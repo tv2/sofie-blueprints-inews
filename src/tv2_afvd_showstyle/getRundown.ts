@@ -926,7 +926,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					})
 			  )
 			: [
-					literal<TimelineObjSisyfosMessage>({
+					literal<TimelineObjSisyfosMessage>({	// @todo: shall we keep this fallback, or just not try to support mp1/next workflow at all?
 						id: '',
 						enable: { while: '1' },
 						priority: 0,
