@@ -80,8 +80,6 @@ export enum SisyfosLLAyer {
 	SisyfosSourceLive_10 = 'sisyfos_source_live_10',
 	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
 	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2',
-	SisyfosSourceClip_1 = 'sisyfos_player_clip_1',
-	SisyfosSourceClip_2 = 'sisyfos_player_clip_2'
 }
 
 export enum VizLLayer {
