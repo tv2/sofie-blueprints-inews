@@ -69,8 +69,8 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: 0,
-					visible: true,
-					label: ''
+					visible: true, // @todo: filter out studio b faders (kasper says)
+					label: '' // @todo: set label
 				}
 			})
 		)
