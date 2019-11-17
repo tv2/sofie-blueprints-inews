@@ -47,7 +47,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Number of Hyperdecks used for recordings',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 1
+		defaultVal: 0
 	},
 	{
 		id: 'MediaPlayerType',
@@ -56,7 +56,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.ENUM,
 		options: _.values(MediaPlayerType),
 		required: true,
-		defaultVal: MediaPlayerType.CasparWithNext
+		defaultVal: MediaPlayerType.CasparAB
 	},
 	{
 		id: 'ABMediaPlayers',
@@ -72,7 +72,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for DSK1 Fill',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 13
+		defaultVal: 21
 	},
 	{
 		id: 'AtemSource.DSK1K',
@@ -80,23 +80,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for DSK1 Key',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 14
-	},
-	{
-		id: 'AtemSource.DSK2F',
-		name: 'ATEM DSK2 Fill',
-		description: 'ATEM vision mixer input for DSK2 Fill',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 15
-	},
-	{
-		id: 'AtemSource.DSK2K',
-		name: 'ATEM DSK2 Key',
-		description: 'ATEM vision mixer input for DSK2 Key',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 16
+		defaultVal: 34
 	},
 	{
 		id: 'AtemSource.ServerC',
@@ -104,7 +88,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for ServerC',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 17
+		defaultVal: 28
 	},
 	{
 		id: 'AtemSource.JingleFill',
