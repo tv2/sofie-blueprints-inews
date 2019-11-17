@@ -921,7 +921,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							type: TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: 0,
 							visible: true,
-							label: 'SERV'
+							label: `SERV ${props.split(':')[1]}` // @todo: is this correct??
 						}
 					})
 			  )
