@@ -305,6 +305,48 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
+		literal<TimelineObjAtemME>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemMEClean,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.ME,
+				me: {
+					input: config.studio.AtemSource.Default,
+					transition: AtemTransitionStyle.CUT
+				}
+			}
+		}),
+		
+		// route default outputs
+		literal<TimelineObjAtemAUX>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemAuxPGM,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.AUX,
+				aux: {
+					input: AtemSourceIndex.Prg1
+				}
+			}
+		}),
+		literal<TimelineObjAtemAUX>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemAuxClean,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.AUX,
+				aux: {
+					input: AtemSourceIndex.Prg4
+				}
+			}
+		}),
 		literal<TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
@@ -314,23 +356,23 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.AUX,
 				aux: {
-					input: config.studio.AtemSource.Default
+					input: config.studio.AtemSource.Default,
 				}
 			}
 		}),
-		// literal<TimelineObjAtemAUX>({ // @todo: to be decided by TV 2
-		// 	id: '',
-		// 	enable: { while: '1' },
-		// 	priority: 0,
-		// 	layer: AtemLLayer.AtemAuxSSrc,
-		// 	content: {
-		// 		deviceType: DeviceType.ATEM,
-		// 		type: TimelineContentTypeAtem.AUX,
-		// 		aux: {
-		// 			input: AtemSourceIndex.SSrc
-		// 		}
-		// 	}
-		// }),
+		literal<TimelineObjAtemAUX>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemAuxSSrc,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.AUX,
+				aux: {
+					input: AtemSourceIndex.SSrc
+				}
+			}
+		}),
 		literal<TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
@@ -384,11 +426,40 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: true,
+						preMultiply: false,	// @ todo: set up the proper parameters for a good key here
 						mask: {
 							enabled: false
 						}
 					}
+				}
+			}
+		}),
+		literal<TimelineObjAtemME>({ // slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
+			id: '',
+			enable: { while: 1 },
+			priority: 0,
+			layer: AtemLLayer.AtemCleanUSKEffect,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.ME,
+				me: {
+					upstreamKeyers: [
+						{
+							upstreamKeyerId: 0
+						},
+						{
+							upstreamKeyerId: 1,
+							onAir: false,
+							mixEffectKeyType: 0,
+							flyEnabled: false,
+							fillSource: config.studio.AtemSource.JingleFill,
+							cutSource: config.studio.AtemSource.JingleKey,
+							maskEnabled: false,
+							lumaSettings: {
+								preMultiplied: true
+							}
+						}
+					]
 				}
 			}
 		}),

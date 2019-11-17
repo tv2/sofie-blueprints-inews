@@ -20,15 +20,25 @@ export enum VirtualAbstractLLayer {}
 
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',
+	AtemMEClean = 'atem_me_clean',
 	AtemDSKGraphics = 'atem_dsk_graphics',
 	AtemDSKEffect = 'atem_dsk_effect',
-	AtemAuxLookahead = 'atem_aux_lookahead',
-	// AtemAuxSSrc = 'atem_aux_ssrc',
-	AtemAuxClean = 'atem_aux_clean',
-	AtemAuxScreen = 'atem_aux_screen',
+	AtemCleanUSKEffect = 'atem_clean_usk_effect',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
-	AtemSSrcOverride = 'atem_supersource_override'
+	// AtemSSrcOverride = 'atem_supersource_override'
+	
+
+	AtemAuxPGM = 'atem_aux_pgm',
+	AtemAuxClean = 'atem_aux_clean',
+	AtemAuxWall = 'atem_aux_wall',
+	AtemAuxAR = 'atem_aux_ar',
+	AtemAuxVizOvlIn1 = 'atem_aux_viz_ovl_in_1',
+	AtemAuxVizFullIn1 = 'atem_aux_viz_full_in_1',
+	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus',
+	AtemAuxVenue = 'atem_aux_venue',
+	AtemAuxLookahead = 'atem_aux_lookahead',
+	AtemAuxSSrc = 'atem_aux_ssrc',
 }
 
 export enum CasparLLayer {

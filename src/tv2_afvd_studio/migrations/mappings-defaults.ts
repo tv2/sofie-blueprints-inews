@@ -134,35 +134,90 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	}),
+	atem_me_clean: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.MixEffect,
+		index: 3 // 3 = ME4
+	}),
+	atem_clean_usk_effect: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.MixEffect,
+		index: 3 // 3 = ME4
+	}),
+	atem_aux_pgm: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 0
+	}),
+	atem_aux_clean: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 1 // 1 = out 2
+	}),
+	atem_aux_wall: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 2 // 2 = out 3
+	}),
+	atem_aux_ar: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 3 // 3 = out 4
+	}),
+	atem_aux_viz_ovl_in_1: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 4 // 4 = out 5
+	}),
+	atem_aux_viz_full_in_1: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 5 // 5 = out 6
+	}),
+	atem_aux_video_mix_minus: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 6 // 6 = out 7
+	}),
+	atem_aux_venue: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 7 // 7 = out 8
+	}),
 	atem_aux_lookahead: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: MappingAtemType.Auxilliary,
-		index: 1
+		index: 8 // 78 = out 9
 	}),
-	// atem_aux_ssrc: literal<MappingAtem & BlueprintMapping>({
-	// 	device: DeviceType.ATEM,
-	// 	deviceId: 'atem0',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	mappingType: MappingAtemType.Auxilliary,
-	// 	index: 2
-	// }),
-	atem_aux_clean: literal<MappingAtem & BlueprintMapping>({
-		// to be removed
+	atem_aux_ssrc: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: MappingAtemType.Auxilliary,
-		index: 5
+		index: 9 // 9 = out 10
 	}),
-	// atem_aux_screen: literal<MappingAtem & BlueprintMapping>({
-	// 	device: DeviceType.ATEM,
-	// 	deviceId: 'atem0',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	mappingType: MappingAtemType.Auxilliary,
-	// 	index: 3
-	// }),
 	atem_dsk_graphics: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
