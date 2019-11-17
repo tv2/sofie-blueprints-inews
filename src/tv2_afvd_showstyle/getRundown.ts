@@ -939,6 +939,34 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							label: 'SERV'
 						}
 					})
-			  ])
+			  ]),
+
+			  literal<TimelineObjSisyfosMessage>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: 0,
+					visible: true,
+					label: 'EVS 1'
+				}
+			}),
+
+			literal<TimelineObjSisyfosMessage>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: SisyfosLLAyer.SisyfosSourceEVS_2,
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: 0,
+					visible: true,
+					label: 'EVS 2'
+				}
+			}),
 	]
 }
