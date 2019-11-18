@@ -621,7 +621,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_1_ST_A,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_1_ST_A,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
@@ -635,7 +635,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_2_ST_A,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_2_ST_A,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
@@ -649,7 +649,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_3_ST_A,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_3_ST_A,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
@@ -663,7 +663,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_4_ST_A,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_4_ST_A,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
@@ -705,7 +705,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_1_ST_B,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_1_ST_B,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
@@ -719,7 +719,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_2_ST_B,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_2_ST_B,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
@@ -733,7 +733,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_3_ST_B,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_3_ST_B,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
@@ -747,7 +747,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGst_4_ST_B,
+			layer: SisyfosLLAyer.SisyfosSourceGæst_4_ST_B,
 			content: {
 				deviceType: DeviceType.SISYFOS,
 				type: TimelineContentTypeSisyfos.SISYFOS,
