@@ -5,7 +5,6 @@ import {
 	DeviceType,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
-	TimelineContentTypeHyperdeck,
 	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
 	TimelineObjAtemAUX,
@@ -13,14 +12,10 @@ import {
 	TimelineObjAtemME,
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
-	// TimelineObjCCGHTMLPage,
 	TimelineObjCCGMedia,
-	// TimelineObjCCGRoute,
-	TimelineObjHyperdeckTransport,
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEElementContinue,
 	Transition,
-	TransportStatus,
 	TSRTimelineObj,
 	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
@@ -42,7 +37,6 @@ import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import {
 	AtemLLayer,
 	CasparLLayer,
-	HyperdeckLLayer,
 	SisyfosLLAyer,
 	SisyfosSourceClip,
 	VizLLayer
@@ -657,20 +651,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 		// 		url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
 		// 	}
 		// }),
-
-		..._.range(config.studio.HyperdeckCount).map(i =>
-			literal<TimelineObjHyperdeckTransport>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: HyperdeckLLayer(i),
-				content: {
-					deviceType: DeviceType.HYPERDECK,
-					type: TimelineContentTypeHyperdeck.TRANSPORT,
-					status: TransportStatus.PREVIEW
-				}
-			})
-		),
 
 		literal<TimelineObjSisyfosMessage>({
 			id: '',

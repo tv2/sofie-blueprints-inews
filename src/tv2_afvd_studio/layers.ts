@@ -107,7 +107,3 @@ export function CasparPlayerClip(i: number) {
 export function SisyfosSourceClip(i: number | string) {
 	return `sisyfos_player_clip_${i}`
 }
-
-export function HyperdeckLLayer(index: number) {
-	return `hyperdeck${index}`
-}

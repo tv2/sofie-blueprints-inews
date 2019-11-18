@@ -9,10 +9,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 
 import { literal } from '../../common/util'
-import mappingsDefaults, {
-	getHyperdeckMappings,
-	getMediaPlayerMappings
-} from '../../tv2_afvd_studio/migrations/mappings-defaults'
+import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { parseConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import OutputlayerDefaults from '../migrations/outputlayer-defaults'
@@ -34,7 +31,6 @@ export function checkAllLayers(
 
 	const allMappings = literal<BlueprintMappings>({
 		...mappingsDefaults,
-		...getHyperdeckMappings(config.studio.HyperdeckCount),
 		...getMediaPlayerMappings(config.studio.MediaPlayerType, config.mediaPlayers)
 	})
 

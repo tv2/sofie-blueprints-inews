@@ -272,39 +272,6 @@ const devices: DeviceEntry[] = [
 			}
 		})
 	},
-	{
-		id: 'hyperdeck0',
-		firstVersion: '0.1.0',
-		type: PlayoutDeviceType.HYPERDECK,
-		defaultValue: input => ({
-			type: PlayoutDeviceType.HYPERDECK,
-			options: {
-				host: input.host,
-				port: 9993
-			}
-		}),
-		input: [
-			{
-				label: 'Device config hyperdeck0: Host',
-				description: 'Enter the Host paramter, example: "127.0.0.1"',
-				inputType: 'text',
-				attribute: 'host',
-				defaultValue: undefined
-			}
-		],
-		validate: device => {
-			if (!device.options) {
-				return 'Missing options'
-			}
-
-			const opts = device.options as any
-			if (!opts.host) {
-				return 'Host is not set'
-			}
-
-			return false
-		}
-	}
 ]
 
 export const deviceMigrations = literal<MigrationStepStudio[]>([

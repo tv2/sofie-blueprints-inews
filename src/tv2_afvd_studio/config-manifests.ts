@@ -42,14 +42,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10' // @todo: is this correct tom??
 	},
 	{
-		id: 'HyperdeckCount',
-		name: 'Hyperdeck Count',
-		description: 'Number of Hyperdecks used for recordings',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 0
-	},
-	{
 		id: 'MediaPlayerType',
 		name: 'Media player type',
 		description: 'Type of media player to use',

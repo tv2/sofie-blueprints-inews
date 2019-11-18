@@ -4,8 +4,6 @@ import {
 	MappingAtem,
 	MappingAtemType,
 	MappingCasparCG,
-	MappingHyperdeck,
-	MappingHyperdeckType,
 	MappingSisyfos,
 	MappingVizMSE
 } from 'timeline-state-resolver-types'
@@ -14,7 +12,6 @@ import * as _ from 'underscore'
 import { literal } from '../../common/util'
 import { MediaPlayerType } from '../config-manifests'
 import { BlueprintConfig, StudioConfig } from '../helpers/config'
-import { HyperdeckLLayer } from '../layers'
 
 export default literal<BlueprintMappings>({
 	core_abstract: literal<MappingAbstract & BlueprintMapping>({
@@ -457,22 +454,6 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.NONE
 	})
 })
-
-export function getHyperdeckMappings(count: number) {
-	const res: BlueprintMappings = {}
-
-	for (let i = 0; i < count; i++) {
-		const id = HyperdeckLLayer(i)
-		res[id] = literal<MappingHyperdeck & BlueprintMapping>({
-			device: DeviceType.HYPERDECK,
-			deviceId: id,
-			mappingType: MappingHyperdeckType.TRANSPORT,
-			lookahead: LookaheadMode.NONE
-		})
-	}
-
-	return res
-}
 
 export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 	const res: BlueprintMappings = {}
