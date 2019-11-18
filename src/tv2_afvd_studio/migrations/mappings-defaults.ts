@@ -198,6 +198,13 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
+	atem_aux_viz: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 4
+	}),
 	casparcg_player_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',

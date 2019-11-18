@@ -28,6 +28,7 @@ export enum AtemLLayer {
 	AtemAuxSSrc = 'atem_aux_ssrc',
 	AtemAuxClean = 'atem_aux_clean',
 	AtemAuxScreen = 'atem_aux_screen',
+	AtemAuxViz = 'atem_aux_viz',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
 	AtemSSrcOverride = 'atem_supersource_override'
