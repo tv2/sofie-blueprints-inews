@@ -278,7 +278,6 @@ export const deviceMigrations = literal<MigrationStepStudio[]>([
 	// create all devices
 	..._.map(devices, createDevice),
 
-	// ensureMakeReadyIsUpToDate('http0', 'nora-reset-stage', () => ({})),
 
 	// ensure all devices still look valid
 	..._.map(devices, validateDevice)

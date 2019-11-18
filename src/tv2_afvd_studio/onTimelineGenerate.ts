@@ -1,8 +1,6 @@
 import {
 	DeviceType,
-	TimelineContentTypeHTTP,
 	TimelineContentTypeLawo,
-	TimelineObjHTTPRequest,
 	TimelineObjLawoSource,
 	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
@@ -56,7 +54,6 @@ export function onTimelineGenerate(
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintPieceDB[]
 ): Promise<BlueprintResultTimeline> {
-	timeline = validateNoraPreload(timeline)
 
 	// // TODO - remove this HACK!
 	// forEachOfType<TimelineObjCCGMedia>(timeline, obj => {
@@ -124,53 +121,10 @@ export function preservePieceLawoLevel(
 	}
 }
 
-function forEachOfType<T extends TSRTimelineObjBase>(
-	timelineObjs: TSRTimelineObjBase[],
-	filter: (obj: Partial<T>) => boolean | undefined,
-	func: (obj: T) => void
-) {
-	_.each(timelineObjs, obj => {
-		const obj2 = obj as T
-		if (filter(obj2)) {
-			func(obj2)
-		}
-	})
-}
-
 function isLawoSource(obj: Partial<TimelineObjLawoSource & TimelineObjectCoreExt>) {
 	return (
 		obj.content && obj.content.deviceType === DeviceType.LAWO && obj.content.type === TimelineContentTypeLawo.SOURCE
 	)
-}
-
-export function validateNoraPreload(timelineObjs: OnGenerateTimelineObj[]) {
-	const toRemoveIds: string[] = []
-	forEachOfType<TimelineObjHTTPRequest & TimelineObjectCoreExt>(
-		timelineObjs,
-		obj =>
-			obj.isLookahead &&
-			obj.content &&
-			obj.content.deviceType === DeviceType.HTTPSEND &&
-			obj.content.type === TimelineContentTypeHTTP.POST,
-		httpObj => {
-			// ignore normal objects
-			if (
-				httpObj.content.params &&
-				httpObj.content.params.template &&
-				httpObj.content.params.template.event === 'take'
-			) {
-				httpObj.content.params.template.event = 'cue'
-			} else {
-				// something we don't understand, so dont lookahead on it
-				if (!httpObj.id) {
-					httpObj.id = 'fake_obj_to_be_removed'
-				}
-				toRemoveIds.push(httpObj.id)
-			}
-		}
-	)
-
-	return timelineObjs.filter(o => toRemoveIds.indexOf(o.id) === -1)
 }
 
 export function copyPreviousLawoLevels(
