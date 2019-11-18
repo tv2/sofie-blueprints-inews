@@ -16,38 +16,34 @@ export function VirtualLLayers() {
 	return _.values(VirtualAbstractLLayer)
 }
 
-export enum VirtualAbstractLLayer {
-	RecordControl = 'record_control'
-}
+export enum VirtualAbstractLLayer {}
 
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',
+	AtemMEClean = 'atem_me_clean',
 	AtemDSKGraphics = 'atem_dsk_graphics',
 	AtemDSKEffect = 'atem_dsk_effect',
-	AtemAuxLookahead = 'atem_aux_lookahead',
-	AtemAuxSSrc = 'atem_aux_ssrc',
-	AtemAuxClean = 'atem_aux_clean',
-	AtemAuxScreen = 'atem_aux_screen',
-	AtemAuxViz = 'atem_aux_viz',
+	AtemCleanUSKEffect = 'atem_clean_usk_effect',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
-	AtemSSrcOverride = 'atem_supersource_override'
+
+	AtemAuxPGM = 'atem_aux_pgm',
+	AtemAuxClean = 'atem_aux_clean',
+	AtemAuxWall = 'atem_aux_wall',
+	AtemAuxAR = 'atem_aux_ar',
+	AtemAuxVizOvlIn1 = 'atem_aux_viz_ovl_in_1',
+	AtemAuxVizFullIn1 = 'atem_aux_viz_full_in_1',
+	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus',
+	AtemAuxVenue = 'atem_aux_venue',
+	AtemAuxLookahead = 'atem_aux_lookahead',
+	AtemAuxSSrc = 'atem_aux_ssrc'
 }
 
 export enum CasparLLayer {
-	CasparPlayerClip = 'casparcg_player_clip',
-	CasparPlayerClipNext = 'casparcg_player_clip_next',
-	CasparPlayerClipNextWarning = 'casparcg_player_clip_next_warning',
-	CasparPlayerClipNextCustom = 'casparcg_player_clip_next_custom',
-	CasparPlayerWipe = 'casparcg_player_wipe',
-	CasparPlayerSoundEffect = 'casparcg_player_soundeffect',
 	CasparPlayerClipPending = 'casparcg_player_clip_pending',
 	CasparPlayerJingle = 'casparcg_player_jingle',
-	CasparCGGraphics = 'casparcg_cg_graphics',
-	CasparCGEffects = 'casparcg_cg_effects',
 	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGLYD = 'casparcg_audio_lyd',
-	CasparCountdown = 'casparcg_cg_countdown',
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame'
@@ -82,16 +78,13 @@ export enum SisyfosLLAyer {
 	SisyfosSourceLive_9 = 'sisyfos_source_live_9',
 	SisyfosSourceLive_10 = 'sisyfos_source_live_10',
 	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
-	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2',
-	SisyfosSourceClip_1 = 'sisyfos_player_clip_1',
-	SisyfosSourceClip_2 = 'sisyfos_player_clip_2'
+	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2'
 }
 
 export enum VizLLayer {
 	VizLLayerOverlay = 'viz_layer_overlay',
 	VizLLayerPilot = 'viz_layer_pilot',
 	VizLLayerDesign = 'viz_layer_design',
-	VizLLayerDVEBackground = 'viz_layer_dve_background',
 	VizLLayerContinue = 'viz_layer_continue'
 }
 
@@ -101,8 +94,4 @@ export function CasparPlayerClip(i: number) {
 
 export function SisyfosSourceClip(i: number | string) {
 	return `sisyfos_player_clip_${i}`
-}
-
-export function HyperdeckLLayer(index: number) {
-	return `hyperdeck${index}`
 }

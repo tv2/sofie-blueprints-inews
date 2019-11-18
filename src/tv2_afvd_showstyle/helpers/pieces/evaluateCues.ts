@@ -131,21 +131,6 @@ export function EvaluateCues(
 			})
 		}
 	})
-
-	/*if (isDVE) {
-		// All cues are AdLibs
-		grafikCues.forEach((cue, i) => {
-			EvaluateGrafik(pieces, adLibPieces, part.externalId, cue as any, true, i)
-		})
-	} else {
-		// First cue is not AdLib, but also an AdLib
-		grafikCues.forEach((cue, i) => {
-			if (i === 0) {
-				EvaluateGrafik(pieces, adLibPieces, part.externalId, cue as any)
-			}
-			EvaluateGrafik(pieces, adLibPieces, part.externalId, cue as any, true)
-		})
-	}*/
 }
 
 export function CreateTiming(
@@ -227,7 +212,3 @@ export function CalculateTime(time: CueTime) {
 
 	return result
 }
-
-/*function containsDVE(cues: CueDefinition[]) {
-	return !!cues.filter(cue => cue.type === CueType.DVE).length
-}*/
