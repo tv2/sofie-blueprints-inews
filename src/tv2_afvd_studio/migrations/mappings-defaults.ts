@@ -485,20 +485,6 @@ export function getMediaPlayerMappings(mode: MediaPlayerType, mediaPlayers: Blue
 	switch (mode) {
 		case MediaPlayerType.CasparWithNext:
 			return {
-				casparcg_player_clip_next_warning: literal<MappingCasparCG & BlueprintMapping>({
-					device: DeviceType.CASPARCG,
-					deviceId: 'caspar01',
-					lookahead: LookaheadMode.NONE,
-					channel: 4,
-					layer: 99
-				}),
-				casparcg_player_clip_next_custom: literal<MappingCasparCG & BlueprintMapping>({
-					device: DeviceType.CASPARCG,
-					deviceId: 'caspar01',
-					lookahead: LookaheadMode.NONE,
-					channel: 4,
-					layer: 110
-				}),
 				sisyfos_source_clip_pending: literal<MappingSisyfos & BlueprintMapping>({
 					device: DeviceType.SISYFOS,
 					deviceId: 'sisyfos0',
