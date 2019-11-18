@@ -313,7 +313,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		
+
 		// route default outputs
 		literal<TimelineObjAtemAUX>({
 			id: '',
@@ -350,7 +350,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.AUX,
 				aux: {
-					input: config.studio.AtemSource.Default,
+					input: config.studio.AtemSource.Default
 				}
 			}
 		}),
@@ -420,7 +420,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: false,	// @ todo: set up the proper parameters for a good key here
+						preMultiply: false, // @ todo: set up the proper parameters for a good key here
 						mask: {
 							enabled: false
 						}
@@ -428,7 +428,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		literal<TimelineObjAtemME>({ // slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
+		literal<TimelineObjAtemME>({
+			// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 			id: '',
 			enable: { while: 1 },
 			priority: 0,
@@ -972,12 +973,13 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							type: TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: 0,
 							visible: true,
-							label: `SERV ${props.split(':')[1]}` // @todo: is this correct??
+							label: `SERV ${props.split(':')[1]}` // @todo: is this correct?? // use media objects-object
 						}
 					})
 			  )
 			: [
-					literal<TimelineObjSisyfosMessage>({	// @todo: shall we keep this fallback, or just not try to support mp1/next workflow at all?
+					literal<TimelineObjSisyfosMessage>({
+						// @todo: shall we keep this fallback, or just not try to support mp1/next workflow at all?
 						id: '',
 						enable: { while: '1' },
 						priority: 0,
@@ -992,32 +994,32 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					})
 			  ]),
 
-			  literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: SisyfosLLAyer.SisyfosSourceEVS_1,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 0,
-					visible: true,
-					label: 'EVS 1'
-				}
-			}),
+		literal<TimelineObjSisyfosMessage>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+			content: {
+				deviceType: DeviceType.SISYFOS,
+				type: TimelineContentTypeSisyfos.SISYFOS,
+				isPgm: 0,
+				visible: true,
+				label: 'EVS 1'
+			}
+		}),
 
-			literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: SisyfosLLAyer.SisyfosSourceEVS_2,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 0,
-					visible: true,
-					label: 'EVS 2'
-				}
-			}),
+		literal<TimelineObjSisyfosMessage>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: SisyfosLLAyer.SisyfosSourceEVS_2,
+			content: {
+				deviceType: DeviceType.SISYFOS,
+				type: TimelineContentTypeSisyfos.SISYFOS,
+				isPgm: 0,
+				visible: true,
+				label: 'EVS 2'
+			}
+		})
 	]
 }

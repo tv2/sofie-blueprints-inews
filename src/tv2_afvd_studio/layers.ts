@@ -27,7 +27,6 @@ export enum AtemLLayer {
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
 	// AtemSSrcOverride = 'atem_supersource_override'
-	
 
 	AtemAuxPGM = 'atem_aux_pgm',
 	AtemAuxClean = 'atem_aux_clean',
@@ -38,7 +37,7 @@ export enum AtemLLayer {
 	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus',
 	AtemAuxVenue = 'atem_aux_venue',
 	AtemAuxLookahead = 'atem_aux_lookahead',
-	AtemAuxSSrc = 'atem_aux_ssrc',
+	AtemAuxSSrc = 'atem_aux_ssrc'
 }
 
 export enum CasparLLayer {
@@ -89,7 +88,7 @@ export enum SisyfosLLAyer {
 	SisyfosSourceLive_9 = 'sisyfos_source_live_9',
 	SisyfosSourceLive_10 = 'sisyfos_source_live_10',
 	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
-	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2',
+	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2'
 }
 
 export enum VizLLayer {
