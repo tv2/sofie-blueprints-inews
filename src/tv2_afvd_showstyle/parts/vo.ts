@@ -18,7 +18,6 @@ import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
 import { CreatePartInvalid } from './invalid'
-// import { PartTime } from './time/partTime'
 
 export function CreatePartVO(
 	context: PartContext,
@@ -36,13 +35,11 @@ export function CreatePartVO(
 		return CreatePartInvalid(partDefinition)
 	}
 
-	// const partTime = PartTime(partDefinition, totalWords)
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
 		typeVariant: ''
-		// expectedDuration: partTime
 	})
 
 	const file = partDefinition.fields.videoId

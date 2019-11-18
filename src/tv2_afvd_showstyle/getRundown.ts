@@ -34,13 +34,7 @@ import {
 import { literal } from '../common/util'
 import { MediaPlayerType } from '../tv2_afvd_studio/config-manifests'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
-import {
-	AtemLLayer,
-	CasparLLayer,
-	SisyfosLLAyer,
-	SisyfosSourceClip,
-	VizLLayer
-} from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, SisyfosSourceClip, VizLLayer } from '../tv2_afvd_studio/layers'
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
@@ -515,27 +509,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-
-		// literal<TimelineObjCCGMedia>({	// @todo: should the be removed for a/b setup?
-		// 	id: '',
-		// 	enable: { while: '1' },
-		// 	priority: 0,
-		// 	layer: CasparLLayer.CasparPlayerClip,
-		// 	content: {
-		// 		deviceType: DeviceType.CASPARCG,
-		// 		type: TimelineContentTypeCasparCg.MEDIA,
-		// 		file: 'CG1080I50',
-		// 		mixer: {
-		// 			opacity: 0
-		// 		},
-		// 		transitions: {
-		// 			inTransition: {
-		// 				type: Transition.CUT,
-		// 				duration: CONSTANTS.DefaultClipFadeOut
-		// 			}
-		// 		}
-		// 	}
-		// }),
 		literal<TimelineObjCCGMedia>({
 			id: '',
 			enable: { while: '1' },
@@ -544,7 +517,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50', // @todo: should this be 'empty'??
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -564,7 +537,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50', // @todo: should this be 'empty'??
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -584,7 +557,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50', // @todo: should this be 'empty'??
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -604,7 +577,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50', // @todo: should this be 'empty'??
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -616,43 +589,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		// literal<TimelineObjCCGRoute>({ // @todo: should the be removed for a/b setup?
-		// 	id: '',
-		// 	enable: { while: '1' },
-		// 	priority: 0,
-		// 	layer: CasparLLayer.CasparPlayerClipNext,
-		// 	content: {
-		// 		deviceType: DeviceType.CASPARCG,
-		// 		type: TimelineContentTypeCasparCg.ROUTE,
-		// 		mappedLayer: CasparLLayer.CasparPlayerClip,
-		// 		mode: 'BACKGROUND'
-		// 	}
-		// }),
-		// literal<TimelineObjCCGMedia>({	// @todo: how is this implemented for a/b??
-		// 	id: '',
-		// 	enable: { while: '1' },
-		// 	priority: 0,
-		// 	layer: CasparLLayer.CasparPlayerClipNextWarning,
-		// 	content: {
-		// 		deviceType: DeviceType.CASPARCG,
-		// 		type: TimelineContentTypeCasparCg.MEDIA,
-		// 		file: 'assets/no_clip_spinner_loop',
-		// 		loop: true
-		// 	}
-		// }),
-
-		// literal<TimelineObjCCGHTMLPage>({	// @todo: to be rendered outside of casparcg for now
-		// 	id: '',
-		// 	enable: { while: '1' },
-		// 	priority: 0,
-		// 	layer: CasparLLayer.CasparCountdown,
-		// 	content: {
-		// 		deviceType: DeviceType.CASPARCG,
-		// 		type: TimelineContentTypeCasparCg.HTMLPAGE,
-		// 		url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
-		// 	}
-		// }),
-
 		literal<TimelineObjSisyfosMessage>({
 			id: '',
 			enable: { while: '1' },

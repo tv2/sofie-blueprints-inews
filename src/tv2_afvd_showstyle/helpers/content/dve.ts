@@ -311,33 +311,3 @@ function boxSource(
 		type: info.type
 	}
 }
-
-/*function makeBox(
-	configBox: DVEConfigBox
-): {
-	x: number
-	y: number
-	scale: number
-	crop?: {
-		left: number
-		top: number
-		right: number
-		bottom: number
-	}
-} {
-	return {
-		x: configBox.x,
-		y: configBox.y,
-		scale: configBox.size / 1000,
-		...(configBox.cropped
-			? {
-					crop: {
-						left: configBox.cropLeft,
-						top: configBox.cropTop,
-						right: configBox.cropRight,
-						bottom: configBox.cropBottom
-					}
-			  }
-			: {})
-	}
-}*/

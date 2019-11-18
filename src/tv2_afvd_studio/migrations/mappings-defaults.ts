@@ -19,69 +19,6 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	// casparcg_player_wipe: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar01',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 3,
-	// 	layer: 199
-	// }),
-	// casparcg_player_soundeffect: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar01',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 3,
-	// 	layer: 130
-	// }),
-	// casparcg_player_clip_next_warning: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar01',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 4,
-	// 	layer: 99
-	// }),
-	// casparcg_player_clip: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar01',
-	// 	lookahead: LookaheadMode.PRELOAD,
-	// 	channel: 1,
-	// 	layer: 111
-	// }),
-	// casparcg_player_clip_next: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar01',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 4,
-	// 	layer: 101
-	// }),
-	// casparcg_player_clip_next_custom: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar01',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 4,
-	// 	layer: 110
-	// }),
-	// casparcg_cg_graphics: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar02',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 2,
-	// 	layer: 120
-	// }),
-	// casparcg_cg_countdown: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar02',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 1,
-	// 	layer: 120
-	// }),
-	// casparcg_cg_effects: literal<MappingCasparCG & BlueprintMapping>({
-	// 	device: DeviceType.CASPARCG,
-	// 	deviceId: 'caspar01',
-	// 	lookahead: LookaheadMode.NONE,
-	// 	channel: 3,
-	// 	layer: 120
-	// }),
 	casparcg_dve_loop: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
@@ -244,13 +181,6 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
-	// atem_supersource_override: literal<MappingAtem & BlueprintMapping>({
-	// 	device: DeviceType.ATEM,
-	// 	deviceId: 'atem0',
-	// 	lookahead: LookaheadMode.RETAIN,
-	// 	mappingType: MappingAtemType.SuperSourceBox,
-	// 	index: 0 // 0 = SS
-	// }),
 	casparcg_player_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
@@ -444,11 +374,6 @@ export default literal<BlueprintMappings>({
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	// viz_layer_dve_background: literal<MappingVizMSE & BlueprintMapping>({
-	// 	device: DeviceType.VIZMSE,
-	// 	deviceId: 'viz0',
-	// 	lookahead: LookaheadMode.NONE
-	// }),
 	viz_layer_continue: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',

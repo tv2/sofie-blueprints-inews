@@ -1,9 +1,4 @@
-import {
-	DeviceType,
-	TimelineContentTypeLawo,
-	TimelineObjLawoSource,
-	TSRTimelineObjBase
-} from 'timeline-state-resolver-types'
+import { DeviceType, TimelineContentTypeLawo, TimelineObjLawoSource } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultTimeline,
 	IBlueprintPieceDB,
@@ -54,19 +49,6 @@ export function onTimelineGenerate(
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintPieceDB[]
 ): Promise<BlueprintResultTimeline> {
-
-	// // TODO - remove this HACK!
-	// forEachOfType<TimelineObjCCGMedia>(timeline, obj => {
-	// 	return obj.isLookahead
-	// }, (obj) => {
-	// 	// TODO - this isnt the ideal mode, as we cant ever loadbg if doing back to back.
-	// 	// Instead TSR/ccg-state should be able to choose a load or loadbg
-	// 	obj.content.playing = false
-	// 	obj.content.noStarttime = true
-	// 	obj.isLookahead = false;
-	// 	(obj as any).wasLookahead = true
-	// })
-
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	copyPreviousLawoLevels(
 		context,
