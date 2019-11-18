@@ -1,12 +1,15 @@
 import {
 	DeviceType,
+	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeVizMSE,
+	TimelineObjAtemAUX,
 	TimelineObjCCGMedia,
 	TimelineObjVIZMSEElementInternal,
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
+	CameraContent,
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -18,12 +21,13 @@ import { literal } from '../../../common/util'
 import { CueDefinitionVIZ } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { CasparLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { FindSourceByName } from '../../../tv2_afvd_studio/helpers/sources'
+import { AtemLLayer, CasparLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { CalculateTime } from './evaluateCues'
 
 export function EvaluateVIZ(
 	context: PartContext,
-	_config: BlueprintConfig,
+	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -97,6 +101,48 @@ export function EvaluateVIZ(
 		}
 	} else if (parsedCue.rawType.match(/^VIZ=grafik-design$/)) {
 		context.warning('VIZ=grafik-design is not supported for this showstyle')
+	} else if (parsedCue.rawType.match(/^VIZ=full$/i)) {
+		if (!parsedCue.content.INP1) {
+			context.warning(`No input provided by ${parsedCue.rawType}`)
+			return
+		}
+		const sourceInfo = FindSourceByName(context, config.sources, parsedCue.content.INP1)
+		if (!sourceInfo) {
+			context.warning(`Could not find source ${parsedCue.content.INP1}`)
+			return
+		}
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partId,
+				enable: {
+					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+				},
+				name: parsedCue.content.INP1 || '',
+				outputLayerId: 'pgm0',
+				sourceLayerId: SourceLayer.PgmVIZ,
+				infiniteMode: PieceLifespan.Infinite,
+				content: literal<CameraContent>({
+					studioLabel: '',
+					switcherInput: sourceInfo.port,
+					timelineObjects: _.compact<TSRTimelineObj>([
+						literal<TimelineObjAtemAUX>({
+							id: '',
+							enable: { start: 0 },
+							priority: 100,
+							layer: AtemLLayer.AtemAuxViz,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.AUX,
+								aux: {
+									input: sourceInfo.port
+								}
+							}
+						})
+					])
+				})
+			})
+		)
 	} else {
 		const path = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
 		if (adlib) {

@@ -4,6 +4,7 @@ import {
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionUnknown,
+	CueDefinitionVIZ,
 	CueType,
 	isTime,
 	ParseCue,
@@ -604,6 +605,24 @@ describe('Cue parser', () => {
 				},
 				start: {
 					frames: 4,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('VIZ Cue', () => {
+		const cueViz = ['VIZ=full', 'INP1=EVS 1', ';0.00']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionVIZ>({
+				type: CueType.VIZ,
+				rawType: 'VIZ=full',
+				design: 'full',
+				content: {
+					INP1: 'EVS 1'
+				},
+				start: {
 					seconds: 0
 				}
 			})
