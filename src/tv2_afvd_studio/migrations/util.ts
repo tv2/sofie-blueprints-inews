@@ -8,8 +8,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../../common/util'
-import { studioConfigManifest } from '../config-manifests'
-import MappingsDefaults, { getHyperdeckMappings } from './mappings-defaults'
+import MappingsDefaults from './mappings-defaults'
 
 export function ensureStudioConfig(
 	version: string,
@@ -151,50 +150,6 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 					}
 				}
 			})
-		})
-	)
-
-	const hyperdeckCount = (context: MigrationContextStudio) => {
-		const configCount = context.getConfig('HyperdeckCount')
-		if (typeof configCount === 'number') {
-			return configCount
-		} else {
-			const defaultVal = studioConfigManifest.find(c => c.id === 'HyperdeckCount')
-			if (defaultVal === undefined) {
-				throw new Error('Expected HyperdeckCount to be defined in StudioConfigManifest')
-			} else {
-				return defaultVal.defaultVal as number
-			}
-		}
-	}
-
-	res.push(
-		literal<MigrationStepStudio>({
-			id: `mappings.defaults._all_hyperdeck_`,
-			version: versionStr,
-			canBeRunAutomatically: true,
-			dependOnResultFrom: 'studioConfig.HyperdeckCount',
-			validate: (context: MigrationContextStudio) => {
-				const expected = _.keys(getHyperdeckMappings(hyperdeckCount(context)))
-
-				let mappingMissing: string | boolean = false
-				_.each(expected, f => {
-					if (!context.getMapping(f)) {
-						mappingMissing = `${f} is missing`
-					}
-				})
-
-				return mappingMissing
-			},
-			migrate: (context: MigrationContextStudio) => {
-				const expected = getHyperdeckMappings(hyperdeckCount(context))
-
-				_.each(expected, (v, k) => {
-					if (!context.getMapping(k)) {
-						context.insertMapping(k, v)
-					}
-				})
-			}
 		})
 	)
 

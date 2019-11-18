@@ -4,8 +4,6 @@ import {
 	MappingAtem,
 	MappingAtemType,
 	MappingCasparCG,
-	MappingHyperdeck,
-	MappingHyperdeckType,
 	MappingSisyfos,
 	MappingVizMSE
 } from 'timeline-state-resolver-types'
@@ -14,7 +12,6 @@ import * as _ from 'underscore'
 import { literal } from '../../common/util'
 import { MediaPlayerType } from '../config-manifests'
 import { BlueprintConfig, StudioConfig } from '../helpers/config'
-import { HyperdeckLLayer } from '../layers'
 
 export default literal<BlueprintMappings>({
 	core_abstract: literal<MappingAbstract & BlueprintMapping>({
@@ -22,94 +19,32 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	casparcg_player_wipe: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 3,
-		layer: 199
-	}),
-	casparcg_player_soundeffect: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 3,
-		layer: 130
-	}),
-	casparcg_player_clip_next_warning: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 4,
-		layer: 99
-	}),
-	casparcg_player_clip: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.PRELOAD,
-		channel: 1,
-		layer: 111
-	}),
-	casparcg_player_clip_next: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 4,
-		layer: 101
-	}),
-	casparcg_player_clip_next_custom: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 4,
-		layer: 110
-	}),
-	casparcg_cg_graphics: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar02',
-		lookahead: LookaheadMode.NONE,
-		channel: 2,
-		layer: 120
-	}),
-	casparcg_cg_countdown: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar02',
-		lookahead: LookaheadMode.NONE,
-		channel: 1,
-		layer: 120
-	}),
-	casparcg_cg_effects: literal<MappingCasparCG & BlueprintMapping>({
-		device: DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 3,
-		layer: 120
-	}),
 	casparcg_dve_loop: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.RETAIN,
+		// @todo: add new prop to load the first frame
 		channel: 2,
 		layer: 110
 	}),
 	casparcg_cg_dve_template: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.RETAIN,
 		channel: 2,
 		layer: 120
 	}),
 	casparcg_dve_key: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.RETAIN,
 		channel: 2,
 		layer: 109
 	}),
 	casparcg_dve_frame: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.RETAIN,
 		channel: 2,
 		layer: 111
 	}),
@@ -134,34 +69,89 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	}),
+	atem_me_clean: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.MixEffect,
+		index: 3 // 3 = ME4
+	}),
+	atem_clean_usk_effect: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.MixEffect,
+		index: 3 // 3 = ME4
+	}),
+	atem_aux_pgm: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 0
+	}),
+	atem_aux_clean: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 1 // 1 = out 2
+	}),
+	atem_aux_wall: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 2 // 2 = out 3
+	}),
+	atem_aux_ar: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 3 // 3 = out 4
+	}),
+	atem_aux_viz_ovl_in_1: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 4 // 4 = out 5
+	}),
+	atem_aux_viz_full_in_1: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 5 // 5 = out 6
+	}),
+	atem_aux_video_mix_minus: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 6 // 6 = out 7
+	}),
+	atem_aux_venue: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: MappingAtemType.Auxilliary,
+		index: 7 // 7 = out 8
+	}),
 	atem_aux_lookahead: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: MappingAtemType.Auxilliary,
-		index: 1
+		index: 8 // 78 = out 9
 	}),
 	atem_aux_ssrc: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: MappingAtemType.Auxilliary,
-		index: 2
-	}),
-	atem_aux_clean: literal<MappingAtem & BlueprintMapping>({
-		// to be removed
-		device: DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: MappingAtemType.Auxilliary,
-		index: 5
-	}),
-	atem_aux_screen: literal<MappingAtem & BlueprintMapping>({
-		device: DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: MappingAtemType.Auxilliary,
-		index: 3
+		index: 9 // 9 = out 10
 	}),
 	atem_dsk_graphics: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
@@ -191,20 +181,6 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
-	atem_supersource_override: literal<MappingAtem & BlueprintMapping>({
-		device: DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.RETAIN,
-		mappingType: MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	atem_aux_viz: literal<MappingAtem & BlueprintMapping>({
-		device: DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: MappingAtemType.Auxilliary,
-		index: 4
-	}),
 	casparcg_player_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
@@ -213,19 +189,19 @@ export default literal<BlueprintMappings>({
 	sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.PRELOAD
 	}),
 	sisyfos_source_audio: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 2,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_live_speak: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 3,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_vært_1_st_a: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
@@ -359,18 +335,6 @@ export default literal<BlueprintMappings>({
 		channel: 21,
 		lookahead: LookaheadMode.NONE
 	}),
-	sisyfos_player_clip_1: literal<MappingSisyfos & BlueprintMapping>({
-		device: DeviceType.SISYFOS,
-		deviceId: 'sisyfos0',
-		channel: 22,
-		lookahead: LookaheadMode.NONE
-	}),
-	sisyfos_player_clip_2: literal<MappingSisyfos & BlueprintMapping>({
-		device: DeviceType.SISYFOS,
-		deviceId: 'sisyfos0',
-		channel: 23,
-		lookahead: LookaheadMode.NONE
-	}),
 	sisyfos_source_evs_1: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
@@ -387,13 +351,13 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 27,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_tlf_hybrid: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 28,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	viz_layer_overlay: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
@@ -410,33 +374,12 @@ export default literal<BlueprintMappings>({
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_dve_background: literal<MappingVizMSE & BlueprintMapping>({
-		device: DeviceType.VIZMSE,
-		deviceId: 'viz0',
-		lookahead: LookaheadMode.NONE
-	}),
 	viz_layer_continue: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	})
 })
-
-export function getHyperdeckMappings(count: number) {
-	const res: BlueprintMappings = {}
-
-	for (let i = 0; i < count; i++) {
-		const id = HyperdeckLLayer(i)
-		res[id] = literal<MappingHyperdeck & BlueprintMapping>({
-			device: DeviceType.HYPERDECK,
-			deviceId: id,
-			mappingType: MappingHyperdeckType.TRANSPORT,
-			lookahead: LookaheadMode.NONE
-		})
-	}
-
-	return res
-}
 
 export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 	const res: BlueprintMappings = {}
@@ -542,20 +485,6 @@ export function getMediaPlayerMappings(mode: MediaPlayerType, mediaPlayers: Blue
 	switch (mode) {
 		case MediaPlayerType.CasparWithNext:
 			return {
-				casparcg_player_clip_next_warning: literal<MappingCasparCG & BlueprintMapping>({
-					device: DeviceType.CASPARCG,
-					deviceId: 'caspar01',
-					lookahead: LookaheadMode.NONE,
-					channel: 4,
-					layer: 99
-				}),
-				casparcg_player_clip_next_custom: literal<MappingCasparCG & BlueprintMapping>({
-					device: DeviceType.CASPARCG,
-					deviceId: 'caspar01',
-					lookahead: LookaheadMode.NONE,
-					channel: 4,
-					layer: 110
-				}),
 				sisyfos_source_clip_pending: literal<MappingSisyfos & BlueprintMapping>({
 					device: DeviceType.SISYFOS,
 					deviceId: 'sisyfos0',

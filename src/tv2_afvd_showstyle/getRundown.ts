@@ -5,7 +5,6 @@ import {
 	DeviceType,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
-	TimelineContentTypeHyperdeck,
 	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
 	TimelineObjAtemAUX,
@@ -13,14 +12,10 @@ import {
 	TimelineObjAtemME,
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
-	TimelineObjCCGHTMLPage,
 	TimelineObjCCGMedia,
-	TimelineObjCCGRoute,
-	TimelineObjHyperdeckTransport,
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEElementContinue,
 	Transition,
-	TransportStatus,
 	TSRTimelineObj,
 	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
@@ -39,14 +34,7 @@ import {
 import { literal } from '../common/util'
 import { MediaPlayerType } from '../tv2_afvd_studio/config-manifests'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
-import {
-	AtemLLayer,
-	CasparLLayer,
-	HyperdeckLLayer,
-	SisyfosLLAyer,
-	SisyfosSourceClip,
-	VizLLayer
-} from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, SisyfosSourceClip, VizLLayer } from '../tv2_afvd_studio/layers'
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
@@ -305,6 +293,48 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
+		literal<TimelineObjAtemME>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemMEClean,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.ME,
+				me: {
+					input: config.studio.AtemSource.Default,
+					transition: AtemTransitionStyle.CUT
+				}
+			}
+		}),
+
+		// route default outputs
+		literal<TimelineObjAtemAUX>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemAuxPGM,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.AUX,
+				aux: {
+					input: AtemSourceIndex.Prg1
+				}
+			}
+		}),
+		literal<TimelineObjAtemAUX>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemAuxClean,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.AUX,
+				aux: {
+					input: AtemSourceIndex.Prg4
+				}
+			}
+		}),
 		literal<TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
@@ -384,11 +414,41 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: true,
+						preMultiply: false, // @ todo: set up the proper parameters for a good key here
 						mask: {
 							enabled: false
 						}
 					}
+				}
+			}
+		}),
+		literal<TimelineObjAtemME>({
+			// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
+			id: '',
+			enable: { while: 1 },
+			priority: 0,
+			layer: AtemLLayer.AtemCleanUSKEffect,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.ME,
+				me: {
+					upstreamKeyers: [
+						{
+							upstreamKeyerId: 0
+						},
+						{
+							upstreamKeyerId: 1,
+							onAir: false,
+							mixEffectKeyType: 0,
+							flyEnabled: false,
+							fillSource: config.studio.AtemSource.JingleFill,
+							cutSource: config.studio.AtemSource.JingleKey,
+							maskEnabled: false,
+							lumaSettings: {
+								preMultiplied: true
+							}
+						}
+					]
 				}
 			}
 		}),
@@ -449,27 +509,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-
-		literal<TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparPlayerClip,
-			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
-					}
-				}
-			}
-		}),
 		literal<TimelineObjCCGMedia>({
 			id: '',
 			enable: { while: '1' },
@@ -478,7 +517,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50',
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -498,7 +537,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50',
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -518,7 +557,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50',
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -538,7 +577,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			content: {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'CG1080I50',
+				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
@@ -550,57 +589,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		literal<TimelineObjCCGRoute>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparPlayerClipNext,
-			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: CasparLLayer.CasparPlayerClip,
-				mode: 'BACKGROUND'
-			}
-		}),
-		literal<TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparPlayerClipNextWarning,
-			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
-				file: 'assets/no_clip_spinner_loop',
-				loop: true
-			}
-		}),
-
-		literal<TimelineObjCCGHTMLPage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparCountdown,
-			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.HTMLPAGE,
-				url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
-			}
-		}),
-
-		..._.range(config.studio.HyperdeckCount).map(i =>
-			literal<TimelineObjHyperdeckTransport>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: HyperdeckLLayer(i),
-				content: {
-					deviceType: DeviceType.HYPERDECK,
-					type: TimelineContentTypeHyperdeck.TRANSPORT,
-					status: TransportStatus.PREVIEW
-				}
-			})
-		),
-
 		literal<TimelineObjSisyfosMessage>({
 			id: '',
 			enable: { while: '1' },
@@ -921,12 +909,13 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							type: TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: 0,
 							visible: true,
-							label: 'SERV'
+							label: `SERV ${props.split(':')[1]}` // @todo: is this correct?? // use media objects-object
 						}
 					})
 			  )
 			: [
 					literal<TimelineObjSisyfosMessage>({
+						// @todo: shall we keep this fallback, or just not try to support mp1/next workflow at all?
 						id: '',
 						enable: { while: '1' },
 						priority: 0,
@@ -939,6 +928,34 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							label: 'SERV'
 						}
 					})
-			  ])
+			  ]),
+
+		literal<TimelineObjSisyfosMessage>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+			content: {
+				deviceType: DeviceType.SISYFOS,
+				type: TimelineContentTypeSisyfos.SISYFOS,
+				isPgm: 0,
+				visible: true,
+				label: 'EVS 1'
+			}
+		}),
+
+		literal<TimelineObjSisyfosMessage>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: SisyfosLLAyer.SisyfosSourceEVS_2,
+			content: {
+				deviceType: DeviceType.SISYFOS,
+				type: TimelineContentTypeSisyfos.SISYFOS,
+				isPgm: 0,
+				visible: true,
+				label: 'EVS 2'
+			}
+		})
 	]
 }

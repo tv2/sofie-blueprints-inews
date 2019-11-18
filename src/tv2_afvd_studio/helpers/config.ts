@@ -27,23 +27,19 @@ export interface StudioConfig {
 	// Must override
 
 	// Intended overrides
-	MediaFlowId: string
+	MediaFlowId: string // @ todo: implement in blueprints, this is currently not used
 	SourcesCam: string
 	SourcesRM: string
 	SourcesSkype: string
-	HyperdeckCount: number
 	ABMediaPlayers: string
 	MediaPlayerType: MediaPlayerType
 
 	AtemSource: {
 		DSK1F: number
 		DSK1K: number
-		DSK2F: number
-		DSK2K: number
 		ServerC: number // Studio
 		JingleFill: number
 		JingleKey: number
-
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
 

@@ -9,15 +9,12 @@ const blankStudioConfig: StudioConfig = {
 	SourcesCam: '',
 	SourcesRM: '',
 	SourcesSkype: '',
-	HyperdeckCount: 0,
 	ABMediaPlayers: '',
 	MediaPlayerType: MediaPlayerType.CasparAB,
 
 	AtemSource: {
 		DSK1F: 0,
 		DSK1K: 0,
-		DSK2F: 0,
-		DSK2K: 0,
 		ServerC: 0,
 		JingleFill: 0,
 		JingleKey: 0,
