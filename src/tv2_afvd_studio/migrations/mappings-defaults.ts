@@ -85,28 +85,29 @@ export default literal<BlueprintMappings>({
 	casparcg_dve_loop: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.RETAIN,
+		// @todo: add new prop to load the first frame
 		channel: 2,
 		layer: 110
 	}),
 	casparcg_cg_dve_template: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.RETAIN,
 		channel: 2,
 		layer: 120
 	}),
 	casparcg_dve_key: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.RETAIN,
 		channel: 2,
 		layer: 109
 	}),
 	casparcg_dve_frame: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.RETAIN,
 		channel: 2,
 		layer: 111
 	}),
@@ -258,19 +259,19 @@ export default literal<BlueprintMappings>({
 	sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.PRELOAD
 	}),
 	sisyfos_source_audio: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 2,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_live_speak: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 3,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_vært_1_st_a: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
@@ -420,13 +421,13 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 27,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_tlf_hybrid: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 28,
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	viz_layer_overlay: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
