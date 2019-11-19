@@ -28,6 +28,7 @@ describe('Migration Defaults', () => {
 		// Inject core_abstract as it is required by core and so needs to be defined
 		const layerIds = RealLLayers()
 			.concat(['core_abstract'])
+			.concat(['casparcg_player_clip_1', 'casparcg_player_clip_2', 'sisyfos_player_clip_1', 'sisyfos_player_clip_2'])
 			.sort()
 
 		expect(defaultsIds).toEqual(layerIds)
