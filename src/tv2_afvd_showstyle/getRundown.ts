@@ -33,9 +33,9 @@ import {
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../common/util'
-import { MediaPlayerType } from '../tv2_afvd_studio/config-manifests'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer, SisyfosSourceClip, VizLLayer } from '../tv2_afvd_studio/layers'
+import { SisyfosChannel, sisyfosChannels, sisyfosServerChannel } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
@@ -630,373 +630,43 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceVært_1_ST_A,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'VÆRT 1'
-			}
+
+		// create sisyfos channels from the config
+		...Object.keys(sisyfosChannels).map(key => {
+			const llayer = key as SisyfosLLAyer
+			const channel = sisyfosChannels[llayer] as SisyfosChannel
+			return literal<TimelineObjSisyfosMessage>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: llayer,
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: channel.isPgm,
+					visible: channel.visibleInStudioA,
+					label: channel.label
+				}
+			})
 		}),
 
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceVært_2_ST_A,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'VÆRT 2'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_1_ST_A,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'GÆST 1'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_2_ST_A,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'GÆST 2'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_3_ST_A,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'GÆST 3'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_4_ST_A,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'GÆST 4'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceVært_1_ST_B,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: false,
-				label: 'VÆRT 1'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceVært_2_ST_B,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: false,
-				label: 'VÆRT 2'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_1_ST_B,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: false,
-				label: 'GÆST 1'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_2_ST_B,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: false,
-				label: 'GÆST 2'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_3_ST_B,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: false,
-				label: 'GÆST 3'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceGæst_4_ST_B,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: false,
-				label: 'GÆST 4'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_1,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 1'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_2,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 2'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_3,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 3'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_4,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 4'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_5,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 5'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_6,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 6'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_7,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 7'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_8,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 8'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_9,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 9'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceLive_10,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'LIVE 10'
-			}
-		}),
-
-		...(config.studio.MediaPlayerType === MediaPlayerType.CasparAB
-			? config.studio.ABMediaPlayers.split(',').map(props =>
-					literal<TimelineObjSisyfosMessage>({
-						id: '',
-						enable: { while: '1' },
-						priority: 0,
-						layer: SisyfosSourceClip(props.split(':')[0]),
-						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
-							isPgm: 0,
-							visible: true,
-							label: `SERV ${props.split(':')[1]}` // @todo: is this correct?? // use media objects-object
-						}
-					})
-			  )
-			: [
-					literal<TimelineObjSisyfosMessage>({
-						// @todo: shall we keep this fallback, or just not try to support mp1/next workflow at all?
-						id: '',
-						enable: { while: '1' },
-						priority: 0,
-						layer: SisyfosLLAyer.SisyfosSourceClipPending,
-						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
-							isPgm: 0,
-							visible: true,
-							label: 'SERV'
-						}
-					})
-			  ]),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceEVS_1,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'EVS 1'
-			}
-		}),
-
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosSourceEVS_2,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 0,
-				visible: true,
-				label: 'EVS 2'
-			}
+		// create sisyfor channels for servers
+		...config.studio.ABMediaPlayers.split(',').map(props => {
+			const channelIndex = props.split(':')[0]
+			const channel = sisyfosServerChannel(channelIndex)
+			return literal<TimelineObjSisyfosMessage>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: SisyfosSourceClip(channelIndex),
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: channel.isPgm,
+					visible: channel.visibleInStudioA,
+					label: channel.label
+				}
+			})
 		})
 	]
 }
