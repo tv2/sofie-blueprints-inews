@@ -191,14 +191,16 @@ export default literal<BlueprintMappings>({
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.NONE,
 		channel: 1,
-		layer: 100
+		layer: 100,
+		previewWhenNotOnAir: true
 	}),
 	casparcg_player_clip_2: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.NONE,
 		channel: 2,
-		layer: 100
+		layer: 100,
+		previewWhenNotOnAir: true
 	}),
 	sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
