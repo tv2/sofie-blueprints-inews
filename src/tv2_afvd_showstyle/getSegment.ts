@@ -103,6 +103,23 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				)
 			})
 		}
+		if (dveCue.length && part.type === PartType.Kam) {
+			dveCue.forEach((cue, j) => {
+				extraParts.push(
+					CreatePartCueOnly(
+						partContext,
+						config,
+						part,
+						`${part.externalId}-${2}`,
+						`${part.rawType ? `${part.rawType}-` : ''}DVE-${j}`,
+						cue,
+						totalWords,
+						true
+					)
+				)
+				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+			})
+		}
 		const tlfCue = part.cues.filter(cue => cue.type === CueType.Telefon)
 		if (tlfCue.length) {
 			tlfCue.forEach((cue, j) => {
