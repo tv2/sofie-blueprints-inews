@@ -70,10 +70,11 @@ export function EvaluateGrafik(
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
 				outputLayerId: 'pgm0',
 				expectedDuration: GetGrafikDuration(config, parsedCue),
-				infiniteMode:
-					parsedCue.end && parsedCue.end.infiniteMode
-						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-						: PieceLifespan.Normal,
+				infiniteMode: isTlf
+					? PieceLifespan.OutOnNextPart
+					: parsedCue.end && parsedCue.end.infiniteMode
+					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+					: PieceLifespan.Normal,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
