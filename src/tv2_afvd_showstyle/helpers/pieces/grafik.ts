@@ -69,7 +69,7 @@ export function EvaluateGrafik(
 				name: grafikName(parsedCue),
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
 				outputLayerId: 'pgm0',
-				expectedDuration: GetGrafikDuration(config, parsedCue),
+				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart
 					: parsedCue.end && parsedCue.end.infiniteMode
@@ -104,15 +104,20 @@ export function EvaluateGrafik(
 				_id: '',
 				externalId: partId,
 				name: grafikName(parsedCue),
-				enable: {
-					...CreateTimingGrafik(config, parsedCue)
-				},
+				...(isTlf
+					? { enable: { start: 0 } }
+					: {
+							enable: {
+								...CreateTimingGrafik(config, parsedCue)
+							}
+					  }),
 				outputLayerId: 'pgm0',
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
-				infiniteMode:
-					parsedCue.end && parsedCue.end.infiniteMode
-						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-						: PieceLifespan.Normal,
+				infiniteMode: isTlf
+					? PieceLifespan.OutOnNextPart
+					: parsedCue.end && parsedCue.end.infiniteMode
+					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+					: PieceLifespan.Normal,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,

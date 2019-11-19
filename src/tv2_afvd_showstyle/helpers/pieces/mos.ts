@@ -34,7 +34,7 @@ export function EvaluateMOS(
 				_rank: rank || 0,
 				externalId: partId,
 				name: grafikName(parsedCue),
-				expectedDuration: GetGrafikDuration(config, parsedCue),
+				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart
 					: parsedCue.end && parsedCue.end.infiniteMode
@@ -72,15 +72,20 @@ export function EvaluateMOS(
 				_id: '',
 				externalId: partId,
 				name: grafikName(parsedCue),
-				enable: {
-					...CreateTimingGrafik(config, parsedCue)
-				},
+				...(isTlf
+					? { enable: { start: 0 } }
+					: {
+							enable: {
+								...CreateTimingGrafik(config, parsedCue)
+							}
+					  }),
 				outputLayerId: 'pgm0',
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
-				infiniteMode:
-					parsedCue.end && parsedCue.end.infiniteMode
-						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-						: PieceLifespan.Normal,
+				infiniteMode: isTlf
+					? PieceLifespan.Infinite
+					: parsedCue.end && parsedCue.end.infiniteMode
+					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+					: PieceLifespan.Normal,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.name,
 					path: parsedCue.vcpid.toString(),
