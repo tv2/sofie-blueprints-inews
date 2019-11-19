@@ -285,7 +285,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				literal<TimelineObjVIZMSELoadAllElements>({
-					id: 'myLoadAllElements',
+					id: 'loadAllElements',
 					enable: {
 						start: 0,
 						duration: 1000
@@ -294,6 +294,21 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
+					}
+				}),
+				literal<TimelineObjAtemDSK>({
+					id: '',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					layer: AtemLLayer.AtemDSKGraphics,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.DSK,
+						dsk: {
+							onAir: false
+						}
 					}
 				})
 			])
