@@ -35,10 +35,11 @@ export function EvaluateMOS(
 				externalId: partId,
 				name: grafikName(parsedCue),
 				expectedDuration: GetGrafikDuration(config, parsedCue),
-				infiniteMode:
-					parsedCue.end && parsedCue.end.infiniteMode
-						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-						: PieceLifespan.Normal,
+				infiniteMode: isTlf
+					? PieceLifespan.OutOnNextPart
+					: parsedCue.end && parsedCue.end.infiniteMode
+					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+					: PieceLifespan.Normal,
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
 				outputLayerId: 'pgm0',
 				content: literal<GraphicsContent>({
