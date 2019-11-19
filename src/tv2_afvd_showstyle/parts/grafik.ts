@@ -33,7 +33,7 @@ export function CreatePartGrafik(
 	part = { ...part, ...GetEffektAutoNext(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, false, true)
 	AddScript(partDefinition, pieces, partTime, false)
 
 	if (pieces.length === 0 && adLibPieces.length === 0) {

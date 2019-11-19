@@ -26,7 +26,8 @@ export function EvaluateMOS(
 	parsedCue: CueDefinitionMOS,
 	adlib?: boolean,
 	isTlf?: boolean,
-	rank?: number
+	rank?: number,
+	isGrafikPart?: boolean
 ) {
 	if (adlib) {
 		adlibPieces.push(
@@ -34,12 +35,13 @@ export function EvaluateMOS(
 				_rank: rank || 0,
 				externalId: partId,
 				name: grafikName(parsedCue),
-				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
-				infiniteMode: isTlf
-					? PieceLifespan.OutOnNextPart
-					: parsedCue.end && parsedCue.end.infiniteMode
-					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-					: PieceLifespan.Normal,
+				...(isTlf || isGrafikPart ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
+				infiniteMode:
+					isTlf || isGrafikPart
+						? PieceLifespan.OutOnNextPart
+						: parsedCue.end && parsedCue.end.infiniteMode
+						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+						: PieceLifespan.Normal,
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
 				outputLayerId: 'pgm0',
 				content: literal<GraphicsContent>({
@@ -72,7 +74,7 @@ export function EvaluateMOS(
 				_id: '',
 				externalId: partId,
 				name: grafikName(parsedCue),
-				...(isTlf
+				...(isTlf || isGrafikPart
 					? { enable: { start: 0 } }
 					: {
 							enable: {
@@ -81,11 +83,12 @@ export function EvaluateMOS(
 					  }),
 				outputLayerId: 'pgm0',
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
-				infiniteMode: isTlf
-					? PieceLifespan.OutOnNextPart
-					: parsedCue.end && parsedCue.end.infiniteMode
-					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-					: PieceLifespan.Normal,
+				infiniteMode:
+					isTlf || isGrafikPart
+						? PieceLifespan.OutOnNextPart
+						: parsedCue.end && parsedCue.end.infiniteMode
+						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+						: PieceLifespan.Normal,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.name,
 					path: parsedCue.vcpid.toString(),
