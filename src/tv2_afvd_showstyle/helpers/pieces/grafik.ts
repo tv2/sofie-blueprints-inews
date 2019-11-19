@@ -68,7 +68,7 @@ export function EvaluateGrafik(
 				externalId: partId,
 				name: grafikName(parsedCue),
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart
@@ -111,7 +111,7 @@ export function EvaluateGrafik(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart

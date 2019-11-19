@@ -30,7 +30,7 @@ export function EvaluateAdLib(
 				externalId: partId,
 				name: `Server: ${file}`,
 				sourceLayerId: SourceLayer.PgmServer,
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				expectedDuration: duration,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				metaData: literal<PieceMetaData>({
@@ -73,7 +73,7 @@ export function EvaluateAdLib(
 				externalId: partId,
 				name: `DVE: ${parsedCue.variant}`,
 				sourceLayerId: SourceLayer.PgmDVE,
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				content: content.content,
 				invalid: !content.valid
 			})
