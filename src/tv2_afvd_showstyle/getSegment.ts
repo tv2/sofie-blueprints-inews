@@ -80,7 +80,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						true
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
 		if (dveCue.length && part.type === PartType.Kam) {
@@ -114,7 +117,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						totalWords
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
 		switch (part.type) {
