@@ -224,7 +224,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		externalId: 'continueForward',
 		name: 'GFX Continue',
 		_rank: 400,
-		sourceLayerId: SourceLayer.PgmContinue,
+		sourceLayerId: SourceLayer.PgmAdlibViz,
 		outputLayerId: 'pgm0',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.Normal,
@@ -236,7 +236,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 						start: 0,
 						duration: 1000
 					},
-					layer: VizLLayer.VizLLayerContinue,
+					layer: VizLLayer.VizLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CONTINUE,
@@ -251,7 +251,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		externalId: 'continueReverse',
 		name: 'GFX Reverse',
 		_rank: 400,
-		sourceLayerId: SourceLayer.PgmContinue,
+		sourceLayerId: SourceLayer.PgmAdlibViz,
 		outputLayerId: 'pgm0',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.Normal,
@@ -263,7 +263,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 						start: 0,
 						duration: 1000
 					},
-					layer: VizLLayer.VizLLayerContinue,
+					layer: VizLLayer.VizLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CONTINUE,
@@ -278,7 +278,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		externalId: 'loadGFX',
 		name: 'Load all GFX',
 		_rank: 500,
-		sourceLayerId: SourceLayer.PgmVIZ,
+		sourceLayerId: SourceLayer.PgmAdlibViz,
 		outputLayerId: 'pgm0',
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
@@ -290,7 +290,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 						start: 0,
 						duration: 1000
 					},
-					layer: VizLLayer.VizLLayerContinue,
+					layer: VizLLayer.VizLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS

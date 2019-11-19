@@ -84,7 +84,7 @@ export enum VizLLayer {
 	VizLLayerOverlay = 'viz_layer_overlay',
 	VizLLayerPilot = 'viz_layer_pilot',
 	VizLLayerDesign = 'viz_layer_design',
-	VizLLayerContinue = 'viz_layer_continue'
+	VizLLayerAdLibs = 'viz_layer_adlibs'
 }
 
 export function CasparPlayerClip(i: number) {

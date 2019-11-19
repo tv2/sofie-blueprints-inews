@@ -81,9 +81,9 @@ export default literal<ISourceLayer[]>([
 		unlimited: false
 	},
 	{
-		_id: SourceLayer.PgmContinue,
+		_id: SourceLayer.PgmAdlibViz,
 		_rank: 9400,
-		name: 'Pilot Continue',
+		name: 'Viz AdLibs',
 		type: SourceLayerType.GRAPHICS,
 		onPGMClean: false,
 		activateKeyboardHotkeys: '',
