@@ -133,6 +133,11 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 		label: 'LIVE 10',
 		visibleInStudioA: true
 	},
+	[SisyfosLLAyer.SisyfosSourceServerC]: {
+		isPgm: 0,
+		label: 'Server C',
+		visibleInStudioA: false // for future applications
+	},
 	[SisyfosLLAyer.SisyfosSourceEVS_1]: {
 		isPgm: 0,
 		label: 'EVS 1',
