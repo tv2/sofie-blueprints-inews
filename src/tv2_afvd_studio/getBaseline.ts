@@ -12,6 +12,8 @@ import { BlueprintMapping, BlueprintMappings, IStudioContext } from 'tv-automati
 import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { AtemSourceIndex } from '../types/atem'
+import { SisyfosLLAyer } from './layers'
+import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -59,20 +61,37 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 				}
 			})
 		),
-		...convertMappings(sisyfosMappings, id =>
-			literal<TimelineObjSisyfosAny>({
-				id: '',
-				enable: { while: '1', duration: 0 },
-				priority: 0,
-				layer: id,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 0,
-					visible: true, // @todo: filter out studio b faders (kasper says)
-					label: '' // @todo: set label
-				}
-			})
-		)
+		...convertMappings(sisyfosMappings, id => {
+			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer] as SisyfosChannel | undefined
+			if (sisyfosChannel) {
+				return literal<TimelineObjSisyfosAny>({
+					id: '',
+					enable: { while: '1', duration: 0 },
+					priority: 0,
+					layer: id,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: sisyfosChannel.isPgm,
+						visible: sisyfosChannel.visibleInStudioA,
+						label: sisyfosChannel.label
+					}
+				})
+			} else {
+				return literal<TimelineObjSisyfosAny>({
+					id: '',
+					enable: { while: '1', duration: 0 },
+					priority: 0,
+					layer: id,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: 0,
+						visible: false,
+						label: ''
+					}
+				})
+			}
+		})
 	]
 }
