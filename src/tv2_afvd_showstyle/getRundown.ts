@@ -651,8 +651,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 		}),
 
 		// create sisyfor channels for servers
-		...config.studio.ABMediaPlayers.split(',').map(props => {
-			const channelIndex = props.split(':')[0]
+		...config.studio.ABMediaPlayers.split(',').map((props, i) => {
+			const channelIndex = i === 0 ? 'A' : 'B'
 			const channel = sisyfosServerChannel(channelIndex)
 			return literal<TimelineObjSisyfosMessage>({
 				id: '',
