@@ -97,7 +97,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						true
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
 		const tlfCue = part.cues.filter(cue => cue.type === CueType.Telefon)
@@ -114,7 +117,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						totalWords
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
 		switch (part.type) {
