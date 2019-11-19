@@ -53,7 +53,6 @@ export enum SisyfosLLAyer {
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
 	SisyfosSourceAudio = 'sisyfos_source_audio',
-	SisyfosSourceLiveSpeak = 'sisyfos_source_live_speak',
 	SisyfosSourceTLF = 'sisyfos_source_tlf_hybrid',
 	SisyfosSourceVært_1_ST_A = 'sisyfos_source_vært_1_st_a',
 	SisyfosSourceVært_2_ST_A = 'sisyfos_source_vært_2_st_a',

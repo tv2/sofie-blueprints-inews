@@ -223,12 +223,6 @@ export default literal<BlueprintMappings>({
 		channel: 2,
 		lookahead: LookaheadMode.NONE
 	}),
-	sisyfos_source_live_speak: literal<MappingSisyfos & BlueprintMapping>({
-		device: DeviceType.SISYFOS,
-		deviceId: 'sisyfos0',
-		channel: 3,
-		lookahead: LookaheadMode.NONE
-	}),
 	sisyfos_source_vært_1_st_a: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',

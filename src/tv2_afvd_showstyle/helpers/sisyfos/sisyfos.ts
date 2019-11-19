@@ -11,7 +11,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 	const audioTimeline: TSRTimelineObj[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
-	if (useMic && camName) {
+	if ((useMic && camName) || !!sourceType.match(/server/i)) {
 		audioTimeline.push(
 			literal<TimelineObjSisyfosMessage>({
 				id: '',

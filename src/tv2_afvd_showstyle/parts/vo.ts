@@ -1,4 +1,3 @@
-import { DeviceType, TimelineContentTypeSisyfos, TimelineObjSisyfosMessage } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
@@ -9,11 +8,11 @@ import {
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
-import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServer } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
+import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
@@ -51,21 +50,7 @@ export function CreatePartVO(
 	let pieces: IBlueprintPiece[] = []
 
 	const serverContent = MakeContentServer(file, duration, partDefinition.externalId, partDefinition)
-	serverContent.timelineObjects.push(
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: {
-				start: 0
-			},
-			priority: 1,
-			layer: SisyfosLLAyer.SisyfosSourceLiveSpeak,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 1
-			}
-		})
-	)
+	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server', true))
 
 	pieces.push(
 		literal<IBlueprintPiece>({
