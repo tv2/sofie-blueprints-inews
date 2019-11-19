@@ -33,7 +33,7 @@ import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from 
 export function MakeContentDVE(
 	context: PartContext,
 	config: BlueprintConfig,
-	partId: string,
+	_partId: string,
 	parsedCue: CueDefinitionDVE,
 	template: DVEConfig
 ): { content: SplitsContent; valid: boolean } {
@@ -187,7 +187,7 @@ export function MakeContentDVE(
 			timelineObjects: _.compact<TSRTimelineObj>([
 				// setup ssrc
 				literal<TimelineObjAtemSsrc>({
-					id: `${partId}_DVE_ATEMSSRC`,
+					id: '',
 					enable: { start: 0 },
 					priority: 1,
 					layer: AtemLLayer.AtemSSrcDefault,
@@ -198,7 +198,7 @@ export function MakeContentDVE(
 					}
 				}),
 				literal<TimelineObjAtemSsrcProps>({
-					id: `${partId}_DVE_ATEMSSRC_ART`,
+					id: '',
 					enable: { start: 10 },
 					priority: 1,
 					layer: AtemLLayer.AtemSSrcArt,

@@ -56,7 +56,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	const totalWords = parsedParts.reduce((prev, cur) => {
 		return prev + cur.script.length
 	}, 0)
-	let nonServerParts = 0
+	let serverParts = 0
 	for (let i = 0; i < parsedParts.length; i++) {
 		const part = parsedParts[i]
 		const partContext = new PartContext2(context, part.externalId)
@@ -75,6 +75,23 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						part,
 						`${part.externalId}-${1}`,
 						`${part.rawType ? `${part.rawType}-` : ''}EKSTERN-${j}`,
+						cue,
+						totalWords,
+						true
+					)
+				)
+				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+			})
+		}
+		if (dveCue.length && part.type === PartType.Kam) {
+			dveCue.forEach((cue, j) => {
+				extraParts.push(
+					CreatePartCueOnly(
+						partContext,
+						config,
+						part,
+						`${part.externalId}-${2}`,
+						`${part.rawType ? `${part.rawType}-` : ''}DVE-${j}`,
 						cue,
 						totalWords,
 						true
@@ -150,8 +167,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			blueprintParts.push(extraPart)
 		})
 
-		if (part.type !== PartType.Server && part.type !== PartType.VO) {
-			nonServerParts++
+		if (part.type === PartType.Server || part.type === PartType.VO) {
+			serverParts++
 		}
 	}
 
@@ -159,7 +176,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration) {
 			part.part.expectedDuration =
-				(Number(ingestSegment.payload.iNewsStory.fields.audioTime) * 1000 || 0) / nonServerParts
+				(Number(ingestSegment.payload.iNewsStory.fields.audioTime) * 1000 || 0) / (blueprintParts.length - serverParts)
 		}
 	})
 
