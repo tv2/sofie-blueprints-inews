@@ -35,15 +35,17 @@ export function CreatePartVO(
 		return CreatePartInvalid(partDefinition)
 	}
 
+	const file = partDefinition.fields.videoId
+	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
+
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
-		typeVariant: ''
+		typeVariant: '',
+		displayDuration: duration || 1000,
+		expectedDuration: duration || 1000
 	})
-
-	const file = partDefinition.fields.videoId
-	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	let pieces: IBlueprintPiece[] = []
