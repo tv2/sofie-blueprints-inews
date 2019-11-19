@@ -150,7 +150,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			blueprintParts.push(extraPart)
 		})
 
-		if (part.type !== PartType.Server) {
+		if (part.type !== PartType.Server && part.type !== PartType.VO) {
 			nonServerParts++
 		}
 	}
