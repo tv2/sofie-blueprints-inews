@@ -62,7 +62,9 @@ export function MakeContentDVE(
 	let valid = true
 
 	const dveConfig = config.showStyle.DVEStyles
-		? config.showStyle.DVEStyles.find(conf => conf.DVEName === parsedCue.template)
+		? config.showStyle.DVEStyles.find(
+				conf => conf.DVEName.toString().toUpperCase() === parsedCue.template.toUpperCase()
+		  )
 		: undefined
 
 	if (!dveConfig) {
