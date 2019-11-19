@@ -135,6 +135,16 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	},
 	[SisyfosLLAyer.SisyfosSourceServerC]: {
 		isPgm: 0,
+		label: 'Server A',
+		visibleInStudioA: true
+	},
+	[SisyfosLLAyer.SisyfosSourceServerB]: {
+		isPgm: 0,
+		label: 'Server B',
+		visibleInStudioA: true
+	},
+	[SisyfosLLAyer.SisyfosSourceServerC]: {
+		isPgm: 0,
 		label: 'Server C',
 		visibleInStudioA: false // for future applications
 	},
@@ -147,14 +157,5 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 		isPgm: 0,
 		label: 'EVS 2',
 		visibleInStudioA: true
-	}
-}
-
-export function sisyfosServerChannel(channelIndex: number | string): SisyfosChannel {
-	return {
-		isPgm: 0,
-		label: `SERVER ${channelIndex}`,
-		visibleInStudioA: true,
-		visibleInStudioB: true
 	}
 }
