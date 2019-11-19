@@ -16,5 +16,5 @@ export enum SourceLayer {
 	PgmScript = 'studio0_script',
 	PgmSlutord = 'studio0_slutord',
 	PgmAudioBed = 'studio0_audio_bed',
-	PgmContinue = 'studio0_continue0'
+	PgmAdlibViz = 'studio0_adlib_viz0'
 }
