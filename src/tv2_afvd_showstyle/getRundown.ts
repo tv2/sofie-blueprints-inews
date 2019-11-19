@@ -431,7 +431,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: true,
+						preMultiply: false, // @ todo: set up the proper parameters for a good key here
 						mask: {
 							enabled: false
 						}
@@ -455,7 +455,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: false, // @ todo: set up the proper parameters for a good key here
+						preMultiply: true,
 						mask: {
 							enabled: false
 						}
