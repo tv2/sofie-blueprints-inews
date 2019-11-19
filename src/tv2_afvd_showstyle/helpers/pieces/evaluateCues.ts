@@ -35,7 +35,8 @@ export function EvaluateCues(
 	adLibPieces: IBlueprintAdLibPieceEPI[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
-	adlib?: boolean
+	adlib?: boolean,
+	isGrafikPart?: boolean
 ) {
 	let adLibRank = 0
 	// const filteredCues = cues.filter(cue => cue.type !== CueType.Grafik)
@@ -49,7 +50,17 @@ export function EvaluateCues(
 					EvaluateGrafik(config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, false, adLibRank)
 					break
 				case CueType.MOS:
-					EvaluateMOS(config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, false, adLibRank)
+					EvaluateMOS(
+						config,
+						pieces,
+						adLibPieces,
+						partDefinition.externalId,
+						cue,
+						shouldAdlib,
+						false,
+						adLibRank,
+						isGrafikPart
+					)
 					break
 				case CueType.Ekstern:
 					EvaluateEkstern(
