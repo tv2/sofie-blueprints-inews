@@ -355,6 +355,12 @@ export default literal<BlueprintMappings>({
 		channel: 21,
 		lookahead: LookaheadMode.NONE
 	}),
+	sisyfos_source_server_c: literal<MappingSisyfos & BlueprintMapping>({
+		device: DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		channel: 24,
+		lookahead: LookaheadMode.NONE
+	}),
 	sisyfos_source_evs_1: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
