@@ -60,12 +60,11 @@ describe('telefon', () => {
 				externalId: partId,
 				name: 'TLF 1',
 				enable: {
-					start: 0,
-					end: 4000
+					start: 0
 				},
 				outputLayerId: 'pgm0',
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
-				infiniteMode: PieceLifespan.Normal,
+				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
