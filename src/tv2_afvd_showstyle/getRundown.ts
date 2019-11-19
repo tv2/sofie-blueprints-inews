@@ -15,6 +15,7 @@ import {
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEElementContinue,
+	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
 	TSRTimelineObjBase
@@ -268,6 +269,31 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 						type: TimelineContentTypeVizMSE.CONTINUE,
 						direction: -1,
 						reference: VizLLayer.VizLLayerPilot
+					}
+				})
+			])
+		}
+	})
+	adlibItems.push({
+		externalId: 'loadGFX',
+		name: 'Load all GFX',
+		_rank: 500,
+		sourceLayerId: SourceLayer.PgmVIZ,
+		outputLayerId: 'pgm0',
+		expectedDuration: 1000,
+		infiniteMode: PieceLifespan.Normal,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjVIZMSELoadAllElements>({
+					id: 'myLoadAllElements',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					layer: VizLLayer.VizLLayerContinue,
+					content: {
+						deviceType: DeviceType.VIZMSE,
+						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
 					}
 				})
 			])
