@@ -82,7 +82,7 @@ export function EvaluateMOS(
 				outputLayerId: 'pgm0',
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
 				infiniteMode: isTlf
-					? PieceLifespan.Infinite
+					? PieceLifespan.OutOnNextPart
 					: parsedCue.end && parsedCue.end.infiniteMode
 					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
 					: PieceLifespan.Normal,
