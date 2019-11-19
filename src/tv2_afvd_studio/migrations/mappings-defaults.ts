@@ -186,10 +186,36 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.PRELOAD
 	}),
+	casparcg_player_clip_1: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 1,
+		layer: 100
+	}),
+	casparcg_player_clip_2: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 2,
+		layer: 100
+	}),
 	sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.PRELOAD
+	}),
+	sisyfos_player_clip_1: literal<MappingSisyfos & BlueprintMapping>({
+		device: DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		lookahead: LookaheadMode.NONE,
+		channel: 22
+	}),
+	sisyfos_player_clip_2: literal<MappingSisyfos & BlueprintMapping>({
+		device: DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		lookahead: LookaheadMode.NONE,
+		channel: 23
 	}),
 	sisyfos_source_audio: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
