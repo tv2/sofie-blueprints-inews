@@ -95,7 +95,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 			name: info.id + '',
 			_rank: rank || 0,
 			sourceLayerId: SourceLayer.PgmCam,
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			content: {
@@ -126,7 +126,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 			name: info.id + '',
 			_rank: rank || 0,
 			sourceLayerId: SourceLayer.PgmLive,
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			content: {
@@ -171,7 +171,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		name: `Delayed Playback`,
 		_rank: 200,
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: 'pgm0',
+		outputLayerId: 'pgm',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		content: {
@@ -225,7 +225,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		name: 'GFX Continue',
 		_rank: 400,
 		sourceLayerId: SourceLayer.PgmAdlibViz,
-		outputLayerId: 'pgm0',
+		outputLayerId: 'sec',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
@@ -252,7 +252,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		name: 'GFX Reverse',
 		_rank: 400,
 		sourceLayerId: SourceLayer.PgmAdlibViz,
-		outputLayerId: 'pgm0',
+		outputLayerId: 'sec',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
@@ -279,7 +279,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		name: 'Load all GFX',
 		_rank: 500,
 		sourceLayerId: SourceLayer.PgmAdlibViz,
-		outputLayerId: 'pgm0',
+		outputLayerId: 'sec',
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
@@ -415,6 +415,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
+
+		// keyers
 		literal<TimelineObjAtemDSK>({
 			id: '',
 			enable: { while: '1' },
@@ -463,8 +465,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
+		// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 		literal<TimelineObjAtemME>({
-			// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 			id: '',
 			enable: { while: 1 },
 			priority: 0,

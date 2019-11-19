@@ -58,7 +58,7 @@ export function CreatePartKam(
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmCam,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			content: {

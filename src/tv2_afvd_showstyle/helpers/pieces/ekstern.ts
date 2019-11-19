@@ -61,7 +61,7 @@ export function EvaluateEkstern(
 				_rank: rank || 0,
 				externalId: partId,
 				name: eksternProps[0],
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				content: literal<RemoteContent>({
 					studioLabel: '',
@@ -99,7 +99,7 @@ export function EvaluateEkstern(
 				externalId: partId,
 				name: eksternProps[0],
 				...CreateTimingEnable(parsedCue),
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				content: literal<RemoteContent>({
 					studioLabel: '',
