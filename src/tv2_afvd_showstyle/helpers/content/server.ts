@@ -31,7 +31,6 @@ export function MakeContentServer(
 		path: file,
 		firstWords: '',
 		lastWords: '',
-		sourceDuration: duration,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
