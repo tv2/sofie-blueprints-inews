@@ -18,12 +18,12 @@ export enum SourceLayer {
 	PgmDVEBackground = 'studio0_dve_back',
 	PgmDesign = 'studio0_design',
 
-	PgmAdlibViz = 'studio0_adlib_viz' // shortcuts
+	PgmAdlibViz = 'studio0_adlib_viz', // shortcuts
 
 	// PgmJingle = 'studio0_jingle',
 	// PgmBreak = 'studio0_break',
 
-	// PgmScript = 'studio0_script',
-	// PgmSlutord = 'studio0_slutord',
+	PgmScript = 'studio0_script',
+	PgmSlutord = 'studio0_slutord'
 	// PgmAudioBed = 'studio0_audio_bed',
 }
