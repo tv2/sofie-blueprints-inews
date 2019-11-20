@@ -213,7 +213,9 @@ const KEY: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmGraphicsTop,
@@ -232,7 +234,9 @@ const KEY: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: true,
-		onPresenterScreen: false
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmGraphicsLower,
@@ -251,7 +255,9 @@ const KEY: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: true,
-		onPresenterScreen: false
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmGraphicsHeadline,
@@ -270,7 +276,9 @@ const KEY: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: true,
-		onPresenterScreen: false
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmGraphicsTema,
@@ -289,7 +297,9 @@ const KEY: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: true,
-		onPresenterScreen: false
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
 	}
 ]
 
@@ -315,7 +325,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmLive, // @todo: should queue by default
@@ -334,7 +346,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmDVE, // @todo: should queue by default
@@ -353,7 +367,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmServer,
@@ -372,7 +388,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmVoiceOver,
@@ -391,7 +409,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmPilot,
@@ -410,7 +430,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmGraphicsTLF,
@@ -429,7 +451,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	},
 	{
 		_id: SourceLayer.PgmDelayed,
@@ -448,7 +472,9 @@ const PGM2: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	}
 ]
 
