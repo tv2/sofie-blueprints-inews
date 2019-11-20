@@ -70,7 +70,7 @@ export function EvaluateJingle(
 					duration
 				},
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				outputLayerId: 'pgm',
+				outputLayerId: 'jingle',
 				sourceLayerId: breaker ? SourceLayer.PgmBreak : SourceLayer.PgmJingle,
 				isTransition: true,
 				content: literal<VTContent>({

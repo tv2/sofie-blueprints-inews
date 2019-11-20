@@ -113,7 +113,7 @@ export function EffektTransitionPiece(
 					start: 0,
 					duration: TimeFromFrames(Number(effektConfig.Duration))
 				},
-				outputLayerId: 'pgm',
+				outputLayerId: 'jingle',
 				sourceLayerId: SourceLayer.PgmBreak,
 				infiniteMode: PieceLifespan.Normal,
 				isTransition: true,

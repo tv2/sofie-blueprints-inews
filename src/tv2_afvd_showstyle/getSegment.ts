@@ -233,7 +233,7 @@ function SlutordLookahead(
 						_id: '',
 						name: `Slutord: ${part.variant.endWords}`,
 						sourceLayerId: SourceLayer.PgmSlutord,
-						outputLayerId: 'pgm',
+						outputLayerId: 'belowPgm',
 						externalId: parsedParts[currentIndex].externalId,
 						enable: {
 							start: 0

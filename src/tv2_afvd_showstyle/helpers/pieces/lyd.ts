@@ -44,7 +44,7 @@ export function EvaluateLYD(
 				_rank: rank || 0,
 				externalId: part.externalId,
 				name: parsedCue.variant,
-				outputLayerId: 'sec',
+				outputLayerId: 'belowPgm',
 				sourceLayerId: SourceLayer.PgmAudioBed,
 				content: literal<BaseContent>({
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
@@ -87,7 +87,7 @@ export function EvaluateLYD(
 				externalId: part.externalId,
 				name: parsedCue.variant,
 				...CreateTimingEnable(parsedCue),
-				outputLayerId: 'sec',
+				outputLayerId: 'belowPgm',
 				sourceLayerId: SourceLayer.PgmAudioBed,
 				content: literal<BaseContent>({
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
