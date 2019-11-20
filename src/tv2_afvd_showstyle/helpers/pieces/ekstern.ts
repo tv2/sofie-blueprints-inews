@@ -87,7 +87,7 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(parsedCue.source, false)
+						...GetSisyfosTimelineObjForEkstern(parsedCue.source)
 					])
 				})
 			})
@@ -125,7 +125,7 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(parsedCue.source, false)
+						...GetSisyfosTimelineObjForEkstern(parsedCue.source)
 					])
 				})
 			})

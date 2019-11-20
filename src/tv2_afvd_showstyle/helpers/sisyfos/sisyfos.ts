@@ -7,11 +7,11 @@ import {
 import { literal } from '../../../common/util'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
-export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLevel: boolean): TSRTimelineObj[] {
+export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineObj[] {
 	const audioTimeline: TSRTimelineObj[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
-	if ((useMic && camName) || !!sourceType.match(/server/i)) {
+	if ((useMic && camName) || !!sourceType.match(/server|telefon/i)) {
 		audioTimeline.push(
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
@@ -23,7 +23,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: voiceOverLevel ? 2 : 1
+					isPgm: 1
 				}
 			}),
 			literal<TimelineObjSisyfosMessage>({
@@ -36,7 +36,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: voiceOverLevel ? 2 : 1
+					isPgm: 1
 				}
 			}),
 			literal<TimelineObjSisyfosMessage>({
@@ -49,7 +49,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: voiceOverLevel ? 2 : 1
+					isPgm: 1
 				}
 			}),
 			literal<TimelineObjSisyfosMessage>({
@@ -62,7 +62,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: voiceOverLevel ? 2 : 1
+					isPgm: 1
 				}
 			}),
 			literal<TimelineObjSisyfosMessage>({
@@ -75,7 +75,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: voiceOverLevel ? 2 : 1
+					isPgm: 1
 				}
 			}),
 			literal<TimelineObjSisyfosMessage>({
@@ -88,7 +88,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: voiceOverLevel ? 2 : 1
+					isPgm: 1
 				}
 			})
 		)
@@ -96,7 +96,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, voiceOverLeve
 	return audioTimeline
 }
 
-export function GetSisyfosTimelineObjForEkstern(sourceType: string, voiceOverLevel: boolean): TSRTimelineObj[] {
+export function GetSisyfosTimelineObjForEkstern(sourceType: string): TSRTimelineObj[] {
 	let audioTimeline: TSRTimelineObj[] = []
 	let layer = SisyfosLLAyer.SisyfosSourceLive_1
 
@@ -148,7 +148,7 @@ export function GetSisyfosTimelineObjForEkstern(sourceType: string, voiceOverLev
 					content: {
 						deviceType: DeviceType.SISYFOS,
 						type: TimelineContentTypeSisyfos.SISYFOS,
-						isPgm: voiceOverLevel ? 2 : 1
+						isPgm: 1
 					}
 				})
 			]

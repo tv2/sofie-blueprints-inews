@@ -114,7 +114,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 							}
 						}
 					}),
-					...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`, false)
+					...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
 				])
 			}
 		}
@@ -145,7 +145,8 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 							}
 						}
 					}),
-					...GetSisyfosTimelineObjForEkstern(`Live ${info.id}`, false)
+					...GetSisyfosTimelineObjForEkstern(`Live ${info.id}`),
+					...GetSisyfosTimelineObjForCamera('telefon')
 				])
 			}
 		}
@@ -651,7 +652,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 		}),
 
 		// create sisyfor channels for servers
-		...config.studio.ABMediaPlayers.split(',').map((props, i) => {
+		...config.studio.ABMediaPlayers.split(',').map((_props, i) => {
 			const channelIndex = i === 0 ? 'A' : 'B'
 			const channel = sisyfosServerChannel(channelIndex)
 			return literal<TimelineObjSisyfosMessage>({

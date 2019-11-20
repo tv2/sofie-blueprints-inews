@@ -148,8 +148,7 @@ export function EffektTransitionPiece(
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 1,
-								faderLevel: 0.75
+								isPgm: 1
 							}
 						})
 					])

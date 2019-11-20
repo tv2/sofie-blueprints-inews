@@ -22,7 +22,8 @@ export function MakeContentServer(
 	duration: number,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
-	adLib?: boolean
+	adLib?: boolean,
+	voiceOver?: boolean
 ): VTContent {
 	return literal<VTContent>({
 		studioLabel: '',
@@ -83,8 +84,7 @@ export function MakeContentServer(
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1,
-					faderLevel: 0.75
+					isPgm: voiceOver ? 2 : 1
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
