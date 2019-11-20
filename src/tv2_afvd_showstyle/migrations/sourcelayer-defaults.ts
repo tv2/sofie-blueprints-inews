@@ -21,7 +21,7 @@ const OVERLAY: ISourceLayer[] = [
 		isQueueable: true,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: true,
+		onPresenterScreen: false,
 		unlimited: false,
 		onPGMClean: false
 	},
@@ -112,7 +112,50 @@ const OVERLAY: ISourceLayer[] = [
 ]
 
 // JINGLE group
-const JINGLE: ISourceLayer[] = []
+const JINGLE: ISourceLayer[] = [
+	{
+		_id: SourceLayer.PgmJingle,
+		_rank: 10,
+		name: 'Jingle',
+		abbreviation: '',
+		type: SourceLayerType.TRANSITION,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	},
+	{
+		_id: SourceLayer.PgmBreak,
+		_rank: 20,
+		name: 'Break',
+		abbreviation: '',
+		type: SourceLayerType.TRANSITION,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	}
+]
 
 // PGM group
 const PGM: ISourceLayer[] = [
@@ -329,13 +372,78 @@ const BELOW_PGM: ISourceLayer[] = [
 		onPresenterScreen: false,
 		unlimited: false,
 		onPGMClean: false
+	},
+	{
+		_id: SourceLayer.PgmVoiceOver,
+		_rank: 30,
+		name: 'Audio bed',
+		abbreviation: 'VO',
+		type: SourceLayerType.AUDIO,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
 	}
 ]
 
 // SEC group
-const SEC: ISourceLayer[] = []
+const SEC: ISourceLayer[] = [
+	{
+		_id: SourceLayer.PgmAdlibVizCmd,
+		_rank: 10,
+		name: 'Viz Full',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	}
+]
 
 // AUX group
-const AUX: ISourceLayer[] = []
+const AUX: ISourceLayer[] = [
+	{
+		_id: SourceLayer.VizFullIn1,
+		_rank: 10,
+		name: 'Viz Full',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	}
+]
 
 export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...BELOW_PGM, ...SEC, ...AUX])
