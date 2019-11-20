@@ -377,11 +377,19 @@ const MANUS: ISourceLayer[] = [
 		onPGMClean: false
 	},
 	{
+<<<<<<< HEAD
 		_id: SourceLayer.PgmScript,
 		_rank: 20,
 		name: 'Manus',
 		abbreviation: '',
 		type: SourceLayerType.SCRIPT,
+=======
+		_id: SourceLayer.PgmAudioBed,
+		_rank: 30,
+		name: 'Audio bed',
+		abbreviation: 'VO',
+		type: SourceLayerType.AUDIO,
+>>>>>>> 7f9573991e937f1ed472e93df3fa05ba787f8286
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
