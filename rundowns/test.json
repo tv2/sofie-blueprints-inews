@@ -30,7 +30,7 @@
                     "start": 0
                 },
                 "infiniteMode": 1,
-                "outputLayerId": "pgm0",
+                "outputLayerId": "pgm",
                 "sourceLayerId": "studio0_live0",
                 "content": {
                     "studioLabel": "",
