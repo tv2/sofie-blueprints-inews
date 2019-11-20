@@ -67,7 +67,7 @@ export function EvaluateGrafik(
 				_rank: rank || 0,
 				externalId: partId,
 				name: grafikName(parsedCue),
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
+				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(parsedCue.template),
 				outputLayerId: 'pgm',
 				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: isTlf
@@ -112,7 +112,7 @@ export function EvaluateGrafik(
 							}
 					  }),
 				outputLayerId: 'pgm',
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
+				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(parsedCue.template),
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart
 					: parsedCue.end && parsedCue.end.infiniteMode
@@ -141,6 +141,35 @@ export function EvaluateGrafik(
 				})
 			})
 		)
+	}
+}
+
+export function GetSourceLayerForGrafik(name: string) {
+	switch (name.toLowerCase()) {
+		case 'arkiv':
+		case 'ident':
+		case 'direkte':
+		case 'billederfra_txt':
+		case 'billederfra_logo':
+		case 'ident_nyhederne':
+		case 'ident_news':
+		case 'ident_tv2sport':
+		case 'tlfdirekte':
+			return SourceLayer.PgmGraphicsIdent
+		case 'topt':
+		case 'tlftopt':
+		case 'tlfoptlive':
+			return SourceLayer.PgmGraphicsTop
+		case 'bund':
+		case 'vaerter':
+			return SourceLayer.PgmGraphicsLower
+		case 'vo':
+		case 'trompet':
+			return SourceLayer.PgmGraphicsHeadline
+		case 'bundright':
+		case 'TEMA_Default':
+		case 'TEMA_Default':
+			return SourceLayer.PgmGraphicsTema
 	}
 }
 
