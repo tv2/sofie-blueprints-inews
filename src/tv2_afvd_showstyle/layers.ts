@@ -1,27 +1,27 @@
 export enum SourceLayer {
 	// Pgm
-	PgmCam = 'studio0_camera0',
-	PgmLive = 'studio0_live0',
-	PgmDVE = 'studio0_dev0',
-	PgmServer = 'studio0_clip0',
-	PgmVoiceOver = 'studio0_voiceover0',
-	PgmPilot = 'studio0_pilot0',
+	PgmCam = 'studio0_camera',
+	PgmLive = 'studio0_live',
+	PgmDVE = 'studio0_dve',
+	PgmServer = 'studio0_clip',
+	PgmVoiceOver = 'studio0_voiceover',
+	PgmPilot = 'studio0_pilot',
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
 	PgmGraphicsTop = 'studio0_graphicsTop',
 	PgmGraphicsLower = 'studio0_graphicsLower',
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
 	PgmGraphicsTema = 'studio0_graphicsTema',
-	PgmGraphicsTLF = 'studio0_graphics1',
-	PgmDelayed = 'studio0_delayed0',
+	PgmGraphicsTLF = 'studio0_graphicsTelefon',
+	PgmDelayed = 'studio0_delayed',
 
-	// PgmVIZ = 'studio0_viz0',
-	PgmDVEBackground = 'studio0_dve_back0',
+	// PgmVIZ = 'studio0_viz',
+	PgmDVEBackground = 'studio0_dve_back',
 	PgmDesign = 'studio0_design',
 
-	PgmAdlibViz = 'studio0_adlib_viz0' // shortcuts
+	PgmAdlibViz = 'studio0_adlib_viz' // shortcuts
 
-	// PgmJingle = 'studio0_jingle0',
-	// PgmBreak = 'studio0_break0',
+	// PgmJingle = 'studio0_jingle',
+	// PgmBreak = 'studio0_break',
 
 	// PgmScript = 'studio0_script',
 	// PgmSlutord = 'studio0_slutord',

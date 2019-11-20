@@ -173,31 +173,31 @@ import { SourceLayer } from '../layers'
 // 	isHidden: true
 // }
 
-const protoitem: ISourceLayer =
-{
-    _id: '',
-    _rank: 0,
-    name: '',
-    abbreviation: '',
-    type: SourceLayerType.,
-    exclusiveGroup: '',
-    isRemoteInput: false,
-    isGuestInput: false,
-    activateKeyboardHotkeys: '',
-    clearKeyboardHotkey: '',
-    assignHotkeysToGlobalAdlibs: false,
-    isSticky: false,
-    activateStickyKeyboardHotkey: '',
-    isQueueable: true,
-    isHidden: false,
-    allowDisable: false,
-    onPresenterScreen: true
-},
+// const protoitem: ISourceLayer =
+// {
+//     _id: SourceLayer.
+//     _rank: 0,
+//     name: '',
+//     abbreviation: '',
+//     type: SourceLayerType.,
+//     exclusiveGroup: '',
+//     isRemoteInput: false,
+//     isGuestInput: false,
+//     activateKeyboardHotkeys: '',
+//     clearKeyboardHotkey: '',
+//     assignHotkeysToGlobalAdlibs: false,
+//     isSticky: false,
+//     activateStickyKeyboardHotkey: '',
+//     isQueueable: true,
+//     isHidden: false,
+//     allowDisable: false,
+//     onPresenterScreen: true
+// },
 
 // KEY group
 const KEY: ISourceLayer[] = [
 	{
-		_id: 'SourLayer.studio0_graphicsIdent',
+		_id: SourceLayer.PgmGraphicsIdent,
 		_rank: 10,
 		name: 'Ident',
 		abbreviation: 'G',
@@ -216,7 +216,7 @@ const KEY: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourLayer.studio0_graphicsTop',
+		_id: SourceLayer.PgmGraphicsTop,
 		_rank: 20,
 		name: 'Top',
 		abbreviation: 'G',
@@ -235,7 +235,7 @@ const KEY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: 'SourLayer.studio0_graphicsLower',
+		_id: SourceLayer.PgmGraphicsLower,
 		_rank: 30,
 		name: '',
 		abbreviation: 'G',
@@ -254,7 +254,7 @@ const KEY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: 'SourLayer.studio0_graphicsHeadline',
+		_id: SourceLayer.PgmGraphicsHeadline,
 		_rank: 40,
 		name: '',
 		abbreviation: 'G',
@@ -273,7 +273,7 @@ const KEY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: 'SourLayer.studio0_graphicsTema',
+		_id: SourceLayer.PgmGraphicsTema,
 		_rank: 50,
 		name: '',
 		abbreviation: 'G',
@@ -290,17 +290,16 @@ const KEY: ISourceLayer[] = [
 		isHidden: false,
 		allowDisable: true,
 		onPresenterScreen: false
-	},
+	}
 ]
 
 // PGM group
-const PGM1: ISourceLayer[] = [
-]
+const PGM1: ISourceLayer[] = []
 
 // PGM group
 const PGM2: ISourceLayer[] = [
 	{
-		_id: 'SourceLayer.PgmCam',
+		_id: SourceLayer.PgmCam,
 		_rank: 0,
 		name: 'Kam',
 		abbreviation: 'K',
@@ -319,7 +318,7 @@ const PGM2: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourceLayer.PgmLive', // @todo: should queue by default
+		_id: SourceLayer.PgmLive, // @todo: should queue by default
 		_rank: 0,
 		name: 'Live',
 		abbreviation: 'L',
@@ -338,7 +337,7 @@ const PGM2: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourceLayer.studio0_dev0', // @todo: should queue by default
+		_id: SourceLayer.PgmDVE, // @todo: should queue by default
 		_rank: 0,
 		name: 'DVE',
 		abbreviation: 'D',
@@ -357,11 +356,11 @@ const PGM2: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourceLayer.studio0_clip0',
+		_id: SourceLayer.PgmServer,
 		_rank: 0,
 		name: 'Server',
 		abbreviation: 'S',
-		type: SourceLayerType.VT
+		type: SourceLayerType.VT,
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
@@ -376,7 +375,7 @@ const PGM2: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourceLayer.studio0_voiceover0',
+		_id: SourceLayer.PgmVoiceOver,
 		_rank: 0,
 		name: 'Voice Over',
 		abbreviation: 'VO',
@@ -395,7 +394,7 @@ const PGM2: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourceLayer.studio0_pilot0',
+		_id: SourceLayer.PgmPilot,
 		_rank: 0,
 		name: 'Full',
 		abbreviation: 'F',
@@ -414,7 +413,7 @@ const PGM2: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourceLayer.studio0_graphics1',
+		_id: SourceLayer.PgmGraphicsTLF,
 		_rank: 0,
 		name: 'Telefon',
 		abbreviation: 'TLF',
@@ -433,7 +432,7 @@ const PGM2: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: 'SourceLayer.studio0_delayed0',
+		_id: SourceLayer.PgmDelayed,
 		_rank: 0,
 		name: 'EVS',
 		abbreviation: 'EVS',
@@ -450,12 +449,11 @@ const PGM2: ISourceLayer[] = [
 		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: true
-	},
+	}
 ]
 
 // PGM group
-const PGM3: ISourceLayer[] = [
-]
+const PGM3: ISourceLayer[] = []
 
 // SEC group
 const SEC: ISourceLayer[] = []
