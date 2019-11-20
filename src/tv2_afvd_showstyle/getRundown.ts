@@ -34,8 +34,8 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../common/util'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, SisyfosSourceClip, VizLLayer } from '../tv2_afvd_studio/layers'
-import { SisyfosChannel, sisyfosChannels, sisyfosServerChannel } from '../tv2_afvd_studio/sisyfosChannels'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../tv2_afvd_studio/layers'
+import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
@@ -641,25 +641,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				enable: { while: '1' },
 				priority: 0,
 				layer: llayer,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: channel.isPgm,
-					visible: channel.visibleInStudioA,
-					label: channel.label
-				}
-			})
-		}),
-
-		// create sisyfor channels for servers
-		...config.studio.ABMediaPlayers.split(',').map((_props, i) => {
-			const channelIndex = i === 0 ? 'A' : 'B'
-			const channel = sisyfosServerChannel(channelIndex)
-			return literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: SisyfosSourceClip(channelIndex),
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
