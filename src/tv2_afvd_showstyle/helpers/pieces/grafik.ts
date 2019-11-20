@@ -145,7 +145,8 @@ export function EvaluateGrafik(
 }
 
 export function GetSourceLayerForGrafik(name: string) {
-	switch (name.toLowerCase()) {
+	// TODO: When new cues need adding
+	switch (name) {
 		case 'arkiv':
 		case 'ident':
 		case 'direkte':
@@ -168,9 +169,48 @@ export function GetSourceLayerForGrafik(name: string) {
 			return SourceLayer.PgmGraphicsHeadline
 		case 'bundright':
 		case 'TEMA_Default':
-		case 'TEMA_Default':
+		case 'TEMA_UPDATE':
 			return SourceLayer.PgmGraphicsTema
+		case 'DESIGN_AFTERAAR_CYKEL':
+		case 'DESIGN_HANDBOLD':
+		case 'DESIGN_ISHOCKEY':
+		case 'DESIGN_KONTRA':
+		case 'DESIGN_NBA':
+		case 'DESIGN_SPORTS-LAB':
+		case 'DESIGN_WTA':
+		case 'DESIGN_VUELTA':
+		case 'DESIGN_VM':
+		case 'DESIGN_WIMBLEDON':
+		case 'DESIGN_TDF':
+		case 'DESIGN_ESPORT':
+			return SourceLayer.PgmDesign
+		case 'BG_DVE_BADMINTON':
+		case 'BG_DVE_KONTRA':
+		case 'BG_DVE_NBA':
+		case 'BG_DVE_WTA17':
+		case 'BG_DVE_SPORTCENTER':
+			return SourceLayer.PgmDVEBackground
+		case 'altud':
+		case 'OUT_LOWER':
+		case 'OUT_HEADLINE':
+		case 'OUT_IDENT':
+		case 'OUT_TOP':
+		case 'OUT_TEMA_H':
+		case 'OUT_TRUMPET':
+		case 'OUT_TEMA_GFX':
+		case 'CLEAR_FULL':
+		case 'CLEAR_LAYER':
+		case 'CLEAR_RESET':
+		case 'CLEAR_TROMPET':
+		case 'CLEAR_WALL':
+		case 'CLEAR_FULL_BACK':
+			return SourceLayer.PgmAdlibViz
+		case 'FRONTLAYER_CONTINUE':
+		case 'FRONT_LAYER_CONTINUE':
+			return SourceLayer.PgmAdlibViz
 	}
+
+	return SourceLayer.PgmPilot // TODO: Maybe some better default?
 }
 
 export function grafikName(parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
