@@ -26,8 +26,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 		null,
 		'text',
 		'Studio config: Media player inputs',
-		'Enter the Media player inputs (example: "1:17,2:18,3:19")',
-		'1:17,2:18'
+		'Enter the Media player inputs (example: "1:17,2:18,3:19")'
 	),
 
 	...deviceMigrations,
