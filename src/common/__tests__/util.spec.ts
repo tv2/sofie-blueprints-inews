@@ -11,7 +11,7 @@ describe('util', () => {
 				duration: 200
 			},
 			sourceLayerId: 'Cam',
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			virtual: true,
 			content: {
 				timelineObjects: []
@@ -27,7 +27,7 @@ describe('util', () => {
 				duration: 0
 			},
 			sourceLayerId: 'Cam',
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			virtual: true,
 			content: {
 				timelineObjects: []
@@ -43,7 +43,7 @@ describe('util', () => {
 				duration: 0
 			},
 			sourceLayerId: 'Cam',
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			virtual: true,
 			content: {
 				timelineObjects: []
@@ -59,7 +59,7 @@ describe('util', () => {
 				duration: 0
 			},
 			sourceLayerId: 'Cam',
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			virtual: true,
 			content: {
 				timelineObjects: []
@@ -74,7 +74,7 @@ describe('util', () => {
 				externalId: '-',
 				name: 'test adlib',
 				sourceLayerId: 'Cam',
-				outputLayerId: 'pgm0'
+				outputLayerId: 'pgm'
 			})
 		).toBeTruthy()
 
@@ -84,7 +84,7 @@ describe('util', () => {
 				externalId: '-',
 				name: 'test non-adlib',
 				sourceLayerId: 'Cam',
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				enable: {
 					start: 0
 				}

@@ -146,7 +146,7 @@ describe('DVE Content', () => {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						// setup ssrc
 						literal<TimelineObjAtemSsrc>({
-							id: `0000000001_DVE_ATEMSSRC`,
+							id: ``,
 							enable: { start: 0 },
 							priority: 1,
 							layer: AtemLLayer.AtemSSrcDefault,
@@ -184,7 +184,7 @@ describe('DVE Content', () => {
 							}
 						}),
 						literal<TimelineObjAtemSsrcProps>({
-							id: `0000000001_DVE_ATEMSSRC_ART`,
+							id: ``,
 							enable: { start: 10 },
 							priority: 1,
 							layer: AtemLLayer.AtemSSrcArt,
@@ -413,7 +413,7 @@ describe('DVE Content', () => {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						// setup ssrc
 						literal<TimelineObjAtemSsrc>({
-							id: `0000000001_DVE_ATEMSSRC`,
+							id: ``,
 							enable: { start: 0 },
 							priority: 1,
 							layer: AtemLLayer.AtemSSrcDefault,
@@ -451,7 +451,7 @@ describe('DVE Content', () => {
 							}
 						}),
 						literal<TimelineObjAtemSsrcProps>({
-							id: `0000000001_DVE_ATEMSSRC_ART`,
+							id: ``,
 							enable: { start: 10 },
 							priority: 1,
 							layer: AtemLLayer.AtemSSrcArt,
