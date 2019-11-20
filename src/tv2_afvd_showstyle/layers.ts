@@ -12,13 +12,13 @@ export enum SourceLayer {
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
 	PgmGraphicsTema = 'studio0_graphicsTema',
 	PgmGraphicsTLF = 'studio0_graphics1',
-	PgmDelayed = 'studio0_delayed0'
+	PgmDelayed = 'studio0_delayed0',
 
 	// PgmVIZ = 'studio0_viz0',
-	// PgmDVEBackground = 'studio0_dve_back0',
-	// PgmDesign = 'studio0_design',
+	PgmDVEBackground = 'studio0_dve_back0',
+	PgmDesign = 'studio0_design',
 
-	// PgmAdlibViz = 'studio0_adlib_viz0' //shortcuts
+	PgmAdlibViz = 'studio0_adlib_viz0' // shortcuts
 
 	// PgmJingle = 'studio0_jingle0',
 	// PgmBreak = 'studio0_break0',
