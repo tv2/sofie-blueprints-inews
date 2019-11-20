@@ -94,8 +94,85 @@ describe('telefon', () => {
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 1,
-								faderLevel: 0.75
+								isPgm: 1
+							}
+						}),
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 1
+							}
+						}),
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 1
+							}
+						}),
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 1
+							}
+						}),
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 1
+							}
+						}),
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 1
+							}
+						}),
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 1
 							}
 						})
 					]

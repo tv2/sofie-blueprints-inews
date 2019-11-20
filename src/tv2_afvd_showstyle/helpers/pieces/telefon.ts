@@ -4,6 +4,7 @@ import { literal } from '../../../common/util'
 import { CueDefinitionTelefon, CueType } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
+import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { EvaluateGrafik } from './grafik'
 import { EvaluateMOS } from './mos'
 
@@ -57,9 +58,10 @@ export function EvaluateTelefon(
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 1,
-								faderLevel: 0.75
-							}
+								isPgm: 1
+							},
+
+							...GetSisyfosTimelineObjForCamera('telefon')
 						})
 					)
 					adlibPiece.name = `${parsedCue.source}`
@@ -80,10 +82,11 @@ export function EvaluateTelefon(
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 1,
-								faderLevel: 0.75
+								isPgm: 1
 							}
-						})
+						}),
+
+						...GetSisyfosTimelineObjForCamera('telefon')
 					)
 					piece.name = `${parsedCue.source}`
 					pieces[index] = piece

@@ -282,9 +282,9 @@ describe('DVE Content', () => {
 							}
 						}),
 
-						...GetSisyfosTimelineObjForCamera('KAM 1', false),
+						...GetSisyfosTimelineObjForCamera('KAM 1'),
 
-						...GetSisyfosTimelineObjForEkstern('LIVE 1', false),
+						...GetSisyfosTimelineObjForEkstern('LIVE 1'),
 
 						atemNextObject(AtemSourceIndex.SSrc)
 					])
@@ -549,9 +549,9 @@ describe('DVE Content', () => {
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern('LIVE 1', false),
+						...GetSisyfosTimelineObjForEkstern('LIVE 1'),
 
-						...GetSisyfosTimelineObjForCamera('KAM 1', false),
+						...GetSisyfosTimelineObjForCamera('KAM 1'),
 
 						atemNextObject(AtemSourceIndex.SSrc)
 					])

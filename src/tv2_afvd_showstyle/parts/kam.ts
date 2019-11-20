@@ -85,7 +85,7 @@ export function CreatePartKam(
 						}
 					}),
 
-					...GetSisyfosTimelineObjForCamera(partDefinition.rawType, false)
+					...GetSisyfosTimelineObjForCamera(partDefinition.rawType)
 				])
 			}
 		})
