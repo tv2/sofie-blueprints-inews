@@ -3,37 +3,43 @@ import { literal } from '../../common/util'
 
 export default literal<IOutputLayer[]>([
 	{
-		_id: 'ovl',
+		_id: 'overlay',
 		name: 'OVERLAY',
 		isPGM: false,
 		_rank: 10,
 		isDefaultCollapsed: true
 	},
 	{
-		_id: 'key',
+		_id: 'jingle',
 		name: 'JINGLE',
 		isPGM: false,
-		_rank: 10
+		_rank: 19
 	},
 	{
-		_id: 'pgm2',
+		_id: 'pgm',
 		name: 'PGM',
 		isPGM: true,
 		_rank: 20,
 		isFlattened: true
 	},
 	{
-		_id: 'pgm3',
-		name: 'MUSIK',
+		_id: 'belowPgm',
+		name: '',
 		isPGM: false,
-		_rank: 10
+		_rank: 21
 	},
-	{
-		_id: 'pgm4',
-		name: 'MANUS',
-		isPGM: false,
-		_rank: 10
-	},
+	// {
+	// 	_id: 'musik',
+	// 	name: 'MUSIK',
+	// 	isPGM: false,
+	// 	_rank: 22
+	// },
+	// {
+	// 	_id: 'manus',
+	// 	name: 'MANUS',
+	// 	isPGM: false,
+	// 	_rank: 23
+	// },
 	{
 		_id: 'sec',
 		name: 'SEC',
