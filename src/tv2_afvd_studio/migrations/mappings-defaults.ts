@@ -207,18 +207,6 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.PRELOAD
 	}),
-	sisyfos_player_clip_1: literal<MappingSisyfos & BlueprintMapping>({
-		device: DeviceType.SISYFOS,
-		deviceId: 'sisyfos0',
-		lookahead: LookaheadMode.NONE,
-		channel: 22
-	}),
-	sisyfos_player_clip_2: literal<MappingSisyfos & BlueprintMapping>({
-		device: DeviceType.SISYFOS,
-		deviceId: 'sisyfos0',
-		lookahead: LookaheadMode.NONE,
-		channel: 23
-	}),
 	sisyfos_source_audio: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
@@ -355,6 +343,18 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 21,
+		lookahead: LookaheadMode.NONE
+	}),
+	sisyfos_source_server_a: literal<MappingSisyfos & BlueprintMapping>({
+		device: DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		channel: 22,
+		lookahead: LookaheadMode.NONE
+	}),
+	sisyfos_source_server_b: literal<MappingSisyfos & BlueprintMapping>({
+		device: DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		channel: 23,
 		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_server_c: literal<MappingSisyfos & BlueprintMapping>({

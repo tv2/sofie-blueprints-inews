@@ -9,7 +9,7 @@ import {
 import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { MEDIA_PLAYER_AUTO } from '../../types/constants'
-import { CasparLLayer, CasparPlayerClip, SisyfosLLAyer, SisyfosSourceClip } from '../layers'
+import { CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from '../layers'
 import {
 	MediaPlayerClaim,
 	PieceMetaData,
@@ -298,7 +298,8 @@ function updateObjectsToMediaPlayer(
 			}
 		} else if (obj.content.deviceType === DeviceType.SISYFOS) {
 			if (obj.layer === SisyfosLLAyer.SisyfosSourceClipPending) {
-				obj.layer = SisyfosSourceClip(playerId)
+				// TODO: Change when adding more servers
+				obj.layer = playerId === 0 ? SisyfosLLAyer.SisyfosSourceServerA : SisyfosLLAyer.SisyfosSourceServerB
 			} else {
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)
