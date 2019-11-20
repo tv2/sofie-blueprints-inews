@@ -18,7 +18,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 					start: 0,
 					end: duration
 				},
-				outputLayerId: 'belowPgm',
+				outputLayerId: 'manus',
 				sourceLayerId: slutord ? SourceLayer.PgmSlutord : SourceLayer.PgmScript,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: literal<ScriptContent>({

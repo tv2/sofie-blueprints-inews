@@ -23,23 +23,17 @@ export default literal<IOutputLayer[]>([
 		isFlattened: true
 	},
 	{
-		_id: 'belowPgm',
-		name: '',
+		_id: 'musik',
+		name: 'MUSIK',
 		isPGM: false,
-		_rank: 21
+		_rank: 22
 	},
-	// {
-	// 	_id: 'musik',
-	// 	name: 'MUSIK',
-	// 	isPGM: false,
-	// 	_rank: 22
-	// },
-	// {
-	// 	_id: 'manus',
-	// 	name: 'MANUS',
-	// 	isPGM: false,
-	// 	_rank: 23
-	// },
+	{
+		_id: 'manus',
+		name: 'MANUS',
+		isPGM: false,
+		_rank: 23
+	},
 	{
 		_id: 'sec',
 		name: 'SEC',
