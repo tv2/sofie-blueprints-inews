@@ -19,7 +19,7 @@ import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { CueDefinitionEkstern } from '../../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../layers'
-import { GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
 import { TransitionFromString } from '../transitionFromString'
 import { TransitionSettings } from '../transitionSettings'
 import { CreateTimingEnable } from './evaluateCues'
@@ -87,7 +87,8 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(parsedCue.source)
+						...GetSisyfosTimelineObjForEkstern(parsedCue.source),
+						...GetSisyfosTimelineObjForCamera('telefon')
 					])
 				})
 			})
@@ -125,7 +126,8 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(parsedCue.source)
+						...GetSisyfosTimelineObjForEkstern(parsedCue.source),
+						...GetSisyfosTimelineObjForCamera('telefon')
 					])
 				})
 			})
