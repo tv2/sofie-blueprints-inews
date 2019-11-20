@@ -374,7 +374,7 @@ const BELOW_PGM: ISourceLayer[] = [
 		onPGMClean: false
 	},
 	{
-		_id: SourceLayer.PgmVoiceOver,
+		_id: SourceLayer.PgmAudioBed,
 		_rank: 30,
 		name: 'Audio bed',
 		abbreviation: 'VO',
