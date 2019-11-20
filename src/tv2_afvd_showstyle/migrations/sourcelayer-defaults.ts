@@ -329,8 +329,32 @@ const PGM: ISourceLayer[] = [
 	}
 ]
 
-// BELOW_PGM group
-const BELOW_PGM: ISourceLayer[] = [
+// MUSIK group
+const MUSIK: ISourceLayer[] = [
+	{
+		_id: SourceLayer.PgmVoiceOver,
+		_rank: 30,
+		name: 'Audio bed',
+		abbreviation: 'VO',
+		type: SourceLayerType.AUDIO,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	}
+]
+// MANUS group
+const MANUS: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmSlutord,
 		_rank: 10,
@@ -358,27 +382,6 @@ const BELOW_PGM: ISourceLayer[] = [
 		name: 'Manus',
 		abbreviation: '',
 		type: SourceLayerType.SCRIPT,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false,
-		unlimited: false,
-		onPGMClean: false
-	},
-	{
-		_id: SourceLayer.PgmVoiceOver,
-		_rank: 30,
-		name: 'Audio bed',
-		abbreviation: 'VO',
-		type: SourceLayerType.AUDIO,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
@@ -446,4 +449,4 @@ const AUX: ISourceLayer[] = [
 	}
 ]
 
-export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...BELOW_PGM, ...SEC, ...AUX])
+export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...MUSIK, ...MANUS, ...SEC, ...AUX])
