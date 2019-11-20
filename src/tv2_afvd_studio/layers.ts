@@ -93,7 +93,3 @@ export enum VizLLayer {
 export function CasparPlayerClip(i: number) {
 	return `casparcg_player_clip_${i}`
 }
-
-export function SisyfosSourceClip(i: number | string) {
-	return `sisyfos_player_clip_${i}`
-}
