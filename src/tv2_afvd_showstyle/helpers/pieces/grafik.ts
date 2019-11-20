@@ -204,10 +204,10 @@ export function GetSourceLayerForGrafik(name: string) {
 		case 'CLEAR_TROMPET':
 		case 'CLEAR_WALL':
 		case 'CLEAR_FULL_BACK':
-			return SourceLayer.PgmAdlibViz
+			return SourceLayer.PgmAdlibVizCmd
 		case 'FRONTLAYER_CONTINUE':
 		case 'FRONT_LAYER_CONTINUE':
-			return SourceLayer.PgmAdlibViz
+			return SourceLayer.PgmAdlibVizCmd
 	}
 
 	return SourceLayer.PgmPilot // TODO: Maybe some better default?

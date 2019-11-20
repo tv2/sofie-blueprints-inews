@@ -120,7 +120,7 @@ export function EvaluateVIZ(
 				},
 				name: parsedCue.content.INP1 || '',
 				outputLayerId: 'aux',
-				sourceLayerId: SourceLayer.PgmVIZ,
+				sourceLayerId: SourceLayer.VizFullIn1,
 				infiniteMode: PieceLifespan.Infinite,
 				content: literal<CameraContent>({
 					studioLabel: '',
