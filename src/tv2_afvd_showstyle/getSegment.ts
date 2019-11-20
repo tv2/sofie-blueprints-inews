@@ -13,7 +13,12 @@ import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { parseConfig } from './helpers/config'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
-import { CueType } from './inewsConversion/converters/ParseCue'
+import {
+	CueDefinitionGrafik,
+	CueDefinitionMOS,
+	CueDefinitionTelefon,
+	CueType
+} from './inewsConversion/converters/ParseCue'
 import { SourceLayer } from './layers'
 import { CreatePartCueOnly } from './parts/cueonly'
 import { CreatePartGrafik } from './parts/grafik'
@@ -102,7 +107,17 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		}
 		const tlfCue = part.cues.filter(cue => cue.type === CueType.Telefon)
 		if (tlfCue.length) {
-			tlfCue.forEach((cue, j) => {
+			tlfCue.forEach((cue: CueDefinitionTelefon, j) => {
+				const index = part.cues.findIndex(c => _.isEqual(c, cue))
+				if (index < part.cues.length - 1) {
+					if (part.cues[index + 1].type === CueType.MOS || part.cues[index + 1].type === CueType.Grafik) {
+						cue.vizObj =
+							part.cues[index + 1].type === CueType.MOS
+								? (part.cues[index + 1] as CueDefinitionMOS)
+								: (part.cues[index + 1] as CueDefinitionGrafik)
+						part.cues.splice(index + 1, 1)
+					}
+				}
 				extraParts.push(
 					CreatePartCueOnly(
 						partContext,
