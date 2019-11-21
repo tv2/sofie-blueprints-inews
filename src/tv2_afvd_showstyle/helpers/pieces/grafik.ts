@@ -155,6 +155,7 @@ export function GetSourceLayerForGrafik(name: string) {
 		case 'ident_nyhederne':
 		case 'ident_news':
 		case 'ident_tv2sport':
+		case 'ident_blank':
 		case 'tlfdirekte':
 			return SourceLayer.PgmGraphicsIdent
 		case 'topt':
@@ -210,7 +211,7 @@ export function GetSourceLayerForGrafik(name: string) {
 			return SourceLayer.PgmAdlibVizCmd
 	}
 
-	return SourceLayer.PgmPilot // TODO: Maybe some better default?
+	return SourceLayer.PgmGraphicsLower // TODO: Maybe some better default?
 }
 
 export function grafikName(parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
