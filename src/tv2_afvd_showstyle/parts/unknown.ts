@@ -35,7 +35,7 @@ export function CreatePartUnknown(
 	AddScript(partDefinition, pieces, partTime, false)
 	part = { ...part, ...GetBreakerAutoNext(context, config, partDefinition) }
 
-	if (pieces.length === 0 && adLibPieces.length === 0) {
+	if (pieces.length === 0) {
 		part.invalid = true
 	}
 
