@@ -33,7 +33,7 @@ export function EvaluateDesign(
 				_rank: rank || 0,
 				externalId: partId,
 				name: parsedCue.design,
-				outputLayerId: 'pgm0',
+				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,
 				infiniteMode: PieceLifespan.Infinite,
 				content: literal<GraphicsContent>({
@@ -65,7 +65,7 @@ export function EvaluateDesign(
 				enable: {
 					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 				},
-				outputLayerId: 'pgm0',
+				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,
 				infiniteMode: PieceLifespan.Infinite,
 				content: literal<GraphicsContent>({

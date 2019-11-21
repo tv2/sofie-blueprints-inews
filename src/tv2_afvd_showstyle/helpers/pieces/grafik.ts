@@ -67,8 +67,8 @@ export function EvaluateGrafik(
 				_rank: rank || 0,
 				externalId: partId,
 				name: grafikName(parsedCue),
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
-				outputLayerId: 'pgm0',
+				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(parsedCue.template),
+				outputLayerId: 'pgm',
 				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart
@@ -111,8 +111,8 @@ export function EvaluateGrafik(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				outputLayerId: 'pgm0',
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmGraphics,
+				outputLayerId: 'pgm',
+				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(parsedCue.template),
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart
 					: parsedCue.end && parsedCue.end.infiniteMode
@@ -142,6 +142,75 @@ export function EvaluateGrafik(
 			})
 		)
 	}
+}
+
+export function GetSourceLayerForGrafik(name: string) {
+	// TODO: When new cues need adding
+	switch (name) {
+		case 'arkiv':
+		case 'ident':
+		case 'direkte':
+		case 'billederfra_txt':
+		case 'billederfra_logo':
+		case 'ident_nyhederne':
+		case 'ident_news':
+		case 'ident_tv2sport':
+		case 'tlfdirekte':
+			return SourceLayer.PgmGraphicsIdent
+		case 'topt':
+		case 'tlftopt':
+		case 'tlfoptlive':
+			return SourceLayer.PgmGraphicsTop
+		case 'bund':
+		case 'vaerter':
+			return SourceLayer.PgmGraphicsLower
+		case 'vo':
+		case 'trompet':
+			return SourceLayer.PgmGraphicsHeadline
+		case 'bundright':
+		case 'TEMA_Default':
+		case 'TEMA_UPDATE':
+			return SourceLayer.PgmGraphicsTema
+		case 'DESIGN_AFTERAAR_CYKEL':
+		case 'DESIGN_HANDBOLD':
+		case 'DESIGN_ISHOCKEY':
+		case 'DESIGN_KONTRA':
+		case 'DESIGN_NBA':
+		case 'DESIGN_SPORTS-LAB':
+		case 'DESIGN_WTA':
+		case 'DESIGN_VUELTA':
+		case 'DESIGN_VM':
+		case 'DESIGN_WIMBLEDON':
+		case 'DESIGN_TDF':
+		case 'DESIGN_ESPORT':
+			return SourceLayer.PgmDesign
+		case 'BG_DVE_BADMINTON':
+		case 'BG_DVE_KONTRA':
+		case 'BG_DVE_NBA':
+		case 'BG_DVE_WTA17':
+		case 'BG_DVE_SPORTCENTER':
+			return SourceLayer.PgmDVEBackground
+		case 'altud':
+		case 'OUT_LOWER':
+		case 'OUT_HEADLINE':
+		case 'OUT_IDENT':
+		case 'OUT_TOP':
+		case 'OUT_TEMA_H':
+		case 'OUT_TRUMPET':
+		case 'OUT_TEMA_GFX':
+		case 'CLEAR_FULL':
+		case 'CLEAR_LAYER':
+		case 'CLEAR_RESET':
+		case 'CLEAR_TROMPET':
+		case 'CLEAR_WALL':
+		case 'CLEAR_FULL_BACK':
+			return SourceLayer.PgmAdlibVizCmd
+		case 'FRONTLAYER_CONTINUE':
+		case 'FRONT_LAYER_CONTINUE':
+			return SourceLayer.PgmAdlibVizCmd
+	}
+
+	return SourceLayer.PgmPilot // TODO: Maybe some better default?
 }
 
 export function grafikName(parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
