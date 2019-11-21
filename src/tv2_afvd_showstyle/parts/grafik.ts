@@ -36,7 +36,7 @@ export function CreatePartGrafik(
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, false, true)
 	AddScript(partDefinition, pieces, partTime, false)
 
-	if (pieces.length === 0 && adLibPieces.length === 0) {
+	if (pieces.length === 0) {
 		part.invalid = true
 	}
 
