@@ -160,7 +160,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				blueprintParts.push(CreatePartServer(partContext, config, part))
 				break
 			case PartType.Live:
-				blueprintParts.push(CreatePartLive(partContext, config, part, totalWords))
+				const blueprintPart = CreatePartLive(partContext, config, part, totalWords)
+				if (!blueprintPart.part.invalid && (blueprintPart.pieces.length || blueprintPart.adLibPieces.length)) {
+					blueprintParts.push(blueprintPart)
+				}
 				break
 			case PartType.Teknik:
 				blueprintParts.push(CreatePartTeknik(partContext, config, part, totalWords))
