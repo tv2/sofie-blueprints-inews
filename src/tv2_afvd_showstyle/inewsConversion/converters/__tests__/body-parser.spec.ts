@@ -347,7 +347,7 @@ describe('Body parser', () => {
 					modified: 0
 				},
 				{
-					type: PartType.Unknown,
+					type: PartType.Server,
 					rawType: 'ATTACK',
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',

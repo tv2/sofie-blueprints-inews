@@ -287,7 +287,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			},
 			...definition
 		}
-	} else if (firstToken.match(/SERVER/)) {
+	} else if (firstToken.match(/SERVER/) || firstToken.match(/ATTACK/i)) {
 		return {
 			type: PartType.Server,
 			variant: {},
