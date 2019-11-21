@@ -159,7 +159,7 @@ export function GetSourceLayerForGrafik(name: string) {
 			return SourceLayer.PgmGraphicsIdent
 		case 'topt':
 		case 'tlftopt':
-		case 'tlfoptlive':
+		case 'tlftoptlive':
 			return SourceLayer.PgmGraphicsTop
 		case 'bund':
 		case 'vaerter':
