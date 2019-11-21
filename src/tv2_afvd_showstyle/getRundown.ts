@@ -620,7 +620,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: channel.isPgm,
-					visible: channel.visibleInStudioA,
+					visible: channel.visibleInStudioA ? true : false,
 					label: channel.label
 				}
 			})
