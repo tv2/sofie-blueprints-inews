@@ -47,6 +47,7 @@ export interface CueDefinitionGrafik extends CueDefinitionBase {
 }
 
 export interface CueDefinitionMOS extends CueDefinitionBase {
+	ignore?: boolean
 	type: CueType.MOS
 	name: string
 	vcpid: number
@@ -272,7 +273,10 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 			const engine = line.match(/[#|*]?cg(\d+) pilotdata/i)
 			if (engine && engine[1]) {
 				mosCue.engine = engine[1]
+				mosCue.ignore = true
 			}
+		} else if (line.match(/cg\d+ \]\] .+? \[\[ pilotdata/i)) {
+			mosCue.ignore = true
 		}
 	})
 	if (realCue.length === 4) {
