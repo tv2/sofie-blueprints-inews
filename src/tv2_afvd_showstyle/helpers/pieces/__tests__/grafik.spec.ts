@@ -57,7 +57,7 @@ describe('grafik piece', () => {
 					end: 4000
 				},
 				infiniteMode: PieceLifespan.Normal,
-				outputLayerId: 'pgm',
+				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -115,7 +115,7 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense - Copenhagen',
 				infiniteMode: PieceLifespan.Normal,
-				outputLayerId: 'pgm',
+				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
@@ -180,7 +180,7 @@ describe('grafik piece', () => {
 					end: 14000
 				},
 				infiniteMode: PieceLifespan.Normal,
-				outputLayerId: 'pgm',
+				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',

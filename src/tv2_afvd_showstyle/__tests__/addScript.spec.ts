@@ -30,7 +30,7 @@ describe('addScript', () => {
 					start: 0,
 					end: 1000
 				},
-				outputLayerId: 'belowPgm',
+				outputLayerId: 'manus',
 				sourceLayerId: SourceLayer.PgmScript,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: literal<ScriptContent>({
