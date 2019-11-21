@@ -43,7 +43,7 @@ export function EvaluateVIZ(
 					_rank: rank || 0,
 					externalId: partId,
 					name: path,
-					outputLayerId: 'pgm0',
+					outputLayerId: 'sec',
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
@@ -75,7 +75,7 @@ export function EvaluateVIZ(
 					enable: {
 						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 					},
-					outputLayerId: 'pgm0',
+					outputLayerId: 'sec',
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
@@ -119,8 +119,8 @@ export function EvaluateVIZ(
 					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 				},
 				name: parsedCue.content.INP1 || '',
-				outputLayerId: 'pgm0',
-				sourceLayerId: SourceLayer.PgmVIZ,
+				outputLayerId: 'aux',
+				sourceLayerId: SourceLayer.VizFullIn1,
 				infiniteMode: PieceLifespan.Infinite,
 				content: literal<CameraContent>({
 					studioLabel: '',
@@ -151,7 +151,7 @@ export function EvaluateVIZ(
 					_rank: rank || 0,
 					externalId: partId,
 					name: path,
-					outputLayerId: 'pgm0',
+					outputLayerId: 'sec',
 					sourceLayerId: SourceLayer.PgmDesign,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
@@ -183,7 +183,7 @@ export function EvaluateVIZ(
 					enable: {
 						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 					},
-					outputLayerId: 'pgm0',
+					outputLayerId: 'sec',
 					sourceLayerId: SourceLayer.PgmDesign,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({

@@ -62,7 +62,7 @@ describe('telefon', () => {
 				enable: {
 					start: 0
 				},
-				outputLayerId: 'pgm0',
+				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: literal<GraphicsContent>({

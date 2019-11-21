@@ -105,6 +105,23 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
 			})
 		}
+		if (dveCue.length && part.type === PartType.Kam) {
+			dveCue.forEach((cue, j) => {
+				extraParts.push(
+					CreatePartCueOnly(
+						partContext,
+						config,
+						part,
+						`${part.externalId}-${2}`,
+						`${part.rawType ? `${part.rawType}-` : ''}DVE-${j}`,
+						cue,
+						totalWords,
+						true
+					)
+				)
+				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+			})
+		}
 		const tlfCue = part.cues.filter(cue => cue.type === CueType.Telefon)
 		if (tlfCue.length) {
 			tlfCue.forEach((cue: CueDefinitionTelefon, j) => {
@@ -225,7 +242,7 @@ function SlutordLookahead(
 						_id: '',
 						name: `Slutord: ${part.variant.endWords}`,
 						sourceLayerId: SourceLayer.PgmSlutord,
-						outputLayerId: 'pgm0',
+						outputLayerId: 'manus',
 						externalId: parsedParts[currentIndex].externalId,
 						enable: {
 							start: 0

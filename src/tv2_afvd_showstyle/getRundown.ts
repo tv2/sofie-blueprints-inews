@@ -95,7 +95,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 			name: info.id + '',
 			_rank: rank || 0,
 			sourceLayerId: SourceLayer.PgmCam,
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			content: {
@@ -126,7 +126,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 			name: info.id + '',
 			_rank: rank || 0,
 			sourceLayerId: SourceLayer.PgmLive,
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			content: {
@@ -172,7 +172,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		name: `Delayed Playback`,
 		_rank: 200,
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: 'pgm0',
+		outputLayerId: 'pgm',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		content: {
@@ -195,38 +195,11 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		}
 	})
 	adlibItems.push({
-		externalId: 'delayedplus',
-		name: `Delayed Playback +`,
-		_rank: 300,
-		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: 'pgm0',
-		expectedDuration: 0,
-		infiniteMode: PieceLifespan.OutOnNextPart,
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjAtemME>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: AtemLLayer.AtemMEProgram,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.ME,
-						me: {
-							input: 35,
-							transition: AtemTransitionStyle.CUT
-						}
-					}
-				})
-			])
-		}
-	})
-	adlibItems.push({
 		externalId: 'continueForward',
 		name: 'GFX Continue',
 		_rank: 400,
-		sourceLayerId: SourceLayer.PgmAdlibViz,
-		outputLayerId: 'pgm0',
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
@@ -252,8 +225,8 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		externalId: 'continueReverse',
 		name: 'GFX Reverse',
 		_rank: 400,
-		sourceLayerId: SourceLayer.PgmAdlibViz,
-		outputLayerId: 'pgm0',
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
@@ -279,8 +252,8 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 		externalId: 'loadGFX',
 		name: 'Load all GFX',
 		_rank: 500,
-		sourceLayerId: SourceLayer.PgmAdlibViz,
-		outputLayerId: 'pgm0',
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
@@ -416,6 +389,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
+
+		// keyers
 		literal<TimelineObjAtemDSK>({
 			id: '',
 			enable: { while: '1' },
@@ -464,8 +439,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
+		// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 		literal<TimelineObjAtemME>({
-			// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 			id: '',
 			enable: { while: 1 },
 			priority: 0,
@@ -645,7 +620,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: channel.isPgm,
-					visible: channel.visibleInStudioA ? true : false,
+					visible: channel.visibleInStudioA,
 					label: channel.label
 				}
 			})

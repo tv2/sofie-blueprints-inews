@@ -25,7 +25,7 @@ export function createVirtualPiece(
 				  }
 				: enable,
 		sourceLayerId: layer,
-		outputLayerId: 'pgm0',
+		outputLayerId: 'pgm',
 		virtual: true,
 		content: {
 			timelineObjects: []

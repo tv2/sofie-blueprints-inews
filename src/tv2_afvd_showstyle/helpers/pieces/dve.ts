@@ -95,7 +95,7 @@ export function EvaluateDVE(
 					_rank: rank || 0,
 					externalId: partId,
 					name: `DVE: ${parsedCue.template}`,
-					outputLayerId: 'pgm0',
+					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					content: content.content
@@ -111,7 +111,7 @@ export function EvaluateDVE(
 						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
 						...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
 					},
-					outputLayerId: 'pgm0',
+					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					content: content.content

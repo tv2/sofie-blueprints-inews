@@ -58,7 +58,7 @@ export function CreatePartVO(
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
-			outputLayerId: 'pgm0',
+			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
