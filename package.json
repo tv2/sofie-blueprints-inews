@@ -59,8 +59,8 @@
   "dependencies": {
     "handlebars": "^4.3.0",
     "object-path": "^0.11.4",
-    "timeline-state-resolver-types": "^3.12.0",
-    "tv-automation-sofie-blueprints-integration": "^1.2.0",
+    "timeline-state-resolver-types": "olzzon/tv-automation-state-timeline-resolver#dist-types",
+    "tv-automation-sofie-blueprints-integration": "olzzon/tv-automation-sofie-blueprints-integration#dist",
     "underscore": "^1.9.1"
   },
   "resolutions": {
