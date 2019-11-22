@@ -129,5 +129,21 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 320 // 8 frames (5 in decklinks + casparcg)
+	},
+	{
+		id: 'CasparPrerollDuration',
+		name: 'Caspar preroll duration',
+		description: 'ms of preroll before switching to caspar',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 200 // 5 frames
+	},
+	{
+		id: 'PilotPrerollDuration',
+		name: 'Pilot Preroll Duration',
+		description: 'ms of preroll before switching to Pilot elements',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 2000
 	}
 ]

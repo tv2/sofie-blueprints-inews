@@ -22,7 +22,9 @@ const blankStudioConfig: StudioConfig = {
 		SplitArtK: 0,
 		Default: 0
 	},
-	CasparOutputDelay: 0
+	CasparOutputDelay: 0,
+	CasparPrerollDuration: 0,
+	PilotPrerollDuration: 0
 }
 
 function getObjectKeys(obj: any): string[] {

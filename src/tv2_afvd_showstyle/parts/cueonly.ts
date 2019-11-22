@@ -9,7 +9,7 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
-import { CueDefinition } from '../inewsConversion/converters/ParseCue'
+import { CueDefinition, CueType } from '../inewsConversion/converters/ParseCue'
 import { GetBreakerAutoNext } from './effekt'
 import { PartTime } from './time/partTime'
 
@@ -42,6 +42,10 @@ export function CreatePartCueOnly(
 
 	if (makeAdlibs) {
 		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, true)
+	}
+
+	if (partDefinition.cues.filter(c => c.type === CueType.MOS || c.type === CueType.Telefon).length) {
+		part.prerollDuration = config.studio.PilotPrerollDuration
 	}
 
 	if (pieces.length === 0 && adLibPieces.length === 0) {

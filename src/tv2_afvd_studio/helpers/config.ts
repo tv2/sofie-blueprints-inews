@@ -50,6 +50,8 @@ export interface StudioConfig {
 
 	// Constants
 	CasparOutputDelay: number
+	CasparPrerollDuration: number
+	PilotPrerollDuration: number
 }
 
 export function applyToConfig(

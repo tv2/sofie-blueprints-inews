@@ -40,7 +40,8 @@ export function CreatePartServer(
 		metaData: {},
 		typeVariant: '',
 		displayDuration: duration || 1000,
-		expectedDuration: duration || 1000
+		expectedDuration: duration || 1000,
+		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -58,7 +59,8 @@ export function CreatePartServer(
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [part.externalId]
 			}),
-			content: MakeContentServer(file, duration, part.externalId, partDefinition)
+			content: MakeContentServer(file, duration, part.externalId, partDefinition),
+			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
 

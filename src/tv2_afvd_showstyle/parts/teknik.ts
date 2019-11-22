@@ -10,6 +10,7 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
+import { CueType } from '../inewsConversion/converters/ParseCue'
 import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
 import { PartTime } from './time/partTime'
 
@@ -35,6 +36,10 @@ export function CreatePartTeknik(
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime, false)
+
+	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
+		part.prerollDuration = config.studio.PilotPrerollDuration
+	}
 
 	if (pieces.length === 0) {
 		part.invalid = true

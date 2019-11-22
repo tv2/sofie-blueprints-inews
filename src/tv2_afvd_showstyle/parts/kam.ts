@@ -24,6 +24,7 @@ import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
+import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
 import { CreatePartInvalid } from './invalid'
@@ -96,6 +97,10 @@ export function CreatePartKam(
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime, false)
+
+	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
+		part.prerollDuration = config.studio.PilotPrerollDuration
+	}
 
 	if (pieces.length === 0) {
 		part.invalid = true

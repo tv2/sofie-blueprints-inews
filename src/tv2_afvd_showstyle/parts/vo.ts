@@ -43,7 +43,8 @@ export function CreatePartVO(
 		metaData: {},
 		typeVariant: '',
 		displayDuration: duration || 1000,
-		expectedDuration: duration || 1000
+		expectedDuration: duration || 1000,
+		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -64,7 +65,8 @@ export function CreatePartVO(
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [part.externalId]
 			}),
-			content: serverContent
+			content: serverContent,
+			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
 

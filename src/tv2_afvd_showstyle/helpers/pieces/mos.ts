@@ -47,6 +47,7 @@ export function EvaluateMOS(
 						: PieceLifespan.Normal,
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
 				outputLayerId: 'pgm',
+				adlibPreroll: config.studio.PilotPrerollDuration,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.name,
 					path: parsedCue.vcpid.toString(),
@@ -86,6 +87,7 @@ export function EvaluateMOS(
 					  }),
 				outputLayerId: 'pgm',
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
+				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode:
 					isTlf || isGrafikPart
 						? PieceLifespan.OutOnNextPart
