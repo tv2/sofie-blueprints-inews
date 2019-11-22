@@ -9,6 +9,7 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
+import { CueType } from '../inewsConversion/converters/ParseCue'
 import { GetBreakerAutoNext } from './effekt'
 import { PartTime } from './time/partTime'
 
@@ -34,6 +35,10 @@ export function CreatePartUnknown(
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime, false)
 	part = { ...part, ...GetBreakerAutoNext(context, config, partDefinition) }
+
+	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
+		part.prerollDuration = config.studio.PilotPrerollDuration
+	}
 
 	if (pieces.length === 0) {
 		part.invalid = true

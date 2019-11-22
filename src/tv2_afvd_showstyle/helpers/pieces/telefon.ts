@@ -65,6 +65,7 @@ export function EvaluateTelefon(
 						})
 					)
 					adlibPiece.name = `${parsedCue.source}`
+					adlibPiece.adlibPreroll = config.studio.PilotPrerollDuration
 					adlibPieces[index] = adlibPiece
 				}
 			} else {
@@ -89,6 +90,7 @@ export function EvaluateTelefon(
 						...GetSisyfosTimelineObjForCamera('telefon')
 					)
 					piece.name = `${parsedCue.source}`
+					piece.adlibPreroll = config.studio.PilotPrerollDuration
 					pieces[index] = piece
 				}
 			}
