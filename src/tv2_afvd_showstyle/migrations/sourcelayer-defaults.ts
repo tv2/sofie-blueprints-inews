@@ -49,7 +49,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsLower,
 		_rank: 30,
-		name: '',
+		name: 'Bundt',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -70,7 +70,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsHeadline,
 		_rank: 40,
-		name: '',
+		name: 'Headline',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -91,7 +91,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsTema,
 		_rank: 50,
-		name: '',
+		name: 'Tema',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
