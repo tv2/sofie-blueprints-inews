@@ -73,7 +73,6 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 						deviceType: DeviceType.SISYFOS,
 						type: TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: sisyfosChannel.isPgm,
-						visible: sisyfosChannel.visibleInStudioA,
 						label: sisyfosChannel.label
 					}
 				})
@@ -87,7 +86,6 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 						deviceType: DeviceType.SISYFOS,
 						type: TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: 0,
-						visible: false,
 						label: ''
 					}
 				})
