@@ -210,7 +210,7 @@ export default literal<BlueprintMappings>({
 	sisyfos_source_audio: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		channel: 2,
+		channel: 27,
 		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_Host_1_st_a: literal<MappingSisyfos & BlueprintMapping>({
