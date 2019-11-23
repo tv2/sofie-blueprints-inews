@@ -17,7 +17,6 @@ import { literal } from '../../../../common/util'
 import { casparABPlaybackConfig, defaultShowStyleConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
 import { CueType } from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
-import { atemNextObject } from '../../../../tv2_afvd_studio/helpers/objects'
 import { AtemLLayer, CasparLLayer } from '../../../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { AtemSourceIndex } from '../../../../types/atem'
@@ -284,9 +283,7 @@ describe('DVE Content', () => {
 
 						...GetSisyfosTimelineObjForCamera('KAM 1'),
 
-						...GetSisyfosTimelineObjForEkstern('LIVE 1'),
-
-						atemNextObject(AtemSourceIndex.SSrc)
+						...GetSisyfosTimelineObjForEkstern('LIVE 1')
 					])
 				}
 			})
@@ -551,9 +548,7 @@ describe('DVE Content', () => {
 
 						...GetSisyfosTimelineObjForEkstern('LIVE 1'),
 
-						...GetSisyfosTimelineObjForCamera('KAM 1'),
-
-						atemNextObject(AtemSourceIndex.SSrc)
+						...GetSisyfosTimelineObjForCamera('KAM 1')
 					])
 				}
 			})

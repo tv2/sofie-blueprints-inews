@@ -8,7 +8,7 @@ import { CueDefinitionAdLib, CueDefinitionDVE, CueType } from '../../inewsConver
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 import { MakeContentServer } from '../content/server'
-import { DVEConfig, GetDVETemplate, TemplateIsValid } from './dve'
+import { GetDVETemplate, TemplateIsValid } from './dve'
 
 export function EvaluateAdLib(
 	context: PartContext,
@@ -46,7 +46,7 @@ export function EvaluateAdLib(
 			return
 		}
 
-		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
+		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant) // TODO - is this correct?
 		if (!rawTemplate) {
 			context.warning(`Could not find template ${parsedCue.variant}`)
 			return
@@ -64,9 +64,7 @@ export function EvaluateAdLib(
 			labels: parsedCue.bynavn ? [parsedCue.bynavn] : []
 		}
 
-		const template: DVEConfig = JSON.parse(rawTemplate.DVEJSON as string) as DVEConfig
-
-		const content = MakeContentDVE(context, config, partId, cueDVE, template)
+		const content = MakeContentDVE(context, config, partId, cueDVE, rawTemplate)
 
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({

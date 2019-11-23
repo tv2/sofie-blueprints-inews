@@ -18,7 +18,8 @@ import {
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
-	TSRTimelineObjBase
+	TSRTimelineObjBase,
+	SuperSourceBox
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
@@ -42,6 +43,8 @@ import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
+import { MakeContentDVE2 } from './helpers/content/dve'
+import { ATEM_SUPERSOURCE_CONFIG_TIME } from './helpers/pieces/dve'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,
@@ -90,11 +93,12 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 }
 
 function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
-	function makeCameraAdLib(info: SourceInfo, rank: number): IBlueprintAdLibPiece {
-		return {
+	function makeCameraAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		res.push({
 			externalId: 'cam',
 			name: info.id + '',
-			_rank: rank || 0,
+			_rank: 100 + rank || 0,
 			sourceLayerId: SourceLayer.PgmCam,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
@@ -118,11 +122,56 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 					...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
 				])
 			}
-		}
+		})
+		// adlibs
+		const layers = [
+			{ sl: SourceLayer.PgmDVEBox1, l: AtemLLayer.AtemSSrcBox1 },
+			{ sl: SourceLayer.PgmDVEBox2, l: AtemLLayer.AtemSSrcBox2 },
+			{ sl: SourceLayer.PgmDVEBox3, l: AtemLLayer.AtemSSrcBox3 }
+		]
+		_.forEach(layers, (layer, i) => {
+			const boxes: SuperSourceBox[] = _.range(i).map(() => ({}))
+			boxes.push({
+				source: info.port
+			})
+
+			// TODO - account for layouts
+
+			res.push({
+				externalId: 'cam',
+				name: info.id + '',
+				_rank: 200 + 50 * i + (rank || 0),
+				sourceLayerId: layer.sl,
+				outputLayerId: 'pgm', // TODO
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: {
+					timelineObjects: _.compact<TSRTimelineObj>([
+						literal<TimelineObjAtemSsrc>({
+							id: '',
+							enable: { while: '1' },
+							priority: 1,
+							layer: layer.l,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.SSRC,
+								ssrc: {
+									boxes
+								}
+							}
+						})
+						// TODO - audio
+						// ...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
+					])
+				}
+			})
+		})
+		return res
 	}
 
-	function makeRemoteAdLib(info: SourceInfo, rank: number): IBlueprintAdLibPiece {
-		return {
+	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		res.push({
 			externalId: 'cam',
 			name: info.id + '',
 			_rank: rank || 0,
@@ -150,21 +199,22 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 					...GetSisyfosTimelineObjForCamera('telefon')
 				])
 			}
-		}
+		})
+		return res
 	}
 
 	const adlibItems: IBlueprintAdLibPiece[] = []
 	let cameras = 0
 	_.each(config.sources, v => {
 		if (v.type === SourceLayerType.CAMERA) {
-			adlibItems.push(makeCameraAdLib(v, 100 + cameras))
+			adlibItems.push(...makeCameraAdLibs(v, cameras))
 			cameras++
 		}
 	})
 	let remotes = cameras
 	_.each(config.sources, v => {
 		if (v.type === SourceLayerType.REMOTE) {
-			adlibItems.push(makeRemoteAdLib(v, 100 + remotes))
+			adlibItems.push(...makeRemoteAdLibs(v, 100 + remotes))
 			remotes++
 		}
 	})
@@ -289,6 +339,26 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
+
+	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
+		const boxSources = ['', '', '', '']
+		const content = MakeContentDVE2(context, config, dveConfig, {}, boxSources)
+
+		if (content.valid) {
+			adlibItems.push({
+				externalId: `dve-${dveConfig.DVEName}`,
+				name: (dveConfig.DVEName || 'DVE') + '',
+				_rank: 200 + i,
+				sourceLayerId: SourceLayer.PgmDVEAdlib,
+				outputLayerId: 'pgm',
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: content.content,
+				adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
+			})
+		}
+	})
+
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p))
 	return adlibItems
 }
