@@ -1,20 +1,28 @@
 import {
+	DeviceType,
+	TimelineContentTypeAtem,
+	TimelineObjAtemAUX,
+	TimelineObjAtemME
+} from 'timeline-state-resolver-types'
+import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	IBlueprintPiece,
+	IBlueprintPieceGeneric,
 	IBlueprintRundownDB,
 	IBlueprintSegment,
 	IngestSegment,
+	OnGenerateTimelineObj,
 	PartContext,
 	ScriptContent,
 	SegmentContext,
-	IBlueprintPieceGeneric,
-	OnGenerateTimelineObj,
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
+import { AtemLLayer } from '../tv2_afvd_studio/layers'
+import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { parseConfig } from './helpers/config'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import {
@@ -34,14 +42,6 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
-import {
-	TimelineObjAtemME,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemAUX
-} from 'timeline-state-resolver-types'
-import { AtemLLayer } from '../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({

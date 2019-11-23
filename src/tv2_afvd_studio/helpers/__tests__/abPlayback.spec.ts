@@ -185,7 +185,7 @@ describe('resolveMediaPlayerAssignments', () => {
 	const config = defaultStudioConfig(context)
 
 	test('Test no pieces', () => {
-		const assignments = resolveMediaPlayerAssignments(context, config, false, {}, [])
+		const assignments = resolveMediaPlayerAssignments(context, config, {}, [])
 		expect(assignments).toHaveLength(0)
 	})
 
@@ -197,7 +197,7 @@ describe('resolveMediaPlayerAssignments', () => {
 			createBasicPiece('2', 800, 4000, 'ghi')
 		]
 
-		const assignments = resolveMediaPlayerAssignments(context, config, false, previousAssignments, pieces)
+		const assignments = resolveMediaPlayerAssignments(context, config, previousAssignments, pieces)
 		expect(assignments).toHaveLength(3)
 		expect(assignments).toEqual([
 			{ end: 5400, id: 'abc', player: '1', start: 400, type: 1, optional: false },
@@ -215,7 +215,7 @@ describe('resolveMediaPlayerAssignments', () => {
 			createBasicPiece('3', 6400, 1000, 'abc') // Gap before
 		]
 
-		const assignments = resolveMediaPlayerAssignments(context, config, false, previousAssignments, pieces)
+		const assignments = resolveMediaPlayerAssignments(context, config, previousAssignments, pieces)
 		expect(assignments).toHaveLength(1)
 		expect(assignments).toEqual([{ end: 7400, id: 'abc', player: '1', start: 400, type: 1, optional: false }])
 	})
@@ -228,7 +228,7 @@ describe('resolveMediaPlayerAssignments', () => {
 			createBasicPiece('3', 6400, 1000, 'ghi') // Wait, then reuse first
 		]
 
-		const assignments = resolveMediaPlayerAssignments(context, config, false, previousAssignments, pieces)
+		const assignments = resolveMediaPlayerAssignments(context, config, previousAssignments, pieces)
 		expect(assignments).toHaveLength(3)
 		expect(assignments).toEqual([
 			{ end: 5400, id: 'abc', player: '1', start: 400, type: 1, optional: false },
@@ -245,7 +245,7 @@ describe('resolveMediaPlayerAssignments', () => {
 			createBasicPiece('3', 5400, 1000, 'ghi') // Wait, then reuse first
 		]
 
-		const assignments = resolveMediaPlayerAssignments(context, config, false, previousAssignments, pieces)
+		const assignments = resolveMediaPlayerAssignments(context, config, previousAssignments, pieces)
 		expect(assignments).toHaveLength(3)
 		expect(assignments).toEqual([
 			{ end: 5400, id: 'abc', player: '1', start: 400, type: 1, optional: false },
@@ -273,7 +273,7 @@ describe('resolveMediaPlayerAssignments', () => {
 			createBasicPiece('2', 800, 4000, 'ghi')
 		]
 
-		const assignments = resolveMediaPlayerAssignments(context, config, false, previousAssignments, pieces)
+		const assignments = resolveMediaPlayerAssignments(context, config, previousAssignments, pieces)
 		expect(assignments).toHaveLength(3)
 		expect(assignments).toEqual([
 			{ end: 5400, id: 'abc', player: '5', start: 400, type: 1, optional: false },
@@ -301,7 +301,7 @@ describe('resolveMediaPlayerAssignments', () => {
 			createBasicPiece('2', 800, 4000, 'ghi')
 		]
 
-		const assignments = resolveMediaPlayerAssignments(context, config, false, previousAssignments, pieces)
+		const assignments = resolveMediaPlayerAssignments(context, config, previousAssignments, pieces)
 		expect(assignments).toHaveLength(3)
 		expect(assignments).toEqual([
 			{ end: 5400, id: 'abc', player: '2', start: 400, type: 1, optional: false },
@@ -343,7 +343,7 @@ describe('applyMediaPlayersAssignments', () => {
 	const config = defaultStudioConfig(context)
 
 	test('Test no assignments', () => {
-		const res = applyMediaPlayersAssignments(context, config, false, [], {}, [])
+		const res = applyMediaPlayersAssignments(context, config, [], {}, [])
 		expect(res).toEqual({})
 	})
 
@@ -361,7 +361,7 @@ describe('applyMediaPlayersAssignments', () => {
 			}
 		}
 
-		const res = applyMediaPlayersAssignments(context, config, false, [], previousAssignments, [])
+		const res = applyMediaPlayersAssignments(context, config, [], previousAssignments, [])
 		expect(res).toEqual({})
 	})
 
@@ -406,7 +406,7 @@ describe('applyMediaPlayersAssignments', () => {
 			})
 		]
 
-		const res = applyMediaPlayersAssignments(context, config, false, objects, previousAssignments, [])
+		const res = applyMediaPlayersAssignments(context, config, objects, previousAssignments, [])
 		// expect(context.getNotes()).toHaveLength(0)
 		expect(res).toEqual(
 			literal<TimelinePersistentStateExt['activeMediaPlayers']>({

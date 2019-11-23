@@ -225,7 +225,9 @@ export function resolveMediaPlayerAssignments(
 
 		const otherActive = _.filter(activeRequests, r => doesRequestOverlap(req, r))
 
-		context.warning(`for ${JSON.stringify(req)} there is: ${JSON.stringify(otherActive, undefined, 4)}`)
+		if (debugLog) {
+			context.warning(`for ${JSON.stringify(req)} there is: ${JSON.stringify(otherActive, undefined, 4)}`)
+		}
 
 		// TODO - what about playing the same piece back-to-back?
 
