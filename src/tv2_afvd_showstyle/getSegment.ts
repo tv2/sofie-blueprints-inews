@@ -369,21 +369,21 @@ function postProcessPieceTimelineObjects(piece: IBlueprintPieceGeneric) {
 				obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.ME
 		)
 		_.each(atemMeObjs, tlObj => {
-			// Basic clone of every object to AtemMEClean
 			if (tlObj.layer === AtemLLayer.AtemMEProgram) {
+				// Basic clone of every object to AtemMEClean
 				const cleanObj = _.clone(tlObj) // Note: shallow clone
 				cleanObj.layer = AtemLLayer.AtemMEClean
 				cleanObj.id = `${tlObj.id}_clean`
 				extraObjs.push(cleanObj)
 
 				if (tlObj.content.me.input !== undefined) {
-					const holdMode = TimelineObjHoldMode.NORMAL as TimelineObjHoldMode
+					// Create a lookahead-lookahead object for this me-program
 					const lookaheadObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
 						id: '',
 						enable: { start: 0 },
-						priority: holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
+						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
 						layer: AtemLLayer.AtemAuxLookahead,
-						holdMode,
+						holdMode: tlObj.holdMode,
 						content: {
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.AUX,
@@ -395,7 +395,6 @@ function postProcessPieceTimelineObjects(piece: IBlueprintPieceGeneric) {
 							mediaPlayerSession: tlObj.metaData?.mediaPlayerSessionId // TODO - does this work the same?
 						}
 					})
-					console.log('lookahead', lookaheadObj)
 					extraObjs.push(lookaheadObj)
 				}
 			}
