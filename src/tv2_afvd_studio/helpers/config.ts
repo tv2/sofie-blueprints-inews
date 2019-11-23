@@ -45,6 +45,7 @@ export interface StudioConfig {
 		SplitArtK: number // Atem MP1 Key
 
 		Default: number
+		MixMinusDefault: number
 	}
 
 	// Dev overrides

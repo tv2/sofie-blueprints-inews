@@ -31,6 +31,7 @@ export interface TimelinePersistentStateExt extends TimelinePersistentState {
 export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 	/** Metadata for use by the OnTimelineGenerate or other callbacks */
 	metaData?: {
+		context?: string
 		lawoPersistLevel?: boolean
 		mediaPlayerSession?: string
 	}

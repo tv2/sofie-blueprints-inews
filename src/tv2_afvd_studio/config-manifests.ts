@@ -1,5 +1,6 @@
 import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { AtemSourceIndex } from '../types/atem'
 
 export const CORE_INJECTED_KEYS = ['SofieHostURL']
 
@@ -128,7 +129,15 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer default source',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 2001
+		defaultVal: AtemSourceIndex.Col1
+	},
+	{
+		id: 'AtemSource.MixMinusDefault',
+		name: 'ATEM Mix-minus default source',
+		description: 'ATEM vision mixer default source for mix-minus',
+		type: ConfigManifestEntryType.NUMBER,
+		required: true,
+		defaultVal: AtemSourceIndex.Col1
 	},
 	{
 		id: 'CasparOutputDelay',
