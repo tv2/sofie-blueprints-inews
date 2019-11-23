@@ -11,6 +11,8 @@ import {
 	NotesContext,
 	OnGenerateTimelineObj,
 	SegmentContext,
+	SourceLayerType,
+	SplitsContent,
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode
 } from 'tv-automation-sofie-blueprints-integration'
@@ -90,7 +92,22 @@ export function postProcessPieceTimelineObjects(
 				}
 
 				// mix minus
-				if (piece.sourceLayerId !== SourceLayer.PgmLive && piece.sourceLayerId !== SourceLayer.PgmDVE) {
+				let mixMinusSource: number | undefined | null = tlObj.content.me.input // TODO - what about clips?
+				if (piece.sourceLayerId === SourceLayer.PgmLive) {
+					// Never show live sources
+					mixMinusSource = null
+				}
+				if (piece.sourceLayerId === SourceLayer.PgmDVE) {
+					// If the dve has a single kam, show that. Otherwise fallback to default
+					const pieceContent = piece.content as SplitsContent
+					const kamSources = _.filter(
+						pieceContent.boxSourceConfiguration || [],
+						box => box.type === SourceLayerType.CAMERA
+					)
+
+					mixMinusSource = kamSources.length === 1 ? Number(kamSources[0].switcherInput) : null
+				}
+				if (mixMinusSource !== null) {
 					const mixMinusObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
 						..._.omit(tlObj, 'content'),
 						...literal<Partial<TimelineObjAtemAUX & TimelineBlueprintExt>>({
@@ -100,7 +117,7 @@ export function postProcessPieceTimelineObjects(
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.AUX,
 								aux: {
-									input: tlObj.content.me.input || config.studio.AtemSource.MixMinusDefault
+									input: mixMinusSource || config.studio.AtemSource.MixMinusDefault
 								}
 							},
 							metaData: {
