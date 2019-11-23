@@ -41,6 +41,7 @@ import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
+import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,
@@ -88,7 +89,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 	}
 }
 
-function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
 	function makeCameraAdLib(info: SourceInfo, rank: number): IBlueprintAdLibPiece {
 		return {
 			externalId: 'cam',
@@ -288,6 +289,7 @@ function getGlobalAdLibPieces(_context: NotesContext, config: BlueprintConfig): 
 			])
 		}
 	})
+	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p))
 	return adlibItems
 }
 

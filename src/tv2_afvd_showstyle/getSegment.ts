@@ -1,30 +1,17 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemAUX,
-	TimelineObjAtemME,
-	TimelineObjAtemDSK
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	IBlueprintPiece,
-	IBlueprintPieceGeneric,
 	IBlueprintRundownDB,
 	IBlueprintSegment,
 	IngestSegment,
-	OnGenerateTimelineObj,
 	PartContext,
 	ScriptContent,
-	SegmentContext,
-	TimelineObjectCoreExt,
-	TimelineObjHoldMode
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
-import { AtemLLayer } from '../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
-import { parseConfig, BlueprintConfig } from './helpers/config'
+import { parseConfig } from './helpers/config'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
@@ -43,8 +30,7 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
-import { ObjectType } from 'src/types/classes'
-import { isContext } from 'vm'
+import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -351,97 +337,5 @@ export class PartContext2 implements PartContext {
 	}
 	public unhashId(hash: string) {
 		return this.baseContext.unhashId(hash)
-	}
-}
-
-function postProcessPartTimelineObjects(
-	context: SegmentContext,
-	config: BlueprintConfig,
-	parts: BlueprintResultPart[]
-) {
-	_.each(parts, part => {
-		const ctx = new PartContext2(context, part.part.externalId)
-		_.each(part.pieces, p => postProcessPieceTimelineObjects(ctx, config, p))
-		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(ctx, config, p))
-	})
-}
-
-// Do any post-process of timeline objects
-function postProcessPieceTimelineObjects(context: PartContext, config: BlueprintConfig, piece: IBlueprintPieceGeneric) {
-	if (piece.content?.timelineObjects) {
-		const extraObjs: TimelineObjectCoreExt[] = []
-
-		const atemMeObjs = (piece.content.timelineObjects as Array<
-			TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj
-		>).filter(
-			obj =>
-				obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.ME
-		)
-		_.each(atemMeObjs, tlObj => {
-			if (tlObj.layer === AtemLLayer.AtemMEProgram) {
-				// Basic clone of every object to AtemMEClean
-				const cleanObj = _.clone(tlObj) // Note: shallow clone
-				cleanObj.layer = AtemLLayer.AtemMEClean
-				cleanObj.id = '' // Force new id
-				extraObjs.push(cleanObj)
-
-				if (tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined) {
-					// Create a lookahead-lookahead object for this me-program
-					const lookaheadObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
-						id: '',
-						enable: { start: 0 },
-						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
-						layer: AtemLLayer.AtemAuxLookahead,
-						holdMode: tlObj.holdMode,
-						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.AUX,
-							aux: {
-								input: tlObj.content.me.input || config.studio.AtemSource.Default
-							}
-						},
-						metaData: {
-							mediaPlayerSession: tlObj.metaData?.mediaPlayerSession // TODO - does this work the same?
-						}
-					})
-					extraObjs.push(lookaheadObj)
-				}
-			}
-		})
-
-		const atemDskObjs = (piece.content.timelineObjects as TimelineObjAtemDSK[]).filter(
-			obj =>
-				obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.DSK
-		)
-		_.each(atemDskObjs, tlObj => {
-			if (tlObj.layer === AtemLLayer.AtemDSKEffect) {
-				const newProps = _.pick(tlObj.content.dsk, 'onAir')
-				if (_.isEqual(newProps, tlObj.content.dsk)) {
-					context.warning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
-				}
-
-				const cleanObj = literal<TimelineObjAtemME & TimelineBlueprintExt>({
-					..._.omit(tlObj, 'content'),
-					id: '',
-					layer: AtemLLayer.AtemCleanUSKEffect,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.ME,
-						me: {
-							upstreamKeyers: [
-								{}, // USK 1
-								{
-									upstreamKeyerId: 1,
-									...newProps
-								}
-							]
-						}
-					}
-				})
-				extraObjs.push(cleanObj)
-			}
-		})
-
-		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
 	}
 }
