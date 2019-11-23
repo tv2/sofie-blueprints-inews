@@ -21,7 +21,8 @@ const blankStudioConfig: StudioConfig = {
 		JingleKey: 0,
 		SplitArtF: 0,
 		SplitArtK: 0,
-		Default: 0
+		Default: 0,
+		MixMinusDefault: 0
 	},
 	CasparOutputDelay: 0,
 	CasparPrerollDuration: 0,

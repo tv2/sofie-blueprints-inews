@@ -387,7 +387,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.AUX,
 				aux: {
-					input: config.studio.AtemSource.Default
+					input: config.studio.AtemSource.MixMinusDefault
 				}
 			}
 		}),
