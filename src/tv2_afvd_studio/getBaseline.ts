@@ -1,18 +1,9 @@
-import {
-	AtemTransitionStyle,
-	DeviceType,
-	MappingAtemType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemME,
-	TimelineObjSisyfosAny,
-	TSRTimelineObjBase
-} from 'timeline-state-resolver-types'
+import { AtemTransitionStyle, DeviceType, MappingAtemType, TimelineContentTypeAtem, TimelineContentTypeSisyfos, TimelineObjAtemAUX, TimelineObjAtemME, TimelineObjSisyfosAny, TSRTimelineObjBase } from 'timeline-state-resolver-types'
 import { BlueprintMapping, BlueprintMappings, IStudioContext } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { AtemSourceIndex } from '../types/atem'
-import { SisyfosLLAyer } from './layers'
+import { AtemLLayer, SisyfosLLAyer } from './layers'
 import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
@@ -91,5 +82,34 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 				})
 			}
 		})
+
+		// have ATEM output default still image
+		literal<TimelineObjAtemAUX>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemAuxPGM,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.AUX,
+				aux: {
+					input: AtemSourceIndex.Prg1
+				}
+			}
+		}),
+		literal<TimelineObjAtemME>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemMEProgram,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.ME,
+				me: {
+					input: AtemSourceIndex.MP1,
+					transition: AtemTransitionStyle.CUT
+				}
+			}
+		}),
 	]
 }
