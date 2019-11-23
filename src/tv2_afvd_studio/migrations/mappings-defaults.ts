@@ -22,7 +22,7 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
 		lookahead: LookaheadMode.RETAIN,
-		// @todo: add new prop to load the first frame
+		previewWhenNotOnAir: true,
 		channel: 2,
 		layer: 110
 	}),
@@ -37,6 +37,7 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
 		lookahead: LookaheadMode.RETAIN,
+		previewWhenNotOnAir: true,
 		channel: 2,
 		layer: 109
 	}),
@@ -44,6 +45,7 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
 		lookahead: LookaheadMode.RETAIN,
+		previewWhenNotOnAir: true,
 		channel: 2,
 		layer: 111
 	}),
