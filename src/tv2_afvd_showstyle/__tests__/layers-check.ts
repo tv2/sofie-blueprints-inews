@@ -31,7 +31,7 @@ export function checkAllLayers(
 
 	const allMappings = literal<BlueprintMappings>({
 		...mappingsDefaults,
-		...getMediaPlayerMappings(config.studio.MediaPlayerType, config.mediaPlayers)
+		...getMediaPlayerMappings(config.mediaPlayers)
 	})
 
 	const validateObject = (obj: TimelineObjectCoreExt) => {

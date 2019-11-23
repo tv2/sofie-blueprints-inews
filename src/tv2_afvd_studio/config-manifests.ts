@@ -4,11 +4,6 @@ import { AtemSourceIndex } from '../types/atem'
 
 export const CORE_INJECTED_KEYS = ['SofieHostURL']
 
-export enum MediaPlayerType {
-	CasparWithNext = 'CasparWithNext',
-	CasparAB = 'CasparAB'
-}
-
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'MediaFlowId',
@@ -41,15 +36,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'
-	},
-	{
-		id: 'MediaPlayerType',
-		name: 'Media player type',
-		description: 'Type of media player to use',
-		type: ConfigManifestEntryType.ENUM,
-		options: _.values(MediaPlayerType),
-		required: true,
-		defaultVal: MediaPlayerType.CasparAB
 	},
 	{
 		id: 'ABMediaPlayers',
