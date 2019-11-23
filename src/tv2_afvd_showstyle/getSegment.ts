@@ -2,7 +2,8 @@ import {
 	DeviceType,
 	TimelineContentTypeAtem,
 	TimelineObjAtemAUX,
-	TimelineObjAtemME
+	TimelineObjAtemME,
+	TimelineObjAtemDSK
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
@@ -42,6 +43,8 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
+import { ObjectType } from 'src/types/classes'
+import { isContext } from 'vm'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -243,7 +246,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = true
 	}
 
-	postProcessPartTimelineObjects(config, blueprintParts)
+	postProcessPartTimelineObjects(context, config, blueprintParts)
 
 	return {
 		segment,
@@ -351,17 +354,23 @@ export class PartContext2 implements PartContext {
 	}
 }
 
-function postProcessPartTimelineObjects(config: BlueprintConfig, parts: BlueprintResultPart[]) {
+function postProcessPartTimelineObjects(
+	context: SegmentContext,
+	config: BlueprintConfig,
+	parts: BlueprintResultPart[]
+) {
 	_.each(parts, part => {
-		_.each(part.pieces, p => postProcessPieceTimelineObjects(config, p))
-		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(config, p))
+		const ctx = new PartContext2(context, part.part.externalId)
+		_.each(part.pieces, p => postProcessPieceTimelineObjects(ctx, config, p))
+		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(ctx, config, p))
 	})
 }
 
 // Do any post-process of timeline objects
-function postProcessPieceTimelineObjects(config: BlueprintConfig, piece: IBlueprintPieceGeneric) {
+function postProcessPieceTimelineObjects(context: PartContext, config: BlueprintConfig, piece: IBlueprintPieceGeneric) {
 	if (piece.content?.timelineObjects) {
 		const extraObjs: TimelineObjectCoreExt[] = []
+
 		const atemMeObjs = (piece.content.timelineObjects as Array<
 			TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj
 		>).filter(
@@ -397,6 +406,39 @@ function postProcessPieceTimelineObjects(config: BlueprintConfig, piece: IBluepr
 					})
 					extraObjs.push(lookaheadObj)
 				}
+			}
+		})
+
+		const atemDskObjs = (piece.content.timelineObjects as TimelineObjAtemDSK[]).filter(
+			obj =>
+				obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.DSK
+		)
+		_.each(atemDskObjs, tlObj => {
+			if (tlObj.layer === AtemLLayer.AtemDSKEffect) {
+				const newProps = _.pick(tlObj.content.dsk, 'onAir')
+				if (_.isEqual(newProps, tlObj.content.dsk)) {
+					context.warning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
+				}
+
+				const cleanObj = literal<TimelineObjAtemME & TimelineBlueprintExt>({
+					..._.omit(tlObj, 'content'),
+					id: '',
+					layer: AtemLLayer.AtemCleanUSKEffect,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.ME,
+						me: {
+							upstreamKeyers: [
+								{}, // USK 1
+								{
+									upstreamKeyerId: 1,
+									...newProps
+								}
+							]
+						}
+					}
+				})
+				extraObjs.push(cleanObj)
 			}
 		})
 
