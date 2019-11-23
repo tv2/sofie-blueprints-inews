@@ -23,7 +23,7 @@ import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
-import { parseConfig } from './helpers/config'
+import { parseConfig, BlueprintConfig } from './helpers/config'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
@@ -243,7 +243,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = true
 	}
 
-	postProcessPartTimelineObjects(blueprintParts)
+	postProcessPartTimelineObjects(config, blueprintParts)
 
 	return {
 		segment,
@@ -351,15 +351,15 @@ export class PartContext2 implements PartContext {
 	}
 }
 
-function postProcessPartTimelineObjects(parts: BlueprintResultPart[]) {
+function postProcessPartTimelineObjects(config: BlueprintConfig, parts: BlueprintResultPart[]) {
 	_.each(parts, part => {
-		_.each(part.pieces, postProcessPieceTimelineObjects)
-		_.each(part.adLibPieces, postProcessPieceTimelineObjects)
+		_.each(part.pieces, p => postProcessPieceTimelineObjects(config, p))
+		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(config, p))
 	})
 }
 
 // Do any post-process of timeline objects
-function postProcessPieceTimelineObjects(piece: IBlueprintPieceGeneric) {
+function postProcessPieceTimelineObjects(config: BlueprintConfig, piece: IBlueprintPieceGeneric) {
 	if (piece.content?.timelineObjects) {
 		const extraObjs: TimelineObjectCoreExt[] = []
 		const atemMeObjs = (piece.content.timelineObjects as Array<
@@ -373,10 +373,10 @@ function postProcessPieceTimelineObjects(piece: IBlueprintPieceGeneric) {
 				// Basic clone of every object to AtemMEClean
 				const cleanObj = _.clone(tlObj) // Note: shallow clone
 				cleanObj.layer = AtemLLayer.AtemMEClean
-				cleanObj.id = `${tlObj.id}_clean`
+				cleanObj.id = '' // Force new id
 				extraObjs.push(cleanObj)
 
-				if (tlObj.content.me.input !== undefined) {
+				if (tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined) {
 					// Create a lookahead-lookahead object for this me-program
 					const lookaheadObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
 						id: '',
@@ -388,11 +388,11 @@ function postProcessPieceTimelineObjects(piece: IBlueprintPieceGeneric) {
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.AUX,
 							aux: {
-								input: tlObj.content.me.input
+								input: tlObj.content.me.input || config.studio.AtemSource.Default
 							}
 						},
 						metaData: {
-							mediaPlayerSession: tlObj.metaData?.mediaPlayerSessionId // TODO - does this work the same?
+							mediaPlayerSession: tlObj.metaData?.mediaPlayerSession // TODO - does this work the same?
 						}
 					})
 					extraObjs.push(lookaheadObj)
