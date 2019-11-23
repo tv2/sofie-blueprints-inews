@@ -1,4 +1,10 @@
-import { DeviceType, TimelineContentTypeLawo, TimelineObjLawoSource } from 'timeline-state-resolver-types'
+import {
+	DeviceType,
+	TimelineContentTypeLawo,
+	TimelineObjLawoSource,
+	TimelineObjAtemME,
+	TimelineContentTypeAtem
+} from 'timeline-state-resolver-types'
 import {
 	BlueprintResultTimeline,
 	IBlueprintPieceDB,
@@ -13,6 +19,7 @@ import {
 import * as _ from 'underscore'
 import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { assignMediaPlayers } from './helpers/abPlayback'
+import { AtemLLayer } from './layers'
 
 export interface PartEndStateExt extends PartEndState {
 	stickyLawoLevels: { [key: string]: number | undefined }
@@ -72,10 +79,31 @@ export function onTimelineGenerate(
 		resolvedPieces
 	)
 
+	timeline = makeCleanFeed(timeline)
+
 	return Promise.resolve({
 		timeline,
 		persistentState
 	})
+}
+
+function makeCleanFeed(timelineObjs: OnGenerateTimelineObj[]) {
+	const extraObjs: OnGenerateTimelineObj[] = []
+
+	const atemMeObjs = (timelineObjs as Array<TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj>).filter(
+		obj => obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.ME
+	)
+	_.each(atemMeObjs, tlObj => {
+		// Basic clone of every object to AtemMEClean
+		if (tlObj.layer === AtemLLayer.AtemMEProgram) {
+			const cleanObj = _.clone(tlObj) // Note: shallow clone
+			cleanObj.layer = AtemLLayer.AtemMEClean
+			cleanObj.id = `${tlObj.id}_clean`
+			extraObjs.push(cleanObj)
+		}
+	})
+
+	return timelineObjs.concat(extraObjs)
 }
 
 export function preservePieceLawoLevel(
