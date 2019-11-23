@@ -11,6 +11,7 @@ const blankStudioConfig: StudioConfig = {
 	SourcesSkype: '',
 	ABMediaPlayers: '',
 	MediaPlayerType: MediaPlayerType.CasparAB,
+	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
 		DSK1F: 0,
