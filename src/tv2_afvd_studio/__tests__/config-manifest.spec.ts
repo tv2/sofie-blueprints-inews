@@ -1,5 +1,5 @@
 import * as _ from 'underscore'
-import { CORE_INJECTED_KEYS, MediaPlayerType, studioConfigManifest } from '../config-manifests'
+import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { StudioConfig } from '../helpers/config'
 
 const blankStudioConfig: StudioConfig = {
@@ -10,7 +10,6 @@ const blankStudioConfig: StudioConfig = {
 	SourcesRM: '',
 	SourcesSkype: '',
 	ABMediaPlayers: '',
-	MediaPlayerType: MediaPlayerType.CasparAB,
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {

@@ -10,7 +10,6 @@ import {
 import { BlueprintMapping, BlueprintMappings, LookaheadMode } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../../common/util'
-import { MediaPlayerType } from '../config-manifests'
 import { BlueprintConfig, StudioConfig } from '../helpers/config'
 
 export default literal<BlueprintMappings>({
@@ -509,50 +508,36 @@ export function getTelefonSisyfosMappings(mappings: string) {
 	return res
 }
 
-export function getMediaPlayerMappings(mode: MediaPlayerType, mediaPlayers: BlueprintConfig['mediaPlayers']) {
-	switch (mode) {
-		case MediaPlayerType.CasparWithNext:
-			return {
-				sisyfos_source_clip_pending: literal<MappingSisyfos & BlueprintMapping>({
-					device: DeviceType.SISYFOS,
-					deviceId: 'sisyfos0',
-					lookahead: LookaheadMode.NONE,
-					channel: 1
-				})
-			}
-		case MediaPlayerType.CasparAB: {
-			const res: BlueprintMappings = {
-				casparcg_player_clip_pending: literal<MappingAbstract & BlueprintMapping>({
-					device: DeviceType.ABSTRACT,
-					deviceId: 'abstract0',
-					lookahead: LookaheadMode.PRELOAD,
-					lookaheadDepth: mediaPlayers.length // Number of players
-				}),
-				sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
-					device: DeviceType.ABSTRACT,
-					deviceId: 'abstract0',
-					lookahead: LookaheadMode.NONE
-				})
-			}
-
-			for (const mp of mediaPlayers) {
-				res[`casparcg_player_clip_${mp.id}`] = literal<MappingCasparCG & BlueprintMapping>({
-					device: DeviceType.CASPARCG,
-					deviceId: 'caspar01',
-					lookahead: LookaheadMode.NONE,
-					channel: 0, // TODO?
-					layer: 110
-				})
-				res[`sisyfos_player_clip_${mp.id}`] = literal<MappingSisyfos & BlueprintMapping>({
-					device: DeviceType.SISYFOS,
-					deviceId: 'sisyfos0',
-					lookahead: LookaheadMode.NONE,
-					channel: Number(mp.id) || 0
-				})
-			}
-
-			return res
-		}
+export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlayers']) {
+	const res: BlueprintMappings = {
+		casparcg_player_clip_pending: literal<MappingAbstract & BlueprintMapping>({
+			device: DeviceType.ABSTRACT,
+			deviceId: 'abstract0',
+			lookahead: LookaheadMode.PRELOAD,
+			lookaheadDepth: mediaPlayers.length // Number of players
+		}),
+		sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
+			device: DeviceType.ABSTRACT,
+			deviceId: 'abstract0',
+			lookahead: LookaheadMode.NONE
+		})
 	}
-	// return assertUnreachable(mode)
+
+	for (const mp of mediaPlayers) {
+		res[`casparcg_player_clip_${mp.id}`] = literal<MappingCasparCG & BlueprintMapping>({
+			device: DeviceType.CASPARCG,
+			deviceId: 'caspar01',
+			lookahead: LookaheadMode.NONE,
+			channel: 0, // TODO?
+			layer: 110
+		})
+		res[`sisyfos_player_clip_${mp.id}`] = literal<MappingSisyfos & BlueprintMapping>({
+			device: DeviceType.SISYFOS,
+			deviceId: 'sisyfos0',
+			lookahead: LookaheadMode.NONE,
+			channel: Number(mp.id) || 0
+		})
+	}
+
+	return res
 }

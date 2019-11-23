@@ -9,7 +9,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable } from '../../common/util'
-import { CORE_INJECTED_KEYS, MediaPlayerType, studioConfigManifest } from '../config-manifests'
+import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { parseMediaPlayers, parseSources, SourceInfo } from './sources'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
@@ -32,7 +32,6 @@ export interface StudioConfig {
 	SourcesRM: string
 	SourcesSkype: string
 	ABMediaPlayers: string
-	MediaPlayerType: MediaPlayerType
 	ABPlaybackDebugLogging: boolean
 
 	AtemSource: {
