@@ -33,6 +33,7 @@ export interface StudioConfig {
 	SourcesSkype: string
 	ABMediaPlayers: string
 	MediaPlayerType: MediaPlayerType
+	ABPlaybackDebugLogging: boolean
 
 	AtemSource: {
 		DSK1F: number

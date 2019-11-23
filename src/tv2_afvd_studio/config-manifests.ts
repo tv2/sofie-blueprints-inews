@@ -59,6 +59,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: '1:26,2:27'
 	},
 	{
+		id: 'ABPlaybackDebugLogging',
+		name: 'Media players selection debug logging',
+		description: 'Enable debug logging for A/B media player selection',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: false
+	},
+	{
 		id: 'AtemSource.DSK1F',
 		name: 'ATEM DSK1 Fill',
 		description: 'ATEM vision mixer input for DSK1 Fill',

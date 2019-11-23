@@ -185,10 +185,10 @@ export function doesRequestOverlap(thisReq: ActiveRequest, other: ActiveRequest)
 export function resolveMediaPlayerAssignments(
 	context: NotesContext,
 	config: BlueprintConfig,
-	debugLog: boolean,
 	previousAssignmentRev: SessionToPlayerMap,
 	resolvedPieces: IBlueprintPieceDB[]
 ) {
+	const debugLog = config.studio.ABPlaybackDebugLogging
 	const sessionRequests = calculateSessionTimeRanges(resolvedPieces)
 
 	// In future this may want a better fit algorithm than this. This only applies if being done for multiple clips playing simultaneously, and more players
@@ -318,18 +318,18 @@ export function assignMediaPlayers(
 	resolvedPieces: IBlueprintPieceDB[]
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const previousAssignmentRev = reversePreviousAssignment(previousAssignment)
-	const activeRequests = resolveMediaPlayerAssignments(context, config, true, previousAssignmentRev, resolvedPieces)
+	const activeRequests = resolveMediaPlayerAssignments(context, config, previousAssignmentRev, resolvedPieces)
 
-	return applyMediaPlayersAssignments(context, config, true, timelineObjs, previousAssignmentRev, activeRequests)
+	return applyMediaPlayersAssignments(context, config, timelineObjs, previousAssignmentRev, activeRequests)
 }
 export function applyMediaPlayersAssignments(
 	context: NotesContext,
 	config: BlueprintConfig,
-	debugLog: boolean,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignmentRev: SessionToPlayerMap,
 	activeRequests: ActiveRequest[]
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
+	const debugLog = config.studio.ABPlaybackDebugLogging
 	const newAssignments: TimelinePersistentStateExt['activeMediaPlayers'] = {}
 	const persistAssignment = (sessionId: string, playerId: number, lookahead: boolean) => {
 		let ls = newAssignments[playerId]
