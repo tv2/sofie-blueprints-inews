@@ -17,12 +17,12 @@ import {
 	RemoteContent,
 	SourceLayerType,
 	SplitsContent,
-	VTContent
+	VTContent,
+	NotesContext
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../../../common/util'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { atemNextObject } from '../../../tv2_afvd_studio/helpers/objects'
+import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { FindSourceInfoStrict, SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { AtemSourceIndex } from '../../../types/atem'
@@ -35,36 +35,8 @@ export function MakeContentDVE(
 	config: BlueprintConfig,
 	_partId: string,
 	parsedCue: CueDefinitionDVE,
-	template: DVEConfig
+	dveConfig: DVEConfigInput | undefined
 ): { content: SplitsContent; valid: boolean } {
-	const boxes: DVEConfigBox[] = []
-	let audioTimeline: TSRTimelineObj[] = []
-	const boxSources: Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) & {
-		type: SourceLayerType
-		studioLabel: string
-		switcherInput: number | string
-		/** Geometry information for a given box item in the Split. X,Y are relative to center of Box, Scale is 0...1, where 1 is Full-Screen */
-		geometry?: {
-			x: number
-			y: number
-			scale: number
-			crop?: {
-				left: number
-				top: number
-				right: number
-				bottom: number
-			}
-		}
-	}> = []
-
-	let valid = true
-
-	const dveConfig = config.showStyle.DVEStyles
-		? config.showStyle.DVEStyles.find(
-				conf => conf.DVEName.toString().toUpperCase() === parsedCue.template.toUpperCase()
-		  )
-		: undefined
-
 	if (!dveConfig) {
 		context.warning(`DVE ${parsedCue.template} is not configured`)
 		return {
@@ -101,21 +73,60 @@ export function MakeContentDVE(
 
 	boxMap = boxMap.filter(map => map !== '')
 
+	const graphicsTemplateContent: { [key: string]: string } = {}
+	parsedCue.labels.forEach((label, i) => {
+		graphicsTemplateContent[`locator${i + 1}`] = label
+	})
+
+	return MakeContentDVE2(context, config, dveConfig, graphicsTemplateContent, boxMap)
+}
+
+export function MakeContentDVE2(
+	context: NotesContext,
+	config: BlueprintConfig,
+	dveConfig: DVEConfigInput,
+	graphicsTemplateContent: { [key: string]: string },
+	boxMap: string[]
+) {
+	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
+
+	const boxes: DVEConfigBox[] = []
+	const audioTimeline: TSRTimelineObj[] = []
+	const boxSources: Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) & {
+		type: SourceLayerType
+		studioLabel: string
+		switcherInput: number | string
+		/** Geometry information for a given box item in the Split. X,Y are relative to center of Box, Scale is 0...1, where 1 is Full-Screen */
+		geometry?: {
+			x: number
+			y: number
+			scale: number
+			crop?: {
+				left: number
+				top: number
+				right: number
+				bottom: number
+			}
+		}
+	}> = []
+
+	let valid = true
+
 	boxMap.forEach((mappingFrom, num) => {
 		if (mappingFrom === undefined || mappingFrom === '') {
 			boxSources.push({
 				...{
 					studioLabel: '',
-					switcherInput: 0,
+					switcherInput: config.studio.AtemSource.Default,
 					type: SourceLayerType.CAMERA
 				},
 				...literal<CameraContent>({
 					studioLabel: '',
-					switcherInput: 0,
+					switcherInput: config.studio.AtemSource.Default,
 					timelineObjects: []
 				})
 			})
-			boxes.push({ ...template.boxes[num], ...{ source: 0, enabled: false } })
+			boxes.push({ ...template.boxes[num], ...{ source: config.studio.AtemSource.Default } })
 		} else {
 			const props = mappingFrom.split(' ')
 			const sourceType = props[0]
@@ -139,9 +150,9 @@ export function MakeContentDVE(
 						timelineObjects: []
 					})
 				})
-				boxes.push({ ...template.boxes[num], ...{ source: Number(sourceInfoCam.port), enabled: true } })
+				boxes.push({ ...template.boxes[num], ...{ source: Number(sourceInfoCam.port) } })
 
-				audioTimeline = [...audioTimeline, ...GetSisyfosTimelineObjForCamera(mappingFrom)]
+				audioTimeline.push(...GetSisyfosTimelineObjForCamera(mappingFrom))
 			} else if (sourceType.match(/LIVE/i) || sourceType.match(/SKYPE/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom)
 				if (sourceInfoLive === undefined) {
@@ -157,9 +168,9 @@ export function MakeContentDVE(
 						timelineObjects: []
 					})
 				})
-				boxes.push({ ...template.boxes[num], ...{ source: Number(sourceInfoLive.port), enabled: true } })
+				boxes.push({ ...template.boxes[num], ...{ source: Number(sourceInfoLive.port) } })
 
-				audioTimeline = [...audioTimeline, ...GetSisyfosTimelineObjForEkstern(mappingFrom)]
+				audioTimeline.push(...GetSisyfosTimelineObjForEkstern(mappingFrom))
 			} else {
 				context.warning(`Unknown source type for DVE: ${mappingFrom}`)
 				valid = false
@@ -171,13 +182,8 @@ export function MakeContentDVE(
 	const graphicsTemplateStyle = dveConfig.DVEGraphicsTemplateJSON
 		? JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
 		: ''
-	const graphicsTemplateContent: { [key: string]: string } = {}
 	const keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : ''
 	const frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : ''
-
-	parsedCue.labels.forEach((label, i) => {
-		graphicsTemplateContent[`locator${i + 1}`] = label
-	})
 
 	return {
 		valid,
@@ -291,9 +297,7 @@ export function MakeContentDVE(
 					  ]
 					: []),
 
-				...audioTimeline,
-
-				atemNextObject(AtemSourceIndex.SSrc)
+				...audioTimeline
 			])
 		})
 	}

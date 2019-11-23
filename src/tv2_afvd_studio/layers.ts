@@ -26,6 +26,9 @@ export enum AtemLLayer {
 	AtemCleanUSKEffect = 'atem_clean_usk_effect',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
+	AtemSSrcBox1 = 'atem_supersource_z_box1',
+	AtemSSrcBox2 = 'atem_supersource_z_box2',
+	AtemSSrcBox3 = 'atem_supersource_z_box3',
 
 	AtemAuxPGM = 'atem_aux_pgm',
 	AtemAuxClean = 'atem_aux_clean',

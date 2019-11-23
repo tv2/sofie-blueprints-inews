@@ -1,18 +1,18 @@
 import {
-	BasicConfigItemValue,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan,
-	TableConfigItemValue
+	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../../../common/util'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
+import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
 import { CalculateTime } from './evaluateCues'
+
+export const ATEM_SUPERSOURCE_CONFIG_TIME = 80
 
 export interface DVEConfigBox {
 	enabled: boolean
@@ -83,10 +83,9 @@ export function EvaluateDVE(
 		return
 	}
 
-	// const template: DVEConfig = JSON.parse(rawTemplate.DVEJSON as string) as DVEConfig
-	const template: DVEConfig = JSON.parse(rawTemplate.DVEJSON as string) as DVEConfig
+	const content = MakeContentDVE(context, config, partId, parsedCue, rawTemplate)
 
-	const content = MakeContentDVE(context, config, partId, parsedCue, template)
+	// TODO - how do we pass ATEM_SUPERSOURCE_CONFIG_TIME to the part?
 
 	if (content.valid) {
 		if (adlib) {
@@ -98,7 +97,8 @@ export function EvaluateDVE(
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: PieceLifespan.OutOnNextPart,
-					content: content.content
+					content: content.content,
+					adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
 				})
 			)
 		} else {
@@ -114,7 +114,8 @@ export function EvaluateDVE(
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: PieceLifespan.OutOnNextPart,
-					content: content.content
+					content: content.content,
+					adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
 				})
 			)
 		}
@@ -184,17 +185,6 @@ export function TemplateIsValid(template: any): boolean {
 	return false
 }
 
-export interface DVEConfigInput {
-	_id: string
-	DVEName: string
-	DVEJSON: string
-	DVEGraphicsTemplate: string
-	DVEGraphicsTemplateJSON: string
-	DVEInputs: string
-	[key: string]: BasicConfigItemValue
-}
-
-export function GetDVETemplate(config: TableConfigItemValue, templateName: string): DVEConfigInput | undefined {
-	const conf = config.find(c => c.DVEName.toString().toUpperCase() === templateName.toUpperCase())
-	return conf as DVEConfigInput
+export function GetDVETemplate(config: DVEConfigInput[], templateName: string): DVEConfigInput | undefined {
+	return config ? config.find(c => c.DVEName.toString().toUpperCase() === templateName.toUpperCase()) : undefined
 }
