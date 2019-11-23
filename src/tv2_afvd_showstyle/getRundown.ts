@@ -407,9 +407,9 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: false,
-						clip: 500,
-						gain: 500,
+						preMultiply: true, // todo: test this first with viz
+						// clip: 500,
+						// gain: 500,
 						mask: {
 							enabled: false
 						}
