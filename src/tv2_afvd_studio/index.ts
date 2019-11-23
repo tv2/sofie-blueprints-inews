@@ -19,7 +19,7 @@ const manifest: StudioBlueprintManifest = {
 	minimumCoreVersion: '1.2.0',
 
 	studioConfigManifest,
-	studioMigrations, // TODO - device migrations should be moved to be done here
+	studioMigrations,
 
 	getBaseline,
 	getShowStyleId

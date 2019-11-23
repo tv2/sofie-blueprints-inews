@@ -380,12 +380,12 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: AtemLLayer.AtemAuxClean,
+			layer: AtemLLayer.AtemAuxVideoMixMinus,
 			content: {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.AUX,
 				aux: {
-					input: AtemSourceIndex.Cfd1
+					input: config.studio.AtemSource.Default
 				}
 			}
 		}),
@@ -442,7 +442,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 		// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 		literal<TimelineObjAtemME>({
 			id: '',
-			enable: { while: 1 },
+			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemCleanUSKEffect,
 			content: {
@@ -455,7 +455,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 						},
 						{
 							upstreamKeyerId: 1,
-							onAir: false,
+							onAir: true,
 							mixEffectKeyType: 0,
 							flyEnabled: false,
 							fillSource: config.studio.AtemSource.JingleFill,
