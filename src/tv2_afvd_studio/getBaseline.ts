@@ -1,4 +1,14 @@
-import { AtemTransitionStyle, DeviceType, MappingAtemType, TimelineContentTypeAtem, TimelineContentTypeSisyfos, TimelineObjAtemAUX, TimelineObjAtemME, TimelineObjSisyfosAny, TSRTimelineObjBase } from 'timeline-state-resolver-types'
+import {
+	AtemTransitionStyle,
+	DeviceType,
+	MappingAtemType,
+	TimelineContentTypeAtem,
+	TimelineContentTypeSisyfos,
+	TimelineObjAtemAUX,
+	TimelineObjAtemME,
+	TimelineObjSisyfosAny,
+	TSRTimelineObjBase
+} from 'timeline-state-resolver-types'
 import { BlueprintMapping, BlueprintMappings, IStudioContext } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../common/util'
@@ -81,7 +91,7 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 					}
 				})
 			}
-		})
+		}),
 
 		// have ATEM output default still image
 		literal<TimelineObjAtemAUX>({
@@ -110,6 +120,6 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 					transition: AtemTransitionStyle.CUT
 				}
 			}
-		}),
+		})
 	]
 }

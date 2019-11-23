@@ -3,6 +3,7 @@ import * as _ from 'underscore'
 import {
 	AtemTransitionStyle,
 	DeviceType,
+	SuperSourceBox,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
@@ -18,8 +19,7 @@ import {
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
-	TSRTimelineObjBase,
-	SuperSourceBox
+	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
@@ -40,11 +40,11 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChann
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
+import { MakeContentDVE2 } from './helpers/content/dve'
+import { ATEM_SUPERSOURCE_CONFIG_TIME } from './helpers/pieces/dve'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
-import { MakeContentDVE2 } from './helpers/content/dve'
-import { ATEM_SUPERSOURCE_CONFIG_TIME } from './helpers/pieces/dve'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,
