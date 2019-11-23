@@ -407,7 +407,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: true, // @ todo: set up the proper parameters for a good key here
+						preMultiply: false, // @ todo: set up the proper parameters for a good key here
 						mask: {
 							enabled: false
 						}
