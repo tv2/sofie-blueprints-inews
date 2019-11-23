@@ -7,7 +7,11 @@ import {
 	IngestSegment,
 	PartContext,
 	ScriptContent,
-	SegmentContext
+	SegmentContext,
+	IBlueprintPieceGeneric,
+	OnGenerateTimelineObj,
+	TimelineObjectCoreExt,
+	TimelineObjHoldMode
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
@@ -30,6 +34,14 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
+import {
+	TimelineObjAtemME,
+	DeviceType,
+	TimelineContentTypeAtem,
+	TimelineObjAtemAUX
+} from 'timeline-state-resolver-types'
+import { AtemLLayer } from '../tv2_afvd_studio/layers'
+import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -231,6 +243,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = true
 	}
 
+	postProcessPartTimelineObjects(blueprintParts)
+
 	return {
 		segment,
 		parts: blueprintParts
@@ -334,5 +348,59 @@ export class PartContext2 implements PartContext {
 	}
 	public unhashId(hash: string) {
 		return this.baseContext.unhashId(hash)
+	}
+}
+
+function postProcessPartTimelineObjects(parts: BlueprintResultPart[]) {
+	_.each(parts, part => {
+		_.each(part.pieces, postProcessPieceTimelineObjects)
+		_.each(part.adLibPieces, postProcessPieceTimelineObjects)
+	})
+}
+
+// Do any post-process of timeline objects
+function postProcessPieceTimelineObjects(piece: IBlueprintPieceGeneric) {
+	if (piece.content?.timelineObjects) {
+		const extraObjs: TimelineObjectCoreExt[] = []
+		const atemMeObjs = (piece.content.timelineObjects as Array<
+			TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj
+		>).filter(
+			obj =>
+				obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.ME
+		)
+		_.each(atemMeObjs, tlObj => {
+			// Basic clone of every object to AtemMEClean
+			if (tlObj.layer === AtemLLayer.AtemMEProgram) {
+				const cleanObj = _.clone(tlObj) // Note: shallow clone
+				cleanObj.layer = AtemLLayer.AtemMEClean
+				cleanObj.id = `${tlObj.id}_clean`
+				extraObjs.push(cleanObj)
+
+				if (tlObj.content.me.input !== undefined) {
+					const holdMode = TimelineObjHoldMode.NORMAL as TimelineObjHoldMode
+					const lookaheadObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
+						id: '',
+						enable: { start: 0 },
+						priority: holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
+						layer: AtemLLayer.AtemAuxLookahead,
+						holdMode,
+						content: {
+							deviceType: DeviceType.ATEM,
+							type: TimelineContentTypeAtem.AUX,
+							aux: {
+								input: tlObj.content.me.input
+							}
+						},
+						metaData: {
+							mediaPlayerSession: tlObj.metaData?.mediaPlayerSessionId // TODO - does this work the same?
+						}
+					})
+					console.log('lookahead', lookaheadObj)
+					extraObjs.push(lookaheadObj)
+				}
+			}
+		})
+
+		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
 	}
 }
