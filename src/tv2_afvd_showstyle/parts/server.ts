@@ -59,7 +59,7 @@ export function CreatePartServer(
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [part.externalId]
 			}),
-			content: MakeContentServer(file, duration, part.externalId, partDefinition),
+			content: MakeContentServer(file, duration, part.externalId, partDefinition, config),
 			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
