@@ -1,5 +1,6 @@
 import {
 	DeviceType,
+	Timeline,
 	TimelineContentTypeSisyfos,
 	TimelineObjSisyfosMessage,
 	TSRTimelineObj
@@ -7,7 +8,11 @@ import {
 import { literal } from '../../../common/util'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
-export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineObj[] {
+export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Timeline.TimelineEnable): TSRTimelineObj[] {
+	if (!enable) {
+		enable = { start: 0 }
+	}
+
 	const audioTimeline: TSRTimelineObj[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
@@ -15,9 +20,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineO
 		audioTimeline.push(
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable,
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
 				content: {
@@ -28,9 +31,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineO
 			}),
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable,
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
 				content: {
@@ -41,9 +42,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineO
 			}),
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable,
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
 				content: {
@@ -54,9 +53,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineO
 			}),
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable,
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
 				content: {
@@ -67,9 +64,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineO
 			}),
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable,
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
 				content: {
@@ -80,9 +75,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineO
 			}),
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable,
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
 				content: {
@@ -96,7 +89,14 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string): TSRTimelineO
 	return audioTimeline
 }
 
-export function GetSisyfosTimelineObjForEkstern(sourceType: string): TSRTimelineObj[] {
+export function GetSisyfosTimelineObjForEkstern(
+	sourceType: string,
+	enable?: Timeline.TimelineEnable
+): TSRTimelineObj[] {
+	if (!enable) {
+		enable = { start: 0 }
+	}
+
 	let audioTimeline: TSRTimelineObj[] = []
 	let layer = SisyfosLLAyer.SisyfosSourceLive_1
 
@@ -140,9 +140,7 @@ export function GetSisyfosTimelineObjForEkstern(sourceType: string): TSRTimeline
 			audioTimeline = [
 				literal<TimelineObjSisyfosMessage>({
 					id: '',
-					enable: {
-						start: 0
-					},
+					enable,
 					priority: 1,
 					layer,
 					content: {
