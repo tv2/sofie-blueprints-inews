@@ -3,7 +3,6 @@ import * as _ from 'underscore'
 import {
 	AtemTransitionStyle,
 	DeviceType,
-	SuperSourceBox,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
@@ -40,7 +39,7 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChann
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
-import { MakeContentDVE2 } from './helpers/content/dve'
+import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
 import { ATEM_SUPERSOURCE_CONFIG_TIME } from './helpers/pieces/dve'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
@@ -93,6 +92,35 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 }
 
 function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+	function makeSsrcAdlibBoxes(layer: SourceLayer, port: number) {
+		// Generate boxes with classes to map across each layer
+		const boxObjs = _.map(boxMappings, (m, i) =>
+			literal<TimelineObjAtemSsrc>({
+				id: '',
+				// TODO - will these classes play ok with lookahead?
+				enable: { while: `.${layer}_${m}` },
+				priority: 1,
+				layer: m,
+				content: {
+					deviceType: DeviceType.ATEM,
+					type: TimelineContentTypeAtem.SSRC,
+					ssrc: {
+						boxes: [
+							// Pad until we are on the right box
+							..._.range(i).map(() => ({})),
+							// Add the source setter
+							{ source: port }
+						]
+					}
+				}
+			})
+		)
+		const audioWhile = boxObjs.map(obj => obj.enable.while as string).join(' | ')
+		return {
+			boxObjs,
+			audioWhile
+		}
+	}
 	function makeCameraAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
@@ -124,45 +152,22 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				])
 			}
 		})
-		// adlibs
-		const layers = [
-			{ sl: SourceLayer.PgmDVEBox1, l: AtemLLayer.AtemSSrcBox1 },
-			{ sl: SourceLayer.PgmDVEBox2, l: AtemLLayer.AtemSSrcBox2 },
-			{ sl: SourceLayer.PgmDVEBox3, l: AtemLLayer.AtemSSrcBox3 }
-		]
-		_.forEach(layers, (layer, i) => {
-			const boxes: SuperSourceBox[] = _.range(i).map(() => ({}))
-			boxes.push({
-				source: info.port
-			})
-
-			// TODO - account for layouts
+		// ssrc box
+		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
+			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
 
 			res.push({
 				externalId: 'cam',
 				name: info.id + '',
 				_rank: 200 + 50 * i + (rank || 0),
-				sourceLayerId: layer.sl,
+				sourceLayerId: layer,
 				outputLayerId: 'pgm', // TODO
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
-						literal<TimelineObjAtemSsrc>({
-							id: '',
-							enable: { while: '1' },
-							priority: 1,
-							layer: layer.l,
-							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.SSRC,
-								ssrc: {
-									boxes
-								}
-							}
-						})
-						// TODO - audio
-						// ...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
+						...boxObjs,
+						...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`, { while: audioWhile })
 					])
 				}
 			})
@@ -202,6 +207,28 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				])
 			}
 		})
+
+		// ssrc box
+		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
+			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
+
+			res.push({
+				externalId: 'cam',
+				name: info.id + '',
+				_rank: 200 + 50 * i + (rank || 0),
+				sourceLayerId: layer,
+				outputLayerId: 'pgm', // TODO
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: {
+					timelineObjects: _.compact<TSRTimelineObj>([
+						...boxObjs,
+						...GetSisyfosTimelineObjForEkstern(`Live ${info.id}`, { while: audioWhile }),
+						...GetSisyfosTimelineObjForCamera('telefon')
+					])
+				}
+			})
+		})
 		return res
 	}
 
@@ -216,7 +243,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	let remotes = cameras
 	_.each(config.sources, v => {
 		if (v.type === SourceLayerType.REMOTE) {
-			adlibItems.push(...makeRemoteAdLibs(v, 100 + remotes))
+			adlibItems.push(...makeRemoteAdLibs(v, remotes))
 			remotes++
 		}
 	})
@@ -384,8 +411,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	// })
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		const boxSources = ['', '', '', '']
-		const content = MakeContentDVE2(context, config, dveConfig, {}, boxSources)
+		// const boxSources = ['', '', '', '']
+		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined)
 
 		if (content.valid) {
 			adlibItems.push({

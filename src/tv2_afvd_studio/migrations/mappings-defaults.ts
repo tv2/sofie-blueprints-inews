@@ -178,28 +178,28 @@ export default literal<BlueprintMappings>({
 	atem_supersource_default: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.RETAIN, // TODO - verify
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
 	atem_supersource_z_box1: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.NONE, // TODO - set to WHEN_CLEAR with a maxDepth of 1
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
 	atem_supersource_z_box2: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.NONE, // TODO - set to WHEN_CLEAR with a maxDepth of 1
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
 	atem_supersource_z_box3: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.NONE, // TODO - set to WHEN_CLEAR with a maxDepth of 1
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),

@@ -1,4 +1,4 @@
-import { Timeline } from 'timeline-state-resolver-types'
+import { DeviceType, Timeline, TimelineObjEmpty } from 'timeline-state-resolver-types'
 import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
 
 export function literal<T>(o: T) {
@@ -31,6 +31,20 @@ export function createVirtualPiece(
 			timelineObjects: []
 		}
 	}
+}
+
+export type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
+export type EmptyBaseObj = OptionalExceptFor<Omit<TimelineObjEmpty, 'content'>, 'layer' | 'enable' | 'classes'>
+export function createEmptyObject(obj: EmptyBaseObj): TimelineObjEmpty {
+	return literal<TimelineObjEmpty>({
+		id: '',
+		priority: 0,
+		...obj,
+		content: {
+			deviceType: DeviceType.ABSTRACT,
+			type: 'empty'
+		}
+	})
 }
 
 /**
