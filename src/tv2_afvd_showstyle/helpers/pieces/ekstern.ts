@@ -63,6 +63,7 @@ export function EvaluateEkstern(
 				name: eksternProps[0],
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
+				toBeQueued: true,
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,

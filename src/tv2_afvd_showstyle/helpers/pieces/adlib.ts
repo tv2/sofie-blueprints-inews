@@ -33,6 +33,7 @@ export function EvaluateAdLib(
 				outputLayerId: 'pgm',
 				expectedDuration: duration,
 				infiniteMode: PieceLifespan.OutOnNextPart,
+				toBeQueued: true,
 				metaData: literal<PieceMetaData>({
 					mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
 				}),
@@ -73,6 +74,7 @@ export function EvaluateAdLib(
 				name: `DVE: ${parsedCue.variant}`,
 				sourceLayerId: SourceLayer.PgmDVE,
 				outputLayerId: 'pgm',
+				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid
 			})

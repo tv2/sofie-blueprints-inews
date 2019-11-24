@@ -5013,7 +5013,7 @@ tunnel-agent@^0.6.0:
 
 tv-automation-sofie-blueprints-integration@olzzon/tv-automation-sofie-blueprints-integration#dist:
   version "1.2.0"
-  resolved "https://codeload.github.com/olzzon/tv-automation-sofie-blueprints-integration/tar.gz/a14121c4554bd2ab1025a3c204d4bad72d2cc215"
+  resolved "https://codeload.github.com/olzzon/tv-automation-sofie-blueprints-integration/tar.gz/700753887a147d99ca4522b61b54653b7072fc2e"
   dependencies:
     moment "^2.22.2"
     timeline-state-resolver-types olzzon/tv-automation-state-timeline-resolver#dist-types

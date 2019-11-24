@@ -103,6 +103,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -179,6 +180,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -400,6 +402,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				outputLayerId: 'pgm',
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
+				toBeQueued: true,
 				content: content.content,
 				adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
 			})
