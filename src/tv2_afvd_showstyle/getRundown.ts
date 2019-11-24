@@ -269,21 +269,6 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
 					}
 				})
-				// 	literal<TimelineObjAtemDSK>({
-				// 		id: '',
-				// 		enable: {
-				// 			start: 0,
-				// 			duration: 1000
-				// 		},
-				// 		layer: AtemLLayer.AtemDSKGraphics,
-				// 		content: {
-				// 			deviceType: DeviceType.ATEM,
-				// 			type: TimelineContentTypeAtem.DSK,
-				// 			dsk: {
-				// 				onAir: false
-				// 			}
-				// 		}
-				// 	})
 			])
 		}
 	})
@@ -338,6 +323,64 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						type: TimelineContentTypeVizMSE.CONTINUE,
 						direction: -1,
 						reference: VizLLayer.VizLLayerPilot
+					}
+				})
+			])
+		}
+	})
+	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
+	adlibItems.push({
+		externalId: 'dskoff',
+		name: 'DSK OFF',
+		_rank: 400,
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
+		expectedDuration: 1000,
+		infiniteMode: PieceLifespan.Normal,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjAtemDSK>({
+					id: '',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					layer: AtemLLayer.AtemDSKGraphics,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.DSK,
+						dsk: {
+							onAir: false
+						}
+					}
+				})
+			])
+		}
+	})
+	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
+	adlibItems.push({
+		externalId: 'dskon',
+		name: 'DSK ON',
+		_rank: 500,
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
+		expectedDuration: 1000,
+		infiniteMode: PieceLifespan.Normal,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjAtemDSK>({
+					id: '',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					layer: AtemLLayer.AtemDSKGraphics,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.DSK,
+						dsk: {
+							onAir: true
+						}
 					}
 				})
 			])
