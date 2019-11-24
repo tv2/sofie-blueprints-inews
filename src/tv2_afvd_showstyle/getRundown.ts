@@ -308,7 +308,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		_rank: 200,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
-		expectedDuration: 0,
+		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
@@ -336,7 +336,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		_rank: 300,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
-		expectedDuration: 0,
+		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
@@ -362,7 +362,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		externalId: 'dskoff',
 		name: 'DSK OFF',
 		_rank: 400,
-		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		sourceLayerId: SourceLayer.PgmDSK,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
 		content: {
@@ -382,33 +382,6 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
-	// // the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
-	// adlibItems.push({
-	// 	externalId: 'dskon',
-	// 	name: 'DSK ON',
-	// 	_rank: 500,
-	// 	sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-	// 	outputLayerId: 'sec',
-	// 	infiniteMode: PieceLifespan.Infinite,
-	// 	content: {
-	// 		timelineObjects: _.compact<TSRTimelineObj>([
-	// 			literal<TimelineObjAtemDSK>({
-	// 				id: '',
-	// 				enable: {
-	// 					{ while: 1}
-	// 				},
-	// 				layer: AtemLLayer.AtemDSKGraphics,
-	// 				content: {
-	// 					deviceType: DeviceType.ATEM,
-	// 					type: TimelineContentTypeAtem.DSK,
-	// 					dsk: {
-	// 						onAir: true
-	// 					}
-	// 				}
-	// 			})
-	// 		])
-	// 	}
-	// })
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
