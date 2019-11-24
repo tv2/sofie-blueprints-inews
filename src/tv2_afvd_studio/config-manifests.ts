@@ -14,6 +14,23 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 'flow0'
 	},
 	{
+		id: 'ClipFileExtension',
+		name: 'Clip files extension',
+		description: 'Default file extension to clips to fetch from Omneon and play at CasparCG',
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: '.mxf'
+	},
+	{
+		id: 'ClipSourcePath',
+		name: 'Network base path',
+		description:
+			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: ''
+	},
+	{
 		id: 'SourcesCam',
 		name: 'Camera Mapping',
 		description: 'Camera number to ATEM input (eg 1:1,9:2)',
