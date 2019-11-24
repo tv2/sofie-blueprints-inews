@@ -29,8 +29,10 @@ export function MakeContentServer(
 ): VTContent {
 	return literal<VTContent>({
 		studioLabel: '',
-		fileName: file, // playing casparcg
-		path: `${config.studio.ClipSourcePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		// fileName: file, // playing casparcg
+		// path: `${config.studio.ClipSourcePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		path: file, // playing casparcg
+		fileName: `${config.studio.ClipSourcePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
