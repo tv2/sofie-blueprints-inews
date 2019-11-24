@@ -31,6 +31,7 @@ export function MakeContentServer(
 		studioLabel: '',
 		fileName: file,
 		path: file,
+		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
