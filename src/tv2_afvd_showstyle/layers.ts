@@ -24,6 +24,7 @@ export enum SourceLayer {
 	PgmDVEBackground = 'studio0_dve_back',
 	PgmDesign = 'studio0_design',
 	PgmAdlibVizCmd = 'studio0_adlib_viz_cmd', // shortcuts
+	PgmDSK = 'studio0_dsk_cmd', // shortcuts
 	PgmJingle = 'studio0_jingle',
 	PgmBreak = 'studio0_break',
 	PgmScript = 'studio0_script',
