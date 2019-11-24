@@ -15,6 +15,7 @@ export enum SourceLayer {
 	PgmGraphicsTLF = 'studio0_graphicsTelefon',
 	PgmDelayed = 'studio0_delayed',
 
+	// Note: there is a regex in core to ignore some DVE layers. That will need updating if adding more
 	PgmDVEBox1 = 'studio0_dve_box1',
 	PgmDVEBox2 = 'studio0_dve_box2',
 	PgmDVEBox3 = 'studio0_dve_box3',
