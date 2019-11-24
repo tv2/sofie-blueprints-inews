@@ -25,8 +25,11 @@ module.exports = env => {
 	if (!versionTSRTypes) throw Error('timeline-state-resolver-types version missing!')
 	if (!versionIntegration) throw Error('tv-automation-sofie-blueprints-integration version missing!')
 
-	versionTSRTypes = versionTSRTypes.replace(/[^\d.]/g, '') || '0.0.0'
-	versionIntegration = versionIntegration.replace(/[^\d.]/g, '') || '0.0.0'
+	// versionTSRTypes = versionTSRTypes.replace(/[^\d.]/g, '') || '0.0.0'
+	// versionIntegration = versionIntegration.replace(/[^\d.]/g, '') || '0.0.0'
+
+	versionTSRTypes = '0.0.0'
+	versionIntegration = '0.0.0'
 
 	const entrypoints = env.bundle ? GetEntrypointsForBundle(env.bundle) : BlueprintEntrypoints
 
