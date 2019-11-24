@@ -245,6 +245,49 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
+
+	// the order of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
+	adlibItems.push({
+		externalId: 'loadGFX',
+		name: 'Load all GFX',
+		_rank: 500,
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
+		expectedDuration: 1000,
+		infiniteMode: PieceLifespan.Normal,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjVIZMSELoadAllElements>({
+					id: 'loadAllElements',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					layer: VizLLayer.VizLLayerAdLibs,
+					content: {
+						deviceType: DeviceType.VIZMSE,
+						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
+					}
+				})
+				// 	literal<TimelineObjAtemDSK>({
+				// 		id: '',
+				// 		enable: {
+				// 			start: 0,
+				// 			duration: 1000
+				// 		},
+				// 		layer: AtemLLayer.AtemDSKGraphics,
+				// 		content: {
+				// 			deviceType: DeviceType.ATEM,
+				// 			type: TimelineContentTypeAtem.DSK,
+				// 			dsk: {
+				// 				onAir: false
+				// 			}
+				// 		}
+				// 	})
+			])
+		}
+	})
+	// the order of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'continueForward',
 		name: 'GFX Continue',
@@ -272,6 +315,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
+	// the order of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'continueReverse',
 		name: 'GFX Reverse',
@@ -294,46 +338,6 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						type: TimelineContentTypeVizMSE.CONTINUE,
 						direction: -1,
 						reference: VizLLayer.VizLLayerPilot
-					}
-				})
-			])
-		}
-	})
-	adlibItems.push({
-		externalId: 'loadGFX',
-		name: 'Load all GFX',
-		_rank: 500,
-		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-		outputLayerId: 'sec',
-		expectedDuration: 1000,
-		infiniteMode: PieceLifespan.Normal,
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjVIZMSELoadAllElements>({
-					id: 'loadAllElements',
-					enable: {
-						start: 0,
-						duration: 1000
-					},
-					layer: VizLLayer.VizLLayerAdLibs,
-					content: {
-						deviceType: DeviceType.VIZMSE,
-						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
-					}
-				}),
-				literal<TimelineObjAtemDSK>({
-					id: '',
-					enable: {
-						start: 0,
-						duration: 1000
-					},
-					layer: AtemLLayer.AtemDSKGraphics,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.DSK,
-						dsk: {
-							onAir: false
-						}
 					}
 				})
 			])
