@@ -246,11 +246,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		}
 	})
 
-	// the order of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
+	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'loadGFX',
 		name: 'Load all GFX',
-		_rank: 500,
+		_rank: 100,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
 		expectedDuration: 1000,
@@ -287,11 +287,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
-	// the order of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
+	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'continueForward',
 		name: 'GFX Continue',
-		_rank: 400,
+		_rank: 200,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
 		expectedDuration: 0,
@@ -315,11 +315,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
-	// the order of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
+	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'continueReverse',
 		name: 'GFX Reverse',
-		_rank: 400,
+		_rank: 300,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
 		expectedDuration: 0,
