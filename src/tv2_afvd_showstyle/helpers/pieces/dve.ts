@@ -97,6 +97,7 @@ export function EvaluateDVE(
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: PieceLifespan.OutOnNextPart,
+					toBeQueued: true,
 					content: content.content,
 					adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
 				})
