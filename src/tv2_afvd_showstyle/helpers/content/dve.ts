@@ -13,12 +13,12 @@ import {
 import {
 	CameraContent,
 	GraphicsContent,
+	NotesContext,
 	PartContext,
 	RemoteContent,
 	SourceLayerType,
 	SplitsContent,
-	VTContent,
-	NotesContext
+	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../../../common/util'
