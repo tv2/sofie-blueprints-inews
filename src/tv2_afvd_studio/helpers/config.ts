@@ -27,7 +27,9 @@ export interface StudioConfig {
 	// Must override
 
 	// Intended overrides
-	MediaFlowId: string // @ todo: implement in blueprints, this is currently not used
+	MediaFlowId: string
+	ClipFileExtension: string
+	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
 	SourcesCam: string
 	SourcesRM: string
 	SourcesSkype: string
