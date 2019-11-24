@@ -507,7 +507,7 @@ const SEC: ISourceLayer[] = [
 		onPGMClean: false
 	},
 	{
-		_id: SourceLayer.PgmAdlibVizCmd,
+		_id: SourceLayer.PgmDSK,
 		_rank: 10,
 		name: 'Viz Full',
 		abbreviation: '',
