@@ -162,7 +162,7 @@ export function ParseBody(
 				.trim()
 
 			if (typeStr) {
-				if (!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|TEKNIK|LIVE|GRAFIK|VO|VOSB|SLUTORD)+\b/gi)) {
+				if (!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|ATTACK|TEKNIK|LIVE|GRAFIK|VO|VOSB|SLUTORD)+\b/gi)) {
 					// Live types have bullet points (usually questions to ask)
 					if (definition.type === PartType.Live) {
 						const scriptBullet = line.match(/<p><pi>(.*)?<\/pi><\/p>/)
@@ -172,6 +172,8 @@ export function ParseBody(
 								definition.script += `${trimscript}\n`
 							}
 						}
+					} else if (!!line.match(/<p><pi>(.*)?<\/pi><\/p>/)) {
+						// Red text notes
 					} else {
 						if (
 							definition.externalId !== '' ||
