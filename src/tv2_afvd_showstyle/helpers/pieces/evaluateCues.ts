@@ -23,6 +23,7 @@ import { EvaluateGrafik } from './grafik'
 import { EvaluateJingle } from './jingle'
 import { EvaluateLYD } from './lyd'
 import { EvaluateMOS } from './mos'
+import { EvaluateTargetEngine } from './targetEngine'
 import { EvaluateTelefon } from './telefon'
 import { EvaluateVIZ } from './viz'
 
@@ -99,6 +100,9 @@ export function EvaluateCues(
 					break
 				case CueType.Design:
 					EvaluateDesign(config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
+					break
+				case CueType.TargetEngine:
+					EvaluateTargetEngine(context, config, pieces, partDefinition.externalId, cue)
 					break
 				default:
 					if (cue.type !== CueType.Unknown) {

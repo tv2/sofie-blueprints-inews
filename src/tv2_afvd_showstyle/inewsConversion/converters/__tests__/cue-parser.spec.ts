@@ -3,8 +3,8 @@ import {
 	CueDefinition,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
+	CueDefinitionTargetEngine,
 	CueDefinitionUnknown,
-	CueDefinitionVIZ,
 	CueType,
 	isTime,
 	ParseCue,
@@ -396,6 +396,22 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('GRAFIK=FULL', () => {
+		const cueGrafik = ['GRAFIK=FULL', 'INP1=', 'INP=']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.TargetEngine,
+				rawType: 'GRAFIK=FULL',
+				engine: 'FULL',
+				content: {
+					INP1: '',
+					INP: ''
+				}
+			})
+		)
+	})
+
 	test('cg12 pilotdata', () => {
 		const cueMOS = [
 			'cg12 pilotdata',
@@ -647,10 +663,10 @@ describe('Cue parser', () => {
 		const cueViz = ['VIZ=full', 'INP1=EVS 1', ';0.00']
 		const result = ParseCue(cueViz)
 		expect(result).toEqual(
-			literal<CueDefinitionVIZ>({
-				type: CueType.VIZ,
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
 				rawType: 'VIZ=full',
-				design: 'full',
+				engine: 'full',
 				content: {
 					INP1: 'EVS 1'
 				},
