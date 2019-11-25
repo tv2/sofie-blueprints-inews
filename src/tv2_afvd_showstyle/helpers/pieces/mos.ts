@@ -29,9 +29,6 @@ export function EvaluateMOS(
 	rank?: number,
 	isGrafikPart?: boolean
 ) {
-	if (parsedCue.ignore && !isTlf) {
-		return
-	}
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
