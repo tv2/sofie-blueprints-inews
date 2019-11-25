@@ -150,7 +150,7 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	},
 	[SisyfosLLAyer.SisyfosSourceAudiobed]: {
 		isPgm: 0,
-		label: 'AUDIO',
+		label: 'BED',
 		visibleInStudioA: true
 	},
 	[SisyfosLLAyer.SisyfosSourceTLF]: {
