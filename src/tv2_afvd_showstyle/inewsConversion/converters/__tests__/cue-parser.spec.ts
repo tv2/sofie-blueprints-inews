@@ -302,7 +302,7 @@ describe('Cue parser', () => {
 
 	test('MOS object', () => {
 		const cueMOS = [
-			'#cg4-pilotdata',
+			'#cg4 pilotdata',
 			'Senderplan/23-10-2019',
 			'VCPID=2552305',
 			'ContinueCount=1',
