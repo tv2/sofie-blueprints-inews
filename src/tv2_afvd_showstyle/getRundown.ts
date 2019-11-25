@@ -370,6 +370,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				literal<TimelineObjAtemDSK>({
 					id: '',
 					enable: { while: '1' },
+					priority: 10,
 					layer: AtemLLayer.AtemDSKGraphics,
 					content: {
 						deviceType: DeviceType.ATEM,
@@ -523,9 +524,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: true, // todo: test this first with viz
-						// clip: 500,
-						// gain: 500,
+						preMultiply: true,
 						mask: {
 							enabled: false
 						}
