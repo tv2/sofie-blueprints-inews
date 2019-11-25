@@ -36,19 +36,20 @@ export function EvaluateVIZ(
 	rank?: number
 ) {
 	if (parsedCue.design.match(/^dve-triopage$/)) {
-		const dveBackroundFileName = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
+		const fileName = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
+		const path = `dve/${fileName}`
 		if (adlib) {
 			adlibPieces.push(
 				literal<IBlueprintAdLibPiece>({
 					_rank: rank || 0,
 					externalId: partId,
-					name: dveBackroundFileName,
+					name: fileName,
 					outputLayerId: 'sec',
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
-						fileName: `dve/${dveBackroundFileName}`,
-						path: `dve/${dveBackroundFileName}`,
+						fileName,
+						path,
 						timelineObjects: _.compact<TSRTimelineObj>([
 							literal<TimelineObjCCGMedia>({
 								id: '',
@@ -58,7 +59,7 @@ export function EvaluateVIZ(
 								content: {
 									deviceType: DeviceType.CASPARCG,
 									type: TimelineContentTypeCasparCg.MEDIA,
-									file: dveBackroundFileName,
+									file: path,
 									loop: true
 								}
 							})
@@ -71,7 +72,7 @@ export function EvaluateVIZ(
 				literal<IBlueprintPiece>({
 					_id: '',
 					externalId: partId,
-					name: dveBackroundFileName,
+					name: fileName,
 					enable: {
 						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 					},
@@ -79,8 +80,8 @@ export function EvaluateVIZ(
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
-						fileName: `dve/${dveBackroundFileName}`,
-						path: `dve/${dveBackroundFileName}`,
+						fileName,
+						path,
 						timelineObjects: _.compact<TSRTimelineObj>([
 							literal<TimelineObjCCGMedia>({
 								id: '',
@@ -90,7 +91,7 @@ export function EvaluateVIZ(
 								content: {
 									deviceType: DeviceType.CASPARCG,
 									type: TimelineContentTypeCasparCg.MEDIA,
-									file: dveBackroundFileName,
+									file: path,
 									loop: true
 								}
 							})
