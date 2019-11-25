@@ -162,7 +162,7 @@ export function ParseBody(
 				.trim()
 
 			if (typeStr) {
-				if (!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|TEKNIK|LIVE|GRAFIK|VO|SLUTORD)+\b/gi)) {
+				if (!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|TEKNIK|LIVE|GRAFIK|VO|VOSB|SLUTORD)+\b/gi)) {
 					// Live types have bullet points (usually questions to ask)
 					if (definition.type === PartType.Live) {
 						const scriptBullet = line.match(/<p><pi>(.*)?<\/pi><\/p>/)
@@ -312,6 +312,12 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			...definition
 		}
 	} else if (firstToken.match(/VO/)) {
+		return {
+			type: PartType.VO,
+			variant: {},
+			...definition
+		}
+	} else if (firstToken.match(/VOSB/)) {
 		return {
 			type: PartType.VO,
 			variant: {},

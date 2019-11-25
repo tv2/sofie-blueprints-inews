@@ -1217,4 +1217,27 @@ describe('Body parser', () => {
 			])
 		)
 	})
+
+	test('test 24', () => {
+		const body18 =
+			'\r\n<p><pi>***VOSB EFFEKT 0*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Danmarks udenrigsminister Jeppe Kofod talte i går aftes i telefon med sin amerikanske kollega, Mike Pompeo. De to diskuterede blandt andet Grønland. </p>\r\n<p></p>\r\n'
+		const cues18 = [unparsedGrafik1]
+		const result = ParseBody('00000000001', '', body18, cues18, fields, 0)
+		expect(result).toEqual(
+			literal<PartDefinition[]>([
+				literal<PartDefinitionVO>({
+					externalId: '00000000001-0',
+					type: PartType.VO,
+					variant: {},
+					effekt: 0,
+					rawType: 'VOSB',
+					cues: [cueGrafik1],
+					script:
+						'Danmarks udenrigsminister Jeppe Kofod talte i går aftes i telefon med sin amerikanske kollega, Mike Pompeo. De to diskuterede blandt andet Grønland.\n',
+					fields,
+					modified: 0
+				})
+			])
+		)
+	})
 })
