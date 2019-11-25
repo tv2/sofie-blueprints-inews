@@ -40,7 +40,6 @@ import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
-import { ATEM_SUPERSOURCE_CONFIG_TIME } from './helpers/pieces/dve'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -400,7 +399,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
 				content: content.content,
-				adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
+				adlibPreroll: Number(config.studio.DVEPrerollDuration) || 0
 			})
 		}
 	})
