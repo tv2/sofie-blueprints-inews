@@ -52,7 +52,6 @@ export interface StudioConfig {
 	// Dev overrides
 
 	// Constants
-	CasparOutputDelay: number
 	CasparPrerollDuration: number
 	PilotPrerollDuration: number
 }

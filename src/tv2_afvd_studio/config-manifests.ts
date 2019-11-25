@@ -143,14 +143,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
-		id: 'CasparOutputDelay',
-		name: 'CasparCG Output latency',
-		description: 'Delay between playback and output on SDI (ms)',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 320 // 8 frames (5 in decklinks + casparcg)
-	},
-	{
 		id: 'CasparPrerollDuration',
 		name: 'Caspar preroll duration',
 		description: 'ms of preroll before switching to caspar',
