@@ -96,7 +96,7 @@ export function CreatePartKam(
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
-	AddScript(partDefinition, pieces, partTime, false)
+	AddScript(partDefinition, pieces, partTime)
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
 		part.prerollDuration = config.studio.PilotPrerollDuration

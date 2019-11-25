@@ -33,7 +33,7 @@ export function CreatePartUnknown(
 	const pieces: IBlueprintPiece[] = []
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
-	AddScript(partDefinition, pieces, partTime, false)
+	AddScript(partDefinition, pieces, partTime)
 	part = { ...part, ...GetBreakerAutoNext(context, config, partDefinition) }
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
