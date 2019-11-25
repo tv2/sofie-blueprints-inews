@@ -96,26 +96,6 @@ export function EvaluateJingle(
 							}
 						}),
 
-						literal<TimelineObjAtemDSK & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: AtemLLayer.AtemMEProgram,
-							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.DSK,
-								dsk: {
-									onAir: true,
-									sources: {
-										fillSource: config.studio.AtemSource.JingleFill,
-										cutSource: config.studio.AtemSource.JingleKey
-									}
-								}
-							}
-						}),
-
 						literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 							id: '',
 							enable: {
