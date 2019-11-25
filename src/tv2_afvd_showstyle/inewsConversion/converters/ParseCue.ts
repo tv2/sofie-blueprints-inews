@@ -14,7 +14,8 @@ export enum CueType {
 	LYD,
 	Jingle,
 	Design,
-	Profile
+	Profile,
+	TargetEngine
 }
 
 export interface CueTime {
@@ -123,6 +124,15 @@ export interface CueDefinitionProfile extends CueDefinitionBase {
 	profile: string
 }
 
+export interface CueDefinitionTargetEngine extends CueDefinitionBase {
+	type: CueType.TargetEngine
+	rawType: string
+	engine: string
+	content: {
+		[key: string]: string
+	}
+}
+
 export type CueDefinition =
 	| CueDefinitionUnknown
 	| CueDefinitionIgnoredMOS
@@ -138,6 +148,7 @@ export type CueDefinition =
 	| CueDefinitionJingle
 	| CueDefinitionDesign
 	| CueDefinitionProfile
+	| CueDefinitionTargetEngine
 
 export function ParseCue(cue: UnparsedCue): CueDefinition {
 	if (!cue || cue.length === 0) {
@@ -180,6 +191,9 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	} else if (cue[0].match(/^TELEFON=/)) {
 		// Telefon
 		return parseTelefon(cue)
+	} else if (cue[0].match(/^(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
+		// Target engine
+		return parseTargetEngine(cue)
 	} else if (cue[0].match(/^VIZ=/)) {
 		return parseVIZCues(cue)
 	} else if (cue[0].match(/^STUDIE=MIC ON OFF$/)) {
@@ -373,7 +387,7 @@ function parseVIZCues(cue: string[]): CueDefinitionVIZ {
 		design: ''
 	}
 
-	const design = cue[0].match(/^VIZ=(.*)$/)
+	const design = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/)
 	if (design) {
 		vizCues.design = design[1]
 	}
@@ -486,6 +500,32 @@ function parseJingle(cue: string[]) {
 	}
 
 	return jingleCue
+}
+
+function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
+	let engineCue: CueDefinitionTargetEngine = {
+		type: CueType.TargetEngine,
+		rawType: cue[0],
+		content: {},
+		engine: ''
+	}
+
+	const engine = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/)
+
+	if (engine) {
+		engineCue.engine = engine[1]
+	}
+
+	for (let i = 1; i < cue.length; i++) {
+		if (isTime(cue[i])) {
+			engineCue = { ...engineCue, ...parseTime(cue[i]) }
+		} else {
+			const c = cue[i].split('=')
+			engineCue.content[c[0].toString()] = c[1]
+		}
+	}
+
+	return engineCue
 }
 
 export function isTime(line: string) {
