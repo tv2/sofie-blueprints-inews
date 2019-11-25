@@ -66,7 +66,7 @@ export function CreatePartIntro(
 	const pieces: IBlueprintPiece[] = []
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
-	AddScript(partDefinition, pieces, partTime, false)
+	AddScript(partDefinition, pieces, partTime)
 
 	if (pieces.length === 0) {
 		part.invalid = true

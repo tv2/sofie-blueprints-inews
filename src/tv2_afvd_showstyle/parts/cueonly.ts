@@ -37,7 +37,7 @@ export function CreatePartCueOnly(
 	const pieces: IBlueprintPiece[] = []
 
 	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID)
-	AddScript(partDefinitionWithID, pieces, partTime, false)
+	AddScript(partDefinitionWithID, pieces, partTime)
 	part = { ...part, ...GetBreakerAutoNext(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
