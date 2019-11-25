@@ -23,9 +23,10 @@ const blankStudioConfig: StudioConfig = {
 		Default: 0,
 		MixMinusDefault: 0
 	},
-	CasparOutputDelay: 0,
 	CasparPrerollDuration: 0,
-	PilotPrerollDuration: 0
+	PilotPrerollDuration: 0,
+	ClipFileExtension: 'mxf',
+	ClipSourcePath: '/'
 }
 
 function getObjectKeys(obj: any): string[] {
