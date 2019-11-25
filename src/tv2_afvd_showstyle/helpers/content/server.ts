@@ -20,7 +20,6 @@ import { TransitionSettings } from '../transitionSettings'
 
 export function MakeContentServer(
 	file: string,
-	duration: number,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
 	config: BlueprintConfig,
@@ -45,8 +44,7 @@ export function MakeContentServer(
 				content: {
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
-					file,
-					length: duration
+					file
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
