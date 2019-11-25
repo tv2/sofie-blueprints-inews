@@ -69,7 +69,7 @@ export function EvaluateLYD(
 								...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
 							},
 							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceAudio,
+							layer: SisyfosLLAyer.SisyfosSourceAudiobed,
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
@@ -112,7 +112,7 @@ export function EvaluateLYD(
 								...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
 							},
 							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceAudio,
+							layer: SisyfosLLAyer.SisyfosSourceAudiobed,
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,

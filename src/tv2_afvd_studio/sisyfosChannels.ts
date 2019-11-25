@@ -8,21 +8,6 @@ export interface SisyfosChannel {
 }
 
 export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
-	[SisyfosLLAyer.SisyfosSourceJingle]: {
-		isPgm: 0,
-		label: 'JINGLE',
-		visibleInStudioA: true
-	},
-	[SisyfosLLAyer.SisyfosSourceAudio]: {
-		isPgm: 0,
-		label: 'AUDIO',
-		visibleInStudioA: true
-	},
-	[SisyfosLLAyer.SisyfosSourceTLF]: {
-		isPgm: 0,
-		label: 'TLF',
-		visibleInStudioA: true
-	},
 	[SisyfosLLAyer.SisyfosSourceHost_1_ST_A]: {
 		isPgm: 0,
 		label: 'VÆRT 1',
@@ -143,11 +128,11 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 		label: 'Server B',
 		visibleInStudioA: true
 	},
-	[SisyfosLLAyer.SisyfosSourceServerC]: {
-		isPgm: 0,
-		label: 'Server C',
-		visibleInStudioA: false // for future applications
-	},
+	// [SisyfosLLAyer.SisyfosSourceServerC]: {
+	// 	isPgm: 0,
+	// 	label: 'Server C',
+	// 	visibleInStudioA: false // for future applications
+	// },
 	[SisyfosLLAyer.SisyfosSourceEVS_1]: {
 		isPgm: 0,
 		label: 'EVS 1',
@@ -156,6 +141,21 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	[SisyfosLLAyer.SisyfosSourceEVS_2]: {
 		isPgm: 0,
 		label: 'EVS 2',
+		visibleInStudioA: true
+	},
+	[SisyfosLLAyer.SisyfosSourceJingle]: {
+		isPgm: 0,
+		label: 'JINGLE',
+		visibleInStudioA: true
+	},
+	[SisyfosLLAyer.SisyfosSourceAudiobed]: {
+		isPgm: 0,
+		label: 'AUDIO',
+		visibleInStudioA: true
+	},
+	[SisyfosLLAyer.SisyfosSourceTLF]: {
+		isPgm: 0,
+		label: 'TLF',
 		visibleInStudioA: true
 	}
 }
