@@ -157,5 +157,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 2000
+	},
+	{
+		id: 'DVEPrerollDuration',
+		name: 'DVE Preroll Duration',
+		description: 'ms of preroll before switching to DVE',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
 	}
 ]

@@ -46,6 +46,8 @@ export function CreatePartCueOnly(
 
 	if (partDefinition.cues.filter(c => c.type === CueType.MOS || c.type === CueType.Telefon).length) {
 		part.prerollDuration = config.studio.PilotPrerollDuration
+	} else if (partDefinition.cues.filter(c => c.type === CueType.DVE).length) {
+		part.prerollDuration = config.studio.DVEPrerollDuration
 	}
 
 	if (pieces.length === 0 && adLibPieces.length === 0) {

@@ -26,7 +26,8 @@ const blankStudioConfig: StudioConfig = {
 	CasparPrerollDuration: 0,
 	PilotPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
-	ClipSourcePath: '/'
+	ClipSourcePath: '/',
+	DVEPrerollDuration: 0
 }
 
 function getObjectKeys(obj: any): string[] {
