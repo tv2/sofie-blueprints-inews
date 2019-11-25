@@ -29,8 +29,8 @@ describe('Baseline', () => {
 			}
 
 			const mockContext = new ShowStyleContext(rundown.name, mappingsDefaults)
-			mockContext.studioConfig = configSpec.studioConfig
-			mockContext.showStyleConfig = configSpec.showStyleConfig
+			mockContext.studioConfig = configSpec.studioConfig as any
+			mockContext.showStyleConfig = configSpec.showStyleConfig as any
 
 			const res = Blueprints.getRundown(mockContext, rundown)
 
