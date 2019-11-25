@@ -5,7 +5,8 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 
 const PREVIEW_CHARACTERS = 30
 
-export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, slutord: boolean) {
+// export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, slutord: boolean) {
+export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number) {
 	const script = part.script.replace(/^\**/, '').trim()
 	if (script.length) {
 		const stripLength = Math.min(PREVIEW_CHARACTERS, script.length)
@@ -19,7 +20,8 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 					end: duration
 				},
 				outputLayerId: 'manus',
-				sourceLayerId: slutord ? SourceLayer.PgmSlutord : SourceLayer.PgmScript,
+				// sourceLayerId: slutord ? SourceLayer.PgmSlutord : SourceLayer.PgmScript,
+				sourceLayerId: SourceLayer.PgmScript,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: literal<ScriptContent>({
 					firstWords: script.slice(0, stripLength),
