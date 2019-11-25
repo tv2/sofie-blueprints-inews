@@ -12,8 +12,6 @@ import { CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
 import { CalculateTime } from './evaluateCues'
 
-export const ATEM_SUPERSOURCE_CONFIG_TIME = 80
-
 export interface DVEConfigBox {
 	enabled: boolean
 	source: number
@@ -85,8 +83,6 @@ export function EvaluateDVE(
 
 	const content = MakeContentDVE(context, config, partId, parsedCue, rawTemplate)
 
-	// TODO - how do we pass ATEM_SUPERSOURCE_CONFIG_TIME to the part?
-
 	if (content.valid) {
 		if (adlib) {
 			adlibPieces.push(
@@ -99,7 +95,7 @@ export function EvaluateDVE(
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
+					adlibPreroll: Number(config.studio.DVEPrerollDuration) || 0
 				})
 			)
 		} else {
@@ -116,7 +112,7 @@ export function EvaluateDVE(
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					content: content.content,
-					adlibPreroll: ATEM_SUPERSOURCE_CONFIG_TIME
+					adlibPreroll: Number(config.studio.DVEPrerollDuration) || 0
 				})
 			)
 		}

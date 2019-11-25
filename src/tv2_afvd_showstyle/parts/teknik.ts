@@ -39,6 +39,8 @@ export function CreatePartTeknik(
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
 		part.prerollDuration = config.studio.PilotPrerollDuration
+	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
+		part.prerollDuration = config.studio.DVEPrerollDuration
 	}
 
 	if (pieces.length === 0) {

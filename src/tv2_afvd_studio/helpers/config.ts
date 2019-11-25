@@ -54,6 +54,7 @@ export interface StudioConfig {
 	// Constants
 	CasparPrerollDuration: number
 	PilotPrerollDuration: number
+	DVEPrerollDuration: number
 }
 
 export function applyToConfig(
