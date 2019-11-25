@@ -59,7 +59,8 @@ export function EvaluateLYD(
 							content: {
 								deviceType: DeviceType.CASPARCG,
 								type: TimelineContentTypeCasparCg.MEDIA,
-								file
+								file,
+								channelLayout: 'bed'
 							}
 						}),
 						literal<TimelineObjSisyfosMessage>({
@@ -102,7 +103,8 @@ export function EvaluateLYD(
 							content: {
 								deviceType: DeviceType.CASPARCG,
 								type: TimelineContentTypeCasparCg.MEDIA,
-								file
+								file,
+								channelLayout: 'bed'
 							}
 						}),
 						literal<TimelineObjSisyfosMessage>({
