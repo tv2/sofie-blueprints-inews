@@ -55,7 +55,7 @@ export enum CasparLLayer {
 export enum SisyfosLLAyer {
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
-	SisyfosSourceAudio = 'sisyfos_source_audio',
+	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
 	SisyfosSourceTLF = 'sisyfos_source_tlf_hybrid',
 	SisyfosSourceHost_1_ST_A = 'sisyfos_source_Host_1_st_a',
 	SisyfosSourceHost_2_ST_A = 'sisyfos_source_Host_2_st_a',
@@ -81,7 +81,7 @@ export enum SisyfosLLAyer {
 	SisyfosSourceLive_10 = 'sisyfos_source_live_10',
 	SisyfosSourceServerA = 'sisyfos_source_server_a',
 	SisyfosSourceServerB = 'sisyfos_source_server_b',
-	SisyfosSourceServerC = 'sisyfos_source_server_c',
+	// SisyfosSourceServerC = 'sisyfos_source_server_c',
 	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
 	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2'
 }
