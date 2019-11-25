@@ -24,8 +24,8 @@ export function MakeContentServer(
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
 	config: BlueprintConfig,
-	adLib?: boolean,
-	voiceOver?: boolean
+	adLib?: boolean
+	// voiceOver?: boolean
 ): VTContent {
 	return literal<VTContent>({
 		studioLabel: '',
@@ -86,7 +86,8 @@ export function MakeContentServer(
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: voiceOver ? 2 : 1
+					// isPgm: voiceOver ? 2 : 1
+					isPgm: 1
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
