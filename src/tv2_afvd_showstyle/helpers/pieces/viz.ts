@@ -36,19 +36,19 @@ export function EvaluateVIZ(
 	rank?: number
 ) {
 	if (parsedCue.design.match(/^dve-triopage$/)) {
-		const path = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
+		const dveBackroundFileName = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
 		if (adlib) {
 			adlibPieces.push(
 				literal<IBlueprintAdLibPiece>({
 					_rank: rank || 0,
 					externalId: partId,
-					name: path,
+					name: dveBackroundFileName,
 					outputLayerId: 'sec',
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
-						fileName: path,
-						path,
+						fileName: dveBackroundFileName,
+						path: `dve/${dveBackroundFileName}`,
 						timelineObjects: _.compact<TSRTimelineObj>([
 							literal<TimelineObjCCGMedia>({
 								id: '',
@@ -58,7 +58,7 @@ export function EvaluateVIZ(
 								content: {
 									deviceType: DeviceType.CASPARCG,
 									type: TimelineContentTypeCasparCg.MEDIA,
-									file: path,
+									file: dveBackroundFileName,
 									loop: true
 								}
 							})
@@ -71,7 +71,7 @@ export function EvaluateVIZ(
 				literal<IBlueprintPiece>({
 					_id: '',
 					externalId: partId,
-					name: path,
+					name: dveBackroundFileName,
 					enable: {
 						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 					},
@@ -79,8 +79,8 @@ export function EvaluateVIZ(
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
-						fileName: path,
-						path,
+						fileName: dveBackroundFileName,
+						path: dveBackroundFileName,
 						timelineObjects: _.compact<TSRTimelineObj>([
 							literal<TimelineObjCCGMedia>({
 								id: '',
@@ -90,7 +90,7 @@ export function EvaluateVIZ(
 								content: {
 									deviceType: DeviceType.CASPARCG,
 									type: TimelineContentTypeCasparCg.MEDIA,
-									file: path,
+									file: dveBackroundFileName,
 									loop: true
 								}
 							})
