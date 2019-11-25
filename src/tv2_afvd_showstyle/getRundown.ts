@@ -330,33 +330,34 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		}
 	})
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
-	adlibItems.push({
-		externalId: 'continueReverse',
-		name: 'GFX Reverse',
-		_rank: 300,
-		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-		outputLayerId: 'sec',
-		expectedDuration: 1000,
-		infiniteMode: PieceLifespan.Normal,
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjVIZMSEElementContinue>({
-					id: '',
-					enable: {
-						start: 0,
-						duration: 1000
-					},
-					layer: VizLLayer.VizLLayerAdLibs,
-					content: {
-						deviceType: DeviceType.VIZMSE,
-						type: TimelineContentTypeVizMSE.CONTINUE,
-						direction: -1,
-						reference: VizLLayer.VizLLayerPilot
-					}
-				})
-			])
-		}
-	})
+	// disabled since TV 2 says this doesn't work
+	// adlibItems.push({
+	// 	externalId: 'continueReverse',
+	// 	name: 'GFX Reverse',
+	// 	_rank: 300,
+	// 	sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+	// 	outputLayerId: 'sec',
+	// 	expectedDuration: 1000,
+	// 	infiniteMode: PieceLifespan.Normal,
+	// 	content: {
+	// 		timelineObjects: _.compact<TSRTimelineObj>([
+	// 			literal<TimelineObjVIZMSEElementContinue>({
+	// 				id: '',
+	// 				enable: {
+	// 					start: 0,
+	// 					duration: 1000
+	// 				},
+	// 				layer: VizLLayer.VizLLayerAdLibs,
+	// 				content: {
+	// 					deviceType: DeviceType.VIZMSE,
+	// 					type: TimelineContentTypeVizMSE.CONTINUE,
+	// 					direction: -1,
+	// 					reference: VizLLayer.VizLLayerPilot
+	// 				}
+	// 			})
+	// 		])
+	// 	}
+	// })
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'dskoff',
