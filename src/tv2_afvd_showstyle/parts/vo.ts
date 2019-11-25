@@ -37,13 +37,17 @@ export function CreatePartVO(
 	const file = partDefinition.fields.videoId
 	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
-	let part = literal<IBlueprintPart>({
+	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
 		typeVariant: '',
-		displayDuration: duration || 1000,
-		expectedDuration: duration || 1000,
+		...(duration > 0
+			? {
+					displayDuration: duration,
+					expectedDuration: duration
+			  }
+			: {}),
 		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
