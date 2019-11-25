@@ -11,3 +11,4 @@ Viz templates can be added in the blueprint settings of the Showstyle by adding 
 - Out Type: When the template should be taken out. If nothing is set, it will be taken out after the default duration (set by the `Default Template Duration` blueprint setting).
 - Variable 1: The name of the first variable needed to be passed to the template, e.g. `triopage=`
 - Variable 2: The name of the second variable needed to be passed to the template.
+- Is Design: Whether the cue changes the design of the viz engine.
