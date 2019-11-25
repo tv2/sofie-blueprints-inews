@@ -47,7 +47,7 @@ export function EvaluateVIZ(
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
-						fileName: `dve/${dveBackroundFileName}`,
+						fileName: 'dveBackroundFileName',
 						path: `dve/${dveBackroundFileName}`,
 						timelineObjects: _.compact<TSRTimelineObj>([
 							literal<TimelineObjCCGMedia>({
@@ -79,8 +79,8 @@ export function EvaluateVIZ(
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					infiniteMode: PieceLifespan.Infinite,
 					content: literal<GraphicsContent>({
-						fileName: dveBackroundFileName,
-						path: dveBackroundFileName,
+						fileName: 'dveBackroundFileName',
+						path: `dve/${dveBackroundFileName}`,
 						timelineObjects: _.compact<TSRTimelineObj>([
 							literal<TimelineObjCCGMedia>({
 								id: '',
