@@ -300,6 +300,30 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('MOS object', () => {
+		const cueMOS = [
+			'#cg4-pilotdata',
+			'Senderplan/23-10-2019',
+			'VCPID=2552305',
+			'ContinueCount=1',
+			'Senderplan/23-10-2019'
+		]
+		const result = ParseCue(cueMOS)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.MOS,
+				engine: '4',
+				name: 'Senderplan/23-10-2019',
+				vcpid: 2552305,
+				ignore: true,
+				continueCount: 1,
+				start: {
+					seconds: 0
+				}
+			})
+		)
+	})
+
 	test('MOS object with timing - adlib + O', () => {
 		const cueMOS = [
 			']] S3.0 M 0 [[',

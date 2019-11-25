@@ -163,7 +163,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	} else if (cue[0].match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i)) {
 		// MOS
 		return parseMOS(cue)
-	} else if (cue[0].match(/[#|*]?cg\d+ pilotdata/i)) {
+	} else if (cue[0].match(/[#|*]?cg\d+[ -]pilotdata/i)) {
 		return parseMOS(cue)
 	} else if (cue[0].match(/^EKSTERN=/)) {
 		// EKSTERN
@@ -264,13 +264,13 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 	const realCue: string[] = []
 	cue.forEach(line => {
 		if (
-			!line.match(/[#|*]?cg\d+ pilotdata/i) &&
+			!line.match(/[#|*]?cg\d+[ -]pilotdata/i) &&
 			!line.match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i) &&
 			!line.match(/cg\d+ \]\] .+? \[\[ pilotdata/i)
 		) {
 			realCue.push(line)
-		} else if (!!line.match(/[#|*]?cg\d+ pilotdata/i)) {
-			const engine = line.match(/[#|*]?cg(\d+) pilotdata/i)
+		} else if (!!line.match(/[#|*]?cg\d+[ -]pilotdata/i)) {
+			const engine = line.match(/[#|*]?cg(\d+)[ -]pilotdata/i)
 			if (engine && engine[1]) {
 				mosCue.engine = engine[1]
 				mosCue.ignore = true
