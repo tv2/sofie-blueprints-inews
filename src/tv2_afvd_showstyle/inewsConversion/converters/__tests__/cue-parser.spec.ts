@@ -291,7 +291,6 @@ describe('Cue parser', () => {
 				type: CueType.MOS,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
-				ignore: true,
 				continueCount: 3,
 				start: {
 					seconds: 0
@@ -315,7 +314,6 @@ describe('Cue parser', () => {
 				engine: '4',
 				name: 'Senderplan/23-10-2019',
 				vcpid: 2552305,
-				ignore: true,
 				continueCount: 1,
 				start: {
 					seconds: 0
@@ -338,7 +336,6 @@ describe('Cue parser', () => {
 			type: CueType.MOS,
 			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
 			vcpid: 2520177,
-			ignore: true,
 			continueCount: -1,
 			adlib: true,
 			end: {
@@ -361,7 +358,6 @@ describe('Cue parser', () => {
 			type: CueType.MOS,
 			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O',
 			vcpid: 2520177,
-			ignore: true,
 			continueCount: -1,
 			start: {
 				seconds: 2
@@ -386,7 +382,6 @@ describe('Cue parser', () => {
 				type: CueType.MOS,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
-				ignore: true,
 				continueCount: 3,
 				start: {
 					seconds: 0
@@ -426,7 +421,6 @@ describe('Cue parser', () => {
 				type: CueType.MOS,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
-				ignore: true,
 				continueCount: 3,
 				start: {
 					seconds: 0
@@ -450,7 +444,6 @@ describe('Cue parser', () => {
 				type: CueType.MOS,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
-				ignore: true,
 				continueCount: 3,
 				start: {
 					seconds: 0
@@ -474,7 +467,6 @@ describe('Cue parser', () => {
 			type: CueType.MOS,
 			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:10',
 			vcpid: 2520177,
-			ignore: true,
 			continueCount: -1,
 			start: {
 				seconds: 0
@@ -561,7 +553,6 @@ describe('Cue parser', () => {
 					type: CueType.MOS,
 					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
 					vcpid: 2520177,
-					ignore: true,
 					continueCount: -1,
 					adlib: true,
 					end: {
