@@ -372,22 +372,12 @@ describe('Body parser', () => {
 					type: PartType.Kam,
 					rawType: 'KAM 4',
 					cues: [],
-					script: '',
+					script:
+						'I morgen holder rytterne hviledag, men det betyder ikke at vores cykelredaktion gør. Vi sender nemlig et program om doping i cykelsporten her på TV 2 kl. 15.20\n',
 					variant: {
 						name: '4'
 					},
 					externalId: '00000000001-3',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Unknown,
-					rawType: 'NEDLÆG',
-					cues: [],
-					script:
-						'I morgen holder rytterne hviledag, men det betyder ikke at vores cykelredaktion gør. Vi sender nemlig et program om doping i cykelsporten her på TV 2 kl. 15.20\n',
-					variant: {},
-					externalId: '00000000001-4',
 					fields: {},
 					modified: 0
 				}
@@ -405,22 +395,12 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [],
-					script: '',
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					script: 'Divya Das med fra London\n',
 					variant: {
 						name: '2'
 					},
 					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Unknown,
-					rawType: 'KADA',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
-					script: 'Divya Das med fra London\n',
-					variant: {},
-					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				},
@@ -431,7 +411,7 @@ describe('Body parser', () => {
 					script:
 						'- Angela Merkel har accepteret at give Johnson 30 dage til at løse problemet med den såkaldte backstop. Hvordan er den udmelding blevet modtaget i Storbritannien?\n- Emmanuel Macron har indtil nu afvist at genforhandle brexit-aftalen. Så hvad skal Boris Johnson have ud af dagens besøg i Paris?\n- Hvad skal ændre sig, hvis briterne ikke skal forlade EU uden en aftale den 31. oktober?\n',
 					variant: {},
-					externalId: '00000000001-2',
+					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -496,34 +476,13 @@ describe('Body parser', () => {
 					modified: 0
 				},
 				{
-					type: PartType.Unknown,
-					rawType:
-						'Hvordan forholdt den amerikanske udenrigsminster sig til den diplomatiske diskussion der er opstået?',
-					cues: [],
-					script: '',
-					variant: {},
-					externalId: '00000000001-1',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Unknown,
-					rawType: 'Hvordan ser i på det nuværende forhold mellem USA og Danmark?',
-					cues: [],
-					script: '',
-					variant: {},
-					externalId: '00000000001-2',
-					fields: {},
-					modified: 0
-				},
-				{
 					type: PartType.Live,
 					rawType: 'LIVE',
 					cues: [cueEkstern1],
 					script:
 						'Hvordan kan et godt fortsat strategisk samarbejde fortsætte, når Trump langer ud efter Danmark og drager forsvarsbudgettet ind i diskussionen?\nEr amerikanerne med Trump i spidsen fortsat interessedeed i at komme på besøg - Trump skrev selv at hans besøg blot var udsat - ikke aflyst?\n',
 					variant: {},
-					externalId: '00000000001-3',
+					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -554,22 +513,11 @@ describe('Body parser', () => {
 				{
 					type: PartType.VO,
 					rawType: 'VO',
-					cues: [cueGrafik1],
-					script: '',
-					variant: {},
-					externalId: '00000000001-1',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Unknown,
-					rawType:
-						"SB: Trump: I looked forward to going, but I thought that the prime minister's statement that it was an absurd idea was nasty, and I thought it was an inappropriate statement. 10 sek)",
-					cues: [cueGrafik2],
+					cues: [cueGrafik1, cueGrafik2],
 					script:
 						"Mette Frederiksen sagde søndag til DR, at diskussionen om at sælge Grønland er 'absurd', og det er dét, der er faldet Trump for brystet.\nSenere på aftenen fortsatte Donald Trump sin kritik af Danmark på Twitter:\nIfølge præsidenten burde Danmark bruge langt flere penge på forsvar - og dermed bidrage mere til forsvarsalliancen NATO.\n",
 					variant: {},
-					externalId: '00000000001-2',
+					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -931,7 +879,7 @@ describe('Body parser', () => {
 					externalId: '00000000001-0',
 					type: PartType.Unknown,
 					variant: {},
-					rawType: 'K2 NBA18_LEAD_OUT',
+					rawType: '',
 					cues: [cueJingle1],
 					script: '',
 					fields,
@@ -1221,6 +1169,29 @@ describe('Body parser', () => {
 	test('test 24', () => {
 		const body18 =
 			'\r\n<p><pi>***VOSB EFFEKT 0*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Danmarks udenrigsminister Jeppe Kofod talte i går aftes i telefon med sin amerikanske kollega, Mike Pompeo. De to diskuterede blandt andet Grønland. </p>\r\n<p></p>\r\n'
+		const cues18 = [unparsedGrafik1]
+		const result = ParseBody('00000000001', '', body18, cues18, fields, 0)
+		expect(result).toEqual(
+			literal<PartDefinition[]>([
+				literal<PartDefinitionVO>({
+					externalId: '00000000001-0',
+					type: PartType.VO,
+					variant: {},
+					effekt: 0,
+					rawType: 'VOSB',
+					cues: [cueGrafik1],
+					script:
+						'Danmarks udenrigsminister Jeppe Kofod talte i går aftes i telefon med sin amerikanske kollega, Mike Pompeo. De to diskuterede blandt andet Grønland.\n',
+					fields,
+					modified: 0
+				})
+			])
+		)
+	})
+
+	test('test 25', () => {
+		const body18 =
+			'\r\n<p><pi>***VOSB EFFEKT 0*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><pi>Some script here, possibly a note to the presenter</pi></p>\r\n<p>Danmarks udenrigsminister Jeppe Kofod talte i går aftes i telefon med sin amerikanske kollega, Mike Pompeo. De to diskuterede blandt andet Grønland. </p>\r\n<p></p>\r\n'
 		const cues18 = [unparsedGrafik1]
 		const result = ParseBody('00000000001', '', body18, cues18, fields, 0)
 		expect(result).toEqual(
