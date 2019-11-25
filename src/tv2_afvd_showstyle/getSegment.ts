@@ -259,7 +259,7 @@ function SlutordLookahead(
 					literal<IBlueprintPiece>({
 						_id: '',
 						name: `Slutord: ${part.variant.endWords}`,
-						sourceLayerId: SourceLayer.PgmSlutord,
+						sourceLayerId: SourceLayer.PgmScript,
 						outputLayerId: 'manus',
 						externalId: parsedParts[currentIndex].externalId,
 						enable: {

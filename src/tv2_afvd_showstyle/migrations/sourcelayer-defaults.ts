@@ -439,27 +439,27 @@ const MUSIK: ISourceLayer[] = [
 ]
 // MANUS group
 const MANUS: ISourceLayer[] = [
-	{
-		_id: SourceLayer.PgmSlutord,
-		_rank: 10,
-		name: 'Slutord',
-		abbreviation: '',
-		type: SourceLayerType.SCRIPT,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false,
-		unlimited: false,
-		onPGMClean: false
-	},
+	// {
+	// 	_id: SourceLayer.PgmSlutord,
+	// 	_rank: 10,
+	// 	name: 'Slutord',
+	// 	abbreviation: '',
+	// 	type: SourceLayerType.SCRIPT,
+	// 	exclusiveGroup: '',
+	// 	isRemoteInput: false,
+	// 	isGuestInput: false,
+	// 	activateKeyboardHotkeys: '',
+	// 	clearKeyboardHotkey: '',
+	// 	assignHotkeysToGlobalAdlibs: false,
+	// 	isSticky: false,
+	// 	activateStickyKeyboardHotkey: '',
+	// 	isQueueable: false,
+	// 	isHidden: false,
+	// 	allowDisable: false,
+	// 	onPresenterScreen: false,
+	// 	unlimited: false,
+	// 	onPGMClean: false
+	// },
 	{
 		_id: SourceLayer.PgmScript,
 		_rank: 20,
