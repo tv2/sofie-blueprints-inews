@@ -11,10 +11,12 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
+import { assertUnreachable } from '../../../common/util'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { CueDefinition, CueDefinitionBase, CueTime, CueType } from '../../inewsConversion/converters/ParseCue'
 import { EvaluateAdLib } from './adlib'
+import { EvaluateClearGrafiks } from './clearGrafiks'
 import { EvaluateDesign } from './design'
 import { EvaluateDVE } from './dve'
 import { EvaluateEkstern } from './ekstern'
@@ -104,11 +106,15 @@ export function EvaluateCues(
 				case CueType.TargetEngine:
 					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
 					break
+				case CueType.ClearGrafiks:
+					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue)
+					break
 				default:
 					if (cue.type !== CueType.Unknown && cue.type !== CueType.Profile && cue.type !== CueType.Mic) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
 						// TODO: Mic -> For the future
-						context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
+						// context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
+						assertUnreachable(cue)
 					}
 					break
 			}
