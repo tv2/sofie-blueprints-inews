@@ -82,10 +82,9 @@ export function GetBreakerEffekt(
 					transitionDuration: TimeFromFrames(Number(realBreaker.Duration)),
 					autoNext: realBreaker.Autonext === true,
 					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
-					expectedDuration:
-						TimeFromFrames(
-							Number(realBreaker.Duration) - Number(realBreaker.StartAlpha) - Number(realBreaker.EndAlpha)
-						)
+					expectedDuration: TimeFromFrames(
+						Number(realBreaker.Duration) - Number(realBreaker.StartAlpha) - Number(realBreaker.EndAlpha)
+					)
 				}
 			}
 		}
@@ -143,7 +142,7 @@ export function EffektTransitionPiece(
 						literal<TimelineObjAtemDSK>({
 							id: '',
 							enable: {
-								start: Number(config.studio.CasparPrerollDuration) * 2
+								start: Number(config.studio.CasparPrerollDuration) * 2 + 2000
 							},
 							priority: 0,
 							layer: AtemLLayer.AtemDSKEffect,
