@@ -116,7 +116,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Viz keyer clip',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 39.3
+		defaultVal: 50.0
 	},
 	{
 		id: 'AtemSettings.VizGain',
@@ -124,7 +124,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Viz keyer gain',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 20.9
+		defaultVal: 12.5
 	},
 	{
 		id: 'AtemSettings.CCGClip',
@@ -132,7 +132,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'CasparCG keyer clip',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 39.3
+		defaultVal: 50.0
 	},
 	{
 		id: 'AtemSettings.CCGGain',
@@ -140,7 +140,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'CasparCG keyer gain',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 20.9
+		defaultVal: 12.5
 	},
 	{
 		id: 'AtemSource.SplitArtF',
