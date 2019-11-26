@@ -34,7 +34,7 @@ export function EvaluateMOS(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
-				name: grafikName(parsedCue),
+				name: grafikName(config, parsedCue),
 				...(isTlf || isGrafikPart ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode:
 					isTlf || isGrafikPart
@@ -74,7 +74,7 @@ export function EvaluateMOS(
 			literal<IBlueprintPiece>({
 				_id: '',
 				externalId: partId,
-				name: grafikName(parsedCue),
+				name: grafikName(config, parsedCue),
 				...(isTlf || isGrafikPart
 					? { enable: { start: 0 } }
 					: {
