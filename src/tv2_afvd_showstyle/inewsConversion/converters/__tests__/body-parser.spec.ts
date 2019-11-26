@@ -162,21 +162,11 @@ describe('Body parser', () => {
 		expect(result).toEqual(
 			literal<PartDefinition[]>([
 				{
-					type: PartType.Unknown,
-					cues: [],
-					script: 'Thid id thr trext for the next DVE\n',
-					variant: {},
-					externalId: '00000000001-0',
-					rawType: '',
-					fields: {},
-					modified: 0
-				},
-				{
 					type: PartType.Live,
 					cues: [cueUnknown, cueGrafik1, cueEkstern1],
-					script: 'Script here\n',
+					script: 'Thid id thr trext for the next DVE\nScript here\n',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '00000000001-0',
 					rawType: 'LIVE',
 					fields: {},
 					modified: 0
@@ -250,24 +240,14 @@ describe('Body parser', () => {
 		expect(result).toEqual(
 			literal<PartDefinition[]>([
 				{
-					type: PartType.Unknown,
-					rawType: '',
-					cues: [cueUnknown],
-					script: '',
-					variant: {},
-					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
 					type: PartType.Kam,
 					rawType: 'CAMERA 1',
-					cues: [],
+					cues: [cueUnknown],
 					script: 'Her står em masse tekst\n',
 					variant: {
 						name: '1'
 					},
-					externalId: '00000000001-1',
+					externalId: '00000000001-0',
 					fields: {},
 					modified: 0
 				}
@@ -339,22 +319,12 @@ describe('Body parser', () => {
 		expect(result).toEqual(
 			literal<PartDefinition[]>([
 				{
-					type: PartType.Unknown,
-					rawType: '',
-					cues: [cueUnknown],
+					type: PartType.Server,
+					rawType: 'ATTACK',
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
 					variant: {},
 					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Server,
-					rawType: 'ATTACK',
-					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
-					script: '',
-					variant: {},
-					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				},
@@ -366,7 +336,7 @@ describe('Body parser', () => {
 					variant: {
 						endWords: 'wauw'
 					},
-					externalId: '00000000001-2',
+					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				},
@@ -379,7 +349,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '4'
 					},
-					externalId: '00000000001-3',
+					externalId: '00000000001-2',
 					fields: {},
 					modified: 0
 				}
@@ -598,23 +568,13 @@ describe('Body parser', () => {
 		expect(result).toEqual(
 			literal<PartDefinition[]>([
 				{
-					type: PartType.Unknown,
-					rawType: '',
-					cues: [cueUnknown],
+					type: PartType.Live,
+					rawType: 'LIVE',
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1, cueEkstern2],
 					script:
 						'Rasmus Staghøj, således reaktioner fra Astana-lejren, men hvordan bliver der ellers talt om det her nede hos jer?\n',
 					variant: {},
 					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Live,
-					rawType: 'LIVE',
-					cues: [cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1, cueEkstern2],
-					script: '',
-					variant: {},
-					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -739,31 +699,21 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', '', body17, cues17, fields, 0)
 		expect(result).toEqual(
 			literal<PartDefinition[]>([
-				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-0',
-					type: PartType.Unknown,
-					variant: {},
-					rawType: '',
-					cues: [cueEkstern1],
-					script: '',
-					fields,
-					modified: 0
-				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-1',
+					externalId: '00000000001-0',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
 					},
 					rawType: 'KAM 1',
-					cues: [cueEkstern2],
+					cues: [cueEkstern1, cueEkstern2],
 					script:
 						'Siden nytår er over 100 mennesker kommet til skade på et el-løbehjul i Københavnsområdet.\nDet fremgår af en opgørelse fra Region Hovedstaden, hvor enten akutmodtagelsen eller en ambulance har været involveret i en løbehjuls-skade.\nDe gange, hvor det er gået galt, er der typisk tale om ansigtsskader, og det er især gået ud over dem i alderen 18 til 25 år:\n',
 					fields,
 					modified: 0
 				}),
 				literal<PartDefinitionServer>({
-					externalId: '00000000001-2',
+					externalId: '00000000001-1',
 					type: PartType.Server,
 					variant: {},
 					rawType: 'SERVER',
@@ -773,7 +723,7 @@ describe('Body parser', () => {
 					modified: 0
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-3',
+					externalId: '00000000001-2',
 					type: PartType.Slutord,
 					variant: {
 						endWords: ''
@@ -785,7 +735,7 @@ describe('Body parser', () => {
 					modified: 0
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-4',
+					externalId: '00000000001-3',
 					type: PartType.Slutord,
 					variant: {
 						endWords: 'Skarpere regler.'
@@ -797,7 +747,7 @@ describe('Body parser', () => {
 					modified: 0
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-5',
+					externalId: '00000000001-4',
 					type: PartType.Kam,
 					variant: {
 						name: '2'
