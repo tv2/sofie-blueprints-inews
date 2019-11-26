@@ -52,8 +52,8 @@ describe('Rundown exceptions', () => {
 		for (const segment of roData.segments) {
 			test('Rundown segment: ' + roSpec.ro + ' - ' + rundown.externalId, async () => {
 				const mockContext = new SegmentContext(rundown, mappingsDefaults)
-				mockContext.studioConfig = roSpec.studioConfig
-				mockContext.showStyleConfig = roSpec.showStyleConfig
+				mockContext.studioConfig = roSpec.studioConfig as any
+				mockContext.showStyleConfig = roSpec.showStyleConfig as any
 
 				const res = Blueprints.getSegment(mockContext, segment)
 				if (segment.payload.iNewsStory.fields.pageNumber && segment.payload.iNewsStory.fields.pageNumber.trim()) {
