@@ -233,15 +233,17 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
+	const numCams = 10
+	const numRms = 10
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.slice(0, numCams) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach((o, i) => adlibItems.push(...makeCameraAdLibs(o, i)))
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
-		.forEach((o, i) => adlibItems.push(...makeRemoteAdLibs(o, i)))
+		.slice(0, numRms) // the first x cameras to create INP1/2/3 live-adlibs from
+		.forEach((o, i) => adlibItems.push(...makeRemoteAdLibs(o, numCams + i)))
 
 	adlibItems.push({
 		externalId: 'delayed',
