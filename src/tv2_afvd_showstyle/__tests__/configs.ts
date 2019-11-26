@@ -26,14 +26,6 @@ export const casparABPlaybackConfig: ConfigMap = {
 
 export const defaultShowStyleConfig: ConfigMap = {
 	DefaultTemplateDuration: 4,
-	JingleTimings: [
-		{
-			_id: '',
-			JingleName: 'SN_intro_19',
-			FileName: 'SN_intro_19',
-			FramesOfAlpha: ':50'
-		}
-	],
 	DVEStyles: [
 		{
 			_id: '',
