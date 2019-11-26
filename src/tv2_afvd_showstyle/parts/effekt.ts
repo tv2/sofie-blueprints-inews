@@ -68,7 +68,9 @@ export function GetBreakerAutoNext(
 	if (part.cues) {
 		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
 		if (cue) {
-			const realBreaker = config.showStyle.BreakerConfig.find(conf => conf.BreakerName === cue.clip)
+			const realBreaker = config.showStyle.BreakerConfig.find(
+				conf => conf.BreakerName.toString().toUpperCase() === cue.clip.toUpperCase()
+			)
 			if (realBreaker) {
 				return {
 					transitionPrerollDuration: TimeFromFrames(Number(realBreaker.StartAlpha)),
