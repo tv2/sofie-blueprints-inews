@@ -43,7 +43,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	})
 	const config = parseConfig(context)
 
-	if (ingestSegment.payload.iNewsStory.meta.float === 'float' || ingestSegment.payload.iNewsStory.cues.length === 0) {
+	if (ingestSegment.payload.iNewsStory.meta.float === 'float') {
 		segment.isHidden = true
 		return {
 			segment,
@@ -250,6 +250,13 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	})
 
 	if (blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length) {
+		segment.isHidden = true
+	}
+
+	if (
+		blueprintParts.filter(part => part.part.invalid).length === blueprintParts.length &&
+		ingestSegment.payload.iNewsStory.cues.length === 0
+	) {
 		segment.isHidden = true
 	}
 
