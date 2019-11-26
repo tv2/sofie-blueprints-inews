@@ -7,6 +7,7 @@ export enum SourceLayer {
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',
 	PgmPilot = 'studio0_pilot',
+	PgmPilotOverlay = 'studio0_pilotOverlay',
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
 	PgmGraphicsTop = 'studio0_graphicsTop',
 	PgmGraphicsLower = 'studio0_graphicsLower',
