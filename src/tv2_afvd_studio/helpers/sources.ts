@@ -28,7 +28,7 @@ export function parseMapStr(
 				if (!canBeStrings && !isNaN(val)) {
 					res.push({ id: ind, val: parseInt(p[1], 10) })
 					return
-				} else if (canBeStrings && p[1]) {
+				} else if (canBeStrings && p[1] !== undefined) {
 					res.push({ id: ind, val: p[1] })
 					return
 				}
@@ -98,7 +98,7 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 	switch (type) {
 		case SourceLayerType.CAMERA:
 			const cameraName = id.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
-			if (!cameraName) {
+			if (cameraName === undefined || cameraName === null) {
 				return undefined
 			}
 
