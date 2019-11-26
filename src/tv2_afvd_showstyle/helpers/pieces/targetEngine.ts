@@ -29,12 +29,13 @@ export function EvaluateTargetEngine(
 	if (!parsedCue.engine.match(/full/i)) {
 		return
 	}
-	if (!parsedCue.content.INP1) {
+	if (!parsedCue.content.INP1 && !parsedCue.content.INP) {
 		context.warning(`No input provided by ${parsedCue.rawType} for engine aux`)
 	} else {
-		let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.content.INP1)
+		const source = parsedCue.content.INP1 ? parsedCue.content.INP1 : parsedCue.content.INP
+		let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)
 		if (!sourceInfo) {
-			sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, parsedCue.content.INP1)
+			sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, source)
 		}
 
 		if (!sourceInfo) {
