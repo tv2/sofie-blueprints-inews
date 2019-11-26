@@ -271,7 +271,7 @@ export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafi
 		const template = config.showStyle.GFXTemplates.find(templ =>
 			templ.iNewsName ? templ.iNewsName.toString().toUpperCase() === cue.template.toString().toUpperCase() : false
 		)
-		if (template && template.VizTemplate) {
+		if (template && template.VizTemplate.toString().length) {
 			return template.VizTemplate.toString()
 		}
 	}
