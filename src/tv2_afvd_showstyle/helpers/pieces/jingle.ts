@@ -1,7 +1,9 @@
 import {
 	DeviceType,
+	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
+	TimelineObjAtemDSK,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosAny
 } from 'timeline-state-resolver-types'
@@ -17,7 +19,7 @@ import { literal } from '../../../common/util'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { CueDefinitionJingle } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../config'
 
@@ -84,6 +86,20 @@ export function EvaluateJingle(
 								type: TimelineContentTypeCasparCg.MEDIA,
 								file,
 								length: duration
+							}
+						}),
+
+						literal<TimelineObjAtemDSK>({
+							id: '',
+							enable: { while: '1' },
+							priority: 0,
+							layer: AtemLLayer.AtemDSKEffect,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.DSK,
+								dsk: {
+									onAir: true
+								}
 							}
 						}),
 

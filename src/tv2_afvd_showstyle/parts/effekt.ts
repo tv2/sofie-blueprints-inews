@@ -1,7 +1,9 @@
 import {
 	DeviceType,
+	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
+	TimelineObjAtemDSK,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosAny
 } from 'timeline-state-resolver-types'
@@ -15,7 +17,7 @@ import {
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
-import { CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueDefinitionJingle, CueType } from '../inewsConversion/converters/ParseCue'
@@ -127,6 +129,20 @@ export function EffektTransitionPiece(
 								deviceType: DeviceType.CASPARCG,
 								type: TimelineContentTypeCasparCg.MEDIA,
 								file: effektConfig.ClipName.toString()
+							}
+						}),
+
+						literal<TimelineObjAtemDSK>({
+							id: '',
+							enable: { while: '1' },
+							priority: 0,
+							layer: AtemLLayer.AtemDSKEffect,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.DSK,
+								dsk: {
+									onAir: true
+								}
 							}
 						}),
 
