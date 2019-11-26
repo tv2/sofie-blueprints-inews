@@ -68,8 +68,8 @@ export function GetBreakerAutoNext(
 	if (part.cues) {
 		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
 		if (cue) {
-			const realBreaker = config.showStyle.BreakerConfig.find(
-				conf => conf.BreakerName.toString().toUpperCase() === cue.clip.toUpperCase()
+			const realBreaker = config.showStyle.BreakerConfig.find(conf =>
+				conf.BreakerName ? conf.BreakerName.toString().toUpperCase() === cue.clip.toUpperCase() : false
 			)
 			if (realBreaker) {
 				return {
