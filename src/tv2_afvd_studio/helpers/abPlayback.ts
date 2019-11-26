@@ -262,7 +262,6 @@ function updateObjectsToMediaPlayer(
 	playerId: number,
 	objs: OnGenerateTimelineObj[]
 ) {
-	context.warning(playerId.toString())
 	_.each(objs, obj => {
 		// Mutate each object to the correct player
 		if (obj.content.deviceType === DeviceType.CASPARCG) {
