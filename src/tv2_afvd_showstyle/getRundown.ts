@@ -525,8 +525,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					properties: {
 						tie: false,
 						preMultiply: false,
-						clip: config.studio.AtemSettings.VizClip,
-						gain: config.studio.AtemSettings.VizGain,
+						clip: config.studio.AtemSettings.VizClip * 10, // input is percents (0-100), atem uses 1-000,
+						gain: config.studio.AtemSettings.VizGain * 10, // input is percents (0-100), atem uses 1-000,
 						mask: {
 							enabled: false
 						}
@@ -551,8 +551,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					properties: {
 						tie: false,
 						preMultiply: false,
-						clip: config.studio.AtemSettings.CCGClip,
-						gain: config.studio.AtemSettings.CCGGain,
+						clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
+						gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
 						mask: {
 							enabled: false
 						}
@@ -584,8 +584,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							maskEnabled: false,
 							lumaSettings: {
 								preMultiplied: false,
-								clip: config.studio.AtemSettings.CCGClip,
-								gain: config.studio.AtemSettings.CCGGain
+								clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
+								gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
 							}
 						}
 					]
