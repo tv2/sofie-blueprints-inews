@@ -5,7 +5,6 @@ import {
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionTargetEngine,
-	CueDefinitionUnknown,
 	CueType,
 	isTime,
 	ParseCue,
@@ -761,8 +760,13 @@ describe('Cue parser', () => {
 		const cueSS = ['SS=3-SPORTSDIGI', 'INP1=EVS 1', ';0.00.01']
 		const result = ParseCue(cueSS)
 		expect(result).toEqual(
-			literal<CueDefinitionUnknown>({
-				type: CueType.Unknown,
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				engine: 'WALL',
+				rawType: 'SS=3-SPORTSDIGI',
+				content: {
+					INP1: 'EVS 1'
+				},
 				start: {
 					seconds: 0,
 					frames: 1
