@@ -76,14 +76,6 @@ export function GetBreakerAutoNext(
 					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
 					expectedDuration: TimeFromFrames(Number(realBreaker.Duration))
 				}
-			} else {
-				const realJingle = config.showStyle.JingleTimings.find(conf => conf.JingleName === cue.clip)
-				if (realJingle) {
-					return {
-						autoNext: true,
-						autoNextOverlap: TimeFromFrames(Number(realJingle.FramesOfAlpha))
-					}
-				}
 			}
 		}
 	}
@@ -114,7 +106,7 @@ export function EffektTransitionPiece(
 					duration: TimeFromFrames(Number(effektConfig.Duration))
 				},
 				outputLayerId: 'jingle',
-				sourceLayerId: SourceLayer.PgmBreak,
+				sourceLayerId: SourceLayer.PgmJingle,
 				infiniteMode: PieceLifespan.Normal,
 				isTransition: true,
 				content: literal<TransitionContent & VTContent>({

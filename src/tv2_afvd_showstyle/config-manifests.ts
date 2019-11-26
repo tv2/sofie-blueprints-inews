@@ -176,53 +176,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		/*
-		Jingle Timings
-		Jingle Name
-		File Name
-		Frames of Alpha
-		*/
-		id: 'JingleTimings',
-		name: 'Jingle Timings',
-		description: 'Jingle configuration',
-		type: ConfigManifestEntryType.TABLE,
-		required: false,
-		defaultVal: [
-			{
-				_id: '',
-				JingleName: 0,
-				FileName: '',
-				FramesOfAlpha: 0
-			}
-		],
-		columns: [
-			{
-				id: 'JingleName',
-				name: 'Jingle Name',
-				description: 'The jingle name',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: ''
-			},
-			{
-				id: 'FileName',
-				name: 'File Name',
-				description: 'The name of the jingle clip',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: ''
-			},
-			{
-				id: 'FramesOfAlpha',
-				name: 'Frames of Alpha',
-				description: 'Number of frames of alpha at the beginning of the clip',
-				type: ConfigManifestEntryType.NUMBER,
-				required: true,
-				defaultVal: 0
-			}
-		]
-	},
-	{
-		/*
 		Wipes Config
 		Effekt number
 		Clip name

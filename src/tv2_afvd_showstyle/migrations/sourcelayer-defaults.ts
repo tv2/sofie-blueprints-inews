@@ -133,27 +133,6 @@ const JINGLE: ISourceLayer[] = [
 		onPresenterScreen: false,
 		unlimited: false,
 		onPGMClean: false
-	},
-	{
-		_id: SourceLayer.PgmBreak,
-		_rank: 20,
-		name: 'Break',
-		abbreviation: '',
-		type: SourceLayerType.TRANSITION,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false,
-		unlimited: false,
-		onPGMClean: false
 	}
 ]
 

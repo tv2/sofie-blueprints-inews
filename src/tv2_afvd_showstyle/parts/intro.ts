@@ -35,18 +35,18 @@ export function CreatePartIntro(
 
 	const parsedJingle = jingleCue as CueDefinitionJingle
 
-	if (!config.showStyle.JingleTimings) {
+	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
 		return CreatePartInvalid(partDefinition)
 	}
 
-	const jingle = config.showStyle.JingleTimings.find(jngl => jngl.JingleName === parsedJingle.clip)
+	const jingle = config.showStyle.BreakerConfig.find(jngl => jngl.BreakerName === parsedJingle.clip)
 	if (!jingle) {
 		context.warning(`Jingle ${parsedJingle.clip} is not configured`)
 		return CreatePartInvalid(partDefinition)
 	}
 
-	const overlapFrames = jingle.FramesOfAlpha
+	const overlapFrames = jingle.EndAlpha
 
 	if (overlapFrames === undefined) {
 		context.warning(`Jingle ${parsedJingle.clip} does not have an out-duration set.`)

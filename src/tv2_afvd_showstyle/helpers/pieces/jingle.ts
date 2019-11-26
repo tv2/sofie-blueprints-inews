@@ -33,26 +33,19 @@ export function EvaluateJingle(
 ) {
 	const duration = Number(part.fields.tapeTime) * 1000 || 0
 
-	if (!config.showStyle.JingleTimings) {
+	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
 		return
 	}
 
-	let breaker = false
 	let file = ''
 
-	let jingle = config.showStyle.JingleTimings.find(jngl => jngl.JingleName === parsedCue.clip)
+	const jingle = config.showStyle.BreakerConfig.find(brkr => brkr.BreakerName === parsedCue.clip)
 	if (!jingle) {
-		jingle = config.showStyle.BreakerConfig.find(brkr => brkr.BreakerName === parsedCue.clip)
-		breaker = true
-		if (!jingle) {
-			context.warning(`Jingle ${parsedCue.clip} is not configured`)
-			return
-		} else {
-			file = jingle.ClipName.toString()
-		}
+		context.warning(`Jingle ${parsedCue.clip} is not configured`)
+		return
 	} else {
-		file = jingle.FileName.toString()
+		file = jingle.ClipName.toString()
 	}
 
 	if (adlib) {
@@ -69,7 +62,7 @@ export function EvaluateJingle(
 				},
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				outputLayerId: 'jingle',
-				sourceLayerId: breaker ? SourceLayer.PgmBreak : SourceLayer.PgmJingle,
+				sourceLayerId: SourceLayer.PgmJingle,
 				isTransition: true,
 				content: literal<VTContent>({
 					studioLabel: '',

@@ -35,7 +35,6 @@ export interface ShowStyleConfig {
 	GFXTemplates: TableConfigItemValue
 	WipesConfig: TableConfigItemValue
 	BreakerConfig: TableConfigItemValue
-	JingleTimings: TableConfigItemValue
 	DefaultTemplateDuration: number
 	LYDConfig: TableConfigItemValue
 }
