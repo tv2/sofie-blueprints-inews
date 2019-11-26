@@ -10,6 +10,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
+	PieceLifespan,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
@@ -31,8 +32,9 @@ export function EvaluateLYD(
 	rank?: number
 ) {
 	const conf = config.showStyle.LYDConfig.find(lyd => lyd.iNewsName === parsedCue.variant)
+	const stop = !!parsedCue.variant.match(/STOP/) // TODO: STOP 1 / STOP 2 etc.
 
-	if (!conf) {
+	if (!conf && !stop) {
 		context.warning(`LYD ${parsedCue.variant} not configured, using iNews name as file name`)
 	}
 
@@ -46,6 +48,7 @@ export function EvaluateLYD(
 				name: parsedCue.variant,
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
+				infiniteMode: PieceLifespan.Infinite,
 				content: literal<BaseContent>({
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TimelineObjCCGMedia>({
@@ -90,39 +93,45 @@ export function EvaluateLYD(
 				...CreateTimingEnable(parsedCue),
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
-				content: literal<BaseContent>({
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-								...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
-							},
-							priority: 1,
-							layer: CasparLLayer.CasparCGLYD,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file,
-								channelLayout: 'bed'
-							}
-						}),
-						literal<TimelineObjSisyfosMessage>({
-							id: '',
-							enable: {
-								start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-								...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceAudiobed,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 1
-							}
-						})
-					])
-				})
+				infiniteMode: PieceLifespan.Infinite,
+				virtual: stop,
+				...(stop
+					? {
+							content: literal<BaseContent>({
+								timelineObjects: literal<TimelineObjectCoreExt[]>([
+									literal<TimelineObjCCGMedia>({
+										id: '',
+										enable: {
+											start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
+											...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
+										},
+										priority: 1,
+										layer: CasparLLayer.CasparCGLYD,
+										content: {
+											deviceType: DeviceType.CASPARCG,
+											type: TimelineContentTypeCasparCg.MEDIA,
+											file,
+											channelLayout: 'bed'
+										}
+									}),
+									literal<TimelineObjSisyfosMessage>({
+										id: '',
+										enable: {
+											start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
+											...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
+										},
+										priority: 1,
+										layer: SisyfosLLAyer.SisyfosSourceAudiobed,
+										content: {
+											deviceType: DeviceType.SISYFOS,
+											type: TimelineContentTypeSisyfos.SISYFOS,
+											isPgm: 1
+										}
+									})
+								])
+							})
+					  }
+					: {})
 			})
 		)
 	}
