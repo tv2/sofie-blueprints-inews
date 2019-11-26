@@ -188,6 +188,7 @@ export function GetSourceLayerForGrafik(name: string) {
 		case 'DESIGN_WIMBLEDON':
 		case 'DESIGN_TDF':
 		case 'DESIGN_ESPORT':
+		case 'DESIGN_SC':
 			return SourceLayer.PgmDesign
 		case 'BG_DVE_BADMINTON':
 		case 'BG_DVE_KONTRA':
