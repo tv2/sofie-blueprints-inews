@@ -29,46 +29,46 @@ export function EvaluateTargetEngine(
 		return
 	}
 	if (!parsedCue.content.INP1) {
-		context.warning(`No input provided by ${parsedCue.rawType}`)
-		return
-	}
-	const sourceInfo = FindSourceByName(context, config.sources, parsedCue.content.INP1)
-	if (!sourceInfo) {
-		context.warning(`Could not find source ${parsedCue.content.INP1}`)
-		return
-	}
-	pieces.push(
-		literal<IBlueprintPiece>({
-			_id: '',
-			externalId: partId,
-			enable: {
-				start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
-			},
-			name: parsedCue.content.INP1 || '',
-			outputLayerId: 'aux',
-			sourceLayerId: SourceLayer.VizFullIn1,
-			infiniteMode: PieceLifespan.Infinite,
-			content: literal<CameraContent>({
-				studioLabel: '',
-				switcherInput: sourceInfo.port,
-				timelineObjects: _.compact<TSRTimelineObj>([
-					literal<TimelineObjAtemAUX>({
-						id: '',
-						enable: { start: 0 },
-						priority: 100,
-						layer: AtemLLayer.AtemAuxVizFullIn1,
-						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.AUX,
-							aux: {
-								input: sourceInfo.port
+		context.warning(`No input provided by ${parsedCue.rawType} for engine aux`)
+	} else {
+		const sourceInfo = FindSourceByName(context, config.sources, parsedCue.content.INP1)
+		if (!sourceInfo) {
+			context.warning(`Could not find source ${parsedCue.content.INP1}`)
+			return
+		}
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partId,
+				enable: {
+					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+				},
+				name: parsedCue.content.INP1 || '',
+				outputLayerId: 'aux',
+				sourceLayerId: SourceLayer.VizFullIn1,
+				infiniteMode: PieceLifespan.Infinite,
+				content: literal<CameraContent>({
+					studioLabel: '',
+					switcherInput: sourceInfo.port,
+					timelineObjects: _.compact<TSRTimelineObj>([
+						literal<TimelineObjAtemAUX>({
+							id: '',
+							enable: { start: 0 },
+							priority: 100,
+							layer: AtemLLayer.AtemAuxVizFullIn1,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.AUX,
+								aux: {
+									input: sourceInfo.port
+								}
 							}
-						}
-					})
-				])
+						})
+					])
+				})
 			})
-		})
-	)
+		)
+	}
 
 	if (parsedCue.grafik) {
 		// TODO target engine

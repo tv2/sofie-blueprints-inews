@@ -16,6 +16,7 @@ import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './in
 import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
+	CueDefinitionTargetEngine,
 	CueDefinitionTelefon,
 	CueType
 } from './inewsConversion/converters/ParseCue'
@@ -68,6 +69,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		const partContext = new PartContext2(context, part.externalId)
 		const livecue = part.cues.filter(cue => cue.type === CueType.Ekstern)
 		const dveCue = part.cues.filter(cue => cue.type === CueType.DVE)
+		const targetCue = part.cues.filter(cue => cue.type === CueType.TargetEngine && cue.engine.match(/full/i))
+		const tlfCue = part.cues.filter(cue => cue.type === CueType.Telefon)
 		const extraParts: BlueprintResultPart[] = []
 		if (
 			livecue.length &&
@@ -86,7 +89,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						true
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
 		if (dveCue.length && part.type === PartType.Kam) {
@@ -103,7 +109,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						true
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
 		if (dveCue.length && part.type === PartType.Kam) {
@@ -120,10 +129,31 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						true
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
-		const tlfCue = part.cues.filter(cue => cue.type === CueType.Telefon)
+		if (targetCue.length && !tlfCue.length && part.cues.length !== 1) {
+			targetCue.forEach((cue: CueDefinitionTargetEngine, j: number) => {
+				extraParts.push(
+					CreatePartCueOnly(
+						partContext,
+						config,
+						part,
+						`${part.externalId}=${j * j ** 2}`,
+						`${part.rawType}`,
+						cue,
+						totalWords
+					)
+				)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
+			})
+		}
 		if (tlfCue.length) {
 			tlfCue.forEach((cue: CueDefinitionTelefon, j) => {
 				const index = part.cues.findIndex(c => _.isEqual(c, cue))
@@ -147,7 +177,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 						totalWords
 					)
 				)
-				part.cues.splice(part.cues.findIndex(c => _.isEqual(c, cue)), 1)
+				part.cues.splice(
+					part.cues.findIndex(c => _.isEqual(c, cue)),
+					1
+				)
 			})
 		}
 		switch (part.type) {
