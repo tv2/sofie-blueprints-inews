@@ -42,7 +42,11 @@ export function EvaluateMOS(
 						: parsedCue.end && parsedCue.end.infiniteMode
 						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
 						: PieceLifespan.Normal,
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
+				sourceLayerId: isTlf
+					? SourceLayer.PgmGraphicsTLF
+					: parsedCue.name.match(/MOSART=L/i)
+					? SourceLayer.PgmPilotOverlay
+					: SourceLayer.PgmPilot,
 				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				content: literal<GraphicsContent>({
@@ -83,7 +87,11 @@ export function EvaluateMOS(
 							}
 					  }),
 				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
+				sourceLayerId: isTlf
+					? SourceLayer.PgmGraphicsTLF
+					: parsedCue.name.match(/MOSART=L/i)
+					? SourceLayer.PgmPilotOverlay
+					: SourceLayer.PgmPilot,
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode:
 					isTlf || isGrafikPart
