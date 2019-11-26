@@ -40,7 +40,9 @@ export function CreatePartIntro(
 		return CreatePartInvalid(partDefinition)
 	}
 
-	const jingle = config.showStyle.BreakerConfig.find(jngl => jngl.BreakerName === parsedJingle.clip)
+	const jingle = config.showStyle.BreakerConfig.find(
+		jngl => jngl.BreakerName.toString().toUpperCase() === parsedJingle.clip.toString().toUpperCase()
+	)
 	if (!jingle) {
 		context.warning(`Jingle ${parsedJingle.clip} is not configured`)
 		return CreatePartInvalid(partDefinition)

@@ -42,7 +42,11 @@ export function EvaluateGrafik(
 ) {
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(
-			templ => templ.iNewsName === parsedCue.template && templ.INewsCode.toString().replace(/=/g, '') === parsedCue.cue
+			templ =>
+				templ.iNewsName === parsedCue.template &&
+				templ.INewsCode.toString()
+					.replace(/=/g, '')
+					.toUpperCase() === parsedCue.cue.toUpperCase()
 		)
 		if (template) {
 			if (template.IsDesign) {
@@ -239,14 +243,18 @@ export function CreateTimingGrafik(
 export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGrafik | CueDefinitionMOS): number {
 	if (config.showStyle.GFXTemplates) {
 		if (cue.type === CueType.Grafik) {
-			const template = config.showStyle.GFXTemplates.find(templ => templ.iNewsName === cue.template)
+			const template = config.showStyle.GFXTemplates.find(
+				templ => templ.iNewsName.toString().toUpperCase() === cue.template.toUpperCase()
+			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
 					return 0
 				}
 			}
 		} else {
-			const template = config.showStyle.GFXTemplates.find(templ => templ.iNewsName === cue.vcpid)
+			const template = config.showStyle.GFXTemplates.find(
+				templ => templ.iNewsName.toString().toUpperCase() === cue.vcpid.toString().toUpperCase()
+			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
 					return 0
@@ -260,7 +268,9 @@ export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGra
 
 export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafik): string {
 	if (config.showStyle.GFXTemplates) {
-		const template = config.showStyle.GFXTemplates.find(templ => templ.iNewsName === cue.template)
+		const template = config.showStyle.GFXTemplates.find(
+			templ => templ.iNewsName.toString().toUpperCase() === cue.template.toString().toUpperCase()
+		)
 		if (template) {
 			return template.VizTemplate.toString()
 		}

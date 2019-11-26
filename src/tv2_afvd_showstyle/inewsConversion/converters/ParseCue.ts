@@ -158,7 +158,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 
 	cue = cue.filter(c => c !== '')
 
-	if (cue[0].match(/^kg ovl-all-out$/) || cue[0].match(/^[#* ]?kg altud$/)) {
+	if (cue[0].match(/^kg ovl-all-out$/i) || cue[0].match(/^[#* ]?kg altud$/i)) {
 		// All out
 		return parseAllOut(cue)
 	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
@@ -171,35 +171,35 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		return parseMOS(cue)
 	} else if (cue[0].match(/[#|*]?cg\d+[ -]pilotdata/i)) {
 		return parseMOS(cue)
-	} else if (cue[0].match(/^EKSTERN=/)) {
+	} else if (cue[0].match(/^EKSTERN=/i)) {
 		// EKSTERN
-		const eksternSource = cue[0].match(/^EKSTERN=(.+)$/)
+		const eksternSource = cue[0].match(/^EKSTERN=(.+)$/i)
 		if (eksternSource) {
 			return {
 				type: CueType.Ekstern,
 				source: eksternSource[1]
 			}
 		}
-	} else if (cue[0].match(/^DVE=/)) {
+	} else if (cue[0].match(/^DVE=/i)) {
 		// DVE
 		return parseDVE(cue)
-	} else if (cue[0].match(/^TELEFON=/)) {
+	} else if (cue[0].match(/^TELEFON=/i)) {
 		// Telefon
 		return parseTelefon(cue)
 	} else if (cue[0].match(/^(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
 		// Target engine
 		return parseTargetEngine(cue)
-	} else if (cue[0].match(/^VIZ=/)) {
+	} else if (cue[0].match(/^VIZ=/i)) {
 		return parseVIZCues(cue)
-	} else if (cue[0].match(/^STUDIE=MIC ON OFF$/)) {
+	} else if (cue[0].match(/^STUDIE=MIC ON OFF$/i)) {
 		return parseMic(cue)
-	} else if (cue[0].match(/^ADLIBPIX=/)) {
+	} else if (cue[0].match(/^ADLIBPIX=/i)) {
 		return parseAdLib(cue)
-	} else if (cue[0].match(/^KOMMANDO=/)) {
+	} else if (cue[0].match(/^KOMMANDO=/i)) {
 		return parseKommando(cue)
-	} else if (cue[0].match(/^LYD=/)) {
+	} else if (cue[0].match(/^LYD=/i)) {
 		return parseLYD(cue)
-	} else if (cue[0].match(/^JINGLE\d+=/)) {
+	} else if (cue[0].match(/^JINGLE\d+=/i)) {
 		return parseJingle(cue)
 	}
 	return {
@@ -222,9 +222,9 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 		if (firstLineValues[3]) {
 			kgCue.textFields.push(firstLineValues[3])
 		}
-	} else if (cue[0].match(/^DIGI=/)) {
+	} else if (cue[0].match(/^DIGI=/i)) {
 		kgCue.cue = 'DIGI'
-		const templateType = cue[0].match(/^DIGI=(.+)$/)
+		const templateType = cue[0].match(/^DIGI=(.+)$/i)
 		if (templateType) {
 			kgCue.template = templateType[1]
 		}
@@ -233,7 +233,7 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 	let textFields = cue.length - 1
 	if (isTime(cue[cue.length - 1])) {
 		kgCue = { ...kgCue, ...parseTime(cue[cue.length - 1]) }
-	} else if (!cue[cue.length - 1].match(/;x.xx/)) {
+	} else if (!cue[cue.length - 1].match(/;x.xx/i)) {
 		textFields += 1
 	} else {
 		kgCue.adlib = true
@@ -313,18 +313,18 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 	}
 
 	cue.forEach(c => {
-		if (c.match(/^DVE=/)) {
-			const template = c.match(/^DVE=(.+)$/)
+		if (c.match(/^DVE=/i)) {
+			const template = c.match(/^DVE=(.+)$/i)
 			if (template) {
 				dvecue.template = template[1]
 			}
-		} else if (c.match(/^INP\d+=/)) {
-			const input = c.match(/^(INP\d)+=(.+)$/)
+		} else if (c.match(/^INP\d+=/i)) {
+			const input = c.match(/^(INP\d)+=(.+)$/i)
 			if (input && input[1] && input[2]) {
 				dvecue.sources[input[1] as keyof DVESources] = input[2]
 			}
-		} else if (c.match(/^BYNAVN=/)) {
-			const labels = c.match(/^BYNAVN=(.+)$/)
+		} else if (c.match(/^BYNAVN=/i)) {
+			const labels = c.match(/^BYNAVN=(.+)$/i)
 			if (labels) {
 				dvecue.labels = labels[1].split(/\/|\\/)
 			}
@@ -341,7 +341,7 @@ function parseTelefon(cue: string[]): CueDefinitionTelefon {
 		type: CueType.Telefon,
 		source: ''
 	}
-	const source = cue[0].match(/^TELEFON=(.+)$/)
+	const source = cue[0].match(/^TELEFON=(.+)$/i)
 	if (source) {
 		telefonCue.source = source[1]
 	}
@@ -366,7 +366,7 @@ function parseVIZCues(cue: string[]): CueDefinitionVIZ {
 		design: ''
 	}
 
-	const design = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/)
+	const design = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
 	if (design) {
 		vizCues.design = design[1]
 	}
@@ -389,11 +389,11 @@ function parseMic(cue: string[]): CueDefinitionMic {
 		mics: {}
 	}
 	cue.forEach(c => {
-		if (!c.match(/^STUDIE=MIC ON OFF$/)) {
+		if (!c.match(/^STUDIE=MIC ON OFF$/i)) {
 			if (isTime(c)) {
 				micCue = { ...micCue, ...parseTime(c) }
 			} else {
-				const micState = c.match(/^(.+)=((?:ON)|(?:OFF))?$/)
+				const micState = c.match(/^(.+)=((?:ON)|(?:OFF))?$/i)
 				if (micState) {
 					micCue.mics[micState[1].toString()] = micState[2] ? micState[2] === 'ON' : false
 				}
@@ -411,20 +411,20 @@ function parseAdLib(cue: string[]) {
 		inputs: {}
 	}
 
-	const variant = cue[0].match(/^ADLIBPIX=(.+)$/)
+	const variant = cue[0].match(/^ADLIBPIX=(.+)$/i)
 	if (variant) {
 		adlib.variant = variant[1]
 	}
 
 	if (cue[1]) {
-		const input = cue[1].match(/^(INP\d)+=(.+)$/)
+		const input = cue[1].match(/^(INP\d)+=(.+)$/i)
 		if (input && input[1] && input[2] && adlib.inputs !== undefined) {
 			adlib.inputs[input[1] as keyof DVESources] = input[2]
 		}
 	}
 
 	if (cue[2]) {
-		const bynavn = cue[2].match(/^BYNAVN=(.)$/)
+		const bynavn = cue[2].match(/^BYNAVN=(.)$/i)
 		if (bynavn) {
 			adlib.bynavn = bynavn[1]
 		}
@@ -456,7 +456,7 @@ function parseLYD(cue: string[]) {
 		variant: ''
 	}
 
-	const command = cue[0].match(/^LYD=(.*)$/)
+	const command = cue[0].match(/^LYD=(.*)$/i)
 	if (command) {
 		lydCue.variant = command[1]
 	}
@@ -473,7 +473,7 @@ function parseJingle(cue: string[]) {
 		type: CueType.Jingle,
 		clip: ''
 	}
-	const clip = cue[0].match(/^JINGLE\d+=(.*)$/)
+	const clip = cue[0].match(/^JINGLE\d+=(.*)$/i)
 	if (clip && clip[1]) {
 		jingleCue.clip = clip[1]
 	}
@@ -489,13 +489,13 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 		engine: ''
 	}
 
-	const engine = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/)
+	const engine = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
 
 	if (engine) {
 		engineCue.engine = engine[1]
 	}
 
-	const wall = cue[0].match(/^SS=/)
+	const wall = cue[0].match(/^SS=/i)
 
 	if (wall) {
 		engineCue.engine = 'WALL'
