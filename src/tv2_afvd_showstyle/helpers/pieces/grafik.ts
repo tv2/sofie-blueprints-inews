@@ -150,7 +150,7 @@ export function EvaluateGrafik(
 
 export function GetSourceLayerForGrafik(name: string) {
 	// TODO: When new cues need adding
-	switch (name) {
+	switch (name.trim()) {
 		case 'arkiv':
 		case 'ident':
 		case 'direkte':
@@ -271,7 +271,7 @@ export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafi
 		const template = config.showStyle.GFXTemplates.find(templ =>
 			templ.iNewsName ? templ.iNewsName.toString().toUpperCase() === cue.template.toString().toUpperCase() : false
 		)
-		if (template) {
+		if (template && template.VizTemplate) {
 			return template.VizTemplate.toString()
 		}
 	}
