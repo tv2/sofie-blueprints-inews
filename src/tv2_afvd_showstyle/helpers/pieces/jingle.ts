@@ -42,8 +42,8 @@ export function EvaluateJingle(
 
 	let file = ''
 
-	const jingle = config.showStyle.BreakerConfig.find(
-		brkr => brkr.BreakerName.toString().toUpperCase() === parsedCue.clip.toUpperCase()
+	const jingle = config.showStyle.BreakerConfig.find(brkr =>
+		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === parsedCue.clip.toUpperCase() : false
 	)
 	if (!jingle) {
 		context.warning(`Jingle ${parsedCue.clip} is not configured`)
