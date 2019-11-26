@@ -83,11 +83,10 @@ export function GetBreakerEffekt(
 					transitionDuration: TimeFromFrames(Number(realBreaker.Duration)),
 					autoNext: realBreaker.Autonext === true,
 					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
-					expectedDuration: TimeFromFrames(
-						Number(realBreaker.Duration) -
-							Number(realBreaker.StartAlpha) -
-							(Number(realBreaker.EndAlpha) + Number(config.studio.CasparPrerollDuration))
-					)
+					expectedDuration:
+						TimeFromFrames(
+							Number(realBreaker.Duration) - Number(realBreaker.StartAlpha) - Number(realBreaker.EndAlpha)
+						) - Number(config.studio.CasparPrerollDuration)
 				}
 			}
 		}
