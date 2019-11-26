@@ -1,5 +1,3 @@
-import * as _ from 'underscore'
-
 import {
 	AtemTransitionStyle,
 	DeviceType,
@@ -12,6 +10,7 @@ import {
 	TimelineObjAtemME,
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
+	TimelineObjCCGHTMLPage,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEElementContinue,
@@ -32,6 +31,7 @@ import {
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
+import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../tv2_afvd_studio/layers'
@@ -503,6 +503,19 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				aux: {
 					input: config.studio.AtemSource.MixMinusDefault
 				}
+			}
+		}),
+
+		// render presenter screen
+		literal<TimelineObjCCGHTMLPage>({
+			id: '',
+			enable: { while: 1 },
+			priority: 0,
+			layer: CasparLLayer.CasparCountdown,
+			content: {
+				deviceType: DeviceType.CASPARCG,
+				type: TimelineContentTypeCasparCg.HTMLPAGE,
+				url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
 			}
 		}),
 
