@@ -43,7 +43,7 @@ export function EvaluateMOS(
 						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
 						: PieceLifespan.Normal,
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
-				outputLayerId: 'pgm',
+				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.name,
@@ -82,7 +82,7 @@ export function EvaluateMOS(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				outputLayerId: 'pgm',
+				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : SourceLayer.PgmPilot,
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode:
