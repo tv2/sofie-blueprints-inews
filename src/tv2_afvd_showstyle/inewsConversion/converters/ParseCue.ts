@@ -165,7 +165,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		// kg (Grafik)
 		return parsekg(cue)
 	} else if (cue[0].match(/ss=/i)) {
-		return parseSS(cue)
+		return parseTargetEngine(cue)
 	} else if (cue[0].match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i)) {
 		// MOS
 		return parseMOS(cue)
@@ -248,19 +248,6 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 	}
 
 	return kgCue
-}
-
-function parseSS(cue: string[]): CueDefinitionUnknown {
-	// TODO: Studio screen
-	let ssCue: CueDefinitionUnknown = {
-		type: CueType.Unknown
-	}
-	cue.forEach(line => {
-		if (isTime(line)) {
-			ssCue = { ...ssCue, ...parseTime(line) }
-		}
-	})
-	return ssCue
 }
 
 function parseMOS(cue: string[]): CueDefinitionMOS {
@@ -506,6 +493,12 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 
 	if (engine) {
 		engineCue.engine = engine[1]
+	}
+
+	const wall = cue[0].match(/^SS=/)
+
+	if (wall) {
+		engineCue.engine = 'WALL'
 	}
 
 	for (let i = 1; i < cue.length; i++) {
