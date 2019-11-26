@@ -14,14 +14,15 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan
+	PieceLifespan,
+	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../../../common/util'
 import { CueDefinitionVIZ } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { FindSourceByName } from '../../../tv2_afvd_studio/helpers/sources'
+import { FindSourceByName, FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { CalculateTime } from './evaluateCues'
 
@@ -107,10 +108,13 @@ export function EvaluateVIZ(
 			context.warning(`No input provided by ${parsedCue.rawType}`)
 			return
 		}
-		const sourceInfo = FindSourceByName(context, config.sources, parsedCue.content.INP1)
+		let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.content.INP1)
 		if (!sourceInfo) {
-			context.warning(`Could not find source ${parsedCue.content.INP1}`)
-			return
+			sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, parsedCue.content.INP1)
+			if (!sourceInfo) {
+				context.warning(`Could not find source ${parsedCue.content.INP1}`)
+				return
+			}
 		}
 		pieces.push(
 			literal<IBlueprintPiece>({
