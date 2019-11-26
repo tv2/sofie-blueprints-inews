@@ -510,7 +510,7 @@ const SEC: ISourceLayer[] = [
 	},
 	{
 		_id: SourceLayer.PgmDesign,
-		_rank: 20,
+		_rank: 30,
 		name: 'VIZ Design',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
@@ -531,7 +531,7 @@ const SEC: ISourceLayer[] = [
 	},
 	{
 		_id: SourceLayer.PgmDVEBackground,
-		_rank: 20,
+		_rank: 40,
 		name: 'DVE Background',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
