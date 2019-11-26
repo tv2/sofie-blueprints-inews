@@ -66,8 +66,8 @@ export function EvaluateGrafik(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
-				name: grafikName(parsedCue),
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(parsedCue.template),
+				name: grafikName(config, parsedCue),
+				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(GetTemplateName(config, parsedCue)),
 				outputLayerId: 'overlay',
 				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: isTlf
@@ -103,7 +103,7 @@ export function EvaluateGrafik(
 			literal<IBlueprintPiece>({
 				_id: '',
 				externalId: partId,
-				name: grafikName(parsedCue),
+				name: grafikName(config, parsedCue),
 				...(isTlf
 					? { enable: { start: 0 } }
 					: {
@@ -112,7 +112,7 @@ export function EvaluateGrafik(
 							}
 					  }),
 				outputLayerId: 'overlay',
-				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(parsedCue.template),
+				sourceLayerId: isTlf ? SourceLayer.PgmGraphicsTLF : GetSourceLayerForGrafik(GetTemplateName(config, parsedCue)),
 				infiniteMode: isTlf
 					? PieceLifespan.OutOnNextPart
 					: parsedCue.end && parsedCue.end.infiniteMode
@@ -214,9 +214,9 @@ export function GetSourceLayerForGrafik(name: string) {
 	return SourceLayer.PgmGraphicsLower // TODO: Maybe some better default?
 }
 
-export function grafikName(parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
+export function grafikName(config: BlueprintConfig, parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
 	if (parsedCue.type === CueType.Grafik) {
-		return `${parsedCue.template ? `${parsedCue.template}` : ''}${parsedCue.textFields
+		return `${parsedCue.template ? `${GetTemplateName(config, parsedCue)}` : ''}${parsedCue.textFields
 			.filter(txt => !txt.match(/^;.\.../))
 			.map(txt => ` - ${txt}`)}`.replace(/,/g, '')
 	} else {
