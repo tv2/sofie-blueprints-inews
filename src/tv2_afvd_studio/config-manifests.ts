@@ -111,6 +111,38 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 31
 	},
 	{
+		id: 'AtemSettings.VizClip',
+		name: 'Viz keyer clip',
+		description: 'Viz keyer clip',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 39.3
+	},
+	{
+		id: 'AtemSettings.VizGain',
+		name: 'Viz keyer gain',
+		description: 'Viz keyer gain',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 20.9
+	},
+	{
+		id: 'AtemSettings.CCGClip',
+		name: 'CasparCG keyer clip',
+		description: 'CasparCG keyer clip',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 39.3
+	},
+	{
+		id: 'AtemSettings.CCGGain',
+		name: 'CasparCG keyer gain',
+		description: 'CasparCG keyer gain',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 20.9
+	},
+	{
 		id: 'AtemSource.SplitArtF',
 		name: 'ATEM Split Screen Art Fill',
 		description: 'ATEM vision mixer input for Split Screen Art Fill',

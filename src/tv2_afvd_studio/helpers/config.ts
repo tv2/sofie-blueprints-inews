@@ -49,6 +49,13 @@ export interface StudioConfig {
 		MixMinusDefault: number
 	}
 
+	AtemSettings: {
+		VizClip: number
+		VizGain: number
+		CCGClip: number
+		CCGGain: number
+	}
+
 	// Dev overrides
 
 	// Constants
