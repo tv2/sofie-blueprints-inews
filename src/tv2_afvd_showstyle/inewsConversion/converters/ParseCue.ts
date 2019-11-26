@@ -157,6 +157,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	}
 
 	cue = cue.filter(c => c !== '')
+	cue = cue.map(c => c.trim())
 
 	if (cue[0].match(/^kg ovl-all-out$/i) || cue[0].match(/^[#* ]?kg altud$/i)) {
 		// All out

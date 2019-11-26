@@ -212,6 +212,22 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('Grafik (kg) - ident_nyhederne with space', () => {
+		const cueGrafik = ['#kg ident_nyhederne ', 'Ident Nyhederne', ';0.01']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.Grafik,
+				template: 'ident_nyhederne',
+				cue: 'kg',
+				start: {
+					seconds: 1
+				},
+				textFields: ['Ident Nyhederne']
+			})
+		)
+	})
+
 	test('Grafik (kg) - All out', () => {
 		const cueGrafik = ['kg ovl-all-out', 'CLEAR OVERLAY', ';0.00']
 		const result = ParseCue(cueGrafik)

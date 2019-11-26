@@ -269,7 +269,7 @@ export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGra
 export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafik): string {
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(templ =>
-			templ.iNewsName ? templ.iNewsName.toString().toUpperCase() === cue.template.toString().toUpperCase() : false
+			templ.iNewsName ? templ.iNewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
 		)
 		if (template && template.VizTemplate.toString().length) {
 			return template.VizTemplate.toString()
