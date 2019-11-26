@@ -43,7 +43,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	})
 	const config = parseConfig(context)
 
-	if (ingestSegment.payload.iNewsStory.meta.float === 'float') {
+	if (ingestSegment.payload.iNewsStory.meta.float === 'float' || ingestSegment.payload.iNewsStory.cues.length === 0) {
 		segment.isHidden = true
 		return {
 			segment,
