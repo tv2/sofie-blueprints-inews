@@ -10,7 +10,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueDefinition, CueType } from '../inewsConversion/converters/ParseCue'
-import { GetBreakerAutoNext } from './effekt'
+import { GetBreakerEffekt } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartCueOnly(
@@ -38,7 +38,7 @@ export function CreatePartCueOnly(
 
 	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID)
 	AddScript(partDefinitionWithID, pieces, partTime)
-	part = { ...part, ...GetBreakerAutoNext(context, config, partDefinitionWithID) }
+	part = { ...part, ...GetBreakerEffekt(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
 		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, true)

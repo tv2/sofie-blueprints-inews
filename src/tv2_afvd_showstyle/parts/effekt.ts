@@ -24,7 +24,7 @@ import { CueDefinitionJingle, CueType } from '../inewsConversion/converters/Pars
 import { SourceLayer } from '../layers'
 import { TimeFromFrames } from './time/frameTime'
 
-export function GetEffektAutoNext(
+export function GetWipeEffekt(
 	context: PartContext,
 	config: BlueprintConfig,
 	part: PartDefinition
@@ -50,7 +50,7 @@ export function GetEffektAutoNext(
 	return {}
 }
 
-export function GetBreakerAutoNext(
+export function GetBreakerEffekt(
 	_context: PartContext,
 	config: BlueprintConfig,
 	part: PartDefinition

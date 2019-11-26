@@ -26,7 +26,7 @@ import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
+import { EffektTransitionPiece, GetWipeEffekt } from './effekt'
 import { CreatePartInvalid } from './invalid'
 import { PartTime } from './time/partTime'
 
@@ -131,7 +131,7 @@ export function CreatePartKam(
 		)
 	}
 
-	part = { ...part, ...GetEffektAutoNext(context, config, partDefinition) }
+	part = { ...part, ...GetWipeEffekt(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
