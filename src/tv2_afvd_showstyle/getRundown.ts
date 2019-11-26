@@ -541,7 +541,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.DSK,
 				dsk: {
-					onAir: true,
+					onAir: false,
 					sources: {
 						fillSource: config.studio.AtemSource.JingleFill,
 						cutSource: config.studio.AtemSource.JingleKey
