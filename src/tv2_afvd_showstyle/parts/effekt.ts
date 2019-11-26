@@ -38,7 +38,7 @@ export function GetEffektAutoNext(
 		const realEffekt = config.showStyle.WipesConfig.find(conf => Number(conf.EffektNumber) === part.effekt)
 		if (realEffekt) {
 			return {
-				transitionPrerollDuration: TimeFromFrames(Number(realEffekt.StartAlpha)),
+				transitionPrerollDuration: Number(config.studio.CasparPrerollDuration),
 				transitionKeepaliveDuration: TimeFromFrames(Number(realEffekt.StartAlpha)),
 				transitionDuration: TimeFromFrames(Number(realEffekt.Duration)),
 				autoNext: true
