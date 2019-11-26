@@ -83,7 +83,9 @@ export function GetBreakerEffekt(
 					transitionDuration: TimeFromFrames(Number(realBreaker.Duration)),
 					autoNext: realBreaker.Autonext === true,
 					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
-					expectedDuration: Number(realBreaker.Duration) - Number(realBreaker.StartAlpha) - Number(realBreaker.EndAlpha)
+					expectedDuration: TimeFromFrames(
+						Number(realBreaker.Duration) - Number(realBreaker.StartAlpha) - Number(realBreaker.EndAlpha)
+					)
 				}
 			}
 		}
