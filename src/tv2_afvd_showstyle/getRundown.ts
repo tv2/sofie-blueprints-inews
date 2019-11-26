@@ -525,8 +525,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					properties: {
 						tie: false,
 						preMultiply: false,
-						clip: 393,
-						gain: 209,
+						clip: config.studio.AtemSettings.VizClip,
+						gain: config.studio.AtemSettings.VizGain,
 						mask: {
 							enabled: false
 						}
@@ -551,8 +551,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					properties: {
 						tie: false,
 						preMultiply: false,
-						clip: 393,
-						gain: 209,
+						clip: config.studio.AtemSettings.CCGClip,
+						gain: config.studio.AtemSettings.CCGGain,
 						mask: {
 							enabled: false
 						}
@@ -584,8 +584,8 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							maskEnabled: false,
 							lumaSettings: {
 								preMultiplied: false,
-								clip: 393,
-								gain: 209
+								clip: config.studio.AtemSettings.CCGClip,
+								gain: config.studio.AtemSettings.CCGGain
 							}
 						}
 					]
