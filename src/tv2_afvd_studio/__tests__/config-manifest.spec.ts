@@ -23,6 +23,12 @@ const blankStudioConfig: StudioConfig = {
 		Default: 0,
 		MixMinusDefault: 0
 	},
+	AtemSettings: {
+		CCGClip: 0,
+		CCGGain: 0,
+		VizClip: 0,
+		VizGain: 0
+	},
 	CasparPrerollDuration: 0,
 	PilotPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
