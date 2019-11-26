@@ -507,6 +507,48 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false,
 		unlimited: false,
 		onPGMClean: false
+	},
+	{
+		_id: SourceLayer.PgmDesign,
+		_rank: 20,
+		name: 'VIZ Design',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	},
+	{
+		_id: SourceLayer.PgmDVEBackground,
+		_rank: 20,
+		name: 'DVE Background',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
 	}
 ]
 
