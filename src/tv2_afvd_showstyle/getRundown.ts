@@ -232,20 +232,17 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	}
 
 	const adlibItems: IBlueprintAdLibPiece[] = []
-	let cameras = 0
-	_.each(config.sources, v => {
-		if (v.type === SourceLayerType.CAMERA) {
-			adlibItems.push(...makeCameraAdLibs(v, cameras))
-			cameras++
-		}
-	})
-	let remotes = cameras
-	_.each(config.sources, v => {
-		if (v.type === SourceLayerType.REMOTE) {
-			adlibItems.push(...makeRemoteAdLibs(v, remotes))
-			remotes++
-		}
-	})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach((o, i) => adlibItems.push(...makeCameraAdLibs(o, i)))
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE)
+		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
+		.forEach((o, i) => adlibItems.push(...makeRemoteAdLibs(o, i)))
+
 	adlibItems.push({
 		externalId: 'delayed',
 		name: `Delayed Playback`,
