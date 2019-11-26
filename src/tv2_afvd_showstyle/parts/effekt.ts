@@ -118,7 +118,6 @@ export function EffektTransitionPiece(
 					path: effektConfig.ClipName.toString(),
 					firstWords: '',
 					lastWords: '',
-					sourceDuration: TimeFromFrames(Number(effektConfig.Duration)),
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TimelineObjCCGMedia>({
 							id: '',
