@@ -253,12 +253,12 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = true
 	}
 
-	/*if (
-		blueprintParts.filter(part => part.part.invalid).length === blueprintParts.length &&
+	if (
+		blueprintParts.filter(part => part.part.invalid === true).length === blueprintParts.length &&
 		ingestSegment.payload.iNewsStory.cues.length === 0
 	) {
 		segment.isHidden = true
-	}*/
+	}
 
 	postProcessPartTimelineObjects(context, config, blueprintParts)
 
