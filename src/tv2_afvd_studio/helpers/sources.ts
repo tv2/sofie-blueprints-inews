@@ -102,13 +102,13 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 				return undefined
 			}
 
-			return _.find(sources, s => s.type === type && s.id === cameraName[1].replace(/minus mic/, '').trim())
+			return _.find(sources, s => s.type === type && s.id === cameraName[1].replace(/minus mic/i, '').trim())
 		case SourceLayerType.REMOTE:
-			const remoteName = id.match(/^(?:LIVE|SKYPE) (\d+).*$/)
+			const remoteName = id.match(/^(?:LIVE|SKYPE) (\d+).*$/i)
 			if (!remoteName) {
 				return undefined
 			}
-			if (id.match(/^LIVE/)) {
+			if (id.match(/^LIVE/i)) {
 				return _.find(sources, s => s.type === type && s.id === remoteName[1])
 			} else {
 				// Skype
