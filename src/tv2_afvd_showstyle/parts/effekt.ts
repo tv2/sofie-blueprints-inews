@@ -69,7 +69,7 @@ export function GetBreakerEffekt(
 		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
 		if (cue) {
 			const realBreaker = config.showStyle.BreakerConfig.find(conf => {
-				return conf.BreakerName
+				return conf.BreakerName && typeof conf.BreakerName === 'string'
 					? conf.BreakerName.toString()
 							.trim()
 							.toUpperCase() === cue.clip.toUpperCase()
@@ -78,11 +78,11 @@ export function GetBreakerEffekt(
 			if (realBreaker) {
 				return {
 					transitionPrerollDuration: Number(config.studio.CasparPrerollDuration),
-					transitionKeepaliveDuration: TimeFromFrames(Number(realBreaker.StartAlpha)),
+					transitionKeepaliveDuration:
+						TimeFromFrames(Number(realBreaker.StartAlpha)) + Number(config.studio.CasparPrerollDuration),
 					transitionDuration: TimeFromFrames(Number(realBreaker.Duration)),
 					autoNext: realBreaker.Autonext === true,
-					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
-					expectedDuration: TimeFromFrames(Number(realBreaker.Duration))
+					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha))
 				}
 			}
 		}
