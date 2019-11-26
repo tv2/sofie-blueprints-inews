@@ -2,7 +2,6 @@ export type UnparsedCue = string[] | null
 
 export enum CueType {
 	Unknown,
-	Ignored_MOS, // Cues intentionally ignored - not required by Sofie
 	Grafik,
 	MOS,
 	Ekstern,
@@ -15,7 +14,8 @@ export enum CueType {
 	Jingle,
 	Design,
 	Profile,
-	TargetEngine
+	TargetEngine,
+	ClearGrafiks
 }
 
 export interface CueTime {
@@ -33,11 +33,6 @@ export interface CueDefinitionBase {
 
 export interface CueDefinitionUnknown extends CueDefinitionBase {
 	type: CueType.Unknown
-}
-
-export interface CueDefinitionIgnoredMOS extends CueDefinitionBase {
-	type: CueType.Ignored_MOS
-	command: UnparsedCue
 }
 
 export interface CueDefinitionGrafik extends CueDefinitionBase {
@@ -133,9 +128,12 @@ export interface CueDefinitionTargetEngine extends CueDefinitionBase {
 	grafik?: CueDefinitionMOS
 }
 
+export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
+	type: CueType.ClearGrafiks
+}
+
 export type CueDefinition =
 	| CueDefinitionUnknown
-	| CueDefinitionIgnoredMOS
 	| CueDefinitionGrafik
 	| CueDefinitionMOS
 	| CueDefinitionEkstern
@@ -149,6 +147,7 @@ export type CueDefinition =
 	| CueDefinitionDesign
 	| CueDefinitionProfile
 	| CueDefinitionTargetEngine
+	| CueDefinitionClearGrafiks
 
 export function ParseCue(cue: UnparsedCue): CueDefinition {
 	if (!cue || cue.length === 0) {
@@ -159,13 +158,9 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 
 	cue = cue.filter(c => c !== '')
 
-	if (cue[0].match(/^kg ovl-all-out$/)) {
+	if (cue[0].match(/^kg ovl-all-out$/) || cue[0].match(/^[#* ]?kg altud$/)) {
 		// All out
-		// TODO: STOP IGNORING MAYBE!
-		return {
-			type: CueType.Ignored_MOS,
-			command: cue
-		}
+		return parseAllOut(cue)
 	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
 		// kg (Grafik)
 		return parsekg(cue)
@@ -523,6 +518,20 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 	}
 
 	return engineCue
+}
+
+function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
+	let clearCue: CueDefinitionClearGrafiks = {
+		type: CueType.ClearGrafiks
+	}
+
+	cue.forEach(c => {
+		if (isTime(c)) {
+			clearCue = { ...clearCue, ...parseTime(c) }
+		}
+	})
+
+	return clearCue
 }
 
 export function isTime(line: string) {

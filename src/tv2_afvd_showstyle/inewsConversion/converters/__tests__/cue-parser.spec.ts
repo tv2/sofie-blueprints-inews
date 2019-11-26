@@ -1,6 +1,7 @@
 import { literal } from '../../../../common/util'
 import {
 	CueDefinition,
+	CueDefinitionClearGrafiks,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionTargetEngine,
@@ -216,9 +217,24 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg ovl-all-out', 'CLEAR OVERLAY', ';0.00']
 		const result = ParseCue(cueGrafik)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Ignored_MOS,
-				command: ['kg ovl-all-out', 'CLEAR OVERLAY', ';0.00']
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('Grafik (kg) - altud', () => {
+		const cueGrafik = ['kg altud', 'CLEAR OVERLAY', ';0.00']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					seconds: 0
+				}
 			})
 		)
 	})
