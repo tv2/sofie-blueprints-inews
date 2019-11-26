@@ -73,9 +73,9 @@ export function GetBreakerAutoNext(
 			)
 			if (realBreaker) {
 				return {
-					transitionPrerollDuration: TimeFromFrames(Number(realBreaker.StartAlpha)),
+					transitionPrerollDuration: Number(config.studio.CasparPrerollDuration),
 					transitionKeepaliveDuration: TimeFromFrames(Number(realBreaker.StartAlpha)),
-					transitionDuration: TimeFromFrames(Number(realBreaker.StartAlpha)),
+					transitionDuration: TimeFromFrames(Number(realBreaker.Duration)),
 					autoNext: true,
 					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
 					expectedDuration: TimeFromFrames(Number(realBreaker.Duration))
