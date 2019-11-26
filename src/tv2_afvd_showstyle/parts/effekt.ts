@@ -126,7 +126,7 @@ export function EffektTransitionPiece(
 					lastWords: '',
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TimelineObjCCGMedia>({
-							id: 'jingleClip',
+							id: '',
 							enable: {
 								start: 0
 							},
@@ -142,7 +142,7 @@ export function EffektTransitionPiece(
 						literal<TimelineObjAtemDSK>({
 							id: '',
 							enable: {
-								start: `#jingleClip.start` + Number(config.studio.CasparPrerollDuration)
+								start: Number(config.studio.CasparPrerollDuration)
 							},
 							priority: 1,
 							layer: AtemLLayer.AtemDSKEffect,
