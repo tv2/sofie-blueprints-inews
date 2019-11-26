@@ -15,6 +15,8 @@ import {
 	CueDefinitionEkstern,
 	CueDefinitionGrafik,
 	CueDefinitionJingle,
+	CueDefinitionMOS,
+	CueDefinitionTargetEngine,
 	CueDefinitionTelefon,
 	CueDefinitionUnknown,
 	CueType,
@@ -1205,6 +1207,49 @@ describe('Body parser', () => {
 					cues: [cueGrafik1],
 					script:
 						'Danmarks udenrigsminister Jeppe Kofod talte i går aftes i telefon med sin amerikanske kollega, Mike Pompeo. De to diskuterede blandt andet Grønland.\n',
+					fields,
+					modified: 0
+				})
+			])
+		)
+	})
+
+	test('Merge target cues', () => {
+		const bodyTarget = '\r\n<p><a idref="0"><a idref="1"></a></p>\r\n<p></p>\r\n'
+		const cuesTarget = [
+			['GRAFIK=FULL', 'INP1=', 'INP='],
+			['#cg4 pilotdata', 'TELEFON/KORT//LIVE_KABUL', 'VCPID=2552305', 'ContinueCount=3', 'TELEFON/KORT//LIVE_KABU']
+		]
+		const result = ParseBody('00000000001', '', bodyTarget, cuesTarget, fields, 0)
+		expect(result).toEqual(
+			literal<PartDefinition[]>([
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-0',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
+					cues: [
+						literal<CueDefinitionTargetEngine>({
+							type: CueType.TargetEngine,
+							rawType: 'GRAFIK=FULL',
+							engine: 'FULL',
+							content: {
+								INP1: '',
+								INP: ''
+							},
+							grafik: literal<CueDefinitionMOS>({
+								type: CueType.MOS,
+								name: 'TELEFON/KORT//LIVE_KABUL',
+								vcpid: 2552305,
+								start: {
+									seconds: 0
+								},
+								continueCount: 3,
+								engine: '4'
+							})
+						})
+					],
+					script: '',
 					fields,
 					modified: 0
 				})

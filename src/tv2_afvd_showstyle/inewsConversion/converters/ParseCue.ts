@@ -130,6 +130,7 @@ export interface CueDefinitionTargetEngine extends CueDefinitionBase {
 	content: {
 		[key: string]: string
 	}
+	grafik?: CueDefinitionMOS
 }
 
 export type CueDefinition =
