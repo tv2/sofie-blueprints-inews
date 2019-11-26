@@ -49,7 +49,8 @@ export enum CasparLLayer {
 	CasparCGLYD = 'casparcg_audio_lyd',
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
-	CasparCGDVEFrame = 'casparcg_dve_frame'
+	CasparCGDVEFrame = 'casparcg_dve_frame',
+	CasparCountdown = 'casparcg_countdown'
 }
 
 export enum SisyfosLLAyer {

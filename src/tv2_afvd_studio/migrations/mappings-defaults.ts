@@ -56,6 +56,14 @@ export default literal<BlueprintMappings>({
 		channel: 1,
 		layer: 120
 	}),
+	casparcg_countdown: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar02',
+		lookahead: LookaheadMode.NONE,
+		previewWhenNotOnAir: true,
+		channel: 3,
+		layer: 120
+	}),
 	casparcg_audio_lyd: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar02',
