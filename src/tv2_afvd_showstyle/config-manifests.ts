@@ -261,7 +261,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				ClipName: '',
 				Duration: 0,
 				StartAlpha: 0,
-				EndAlpha: 0
+				EndAlpha: 0,
+				Autonext: true
 			}
 		],
 		columns: [

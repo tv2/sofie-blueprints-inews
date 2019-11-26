@@ -11,7 +11,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
-import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
+import { EffektTransitionPiece, GetWipeEffekt } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartGrafik(
@@ -31,7 +31,7 @@ export function CreatePartGrafik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	let pieces: IBlueprintPiece[] = []
 
-	part = { ...part, ...GetEffektAutoNext(context, config, partDefinition) }
+	part = { ...part, ...GetWipeEffekt(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, false, true)

@@ -13,7 +13,7 @@ import { MakeContentServer } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
+import { EffektTransitionPiece, GetWipeEffekt } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartServer(
@@ -64,7 +64,7 @@ export function CreatePartServer(
 		})
 	)
 
-	part = { ...part, ...GetEffektAutoNext(context, config, partDefinition) }
+	part = { ...part, ...GetWipeEffekt(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)

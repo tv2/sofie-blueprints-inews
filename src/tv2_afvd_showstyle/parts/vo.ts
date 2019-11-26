@@ -15,7 +15,7 @@ import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece, GetEffektAutoNext } from './effekt'
+import { EffektTransitionPiece, GetWipeEffekt } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartVO(
@@ -74,7 +74,7 @@ export function CreatePartVO(
 		})
 	)
 
-	part = { ...part, ...GetEffektAutoNext(context, config, partDefinition) }
+	part = { ...part, ...GetWipeEffekt(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
