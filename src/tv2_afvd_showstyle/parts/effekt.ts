@@ -141,7 +141,20 @@ export function EffektTransitionPiece(
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.DSK,
 								dsk: {
-									onAir: true
+									onAir: true,
+									sources: {
+										fillSource: config.studio.AtemSource.JingleFill,
+										cutSource: config.studio.AtemSource.JingleKey
+									},
+									properties: {
+										tie: false,
+										preMultiply: false,
+										clip: 393,
+										gain: 209,
+										mask: {
+											enabled: false
+										}
+									}
 								}
 							}
 						}),
