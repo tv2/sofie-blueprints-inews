@@ -47,50 +47,89 @@ export function CreatePartKam(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	let pieces: IBlueprintPiece[] = []
-	const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
-	if (sourceInfoCam === undefined) {
-		return CreatePartInvalid(partDefinition)
-	}
-	const atemInput = sourceInfoCam.port
-
-	pieces.push(
-		literal<IBlueprintPiece>({
-			_id: '',
-			externalId: partDefinition.externalId,
-			name: part.title,
-			enable: { start: 0 },
-			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmCam,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			content: {
-				studioLabel: '',
-				switcherInput: atemInput,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TimelineObjAtemME>({
-						id: ``,
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: AtemLLayer.AtemMEProgram,
-						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.ME,
-							me: {
-								input: Number(atemInput),
-								transition: partDefinition.transition
-									? TransitionFromString(partDefinition.transition.style)
-									: AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(partDefinition)
+	if (partDefinition.rawType.match(/kam cs 3/i)) {
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: 'CS 3 (JINGLE)',
+				enable: { start: 0 },
+				outputLayerId: 'pgm',
+				sourceLayerId: SourceLayer.PgmJingle,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: {
+					studioLabel: '',
+					switcherInput: config.studio.AtemSource.JingleFill,
+					timelineObjects: literal<TimelineObjectCoreExt[]>([
+						literal<TimelineObjAtemME>({
+							id: ``,
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: AtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: config.studio.AtemSource.JingleFill,
+									transition: partDefinition.transition
+										? TransitionFromString(partDefinition.transition.style)
+										: AtemTransitionStyle.CUT,
+									transitionSettings: TransitionSettings(partDefinition)
+								}
 							}
-						}
-					}),
+						})
+					])
+				}
+			})
+		)
+	} else {
+		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		if (sourceInfoCam === undefined) {
+			return CreatePartInvalid(partDefinition)
+		}
+		const atemInput = sourceInfoCam.port
 
-					...GetSisyfosTimelineObjForCamera(partDefinition.rawType)
-				])
-			}
-		})
-	)
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: part.title,
+				enable: { start: 0 },
+				outputLayerId: 'pgm',
+				sourceLayerId: SourceLayer.PgmCam,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: {
+					studioLabel: '',
+					switcherInput: atemInput,
+					timelineObjects: literal<TimelineObjectCoreExt[]>([
+						literal<TimelineObjAtemME>({
+							id: ``,
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: AtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: Number(atemInput),
+									transition: partDefinition.transition
+										? TransitionFromString(partDefinition.transition.style)
+										: AtemTransitionStyle.CUT,
+									transitionSettings: TransitionSettings(partDefinition)
+								}
+							}
+						}),
+
+						...GetSisyfosTimelineObjForCamera(partDefinition.rawType)
+					])
+				}
+			})
+		)
+	}
 
 	part = { ...part, ...GetEffektAutoNext(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
