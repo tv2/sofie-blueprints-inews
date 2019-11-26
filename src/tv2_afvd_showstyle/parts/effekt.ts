@@ -143,7 +143,7 @@ export function EffektTransitionPiece(
 
 						literal<TimelineObjAtemDSK>({
 							id: '',
-							enable: { while: '1' },
+							enable: { start: 0 },
 							priority: 0,
 							layer: AtemLLayer.AtemDSKEffect,
 							content: {
