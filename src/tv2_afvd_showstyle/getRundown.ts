@@ -524,7 +524,9 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: true,
+						preMultiply: false,
+						clip: 393,
+						gain: 209,
 						mask: {
 							enabled: false
 						}
@@ -548,7 +550,9 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					},
 					properties: {
 						tie: false,
-						preMultiply: true,
+						preMultiply: false,
+						clip: 393,
+						gain: 209,
 						mask: {
 							enabled: false
 						}
@@ -579,7 +583,9 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							cutSource: config.studio.AtemSource.JingleKey,
 							maskEnabled: false,
 							lumaSettings: {
-								preMultiplied: true
+								preMultiplied: false,
+								clip: 393,
+								gain: 209
 							}
 						}
 					]
