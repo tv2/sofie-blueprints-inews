@@ -105,7 +105,9 @@ export function EvaluateCues(
 					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
 					break
 				default:
-					if (cue.type !== CueType.Unknown) {
+					if (cue.type !== CueType.Unknown && cue.type !== CueType.Profile && cue.type !== CueType.Mic) {
+						// TODO: Profile -> Change the profile as defined in VIZ device settings
+						// TODO: Mic -> For the future
 						context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
 					}
 					break
