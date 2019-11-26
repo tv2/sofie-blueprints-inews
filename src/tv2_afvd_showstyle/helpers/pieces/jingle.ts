@@ -33,8 +33,6 @@ export function EvaluateJingle(
 	adlib?: boolean,
 	_rank?: number
 ) {
-	const duration = Number(part.fields.tapeTime) * 1000 || 0
-
 	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
 		return
@@ -61,8 +59,7 @@ export function EvaluateJingle(
 				externalId: part.externalId,
 				name: parsedCue.clip,
 				enable: {
-					start: 0,
-					duration
+					start: 0
 				},
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				outputLayerId: 'jingle',
@@ -74,7 +71,6 @@ export function EvaluateJingle(
 					path: file,
 					firstWords: '',
 					lastWords: '',
-					sourceDuration: duration,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 							id: '',
@@ -86,8 +82,7 @@ export function EvaluateJingle(
 							content: {
 								deviceType: DeviceType.CASPARCG,
 								type: TimelineContentTypeCasparCg.MEDIA,
-								file,
-								length: duration
+								file
 							}
 						}),
 
