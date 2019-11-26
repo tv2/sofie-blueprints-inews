@@ -67,10 +67,8 @@ export function GetBreakerEffekt(
 	| {} {
 	if (part.cues) {
 		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
-		_context.warning('cue not: ' + cue.toString())
 		if (cue) {
 			const realBreaker = config.showStyle.BreakerConfig.find(conf => {
-				_context.warning('breaker:' + conf.BreakerName.toString().toUpperCase())
 				return conf.BreakerName
 					? conf.BreakerName.toString()
 							.trim()
