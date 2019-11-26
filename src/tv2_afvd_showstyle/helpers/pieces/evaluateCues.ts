@@ -102,7 +102,7 @@ export function EvaluateCues(
 					EvaluateDesign(config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 					break
 				case CueType.TargetEngine:
-					EvaluateTargetEngine(context, config, pieces, partDefinition.externalId, cue)
+					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
 					break
 				default:
 					if (cue.type !== CueType.Unknown) {

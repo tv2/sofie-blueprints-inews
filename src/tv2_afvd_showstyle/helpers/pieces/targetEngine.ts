@@ -1,18 +1,26 @@
 import { DeviceType, TimelineContentTypeAtem, TimelineObjAtemAUX, TSRTimelineObj } from 'timeline-state-resolver-types'
-import { CameraContent, IBlueprintPiece, PartContext, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import {
+	CameraContent,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece,
+	PartContext,
+	PieceLifespan
+} from 'tv-automation-sofie-blueprints-integration'
 import _ = require('underscore')
 import { literal } from '../../../common/util'
+import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { CueDefinitionTargetEngine } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { FindSourceByName } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { CalculateTime } from './evaluateCues'
+import { EvaluateMOS } from './mos'
 
 export function EvaluateTargetEngine(
 	context: PartContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
+	adlibPeces: IBlueprintAdLibPiece[],
 	partId: string,
 	parsedCue: CueDefinitionTargetEngine
 ) {
@@ -61,4 +69,9 @@ export function EvaluateTargetEngine(
 			})
 		})
 	)
+
+	if (parsedCue.grafik) {
+		// TODO target engine
+		EvaluateMOS(config, pieces, adlibPeces, partId, parsedCue.grafik)
+	}
 }

@@ -1,4 +1,4 @@
-import { CueDefinition, ParseCue, UnparsedCue } from './ParseCue'
+import { CueDefinition, CueDefinitionMOS, CueDefinitionTargetEngine, CueType, ParseCue, UnparsedCue } from './ParseCue'
 
 export enum PartType {
 	Unknown,
@@ -224,7 +224,40 @@ export function ParseBody(
 	}
 	definitions.push(definition)
 
+	definitions.forEach(partDefinition => {
+		if (partDefinition.cues.length) {
+			while (FindTargetPair(partDefinition)) {
+				// NO-OP
+			}
+		}
+	})
+
 	return definitions
+}
+
+function FindTargetPair(partDefinition: PartDefinition): boolean {
+	const index = partDefinition.cues.findIndex(cue => cue.type === CueType.TargetEngine)
+	if (index === -1) {
+		// No more targets
+		return false
+	}
+
+	if (index + 1 < partDefinition.cues.length) {
+		if (partDefinition.cues[index + 1].type === CueType.MOS) {
+			const mosCue = partDefinition.cues[index + 1] as CueDefinitionMOS
+			const targetCue = partDefinition.cues[index] as CueDefinitionTargetEngine
+			targetCue.grafik = mosCue
+			partDefinition.cues[index] = targetCue
+			partDefinition.cues.splice(index + 1, 1)
+		} else {
+			// Target with no grafik
+			return false
+		}
+	} else {
+		return false
+	}
+
+	return true
 }
 
 function addCue(definition: PartDefinition, line: string, cues: UnparsedCue[]) {
