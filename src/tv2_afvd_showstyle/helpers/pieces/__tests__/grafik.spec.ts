@@ -58,7 +58,7 @@ describe('grafik piece', () => {
 				},
 				infiniteMode: PieceLifespan.Normal,
 				outputLayerId: 'overlay',
-				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				sourceLayerId: SourceLayer.PgmGraphicsOverlay,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -69,7 +69,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlayBund,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -116,7 +116,7 @@ describe('grafik piece', () => {
 				name: 'bund - Odense - Copenhagen',
 				infiniteMode: PieceLifespan.Normal,
 				outputLayerId: 'overlay',
-				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				sourceLayerId: SourceLayer.PgmGraphicsOverlay,
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -128,7 +128,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlayBund,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -181,7 +181,7 @@ describe('grafik piece', () => {
 				},
 				infiniteMode: PieceLifespan.Normal,
 				outputLayerId: 'overlay',
-				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				sourceLayerId: SourceLayer.PgmGraphicsOverlay,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -192,7 +192,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlayBund,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -247,7 +247,7 @@ describe('grafik piece', () => {
 				},
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				outputLayerId: 'overlay',
-				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				sourceLayerId: SourceLayer.PgmGraphicsOverlay,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -258,7 +258,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlayBund,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

@@ -110,6 +110,27 @@ const OVERLAY: ISourceLayer[] = [
 		onPGMClean: false
 	},
 	{
+		_id: SourceLayer.PgmGraphicsOverlay,
+		_rank: 55,
+		name: 'Overlay',
+		abbreviation: 'O',
+		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: true,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	},
+	{
 		_id: SourceLayer.PgmPilotOverlay,
 		_rank: 60,
 		name: 'Overlay',
