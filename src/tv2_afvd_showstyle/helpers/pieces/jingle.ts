@@ -4,6 +4,7 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineObjAtemDSK,
+	TimelineObjAtemME,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosAny
 } from 'timeline-state-resolver-types'
@@ -105,12 +106,45 @@ export function EvaluateJingle(
 									properties: {
 										tie: false,
 										preMultiply: false,
-										clip: 393,
-										gain: 209,
+										clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
+										gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
 										mask: {
 											enabled: false
 										}
 									}
+								}
+							}
+						}),
+						literal<TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: Number(config.studio.CasparPrerollDuration)
+							},
+							priority: 0,
+							layer: AtemLLayer.AtemCleanUSKEffect,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									upstreamKeyers: [
+										{
+											upstreamKeyerId: 0
+										},
+										{
+											upstreamKeyerId: 0,
+											onAir: true,
+											mixEffectKeyType: 0,
+											flyEnabled: false,
+											fillSource: config.studio.AtemSource.JingleFill,
+											cutSource: config.studio.AtemSource.JingleKey,
+											maskEnabled: false,
+											lumaSettings: {
+												preMultiplied: false,
+												clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
+												gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
+											}
+										}
+									]
 								}
 							}
 						}),
