@@ -584,9 +584,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				me: {
 					upstreamKeyers: [
 						{
-							upstreamKeyerId: 0
-						},
-						{
 							upstreamKeyerId: 0,
 							onAir: false,
 							mixEffectKeyType: 0,
