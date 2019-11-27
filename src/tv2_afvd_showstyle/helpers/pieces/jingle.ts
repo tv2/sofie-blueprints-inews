@@ -88,7 +88,9 @@ export function EvaluateJingle(
 
 						literal<TimelineObjAtemDSK>({
 							id: '',
-							enable: { while: '1' },
+							enable: {
+								start: Number(config.studio.CasparPrerollDuration)
+							},
 							priority: 0,
 							layer: AtemLLayer.AtemDSKEffect,
 							content: {
