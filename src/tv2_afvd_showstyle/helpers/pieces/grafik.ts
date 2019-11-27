@@ -232,14 +232,13 @@ export function grafikName(config: BlueprintConfig, parsedCue: CueDefinitionGraf
 export function CreateTimingGrafik(
 	config: BlueprintConfig,
 	cue: CueDefinitionGrafik | CueDefinitionMOS
-): { start: number; end: number } {
-	const ret: { start: number; end: number } = { start: 0, end: 0 }
+): { start: number; end?: number } {
+	const ret: { start: number; end?: number } = { start: 0, end: 0 }
 	cue.start ? (ret.start = CalculateTime(cue.start)) : (ret.start = 0)
 
 	cue.end
 		? cue.end.infiniteMode
-			? // tslint:disable-next-line: no-unused-expression
-			  undefined
+			? (ret.end = undefined)
 			: (ret.end = ret.start + CalculateTime(cue.end))
 		: (ret.end = ret.start + GetGrafikDuration(config, cue))
 
