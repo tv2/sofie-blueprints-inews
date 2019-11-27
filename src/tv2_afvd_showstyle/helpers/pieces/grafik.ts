@@ -227,7 +227,7 @@ export function CreateTimingGrafik(
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
-	const end = cue.end ? CalculateTime(cue.end) : ret.start + GetGrafikDuration(config, cue)
+	const end = cue.end && !cue.end.infiniteMode ? CalculateTime(cue.end) : ret.start + GetGrafikDuration(config, cue)
 	ret.end = end
 
 	return ret
