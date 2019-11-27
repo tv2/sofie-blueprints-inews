@@ -31,7 +31,10 @@ export function GetBreakerEffekt(
 			})
 			if (realBreaker) {
 				return {
-					expectedDuration: TimeFromFrames(Number(realBreaker.Duration)),
+					expectedDuration:
+						TimeFromFrames(Number(realBreaker.Duration)) -
+						TimeFromFrames(Number(realBreaker.StartAlpha)) -
+						TimeFromFrames(Number(realBreaker.EndAlpha)),
 					transitionKeepaliveDuration:
 						TimeFromFrames(Number(realBreaker.StartAlpha)) + config.studio.CasparPrerollDuration + 1,
 					transitionPrerollDuration: config.studio.CasparPrerollDuration,
