@@ -114,7 +114,8 @@ export function EvaluateLYD(
 											deviceType: DeviceType.CASPARCG,
 											type: TimelineContentTypeCasparCg.MEDIA,
 											file,
-											channelLayout: 'bed'
+											channelLayout: 'bed',
+											loop: true
 										}
 									}),
 									literal<TimelineObjSisyfosMessage>({
