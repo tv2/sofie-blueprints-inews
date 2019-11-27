@@ -113,7 +113,7 @@ export function CreatePartEffekt(
 	}
 
 	let part = literal<IBlueprintPart>({
-		externalId: partDefinition.externalId,
+		externalId: `${partDefinition.externalId}-EFFEKT-${partDefinition.effekt}`,
 		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
 		metaData: {},
 		typeVariant: ''
