@@ -34,15 +34,16 @@ export function GetBreakerEffekt(
 					expectedDuration:
 						TimeFromFrames(Number(realBreaker.Duration)) -
 						TimeFromFrames(Number(realBreaker.StartAlpha)) -
-						TimeFromFrames(Number(realBreaker.EndAlpha)),
+						TimeFromFrames(Number(realBreaker.EndAlpha)) +
+						80,
 					transitionKeepaliveDuration:
-						TimeFromFrames(Number(realBreaker.StartAlpha)) + config.studio.CasparPrerollDuration + 2,
+						TimeFromFrames(Number(realBreaker.StartAlpha)) + config.studio.CasparPrerollDuration + 1,
 					transitionPrerollDuration: config.studio.CasparPrerollDuration,
 					transitionDuration:
 						TimeFromFrames(Number(realBreaker.Duration)) -
 						TimeFromFrames(Number(realBreaker.StartAlpha)) -
 						TimeFromFrames(Number(realBreaker.EndAlpha)),
-					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)) + config.studio.CasparPrerollDuration + 2,
+					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)) + config.studio.CasparPrerollDuration + 1,
 					autoNext: true
 				}
 			}
