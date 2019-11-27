@@ -358,6 +358,22 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: ''
+			},
+			{
+				id: 'FadeIn',
+				name: 'Fade In',
+				description: 'ms duration to fade in file',
+				type: ConfigManifestEntryType.NUMBER,
+				required: true,
+				defaultVal: 1000
+			},
+			{
+				id: 'FadeOut',
+				name: 'Fade Out',
+				description: 'ms duration to fade out file',
+				type: ConfigManifestEntryType.NUMBER,
+				required: true,
+				defaultVal: 1000
 			}
 		]
 	}

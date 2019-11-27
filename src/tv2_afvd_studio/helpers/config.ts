@@ -55,6 +55,11 @@ export interface StudioConfig {
 		CCGGain: number
 	}
 
+	AudioBedSettings: {
+		fadeIn: number
+		fadeOut: number
+	}
+
 	// Dev overrides
 
 	// Constants
