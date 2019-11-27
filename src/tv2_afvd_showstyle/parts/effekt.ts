@@ -98,7 +98,7 @@ export function EffektTransitionPiece(
 						literal<TimelineObjAtemDSK>({
 							id: '',
 							enable: {
-								start: Number(config.studio.CasparPrerollDuration)
+								start: 0
 							},
 							priority: 1,
 							layer: AtemLLayer.AtemDSKEffect,
