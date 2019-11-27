@@ -3,7 +3,8 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineObjCCGMedia,
-	TimelineObjSisyfosMessage
+	TimelineObjSisyfosMessage,
+	Transition
 } from 'timeline-state-resolver-types'
 import {
 	BaseContent,
@@ -41,6 +42,8 @@ export function EvaluateLYD(
 	}
 
 	const file = conf ? conf.FileName.toString() : parsedCue.variant
+	const fadeIn = conf ? Number(conf.FadeIn) : undefined
+	const fadeOut = conf ? Number(conf.FadeOut) : undefined
 
 	if (adlib) {
 		adlibPieces.push(
@@ -51,40 +54,7 @@ export function EvaluateLYD(
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
 				infiniteMode: PieceLifespan.Infinite,
-				content: literal<BaseContent>({
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-								...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
-							},
-							priority: 1,
-							layer: CasparLLayer.CasparCGLYD,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file,
-								channelLayout: 'bed',
-								loop: true
-							}
-						}),
-						literal<TimelineObjSisyfosMessage>({
-							id: '',
-							enable: {
-								start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-								...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceAudiobed,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 1
-							}
-						})
-					])
-				})
+				content: LydContent(config, file, parsedCue, fadeIn, fadeOut)
 			})
 		)
 	} else {
@@ -95,48 +65,89 @@ export function EvaluateLYD(
 				name: parsedCue.variant,
 				...CreateTimingEnable(parsedCue),
 				outputLayerId: 'musik',
-				sourceLayerId: SourceLayer.PgmAudioBed,
+				sourceLayerId: GetLYDSourceLayer(file),
 				infiniteMode: PieceLifespan.Infinite,
 				virtual: stop,
 				...(stop
 					? {
-							content: literal<BaseContent>({
-								timelineObjects: literal<TimelineObjectCoreExt[]>([
-									literal<TimelineObjCCGMedia>({
-										id: '',
-										enable: {
-											start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-											...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
-										},
-										priority: 1,
-										layer: CasparLLayer.CasparCGLYD,
-										content: {
-											deviceType: DeviceType.CASPARCG,
-											type: TimelineContentTypeCasparCg.MEDIA,
-											file,
-											channelLayout: 'bed',
-											loop: true
-										}
-									}),
-									literal<TimelineObjSisyfosMessage>({
-										id: '',
-										enable: {
-											start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-											...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
-										},
-										priority: 1,
-										layer: SisyfosLLAyer.SisyfosSourceAudiobed,
-										content: {
-											deviceType: DeviceType.SISYFOS,
-											type: TimelineContentTypeSisyfos.SISYFOS,
-											isPgm: 1
-										}
-									})
-								])
-							})
+							content: LydContent(config, file, parsedCue, fadeIn, fadeOut)
 					  }
 					: {})
 			})
 		)
 	}
+}
+
+export function GetLYDSourceLayer(_name: string): SourceLayer {
+	return SourceLayer.PgmAudioBed
+}
+
+export function LydContent(
+	config: BlueprintConfig,
+	file: string,
+	parsedCue: CueDefinitionLYD,
+	fadeIn?: number,
+	fadeOut?: number
+): BaseContent {
+	const id = `${file.trim().replace(/ /g, '_')}`
+	return literal<BaseContent>({
+		timelineObjects: literal<TimelineObjectCoreExt[]>([
+			literal<TimelineObjCCGMedia>({
+				id,
+				enable: {
+					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
+					...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
+				},
+				priority: 1,
+				layer: CasparLLayer.CasparCGLYD,
+				content: {
+					deviceType: DeviceType.CASPARCG,
+					type: TimelineContentTypeCasparCg.MEDIA,
+					file,
+					channelLayout: 'bed',
+					loop: true,
+					mixer: {
+						volume: 100
+					},
+					transitions: {
+						inTransition: {
+							type: Transition.MIX,
+							duration: fadeIn !== undefined ? fadeIn : config.studio.AudioBedSettings.fadeIn
+						}
+					}
+				},
+				keyframes: [
+					{
+						id: 'kf0',
+						enable: {
+							start: `#${id}.end - ${fadeOut !== undefined ? fadeOut : config.studio.AudioBedSettings.fadeOut}`
+						},
+						content: {
+							mixer: {
+								inTransition: {
+									type: Transition.MIX,
+									duration: fadeOut !== undefined ? fadeOut : config.studio.AudioBedSettings.fadeOut
+								},
+								volume: 0
+							}
+						}
+					}
+				]
+			}),
+			literal<TimelineObjSisyfosMessage>({
+				id: '',
+				enable: {
+					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
+					...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
+				},
+				priority: 1,
+				layer: SisyfosLLAyer.SisyfosSourceAudiobed,
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: 1
+				}
+			})
+		])
+	})
 }

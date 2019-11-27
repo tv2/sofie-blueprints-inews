@@ -175,6 +175,22 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
+		id: 'AudioBedSettings.fadeIn',
+		name: 'Bed Fade In',
+		description: 'Default fade in duration for audio beds',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
+	},
+	{
+		id: 'AudioBedSettings.fadeOut',
+		name: 'Bed Fade Out',
+		description: 'Default fade out duration for audio beds',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
+	},
+	{
 		id: 'CasparPrerollDuration',
 		name: 'Caspar preroll duration',
 		description: 'ms of preroll before switching to caspar',

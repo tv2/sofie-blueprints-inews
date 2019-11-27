@@ -29,6 +29,10 @@ const blankStudioConfig: StudioConfig = {
 		VizClip: 0,
 		VizGain: 0
 	},
+	AudioBedSettings: {
+		fadeIn: 0,
+		fadeOut: 0
+	},
 	CasparPrerollDuration: 0,
 	PilotPrerollDuration: 0,
 	ClipFileExtension: 'mxf',

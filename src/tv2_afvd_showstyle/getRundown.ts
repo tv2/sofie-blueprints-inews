@@ -756,6 +756,22 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					label: channel.label
 				}
 			})
+		}),
+
+		literal<TimelineObjCCGMedia>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: CasparLLayer.CasparCGLYD,
+			content: {
+				deviceType: DeviceType.CASPARCG,
+				type: TimelineContentTypeCasparCg.MEDIA,
+				loop: true,
+				file: 'EMPTY',
+				mixer: {
+					volume: 0
+				}
+			}
 		})
 	]
 }
