@@ -254,7 +254,8 @@ export function ParseBody(
 }
 
 function FindTargetPair(partDefinition: PartDefinition): boolean {
-	const index = partDefinition.cues.findIndex(cue => cue.type === CueType.TargetEngine)
+	const index = partDefinition.cues.findIndex(cue => cue.type === CueType.TargetEngine && !cue.grafik)
+
 	if (index === -1) {
 		// No more targets
 		return false
@@ -267,6 +268,7 @@ function FindTargetPair(partDefinition: PartDefinition): boolean {
 			targetCue.grafik = mosCue
 			partDefinition.cues[index] = targetCue
 			partDefinition.cues.splice(index + 1, 1)
+			return true
 		} else {
 			// Target with no grafik
 			return false
@@ -274,8 +276,6 @@ function FindTargetPair(partDefinition: PartDefinition): boolean {
 	} else {
 		return false
 	}
-
-	return true
 }
 
 function addCue(definition: PartDefinition, line: string, cues: UnparsedCue[]) {
