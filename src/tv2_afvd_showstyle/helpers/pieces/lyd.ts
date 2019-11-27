@@ -33,7 +33,7 @@ export function EvaluateLYD(
 	rank?: number
 ) {
 	const conf = config.showStyle.LYDConfig.find(lyd =>
-		lyd.iNewsName ? lyd.iNewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
+		lyd.INewsName ? lyd.INewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
 	)
 	const stop = !!parsedCue.variant.match(/STOP/) // TODO: STOP 1 / STOP 2 etc.
 

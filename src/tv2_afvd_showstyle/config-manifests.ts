@@ -81,9 +81,11 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
 		/*
 		Graphic template setup								
+		Grafik template (viz)	
+		Source layer
+		Layer mapping
 		inews code	
 		inews name	
-		Grafik template (viz)	
 		destination	default out (default, S, B, O)	
 		var 1 name	
 		var 2 name 	
@@ -91,15 +93,17 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		*/
 		id: 'GFXTemplates',
 		name: 'GFX Templates',
-		description: 'Graphics Template Setup',
+		description: 'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are aslo required. VizTemplate is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNes i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [
 			{
 				_id: '',
+				VizTemplate: '',
+				SourceLayer: '',
+				LayerMapping: '',
 				INewsCode: '',
 				INewsName: '',
-				VizTemplate: '',
 				VizDestination: '',
 				OutType: '', // (default(''), S, B, O)
 				Argument1: '',
@@ -109,23 +113,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		],
 		columns: [
 			{
-				id: 'INewsCode',
-				name: 'iNews Command',
-				description: 'The code as it will appear in iNews',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: ''
-			},
-			{
-				id: 'iNewsName',
-				name: 'iNews Name',
-				description: 'The name after the code',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: ''
-			},
-			{
-				id: 'VizTemplate',
+				id: 'VizTemplate (**)',
 				name: 'Viz Template Name',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
@@ -133,11 +121,51 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: ''
 			},
 			{
-				id: 'VizDestination',
+				id: 'SourceLayer (**)',
+				name: 'Source layer',
+				description: 'The ID of the source layer to place the piece on in Sofie UI',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: ''
+			},
+			{
+				id: 'LayerMapping',
+				name: 'Viz Template Name',
+				description: 'The name of the Viz Template',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: ''
+			},
+			{
+				id: 'LayerMapping (**)',
+				name: 'Layer mapping',
+				description: 'The Sofie Layer mapping to use in playback. This will ensure proper viz transition logic by matching the viz layers.',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: ''
+			},
+			{
+				id: 'INewsCode (*)',
+				name: 'iNews Command',
+				description: 'The code as it will appear in iNews',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: ''
+			},
+			{
+				id: 'INewsName (*)',
+				name: 'iNews Name',
+				description: 'The name after the code',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: ''
+			},
+			{
+				id: 'VizDestination (*)',
 				name: 'Viz Destination',
 				description: 'The name of the Viz Engine',
 				type: ConfigManifestEntryType.STRING,
-				required: true,
+				required: false,
 				defaultVal: ''
 			},
 			{
@@ -145,7 +173,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				name: 'Out type',
 				description: 'The type of out, none follow timecode, S stays on to ??, B stays on to ??, O stays on to ??',
 				type: ConfigManifestEntryType.STRING,
-				required: true,
+				required: false,
 				defaultVal: ''
 			},
 			{
@@ -153,7 +181,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				name: 'Variable 1',
 				description: 'Argument passed to Viz',
 				type: ConfigManifestEntryType.STRING,
-				required: true,
+				required: false,
 				defaultVal: ''
 			},
 			{
@@ -161,7 +189,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				name: 'Variable 2',
 				description: 'Argument passed to Viz',
 				type: ConfigManifestEntryType.STRING,
-				required: true,
+				required: false,
 				defaultVal: ''
 			},
 			{
@@ -338,13 +366,13 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: [
 			{
 				_id: '',
-				iNewsName: '',
+				INewsName: '',
 				FileName: ''
 			}
 		],
 		columns: [
 			{
-				id: 'iNewsName',
+				id: 'INewsName',
 				name: 'iNews Name',
 				description: 'Name of LYD as in iNews',
 				type: ConfigManifestEntryType.STRING,
