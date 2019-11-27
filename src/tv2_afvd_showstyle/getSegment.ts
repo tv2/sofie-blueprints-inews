@@ -159,9 +159,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					1
 				)
 			})
-			if (part.cues.length === 0) {
-				part.type = PartType.Unknown
-			}
 		}
 		if (tlfCue.length) {
 			tlfCue.forEach((cue: CueDefinitionTelefon, j) => {
