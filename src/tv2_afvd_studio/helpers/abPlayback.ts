@@ -301,7 +301,8 @@ function updateObjectsToMediaPlayer(
 		} else if (obj.content.deviceType === DeviceType.SISYFOS) {
 			if (obj.layer === SisyfosLLAyer.SisyfosSourceClipPending) {
 				// TODO: Change when adding more servers
-				obj.layer = playerId === 0 ? SisyfosLLAyer.SisyfosSourceServerA : SisyfosLLAyer.SisyfosSourceServerB
+				context.warning(playerId.toString())
+				context.warning(typeof playerId)
 			} else if (obj.lookaheadForLayer === SisyfosLLAyer.SisyfosSourceClipPending) {
 				// This works on the assumption that layer will contain lookaheadForLayer, but not the exact syntax.
 				// Hopefully this will be durable to any potential future core changes
