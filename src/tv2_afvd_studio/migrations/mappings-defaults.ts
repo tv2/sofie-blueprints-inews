@@ -422,12 +422,27 @@ export default literal<BlueprintMappings>({
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
+	viz_layer_overlay_ident: literal<MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		lookahead: LookaheadMode.NONE
+	}),
 	viz_layer_overlay_topt: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_bund: literal<MappingVizMSE & BlueprintMapping>({
+	viz_layer_overlay_lower: literal<MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		lookahead: LookaheadMode.NONE
+	}),
+	viz_layer_overlay_headline: literal<MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		lookahead: LookaheadMode.NONE
+	}),
+	viz_layer_overlay_tema: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
