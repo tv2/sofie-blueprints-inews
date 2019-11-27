@@ -332,6 +332,52 @@ describe('Cue parser', () => {
 
 	test('MOS object', () => {
 		const cueMOS = [
+			']] S3.0 M 0 [[',
+			'cg4 ]] 2 YNYBB 0 [[ pilotdata',
+			'Senderplan/23-10-2019',
+			'VCPID=2565134',
+			'ContinueCount=-1',
+			'Senderplan/23-10-2019'
+		]
+		const result = ParseCue(cueMOS)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.MOS,
+				name: 'Senderplan/23-10-2019',
+				vcpid: 2565134,
+				continueCount: -1,
+				start: {
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('MOS object', () => {
+		const cueMOS = [
+			']] S3.0 M 0 [[',
+			'cg4 ]] 3 YNYAB 0 [[ pilotdata',
+			'Senderplan/23-10-2019',
+			'VCPID=2565134',
+			'ContinueCount=-1',
+			'Senderplan/23-10-2019'
+		]
+		const result = ParseCue(cueMOS)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.MOS,
+				name: 'Senderplan/23-10-2019',
+				vcpid: 2565134,
+				continueCount: -1,
+				start: {
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('MOS object', () => {
+		const cueMOS = [
 			'#cg4 pilotdata',
 			'Senderplan/23-10-2019',
 			'VCPID=2552305',

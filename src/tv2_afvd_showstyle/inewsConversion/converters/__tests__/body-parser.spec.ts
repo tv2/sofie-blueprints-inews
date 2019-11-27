@@ -1210,6 +1210,83 @@ describe('Body parser', () => {
 		)
 	})
 
+	test('Merge target cues', () => {
+		const bodyTarget =
+			'\r\n<p></p>\r\n<p></p>\r\n<p><cc>LOAD PILOT GRAFIK ON FULLSCREEN CHANNEL</cc></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="2"></a></p>\r\n<p><a idref="3"></a></p>\r\n<p></p>\r\n<p></p>\r\n'
+		const cuesTarget = [
+			['GRAFIK=FULL', 'INP1=', 'INP2='],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 2 YNYBB 0 [[ pilotdata',
+				'Senderplan/23-10-2019',
+				'VCPID=2565134',
+				'ContinueCount=-1',
+				'Senderplan/23-10-2019'
+			],
+			['GRAFIK=FULL', 'INP1=', 'INP2='],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 3 YNYAB 0 [[ pilotdata',
+				'Senderplan/23-10-2019',
+				'VCPID=2565134',
+				'ContinueCount=-1',
+				'Senderplan/23-10-2019'
+			]
+		]
+		const result = ParseBody('00000000001', '', bodyTarget, cuesTarget, fields, 0)
+		expect(result).toEqual(
+			literal<PartDefinition[]>([
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-0',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
+					cues: [
+						literal<CueDefinitionTargetEngine>({
+							type: CueType.TargetEngine,
+							rawType: 'GRAFIK=FULL',
+							engine: 'FULL',
+							content: {
+								INP1: '',
+								INP2: ''
+							},
+							grafik: literal<CueDefinitionMOS>({
+								type: CueType.MOS,
+								name: 'Senderplan/23-10-2019',
+								vcpid: 2565134,
+								start: {
+									seconds: 0
+								},
+								continueCount: -1
+							})
+						}),
+						literal<CueDefinitionTargetEngine>({
+							type: CueType.TargetEngine,
+							rawType: 'GRAFIK=FULL',
+							engine: 'FULL',
+							content: {
+								INP1: '',
+								INP2: ''
+							},
+							grafik: literal<CueDefinitionMOS>({
+								type: CueType.MOS,
+								name: 'Senderplan/23-10-2019',
+								vcpid: 2565134,
+								start: {
+									seconds: 0
+								},
+								continueCount: -1
+							})
+						})
+					],
+					script: '',
+					fields,
+					modified: 0
+				})
+			])
+		)
+	})
+
 	test('Merge wall cues', () => {
 		const bodyTarget = '\r\n<p><a idref="0"><a idref="1"></a></p>\r\n<p></p>\r\n'
 		const cuesTarget = [
