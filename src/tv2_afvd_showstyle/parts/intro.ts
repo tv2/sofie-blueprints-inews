@@ -59,8 +59,7 @@ export function CreatePartIntro(
 		externalId: partDefinition.externalId,
 		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
 		metaData: {},
-		typeVariant: '',
-		autoNext: true
+		typeVariant: ''
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
