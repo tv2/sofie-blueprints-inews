@@ -128,9 +128,6 @@ export function EvaluateJingle(
 								me: {
 									upstreamKeyers: [
 										{
-											upstreamKeyerId: 0
-										},
-										{
 											upstreamKeyerId: 0,
 											onAir: true,
 											mixEffectKeyType: 0,
