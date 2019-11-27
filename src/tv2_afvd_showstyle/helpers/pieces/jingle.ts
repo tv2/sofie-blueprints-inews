@@ -92,7 +92,7 @@ export function EvaluateJingle(
 							enable: {
 								start: Number(config.studio.CasparPrerollDuration)
 							},
-							priority: 0,
+							priority: 1,
 							layer: AtemLLayer.AtemDSKEffect,
 							content: {
 								deviceType: DeviceType.ATEM,
@@ -120,7 +120,7 @@ export function EvaluateJingle(
 							enable: {
 								start: Number(config.studio.CasparPrerollDuration)
 							},
-							priority: 0,
+							priority: 1,
 							layer: AtemLLayer.AtemCleanUSKEffect,
 							content: {
 								deviceType: DeviceType.ATEM,
