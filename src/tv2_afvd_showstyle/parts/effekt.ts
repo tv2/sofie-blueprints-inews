@@ -1,27 +1,7 @@
-import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemDSK,
-	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny
-} from 'timeline-state-resolver-types'
-import {
-	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext,
-	PieceLifespan,
-	TimelineObjectCoreExt,
-	TransitionContent,
-	VTContent
-} from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../common/util'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { IBlueprintPart, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { BlueprintConfig } from '../helpers/config'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueDefinitionJingle, CueType } from '../inewsConversion/converters/ParseCue'
-import { SourceLayer } from '../layers'
 import { TimeFromFrames } from './time/frameTime'
 
 export function GetBreakerEffekt(
