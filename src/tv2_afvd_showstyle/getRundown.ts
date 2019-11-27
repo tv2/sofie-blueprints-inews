@@ -290,6 +290,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						start: 0,
 						duration: 1000
 					},
+					priority: 100,
 					layer: VizLLayer.VizLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
@@ -316,6 +317,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						start: 0,
 						duration: 1000
 					},
+					priority: 100,
 					layer: VizLLayer.VizLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
