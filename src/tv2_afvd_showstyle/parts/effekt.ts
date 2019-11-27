@@ -35,7 +35,7 @@ export function GetBreakerEffekt(
 						TimeFromFrames(Number(realBreaker.Duration)) -
 						TimeFromFrames(Number(realBreaker.StartAlpha)) -
 						TimeFromFrames(Number(realBreaker.EndAlpha)) +
-						TimeFromFrames(config.studio.ATEMDelay),
+						TimeFromFrames(config.studio.ATEMDelay * 2),
 					transitionKeepaliveDuration:
 						TimeFromFrames(Number(realBreaker.StartAlpha)) +
 						config.studio.CasparPrerollDuration +
