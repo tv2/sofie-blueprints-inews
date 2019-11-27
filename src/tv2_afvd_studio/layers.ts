@@ -89,6 +89,8 @@ export enum SisyfosLLAyer {
 
 export enum VizLLayer {
 	VizLLayerOverlay = 'viz_layer_overlay',
+	VizLLayerOverlayBund = 'viz_layer_overlay_bund',
+	VizLLayerOverlayTopt = 'viz_layer_overlay_topt',
 	VizLLayerPilot = 'viz_layer_pilot',
 	VizLLayerDesign = 'viz_layer_design',
 	VizLLayerAdLibs = 'viz_layer_adlibs'
