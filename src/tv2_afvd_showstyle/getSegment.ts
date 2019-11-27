@@ -22,6 +22,7 @@ import {
 } from './inewsConversion/converters/ParseCue'
 import { SourceLayer } from './layers'
 import { CreatePartCueOnly } from './parts/cueonly'
+import { CreatePartEffekt } from './parts/effekt'
 import { CreatePartGrafik } from './parts/grafik'
 import { CreatePartIntro } from './parts/intro'
 import { CreatePartInvalid } from './parts/invalid'
@@ -67,6 +68,11 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	for (let i = 0; i < parsedParts.length; i++) {
 		const part = parsedParts[i]
 		const partContext = new PartContext2(context, part.externalId)
+
+		if (part.effekt !== undefined) {
+			blueprintParts.push(CreatePartEffekt(partContext, config, part, totalWords))
+		}
+
 		const livecue = part.cues.filter(cue => cue.type === CueType.Ekstern)
 		const dveCue = part.cues.filter(cue => cue.type === CueType.DVE)
 		const targetCue = part.cues.filter(cue => cue.type === CueType.TargetEngine && cue.engine.match(/full/i))
