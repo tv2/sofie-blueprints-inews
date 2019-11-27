@@ -8,7 +8,7 @@ export function GetBreakerEffekt(
 	_context: PartContext,
 	config: BlueprintConfig,
 	part: PartDefinition
-): Pick<IBlueprintPart, 'expectedDuration' | 'autoNext'> | {} {
+): Pick<IBlueprintPart, 'expectedDuration' | 'autoNext' | 'transitionKeepaliveDuration'> | {} {
 	if (part.cues) {
 		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
 		if (cue) {
@@ -22,6 +22,7 @@ export function GetBreakerEffekt(
 			if (realBreaker) {
 				return {
 					expectedDuration: TimeFromFrames(Number(realBreaker.Duration)),
+					transitionKeepaliveDuration: TimeFromFrames(Number(realBreaker.StartAlpha)),
 					autoNext: true
 				}
 			}
