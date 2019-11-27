@@ -43,7 +43,7 @@ export function EvaluateGrafik(
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(
 			templ =>
-				templ.iNewsName === parsedCue.template &&
+				templ.INewsName === parsedCue.template &&
 				templ.INewsCode.toString()
 					.replace(/=/g, '')
 					.toUpperCase() === parsedCue.cue.toUpperCase()
@@ -247,7 +247,7 @@ export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGra
 	if (config.showStyle.GFXTemplates) {
 		if (cue.type === CueType.Grafik) {
 			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.iNewsName ? templ.iNewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
+				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
 			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
@@ -256,7 +256,7 @@ export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGra
 			}
 		} else {
 			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.iNewsName ? templ.iNewsName.toString().toUpperCase() === cue.vcpid.toString().toUpperCase() : false
+				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.vcpid.toString().toUpperCase() : false
 			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
@@ -272,7 +272,7 @@ export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGra
 export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafik): string {
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(templ =>
-			templ.iNewsName ? templ.iNewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
+			templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
 		)
 		if (template && template.VizTemplate.toString().length) {
 			return template.VizTemplate.toString()
