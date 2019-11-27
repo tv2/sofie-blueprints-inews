@@ -588,7 +588,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 						},
 						{
 							upstreamKeyerId: 0,
-							onAir: true,
+							onAir: false,
 							mixEffectKeyType: 0,
 							flyEnabled: false,
 							fillSource: config.studio.AtemSource.JingleFill,
