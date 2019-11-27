@@ -107,7 +107,7 @@ export function EvaluateCues(
 					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
 					break
 				case CueType.ClearGrafiks:
-					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue)
+					// EvaluateClearGrafiks(pieces, partDefinition.externalId, cue)
 					break
 				default:
 					if (cue.type !== CueType.Unknown && cue.type !== CueType.Profile && cue.type !== CueType.Mic) {
