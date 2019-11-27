@@ -75,7 +75,7 @@ describe('telefon', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlayBund,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

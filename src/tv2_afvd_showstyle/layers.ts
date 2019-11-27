@@ -14,6 +14,7 @@ export enum SourceLayer {
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
 	PgmGraphicsTema = 'studio0_graphicsTema',
 	PgmGraphicsTLF = 'studio0_graphicsTelefon',
+	PgmGraphicsOverlay = 'studio0_overlay',
 	PgmDelayed = 'studio0_delayed',
 
 	// Note: there is a regex in core to ignore some DVE layers. That will need updating if adding more
