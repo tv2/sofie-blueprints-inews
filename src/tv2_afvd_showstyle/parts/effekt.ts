@@ -8,7 +8,9 @@ export function GetBreakerEffekt(
 	_context: PartContext,
 	config: BlueprintConfig,
 	part: PartDefinition
-): Pick<IBlueprintPart, 'expectedDuration' | 'autoNext' | 'transitionKeepaliveDuration'> | {} {
+):
+	| Pick<IBlueprintPart, 'expectedDuration' | 'autoNext' | 'transitionKeepaliveDuration' | 'transitionPrerollDuration'>
+	| {} {
 	if (part.cues) {
 		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
 		if (cue) {
@@ -23,8 +25,8 @@ export function GetBreakerEffekt(
 				return {
 					expectedDuration: TimeFromFrames(Number(realBreaker.Duration)),
 					transitionKeepaliveDuration:
-						TimeFromFrames(Number(realBreaker.StartAlpha)) +
-						TimeFromFrames(Number(config.studio.CasparPrerollDuration)),
+						TimeFromFrames(Number(realBreaker.StartAlpha)) + config.studio.CasparPrerollDuration,
+					transitionPrerollDuration: config.studio.CasparPrerollDuration,
 					autoNext: true
 				}
 			}
