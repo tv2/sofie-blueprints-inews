@@ -241,13 +241,13 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		}
 	}
 
-	blueprintParts.forEach(part => {
+	/*blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration) {
 			part.part.expectedDuration =
 				(Number(ingestSegment.payload.iNewsStory.fields.audioTime) * 1000 || 0) / (blueprintParts.length - serverParts)
 		}
-	})
+	})*/
 
 	if (blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length) {
 		segment.isHidden = true
