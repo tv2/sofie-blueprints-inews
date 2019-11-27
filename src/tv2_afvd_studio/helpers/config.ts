@@ -35,7 +35,6 @@ export interface StudioConfig {
 	SourcesSkype: string
 	ABMediaPlayers: string
 	ABPlaybackDebugLogging: boolean
-
 	AtemSource: {
 		DSK1F: number
 		DSK1K: number
@@ -62,6 +61,7 @@ export interface StudioConfig {
 	CasparPrerollDuration: number
 	PilotPrerollDuration: number
 	DVEPrerollDuration: number
+	ATEMDelay: number
 }
 
 export function applyToConfig(
