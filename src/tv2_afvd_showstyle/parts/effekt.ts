@@ -86,8 +86,7 @@ export function EffektTransitionPiece(
 				externalId: part.externalId,
 				name: `EFFEKT ${part.effekt}`,
 				enable: {
-					start: 0,
-					duration: TimeFromFrames(Number(effektConfig.Duration))
+					start: 0
 				},
 				outputLayerId: 'jingle',
 				sourceLayerId: SourceLayer.PgmJingle,
