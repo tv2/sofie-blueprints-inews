@@ -197,5 +197,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 1000
+	},
+	{
+		id: 'ATEMDelay',
+		name: 'ATEM Delay',
+		description: 'Frames of latency in ATEM',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1
 	}
 ]

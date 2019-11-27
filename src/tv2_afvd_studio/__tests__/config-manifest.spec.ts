@@ -33,7 +33,8 @@ const blankStudioConfig: StudioConfig = {
 	PilotPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
 	ClipSourcePath: '/',
-	DVEPrerollDuration: 0
+	DVEPrerollDuration: 0,
+	ATEMDelay: 1
 }
 
 function getObjectKeys(obj: any): string[] {
