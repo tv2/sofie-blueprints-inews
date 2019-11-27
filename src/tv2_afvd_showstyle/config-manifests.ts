@@ -114,16 +114,16 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		],
 		columns: [
 			{
-				id: 'VizTemplate (**)',
-				name: 'Viz Template Name',
+				id: 'VizTemplate',
+				name: 'Viz Template Name (**)',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: ''
 			},
 			{
-				id: 'SourceLayer (**)',
-				name: 'Source layer',
+				id: 'SourceLayer',
+				name: 'Source layer (**)',
 				description: 'The ID of the source layer to place the piece on in Sofie UI',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
@@ -131,15 +131,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'LayerMapping',
-				name: 'Viz Template Name',
-				description: 'The name of the Viz Template',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: ''
-			},
-			{
-				id: 'LayerMapping (**)',
-				name: 'Layer mapping',
+				name: 'Layer mapping (**)',
 				description:
 					'The Sofie Layer mapping to use in playback. This will ensure proper viz transition logic by matching the viz layers.',
 				type: ConfigManifestEntryType.STRING,
@@ -147,24 +139,24 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: ''
 			},
 			{
-				id: 'INewsCode (*)',
-				name: 'iNews Command',
+				id: 'INewsCode',
+				name: 'iNews Command (*)',
 				description: 'The code as it will appear in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: ''
 			},
 			{
-				id: 'INewsName (*)',
-				name: 'iNews Name',
+				id: 'INewsName',
+				name: 'iNews Name (*)',
 				description: 'The name after the code',
 				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: ''
 			},
 			{
-				id: 'VizDestination (*)',
-				name: 'Viz Destination',
+				id: 'VizDestination',
+				name: 'Viz Destination (*)',
 				description: 'The name of the Viz Engine',
 				type: ConfigManifestEntryType.STRING,
 				required: false,
