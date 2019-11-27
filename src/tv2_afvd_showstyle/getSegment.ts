@@ -215,7 +215,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				blueprintParts.push(CreatePartVO(partContext, config, part, totalWords))
 				break
 			case PartType.Unknown:
-				blueprintParts.push(CreatePartUnknown(partContext, config, part, totalWords))
+				if (part.cues.length) {
+					blueprintParts.push(CreatePartUnknown(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.Slutord:
 				blueprintParts.push(CreatePartInvalid(part))
