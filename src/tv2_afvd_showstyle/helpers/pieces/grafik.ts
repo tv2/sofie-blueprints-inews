@@ -234,13 +234,11 @@ export function CreateTimingGrafik(
 	cue: CueDefinitionGrafik | CueDefinitionMOS
 ): { start: number; end?: number } {
 	const ret: { start: number; end?: number } = { start: 0, end: 0 }
-	cue.start ? (ret.start = CalculateTime(cue.start)) : (ret.start = 0)
+	const start = cue.start ? CalculateTime(cue.start) : 0
+	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
-	cue.end
-		? cue.end.infiniteMode
-			? (ret.end = undefined)
-			: (ret.end = ret.start + CalculateTime(cue.end))
-		: (ret.end = ret.start + GetGrafikDuration(config, cue))
+	const end = cue.end ? CalculateTime(cue.end) : ret.start + GetGrafikDuration(config, cue)
+	ret.end = end
 
 	return ret
 }

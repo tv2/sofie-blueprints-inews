@@ -206,4 +206,70 @@ describe('grafik piece', () => {
 			})
 		])
 	})
+
+	test('kg bund infinite', () => {
+		const cue: CueDefinitionGrafik = {
+			type: CueType.Grafik,
+			template: 'bund',
+			cue: 'kg',
+			textFields: ['Odense', 'Copenhagen'],
+			start: {
+				seconds: 10
+			},
+			end: {
+				infiniteMode: 'B'
+			}
+		}
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const partId = '0000000001'
+		EvaluateGrafik(
+			{
+				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
+				studio: (defaultStudioConfig as unknown) as StudioConfig,
+				sources: [],
+				mediaPlayers: []
+			},
+			pieces,
+			adLibPieces,
+			partId,
+			cue,
+			cue.adlib ? cue.adlib : false,
+			false
+		)
+		expect(pieces).toEqual([
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partId,
+				name: 'bund - Odense - Copenhagen',
+				enable: {
+					start: 10000
+				},
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				outputLayerId: 'overlay',
+				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				content: literal<GraphicsContent>({
+					fileName: 'bund',
+					path: 'bund',
+					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
+						literal<TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: VizLLayer.VizLLayerOverlay,
+							content: {
+								deviceType: DeviceType.VIZMSE,
+								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'bund',
+								templateData: ['Odense', 'Copenhagen'],
+								channelName: 'FULL1'
+							}
+						})
+					])
+				})
+			})
+		])
+	})
 })

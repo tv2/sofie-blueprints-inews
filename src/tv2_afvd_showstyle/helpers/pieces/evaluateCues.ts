@@ -223,7 +223,11 @@ export function InfiniteMode(mode: 'B' | 'S' | 'O', defaultLifespan: PieceLifesp
 	return defaultLifespan
 }
 
-export function CalculateTime(time: CueTime) {
+export function CalculateTime(time: CueTime): number | undefined {
+	if (time.infiniteMode) {
+		return
+	}
+
 	let result = 0
 	if (time.seconds) {
 		result += time.seconds * 1000
