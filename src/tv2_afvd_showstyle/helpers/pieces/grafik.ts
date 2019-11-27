@@ -227,17 +227,23 @@ export function CreateTimingGrafik(
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
+	const duration = GetGrafikDuration(config, cue)
 	const end = cue.end
 		? cue.end.infiniteMode
 			? undefined
 			: CalculateTime(cue.end)
-		: ret.start + GetGrafikDuration(config, cue)
+		: duration
+		? ret.start + duration
+		: undefined
 	ret.end = end
 
 	return ret
 }
 
-export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGrafik | CueDefinitionMOS): number {
+export function GetGrafikDuration(
+	config: BlueprintConfig,
+	cue: CueDefinitionGrafik | CueDefinitionMOS
+): number | undefined {
 	if (config.showStyle.GFXTemplates) {
 		if (cue.type === CueType.Grafik) {
 			const template = config.showStyle.GFXTemplates.find(templ =>
@@ -245,7 +251,7 @@ export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGra
 			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return 0
+					return undefined
 				}
 			}
 		} else {
@@ -254,7 +260,7 @@ export function GetGrafikDuration(config: BlueprintConfig, cue: CueDefinitionGra
 			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return 0
+					return undefined
 				}
 			}
 		}
