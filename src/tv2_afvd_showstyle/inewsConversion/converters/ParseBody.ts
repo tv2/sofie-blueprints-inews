@@ -5,7 +5,6 @@ export enum PartType {
 	Kam,
 	Server,
 	VO,
-	Live,
 	Teknik,
 	Grafik,
 	INTRO,
@@ -60,11 +59,6 @@ export interface PartDefinitionTeknik extends PartDefinitionBase {
 	variant: {}
 }
 
-export interface PartDefinitionLive extends PartDefinitionBase {
-	type: PartType.Live
-	variant: {}
-}
-
 export interface PartDefinitionGrafik extends PartDefinitionBase {
 	type: PartType.Grafik
 	variant: {}
@@ -92,7 +86,6 @@ export type PartDefinition =
 	| PartDefinitionKam
 	| PartDefinitionServer
 	| PartDefinitionTeknik
-	| PartDefinitionLive
 	| PartDefinitionGrafik
 	| PartDefinitionVO
 	| PartDefinitionIntro
@@ -102,7 +95,6 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionKam, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionServer, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionTeknik, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionLive, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionGrafik, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionVO, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionIntro, 'type' | 'variant' | 'effekt' | 'transition'>
@@ -162,17 +154,8 @@ export function ParseBody(
 				.trim()
 
 			if (typeStr) {
-				if (!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|ATTACK|TEKNIK|LIVE|GRAFIK|VO|VOSB|SLUTORD)+\b/gi)) {
-					// Live types have bullet points (usually questions to ask)
-					if (definition.type === PartType.Live) {
-						const scriptBullet = line.match(/<p><pi>(.*)?<\/pi><\/p>/)
-						if (scriptBullet) {
-							const trimscript = scriptBullet[1].trim()
-							if (trimscript) {
-								definition.script += `${trimscript}\n`
-							}
-						}
-					} else if (!!line.match(/<p><pi>(.*)?<\/pi><\/p>/)) {
+				if (!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|ATTACK|TEKNIK|GRAFIK|VO|VOSB|SLUTORD)+\b/gi)) {
+					if (!!line.match(/<p><pi>(.*)?<\/pi><\/p>/)) {
 						// Red text notes
 					} else {
 						if (
@@ -349,12 +332,6 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 	} else if (firstToken.match(/TEKNIK/)) {
 		return {
 			type: PartType.Teknik,
-			variant: {},
-			...definition
-		}
-	} else if (firstToken.match(/LIVE/)) {
-		return {
-			type: PartType.Live,
 			variant: {},
 			...definition
 		}

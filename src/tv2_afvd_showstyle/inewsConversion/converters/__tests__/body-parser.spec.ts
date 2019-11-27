@@ -3,7 +3,6 @@ import {
 	ParseBody,
 	PartDefinition,
 	PartDefinitionKam,
-	PartDefinitionLive,
 	PartDefinitionServer,
 	PartDefinitionSlutord,
 	PartDefinitionUnknown,
@@ -162,12 +161,12 @@ describe('Body parser', () => {
 		expect(result).toEqual(
 			literal<PartDefinition[]>([
 				{
-					type: PartType.Live,
+					type: PartType.Unknown,
 					cues: [cueUnknown, cueGrafik1, cueEkstern1],
 					script: 'Thid id thr trext for the next DVE\nScript here\n',
 					variant: {},
 					externalId: '00000000001-0',
-					rawType: 'LIVE',
+					rawType: '',
 					fields: {},
 					modified: 0
 				}
@@ -367,23 +366,12 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1],
 					script: 'Divya Das med fra London\n',
 					variant: {
 						name: '2'
 					},
 					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Live,
-					rawType: 'LIVE',
-					cues: [cueEkstern1],
-					script:
-						'- Angela Merkel har accepteret at give Johnson 30 dage til at løse problemet med den såkaldte backstop. Hvordan er den udmelding blevet modtaget i Storbritannien?\n- Emmanuel Macron har indtil nu afvist at genforhandle brexit-aftalen. Så hvad skal Boris Johnson have ud af dagens besøg i Paris?\n- Hvad skal ændre sig, hvis briterne ikke skal forlade EU uden en aftale den 31. oktober?\n',
-					variant: {},
-					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -393,7 +381,7 @@ describe('Body parser', () => {
 
 	test('test9', () => {
 		const body9 =
-			'\r\n<p><cc>HUSK AT BOOKE DENNE LIVE!!</cc></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"><a idref="2"></a></a></p>\r\n<p><cc>Husk at skrive bynavn med VERSALER efter "BYNAVN=" og efter "#kg direkte"</cc></p>\r\n<p></p>\r\n<p><a idref="3"> <cc>Kilde til optagelse på select-feed.</cc></a></p>\r\n<p></p>\r\n<p>Vi har også dig, Kristian Mouritzen, Sikkerhedspolitisk korrespondent på Berlingske med på en forbindelse. </p>\r\n<p></p>\r\n<p>Du har skrevet en analyse af forholdet mellem USA og Danmark efter Trump i et interview kalder Mette Frederiksens kommentare for "nasty". </p>\r\n<p></p>\r\n<p>Nogle politiske analystikere er ude og hylde Mette Frederiksen for sine handlinger, mens andre kalder det usmart. Er det her udelukkende en retorisk armlægningskonkurrence, eller skal vi forvente, at det udskudte besøg også vil få konsekvenser for forholdet mellem Danmark og USA på længere sigt? </p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>Husk at lave en BUNDT. Opret den med tidsangivelse x.xx.</cc></p>\r\n<p><a idref="4"></a></p>\r\n<p></p>\r\n<p><pi>Skal vi forvente at Mette Frederiksen vil forsøge at glatte den nuværende konflikt ud, så Trump på et tidspunkt vil genoverveje besøget til Danmark? </pi></p>\r\n<p></p>\r\n<p><pi>Vi har set flere andre politiske ledere agere mindre konfronterende og i stedet være imødekommende, når den amerikanske præsident har været på besøg. Hvad får Mette Frederiksen ud af at bruge en retorik, hvor hun eksempelvis kalder købet af Grønland en "absurd diskussion"? </pi></p>\r\n<p></p>\r\n<p></p>\r\n'
+			'\r\n<p><cc>HUSK AT BOOK  LIVE!!</cc></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"><a idref="2"></a></a></p>\r\n<p><cc>Husk at skrive bynavn med VERSALER efter "BYNAVN=" og efter "#kg direkte"</cc></p>\r\n<p></p>\r\n<p><a idref="3"> <cc>Kilde til optagelse på select-feed.</cc></a></p>\r\n<p></p>\r\n<p>Vi har også dig, Kristian Mouritzen, Sikkerhedspolitisk korrespondent på Berlingske med på en forbindelse. </p>\r\n<p></p>\r\n<p>Du har skrevet en analyse af forholdet mellem USA og Danmark efter Trump i et interview kalder Mette Frederiksens kommentare for "nasty". </p>\r\n<p></p>\r\n<p>Nogle politiske analystikere er ude og hylde Mette Frederiksen for sine handlinger, mens andre kalder det usmart. Er det her udelukkende en retorisk armlægningskonkurrence, eller skal vi forvente, at det udskudte besøg også vil få konsekvenser for forholdet mellem Danmark og USA på længere sigt? </p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>Husk at lave en BUNDT. Opret den med tidsangivelse x.xx.</cc></p>\r\n<p><a idref="4"></a></p>\r\n<p></p>\r\n<p><pi>Skal vi forvente at Mette Frederiksen vil forsøge at glatte den nuværende konflikt ud, så Trump på et tidspunkt vil genoverveje besøget til Danmark? </pi></p>\r\n<p></p>\r\n<p><pi>Vi har set flere andre politiske ledere agere mindre konfronterende og i stedet være imødekommende, når den amerikanske præsident har været på besøg. Hvad får Mette Frederiksen ud af at bruge en retorik, hvor hun eksempelvis kalder købet af Grønland en "absurd diskussion"? </pi></p>\r\n<p></p>\r\n<p></p>\r\n'
 		const cues9 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2, unparsedGrafik3, unparsedEkstern1]
 		const result = ParseBody('00000000001', '', body9, cues9, fields, 0)
 		expect(result).toEqual(
@@ -401,24 +389,13 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1],
 					script:
 						'Vi har også dig, Kristian Mouritzen, Sikkerhedspolitisk korrespondent på Berlingske med på en forbindelse.\nDu har skrevet en analyse af forholdet mellem USA og Danmark efter Trump i et interview kalder Mette Frederiksens kommentare for "nasty".\nNogle politiske analystikere er ude og hylde Mette Frederiksen for sine handlinger, mens andre kalder det usmart. Er det her udelukkende en retorisk armlægningskonkurrence, eller skal vi forvente, at det udskudte besøg også vil få konsekvenser for forholdet mellem Danmark og USA på længere sigt?\n',
 					variant: {
 						name: '2'
 					},
 					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Live,
-					rawType: 'LIVE',
-					cues: [cueEkstern1],
-					script:
-						'Skal vi forvente at Mette Frederiksen vil forsøge at glatte den nuværende konflikt ud, så Trump på et tidspunkt vil genoverveje besøget til Danmark?\nVi har set flere andre politiske ledere agere mindre konfronterende og i stedet være imødekommende, når den amerikanske præsident har været på besøg. Hvad får Mette Frederiksen ud af at bruge en retorik, hvor hun eksempelvis kalder købet af Grønland en "absurd diskussion"?\n',
-					variant: {},
-					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -437,24 +414,13 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1],
 					script:
 						'Som lovet -med os igen har vi nu\nUdenrigsminister Jeppe Kofod.\nTrump valgte at aflyse besøget i danmark - og igår aftes førte det til, at du havde en samtale med den amerikanske udenrigsminster Mike Pompeo. Hvorfor talte i sammen?\n',
 					variant: {
 						name: '2'
 					},
 					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Live,
-					rawType: 'LIVE',
-					cues: [cueEkstern1],
-					script:
-						'Hvordan kan et godt fortsat strategisk samarbejde fortsætte, når Trump langer ud efter Danmark og drager forsvarsbudgettet ind i diskussionen?\nEr amerikanerne med Trump i spidsen fortsat interessedeed i at komme på besøg - Trump skrev selv at hans besøg blot var udsat - ikke aflyst?\n',
-					variant: {},
-					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -507,24 +473,13 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 3',
-					cues: [cueUnknown, cueGrafik1],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2],
 					script:
-						'Og så kan vi byde velkommen til Kaare Sørensen, digital udviklingsredaktør her på TV 2 og tidligere USA-korrespondent.\nDu har fulgt Trumps brug af sociale medier og herunder særligt præsidentens brug af Twitter. Hvad kendetegner Donald Trumps brug af sociale medier?\n',
+						'Og så kan vi byde velkommen til Kaare Sørensen, digital udviklingsredaktør her på TV 2 og tidligere USA-korrespondent.\nDu har fulgt Trumps brug af sociale medier og herunder særligt præsidentens brug af Twitter. Hvad kendetegner Donald Trumps brug af sociale medier?\n.\n',
 					variant: {
 						name: '3'
 					},
 					externalId: '00000000001-0',
-					fields: {},
-					modified: 0
-				},
-				{
-					type: PartType.Live,
-					rawType: 'LIVE',
-					cues: [cueGrafik2],
-					script:
-						'.\nHvis vi kigger specifikt på Twitter, hvordan skiller Trump sig ud fra tidligere præsidenter, når det kommer til brugen af det her?\nHvad får præsidenten ud af den her adfærd på de sociale medier?\nHar han en særlig strategi med den her måde at bruge twitter på?\nVi har med en præsident at gøre, der konstant laver overskrifter med brugen af sociale medier. Hvad det, der gør, at medier over hele kloden bliver ved med at beskæftige sig med de her tweets?\n',
-					variant: {},
-					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				}
@@ -568,8 +523,8 @@ describe('Body parser', () => {
 		expect(result).toEqual(
 			literal<PartDefinition[]>([
 				{
-					type: PartType.Live,
-					rawType: 'LIVE',
+					type: PartType.Unknown,
+					rawType: '',
 					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1, cueEkstern2],
 					script:
 						'Rasmus Staghøj, således reaktioner fra Astana-lejren, men hvordan bliver der ellers talt om det her nede hos jer?\n',
@@ -1004,18 +959,7 @@ describe('Body parser', () => {
 							end: {
 								infiniteMode: 'S'
 							}
-						})
-					],
-					script: 'Skriv spib her\n',
-					fields,
-					modified: 0
-				}),
-				literal<PartDefinitionLive>({
-					externalId: '00000000001-1',
-					type: PartType.Live,
-					variant: {},
-					rawType: 'LIVE',
-					cues: [
+						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
 							template: 'tlftoptlive',
@@ -1029,7 +973,7 @@ describe('Body parser', () => {
 							}
 						})
 					],
-					script: '',
+					script: 'Skriv spib her\n',
 					fields,
 					modified: 0
 				})
@@ -1084,22 +1028,7 @@ describe('Body parser', () => {
 							end: {
 								infiniteMode: 'S'
 							}
-						})
-					],
-					script: 'Skriv spib her\n',
-					fields,
-					modified: 0
-				}),
-				literal<PartDefinitionLive>({
-					externalId: '00000000001-1',
-					type: PartType.Live,
-					variant: {},
-					rawType: 'LIVE',
-					transition: {
-						style: 'DIP',
-						duration: 300
-					},
-					cues: [
+						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
 							template: 'tlftoptlive',
@@ -1113,7 +1042,7 @@ describe('Body parser', () => {
 							}
 						})
 					],
-					script: '',
+					script: 'Skriv spib her\n',
 					fields,
 					modified: 0
 				})

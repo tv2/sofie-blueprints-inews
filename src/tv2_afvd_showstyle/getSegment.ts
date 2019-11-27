@@ -27,7 +27,6 @@ import { CreatePartGrafik } from './parts/grafik'
 import { CreatePartIntro } from './parts/intro'
 import { CreatePartInvalid } from './parts/invalid'
 import { CreatePartKam } from './parts/kam'
-import { CreatePartLive } from './parts/live'
 import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
@@ -198,12 +197,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.Server:
 				blueprintParts.push(CreatePartServer(partContext, config, part))
-				break
-			case PartType.Live:
-				const blueprintPart = CreatePartLive(partContext, config, part, totalWords)
-				if (!blueprintPart.part.invalid && (blueprintPart.pieces.length || blueprintPart.adLibPieces.length)) {
-					blueprintParts.push(blueprintPart)
-				}
 				break
 			case PartType.Teknik:
 				blueprintParts.push(CreatePartTeknik(partContext, config, part, totalWords))
