@@ -91,11 +91,7 @@ export function EvaluateGrafik(
 								start: 0
 							},
 							priority: 1,
-							layer: parsedCue.template.match(/bund/i)
-								? VizLLayer.VizLLayerOverlayBund
-								: parsedCue.template.match(/topt/)
-								? VizLLayer.VizLLayerOverlayTopt
-								: VizLLayer.VizLLayerOverlay,
+							layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -140,11 +136,7 @@ export function EvaluateGrafik(
 								start: 0
 							},
 							priority: 1,
-							layer: parsedCue.template.match(/bund/i)
-								? VizLLayer.VizLLayerOverlayBund
-								: parsedCue.template.match(/topt/)
-								? VizLLayer.VizLLayerOverlayTopt
-								: VizLLayer.VizLLayerOverlay,
+							layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -188,6 +180,32 @@ export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string) {
 			return SourceLayer.PgmGraphicsTop
 		default:
 			return SourceLayer.PgmGraphicsOverlay
+	}
+}
+
+export function GetTimelineLayerForGrafik(config: BlueprintConfig, name: string) {
+	const conf = config.showStyle.GFXTemplates
+		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
+		: undefined
+
+	if (!conf) {
+		return VizLLayer.VizLLayerOverlay
+	}
+
+	switch (conf.LayerMapping) {
+		// TODO: When adding more output layers
+		case VizLLayer.VizLLayerOverlayIdent:
+			return VizLLayer.VizLLayerOverlayIdent
+		case VizLLayer.VizLLayerOverlayTopt:
+			return VizLLayer.VizLLayerOverlayTopt
+		case VizLLayer.VizLLayerOverlayLower:
+			return VizLLayer.VizLLayerOverlayLower
+		case VizLLayer.VizLLayerOverlayHeadline:
+			return VizLLayer.VizLLayerOverlayHeadline
+		case VizLLayer.VizLLayerOverlayTema:
+			return VizLLayer.VizLLayerOverlayTema
+		default:
+			return VizLLayer.VizLLayerOverlay
 	}
 }
 

@@ -69,7 +69,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayBund,
+							layer: VizLLayer.VizLLayerOverlay,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -128,7 +128,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayBund,
+							layer: VizLLayer.VizLLayerOverlay,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -192,7 +192,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayBund,
+							layer: VizLLayer.VizLLayerOverlay,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -258,7 +258,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayBund,
+							layer: VizLLayer.VizLLayerOverlay,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
