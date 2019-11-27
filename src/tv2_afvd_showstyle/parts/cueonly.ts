@@ -10,7 +10,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueDefinition, CueType } from '../inewsConversion/converters/ParseCue'
-// import { GetBreakerEffekt } from './effekt'
+import { GetBreakerEffekt } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartCueOnly(
@@ -26,7 +26,7 @@ export function CreatePartCueOnly(
 	const partDefinitionWithID = { ...partDefinition, ...{ externalId: id } }
 	const partTime = PartTime(partDefinitionWithID, totalWords)
 
-	const part = literal<IBlueprintPart>({
+	let part = literal<IBlueprintPart>({
 		externalId: id,
 		title,
 		metaData: {},
@@ -38,7 +38,7 @@ export function CreatePartCueOnly(
 
 	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID)
 	AddScript(partDefinitionWithID, pieces, partTime)
-	// part = { ...part, ...GetBreakerEffekt(context, config, partDefinitionWithID) }
+	part = { ...part, ...GetBreakerEffekt(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
 		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, true)
