@@ -26,7 +26,6 @@ import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece } from './effekt'
 import { CreatePartInvalid } from './invalid'
 import { PartTime } from './time/partTime'
 
@@ -46,7 +45,7 @@ export function CreatePartKam(
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	let pieces: IBlueprintPiece[] = []
+	const pieces: IBlueprintPiece[] = []
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -130,8 +129,6 @@ export function CreatePartKam(
 			})
 		)
 	}
-
-	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime)
