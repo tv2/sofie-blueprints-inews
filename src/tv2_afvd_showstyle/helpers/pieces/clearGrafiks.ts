@@ -12,6 +12,7 @@ export function EvaluateClearGrafiks(pieces: IBlueprintPiece[], partId: string, 
 		SourceLayer.PgmGraphicsHeadline,
 		SourceLayer.PgmGraphicsTema,
 		SourceLayer.PgmGraphicsTLF,
+		SourceLayer.PgmGraphicsOverlay,
 		SourceLayer.PgmPilotOverlay
 	].forEach(layer => {
 		pieces.push(
