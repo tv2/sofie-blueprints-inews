@@ -89,11 +89,7 @@ export function EvaluateGrafik(
 								start: 0
 							},
 							priority: 1,
-							layer: parsedCue.template.match(/bund/i)
-								? VizLLayer.VizLLayerOverlayBund
-								: parsedCue.template.match(/topt/)
-								? VizLLayer.VizLLayerOverlayTopt
-								: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlay,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -136,11 +132,7 @@ export function EvaluateGrafik(
 								start: 0
 							},
 							priority: 1,
-							layer: parsedCue.template.match(/bund/i)
-								? VizLLayer.VizLLayerOverlayBund
-								: parsedCue.template.match(/topt/)
-								? VizLLayer.VizLLayerOverlayTopt
-								: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlay,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
