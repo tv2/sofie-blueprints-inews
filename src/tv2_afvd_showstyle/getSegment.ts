@@ -70,7 +70,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		const partContext = new PartContext2(context, part.externalId)
 
 		if (part.effekt !== undefined) {
-			blueprintParts.push(CreatePartEffekt(partContext, config, part, totalWords))
+			blueprintParts.push(CreatePartEffekt(partContext, config, part))
 		}
 
 		const livecue = part.cues.filter(cue => cue.type === CueType.Ekstern)
