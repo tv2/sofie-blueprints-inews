@@ -31,8 +31,6 @@ export function CreatePartGrafik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	let pieces: IBlueprintPiece[] = []
 
-	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
-
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, false, true)
 	AddScript(partDefinition, pieces, partTime)
 

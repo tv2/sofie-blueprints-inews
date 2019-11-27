@@ -15,7 +15,6 @@ import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartVO(
@@ -52,7 +51,7 @@ export function CreatePartVO(
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	let pieces: IBlueprintPiece[] = []
+	const pieces: IBlueprintPiece[] = []
 
 	const serverContent = MakeContentServer(file, partDefinition.externalId, partDefinition, config, false)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
@@ -73,8 +72,6 @@ export function CreatePartVO(
 			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
-
-	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, duration)

@@ -13,7 +13,6 @@ import { MakeContentServer } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartServer(
@@ -45,7 +44,7 @@ export function CreatePartServer(
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	let pieces: IBlueprintPiece[] = []
+	const pieces: IBlueprintPiece[] = []
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -63,8 +62,6 @@ export function CreatePartServer(
 			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
-
-	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 
