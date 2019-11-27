@@ -15,7 +15,7 @@ import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece, GetWipeEffekt } from './effekt'
+import { EffektTransitionPiece } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartVO(
@@ -37,7 +37,7 @@ export function CreatePartVO(
 	const file = partDefinition.fields.videoId
 	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
-	let part = literal<IBlueprintPart>({
+	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
@@ -74,7 +74,6 @@ export function CreatePartVO(
 		})
 	)
 
-	part = { ...part, ...GetWipeEffekt(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)

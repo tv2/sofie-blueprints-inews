@@ -11,7 +11,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
-import { EffektTransitionPiece, GetWipeEffekt } from './effekt'
+import { EffektTransitionPiece } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartTeknik(
@@ -21,7 +21,7 @@ export function CreatePartTeknik(
 	totalWords: number
 ): BlueprintResultPart {
 	const partTime = PartTime(partDefinition, totalWords)
-	let part = literal<IBlueprintPart>({
+	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
 		metaData: {},
@@ -31,7 +31,6 @@ export function CreatePartTeknik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	let pieces: IBlueprintPiece[] = []
 
-	part = { ...part, ...GetWipeEffekt(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)

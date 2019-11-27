@@ -24,32 +24,6 @@ import { CueDefinitionJingle, CueType } from '../inewsConversion/converters/Pars
 import { SourceLayer } from '../layers'
 import { TimeFromFrames } from './time/frameTime'
 
-export function GetWipeEffekt(
-	context: PartContext,
-	config: BlueprintConfig,
-	part: PartDefinition
-):
-	| Pick<
-			IBlueprintPart,
-			'transitionPrerollDuration' | 'transitionKeepaliveDuration' | 'transitionDuration' | 'autoNext'
-	  >
-	| {} {
-	if (part.effekt) {
-		const realEffekt = config.showStyle.WipesConfig.find(conf => Number(conf.EffektNumber) === part.effekt)
-		if (realEffekt) {
-			return {
-				transitionPrerollDuration: Number(config.studio.CasparPrerollDuration),
-				transitionKeepaliveDuration: TimeFromFrames(Number(realEffekt.StartAlpha)),
-				transitionDuration: TimeFromFrames(Number(realEffekt.Duration)),
-				autoNext: true
-			}
-		} else {
-			context.warning(`Could not find EFFEKT ${part.effekt}`)
-		}
-	}
-	return {}
-}
-
 export function GetBreakerEffekt(
 	_context: PartContext,
 	config: BlueprintConfig,

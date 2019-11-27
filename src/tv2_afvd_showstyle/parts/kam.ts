@@ -26,7 +26,7 @@ import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
-import { EffektTransitionPiece, GetWipeEffekt } from './effekt'
+import { EffektTransitionPiece } from './effekt'
 import { CreatePartInvalid } from './invalid'
 import { PartTime } from './time/partTime'
 
@@ -38,7 +38,7 @@ export function CreatePartKam(
 ): BlueprintResultPart {
 	const partTime = PartTime(partDefinition, totalWords)
 
-	let part = literal<IBlueprintPart>({
+	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
@@ -131,7 +131,6 @@ export function CreatePartKam(
 		)
 	}
 
-	part = { ...part, ...GetWipeEffekt(context, config, partDefinition) }
 	pieces = [...pieces, ...EffektTransitionPiece(context, config, partDefinition)]
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
