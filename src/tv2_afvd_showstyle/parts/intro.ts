@@ -56,13 +56,12 @@ export function CreatePartIntro(
 		return CreatePartInvalid(partDefinition)
 	}
 
-	let part = literal<IBlueprintPart>({
+	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
 		metaData: {},
 		typeVariant: '',
-		autoNext: true,
-		autoNextOverlap: TimeFromFrames(Number(overlapFrames))
+		autoNext: true
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
