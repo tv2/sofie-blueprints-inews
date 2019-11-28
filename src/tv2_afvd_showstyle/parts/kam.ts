@@ -133,7 +133,11 @@ export function CreatePartKam(
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime)
 
-	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
+	if (
+		partDefinition.cues.filter(
+			cue => cue.type === CueType.MOS || cue.type === CueType.Telefon || cue.type === CueType.TargetEngine
+		).length
+	) {
 		part.prerollDuration = config.studio.PilotPrerollDuration
 		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
 			? Number(config.studio.PilotKeepaliveDuration)
