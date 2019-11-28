@@ -5011,9 +5011,9 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tv-automation-sofie-blueprints-integration@olzzon/tv-automation-sofie-blueprints-integration#c055cade64cd0c084e247da5993e61727d7c672c:
+tv-automation-sofie-blueprints-integration@olzzon/tv-automation-sofie-blueprints-integration#e66399dddad703839c708955a084d530b7e1fe95:
   version "1.2.0"
-  resolved "https://codeload.github.com/olzzon/tv-automation-sofie-blueprints-integration/tar.gz/c055cade64cd0c084e247da5993e61727d7c672c"
+  resolved "https://codeload.github.com/olzzon/tv-automation-sofie-blueprints-integration/tar.gz/e66399dddad703839c708955a084d530b7e1fe95"
   dependencies:
     moment "^2.22.2"
     timeline-state-resolver-types olzzon/tv-automation-state-timeline-resolver#dist-types
