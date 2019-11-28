@@ -88,7 +88,7 @@ export function LydContent(
 	file: string,
 	parsedCue: CueDefinitionLYD,
 	fadeIn?: number,
-	_fadeOut?: number
+	fadeOut?: number
 ): BaseContent {
 	const id = `${file.trim().replace(/ /g, '_')}`
 	return literal<BaseContent>({
@@ -117,8 +117,8 @@ export function LydContent(
 								fadeIn !== undefined ? TimeFromFrames(fadeIn) : TimeFromFrames(config.studio.AudioBedSettings.fadeIn)
 						}
 					}
-				}
-				/*keyframes: [
+				},
+				keyframes: [
 					{
 						id: 'kf0',
 						enable: {
@@ -139,7 +139,7 @@ export function LydContent(
 							}
 						}
 					}
-				]*/
+				]
 			}),
 			literal<TimelineObjSisyfosMessage>({
 				id: '',
