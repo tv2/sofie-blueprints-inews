@@ -136,6 +136,8 @@ export function CreatePartKam(
 	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
 		part.prerollDuration = config.studio.PilotPrerollDuration
 		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
+			? Number(config.studio.PilotKeepaliveDuration)
+			: 60000
 	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
 		part.prerollDuration = config.studio.DVEPrerollDuration
 	}
