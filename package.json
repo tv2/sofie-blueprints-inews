@@ -60,7 +60,7 @@
     "handlebars": "^4.3.0",
     "object-path": "^0.11.4",
     "timeline-state-resolver-types": "olzzon/tv-automation-state-timeline-resolver#dist-types",
-    "tv-automation-sofie-blueprints-integration": "olzzon/tv-automation-sofie-blueprints-integration#e66399dddad703839c708955a084d530b7e1fe95",
+    "tv-automation-sofie-blueprints-integration": "olzzon/tv-automation-sofie-blueprints-integration#disttag1",
     "underscore": "^1.9.1"
   }
 }
