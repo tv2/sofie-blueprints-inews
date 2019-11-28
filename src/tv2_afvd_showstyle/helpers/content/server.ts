@@ -54,7 +54,7 @@ export function MakeContentServer(
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
 				enable: {
-					start: config.studio.CasparPrerollDuration
+					start: 0
 				},
 				priority: 1,
 				layer: AtemLLayer.AtemMEProgram,
