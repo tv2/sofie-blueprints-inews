@@ -31,7 +31,8 @@ const blankStudioConfig: StudioConfig = {
 	},
 	AudioBedSettings: {
 		fadeIn: 0,
-		fadeOut: 0
+		fadeOut: 0,
+		volume: 0
 	},
 	CasparPrerollDuration: 0,
 	PilotPrerollDuration: 0,

@@ -180,7 +180,15 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Default fade in duration for audio beds',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 1000
+		defaultVal: 25
+	},
+	{
+		id: 'AudioBedSettings.volume',
+		name: 'Bed Volume',
+		description: 'Volume (0 - 100)',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 80
 	},
 	{
 		id: 'AudioBedSettings.fadeOut',
@@ -188,7 +196,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Default fade out duration for audio beds',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 1000
+		defaultVal: 25
 	},
 	{
 		id: 'CasparPrerollDuration',
