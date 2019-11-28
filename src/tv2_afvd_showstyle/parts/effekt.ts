@@ -73,12 +73,12 @@ export function CreatePartEffekt(
 ): BlueprintResultPart {
 	if (partDefinition.effekt === undefined) {
 		context.warning('Effekt is not defined')
-		return CreatePartInvalid(partDefinition)
+		return CreatePartInvalid(partDefinition, 'effekt')
 	}
 
 	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
-		return CreatePartInvalid(partDefinition)
+		return CreatePartInvalid(partDefinition, 'effekt')
 	}
 
 	const jingle = config.showStyle.BreakerConfig.find(jngl =>
@@ -88,14 +88,14 @@ export function CreatePartEffekt(
 	)
 	if (!jingle) {
 		context.warning(`Jingle ${partDefinition.effekt} is not configured`)
-		return CreatePartInvalid(partDefinition)
+		return CreatePartInvalid(partDefinition, 'effekt')
 	}
 
 	const overlapFrames = jingle.EndAlpha
 
 	if (overlapFrames === undefined) {
 		context.warning(`Jingle ${partDefinition.effekt} does not have an out-duration set.`)
-		return CreatePartInvalid(partDefinition)
+		return CreatePartInvalid(partDefinition, 'effekt')
 	}
 
 	let part = literal<IBlueprintPart>({
