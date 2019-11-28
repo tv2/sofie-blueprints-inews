@@ -29,6 +29,7 @@ export interface CueDefinitionBase {
 	start?: CueTime
 	end?: CueTime
 	adlib?: boolean
+	floating?: boolean
 }
 
 export interface CueDefinitionUnknown extends CueDefinitionBase {
@@ -237,14 +238,14 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 	} else if (!cue[cue.length - 1].match(/;x.xx/i)) {
 		textFields += 1
 	} else {
-		kgCue.adlib = true
+		kgCue.floating = true
 	}
 
 	for (let i = 1; i < textFields; i++) {
 		kgCue.textFields.push(cue[i])
 	}
 
-	if (!kgCue.start) {
+	if (!kgCue.start && !kgCue.floating) {
 		kgCue.adlib = true
 	}
 
