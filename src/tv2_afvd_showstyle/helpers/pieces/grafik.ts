@@ -17,7 +17,7 @@ import {
 	CueDefinitionMOS,
 	CueType
 } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
-import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
+import { ControlClasses, SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { EvaluateDesign } from './design'
@@ -37,7 +37,7 @@ export function EvaluateGrafik(
 	partId: string,
 	parsedCue: CueDefinitionGrafik,
 	adlib: boolean,
-	isTlf?: boolean,
+	isTlfPrimary?: boolean,
 	rank?: number
 ) {
 	if (config.showStyle.GFXTemplates) {
@@ -65,22 +65,34 @@ export function EvaluateGrafik(
 			}
 		}
 	}
+
+	const isIdentGrafik = parsedCue.template === 'direkte'
+
+	const getInfiniteMode = () => {
+		if (isTlfPrimary) {
+			return PieceLifespan.OutOnNextPart
+		} else if (isIdentGrafik) {
+			// These are activated by the live, and should continue for when that live is recalled
+			return PieceLifespan.OutOnNextSegment
+		} else if (parsedCue.end && parsedCue.end.infiniteMode) {
+			return InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+		} else {
+			return PieceLifespan.Normal
+		}
+	}
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
 				name: grafikName(config, parsedCue),
-				sourceLayerId: isTlf
+				sourceLayerId: isTlfPrimary
 					? SourceLayer.PgmGraphicsTLF
 					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 				outputLayerId: 'overlay',
-				...(isTlf ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
-				infiniteMode: isTlf
-					? PieceLifespan.OutOnNextPart
-					: parsedCue.end && parsedCue.end.infiniteMode
-					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-					: PieceLifespan.Normal,
+				...(isTlfPrimary ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
+				infiniteMode: getInfiniteMode(),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
@@ -110,7 +122,7 @@ export function EvaluateGrafik(
 				_id: '',
 				externalId: partId,
 				name: grafikName(config, parsedCue),
-				...(isTlf
+				...(isTlfPrimary
 					? { enable: { start: 0 } }
 					: {
 							enable: {
@@ -118,23 +130,23 @@ export function EvaluateGrafik(
 							}
 					  }),
 				outputLayerId: 'overlay',
-				sourceLayerId: isTlf
+				sourceLayerId: isTlfPrimary
 					? SourceLayer.PgmGraphicsTLF
 					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-				infiniteMode: isTlf
-					? PieceLifespan.OutOnNextPart
-					: parsedCue.end && parsedCue.end.infiniteMode
-					? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-					: PieceLifespan.Normal,
+				infiniteMode: getInfiniteMode(),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
 					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
 						literal<TimelineObjVIZMSEElementInternal>({
 							id: '',
-							enable: {
-								start: 0
-							},
+							enable: isIdentGrafik
+								? {
+										while: `.${ControlClasses.ShowIdentGraphic}`
+								  }
+								: {
+										start: 0
+								  },
 							priority: 1,
 							layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 							content: {
@@ -284,7 +296,7 @@ export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafi
 }
 
 export function GetDefaultOut(config: BlueprintConfig): number {
-	if (config.showStyle.DefaultTemplateDuration! === undefined) {
+	if (config.showStyle.DefaultTemplateDuration !== undefined) {
 		return Number(config.showStyle.DefaultTemplateDuration) * 1000
 	}
 

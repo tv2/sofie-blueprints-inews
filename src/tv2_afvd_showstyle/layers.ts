@@ -32,3 +32,7 @@ export enum SourceLayer {
 	// PgmSlutord = 'studio0_slutord',
 	PgmAudioBed = 'studio0_audio_bed'
 }
+
+export enum ControlClasses {
+	ShowIdentGraphic = 'show_ident_graphic'
+}
