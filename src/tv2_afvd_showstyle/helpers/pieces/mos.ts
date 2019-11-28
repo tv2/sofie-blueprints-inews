@@ -65,7 +65,7 @@ export function EvaluateMOS(
 								type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
 								templateVcpId: parsedCue.vcpid,
 								continueStep: parsedCue.continueCount,
-								noAutoPreloading: true,
+								noAutoPreloading: false,
 								channelName: 'FULL1'
 							}
 						})
@@ -115,7 +115,7 @@ export function EvaluateMOS(
 								type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
 								templateVcpId: parsedCue.vcpid,
 								continueStep: parsedCue.continueCount,
-								noAutoPreloading: true,
+								noAutoPreloading: false,
 								channelName: 'FULL1'
 							}
 						})
