@@ -36,7 +36,11 @@ export function CreatePartUnknown(
 	AddScript(partDefinition, pieces, partTime)
 	part = { ...part, ...GetBreakerEffekt(context, config, partDefinition) }
 
-	if (partDefinition.cues.filter(cue => cue.type === CueType.MOS || cue.type === CueType.Telefon).length) {
+	if (
+		partDefinition.cues.filter(
+			cue => cue.type === CueType.MOS || cue.type === CueType.Telefon || cue.type === CueType.TargetEngine
+		).length
+	) {
 		part.prerollDuration = config.studio.PilotPrerollDuration
 		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
 			? Number(config.studio.PilotKeepaliveDuration)
