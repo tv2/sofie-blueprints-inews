@@ -22,6 +22,7 @@ export function EvaluateAdLib(
 	if (parsedCue.variant.match(/server/i)) {
 		// Create server AdLib
 		const file = partDefinition.fields.videoId
+		const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -30,7 +31,7 @@ export function EvaluateAdLib(
 				name: `Server: ${file}`,
 				sourceLayerId: SourceLayer.PgmServer,
 				outputLayerId: 'pgm',
-				expectedDuration: 0,
+				expectedDuration: duration,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
 				metaData: literal<PieceMetaData>({
