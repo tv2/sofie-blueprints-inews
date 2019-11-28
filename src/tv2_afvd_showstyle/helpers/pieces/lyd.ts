@@ -68,7 +68,7 @@ export function EvaluateLYD(
 				sourceLayerId: GetLYDSourceLayer(file),
 				infiniteMode: PieceLifespan.Infinite,
 				virtual: stop,
-				...(stop
+				...(!stop
 					? {
 							content: LydContent(config, file, parsedCue, fadeIn, fadeOut)
 					  }
