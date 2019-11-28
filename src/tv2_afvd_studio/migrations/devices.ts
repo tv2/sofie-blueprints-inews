@@ -109,7 +109,7 @@ const devices: DeviceEntry[] = [
 				host: input.host,
 				port: 5250,
 				launcherHost: input.host,
-				launcherPort: '8005'
+				launcherPort: 8005
 			}
 		}),
 		input: [
