@@ -46,7 +46,7 @@ export function EvaluateCues(
 	// const grafikCues = cues.filter(cue => cue.type === CueType.Grafik)
 	// const isDVE = containsDVE(cues)
 	cues.forEach(cue => {
-		if (cue && !cue.floating) {
+		if (cue) {
 			const shouldAdlib = adlib ? adlib : cue.adlib ? cue.adlib : false
 			switch (cue.type) {
 				case CueType.Grafik:
