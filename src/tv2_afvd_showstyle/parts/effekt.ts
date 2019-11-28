@@ -113,7 +113,7 @@ export function CreatePartEffekt(
 		clip: partDefinition.effekt.toString()
 	}
 
-	EvaluateJingle(context, config, pieces, adLibPieces, jingleCue, partDefinition)
+	EvaluateJingle(context, config, pieces, adLibPieces, jingleCue, partDefinition, false, 0, true)
 
 	const fakePart = JSON.parse(JSON.stringify(partDefinition))
 	fakePart.cues = [jingleCue]

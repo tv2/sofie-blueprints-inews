@@ -32,7 +32,8 @@ export function EvaluateJingle(
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
 	adlib?: boolean,
-	_rank?: number
+	_rank?: number,
+	effekt?: boolean
 ) {
 	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
@@ -58,7 +59,7 @@ export function EvaluateJingle(
 			literal<IBlueprintPiece>({
 				_id: '',
 				externalId: part.externalId,
-				name: parsedCue.clip,
+				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				enable: {
 					start: 0
 				},
