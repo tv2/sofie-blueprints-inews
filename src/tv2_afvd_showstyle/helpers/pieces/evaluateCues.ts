@@ -146,7 +146,7 @@ export function EvaluateCues(
 							deviceSubType: DeviceType.VIZMSE,
 							content: {
 								templateName: (obj as TimelineObjVIZMSEElementPilot).content.templateVcpId,
-								noAutoPreloading: false
+								channelName: (obj as TimelineObjVIZMSEElementPilot).content.channelName
 							}
 						})
 					}
