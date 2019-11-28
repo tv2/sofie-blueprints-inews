@@ -42,6 +42,11 @@ export function CreatePartGrafik(
 		part.prerollDuration = config.studio.DVEPrerollDuration
 	}
 
+	part.prerollDuration = config.studio.PilotPrerollDuration
+	part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
+		? Number(config.studio.PilotKeepaliveDuration)
+		: 60000
+
 	if (pieces.length === 0) {
 		part.invalid = true
 	}
