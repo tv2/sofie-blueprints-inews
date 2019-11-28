@@ -12,13 +12,13 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../../common/util'
+import { createEmptyObject, literal } from '../../../common/util'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { CueDefinitionEkstern } from '../../inewsConversion/converters/ParseCue'
-import { SourceLayer } from '../../layers'
+import { ControlClasses, SourceLayer } from '../../layers'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
 import { TransitionFromString } from '../transitionFromString'
 import { TransitionSettings } from '../transitionSettings'
@@ -103,10 +103,17 @@ export function EvaluateEkstern(
 				...CreateTimingEnable(parsedCue),
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
+				toBeQueued: true,
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
+						createEmptyObject({
+							// Only want the ident for original versions (or clones)
+							enable: { start: 0 },
+							layer: 'ekstern_enable_ident',
+							classes: [ControlClasses.ShowIdentGraphic]
+						}),
 						literal<TimelineObjAtemME>({
 							id: '',
 							enable: {
