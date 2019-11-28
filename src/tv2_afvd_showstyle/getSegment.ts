@@ -142,7 +142,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				)
 			})
 		}
-		if (targetCue.length && !tlfCue.length && part.cues.length !== 1) {
+		if (targetCue.length && !tlfCue.length && !(part.type === PartType.Grafik && part.cues.length === 1)) {
 			targetCue.forEach((cue: CueDefinitionTargetEngine, j: number) => {
 				extraParts.push(
 					CreatePartCueOnly(
