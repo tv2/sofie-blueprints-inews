@@ -834,21 +834,21 @@ describe('Body parser', () => {
 							template: 'ident_blank',
 							cue: 'kg',
 							textFields: ['ODENSE', 'KLJ'],
-							adlib: true
+							floating: true
 						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
 							template: 'bund',
 							cue: 'kg',
 							textFields: ['ANETTE RYTTER', 'Inews'],
-							adlib: true
+							floating: true
 						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
 							template: 'bund',
 							cue: 'kg',
 							textFields: ['ANETTE RYTTER', 'anry@tv2.dk'],
-							adlib: true
+							floating: true
 						}),
 						literal<CueDefinitionTargetEngine>({
 							type: CueType.TargetEngine,

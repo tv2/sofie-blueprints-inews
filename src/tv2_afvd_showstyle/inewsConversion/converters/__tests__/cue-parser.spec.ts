@@ -107,7 +107,7 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['HELENE RØNBJERG KRISTENSEN', 'herk@tv2.dk'],
-				adlib: true
+				floating: true
 			})
 		)
 	})
@@ -121,7 +121,7 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['HELENE RØNBJERG KRISTENSEN', 'herk@tv2.dk'],
-				adlib: true
+				floating: true
 			})
 		)
 	})
