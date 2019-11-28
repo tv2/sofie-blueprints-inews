@@ -36,6 +36,7 @@ const blankStudioConfig: StudioConfig = {
 	},
 	CasparPrerollDuration: 0,
 	PilotPrerollDuration: 0,
+	PilotKeepaliveDuration: 0,
 	ClipFileExtension: 'mxf',
 	ClipSourcePath: '/',
 	DVEPrerollDuration: 0,

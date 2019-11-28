@@ -215,6 +215,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 2000
 	},
 	{
+		id: 'PilotKeepaliveDuration',
+		name: 'Pilot Keepalive Duration',
+		description: 'ms to keep old part alive before switching to Pilot elements',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 2000
+	},
+	{
 		id: 'DVEPrerollDuration',
 		name: 'DVE Preroll Duration',
 		description: 'ms of preroll before switching to DVE',
