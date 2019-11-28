@@ -49,6 +49,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			segment,
 			parts: []
 		}
+	} else {
+		segment.isHidden = false
 	}
 
 	const blueprintParts: BlueprintResultPart[] = []
