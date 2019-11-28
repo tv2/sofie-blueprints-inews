@@ -108,7 +108,7 @@ export function LydContent(
 					channelLayout: 'bed',
 					loop: true,
 					mixer: {
-						volume: 100
+						volume: Number(config.studio.AudioBedSettings.volume) / 100
 					},
 					transitions: {
 						inTransition: {

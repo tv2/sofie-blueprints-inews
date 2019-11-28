@@ -58,6 +58,7 @@ export interface StudioConfig {
 	AudioBedSettings: {
 		fadeIn: number
 		fadeOut: number
+		volume: number
 	}
 
 	// Dev overrides
