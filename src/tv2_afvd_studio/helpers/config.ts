@@ -66,6 +66,7 @@ export interface StudioConfig {
 	// Constants
 	CasparPrerollDuration: number
 	PilotPrerollDuration: number
+	PilotKeepaliveDuration: number
 	DVEPrerollDuration: number
 	ATEMDelay: number
 }
