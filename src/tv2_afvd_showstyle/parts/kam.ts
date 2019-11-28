@@ -138,7 +138,6 @@ export function CreatePartKam(
 		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
 	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
 		part.prerollDuration = config.studio.DVEPrerollDuration
-		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
 	}
 
 	if (pieces.length === 0) {
