@@ -18,6 +18,7 @@ import { literal } from '../../../common/util'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { CueDefinitionLYD } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
+import { TimeFromFrames } from '../../../tv2_afvd_showstyle/parts/time/frameTime'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { CalculateTime, CreateTimingEnable } from './evaluateCues'
@@ -112,7 +113,8 @@ export function LydContent(
 					transitions: {
 						inTransition: {
 							type: Transition.MIX,
-							duration: fadeIn !== undefined ? fadeIn : config.studio.AudioBedSettings.fadeIn
+							duration:
+								fadeIn !== undefined ? TimeFromFrames(fadeIn) : TimeFromFrames(config.studio.AudioBedSettings.fadeIn)
 						}
 					}
 				},
@@ -120,13 +122,18 @@ export function LydContent(
 					{
 						id: 'kf0',
 						enable: {
-							start: `#${id}.end - ${fadeOut !== undefined ? fadeOut : config.studio.AudioBedSettings.fadeOut}`
+							start: `#${id}.end - ${
+								fadeOut !== undefined ? TimeFromFrames(fadeOut) : TimeFromFrames(config.studio.AudioBedSettings.fadeOut)
+							}`
 						},
 						content: {
 							mixer: {
 								inTransition: {
 									type: Transition.MIX,
-									duration: fadeOut !== undefined ? fadeOut : config.studio.AudioBedSettings.fadeOut
+									duration:
+										fadeOut !== undefined
+											? TimeFromFrames(fadeOut)
+											: TimeFromFrames(config.studio.AudioBedSettings.fadeOut)
 								},
 								volume: 0
 							}
