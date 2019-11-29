@@ -97,7 +97,7 @@ export default literal<BlueprintMappings>({
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: MappingAtemType.Auxilliary,
-		index: 0
+		index: 0 // 0 = out 1
 	}),
 	atem_aux_clean: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
@@ -153,7 +153,7 @@ export default literal<BlueprintMappings>({
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: MappingAtemType.Auxilliary,
-		index: 8 // 78 = out 9
+		index: 8 // 8 = out 9
 	}),
 	atem_aux_ssrc: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
