@@ -188,7 +188,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM input for continuity',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 2002
+		defaultVal: AtemSourceIndex.Col2
 	},
 	{
 		id: 'AudioBedSettings.fadeIn',
