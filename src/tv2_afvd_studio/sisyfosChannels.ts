@@ -10,15 +10,15 @@ export interface SisyfosChannel {
 export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	[SisyfosLLAyer.SisyfosSourceHost_1_ST_A]: {
 		isPgm: 0,
-		label: 'VÆRT 1'
+		label: 'VRT 1'
 	},
 	[SisyfosLLAyer.SisyfosSourceHost_2_ST_A]: {
 		isPgm: 0,
-		label: 'VÆRT 2'
+		label: 'VRT 2'
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_1_ST_A]: {
 		isPgm: 0,
-		label: 'GÆST 1'
+		label: 'GST 1'
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_2_ST_A]: {
 		isPgm: 0,
@@ -34,12 +34,12 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	},
 	[SisyfosLLAyer.SisyfosSourceHost_1_ST_B]: {
 		isPgm: 0,
-		label: 'B-VÆRT 1',
+		label: 'B-VRT 1',
 		hideInStudioA: true
 	},
 	[SisyfosLLAyer.SisyfosSourceHost_2_ST_B]: {
 		isPgm: 0,
-		label: 'B-VÆRT 2',
+		label: 'B-VRT 2',
 		hideInStudioA: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_1_ST_B]: {
