@@ -83,25 +83,26 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	if (segment.name.trim().match(/^CONTINUITY$/)) {
 		// blueprintParts.push(CreatePartContinuity(config, ingestSegment))
-		blueprintParts.push(
-			CreatePartKam(
-				new PartContext2(context, `${ingestSegment.externalId}-CONTINUITY`),
-				config,
-				literal<PartDefinitionKam>({
-					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
-					externalId: `${ingestSegment.externalId}-CONTINUITY`,
-					rawType: 'KAM 1',
-					cues: [],
-					script: '',
-					fields: {},
-					modified: 0
-				}),
-				10
-			)
+		const part = CreatePartKam(
+			new PartContext2(context, `${ingestSegment.externalId}-CONTINUITY`),
+			config,
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: `${ingestSegment.externalId}-CONTINUITY`,
+				rawType: 'KAM 1',
+				cues: [],
+				script: '',
+				fields: {},
+				modified: 0
+			}),
+			10
 		)
+		part.pieces[0].sourceLayerId = SourceLayer.PgmContinuity
+		part.pieces[0].name = 'CONTINUITY'
+		blueprintParts.push()
 		return {
 			segment,
 			parts: blueprintParts
