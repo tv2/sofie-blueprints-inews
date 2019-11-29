@@ -77,6 +77,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	if (segment.name.trim().match(/^CONTINUITY$/)) {
 		blueprintParts.push(CreatePartContinuity(ingestSegment))
+		return {
+			segment,
+			parts: blueprintParts
+		}
 	}
 
 	let serverParts = 0
