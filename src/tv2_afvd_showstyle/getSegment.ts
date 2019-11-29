@@ -102,7 +102,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		)
 		part.pieces[0].sourceLayerId = SourceLayer.PgmContinuity
 		part.pieces[0].name = 'CONTINUITY'
-		blueprintParts.push()
+		blueprintParts.push(part)
 		return {
 			segment,
 			parts: blueprintParts
