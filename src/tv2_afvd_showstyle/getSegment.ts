@@ -2,7 +2,8 @@ import {
 	DeviceType,
 	TimelineContentTypeAtem,
 	TimelineObjAtemAny,
-	TimelineObjAtemME
+	TimelineObjAtemME,
+	AtemTransitionStyle
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
@@ -388,7 +389,8 @@ export function CreatePartContinuity(config: BlueprintConfig, ingestSegment: Ing
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.ME,
 								me: {
-									input: config.studio.AtemSource.Continuity
+									input: config.studio.AtemSource.Continuity,
+									transition: AtemTransitionStyle.CUT
 								}
 							}
 						})
