@@ -21,7 +21,9 @@ const blankStudioConfig: StudioConfig = {
 		SplitArtF: 0,
 		SplitArtK: 0,
 		Default: 0,
-		MixMinusDefault: 0
+		MixMinusDefault: 0,
+		DelayedPlayback: 0,
+		Continuity: 0
 	},
 	AtemSettings: {
 		CCGClip: 0,

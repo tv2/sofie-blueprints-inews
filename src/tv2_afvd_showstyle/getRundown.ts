@@ -264,7 +264,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						deviceType: DeviceType.ATEM,
 						type: TimelineContentTypeAtem.ME,
 						me: {
-							input: 22,
+							input: config.studio.AtemSource.DelayedPlayback,
 							transition: AtemTransitionStyle.CUT
 						}
 					}
