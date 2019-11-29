@@ -9,8 +9,7 @@ import {
 	PartContext,
 	PieceLifespan,
 	ScriptContent,
-	SegmentContext,
-	TimelineObjectCoreExt
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
@@ -71,7 +70,27 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	}, 0)
 
 	if (segment.name.trim().match(/^CONTINUITY$/)) {
-		blueprintParts.push(CreatePartContinuity(config, ingestSegment))
+		// blueprintParts.push(CreatePartContinuity(config, ingestSegment))
+		const part = CreatePartKam(
+			new PartContext2(context, `${ingestSegment.externalId}-CONTINUITY`),
+			config,
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: `${ingestSegment.externalId}-CONTINUITY`,
+				rawType: 'KAM 1',
+				cues: [],
+				script: '',
+				fields: {},
+				modified: 0
+			}),
+			10
+		)
+		part.pieces[0].sourceLayerId = SourceLayer.PgmContinuity
+		part.pieces[0].name = 'CONTINUITY'
+		blueprintParts.push(part)
 		return {
 			segment,
 			parts: blueprintParts
@@ -324,29 +343,30 @@ function SlutordLookahead(
 	return false
 }
 
-export function CreatePartContinuity(_config: BlueprintConfig, ingestSegment: IngestSegment) {
+export function CreatePartContinuity(config: BlueprintConfig, ingestSegment: IngestSegment) {
 	return literal<BlueprintResultPart>({
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
 			title: 'CONTINUITY',
-			typeVariant: '',
-			metaData: {}
+			typeVariant: ''
 		},
 		pieces: [
 			literal<IBlueprintPiece>({
 				_id: '',
 				externalId: `${ingestSegment.externalId}-CONTINUITY`,
+				enable: {
+					start: 0
+				},
 				name: 'CONTINUITY',
-				enable: { start: 0 },
-				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmContinuity,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				content: {
+				outputLayerId: 'pgm',
+				infiniteMode: PieceLifespan.OutOnNextSegment,
+				content: literal<CameraContent>({
 					studioLabel: '',
-					switcherInput: 2002,
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
+					switcherInput: config.studio.AtemSource.Continuity,
+					timelineObjects: _.compact<TimelineObjAtemAny>([
 						literal<TimelineObjAtemME>({
-							id: ``,
+							id: '',
 							enable: {
 								start: 0
 							},
@@ -356,12 +376,12 @@ export function CreatePartContinuity(_config: BlueprintConfig, ingestSegment: In
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.ME,
 								me: {
-									input: 2002
+									input: config.studio.AtemSource.Continuity
 								}
 							}
 						})
 					])
-				}
+				})
 			})
 		],
 		adLibPieces: []
