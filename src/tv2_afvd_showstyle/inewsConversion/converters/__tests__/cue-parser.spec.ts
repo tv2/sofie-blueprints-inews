@@ -851,6 +851,18 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('LYD Adlib', () => {
+		const cueLYD = ['LYD=SPORT_BED', ';x.xx']
+		const result = ParseCue(cueLYD)
+		expect(result).toEqual(
+			literal<CueDefinitionLYD>({
+				type: CueType.LYD,
+				adlib: true,
+				variant: 'SPORT_BED'
+			})
+		)
+	})
+
 	test('JINGLE', () => {
 		const cueJingle = ['JINGLE2=SN_intro_19']
 		const result = ParseCue(cueJingle)

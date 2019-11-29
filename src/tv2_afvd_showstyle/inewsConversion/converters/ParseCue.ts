@@ -464,6 +464,8 @@ function parseLYD(cue: string[]) {
 
 	if (isTime(cue[1])) {
 		lydCue = { ...lydCue, ...parseTime(cue[1]) }
+	} else if (cue[1].match(/;x.xx/)) {
+		lydCue.adlib = true
 	}
 
 	return lydCue
