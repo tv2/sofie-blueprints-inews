@@ -75,7 +75,7 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 						type: TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: sisyfosChannel.isPgm,
 						label: sisyfosChannel.label,
-						visible: sisyfosChannel.visibleInStudioA
+						visible: !sisyfosChannel.hideInStudioA
 					}
 				})
 			} else {
