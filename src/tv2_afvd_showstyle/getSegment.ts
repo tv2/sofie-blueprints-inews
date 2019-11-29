@@ -1,7 +1,13 @@
-import { DeviceType, TimelineContentTypeAtem, TimelineObjAtemME } from 'timeline-state-resolver-types'
+import {
+	DeviceType,
+	TimelineContentTypeAtem,
+	TimelineObjAtemAny,
+	TimelineObjAtemME
+} from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
+	CameraContent,
 	IBlueprintPiece,
 	IBlueprintRundownDB,
 	IBlueprintSegment,
@@ -15,7 +21,13 @@ import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
-import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
+import {
+	ParseBody,
+	PartDefinition,
+	PartDefinitionKam,
+	PartDefinitionSlutord,
+	PartType
+} from './inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
