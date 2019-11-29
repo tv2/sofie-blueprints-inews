@@ -20,7 +20,7 @@ import {
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
-import { parseConfig } from './helpers/config'
+import { BlueprintConfig, parseConfig } from './helpers/config'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
@@ -76,7 +76,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	}, 0)
 
 	if (segment.name.trim().match(/^CONTINUITY$/)) {
-		blueprintParts.push(CreatePartContinuity(ingestSegment))
+		blueprintParts.push(CreatePartContinuity(config, ingestSegment))
 		return {
 			segment,
 			parts: blueprintParts
@@ -329,7 +329,7 @@ function SlutordLookahead(
 	return false
 }
 
-export function CreatePartContinuity(ingestSegment: IngestSegment) {
+export function CreatePartContinuity(config: BlueprintConfig, ingestSegment: IngestSegment) {
 	return literal<BlueprintResultPart>({
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
@@ -349,7 +349,7 @@ export function CreatePartContinuity(ingestSegment: IngestSegment) {
 				infiniteMode: PieceLifespan.OutOnNextSegment,
 				content: literal<CameraContent>({
 					studioLabel: '',
-					switcherInput: 2002,
+					switcherInput: config.studio.AtemSource.Continuity,
 					timelineObjects: _.compact<TimelineObjAtemAny>([
 						literal<TimelineObjAtemME>({
 							id: '',
@@ -362,7 +362,7 @@ export function CreatePartContinuity(ingestSegment: IngestSegment) {
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.ME,
 								me: {
-									input: 2002
+									input: config.studio.AtemSource.Continuity
 								}
 							}
 						})

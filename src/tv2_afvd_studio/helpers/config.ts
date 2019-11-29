@@ -46,6 +46,9 @@ export interface StudioConfig {
 
 		Default: number
 		MixMinusDefault: number
+
+		DelayedPlayback: number
+		Continuity: number
 	}
 
 	AtemSettings: {
