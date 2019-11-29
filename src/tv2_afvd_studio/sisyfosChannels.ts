@@ -40,32 +40,32 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	},
 	[SisyfosLLAyer.SisyfosSourceHost_1_ST_B]: {
 		isPgm: 0,
-		label: 'VÆRT 1',
+		label: 'B-VÆRT 1',
 		visibleInStudioB: true
 	},
 	[SisyfosLLAyer.SisyfosSourceHost_2_ST_B]: {
 		isPgm: 0,
-		label: 'VÆRT 2',
+		label: 'B-VÆRT 2',
 		visibleInStudioB: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_1_ST_B]: {
 		isPgm: 0,
-		label: 'GÆST 1',
+		label: 'B-GÆST 1',
 		visibleInStudioB: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_2_ST_B]: {
 		isPgm: 0,
-		label: 'GÆST 2',
+		label: 'B-GÆST 2',
 		visibleInStudioB: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_3_ST_B]: {
 		isPgm: 0,
-		label: 'GÆST 3',
+		label: 'B-GÆST 3',
 		visibleInStudioB: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_4_ST_B]: {
 		isPgm: 0,
-		label: 'GÆST 4',
+		label: 'B-GÆST 4',
 		visibleInStudioB: true
 	},
 	[SisyfosLLAyer.SisyfosSourceLive_1]: {
