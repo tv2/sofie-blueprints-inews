@@ -339,7 +339,7 @@ export function CreatePartContinuity(config: BlueprintConfig, ingestSegment: Ing
 		pieces: [
 			literal<IBlueprintPiece>({
 				_id: '',
-				externalId: `${ingestSegment.externalId}-CONTINUITY-WHITE`,
+				externalId: `${ingestSegment.externalId}-CONTINUITY`,
 				enable: {
 					start: 0
 				},
