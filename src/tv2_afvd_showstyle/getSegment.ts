@@ -1,16 +1,25 @@
 import {
+	DeviceType,
+	TimelineContentTypeAtem,
+	TimelineObjAtemAny,
+	TimelineObjAtemME
+} from 'timeline-state-resolver-types'
+import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
+	CameraContent,
 	IBlueprintPiece,
 	IBlueprintRundownDB,
 	IBlueprintSegment,
 	IngestSegment,
 	PartContext,
+	PieceLifespan,
 	ScriptContent,
 	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
+import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { parseConfig } from './helpers/config'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import {
@@ -65,6 +74,11 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	const totalWords = parsedParts.reduce((prev, cur) => {
 		return prev + cur.script.length
 	}, 0)
+
+	if (segment.name.trim().match(/^CONTINUITY$/)) {
+		blueprintParts.push(CreatePartContinuity(ingestSegment))
+	}
+
 	let serverParts = 0
 	for (let i = 0; i < parsedParts.length; i++) {
 		const part = parsedParts[i]
@@ -309,6 +323,51 @@ function SlutordLookahead(
 	}
 
 	return false
+}
+
+export function CreatePartContinuity(ingestSegment: IngestSegment) {
+	return literal<BlueprintResultPart>({
+		part: {
+			externalId: `${ingestSegment.externalId}-CONTINUITY`,
+			title: 'CONTINUITY',
+			typeVariant: ''
+		},
+		pieces: [
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: `${ingestSegment.externalId}-CONTINUITY-WHITE`,
+				enable: {
+					start: 0
+				},
+				name: 'CONTINUITY',
+				sourceLayerId: SourceLayer.PgmContinuity,
+				outputLayerId: 'pgm',
+				infiniteMode: PieceLifespan.OutOnNextSegment,
+				content: literal<CameraContent>({
+					studioLabel: '',
+					switcherInput: 2002,
+					timelineObjects: _.compact<TimelineObjAtemAny>([
+						literal<TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: AtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: 2002
+								}
+							}
+						})
+					])
+				})
+			})
+		],
+		adLibPieces: []
+	})
 }
 
 export class PartContext2 implements PartContext {
