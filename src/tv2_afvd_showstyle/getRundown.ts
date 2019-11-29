@@ -120,7 +120,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			audioWhile
 		}
 	}
-	function makeCameraAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'cam',
@@ -130,7 +130,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: false,
+			toBeQueued: preview,
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -234,6 +234,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
 	const numCams = 10
+	const numCamsPvw = 10
 	const numRms = 10
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
@@ -241,9 +242,14 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		.forEach((o, i) => adlibItems.push(...makeCameraAdLibs(o, i)))
 
 	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, numCamsPvw) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach((o, i) => adlibItems.push(...makeCameraAdLibs(o, numCams + i, true)))
+
+	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, numRms) // the first x cameras to create INP1/2/3 live-adlibs from
-		.forEach((o, i) => adlibItems.push(...makeRemoteAdLibs(o, numCams + i)))
+		.forEach((o, i) => adlibItems.push(...makeRemoteAdLibs(o, numCams + numCamsPvw + i)))
 
 	adlibItems.push({
 		externalId: 'delayed',
