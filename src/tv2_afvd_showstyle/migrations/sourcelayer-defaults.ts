@@ -434,6 +434,27 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true,
 		unlimited: false,
 		onPGMClean: false
+	},
+	{
+		_id: SourceLayer.PgmContinuity,
+		_rank: 0,
+		name: 'CONTINUITY',
+		abbreviation: 'CONTINUITY',
+		type: SourceLayerType.METADATA,
+		exclusiveGroup: 'me1',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: true,
+		unlimited: false,
+		onPGMClean: false
 	}
 ]
 
