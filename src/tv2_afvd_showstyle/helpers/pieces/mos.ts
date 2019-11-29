@@ -66,7 +66,7 @@ export function EvaluateMOS(
 								templateVcpId: parsedCue.vcpid,
 								continueStep: parsedCue.continueCount,
 								noAutoPreloading: false,
-								channelName: 'FULL1'
+								channelName: parsedCue.name.match(/MOSART=L/i) ? undefined : 'FULL1'
 							}
 						})
 					])
@@ -116,7 +116,7 @@ export function EvaluateMOS(
 								templateVcpId: parsedCue.vcpid,
 								continueStep: parsedCue.continueCount,
 								noAutoPreloading: false,
-								channelName: 'FULL1'
+								channelName: parsedCue.name.match(/MOSART=L/i) ? undefined : 'FULL1'
 							}
 						})
 					])
