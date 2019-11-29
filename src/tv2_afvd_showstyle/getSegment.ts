@@ -1,9 +1,9 @@
 import {
+	AtemTransitionStyle,
 	DeviceType,
 	TimelineContentTypeAtem,
 	TimelineObjAtemAny,
-	TimelineObjAtemME,
-	AtemTransitionStyle
+	TimelineObjAtemME
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
@@ -22,13 +22,7 @@ import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
-import {
-	ParseBody,
-	PartDefinition,
-	PartDefinitionKam,
-	PartDefinitionSlutord,
-	PartType
-} from './inewsConversion/converters/ParseBody'
+import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
@@ -83,27 +77,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	}, 0)
 
 	if (segment.name.trim().match(/^CONTINUITY$/)) {
-		// blueprintParts.push(CreatePartContinuity(config, ingestSegment))
-		const part = CreatePartKam(
-			new PartContext2(context, `${ingestSegment.externalId}-CONTINUITY`),
-			config,
-			literal<PartDefinitionKam>({
-				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
-				externalId: `${ingestSegment.externalId}-CONTINUITY`,
-				rawType: 'KAM 1',
-				cues: [],
-				script: '',
-				fields: {},
-				modified: 0
-			}),
-			10
-		)
-		part.pieces[0].sourceLayerId = SourceLayer.PgmContinuity
-		part.pieces[0].name = 'CONTINUITY'
-		blueprintParts.push(part)
+		blueprintParts.push(CreatePartContinuity(config, ingestSegment))
 		return {
 			segment,
 			parts: blueprintParts
