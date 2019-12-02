@@ -194,7 +194,7 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadDepth: 1,
+		lookaheadMaxSearchDistance: 1,
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
@@ -202,7 +202,7 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadDepth: 1,
+		lookaheadMaxSearchDistance: 1,
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
@@ -210,7 +210,7 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadDepth: 1,
+		lookaheadMaxSearchDistance: 1,
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
