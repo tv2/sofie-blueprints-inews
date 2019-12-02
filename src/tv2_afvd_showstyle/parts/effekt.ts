@@ -58,7 +58,7 @@ export function GetBreakerEffekt(
 						TimeFromFrames(Number(realBreaker.EndAlpha)) +
 						config.studio.CasparPrerollDuration +
 						config.studio.ATEMDelay,
-					autoNext: true
+					autoNext: realBreaker.Autonext === true
 				}
 			}
 		}
