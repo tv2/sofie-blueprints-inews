@@ -1,4 +1,10 @@
-import { DeviceType, TimelineContentTypeLawo, TimelineObjLawoSource } from 'timeline-state-resolver-types'
+import {
+	DeviceType,
+	TimelineContentTypeAtem,
+	TimelineContentTypeLawo,
+	TimelineObjAtemSsrc,
+	TimelineObjLawoSource
+} from 'timeline-state-resolver-types'
 import {
 	BlueprintResultTimeline,
 	IBlueprintPieceDB,
@@ -34,6 +40,7 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 		context?: string
 		lawoPersistLevel?: boolean
 		mediaPlayerSession?: string
+		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 	}
 }
 
@@ -73,9 +80,36 @@ export function onTimelineGenerate(
 		resolvedPieces
 	)
 
+	dveBoxLookaheadUseOriginalEnable(timeline)
+
 	return Promise.resolve({
 		timeline,
 		persistentState
+	})
+}
+
+/**
+ * DVE box lookahead uses classes to select the correct object.
+ * Lookahead is replacing this selector rule with a '1' which causes every box to show the same.
+ * This simply restores the original enable, which gets put into metaData for this purpose.
+ */
+function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
+	// DVE_box lookahead class
+	_.each(timeline, obj => {
+		const obj2 = obj as TimelineObjAtemSsrc & TimelineBlueprintExt
+		if (
+			obj2.isLookahead &&
+			obj2.content.deviceType === DeviceType.ATEM &&
+			obj2.content.type === TimelineContentTypeAtem.SSRC &&
+			obj2.enable &&
+			(obj2.enable.while === '1' || obj2.enable.while === 1)
+		) {
+			const origClass = obj2.metaData ? obj2.metaData.dveAdlibEnabler : undefined
+			if (origClass) {
+				// Restore the original enable rule
+				obj2.enable = { while: origClass }
+			}
+		}
 	})
 }
 

@@ -28,7 +28,7 @@ import { FindSourceInfoStrict, SourceInfo } from '../../../tv2_afvd_studio/helpe
 import { AtemLLayer, CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { AtemSourceIndex } from '../../../types/atem'
 import { CueDefinitionDVE, DVESources } from '../../inewsConversion/converters/ParseCue'
-import { SourceLayer } from '../../layers'
+import { ControlClasses, SourceLayer } from '../../layers'
 import { DVEConfig } from '../pieces/dve'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
 
@@ -194,8 +194,8 @@ export function MakeContentDVE2(
 				// Setup classes for adlibs to be able to override boxes
 				createEmptyObject({
 					enable: { start: 0 },
-					layer: 'dve_layout_classes', // TODO - define name better?
-					classes
+					layer: 'dve_lookahead_control',
+					classes: [ControlClasses.DVEOnAir]
 				}),
 
 				// setup ssrc
@@ -208,7 +208,8 @@ export function MakeContentDVE2(
 						deviceType: DeviceType.ATEM,
 						type: TimelineContentTypeAtem.SSRC,
 						ssrc: { boxes }
-					}
+					},
+					classes
 				}),
 				literal<TimelineObjAtemSsrcProps>({
 					id: '',
