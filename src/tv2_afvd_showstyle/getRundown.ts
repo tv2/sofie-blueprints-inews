@@ -35,13 +35,14 @@ import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../tv2_afvd_studio/layers'
+import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from './helpers/sisyfos/sisyfos'
-import { SourceLayer } from './layers'
+import { ControlClasses, SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -94,9 +95,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	function makeSsrcAdlibBoxes(layer: SourceLayer, port: number) {
 		// Generate boxes with classes to map across each layer
 		const boxObjs = _.map(boxMappings, (m, i) =>
-			literal<TimelineObjAtemSsrc>({
+			literal<TimelineObjAtemSsrc & TimelineBlueprintExt>({
 				id: '',
-				// TODO - will these classes play ok with lookahead?
 				enable: { while: `.${layer}_${m}` },
 				priority: 1,
 				layer: m,
@@ -111,6 +111,9 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							{ source: port }
 						]
 					}
+				},
+				metaData: {
+					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`
 				}
 			})
 		)

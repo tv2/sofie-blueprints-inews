@@ -35,5 +35,6 @@ export enum SourceLayer {
 }
 
 export enum ControlClasses {
-	ShowIdentGraphic = 'show_ident_graphic'
+	ShowIdentGraphic = 'show_ident_graphic',
+	DVEOnAir = 'dve_on_air' // DVE Part is on air
 }
