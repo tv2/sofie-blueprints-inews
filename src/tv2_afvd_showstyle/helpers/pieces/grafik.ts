@@ -66,20 +66,7 @@ export function EvaluateGrafik(
 		}
 	}
 
-	const isIdentGrafik = parsedCue.template === 'direkte'
-
-	const getInfiniteMode = () => {
-		if (isTlfPrimary) {
-			return PieceLifespan.OutOnNextPart
-		} else if (isIdentGrafik) {
-			// These are activated by the live, and should continue for when that live is recalled
-			return PieceLifespan.OutOnNextSegment
-		} else if (parsedCue.end && parsedCue.end.infiniteMode) {
-			return InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-		} else {
-			return PieceLifespan.Normal
-		}
-	}
+	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
 	if (adlib) {
 		adlibPieces.push(
@@ -92,7 +79,7 @@ export function EvaluateGrafik(
 					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 				outputLayerId: 'overlay',
 				...(isTlfPrimary ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
-				infiniteMode: getInfiniteMode(),
+				infiniteMode: GetInfiniteModeForGrafik(config, parsedCue, isTlfPrimary, isIdentGrafik),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
@@ -133,7 +120,7 @@ export function EvaluateGrafik(
 				sourceLayerId: isTlfPrimary
 					? SourceLayer.PgmGraphicsTLF
 					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-				infiniteMode: getInfiniteMode(),
+				infiniteMode: GetInfiniteModeForGrafik(config, parsedCue, isTlfPrimary, isIdentGrafik),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
@@ -162,6 +149,48 @@ export function EvaluateGrafik(
 			})
 		)
 	}
+}
+
+export function GetInfiniteModeForGrafik(
+	config: BlueprintConfig,
+	parsedCue: CueDefinitionGrafik,
+	isTlf?: boolean,
+	isIdent?: boolean
+): PieceLifespan {
+	return isTlf
+		? PieceLifespan.OutOnNextPart
+		: isIdent
+		? PieceLifespan.OutOnNextSegment
+		: parsedCue.end && parsedCue.end.infiniteMode
+		? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+		: FindInfiniteModeFromConfig(config, parsedCue)
+}
+
+export function FindInfiniteModeFromConfig(config: BlueprintConfig, parsedCue: CueDefinitionGrafik): PieceLifespan {
+	if (config.showStyle.GFXTemplates) {
+		const template = GetTemplateName(config, parsedCue)
+		const conf = config.showStyle.GFXTemplates.find(cnf =>
+			cnf.VizTemplate ? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() : false
+		)
+
+		if (!conf) {
+			return PieceLifespan.Normal
+		}
+
+		if (!conf.OutType || !conf.OutType.toString().length) {
+			return PieceLifespan.Normal
+		}
+
+		const type = conf.OutType.toString().toUpperCase()
+
+		if (type !== 'B' && type !== 'S' && type !== 'O') {
+			return PieceLifespan.Normal
+		}
+
+		return InfiniteMode(type, PieceLifespan.Normal)
+	}
+
+	return PieceLifespan.Normal
 }
 
 export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string) {
