@@ -1,4 +1,13 @@
-import { CueDefinition, CueDefinitionMOS, CueDefinitionTargetEngine, CueType, ParseCue, UnparsedCue } from './ParseCue'
+import { ParseCueOrder } from '../../../tv2_afvd_showstyle/helpers/parseCueOrder'
+import {
+	CueDefinition,
+	CueDefinitionMOS,
+	CueDefinitionTargetEngine,
+	CueDefinitionTelefon,
+	CueType,
+	ParseCue,
+	UnparsedCue
+} from './ParseCue'
 
 export enum PartType {
 	Unknown,
@@ -233,11 +242,13 @@ export function ParseBody(
 		}
 	}
 
-	return definitions
+	return ParseCueOrder(definitions, segmentId)
 }
 
-function FindTargetPair(partDefinition: PartDefinition): boolean {
-	const index = partDefinition.cues.findIndex(cue => cue.type === CueType.TargetEngine && !cue.grafik)
+export function FindTargetPair(partDefinition: PartDefinition): boolean {
+	const index = partDefinition.cues.findIndex(
+		cue => (cue.type === CueType.TargetEngine && !cue.grafik) || (cue.type === CueType.Telefon && !cue.vizObj)
+	)
 
 	if (index === -1) {
 		// No more targets
@@ -247,9 +258,15 @@ function FindTargetPair(partDefinition: PartDefinition): boolean {
 	if (index + 1 < partDefinition.cues.length) {
 		if (partDefinition.cues[index + 1].type === CueType.MOS) {
 			const mosCue = partDefinition.cues[index + 1] as CueDefinitionMOS
-			const targetCue = partDefinition.cues[index] as CueDefinitionTargetEngine
-			targetCue.grafik = mosCue
-			partDefinition.cues[index] = targetCue
+			if (partDefinition.cues[index].type === CueType.TargetEngine) {
+				const targetCue = partDefinition.cues[index] as CueDefinitionTargetEngine
+				targetCue.grafik = mosCue
+				partDefinition.cues[index] = targetCue
+			} else {
+				const targetCue = partDefinition.cues[index] as CueDefinitionTelefon
+				targetCue.vizObj = mosCue
+				partDefinition.cues[index] = targetCue
+			}
 			partDefinition.cues.splice(index + 1, 1)
 			return true
 		} else {
