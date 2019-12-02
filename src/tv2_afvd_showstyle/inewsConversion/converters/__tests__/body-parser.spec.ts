@@ -2,6 +2,7 @@ import { literal } from '../../../../common/util'
 import {
 	ParseBody,
 	PartDefinition,
+	PartDefinitionGrafik,
 	PartDefinitionKam,
 	PartDefinitionServer,
 	PartDefinitionSlutord,
@@ -1254,6 +1255,85 @@ describe('Body parser', () => {
 				})
 			])
 		)
+	})
+
+	test('test 26', () => {
+		const body26 =
+			'\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--tlftopt-></cc><a idref="0"><cc><--</cc></a></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="1"><pi>************ 100%GRAFIK ***********</pi></a></p>\r\n<p><a idref="4"></a></p>\r\n<p><a idref="3"></a></p>\r\n<p></p>\r\n'
+		const cues26 = [
+			['kg tlftoptlive Dette er tlf top', 'Tester', ';0.00'],
+			['GRAFIK=full'],
+			null,
+			['kg tlfdirekte KØBENHAVN', ';0.00'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 2 YNYAB 0 [[ pilotdata',
+				'TELEFON/KORT//LIVE_KABUL',
+				'VCPID=2552305',
+				'ContinueCount=3',
+				'TELEFON/KORT//LIVE_KABUL'
+			]
+		]
+		const result = ParseBody('00000000001', '', body26, cues26, fields, 0)
+		expect(result).toEqual([
+			literal<PartDefinitionKam>({
+				externalId: '00000000001-0',
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				rawType: 'KAM 1',
+				cues: [
+					literal<CueDefinitionGrafik>({
+						type: CueType.Grafik,
+						template: 'tlftoptlive',
+						cue: 'kg',
+						textFields: ['Dette er tlf top', 'Tester'],
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				fields,
+				modified: 0,
+				script: ''
+			}),
+			literal<PartDefinitionGrafik>({
+				externalId: '00000000001-1',
+				type: PartType.Grafik,
+				variant: {},
+				rawType: '100%GRAFIK',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						engine: 'full',
+						rawType: 'GRAFIK=full',
+						content: {},
+						grafik: literal<CueDefinitionMOS>({
+							type: CueType.MOS,
+							name: 'TELEFON/KORT//LIVE_KABUL',
+							vcpid: 2552305,
+							continueCount: 3,
+							start: {
+								seconds: 0
+							}
+						})
+					}),
+					literal<CueDefinitionGrafik>({
+						type: CueType.Grafik,
+						template: 'tlfdirekte',
+						cue: 'kg',
+						textFields: ['KØBENHAVN'],
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				fields,
+				modified: 0,
+				script: ''
+			})
+		])
 	})
 
 	test('Merge target cues', () => {

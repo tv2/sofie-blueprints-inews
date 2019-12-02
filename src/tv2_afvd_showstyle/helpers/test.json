@@ -6,145 +6,58 @@
             "name": "1"
         },
         "rawType": "KAM 1",
-        "cues": [],
-        "script": "Siden nytår er over 100 mennesker kommet til skade på et el-løbehjul i Københavnsområdet.\nDet fremgår afen opgørelse fra Region Hovedstaden, hvor enten akutmodtagelsen eller en ambulance har været involveret i en løbehjuls-skade.\nDe gange, hvor det er gået galt, er der typisk tale om ansigtsskader, og det er isærgået ud over dem i alderen 18 til 25 år:\n",
+        "cues": [
+            {
+                "type": 1,
+                "template": "tlftoptlive",
+                "cue": "kg",
+                "textFields": [
+                    "Dette er tlf top",
+                    "Tester"
+                ],
+                "start": {
+                    "seconds": 0
+                }
+            }
+        ],
+        "script": "",
         "fields": {},
         "modified": 0
     },
     {
-        "type": 0,
-        "variant": {},
         "externalId": "00000000001-1",
-        "rawType": "",
-        "cues": [
-            {
-                "type": 3,
-                "source": "1"
-            }
-        ],
-        "script": "",
-        "fields": {},
-        "modified": 0
-    },
-    {
-        "type": 0,
+        "type": 5,
         "variant": {},
-        "externalId": "00000000001-2",
-        "rawType": "",
+        "rawType": "100%GRAFIK",
         "cues": [
             {
-                "type": 3,
-                "source": "2"
-            }
-        ],
-        "script": "",
-        "fields": {},
-        "modified": 0
-    },
-    {
-        "externalId": "00000000001-3",
-        "type": 2,
-        "variant": {},
-        "rawType": "SERVER",
-        "cues": [
-            {
-                "type": 1,
-                "template": "bund",
-                "cue": "kg",
-                "textFields": [
-                    "2"
-                ],
-                "adlib": true
+                "type": 13,
+                "rawType": "GRAFIK=full",
+                "content": {},
+                "engine": "full",
+                "grafik": {
+                    "type": 2,
+                    "name": "TELEFON/KORT//LIVE_KABUL",
+                    "vcpid": 2552305,
+                    "continueCount": 3,
+                    "start": {
+                        "seconds": 0
+                    }
+                }
             },
             {
                 "type": 1,
-                "template": "bund",
+                "template": "tlfdirekte",
                 "cue": "kg",
                 "textFields": [
-                    "3"
+                    "KØBENHAVN"
                 ],
-                "adlib": true
-            },
-            {
-                "type": 10,
-                "clip": "1"
-            },
-            {
-                "type": 10,
-                "clip": "2"
-            },
-            {
-                "type": 10,
-                "clip": "3"
+                "start": {
+                    "seconds": 0
+                }
             }
         ],
         "script": "",
-        "fields": {},
-        "modified": 0
-    },
-    {
-        "type": 0,
-        "variant": {},
-        "externalId": "00000000001-4",
-        "rawType": "",
-        "cues": [
-            {
-                "type": 5,
-                "source": "TLF 1"
-            }
-        ],
-        "script": "",
-        "fields": {},
-        "modified": 0
-    },
-    {
-        "type": 0,
-        "variant": {},
-        "externalId": "00000000001-5",
-        "rawType": "",
-        "cues": [
-            {
-                "type": 5,
-                "source": "TLF 2"
-            }
-        ],
-        "script": "",
-        "fields": {},
-        "modified": 0
-    },
-    {
-        "externalId": "00000000001-2",
-        "type": 7,
-        "variant": {
-            "endWords": ""
-        },
-        "rawType": "SLUTORD: ",
-        "cues": [],
-        "script": "",
-        "fields": {},
-        "modified": 0
-    },
-    {
-        "externalId": "00000000001-3",
-        "type": 7,
-        "variant": {
-            "endWords": "Skarpere regler."
-        },
-        "rawType": "Slutord Skarpere regler.",
-        "cues": [],
-        "script": "",
-        "fields": {},
-        "modified": 0
-    },
-    {
-        "externalId": "00000000001-4",
-        "type": 1,
-        "variant": {
-            "name": "2"
-        },
-        "rawType": "KAM 2",
-        "cues": [],
-        "script": "Transportminister Benny Engelbrecht siger at han afventer den igangværende evaluering, der er færdig i januar 2020. Herefter vil han sammen med de andre partiet vurdere, om noget skal ændres i forsøgsordningen.\n",
         "fields": {},
         "modified": 0
     }
