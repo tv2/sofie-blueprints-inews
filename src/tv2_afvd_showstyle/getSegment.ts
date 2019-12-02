@@ -226,7 +226,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				blueprintParts.push(CreatePartGrafik(partContext, config, part, totalWords))
 				break
 			case PartType.VO:
-				blueprintParts.push(CreatePartVO(partContext, config, part, totalWords))
+				blueprintParts.push(
+					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.totalTime))
+				)
 				break
 			case PartType.Unknown:
 				if (part.cues.length) {
@@ -258,16 +260,24 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			blueprintParts.push(extraPart)
 		})
 
-		if (part.type === PartType.Server || (part.type === PartType.VO && Number(part.fields.tapeTime) > 0)) {
+		if (
+			part.type === PartType.Server ||
+			(part.type === PartType.VO && (Number(part.fields.tapeTime) > 0 || part.script.length))
+		) {
 			serverParts++
 		}
 	}
+
+	const allocatedTime = blueprintParts.reduce((prev, cur) => {
+		return prev + (cur.part.expectedDuration ? cur.part.expectedDuration : 0)
+	}, 0)
 
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration) {
 			part.part.expectedDuration =
-				(Number(ingestSegment.payload.iNewsStory.fields.audioTime) * 1000 || 0) / (blueprintParts.length - serverParts)
+				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime || 0) /
+				(blueprintParts.length - serverParts)
 		}
 	})
 
