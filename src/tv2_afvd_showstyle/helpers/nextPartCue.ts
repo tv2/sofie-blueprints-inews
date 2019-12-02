@@ -1,4 +1,4 @@
-import { PartDefinition } from '../inewsConversion/converters/ParseBody'
+import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
 
 export function GetNextPartCue(partdefinition: PartDefinition, currentCue: number): number {
@@ -8,7 +8,7 @@ export function GetNextPartCue(partdefinition: PartDefinition, currentCue: numbe
 			cue =>
 				cue.type === CueType.DVE ||
 				cue.type === CueType.Ekstern ||
-				(cue.type === CueType.TargetEngine && cue.engine.match(/full/i)) ||
+				(cue.type === CueType.TargetEngine && cue.engine.match(/full/i) && partdefinition.type !== PartType.Grafik) ||
 				cue.type === CueType.Telefon
 		)
 	if (index === -1) {
