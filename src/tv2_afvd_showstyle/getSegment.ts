@@ -235,7 +235,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.Slutord:
 				blueprintParts.push(CreatePartInvalid(part))
-				context.warning('Slutord should have been filtered out by now, something may have gone wrong')
+				context.warning('Slutord should have been moved to script, something may have gone wrong')
 				break
 			default:
 				assertUnreachable(part)
