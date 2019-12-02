@@ -130,24 +130,34 @@ describe('Body parser', () => {
 			literal<PartDefinition[]>([
 				{
 					type: PartType.Teknik,
-					cues: [
-						cueUnknown,
-						cueGrafik1,
-						cueGrafik2,
-						cueGrafik3,
-						cueEkstern1,
-						cueEkstern2,
-						cueJingle1,
-						cueJingle2,
-						cueJingle3
-					],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
 					variant: {},
 					externalId: '00000000001-0',
 					rawType: 'TEKNIK',
 					fields: {},
 					modified: 0
-				}
+				},
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					variant: {},
+					externalId: '00000000001-1',
+					fields: {},
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern2, cueJingle1, cueJingle2, cueJingle3],
+					script: '',
+					variant: {},
+					externalId: '00000000001-2',
+					fields: {},
+					modified: 0
+				})
 			])
 		)
 	})
@@ -162,14 +172,24 @@ describe('Body parser', () => {
 			literal<PartDefinition[]>([
 				{
 					type: PartType.Unknown,
-					cues: [cueUnknown, cueGrafik1, cueEkstern1],
+					cues: [cueUnknown, cueGrafik1],
 					script: 'Thid id thr trext for the next DVE\nScript here\n',
 					variant: {},
 					externalId: '00000000001-0',
 					rawType: '',
 					fields: {},
 					modified: 0
-				}
+				},
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					variant: {},
+					externalId: '00000000001-1',
+					fields: {},
+					modified: 0
+				})
 			])
 		)
 	})
@@ -208,13 +228,33 @@ describe('Body parser', () => {
 				{
 					type: PartType.Server,
 					rawType: 'SERVER',
-					cues: [cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1, cueEkstern2, cueJingle1, cueJingle2],
+					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
 					variant: {},
 					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
 				},
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					variant: {},
+					externalId: '00000000001-2',
+					fields: {},
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern2, cueJingle1, cueJingle2],
+					script: '',
+					variant: {},
+					externalId: '00000000001-3',
+					fields: {},
+					modified: 0
+				}),
 				{
 					type: PartType.Slutord,
 					rawType: 'SLUTORD: ekstra kick',
@@ -223,7 +263,7 @@ describe('Body parser', () => {
 					variant: {
 						endWords: 'ekstra kick'
 					},
-					externalId: '00000000001-2',
+					externalId: '00000000001-4',
 					fields: {},
 					modified: 0
 				}
@@ -276,13 +316,23 @@ describe('Body parser', () => {
 				{
 					type: PartType.Grafik,
 					rawType: '100%GRAFIK',
-					cues: [cueGrafik1, cueEkstern1, cueGrafik3],
+					cues: [cueGrafik1],
 					script: '',
 					variant: {},
 					externalId: '00000000001-1',
 					fields: {},
 					modified: 0
-				}
+				},
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1, cueGrafik3],
+					script: '',
+					variant: {},
+					externalId: '00000000001-2',
+					fields: {},
+					modified: 0
+				})
 			])
 		)
 	})
@@ -366,7 +416,7 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script: 'Divya Das med fra London\n',
 					variant: {
 						name: '2'
@@ -374,7 +424,17 @@ describe('Body parser', () => {
 					externalId: '00000000001-0',
 					fields: {},
 					modified: 0
-				}
+				},
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					variant: {},
+					externalId: '00000000001-1',
+					fields: {},
+					modified: 0
+				})
 			])
 		)
 	})
@@ -389,7 +449,7 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script:
 						'Vi har også dig, Kristian Mouritzen, Sikkerhedspolitisk korrespondent på Berlingske med på en forbindelse.\nDu har skrevet en analyse af forholdet mellem USA og Danmark efter Trump i et interview kalder Mette Frederiksens kommentare for "nasty".\nNogle politiske analystikere er ude og hylde Mette Frederiksen for sine handlinger, mens andre kalder det usmart. Er det her udelukkende en retorisk armlægningskonkurrence, eller skal vi forvente, at det udskudte besøg også vil få konsekvenser for forholdet mellem Danmark og USA på længere sigt?\n',
 					variant: {
@@ -398,7 +458,17 @@ describe('Body parser', () => {
 					externalId: '00000000001-0',
 					fields: {},
 					modified: 0
-				}
+				},
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					variant: {},
+					externalId: '00000000001-1',
+					fields: {},
+					modified: 0
+				})
 			])
 		)
 	})
@@ -414,7 +484,7 @@ describe('Body parser', () => {
 				{
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script:
 						'Som lovet -med os igen har vi nu\nUdenrigsminister Jeppe Kofod.\nTrump valgte at aflyse besøget i danmark - og igår aftes førte det til, at du havde en samtale med den amerikanske udenrigsminster Mike Pompeo. Hvorfor talte i sammen?\n',
 					variant: {
@@ -423,7 +493,17 @@ describe('Body parser', () => {
 					externalId: '00000000001-0',
 					fields: {},
 					modified: 0
-				}
+				},
+				literal<PartDefinitionUnknown>({
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					variant: {},
+					externalId: '00000000001-1',
+					fields: {},
+					modified: 0
+				})
 			])
 		)
 	})
@@ -525,11 +605,31 @@ describe('Body parser', () => {
 				{
 					type: PartType.Unknown,
 					rawType: '',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3, cueEkstern1, cueEkstern2],
+					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script:
 						'Rasmus Staghøj, således reaktioner fra Astana-lejren, men hvordan bliver der ellers talt om det her nede hos jer?\n',
 					variant: {},
 					externalId: '00000000001-0',
+					fields: {},
+					modified: 0
+				},
+				{
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					variant: {},
+					externalId: '00000000001-1',
+					fields: {},
+					modified: 0
+				},
+				{
+					type: PartType.Unknown,
+					rawType: '',
+					cues: [cueEkstern2],
+					script: '',
+					variant: {},
+					externalId: '00000000001-2',
 					fields: {},
 					modified: 0
 				}
@@ -661,24 +761,64 @@ describe('Body parser', () => {
 						name: '1'
 					},
 					rawType: 'KAM 1',
-					cues: [cueEkstern1, cueEkstern2],
+					cues: [],
 					script:
 						'Siden nytår er over 100 mennesker kommet til skade på et el-løbehjul i Københavnsområdet.\nDet fremgår af en opgørelse fra Region Hovedstaden, hvor enten akutmodtagelsen eller en ambulance har været involveret i en løbehjuls-skade.\nDe gange, hvor det er gået galt, er der typisk tale om ansigtsskader, og det er især gået ud over dem i alderen 18 til 25 år:\n',
 					fields,
 					modified: 0
 				}),
-				literal<PartDefinitionServer>({
+				literal<PartDefinitionUnknown>({
 					externalId: '00000000001-1',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
+					cues: [cueEkstern1],
+					script: '',
+					fields,
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-2',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
+					cues: [cueEkstern2],
+					script: '',
+					fields,
+					modified: 0
+				}),
+				literal<PartDefinitionServer>({
+					externalId: '00000000001-3',
 					type: PartType.Server,
 					variant: {},
 					rawType: 'SERVER',
-					cues: [cueGrafik2, cueGrafik3, cueJingle1, cueJingle2, cueJingle3, cueTelefon1, cueTelefon2],
+					cues: [cueGrafik2, cueGrafik3, cueJingle1, cueJingle2, cueJingle3],
+					script: '',
+					fields,
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-4',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
+					cues: [cueTelefon1],
+					script: '',
+					fields,
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-5',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
+					cues: [cueTelefon2],
 					script: '',
 					fields,
 					modified: 0
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-2',
+					externalId: '00000000001-6',
 					type: PartType.Slutord,
 					variant: {
 						endWords: ''
@@ -690,7 +830,7 @@ describe('Body parser', () => {
 					modified: 0
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-3',
+					externalId: '00000000001-7',
 					type: PartType.Slutord,
 					variant: {
 						endWords: 'Skarpere regler.'
@@ -702,7 +842,7 @@ describe('Body parser', () => {
 					modified: 0
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-4',
+					externalId: '00000000001-8',
 					type: PartType.Kam,
 					variant: {
 						name: '2'
@@ -934,6 +1074,16 @@ describe('Body parser', () => {
 						name: '1'
 					},
 					rawType: 'KAM 1',
+					cues: [],
+					script: 'Skriv spib her\n',
+					fields,
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-1',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
 					cues: [
 						literal<CueDefinitionTelefon>({
 							type: CueType.Telefon,
@@ -973,7 +1123,7 @@ describe('Body parser', () => {
 							}
 						})
 					],
-					script: 'Skriv spib her\n',
+					script: '',
 					fields,
 					modified: 0
 				})
@@ -1003,6 +1153,16 @@ describe('Body parser', () => {
 						duration: 200
 					},
 					rawType: 'KAM 1',
+					cues: [],
+					script: 'Skriv spib her\n',
+					fields,
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-1',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
 					cues: [
 						literal<CueDefinitionTelefon>({
 							type: CueType.Telefon,
@@ -1042,7 +1202,7 @@ describe('Body parser', () => {
 							}
 						})
 					],
-					script: 'Skriv spib her\n',
+					script: '',
 					fields,
 					modified: 0
 				})
@@ -1188,7 +1348,18 @@ describe('Body parser', () => {
 								},
 								continueCount: -1
 							})
-						}),
+						})
+					],
+					script: '',
+					fields,
+					modified: 0
+				}),
+				literal<PartDefinitionUnknown>({
+					externalId: '00000000001-1',
+					type: PartType.Unknown,
+					variant: {},
+					rawType: '',
+					cues: [
 						literal<CueDefinitionTargetEngine>({
 							type: CueType.TargetEngine,
 							rawType: 'GRAFIK=FULL',
