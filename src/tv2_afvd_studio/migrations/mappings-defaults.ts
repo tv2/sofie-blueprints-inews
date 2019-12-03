@@ -217,7 +217,8 @@ export default literal<BlueprintMappings>({
 	casparcg_player_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.PRELOAD,
+		lookaheadDepth: 2
 	}),
 	casparcg_player_clip_1: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
