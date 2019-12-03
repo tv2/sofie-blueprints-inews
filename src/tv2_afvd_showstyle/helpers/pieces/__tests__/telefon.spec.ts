@@ -11,8 +11,10 @@ import {
 	IBlueprintPiece,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
+import { SegmentContext } from '../../../../__mocks__/context'
 import { literal } from '../../../../common/util'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
 import {
 	CueDefinitionGrafik,
 	CueDefinitionTelefon,
@@ -21,8 +23,23 @@ import {
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer, VizLLayer } from '../../../../tv2_afvd_studio/layers'
+import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { ShowStyleConfig } from '../../config'
 import { EvaluateTelefon } from '../telefon'
+
+const mockContext = new SegmentContext(
+	{
+		_id: '',
+		externalId: '',
+		name: '',
+		showStyleVariantId: ''
+	},
+	mappingsDefaults
+)
+mockContext.studioConfig = defaultStudioConfig as any
+mockContext.showStyleConfig = defaultShowStyleConfig as any
+
+const partContext = new PartContext2(mockContext, '00001')
 
 describe('telefon', () => {
 	test('telefon with vizObj', () => {
@@ -49,6 +66,7 @@ describe('telefon', () => {
 				sources: [],
 				mediaPlayers: []
 			},
+			partContext,
 			pieces,
 			adLibPieces,
 			partId,

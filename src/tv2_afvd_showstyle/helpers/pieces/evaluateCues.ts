@@ -50,11 +50,22 @@ export function EvaluateCues(
 			const shouldAdlib = adlib ? true : cue.adlib ? true : false
 			switch (cue.type) {
 				case CueType.Grafik:
-					EvaluateGrafik(config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, false, adLibRank)
+					EvaluateGrafik(
+						config,
+						context,
+						pieces,
+						adLibPieces,
+						partDefinition.externalId,
+						cue,
+						shouldAdlib,
+						false,
+						adLibRank
+					)
 					break
 				case CueType.MOS:
 					EvaluateMOS(
 						config,
+						context,
 						pieces,
 						adLibPieces,
 						partDefinition.externalId,
@@ -89,7 +100,7 @@ export function EvaluateCues(
 					EvaluateAdLib(context, config, adLibPieces, partDefinition.externalId, cue, partDefinition, adLibRank)
 					break
 				case CueType.Telefon:
-					EvaluateTelefon(config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
+					EvaluateTelefon(config, context, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 					break
 				case CueType.VIZ:
 					EvaluateVIZ(context, config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
