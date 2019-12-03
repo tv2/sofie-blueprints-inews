@@ -30,7 +30,7 @@ export function EvaluateTargetEngine(
 		return
 	}
 	if (!parsedCue.content.INP1 && !parsedCue.content.INP) {
-		context.warning(`No input provided by ${parsedCue.rawType} for engine aux`)
+		// context.warning(`No input provided by ${parsedCue.rawType} for engine aux`)
 	} else {
 		const source = parsedCue.content.INP1 ? parsedCue.content.INP1 : parsedCue.content.INP
 		let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)
@@ -78,6 +78,6 @@ export function EvaluateTargetEngine(
 
 	if (parsedCue.grafik) {
 		// TODO target engine
-		EvaluateMOS(config, pieces, adlibPeces, partId, parsedCue.grafik, false, false, 0, true)
+		EvaluateMOS(config, context, pieces, adlibPeces, partId, parsedCue.grafik, false, false, 0, true)
 	}
 }

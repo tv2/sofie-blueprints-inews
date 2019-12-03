@@ -8,6 +8,7 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
@@ -20,6 +21,7 @@ import { CreateTimingGrafik, GetGrafikDuration, grafikName } from './grafik'
 
 export function EvaluateMOS(
 	config: BlueprintConfig,
+	context: PartContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -29,6 +31,10 @@ export function EvaluateMOS(
 	rank?: number,
 	isGrafikPart?: boolean
 ) {
+	if (parsedCue.vcpid === undefined || parsedCue.vcpid === null || parsedCue.vcpid.toString() === '') {
+		context.warning('No valid VCPID provided')
+	}
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({

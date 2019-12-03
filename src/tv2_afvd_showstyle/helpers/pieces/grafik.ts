@@ -8,6 +8,7 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
@@ -32,6 +33,7 @@ export function IsGrafik(rawString: string): boolean {
 
 export function EvaluateGrafik(
 	config: BlueprintConfig,
+	context: PartContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -68,6 +70,12 @@ export function EvaluateGrafik(
 
 	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
+	const mappedTemplate = GetTemplateName(config, parsedCue)
+
+	if (!mappedTemplate || !mappedTemplate.length) {
+		context.warning(`No valid template found for ${parsedCue.template}`)
+	}
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -94,7 +102,7 @@ export function EvaluateGrafik(
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: GetTemplateName(config, parsedCue),
+								templateName: mappedTemplate,
 								templateData: parsedCue.textFields,
 								channelName: 'FULL1'
 							}
@@ -139,7 +147,7 @@ export function EvaluateGrafik(
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: GetTemplateName(config, parsedCue),
+								templateName: mappedTemplate,
 								templateData: parsedCue.textFields,
 								channelName: 'FULL1'
 							}
