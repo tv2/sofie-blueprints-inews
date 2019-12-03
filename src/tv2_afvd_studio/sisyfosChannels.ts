@@ -22,15 +22,15 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_2_ST_A]: {
 		isPgm: 0,
-		label: 'GÆST 2'
+		label: 'GST 2'
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_3_ST_A]: {
 		isPgm: 0,
-		label: 'GÆST 3'
+		label: 'GST 3'
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_4_ST_A]: {
 		isPgm: 0,
-		label: 'GÆST 4'
+		label: 'GST 4'
 	},
 	[SisyfosLLAyer.SisyfosSourceHost_1_ST_B]: {
 		isPgm: 0,
@@ -44,22 +44,22 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_1_ST_B]: {
 		isPgm: 0,
-		label: 'B-GÆST 1',
+		label: 'B-GST 1',
 		hideInStudioA: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_2_ST_B]: {
 		isPgm: 0,
-		label: 'B-GÆST 2',
+		label: 'B-GST 2',
 		hideInStudioA: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_3_ST_B]: {
 		isPgm: 0,
-		label: 'B-GÆST 3',
+		label: 'B-GST 3',
 		hideInStudioA: true
 	},
 	[SisyfosLLAyer.SisyfosSourceGuest_4_ST_B]: {
 		isPgm: 0,
-		label: 'B-GÆST 4',
+		label: 'B-GST 4',
 		hideInStudioA: true
 	},
 	[SisyfosLLAyer.SisyfosSourceLive_1]: {
