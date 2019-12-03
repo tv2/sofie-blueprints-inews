@@ -135,7 +135,7 @@ export function EvaluateVIZ(
 							id: '',
 							enable: { start: 0 },
 							priority: 100,
-							layer: AtemLLayer.AtemAuxVizFullIn1,
+							layer: AtemLLayer.AtemAuxVizOvlIn1,
 							content: {
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.AUX,

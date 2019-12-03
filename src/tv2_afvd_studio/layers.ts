@@ -35,7 +35,7 @@ export enum AtemLLayer {
 	AtemAuxWall = 'atem_aux_wall',
 	AtemAuxAR = 'atem_aux_ar',
 	AtemAuxVizOvlIn1 = 'atem_aux_viz_ovl_in_1',
-	AtemAuxVizFullIn1 = 'atem_aux_viz_full_in_1',
+	// AtemAuxVizFullIn1 = 'atem_aux_viz_full_in_1',
 	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus',
 	AtemAuxVenue = 'atem_aux_venue',
 	AtemAuxLookahead = 'atem_aux_lookahead',
