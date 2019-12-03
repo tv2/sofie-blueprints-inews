@@ -17,7 +17,8 @@ export enum PartType {
 	Teknik,
 	Grafik,
 	INTRO,
-	Slutord
+	Slutord,
+	EVS
 }
 
 export interface INewsStory {
@@ -90,6 +91,14 @@ export interface PartDefinitionSlutord extends PartDefinitionBase {
 	}
 }
 
+export interface PartDefinitionEVS extends PartDefinitionBase {
+	type: PartType.EVS
+	variant: {
+		evs: string
+		isVO: boolean
+	}
+}
+
 export type PartDefinition =
 	| PartDefinitionUnknown
 	| PartDefinitionKam
@@ -99,6 +108,7 @@ export type PartDefinition =
 	| PartDefinitionVO
 	| PartDefinitionIntro
 	| PartDefinitionSlutord
+	| PartDefinitionEVS
 export type PartdefinitionTypes =
 	| Pick<PartDefinitionUnknown, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionKam, 'type' | 'variant' | 'effekt' | 'transition'>
@@ -108,6 +118,7 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionVO, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionIntro, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionSlutord, 'type' | 'variant' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionEVS, 'type' | 'variant' | 'effekt' | 'transition'>
 
 export function ParseBody(
 	segmentId: string,
@@ -163,7 +174,9 @@ export function ParseBody(
 				.trim()
 
 			if (typeStr) {
-				if (!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|ATTACK|TEKNIK|GRAFIK|VO|VOSB|SLUTORD)+\b/gi)) {
+				if (
+					!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|ATTACK|TEKNIK|GRAFIK|EVS\d+(?:VO)?|VO|VOSB|SLUTORD)+\b/gi)
+				) {
 					if (!!line.match(/<p><pi>(.*)?<\/pi><\/p>/)) {
 						// Red text notes
 					} else {
@@ -357,6 +370,15 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			type: PartType.Grafik,
 			variant: {},
 			...definition
+		}
+	} else if (firstToken.match(/EVS\d+(?:VO)?/)) {
+		const strippedToken = firstToken.match(/EVS(\d+)(VO)?/)
+		return {
+			type: PartType.EVS,
+			variant: {
+				evs: strippedToken && strippedToken[1] ? strippedToken[1] : '1',
+				isVO: !!strippedToken && !!strippedToken[2]
+			}
 		}
 	} else if (firstToken.match(/VO/)) {
 		return {

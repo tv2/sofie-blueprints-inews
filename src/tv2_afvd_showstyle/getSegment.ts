@@ -33,6 +33,7 @@ import {
 import { SourceLayer } from './layers'
 import { CreatePartCueOnly } from './parts/cueonly'
 import { CreatePartEffekt } from './parts/effekt'
+import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'
 import { CreatePartIntro } from './parts/intro'
 import { CreatePartInvalid } from './parts/invalid'
@@ -238,6 +239,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			case PartType.Slutord:
 				blueprintParts.push(CreatePartInvalid(part))
 				context.warning('Slutord should have been moved to script, something may have gone wrong')
+				break
+			case PartType.EVS:
+				blueprintParts.push(CreatePartEVS(partContext, config, part, totalWords))
 				break
 			default:
 				assertUnreachable(part)

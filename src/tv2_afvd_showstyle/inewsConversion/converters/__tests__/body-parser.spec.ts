@@ -2,6 +2,7 @@ import { literal } from '../../../../common/util'
 import {
 	ParseBody,
 	PartDefinition,
+	PartDefinitionEVS,
 	PartDefinitionGrafik,
 	PartDefinitionKam,
 	PartDefinitionServer,
@@ -1332,6 +1333,50 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				script: ''
+			})
+		])
+	})
+
+	test('test 27', () => {
+		const body27 =
+			'\r\n<p></p>\r\n<p></p>\r\n<p><pi>EVS1</pi></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="0"><a idref="1"><a idref="2"></a></a></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p>Skriv din spib her</p>\r\n<p></p>\r\n'
+		const cues27 = [unparsedGrafik1, unparsedGrafik2, unparsedGrafik3]
+		const result = ParseBody('00000000001', '', body27, cues27, fields, 0)
+		expect(result).toEqual([
+			literal<PartDefinitionEVS>({
+				externalId: '00000000001-0',
+				type: PartType.EVS,
+				rawType: 'EVS1',
+				variant: {
+					evs: '1',
+					isVO: false
+				},
+				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
+				fields,
+				modified: 0,
+				script: 'Skriv din spib her\n'
+			})
+		])
+	})
+
+	test('test 27', () => {
+		const body27 =
+			'\r\n<p></p>\r\n<p></p>\r\n<p><pi>EVS1VO</pi></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="0"><a idref="1"><a idref="2"></a></a></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p>Skriv din spib her</p>\r\n<p></p>\r\n'
+		const cues27 = [unparsedGrafik1, unparsedGrafik2, unparsedGrafik3]
+		const result = ParseBody('00000000001', '', body27, cues27, fields, 0)
+		expect(result).toEqual([
+			literal<PartDefinitionEVS>({
+				externalId: '00000000001-0',
+				type: PartType.EVS,
+				rawType: 'EVS1VO',
+				variant: {
+					evs: '1',
+					isVO: true
+				},
+				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
+				fields,
+				modified: 0,
+				script: 'Skriv din spib her\n'
 			})
 		])
 	})
