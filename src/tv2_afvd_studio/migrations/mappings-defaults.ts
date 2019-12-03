@@ -127,13 +127,13 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.Auxilliary,
 		index: 4 // 4 = out 5
 	}),
-	atem_aux_viz_full_in_1: literal<MappingAtem & BlueprintMapping>({
-		device: DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		mappingType: MappingAtemType.Auxilliary,
-		index: 5 // 5 = out 6
-	}),
+	// atem_aux_viz_full_in_1: literal<MappingAtem & BlueprintMapping>({
+	// 	device: DeviceType.ATEM,
+	// 	deviceId: 'atem0',
+	// 	lookahead: LookaheadMode.WHEN_CLEAR,
+	// 	mappingType: MappingAtemType.Auxilliary,
+	// 	index: 5 // 5 = out 6
+	// }),
 	atem_aux_video_mix_minus: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
