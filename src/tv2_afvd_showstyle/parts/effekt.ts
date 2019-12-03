@@ -33,13 +33,13 @@ export function GetBreakerEffekt(
 				return {
 					expectedDuration:
 						TimeFromFrames(Number(realBreaker.Duration)) -
-						TimeFromFrames(Number(realBreaker.EndAlpha)) -
-						2 * config.studio.ATEMDelay,
+						TimeFromFrames(Number(realBreaker.EndAlpha)) +
+						2 * TimeFromFrames(config.studio.ATEMDelay),
 					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)) + config.studio.ATEMDelay,
 					prerollDuration:
 						TimeFromFrames(Number(realBreaker.StartAlpha)) +
 						config.studio.CasparPrerollDuration +
-						config.studio.ATEMDelay,
+						TimeFromFrames(config.studio.ATEMDelay),
 					autoNext: realBreaker.Autonext === true
 				}
 			}

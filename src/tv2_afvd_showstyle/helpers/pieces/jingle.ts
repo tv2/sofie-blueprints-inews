@@ -66,7 +66,6 @@ export function EvaluateJingle(
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				outputLayerId: 'jingle',
 				sourceLayerId: SourceLayer.PgmJingle,
-				isTransition: true,
 				content: literal<VTContent>({
 					studioLabel: '',
 					fileName: file,
