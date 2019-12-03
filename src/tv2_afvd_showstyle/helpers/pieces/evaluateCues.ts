@@ -16,6 +16,7 @@ import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { CueDefinition, CueDefinitionBase, CueTime, CueType } from '../../inewsConversion/converters/ParseCue'
 import { EvaluateAdLib } from './adlib'
+import { EvaluateClearGrafiks } from './clearGrafiks'
 // import { EvaluateClearGrafiks } from './clearGrafiks'
 import { EvaluateDesign } from './design'
 import { EvaluateDVE } from './dve'
@@ -118,7 +119,7 @@ export function EvaluateCues(
 					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
 					break
 				case CueType.ClearGrafiks:
-					// EvaluateClearGrafiks(pieces, partDefinition.externalId, cue)
+					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue)
 					break
 				default:
 					if (cue.type !== CueType.Unknown && cue.type !== CueType.Profile && cue.type !== CueType.Mic) {
