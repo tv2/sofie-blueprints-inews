@@ -285,7 +285,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'loadGFX',
-		name: 'Load all GFX',
+		name: 'OVL INIT',
 		_rank: 100,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
