@@ -113,8 +113,7 @@ export function LydContent(
 					transitions: {
 						inTransition: {
 							type: Transition.MIX,
-							duration:
-								fadeIn !== undefined ? TimeFromFrames(fadeIn) : TimeFromFrames(config.studio.AudioBedSettings.fadeIn)
+							duration: 1 // fadeIn !== undefined ? TimeFromFrames(fadeIn) : TimeFromFrames(config.studio.AudioBedSettings.fadeIn)
 						}
 					}
 				},
@@ -130,10 +129,7 @@ export function LydContent(
 							mixer: {
 								inTransition: {
 									type: Transition.MIX,
-									duration:
-										fadeOut !== undefined
-											? TimeFromFrames(fadeOut)
-											: TimeFromFrames(config.studio.AudioBedSettings.fadeOut)
+									duration: 1 // fadeOut !== undefined ? TimeFromFrames(fadeOut) : TimeFromFrames(config.studio.AudioBedSettings.fadeOut)
 								},
 								volume: 0
 							}
