@@ -89,7 +89,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			part.type === PartType.Unknown &&
 			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
-			blueprintParts.push(CreatePartInvalid(part, 'noPrimary'))
+			blueprintParts.push(CreatePartUnknown(partContext, config, part, totalWords, true))
 			continue
 		}
 

@@ -17,7 +17,8 @@ export function CreatePartUnknown(
 	context: PartContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
-	totalWords: number
+	totalWords: number,
+	asAdlibs?: boolean
 ) {
 	const partTime = PartTime(partDefinition, totalWords)
 
@@ -32,7 +33,7 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
 	AddScript(partDefinition, pieces, partTime)
 	part = { ...part, ...GetBreakerEffekt(context, config, partDefinition) }
 
