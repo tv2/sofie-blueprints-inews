@@ -9,6 +9,7 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 
 		// Unknown part type => It's not creating pieces of its own
 		if (partDefinition.type !== PartType.Unknown) {
+			// No extra parts
 			if (first === -1) {
 				retDefintions.push({ ...partDefinition, externalId: `${segmentId}-${partIdCounter}` })
 				partIdCounter++
@@ -16,6 +17,7 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 			} else {
 				retDefintions.push({
 					...partDefinition,
+					...(partDefinition.type === PartType.Slutord ? { script: '' } : {}),
 					cues: first > 0 ? partDefinition.cues.splice(0, first) : [],
 					externalId: `${segmentId}-${partIdCounter}`
 				})
@@ -27,6 +29,14 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 			return
 		}
 
+		// This catches the case where iNews has:
+		// SLUTORD...
+		// ***LIVE***
+		// <a PRIMARY>
+		// script
+		let isFirstNewPrimary = true
+		const slutordScript = partDefinition.type === PartType.Slutord ? partDefinition.script : undefined
+
 		while (partDefinition.cues.length) {
 			if (GetNextPartCue(partDefinition, 0) !== -1) {
 				retDefintions.push({
@@ -35,7 +45,12 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 					externalId: `${segmentId}-${partIdCounter}`,
 					rawType: '',
 					cues: partDefinition.cues.splice(0, GetNextPartCue(partDefinition, 0)),
-					script: retDefintions.length === 0 ? partDefinition.script : '',
+					script:
+						isFirstNewPrimary && slutordScript
+							? slutordScript
+							: retDefintions.length === 0
+							? partDefinition.script
+							: '',
 					fields: partDefinition.fields,
 					modified: partDefinition.modified
 				})
@@ -46,12 +61,18 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 					externalId: `${segmentId}-${partIdCounter}`,
 					rawType: '',
 					cues: partDefinition.cues,
-					script: retDefintions.length === 0 ? partDefinition.script : '',
+					script:
+						isFirstNewPrimary && slutordScript
+							? slutordScript
+							: retDefintions.length === 0
+							? partDefinition.script
+							: '',
 					fields: partDefinition.fields,
 					modified: partDefinition.modified
 				})
 				partDefinition.cues = []
 			}
+			isFirstNewPrimary = false
 			partIdCounter++
 		}
 	})

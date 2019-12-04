@@ -4,6 +4,7 @@ import {
 	PartDefinition,
 	PartDefinitionKam,
 	PartDefinitionServer,
+	PartDefinitionSlutord,
 	PartDefinitionUnknown,
 	PartType
 } from '../inewsConversion/converters/ParseBody'
@@ -178,6 +179,35 @@ const testSegment4: PartDefinition[] = [
 		variant: {},
 		externalId: '00001-0',
 		rawType: 'LIVE',
+		cues: [
+			literal<CueDefinitionDVE>({
+				type: CueType.DVE,
+				template: 'SOMMERFUGL',
+				sources: {
+					INP1: 'KAM 1',
+					INP2: 'LIVE 2'
+				},
+				labels: ['Rodovre']
+			}),
+			literal<CueDefinitionEkstern>({
+				type: CueType.Ekstern,
+				source: 'LIVE 2'
+			})
+		],
+		script: 'Some script',
+		fields: {},
+		modified: 0
+	})
+]
+
+const testSegment5: PartDefinition[] = [
+	literal<PartDefinitionSlutord>({
+		type: PartType.Slutord,
+		variant: {
+			endWords: 'The end'
+		},
+		externalId: '00001-0',
+		rawType: 'SLUTORD: The end',
 		cues: [
 			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
@@ -474,6 +504,58 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
+				modified: 0
+			})
+		])
+	})
+
+	test('Slutord with script', () => {
+		expect(ParseCueOrder(testSegment5, '00001')).toEqual([
+			literal<PartDefinitionSlutord>({
+				externalId: '00001-0',
+				type: PartType.Slutord,
+				variant: {
+					endWords: 'The end'
+				},
+				rawType: 'SLUTORD: The end',
+				cues: [],
+				fields: {},
+				script: '',
+				modified: 0
+			}),
+			literal<PartDefinitionUnknown>({
+				externalId: '00001-1',
+				type: PartType.Unknown,
+				variant: {},
+				rawType: '',
+				cues: [
+					literal<CueDefinitionDVE>({
+						type: CueType.DVE,
+						template: 'SOMMERFUGL',
+						sources: {
+							INP1: 'KAM 1',
+							INP2: 'LIVE 2'
+						},
+						labels: ['Rodovre']
+					})
+				],
+				fields: {},
+				script: 'Some script',
+				modified: 0
+			}),
+			literal<PartDefinitionUnknown>({
+				externalId: '00001-2',
+				type: PartType.Unknown,
+				variant: {},
+				rawType: '',
+				cues: [
+					literal<CueDefinitionEkstern>({
+						type: CueType.Ekstern,
+						source: 'LIVE 2'
+					})
+				],
+				fields: {},
+				script: '',
 				modified: 0
 			})
 		])

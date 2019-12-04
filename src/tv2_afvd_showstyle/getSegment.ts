@@ -22,6 +22,7 @@ import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
+import { GetNextPartCue } from './helpers/nextPartCue'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import { SourceLayer } from './layers'
 import { CreatePartEffekt } from './parts/effekt'
@@ -81,6 +82,11 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	for (let i = 0; i < parsedParts.length; i++) {
 		const part = parsedParts[i]
 		const partContext = new PartContext2(context, part.externalId)
+
+		if (GetNextPartCue(part, -1) === -1 && part.type === PartType.Unknown) {
+			blueprintParts.push(CreatePartInvalid(part, 'noPrimary'))
+			continue
+		}
 
 		if (part.effekt !== undefined) {
 			blueprintParts.push(CreatePartEffekt(partContext, config, part))
