@@ -239,7 +239,7 @@ export default literal<BlueprintMappings>({
 	sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
-		lookahead: LookaheadMode.PRELOAD
+		lookahead: LookaheadMode.NONE
 	}),
 	sisyfos_source_Host_1_st_a: literal<MappingSisyfos & BlueprintMapping>({
 		device: DeviceType.SISYFOS,
