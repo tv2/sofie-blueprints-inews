@@ -87,7 +87,7 @@ export function LydContent(
 	config: BlueprintConfig,
 	file: string,
 	parsedCue: CueDefinitionLYD,
-	fadeIn?: number,
+	_fadeIn?: number,
 	fadeOut?: number
 ): BaseContent {
 	const id = `${file.trim().replace(/ /g, '_')}`
