@@ -30,7 +30,7 @@ export function EvaluateTargetEngine(
 		return
 	}
 	if (!parsedCue.content.INP1 && !parsedCue.content.INP) {
-		// context.warning(`No input provided by ${parsedCue.rawType} for engine aux`)
+		context.warning(`No input provided by ${parsedCue.rawType} for engine aux`)
 	} else {
 		const source = parsedCue.content.INP1 ? parsedCue.content.INP1 : parsedCue.content.INP
 		let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)

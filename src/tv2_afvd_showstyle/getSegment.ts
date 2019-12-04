@@ -24,6 +24,7 @@ import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetNextPartCue } from './helpers/nextPartCue'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
+import { CueType } from './inewsConversion/converters/ParseCue'
 import { SourceLayer } from './layers'
 import { CreatePartEffekt } from './parts/effekt'
 import { CreatePartEVS } from './parts/evs'
@@ -36,7 +37,6 @@ import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
-import { CueType } from './inewsConversion/converters/ParseCue'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
