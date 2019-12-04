@@ -172,6 +172,33 @@ const testSegment3: PartDefinition[] = [
 	})
 ]
 
+const testSegment4: PartDefinition[] = [
+	literal<PartDefinitionUnknown>({
+		type: PartType.Unknown,
+		variant: {},
+		externalId: '00001-0',
+		rawType: 'LIVE',
+		cues: [
+			literal<CueDefinitionDVE>({
+				type: CueType.DVE,
+				template: 'SOMMERFUGL',
+				sources: {
+					INP1: 'KAM 1',
+					INP2: 'LIVE 2'
+				},
+				labels: ['Rodovre']
+			}),
+			literal<CueDefinitionEkstern>({
+				type: CueType.Ekstern,
+				source: 'LIVE 2'
+			})
+		],
+		script: 'Some script',
+		fields: {},
+		modified: 0
+	})
+]
+
 describe('Parse Cue Order', () => {
 	test('Kam - DVE - Ekstern (direkte bund bund - DVE - Ekstern (direkte)', () => {
 		expect(ParseCueOrder(testSegment1, '00001')).toEqual([
@@ -403,6 +430,46 @@ describe('Parse Cue Order', () => {
 						template: 'bund',
 						cue: 'kg',
 						textFields: []
+					})
+				],
+				script: '',
+				fields: {},
+				modified: 0
+			})
+		])
+	})
+
+	test('Unknown LIVE + Script - DVE - Ekstern', () => {
+		expect(ParseCueOrder(testSegment4, '00001')).toEqual([
+			literal<PartDefinitionUnknown>({
+				externalId: '00001-0',
+				type: PartType.Unknown,
+				variant: {},
+				rawType: '',
+				cues: [
+					literal<CueDefinitionDVE>({
+						type: CueType.DVE,
+						template: 'SOMMERFUGL',
+						sources: {
+							INP1: 'KAM 1',
+							INP2: 'LIVE 2'
+						},
+						labels: ['Rodovre']
+					})
+				],
+				script: 'Some script',
+				fields: {},
+				modified: 0
+			}),
+			literal<PartDefinitionUnknown>({
+				externalId: '00001-1',
+				type: PartType.Unknown,
+				variant: {},
+				rawType: '',
+				cues: [
+					literal<CueDefinitionEkstern>({
+						type: CueType.Ekstern,
+						source: 'LIVE 2'
 					})
 				],
 				script: '',

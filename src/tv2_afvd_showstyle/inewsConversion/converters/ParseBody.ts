@@ -192,6 +192,8 @@ export function ParseBody(
 						}
 
 						definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified)
+						// check for cues inline with the type definition
+						addCue(definition, line, cues)
 					}
 					return
 				}
