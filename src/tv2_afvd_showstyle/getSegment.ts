@@ -168,9 +168,11 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		}
 	})
 
-	/*if (blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length) {
+	if (
+		blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length === blueprintParts.length
+	) {
 		segment.isHidden = true
-	}*/
+	}
 
 	if (
 		blueprintParts.filter(part => part.part.invalid === true).length === blueprintParts.length &&
