@@ -39,7 +39,7 @@ export function GetBreakerEffekt(
 					expectedDuration:
 						TimeFromFrames(Number(realBreaker.Duration)) -
 						TimeFromFrames(Number(realBreaker.EndAlpha)) -
-						TimeFromFrames(Number(realBreaker.StartAlpha)) -
+						TimeFromFrames(Number(realBreaker.StartAlpha)) +
 						TimeFromFrames(Number(config.studio.ATEMDelay)),
 					prerollDuration:
 						config.studio.CasparPrerollDuration +
