@@ -237,24 +237,6 @@ export function ParseBody(
 		}
 	})
 
-	if (definitions[0] && definitions[1]) {
-		// Merge orphaned script / cues with first part.
-		if (definitions[0].type === PartType.Unknown && definitions[1].type !== PartType.Unknown) {
-			if (definitions[0].script.length) {
-				definitions[1].script = definitions[0].script.concat(definitions[1].script)
-			}
-
-			if (definitions[0].cues.length) {
-				definitions[1].cues = definitions[0].cues.concat(definitions[1].cues)
-			}
-
-			definitions.splice(0, 1)
-			definitions.forEach((part, i) => {
-				part.externalId = `${segmentId}-${i}`
-			})
-		}
-	}
-
 	return ParseCueOrder(definitions, segmentId)
 }
 
