@@ -36,6 +36,7 @@ import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
+import { CueType } from './inewsConversion/converters/ParseCue'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -83,7 +84,11 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		const part = parsedParts[i]
 		const partContext = new PartContext2(context, part.externalId)
 
-		if (GetNextPartCue(part, -1) === -1 && part.type === PartType.Unknown) {
+		if (
+			GetNextPartCue(part, -1) === -1 &&
+			part.type === PartType.Unknown &&
+			part.cues.filter(cue => cue.type === CueType.Jingle).length === 0
+		) {
 			blueprintParts.push(CreatePartInvalid(part, 'noPrimary'))
 			continue
 		}
