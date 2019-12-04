@@ -87,7 +87,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		if (
 			GetNextPartCue(part, -1) === -1 &&
 			part.type === PartType.Unknown &&
-			part.cues.filter(cue => cue.type === CueType.Jingle).length === 0
+			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
 			blueprintParts.push(CreatePartInvalid(part, 'noPrimary'))
 			continue
