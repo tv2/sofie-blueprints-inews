@@ -23,15 +23,7 @@ import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
-import {
-	CueDefinitionGrafik,
-	CueDefinitionMOS,
-	CueDefinitionTargetEngine,
-	CueDefinitionTelefon,
-	CueType
-} from './inewsConversion/converters/ParseCue'
 import { SourceLayer } from './layers'
-import { CreatePartCueOnly } from './parts/cueonly'
 import { CreatePartEffekt } from './parts/effekt'
 import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'
@@ -93,123 +85,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		if (part.effekt !== undefined) {
 			blueprintParts.push(CreatePartEffekt(partContext, config, part))
 		}
-
-		const livecue = part.cues.filter(cue => cue.type === CueType.Ekstern)
-		const dveCue = part.cues.filter(cue => cue.type === CueType.DVE)
-		const targetCue = part.cues.filter(cue => cue.type === CueType.TargetEngine && cue.engine.match(/full/i))
-		const tlfCue = part.cues.filter(cue => cue.type === CueType.Telefon)
-		const extraParts: BlueprintResultPart[] = []
-		if (
-			livecue.length &&
-			(dveCue.length || part.type === PartType.Kam || part.type === PartType.Server || part.type === PartType.VO)
-		) {
-			livecue.forEach((cue, j) => {
-				extraParts.push(
-					CreatePartCueOnly(
-						partContext,
-						config,
-						part,
-						`${part.externalId}-${j * j}`,
-						`${part.rawType ? `${part.rawType}-` : ''}EKSTERN-${j}`,
-						cue,
-						totalWords,
-						true
-					)
-				)
-				part.cues.splice(
-					part.cues.findIndex(c => _.isEqual(c, cue)),
-					1
-				)
-			})
-		}
-		if (dveCue.length && part.type === PartType.Kam) {
-			dveCue.forEach((cue, j) => {
-				extraParts.push(
-					CreatePartCueOnly(
-						partContext,
-						config,
-						part,
-						`${part.externalId}-${j * j}`,
-						`${part.rawType ? `${part.rawType}-` : ''}DVE-${j}`,
-						cue,
-						totalWords,
-						true
-					)
-				)
-				part.cues.splice(
-					part.cues.findIndex(c => _.isEqual(c, cue)),
-					1
-				)
-			})
-		}
-		if (dveCue.length && part.type === PartType.Kam) {
-			dveCue.forEach((cue, j) => {
-				extraParts.push(
-					CreatePartCueOnly(
-						partContext,
-						config,
-						part,
-						`${part.externalId}-${2}`,
-						`${part.rawType ? `${part.rawType}-` : ''}DVE-${j}`,
-						cue,
-						totalWords,
-						true
-					)
-				)
-				part.cues.splice(
-					part.cues.findIndex(c => _.isEqual(c, cue)),
-					1
-				)
-			})
-		}
-		if (targetCue.length && !tlfCue.length && !(part.type === PartType.Grafik && part.cues.length === 1)) {
-			targetCue.forEach((cue: CueDefinitionTargetEngine, j: number) => {
-				extraParts.push(
-					CreatePartCueOnly(
-						partContext,
-						config,
-						part,
-						`${part.externalId}=${j * j ** 2}`,
-						`${part.rawType}`,
-						cue,
-						totalWords
-					)
-				)
-				part.cues.splice(
-					part.cues.findIndex(c => _.isEqual(c, cue)),
-					1
-				)
-			})
-		}
-		if (tlfCue.length) {
-			tlfCue.forEach((cue: CueDefinitionTelefon, j) => {
-				const index = part.cues.findIndex(c => _.isEqual(c, cue))
-				if (index < part.cues.length - 1) {
-					if (part.cues[index + 1].type === CueType.MOS || part.cues[index + 1].type === CueType.Grafik) {
-						cue.vizObj =
-							part.cues[index + 1].type === CueType.MOS
-								? (part.cues[index + 1] as CueDefinitionMOS)
-								: (part.cues[index + 1] as CueDefinitionGrafik)
-						part.cues.splice(index + 1, 1)
-					}
-				}
-				extraParts.push(
-					CreatePartCueOnly(
-						partContext,
-						config,
-						part,
-						`${part.externalId}-${1}`,
-						`${part.rawType ? `${part.rawType}-` : ''}EKSTERN-${j}`,
-						cue,
-						totalWords
-					)
-				)
-				part.cues.splice(
-					part.cues.findIndex(c => _.isEqual(c, cue)),
-					1
-				)
-			})
-		}
 		switch (part.type) {
 			case PartType.INTRO:
 				blueprintParts.push(CreatePartIntro(partContext, config, part, totalWords))
@@ -260,9 +135,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				blueprintParts[blueprintParts.length - 1].part.expectedDuration = 1000
 			}
 		}
-		extraParts.forEach(extraPart => {
-			blueprintParts.push(extraPart)
-		})
 
 		if (
 			part.type === PartType.Server ||
