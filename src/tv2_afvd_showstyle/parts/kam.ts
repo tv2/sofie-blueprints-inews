@@ -27,6 +27,7 @@ import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreatePartInvalid } from './invalid'
+import { TimeFromFrames } from './time/frameTime'
 import { PartTime } from './time/partTime'
 
 export function CreatePartKam(
@@ -107,7 +108,7 @@ export function CreatePartKam(
 						_id: '',
 						externalId: `${partDefinition.externalId}-EFFEKT-${effekt}`,
 						name: `EFFEKT-${effekt}`,
-						enable: { start: 0, duration: Number(effektConfig.Duration) * 1000 },
+						enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
 						outputLayerId: 'jingle',
 						sourceLayerId: SourceLayer.PgmJingle,
 						infiniteMode: PieceLifespan.Normal,
