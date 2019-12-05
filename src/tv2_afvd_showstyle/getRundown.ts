@@ -13,6 +13,7 @@ import {
 	TimelineObjCCGHTMLPage,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosMessage,
+	TimelineObjVIZMSEClearAllElements,
 	TimelineObjVIZMSEElementContinue,
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
@@ -333,6 +334,33 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						type: TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
 						reference: VizLLayer.VizLLayerPilot
+					}
+				})
+			])
+		}
+	})
+	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
+	adlibItems.push({
+		externalId: 'clearAllGFX',
+		name: 'GFX Clear',
+		_rank: 300,
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
+		expectedDuration: 1000,
+		infiniteMode: PieceLifespan.Normal,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjVIZMSEClearAllElements>({
+					id: '',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					priority: 100,
+					layer: VizLLayer.VizLLayerAdLibs,
+					content: {
+						deviceType: DeviceType.VIZMSE,
+						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
 					}
 				})
 			])
