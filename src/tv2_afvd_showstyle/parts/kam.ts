@@ -12,8 +12,7 @@ import {
 	PartContext,
 	PieceLifespan,
 	SourceLayerType,
-	TimelineObjectCoreExt,
-	TransitionContent
+	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
