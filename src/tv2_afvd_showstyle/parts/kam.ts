@@ -12,7 +12,8 @@ import {
 	PartContext,
 	PieceLifespan,
 	SourceLayerType,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TransitionContent
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
@@ -112,6 +113,7 @@ export function CreatePartKam(
 						outputLayerId: 'jingle',
 						sourceLayerId: SourceLayer.PgmJingle,
 						infiniteMode: PieceLifespan.Normal,
+						isTransition: true,
 						content: {}
 					})
 				)
