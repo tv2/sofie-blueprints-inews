@@ -121,7 +121,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		const audioWhile = boxObjs.map(obj => obj.enable.while as string).join(' | ')
 		return {
 			boxObjs,
-			audioWhile
+			audioWhile: `(\$${SourceLayer.PgmDVE} | \$${SourceLayer.PgmDVEAdlib}) & (${audioWhile})`
 		}
 	}
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
@@ -227,7 +227,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
 						...GetSisyfosTimelineObjForEkstern(`Live ${info.id}`, { while: audioWhile }),
-						...GetSisyfosTimelineObjForCamera('telefon')
+						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
 					])
 				}
 			})
