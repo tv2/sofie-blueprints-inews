@@ -353,7 +353,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				literal<TimelineObjVIZMSEClearAllElements>({
 					id: '',
 					enable: {
-						start: 0,
+						start: 1000,
 						duration: 1000
 					},
 					priority: 100,
