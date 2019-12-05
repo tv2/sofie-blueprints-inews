@@ -97,7 +97,7 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 	id = id.replace(/\s+/, ' ').trim()
 	switch (type) {
 		case SourceLayerType.CAMERA:
-			const cameraName = id.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
+			const cameraName = id.match(/^(?:KAM|CAM)(?:ERA)? ?(.+)$/i)
 			if (cameraName === undefined || cameraName === null) {
 				return undefined
 			}
