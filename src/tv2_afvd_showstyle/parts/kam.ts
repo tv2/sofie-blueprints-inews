@@ -90,6 +90,33 @@ export function CreatePartKam(
 		}
 		const atemInput = sourceInfoCam.port
 
+		const effekt = partDefinition.effekt
+
+		if (effekt) {
+			const effektConfig = config.showStyle.BreakerConfig.find(
+				conf =>
+					conf.BreakerName.toString()
+						.trim()
+						.toUpperCase() === effekt.toString().toUpperCase()
+			)
+			if (!effektConfig) {
+				context.warning(`Could not find effekt ${effekt}`)
+			} else {
+				pieces.push(
+					literal<IBlueprintPiece>({
+						_id: '',
+						externalId: `${partDefinition.externalId}-EFFEKT-${effekt}`,
+						name: `EFFEKT-${effekt}`,
+						enable: { start: 0, duration: Number(effektConfig.Duration) },
+						outputLayerId: 'jingle',
+						sourceLayerId: SourceLayer.PgmJingle,
+						infiniteMode: PieceLifespan.Normal,
+						content: {}
+					})
+				)
+			}
+		}
+
 		pieces.push(
 			literal<IBlueprintPiece>({
 				_id: '',

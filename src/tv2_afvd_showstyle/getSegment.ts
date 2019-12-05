@@ -92,9 +92,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			continue
 		}
 
-		/*if (part.effekt !== undefined) {
-			blueprintParts.push(CreatePartEffekt(partContext, config, part))
-		}*/
 		switch (part.type) {
 			case PartType.INTRO:
 				blueprintParts.push(CreatePartIntro(partContext, config, part, totalWords))
