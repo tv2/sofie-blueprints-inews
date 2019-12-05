@@ -54,7 +54,8 @@ export default literal<BlueprintMappings>({
 		deviceId: 'caspar02',
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 1,
-		layer: 120
+		layer: 120,
+		previewWhenNotOnAir: true
 	}),
 	casparcg_countdown: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
