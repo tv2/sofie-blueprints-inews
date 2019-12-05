@@ -260,7 +260,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ms of preroll before switching to DVE',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 1000
+		defaultVal: 80
 	},
 	{
 		id: 'ATEMDelay',
