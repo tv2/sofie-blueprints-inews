@@ -71,6 +71,7 @@ export interface StudioConfig {
 	CasparPrerollDuration: number
 	PilotPrerollDuration: number
 	PilotKeepaliveDuration: number
+	PilotCutToMediaPlayer: number
 	DVEPrerollDuration: number
 	ATEMDelay: number
 }

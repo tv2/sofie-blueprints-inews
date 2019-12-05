@@ -80,7 +80,7 @@ export function EvaluateMOS(
 						literal<TimelineObjAtemME>({
 							id: '',
 							enable: {
-								start: config.studio.PilotKeepaliveDuration
+								start: config.studio.PilotCutToMediaPlayer
 							},
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
@@ -146,7 +146,7 @@ export function EvaluateMOS(
 						literal<TimelineObjAtemME>({
 							id: '',
 							enable: {
-								start: config.studio.PilotKeepaliveDuration
+								start: config.studio.PilotCutToMediaPlayer
 							},
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,

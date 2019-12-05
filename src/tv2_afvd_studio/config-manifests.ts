@@ -247,6 +247,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 2000
 	},
 	{
+		id: 'PilotCutToMediaPlayer',
+		name: 'Pilot media Player Cut Point',
+		description: 'ms from start of grafik before switching to background source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 500
+	},
+	{
 		id: 'DVEPrerollDuration',
 		name: 'DVE Preroll Duration',
 		description: 'ms of preroll before switching to DVE',
