@@ -255,14 +255,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 500
 	},
 	{
-		id: 'DVEPrerollDuration',
-		name: 'DVE Preroll Duration',
-		description: 'ms of preroll before switching to DVE',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 80
-	},
-	{
 		id: 'ATEMDelay',
 		name: 'ATEM Delay',
 		description: 'Frames of latency in ATEM',

@@ -23,7 +23,6 @@ import { AddScript } from '../helpers/pieces/script'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
-import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { PartTime } from './time/partTime'
@@ -102,10 +101,6 @@ export function CreatePartEVS(
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime)
-
-	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.DVEPrerollDuration
-	}
 
 	if (pieces.length === 0) {
 		part.invalid = true

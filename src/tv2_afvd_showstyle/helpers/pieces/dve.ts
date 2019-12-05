@@ -95,7 +95,7 @@ export function EvaluateDVE(
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.DVEPrerollDuration) || 0
+					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
 				})
 			)
 		} else {
@@ -113,7 +113,7 @@ export function EvaluateDVE(
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.DVEPrerollDuration) || 0
+					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
 				})
 			)
 		}

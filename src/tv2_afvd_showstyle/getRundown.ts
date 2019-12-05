@@ -437,7 +437,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
 				content: content.content,
-				adlibPreroll: Number(config.studio.DVEPrerollDuration) || 0
+				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
 			})
 		}
 	})

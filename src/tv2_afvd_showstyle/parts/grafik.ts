@@ -10,7 +10,6 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
-import { CueType } from '../inewsConversion/converters/ParseCue'
 import { PartTime } from './time/partTime'
 
 export function CreatePartGrafik(
@@ -32,10 +31,6 @@ export function CreatePartGrafik(
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, false, true)
 	AddScript(partDefinition, pieces, partTime)
-
-	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.DVEPrerollDuration
-	}
 
 	part.prerollDuration = config.studio.PilotPrerollDuration
 	part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration

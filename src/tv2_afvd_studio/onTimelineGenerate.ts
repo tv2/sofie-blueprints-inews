@@ -100,9 +100,9 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 		if (
 			obj2.isLookahead &&
 			obj2.content.deviceType === DeviceType.ATEM &&
-			obj2.content.type === TimelineContentTypeAtem.SSRC &&
-			obj2.enable &&
-			(obj2.enable.while === '1' || obj2.enable.while === 1)
+			obj2.content.type === TimelineContentTypeAtem.SSRC
+			// obj2.enable &&
+			// (obj2.enable.while === '1' || obj2.enable.while === 1)
 		) {
 			const origClass = obj2.metaData ? obj2.metaData.dveAdlibEnabler : undefined
 			if (origClass) {

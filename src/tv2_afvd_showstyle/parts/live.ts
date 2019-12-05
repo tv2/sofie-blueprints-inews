@@ -10,7 +10,6 @@ import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
-import { CueType } from '../inewsConversion/converters/ParseCue'
 import { CreateEffektForpart } from './effekt'
 import { PartTime } from './time/partTime'
 
@@ -35,10 +34,6 @@ export function CreatePartLive(
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime)
-
-	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.DVEPrerollDuration
-	}
 
 	if (pieces.length === 0) {
 		part.invalid = true

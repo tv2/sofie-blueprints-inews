@@ -51,7 +51,7 @@ export function CreatePartUnknown(
 			? Number(config.studio.PilotKeepaliveDuration)
 			: 60000
 	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.DVEPrerollDuration
+		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
 	if (pieces.length === 0) {

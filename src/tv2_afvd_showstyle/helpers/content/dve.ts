@@ -8,7 +8,8 @@ import {
 	TimelineObjAtemSsrcProps,
 	TimelineObjCCGMedia,
 	TimelineObjCCGTemplate,
-	TSRTimelineObj
+	TSRTimelineObj,
+	Timeline
 } from 'timeline-state-resolver-types'
 import {
 	CameraContent,
@@ -82,7 +83,7 @@ export function MakeContentDVE2(
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
-	const boxMap: string[] = []
+	const boxMap: Array<{ source: string; sourceLayer: SourceLayer }> = []
 
 	const classes: string[] = []
 
@@ -95,20 +96,21 @@ export function MakeContentDVE2(
 			return
 		}
 
-		classes.push(`${boxLayers[fromCue as keyof DVESources]}_${boxMappings[targetBox - 1]}`)
+		const sourceLayer = boxLayers[fromCue as keyof DVESources] as SourceLayer
+		classes.push(`${sourceLayer}_${boxMappings[targetBox - 1]}`)
 
 		if (sources) {
 			const prop = sources[fromCue as keyof DVESources]
 			if (!prop) {
 				context.warning(`Missing mapping for ${targetBox}`)
 				// Need something to keep the layout etc
-				boxMap[targetBox - 1] = ''
+				boxMap[targetBox - 1] = { source: '', sourceLayer }
 			} else {
-				boxMap[targetBox - 1] = prop
+				boxMap[targetBox - 1] = { source: prop, sourceLayer }
 			}
 		} else {
 			// Need something to keep the layout etc
-			boxMap[targetBox - 1] = ''
+			boxMap[targetBox - 1] = { source: '', sourceLayer }
 		}
 	})
 
@@ -136,7 +138,7 @@ export function MakeContentDVE2(
 	let valid = true
 
 	boxMap.forEach((mappingFrom, num) => {
-		if (mappingFrom === undefined || mappingFrom === '') {
+		if (mappingFrom === undefined || mappingFrom.source === '') {
 			if (sources) {
 				// If it is intentional there are no sources, then ignore
 				// TODO - should this warn?
@@ -144,35 +146,39 @@ export function MakeContentDVE2(
 				valid = false
 			}
 		} else {
-			const props = mappingFrom.split(' ')
+			const props = mappingFrom.source.split(' ')
 			const sourceType = props[0]
 			const sourceInput = props[1]
 			if (!sourceType || !sourceInput) {
-				context.warning(`Invalid DVE source: ${mappingFrom}`)
+				context.warning(`Invalid DVE source: ${mappingFrom.source}`)
 				return
 			}
+			const audioEnable: Timeline.TimelineEnable = {
+				while: `!\$${mappingFrom.sourceLayer}`
+				// while: `!.${ControlClasses.DVEBoxOverridePrefix + boxMappings[num]}`
+			} // TODO - test
 			if (sourceType.match(/KAM/i)) {
-				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom)
+				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
 				if (sourceInfoCam === undefined) {
-					context.warning(`Invalid source: ${mappingFrom}`)
+					context.warning(`Invalid source: ${mappingFrom.source}`)
 					valid = false
 					return
 				}
 
-				setBoxSource(num, sourceInfoCam, mappingFrom)
-				audioTimeline.push(...GetSisyfosTimelineObjForCamera(mappingFrom))
+				setBoxSource(num, sourceInfoCam, mappingFrom.source)
+				audioTimeline.push(...GetSisyfosTimelineObjForCamera(mappingFrom.source, audioEnable))
 			} else if (sourceType.match(/LIVE/i) || sourceType.match(/SKYPE/i)) {
-				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom)
+				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
-					context.warning(`Invalid source: ${mappingFrom}`)
+					context.warning(`Invalid source: ${mappingFrom.source}`)
 					valid = false
 					return
 				}
 
-				setBoxSource(num, sourceInfoLive, mappingFrom)
-				audioTimeline.push(...GetSisyfosTimelineObjForEkstern(mappingFrom))
+				setBoxSource(num, sourceInfoLive, mappingFrom.source)
+				audioTimeline.push(...GetSisyfosTimelineObjForEkstern(mappingFrom.source, audioEnable))
 			} else {
-				context.warning(`Unknown source type for DVE: ${mappingFrom}`)
+				context.warning(`Unknown source type for DVE: ${mappingFrom.source}`)
 				valid = false
 			}
 		}
@@ -213,7 +219,7 @@ export function MakeContentDVE2(
 				}),
 				literal<TimelineObjAtemSsrcProps>({
 					id: '',
-					enable: { start: 10 },
+					enable: { start: Number(config.studio.CasparPrerollDuration) - 10 }, // TODO - why 10ms?
 					priority: 1,
 					layer: AtemLLayer.AtemSSrcArt,
 					content: {
@@ -230,7 +236,7 @@ export function MakeContentDVE2(
 
 				literal<TimelineObjAtemME>({
 					id: '',
-					enable: { start: 80 }, // give the ssrc 2 frames to get configured
+					enable: { start: Number(config.studio.CasparPrerollDuration) - 80 }, // let caspar update, but give the ssrc 2 frames to get configured
 					priority: 1,
 					layer: AtemLLayer.AtemMEProgram,
 					content: {

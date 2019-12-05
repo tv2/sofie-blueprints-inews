@@ -43,7 +43,6 @@ const blankStudioConfig: StudioConfig = {
 	PilotCutToMediaPlayer: 0,
 	ClipFileExtension: 'mxf',
 	ClipSourcePath: '/',
-	DVEPrerollDuration: 0,
 	ATEMDelay: 1
 }
 
