@@ -175,7 +175,9 @@ export function ParseBody(
 
 			if (typeStr) {
 				if (
-					!typeStr.match(/\b(KAM|CAM|KAMERA|CAMERA|SERVER|ATTACK|TEKNIK|GRAFIK|EVS\d+(?:VO)?|VO|VOSB|SLUTORD)+\b/gi)
+					!typeStr.match(
+						/\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS\d+(?:VO)?|VO|VOSB|SLUTORD)+\b/gi
+					)
 				) {
 					if (!!line.match(/<p><pi>(.*)?<\/pi><\/p>/)) {
 						// Red text notes
@@ -330,10 +332,11 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 	const firstToken = tokens[0]
 
 	if (firstToken.match(/KAM|CAM/)) {
+		const adjacentKamNumber = tokens[0].match(/KAM(\d+)/)
 		return {
 			type: PartType.Kam,
 			variant: {
-				name: tokens[1]
+				name: adjacentKamNumber ? adjacentKamNumber[1] : tokens[1]
 			},
 			...definition
 		}
