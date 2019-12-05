@@ -50,7 +50,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'File name (path) for CasparCG overlay template (locators)',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: 'dve/locators.html'
+				defaultVal: 'dve/locators'
 			},
 			{
 				id: 'DVEGraphicsTemplateJSON',
