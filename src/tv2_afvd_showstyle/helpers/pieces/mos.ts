@@ -127,7 +127,7 @@ export function EvaluateMOS(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.name,
 					path: parsedCue.vcpid.toString(),
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
+					timelineObjects: [
 						literal<TimelineObjVIZMSEElementPilot>({
 							id: '',
 							enable: {
@@ -143,8 +143,24 @@ export function EvaluateMOS(
 								noAutoPreloading: false,
 								channelName: parsedCue.name.match(/MOSART=L/i) ? undefined : 'FULL1'
 							}
+						}),
+						literal<TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: config.studio.PilotKeepaliveDuration
+							},
+							priority: 1,
+							layer: AtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: config.studio.AtemSource.FullFrameGrafikBackground,
+									transition: AtemTransitionStyle.CUT
+								}
+							}
 						})
-					])
+					]
 				})
 			})
 		)
