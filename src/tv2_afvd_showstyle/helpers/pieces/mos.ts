@@ -18,6 +18,7 @@ import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/co
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
+import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { InfiniteMode } from './evaluateCues'
 import { CreateTimingGrafik, GetGrafikDuration, grafikName } from './grafik'
 
@@ -92,7 +93,8 @@ export function EvaluateMOS(
 									transition: AtemTransitionStyle.CUT
 								}
 							}
-						})
+						}),
+						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full'))
 					]
 				})
 			})
@@ -158,7 +160,8 @@ export function EvaluateMOS(
 									transition: AtemTransitionStyle.CUT
 								}
 							}
-						})
+						}),
+						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full'))
 					]
 				})
 			})
