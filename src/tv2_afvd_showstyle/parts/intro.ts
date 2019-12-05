@@ -11,7 +11,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CueDefinitionJingle, CueType } from '../inewsConversion/converters/ParseCue'
-import { GetBreakerEffekt } from './effekt'
+import { GetJinglePartProperties } from './effekt'
 import { CreatePartInvalid } from './invalid'
 import { PartTime } from './time/partTime'
 
@@ -67,7 +67,7 @@ export function CreatePartIntro(
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime)
-	part = { ...part, ...GetBreakerEffekt(context, config, partDefinition) }
+	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (pieces.length === 0) {
 		part.invalid = true

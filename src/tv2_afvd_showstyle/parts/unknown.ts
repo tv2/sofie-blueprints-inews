@@ -10,7 +10,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
-import { GetBreakerEffekt } from './effekt'
+import { GetJinglePartProperties } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartUnknown(
@@ -37,7 +37,7 @@ export function CreatePartUnknown(
 	if (!asAdlibs) {
 		AddScript(partDefinition, pieces, partTime)
 	}
-	part = { ...part, ...GetBreakerEffekt(context, config, partDefinition) }
+	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (
 		partDefinition.cues.filter(

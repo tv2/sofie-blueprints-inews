@@ -13,7 +13,7 @@ import { CueDefinitionJingle, CueType } from '../inewsConversion/converters/Pars
 import { CreatePartInvalid } from './invalid'
 import { TimeFromFrames } from './time/frameTime'
 
-export function GetBreakerEffekt(
+export function GetJinglePartProperties(
 	_context: PartContext,
 	config: BlueprintConfig,
 	part: PartDefinition
@@ -103,7 +103,7 @@ export function CreatePartEffekt(
 	const fakePart = JSON.parse(JSON.stringify(partDefinition))
 	fakePart.cues = [jingleCue]
 
-	part = { ...part, ...GetBreakerEffekt(context, config, fakePart) }
+	part = { ...part, ...GetJinglePartProperties(context, config, fakePart) }
 
 	if (pieces.length === 0) {
 		part.invalid = true
