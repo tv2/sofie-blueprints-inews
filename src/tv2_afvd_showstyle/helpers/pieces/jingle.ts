@@ -58,7 +58,7 @@ export function EvaluateJingle(
 		pieces.push(
 			literal<IBlueprintPiece>({
 				_id: '',
-				externalId: part.externalId,
+				externalId: `${part.externalId}-JINGLE`,
 				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				enable: {
 					start: 0
