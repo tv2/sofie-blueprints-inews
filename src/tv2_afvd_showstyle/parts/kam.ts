@@ -107,7 +107,7 @@ export function CreatePartKam(
 						_id: '',
 						externalId: `${partDefinition.externalId}-EFFEKT-${effekt}`,
 						name: `EFFEKT-${effekt}`,
-						enable: { start: 0, duration: Number(effektConfig.Duration) },
+						enable: { start: 0, duration: Number(effektConfig.Duration) * 1000 },
 						outputLayerId: 'jingle',
 						sourceLayerId: SourceLayer.PgmJingle,
 						infiniteMode: PieceLifespan.Normal,
