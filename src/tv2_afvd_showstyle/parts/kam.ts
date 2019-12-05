@@ -2,12 +2,7 @@ import {
 	AtemTransitionStyle,
 	DeviceType,
 	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemDSK,
-	TimelineObjAtemME,
-	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny
+	TimelineObjAtemME
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
@@ -17,13 +12,11 @@ import {
 	PartContext,
 	PieceLifespan,
 	SourceLayerType,
-	TimelineObjectCoreExt,
-	VTContent
+	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
@@ -33,8 +26,8 @@ import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
+import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
-import { TimeFromFrames } from './time/frameTime'
 import { PartTime } from './time/partTime'
 
 export function CreatePartKam(
@@ -98,114 +91,7 @@ export function CreatePartKam(
 		}
 		const atemInput = sourceInfoCam.port
 
-		const effekt = partDefinition.effekt
-
-		if (effekt) {
-			const effektConfig = config.showStyle.BreakerConfig.find(
-				conf =>
-					conf.BreakerName.toString()
-						.trim()
-						.toUpperCase() === effekt.toString().toUpperCase()
-			)
-			if (!effektConfig) {
-				context.warning(`Could not find effekt ${effekt}`)
-			} else {
-				const file = effektConfig.ClipName.toString()
-
-				if (!file) {
-					context.warning(`Could not find file for ${effekt}`)
-				} else {
-					pieces.push(
-						literal<IBlueprintPiece>({
-							_id: '',
-							externalId: `${partDefinition.externalId}-EFFEKT-${effekt}`,
-							name: `EFFEKT-${effekt}`,
-							enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
-							outputLayerId: 'jingle',
-							sourceLayerId: SourceLayer.PgmJingle,
-							infiniteMode: PieceLifespan.Normal,
-							isTransition: true,
-							content: literal<VTContent>({
-								studioLabel: '',
-								fileName: file,
-								path: file,
-								firstWords: '',
-								lastWords: '',
-								timelineObjects: literal<TimelineObjectCoreExt[]>([
-									literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
-										id: '',
-										enable: {
-											start: 0
-										},
-										priority: 1,
-										layer: CasparLLayer.CasparPlayerJingle,
-										content: {
-											deviceType: DeviceType.CASPARCG,
-											type: TimelineContentTypeCasparCg.MEDIA,
-											file
-										}
-									}),
-									literal<TimelineObjAtemDSK>({
-										id: '',
-										enable: {
-											start: Number(config.studio.CasparPrerollDuration)
-										},
-										priority: 1,
-										layer: AtemLLayer.AtemDSKEffect,
-										content: {
-											deviceType: DeviceType.ATEM,
-											type: TimelineContentTypeAtem.DSK,
-											dsk: {
-												onAir: true,
-												sources: {
-													fillSource: config.studio.AtemSource.JingleFill,
-													cutSource: config.studio.AtemSource.JingleKey
-												},
-												properties: {
-													tie: false,
-													preMultiply: false,
-													clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-													gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-													mask: {
-														enabled: false
-													}
-												}
-											}
-										}
-									}),
-									literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-										id: '',
-										enable: {
-											start: 0
-										},
-										priority: 1,
-										layer: SisyfosLLAyer.SisyfosSourceJingle,
-										content: {
-											deviceType: DeviceType.SISYFOS,
-											type: TimelineContentTypeSisyfos.SISYFOS,
-											isPgm: 1
-										}
-									})
-								])
-							})
-						})
-					)
-
-					part = {
-						...part,
-						...{
-							transitionDuration: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
-							transitionKeepaliveDuration:
-								TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
-							transitionPrerollDuration:
-								TimeFromFrames(Number(effektConfig.Duration)) -
-								TimeFromFrames(Number(effektConfig.EndAlpha)) +
-								config.studio.CasparPrerollDuration
-						}
-					}
-				}
-			}
-		}
+		part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 		pieces.push(
 			literal<IBlueprintPiece>({
