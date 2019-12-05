@@ -738,9 +738,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				deviceType: DeviceType.CASPARCG,
 				type: TimelineContentTypeCasparCg.MEDIA,
 				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
 				transitions: {
 					inTransition: {
 						type: Transition.CUT,
