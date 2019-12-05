@@ -10,7 +10,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
-import { GetJinglePartProperties } from './effekt'
+import { CreateEffektForpart, GetJinglePartProperties } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartUnknown(
@@ -32,6 +32,8 @@ export function CreatePartUnknown(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
 	if (!asAdlibs) {

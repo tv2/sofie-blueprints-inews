@@ -15,6 +15,7 @@ import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
+import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartVO(
@@ -37,7 +38,7 @@ export function CreatePartVO(
 	const file = partDefinition.fields.videoId
 	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
-	const part = literal<IBlueprintPart>({
+	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
@@ -62,6 +63,8 @@ export function CreatePartVO(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	const serverContent = MakeContentServer(file, partDefinition.externalId, partDefinition, config, false)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))

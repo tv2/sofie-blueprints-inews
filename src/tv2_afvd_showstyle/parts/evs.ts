@@ -25,6 +25,7 @@ import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
+import { CreateEffektForpart } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartEVS(
@@ -35,7 +36,7 @@ export function CreatePartEVS(
 ): BlueprintResultPart {
 	const partTime = PartTime(partDefinition, totalWords)
 
-	const part = literal<IBlueprintPart>({
+	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
@@ -45,6 +46,8 @@ export function CreatePartEVS(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const atemInput = config.studio.AtemSource.DelayedPlayback
+
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	pieces.push(
 		literal<IBlueprintPiece>({

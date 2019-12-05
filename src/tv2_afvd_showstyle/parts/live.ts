@@ -11,6 +11,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CueType } from '../inewsConversion/converters/ParseCue'
+import { CreateEffektForpart } from './effekt'
 import { PartTime } from './time/partTime'
 
 export function CreatePartLive(
@@ -20,7 +21,7 @@ export function CreatePartLive(
 	totalWords: number
 ): BlueprintResultPart {
 	const partTime = PartTime(partDefinition, totalWords)
-	const part = literal<IBlueprintPart>({
+	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
 		metaData: {},
@@ -29,6 +30,8 @@ export function CreatePartLive(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime)
