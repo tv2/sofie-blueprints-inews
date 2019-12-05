@@ -23,7 +23,8 @@ const blankStudioConfig: StudioConfig = {
 		Default: 0,
 		MixMinusDefault: 0,
 		DelayedPlayback: 0,
-		Continuity: 0
+		Continuity: 0,
+		FullFrameGrafikBackground: 0
 	},
 	AtemSettings: {
 		CCGClip: 0,
