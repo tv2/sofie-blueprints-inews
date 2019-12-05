@@ -13,6 +13,7 @@ import { MakeContentServer } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
+import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartServer(
@@ -33,7 +34,7 @@ export function CreatePartServer(
 	const file = partDefinition.fields.videoId
 	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
-	const part = literal<IBlueprintPart>({
+	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
@@ -45,6 +46,8 @@ export function CreatePartServer(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	pieces.push(
 		literal<IBlueprintPiece>({
