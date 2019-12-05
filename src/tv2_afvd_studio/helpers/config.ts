@@ -43,6 +43,7 @@ export interface StudioConfig {
 		JingleKey: number
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
+		FullFrameGrafikBackground: number
 
 		Default: number
 		MixMinusDefault: number

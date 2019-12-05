@@ -159,6 +159,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 32
 	},
 	{
+		id: 'AtemSource.FullFrameGrafikBackground',
+		name: 'Full frame grafik background source',
+		description: 'ATEM source for mos full-frame grafik background source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 3010
+	},
+	{
 		id: 'AtemSource.Default',
 		name: 'ATEM Default source',
 		description: 'ATEM vision mixer default source',

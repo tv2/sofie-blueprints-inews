@@ -1,6 +1,9 @@
 import {
+	AtemTransitionStyle,
 	DeviceType,
+	TimelineContentTypeAtem,
 	TimelineContentTypeVizMSE,
+	TimelineObjAtemME,
 	TimelineObjVIZMSEAny,
 	TimelineObjVIZMSEElementPilot
 } from 'timeline-state-resolver-types'
@@ -14,7 +17,7 @@ import {
 import { literal } from '../../../common/util'
 import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { InfiniteMode } from './evaluateCues'
 import { CreateTimingGrafik, GetGrafikDuration, grafikName } from './grafik'
@@ -58,7 +61,7 @@ export function EvaluateMOS(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.name,
 					path: parsedCue.vcpid.toString(),
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
+					timelineObjects: [
 						literal<TimelineObjVIZMSEElementPilot>({
 							id: '',
 							enable: {
@@ -74,8 +77,24 @@ export function EvaluateMOS(
 								noAutoPreloading: false,
 								channelName: parsedCue.name.match(/MOSART=L/i) ? undefined : 'FULL1'
 							}
+						}),
+						literal<TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: config.studio.PilotKeepaliveDuration
+							},
+							priority: 1,
+							layer: AtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: config.studio.AtemSource.FullFrameGrafikBackground,
+									transition: AtemTransitionStyle.CUT
+								}
+							}
 						})
-					])
+					]
 				})
 			})
 		)
