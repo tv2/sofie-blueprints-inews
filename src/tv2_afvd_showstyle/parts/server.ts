@@ -39,8 +39,8 @@ export function CreatePartServer(
 		metaData: {},
 		typeVariant: '',
 		displayDuration: duration || 1000,
-		expectedDuration: duration || 1000,
-		prerollDuration: config.studio.CasparPrerollDuration
+		expectedDuration: duration || 1000
+		// prerollDuration: config.studio.CasparPrerollDuration
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
