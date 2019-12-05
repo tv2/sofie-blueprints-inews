@@ -4,7 +4,6 @@ import {
 	TimelineContentTypeAtem,
 	TimelineContentTypeVizMSE,
 	TimelineObjAtemME,
-	TimelineObjVIZMSEAny,
 	TimelineObjVIZMSEElementPilot
 } from 'timeline-state-resolver-types'
 import {
