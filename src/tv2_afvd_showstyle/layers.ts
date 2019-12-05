@@ -9,6 +9,7 @@ export enum SourceLayer {
 	PgmPilot = 'studio0_pilot',
 	PgmPilotOverlay = 'studio0_pilotOverlay',
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
+	PgmGraphicsIdentPersistent = 'studio0_graphicsIdent_persistent',
 	PgmGraphicsTop = 'studio0_graphicsTop',
 	PgmGraphicsLower = 'studio0_graphicsLower',
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',

@@ -26,6 +26,27 @@ const OVERLAY: ISourceLayer[] = [
 		onPGMClean: false
 	},
 	{
+		_id: SourceLayer.PgmGraphicsIdentPersistent,
+		_rank: 10,
+		name: 'Ident Persistent',
+		abbreviation: 'G',
+		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: 'q,alt+a',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false,
+		unlimited: false,
+		onPGMClean: false
+	},
+	{
 		_id: SourceLayer.PgmGraphicsTop,
 		_rank: 20,
 		name: 'Top',

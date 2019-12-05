@@ -112,50 +112,68 @@ export function EvaluateGrafik(
 			})
 		)
 	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				_id: '',
-				externalId: partId,
-				name: grafikName(config, parsedCue),
-				...(isTlfPrimary
-					? { enable: { start: 0 } }
-					: {
-							enable: {
-								...CreateTimingGrafik(config, parsedCue)
-							}
-					  }),
-				outputLayerId: 'overlay',
-				sourceLayerId: isTlfPrimary
-					? SourceLayer.PgmGraphicsTLF
-					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-				infiniteMode: GetInfiniteModeForGrafik(config, parsedCue, isTlfPrimary, isIdentGrafik),
-				content: literal<GraphicsContent>({
-					fileName: parsedCue.template,
-					path: parsedCue.template,
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
-						literal<TimelineObjVIZMSEElementInternal>({
-							id: '',
-							enable: isIdentGrafik
-								? {
-										while: `.${ControlClasses.ShowIdentGraphic}`
-								  }
-								: {
-										start: 0
-								  },
-							priority: 1,
-							layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: mappedTemplate,
-								templateData: parsedCue.textFields,
-								channelName: 'FULL1'
-							}
-						})
-					])
-				})
+		const sourceLayer = isTlfPrimary
+			? SourceLayer.PgmGraphicsTLF
+			: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue))
+
+		const piece = literal<IBlueprintPiece>({
+			_id: '',
+			externalId: partId,
+			name: grafikName(config, parsedCue),
+			...(isTlfPrimary
+				? { enable: { start: 0 } }
+				: {
+						enable: {
+							...CreateTimingGrafik(config, parsedCue)
+						}
+				  }),
+			outputLayerId: 'overlay',
+			sourceLayerId: sourceLayer,
+			infiniteMode: GetInfiniteModeForGrafik(config, parsedCue, isTlfPrimary, isIdentGrafik),
+			content: literal<GraphicsContent>({
+				fileName: parsedCue.template,
+				path: parsedCue.template,
+				timelineObjects: literal<TimelineObjVIZMSEAny[]>([
+					literal<TimelineObjVIZMSEElementInternal>({
+						id: '',
+						enable: isIdentGrafik
+							? {
+									while: `.${ControlClasses.ShowIdentGraphic}`
+							  }
+							: {
+									start: 0
+							  },
+						priority: 1,
+						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+						content: {
+							deviceType: DeviceType.VIZMSE,
+							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+							templateName: mappedTemplate,
+							templateData: parsedCue.textFields,
+							channelName: 'FULL1'
+						}
+					})
+				])
 			})
-		)
+		})
+		pieces.push(piece)
+
+		if (
+			sourceLayer === SourceLayer.PgmGraphicsIdentPersistent &&
+			(piece.infiniteMode === PieceLifespan.OutOnNextSegment || piece.infiniteMode === PieceLifespan.Infinite)
+		) {
+			// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
+			// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
+			pieces.push(
+				literal<IBlueprintPiece>({
+					...piece,
+					_id: '',
+					sourceLayerId: SourceLayer.PgmGraphicsIdent,
+					infiniteMode: PieceLifespan.OutOnNextPart,
+					content: undefined
+				})
+			)
+		}
 	}
 }
 
@@ -216,7 +234,7 @@ export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string) {
 		case SourceLayer.PgmGraphicsHeadline:
 			return SourceLayer.PgmGraphicsHeadline
 		case SourceLayer.PgmGraphicsIdent:
-			return SourceLayer.PgmGraphicsIdent
+			return SourceLayer.PgmGraphicsIdentPersistent
 		case SourceLayer.PgmGraphicsLower:
 			return SourceLayer.PgmGraphicsLower
 		case SourceLayer.PgmGraphicsOverlay:
