@@ -211,6 +211,54 @@ export function EvaluateMOS(
 								}
 							}
 						}),
+						literal<TimelineObjCCGMedia>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 2,
+							layer: CasparLLayer.CasparCGDVEFrame,
+							content: {
+								deviceType: DeviceType.CASPARCG,
+								type: TimelineContentTypeCasparCg.MEDIA,
+								file: 'empty',
+								mixer: {
+									opacity: 0
+								}
+							}
+						}),
+						literal<TimelineObjCCGMedia>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 2,
+							layer: CasparLLayer.CasparCGDVEKey,
+							content: {
+								deviceType: DeviceType.CASPARCG,
+								type: TimelineContentTypeCasparCg.MEDIA,
+								file: 'empty',
+								mixer: {
+									opacity: 0
+								}
+							}
+						}),
+						literal<TimelineObjCCGMedia>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 2,
+							layer: CasparLLayer.CasparCGDVETemplate,
+							content: {
+								deviceType: DeviceType.CASPARCG,
+								type: TimelineContentTypeCasparCg.MEDIA,
+								file: 'empty',
+								mixer: {
+									opacity: 0
+								}
+							}
+						}),
 						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full'))
 					]
 				})

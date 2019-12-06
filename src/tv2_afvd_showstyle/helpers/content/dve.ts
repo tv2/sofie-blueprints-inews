@@ -1,6 +1,7 @@
 import {
 	AtemTransitionStyle,
 	DeviceType,
+	Timeline,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineObjAtemME,
@@ -8,8 +9,7 @@ import {
 	TimelineObjAtemSsrcProps,
 	TimelineObjCCGMedia,
 	TimelineObjCCGTemplate,
-	TSRTimelineObj,
-	Timeline
+	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
 	CameraContent,
