@@ -36,7 +36,7 @@ export function EvaluateLYD(
 	const conf = config.showStyle.LYDConfig.find(lyd =>
 		lyd.INewsName ? lyd.INewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
 	)
-	const stop = !!parsedCue.variant.match(/STOP/) // TODO: STOP 1 / STOP 2 etc.
+	const stop = !!parsedCue.variant.match(/^[^_]*STOP[^_]*$/i) // TODO: STOP 1 / STOP 2 etc.
 
 	if (!conf && !stop) {
 		context.warning(`LYD ${parsedCue.variant} not configured, using iNews name as file name`)
@@ -90,7 +90,7 @@ export function LydContent(
 	_fadeIn?: number,
 	fadeOut?: number
 ): BaseContent {
-	const id = `${file.trim().replace(/ /g, '_')}`
+	const id = `${file.trim().replace(/ /gi, '_')}`
 	return literal<BaseContent>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TimelineObjCCGMedia>({

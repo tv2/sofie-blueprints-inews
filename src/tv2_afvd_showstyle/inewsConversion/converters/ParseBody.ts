@@ -156,21 +156,21 @@ export function ParseBody(
 	let lines = body.split('\r\n')
 
 	for (let i = 0; i < lines.length; i++) {
-		lines[i] = lines[i].replace(/<cc>(.*?)<\/cc>/g, '')
+		lines[i] = lines[i].replace(/<cc>(.*?)<\/cc>/gi, '')
 	}
 	lines = lines.filter(line => line !== '<p></p>' && line !== '<p><pi></pi></p>')
 
 	lines.forEach(line => {
-		const type = line.match(/<pi>(.*?)<\/pi>/)
+		const type = line.match(/<pi>(.*?)<\/pi>/i)
 
 		if (type) {
 			const typeStr = type[1]
-				.replace(/<[a-z]+>/g, '')
-				.replace(/<\/[a-z]+>/g, '')
-				.replace(/[^\w\s]*\B[^\w\s]/g, '')
-				.replace(/[\s]+/, ' ')
-				.replace(/<tab>/, '')
-				.replace(/<\/tab>/, '')
+				.replace(/<[a-z]+>/gi, '')
+				.replace(/<\/[a-z]+>/gi, '')
+				.replace(/[^\w\s]*\B[^\w\s]/gi, '')
+				.replace(/[\s]+/i, ' ')
+				.replace(/<tab>/i, '')
+				.replace(/<\/tab>/i, '')
 				.trim()
 
 			if (typeStr) {
@@ -179,7 +179,7 @@ export function ParseBody(
 						/\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS\d+(?:VO)?|VO|VOSB|SLUTORD)+\b/gi
 					)
 				) {
-					if (!!line.match(/<p><pi>(.*)?<\/pi><\/p>/)) {
+					if (!!line.match(/<p><pi>(.*)?<\/pi><\/p>/i)) {
 						// Red text notes
 					} else {
 						if (
@@ -217,10 +217,10 @@ export function ParseBody(
 
 		addCue(definition, line, cues)
 
-		const script = line.match(/<p>(.*)?<\/p>/)
+		const script = line.match(/<p>(.*)?<\/p>/i)
 		if (script) {
 			const trimscript = script[1]
-				.replace(/<.*?>/g, '')
+				.replace(/<.*?>/gi, '')
 				.replace('\n\r', '')
 				.trim()
 			if (trimscript) {
@@ -278,10 +278,10 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 }
 
 function addCue(definition: PartDefinition, line: string, cues: UnparsedCue[]) {
-	const cue = line.match(/<a idref=["|'](\d+)["|']>/g)
+	const cue = line.match(/<a idref=["|'](\d+)["|']>/gi)
 	if (cue) {
 		cue.forEach(c => {
-			const value = c.match(/<a idref=["|'](\d+)["|']>/)
+			const value = c.match(/<a idref=["|'](\d+)["|']>/i)
 			if (value) {
 				const realCue = cues[Number(value[1])]
 				if (realCue) {
@@ -299,7 +299,7 @@ function makeDefinition(segmentId: string, i: number, typeStr: string, fields: a
 		rawType: typeStr
 			.replace(/effekt \d+/gi, '')
 			.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
-			.replace(/\s+/g, ' ')
+			.replace(/\s+/gi, ' ')
 			.trim(),
 		cues: [],
 		script: '',
@@ -326,13 +326,13 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 	const tokens = typeStr
 		.replace(/effekt (\d+)/gi, '')
 		.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
-		.replace(/\s+/g, ' ')
+		.replace(/\s+/gi, ' ')
 		.trim()
 		.split(' ')
 	const firstToken = tokens[0]
 
-	if (firstToken.match(/KAM|CAM/)) {
-		const adjacentKamNumber = tokens[0].match(/KAM(\d+)/)
+	if (firstToken.match(/KAM|CAM/i)) {
+		const adjacentKamNumber = tokens[0].match(/KAM(\d+)/i)
 		return {
 			type: PartType.Kam,
 			variant: {
@@ -340,26 +340,26 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			},
 			...definition
 		}
-	} else if (firstToken.match(/SERVER/) || firstToken.match(/ATTACK/i)) {
+	} else if (firstToken.match(/SERVER/i) || firstToken.match(/ATTACK/i)) {
 		return {
 			type: PartType.Server,
 			variant: {},
 			...definition
 		}
-	} else if (firstToken.match(/TEKNIK/)) {
+	} else if (firstToken.match(/TEKNIK/i)) {
 		return {
 			type: PartType.Teknik,
 			variant: {},
 			...definition
 		}
-	} else if (firstToken.match(/GRAFIK/)) {
+	} else if (firstToken.match(/GRAFIK/i)) {
 		return {
 			type: PartType.Grafik,
 			variant: {},
 			...definition
 		}
-	} else if (firstToken.match(/EVS\d+(?:VO)?/)) {
-		const strippedToken = firstToken.match(/EVS(\d+)(VO)?/)
+	} else if (firstToken.match(/EVS\d+(?:VO)?/i)) {
+		const strippedToken = firstToken.match(/EVS(\d+)(VO)?/i)
 		return {
 			type: PartType.EVS,
 			variant: {
@@ -367,13 +367,13 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 				isVO: !!strippedToken && !!strippedToken[2]
 			}
 		}
-	} else if (firstToken.match(/VO/)) {
+	} else if (firstToken.match(/VO/i)) {
 		return {
 			type: PartType.VO,
 			variant: {},
 			...definition
 		}
-	} else if (firstToken.match(/VOSB/)) {
+	} else if (firstToken.match(/VOSB/i)) {
 		return {
 			type: PartType.VO,
 			variant: {},

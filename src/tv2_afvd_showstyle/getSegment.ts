@@ -70,7 +70,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		return prev + cur.script.length
 	}, 0)
 
-	if (segment.name.trim().match(/^CONTINUITY$/)) {
+	if (segment.name.trim().match(/^CONTINUITY$/i)) {
 		blueprintParts.push(CreatePartContinuity(config, ingestSegment))
 		return {
 			segment,

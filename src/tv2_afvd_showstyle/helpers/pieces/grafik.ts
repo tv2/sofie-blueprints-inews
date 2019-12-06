@@ -24,13 +24,6 @@ import { BlueprintConfig } from '../config'
 import { EvaluateDesign } from './design'
 import { CalculateTime, InfiniteMode } from './evaluateCues'
 
-/**
- * @returns {true} If a cue is a grafik
- */
-export function IsGrafik(rawString: string): boolean {
-	return !!rawString.match(/^(?:kg |DIGI=)/)
-}
-
 export function EvaluateGrafik(
 	config: BlueprintConfig,
 	context: PartContext,
@@ -47,7 +40,7 @@ export function EvaluateGrafik(
 			templ =>
 				templ.INewsName === parsedCue.template &&
 				templ.INewsCode.toString()
-					.replace(/=/g, '')
+					.replace(/=/gi, '')
 					.toUpperCase() === parsedCue.cue.toUpperCase()
 		)
 		if (template) {
@@ -279,8 +272,8 @@ export function GetTimelineLayerForGrafik(config: BlueprintConfig, name: string)
 export function grafikName(config: BlueprintConfig, parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
 	if (parsedCue.type === CueType.Grafik) {
 		return `${parsedCue.template ? `${GetTemplateName(config, parsedCue)}` : ''}${parsedCue.textFields
-			.filter(txt => !txt.match(/^;.\.../))
-			.map(txt => ` - ${txt}`)}`.replace(/,/g, '')
+			.filter(txt => !txt.match(/^;.\.../i))
+			.map(txt => ` - ${txt}`)}`.replace(/,/gi, '')
 	} else {
 		return `${parsedCue.name ? parsedCue.name : ''}`
 	}

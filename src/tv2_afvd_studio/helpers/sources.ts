@@ -94,7 +94,7 @@ export function parseSources(context: NotesContext | undefined, studioConfig: St
 }
 
 export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: string): SourceInfo | undefined {
-	id = id.replace(/\s+/, ' ').trim()
+	id = id.replace(/\s+/i, ' ').trim()
 	switch (type) {
 		case SourceLayerType.CAMERA:
 			const cameraName = id.match(/^(?:KAM|CAM)(?:ERA)? ?(.+)$/i)

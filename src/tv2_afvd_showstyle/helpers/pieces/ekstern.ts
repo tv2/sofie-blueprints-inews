@@ -36,7 +36,7 @@ export function EvaluateEkstern(
 	rank?: number
 ) {
 	const eksternProps = parsedCue.source
-		.replace(/\s+/, ' ')
+		.replace(/\s+/i, ' ')
 		.trim()
 		.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
 	if (!eksternProps) {

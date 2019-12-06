@@ -36,7 +36,7 @@ export function EvaluateVIZ(
 	adlib?: boolean,
 	rank?: number
 ) {
-	if (parsedCue.design.match(/^dve-triopage$/)) {
+	if (parsedCue.design.match(/^dve-triopage$/i)) {
 		const fileName = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
 		const path = `dve/${fileName}`
 		if (adlib) {
@@ -101,7 +101,7 @@ export function EvaluateVIZ(
 				})
 			)
 		}
-	} else if (parsedCue.rawType.match(/^VIZ=grafik-design$/)) {
+	} else if (parsedCue.rawType.match(/^VIZ=grafik-design$/i)) {
 		context.warning('VIZ=grafik-design is not supported for this showstyle')
 	} else if (parsedCue.rawType.match(/^VIZ=full$/i)) {
 		if (!parsedCue.content.INP1) {

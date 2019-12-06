@@ -218,7 +218,7 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 
 	const firstLineValues = cue[0].match(/^[*|#]?kg[ |=]([\w|\d]+)( (.+))*$/i)
 	if (firstLineValues) {
-		kgCue.cue = cue[0].match(/kg/) ? 'kg' : 'KG'
+		kgCue.cue = cue[0].match(/kg/) ? 'kg' : 'KG' // THIS ONE SHOULD NOT BE INSENSITIVE
 		kgCue.template = firstLineValues[1]
 		if (firstLineValues[3]) {
 			kgCue.textFields.push(firstLineValues[3])
@@ -276,7 +276,7 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 	if (realCue.length === 4) {
 		const vcpid = realCue[1].match(/^VCPID=(\d+)$/i)
 		const continueCount = realCue[2].match(/^ContinueCount=(-?\d+)$/i)
-		const timing = realCue[0].match(/L\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/)
+		const timing = realCue[0].match(/L\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/i)
 
 		if (vcpid && continueCount) {
 			mosCue.name = realCue[0]
@@ -290,7 +290,7 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 					mosCue.start = parseTime(timing[1]).start
 				}
 
-				if (timing[2].match(/[SBO]/)) {
+				if (timing[2].match(/[SBO]/i)) {
 					mosCue.end = {
 						infiniteMode: timing[2] as keyof { B: any; S: any; O: any }
 					}
@@ -327,7 +327,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 		} else if (c.match(/^BYNAVN=/i)) {
 			const labels = c.match(/^BYNAVN=(.+)$/i)
 			if (labels) {
-				dvecue.labels = labels[1].split(/\/|\\/)
+				dvecue.labels = labels[1].split(/\/|\\/i)
 			}
 		} else if (isTime(c)) {
 			dvecue = { ...dvecue, ...parseTime(c) }
@@ -464,7 +464,7 @@ function parseLYD(cue: string[]) {
 
 	if (isTime(cue[1])) {
 		lydCue = { ...lydCue, ...parseTime(cue[1]) }
-	} else if (cue[1].match(/;x.xx/)) {
+	} else if (cue[1].match(/;x.xx/i)) {
 		lydCue.adlib = true
 	}
 
@@ -532,12 +532,12 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 
 export function isTime(line: string) {
 	return !!line
-		.replace(/\s+/g, '')
-		.match(/^;\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}(?:(?:-\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}){0,1}|(?:-[BSO]))$/)
+		.replace(/\s+/gi, '')
+		.match(/^;\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}(?:(?:-\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}){0,1}|(?:-[BSO]))$/i)
 }
 
 export function isMosTime(line: string) {
-	return !!line.replace(/\s+/g, '').match(/\d{1,2}(?:\:\d{1,2}){1,2}/)
+	return !!line.replace(/\s+/gi, '').match(/\d{1,2}(?:\:\d{1,2}){1,2}/i)
 }
 
 export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'> {
@@ -548,12 +548,12 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 	const startAndEnd = line.split('-')
 	startAndEnd[0] = startAndEnd[0].replace(';', '')
 	startAndEnd.forEach((time, i) => {
-		time = time.replace(/\s+/g, '')
+		time = time.replace(/\s+/gi, '')
 		const field = i === 0 ? 'start' : 'end'
-		if (time.match(/^[BSO]$/) && i !== 0) {
+		if (time.match(/^[BSO]$/i) && i !== 0) {
 			retTime[field].infiniteMode = time
 		} else {
-			if (!!time.match(/\./)) {
+			if (!!time.match(/\./i)) {
 				const timeSegments = time.split('.')
 
 				if (timeSegments[0]) {

@@ -17,7 +17,7 @@ export function getHash(str: string): string {
 	return hash
 		.update(str)
 		.digest('base64')
-		.replace(/[\+\/\=]/g, '_') // remove +/= from strings, because they cause troubles
+		.replace(/[\+\/\=]/gi, '_') // remove +/= from strings, because they cause troubles
 }
 
 export class CommonContext implements ICommonContext {

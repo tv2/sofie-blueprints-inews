@@ -7,7 +7,7 @@ const PREVIEW_CHARACTERS = 30
 
 // export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, slutord: boolean) {
 export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number) {
-	const script = part.script.replace(/^\**/, '').trim()
+	const script = part.script.replace(/^\**/i, '').trim()
 	if (script.length) {
 		const stripLength = Math.min(PREVIEW_CHARACTERS, script.length)
 		pieces.push(
@@ -26,7 +26,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 				content: literal<ScriptContent>({
 					firstWords: script.slice(0, stripLength),
 					lastWords: script
-						.replace(/\n/g, ' ')
+						.replace(/\n/gi, ' ')
 						.trim()
 						.slice(script.length - stripLength)
 						.trim(),
