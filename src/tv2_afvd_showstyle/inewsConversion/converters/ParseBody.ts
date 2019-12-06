@@ -218,7 +218,7 @@ export function ParseBody(
 		addCue(definition, line, cues)
 
 		const script = line.match(/<p>(.*)?<\/p>/i)
-		if (script) {
+		if (script && script[1]) {
 			const trimscript = script[1]
 				.replace(/<.*?>/gi, '')
 				.replace('\n\r', '')
