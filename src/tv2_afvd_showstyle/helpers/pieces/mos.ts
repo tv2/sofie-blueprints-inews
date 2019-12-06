@@ -168,7 +168,7 @@ export function EvaluateMOS(
 									SisyfosLLAyer.SisyfosSourceEVS_2
 							  ].map<TimelineObjSisyfosMessage>(layer => {
 									return literal<TimelineObjSisyfosMessage>({
-										id: '',
+										id: `muteSisyfos-${layer}`,
 										enable: {
 											start: 0
 										},
