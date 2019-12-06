@@ -429,6 +429,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
+		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
@@ -455,6 +456,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
+		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
