@@ -435,40 +435,13 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
 					return literal<TimelineObjSisyfosMessage>({
 						id: '',
-						enable: { while: '1' },
+						enable: { start: 0 },
 						priority: 10,
 						layer,
 						content: {
 							deviceType: DeviceType.SISYFOS,
 							type: TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: 1
-						}
-					})
-				})
-			])
-		}
-	})
-
-	adlibItems.push({
-		externalId: 'micDown',
-		name: 'Mics Down',
-		_rank: 550,
-		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-		outputLayerId: 'sec',
-		infiniteMode: PieceLifespan.Infinite,
-		expectedDuration: 0,
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
-					return literal<TimelineObjSisyfosMessage>({
-						id: '',
-						enable: { while: '1' },
-						priority: 10,
-						layer,
-						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
-							isPgm: 0
 						}
 					})
 				})
