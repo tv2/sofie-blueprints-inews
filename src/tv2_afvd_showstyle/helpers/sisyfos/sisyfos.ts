@@ -8,6 +8,15 @@ import {
 import { literal } from '../../../common/util'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
+export const STUDIO_MICS = [
+	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
+]
+
 export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Timeline.TimelineEnable): TSRTimelineObj[] {
 	if (!enable) {
 		enable = { start: 0 }

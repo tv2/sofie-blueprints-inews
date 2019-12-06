@@ -42,7 +42,7 @@ import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
-import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from './helpers/sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern, STUDIO_MICS } from './helpers/sisyfos/sisyfos'
 import { ControlClasses, SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -417,6 +417,58 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							onAir: false
 						}
 					}
+				})
+			])
+		}
+	})
+
+	adlibItems.push({
+		externalId: 'micUp',
+		name: 'Mics Up',
+		_rank: 500,
+		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
+		outputLayerId: 'sec',
+		infiniteMode: PieceLifespan.Infinite,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
+					return literal<TimelineObjSisyfosMessage>({
+						id: '',
+						enable: { while: '1' },
+						priority: 10,
+						layer,
+						content: {
+							deviceType: DeviceType.SISYFOS,
+							type: TimelineContentTypeSisyfos.SISYFOS,
+							isPgm: 1
+						}
+					})
+				})
+			])
+		}
+	})
+
+	adlibItems.push({
+		externalId: 'micDown',
+		name: 'Mics Down',
+		_rank: 550,
+		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
+		outputLayerId: 'sec',
+		infiniteMode: PieceLifespan.Infinite,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
+					return literal<TimelineObjSisyfosMessage>({
+						id: '',
+						enable: { while: '1' },
+						priority: 10,
+						layer,
+						content: {
+							deviceType: DeviceType.SISYFOS,
+							type: TimelineContentTypeSisyfos.SISYFOS,
+							isPgm: 0
+						}
+					})
 				})
 			])
 		}
