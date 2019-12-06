@@ -2,8 +2,10 @@ import {
 	AtemTransitionStyle,
 	DeviceType,
 	TimelineContentTypeAtem,
+	TimelineContentTypeCasparCg,
 	TimelineContentTypeVizMSE,
 	TimelineObjAtemME,
+	TimelineObjCCGMedia,
 	TimelineObjVIZMSEElementPilot
 } from 'timeline-state-resolver-types'
 import {
@@ -16,7 +18,7 @@ import {
 import { literal } from '../../../common/util'
 import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { InfiniteMode } from './evaluateCues'
@@ -91,6 +93,54 @@ export function EvaluateMOS(
 								me: {
 									input: config.studio.AtemSource.FullFrameGrafikBackground,
 									transition: AtemTransitionStyle.CUT
+								}
+							}
+						}),
+						literal<TimelineObjCCGMedia>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 2,
+							layer: CasparLLayer.CasparCGDVEFrame,
+							content: {
+								deviceType: DeviceType.CASPARCG,
+								type: TimelineContentTypeCasparCg.MEDIA,
+								file: 'empty',
+								mixer: {
+									opacity: 0
+								}
+							}
+						}),
+						literal<TimelineObjCCGMedia>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 2,
+							layer: CasparLLayer.CasparCGDVEKey,
+							content: {
+								deviceType: DeviceType.CASPARCG,
+								type: TimelineContentTypeCasparCg.MEDIA,
+								file: 'empty',
+								mixer: {
+									opacity: 0
+								}
+							}
+						}),
+						literal<TimelineObjCCGMedia>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 2,
+							layer: CasparLLayer.CasparCGDVETemplate,
+							content: {
+								deviceType: DeviceType.CASPARCG,
+								type: TimelineContentTypeCasparCg.MEDIA,
+								file: 'empty',
+								mixer: {
+									opacity: 0
 								}
 							}
 						}),
