@@ -98,89 +98,10 @@ export function EvaluateMOS(
 								}
 							}
 						}),
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 2,
-							layer: CasparLLayer.CasparCGDVEFrame,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file: 'empty',
-								mixer: {
-									opacity: 0
-								}
-							}
-						}),
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 2,
-							layer: CasparLLayer.CasparCGDVEKey,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file: 'empty',
-								mixer: {
-									opacity: 0
-								}
-							}
-						}),
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 2,
-							layer: CasparLLayer.CasparCGDVETemplate,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file: 'empty',
-								mixer: {
-									opacity: 0
-								}
-							}
-						}),
+						...CleanUpDVEBackground(config),
 						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full')),
 						// Mute everything else
-						...(parsedCue.name.match(/MOSART=L/i)
-							? []
-							: [
-									SisyfosLLAyer.SisyfosSourceServerA,
-									SisyfosLLAyer.SisyfosSourceServerB,
-									SisyfosLLAyer.SisyfosSourceLive_1,
-									SisyfosLLAyer.SisyfosSourceLive_2,
-									SisyfosLLAyer.SisyfosSourceLive_3,
-									SisyfosLLAyer.SisyfosSourceLive_4,
-									SisyfosLLAyer.SisyfosSourceLive_5,
-									SisyfosLLAyer.SisyfosSourceLive_6,
-									SisyfosLLAyer.SisyfosSourceLive_7,
-									SisyfosLLAyer.SisyfosSourceLive_8,
-									SisyfosLLAyer.SisyfosSourceLive_9,
-									SisyfosLLAyer.SisyfosSourceLive_10,
-									SisyfosLLAyer.SisyfosSourceTLF,
-									SisyfosLLAyer.SisyfosSourceEVS_1,
-									SisyfosLLAyer.SisyfosSourceEVS_2
-							  ].map<TimelineObjSisyfosMessage>(layer => {
-									return literal<TimelineObjSisyfosMessage>({
-										id: `muteSisyfos-${layer}`,
-										enable: {
-											start: 0
-										},
-										priority: 2,
-										layer,
-										content: {
-											deviceType: DeviceType.SISYFOS,
-											type: TimelineContentTypeSisyfos.SISYFOS,
-											isPgm: 0
-										}
-									})
-							  }))
+						...MuteSisyfosChannels(parsedCue)
 					]
 				})
 			})
@@ -247,58 +168,72 @@ export function EvaluateMOS(
 								}
 							}
 						}),
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 2,
-							layer: CasparLLayer.CasparCGDVEFrame,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file: 'empty',
-								mixer: {
-									opacity: 0
-								}
-							}
-						}),
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 2,
-							layer: CasparLLayer.CasparCGDVEKey,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file: 'empty',
-								mixer: {
-									opacity: 0
-								}
-							}
-						}),
-						literal<TimelineObjCCGMedia>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 2,
-							layer: CasparLLayer.CasparCGDVETemplate,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file: 'empty',
-								mixer: {
-									opacity: 0
-								}
-							}
-						}),
-						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full'))
+						...CleanUpDVEBackground(config),
+						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full')),
+						// Mute everything else
+						...MuteSisyfosChannels(parsedCue)
 					]
 				})
 			})
 		)
 	}
+}
+
+function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMedia[] {
+	return [CasparLLayer.CasparCGDVEFrame, CasparLLayer.CasparCGDVEKey, CasparLLayer.CasparCGDVETemplate].map<
+		TimelineObjCCGMedia
+	>(layer => {
+		return {
+			id: '',
+			enable: {
+				start: config.studio.PilotCutToMediaPlayer
+			},
+			priority: 2,
+			layer,
+			content: {
+				deviceType: DeviceType.CASPARCG,
+				type: TimelineContentTypeCasparCg.MEDIA,
+				file: 'empty',
+				mixer: {
+					opacity: 0
+				}
+			}
+		}
+	})
+}
+
+function MuteSisyfosChannels(parsedCue: CueDefinitionMOS): TimelineObjSisyfosMessage[] {
+	return parsedCue.name.match(/MOSART=L/i)
+		? []
+		: [
+				SisyfosLLAyer.SisyfosSourceServerA,
+				SisyfosLLAyer.SisyfosSourceServerB,
+				SisyfosLLAyer.SisyfosSourceLive_1,
+				SisyfosLLAyer.SisyfosSourceLive_2,
+				SisyfosLLAyer.SisyfosSourceLive_3,
+				SisyfosLLAyer.SisyfosSourceLive_4,
+				SisyfosLLAyer.SisyfosSourceLive_5,
+				SisyfosLLAyer.SisyfosSourceLive_6,
+				SisyfosLLAyer.SisyfosSourceLive_7,
+				SisyfosLLAyer.SisyfosSourceLive_8,
+				SisyfosLLAyer.SisyfosSourceLive_9,
+				SisyfosLLAyer.SisyfosSourceLive_10,
+				SisyfosLLAyer.SisyfosSourceTLF,
+				SisyfosLLAyer.SisyfosSourceEVS_1,
+				SisyfosLLAyer.SisyfosSourceEVS_2
+		  ].map<TimelineObjSisyfosMessage>(layer => {
+				return literal<TimelineObjSisyfosMessage>({
+					id: `muteSisyfos-${layer}`,
+					enable: {
+						start: 0
+					},
+					priority: 2,
+					layer,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: 0
+					}
+				})
+		  })
 }
