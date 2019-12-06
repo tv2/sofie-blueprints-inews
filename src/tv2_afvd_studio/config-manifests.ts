@@ -247,6 +247,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 2000
 	},
 	{
+		id: 'PilotOutTransitionDuration',
+		name: 'Pilot Out Transition Duration',
+		description: 'ms to keep pilot elements alive before transition to next part',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
+	},
+	{
 		id: 'PilotCutToMediaPlayer',
 		name: 'Pilot media Player Cut Point',
 		description: 'ms from start of grafik before switching to background source',

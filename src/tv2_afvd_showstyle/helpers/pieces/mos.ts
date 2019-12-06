@@ -8,7 +8,8 @@ import {
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosMessage,
-	TimelineObjVIZMSEElementPilot
+	TimelineObjVIZMSEElementPilot,
+	VIZMSETransitionType
 } from 'timeline-state-resolver-types'
 import {
 	GraphicsContent,
@@ -111,7 +112,15 @@ function GetMosObjContent(config: BlueprintConfig, parsedCue: CueDefinitionMOS, 
 					templateVcpId: parsedCue.vcpid,
 					continueStep: parsedCue.continueCount,
 					noAutoPreloading: false,
-					channelName: isOverlay ? undefined : 'FULL1'
+					channelName: isOverlay ? undefined : 'FULL1',
+					...(isOverlay
+						? {}
+						: {
+								outTransition: {
+									type: VIZMSETransitionType.DELAY,
+									delay: config.studio.PilotOutTransitionDuration
+								}
+						  })
 				}
 			}),
 			...CleanUpDVEBackground(config),

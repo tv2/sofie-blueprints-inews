@@ -72,6 +72,7 @@ export interface StudioConfig {
 	PilotPrerollDuration: number
 	PilotKeepaliveDuration: number
 	PilotCutToMediaPlayer: number
+	PilotOutTransitionDuration: number
 	ATEMDelay: number
 }
 

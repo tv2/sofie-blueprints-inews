@@ -59,8 +59,8 @@
   "dependencies": {
     "handlebars": "^4.3.0",
     "object-path": "^0.11.4",
-    "timeline-state-resolver-types": "https://github.com/olzzon/tv-automation-state-timeline-resolver.git#47aa3731328f0d825ae46c177bd738c2ef8cca35",
-    "tv-automation-sofie-blueprints-integration": "https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#e79ddb0da50bb9458b4199656d46504b769aa01d",
+    "timeline-state-resolver-types": "git+https://github.com/olzzon/tv-automation-state-timeline-resolver.git#dist20191206_types",
+    "tv-automation-sofie-blueprints-integration": "git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#182f4f0ff20d4e2930f1c4ba1f713d2a00617feb",
     "underscore": "^1.9.1"
   }
 }
