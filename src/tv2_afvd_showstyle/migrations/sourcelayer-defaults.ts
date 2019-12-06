@@ -652,7 +652,7 @@ const SEC: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false,
 		unlimited: false,
