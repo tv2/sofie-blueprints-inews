@@ -82,22 +82,27 @@ export function EvaluateMOS(
 								channelName: parsedCue.name.match(/MOSART=L/i) ? undefined : 'FULL1'
 							}
 						}),
-						literal<TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 1,
-							layer: AtemLLayer.AtemMEProgram,
-							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
-								me: {
-									input: config.studio.AtemSource.FullFrameGrafikBackground,
-									transition: AtemTransitionStyle.CUT
-								}
-							}
-						}),
+
+						...(parsedCue.name.match(/MOSART=L/i)
+							? []
+							: [
+									literal<TimelineObjAtemME>({
+										id: '',
+										enable: {
+											start: config.studio.PilotCutToMediaPlayer
+										},
+										priority: 1,
+										layer: AtemLLayer.AtemMEProgram,
+										content: {
+											deviceType: DeviceType.ATEM,
+											type: TimelineContentTypeAtem.ME,
+											me: {
+												input: config.studio.AtemSource.FullFrameGrafikBackground,
+												transition: AtemTransitionStyle.CUT
+											}
+										}
+									})
+							  ]),
 						...CleanUpDVEBackground(config),
 						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full')),
 						// Mute everything else
