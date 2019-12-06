@@ -3,9 +3,11 @@ import {
 	DeviceType,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
+	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
+	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEElementPilot
 } from 'timeline-state-resolver-types'
 import {
@@ -18,7 +20,7 @@ import {
 import { literal } from '../../../common/util'
 import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer, VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { InfiniteMode } from './evaluateCues'
@@ -144,7 +146,41 @@ export function EvaluateMOS(
 								}
 							}
 						}),
-						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full'))
+						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full')),
+						// Mute everything else
+						...(parsedCue.name.match(/MOSART=L/i)
+							? []
+							: [
+									SisyfosLLAyer.SisyfosSourceServerA,
+									SisyfosLLAyer.SisyfosSourceServerB,
+									SisyfosLLAyer.SisyfosSourceLive_1,
+									SisyfosLLAyer.SisyfosSourceLive_2,
+									SisyfosLLAyer.SisyfosSourceLive_3,
+									SisyfosLLAyer.SisyfosSourceLive_4,
+									SisyfosLLAyer.SisyfosSourceLive_5,
+									SisyfosLLAyer.SisyfosSourceLive_6,
+									SisyfosLLAyer.SisyfosSourceLive_7,
+									SisyfosLLAyer.SisyfosSourceLive_8,
+									SisyfosLLAyer.SisyfosSourceLive_9,
+									SisyfosLLAyer.SisyfosSourceLive_10,
+									SisyfosLLAyer.SisyfosSourceTLF,
+									SisyfosLLAyer.SisyfosSourceEVS_1,
+									SisyfosLLAyer.SisyfosSourceEVS_2
+							  ].map<TimelineObjSisyfosMessage>(layer => {
+									return literal<TimelineObjSisyfosMessage>({
+										id: '',
+										enable: {
+											start: 0
+										},
+										priority: 2,
+										layer,
+										content: {
+											deviceType: DeviceType.SISYFOS,
+											type: TimelineContentTypeSisyfos.SISYFOS,
+											isPgm: 0
+										}
+									})
+							  }))
 					]
 				})
 			})
