@@ -51,64 +51,11 @@ export function EvaluateMOS(
 				externalId: partId,
 				name: grafikName(config, parsedCue),
 				...(isTlf || isGrafikPart ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
-				infiniteMode:
-					isTlf || isGrafikPart
-						? PieceLifespan.OutOnNextPart
-						: parsedCue.end && parsedCue.end.infiniteMode
-						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-						: PieceLifespan.Normal,
-				sourceLayerId: isTlf
-					? SourceLayer.PgmGraphicsTLF
-					: isOverlay
-					? SourceLayer.PgmPilotOverlay
-					: SourceLayer.PgmPilot,
+				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
+				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
 				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
-				content: literal<GraphicsContent>({
-					fileName: parsedCue.name,
-					path: parsedCue.vcpid.toString(),
-					timelineObjects: [
-						literal<TimelineObjVIZMSEElementPilot>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: VizLLayer.VizLLayerPilot,
-							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
-								templateVcpId: parsedCue.vcpid,
-								continueStep: parsedCue.continueCount,
-								noAutoPreloading: false,
-								channelName: isOverlay ? undefined : 'FULL1'
-							}
-						}),
-						...CleanUpDVEBackground(config),
-						...(isOverlay
-							? []
-							: [
-									literal<TimelineObjAtemME>({
-										id: '',
-										enable: {
-											start: config.studio.PilotCutToMediaPlayer
-										},
-										priority: 1,
-										layer: AtemLLayer.AtemMEProgram,
-										content: {
-											deviceType: DeviceType.ATEM,
-											type: TimelineContentTypeAtem.ME,
-											me: {
-												input: config.studio.AtemSource.FullFrameGrafikBackground,
-												transition: AtemTransitionStyle.CUT
-											}
-										}
-									}),
-									...GetSisyfosTimelineObjForCamera('full'),
-									...MuteSisyfosChannels()
-							  ])
-					]
-				})
+				content: GetMosObjContent(config, parsedCue, isOverlay)
 			})
 		)
 	} else {
@@ -125,66 +72,73 @@ export function EvaluateMOS(
 							}
 					  }),
 				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
-				sourceLayerId: isTlf
-					? SourceLayer.PgmGraphicsTLF
-					: isOverlay
-					? SourceLayer.PgmPilotOverlay
-					: SourceLayer.PgmPilot,
+				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
-				infiniteMode:
-					isTlf || isGrafikPart
-						? PieceLifespan.OutOnNextPart
-						: parsedCue.end && parsedCue.end.infiniteMode
-						? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-						: PieceLifespan.Normal,
-				content: literal<GraphicsContent>({
-					fileName: parsedCue.name,
-					path: parsedCue.vcpid.toString(),
-					timelineObjects: [
-						literal<TimelineObjVIZMSEElementPilot>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: VizLLayer.VizLLayerPilot,
-							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
-								templateVcpId: parsedCue.vcpid,
-								continueStep: parsedCue.continueCount,
-								noAutoPreloading: false,
-								channelName: isOverlay ? undefined : 'FULL1'
-							}
-						}),
-						...CleanUpDVEBackground(config),
-						...(isOverlay
-							? []
-							: [
-									literal<TimelineObjAtemME>({
-										id: '',
-										enable: {
-											start: config.studio.PilotCutToMediaPlayer
-										},
-										priority: 1,
-										layer: AtemLLayer.AtemMEProgram,
-										content: {
-											deviceType: DeviceType.ATEM,
-											type: TimelineContentTypeAtem.ME,
-											me: {
-												input: config.studio.AtemSource.FullFrameGrafikBackground,
-												transition: AtemTransitionStyle.CUT
-											}
-										}
-									}),
-									...GetSisyfosTimelineObjForCamera('full'),
-									...MuteSisyfosChannels()
-							  ])
-					]
-				})
+				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
+				content: GetMosObjContent(config, parsedCue, isOverlay)
 			})
 		)
 	}
+}
+
+function GetSourceLayer(isTlf?: boolean, isOverlay?: boolean) {
+	return isTlf ? SourceLayer.PgmGraphicsTLF : isOverlay ? SourceLayer.PgmPilotOverlay : SourceLayer.PgmPilot
+}
+
+function GetInfiniteMode(parsedCue: CueDefinitionMOS, isTlf?: boolean, isGrafikPart?: boolean): PieceLifespan {
+	return isTlf || isGrafikPart
+		? PieceLifespan.OutOnNextPart
+		: parsedCue.end && parsedCue.end.infiniteMode
+		? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+		: PieceLifespan.Normal
+}
+
+function GetMosObjContent(config: BlueprintConfig, parsedCue: CueDefinitionMOS, isOverlay: boolean): GraphicsContent {
+	return literal<GraphicsContent>({
+		fileName: parsedCue.name,
+		path: parsedCue.vcpid.toString(),
+		timelineObjects: [
+			literal<TimelineObjVIZMSEElementPilot>({
+				id: '',
+				enable: {
+					start: 0
+				},
+				priority: 1,
+				layer: VizLLayer.VizLLayerPilot,
+				content: {
+					deviceType: DeviceType.VIZMSE,
+					type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
+					templateVcpId: parsedCue.vcpid,
+					continueStep: parsedCue.continueCount,
+					noAutoPreloading: false,
+					channelName: isOverlay ? undefined : 'FULL1'
+				}
+			}),
+			...CleanUpDVEBackground(config),
+			...(isOverlay
+				? []
+				: [
+						literal<TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 1,
+							layer: AtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: config.studio.AtemSource.FullFrameGrafikBackground,
+									transition: AtemTransitionStyle.CUT
+								}
+							}
+						}),
+						...GetSisyfosTimelineObjForCamera('full'),
+						...MuteSisyfosChannels()
+				  ])
+		]
+	})
 }
 
 function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMedia[] {
