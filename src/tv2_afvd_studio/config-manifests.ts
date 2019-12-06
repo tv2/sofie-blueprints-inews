@@ -164,7 +164,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM source for mos full-frame grafik background source',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 3010
+		defaultVal: 30
 	},
 	{
 		id: 'AtemSource.Default',
