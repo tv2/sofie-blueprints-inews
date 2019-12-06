@@ -42,6 +42,8 @@ export function EvaluateMOS(
 		context.warning('No valid VCPID provided')
 	}
 
+	const isOverlay = !!parsedCue.name.match(/MOSART=L/i)
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -57,7 +59,7 @@ export function EvaluateMOS(
 						: PieceLifespan.Normal,
 				sourceLayerId: isTlf
 					? SourceLayer.PgmGraphicsTLF
-					: parsedCue.name.match(/MOSART=L/i)
+					: isOverlay
 					? SourceLayer.PgmPilotOverlay
 					: SourceLayer.PgmPilot,
 				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
@@ -79,11 +81,11 @@ export function EvaluateMOS(
 								templateVcpId: parsedCue.vcpid,
 								continueStep: parsedCue.continueCount,
 								noAutoPreloading: false,
-								channelName: parsedCue.name.match(/MOSART=L/i) ? undefined : 'FULL1'
+								channelName: isOverlay ? undefined : 'FULL1'
 							}
 						}),
-
-						...(parsedCue.name.match(/MOSART=L/i)
+						...CleanUpDVEBackground(config),
+						...(isOverlay
 							? []
 							: [
 									literal<TimelineObjAtemME>({
@@ -101,12 +103,10 @@ export function EvaluateMOS(
 												transition: AtemTransitionStyle.CUT
 											}
 										}
-									})
-							  ]),
-						...CleanUpDVEBackground(config),
-						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full')),
-						// Mute everything else
-						...MuteSisyfosChannels(parsedCue)
+									}),
+									...GetSisyfosTimelineObjForCamera('full'),
+									...MuteSisyfosChannels()
+							  ])
 					]
 				})
 			})
@@ -127,7 +127,7 @@ export function EvaluateMOS(
 				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				sourceLayerId: isTlf
 					? SourceLayer.PgmGraphicsTLF
-					: parsedCue.name.match(/MOSART=L/i)
+					: isOverlay
 					? SourceLayer.PgmPilotOverlay
 					: SourceLayer.PgmPilot,
 				adlibPreroll: config.studio.PilotPrerollDuration,
@@ -154,29 +154,32 @@ export function EvaluateMOS(
 								templateVcpId: parsedCue.vcpid,
 								continueStep: parsedCue.continueCount,
 								noAutoPreloading: false,
-								channelName: parsedCue.name.match(/MOSART=L/i) ? undefined : 'FULL1'
-							}
-						}),
-						literal<TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: config.studio.PilotCutToMediaPlayer
-							},
-							priority: 1,
-							layer: AtemLLayer.AtemMEProgram,
-							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
-								me: {
-									input: config.studio.AtemSource.FullFrameGrafikBackground,
-									transition: AtemTransitionStyle.CUT
-								}
+								channelName: isOverlay ? undefined : 'FULL1'
 							}
 						}),
 						...CleanUpDVEBackground(config),
-						...(parsedCue.name.match(/MOSART=L/i) ? [] : GetSisyfosTimelineObjForCamera('full')),
-						// Mute everything else
-						...MuteSisyfosChannels(parsedCue)
+						...(isOverlay
+							? []
+							: [
+									literal<TimelineObjAtemME>({
+										id: '',
+										enable: {
+											start: config.studio.PilotCutToMediaPlayer
+										},
+										priority: 1,
+										layer: AtemLLayer.AtemMEProgram,
+										content: {
+											deviceType: DeviceType.ATEM,
+											type: TimelineContentTypeAtem.ME,
+											me: {
+												input: config.studio.AtemSource.FullFrameGrafikBackground,
+												transition: AtemTransitionStyle.CUT
+											}
+										}
+									}),
+									...GetSisyfosTimelineObjForCamera('full'),
+									...MuteSisyfosChannels()
+							  ])
 					]
 				})
 			})
@@ -207,38 +210,36 @@ function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMedia[] {
 	})
 }
 
-function MuteSisyfosChannels(parsedCue: CueDefinitionMOS): TimelineObjSisyfosMessage[] {
-	return parsedCue.name.match(/MOSART=L/i)
-		? []
-		: [
-				SisyfosLLAyer.SisyfosSourceServerA,
-				SisyfosLLAyer.SisyfosSourceServerB,
-				SisyfosLLAyer.SisyfosSourceLive_1,
-				SisyfosLLAyer.SisyfosSourceLive_2,
-				SisyfosLLAyer.SisyfosSourceLive_3,
-				SisyfosLLAyer.SisyfosSourceLive_4,
-				SisyfosLLAyer.SisyfosSourceLive_5,
-				SisyfosLLAyer.SisyfosSourceLive_6,
-				SisyfosLLAyer.SisyfosSourceLive_7,
-				SisyfosLLAyer.SisyfosSourceLive_8,
-				SisyfosLLAyer.SisyfosSourceLive_9,
-				SisyfosLLAyer.SisyfosSourceLive_10,
-				SisyfosLLAyer.SisyfosSourceTLF,
-				SisyfosLLAyer.SisyfosSourceEVS_1,
-				SisyfosLLAyer.SisyfosSourceEVS_2
-		  ].map<TimelineObjSisyfosMessage>(layer => {
-				return literal<TimelineObjSisyfosMessage>({
-					id: `muteSisyfos-${layer}`,
-					enable: {
-						start: 0
-					},
-					priority: 2,
-					layer,
-					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
-						isPgm: 0
-					}
-				})
-		  })
+function MuteSisyfosChannels(): TimelineObjSisyfosMessage[] {
+	return [
+		SisyfosLLAyer.SisyfosSourceServerA,
+		SisyfosLLAyer.SisyfosSourceServerB,
+		SisyfosLLAyer.SisyfosSourceLive_1,
+		SisyfosLLAyer.SisyfosSourceLive_2,
+		SisyfosLLAyer.SisyfosSourceLive_3,
+		SisyfosLLAyer.SisyfosSourceLive_4,
+		SisyfosLLAyer.SisyfosSourceLive_5,
+		SisyfosLLAyer.SisyfosSourceLive_6,
+		SisyfosLLAyer.SisyfosSourceLive_7,
+		SisyfosLLAyer.SisyfosSourceLive_8,
+		SisyfosLLAyer.SisyfosSourceLive_9,
+		SisyfosLLAyer.SisyfosSourceLive_10,
+		SisyfosLLAyer.SisyfosSourceTLF,
+		SisyfosLLAyer.SisyfosSourceEVS_1,
+		SisyfosLLAyer.SisyfosSourceEVS_2
+	].map<TimelineObjSisyfosMessage>(layer => {
+		return literal<TimelineObjSisyfosMessage>({
+			id: `muteSisyfos-${layer}`,
+			enable: {
+				start: 0
+			},
+			priority: 2,
+			layer,
+			content: {
+				deviceType: DeviceType.SISYFOS,
+				type: TimelineContentTypeSisyfos.SISYFOS,
+				isPgm: 0
+			}
+		})
+	})
 }
