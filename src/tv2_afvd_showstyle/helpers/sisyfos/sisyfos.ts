@@ -27,71 +27,18 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Time
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	if ((useMic && camName) || !!sourceType.match(/server|telefon|full/i)) {
 		audioTimeline.push(
-			literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable,
-				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1
-				}
-			}),
-			literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable,
-				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1
-				}
-			}),
-			literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable,
-				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1
-				}
-			}),
-			literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable,
-				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1
-				}
-			}),
-			literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable,
-				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1
-				}
-			}),
-			literal<TimelineObjSisyfosMessage>({
-				id: '',
-				enable,
-				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1
-				}
+			...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
+				return literal<TimelineObjSisyfosMessage>({
+					id: '',
+					enable: enable ? enable : { start: 0 },
+					priority: 1,
+					layer,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: 1
+					}
+				})
 			})
 		)
 	}
