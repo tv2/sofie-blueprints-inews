@@ -79,6 +79,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	}
 
 	let serverParts = 0
+	let jingleTime = 0
 	for (let i = 0; i < parsedParts.length; i++) {
 		const part = parsedParts[i]
 		const partContext = new PartContext2(context, part.externalId)
@@ -149,11 +150,19 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		) {
 			serverParts++
 		}
+
+		if (part.cues.filter(cue => cue.type === CueType.Jingle)) {
+			const t = blueprintParts[blueprintParts.length - 1].part.expectedDuration
+			if (t) {
+				jingleTime += t
+			}
+		}
 	}
 
-	const allocatedTime = blueprintParts.reduce((prev, cur) => {
-		return prev + (cur.part.expectedDuration ? cur.part.expectedDuration : 0)
-	}, 0)
+	const allocatedTime =
+		blueprintParts.reduce((prev, cur) => {
+			return prev + (cur.part.expectedDuration ? cur.part.expectedDuration : 0)
+		}, 0) - jingleTime
 
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
