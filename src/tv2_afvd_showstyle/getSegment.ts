@@ -159,10 +159,14 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		}
 	}
 
-	const allocatedTime =
+	let allocatedTime =
 		blueprintParts.reduce((prev, cur) => {
 			return prev + (cur.part.expectedDuration ? cur.part.expectedDuration : 0)
 		}, 0) - jingleTime
+
+	if (allocatedTime < 0) {
+		allocatedTime = 0
+	}
 
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
