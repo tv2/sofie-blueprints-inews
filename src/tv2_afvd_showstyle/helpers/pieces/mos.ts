@@ -117,10 +117,14 @@ function GetMosObjContent(config: BlueprintConfig, parsedCue: CueDefinitionMOS, 
 					continueStep: parsedCue.continueCount,
 					noAutoPreloading: false,
 					channelName: isOverlay ? undefined : 'FULL1',
-					outTransition: {
-						type: VIZMSETransitionType.DELAY,
-						delay: config.studio.PilotOutTransitionDuration
-					}
+					...(isOverlay
+						? {}
+						: {
+								outTransition: {
+									type: VIZMSETransitionType.DELAY,
+									delay: config.studio.PilotOutTransitionDuration
+								}
+						  })
 				}
 			}),
 			...CleanUpDVEBackground(config),
