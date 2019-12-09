@@ -492,16 +492,10 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 		engine: ''
 	}
 
-	const engine = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
+	const engine = cue[0].match(/^(?:VIZ|GRAFIK|SS)=(.*)$/i)
 
 	if (engine) {
 		engineCue.engine = engine[1]
-	}
-
-	const wall = cue[0].match(/^SS=/i)
-
-	if (wall) {
-		engineCue.engine = 'WALL'
 	}
 
 	for (let i = 1; i < cue.length; i++) {
