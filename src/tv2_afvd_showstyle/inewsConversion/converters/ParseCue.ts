@@ -15,7 +15,8 @@ export enum CueType {
 	Design,
 	Profile,
 	TargetEngine,
-	ClearGrafiks
+	ClearGrafiks,
+	TargetWall
 }
 
 export interface CueTime {
@@ -128,6 +129,11 @@ export interface CueDefinitionTargetEngine extends CueDefinitionBase {
 	grafik?: CueDefinitionMOS
 }
 
+export interface CueDefinitionTargetWall extends CueDefinitionBase {
+	type: CueType.TargetWall
+	clip: string
+}
+
 export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 	type: CueType.ClearGrafiks
 }
@@ -148,6 +154,7 @@ export type CueDefinition =
 	| CueDefinitionProfile
 	| CueDefinitionTargetEngine
 	| CueDefinitionClearGrafiks
+	| CueDefinitionTargetWall
 
 export function ParseCue(cue: UnparsedCue): CueDefinition {
 	if (!cue || cue.length === 0) {
@@ -166,7 +173,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		// kg (Grafik)
 		return parsekg(cue)
 	} else if (cue[0].match(/ss=/i)) {
-		return parseTargetEngine(cue)
+		return parseTargetWall(cue)
 	} else if (cue[0].match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i)) {
 		// MOS
 		return parseMOS(cue)
@@ -492,14 +499,10 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 		engine: ''
 	}
 
-	const engine = cue[0].match(/^(?:VIZ|GRAFIK|SS)=(.*)$/i)
+	const engine = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
 
-	if (cue[0].match(/^SS=/i)) {
-		engineCue.engine = 'FULL'
-	} else {
-		if (engine) {
-			engineCue.engine = engine[1]
-		}
+	if (engine) {
+		engineCue.engine = engine[1]
 	}
 
 	for (let i = 1; i < cue.length; i++) {
@@ -508,6 +511,27 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 		} else {
 			const c = cue[i].split('=')
 			engineCue.content[c[0].toString()] = c[1]
+		}
+	}
+
+	return engineCue
+}
+
+function parseTargetWall(cue: string[]): CueDefinitionTargetWall {
+	let engineCue: CueDefinitionTargetWall = {
+		type: CueType.TargetWall,
+		clip: ''
+	}
+
+	const clip = cue[0].match(/^SS=(.*)$/i)
+
+	if (clip) {
+		engineCue.clip = clip[1]
+	}
+
+	for (let i = 1; i < cue.length; i++) {
+		if (isTime(cue[i])) {
+			engineCue = { ...engineCue, ...parseTime(cue[i]) }
 		}
 	}
 

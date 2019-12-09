@@ -122,9 +122,15 @@ export function EvaluateCues(
 					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue)
 					break
 				default:
-					if (cue.type !== CueType.Unknown && cue.type !== CueType.Profile && cue.type !== CueType.Mic) {
+					if (
+						cue.type !== CueType.Unknown &&
+						cue.type !== CueType.Profile &&
+						cue.type !== CueType.Mic &&
+						cue.type !== CueType.TargetWall
+					) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
 						// TODO: Mic -> For the future
+						// TODO: Wall -> For the future
 						// context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
 						assertUnreachable(cue)
 					}
