@@ -64,7 +64,7 @@ export function EvaluateLYD(
 				_id: '',
 				externalId: part.externalId,
 				name: parsedCue.variant,
-				...(stop ? { enable: { start: 0 } } : CreateTimingEnable(parsedCue)),
+				...(stop ? { enable: { start: CreateTimingEnable(parsedCue).enable.start } } : CreateTimingEnable(parsedCue)),
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
 				infiniteMode: PieceLifespan.Infinite,
