@@ -494,8 +494,12 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 
 	const engine = cue[0].match(/^(?:VIZ|GRAFIK|SS)=(.*)$/i)
 
-	if (engine) {
-		engineCue.engine = engine[1]
+	if (cue[0].match(/^SS=/i)) {
+		engineCue.engine = 'FULL'
+	} else {
+		if (engine) {
+			engineCue.engine = engine[1]
+		}
 	}
 
 	for (let i = 1; i < cue.length; i++) {
