@@ -49,6 +49,7 @@ export interface CueDefinitionMOS extends CueDefinitionBase {
 	vcpid: number
 	continueCount: number
 	engine?: string
+	isActuallyWall?: boolean
 }
 
 export interface CueDefinitionEkstern extends CueDefinitionBase {
@@ -289,6 +290,10 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 			mosCue.name = realCue[0]
 			mosCue.vcpid = Number(vcpid[1])
 			mosCue.continueCount = Number(continueCount[1])
+
+			if (!!mosCue.name.match(/^ST4_WALL/i)) {
+				mosCue.isActuallyWall = true
+			}
 
 			if (timing) {
 				if (timing[1] === 'M') {

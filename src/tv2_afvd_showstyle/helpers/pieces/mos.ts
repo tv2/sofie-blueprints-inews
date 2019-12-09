@@ -39,6 +39,10 @@ export function EvaluateMOS(
 	rank?: number,
 	isGrafikPart?: boolean
 ) {
+	if (parsedCue.isActuallyWall) {
+		return
+	}
+
 	if (parsedCue.vcpid === undefined || parsedCue.vcpid === null || parsedCue.vcpid.toString() === '') {
 		context.warning('No valid VCPID provided')
 	}
