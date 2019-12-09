@@ -60,7 +60,7 @@ export function EvaluateMOS(
 				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
 				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
-				content: GetMosObjContent(config, parsedCue, isOverlay)
+				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay)
 			})
 		)
 	} else {
@@ -80,7 +80,7 @@ export function EvaluateMOS(
 				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
-				content: GetMosObjContent(config, parsedCue, isOverlay)
+				content: GetMosObjContent(config, parsedCue, partId, isOverlay)
 			})
 		)
 	}
@@ -98,7 +98,12 @@ function GetInfiniteMode(parsedCue: CueDefinitionMOS, isTlf?: boolean, isGrafikP
 		: PieceLifespan.Normal
 }
 
-function GetMosObjContent(config: BlueprintConfig, parsedCue: CueDefinitionMOS, isOverlay: boolean): GraphicsContent {
+function GetMosObjContent(
+	config: BlueprintConfig,
+	parsedCue: CueDefinitionMOS,
+	partId: string,
+	isOverlay: boolean
+): GraphicsContent {
 	return literal<GraphicsContent>({
 		fileName: parsedCue.name,
 		path: parsedCue.vcpid.toString(),
@@ -148,7 +153,7 @@ function GetMosObjContent(config: BlueprintConfig, parsedCue: CueDefinitionMOS, 
 							}
 						}),
 						...GetSisyfosTimelineObjForCamera('full'),
-						...MuteSisyfosChannels()
+						...MuteSisyfosChannels(partId)
 				  ])
 		]
 	})
@@ -177,7 +182,7 @@ function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMedia[] {
 	})
 }
 
-function MuteSisyfosChannels(): TimelineObjSisyfosMessage[] {
+function MuteSisyfosChannels(partId: string): TimelineObjSisyfosMessage[] {
 	return [
 		SisyfosLLAyer.SisyfosSourceServerA,
 		SisyfosLLAyer.SisyfosSourceServerB,
@@ -196,7 +201,7 @@ function MuteSisyfosChannels(): TimelineObjSisyfosMessage[] {
 		SisyfosLLAyer.SisyfosSourceEVS_2
 	].map<TimelineObjSisyfosMessage>(layer => {
 		return literal<TimelineObjSisyfosMessage>({
-			id: `muteSisyfos-${layer}`,
+			id: `muteSisyfos-${layer}-${partId}`,
 			enable: {
 				start: 0
 			},
