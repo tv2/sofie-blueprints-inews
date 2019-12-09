@@ -493,7 +493,7 @@ const MUSIK: ISourceLayer[] = [
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',plus',
+		clearKeyboardHotkey: ',add',
 		assignHotkeysToGlobalAdlibs: false,
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
