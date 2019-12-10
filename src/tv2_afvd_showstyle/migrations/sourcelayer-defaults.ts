@@ -211,7 +211,7 @@ const PGM: ISourceLayer[] = [
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys:
-			'f1,f2,f3,f4,f5,alt+f1,alt+f2,alt+f3,alt+f4,alt+f5,shift+ctrl+f1,shift+ctrl+f2,shift+ctrl+f3,shift+ctrl+f4,shift+ctrl+f5,shift+ctrl+alt+f1,shift+ctrl+alt+f2,shift+ctrl+alt+f3,shift+ctrl+alt+f4,shift+ctrl+alt+f5',
+			'f1,f2,f3,f4,f5,shift+ctrl+f1,shift+ctrl+f2,shift+ctrl+f3,shift+ctrl+f4,shift+ctrl+f5,shift+ctrl+alt+f1,shift+ctrl+alt+f2,shift+ctrl+alt+f3,shift+ctrl+alt+f4,shift+ctrl+alt+f5',
 		clearKeyboardHotkey: '',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,
@@ -298,7 +298,7 @@ const PGM: ISourceLayer[] = [
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys:
-			'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+alt+f1,shift+falt+2,shift+alt+f3,shift+alt+f4,shift+alt+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0',
+			'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+alt+f1,shift+alt+2,shift+alt+f3,shift+alt+f4,shift+alt+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0',
 		clearKeyboardHotkey: '',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,
