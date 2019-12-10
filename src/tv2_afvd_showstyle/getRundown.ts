@@ -128,7 +128,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'cam',
-			name: 'Cut cam ' + info.id + '',
+			name: !preview ? `Cut cam ${info.id}` : `Pvw cam ${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmCam,
 			outputLayerId: 'pgm',
@@ -166,7 +166,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 			res.push({
 				externalId: 'cam',
-				name: info.id + '',
+				name: `IP ${i + 1} cam ${info.id}`,
 				_rank: rank * 100 + i,
 				sourceLayerId: layer,
 				outputLayerId: 'pgm', // TODO
@@ -187,7 +187,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'live',
-			name: info.id + '',
+			name: `Pvw live ${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLive,
 			outputLayerId: 'pgm',
@@ -227,7 +227,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 			res.push({
 				externalId: 'cam',
-				name: info.id + '',
+				name: `IP ${i + 1} live ${info.id}`,
 				_rank: rank * 100 + i,
 				sourceLayerId: layer,
 				outputLayerId: 'pgm', // TODO
