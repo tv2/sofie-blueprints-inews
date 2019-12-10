@@ -93,7 +93,7 @@ describe('grafik piece', () => {
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'FULL1'
+								channelName: 'OVL1'
 							}
 						})
 					])
@@ -153,7 +153,7 @@ describe('grafik piece', () => {
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'FULL1'
+								channelName: 'OVL1'
 							}
 						})
 					])
@@ -218,7 +218,7 @@ describe('grafik piece', () => {
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'FULL1'
+								channelName: 'OVL1'
 							}
 						})
 					])
@@ -285,7 +285,7 @@ describe('grafik piece', () => {
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'FULL1'
+								channelName: 'OVL1'
 							}
 						})
 					])
