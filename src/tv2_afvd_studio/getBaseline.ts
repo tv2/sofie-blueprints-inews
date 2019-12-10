@@ -49,7 +49,7 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 		...convertMappings(atemMeMappings, id =>
 			literal<TimelineObjAtemME>({
 				id: '',
-				enable: { while: '1', duration: 0 },
+				enable: { while: '1' },
 				priority: 0,
 				layer: id,
 				content: {
@@ -67,7 +67,7 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 			if (sisyfosChannel) {
 				return literal<TimelineObjSisyfosAny>({
 					id: '',
-					enable: { while: '1', duration: 0 },
+					enable: { while: '1' },
 					priority: 0,
 					layer: id,
 					content: {
@@ -81,7 +81,7 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 			} else {
 				return literal<TimelineObjSisyfosAny>({
 					id: '',
-					enable: { while: '1', duration: 0 },
+					enable: { while: '1' },
 					priority: 0,
 					layer: id,
 					content: {

@@ -602,7 +602,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 		// render presenter screen
 		literal<TimelineObjCCGHTMLPage>({
 			id: '',
-			enable: { while: 1 },
+			enable: { while: '1' },
 			priority: 0,
 			layer: CasparLLayer.CasparCountdown,
 			content: {
