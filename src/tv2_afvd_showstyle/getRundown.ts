@@ -287,7 +287,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	adlibItems.push({
 		externalId: 'delayed',
 		name: `Delayed Playback`,
-		_rank: 200,
+		_rank: 1500,
 		sourceLayerId: SourceLayer.PgmCam,
 		outputLayerId: 'pgm',
 		expectedDuration: 0,
