@@ -282,8 +282,8 @@ export function grafikName(config: BlueprintConfig, parsedCue: CueDefinitionGraf
 export function CreateTimingGrafik(
 	config: BlueprintConfig,
 	cue: CueDefinitionGrafik | CueDefinitionMOS
-): { start: number; end?: number } {
-	const ret: { start: number; end?: number } = { start: 0, end: 0 }
+): { start: number; duration?: number } {
+	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
@@ -295,7 +295,7 @@ export function CreateTimingGrafik(
 		: duration
 		? ret.start + duration
 		: undefined
-	ret.end = end
+	ret.duration = end ? end - ret.start : undefined
 
 	return ret
 }

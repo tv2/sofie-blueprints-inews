@@ -71,7 +71,7 @@ describe('CreateTiming', () => {
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
 					start: 0,
-					end: 1000
+					duration: 1000
 				},
 				infiniteMode: PieceLifespan.Normal
 			})
@@ -90,7 +90,7 @@ describe('CreateTiming', () => {
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
 					start: 0,
-					end: 40
+					duration: 40
 				},
 				infiniteMode: PieceLifespan.Normal
 			})
@@ -110,7 +110,7 @@ describe('CreateTiming', () => {
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
 					start: 0,
-					end: 1040
+					duration: 1040
 				},
 				infiniteMode: PieceLifespan.Normal
 			})
@@ -186,7 +186,7 @@ describe('CreateTiming', () => {
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
 					start: 40,
-					end: 1000
+					duration: 960
 				},
 				infiniteMode: PieceLifespan.Normal
 			})

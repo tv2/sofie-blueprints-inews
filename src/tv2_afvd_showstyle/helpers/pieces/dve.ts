@@ -99,14 +99,17 @@ export function EvaluateDVE(
 				})
 			)
 		} else {
+			let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
+			start = start ? start : 0
+			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 			pieces.push(
 				literal<IBlueprintPiece>({
 					_id: '',
 					externalId: partId,
 					name: `DVE: ${parsedCue.template}`,
 					enable: {
-						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-						...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
+						start,
+						...(end ? { duration: end - start } : {})
 					},
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,

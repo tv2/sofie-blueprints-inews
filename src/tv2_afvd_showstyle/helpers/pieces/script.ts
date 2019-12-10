@@ -17,7 +17,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 				name: script.slice(0, stripLength),
 				enable: {
 					start: 0,
-					end: duration
+					duration
 				},
 				outputLayerId: 'manus',
 				// sourceLayerId: slutord ? SourceLayer.PgmSlutord : SourceLayer.PgmScript,

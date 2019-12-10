@@ -200,7 +200,12 @@ export function CreateTimingEnable(cue: CueDefinition) {
 		if (cue.end.infiniteMode) {
 			result.infiniteMode = InfiniteMode(cue.end.infiniteMode, PieceLifespan.Normal)
 		} else {
-			;(result.enable as any).end = CalculateTime(cue.end)
+			const end = CalculateTime(cue.end)
+			;(result.enable as any).duration = end
+				? result.enable.start
+					? end - Number(result.enable.start)
+					: end
+				: undefined
 		}
 	} else {
 		result.infiniteMode = PieceLifespan.OutOnNextPart

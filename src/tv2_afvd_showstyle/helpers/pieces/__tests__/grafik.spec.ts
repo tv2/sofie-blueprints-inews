@@ -72,7 +72,7 @@ describe('grafik piece', () => {
 				name: 'bund - Odense - Copenhagen',
 				enable: {
 					start: 0,
-					end: 4000
+					duration: 4000
 				},
 				infiniteMode: PieceLifespan.Normal,
 				outputLayerId: 'overlay',
@@ -197,7 +197,7 @@ describe('grafik piece', () => {
 				name: 'bund - Odense - Copenhagen',
 				enable: {
 					start: 10000,
-					end: 14000
+					duration: 4000
 				},
 				infiniteMode: PieceLifespan.Normal,
 				outputLayerId: 'overlay',
