@@ -156,7 +156,7 @@ export function EvaluateCues(
 							content: {
 								templateName: (obj as TimelineObjVIZMSEElementInternal).content.templateName,
 								templateData: (obj as TimelineObjVIZMSEElementInternal).content.templateData,
-								channelName: undefined // Currently not used
+								channelName: 'OVL1'
 							}
 						})
 					} else if (obj.content.type === TimelineContentTypeVizMSE.ELEMENT_PILOT) {

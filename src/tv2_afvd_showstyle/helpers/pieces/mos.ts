@@ -121,7 +121,7 @@ function GetMosObjContent(
 					templateVcpId: parsedCue.vcpid,
 					continueStep: parsedCue.continueCount,
 					noAutoPreloading: false,
-					channelName: isOverlay ? undefined : 'FULL1',
+					channelName: isOverlay ? 'OVL1' : 'FULL1',
 					...(isOverlay
 						? {}
 						: {
