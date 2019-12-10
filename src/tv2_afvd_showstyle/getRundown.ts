@@ -247,7 +247,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
-	let globalRank = 1
+	let globalRank = 1000
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
