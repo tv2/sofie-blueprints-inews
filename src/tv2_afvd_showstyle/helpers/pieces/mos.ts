@@ -132,7 +132,6 @@ function GetMosObjContent(
 						  })
 				}
 			}),
-			...CleanUpDVEBackground(config),
 			...(isOverlay
 				? []
 				: [
@@ -159,7 +158,7 @@ function GetMosObjContent(
 	})
 }
 
-function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMedia[] {
+export function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMedia[] {
 	return [CasparLLayer.CasparCGDVEFrame, CasparLLayer.CasparCGDVEKey, CasparLLayer.CasparCGDVETemplate].map<
 		TimelineObjCCGMedia
 	>(layer => {
