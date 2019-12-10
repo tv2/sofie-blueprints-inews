@@ -251,7 +251,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 10) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
 		})
