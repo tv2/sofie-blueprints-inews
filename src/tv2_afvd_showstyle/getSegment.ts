@@ -170,6 +170,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		allocatedTime = 0
 	}
 
+	let extraTime = 0 // The part at the end gets the extra time so display duration works correctly
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration) {
@@ -180,10 +181,16 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				!!part.part.title.match(/(?:kam|cam)(?:era)? ?.*/i) &&
 				part.part.expectedDuration > config.studio.MaximumKamDisplayDuration
 			) {
+				extraTime += part.part.expectedDuration - config.studio.MaximumKamDisplayDuration
 				part.part.displayDuration = config.studio.MaximumKamDisplayDuration
 			}
 		}
 	})
+
+	if (extraTime > 0) {
+		blueprintParts[blueprintParts.length - 1].part.displayDuration =
+			Number(blueprintParts[blueprintParts.length - 1].part.displayDuration) + extraTime
+	}
 
 	if (
 		blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length === blueprintParts.length
