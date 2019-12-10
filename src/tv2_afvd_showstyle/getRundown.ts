@@ -128,8 +128,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'cam',
-			name: info.id + '',
-			_rank: 100 + rank || 0,
+			name: 'Cut cam ' + info.id + '',
+			_rank: rank,
 			sourceLayerId: SourceLayer.PgmCam,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
@@ -155,14 +155,19 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				])
 			}
 		})
-		// ssrc box
+		return res
+	}
+
+	// ssrc box
+	function makeCameraAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
 
 			res.push({
 				externalId: 'cam',
 				name: info.id + '',
-				_rank: 200 + 50 * i + (rank || 0),
+				_rank: rank * 100 + i,
 				sourceLayerId: layer,
 				outputLayerId: 'pgm', // TODO
 				expectedDuration: 0,
@@ -183,7 +188,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		res.push({
 			externalId: 'live',
 			name: info.id + '',
-			_rank: rank || 0,
+			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLive,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
@@ -211,14 +216,19 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			}
 		})
 
-		// ssrc box
+		return res
+	}
+
+	// ssrc box
+	function makeRemoteAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
 
 			res.push({
 				externalId: 'cam',
 				name: info.id + '',
-				_rank: 200 + 50 * i + (rank || 0),
+				_rank: rank * 100 + i,
 				sourceLayerId: layer,
 				outputLayerId: 'pgm', // TODO
 				expectedDuration: 0,
@@ -237,23 +247,42 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
-	const numCams = 10
-	const numCamsPvw = 10
-	const numRms = 10
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, numCams) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach((o, i) => adlibItems.push(...makeCameraAdLibs(o, i)))
+	let globalRank = 1
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, numCamsPvw) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach((o, i) => adlibItems.push(...makeCameraAdLibs(o, numCams + i, true)))
+		.slice(0, 10) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 10) // the first x cameras to create preview cam-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 10) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeCameraAdlibBoxes(o, globalRank++))
+		})
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, numRms) // the first x cameras to create INP1/2/3 live-adlibs from
-		.forEach((o, i) => adlibItems.push(...makeRemoteAdLibs(o, numCams + numCamsPvw + i)))
+		.slice(0, 10) // the first x cameras to create live-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE)
+		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
+		})
 
 	adlibItems.push({
 		externalId: 'delayed',
