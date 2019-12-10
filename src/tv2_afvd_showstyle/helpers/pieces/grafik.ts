@@ -97,7 +97,7 @@ export function EvaluateGrafik(
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: mappedTemplate,
 								templateData: parsedCue.textFields,
-								channelName: 'FULL1'
+								channelName: 'OVL1'
 							}
 						})
 					])
@@ -143,7 +143,7 @@ export function EvaluateGrafik(
 							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 							templateName: mappedTemplate,
 							templateData: parsedCue.textFields,
-							channelName: 'FULL1'
+							channelName: 'OVL1'
 						}
 					})
 				])
