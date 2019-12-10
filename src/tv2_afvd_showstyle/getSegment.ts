@@ -80,6 +80,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	let serverParts = 0
 	let jingleTime = 0
+	let serverTime = 0
 	for (let i = 0; i < parsedParts.length; i++) {
 		const part = parsedParts[i]
 		const partContext = new PartContext2(context, part.externalId)
@@ -148,6 +149,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			part.type === PartType.Server ||
 			(part.type === PartType.VO && (Number(part.fields.tapeTime) > 0 || part.script.length))
 		) {
+			serverTime += Number(blueprintParts[blueprintParts.length - 1].part.expectedDuration)
 			serverParts++
 		}
 
@@ -172,8 +174,14 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration) {
 			part.part.expectedDuration =
-				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime || 0) /
+				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
 				(blueprintParts.length - serverParts)
+			if (
+				!!part.part.title.match(/(?:kam|cam)(?:era)? ?.*/i) &&
+				part.part.expectedDuration > config.studio.MaximumKamDisplayDuration
+			) {
+				part.part.displayDuration = config.studio.MaximumKamDisplayDuration
+			}
 		}
 	})
 

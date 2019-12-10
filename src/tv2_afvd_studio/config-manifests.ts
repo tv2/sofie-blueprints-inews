@@ -269,5 +269,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 1
+	},
+	{
+		id: 'MaximumKamDisplayDuration',
+		name: 'Maximum Kam Display Duration',
+		description: 'Maximum duration (ms) to give Kam parts in UI',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 10000
 	}
 ]

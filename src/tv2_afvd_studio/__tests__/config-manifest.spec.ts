@@ -44,7 +44,8 @@ const blankStudioConfig: StudioConfig = {
 	PilotOutTransitionDuration: 0,
 	ClipFileExtension: 'mxf',
 	ClipSourcePath: '/',
-	ATEMDelay: 1
+	ATEMDelay: 1,
+	MaximumKamDisplayDuration: 0
 }
 
 function getObjectKeys(obj: any): string[] {

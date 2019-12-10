@@ -74,6 +74,7 @@ export interface StudioConfig {
 	PilotCutToMediaPlayer: number
 	PilotOutTransitionDuration: number
 	ATEMDelay: number
+	MaximumKamDisplayDuration: number
 }
 
 export function applyToConfig(
