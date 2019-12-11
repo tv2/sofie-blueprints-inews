@@ -28,7 +28,7 @@ describe('addScript', () => {
 				name: 'Hallo, I wnat to tell you.....',
 				enable: {
 					start: 0,
-					end: 1000
+					duration: 1000
 				},
 				outputLayerId: 'manus',
 				sourceLayerId: SourceLayer.PgmScript,
