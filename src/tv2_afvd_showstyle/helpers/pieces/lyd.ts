@@ -54,7 +54,7 @@ export function EvaluateLYD(
 				name: parsedCue.variant,
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
-				infiniteMode: PieceLifespan.Infinite,
+				infiniteMode: stop ? PieceLifespan.Normal : PieceLifespan.Infinite,
 				content: LydContent(config, file, parsedCue, fadeIn, fadeOut)
 			})
 		)
@@ -67,7 +67,7 @@ export function EvaluateLYD(
 				...(stop ? { enable: { start: CreateTimingEnable(parsedCue).enable.start } } : CreateTimingEnable(parsedCue)),
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
-				infiniteMode: PieceLifespan.Infinite,
+				infiniteMode: stop ? PieceLifespan.Normal : PieceLifespan.Infinite,
 				virtual: stop,
 				...(!stop
 					? {
