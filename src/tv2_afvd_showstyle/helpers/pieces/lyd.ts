@@ -55,7 +55,7 @@ export function EvaluateLYD(
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
 				infiniteMode: stop ? PieceLifespan.Normal : PieceLifespan.Infinite,
-				content: LydContent(config, file, parsedCue, fadeIn, fadeOut)
+				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
 			})
 		)
 	} else {
@@ -68,12 +68,7 @@ export function EvaluateLYD(
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
 				infiniteMode: stop ? PieceLifespan.Normal : PieceLifespan.Infinite,
-				virtual: stop,
-				...(!stop
-					? {
-							content: LydContent(config, file, parsedCue, fadeIn, fadeOut)
-					  }
-					: {})
+				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
 			})
 		)
 	}
@@ -87,9 +82,30 @@ export function LydContent(
 	config: BlueprintConfig,
 	file: string,
 	parsedCue: CueDefinitionLYD,
+	stop?: boolean,
 	_fadeIn?: number,
 	fadeOut?: number
 ): BaseContent {
+	if (stop) {
+		return literal<BaseContent>({
+			timelineObjects: [
+				literal<TimelineObjSisyfosMessage>({
+					id: '',
+					enable: {
+						start: 0
+					},
+					priority: 50,
+					layer: SisyfosLLAyer.SisyfosSourceAudiobed,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: 0
+					}
+				})
+			]
+		})
+	}
+
 	const id = `${file.trim().replace(/ /gi, '_')}`
 	return literal<BaseContent>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
