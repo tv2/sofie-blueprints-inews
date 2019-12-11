@@ -46,6 +46,7 @@ export enum CasparLLayer {
 	CasparPlayerClipPending = 'casparcg_player_clip_pending',
 	CasparPlayerJingle = 'casparcg_player_jingle',
 	CasparCGDVELoop = 'casparcg_dve_loop',
+	CasparCGFullBg = 'casparcg_full_bg',
 	CasparCGLYD = 'casparcg_audio_lyd',
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',

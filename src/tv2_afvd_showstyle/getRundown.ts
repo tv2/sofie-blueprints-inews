@@ -12,6 +12,7 @@ import {
 	TimelineObjAtemSsrcProps,
 	TimelineObjCCGHTMLPage,
 	TimelineObjCCGMedia,
+	TimelineObjCCGRoute,
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEClearAllElements,
 	TimelineObjVIZMSEElementContinue,
@@ -855,6 +856,17 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
+			}
+		}),
+		literal<TimelineObjCCGRoute>({
+			id: '',
+			enable: { while: 1 },
+			priority: 0,
+			layer: CasparLLayer.CasparCGFullBg,
+			content: {
+				deviceType: DeviceType.CASPARCG,
+				type: TimelineContentTypeCasparCg.ROUTE,
+				mappedLayer: CasparLLayer.CasparCGDVELoop
 			}
 		}),
 
