@@ -16,6 +16,7 @@ import {
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEClearAllElements,
 	TimelineObjVIZMSEElementContinue,
+	TimelineObjVIZMSEElementInternal,
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
@@ -23,6 +24,7 @@ import {
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
+	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
@@ -525,6 +527,48 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			})
 		}
 	})
+
+	// viz styles and dve backgrounds
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: 301,
+			externalId: 'dve-design-sc',
+			name: 'DVE Design SC',
+			outputLayerId: 'sec',
+			sourceLayerId: SourceLayer.PgmDesign,
+			infiniteMode: PieceLifespan.Infinite,
+			content: literal<GraphicsContent>({
+				fileName: 'DESIGN_SC',
+				path: 'DESIGN_SC',
+				timelineObjects: _.compact<TSRTimelineObj>([
+					literal<TimelineObjVIZMSEElementInternal>({
+						id: '',
+						enable: { start: 0 },
+						priority: 110,
+						layer: VizLLayer.VizLLayerDesign,
+						content: {
+							deviceType: DeviceType.VIZMSE,
+							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+							templateName: 'DESIGN_SC',
+							templateData: []
+						}
+					}),
+					literal<TimelineObjCCGMedia>({
+						id: '',
+						enable: { start: 0 },
+						priority: 110,
+						layer: CasparLLayer.CasparCGDVELoop,
+						content: {
+							deviceType: DeviceType.CASPARCG,
+							type: TimelineContentTypeCasparCg.MEDIA,
+							file: 'dve/design_sc',
+							loop: true
+						}
+					})
+				])
+			})
+		})
+	)
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p))
 	return adlibItems
