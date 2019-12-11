@@ -4,7 +4,8 @@ import {
 	TimelineContentTypeSisyfos,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosMessage,
-	Transition
+	Transition,
+	TimelineObjEmpty
 } from 'timeline-state-resolver-types'
 import {
 	BaseContent,
@@ -89,7 +90,7 @@ export function LydContent(
 	if (stop) {
 		return literal<BaseContent>({
 			timelineObjects: [
-				literal<TimelineObjSisyfosMessage>({
+				literal<TimelineObjEmpty>({
 					id: '',
 					enable: {
 						start: 0
@@ -97,10 +98,10 @@ export function LydContent(
 					priority: 50,
 					layer: SisyfosLLAyer.SisyfosSourceAudiobed,
 					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
-						isPgm: 0
-					}
+						deviceType: DeviceType.ABSTRACT,
+						type: 'empty'
+					},
+					classes: []
 				})
 			]
 		})
