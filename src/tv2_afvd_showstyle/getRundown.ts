@@ -538,8 +538,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			sourceLayerId: SourceLayer.PgmDesign,
 			infiniteMode: PieceLifespan.Infinite,
 			content: literal<GraphicsContent>({
-				fileName: 'DESIGN_SC',
-				path: 'DESIGN_SC',
+				fileName: 'BG_LOADER_SC',
+				path: 'BG_LOADER_SC',
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjVIZMSEElementInternal>({
 						id: '',
@@ -549,7 +549,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						content: {
 							deviceType: DeviceType.VIZMSE,
 							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-							templateName: 'DESIGN_SC',
+							templateName: 'BG_LOADER_SC',
 							templateData: []
 						}
 					}),
@@ -561,7 +561,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						content: {
 							deviceType: DeviceType.CASPARCG,
 							type: TimelineContentTypeCasparCg.MEDIA,
-							file: 'dve/design_sc',
+							file: 'dve/BG_LOADER_SC',
 							loop: true
 						}
 					})
