@@ -376,7 +376,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		_rank: 300,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
-		expectedDuration: 1000,
+		expectedDuration: 2000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
