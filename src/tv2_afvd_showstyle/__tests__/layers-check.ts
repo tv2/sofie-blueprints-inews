@@ -40,7 +40,12 @@ export function checkAllLayers(
 
 		const isMediaPlayerPending =
 			(obj.layer + '').endsWith('_pending') && mapping && mapping.device === DeviceType.ABSTRACT
-		if (mapping && mapping.device !== obj.content.deviceType && !isMediaPlayerPending) {
+		if (
+			mapping &&
+			mapping.device !== obj.content.deviceType &&
+			!isMediaPlayerPending &&
+			(obj.content as any).type !== 'empty'
+		) {
 			wrongDeviceLayers.push(obj.layer)
 		} else if (!isAbstract && !mapping) {
 			missingLayers.push(obj.layer)
