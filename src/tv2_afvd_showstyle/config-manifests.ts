@@ -273,7 +273,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		id: 'BreakerConfig',
 		name: 'Breaker Configuration',
 		description:
-			'Clip name is the clip name without file extension. Duration is the length of the file, including trailing audio. Alpha start is the number of frames from the first frame and until the jingle covers the full frame. The alpha end is how many frames from the alpha starta fading out, until the very end of the file.',
+			'Clip name is the clip name without file extension. Duration is the length of the file, including trailing audio. Alpha start is the number of frames from the first frame and until the jingle covers the full frame. The alpha end is how many frames from the alpha starts fading out, until the very end of the file.',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [
