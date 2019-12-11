@@ -3,9 +3,9 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineObjCCGMedia,
+	TimelineObjEmpty,
 	TimelineObjSisyfosMessage,
-	Transition,
-	TimelineObjEmpty
+	Transition
 } from 'timeline-state-resolver-types'
 import {
 	BaseContent,
