@@ -25,6 +25,7 @@ export enum SourceLayer {
 	PgmDVEBox3 = 'studio0_dve_box3',
 
 	VizFullIn1 = 'studio0_aux_viz_full1',
+	AuxStudioScreen = 'studio0_aux_studio_screen',
 	PgmDVEBackground = 'studio0_dve_back',
 	PgmDesign = 'studio0_design',
 	PgmAdlibVizCmd = 'studio0_adlib_viz_cmd', // shortcuts

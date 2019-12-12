@@ -258,6 +258,42 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		return res
 	}
 
+	// aux adlibs
+	function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		res.push({
+			externalId: 'auxstudio',
+			name: info.id + '',
+			_rank: rank,
+			sourceLayerId: SourceLayer.AuxStudioScreen,
+			outputLayerId: 'aux',
+			expectedDuration: 0,
+			infiniteMode: PieceLifespan.Infinite,
+			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
+			content: {
+				timelineObjects: _.compact<TSRTimelineObj>([
+					literal<TimelineObjAtemAUX>({
+						id: '',
+						enable: { while: '1' },
+						priority: 1,
+						layer: AtemLLayer.AtemAuxAR,
+						content: {
+							deviceType: DeviceType.ATEM,
+							type: TimelineContentTypeAtem.AUX,
+							aux: {
+								input: info.port
+							}
+						}
+					}),
+					...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
+					...GetSisyfosTimelineObjForCamera('telefon')
+				])
+			}
+		})
+
+		return res
+	}
+
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
 	let globalRank = 1000
@@ -295,6 +331,13 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE)
+		.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
+		.forEach(o => {
+			adlibItems.push(...makeRemoteAuxStudioAdLibs(o, globalRank++))
 		})
 
 	adlibItems.push({
