@@ -195,6 +195,45 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		return res
 	}
 
+	// evs ssrc box
+	function makeEvsAdlibBoxes(
+		info: { port: number; id: string },
+		rank: number,
+		vo: boolean = false
+	): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
+			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
+
+			res.push({
+				externalId: 'evs',
+				name: info.id + '',
+				_rank: rank * 100 + i,
+				sourceLayerId: layer,
+				outputLayerId: 'pgm', // TODO
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: {
+					timelineObjects: _.compact<TSRTimelineObj>([
+						...boxObjs,
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: { while: audioWhile },
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: vo === true ? 2 : 1
+							}
+						})
+					])
+				}
+			})
+		})
+		return res
+	}
+
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
@@ -339,6 +378,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAuxStudioAdLibs(o, globalRank++))
 		})
+
+	adlibItems.push(...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++))
+	adlibItems.push(
+		...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++, true)
+	)
 
 	adlibItems.push({
 		externalId: 'delayed',
