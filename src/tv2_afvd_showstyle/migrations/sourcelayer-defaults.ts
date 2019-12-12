@@ -210,7 +210,7 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'f1,f2,f3,f4,f5,shift+ctrl+f1,shift+ctrl+f2,shift+ctrl+f3,shift+ctrl+f4,shift+ctrl+f5',
+		activateKeyboardHotkeys: 'f1,f2,f3,f4,f5,shift+ctrl+f1,shift+ctrl+f2,shift+ctrl+f3,shift+ctrl+f4,shift+ctrl+f5,e',
 		clearKeyboardHotkey: ',',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,

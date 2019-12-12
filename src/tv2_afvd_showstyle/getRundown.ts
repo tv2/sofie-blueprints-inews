@@ -13,6 +13,7 @@ import {
 	TimelineObjCCGHTMLPage,
 	TimelineObjCCGMedia,
 	TimelineObjCCGRoute,
+	TimelineObjSisyfosAny,
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEClearAllElements,
 	TimelineObjVIZMSEElementContinue,
@@ -318,6 +319,17 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							input: config.studio.AtemSource.DelayedPlayback,
 							transition: AtemTransitionStyle.CUT
 						}
+					}
+				}),
+				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: 2
 					}
 				})
 			])
