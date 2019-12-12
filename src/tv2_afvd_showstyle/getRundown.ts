@@ -348,6 +348,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		outputLayerId: 'pgm',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.OutOnNextPart,
+		toBeQueued: true,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				literal<TimelineObjAtemME>({
