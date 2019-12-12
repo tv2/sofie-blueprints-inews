@@ -46,7 +46,8 @@ export function MakeContentServer(
 				content: {
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
-					file
+					file,
+					loop: adLib
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
