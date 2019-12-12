@@ -45,8 +45,15 @@ import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
-import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern, STUDIO_MICS } from './helpers/sisyfos/sisyfos'
+import { GetEksternMetaData } from './helpers/pieces/ekstern'
+import {
+	GetLayerForEkstern,
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEkstern,
+	STUDIO_MICS
+} from './helpers/sisyfos/sisyfos'
 import { ControlClasses, SourceLayer } from './layers'
+import { GetKamMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -138,6 +145,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
+			metaData: GetKamMetaData(),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -197,6 +205,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
+			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({

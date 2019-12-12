@@ -11,16 +11,17 @@ import {
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
+	PieceMetaData,
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera, GetStickyForPiece, STUDIO_MICS } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
@@ -101,6 +102,7 @@ export function CreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
+				metaData: GetKamMetaData(),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -144,4 +146,12 @@ export function CreatePartKam(
 		adLibPieces,
 		pieces
 	}
+}
+
+export function GetKamMetaData(): PieceMetaData | undefined {
+	return GetStickyForPiece([
+		...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
+			return { layer: l, isPgm: 1 }
+		})
+	])
 }

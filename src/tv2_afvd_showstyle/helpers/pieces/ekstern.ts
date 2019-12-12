@@ -62,6 +62,8 @@ export function EvaluateEkstern(
 	}
 	const atemInput = sourceInfoCam.port
 
+	const layer = GetLayerForEkstern(parsedCue.source)
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -71,7 +73,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: getMetaData(parsedCue),
+				metaData: GetEksternMetaData(layer),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -112,7 +114,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: getMetaData(parsedCue),
+				metaData: GetEksternMetaData(layer),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -152,8 +154,7 @@ export function EvaluateEkstern(
 	}
 }
 
-function getMetaData(parsedCue: CueDefinitionEkstern): PieceMetaData | undefined {
-	const layer = GetLayerForEkstern(parsedCue.source)
+export function GetEksternMetaData(layer?: SisyfosLLAyer): PieceMetaData | undefined {
 	return layer
 		? GetStickyForPiece([
 				{ layer, isPgm: 1 },
