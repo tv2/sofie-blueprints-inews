@@ -692,7 +692,7 @@ const AUX: ISourceLayer[] = [
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys:
-			'shift+ctrl+1,shift+ctrl+2,shift+ctrl+3,shift+ctrl+4,shift+ctrl+5,shift+ctrl+6,shift+ctrl+7,shift+ctrl+8,shift+ctrl+9,shift+ctrl+0',
+			'shift+ctrl+1,shift+ctrl+2,shift+ctrl+3,shift+ctrl+4,shift+ctrl+5,shift+ctrl+6,shift+ctrl+7,shift+ctrl+8,shift+ctrl+9,shift+ctrl+0,shift+ctrl+e',
 		clearKeyboardHotkey: ',',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,

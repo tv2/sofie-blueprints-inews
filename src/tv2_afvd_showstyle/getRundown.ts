@@ -378,6 +378,43 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
+	adlibItems.push({
+		externalId: 'delayedaux',
+		name: `Delayed Playback in studio aux`,
+		_rank: 1550,
+		sourceLayerId: SourceLayer.AuxStudioScreen,
+		outputLayerId: 'aux',
+		expectedDuration: 0,
+		infiniteMode: PieceLifespan.Infinite,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjAtemAUX>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: AtemLLayer.AtemAuxAR,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.AUX,
+						aux: {
+							input: config.studio.AtemSource.DelayedPlayback
+						}
+					}
+				}),
+				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: 1
+					}
+				})
+			])
+		}
+	})
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
