@@ -416,6 +416,32 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			])
 		}
 	})
+	adlibItems.push({
+		externalId: 'delayedaux',
+		name: `Delayed Playback in viz aux`,
+		_rank: 1560,
+		sourceLayerId: SourceLayer.VizFullIn1,
+		outputLayerId: 'aux',
+		expectedDuration: 0,
+		infiniteMode: PieceLifespan.Infinite,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjAtemAUX>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: AtemLLayer.AtemAuxVizOvlIn1,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.AUX,
+						aux: {
+							input: config.studio.AtemSource.DelayedPlayback
+						}
+					}
+				})
+			])
+		}
+	})
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
