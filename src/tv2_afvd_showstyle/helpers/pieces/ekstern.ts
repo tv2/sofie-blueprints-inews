@@ -16,10 +16,17 @@ import { createEmptyObject, literal } from '../../../common/util'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { CueDefinitionEkstern } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
-import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
+import {
+	GetLayerForEkstern,
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEkstern,
+	GetStickyForPiece,
+	STUDIO_MICS
+} from '../sisyfos/sisyfos'
 import { TransitionFromString } from '../transitionFromString'
 import { TransitionSettings } from '../transitionSettings'
 import { CreateTimingEnable } from './evaluateCues'
@@ -64,6 +71,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
+				metaData: getMetaData(parsedCue),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -88,7 +96,7 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(parsedCue.source),
+						...GetSisyfosTimelineObjForEkstern(context, parsedCue.source),
 						...GetSisyfosTimelineObjForCamera('telefon')
 					])
 				})
@@ -104,6 +112,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
+				metaData: getMetaData(parsedCue),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -134,11 +143,23 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(parsedCue.source),
+						...GetSisyfosTimelineObjForEkstern(context, parsedCue.source),
 						...GetSisyfosTimelineObjForCamera('telefon')
 					])
 				})
 			})
 		)
 	}
+}
+
+function getMetaData(parsedCue: CueDefinitionEkstern): PieceMetaData | undefined {
+	const layer = GetLayerForEkstern(parsedCue.source)
+	return layer
+		? GetStickyForPiece([
+				{ layer, isPgm: 1 },
+				...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
+					return { layer: l, isPgm: 1 }
+				})
+		  ])
+		: undefined
 }

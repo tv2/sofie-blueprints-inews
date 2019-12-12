@@ -176,7 +176,7 @@ export function MakeContentDVE2(
 				}
 
 				setBoxSource(num, sourceInfoLive, mappingFrom.source)
-				audioTimeline.push(...GetSisyfosTimelineObjForEkstern(mappingFrom.source, audioEnable))
+				audioTimeline.push(...GetSisyfosTimelineObjForEkstern(context, mappingFrom.source, audioEnable))
 			} else {
 				context.warning(`Unknown source type for DVE: ${mappingFrom.source}`)
 				valid = false

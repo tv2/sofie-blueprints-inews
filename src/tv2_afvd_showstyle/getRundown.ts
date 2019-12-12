@@ -213,7 +213,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							}
 						}
 					}),
-					...GetSisyfosTimelineObjForEkstern(`Live ${info.id}`),
+					...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
 					...GetSisyfosTimelineObjForCamera('telefon')
 				])
 			}
@@ -239,7 +239,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(`Live ${info.id}`, { while: audioWhile }),
+						...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, { while: audioWhile }),
 						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
 					])
 				}

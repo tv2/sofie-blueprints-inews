@@ -15,6 +15,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studi
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { BlueprintConfig } from '../../helpers/config'
+import { STICKY_LAYERS } from '../sisyfos/sisyfos'
 import { TransitionFromString } from '../transitionFromString'
 import { TransitionSettings } from '../transitionSettings'
 
@@ -23,7 +24,8 @@ export function MakeContentServer(
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
 	config: BlueprintConfig,
-	adLib?: boolean
+	adLib?: boolean,
+	stickyLevels?: boolean
 	// voiceOver?: boolean
 ): VTContent {
 	return literal<VTContent>({
@@ -90,7 +92,28 @@ export function MakeContentServer(
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				}
-			})
+			}),
+
+			...(stickyLevels
+				? STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 0
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
+						})
+				  })
+				: [])
 		])
 	})
 }

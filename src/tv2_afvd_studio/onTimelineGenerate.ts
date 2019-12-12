@@ -1,9 +1,9 @@
 import {
 	DeviceType,
 	TimelineContentTypeAtem,
-	TimelineContentTypeLawo,
+	TimelineContentTypeSisyfos,
 	TimelineObjAtemSsrc,
-	TimelineObjLawoSource
+	TimelineObjSisyfosAny
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultTimeline,
@@ -21,7 +21,7 @@ import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { assignMediaPlayers } from './helpers/abPlayback'
 
 export interface PartEndStateExt extends PartEndState {
-	stickyLawoLevels: { [key: string]: number | undefined }
+	stickySisyfosLevels: { [key: string]: number | undefined }
 }
 
 export interface MediaPlayerClaim {
@@ -38,14 +38,14 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 	/** Metadata for use by the OnTimelineGenerate or other callbacks */
 	metaData?: {
 		context?: string
-		lawoPersistLevel?: boolean
+		sisyfosPersistLevel?: boolean
 		mediaPlayerSession?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 	}
 }
 
 export interface PieceMetaData extends PieceMetaDataBase {
-	stickyLawoLevels?: { [key: string]: { value: number; followsPrevious: boolean } }
+	stickySisyfosLevels?: { [key: string]: { value: number; followsPrevious: boolean } }
 	mediaPlayerSessions?: string[]
 	mediaPlayerOptional?: boolean
 }
@@ -58,10 +58,10 @@ export function onTimelineGenerate(
 	resolvedPieces: IBlueprintPieceDB[]
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
-	copyPreviousLawoLevels(
+	copyPreviousSisyfosLevels(
 		context,
 		timeline,
-		previousPartEndState2 ? previousPartEndState2.stickyLawoLevels : {},
+		previousPartEndState2 ? previousPartEndState2.stickySisyfosLevels : {},
 		resolvedPieces
 	)
 
@@ -86,6 +86,31 @@ export function onTimelineGenerate(
 		timeline,
 		persistentState
 	})
+}
+
+export function getEndStateForPart(
+	_context: RundownContext,
+	_previousPersistentState: TimelinePersistentState | undefined,
+	previousPartEndState: PartEndState | undefined,
+	resolvedPieces: IBlueprintPieceDB[],
+	time: number
+): PartEndState {
+	const endState: PartEndStateExt = {
+		stickySisyfosLevels: {}
+	}
+
+	const previousPartEndState2 = previousPartEndState as Partial<PartEndStateExt> | undefined
+
+	const activePieces = _.filter(
+		resolvedPieces,
+		p => p.enable && (p.enable.start as number) <= time && (!p.enable.end || (p.enable.end as number) >= time)
+	)
+
+	_.each(activePieces, piece => {
+		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
+	})
+
+	return endState
 }
 
 /**
@@ -113,7 +138,7 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 	})
 }
 
-export function preservePieceLawoLevel(
+export function preservePieceSisfosLevel(
 	endState: PartEndStateExt,
 	previousPartEndState: Partial<PartEndStateExt> | undefined,
 	piece: IBlueprintPieceDB
@@ -121,46 +146,48 @@ export function preservePieceLawoLevel(
 	const metaData = piece.metaData as PieceMetaData | undefined
 	if (metaData) {
 		// Loop through rm level persistance
-		if (metaData.stickyLawoLevels) {
-			for (const key of Object.keys(metaData.stickyLawoLevels)) {
-				const values = metaData.stickyLawoLevels[key]
+		if (metaData.stickySisyfosLevels) {
+			for (const key of Object.keys(metaData.stickySisyfosLevels)) {
+				const values = metaData.stickySisyfosLevels[key]
 
 				// Follow the previous state, if specified, or start with this exposed value
-				endState.stickyLawoLevels[key] =
+				endState.stickySisyfosLevels[key] =
 					values.followsPrevious &&
 					previousPartEndState &&
-					previousPartEndState.stickyLawoLevels &&
-					previousPartEndState.stickyLawoLevels[key]
-						? previousPartEndState.stickyLawoLevels[key]
+					previousPartEndState.stickySisyfosLevels &&
+					previousPartEndState.stickySisyfosLevels[key]
+						? previousPartEndState.stickySisfosLevels[key]
 						: values.value
 			}
 		}
 	}
 }
 
-function isLawoSource(obj: Partial<TimelineObjLawoSource & TimelineObjectCoreExt>) {
+function isSisyfosSource(obj: Partial<TimelineObjSisyfosAny & TimelineObjectCoreExt>) {
 	return (
-		obj.content && obj.content.deviceType === DeviceType.LAWO && obj.content.type === TimelineContentTypeLawo.SOURCE
+		obj.content &&
+		obj.content.deviceType === DeviceType.SISYFOS &&
+		obj.content.type === TimelineContentTypeSisyfos.SISYFOS
 	)
 }
 
-export function copyPreviousLawoLevels(
+export function copyPreviousSisyfosLevels(
 	context: RundownContext,
 	timelineObjs: OnGenerateTimelineObj[],
-	previousLevels: PartEndStateExt['stickyLawoLevels'],
+	previousLevels: PartEndStateExt['stickySisyfosLevels'],
 	resolvedPieces: IBlueprintPieceDB[]
 ) {
 	// This needs to look at previous pieces within the part, to make it work for adlibs
-	const lawoObjs = (timelineObjs as Array<TimelineObjLawoSource & TimelineBlueprintExt & OnGenerateTimelineObj>).filter(
-		isLawoSource
-	)
+	const sisyfosObjs = (timelineObjs as Array<
+		TimelineObjSisyfosAny & TimelineBlueprintExt & OnGenerateTimelineObj
+	>).filter(isSisyfosSource)
 
 	// Pieces should be ordered, we shall assume that
 	const groupedPieces = _.groupBy(resolvedPieces, p => p.enable.start)
 	_.each(groupedPieces, pieces => {
-		const pieceIds = _.map(pieces, p => p._id) // getPieceGroupId(p._id))
+		const pieceIds = _.pluck(pieces, '_id') // getPieceGroupId(p._id))
 		// Find all the objs that start here
-		const objs = lawoObjs.filter(o => {
+		const objs = sisyfosObjs.filter(o => {
 			const groupId = o.pieceId
 			return groupId && pieceIds.indexOf(groupId) !== -1
 		})
@@ -187,15 +214,18 @@ export function copyPreviousLawoLevels(
 				return start < time && (duration === undefined || start + duration >= time)
 			})
 
-			const newPreviousLevels: PartEndStateExt['stickyLawoLevels'] = {}
+			const newPreviousLevels: PartEndStateExt['stickySisyfosLevels'] = {}
 			_.each(activePieces, piece => {
 				const metadata = piece.metaData as PieceMetaData | undefined
-				if (metadata && metadata.stickyLawoLevels) {
-					_.each(metadata.stickyLawoLevels, (val, id) => {
+				if (metadata && metadata.stickySisyfosLevels) {
+					_.each(metadata.stickySisyfosLevels, (val, id) => {
+						// context.warning(
+						// 	`New level from ${piece._id} for ${id} of ${JSON.stringify(val)} (last was ${previousLevels[id]})`
+						// )
 						if (newPreviousLevels[id]) {
 							context.warning('duplicate level, going with the first!')
 						} else {
-							if (val.followsPrevious && previousLevels[id]) {
+							if (val.followsPrevious && previousLevels[id] !== undefined) {
 								newPreviousLevels[id] = previousLevels[id]
 							} else {
 								newPreviousLevels[id] = val.value
@@ -210,12 +240,11 @@ export function copyPreviousLawoLevels(
 		}
 
 		// Apply newly calculated levels
-		_.each(objs, lawoObj => {
-			// Persist the level, if lawo is not 'muted'
-			const contentObj = lawoObj.content['Fader/Motor dB Value']
-			const previousVal = previousLevels[lawoObj.layer + '']
-			if (contentObj && previousVal !== undefined && lawoObj.metaData && lawoObj.metaData.lawoPersistLevel) {
-				contentObj.value = previousVal
+		_.each(objs, sisyfosObj => {
+			const contentObj = sisyfosObj.content
+			const previousVal = previousLevels[sisyfosObj.layer + '']
+			if (contentObj && previousVal !== undefined && sisyfosObj.metaData && sisyfosObj.metaData.sisyfosPersistLevel) {
+				contentObj.isPgm = previousVal
 			}
 		})
 	})

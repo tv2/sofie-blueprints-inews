@@ -5,8 +5,11 @@ import {
 	TimelineObjSisyfosMessage,
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
+import { NotesContext } from 'tv-automation-sofie-blueprints-integration'
+import _ = require('underscore')
 import { literal } from '../../../common/util'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
 
 export const STUDIO_MICS = [
 	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
@@ -15,6 +18,25 @@ export const STUDIO_MICS = [
 	SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
 	SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
 	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
+]
+
+export const STICKY_LAYERS = [
+	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
+	SisyfosLLAyer.SisyfosSourceLive_1,
+	SisyfosLLAyer.SisyfosSourceLive_2,
+	SisyfosLLAyer.SisyfosSourceLive_3,
+	SisyfosLLAyer.SisyfosSourceLive_4,
+	SisyfosLLAyer.SisyfosSourceLive_5,
+	SisyfosLLAyer.SisyfosSourceLive_6,
+	SisyfosLLAyer.SisyfosSourceLive_7,
+	SisyfosLLAyer.SisyfosSourceLive_8,
+	SisyfosLLAyer.SisyfosSourceLive_9,
+	SisyfosLLAyer.SisyfosSourceLive_10
 ]
 
 export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Timeline.TimelineEnable): TSRTimelineObj[] {
@@ -46,6 +68,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Time
 }
 
 export function GetSisyfosTimelineObjForEkstern(
+	context: NotesContext,
 	sourceType: string,
 	enable?: Timeline.TimelineEnable
 ): TSRTimelineObj[] {
@@ -54,8 +77,30 @@ export function GetSisyfosTimelineObjForEkstern(
 	}
 
 	let audioTimeline: TSRTimelineObj[] = []
-	let layer = SisyfosLLAyer.SisyfosSourceLive_1
+	const layer = GetLayerForEkstern(sourceType)
 
+	if (!layer) {
+		context.warning(`Could not set audio levels for ${sourceType}`)
+		return audioTimeline
+	}
+
+	audioTimeline = [
+		literal<TimelineObjSisyfosMessage>({
+			id: '',
+			enable,
+			priority: 1,
+			layer,
+			content: {
+				deviceType: DeviceType.SISYFOS,
+				type: TimelineContentTypeSisyfos.SISYFOS,
+				isPgm: 1
+			}
+		})
+	]
+	return audioTimeline
+}
+
+export function GetLayerForEkstern(sourceType: string) {
 	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
 	if (eksternProps) {
 		const source = eksternProps[1]
@@ -63,50 +108,47 @@ export function GetSisyfosTimelineObjForEkstern(
 		if (source) {
 			switch (source) {
 				case '1':
-					layer = SisyfosLLAyer.SisyfosSourceLive_1
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_1
 				case '2':
-					layer = SisyfosLLAyer.SisyfosSourceLive_2
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_2
 				case '3':
-					layer = SisyfosLLAyer.SisyfosSourceLive_3
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_3
 				case '4':
-					layer = SisyfosLLAyer.SisyfosSourceLive_4
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_4
 				case '5':
-					layer = SisyfosLLAyer.SisyfosSourceLive_5
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_5
 				case '6':
-					layer = SisyfosLLAyer.SisyfosSourceLive_6
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_6
 				case '7':
-					layer = SisyfosLLAyer.SisyfosSourceLive_7
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_7
 				case '8':
-					layer = SisyfosLLAyer.SisyfosSourceLive_8
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_8
 				case '9':
-					layer = SisyfosLLAyer.SisyfosSourceLive_9
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_9
 				case '10':
-					layer = SisyfosLLAyer.SisyfosSourceLive_10
-					break
+					return SisyfosLLAyer.SisyfosSourceLive_10
 			}
-			audioTimeline = [
-				literal<TimelineObjSisyfosMessage>({
-					id: '',
-					enable,
-					priority: 1,
-					layer,
-					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
-						isPgm: 1
-					}
-				})
-			]
 		}
 	}
-	return audioTimeline
+	return
+}
+
+export function GetStickyForPiece(
+	layers: Array<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>
+): PieceMetaData | undefined {
+	return literal<PieceMetaData>({
+		stickySisyfosLevels: _.object(
+			layers
+				.filter(layer => STICKY_LAYERS.indexOf(layer.layer) !== -1)
+				.map<[string, { value: number; followsPrevious: boolean }]>(layer => {
+					return [
+						layer.layer,
+						{
+							value: layer.isPgm,
+							followsPrevious: false
+						}
+					]
+				})
+		)
+	})
 }
