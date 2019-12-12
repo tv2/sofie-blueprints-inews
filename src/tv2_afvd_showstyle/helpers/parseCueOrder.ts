@@ -52,7 +52,8 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 							? partDefinition.script
 							: '',
 					fields: partDefinition.fields,
-					modified: partDefinition.modified
+					modified: partDefinition.modified,
+					storyName: partDefinition.storyName
 				})
 			} else {
 				retDefintions.push({
@@ -68,7 +69,8 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 							? partDefinition.script
 							: '',
 					fields: partDefinition.fields,
-					modified: partDefinition.modified
+					modified: partDefinition.modified,
+					storyName: partDefinition.storyName
 				})
 				partDefinition.cues = []
 			}

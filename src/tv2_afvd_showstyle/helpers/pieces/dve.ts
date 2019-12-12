@@ -7,6 +7,7 @@ import {
 import * as _ from 'underscore'
 import { literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
+import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
@@ -61,7 +62,7 @@ export function EvaluateDVE(
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
-	partId: string,
+	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	adlib?: boolean,
 	rank?: number
@@ -81,15 +82,15 @@ export function EvaluateDVE(
 		return
 	}
 
-	const content = MakeContentDVE(context, config, partId, parsedCue, rawTemplate)
+	const content = MakeContentDVE(context, config, partDefinition.externalId, parsedCue, rawTemplate)
 
 	if (content.valid) {
 		if (adlib) {
 			adlibPieces.push(
 				literal<IBlueprintAdLibPiece>({
 					_rank: rank || 0,
-					externalId: partId,
-					name: `DVE: ${parsedCue.template}`,
+					externalId: partDefinition.externalId,
+					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: PieceLifespan.OutOnNextPart,
@@ -105,7 +106,7 @@ export function EvaluateDVE(
 			pieces.push(
 				literal<IBlueprintPiece>({
 					_id: '',
-					externalId: partId,
+					externalId: partDefinition.externalId,
 					name: `DVE: ${parsedCue.template}`,
 					enable: {
 						start,

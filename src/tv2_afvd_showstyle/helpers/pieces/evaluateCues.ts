@@ -91,10 +91,10 @@ export function EvaluateCues(
 					)
 					break
 				case CueType.DVE:
-					EvaluateDVE(context, config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
+					EvaluateDVE(context, config, pieces, adLibPieces, partDefinition, cue, shouldAdlib, adLibRank)
 					// Always make an adlib for DVEs
 					if (!shouldAdlib) {
-						EvaluateDVE(context, config, pieces, adLibPieces, partDefinition.externalId, cue, true, adLibRank)
+						EvaluateDVE(context, config, pieces, adLibPieces, partDefinition, cue, true, adLibRank)
 					}
 					break
 				case CueType.AdLib:

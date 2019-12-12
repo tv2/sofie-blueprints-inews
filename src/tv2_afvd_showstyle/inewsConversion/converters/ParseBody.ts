@@ -45,6 +45,7 @@ export interface PartDefinitionBase {
 	fields: { [key: string]: string }
 	modified: number
 	transition?: PartTransition
+	storyName: string
 }
 
 export interface PartDefinitionUnknown extends PartDefinitionBase {
@@ -137,7 +138,8 @@ export function ParseBody(
 		cues: [],
 		script: '',
 		fields,
-		modified
+		modified,
+		storyName: segmentName
 	}
 
 	if (segmentName === 'INTRO') {
@@ -193,7 +195,7 @@ export function ParseBody(
 							definitions.push(definition)
 						}
 
-						definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified)
+						definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
 						// check for cues inline with the type definition
 						addCue(definition, line, cues)
 					}
@@ -206,7 +208,7 @@ export function ParseBody(
 					definitions.push(definition)
 				}
 
-				definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified)
+				definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
 
 				// check for cues inline with the type definition
 				addCue(definition, line, cues)
@@ -292,7 +294,14 @@ function addCue(definition: PartDefinition, line: string, cues: UnparsedCue[]) {
 	}
 }
 
-function makeDefinition(segmentId: string, i: number, typeStr: string, fields: any, modified: number): PartDefinition {
+function makeDefinition(
+	segmentId: string,
+	i: number,
+	typeStr: string,
+	fields: any,
+	modified: number,
+	storyName: string
+): PartDefinition {
 	const part: PartDefinition = {
 		externalId: `${segmentId}-${i}`, // TODO - this should be something that sticks when inserting a part before the current part
 		...extractTypeProperties(typeStr),
@@ -304,7 +313,8 @@ function makeDefinition(segmentId: string, i: number, typeStr: string, fields: a
 		cues: [],
 		script: '',
 		fields,
-		modified
+		modified,
+		storyName
 	}
 
 	return part
