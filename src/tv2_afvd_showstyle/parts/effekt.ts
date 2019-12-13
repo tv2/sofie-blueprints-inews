@@ -67,7 +67,14 @@ export function CreateEffektForpart(
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[]
-): { tranisitionDuration: number; transitionKeepaliveDuration: number; transitionPrerollDuration: number } | {} {
+):
+	| {
+			tranisitionDuration: number
+			transitionKeepaliveDuration: number
+			transitionPrerollDuration: number
+			autoNext: false
+	  }
+	| {} {
 	const effekt = partDefinition.effekt
 	if (effekt === undefined) {
 		return {}
@@ -178,6 +185,7 @@ export function CreateEffektForpart(
 		transitionPrerollDuration:
 			TimeFromFrames(Number(effektConfig.Duration)) -
 			TimeFromFrames(Number(effektConfig.EndAlpha)) +
-			config.studio.CasparPrerollDuration
+			config.studio.CasparPrerollDuration,
+		autoNext: false
 	}
 }
