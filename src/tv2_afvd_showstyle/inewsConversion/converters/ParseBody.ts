@@ -336,6 +336,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 	const tokens = typeStr
 		.replace(/effekt (\d+)/gi, '')
 		.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
+		.replace(/100%/g, '')
 		.replace(/\s+/gi, ' ')
 		.trim()
 		.split(' ')

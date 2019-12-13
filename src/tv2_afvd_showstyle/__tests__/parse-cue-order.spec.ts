@@ -2,6 +2,7 @@ import { literal } from '../../common/util'
 import { ParseCueOrder } from '../helpers/parseCueOrder'
 import {
 	PartDefinition,
+	PartDefinitionGrafik,
 	PartDefinitionKam,
 	PartDefinitionServer,
 	PartDefinitionSlutord,
@@ -12,6 +13,7 @@ import {
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
 	CueDefinitionGrafik,
+	CueDefinitionTargetEngine,
 	CueType
 } from '../inewsConversion/converters/ParseCue'
 
@@ -228,6 +230,36 @@ const testSegment5: PartDefinition[] = [
 			})
 		],
 		script: 'Some script',
+		fields: {},
+		modified: 0,
+		storyName: ''
+	})
+]
+
+const testSegment6: PartDefinition[] = [
+	literal<PartDefinitionGrafik>({
+		type: PartType.Grafik,
+		variant: {},
+		externalId: '00001-0',
+		rawType: '100% GRAFIK',
+		cues: [
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				rawType: 'GRAFIK=FULL',
+				content: {},
+				engine: 'FULL',
+				grafik: {
+					type: CueType.MOS,
+					name: 'PROFILE/MEST BRUGTE STARTERE I NBA/08-12-2019',
+					vcpid: 2577769,
+					continueCount: 2,
+					start: {
+						seconds: 0
+					}
+				}
+			})
+		],
+		script: '',
 		fields: {},
 		modified: 0,
 		storyName: ''
@@ -575,6 +607,38 @@ describe('Parse Cue Order', () => {
 				],
 				fields: {},
 				script: '',
+				modified: 0,
+				storyName: ''
+			})
+		])
+	})
+
+	test('100% GRAFIK', () => {
+		expect(ParseCueOrder(testSegment6, '00001')).toEqual([
+			literal<PartDefinitionGrafik>({
+				type: PartType.Grafik,
+				variant: {},
+				externalId: '00001-0',
+				rawType: '100% GRAFIK',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						rawType: 'GRAFIK=FULL',
+						content: {},
+						engine: 'FULL',
+						grafik: {
+							type: CueType.MOS,
+							name: 'PROFILE/MEST BRUGTE STARTERE I NBA/08-12-2019',
+							vcpid: 2577769,
+							continueCount: 2,
+							start: {
+								seconds: 0
+							}
+						}
+					})
+				],
+				script: '',
+				fields: {},
 				modified: 0,
 				storyName: ''
 			})
