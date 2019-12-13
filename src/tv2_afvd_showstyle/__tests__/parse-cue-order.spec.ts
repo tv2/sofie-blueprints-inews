@@ -81,7 +81,8 @@ const testSegment1: PartDefinition[] = [
 		],
 		script: 'Some script yay\n',
 		fields: {},
-		modified: 0
+		modified: 0,
+		storyName: ''
 	})
 ]
 
@@ -122,7 +123,8 @@ const testSegment2: PartDefinition[] = [
 		],
 		script: '',
 		fields: {},
-		modified: 0
+		modified: 0,
+		storyName: ''
 	})
 ]
 
@@ -169,7 +171,8 @@ const testSegment3: PartDefinition[] = [
 		],
 		script: '',
 		fields: {},
-		modified: 0
+		modified: 0,
+		storyName: ''
 	})
 ]
 
@@ -196,7 +199,8 @@ const testSegment4: PartDefinition[] = [
 		],
 		script: 'Some script',
 		fields: {},
-		modified: 0
+		modified: 0,
+		storyName: ''
 	})
 ]
 
@@ -225,7 +229,8 @@ const testSegment5: PartDefinition[] = [
 		],
 		script: 'Some script',
 		fields: {},
-		modified: 0
+		modified: 0,
+		storyName: ''
 	})
 ]
 
@@ -242,7 +247,8 @@ describe('Parse Cue Order', () => {
 				cues: [],
 				script: 'Some script yay\n',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
@@ -263,7 +269,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
@@ -297,7 +304,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
@@ -318,7 +326,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
@@ -340,7 +349,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			})
 		])
 	})
@@ -355,7 +365,8 @@ describe('Parse Cue Order', () => {
 				cues: [],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
@@ -376,7 +387,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
@@ -404,7 +416,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			})
 		])
 	})
@@ -436,7 +449,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
@@ -464,7 +478,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			})
 		])
 	})
@@ -489,7 +504,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: 'Some script',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				externalId: '00001-1',
@@ -504,7 +520,8 @@ describe('Parse Cue Order', () => {
 				],
 				script: '',
 				fields: {},
-				modified: 0
+				modified: 0,
+				storyName: ''
 			})
 		])
 	})
@@ -521,7 +538,8 @@ describe('Parse Cue Order', () => {
 				cues: [],
 				fields: {},
 				script: '',
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				externalId: '00001-1',
@@ -541,7 +559,8 @@ describe('Parse Cue Order', () => {
 				],
 				fields: {},
 				script: 'Some script',
-				modified: 0
+				modified: 0,
+				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
 				externalId: '00001-2',
@@ -556,7 +575,8 @@ describe('Parse Cue Order', () => {
 				],
 				fields: {},
 				script: '',
-				modified: 0
+				modified: 0,
+				storyName: ''
 			})
 		])
 	})

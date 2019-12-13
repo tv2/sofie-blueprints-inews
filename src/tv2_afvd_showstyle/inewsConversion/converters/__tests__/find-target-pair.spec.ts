@@ -32,7 +32,8 @@ describe('Find target pair', () => {
 					},
 					engine: '4'
 				})
-			]
+			],
+			storyName: ''
 		})
 		const expectedResult = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
@@ -62,7 +63,8 @@ describe('Find target pair', () => {
 						engine: '4'
 					})
 				})
-			]
+			],
+			storyName: ''
 		})
 		expect(FindTargetPair(part)).toBe(true)
 		expect(part).toEqual(expectedResult)
@@ -94,7 +96,8 @@ describe('Find target pair', () => {
 					},
 					engine: '4'
 				})
-			]
+			],
+			storyName: ''
 		})
 		const expectedResult = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
@@ -119,7 +122,8 @@ describe('Find target pair', () => {
 						engine: '4'
 					})
 				})
-			]
+			],
+			storyName: ''
 		})
 		expect(FindTargetPair(part)).toBe(true)
 		expect(part).toEqual(expectedResult)

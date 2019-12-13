@@ -17,7 +17,8 @@ describe('addScript', () => {
 			cues: [],
 			script: 'Hallo, I wnat to tell you......\nHEREEEELLLLOOOK\nYES\n',
 			fields: {},
-			modified: 0
+			modified: 0,
+			storyName: ''
 		})
 		const result: IBlueprintPiece[] = []
 		AddScript(part, result, 1000)

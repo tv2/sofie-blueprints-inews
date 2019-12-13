@@ -96,7 +96,8 @@ const partDefinitionTest1: PartDefinitionKam = {
 			type: CueType.LYD,
 			variant: 'bed'
 		})
-	]
+	],
+	storyName: ''
 }
 
 const partDefinitionTest2: PartDefinitionKam = {
@@ -164,7 +165,8 @@ const partDefinitionTest2: PartDefinitionKam = {
 			cue: 'kg',
 			textFields: []
 		})
-	]
+	],
+	storyName: ''
 }
 
 describe('Get Next Part Cue', () => {
