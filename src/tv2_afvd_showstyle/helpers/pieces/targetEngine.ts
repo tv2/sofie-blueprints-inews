@@ -26,7 +26,7 @@ export function EvaluateTargetEngine(
 	parsedCue: CueDefinitionTargetEngine
 ) {
 	// TODO: Future: Target a specific engine
-	if (!parsedCue.engine.match(/full/i)) {
+	if (!parsedCue.engine.match(/full|ovl/i)) {
 		return
 	}
 	if (!parsedCue.content.INP1 && !parsedCue.content.INP) {
