@@ -20,6 +20,7 @@ import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
+import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
@@ -93,7 +94,9 @@ export function CreatePartEVS(
 							type: TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: partDefinition.variant.isVO ? 2 : 1
 						}
-					})
+					}),
+
+					...GetSisyfosTimelineObjForCamera('evs')
 				])
 			}
 		})

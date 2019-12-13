@@ -47,7 +47,7 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Time
 	const audioTimeline: TSRTimelineObj[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
-	if ((useMic && camName) || !!sourceType.match(/server|telefon|full/i)) {
+	if ((useMic && camName) || !!sourceType.match(/server|telefon|full|evs/i)) {
 		audioTimeline.push(
 			...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
 				return literal<TimelineObjSisyfosMessage>({

@@ -102,7 +102,7 @@ export function CreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				metaData: GetKamMetaData(),
+				metaData: GetKeepStudioMicsMetaData(),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -148,7 +148,7 @@ export function CreatePartKam(
 	}
 }
 
-export function GetKamMetaData(): PieceMetaData | undefined {
+export function GetKeepStudioMicsMetaData(): PieceMetaData | undefined {
 	return GetStickyForPiece([
 		...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
 			return { layer: l, isPgm: 1 }

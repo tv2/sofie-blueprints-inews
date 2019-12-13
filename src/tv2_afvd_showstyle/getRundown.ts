@@ -54,7 +54,7 @@ import {
 	STUDIO_MICS
 } from './helpers/sisyfos/sisyfos'
 import { ControlClasses, SourceLayer } from './layers'
-import { GetKamMetaData } from './parts/kam'
+import { GetKeepStudioMicsMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -146,7 +146,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
-			metaData: GetKamMetaData(),
+			metaData: GetKeepStudioMicsMetaData(),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -393,6 +393,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		toBeQueued: true,
+		metaData: GetKeepStudioMicsMetaData(),
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				literal<TimelineObjAtemME>({
@@ -419,7 +420,9 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						type: TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: 2
 					}
-				})
+				}),
+
+				...GetSisyfosTimelineObjForCamera('evs')
 			])
 		}
 	})
