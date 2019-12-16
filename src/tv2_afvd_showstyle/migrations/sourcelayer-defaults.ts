@@ -671,7 +671,7 @@ const AUX: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'alt+e',
+		activateKeyboardHotkeys: 'ctrl+shift+alt+f',
 		clearKeyboardHotkey: ',',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,
