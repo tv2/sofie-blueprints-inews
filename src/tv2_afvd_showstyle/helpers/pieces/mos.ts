@@ -115,7 +115,7 @@ function GetMosObjContent(
 					start: 0
 				},
 				priority: 1,
-				layer: isOverlay ? VizLLayer.VizLLayerPilot : VizLLayer.VizLLayerPilotOverlay,
+				layer: isOverlay ? VizLLayer.VizLLayerPilotOverlay : VizLLayer.VizLLayerPilot,
 				content: {
 					deviceType: DeviceType.VIZMSE,
 					type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
