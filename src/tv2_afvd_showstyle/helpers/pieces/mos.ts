@@ -58,7 +58,7 @@ export function EvaluateMOS(
 				name: grafikName(config, parsedCue),
 				...(isTlf || isGrafikPart ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
-				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
+				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
 				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay)
@@ -78,7 +78,7 @@ export function EvaluateMOS(
 							}
 					  }),
 				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
-				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
+				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
 				content: GetMosObjContent(config, parsedCue, partId, isOverlay)
