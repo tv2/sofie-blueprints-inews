@@ -77,7 +77,7 @@ export function EvaluateMOS(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
+				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
