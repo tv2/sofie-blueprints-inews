@@ -443,7 +443,7 @@ const PGM: ISourceLayer[] = [
 		name: 'EVS',
 		abbreviation: 'EVS',
 		type: SourceLayerType.VT,
-		exclusiveGroup: '',
+		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys: 'e,r',
