@@ -182,7 +182,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				name: info.id + '',
 				_rank: rank * 100 + i,
 				sourceLayerId: layer,
-				outputLayerId: 'pgm', // TODO
+				outputLayerId: 'sec',
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
@@ -211,7 +211,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				name: info.id + '',
 				_rank: rank * 100 + i,
 				sourceLayerId: layer,
-				outputLayerId: 'pgm', // TODO
+				outputLayerId: 'sec',
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
@@ -283,7 +283,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				name: info.id + '',
 				_rank: rank * 100 + i,
 				sourceLayerId: layer,
-				outputLayerId: 'pgm', // TODO
+				outputLayerId: 'sec',
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
@@ -487,7 +487,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	adlibItems.push({
 		externalId: 'delayedaux',
 		name: `Delayed Playback in studio aux`,
-		_rank: 1550,
+		_rank: 1650,
 		sourceLayerId: SourceLayer.AuxStudioScreen,
 		outputLayerId: 'aux',
 		expectedDuration: 0,
