@@ -78,6 +78,18 @@ export function EvaluateTargetEngine(
 
 	if (parsedCue.grafik) {
 		// TODO target engine
-		EvaluateMOS(config, context, pieces, adlibPeces, partId, parsedCue.grafik, false, false, 0, true)
+		EvaluateMOS(
+			config,
+			context,
+			pieces,
+			adlibPeces,
+			partId,
+			parsedCue.grafik,
+			false,
+			false,
+			0,
+			true,
+			!!parsedCue.engine.match(/ovl/i)
+		)
 	}
 }

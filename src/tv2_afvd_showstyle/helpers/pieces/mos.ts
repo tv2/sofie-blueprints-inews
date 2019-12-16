@@ -37,7 +37,8 @@ export function EvaluateMOS(
 	adlib?: boolean,
 	isTlf?: boolean,
 	rank?: number,
-	isGrafikPart?: boolean
+	isGrafikPart?: boolean,
+	overrideOverlay?: boolean
 ) {
 	if (parsedCue.isActuallyWall) {
 		return
@@ -58,7 +59,7 @@ export function EvaluateMOS(
 				...(isTlf || isGrafikPart ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
 				sourceLayerId: GetSourceLayer(isTlf, isOverlay),
-				outputLayerId: isTlf || isGrafikPart ? 'pgm' : 'overlay',
+				outputLayerId: overrideOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay)
 			})
