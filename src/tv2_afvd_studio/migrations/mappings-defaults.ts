@@ -464,6 +464,11 @@ export default literal<BlueprintMappings>({
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
+	viz_layer_pilot_overlay: literal<MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		lookahead: LookaheadMode.NONE
+	}),
 	viz_layer_design: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',

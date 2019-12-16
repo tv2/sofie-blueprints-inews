@@ -96,6 +96,7 @@ export enum VizLLayer {
 	VizLLayerOverlayHeadline = 'viz_layer_overlay_headline',
 	VizLLayerOverlayTema = 'viz_layer_overlay_tema',
 	VizLLayerPilot = 'viz_layer_pilot',
+	VizLLayerPilotOverlay = 'viz_layer_pilot_overlay',
 	VizLLayerDesign = 'viz_layer_design',
 	VizLLayerAdLibs = 'viz_layer_adlibs'
 }
