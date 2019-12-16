@@ -4,6 +4,7 @@ import {
 	TimelineContentTypeAtem,
 	TimelineContentTypeSisyfos,
 	TimelineObjAtemME,
+	TimelineObjSisyfosAny,
 	TimelineObjSisyfosMessage
 } from 'timeline-state-resolver-types'
 import {
@@ -17,10 +18,11 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
 import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera, STICKY_LAYERS } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
@@ -94,6 +96,25 @@ export function CreatePartEVS(
 							type: TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: partDefinition.variant.isVO ? 2 : 1
 						}
+					}),
+
+					...STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 0
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
+						})
 					}),
 
 					...GetSisyfosTimelineObjForCamera('evs')

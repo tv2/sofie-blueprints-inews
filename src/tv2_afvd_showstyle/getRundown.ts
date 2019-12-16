@@ -51,6 +51,7 @@ import {
 	GetLayerForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
+	STICKY_LAYERS,
 	STUDIO_MICS
 } from './helpers/sisyfos/sisyfos'
 import { ControlClasses, SourceLayer } from './layers'
@@ -420,6 +421,25 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						type: TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: 2
 					}
+				}),
+
+				...STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+					return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer,
+						content: {
+							deviceType: DeviceType.SISYFOS,
+							type: TimelineContentTypeSisyfos.SISYFOS,
+							isPgm: 0
+						},
+						metaData: {
+							sisyfosPersistLevel: true
+						}
+					})
 				}),
 
 				...GetSisyfosTimelineObjForCamera('evs')
