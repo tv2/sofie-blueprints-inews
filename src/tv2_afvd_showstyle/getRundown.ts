@@ -324,9 +324,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 								input: info.port
 							}
 						}
-					}),
-					...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
-					...GetSisyfosTimelineObjForCamera('telefon')
+					})
 				])
 			}
 		})
@@ -467,17 +465,6 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						aux: {
 							input: config.studio.AtemSource.DelayedPlayback
 						}
-					}
-				}),
-				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: SisyfosLLAyer.SisyfosSourceEVS_1,
-					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
-						isPgm: 1
 					}
 				})
 			])
