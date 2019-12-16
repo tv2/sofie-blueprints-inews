@@ -448,7 +448,7 @@ const PGM: ISourceLayer[] = [
 		isGuestInput: false,
 		activateKeyboardHotkeys: 'e,r',
 		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
