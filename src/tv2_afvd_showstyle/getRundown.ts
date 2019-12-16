@@ -387,7 +387,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		externalId: 'delayed',
 		name: `Delayed Playback`,
 		_rank: 1500,
-		sourceLayerId: SourceLayer.PgmCam,
+		sourceLayerId: SourceLayer.PgmDelayed,
 		outputLayerId: 'pgm',
 		expectedDuration: 0,
 		infiniteMode: PieceLifespan.OutOnNextPart,
@@ -438,6 +438,48 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							sisyfosPersistLevel: true
 						}
 					})
+				}),
+
+				...GetSisyfosTimelineObjForCamera('evs')
+			])
+		}
+	})
+	adlibItems.push({
+		externalId: 'delayed',
+		name: `Delayed Playback`,
+		_rank: 1550,
+		sourceLayerId: SourceLayer.PgmDelayed,
+		outputLayerId: 'pgm',
+		expectedDuration: 0,
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		toBeQueued: true,
+		metaData: GetKeepStudioMicsMetaData(),
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjAtemME>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: AtemLLayer.AtemMEProgram,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.ME,
+						me: {
+							input: config.studio.AtemSource.DelayedPlayback,
+							transition: AtemTransitionStyle.CUT
+						}
+					}
+				}),
+				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						isPgm: 1
+					}
 				}),
 
 				...GetSisyfosTimelineObjForCamera('evs')
