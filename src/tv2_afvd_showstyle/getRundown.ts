@@ -480,9 +480,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						type: TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: 1
 					}
-				}),
-
-				...GetSisyfosTimelineObjForCamera('evs')
+				})
 			])
 		}
 	})
