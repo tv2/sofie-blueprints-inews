@@ -27,7 +27,7 @@ export function EvaluateAdLib(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank,
 				externalId: partId,
-				name: `Server: ${file}`,
+				name: `${partDefinition.storyName} Server: ${file}`,
 				sourceLayerId: SourceLayer.PgmServer,
 				outputLayerId: 'pgm',
 				infiniteMode: PieceLifespan.OutOnNextPart,
