@@ -276,7 +276,7 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: ',comma,.',
+		activateKeyboardHotkeys: 'm,comma,.',
 		clearKeyboardHotkey: '',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,
