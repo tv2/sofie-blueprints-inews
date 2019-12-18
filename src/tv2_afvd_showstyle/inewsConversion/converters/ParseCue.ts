@@ -160,7 +160,7 @@ export type CueDefinition =
 	| CueDefinitionTargetWall
 
 export function ParseCue(cue: UnparsedCue): CueDefinition {
-	if (!cue || cue.length === 0) {
+	if (!cue) {
 		return {
 			type: CueType.Unknown
 		}
@@ -168,6 +168,12 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 
 	cue = cue.filter(c => c !== '')
 	cue = cue.map(c => c.trim())
+
+	if (cue.length === 0) {
+		return {
+			type: CueType.Unknown
+		}
+	}
 
 	if (cue[0].match(/^kg ovl-all-out$/i) || cue[0].match(/^[#* ]?kg altud$/i)) {
 		// All out
