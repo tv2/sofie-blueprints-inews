@@ -4,6 +4,7 @@ import {
 	TimelineContentTypeAtem,
 	TimelineContentTypeSisyfos,
 	TimelineObjAtemME,
+	TimelineObjSisyfosAny,
 	TimelineObjSisyfosMessage
 } from 'timeline-state-resolver-types'
 import {
@@ -17,10 +18,11 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
 import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera, LIVE_AUDIO } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
@@ -99,7 +101,7 @@ export function CreatePartEVS(
 					...(partDefinition.variant.isVO
 						? []
 						: [
-								/*...STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+								...LIVE_AUDIO.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 									return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 										id: '',
 										enable: {
@@ -116,7 +118,7 @@ export function CreatePartEVS(
 											sisyfosPersistLevel: true
 										}
 									})
-								}),*/
+								}),
 
 								...GetSisyfosTimelineObjForCamera('evs')
 						  ])

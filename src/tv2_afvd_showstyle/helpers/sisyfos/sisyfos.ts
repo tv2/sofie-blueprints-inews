@@ -20,13 +20,7 @@ export const STUDIO_MICS = [
 	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
 ]
 
-export const STICKY_LAYERS = [
-	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
-	SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
+export const LIVE_AUDIO = [
 	SisyfosLLAyer.SisyfosSourceLive_1,
 	SisyfosLLAyer.SisyfosSourceLive_2,
 	SisyfosLLAyer.SisyfosSourceLive_3,
@@ -38,6 +32,8 @@ export const STICKY_LAYERS = [
 	SisyfosLLAyer.SisyfosSourceLive_9,
 	SisyfosLLAyer.SisyfosSourceLive_10
 ]
+
+export const STICKY_LAYERS = [...STUDIO_MICS, ...LIVE_AUDIO]
 
 export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Timeline.TimelineEnable): TSRTimelineObj[] {
 	if (!enable) {
