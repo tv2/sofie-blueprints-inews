@@ -59,6 +59,7 @@ export function EvaluateCues(
 						partDefinition.externalId,
 						cue,
 						shouldAdlib,
+						partDefinition,
 						false,
 						adLibRank
 					)
@@ -101,7 +102,17 @@ export function EvaluateCues(
 					EvaluateAdLib(context, config, adLibPieces, partDefinition.externalId, cue, partDefinition, adLibRank)
 					break
 				case CueType.Telefon:
-					EvaluateTelefon(config, context, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
+					EvaluateTelefon(
+						config,
+						context,
+						pieces,
+						adLibPieces,
+						partDefinition.externalId,
+						partDefinition,
+						cue,
+						shouldAdlib,
+						adLibRank
+					)
 					break
 				case CueType.VIZ:
 					EvaluateVIZ(context, config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)

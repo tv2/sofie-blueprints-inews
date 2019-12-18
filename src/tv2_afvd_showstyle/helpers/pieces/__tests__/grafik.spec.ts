@@ -14,6 +14,7 @@ import { SegmentContext } from '../../../../__mocks__/context'
 import { literal } from '../../../../common/util'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
+import { PartDefinitionKam, PartType } from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { CueDefinitionGrafik, CueType } from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
@@ -35,6 +36,20 @@ mockContext.studioConfig = defaultStudioConfig as any
 mockContext.showStyleConfig = defaultShowStyleConfig as any
 
 const partContext = new PartContext2(mockContext, '00001')
+
+const dummyPart = literal<PartDefinitionKam>({
+	type: PartType.Kam,
+	variant: {
+		name: '1'
+	},
+	externalId: '0001',
+	rawType: 'Kam 1',
+	cues: [],
+	script: '',
+	storyName: '',
+	fields: {},
+	modified: 0
+})
 
 describe('grafik piece', () => {
 	test('kg bund', () => {
@@ -63,6 +78,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			cue.adlib ? cue.adlib : false,
+			dummyPart,
 			false
 		)
 		expect(pieces).toEqual([
@@ -126,6 +142,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			cue.adlib ? cue.adlib : false,
+			dummyPart,
 			false
 		)
 		expect(adLibPieces).toEqual([
@@ -188,6 +205,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			cue.adlib ? cue.adlib : false,
+			dummyPart,
 			false
 		)
 		expect(pieces).toEqual([
@@ -256,6 +274,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			cue.adlib ? cue.adlib : false,
+			dummyPart,
 			false
 		)
 		expect(pieces).toEqual([
@@ -276,7 +295,7 @@ describe('grafik piece', () => {
 						literal<TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
-								start: 0
+								while: `.studio0_parent_camera_1 & !.adlib_deparent`
 							},
 							priority: 1,
 							layer: VizLLayer.VizLLayerOverlay,

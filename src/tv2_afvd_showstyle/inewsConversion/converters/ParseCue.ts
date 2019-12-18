@@ -1,3 +1,5 @@
+import { PartDefinition, PartType } from './ParseBody'
+
 export type UnparsedCue = string[] | null
 
 export enum CueType {
@@ -624,4 +626,83 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 	}
 
 	return retTime
+}
+
+/**
+ * Creates a parent class for a part, for keeping children of the parent alive when the parent is alive.
+ * @param studio Studio name that the part belongs to.
+ * @param partDefinition Part to create parent string for.
+ */
+export function PartToParentClass(studio: string, partDefinition: PartDefinition): string | undefined {
+	switch (partDefinition.type) {
+		case PartType.Kam:
+			return CameraParentClass(studio, partDefinition.variant.name)
+		case PartType.Server:
+			const clip = partDefinition.fields.videoId
+
+			if (clip) {
+				return ServerParentClass(studio, clip)
+			} else {
+				return
+			}
+		case PartType.EVS:
+			return EVSParentClass(studio, partDefinition.variant.evs)
+		case PartType.Unknown:
+			return UnknownPartParentClass(studio, partDefinition)
+		default:
+			return
+	}
+}
+
+export function CameraParentClass(studio: string, cameraName: string) {
+	return `${studio.toLowerCase()}_parent_camera_${cameraName.toLowerCase()}`
+}
+
+export function EksternParentClass(studio: string, source: string) {
+	return `${studio.toLowerCase()}_parent_ekstern_${source.toLowerCase()}`
+}
+
+export function ServerParentClass(studio: string, clip: string) {
+	return `${studio.toLowerCase()}_parent_server_${clip.toLowerCase()}`
+}
+
+export function EVSParentClass(studio: string, evs: string) {
+	return `${studio.toLowerCase()}_parent_evs_${evs.toLowerCase()}`
+}
+
+export function DVEParentClass(studio: string, dve: string) {
+	return `${studio.toLowerCase()}_parent_dve_${dve.toLowerCase()}`
+}
+
+export function TLFParentClass(studio: string, source: string) {
+	return `${studio.toLowerCase()}_parent_tlf_${source.toLowerCase()}`
+}
+
+export function UnknownPartParentClass(studio: string, partDefinition: PartDefinition): string | undefined {
+	const firstCue = partDefinition.cues[0]
+
+	if (!firstCue) {
+		return
+	}
+
+	switch (firstCue.type) {
+		case CueType.DVE:
+			return DVEParentClass(studio, firstCue.template)
+		case CueType.Ekstern:
+			return EksternParentClass(studio, firstCue.source)
+		case CueType.Telefon:
+			return TLFParentClass(studio, firstCue.source)
+		default:
+			return
+	}
+}
+
+export function AddParentClass(partDefinition: PartDefinition) {
+	return !!partDefinition.cues.filter(
+		cue =>
+			(cue.type === CueType.Grafik || cue.type === CueType.MOS) &&
+			cue.end &&
+			cue.end.infiniteMode &&
+			cue.end.infiniteMode === 'B'
+	).length
 }

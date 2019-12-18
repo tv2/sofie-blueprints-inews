@@ -1,6 +1,7 @@
 import { DeviceType, TimelineContentTypeSisyfos, TimelineObjSisyfosMessage } from 'timeline-state-resolver-types'
 import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
+import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { CueDefinitionTelefon, CueType } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -14,6 +15,7 @@ export function EvaluateTelefon(
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
+	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTelefon,
 	adlib?: boolean,
 	rank?: number
@@ -28,6 +30,7 @@ export function EvaluateTelefon(
 				partId,
 				parsedCue.vizObj,
 				adlib ? adlib : parsedCue.adlib ? parsedCue.adlib : false,
+				partDefinition,
 				true,
 				rank
 			)

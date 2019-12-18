@@ -24,7 +24,8 @@ import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera, GetStickyForPiece, STUDIO_MICS } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
-import { PartDefinition } from '../inewsConversion/converters/ParseBody'
+import { PartDefinitionKam } from '../inewsConversion/converters/ParseBody'
+import { AddParentClass, CameraParentClass } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
@@ -33,7 +34,7 @@ import { PartTime } from './time/partTime'
 export function CreatePartKam(
 	context: PartContext,
 	config: BlueprintConfig,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
 	const partTime = PartTime(partDefinition, totalWords)
@@ -124,7 +125,10 @@ export function CreatePartKam(
 										: AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
-							}
+							},
+							...(AddParentClass(partDefinition)
+								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
+								: {})
 						}),
 
 						...GetSisyfosTimelineObjForCamera(partDefinition.rawType)

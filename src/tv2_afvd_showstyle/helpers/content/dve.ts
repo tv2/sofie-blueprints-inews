@@ -33,7 +33,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studi
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { AtemSourceIndex } from '../../../types/atem'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
-import { CueDefinitionDVE, DVESources } from '../../inewsConversion/converters/ParseCue'
+import { CueDefinitionDVE, DVEParentClass, DVESources } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
 import { DVEConfig } from '../pieces/dve'
 import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
@@ -50,7 +50,9 @@ export function MakeContentDVE(
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
-	dveConfig: DVEConfigInput | undefined
+	dveConfig: DVEConfigInput | undefined,
+	addClass?: boolean,
+	adlib?: boolean
 ): { content: SplitsContent; valid: boolean } {
 	if (!dveConfig) {
 		context.warning(`DVE ${parsedCue.template} is not configured`)
@@ -73,7 +75,16 @@ export function MakeContentDVE(
 		graphicsTemplateContent[`locator${i + 1}`] = label
 	})
 
-	return MakeContentDVE2(context, config, dveConfig, graphicsTemplateContent, parsedCue.sources, partDefinition)
+	return MakeContentDVE2(
+		context,
+		config,
+		dveConfig,
+		graphicsTemplateContent,
+		parsedCue.sources,
+		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
+		adlib,
+		partDefinition
+	)
 }
 
 export function MakeContentDVE2(
@@ -82,6 +93,8 @@ export function MakeContentDVE2(
 	dveConfig: DVEConfigInput,
 	graphicsTemplateContent: { [key: string]: string },
 	sources: DVESources | undefined,
+	className?: string,
+	adlib?: boolean,
 	partDefinition?: PartDefinition
 ) {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
@@ -129,7 +142,7 @@ export function MakeContentDVE2(
 	})
 
 	const boxes = _.map(template.boxes, box => ({ ...box, source: config.studio.AtemSource.Default }))
-	const audioTimeline: TSRTimelineObj[] = []
+	const dveTimeline: TSRTimelineObj[] = []
 	const boxSources: Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) &
 		SplitsContentBoxProperties> = []
 
@@ -181,7 +194,7 @@ export function MakeContentDVE2(
 				}
 
 				setBoxSource(num, sourceInfoCam, mappingFrom.source)
-				audioTimeline.push(...GetSisyfosTimelineObjForCamera(mappingFrom.source, audioEnable))
+				dveTimeline.push(...GetSisyfosTimelineObjForCamera(mappingFrom.source, audioEnable))
 			} else if (sourceType.match(/LIVE/i) || sourceType.match(/SKYPE/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
@@ -191,7 +204,7 @@ export function MakeContentDVE2(
 				}
 
 				setBoxSource(num, sourceInfoLive, mappingFrom.source)
-				audioTimeline.push(...GetSisyfosTimelineObjForEkstern(context, mappingFrom.source, audioEnable))
+				dveTimeline.push(...GetSisyfosTimelineObjForEkstern(context, mappingFrom.source, audioEnable))
 			} else if (sourceType.match(/SERVER/i)) {
 				const file = partDefinition ? partDefinition.fields.videoId : undefined
 
@@ -210,7 +223,7 @@ export function MakeContentDVE2(
 					},
 					mappingFrom.source
 				)
-				audioTimeline.push(
+				dveTimeline.push(
 					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
 						enable: {
@@ -284,7 +297,7 @@ export function MakeContentDVE2(
 						type: TimelineContentTypeAtem.SSRC,
 						ssrc: { boxes }
 					},
-					classes,
+					classes: className ? [...classes, className] : classes,
 					metaData: {
 						mediaPlayerSession: server ? MEDIA_PLAYER_AUTO : undefined // TODO: Maybe this should be segment-level?
 					}
@@ -318,7 +331,8 @@ export function MakeContentDVE2(
 							input: AtemSourceIndex.SSrc,
 							transition: AtemTransitionStyle.CUT
 						}
-					}
+					},
+					...(adlib ? { classes: ['adlib_deparent'] } : {})
 				}),
 				...(graphicsTemplateName
 					? [
@@ -383,7 +397,7 @@ export function MakeContentDVE2(
 					  ]
 					: []),
 
-				...audioTimeline
+				...dveTimeline
 			])
 		})
 	}

@@ -26,6 +26,7 @@ import { GetSisyfosTimelineObjForCamera, LIVE_AUDIO } from '../helpers/sisyfos/s
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
 import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
+import { EVSParentClass } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { PartTime } from './time/partTime'
@@ -81,7 +82,8 @@ export function CreatePartEVS(
 									: AtemTransitionStyle.CUT,
 								transitionSettings: TransitionSettings(partDefinition)
 							}
-						}
+						},
+						classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
 					}),
 
 					literal<TimelineObjSisyfosMessage>({

@@ -11,6 +11,7 @@ import {
 import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
+import { AddParentClass, ServerParentClass } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
@@ -51,7 +52,8 @@ export function MakeContentServer(
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
-				}
+				},
+				...(AddParentClass(partDefinition) && !adLib ? { classes: [ServerParentClass('studio0', file)] } : {})
 			}),
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
@@ -74,7 +76,8 @@ export function MakeContentServer(
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
-				}
+				},
+				...(adLib ? { classes: ['adlib_deparent'] } : {})
 			}),
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({

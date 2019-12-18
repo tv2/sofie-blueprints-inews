@@ -18,7 +18,7 @@ import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { CueDefinitionEkstern } from '../../inewsConversion/converters/ParseCue'
+import { AddParentClass, CueDefinitionEkstern, EksternParentClass } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
 import {
 	GetLayerForEkstern,
@@ -142,7 +142,8 @@ export function EvaluateEkstern(
 										: AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
-							}
+							},
+							...(AddParentClass(partDefinition) ? { classes: [EksternParentClass('studio0', parsedCue.source)] } : {})
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, parsedCue.source),

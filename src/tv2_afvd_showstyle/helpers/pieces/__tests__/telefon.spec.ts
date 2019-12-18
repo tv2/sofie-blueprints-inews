@@ -15,6 +15,7 @@ import { SegmentContext } from '../../../../__mocks__/context'
 import { literal } from '../../../../common/util'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
+import { PartDefinitionKam, PartType } from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
 	CueDefinitionTelefon,
@@ -40,6 +41,20 @@ mockContext.studioConfig = defaultStudioConfig as any
 mockContext.showStyleConfig = defaultShowStyleConfig as any
 
 const partContext = new PartContext2(mockContext, '00001')
+
+const dummyPart = literal<PartDefinitionKam>({
+	type: PartType.Kam,
+	variant: {
+		name: '1'
+	},
+	externalId: '0001',
+	rawType: 'Kam 1',
+	cues: [],
+	script: '',
+	storyName: '',
+	fields: {},
+	modified: 0
+})
 
 describe('telefon', () => {
 	test('telefon with vizObj', () => {
@@ -70,6 +85,7 @@ describe('telefon', () => {
 			pieces,
 			adLibPieces,
 			partId,
+			dummyPart,
 			cue
 		)
 		expect(pieces).toEqual([

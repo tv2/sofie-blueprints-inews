@@ -61,7 +61,7 @@ export function EvaluateMOS(
 				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
 				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
-				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay)
+				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay, true)
 			})
 		)
 	} else {
@@ -103,7 +103,8 @@ function GetMosObjContent(
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
 	partId: string,
-	isOverlay: boolean
+	isOverlay: boolean,
+	adlib?: boolean
 ): GraphicsContent {
 	return literal<GraphicsContent>({
 		fileName: parsedCue.name,
@@ -150,7 +151,8 @@ function GetMosObjContent(
 									input: config.studio.AtemSource.FullFrameGrafikBackground,
 									transition: AtemTransitionStyle.CUT
 								}
-							}
+							},
+							...(adlib ? { classes: ['adlib_deparent'] } : {})
 						}),
 						...GetSisyfosTimelineObjForCamera('full'),
 						...MuteSisyfosChannels(partId)

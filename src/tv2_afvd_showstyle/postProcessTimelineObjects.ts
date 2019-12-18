@@ -66,6 +66,7 @@ export function postProcessPieceTimelineObjects(
 				cleanObj.id = '' // Force new id
 				cleanObj.metaData = _.clone(tlObj.metaData)
 				cleanObj.metaData.context = `Clean for ${tlObj.id}`
+				cleanObj.classes = cleanObj.classes?.filter(c => !c.match(`studio0_parent_`))
 				extraObjs.push(cleanObj)
 
 				if (tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined) {
@@ -126,6 +127,7 @@ export function postProcessPieceTimelineObjects(
 							}
 						})
 					})
+					mixMinusObj.classes = mixMinusObj.classes?.filter(c => !c.match(`studio0_parent_`))
 					extraObjs.push(mixMinusObj)
 				}
 			}

@@ -162,7 +162,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 								input: info.port,
 								transition: AtemTransitionStyle.CUT
 							}
-						}
+						},
+						classes: ['adlib_deparent']
 					}),
 					...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
 				])
@@ -261,7 +262,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 								input: info.port,
 								transition: AtemTransitionStyle.CUT
 							}
-						}
+						},
+						classes: ['adlib_deparent']
 					}),
 					...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
 					...GetSisyfosTimelineObjForCamera('telefon')
@@ -407,7 +409,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							input: config.studio.AtemSource.DelayedPlayback,
 							transition: AtemTransitionStyle.CUT
 						}
-					}
+					},
+					classes: ['adlib_deparent']
 				}),
 				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 					id: '',
@@ -468,7 +471,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							input: config.studio.AtemSource.DelayedPlayback,
 							transition: AtemTransitionStyle.CUT
 						}
-					}
+					},
+					classes: ['adlib_deparent']
 				}),
 				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 					id: '',

@@ -12,11 +12,13 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
+import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionDesign,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
-	CueType
+	CueType,
+	PartToParentClass
 } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'
@@ -32,6 +34,7 @@ export function EvaluateGrafik(
 	partId: string,
 	parsedCue: CueDefinitionGrafik,
 	adlib: boolean,
+	partDefinition: PartDefinition,
 	isTlfPrimary?: boolean,
 	rank?: number
 ) {
@@ -129,13 +132,7 @@ export function EvaluateGrafik(
 				timelineObjects: literal<TimelineObjVIZMSEAny[]>([
 					literal<TimelineObjVIZMSEElementInternal>({
 						id: '',
-						enable: isIdentGrafik
-							? {
-									while: `.${ControlClasses.ShowIdentGraphic}`
-							  }
-							: {
-									start: 0
-							  },
+						enable: GetEnableForGrafik(parsedCue, partDefinition, isIdentGrafik),
 						priority: 1,
 						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 						content: {
@@ -167,6 +164,26 @@ export function EvaluateGrafik(
 				})
 			)
 		}
+	}
+}
+
+function GetEnableForGrafik(
+	cue: CueDefinitionGrafik,
+	partDefinition: PartDefinition,
+	isIdentGrafik: boolean
+): { while: string } | { start: number } {
+	if (isIdentGrafik) {
+		return {
+			while: `.${ControlClasses.ShowIdentGraphic}`
+		}
+	}
+
+	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') {
+		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent` }
+	}
+
+	return {
+		start: 0
 	}
 }
 

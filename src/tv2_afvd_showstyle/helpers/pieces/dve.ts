@@ -9,7 +9,7 @@ import { literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
+import { AddParentClass, CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
 import { CalculateTime } from './evaluateCues'
 
@@ -82,7 +82,14 @@ export function EvaluateDVE(
 		return
 	}
 
-	const content = MakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
+	const content = MakeContentDVE(
+		context,
+		config,
+		partDefinition,
+		parsedCue,
+		rawTemplate,
+		AddParentClass(partDefinition)
+	)
 
 	if (content.valid) {
 		if (adlib) {
