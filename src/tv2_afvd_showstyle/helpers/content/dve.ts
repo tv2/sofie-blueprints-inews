@@ -4,11 +4,13 @@ import {
 	Timeline,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
+	TimelineContentTypeSisyfos,
 	TimelineObjAtemME,
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
 	TimelineObjCCGMedia,
 	TimelineObjCCGTemplate,
+	TimelineObjSisyfosAny,
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
@@ -25,9 +27,12 @@ import {
 import * as _ from 'underscore'
 import { createEmptyObject, literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
+import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { FindSourceInfoStrict, SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { AtemSourceIndex } from '../../../types/atem'
+import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { CueDefinitionDVE, DVESources } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
 import { DVEConfig } from '../pieces/dve'
@@ -43,7 +48,7 @@ export const boxMappings = [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, At
 export function MakeContentDVE(
 	context: PartContext,
 	config: BlueprintConfig,
-	_partId: string,
+	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined
 ): { content: SplitsContent; valid: boolean } {
@@ -68,7 +73,7 @@ export function MakeContentDVE(
 		graphicsTemplateContent[`locator${i + 1}`] = label
 	})
 
-	return MakeContentDVE2(context, config, dveConfig, graphicsTemplateContent, parsedCue.sources)
+	return MakeContentDVE2(context, config, dveConfig, graphicsTemplateContent, parsedCue.sources, partDefinition)
 }
 
 export function MakeContentDVE2(
@@ -76,7 +81,8 @@ export function MakeContentDVE2(
 	config: BlueprintConfig,
 	dveConfig: DVEConfigInput,
 	graphicsTemplateContent: { [key: string]: string },
-	sources: DVESources | undefined
+	sources: DVESources | undefined,
+	partDefinition?: PartDefinition
 ) {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
@@ -99,12 +105,20 @@ export function MakeContentDVE2(
 		const sourceLayer = boxLayers[fromCue as keyof DVESources] as SourceLayer
 		classes.push(`${sourceLayer}_${boxMappings[targetBox - 1]}`)
 
+		let usedServer = false
+
 		if (sources) {
 			const prop = sources[fromCue as keyof DVESources]
 			if (!prop) {
-				context.warning(`Missing mapping for ${targetBox}`)
 				// Need something to keep the layout etc
-				boxMap[targetBox - 1] = { source: '', sourceLayer }
+				// tslint:disable-next-line:prefer-conditional-expression
+				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+					usedServer = true
+				} else {
+					context.warning(`Missing mapping for ${targetBox}`)
+					boxMap[targetBox - 1] = { source: '', sourceLayer }
+				}
 			} else {
 				boxMap[targetBox - 1] = { source: prop, sourceLayer }
 			}
@@ -136,6 +150,7 @@ export function MakeContentDVE2(
 	}
 
 	let valid = true
+	let server = false
 
 	boxMap.forEach((mappingFrom, num) => {
 		if (mappingFrom === undefined || mappingFrom.source === '') {
@@ -177,6 +192,60 @@ export function MakeContentDVE2(
 
 				setBoxSource(num, sourceInfoLive, mappingFrom.source)
 				audioTimeline.push(...GetSisyfosTimelineObjForEkstern(context, mappingFrom.source, audioEnable))
+			} else if (sourceType.match(/SERVER/i)) {
+				const file = partDefinition ? partDefinition.fields.videoId : undefined
+
+				if (!file || !file.length) {
+					context.warning('No video id provided for ADLIBPIX')
+					valid = false
+					return
+				}
+				server = true
+				setBoxSource(
+					num,
+					{
+						type: SourceLayerType.VT,
+						id: 'SERVER',
+						port: -1 // AB: Overwrite
+					},
+					mappingFrom.source
+				)
+				audioTimeline.push(
+					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: CasparLLayer.CasparPlayerClipPending,
+						content: {
+							deviceType: DeviceType.CASPARCG,
+							type: TimelineContentTypeCasparCg.MEDIA,
+							file,
+							loop: true
+						},
+						metaData: {
+							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
+						}
+					}),
+					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: SisyfosLLAyer.SisyfosSourceClipPending,
+						content: {
+							deviceType: DeviceType.SISYFOS,
+							type: TimelineContentTypeSisyfos.SISYFOS,
+							isPgm: 1
+						},
+						metaData: {
+							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
+						}
+					})
+				)
+				return
 			} else {
 				context.warning(`Unknown source type for DVE: ${mappingFrom.source}`)
 				valid = false
@@ -205,7 +274,7 @@ export function MakeContentDVE2(
 				}),
 
 				// setup ssrc
-				literal<TimelineObjAtemSsrc>({
+				literal<TimelineObjAtemSsrc & TimelineBlueprintExt>({
 					id: '',
 					enable: { start: 0 },
 					priority: 1,
@@ -215,7 +284,10 @@ export function MakeContentDVE2(
 						type: TimelineContentTypeAtem.SSRC,
 						ssrc: { boxes }
 					},
-					classes
+					classes,
+					metaData: {
+						mediaPlayerSession: server ? MEDIA_PLAYER_AUTO : undefined // TODO: Maybe this should be segment-level?
+					}
 				}),
 				literal<TimelineObjAtemSsrcProps>({
 					id: '',
@@ -323,7 +395,7 @@ function boxSource(
 ): {
 	studioLabel: string
 	switcherInput: number
-	type: SourceLayerType.CAMERA | SourceLayerType.REMOTE | SourceLayerType.AUDIO
+	type: SourceLayerType.CAMERA | SourceLayerType.REMOTE | SourceLayerType.AUDIO | SourceLayerType.VT
 } {
 	return {
 		studioLabel: label,

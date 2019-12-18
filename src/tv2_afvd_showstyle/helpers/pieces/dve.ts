@@ -82,7 +82,7 @@ export function EvaluateDVE(
 		return
 	}
 
-	const content = MakeContentDVE(context, config, partDefinition.externalId, parsedCue, rawTemplate)
+	const content = MakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
 
 	if (content.valid) {
 		if (adlib) {

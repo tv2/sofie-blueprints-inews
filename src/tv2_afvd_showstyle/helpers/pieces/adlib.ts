@@ -63,7 +63,7 @@ export function EvaluateAdLib(
 			labels: parsedCue.bynavn ? [parsedCue.bynavn] : []
 		}
 
-		const content = MakeContentDVE(context, config, partId, cueDVE, rawTemplate)
+		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
 
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({

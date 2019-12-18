@@ -292,7 +292,13 @@ function updateObjectsToMediaPlayer(
 				atemObj2.content.aux.input = Number(atemInput.val) || 0
 			} else if (atemObj.content.type === TimelineContentTypeAtem.SSRC) {
 				const atemObj2 = atemObj as TimelineObjAtemSsrc
-				atemObj2.content.ssrc.boxes[1].source = Number(atemInput.val) || 0 // Pgm box
+				// Find box with no source
+				const input = Number(atemInput.val) || 0
+				atemObj2.content.ssrc.boxes.forEach((box, i) => {
+					if (box.source === -1) {
+						atemObj2.content.ssrc.boxes[i].source = input // Pgm box
+					}
+				})
 			} else {
 				context.warning(
 					`Trying to move ATEM object of unknown type (${atemObj.content.type}) for media player assignment`
