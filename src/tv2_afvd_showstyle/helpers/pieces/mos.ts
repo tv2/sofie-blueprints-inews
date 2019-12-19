@@ -62,7 +62,6 @@ export function EvaluateMOS(
 				_rank: rank || 0,
 				externalId: partId,
 				name: grafikName(config, parsedCue),
-				...(isTlf || isGrafikPart ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
 				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
 				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
 				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
