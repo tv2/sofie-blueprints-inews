@@ -881,7 +881,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		})
 	)
 
-	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p))
+	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
 }
 

@@ -31,8 +31,8 @@ export function postProcessPartTimelineObjects(
 ) {
 	_.each(parts, part => {
 		const ctx = new PartContext2(context, part.part.externalId)
-		_.each(part.pieces, p => postProcessPieceTimelineObjects(ctx, config, p))
-		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(ctx, config, p))
+		_.each(part.pieces, p => postProcessPieceTimelineObjects(ctx, config, p, false))
+		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(ctx, config, p, true))
 	})
 }
 
@@ -40,7 +40,8 @@ export function postProcessPartTimelineObjects(
 export function postProcessPieceTimelineObjects(
 	context: NotesContext,
 	config: BlueprintConfig,
-	piece: IBlueprintPieceGeneric
+	piece: IBlueprintPieceGeneric,
+	isAdlib: boolean
 ) {
 	if (piece.content?.timelineObjects) {
 		const extraObjs: TimelineObjectCoreExt[] = []
@@ -70,7 +71,7 @@ export function postProcessPieceTimelineObjects(
 				extraObjs.push(cleanObj)
 
 				if (
-					piece.toBeQueued &&
+					(!isAdlib || piece.toBeQueued) &&
 					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					// Create a lookahead-lookahead object for this me-program
