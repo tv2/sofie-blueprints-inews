@@ -70,6 +70,7 @@ export function EvaluateGrafik(
 
 	if (!mappedTemplate || !mappedTemplate.length) {
 		context.warning(`No valid template found for ${parsedCue.template}`)
+		return
 	}
 
 	if (adlib) {

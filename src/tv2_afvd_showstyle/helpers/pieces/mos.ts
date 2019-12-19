@@ -44,8 +44,14 @@ export function EvaluateMOS(
 		return
 	}
 
-	if (parsedCue.vcpid === undefined || parsedCue.vcpid === null || parsedCue.vcpid.toString() === '') {
+	if (
+		parsedCue.vcpid === undefined ||
+		parsedCue.vcpid === null ||
+		parsedCue.vcpid.toString() === '' ||
+		parsedCue.vcpid.toString().length === 0
+	) {
 		context.warning('No valid VCPID provided')
+		return
 	}
 
 	const isOverlay = !!parsedCue.name.match(/MOSART=L/i)
