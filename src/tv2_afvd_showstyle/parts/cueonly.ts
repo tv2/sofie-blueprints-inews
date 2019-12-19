@@ -48,7 +48,7 @@ export function CreatePartCueOnly(
 		partDefinition.cues.filter(
 			c => c.type === CueType.MOS || c.type === CueType.Telefon || c.type === CueType.TargetEngine
 		).length &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle)
+		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		part.prerollDuration = config.studio.PilotPrerollDuration
 		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration

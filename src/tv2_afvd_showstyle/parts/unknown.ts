@@ -45,7 +45,7 @@ export function CreatePartUnknown(
 		partDefinition.cues.filter(
 			cue => cue.type === CueType.MOS || cue.type === CueType.Telefon || cue.type === CueType.TargetEngine
 		).length &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle)
+		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		part.prerollDuration = config.studio.PilotPrerollDuration
 		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
