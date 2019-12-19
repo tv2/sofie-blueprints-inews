@@ -7,6 +7,10 @@ const PREVIEW_CHARACTERS = 30
 
 // export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, slutord: boolean) {
 export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number) {
+	if (duration === 0) {
+		duration = 1000
+	}
+
 	const script = part.script.replace(/^\**/i, '').trim()
 	if (script.length) {
 		const stripLength = Math.min(PREVIEW_CHARACTERS, script.length)
