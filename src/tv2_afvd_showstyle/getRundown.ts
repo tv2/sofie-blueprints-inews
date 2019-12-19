@@ -187,6 +187,26 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 								sisyfosPersistLevel: true
 							}
 						})
+					}),
+					// Force server to be muted (for adlibbing over DVE)
+					...[
+						SisyfosLLAyer.SisyfosSourceClipPending,
+						SisyfosLLAyer.SisyfosSourceServerA,
+						SisyfosLLAyer.SisyfosSourceServerB
+					].map<TimelineObjSisyfosMessage>(layer => {
+						return literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 2,
+							layer,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 0
+							}
+						})
 					})
 				])
 			}
@@ -311,7 +331,27 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 									sisyfosPersistLevel: true
 								}
 							})
+						}),
+					// Force server to be muted (for adlibbing over DVE)
+					...[
+						SisyfosLLAyer.SisyfosSourceClipPending,
+						SisyfosLLAyer.SisyfosSourceServerA,
+						SisyfosLLAyer.SisyfosSourceServerB
+					].map<TimelineObjSisyfosMessage>(layer => {
+						return literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 2,
+							layer,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 0
+							}
 						})
+					})
 				])
 			}
 		})

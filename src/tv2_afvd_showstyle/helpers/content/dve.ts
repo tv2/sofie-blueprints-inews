@@ -436,6 +436,14 @@ export function MakeContentDVE2(
 			...dveTimeline
 				.filter(obj => obj.content.deviceType === DeviceType.SISYFOS)
 				.filter(obj => Object.values(SisyfosLLAyer).includes(obj.layer as SisyfosLLAyer))
+				.filter(
+					obj =>
+						![
+							SisyfosLLAyer.SisyfosSourceClipPending,
+							SisyfosLLAyer.SisyfosSourceServerA,
+							SisyfosLLAyer.SisyfosSourceServerB
+						].includes(obj.layer as SisyfosLLAyer)
+				)
 				.map<SisyfosLLAyer>(obj => obj.layer as SisyfosLLAyer)
 		]
 	}
