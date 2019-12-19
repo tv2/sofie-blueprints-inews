@@ -25,7 +25,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../../../tv2
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { InfiniteMode } from './evaluateCues'
-import { CreateTimingGrafik, GetGrafikDuration, grafikName } from './grafik'
+import { CreateTimingGrafik, grafikName } from './grafik'
 
 export function EvaluateMOS(
 	config: BlueprintConfig,
