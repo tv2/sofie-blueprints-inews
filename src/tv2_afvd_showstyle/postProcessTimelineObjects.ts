@@ -69,7 +69,10 @@ export function postProcessPieceTimelineObjects(
 				cleanObj.classes = cleanObj.classes?.filter(c => !c.match(`studio0_parent_`))
 				extraObjs.push(cleanObj)
 
-				if (tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined) {
+				if (
+					piece.toBeQueued &&
+					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined)
+				) {
 					// Create a lookahead-lookahead object for this me-program
 					const lookaheadObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
 						id: '',
