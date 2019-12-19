@@ -11,6 +11,7 @@ import {
 	TimelineObjCCGMedia,
 	TimelineObjCCGTemplate,
 	TimelineObjSisyfosAny,
+	TimelineObjSisyfosMessage,
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
@@ -36,7 +37,12 @@ import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { CueDefinitionDVE, DVEParentClass, DVESources } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
 import { DVEConfig } from '../pieces/dve'
-import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
+import {
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEkstern,
+	LIVE_AUDIO,
+	STICKY_LAYERS
+} from '../sisyfos/sisyfos'
 
 export const boxLayers: DVESources = {
 	INP1: SourceLayer.PgmDVEBox1,
@@ -53,7 +59,7 @@ export function MakeContentDVE(
 	dveConfig: DVEConfigInput | undefined,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: SplitsContent; valid: boolean } {
+): { content: SplitsContent; valid: boolean; stickyLayers: SisyfosLLAyer[] } {
 	if (!dveConfig) {
 		context.warning(`DVE ${parsedCue.template} is not configured`)
 		return {
@@ -62,7 +68,8 @@ export function MakeContentDVE(
 				boxSourceConfiguration: [],
 				timelineObjects: [],
 				dveConfiguration: []
-			}
+			},
+			stickyLayers: []
 		}
 	}
 
@@ -96,7 +103,7 @@ export function MakeContentDVE2(
 	className?: string,
 	adlib?: boolean,
 	partDefinition?: PartDefinition
-) {
+): { content: SplitsContent; valid: boolean; stickyLayers: SisyfosLLAyer[] } {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
 	const inputs = dveConfig.DVEInputs
@@ -273,6 +280,31 @@ export function MakeContentDVE2(
 	const keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : ''
 	const frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : ''
 
+	if (adlib) {
+		dveTimeline.push(
+			...STICKY_LAYERS.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
+				.filter(layer => LIVE_AUDIO.indexOf(layer) === -1)
+				.map<TimelineObjSisyfosMessage>(layer => {
+					return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer,
+						content: {
+							deviceType: DeviceType.SISYFOS,
+							type: TimelineContentTypeSisyfos.SISYFOS,
+							isPgm: 0
+						},
+						metaData: {
+							sisyfosPersistLevel: true
+						}
+					})
+				})
+		)
+	}
+
 	return {
 		valid,
 		content: literal<SplitsContent>({
@@ -399,7 +431,13 @@ export function MakeContentDVE2(
 
 				...dveTimeline
 			])
-		})
+		}),
+		stickyLayers: [
+			...dveTimeline
+				.filter(obj => obj.content.deviceType === DeviceType.SISYFOS)
+				.filter(obj => Object.values(SisyfosLLAyer).includes(obj.layer as SisyfosLLAyer))
+				.map<SisyfosLLAyer>(obj => obj.layer as SisyfosLLAyer)
+		]
 	}
 }
 

@@ -51,6 +51,7 @@ import {
 	GetLayerForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
+	LIVE_AUDIO,
 	STICKY_LAYERS,
 	STUDIO_MICS
 } from './helpers/sisyfos/sisyfos'
@@ -138,6 +139,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	}
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
+		const camSisyfos = GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
 		res.push({
 			externalId: 'cam',
 			name: info.id + '',
@@ -165,7 +167,27 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						},
 						classes: ['adlib_deparent']
 					}),
-					...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
+					...camSisyfos,
+					...STICKY_LAYERS.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1).map<
+						TimelineObjSisyfosAny & TimelineBlueprintExt
+					>(layer => {
+						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 0
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
+						})
+					})
 				])
 			}
 		})
@@ -238,6 +260,10 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
+		const eksternSisyfos = [
+			...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
+			...GetSisyfosTimelineObjForCamera('telefon')
+		]
 		res.push({
 			externalId: 'live',
 			name: info.id + '',
@@ -265,8 +291,27 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						},
 						classes: ['adlib_deparent']
 					}),
-					...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
-					...GetSisyfosTimelineObjForCamera('telefon')
+					...eksternSisyfos,
+					...STICKY_LAYERS.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.filter(layer => LIVE_AUDIO.indexOf(layer) === -1)
+						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						})
 				])
 			}
 		})

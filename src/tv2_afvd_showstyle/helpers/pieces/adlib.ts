@@ -63,7 +63,19 @@ export function EvaluateAdLib(
 			labels: parsedCue.bynavn ? [parsedCue.bynavn] : []
 		}
 
-		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
+		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
+
+		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
+
+		content.stickyLayers.forEach(layer => {
+			sticky = {
+				...sticky,
+				[layer]: {
+					value: 1,
+					followsPrevious: false
+				}
+			}
+		})
 
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -74,7 +86,10 @@ export function EvaluateAdLib(
 				outputLayerId: 'pgm',
 				toBeQueued: true,
 				content: content.content,
-				invalid: !content.valid
+				invalid: !content.valid,
+				metaData: literal<PieceMetaData>({
+					stickySisyfosLevels: sticky
+				})
 			})
 		)
 	}
