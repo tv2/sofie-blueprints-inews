@@ -101,7 +101,7 @@ export function CreatePartEVS(
 					}),
 
 					...(partDefinition.variant.isVO
-						? []
+						? [...GetSisyfosTimelineObjForCamera('evs')]
 						: [
 								...LIVE_AUDIO.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 									return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
@@ -120,9 +120,7 @@ export function CreatePartEVS(
 											sisyfosPersistLevel: true
 										}
 									})
-								}),
-
-								...GetSisyfosTimelineObjForCamera('evs')
+								})
 						  ])
 				])
 			}
