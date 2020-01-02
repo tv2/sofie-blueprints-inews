@@ -142,7 +142,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		const camSisyfos = GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
 		res.push({
 			externalId: 'cam',
-			name: info.id + '',
+			name: preview ? `K${info.id}` : `${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmCam,
 			outputLayerId: 'pgm',
