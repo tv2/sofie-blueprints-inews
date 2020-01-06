@@ -7,7 +7,7 @@ import { CueType, DVESources } from '../inewsConversion/converters/ParseCue'
 
 export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: string): PartDefinition[] {
 	const retDefintions: PartDefinition[] = []
-	let partIdCounter = 0
+	const foundMap: { [key: string]: number } = {}
 	partDefinitions.forEach(partDefinition => {
 		const first = GetNextPartCue(partDefinition, -1)
 
@@ -15,28 +15,19 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 		if (partDefinition.type !== PartType.Unknown) {
 			// No extra parts
 			if (first === -1) {
-				retDefintions.push({ ...partDefinition, externalId: getExternalId(segmentId, partDefinition, partIdCounter) })
-				partIdCounter++
+				retDefintions.push({ ...partDefinition, externalId: getExternalId(segmentId, partDefinition, foundMap) })
 				return
 			} else {
-				retDefintions.push({
-					...partDefinition,
-					...(partDefinition.type === PartType.Slutord ? { script: '' } : {}),
-					cues: first > 0 ? partDefinition.cues.splice(0, first) : [],
-					externalId: `${segmentId}-${partIdCounter}`
-				})
 				const part = {
 					...partDefinition,
 					...(partDefinition.type === PartType.Slutord ? { script: '' } : {}),
 					cues: first > 0 ? partDefinition.cues.splice(0, first) : []
 				}
-				part.externalId = getExternalId(segmentId, part, partIdCounter)
+				part.externalId = getExternalId(segmentId, part, foundMap)
 				retDefintions.push(part)
-				partIdCounter++
 			}
 		} else if (GetNextPartCue(partDefinition, -1) === -1) {
-			retDefintions.push({ ...partDefinition, externalId: getExternalId(segmentId, partDefinition, partIdCounter) })
-			partIdCounter++
+			retDefintions.push({ ...partDefinition, externalId: getExternalId(segmentId, partDefinition, foundMap) })
 			return
 		}
 
@@ -66,7 +57,7 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 					modified: partDefinition.modified,
 					storyName: partDefinition.storyName
 				}
-				part.externalId = getExternalId(segmentId, part, partIdCounter)
+				part.externalId = getExternalId(segmentId, part, foundMap)
 				retDefintions.push(part)
 			} else {
 				const part: PartDefinition = {
@@ -85,53 +76,52 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 					modified: partDefinition.modified,
 					storyName: partDefinition.storyName
 				}
-				part.externalId = getExternalId(segmentId, part, partIdCounter)
+				part.externalId = getExternalId(segmentId, part, foundMap)
 				retDefintions.push(part)
 				partDefinition.cues = []
 			}
 			isFirstNewPrimary = false
-			partIdCounter++
 		}
 	})
 
 	return retDefintions
 }
 
-function getExternalId(segmentId: string, partDefinition: PartDefinition, partNum: number): string {
-	let tail = `${partDefinition.type.toString()}-${partDefinition.rawType}`
+function getExternalId(segmentId: string, partDefinition: PartDefinition, foundMap: { [key: string]: number }): string {
+	let id = `${segmentId}-${partDefinition.type.toString()}-${partDefinition.rawType}`
 
 	switch (partDefinition.type) {
 		case PartType.EVS:
 			// Common pattern to see EV1 and EVS1VO in the same story
-			tail += `${partDefinition.variant.evs}-${partDefinition.variant.isVO}-${partNum}`
+			id += `${partDefinition.variant.evs}-${partDefinition.variant.isVO}`
 			break
 		case PartType.Grafik:
 			// Grafik parts can reasonably be identified by their cues
-			tail += `${JSON.stringify(partDefinition.cues)}`
+			id += `${JSON.stringify(partDefinition.cues)}`
 			break
 		case PartType.INTRO:
 			// Intro must have a jingle cue
-			tail += `${JSON.stringify(partDefinition.cues.filter(cue => cue.type === CueType.Jingle))}`
+			id += `${JSON.stringify(partDefinition.cues.filter(cue => cue.type === CueType.Jingle))}`
 			break
 		case PartType.Kam:
 			// Reasonable that there will be more than one camera of the same variant
-			tail += `${JSON.stringify(partDefinition.variant.name)}-${partNum}`
+			id += `-${partDefinition.variant.name}`
 			break
 		case PartType.Server:
 			// Only one video Id per story
-			tail += `${partDefinition.fields.videoId}`
+			id += `${partDefinition.fields.videoId}`
 			break
 		case PartType.Slutord:
 			// Slutord parts are filtered out before reaching core, so don't matter as much
-			tail += `${partDefinition.script}`
+			id += `${partDefinition.script}`
 			break
 		case PartType.Teknik:
 			// Possibly an unused part type, not seen in production - only one example found in original test data
-			tail += `TEKNIK`
+			id += `TEKNIK`
 			break
 		case PartType.VO:
 			// Only one video Id per story.
-			tail += `${partDefinition.fields.videoId}`
+			id += `${partDefinition.fields.videoId}`
 			break
 		case PartType.Unknown:
 			// Special cases based on cues (primary cues)
@@ -140,7 +130,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, partNu
 			if (firstCue) {
 				switch (firstCue.type) {
 					case CueType.AdLib:
-						tail += `${firstCue.variant}`
+						id += `${firstCue.variant}`
 						break
 					case CueType.DVE:
 						function countSources(sources: DVESources) {
@@ -153,32 +143,47 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, partNu
 
 							return count
 						}
-						tail += `${firstCue.template}-${countSources(firstCue.sources)}`
+						id += `${firstCue.template}-${countSources(firstCue.sources)}`
 						break
 					case CueType.Ekstern:
 						// Reasonable that the same live source wil appear more than once in a story
-						tail += `${firstCue.source}-${partNum}`
+						id += `${firstCue.source}`
 						break
 					case CueType.Jingle:
-						tail += `${firstCue.clip}`
+						id += `${firstCue.clip}`
 						break
 					case CueType.TargetEngine:
 						// Pair the engine will the graphic, common to see 'FULL' targeted multiple times in one story
-						tail += `${firstCue.engine}-${JSON.stringify(firstCue.grafik)}`
+						id += `${firstCue.engine}-${JSON.stringify(firstCue.grafik)}`
 						break
 					case CueType.Telefon:
-						tail += `${firstCue.source}-${partNum}`
+						id += `${firstCue.source}`
 						break
 				}
 			} else {
 				// This should never happen. Log it in case it ever occurs.
 				console.log(`Adding part with potentially bad Id: ${JSON.stringify(partDefinition)}`)
-				tail += `UNKNOWN`
+				id += `UNKNOWN`
 			}
 			break
 		default:
 			assertUnreachable(partDefinition)
 	}
 
-	return md5(`${segmentId}-${tail}`)
+	id = padId(id, foundMap)
+		.trim()
+		.replace(/ /g, '-')
+
+	return md5(`${id}`)
+}
+
+function padId(id: string, foundMap: { [key: string]: number }) {
+	if (Object.keys(foundMap).includes(id)) {
+		foundMap[id] += 1
+		id = `${id}-${foundMap[id]}`
+	} else {
+		foundMap[id] = 1
+	}
+	foundMap = foundMap
+	return id
 }
