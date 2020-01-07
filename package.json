@@ -57,7 +57,9 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "@types/md5": "^2.1.33",
     "handlebars": "^4.3.0",
+    "md5": "^2.2.1",
     "object-path": "^0.11.4",
     "timeline-state-resolver-types": "git+https://github.com/olzzon/tv-automation-state-timeline-resolver.git#dist20191206_types",
     "tv-automation-sofie-blueprints-integration": "git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#182f4f0ff20d4e2930f1c4ba1f713d2a00617feb",

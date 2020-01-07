@@ -1,5 +1,6 @@
 import { literal } from '../../common/util'
 import { ParseCueOrder } from '../helpers/parseCueOrder'
+import { stripExternalId } from '../inewsConversion/converters/__tests__/body-parser.spec'
 import {
 	PartDefinition,
 	PartDefinitionGrafik,
@@ -268,13 +269,13 @@ const testSegment6: PartDefinition[] = [
 
 describe('Parse Cue Order', () => {
 	test('Kam - DVE - Ekstern (direkte bund bund - DVE - Ekstern (direkte)', () => {
-		expect(ParseCueOrder(testSegment1, '00001')).toEqual([
+		expect(stripExternalId(ParseCueOrder(testSegment1, '00001'))).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
 				variant: {
 					name: '1'
 				},
-				externalId: '00001-0',
+				externalId: '',
 				rawType: 'Kam 1',
 				cues: [],
 				script: 'Some script yay\n',
@@ -285,7 +286,7 @@ describe('Parse Cue Order', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-1',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// DVE 1 - (index 0)
@@ -307,7 +308,7 @@ describe('Parse Cue Order', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-2',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// Ekstern 1 - (index 1)
@@ -342,7 +343,7 @@ describe('Parse Cue Order', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-3',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// DVE 2 - (index 5)
@@ -364,7 +365,7 @@ describe('Parse Cue Order', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-4',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// Ekstern 2 - (index 6)
@@ -388,11 +389,11 @@ describe('Parse Cue Order', () => {
 	})
 
 	test('Server - DVE - Ekstern (direkte bund)', () => {
-		expect(ParseCueOrder(testSegment2, '00001')).toEqual([
+		expect(stripExternalId(ParseCueOrder(testSegment2, '00001'))).toEqual([
 			literal<PartDefinitionServer>({
 				type: PartType.Server,
 				variant: {},
-				externalId: '00001-0',
+				externalId: '',
 				rawType: 'Server',
 				cues: [],
 				script: '',
@@ -403,7 +404,7 @@ describe('Parse Cue Order', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-1',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// DVE 1 - (index 0)
@@ -425,7 +426,7 @@ describe('Parse Cue Order', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-2',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// Ekstern 1 - (index 1)
@@ -455,11 +456,11 @@ describe('Parse Cue Order', () => {
 	})
 
 	test('Unknown DVE (bund) - Ekstern (direkte bund)', () => {
-		expect(ParseCueOrder(testSegment3, '00001')).toEqual([
+		expect(stripExternalId(ParseCueOrder(testSegment3, '00001'))).toEqual([
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-0',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// DVE 1 - (index 0)
@@ -487,7 +488,7 @@ describe('Parse Cue Order', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				variant: {},
-				externalId: '00001-1',
+				externalId: '',
 				rawType: '',
 				cues: [
 					// Ekstern 1 - (index 1)
@@ -517,9 +518,9 @@ describe('Parse Cue Order', () => {
 	})
 
 	test('Unknown LIVE + Script - DVE - Ekstern', () => {
-		expect(ParseCueOrder(testSegment4, '00001')).toEqual([
+		expect(stripExternalId(ParseCueOrder(testSegment4, '00001'))).toEqual([
 			literal<PartDefinitionUnknown>({
-				externalId: '00001-0',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -540,7 +541,7 @@ describe('Parse Cue Order', () => {
 				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00001-1',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -559,9 +560,9 @@ describe('Parse Cue Order', () => {
 	})
 
 	test('Slutord with script', () => {
-		expect(ParseCueOrder(testSegment5, '00001')).toEqual([
+		expect(stripExternalId(ParseCueOrder(testSegment5, '00001'))).toEqual([
 			literal<PartDefinitionSlutord>({
-				externalId: '00001-0',
+				externalId: '',
 				type: PartType.Slutord,
 				variant: {
 					endWords: 'The end'
@@ -574,7 +575,7 @@ describe('Parse Cue Order', () => {
 				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00001-1',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -595,7 +596,7 @@ describe('Parse Cue Order', () => {
 				storyName: ''
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00001-2',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -614,11 +615,11 @@ describe('Parse Cue Order', () => {
 	})
 
 	test('100% GRAFIK', () => {
-		expect(ParseCueOrder(testSegment6, '00001')).toEqual([
+		expect(stripExternalId(ParseCueOrder(testSegment6, '00001'))).toEqual([
 			literal<PartDefinitionGrafik>({
 				type: PartType.Grafik,
 				variant: {},
-				externalId: '00001-0',
+				externalId: '',
 				rawType: '100% GRAFIK',
 				cues: [
 					literal<CueDefinitionTargetEngine>({

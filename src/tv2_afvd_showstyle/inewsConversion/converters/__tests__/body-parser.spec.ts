@@ -131,14 +131,14 @@ describe('Body parser', () => {
 		]
 
 		const result = ParseBody('00000000001', 'test-segment', body1, cues1, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionTeknik>({
 					type: PartType.Teknik,
 					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
 					variant: {},
-					externalId: '00000000001-0',
+					externalId: '',
 					rawType: 'TEKNIK',
 					fields: {},
 					modified: 0,
@@ -150,7 +150,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -161,7 +161,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern2, cueJingle1, cueJingle2, cueJingle3],
 					script: '',
 					variant: {},
-					externalId: '00000000001-2',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -176,14 +176,14 @@ describe('Body parser', () => {
 		const cues2 = [unparsedUnknown, unparsedGrafik1, null, unparsedGrafik3, unparsedEkstern1]
 
 		const result = ParseBody('00000000001', 'test-segment', body2, cues2, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
 					cues: [cueUnknown, cueGrafik1],
 					script: 'Thid id thr trext for the next DVE\nScript here\n',
 					variant: {},
-					externalId: '00000000001-0',
+					externalId: '',
 					rawType: '',
 					fields: {},
 					modified: 0,
@@ -195,7 +195,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -220,7 +220,7 @@ describe('Body parser', () => {
 		]
 
 		const result = ParseBody('00000000001', 'test-segment', body3, cues3, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -230,7 +230,7 @@ describe('Body parser', () => {
 					variant: {
 						name: 'AR'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -241,7 +241,7 @@ describe('Body parser', () => {
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -252,7 +252,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-2',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -263,7 +263,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern2, cueJingle1, cueJingle2],
 					script: '',
 					variant: {},
-					externalId: '00000000001-3',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -276,7 +276,7 @@ describe('Body parser', () => {
 					variant: {
 						endWords: 'ekstra kick'
 					},
-					externalId: '00000000001-4',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -290,7 +290,7 @@ describe('Body parser', () => {
 			"\r\n<p></p>\r\n<p><a idref='0'></a></p>\r\n<p><pi>CAMERA 1</pi></p>\r\n<p>Her står em masse tekst</p>\r\n"
 		const cues4 = [unparsedUnknown]
 		const result = ParseBody('00000000001', 'test-segment', body4, cues4, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
@@ -298,7 +298,7 @@ describe('Body parser', () => {
 					cues: [cueUnknown],
 					script: '',
 					variant: {},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields,
 					modified: 0,
 					storyName: 'test-segment'
@@ -311,7 +311,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '1'
 					},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields,
 					modified: 0,
 					storyName: 'test-segment'
@@ -325,7 +325,7 @@ describe('Body parser', () => {
 			'\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--tlftopt-></cc><a idref="0"><cc><--</cc></a></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="1"><pi>************ 100%GRAFIK ***********</pi></a></p>\r\n<p><a idref="4"></a></p>\r\n<p><a idref="3"></a></p>\r\n<p></p>\r\n'
 		const cues5 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2, unparsedGrafik3, unparsedEkstern1]
 		const result = ParseBody('00000000001', 'test-segment', body5, cues5, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -335,7 +335,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '1'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -346,7 +346,7 @@ describe('Body parser', () => {
 					cues: [cueGrafik1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -357,7 +357,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1, cueGrafik3],
 					script: '',
 					variant: {},
-					externalId: '00000000001-2',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -371,7 +371,7 @@ describe('Body parser', () => {
 			'\r\n<p><pi></pi></p>\r\n<p><pi></pi></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--værter-></cc><a idref="0"><cc><--</cc><pi></pi></a></p>\r\n'
 		const cues6 = [unparsedUnknown]
 		const result = ParseBody('00000000001', 'test-segment', body6, cues6, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -381,7 +381,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '1'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -395,7 +395,7 @@ describe('Body parser', () => {
 			'\r\n<p></p>\r\n<p><a idref="0"></a></p>\r\n<p></p>\r\n<p><pi>***ATTACK*** </pi></p>\r\n<p><cc>----ss3 Sport LOOP-></cc><a idref="1"><cc><-</cc></a></p>\r\n<p><cc>---AR DIGI OUT-></cc><a idref="2"><cc><---</cc></a></p>\r\n<p><cc>---bundter herunder---></cc></p>\r\n<p><a idref="3"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>SLUTORD:... wauw</pi></p>\r\n<p></p>\r\n<p><pi>KAM 4 </pi></p>\r\n<p><pi>NEDLÆG</pi></p>\r\n<p>Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script.</p>\r\n<p></p>\r\n'
 		const cues7 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2, unparsedGrafik3]
 		const result = ParseBody('00000000001', 'test-segment', body7, cues7, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
@@ -403,7 +403,7 @@ describe('Body parser', () => {
 					cues: [cueUnknown],
 					script: '',
 					variant: {},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields,
 					modified: 0,
 					storyName: 'test-segment'
@@ -414,7 +414,7 @@ describe('Body parser', () => {
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -427,7 +427,7 @@ describe('Body parser', () => {
 					variant: {
 						endWords: 'wauw'
 					},
-					externalId: '00000000001-2',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -441,7 +441,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '4'
 					},
-					externalId: '00000000001-3',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -455,7 +455,7 @@ describe('Body parser', () => {
 			'\r\n<p><cc>COMMENT OUTSIDE!!</cc></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p><pi>KADA</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"><a idref="2"></a></a></p>\r\n<p><cc>Efter "BYNAVN=" og efter "#kg direkte"</cc></p>\r\n<p></p>\r\n<p><a idref="3"> <cc>Kilde til optagelse på select-feed.</cc></a></p>\r\n<p></p>\r\n<p>Some script</p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>Some script</cc></p>\r\n<p><a idref="4"></a></p>\r\n<p></p>\r\n<p><pi>- Bullet 1?</pi></p>\r\n<p></p>\r\n<p><pi>- Bullet 2?</pi></p>\r\n<p></p>\r\n<p><pi>- Bullet 3?</pi></p>\r\n<p></p>\r\n'
 		const cues8 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2, unparsedGrafik3, unparsedEkstern1]
 		const result = ParseBody('00000000001', 'test-segment', body8, cues8, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -465,7 +465,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '2'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -476,7 +476,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -490,7 +490,7 @@ describe('Body parser', () => {
 			'\r\n<p><cc>COMMENT OUTSIDE!!</cc></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"><a idref="2"></a></a></p>\r\n<p><cc>Efter "BYNAVN=" og efter "#kg direkte"</cc></p>\r\n<p></p>\r\n<p><a idref="3"> <cc>Kilde til optagelse på select-feed.</cc></a></p>\r\n<p></p>\r\n<p>Some script.</p>\r\n<p></p>\r\n<p>Some more script with "a quote"</p>\r\n<p></p>\r\n<p>Yet more script, this time it\'s a question? </p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>More commentary</cc></p>\r\n<p><a idref="4"></a></p>\r\n<p></p>\r\n<p><pi>Danmark? </pi></p>\r\n<p></p>\r\n<p><pi>Grønland en "absurd diskussion"? </pi></p>\r\n<p></p>\r\n<p></p>\r\n'
 		const cues9 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2, unparsedGrafik3, unparsedEkstern1]
 		const result = ParseBody('00000000001', 'test-segment', body9, cues9, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -500,7 +500,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '2'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -511,7 +511,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -526,7 +526,7 @@ describe('Body parser', () => {
 			'\r\n<p><pi>KAM 2</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"><a idref="2"></a></a></p>\r\n<p><cc>Efter "BYNAVN=" og efter "#kg direkte"</cc></p>\r\n<p></p>\r\n<p><a idref="3"> <cc>Kilde til optagelse på select-feed.</cc></a></p>\r\n<p></p>\r\n<p>Question?</p>\r\n<p></p>\r\n<p><pi>Question, but in PI tags?</pi></p>\r\n<p></p>\r\n<p><pi>USA og Danmark?</pi></p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>Comment</cc></p>\r\n<p><a idref="4"></a></p>\r\n<p><pi>This line should be ignored</pi></p>\r\n<p></p>\r\n<p><pi>Also this one?</pi></p>\r\n<p></p>\r\n<p><cc>More comments</cc></p>\r\n<p><cc>Even more?</cc></p>\r\n<p><cc></cc></p>\r\n'
 		const cues10 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2, unparsedGrafik3, unparsedEkstern1]
 		const result = ParseBody('00000000001', 'test-segment', body10, cues10, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -536,7 +536,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '2'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -547,7 +547,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -561,7 +561,7 @@ describe('Body parser', () => {
 			'\r\n<p><pi>KAM 1</pi></p>\r\n<p></p>\r\n<p>Some script.</p>\r\n<p><a idref="0"></a></p>\r\n<p><pi>***VO***</pi></p>\r\n<p><a idref="1"></a></p>\r\n<p><pi><b>SB: Say this over this clip (10 sek)</b></pi></p>\r\n<p><a idref="2"></a></p>\r\n<p>More script. </p>\r\n<p></p>\r\n<p>Even more</p>\r\n<p></p>\r\n<p>More script again. </p>\r\n<p></p>\r\n<p><cc>Couple of comments</cc></p>\r\n<p><cc>Should be ignored</cc></p>\r\n<p></p>\r\n'
 		const cues11 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2]
 		const result = ParseBody('00000000001', 'test-segment', body11, cues11, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -571,7 +571,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '1'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -582,7 +582,7 @@ describe('Body parser', () => {
 					cues: [cueGrafik1, cueGrafik2],
 					script: 'More script.\nEven more\nMore script again.\n',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -596,7 +596,7 @@ describe('Body parser', () => {
 			'\r\n<p><cc>This is an interview.</cc></p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 3</pi></p>\r\n<p></p>\r\n<p><a idref="0"><cc> <-- Comment about this</cc></a></p>\r\n<p></p>\r\n<p><a idref="1"> <cc>Also about this! </cc></a></p>\r\n<p></p>\r\n<p><cc>Remember:</cc></p>\r\n<p></p>\r\n<p>Here is our correspondant. </p>\r\n<p></p>\r\n<p>What\'s going on over there? </p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>There is a graphic in this part</cc></p>\r\n<p>.</p>\r\n<p></p>\r\n<p><pi>Ask a question? </pi></p>\r\n<p></p>\r\n<p><pi>Ask another?</pi></p>\r\n<p></p>\r\n<p><pi>What\'s the reaction? </pi></p>\r\n<p></p>\r\n<p><a idref="2"></a></p>\r\n<p></p>\r\n'
 		const cues12 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2]
 		const result = ParseBody('00000000001', 'test-segment', body12, cues12, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				{
 					type: PartType.Kam,
@@ -606,7 +606,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '3'
 					},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -620,7 +620,7 @@ describe('Body parser', () => {
 			'\r\n<p><a idref="0"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n'
 		const cues13 = [unparsedUnknown]
 		const result = ParseBody('00000000001', 'test-segment', body13, cues13, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				{
 					type: PartType.Unknown,
@@ -628,7 +628,7 @@ describe('Body parser', () => {
 					cues: [cueUnknown],
 					script: '',
 					variant: {},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -649,7 +649,7 @@ describe('Body parser', () => {
 			unparsedEkstern2
 		]
 		const result = ParseBody('00000000001', 'test-segment', body14, cues14, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				{
 					type: PartType.Unknown,
@@ -657,7 +657,7 @@ describe('Body parser', () => {
 					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
 					script: "What's going on over there?\n",
 					variant: {},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -668,7 +668,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-1',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -679,7 +679,7 @@ describe('Body parser', () => {
 					cues: [cueEkstern2],
 					script: '',
 					variant: {},
-					externalId: '00000000001-2',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
@@ -693,7 +693,7 @@ describe('Body parser', () => {
 			'\r\n<p><cc>---JINGLE sport grafisk intro---></cc><a idref="0"><cc><----</cc></a></p>\r\n<p></p>\r\n<p><cc>---AUDIO til grafisk intro , fortsætter under teasere---></cc><a idref="2"><cc><----</cc></a></p>\r\n<p><a idref="1"></a></p>\r\n'
 		const cues15 = [unparsedUnknown, unparsedGrafik1]
 		const result = ParseBody('00000000001', 'INTRO', body15, cues15, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				{
 					type: PartType.INTRO,
@@ -701,7 +701,7 @@ describe('Body parser', () => {
 					cues: [cueUnknown, cueGrafik1],
 					script: '',
 					variant: {},
-					externalId: '00000000001-0',
+					externalId: '',
 					fields: {},
 					modified: 0,
 					storyName: 'INTRO'
@@ -723,10 +723,10 @@ describe('Body parser', () => {
 			unparsedJingle3
 		]
 		const result = ParseBody('00000000001', 'test-segment', body16, cues16, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Kam,
 					rawType: 'KAM 2',
 					script: 'Hallo, I wnat to tell you......\n',
@@ -739,7 +739,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionServer>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Server,
 					rawType: 'SERVER',
 					script: '',
@@ -750,7 +750,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-2',
+					externalId: '',
 					type: PartType.Kam,
 					rawType: 'KAM 2',
 					script: '',
@@ -763,7 +763,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-3',
+					externalId: '',
 					type: PartType.Slutord,
 					rawType: 'SLUTORD:',
 					script: '',
@@ -776,7 +776,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-4',
+					externalId: '',
 					type: PartType.Kam,
 					rawType: 'KAM 2',
 					script: '',
@@ -809,10 +809,10 @@ describe('Body parser', () => {
 			unparsedTelefon2
 		]
 		const result = ParseBody('00000000001', 'test-segment', body17, cues17, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -823,7 +823,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -836,7 +836,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-2',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -847,7 +847,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionServer>({
-					externalId: '00000000001-3',
+					externalId: '',
 					type: PartType.Server,
 					variant: {},
 					rawType: 'SERVER',
@@ -858,7 +858,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-4',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -869,7 +869,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-5',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -880,7 +880,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-6',
+					externalId: '',
 					type: PartType.Slutord,
 					variant: {
 						endWords: ''
@@ -893,7 +893,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-7',
+					externalId: '',
 					type: PartType.Slutord,
 					variant: {
 						endWords: 'Skarpere regler.'
@@ -906,7 +906,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-8',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '2'
@@ -927,10 +927,10 @@ describe('Body parser', () => {
 			'\r\n<p><pi>***VO EFFEKT 0*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>With some script. </p>\r\n<p></p>\r\n'
 		const cues18 = [unparsedGrafik1]
 		const result = ParseBody('00000000001', 'test-segment', body18, cues18, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionVO>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.VO,
 					variant: {},
 					effekt: 0,
@@ -950,10 +950,10 @@ describe('Body parser', () => {
 			'\r\n<p></p>\r\n<p><pi>KAM 1 EFFEKT 1</pi></p>\r\n<p>Dette er takst</p>\r\n<p></p>\r\n<p><pi>SERVER</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>STORT BILLEDE AF STUDIE</p>\r\n<p></p>\r\n'
 		const cues19 = [unparsedGrafik1, unparsedGrafik2]
 		const result = ParseBody('00000000001', 'test-segment', body19, cues19, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -967,7 +967,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionServer>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Server,
 					variant: {},
 					rawType: 'SERVER',
@@ -986,10 +986,10 @@ describe('Body parser', () => {
 			'\r\n<p><cc>OBS: der skal være 2 primære templates mellem 2 breakere</cc></p>\r\n<p><pi>K2 NBA18_LEAD_OUT</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p></p>\r\n<p><tab><tab><tab><tab><tab><tab></tab></tab></tab></tab></tab></tab></p>\r\n<p></p>\r\n'
 		const cues20 = [unparsedJingle1]
 		const result = ParseBody('00000000001', 'test-segment', body20, cues20, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -1016,10 +1016,10 @@ describe('Body parser', () => {
 			['SS=3-NYH-19-LOOP', ';0.01']
 		]
 		const result = ParseBody('00000000001', 'test-segment', body21, cues21, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '2'
@@ -1032,7 +1032,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionServer>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Server,
 					variant: {},
 					rawType: 'SERVER',
@@ -1072,7 +1072,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-2',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -1085,7 +1085,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-3',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -1098,7 +1098,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-4',
+					externalId: '',
 					type: PartType.Slutord,
 					variant: {
 						endWords: ''
@@ -1111,7 +1111,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-5',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -1136,10 +1136,10 @@ describe('Body parser', () => {
 			['kg tlftoptlive', 'TEXT MORETEXT', 'place', ';0.00-S']
 		]
 		const result = ParseBody('00000000001', 'test-segment', body22, cues22, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -1152,7 +1152,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -1213,10 +1213,10 @@ describe('Body parser', () => {
 			['kg tlftoptlive', 'TEXT MORETEXT', 'Place', ';0.00-S']
 		]
 		const result = ParseBody('00000000001', 'test-segment', body22, cues22, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -1233,7 +1233,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -1290,10 +1290,10 @@ describe('Body parser', () => {
 			'\r\n<p><pi>***VOSB EFFEKT 0*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script. </p>\r\n<p></p>\r\n'
 		const cues18 = [unparsedGrafik1]
 		const result = ParseBody('00000000001', 'test-segment', body18, cues18, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionVO>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.VO,
 					variant: {},
 					effekt: 0,
@@ -1313,10 +1313,10 @@ describe('Body parser', () => {
 			'\r\n<p><pi>***VOSB EFFEKT 0*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><pi>Some script here, possibly a note to the presenter</pi></p>\r\n<p>Some script. </p>\r\n<p></p>\r\n'
 		const cues18 = [unparsedGrafik1]
 		const result = ParseBody('00000000001', 'test-segment', body18, cues18, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionVO>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.VO,
 					variant: {},
 					effekt: 0,
@@ -1349,9 +1349,9 @@ describe('Body parser', () => {
 			]
 		]
 		const result = ParseBody('00000000001', 'test-segment', body26, cues26, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.Kam,
 				variant: {
 					name: '1'
@@ -1374,7 +1374,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionGrafik>({
-				externalId: '00000000001-1',
+				externalId: '',
 				type: PartType.Grafik,
 				variant: {},
 				rawType: '100%GRAFIK',
@@ -1417,9 +1417,9 @@ describe('Body parser', () => {
 			'\r\n<p></p>\r\n<p></p>\r\n<p><pi>EVS1</pi></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="0"><a idref="1"><a idref="2"></a></a></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p>Skriv din spib her</p>\r\n<p></p>\r\n'
 		const cues27 = [unparsedGrafik1, unparsedGrafik2, unparsedGrafik3]
 		const result = ParseBody('00000000001', 'test-segment', body27, cues27, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionEVS>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS1',
 				variant: {
@@ -1440,9 +1440,9 @@ describe('Body parser', () => {
 			'\r\n<p></p>\r\n<p></p>\r\n<p><pi>EVS1VO</pi></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="0"><a idref="1"><a idref="2"></a></a></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p>Skriv din spib her</p>\r\n<p></p>\r\n'
 		const cues27 = [unparsedGrafik1, unparsedGrafik2, unparsedGrafik3]
 		const result = ParseBody('00000000001', 'test-segment', body27, cues27, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionEVS>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS1VO',
 				variant: {
@@ -1469,9 +1469,9 @@ describe('Body parser', () => {
 			['EKSTERN=LIVE 2']
 		]
 		const result = ParseBody('00000000001', 'test-segment', body28, cues28, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionServer>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.Server,
 				variant: {},
 				rawType: 'SERVER',
@@ -1503,7 +1503,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionSlutord>({
-				externalId: '00000000001-1',
+				externalId: '',
 				type: PartType.Slutord,
 				variant: {
 					endWords: 'bare mega fedt'
@@ -1516,7 +1516,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-2',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1537,7 +1537,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-3',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1572,10 +1572,10 @@ describe('Body parser', () => {
 			unparsedTelefon2
 		]
 		const result = ParseBody('00000000001', 'test-segment', body29, cues29, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -1586,7 +1586,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -1597,7 +1597,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-2',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '1'
@@ -1610,7 +1610,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionServer>({
-					externalId: '00000000001-3',
+					externalId: '',
 					type: PartType.Server,
 					variant: {},
 					rawType: 'SERVER',
@@ -1621,7 +1621,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-4',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -1632,7 +1632,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-5',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -1643,7 +1643,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-6',
+					externalId: '',
 					type: PartType.Slutord,
 					variant: {
 						endWords: ''
@@ -1656,7 +1656,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionSlutord>({
-					externalId: '00000000001-7',
+					externalId: '',
 					type: PartType.Slutord,
 					variant: {
 						endWords: 'Skarpere regler.'
@@ -1669,7 +1669,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionKam>({
-					externalId: '00000000001-8',
+					externalId: '',
 					type: PartType.Kam,
 					variant: {
 						name: '2'
@@ -1696,9 +1696,9 @@ describe('Body parser', () => {
 			['#kg bund TEXT MORETEXT', 'Triatlet', ';0.00']
 		]
 		const result = ParseBody('00000000001', 'test-segment', body30, cues30, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1719,7 +1719,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-1',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1735,7 +1735,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionServer>({
-				externalId: '00000000001-2',
+				externalId: '',
 				type: PartType.Server,
 				variant: {},
 				rawType: 'SERVER',
@@ -1767,7 +1767,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionSlutord>({
-				externalId: '00000000001-3',
+				externalId: '',
 				type: PartType.Slutord,
 				variant: {
 					endWords: 'bare mega fedt'
@@ -1793,9 +1793,9 @@ describe('Body parser', () => {
 			['EKSTERN=LIVE 2']
 		]
 		const result = ParseBody('00000000001', 'test-segment', body31, cues31, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1827,7 +1827,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionSlutord>({
-				externalId: '00000000001-1',
+				externalId: '',
 				type: PartType.Slutord,
 				variant: {
 					endWords: 'bare mega fedt'
@@ -1840,7 +1840,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-2',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1861,7 +1861,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-3',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1877,7 +1877,7 @@ describe('Body parser', () => {
 				storyName: 'test-segment'
 			}),
 			literal<PartDefinitionServer>({
-				externalId: '00000000001-4',
+				externalId: '',
 				type: PartType.Server,
 				variant: {},
 				rawType: 'SERVER',
@@ -1894,9 +1894,9 @@ describe('Body parser', () => {
 		const body32 = '\r\n<p></p>\r\n<p><pi>KAM1</pi></p>\r\n'
 		const cues32: string[][] = []
 		const result = ParseBody('00000000001', 'test-segment', body32, cues32, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.Kam,
 				variant: {
 					name: '1'
@@ -1926,9 +1926,9 @@ describe('Body parser', () => {
 			]
 		]
 		const result = ParseBody('00000000001', 'test-segment', body33, cues33, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionUnknown>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.Unknown,
 				variant: {},
 				rawType: '',
@@ -1980,9 +1980,9 @@ describe('Body parser', () => {
 			]
 		]
 		const result = ParseBody('00000000001', 'test-segment', body34, cues34, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
-				externalId: '00000000001-0',
+				externalId: '',
 				type: PartType.Kam,
 				variant: {
 					name: '1'
@@ -2038,11 +2038,11 @@ describe('Body parser', () => {
 			]
 		]
 		const result = ParseBody('00000000001', 'test-segment', body35, cues35, fields, 0)
-		expect(result).toEqual([
+		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionGrafik>({
 				type: PartType.Grafik,
 				variant: {},
-				externalId: '00000000001-0',
+				externalId: '',
 				rawType: '100% GRAFIK',
 				cues: [
 					literal<CueDefinitionTargetEngine>({
@@ -2076,10 +2076,10 @@ describe('Body parser', () => {
 			['#cg4 pilotdata', 'TELEFON/KORT//LIVE_KABUL', 'VCPID=2552305', 'ContinueCount=3', 'TELEFON/KORT//LIVE_KABU']
 		]
 		const result = ParseBody('00000000001', 'test-segment', bodyTarget, cuesTarget, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -2137,10 +2137,10 @@ describe('Body parser', () => {
 			]
 		]
 		const result = ParseBody('00000000001', 'test-segment', bodyTarget, cuesTarget, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -2170,7 +2170,7 @@ describe('Body parser', () => {
 					storyName: 'test-segment'
 				}),
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-1',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -2210,10 +2210,10 @@ describe('Body parser', () => {
 			['#cg4 pilotdata', 'TELEFON/KORT//LIVE_KABUL', 'VCPID=2552305', 'ContinueCount=3', 'TELEFON/KORT//LIVE_KABU']
 		]
 		const result = ParseBody('00000000001', 'test-segment', bodyTarget, cuesTarget, fields, 0)
-		expect(result).toEqual(
+		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
-					externalId: '00000000001-0',
+					externalId: '',
 					type: PartType.Unknown,
 					variant: {},
 					rawType: '',
@@ -2246,3 +2246,9 @@ describe('Body parser', () => {
 		)
 	})
 })
+
+export function stripExternalId(definitions: PartDefinition[]) {
+	return definitions.map(def => {
+		return { ...def, ...{ externalId: '' } }
+	})
+}
