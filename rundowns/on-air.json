@@ -54,7 +54,7 @@
         {
             "externalId": "341dd48e:011f7352:5da02372",
             "name": "Test Segment 2",
-            "rank": 0,
+            "rank": 1,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -95,7 +95,7 @@
         {
             "externalId": "341dd48e:011f7352:5da02373",
             "name": "Test Segment 3",
-            "rank": 0,
+            "rank": 3,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -140,7 +140,7 @@
         {
             "externalId": "341dd48e:011f7352:5da02374",
             "name": "Test Segment 4",
-            "rank": 0,
+            "rank": 4,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -182,7 +182,7 @@
         {
             "externalId": "341dd48e:011f7352:5da02375",
             "name": "Test Segment 5",
-            "rank": 0,
+            "rank": 5,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -206,14 +206,15 @@
                     },
                     "meta": {
                         "words": "6",
-                        "rate": "140"
+                        "rate": "140",
+                        "float": ""
                     },
                     "cues": [],
-                    "id": "341dd48e:011f7352:5da02374",
+                    "id": "341dd48e:011f7352:5da02375",
                     "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>111111111</p>\r\n<p><pi>****VO****</pi></p>\r\n<p>11111111111111111111</p>\r\n"
                 },
                 "modified": "2019-10-11T06:38:00.000Z",
-                "externalId": "341dd48e:011f7352:5da02374",
+                "externalId": "341dd48e:011f7352:5da02375",
                 "rank": 0,
                 "name": "Test Segment 4",
                 "float": false
@@ -223,7 +224,7 @@
         {
             "externalId": "341dd48e:011f7352:5da02376",
             "name": "Test Segment 6",
-            "rank": 0,
+            "rank": 6,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {

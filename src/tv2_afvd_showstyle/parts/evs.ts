@@ -43,7 +43,9 @@ export function CreatePartEVS(
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
-		typeVariant: ''
+		typeVariant: '',
+		expectedDuration: partTime > 0 ? partTime : undefined,
+		displayDuration: partTime > 0 ? partTime : undefined
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
