@@ -3,7 +3,7 @@ import { GetNextPartCue } from './nextPartCue'
 
 import * as md5 from 'md5'
 import { assertUnreachable } from '../../common/util'
-import { CueType, DVESources } from '../inewsConversion/converters/ParseCue'
+import { CueDefinitionJingle, CueType, DVESources } from '../inewsConversion/converters/ParseCue'
 
 export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: string): PartDefinition[] {
 	const retDefintions: PartDefinition[] = []
@@ -92,23 +92,22 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 
 	switch (partDefinition.type) {
 		case PartType.EVS:
-			// Common pattern to see EV1 and EVS1VO in the same story
+			// Common pattern to see EV1 and EVS1VO in the same story. Changing from EVS1 to EVS1VO would mean a new part
 			id += `${partDefinition.variant.evs}-${partDefinition.variant.isVO}`
 			break
-		case PartType.Grafik:
-			// Grafik parts can reasonably be identified by their cues
-			id += `${JSON.stringify(partDefinition.cues)}`
-			break
 		case PartType.INTRO:
-			// Intro must have a jingle cue
-			id += `${JSON.stringify(partDefinition.cues.filter(cue => cue.type === CueType.Jingle))}`
+			// Intro must have a jingle cue, if it doesn't then padId will handle
+			const jingle = partDefinition.cues.find(cue => cue.type === CueType.Jingle) as CueDefinitionJingle
+			if (jingle) {
+				id += `${jingle.clip}`
+			}
 			break
 		case PartType.Kam:
-			// Reasonable that there will be more than one camera of the same variant
+			// Changing the camera name will make a new part
 			id += `-${partDefinition.variant.name}`
 			break
 		case PartType.Server:
-			// Only one video Id per story
+			// Only one video Id per story. Changing the video Id will result in a new part
 			id += `${partDefinition.fields.videoId}`
 			break
 		case PartType.Slutord:
@@ -120,11 +119,12 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			id += `TEKNIK`
 			break
 		case PartType.VO:
-			// Only one video Id per story.
+			// Only one video Id per story. Changing the video Id will result in a new part
 			id += `${partDefinition.fields.videoId}`
 			break
+		case PartType.Grafik:
 		case PartType.Unknown:
-			// Special cases based on cues (primary cues)
+			// Special cases based on cues
 			const firstCue = partDefinition.cues[0]
 
 			if (firstCue) {
@@ -146,18 +146,22 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 						id += `${firstCue.template}-${countSources(firstCue.sources)}`
 						break
 					case CueType.Ekstern:
-						// Reasonable that the same live source wil appear more than once in a story
+						// Identify based on live source. Changing live source will result in a new part
 						id += `${firstCue.source}`
 						break
 					case CueType.Jingle:
+						// Changing the jingle clip will result in a new part
 						id += `${firstCue.clip}`
 						break
 					case CueType.TargetEngine:
 						// Pair the engine will the graphic, common to see 'FULL' targeted multiple times in one story
-						id += `${firstCue.engine}-${JSON.stringify(firstCue.grafik)}`
+						id += `${firstCue.engine}-${JSON.stringify(firstCue.grafik?.vcpid)}`
 						break
 					case CueType.Telefon:
 						id += `${firstCue.source}`
+						break
+					case CueType.MOS:
+						id += `${firstCue.vcpid}`
 						break
 				}
 			} else {
