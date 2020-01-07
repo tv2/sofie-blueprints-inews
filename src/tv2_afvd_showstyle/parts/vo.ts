@@ -23,7 +23,7 @@ export function CreatePartVO(
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
-	audioTime: number
+	totalTime: number
 ): BlueprintResultPart {
 	if (partDefinition.fields === undefined) {
 		context.warning('Video ID not set!')
@@ -37,27 +37,15 @@ export function CreatePartVO(
 
 	const file = partDefinition.fields.videoId
 	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
+	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
 		typeVariant: '',
-		...(duration > 0
-			? {
-					displayDuration: duration,
-					expectedDuration: duration
-			  }
-			: {
-					expectedDuration:
-						partDefinition.script.length && audioTime
-							? (partDefinition.script.length / totalWords) * audioTime * 1000
-							: undefined,
-					displayDuration:
-						partDefinition.script.length && audioTime
-							? (partDefinition.script.length / totalWords) * audioTime * 1000
-							: undefined
-			  }),
+		expectedDuration: (sanitisedScript.length / totalWords) * totalTime * 1000 + duration,
+		displayDuration: (sanitisedScript.length / totalWords) * totalTime * 1000 + duration,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
