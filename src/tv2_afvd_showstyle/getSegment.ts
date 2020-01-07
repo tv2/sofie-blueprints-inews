@@ -67,7 +67,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		ingestSegment.payload.iNewsStory.fields.modifyDate
 	)
 	const totalWords = parsedParts.reduce((prev, cur) => {
-		return prev + cur.script.length
+		return prev + cur.script.replace(/\n/g, '').replace(/\r/g, '').length
 	}, 0)
 
 	if (segment.name.trim().match(/^CONTINUITY$/i)) {
@@ -112,7 +112,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.VO:
 				blueprintParts.push(
-					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.totalTime))
+					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
 				)
 				break
 			case PartType.Unknown:
@@ -175,6 +175,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration) {
 			part.part.expectedDuration =
+				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
+				(blueprintParts.length - serverParts)
+			part.part.displayDuration =
 				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
 				(blueprintParts.length - serverParts)
 			if (
