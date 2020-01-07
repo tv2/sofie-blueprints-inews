@@ -124,7 +124,7 @@ export function EvaluateCues(
 					EvaluateLYD(context, config, pieces, adLibPieces, cue, partDefinition, shouldAdlib, adLibRank)
 					break
 				case CueType.Design:
-					EvaluateDesign(config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
+					EvaluateDesign(config, context, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 					break
 				case CueType.TargetEngine:
 					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
@@ -162,22 +162,28 @@ export function EvaluateCues(
 					}
 
 					if (obj.content.type === TimelineContentTypeVizMSE.ELEMENT_INTERNAL) {
-						piece.expectedPlayoutItems.push({
-							deviceSubType: DeviceType.VIZMSE,
-							content: {
-								templateName: (obj as TimelineObjVIZMSEElementInternal).content.templateName,
-								templateData: (obj as TimelineObjVIZMSEElementInternal).content.templateData,
-								channelName: 'OVL1'
-							}
-						})
+						const name = (obj as TimelineObjVIZMSEElementInternal).content.templateName
+						if (name && name.length) {
+							piece.expectedPlayoutItems.push({
+								deviceSubType: DeviceType.VIZMSE,
+								content: {
+									templateName: (obj as TimelineObjVIZMSEElementInternal).content.templateName,
+									templateData: (obj as TimelineObjVIZMSEElementInternal).content.templateData,
+									channelName: 'OVL1'
+								}
+							})
+						}
 					} else if (obj.content.type === TimelineContentTypeVizMSE.ELEMENT_PILOT) {
-						piece.expectedPlayoutItems.push({
-							deviceSubType: DeviceType.VIZMSE,
-							content: {
-								templateName: (obj as TimelineObjVIZMSEElementPilot).content.templateVcpId,
-								channelName: (obj as TimelineObjVIZMSEElementPilot).content.channelName
-							}
-						})
+						const name = (obj as TimelineObjVIZMSEElementPilot).content.templateVcpId
+						if (name !== undefined && name.toString().length) {
+							piece.expectedPlayoutItems.push({
+								deviceSubType: DeviceType.VIZMSE,
+								content: {
+									templateName: (obj as TimelineObjVIZMSEElementPilot).content.templateVcpId,
+									channelName: (obj as TimelineObjVIZMSEElementPilot).content.channelName
+								}
+							})
+						}
 					}
 				}
 			})

@@ -58,7 +58,7 @@ export function EvaluateGrafik(
 						...parsedCue.end
 					}
 				}
-				EvaluateDesign(config, pieces, adlibPieces, partId, designCue)
+				EvaluateDesign(config, context, pieces, adlibPieces, partId, designCue)
 				return
 			}
 		}

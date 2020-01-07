@@ -8,6 +8,7 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
@@ -20,6 +21,7 @@ import { CalculateTime } from './evaluateCues'
 
 export function EvaluateDesign(
 	_config: BlueprintConfig,
+	context: PartContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -27,6 +29,11 @@ export function EvaluateDesign(
 	adlib?: boolean,
 	rank?: number
 ) {
+	if (!parsedCue.design || !parsedCue.design.length) {
+		context.warning(`No valid design found for ${parsedCue.design}`)
+		return
+	}
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({

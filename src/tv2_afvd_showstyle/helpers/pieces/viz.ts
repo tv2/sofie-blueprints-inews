@@ -150,6 +150,12 @@ export function EvaluateVIZ(
 		)
 	} else {
 		const path = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
+
+		if (!path || !path.length) {
+			context.warning(`No valid template found for ${parsedCue.design}`)
+			return
+		}
+
 		if (adlib) {
 			adlibPieces.push(
 				literal<IBlueprintAdLibPiece>({
