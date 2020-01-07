@@ -342,7 +342,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 		} else if (c.match(/^INP\d+=/i)) {
 			const input = c.match(/^(INP\d)+=(.+)$/i)
 			if (input && input[1] && input[2]) {
-				dvecue.sources[input[1] as keyof DVESources] = input[2]
+				dvecue.sources[input[1].toUpperCase() as keyof DVESources] = input[2]
 			}
 		} else if (c.match(/^BYNAVN=/i)) {
 			const labels = c.match(/^BYNAVN=(.+)$/i)
@@ -397,7 +397,7 @@ function parseVIZCues(cue: string[]): CueDefinitionVIZ {
 			vizCues = { ...vizCues, ...parseTime(cue[i]) }
 		} else {
 			const c = cue[i].split('=')
-			vizCues.content[c[0].toString()] = c[1]
+			vizCues.content[c[0].toString().toUpperCase()] = c[1]
 		}
 	}
 
@@ -440,7 +440,7 @@ function parseAdLib(cue: string[]) {
 	if (cue[1]) {
 		const input = cue[1].match(/^(INP\d)+=(.+)$/i)
 		if (input && input[1] && input[2] && adlib.inputs !== undefined) {
-			adlib.inputs[input[1] as keyof DVESources] = input[2]
+			adlib.inputs[input[1].toString().toUpperCase() as keyof DVESources] = input[2]
 		}
 	}
 
@@ -523,7 +523,7 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 			engineCue = { ...engineCue, ...parseTime(cue[i]) }
 		} else {
 			const c = cue[i].split('=')
-			engineCue.content[c[0].toString()] = c[1]
+			engineCue.content[c[0].toString().toUpperCase()] = c[1]
 		}
 	}
 

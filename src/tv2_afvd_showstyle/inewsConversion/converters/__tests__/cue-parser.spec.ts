@@ -623,6 +623,19 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('DVE', () => {
+		const cueDVE = ['DVE=sommerfugl', 'inp1=KAM 1', 'INP2=LIVE 1', 'BYNAVN=Odense/København']
+		const result = ParseCue(cueDVE)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.DVE,
+				template: 'sommerfugl',
+				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
+				labels: ['Odense', 'København']
+			})
+		)
+	})
+
 	test('TELEFON with Grafik', () => {
 		const cueTelefon = ['TELEFON=TLF 2', 'kg bund', 'TEXT MORETEXT', 'some@email.fakeTLD', ';0.02']
 		const result = ParseCue(cueTelefon)
@@ -692,7 +705,7 @@ describe('Cue parser', () => {
 				rawType: 'VIZ=grafik-design',
 				design: 'grafik-design',
 				content: {
-					triopage: 'DESIGN_SC'
+					TRIOPAGE: 'DESIGN_SC'
 				},
 				start: {
 					frames: 4,
@@ -711,7 +724,7 @@ describe('Cue parser', () => {
 				rawType: 'VIZ=full-triopage',
 				design: 'full-triopage',
 				content: {
-					triopage: 'DESIGN_SC'
+					TRIOPAGE: 'DESIGN_SC'
 				},
 				start: {
 					frames: 4,
@@ -730,7 +743,7 @@ describe('Cue parser', () => {
 				rawType: 'VIZ=dve-triopage',
 				design: 'dve-triopage',
 				content: {
-					triopage: 'DESIGN_SC'
+					TRIOPAGE: 'DESIGN_SC'
 				},
 				start: {
 					frames: 4,
@@ -742,6 +755,25 @@ describe('Cue parser', () => {
 
 	test('VIZ Cue', () => {
 		const cueViz = ['VIZ=dve-triopage', 'GRAFIK=DESIGN_SC', ';0.00.04']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.VIZ,
+				rawType: 'VIZ=dve-triopage',
+				design: 'dve-triopage',
+				content: {
+					GRAFIK: 'DESIGN_SC'
+				},
+				start: {
+					frames: 4,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('VIZ Cue', () => {
+		const cueViz = ['VIZ=dve-triopage', 'grafik=DESIGN_SC', ';0.00.04']
 		const result = ParseCue(cueViz)
 		expect(result).toEqual(
 			literal<CueDefinition>({

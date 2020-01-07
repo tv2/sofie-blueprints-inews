@@ -37,7 +37,7 @@ export function EvaluateVIZ(
 	rank?: number
 ) {
 	if (parsedCue.design.match(/^dve-triopage$/i)) {
-		const fileName = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
+		const fileName = parsedCue.content.TRIOPAGE ? parsedCue.content.TRIOPAGE : parsedCue.content.GRAFIK
 		const path = `dve/${fileName}`
 		if (adlib) {
 			adlibPieces.push(
