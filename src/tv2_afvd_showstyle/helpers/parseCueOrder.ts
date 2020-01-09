@@ -174,9 +174,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			assertUnreachable(partDefinition)
 	}
 
-	id = padId(id, foundMap)
-		.trim()
-		.replace(/ /g, '-')
+	id = padId(id.trim().replace(/ /g, '-'), foundMap)
 
 	return md5(`${id}`)
 }
