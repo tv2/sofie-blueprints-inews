@@ -958,6 +958,8 @@ describe('Cue parser', () => {
 		)
 	})
 
+	/** All-out cues */
+	/** These tests are also used to catch case sensitivity / cue start symbols */
 	test('All out', () => {
 		const cueViz = ['KG=ovl-all-out', ';0.00.01']
 		const result = ParseCue(cueViz)
@@ -971,4 +973,146 @@ describe('Cue parser', () => {
 			})
 		)
 	})
+
+	test('All out', () => {
+		const cueViz = ['KG ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['kg=ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['kg ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['#KG=ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['#KG ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['#kg=ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['#kg ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['kg altud', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['kg=altud', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['kg   	altud', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
+
+	/** End of all-out cues */
 })
