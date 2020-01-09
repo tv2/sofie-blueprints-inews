@@ -93,13 +93,13 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 	switch (partDefinition.type) {
 		case PartType.EVS:
 			// Common pattern to see EV1 and EVS1VO in the same story. Changing from EVS1 to EVS1VO would mean a new part
-			id += `${partDefinition.variant.evs}-${partDefinition.variant.isVO}`
+			id += `-${partDefinition.variant.evs}-${partDefinition.variant.isVO}`
 			break
 		case PartType.INTRO:
 			// Intro must have a jingle cue, if it doesn't then padId will handle
 			const jingle = partDefinition.cues.find(cue => cue.type === CueType.Jingle) as CueDefinitionJingle
 			if (jingle) {
-				id += `${jingle.clip}`
+				id += `-${jingle.clip}`
 			}
 			break
 		case PartType.Kam:
@@ -108,19 +108,19 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			break
 		case PartType.Server:
 			// Only one video Id per story. Changing the video Id will result in a new part
-			id += `${partDefinition.fields.videoId}`
+			id += `-${partDefinition.fields.videoId}`
 			break
 		case PartType.Slutord:
 			// Slutord parts are filtered out before reaching core, so don't matter as much
-			id += `${partDefinition.script}`
+			id += `-${partDefinition.script}`
 			break
 		case PartType.Teknik:
 			// Possibly an unused part type, not seen in production - only one example found in original test data
-			id += `TEKNIK`
+			id += `-TEKNIK`
 			break
 		case PartType.VO:
 			// Only one video Id per story. Changing the video Id will result in a new part
-			id += `${partDefinition.fields.videoId}`
+			id += `-${partDefinition.fields.videoId}`
 			break
 		case PartType.Grafik:
 		case PartType.Unknown:
@@ -130,7 +130,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			if (firstCue) {
 				switch (firstCue.type) {
 					case CueType.AdLib:
-						id += `${firstCue.variant}`
+						id += `-${firstCue.variant}`
 						break
 					case CueType.DVE:
 						function countSources(sources: DVESources) {
@@ -143,25 +143,25 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 
 							return count
 						}
-						id += `${firstCue.template}-${countSources(firstCue.sources)}`
+						id += `-${firstCue.template}-${countSources(firstCue.sources)}`
 						break
 					case CueType.Ekstern:
 						// Identify based on live source. Changing live source will result in a new part
-						id += `${firstCue.source}`
+						id += `-${firstCue.source}`
 						break
 					case CueType.Jingle:
 						// Changing the jingle clip will result in a new part
-						id += `${firstCue.clip}`
+						id += `-${firstCue.clip}`
 						break
 					case CueType.TargetEngine:
 						// Pair the engine will the graphic, common to see 'FULL' targeted multiple times in one story
-						id += `${firstCue.engine}-${JSON.stringify(firstCue.grafik?.vcpid)}`
+						id += `-${firstCue.engine}-${JSON.stringify(firstCue.grafik?.vcpid)}`
 						break
 					case CueType.Telefon:
-						id += `${firstCue.source}`
+						id += `-${firstCue.source}`
 						break
 					case CueType.MOS:
-						id += `${firstCue.vcpid}`
+						id += `-${firstCue.vcpid}`
 						break
 				}
 			} else {
