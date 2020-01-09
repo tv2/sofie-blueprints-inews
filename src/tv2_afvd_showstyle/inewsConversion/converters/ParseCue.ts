@@ -175,7 +175,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		}
 	}
 
-	if (cue[0].match(/^kg ovl-all-out$/i) || cue[0].match(/^[#* ]?kg altud$/i)) {
+	if (cue[0].match(/^kg[= ]ovl-all-out$/i) || cue[0].match(/^[#* ]?kg altud$/i)) {
 		// All out
 		return parseAllOut(cue)
 	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {

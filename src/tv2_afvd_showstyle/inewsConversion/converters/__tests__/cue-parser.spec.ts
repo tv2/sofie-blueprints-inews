@@ -957,4 +957,18 @@ describe('Cue parser', () => {
 			})
 		)
 	})
+
+	test('All out', () => {
+		const cueViz = ['KG=ovl-all-out', ';0.00.01']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				start: {
+					frames: 1,
+					seconds: 0
+				}
+			})
+		)
+	})
 })
