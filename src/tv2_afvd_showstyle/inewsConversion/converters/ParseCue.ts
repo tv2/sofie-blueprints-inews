@@ -167,7 +167,8 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	}
 
 	cue = cue.filter(c => c !== '')
-	cue = cue.map(c => c.trim())
+	// Replace multiple spaces / tabs with a single space
+	cue = cue.map(c => c.trim().replace(/\s+/g, ' '))
 
 	if (cue.length === 0) {
 		return {
@@ -175,7 +176,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		}
 	}
 
-	if (cue[0].match(/^kg[= ]ovl-all-out$/i) || cue[0].match(/^[#* ]?kg altud$/i)) {
+	if (cue[0].match(/^[#* ]?kg[= ]ovl-all-out$/i) || cue[0].match(/^[#* ]?kg[= ]altud$/i)) {
 		// All out
 		return parseAllOut(cue)
 	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
