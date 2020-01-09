@@ -103,8 +103,8 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			}
 			break
 		case PartType.Kam:
-			// Changing the camera name will make a new part
-			id += `-${partDefinition.variant.name}`
+			// No way of uniquely identifying, add some entropy from cues
+			id += `${partDefinition.cues.length}`
 			break
 		case PartType.Server:
 			// Only one video Id per story. Changing the video Id will result in a new part
