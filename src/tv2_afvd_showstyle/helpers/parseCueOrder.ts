@@ -103,8 +103,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			}
 			break
 		case PartType.Kam:
-			// No way of uniquely identifying, add some entropy from cues
-			id += `${GetEntropyFromCues(partDefinition.cues)}`
+			// No way of uniquely identifying, add some entropy from cues?
 			break
 		case PartType.Server:
 			// Only one video Id per story. Changing the video Id will result in a new part
