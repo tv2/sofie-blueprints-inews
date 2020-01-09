@@ -3,7 +3,7 @@ import { GetNextPartCue } from './nextPartCue'
 
 import * as md5 from 'md5'
 import { assertUnreachable } from '../../common/util'
-import { CueDefinition, CueDefinitionJingle, CueType, DVESources } from '../inewsConversion/converters/ParseCue'
+import { CueDefinitionJingle, CueType, DVESources } from '../inewsConversion/converters/ParseCue'
 
 export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: string): PartDefinition[] {
 	const retDefintions: PartDefinition[] = []
@@ -88,7 +88,7 @@ export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: stri
 }
 
 function getExternalId(segmentId: string, partDefinition: PartDefinition, foundMap: { [key: string]: number }): string {
-	let id = `${segmentId}-${partDefinition.type.toString()}-${partDefinition.rawType}`
+	let id = `${segmentId}-${partDefinition.type.toString()}`
 
 	switch (partDefinition.type) {
 		case PartType.EVS:
@@ -103,7 +103,8 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			}
 			break
 		case PartType.Kam:
-			// No way of uniquely identifying, add some entropy from cues?
+			// No way of uniquely identifying, add some entropy from cues
+			id += `-${partDefinition.cues.length}`
 			break
 		case PartType.Server:
 			// Only one video Id per story. Changing the video Id will result in a new part
@@ -189,11 +190,4 @@ function padId(id: string, foundMap: { [key: string]: number }) {
 	}
 	foundMap = foundMap
 	return id
-}
-
-function GetEntropyFromCues(cues: CueDefinition[]): string {
-	return `${cues.length}-${cues
-		.map(cue => cue.type.toString().toUpperCase())
-		.sort((a, b) => a.localeCompare(b))
-		.join('-')}`
 }
