@@ -1,7 +1,7 @@
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { GetNextPartCue } from './nextPartCue'
 
-import * as md5 from 'md5'
+// import * as md5 from 'md5'
 import { assertUnreachable } from '../../common/util'
 import { CueDefinitionJingle, CueType, DVESources } from '../inewsConversion/converters/ParseCue'
 
