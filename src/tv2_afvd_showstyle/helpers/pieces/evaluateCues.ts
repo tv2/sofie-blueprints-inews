@@ -188,7 +188,8 @@ export function EvaluateCues(
 						piece.expectedPlayoutItems.push({
 							deviceSubType: DeviceType.VIZMSE,
 							content: {
-								templateName: 'altud'
+								templateName: 'altud',
+								channelName: 'OVL1'
 							}
 						})
 					}
