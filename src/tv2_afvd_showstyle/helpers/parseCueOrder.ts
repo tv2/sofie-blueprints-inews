@@ -104,7 +104,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			break
 		case PartType.Kam:
 			// No way of uniquely identifying, add some entropy from cues
-			id += `-${partDefinition.cues.length}`
+			id += `-${partDefinition.rawType}-${partDefinition.variant.name}-${partDefinition.cues.length}`
 			break
 		case PartType.Server:
 			// Only one video Id per story. Changing the video Id will result in a new part
@@ -176,7 +176,9 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 
 	id = padId(id.trim().replace(/ /g, '-'), foundMap)
 
-	return md5(`${id}`)
+	return id
+
+	// return md5(`${id}`)
 }
 
 function padId(id: string, foundMap: { [key: string]: number }) {
