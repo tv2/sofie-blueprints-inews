@@ -189,7 +189,8 @@ export function EvaluateCues(
 							deviceSubType: DeviceType.VIZMSE,
 							content: {
 								templateName: 'altud',
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								templateData: []
 							}
 						})
 					}
