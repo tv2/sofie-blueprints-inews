@@ -184,6 +184,13 @@ export function EvaluateCues(
 								}
 							})
 						}
+					} else if (obj.content.type === TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS) {
+						piece.expectedPlayoutItems.push({
+							deviceSubType: DeviceType.VIZMSE,
+							content: {
+								templateName: 'altud'
+							}
+						})
 					}
 				}
 			})
