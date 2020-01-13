@@ -2073,7 +2073,7 @@ describe('Body parser', () => {
 		])
 	})
 
-	test('Merge target cues', () => {
+	test('Merge target cues 1', () => {
 		const bodyTarget = '\r\n<p><a idref="0"><a idref="1"></a></p>\r\n<p></p>\r\n'
 		const cuesTarget = [
 			['GRAFIK=FULL', 'INP1=', 'INP='],
@@ -2117,7 +2117,7 @@ describe('Body parser', () => {
 		)
 	})
 
-	test('Merge target cues', () => {
+	test('Merge target cues 2', () => {
 		const bodyTarget =
 			'\r\n<p></p>\r\n<p></p>\r\n<p><cc>LOAD PILOT GRAFIK ON FULLSCREEN CHANNEL</cc></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="2"></a></p>\r\n<p><a idref="3"></a></p>\r\n<p></p>\r\n<p></p>\r\n'
 		const cuesTarget = [
