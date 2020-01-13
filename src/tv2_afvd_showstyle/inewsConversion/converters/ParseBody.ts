@@ -142,6 +142,8 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
 
+const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS\d+(?:VO)?|VO|VOSB|SLUTORD)+\b/gi
+
 export function ParseBody(
 	segmentId: string,
 	segmentName: string,
@@ -151,18 +153,9 @@ export function ParseBody(
 	modified: number
 ): PartDefinition[] {
 	const definitions: PartDefinition[] = []
-	let definition: PartDefinition = {
-		externalId: '',
-		type: PartType.Unknown,
-		rawType: '',
-		variant: {},
-		cues: [],
-		script: '',
-		fields,
-		modified,
-		storyName: segmentName
-	}
+	let definition: PartDefinition = initDefinition(fields, modified, segmentName)
 
+	// Handle intro segments, they have special behaviour.
 	if (segmentName === 'INTRO') {
 		;((definition as unknown) as PartDefinitionIntro).type = PartType.INTRO
 		cues.forEach(cue => {
@@ -184,8 +177,6 @@ export function ParseBody(
 	}
 	lines = lines.filter(line => line !== '<p></p>' && line !== '<p><pi></pi></p>')
 
-	const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS\d+(?:VO)?|VO|VOSB|SLUTORD)+\b/gi
-
 	lines.forEach(line => {
 		const type = line.match(/<pi>(.*?)<\/pi>/i)
 
@@ -205,7 +196,10 @@ export function ParseBody(
 					.split(/<pi>(.*?)<\/pi>/i)
 					.filter(cue => cue !== '' && !cue.match(/<\/a>/))
 
+				/** Hold any secondary cues in the form: `[] KAM 1` */
 				const secondaryInlineCues: CueDefinition[] = []
+
+				// Find all inline primaries appearing before the red text
 				let pos = 0
 				let redTextFound = false
 				while (pos < inlineCues.length && !redTextFound) {
@@ -214,6 +208,7 @@ export function ParseBody(
 					} else {
 						const parsedCues = getCuesInLine(inlineCues[pos], cues)
 						parsedCues.forEach(cue => {
+							// Create standalone parts for primary cues.
 							if (isPrimaryCue(cue)) {
 								if (shouldPushDefinition(definition)) {
 									definitions.push(definition)
@@ -255,6 +250,7 @@ export function ParseBody(
 
 		addScript(line, definition)
 
+		// Add any remaining cues in the line.
 		if (cueInLine(line)) {
 			const parsedCues = getCuesInLine(line, cues)
 
@@ -286,6 +282,7 @@ export function ParseBody(
 		definition = initDefinition(fields, modified, segmentName)
 	}
 
+	// Flatten cues such as targetEngine.
 	definitions.forEach(partDefinition => {
 		if (partDefinition.cues.length) {
 			while (FindTargetPair(partDefinition)) {
@@ -330,6 +327,7 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	}
 }
 
+/** Creates an initial part definition. */
 function initDefinition(fields: any, modified: number, segmentName: string): PartDefinitionUnknown {
 	return {
 		externalId: '',
@@ -344,10 +342,12 @@ function initDefinition(fields: any, modified: number, segmentName: string): Par
 	}
 }
 
+/** Returns true if there is a cue in the given line. */
 function cueInLine(line: string) {
 	return !!line.match(/<a idref=["|'](\d+)["|']>/gi)
 }
 
+/** Returns all the cues in a given line as parsed cues. */
 function getCuesInLine(line: string, cues: UnparsedCue[]): CueDefinition[] {
 	if (!cueInLine(line)) {
 		return []
