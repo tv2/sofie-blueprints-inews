@@ -18,7 +18,10 @@ export enum PartType {
 	Grafik,
 	INTRO,
 	Slutord,
-	EVS
+	EVS,
+	DVE,
+	Ekstern,
+	Telefon
 }
 
 export interface INewsStory {
@@ -100,6 +103,18 @@ export interface PartDefinitionEVS extends PartDefinitionBase {
 	}
 }
 
+export interface PartDefinitionDVE extends PartDefinitionBase {
+	type: PartType.DVE
+}
+
+export interface PartDefinitionEkstern extends PartDefinitionBase {
+	type: PartType.Ekstern
+}
+
+export interface PartDefinitionTelefon extends PartDefinitionBase {
+	type: PartType.Telefon
+}
+
 export type PartDefinition =
 	| PartDefinitionUnknown
 	| PartDefinitionKam
@@ -110,6 +125,9 @@ export type PartDefinition =
 	| PartDefinitionIntro
 	| PartDefinitionSlutord
 	| PartDefinitionEVS
+	| PartDefinitionDVE
+	| PartDefinitionEkstern
+	| PartDefinitionTelefon
 export type PartdefinitionTypes =
 	| Pick<PartDefinitionUnknown, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionKam, 'type' | 'variant' | 'effekt' | 'transition'>
@@ -120,6 +138,9 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionIntro, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionSlutord, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionEVS, 'type' | 'variant' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionDVE, 'type' | 'variant' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
 
 export function ParseBody(
 	segmentId: string,
