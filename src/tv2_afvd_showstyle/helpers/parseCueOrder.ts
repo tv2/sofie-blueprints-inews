@@ -123,6 +123,9 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			id += `-${partDefinition.fields.videoId}`
 			break
 		case PartType.Grafik:
+		case PartType.DVE:
+		case PartType.Ekstern:
+		case PartType.Telefon:
 		case PartType.Unknown:
 			// Special cases based on cues
 			const firstCue = partDefinition.cues[0]

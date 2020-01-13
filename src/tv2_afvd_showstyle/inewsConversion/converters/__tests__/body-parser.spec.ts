@@ -148,8 +148,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
 					script: '',
@@ -159,8 +159,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2, cueJingle3],
 					script: '',
@@ -826,6 +826,17 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
+				literal<PartDefinitionEkstern>({
+					externalId: '',
+					type: PartType.Ekstern,
+					variant: {},
+					rawType: '',
+					cues: [cueEkstern2],
+					script: '',
+					fields,
+					modified: 0,
+					storyName: 'test-segment'
+				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
@@ -835,17 +846,6 @@ describe('Body parser', () => {
 					rawType: 'KAM 1',
 					cues: [],
 					script: 'Single line of script\n',
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionEkstern>({
-					externalId: '',
-					type: PartType.Ekstern,
-					variant: {},
-					rawType: '',
-					cues: [cueEkstern2],
-					script: '',
 					fields,
 					modified: 0,
 					storyName: 'test-segment'

@@ -1,4 +1,3 @@
-import { ParseCueOrder } from '../../../tv2_afvd_showstyle/helpers/parseCueOrder'
 import {
 	CueDefinition,
 	CueDefinitionMOS,
@@ -183,6 +182,8 @@ export function ParseBody(
 	}
 	lines = lines.filter(line => line !== '<p></p>' && line !== '<p><pi></pi></p>')
 
+	const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS\d+(?:VO)?|VO|VOSB|SLUTORD)+\b/gi
+
 	lines.forEach(line => {
 		const type = line.match(/<pi>(.*?)<\/pi>/i)
 
@@ -192,6 +193,77 @@ export function ParseBody(
 				.replace(/<\/[a-z]+>/gi, '')
 				.replace(/[^\w\s]*\B[^\w\s]/gi, '')
 				.replace(/[\s]+/i, ' ')
+				.replace(/<tab>/i, '')
+				.replace(/<\/tab>/i, '')
+				.trim()
+
+			if (typeStr && !!typeStr.match(ACCEPTED_RED_TEXT)) {
+				const inlineCues = line
+					.replace(/<\/?p>/g, '')
+					.split(/<pi>(.*?)<\/pi>/i)
+					.filter(cue => cue !== '' && !cue.match(/<\/a>/))
+
+				let pos = 0
+				let redTextFound = false
+				while (pos < inlineCues.length && !redTextFound) {
+					if (inlineCues[pos].match(ACCEPTED_RED_TEXT)) {
+						redTextFound = true
+					} else {
+						const parsedCues = getCuesInLine(inlineCues[pos], cues)
+						parsedCues.forEach(cue => {
+							if (isPrimaryCue(cue)) {
+								if (shouldPushDefinition(definition)) {
+									definitions.push(definition)
+								}
+								definition = makeDefinitionPrimaryCue(
+									segmentId,
+									definitions.length,
+									'',
+									fields,
+									modified,
+									segmentName,
+									cue
+								)
+							}
+							definition.cues.push(cue)
+							line = line.replace(inlineCues[pos], '')
+						})
+					}
+					pos++
+				}
+
+				line = line.replace(/<\/a>/g, '').replace(/<pi>(.*?)<\/pi>/i, '')
+
+				if (shouldPushDefinition(definition)) {
+					definitions.push(definition)
+				}
+
+				definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
+			}
+		}
+
+		addScript(line, definition)
+
+		if (cueInLine(line)) {
+			const parsedCues = getCuesInLine(line, cues)
+
+			parsedCues.forEach(cue => {
+				if (isPrimaryCue(cue)) {
+					if (shouldPushDefinition(definition)) {
+						definitions.push(definition)
+					}
+					definition = makeDefinitionPrimaryCue(segmentId, definitions.length, '', fields, modified, segmentName, cue)
+				}
+				definition.cues.push(cue)
+			})
+		}
+
+		/*if (type) {
+			const typeStr = type[1]
+				.replace(/<[a-z]+>/gi, '')
+				.replace(/<\/[a-z]+>/gi, '')
+				.replace(/[^\w\w\s]/gi, '')
+				.r[\s]+/i, ' ')
 				.replace(/<tab>/i, '')
 				.replace(/<\/tab>/i, '')
 				.trim()
@@ -249,9 +321,9 @@ export function ParseBody(
 			if (trimscript) {
 				definition.script += `${trimscript}\n`
 			}
-		}
+		}*/
 	})
-	if (!definition.externalId) {
+	/*if (!definition.externalId) {
 		definition.externalId = `${segmentId}-${definitions.length}`
 	}
 	definitions.push(definition)
@@ -264,7 +336,13 @@ export function ParseBody(
 		}
 	})
 
-	return ParseCueOrder(definitions, segmentId)
+	return ParseCueOrder(definitions, segmentId)*/
+
+	if (shouldPushDefinition(definition)) {
+		definitions.push(definition)
+	}
+
+	return definitions
 }
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
@@ -300,19 +378,82 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	}
 }
 
-function addCue(definition: PartDefinition, line: string, cues: UnparsedCue[]) {
-	const cue = line.match(/<a idref=["|'](\d+)["|']>/gi)
-	if (cue) {
-		cue.forEach(c => {
-			const value = c.match(/<a idref=["|'](\d+)["|']>/i)
-			if (value) {
-				const realCue = cues[Number(value[1])]
-				if (realCue) {
-					definition.cues.push(ParseCue(realCue))
-				}
-			}
-		})
+function cueInLine(line: string) {
+	return !!line.match(/<a idref=["|'](\d+)["|']>/gi)
+}
+
+function getCuesInLine(line: string, cues: UnparsedCue[]): CueDefinition[] {
+	if (!cueInLine(line)) {
+		return []
 	}
+
+	const definitions: CueDefinition[] = []
+
+	const cue = line.match(/<a idref=["|'](\d+)["|']>/gi)
+	cue?.forEach(c => {
+		const value = c.match(/<a idref=["|'](\d+)["|']>/i)
+		if (value) {
+			const realCue = cues[Number(value[1])]
+			if (realCue) {
+				definitions.push(ParseCue(realCue))
+			}
+		}
+	})
+
+	return definitions
+}
+
+function addScript(line: string, definition: PartDefinition) {
+	const script = line.match(/<p>(.*)?<\/p>/i)
+	if (script && script[1]) {
+		const trimscript = script[1]
+			.replace(/<.*?>/gi, '')
+			.replace('\n\r', '')
+			.trim()
+		if (trimscript) {
+			definition.script += `${trimscript}\n`
+		}
+	}
+}
+
+function isPrimaryCue(cue: CueDefinition) {
+	return cue.type === CueType.Telefon || cue.type === CueType.Ekstern || cue.type === CueType.DVE
+}
+
+function shouldPushDefinition(definition: PartDefinition) {
+	return definition.cues.length || definition.script || definition.type !== PartType.Unknown
+}
+
+function makeDefinitionPrimaryCue(
+	segmentId: string,
+	i: number,
+	typeStr: string,
+	fields: any,
+	modified: number,
+	storyName: string,
+	cue: CueDefinition
+): PartDefinition {
+	const definition = makeDefinition(segmentId, i, typeStr, fields, modified, storyName)
+
+	switch (cue.type) {
+		case CueType.Ekstern:
+			definition.type = PartType.Ekstern
+			break
+		case CueType.DVE:
+			definition.type = PartType.DVE
+			break
+		case CueType.Telefon:
+			definition.type = PartType.Telefon
+			break
+		default:
+			// For log purposes + to catch future issues.
+			console.log(
+				`Blueprint recieved non-primary cue when creating primary cue part. Likely a new primary cue type has been added recently.`
+			)
+			break
+	}
+
+	return definition
 }
 
 function makeDefinition(
