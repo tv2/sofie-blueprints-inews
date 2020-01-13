@@ -1,3 +1,4 @@
+import { PostProcessDefinitions } from '../../helpers/postProcessDefinitions'
 import {
 	CueDefinition,
 	CueDefinitionMOS,
@@ -293,7 +294,7 @@ export function ParseBody(
 		}
 	})
 
-	return definitions
+	return PostProcessDefinitions(definitions, segmentId)
 }
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
