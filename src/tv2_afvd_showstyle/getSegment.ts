@@ -174,7 +174,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		allocatedTime = 0
 	}
 
-	let extraTime = 0 // The part at the end gets the extra time so display duration works correctly
+	let totalAllocatedTime = 0
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration) {
@@ -188,15 +188,20 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				!!part.part.title.match(/(?:kam|cam)(?:era)? ?.*/i) &&
 				part.part.expectedDuration > config.studio.MaximumKamDisplayDuration
 			) {
-				extraTime += part.part.expectedDuration - config.studio.MaximumKamDisplayDuration
 				part.part.displayDuration = config.studio.MaximumKamDisplayDuration
 			}
 		}
+
+		totalAllocatedTime += part.part.expectedDuration
 	})
 
+	// TODO: This is where the gap goes
+	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
 	if (extraTime > 0) {
 		blueprintParts[blueprintParts.length - 1].part.displayDuration =
 			Number(blueprintParts[blueprintParts.length - 1].part.displayDuration) + extraTime
+		blueprintParts[blueprintParts.length - 1].part.expectedDuration =
+			blueprintParts[blueprintParts.length - 1].part.displayDuration
 	}
 
 	if (
