@@ -557,11 +557,17 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 		type: CueType.ClearGrafiks
 	}
 
+	let time = false
 	cue.forEach(c => {
 		if (isTime(c)) {
+			time = true
 			clearCue = { ...clearCue, ...parseTime(c) }
 		}
 	})
+
+	if (!time) {
+		clearCue.adlib = true
+	}
 
 	return clearCue
 }

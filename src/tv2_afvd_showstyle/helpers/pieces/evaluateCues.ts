@@ -130,7 +130,7 @@ export function EvaluateCues(
 					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
 					break
 				case CueType.ClearGrafiks:
-					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue)
+					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue, shouldAdlib)
 					break
 				default:
 					if (

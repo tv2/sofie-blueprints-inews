@@ -1114,5 +1114,27 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('All out', () => {
+		const cueViz = ['kg altud', ';0.0x']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				adlib: true
+			})
+		)
+	})
+
+	test('All out', () => {
+		const cueViz = ['kg altud', ';x.xx']
+		const result = ParseCue(cueViz)
+		expect(result).toEqual(
+			literal<CueDefinitionClearGrafiks>({
+				type: CueType.ClearGrafiks,
+				adlib: true
+			})
+		)
+	})
+
 	/** End of all-out cues */
 })

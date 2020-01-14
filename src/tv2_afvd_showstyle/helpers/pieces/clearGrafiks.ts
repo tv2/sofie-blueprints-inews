@@ -6,7 +6,16 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { VizLLayer } from './../../../tv2_afvd_studio/layers'
 import { CreateTimingEnable } from './evaluateCues'
 
-export function EvaluateClearGrafiks(pieces: IBlueprintPiece[], partId: string, parsedCue: CueDefinitionClearGrafiks) {
+export function EvaluateClearGrafiks(
+	pieces: IBlueprintPiece[],
+	partId: string,
+	parsedCue: CueDefinitionClearGrafiks,
+	shouldAdlib: boolean
+) {
+	if (shouldAdlib) {
+		return
+	}
+
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',
