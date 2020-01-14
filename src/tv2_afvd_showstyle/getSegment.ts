@@ -115,6 +115,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
 				)
 				break
+			// DVE, Ekstern, Telefon are defined as primary cues.
+			case PartType.DVE:
+			case PartType.Ekstern:
+			case PartType.Telefon:
 			case PartType.Unknown:
 				if (part.cues.length) {
 					blueprintParts.push(CreatePartUnknown(partContext, config, part, totalWords))

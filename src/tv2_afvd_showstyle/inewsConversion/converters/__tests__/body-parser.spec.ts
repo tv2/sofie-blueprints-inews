@@ -2,12 +2,16 @@ import { literal } from '../../../../common/util'
 import {
 	ParseBody,
 	PartDefinition,
+	PartDefinitionDVE,
+	PartDefinitionEkstern,
 	PartDefinitionEVS,
 	PartDefinitionGrafik,
+	PartDefinitionIntro,
 	PartDefinitionKam,
 	PartDefinitionServer,
 	PartDefinitionSlutord,
 	PartDefinitionTeknik,
+	PartDefinitionTelefon,
 	PartDefinitionUnknown,
 	PartDefinitionVO,
 	PartType
@@ -144,8 +148,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
 					script: '',
@@ -155,8 +159,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2, cueJingle3],
 					script: '',
@@ -181,7 +185,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
 					cues: [cueUnknown, cueGrafik1],
-					script: 'Thid id thr trext for the next DVE\nScript here\n',
+					script: 'Thid id thr trext for the next DVE\n',
 					variant: {},
 					externalId: '',
 					rawType: '',
@@ -189,11 +193,11 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					script: '',
+					script: 'Script here\n',
 					variant: {},
 					externalId: '',
 					fields: {},
@@ -246,8 +250,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
 					script: '',
@@ -257,8 +261,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2],
 					script: '',
@@ -351,8 +355,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1, cueGrafik3],
 					script: '',
@@ -470,8 +474,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
 					script: '',
@@ -505,8 +509,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
 					script: '',
@@ -541,8 +545,8 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
 					script: '',
@@ -598,7 +602,7 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'test-segment', body12, cues12, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				{
+				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 3',
 					cues: [cueUnknown, cueGrafik1, cueGrafik2],
@@ -610,7 +614,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
-				}
+				})
 			])
 		)
 	})
@@ -622,7 +626,7 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'test-segment', body13, cues13, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				{
+				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
 					rawType: '',
 					cues: [cueUnknown],
@@ -632,7 +636,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
-				}
+				})
 			])
 		)
 	})
@@ -651,7 +655,7 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'test-segment', body14, cues14, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				{
+				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
 					rawType: '',
 					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
@@ -661,9 +665,9 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
-				},
-				{
-					type: PartType.Unknown,
+				}),
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
 					script: '',
@@ -672,9 +676,9 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
-				},
-				{
-					type: PartType.Unknown,
+				}),
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2],
 					script: '',
@@ -683,7 +687,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment'
-				}
+				})
 			])
 		)
 	})
@@ -695,7 +699,7 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'INTRO', body15, cues15, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				{
+				literal<PartDefinitionIntro>({
 					type: PartType.INTRO,
 					rawType: 'INTRO',
 					cues: [cueUnknown, cueGrafik1],
@@ -705,7 +709,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'INTRO'
-				}
+				})
 			])
 		)
 	})
@@ -811,12 +815,23 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'test-segment', body17, cues17, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionEkstern>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Ekstern,
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern1],
+					script: '',
+					fields,
+					modified: 0,
+					storyName: 'test-segment'
+				}),
+				literal<PartDefinitionEkstern>({
+					externalId: '',
+					type: PartType.Ekstern,
+					variant: {},
+					rawType: '',
+					cues: [cueEkstern2],
 					script: '',
 					fields,
 					modified: 0,
@@ -835,17 +850,6 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
-					externalId: '',
-					type: PartType.Unknown,
-					variant: {},
-					rawType: '',
-					cues: [cueEkstern2],
-					script: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
-				}),
 				literal<PartDefinitionServer>({
 					externalId: '',
 					type: PartType.Server,
@@ -857,9 +861,9 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionTelefon>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Telefon,
 					variant: {},
 					rawType: '',
 					cues: [cueTelefon1],
@@ -868,9 +872,9 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionTelefon>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Telefon,
 					variant: {},
 					rawType: '',
 					cues: [cueTelefon2],
@@ -1151,9 +1155,9 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionTelefon>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Telefon,
 					variant: {},
 					rawType: '',
 					cues: [
@@ -1232,9 +1236,9 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionTelefon>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Telefon,
 					variant: {},
 					rawType: '',
 					cues: [
@@ -1515,9 +1519,9 @@ describe('Body parser', () => {
 				modified: 0,
 				storyName: 'test-segment'
 			}),
-			literal<PartDefinitionUnknown>({
+			literal<PartDefinitionDVE>({
 				externalId: '',
-				type: PartType.Unknown,
+				type: PartType.DVE,
 				variant: {},
 				rawType: '',
 				cues: [
@@ -1531,14 +1535,14 @@ describe('Body parser', () => {
 						labels: ['Rodovre']
 					})
 				],
-				script: 'Some Script here\n',
+				script: '',
 				fields,
 				modified: 0,
 				storyName: 'test-segment'
 			}),
-			literal<PartDefinitionUnknown>({
+			literal<PartDefinitionEkstern>({
 				externalId: '',
-				type: PartType.Unknown,
+				type: PartType.Ekstern,
 				variant: {},
 				rawType: '',
 				cues: [
@@ -1547,7 +1551,7 @@ describe('Body parser', () => {
 						source: 'LIVE 2'
 					})
 				],
-				script: '',
+				script: 'Some Script here\n',
 				fields,
 				modified: 0,
 				storyName: 'test-segment'
@@ -1574,9 +1578,9 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'test-segment', body29, cues29, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionEkstern>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Ekstern,
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern1],
@@ -1585,9 +1589,9 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionEkstern>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Ekstern,
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern2],
@@ -1620,9 +1624,9 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionTelefon>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Telefon,
 					variant: {},
 					rawType: '',
 					cues: [cueTelefon1],
@@ -1631,9 +1635,9 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment'
 				}),
-				literal<PartDefinitionUnknown>({
+				literal<PartDefinitionTelefon>({
 					externalId: '',
-					type: PartType.Unknown,
+					type: PartType.Telefon,
 					variant: {},
 					rawType: '',
 					cues: [cueTelefon2],
@@ -1697,9 +1701,9 @@ describe('Body parser', () => {
 		]
 		const result = ParseBody('00000000001', 'test-segment', body30, cues30, fields, 0)
 		expect(stripExternalId(result)).toEqual([
-			literal<PartDefinitionUnknown>({
+			literal<PartDefinitionDVE>({
 				externalId: '',
-				type: PartType.Unknown,
+				type: PartType.DVE,
 				variant: {},
 				rawType: '',
 				cues: [
@@ -1713,14 +1717,14 @@ describe('Body parser', () => {
 						labels: ['Rodovre']
 					})
 				],
-				script: 'And some script\n',
+				script: '',
 				fields,
 				modified: 0,
 				storyName: 'test-segment'
 			}),
-			literal<PartDefinitionUnknown>({
+			literal<PartDefinitionEkstern>({
 				externalId: '',
-				type: PartType.Unknown,
+				type: PartType.Ekstern,
 				variant: {},
 				rawType: '',
 				cues: [
@@ -1729,7 +1733,7 @@ describe('Body parser', () => {
 						source: 'LIVE 2'
 					})
 				],
-				script: '',
+				script: 'And some script\n',
 				fields,
 				modified: 0,
 				storyName: 'test-segment'
@@ -1839,9 +1843,9 @@ describe('Body parser', () => {
 				modified: 0,
 				storyName: 'test-segment'
 			}),
-			literal<PartDefinitionUnknown>({
+			literal<PartDefinitionDVE>({
 				externalId: '',
-				type: PartType.Unknown,
+				type: PartType.DVE,
 				variant: {},
 				rawType: '',
 				cues: [
@@ -1855,14 +1859,14 @@ describe('Body parser', () => {
 						labels: ['Rodovre']
 					})
 				],
-				script: 'Some script\n',
+				script: '',
 				fields,
 				modified: 0,
 				storyName: 'test-segment'
 			}),
-			literal<PartDefinitionUnknown>({
+			literal<PartDefinitionEkstern>({
 				externalId: '',
-				type: PartType.Unknown,
+				type: PartType.Ekstern,
 				variant: {},
 				rawType: '',
 				cues: [
@@ -1871,7 +1875,7 @@ describe('Body parser', () => {
 						source: 'LIVE 2'
 					})
 				],
-				script: '',
+				script: 'Some script\n',
 				fields,
 				modified: 0,
 				storyName: 'test-segment'
@@ -2069,7 +2073,7 @@ describe('Body parser', () => {
 		])
 	})
 
-	test('Merge target cues', () => {
+	test('Merge target cues 1', () => {
 		const bodyTarget = '\r\n<p><a idref="0"><a idref="1"></a></p>\r\n<p></p>\r\n'
 		const cuesTarget = [
 			['GRAFIK=FULL', 'INP1=', 'INP='],
@@ -2113,7 +2117,7 @@ describe('Body parser', () => {
 		)
 	})
 
-	test('Merge target cues', () => {
+	test('Merge target cues 2', () => {
 		const bodyTarget =
 			'\r\n<p></p>\r\n<p></p>\r\n<p><cc>LOAD PILOT GRAFIK ON FULLSCREEN CHANNEL</cc></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="2"></a></p>\r\n<p><a idref="3"></a></p>\r\n<p></p>\r\n<p></p>\r\n'
 		const cuesTarget = [

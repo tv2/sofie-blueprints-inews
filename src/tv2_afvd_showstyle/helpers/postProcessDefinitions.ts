@@ -1,94 +1,20 @@
 import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
-import { GetNextPartCue } from './nextPartCue'
 
-// import * as md5 from 'md5'
 import { assertUnreachable } from '../../common/util'
 import { CueDefinitionJingle, CueType, DVESources } from '../inewsConversion/converters/ParseCue'
 
-export function ParseCueOrder(partDefinitions: PartDefinition[], segmentId: string): PartDefinition[] {
-	const retDefintions: PartDefinition[] = []
+export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmentId: string): PartDefinition[] {
 	const foundMap: { [key: string]: number } = {}
-	partDefinitions.forEach(partDefinition => {
-		const first = GetNextPartCue(partDefinition, -1)
 
-		// Unknown part type => It's not creating pieces of its own
-		if (partDefinition.type !== PartType.Unknown) {
-			// No extra parts
-			if (first === -1) {
-				retDefintions.push({ ...partDefinition, externalId: getExternalId(segmentId, partDefinition, foundMap) })
-				return
-			} else {
-				const part = {
-					...partDefinition,
-					...(partDefinition.type === PartType.Slutord ? { script: '' } : {}),
-					cues: first > 0 ? partDefinition.cues.splice(0, first) : []
-				}
-				part.externalId = getExternalId(segmentId, part, foundMap)
-				retDefintions.push(part)
-			}
-		} else if (GetNextPartCue(partDefinition, -1) === -1) {
-			retDefintions.push({ ...partDefinition, externalId: getExternalId(segmentId, partDefinition, foundMap) })
-			return
-		}
-
-		// This catches the case where iNews has:
-		// SLUTORD...
-		// ***LIVE***
-		// <a PRIMARY>
-		// script
-		let isFirstNewPrimary = true
-		const slutordScript = partDefinition.type === PartType.Slutord ? partDefinition.script : undefined
-
-		while (partDefinition.cues.length) {
-			if (GetNextPartCue(partDefinition, 0) !== -1) {
-				const part: PartDefinition = {
-					type: PartType.Unknown,
-					variant: {},
-					externalId: '',
-					rawType: '',
-					cues: partDefinition.cues.splice(0, GetNextPartCue(partDefinition, 0)),
-					script:
-						isFirstNewPrimary && slutordScript
-							? slutordScript
-							: retDefintions.length === 0
-							? partDefinition.script
-							: '',
-					fields: partDefinition.fields,
-					modified: partDefinition.modified,
-					storyName: partDefinition.storyName
-				}
-				part.externalId = getExternalId(segmentId, part, foundMap)
-				retDefintions.push(part)
-			} else {
-				const part: PartDefinition = {
-					type: PartType.Unknown,
-					variant: {},
-					externalId: ``,
-					rawType: '',
-					cues: partDefinition.cues,
-					script:
-						isFirstNewPrimary && slutordScript
-							? slutordScript
-							: retDefintions.length === 0
-							? partDefinition.script
-							: '',
-					fields: partDefinition.fields,
-					modified: partDefinition.modified,
-					storyName: partDefinition.storyName
-				}
-				part.externalId = getExternalId(segmentId, part, foundMap)
-				retDefintions.push(part)
-				partDefinition.cues = []
-			}
-			isFirstNewPrimary = false
-		}
+	partDefinitions.forEach((part, i) => {
+		partDefinitions[i] = { ...part, externalId: getExternalId(segmentId, part, foundMap) }
 	})
 
-	return retDefintions
+	return partDefinitions
 }
 
 function getExternalId(segmentId: string, partDefinition: PartDefinition, foundMap: { [key: string]: number }): string {
-	let id = `${segmentId}-${partDefinition.type.toString()}`
+	let id = `${segmentId}-${PartType[partDefinition.type].toString()}`
 
 	switch (partDefinition.type) {
 		case PartType.EVS:
@@ -108,11 +34,11 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			break
 		case PartType.Server:
 			// Only one video Id per story. Changing the video Id will result in a new part
-			id += `-${partDefinition.fields.videoId}`
+			id += `-${partDefinition.fields.videoId ? partDefinition.fields.videoId : 'noId'}`
 			break
 		case PartType.Slutord:
 			// Slutord parts are filtered out before reaching core, so don't matter as much
-			id += `-${partDefinition.script}`
+			id += `-${partDefinition.variant.endWords.replace(/\s/, '').replace(/\W/, '')}`
 			break
 		case PartType.Teknik:
 			// Possibly an unused part type, not seen in production - only one example found in original test data
@@ -123,6 +49,9 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			id += `-${partDefinition.fields.videoId}`
 			break
 		case PartType.Grafik:
+		case PartType.DVE:
+		case PartType.Ekstern:
+		case PartType.Telefon:
 		case PartType.Unknown:
 			// Special cases based on cues
 			const firstCue = partDefinition.cues[0]
