@@ -16,6 +16,31 @@ export function EvaluateClearGrafiks(
 		return
 	}
 
+	;[
+		SourceLayer.PgmGraphicsIdent,
+		SourceLayer.PgmGraphicsIdentPersistent,
+		SourceLayer.PgmGraphicsTop,
+		SourceLayer.PgmGraphicsLower,
+		SourceLayer.PgmGraphicsHeadline,
+		SourceLayer.PgmGraphicsTema,
+		SourceLayer.PgmGraphicsOverlay,
+		SourceLayer.PgmGraphicsTLF
+	].forEach(sourceLayerId => {
+		pieces.push({
+			_id: '',
+			externalId: partId,
+			name: `CLEAR ${sourceLayerId}`,
+			enable: {
+				start: CreateTimingEnable(parsedCue).enable.start,
+				duration: 1000
+			},
+			outputLayerId: 'sec',
+			sourceLayerId,
+			infiniteMode: PieceLifespan.Normal,
+			virtual: true
+		})
+	})
+
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',
