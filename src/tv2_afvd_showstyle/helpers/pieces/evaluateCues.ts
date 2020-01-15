@@ -169,7 +169,8 @@ export function EvaluateCues(
 								content: {
 									templateName: (obj as TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TimelineObjVIZMSEElementInternal).content.templateData,
-									channelName: 'OVL1'
+									channelName: 'OVL1',
+									rundownId: ''
 								}
 							})
 						}
@@ -180,7 +181,8 @@ export function EvaluateCues(
 								deviceSubType: DeviceType.VIZMSE,
 								content: {
 									templateName: (obj as TimelineObjVIZMSEElementPilot).content.templateVcpId,
-									channelName: (obj as TimelineObjVIZMSEElementPilot).content.channelName
+									channelName: (obj as TimelineObjVIZMSEElementPilot).content.channelName,
+									rundownId: ''
 								}
 							})
 						}
@@ -190,7 +192,8 @@ export function EvaluateCues(
 							content: {
 								templateName: 'altud',
 								channelName: 'OVL1',
-								templateData: []
+								templateData: [],
+								rundownId: ''
 							}
 						})
 					}
