@@ -204,6 +204,12 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			blueprintParts[blueprintParts.length - 1].part.displayDuration
 	}
 
+	blueprintParts.forEach(part => {
+		if (!part.part.expectedDuration) {
+			part.part.expectedDuration = 3000
+		}
+	})
+
 	if (
 		blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length === blueprintParts.length
 	) {
