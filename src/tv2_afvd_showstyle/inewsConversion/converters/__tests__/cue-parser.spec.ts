@@ -867,6 +867,18 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('AdLib Server', () => {
+		const cueAdLib = ['ADLIBPX=server']
+		const result = ParseCue(cueAdLib)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.AdLib,
+				variant: 'server',
+				inputs: {}
+			})
+		)
+	})
+
 	test('Kommando', () => {
 		const cueKommando = ['KOMMANDO=GRAPHICSPROFILE', 'TV2 SPORT 2016', ';0.00']
 		const result = ParseCue(cueKommando)

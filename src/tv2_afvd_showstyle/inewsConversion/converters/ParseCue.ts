@@ -211,7 +211,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		return parseVIZCues(cue)
 	} else if (cue[0].match(/^STUDIE=MIC ON OFF$/i)) {
 		return parseMic(cue)
-	} else if (cue[0].match(/^ADLIBPIX=/i)) {
+	} else if (cue[0].match(/^ADLIBPI?X=/i)) {
 		return parseAdLib(cue)
 	} else if (cue[0].match(/^KOMMANDO=/i)) {
 		return parseKommando(cue)
@@ -433,7 +433,7 @@ function parseAdLib(cue: string[]) {
 		inputs: {}
 	}
 
-	const variant = cue[0].match(/^ADLIBPIX=(.+)$/i)
+	const variant = cue[0].match(/^ADLIBPI?X=(.+)$/i)
 	if (variant) {
 		adlib.variant = variant[1]
 	}
