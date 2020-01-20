@@ -27,7 +27,8 @@ export function CreatePartUnknown(
 		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
 		metaData: {},
 		typeVariant: '',
-		autoNext: false
+		autoNext: false,
+		expectedDuration: partTime
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
