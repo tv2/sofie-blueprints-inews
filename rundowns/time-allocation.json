@@ -11,9 +11,9 @@
     },
     "segments": [
         {
-            "externalId": "1dd244cb:00921671:5e1db217",
+            "externalId": "1dd244cb:00921671:5e1db210",
             "name": "Reference",
-            "rank": 17,
+            "rank": 10,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -21,9 +21,9 @@
                         "pageNumber": "17",
                         "title": "Reference",
                         "var2": "INDSL",
-                        "tapeTime": "513",
+                        "tapeTime": "313",
                         "audioTime": "13",
-                        "totalTime": "513",
+                        "totalTime": "313",
                         "modifyDate": "1579008960",
                         "modifyBy": "bede",
                         "var16": "ååmmdd",
@@ -39,22 +39,22 @@
                         "rate": "140"
                     },
                     "cues": [],
-                    "id": "1dd244cb:0093a9a8:5e1db5c9",
+                    "id": "1dd244cb:00921671:5e1db210",
                     "body": "\r\n<p><pi>Kam 1</pi></p>\r\n<p></p>\r\n<p>This is a manus with a tape time of 5 minutes, wichis the Editors way of \"givin\" this LIVE a maximum of 5minutes.</p>\r\n<p>This text is XX seconds and are added to the totaltime</p>\r\n<p></p>\r\n",
                     "fileId": "1DD244CB:0093A9A8:5E1DB5C9"
                 },
                 "modified": "1579008960",
-                "externalId": "1dd244cb:00921671:5e1db217",
-                "rank": 17,
+                "externalId": "1dd244cb:00921671:5e1db210",
+                "rank": 10,
                 "name": "Reference",
                 "float": false
             },
             "parts": []
         },
         {
-            "externalId": "1dd244cb:00921671:5e1db218",
+            "externalId": "1dd244cb:00921671:5e1db211",
             "name": "Scenario 1",
-            "rank": 17,
+            "rank": 20,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -80,22 +80,108 @@
                         "rate": "140"
                     },
                     "cues": [],
-                    "id": "1dd244cb:0093a9a8:5e1db5c9",
+                    "id": "1dd244cb:00921671:5e1db211",
                     "body": "\r\n<p><cc>Kam 1: 7 seconds, Kam 2: 10 seconds</cc></p>\r\n<p><pi>Kam 1</pi></p>\r\n<p>1111111</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p>1111111111</p>\r\n",
                     "fileId": "1DD244CB:0093A9A8:5E1DB5C8"
                 },
                 "modified": "1579008960",
-                "externalId": "1dd244cb:00921671:5e1db218",
-                "rank": 18,
+                "externalId": "1dd244cb:00921671:5e1db211",
+                "rank": 20,
                 "name": "Scenario 1",
                 "float": false
             },
             "parts": []
         },
         {
-            "externalId": "1dd244cb:00921671:5e1db219",
+            "externalId": "1dd244cb:00921671:5e1db212",
+            "name": "Scenario 1",
+            "rank": 30,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "17",
+                        "title": "Scenario 1",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "17",
+                        "totalTime": "17",
+                        "modifyDate": "1579008960",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "28",
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "EKSTERN=LIVE 1"
+                        ]
+                    ],
+                    "id": "1dd244cb:00921671:5e1db212",
+                    "body": "\r\n<p><cc>Live 1: 7 seconds, Kam 2: 10 seconds</cc></p>\r\n<p><pi>LIVE</pi><a idref=\"0\"></a></p>\r\n<p>1111111</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p>1111111111</p>\r\n",
+                    "fileId": "1DD244CB:0093A9A8:5E1DB5C8"
+                },
+                "modified": "1579008960",
+                "externalId": "1dd244cb:00921671:5e1db212",
+                "rank": 30,
+                "name": "Scenario 1",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1dd244cb:00921671:5e1db2120",
+            "name": "Scenario 1",
+            "rank": 31,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "17",
+                        "title": "Scenario 1",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "17",
+                        "totalTime": "17",
+                        "modifyDate": "1579008960",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "28",
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "1dd244cb:00921671:5e1db2120",
+                    "body": "\r\n<p><cc>EVS 1: 7 seconds, Kam 2: 10 seconds</cc></p>\r\n<p><pi>EVS 1</pi></p>\r\n<p>1111111</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p>1111111111</p>\r\n",
+                    "fileId": "1DD244CB:0093A9A8:5E1DB5C8"
+                },
+                "modified": "1579008960",
+                "externalId": "1dd244cb:00921671:5e1db2120",
+                "rank": 31,
+                "name": "Scenario 1",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1dd244cb:00921671:5e1db213",
             "name": "Scenario 2",
-            "rank": 17,
+            "rank": 40,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -122,22 +208,68 @@
                         "rate": "140"
                     },
                     "cues": [],
-                    "id": "1dd244cb:0093a9a8:5e1db5c9",
+                    "id": "1dd244cb:00921671:5e1db213",
                     "body": "\r\n<p><cc>Kam 1: 8 seconds, VO: 20 seconds</cc></p>\r\n<p><pi>Kam 1</pi></p>\r\n<p>11111111</p>\r\n<p><pi>VO</pi></p>\r\n<p>11111111111111111111</p>\r\n",
                     "fileId": "1DD244CB:0093A9A8:5E1DB5C8"
                 },
                 "modified": "1579008960",
-                "externalId": "1dd244cb:00921671:5e1db219",
-                "rank": 19,
+                "externalId": "1dd244cb:00921671:5e1db213",
+                "rank": 40,
                 "name": "Scenario 2",
                 "float": false
             },
             "parts": []
         },
         {
-            "externalId": "1dd244cb:00921671:5e1db220",
+            "externalId": "1dd244cb:00921671:5e1db214",
+            "name": "Scenario 2",
+            "rank": 50,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "17",
+                        "title": "Scenario 2",
+                        "var2": "INDSL",
+                        "videoId": "1234A",
+                        "tapeTime": "0",
+                        "audioTime": "28",
+                        "totalTime": "28",
+                        "modifyDate": "1579008960",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "28",
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "EKSTERN=LIVE 1"
+                        ]
+                    ],
+                    "id": "1dd244cb:00921671:5e1db214",
+                    "body": "\r\n<p><cc>Live 1: 8 seconds, VO: 20 seconds</cc></p>\r\n<p><pi>LIVE</pi><a idref=\"0\"></a></p>\r\n<p>11111111</p>\r\n<p><pi>VO</pi></p>\r\n<p>11111111111111111111</p>\r\n",
+                    "fileId": "1DD244CB:0093A9A8:5E1DB5C8"
+                },
+                "modified": "1579008960",
+                "externalId": "1dd244cb:00921671:5e1db214",
+                "rank": 50,
+                "name": "Scenario 2",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1dd244cb:00921671:5e1db215",
             "name": "Scenario 3",
-            "rank": 17,
+            "rank": 60,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -164,13 +296,59 @@
                         "rate": "140"
                     },
                     "cues": [],
-                    "id": "1dd244cb:0093a9a8:5e1db5c9",
+                    "id": "1dd244cb:00921671:5e1db215",
                     "body": "\r\n<p><cc>Kam 1: 9 seconds, VO: 25 seconds</cc></p>\r\n<p><pi>Kam 1</pi></p>\r\n<p>111111111</p>\r\n<p><pi>VO</pi></p>\r\n<p><pi>SB: Soundbyte (5 seconds)</pi></p>\r\n<p>11111111111111111111</p>\r\n",
                     "fileId": "1DD244CB:0093A9A8:5E1DB5C8"
                 },
                 "modified": "1579008960",
+                "externalId": "1dd244cb:00921671:5e1db215",
+                "rank": 60,
+                "name": "Scenario 3",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1dd244cb:00921671:5e1db216",
+            "name": "Scenario 3",
+            "rank": 70,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "17",
+                        "title": "Scenario 3",
+                        "var2": "INDSL",
+                        "videoId": "1234A",
+                        "tapeTime": "5",
+                        "audioTime": "29",
+                        "totalTime": "34",
+                        "modifyDate": "1579008960",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "28",
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "EKSTERN=LIVE 1"
+                        ]
+                    ],
+                    "id": "1dd244cb:00921671:5e1db216",
+                    "body": "\r\n<p><cc>Live 1: 9 seconds, VO: 25 seconds</cc></p>\r\n<p><pi>LIVE</pi><a idref=\"0\"></a></p>\r\n<p>111111111</p>\r\n<p><pi>VO</pi></p>\r\n<p><pi>SB: Soundbyte (5 seconds)</pi></p>\r\n<p>11111111111111111111</p>\r\n",
+                    "fileId": "1dd244cb:00921671:5e1db216"
+                },
+                "modified": "1579008960",
                 "externalId": "1dd244cb:00921671:5e1db220",
-                "rank": 20,
+                "rank": 70,
                 "name": "Scenario 3",
                 "float": false
             },
