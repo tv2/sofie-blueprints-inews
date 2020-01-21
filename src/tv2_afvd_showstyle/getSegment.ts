@@ -181,7 +181,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	let totalAllocatedTime = 0
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
-		if (!part.part.expectedDuration) {
+		if (!part.part.expectedDuration && Number(ingestSegment.payload.iNewsStory.fields.totalTime) > 0) {
 			part.part.expectedDuration =
 				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
 				(blueprintParts.length - serverParts)
@@ -196,7 +196,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			}
 		}
 
-		totalAllocatedTime += part.part.expectedDuration
+		if (part.part.expectedDuration) {
+			totalAllocatedTime += part.part.expectedDuration
+		}
 	})
 
 	// TODO: This is where the gap goes
