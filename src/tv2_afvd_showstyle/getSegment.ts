@@ -153,14 +153,18 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			part.type === PartType.Server ||
 			(part.type === PartType.VO && (Number(part.fields.tapeTime) > 0 || part.script.length))
 		) {
-			serverTime += Number(blueprintParts[blueprintParts.length - 1].part.expectedDuration)
-			serverParts++
+			if (blueprintParts[blueprintParts.length - 1]) {
+				serverTime += Number(blueprintParts[blueprintParts.length - 1].part.expectedDuration)
+				serverParts++
+			}
 		}
 
-		if (part.cues.filter(cue => cue.type === CueType.Jingle)) {
-			const t = blueprintParts[blueprintParts.length - 1].part.expectedDuration
-			if (t) {
-				jingleTime += t
+		if (part.cues.filter(cue => cue.type === CueType.Jingle).length) {
+			if (blueprintParts[blueprintParts.length - 1]) {
+				const t = blueprintParts[blueprintParts.length - 1].part.expectedDuration
+				if (t) {
+					jingleTime += t
+				}
 			}
 		}
 	}
@@ -197,7 +201,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	// TODO: This is where the gap goes
 	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
-	if (extraTime > 0) {
+	if (extraTime > 0 && blueprintParts[blueprintParts.length - 1]) {
 		blueprintParts[blueprintParts.length - 1].part.displayDuration =
 			Number(blueprintParts[blueprintParts.length - 1].part.displayDuration) + extraTime
 		blueprintParts[blueprintParts.length - 1].part.expectedDuration =
