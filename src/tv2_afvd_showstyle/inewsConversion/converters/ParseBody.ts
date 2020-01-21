@@ -142,7 +142,7 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
 
-const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+(?:VOV?)?|VO|VOSB|SLUTORD)+\b/gi
+const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+(?:VOV?)?|VOV?|VOSB|SLUTORD)+\b/gi
 
 export function ParseBody(
 	segmentId: string,
@@ -518,7 +518,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 				isVO: !!strippedToken && !!strippedToken[2]
 			}
 		}
-	} else if (firstToken.match(/VO/i)) {
+	} else if (firstToken.match(/VOV?/i)) {
 		return {
 			type: PartType.VO,
 			variant: {},

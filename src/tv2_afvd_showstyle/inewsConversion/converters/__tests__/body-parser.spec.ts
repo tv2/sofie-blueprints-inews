@@ -595,6 +595,41 @@ describe('Body parser', () => {
 		)
 	})
 
+	test('test11a - VOV', () => {
+		const body11 =
+			'\r\n<p><pi>KAM 1</pi></p>\r\n<p></p>\r\n<p>Some script.</p>\r\n<p><a idref="0"></a></p>\r\n<p><pi>***VOV***</pi></p>\r\n<p><a idref="1"></a></p>\r\n<p><pi><b>SB: Say this over this clip (10 sek)</b></pi></p>\r\n<p><a idref="2"></a></p>\r\n<p>More script. </p>\r\n<p></p>\r\n<p>Even more</p>\r\n<p></p>\r\n<p>More script again. </p>\r\n<p></p>\r\n<p><cc>Couple of comments</cc></p>\r\n<p><cc>Should be ignored</cc></p>\r\n<p></p>\r\n'
+		const cues11 = [unparsedUnknown, unparsedGrafik1, unparsedGrafik2]
+		const result = ParseBody('00000000001', 'test-segment', body11, cues11, fields, 0)
+		expect(stripExternalId(result)).toEqual(
+			literal<PartDefinition[]>([
+				literal<PartDefinitionKam>({
+					type: PartType.Kam,
+					rawType: 'KAM 1',
+					cues: [cueUnknown],
+					script: 'Some script.\n',
+					variant: {
+						name: '1'
+					},
+					externalId: '',
+					fields: {},
+					modified: 0,
+					storyName: 'test-segment'
+				}),
+				literal<PartDefinitionVO>({
+					type: PartType.VO,
+					rawType: 'VOV',
+					cues: [cueGrafik1, cueGrafik2],
+					script: 'More script.\nEven more\nMore script again.\n',
+					variant: {},
+					externalId: '',
+					fields: {},
+					modified: 0,
+					storyName: 'test-segment'
+				})
+			])
+		)
+	})
+
 	test('test12', () => {
 		const body12 =
 			'\r\n<p><cc>This is an interview.</cc></p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 3</pi></p>\r\n<p></p>\r\n<p><a idref="0"><cc> <-- Comment about this</cc></a></p>\r\n<p></p>\r\n<p><a idref="1"> <cc>Also about this! </cc></a></p>\r\n<p></p>\r\n<p><cc>Remember:</cc></p>\r\n<p></p>\r\n<p>Here is our correspondant. </p>\r\n<p></p>\r\n<p>What\'s going on over there? </p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>There is a graphic in this part</cc></p>\r\n<p>.</p>\r\n<p></p>\r\n<p><pi>Ask a question? </pi></p>\r\n<p></p>\r\n<p><pi>Ask another?</pi></p>\r\n<p></p>\r\n<p><pi>What\'s the reaction? </pi></p>\r\n<p></p>\r\n<p><a idref="2"></a></p>\r\n<p></p>\r\n'
