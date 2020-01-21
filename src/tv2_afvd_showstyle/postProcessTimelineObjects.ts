@@ -122,7 +122,7 @@ export function postProcessPieceTimelineObjects(
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.AUX,
 								aux: {
-									input: mixMinusSource || config.studio.AtemSource.MixMinusDefault
+									input: mixMinusSource !== undefined ? mixMinusSource : config.studio.AtemSource.MixMinusDefault
 								}
 							},
 							metaData: {
