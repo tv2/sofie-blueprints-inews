@@ -85,7 +85,7 @@ export function postProcessPieceTimelineObjects(
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.AUX,
 							aux: {
-								input: tlObj.content.me.input || config.studio.AtemSource.Default
+								input: tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
 							}
 						},
 						metaData: {
