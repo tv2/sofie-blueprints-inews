@@ -2154,6 +2154,58 @@ describe('Body parser', () => {
 		])
 	})
 
+	test('test 37', () => {
+		const body36 =
+			'\r\n<p><pi>KAM 1</pi></p>\r\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis </p>\r\n<p></p>\r\n<p><a idref="0"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 2</pi></p>\r\n'
+		const cues36 = [['EKSTERN=LIVE 1']]
+		const result = ParseBody('00000000001', 'test-segment', body36, cues36, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				rawType: 'KAM 1',
+				cues: [],
+				script:
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis\n',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment'
+			}),
+			literal<PartDefinitionEkstern>({
+				type: PartType.Ekstern,
+				variant: {},
+				externalId: '',
+				rawType: '',
+				cues: [
+					literal<CueDefinitionEkstern>({
+						type: CueType.Ekstern,
+						source: 'LIVE 1'
+					})
+				],
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment'
+			}),
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '2'
+				},
+				externalId: '',
+				rawType: 'KAM 2',
+				cues: [],
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment'
+			})
+		])
+	})
+
 	test('Merge target cues 1', () => {
 		const bodyTarget = '\r\n<p><a idref="0"><a idref="1"></a></p>\r\n<p></p>\r\n'
 		const cuesTarget = [
