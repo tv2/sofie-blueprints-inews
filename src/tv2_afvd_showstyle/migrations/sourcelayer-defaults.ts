@@ -38,7 +38,7 @@ const OVERLAY: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
-		isHidden: true,
+		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: false
 	},
