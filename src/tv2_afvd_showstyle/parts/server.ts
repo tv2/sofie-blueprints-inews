@@ -11,6 +11,7 @@ import { PieceMetaData } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServer } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
+import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
@@ -48,6 +49,7 @@ export function CreatePartServer(
 	const pieces: IBlueprintPiece[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	AddScript(partDefinition, pieces, duration)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
