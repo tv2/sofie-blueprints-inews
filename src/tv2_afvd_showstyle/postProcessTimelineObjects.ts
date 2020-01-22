@@ -98,7 +98,7 @@ export function postProcessPieceTimelineObjects(
 
 				// mix minus
 				let mixMinusSource: number | undefined | null = tlObj.content.me.input // TODO - what about clips?
-				if (piece.sourceLayerId === SourceLayer.PgmLive) {
+				if (piece.sourceLayerId === SourceLayer.PgmLive && !piece.name.match(/EVS ?\d+/i)) {
 					// Never show live sources
 					mixMinusSource = null
 				}
