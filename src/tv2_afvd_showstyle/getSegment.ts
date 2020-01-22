@@ -67,6 +67,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		ingestSegment.payload.iNewsStory.fields.modifyDate
 	)
 	const totalWords = parsedParts.reduce((prev, cur) => {
+		if (cur.type === PartType.Server) {
+			return prev
+		}
 		return prev + cur.script.replace(/\n/g, '').replace(/\r/g, '').length
 	}, 0)
 
