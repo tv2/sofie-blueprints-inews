@@ -212,7 +212,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	blueprintParts.forEach(part => {
 		if (!part.part.expectedDuration) {
-			part.part.expectedDuration = 3000
+			part.part.expectedDuration = 4000
 		}
 	})
 
