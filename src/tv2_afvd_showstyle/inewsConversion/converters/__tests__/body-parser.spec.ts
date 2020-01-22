@@ -1726,7 +1726,7 @@ describe('Body parser', () => {
 
 	test('test 30', () => {
 		const body30 =
-			'\r\n<p></p>\r\n<p><cc>Comments</cc></p>\r\n<p><pi>***LIVE***</pi><a idref="0"><a idref="1"></p>\r\n<p>And some script</p>\r\n<p><pi>***SERVER***</pi></p>\r\n<p><a idref="2"><cc>--></cc><a idref="3"><cc><--</cc>\r\n<p><cc>More comments</cc></p>\r\n<p><a idref="4"></p>\r\n<p><pi>SLUTORD: bare mega fedt</pi></p>\r\n'
+			'\r\n<p></p>\r\n<p><cc>Comments</cc></p>\r\n<p><pi>***LIVE***</pi><a idref="0"><a idref="1"></p>\r\n<p>And some script</p>\r\n<p><pi>***SERVER***</pi></p>\r\n<p>Server script</p>\r\n<p><a idref="2"><cc>--></cc><a idref="3"><cc><--</cc>\r\n<p><cc>More comments</cc></p>\r\n<p><a idref="4"></p>\r\n<p><pi>SLUTORD: bare mega fedt</pi></p>\r\n'
 		const cues30 = [
 			['DVE=SOMMERFUGL', 'INP1=KAM 1', 'INP2=LIVE 2', 'BYNAVN=Rodovre'],
 			['EKSTERN=LIVE 2'],
@@ -1800,7 +1800,7 @@ describe('Body parser', () => {
 						textFields: ['TEXT MORETEXT', 'Triatlet']
 					})
 				],
-				script: '',
+				script: 'Server script\n',
 				fields,
 				modified: 0,
 				storyName: 'test-segment'
@@ -2101,6 +2101,52 @@ describe('Body parser', () => {
 					})
 				],
 				script: '',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment'
+			})
+		])
+	})
+
+	test('test 36', () => {
+		const body36 =
+			'\r\n<p><pi>KAM 1</pi></p>\r\n<p>Kam 1 script</p>\r\n<p><pi>***SERVER***</pi></p>\r\n<p>Server script</p>\r\n<p><pi>KAM 2</pi></p>\r\n<p>KAM 2 script</p>\r\n'
+		const cues36: string[][] = []
+		const result = ParseBody('00000000001', 'test-segment', body36, cues36, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				rawType: 'KAM 1',
+				cues: [],
+				script: 'Kam 1 script\n',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment'
+			}),
+			literal<PartDefinitionServer>({
+				type: PartType.Server,
+				variant: {},
+				externalId: '',
+				rawType: 'SERVER',
+				cues: [],
+				script: 'Server script\n',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment'
+			}),
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '2'
+				},
+				externalId: '',
+				rawType: 'KAM 2',
+				cues: [],
+				script: 'KAM 2 script\n',
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment'

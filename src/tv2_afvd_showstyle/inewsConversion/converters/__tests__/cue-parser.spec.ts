@@ -305,6 +305,22 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('Grafik (kg) - BillederFra_logo', () => {
+		const cueGrafik = ['#kg BillederFra_logo KØBENHAVN', ';0.01']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.Grafik,
+				start: {
+					seconds: 1
+				},
+				template: 'BillederFra_logo',
+				cue: 'kg',
+				textFields: ['KØBENHAVN']
+			})
+		)
+	})
+
 	test('DIGI', () => {
 		const cueDigi = ['DIGI=VO', 'Dette er en VO tekst', 'Dette er linje 2', ';0.00']
 		const result = ParseCue(cueDigi)

@@ -514,6 +514,7 @@
 \r\n<p><pi>***LIVE***</pi><a idref="0"><a idref="1"></p>
 \r\n<p>And some script</p>
 \r\n<p><pi>***SERVER***</pi></p>
+\r\n<p>Server script</p>
 \r\n<p><a idref="2"><cc>--></cc><a idref="3"><cc><--</cc>
 \r\n<p><cc>More comments</cc></p>
 \r\n<p><a idref="4"></p>
@@ -560,4 +561,13 @@
 \r\n<p><a idref="2"></a></p>
 \r\n<p><cc>Indsæt viz-pilot koden til venstre efter = tegnet.</cc></p>
 \r\n<p></p>
+\r\n
+
+<!-- test 36 -->
+\r\n<p><pi>KAM 1</pi></p>
+\r\n<p>Kam 1 script</p>
+\r\n<p><pi>***SERVER***</pi></p>
+\r\n<p>Server script</p>
+\r\n<p><pi>KAM 2</pi></p>
+\r\n<p>KAM 2 script</p>
 \r\n
