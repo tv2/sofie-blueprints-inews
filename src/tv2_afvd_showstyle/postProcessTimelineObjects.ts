@@ -3,7 +3,8 @@ import {
 	TimelineContentTypeAtem,
 	TimelineObjAtemAUX,
 	TimelineObjAtemDSK,
-	TimelineObjAtemME
+	TimelineObjAtemME,
+	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
@@ -47,13 +48,16 @@ export function postProcessPieceTimelineObjects(
 		const extraObjs: TimelineObjectCoreExt[] = []
 
 		const atemMeObjs = (piece.content.timelineObjects as Array<
-			TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj
+			| (TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj)
+			| (TimelineObjAtemDSK & TimelineBlueprintExt & OnGenerateTimelineObj)
 		>).filter(
 			obj =>
-				obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.ME
+				obj.content &&
+				obj.content.deviceType === DeviceType.ATEM &&
+				(obj.content.type === TimelineContentTypeAtem.ME || obj.content.type === TimelineContentTypeAtem.DSK)
 		)
 		_.each(atemMeObjs, tlObj => {
-			if (tlObj.layer === AtemLLayer.AtemMEProgram) {
+			if (tlObj.layer === AtemLLayer.AtemMEProgram || tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
 				if (!tlObj.id) {
 					tlObj.id = context.getHashId(AtemLLayer.AtemMEProgram, true)
 				}
@@ -72,6 +76,7 @@ export function postProcessPieceTimelineObjects(
 
 				if (
 					(!isAdlib || piece.toBeQueued) &&
+					'me' in tlObj.content &&
 					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					// Create a lookahead-lookahead object for this me-program
@@ -97,7 +102,14 @@ export function postProcessPieceTimelineObjects(
 				}
 
 				// mix minus
-				let mixMinusSource: number | undefined | null = tlObj.content.me.input // TODO - what about clips?
+				let mixMinusSource: number | undefined | null // TODO - what about clips?
+				// tslint:disable-next-line:prefer-conditional-expression
+				if (tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
+					mixMinusSource = (tlObj as TimelineObjAtemDSK).content.dsk.sources?.fillSource
+				} else {
+					mixMinusSource = (tlObj as TimelineObjAtemME).content.me.input
+				}
+
 				if (piece.sourceLayerId === SourceLayer.PgmLive && !piece.name.match(/EVS ?\d+/i)) {
 					// Never show live sources
 					mixMinusSource = null
@@ -118,6 +130,7 @@ export function postProcessPieceTimelineObjects(
 						...literal<Partial<TimelineObjAtemAUX & TimelineBlueprintExt>>({
 							id: '',
 							layer: AtemLLayer.AtemAuxVideoMixMinus,
+							priority: tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK') ? 10 : tlObj.priority,
 							content: {
 								deviceType: DeviceType.ATEM,
 								type: TimelineContentTypeAtem.AUX,
@@ -131,7 +144,9 @@ export function postProcessPieceTimelineObjects(
 							}
 						})
 					})
-					mixMinusObj.classes = mixMinusObj.classes?.filter(c => !c.match(`studio0_parent_`))
+					mixMinusObj.classes = mixMinusObj.classes?.filter(
+						c => !c.match(`studio0_parent_`) && !c.match('PLACEHOLDER_OBJECT_REMOVEME')
+					)
 					extraObjs.push(mixMinusObj)
 				}
 			}
@@ -175,5 +190,8 @@ export function postProcessPieceTimelineObjects(
 		})
 
 		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
+		piece.content.timelineObjects = piece.content.timelineObjects.filter(
+			(obj: TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
+		)
 	}
 }

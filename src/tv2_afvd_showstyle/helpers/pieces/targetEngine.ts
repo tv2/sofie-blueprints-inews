@@ -27,6 +27,7 @@ export function EvaluateTargetEngine(
 ) {
 	// TODO: Future: Target a specific engine
 	if (!parsedCue.engine.match(/full|ovl/i)) {
+		context.warning(`Unknown engine: ${parsedCue.engine}`)
 		return
 	}
 	if (!parsedCue.content.INP1 && !parsedCue.content.INP) {

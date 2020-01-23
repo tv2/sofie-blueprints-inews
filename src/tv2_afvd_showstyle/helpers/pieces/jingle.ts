@@ -113,7 +113,8 @@ export function EvaluateJingle(
 										}
 									}
 								}
-							}
+							},
+							classes: ['MIX_MINUS_OVERRIDE_DSK']
 						}),
 						literal<TimelineObjAtemME>({
 							id: '',

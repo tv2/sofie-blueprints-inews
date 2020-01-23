@@ -5,6 +5,7 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
+	TimelineObjAtemDSK,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
 	TimelineObjSisyfosMessage,
@@ -158,6 +159,26 @@ function GetMosObjContent(
 								}
 							},
 							...(adlib ? { classes: ['adlib_deparent'] } : {})
+						}),
+						literal<TimelineObjAtemDSK>({
+							id: '',
+							enable: {
+								start: config.studio.PilotCutToMediaPlayer
+							},
+							priority: 1,
+							layer: AtemLLayer.AtemAuxPGM,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.DSK,
+								dsk: {
+									onAir: true,
+									sources: {
+										fillSource: config.studio.AtemSource.DSK1F,
+										cutSource: config.studio.AtemSource.DSK1K
+									}
+								}
+							},
+							classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 						}),
 						...GetSisyfosTimelineObjForCamera('full'),
 						...MuteSisyfosChannels(partId)
