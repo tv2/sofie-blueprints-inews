@@ -13,6 +13,7 @@ import {
 	TimelineObjCCGHTMLPage,
 	TimelineObjCCGMedia,
 	TimelineObjCCGRoute,
+	TimelineObjEmpty,
 	TimelineObjSisyfosAny,
 	TimelineObjSisyfosMessage,
 	TimelineObjVIZMSEClearAllElements,
@@ -880,6 +881,34 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			})
 		})
 	)
+
+	adlibItems.push({
+		externalId: 'stopAudioBed',
+		name: 'Stop Soundplayer',
+		_rank: 700,
+		sourceLayerId: SourceLayer.PgmAudioBed,
+		outputLayerId: 'musik',
+		expectedDuration: 1000,
+		infiniteMode: PieceLifespan.Normal,
+		content: {
+			timelineObjects: [
+				literal<TimelineObjEmpty>({
+					id: '',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					priority: 50,
+					layer: SisyfosLLAyer.SisyfosSourceAudiobed,
+					content: {
+						deviceType: DeviceType.ABSTRACT,
+						type: 'empty'
+					},
+					classes: []
+				})
+			]
+		}
+	})
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
