@@ -206,9 +206,13 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	// TODO: This is where the gap goes
 	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
-	if (extraTime > 0 && blueprintParts[blueprintParts.length - 1]) {
+	if (
+		extraTime > 0 &&
+		blueprintParts[blueprintParts.length - 1] &&
+		!blueprintParts[blueprintParts.length - 1].pieces.some(piece => piece.sourceLayerId === 'studio0_jingle')
+	) {
 		blueprintParts[blueprintParts.length - 1].part.displayDuration =
-			Number(blueprintParts[blueprintParts.length - 1].part.displayDuration) + extraTime
+			Number(blueprintParts[blueprintParts.length - 1].part.displayDuration || 0) + extraTime
 		blueprintParts[blueprintParts.length - 1].part.expectedDuration =
 			blueprintParts[blueprintParts.length - 1].part.displayDuration
 	}
