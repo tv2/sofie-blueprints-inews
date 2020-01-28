@@ -22,7 +22,9 @@ import {
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
-	TSRTimelineObjBase
+	TSRTimelineObjBase,
+	Ease,
+	Direction
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
@@ -1284,7 +1286,41 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				loop: true,
 				file: 'EMPTY',
 				mixer: {
-					volume: 0
+					volume: {
+						_value: 0,
+    					inTransition: {
+							type: Transition.MIX,
+							easing: Ease.LINEAR,
+							direction: Direction.LEFT,
+							duration: config.studio.AudioBedSettings.fadeIn
+						},
+						changeTransition: {
+							type: Transition.MIX,
+							easing: Ease.LINEAR,
+							direction: Direction.LEFT,
+							duration: config.studio.AudioBedSettings.fadeOut
+						},
+						outTransition: {
+							type: Transition.MIX,
+							easing: Ease.LINEAR,
+							direction: Direction.LEFT,
+							duration: config.studio.AudioBedSettings.fadeOut
+						}
+					},
+				},
+				transitions: {
+					inTransition: {
+						type: Transition.MIX,
+						easing: Ease.LINEAR,
+						direction: Direction.LEFT,
+						duration: config.studio.AudioBedSettings.fadeIn
+					},
+					outTransition: {
+						type: Transition.MIX,
+						easing: Ease.LINEAR,
+						direction: Direction.LEFT,
+						duration: config.studio.AudioBedSettings.fadeOut
+					}
 				}
 			}
 		})
