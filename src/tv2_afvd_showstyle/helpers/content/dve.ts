@@ -29,7 +29,7 @@ import * as _ from 'underscore'
 import { createEmptyObject, literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
-import { FindSourceInfoStrict, SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
+import { FindSourceInfoStrict, SourceInfo, SourceInfoType } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { AtemSourceIndex } from '../../../types/atem'
@@ -129,9 +129,21 @@ export function MakeContentDVE2(
 
 		if (sources) {
 			const prop = sources[fromCue as keyof DVESources]
-			if (!prop) {
-				// Need something to keep the layout etc
-				// tslint:disable-next-line:prefer-conditional-expression
+			if (prop?.match(/[K|C]AM(?:era)? ?.*/i)) {
+				const match = prop.match(/[K|C]AM(?:era)? ?(.*)/i) as RegExpExecArray
+
+				boxMap[targetBox - 1] = { source: `KAM ${match[1]}`, sourceLayer }
+			} else if (prop?.match(/LIVE ?.*/i)) {
+				const match = prop.match(/LIVE ?(.*)/i) as RegExpExecArray
+
+				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}`, sourceLayer }
+			} else if (prop?.match(/full/i)) {
+				boxMap[targetBox - 1] = { source: `ENGINE FULL`, sourceLayer }
+			} else if (prop?.match(/EVS ?.*/i)) {
+				const match = prop.match(/EVS ?(.*)/i) as RegExpExecArray
+
+				boxMap[targetBox - 1] = { source: `EVS ${match[1]}`, sourceLayer }
+			} else if (!prop) {
 				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
 					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
 					usedServer = true
@@ -212,6 +224,28 @@ export function MakeContentDVE2(
 
 				setBoxSource(num, sourceInfoLive, mappingFrom.source)
 				dveTimeline.push(...GetSisyfosTimelineObjForEkstern(context, mappingFrom.source, audioEnable))
+			} else if (sourceType.match(/EVS/i)) {
+				// TODO: When adding more EVS sources in the future
+				const sourceInfoEVS: SourceInfo = {
+					type: SourceLayerType.REMOTE,
+					id: sourceInput,
+					port: config.studio.AtemSource.DelayedPlayback
+				}
+
+				setBoxSource(num, sourceInfoEVS, mappingFrom.source)
+				dveTimeline.push(...GetSisyfosTimelineObjForCamera('evs'))
+			} else if (sourceType.match(/ENGINE/i)) {
+				if (sourceInput.match(/full/i)) {
+					const sourceInfoFull: SourceInfo = {
+						type: SourceLayerType.GRAPHICS,
+						id: 'full',
+						port: config.studio.AtemSource.DSK1F
+					}
+					setBoxSource(num, sourceInfoFull, mappingFrom.source)
+					dveTimeline.push(...GetSisyfosTimelineObjForCamera('full'))
+				} else {
+					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
+				}
 			} else if (sourceType.match(/SERVER/i)) {
 				const file = partDefinition ? partDefinition.fields.videoId : undefined
 
@@ -455,7 +489,7 @@ function boxSource(
 ): {
 	studioLabel: string
 	switcherInput: number
-	type: SourceLayerType.CAMERA | SourceLayerType.REMOTE | SourceLayerType.AUDIO | SourceLayerType.VT
+	type: SourceInfoType
 } {
 	return {
 		studioLabel: label,
