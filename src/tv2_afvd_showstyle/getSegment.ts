@@ -263,23 +263,39 @@ function SlutordLookahead(
 				(parsedParts[currentIndex].type === PartType.Server || parsedParts[currentIndex].type === PartType.Slutord) &&
 				part.variant.endWords
 			) {
-				blueprintParts[blueprintParts.length - 1].pieces.push(
-					literal<IBlueprintPiece>({
-						_id: '',
-						name: `Slutord: ${part.variant.endWords}`,
-						sourceLayerId: SourceLayer.PgmScript,
-						outputLayerId: 'manus',
-						externalId: parsedParts[currentIndex].externalId,
-						enable: {
-							start: 0
-						},
-						content: literal<ScriptContent>({
-							firstWords: 'SLUTORD:',
-							lastWords: part.variant.endWords,
-							fullScript: `SLUTORD: ${part.variant.endWords}`
+				const existingScriptIndex = blueprintParts[blueprintParts.length - 1].pieces.findIndex(piece => piece.sourceLayerId === SourceLayer.PgmScript)
+				if (existingScriptIndex !== -1) {
+					const existingScript = blueprintParts[blueprintParts.length - 1].pieces[existingScriptIndex]
+					if (!existingScript.content) {
+						existingScript.content = literal<ScriptContent>({
+							firstWords: '',
+							lastWords: ''
 						})
-					})
-				)
+					}
+					
+					existingScript.content.fullScript = 
+						(existingScript.content.fullScript ? `${existingScript.content.fullScript} ` : '') + `SLUTORD: ${part.variant.endWords}`
+					existingScript.name = (existingScript.name.length ? `${existingScript.name} ` : '') + `SLUTORD: ${part.variant.endWords}`
+					blueprintParts[blueprintParts.length - 1].pieces[existingScriptIndex] = existingScript
+				} else {
+					blueprintParts[blueprintParts.length - 1].pieces.push(
+						literal<IBlueprintPiece>({
+							_id: '',
+							name: `Slutord: ${part.variant.endWords}`,
+							sourceLayerId: SourceLayer.PgmScript,
+							outputLayerId: 'manus',
+							externalId: parsedParts[currentIndex].externalId,
+							enable: {
+								start: 0
+							},
+							content: literal<ScriptContent>({
+								firstWords: 'SLUTORD:',
+								lastWords: part.variant.endWords,
+								fullScript: `SLUTORD: ${part.variant.endWords}`
+							})
+						})
+					)
+				}
 			}
 			return true
 		}
