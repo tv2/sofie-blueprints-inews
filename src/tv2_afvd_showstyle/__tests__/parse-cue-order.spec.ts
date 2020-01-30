@@ -6,7 +6,6 @@ import {
 	PartDefinitionGrafik,
 	PartDefinitionKam,
 	PartDefinitionServer,
-	PartDefinitionSlutord,
 	PartDefinitionUnknown,
 	PartType
 } from '../inewsConversion/converters/ParseBody'
@@ -208,13 +207,13 @@ const testSegment4: PartDefinition[] = [
 ]
 
 const testSegment5: PartDefinition[] = [
-	literal<PartDefinitionSlutord>({
-		type: PartType.Slutord,
+	literal<PartDefinitionKam>({
+		type: PartType.Kam,
 		variant: {
-			endWords: 'The end'
+			name: '1'
 		},
 		externalId: '00001-0',
-		rawType: 'SLUTORD: The end',
+		rawType: 'KAM 1',
 		cues: [
 			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
@@ -233,7 +232,8 @@ const testSegment5: PartDefinition[] = [
 		script: 'Some script',
 		fields: {},
 		modified: 0,
-		storyName: ''
+		storyName: '',
+		endWords: 'The end'
 	})
 ]
 
@@ -561,18 +561,19 @@ describe('Parse Cue Order', () => {
 
 	test.skip('Slutord with script', () => {
 		expect(stripExternalId(PostProcessDefinitions(testSegment5, '00001'))).toEqual([
-			literal<PartDefinitionSlutord>({
+			literal<PartDefinitionKam>({
 				externalId: '',
-				type: PartType.Slutord,
+				type: PartType.Kam,
 				variant: {
-					endWords: 'The end'
+					name: '1'
 				},
-				rawType: 'SLUTORD: The end',
+				rawType: 'KAM 1',
 				cues: [],
 				fields: {},
 				script: '',
 				modified: 0,
-				storyName: ''
+				storyName: '',
+				endWords: 'The end'
 			}),
 			literal<PartDefinitionUnknown>({
 				externalId: '',
