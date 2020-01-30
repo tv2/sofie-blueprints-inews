@@ -1,6 +1,8 @@
 import {
 	AtemTransitionStyle,
 	DeviceType,
+	Direction,
+	Ease,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
@@ -22,9 +24,7 @@ import {
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
-	TSRTimelineObjBase,
-	Ease,
-	Direction
+	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
@@ -1288,7 +1288,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				mixer: {
 					volume: {
 						_value: 0,
-    					inTransition: {
+						inTransition: {
 							type: Transition.MIX,
 							easing: Ease.LINEAR,
 							direction: Direction.LEFT,
@@ -1306,7 +1306,7 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 							direction: Direction.LEFT,
 							duration: config.studio.AudioBedSettings.fadeOut
 						}
-					},
+					}
 				},
 				transitions: {
 					inTransition: {

@@ -151,9 +151,8 @@ export function EvaluateCues(
 				adLibRank++
 			}
 		}
-	});
-
-	[...pieces, ...adLibPieces].forEach(piece => {
+	})
+	;[...pieces, ...adLibPieces].forEach(piece => {
 		if (piece.content && piece.content.timelineObjects) {
 			piece.content.timelineObjects.forEach((obj: TSRTimelineObj) => {
 				if (obj.content.deviceType === DeviceType.VIZMSE) {

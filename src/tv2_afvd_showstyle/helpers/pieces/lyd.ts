@@ -124,7 +124,7 @@ export function LydContent(
 					loop: true,
 					mixer: {
 						volume: Number(config.studio.AudioBedSettings.volume) / 100
-					},
+					}
 				}
 			}),
 			literal<TimelineObjSisyfosMessage>({

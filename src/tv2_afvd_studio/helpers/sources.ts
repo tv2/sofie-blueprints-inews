@@ -44,7 +44,12 @@ export function parseMapStr(
 	return res
 }
 
-export type SourceInfoType = SourceLayerType.CAMERA | SourceLayerType.REMOTE | SourceLayerType.AUDIO | SourceLayerType.VT | SourceLayerType.GRAPHICS
+export type SourceInfoType =
+	| SourceLayerType.CAMERA
+	| SourceLayerType.REMOTE
+	| SourceLayerType.AUDIO
+	| SourceLayerType.VT
+	| SourceLayerType.GRAPHICS
 export interface SourceInfo {
 	type: SourceInfoType
 	id: string
