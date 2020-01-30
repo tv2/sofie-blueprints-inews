@@ -9,6 +9,7 @@ import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	CameraContent,
+	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	IBlueprintRundownDB,
 	IBlueprintSegment,
@@ -23,6 +24,7 @@ import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetNextPartCue } from './helpers/nextPartCue'
+import { EvaluateCues } from './helpers/pieces/evaluateCues'
 import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
 import { CueType } from './inewsConversion/converters/ParseCue'
 import { SourceLayer } from './layers'
@@ -138,8 +140,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				assertUnreachable(part)
 				break
 		}
-		if (SlutordLookahead(parsedParts, i, 1, blueprintParts)) {
-			if (SlutordLookahead(parsedParts, i, 2, blueprintParts)) {
+		if (SlutordLookahead(partContext, config, parsedParts, i, 1, blueprintParts, part)) {
+			if (SlutordLookahead(partContext, config, parsedParts, i, 1, blueprintParts, part)) {
 				i++
 			}
 			i++
@@ -249,10 +251,13 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 }
 
 function SlutordLookahead(
+	context: PartContext,
+	config: BlueprintConfig,
 	parsedParts: PartDefinition[],
 	currentIndex: number,
 	offset: number,
-	blueprintParts: BlueprintResultPart[]
+	blueprintParts: BlueprintResultPart[],
+	partDefinition: PartDefinition
 ): boolean {
 	// Check if next part is Slutord
 	if (currentIndex + offset < parsedParts.length) {
@@ -263,7 +268,9 @@ function SlutordLookahead(
 				(parsedParts[currentIndex].type === PartType.Server || parsedParts[currentIndex].type === PartType.Slutord) &&
 				part.variant.endWords
 			) {
-				const existingScriptIndex = blueprintParts[blueprintParts.length - 1].pieces.findIndex(piece => piece.sourceLayerId === SourceLayer.PgmScript)
+				const existingScriptIndex = blueprintParts[blueprintParts.length - 1].pieces.findIndex(
+					piece => piece.sourceLayerId === SourceLayer.PgmScript
+				)
 				if (existingScriptIndex !== -1) {
 					const existingScript = blueprintParts[blueprintParts.length - 1].pieces[existingScriptIndex]
 					if (!existingScript.content) {
@@ -272,10 +279,12 @@ function SlutordLookahead(
 							lastWords: ''
 						})
 					}
-					
-					existingScript.content.fullScript = 
-						(existingScript.content.fullScript ? `${existingScript.content.fullScript} ` : '') + `SLUTORD: ${part.variant.endWords}`
-					existingScript.name = (existingScript.name.length ? `${existingScript.name} ` : '') + `SLUTORD: ${part.variant.endWords}`
+
+					existingScript.content.fullScript =
+						(existingScript.content.fullScript ? `${existingScript.content.fullScript} ` : '') +
+						`SLUTORD: ${part.variant.endWords}`
+					existingScript.name =
+						(existingScript.name.length ? `${existingScript.name} ` : '') + `SLUTORD: ${part.variant.endWords}`
 					blueprintParts[blueprintParts.length - 1].pieces[existingScriptIndex] = existingScript
 				} else {
 					blueprintParts[blueprintParts.length - 1].pieces.push(
@@ -295,6 +304,20 @@ function SlutordLookahead(
 							})
 						})
 					)
+				}
+
+				if (parsedParts[currentIndex + offset].cues.length) {
+					const extraPieces: IBlueprintPiece[] = []
+					const extraAdlibs: IBlueprintAdLibPiece[] = []
+					EvaluateCues(context, config, extraPieces, extraAdlibs, parsedParts[currentIndex + 1].cues, partDefinition)
+					blueprintParts[blueprintParts.length - 1].pieces = [
+						...blueprintParts[blueprintParts.length - 1].pieces,
+						...extraPieces
+					]
+					blueprintParts[blueprintParts.length - 1].adLibPieces = [
+						...blueprintParts[blueprintParts.length - 1].adLibPieces,
+						...extraAdlibs
+					]
 				}
 			}
 			return true
