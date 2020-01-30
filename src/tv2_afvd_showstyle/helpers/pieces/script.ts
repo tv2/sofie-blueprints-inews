@@ -11,7 +11,10 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 		duration = 1000
 	}
 
-	const script = part.script.replace(/^\**/i, '').trim()
+	let script = part.script.replace(/^\**/i, '').trim()
+	if (part.endWords) {
+		script = script.length ? `${script} SLUTORD: ${part.endWords}` : part.endWords
+	}
 	if (script.length) {
 		const stripLength = Math.min(PREVIEW_CHARACTERS, script.length)
 		pieces.push(

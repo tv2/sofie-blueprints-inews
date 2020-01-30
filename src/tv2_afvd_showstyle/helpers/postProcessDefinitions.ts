@@ -36,10 +36,6 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			// Only one video Id per story. Changing the video Id will result in a new part
 			id += `-${partDefinition.fields.videoId ? partDefinition.fields.videoId : 'noId'}`
 			break
-		case PartType.Slutord:
-			// Slutord parts are filtered out before reaching core, so don't matter as much
-			id += `-${partDefinition.variant.endWords.replace(/\s/, '').replace(/\W/, '')}`
-			break
 		case PartType.Teknik:
 			// Possibly an unused part type, not seen in production - only one example found in original test data
 			id += `-TEKNIK`

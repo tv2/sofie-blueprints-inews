@@ -9,7 +9,6 @@ import {
 	PartDefinitionIntro,
 	PartDefinitionKam,
 	PartDefinitionServer,
-	PartDefinitionSlutord,
 	PartDefinitionTeknik,
 	PartDefinitionTelefon,
 	PartDefinitionUnknown,
@@ -270,20 +269,8 @@ describe('Body parser', () => {
 					externalId: '',
 					fields: {},
 					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					type: PartType.Slutord,
-					rawType: 'SLUTORD: ekstra kick',
-					cues: [],
-					script: '',
-					variant: {
-						endWords: 'ekstra kick'
-					},
-					externalId: '',
-					fields: {},
-					modified: 0,
-					storyName: 'test-segment'
+					storyName: 'test-segment',
+					endWords: 'ekstra kick'
 				})
 			])
 		)
@@ -421,20 +408,8 @@ describe('Body parser', () => {
 					externalId: '',
 					fields: {},
 					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					type: PartType.Slutord,
-					rawType: 'SLUTORD wauw',
-					cues: [],
-					script: '',
-					variant: {
-						endWords: 'wauw'
-					},
-					externalId: '',
-					fields: {},
-					modified: 0,
-					storyName: 'test-segment'
+					storyName: 'test-segment',
+					endWords: 'wauw'
 				}),
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -799,20 +774,8 @@ describe('Body parser', () => {
 					cues: [],
 					fields,
 					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					externalId: '',
-					type: PartType.Slutord,
-					rawType: 'SLUTORD:',
-					script: '',
-					variant: {
-						endWords: ''
-					},
-					cues: [],
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
+					storyName: 'test-segment',
+					endWords: ''
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -916,33 +879,8 @@ describe('Body parser', () => {
 					script: '',
 					fields,
 					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					externalId: '',
-					type: PartType.Slutord,
-					variant: {
-						endWords: ''
-					},
-					rawType: 'SLUTORD:',
-					cues: [],
-					script: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					externalId: '',
-					type: PartType.Slutord,
-					variant: {
-						endWords: 'Skarpere regler.'
-					},
-					rawType: 'Slutord Skarpere regler.',
-					cues: [],
-					script: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
+					storyName: 'test-segment',
+					endWords: 'Skarpere regler.'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1134,20 +1072,8 @@ describe('Body parser', () => {
 					script: '',
 					fields,
 					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					externalId: '',
-					type: PartType.Slutord,
-					variant: {
-						endWords: ''
-					},
-					rawType: 'SLUTORD:',
-					cues: [],
-					script: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
+					storyName: 'test-segment',
+					endWords: ''
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1539,20 +1465,8 @@ describe('Body parser', () => {
 				script: '',
 				fields,
 				modified: 0,
-				storyName: 'test-segment'
-			}),
-			literal<PartDefinitionSlutord>({
-				externalId: '',
-				type: PartType.Slutord,
-				variant: {
-					endWords: 'bare mega fedt'
-				},
-				rawType: 'SLUTORD bare mega fedt',
-				cues: [],
-				script: '',
-				fields,
-				modified: 0,
-				storyName: 'test-segment'
+				storyName: 'test-segment',
+				endWords: 'bare mega fedt'
 			}),
 			literal<PartDefinitionDVE>({
 				externalId: '',
@@ -1679,33 +1593,8 @@ describe('Body parser', () => {
 					script: '',
 					fields,
 					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					externalId: '',
-					type: PartType.Slutord,
-					variant: {
-						endWords: ''
-					},
-					rawType: 'SLUTORD:',
-					cues: [],
-					script: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
-				}),
-				literal<PartDefinitionSlutord>({
-					externalId: '',
-					type: PartType.Slutord,
-					variant: {
-						endWords: 'Skarpere regler.'
-					},
-					rawType: 'Slutord Skarpere regler.',
-					cues: [],
-					script: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment'
+					storyName: 'test-segment',
+					endWords: 'Skarpere regler.'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1803,20 +1692,8 @@ describe('Body parser', () => {
 				script: 'Server script\n',
 				fields,
 				modified: 0,
-				storyName: 'test-segment'
-			}),
-			literal<PartDefinitionSlutord>({
-				externalId: '',
-				type: PartType.Slutord,
-				variant: {
-					endWords: 'bare mega fedt'
-				},
-				rawType: 'SLUTORD: bare mega fedt',
-				cues: [],
-				script: '',
-				fields,
-				modified: 0,
-				storyName: 'test-segment'
+				storyName: 'test-segment',
+				endWords: 'bare mega fedt'
 			})
 		])
 	})
@@ -1863,20 +1740,8 @@ describe('Body parser', () => {
 				script: '',
 				fields,
 				modified: 0,
-				storyName: 'test-segment'
-			}),
-			literal<PartDefinitionSlutord>({
-				externalId: '',
-				type: PartType.Slutord,
-				variant: {
-					endWords: 'bare mega fedt'
-				},
-				rawType: 'SLUTORD: bare mega fedt',
-				cues: [],
-				script: '',
-				fields,
-				modified: 0,
-				storyName: 'test-segment'
+				storyName: 'test-segment',
+				endWords: 'bare mega fedt'
 			}),
 			literal<PartDefinitionDVE>({
 				externalId: '',

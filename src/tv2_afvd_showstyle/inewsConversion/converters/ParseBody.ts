@@ -17,7 +17,6 @@ export enum PartType {
 	Teknik,
 	Grafik,
 	INTRO,
-	Slutord,
 	EVS,
 	DVE,
 	Ekstern,
@@ -49,6 +48,7 @@ export interface PartDefinitionBase {
 	modified: number
 	transition?: PartTransition
 	storyName: string
+	endWords?: string
 }
 
 export interface PartDefinitionUnknown extends PartDefinitionBase {
@@ -88,13 +88,6 @@ export interface PartDefinitionIntro extends PartDefinitionBase {
 	variant: {}
 }
 
-export interface PartDefinitionSlutord extends PartDefinitionBase {
-	type: PartType.Slutord
-	variant: {
-		endWords: string
-	}
-}
-
 export interface PartDefinitionEVS extends PartDefinitionBase {
 	type: PartType.EVS
 	variant: {
@@ -123,7 +116,6 @@ export type PartDefinition =
 	| PartDefinitionGrafik
 	| PartDefinitionVO
 	| PartDefinitionIntro
-	| PartDefinitionSlutord
 	| PartDefinitionEVS
 	| PartDefinitionDVE
 	| PartDefinitionEkstern
@@ -136,13 +128,12 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionGrafik, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionVO, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionIntro, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionSlutord, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionEVS, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionDVE, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
 
-const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+(?:VOV?)?|VOV?|VOSB|SLUTORD)+\b/gi
+const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+(?:VOV?)?|VOV?|VOSB)+\b/gi
 
 export function ParseBody(
 	segmentId: string,
@@ -245,6 +236,14 @@ export function ParseBody(
 				definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
 
 				definition.cues.push(...secondaryInlineCues)
+			}
+
+			if (typeStr && typeStr.match(/SLUTORD/i)) {
+				if (definition.endWords) {
+					definition.endWords += ` ${typeStr.replace(/^SLUTORD:? ?/i, '')}`
+				} else {
+					definition.endWords = typeStr.replace(/^SLUTORD:? ?/i, '')
+				}
 			}
 		}
 
@@ -421,7 +420,7 @@ function makeDefinitionPrimaryCue(
 			definition.type = PartType.Telefon
 			break
 		case CueType.TargetEngine:
-			definition.type = partType === PartType.Slutord ? PartType.Unknown : partType
+			definition.type = partType
 			break
 		default:
 			// For log purposes + to catch future issues.
@@ -528,14 +527,6 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 		return {
 			type: PartType.VO,
 			variant: {},
-			...definition
-		}
-	} else if (firstToken.match(/SLUTORD/i)) {
-		return {
-			type: PartType.Slutord,
-			variant: {
-				endWords: tokens.slice(1, tokens.length).join(' ')
-			},
 			...definition
 		}
 	} else {

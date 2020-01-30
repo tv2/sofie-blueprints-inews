@@ -9,14 +9,12 @@ import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	CameraContent,
-	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	IBlueprintRundownDB,
 	IBlueprintSegment,
 	IngestSegment,
 	PartContext,
 	PieceLifespan,
-	ScriptContent,
 	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
@@ -24,14 +22,12 @@ import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetNextPartCue } from './helpers/nextPartCue'
-import { EvaluateCues } from './helpers/pieces/evaluateCues'
-import { ParseBody, PartDefinition, PartDefinitionSlutord, PartType } from './inewsConversion/converters/ParseBody'
+import { ParseBody, PartType } from './inewsConversion/converters/ParseBody'
 import { CueType } from './inewsConversion/converters/ParseCue'
 import { SourceLayer } from './layers'
 import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'
 import { CreatePartIntro } from './parts/intro'
-import { CreatePartInvalid } from './parts/invalid'
 import { CreatePartKam } from './parts/kam'
 import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
@@ -86,8 +82,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	let serverParts = 0
 	let jingleTime = 0
 	let serverTime = 0
-	for (let i = 0; i < parsedParts.length; i++) {
-		const part = parsedParts[i]
+	for (const part of parsedParts) {
 		const partContext = new PartContext2(context, part.externalId)
 
 		if (
@@ -129,10 +124,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					blueprintParts.push(CreatePartUnknown(partContext, config, part, totalWords))
 				}
 				break
-			case PartType.Slutord:
-				blueprintParts.push(CreatePartInvalid(part))
-				context.warning('Slutord should have been moved to script, something may have gone wrong')
-				break
 			case PartType.EVS:
 				blueprintParts.push(CreatePartEVS(partContext, config, part, totalWords))
 				break
@@ -140,12 +131,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				assertUnreachable(part)
 				break
 		}
-		if (SlutordLookahead(partContext, config, parsedParts, i, 1, blueprintParts, part)) {
-			if (SlutordLookahead(partContext, config, parsedParts, i, 1, blueprintParts, part)) {
-				i++
-			}
-			i++
-		}
+
 		if (blueprintParts[blueprintParts.length - 1] && blueprintParts[blueprintParts.length - 1].pieces.length === 1) {
 			const p = blueprintParts[blueprintParts.length - 1].pieces[0]
 			if (p.sourceLayerId === SourceLayer.PgmScript) {
@@ -248,83 +234,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment,
 		parts: blueprintParts
 	}
-}
-
-function SlutordLookahead(
-	context: PartContext,
-	config: BlueprintConfig,
-	parsedParts: PartDefinition[],
-	currentIndex: number,
-	offset: number,
-	blueprintParts: BlueprintResultPart[],
-	partDefinition: PartDefinition
-): boolean {
-	// Check if next part is Slutord
-	if (currentIndex + offset < parsedParts.length) {
-		if (parsedParts[currentIndex + offset].type === PartType.Slutord) {
-			const part = (parsedParts[currentIndex + offset] as unknown) as PartDefinitionSlutord
-			// If it's attached to a server and has some content
-			if (
-				(parsedParts[currentIndex].type === PartType.Server || parsedParts[currentIndex].type === PartType.Slutord) &&
-				part.variant.endWords
-			) {
-				const existingScriptIndex = blueprintParts[blueprintParts.length - 1].pieces.findIndex(
-					piece => piece.sourceLayerId === SourceLayer.PgmScript
-				)
-				if (existingScriptIndex !== -1) {
-					const existingScript = blueprintParts[blueprintParts.length - 1].pieces[existingScriptIndex]
-					if (!existingScript.content) {
-						existingScript.content = literal<ScriptContent>({
-							firstWords: '',
-							lastWords: ''
-						})
-					}
-
-					existingScript.content.fullScript =
-						(existingScript.content.fullScript ? `${existingScript.content.fullScript} ` : '') +
-						`SLUTORD: ${part.variant.endWords}`
-					existingScript.name =
-						(existingScript.name.length ? `${existingScript.name} ` : '') + `SLUTORD: ${part.variant.endWords}`
-					blueprintParts[blueprintParts.length - 1].pieces[existingScriptIndex] = existingScript
-				} else {
-					blueprintParts[blueprintParts.length - 1].pieces.push(
-						literal<IBlueprintPiece>({
-							_id: '',
-							name: `Slutord: ${part.variant.endWords}`,
-							sourceLayerId: SourceLayer.PgmScript,
-							outputLayerId: 'manus',
-							externalId: parsedParts[currentIndex].externalId,
-							enable: {
-								start: 0
-							},
-							content: literal<ScriptContent>({
-								firstWords: 'SLUTORD:',
-								lastWords: part.variant.endWords,
-								fullScript: `SLUTORD: ${part.variant.endWords}`
-							})
-						})
-					)
-				}
-
-				if (parsedParts[currentIndex + offset].cues.length) {
-					const extraPieces: IBlueprintPiece[] = []
-					const extraAdlibs: IBlueprintAdLibPiece[] = []
-					EvaluateCues(context, config, extraPieces, extraAdlibs, parsedParts[currentIndex + 1].cues, partDefinition)
-					blueprintParts[blueprintParts.length - 1].pieces = [
-						...blueprintParts[blueprintParts.length - 1].pieces,
-						...extraPieces
-					]
-					blueprintParts[blueprintParts.length - 1].adLibPieces = [
-						...blueprintParts[blueprintParts.length - 1].adLibPieces,
-						...extraAdlibs
-					]
-				}
-			}
-			return true
-		}
-	}
-
-	return false
 }
 
 export function CreatePartContinuity(config: BlueprintConfig, ingestSegment: IngestSegment) {
