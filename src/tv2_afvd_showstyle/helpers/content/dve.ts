@@ -143,16 +143,16 @@ export function MakeContentDVE2(
 				const match = prop.match(/EVS ?(.*)/i) as RegExpExecArray
 
 				boxMap[targetBox - 1] = { source: `EVS ${match[1]}`, sourceLayer }
-			} else if (!prop) {
+			} else if (prop) {
 				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
 					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
 					usedServer = true
 				} else {
-					context.warning(`Missing mapping for ${targetBox}`)
-					boxMap[targetBox - 1] = { source: '', sourceLayer }
+					boxMap[targetBox - 1] = { source: prop, sourceLayer }
 				}
 			} else {
-				boxMap[targetBox - 1] = { source: prop, sourceLayer }
+				context.warning(`Missing mapping for ${targetBox}`)
+				boxMap[targetBox - 1] = { source: '', sourceLayer }
 			}
 		} else {
 			// Need something to keep the layout etc
