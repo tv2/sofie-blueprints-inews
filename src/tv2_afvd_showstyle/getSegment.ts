@@ -15,7 +15,8 @@ import {
 	IngestSegment,
 	PartContext,
 	PieceLifespan,
-	SegmentContext
+	SegmentContext,
+	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
@@ -34,6 +35,7 @@ import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
+import { MakeContentServerCurrentClip } from './helpers/content/server'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -129,7 +131,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			default:
 				assertUnreachable(part)
-				break
 		}
 
 		if (blueprintParts[blueprintParts.length - 1] && blueprintParts[blueprintParts.length - 1].pieces.length === 1) {
@@ -157,6 +158,25 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					jingleTime += t
 				}
 			}
+		}
+
+		if (blueprintParts.length === 1 && part.fields.videoId) {
+			blueprintParts[0].pieces.push(
+				literal<IBlueprintPiece>({
+					_id: '',
+					externalId: part.externalId,
+					name: `Story clip: ${part.fields.videoId}`,
+					enable: { start: 0 },
+					outputLayerId: 'sec',
+					sourceLayerId: SourceLayer.PgmCurrentServerClip,
+					infiniteMode: PieceLifespan.Infinite,
+					metaData: literal<PieceMetaData>({
+						mediaPlayerSessions: [part.externalId]
+					}),
+					content: MakeContentServerCurrentClip(part.fields.videoId, part.externalId, part, config),
+					adlibPreroll: config.studio.CasparPrerollDuration
+				})
+			)
 		}
 	}
 

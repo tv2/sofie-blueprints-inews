@@ -7,9 +7,8 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
-import { PieceMetaData } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
-import { MakeContentServer } from '../helpers/content/server'
+import { MakeContentServerEnableObject } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
@@ -60,11 +59,7 @@ export function CreatePartServer(
 			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
-			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [part.externalId]
-			}),
-			content: MakeContentServer(file, part.externalId, partDefinition, config),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			content: MakeContentServerEnableObject(file, partDefinition.externalId, partDefinition, config)
 		})
 	)
 

@@ -57,6 +57,7 @@ export function onTimelineGenerate(
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintPieceDB[]
 ): Promise<BlueprintResultTimeline> {
+	console.log(JSON.stringify(resolvedPieces.map(p => p._id)))
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	copyPreviousSisyfosLevels(
 		context,

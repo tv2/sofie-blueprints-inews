@@ -1,0 +1,441 @@
+[
+    {
+        "_id" : "studio0_4K18drlu90ClR_UaI0Wf30mMh70_",
+        "id" : "4K18drlu90ClR_UaI0Wf30mMh70_",
+        "enable" : {
+            "while" : ".serverEnable"
+        },
+        "priority" : 1,
+        "layer" : "sisyfos_source_server_a",
+        "content" : {
+            "deviceType" : 11,
+            "type" : "sisyfos",
+            "isPgm" : 1
+        },
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal"
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "inGroup" : "piece_group_VB5u30PiJ19iGeTUB8erRnvSqtg_"
+    },
+    {
+        "_id" : "studio0_LBelsYkN1tCn6l2_vdRZ5M2EUQg_",
+        "id" : "LBelsYkN1tCn6l2_vdRZ5M2EUQg_",
+        "enable" : {
+            "start" : 0
+        },
+        "priority" : 1,
+        "layer" : "abstract_server_enable",
+        "content" : {
+            "deviceType" : 0
+        },
+        "classes" : [ 
+            "serverEnable"
+        ],
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "inGroup" : "piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+    },
+    {
+        "_id" : "studio0_lookahead_timed0_px8yGjEPH18JatY4PbkNBlQqQts_",
+        "id" : "lookahead_timed0_px8yGjEPH18JatY4PbkNBlQqQts_",
+        "enable" : {
+            "start" : 1,
+            "end" : "#px8yGjEPH18JatY4PbkNBlQqQts_.start"
+        },
+        "priority" : 0.1,
+        "layer" : "atem_aux_video_mix_minus",
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal",
+            "context" : "Mix-minus for J6uSYMEHuO50zXpVak5gCSDnvJE_"
+        },
+        "content" : {
+            "deviceType" : 2,
+            "type" : "aux",
+            "aux" : {
+                "input" : 26
+            }
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "isLookahead" : true
+    },
+    {
+        "_id" : "studio0_YFjFTBq8mqO6EO9BrJnXmQuil6c_",
+        "id" : "YFjFTBq8mqO6EO9BrJnXmQuil6c_",
+        "enable" : {
+            "while" : ".serverEnable"
+        },
+        "priority" : 1,
+        "layer" : "casparcg_player_clip_1",
+        "content" : {
+            "deviceType" : 1,
+            "type" : "media",
+            "file" : "crystal"
+        },
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal"
+        },
+        "classes" : [ 
+            "keepable_server"
+        ],
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "inGroup" : "piece_group_VB5u30PiJ19iGeTUB8erRnvSqtg_"
+    },
+    {
+        "_id" : "studio0_piece_group_firstobject_b_Eq5PsecVG3AmBju3m4MNU_X6w_",
+        "id" : "piece_group_firstobject_b_Eq5PsecVG3AmBju3m4MNU_X6w_",
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "enable" : {
+            "start" : 0
+        },
+        "layer" : "studio0_clip_firstobject",
+        "content" : {
+            "deviceType" : 0,
+            "type" : "callback",
+            "callBack" : "piecePlaybackStarted",
+            "callBackData" : {
+                "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+                "pieceId" : "b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+            },
+            "callBackStopped" : "piecePlaybackStopped"
+        },
+        "classes" : [ 
+            "current_part"
+        ],
+        "inGroup" : "piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+    },
+    {
+        "_id" : "studio0_px8yGjEPH18JatY4PbkNBlQqQts_",
+        "id" : "px8yGjEPH18JatY4PbkNBlQqQts_",
+        "enable" : {
+            "start" : 280
+        },
+        "priority" : 1,
+        "layer" : "atem_aux_video_mix_minus",
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal",
+            "context" : "Mix-minus for J6uSYMEHuO50zXpVak5gCSDnvJE_"
+        },
+        "content" : {
+            "deviceType" : 2,
+            "type" : "aux",
+            "aux" : {
+                "input" : 26
+            }
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "inGroup" : "piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+    },
+    {
+        "_id" : "studio0_lookahead_future0_oRJ5fHcESNNiVz2L90_7W3Y_kig_",
+        "id" : "lookahead_future0_oRJ5fHcESNNiVz2L90_7W3Y_kig_",
+        "enable" : {
+            "while" : "1"
+        },
+        "priority" : 0.05,
+        "layer" : "atem_aux_lookahead",
+        "content" : {
+            "deviceType" : 2,
+            "type" : "aux",
+            "aux" : {
+                "input" : 6000
+            }
+        },
+        "metaData" : {
+            "context" : "Lookahead-lookahead for 4sSAudZ10paaJXmNgKHgCbRjSMk_"
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "isLookahead" : true
+    },
+    {
+        "_id" : "studio0_part_group_VB5u30PiJ19iGeTUB8erRnvSqtg__infinite",
+        "id" : "part_group_VB5u30PiJ19iGeTUB8erRnvSqtg__infinite",
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "enable" : {
+            "start" : "#part_group_gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_.start"
+        },
+        "priority" : 1,
+        "layer" : "",
+        "content" : {
+            "deviceType" : 0,
+            "type" : "group"
+        },
+        "children" : [],
+        "isGroup" : true,
+        "isPartGroup" : true
+    },
+    {
+        "_id" : "studio0_part_group_gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_",
+        "id" : "part_group_gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_",
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "enable" : {
+            "start" : 1580752015552.5
+        },
+        "priority" : 5,
+        "layer" : "",
+        "content" : {
+            "deviceType" : 0,
+            "type" : "group"
+        },
+        "children" : [],
+        "isGroup" : true,
+        "isPartGroup" : true
+    },
+    {
+        "_id" : "studio0_2fz1A3G3GxFZY37lABCEHhyhKpY_",
+        "id" : "2fz1A3G3GxFZY37lABCEHhyhKpY_",
+        "enable" : {
+            "start" : 280
+        },
+        "priority" : 1,
+        "layer" : "atem_me_clean",
+        "content" : {
+            "deviceType" : 2,
+            "type" : "me",
+            "me" : {
+                "transition" : 5,
+                "transitionSettings" : {},
+                "input" : 26
+            }
+        },
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal",
+            "context" : "Clean for J6uSYMEHuO50zXpVak5gCSDnvJE_"
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "inGroup" : "piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+    },
+    {
+        "_id" : "studio0_lookahead_future0_eEP4fI2zXc0FDrAdGpg0ajljvKc_",
+        "id" : "lookahead_future0_eEP4fI2zXc0FDrAdGpg0ajljvKc_",
+        "enable" : {
+            "while" : "1"
+        },
+        "priority" : 0.05,
+        "layer" : "atem_aux_video_mix_minus",
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-VO-crystal",
+            "context" : "Mix-minus for IEwZvRQx_BU89OZn3fCSyxCr44k_"
+        },
+        "content" : {
+            "deviceType" : 2,
+            "type" : "aux",
+            "aux" : {
+                "input" : 27
+            }
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "isLookahead" : true
+    },
+    {
+        "_id" : "studio0_piece_group_VB5u30PiJ19iGeTUB8erRnvSqtg_",
+        "id" : "piece_group_VB5u30PiJ19iGeTUB8erRnvSqtg_",
+        "studioId" : "studio0",
+        "content" : {
+            "deviceType" : 0,
+            "type" : "group"
+        },
+        "children" : [],
+        "inGroup" : "part_group_VB5u30PiJ19iGeTUB8erRnvSqtg__infinite",
+        "isGroup" : true,
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "enable" : {
+            "start" : 0
+        },
+        "layer" : "studio0_current_server_clip",
+        "metadata" : {
+            "pieceId" : "VB5u30PiJ19iGeTUB8erRnvSqtg_"
+        }
+    },
+    {
+        "_id" : "studio0_J6uSYMEHuO50zXpVak5gCSDnvJE_",
+        "id" : "J6uSYMEHuO50zXpVak5gCSDnvJE_",
+        "enable" : {
+            "start" : 280
+        },
+        "priority" : 1,
+        "layer" : "atem_me_program",
+        "content" : {
+            "deviceType" : 2,
+            "type" : "me",
+            "me" : {
+                "transition" : 5,
+                "transitionSettings" : {},
+                "input" : 26
+            }
+        },
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal"
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "inGroup" : "piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+    },
+    {
+        "_id" : "studio0_part_group_firstobject_gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_",
+        "id" : "part_group_firstobject_gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_",
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "enable" : {
+            "start" : 0
+        },
+        "layer" : "group_first_object",
+        "content" : {
+            "deviceType" : 0,
+            "type" : "callback",
+            "callBack" : "partPlaybackStarted",
+            "callBackData" : {
+                "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+                "partId" : "gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_"
+            },
+            "callBackStopped" : "partPlaybackStopped"
+        },
+        "inGroup" : "part_group_gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_",
+        "classes" : []
+    },
+    {
+        "_id" : "studio0_lookahead_timed0_YFjFTBq8mqO6EO9BrJnXmQuil6c_",
+        "id" : "lookahead_timed0_YFjFTBq8mqO6EO9BrJnXmQuil6c_",
+        "enable" : {
+            "start" : 1,
+            "end" : "#YFjFTBq8mqO6EO9BrJnXmQuil6c_.start"
+        },
+        "priority" : 0.1,
+        "layer" : "casparcg_player_clip_1_lookahead",
+        "content" : {
+            "deviceType" : 1,
+            "type" : "media",
+            "file" : "crystal"
+        },
+        "metaData" : {
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal"
+        },
+        "classes" : [ 
+            "keepable_server"
+        ],
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "isLookahead" : true,
+        "lookaheadForLayer" : "casparcg_player_clip_1"
+    },
+    {
+        "_id" : "studio0_piece_group_firstobject_VB5u30PiJ19iGeTUB8erRnvSqtg_",
+        "id" : "piece_group_firstobject_VB5u30PiJ19iGeTUB8erRnvSqtg_",
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "enable" : {
+            "start" : 0
+        },
+        "layer" : "studio0_current_server_clip_firstobject",
+        "content" : {
+            "deviceType" : 0,
+            "type" : "callback",
+            "callBack" : "piecePlaybackStarted",
+            "callBackData" : {
+                "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+                "pieceId" : "VB5u30PiJ19iGeTUB8erRnvSqtg_"
+            },
+            "callBackStopped" : "piecePlaybackStopped"
+        },
+        "classes" : [ 
+            "current_part"
+        ],
+        "inGroup" : "piece_group_VB5u30PiJ19iGeTUB8erRnvSqtg_"
+    },
+    {
+        "_id" : "studio0_piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_",
+        "id" : "piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_",
+        "studioId" : "studio0",
+        "content" : {
+            "deviceType" : 0,
+            "type" : "group"
+        },
+        "children" : [],
+        "inGroup" : "part_group_gNV_IBEpWH_F2UVOLCnQ3Q2zeX0_",
+        "isGroup" : true,
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "enable" : {
+            "start" : 0
+        },
+        "layer" : "studio0_clip",
+        "metadata" : {
+            "pieceId" : "b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+        }
+    },
+    {
+        "_id" : "studio0_7KWBm0gxwsmzJwSprWfuY3yyxrk_",
+        "id" : "7KWBm0gxwsmzJwSprWfuY3yyxrk_",
+        "enable" : {
+            "start" : 0
+        },
+        "priority" : 0,
+        "layer" : "atem_aux_lookahead",
+        "content" : {
+            "deviceType" : 2,
+            "type" : "aux",
+            "aux" : {
+                "input" : 26
+            }
+        },
+        "metaData" : {
+            "context" : "Lookahead-lookahead for J6uSYMEHuO50zXpVak5gCSDnvJE_",
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal"
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "inGroup" : "piece_group_b_Eq5PsecVG3AmBju3m4MNU_X6w_"
+    },
+    {
+        "_id" : "studio0_lookahead_timed0_7KWBm0gxwsmzJwSprWfuY3yyxrk_",
+        "id" : "lookahead_timed0_7KWBm0gxwsmzJwSprWfuY3yyxrk_",
+        "enable" : {
+            "start" : 1,
+            "end" : "#7KWBm0gxwsmzJwSprWfuY3yyxrk_.start"
+        },
+        "priority" : 0.1,
+        "layer" : "atem_aux_lookahead",
+        "content" : {
+            "deviceType" : 2,
+            "type" : "aux",
+            "aux" : {
+                "input" : 26
+            }
+        },
+        "metaData" : {
+            "context" : "Lookahead-lookahead for J6uSYMEHuO50zXpVak5gCSDnvJE_",
+            "mediaPlayerSession" : "341dd48e:011f7352:5da02371-Server-crystal"
+        },
+        "studioId" : "studio0",
+        "rundownId" : "qO4_UBGCsqtHIkGE_YnC6kJt6EM_",
+        "objectType" : "rundown",
+        "isLookahead" : true
+    }
+]

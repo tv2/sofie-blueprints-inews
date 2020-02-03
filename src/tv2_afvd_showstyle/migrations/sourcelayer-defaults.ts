@@ -599,6 +599,25 @@ const SEC: ISourceLayer[] = [
 		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false
+	},
+	{
+		_id: SourceLayer.PgmCurrentServerClip,
+		_rank: 50,
+		name: 'Current Clip',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: ',',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
 	}
 ]
 

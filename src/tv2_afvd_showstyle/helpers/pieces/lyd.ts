@@ -120,7 +120,7 @@ export function LydContent(
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
-					channelLayout: 'bed',
+					channelLayout: 'stereo',
 					loop: true,
 					mixer: {
 						volume: Number(config.studio.AudioBedSettings.volume) / 100

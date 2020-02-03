@@ -4,15 +4,13 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan,
-	PieceMetaData
+	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
 import { BlueprintConfig } from '../helpers/config'
-import { MakeContentServer } from '../helpers/content/server'
+import { MakeContentServerEnableObject } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
@@ -54,8 +52,8 @@ export function CreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const serverContent = MakeContentServer(file, partDefinition.externalId, partDefinition, config, false)
-	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
+	// const serverContent = MakeContentServerCurrentClip(file, partDefinition.externalId, partDefinition, config, false)
+	// serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -64,13 +62,9 @@ export function CreatePartVO(
 			name: part.title,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmVoiceOver,
+			sourceLayerId: SourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
-			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [part.externalId]
-			}),
-			content: serverContent,
-			adlibPreroll: config.studio.CasparPrerollDuration
+			content: MakeContentServerEnableObject(file, partDefinition.externalId, partDefinition, config)
 		})
 	)
 
