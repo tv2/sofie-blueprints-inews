@@ -15,6 +15,7 @@ import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
+import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 
 export function CreatePartVO(
 	context: PartContext,
@@ -52,8 +53,8 @@ export function CreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	// const serverContent = MakeContentServerCurrentClip(file, partDefinition.externalId, partDefinition, config, false)
-	// serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
+	const serverContent = MakeContentServerEnableObject(file, partDefinition.externalId, partDefinition, config)
+	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -62,9 +63,9 @@ export function CreatePartVO(
 			name: part.title,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmServer,
+			sourceLayerId: SourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
-			content: MakeContentServerEnableObject(file, partDefinition.externalId, partDefinition, config)
+			content: serverContent
 		})
 	)
 
