@@ -7,7 +7,7 @@ import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { CueDefinitionAdLib, CueDefinitionDVE, CueType } from '../../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
-import { MakeContentServerCurrentClip } from '../content/server'
+import { MakeContentServerEnableObject } from '../content/server'
 import { GetDVETemplate, TemplateIsValid } from './dve'
 
 export function EvaluateAdLib(
@@ -35,7 +35,7 @@ export function EvaluateAdLib(
 				metaData: literal<PieceMetaData>({
 					mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
 				}),
-				content: MakeContentServerCurrentClip(file, partId, partDefinition, config, true, true),
+				content: MakeContentServerEnableObject(file, partId, partDefinition, config, true),
 				adlibPreroll: config.studio.CasparPrerollDuration
 			})
 		)
