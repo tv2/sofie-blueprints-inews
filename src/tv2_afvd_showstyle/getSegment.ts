@@ -170,7 +170,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					enable: { start: 0 },
 					outputLayerId: 'sec',
 					sourceLayerId: SourceLayer.PgmCurrentServerClip,
-					infiniteMode: PieceLifespan.Infinite,
+					infiniteMode: PieceLifespan.OutOnNextSegment,
 					metaData: literal<PieceMetaData>({
 						mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
 					}),
