@@ -67,7 +67,7 @@ export function EvaluateMOS(
 				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
 				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
 				adlibPreroll: config.studio.PilotPrerollDuration,
-				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay, true)
+				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf)
 			})
 		)
 	} else {
@@ -87,7 +87,7 @@ export function EvaluateMOS(
 				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
-				content: GetMosObjContent(config, parsedCue, partId, isOverlay)
+				content: GetMosObjContent(config, parsedCue, partId, isOverlay, false, isTlf)
 			})
 		)
 	}
@@ -110,7 +110,8 @@ function GetMosObjContent(
 	parsedCue: CueDefinitionMOS,
 	partId: string,
 	isOverlay: boolean,
-	adlib?: boolean
+	adlib?: boolean,
+	tlf?: boolean
 ): GraphicsContent {
 	return literal<GraphicsContent>({
 		fileName: parsedCue.name,
@@ -138,7 +139,8 @@ function GetMosObjContent(
 									delay: config.studio.PilotOutTransitionDuration
 								}
 						  })
-				}
+				},
+				...(isOverlay || tlf ? {} : { classes: [ 'full' ] })
 			}),
 			...(isOverlay
 				? []

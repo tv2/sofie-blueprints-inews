@@ -180,7 +180,7 @@ function GetEnableForGrafik(
 	}
 
 	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent` }
+		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
 	return {
