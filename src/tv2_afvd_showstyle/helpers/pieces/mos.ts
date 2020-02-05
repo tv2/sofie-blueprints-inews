@@ -140,7 +140,7 @@ function GetMosObjContent(
 								}
 						  })
 				},
-				...(isOverlay || tlf ? [] : [ '.full' ])
+				...(isOverlay || tlf ? [] : [ 'full' ])
 			}),
 			...(isOverlay
 				? []
