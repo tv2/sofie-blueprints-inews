@@ -24,7 +24,8 @@ import {
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
-	TSRTimelineObjBase
+	TSRTimelineObjBase,
+	TimelineObjAbstractAny
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
@@ -42,7 +43,7 @@ import {
 import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer, VirtualAbstractLLayer } from '../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -1322,6 +1323,16 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 						duration: config.studio.AudioBedSettings.fadeOut
 					}
 				}
+			}
+		}),
+
+		literal<TimelineObjAbstractAny>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: VirtualAbstractLLayer.ServerEnable,
+			content: {
+				deviceType: DeviceType.ABSTRACT
 			}
 		})
 	]

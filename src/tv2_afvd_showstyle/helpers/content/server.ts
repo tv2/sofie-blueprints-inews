@@ -23,7 +23,7 @@ import { TransitionSettings } from '../transitionSettings'
 
 export function MakeContentServerCurrentClip(
 	file: string,
-	mediaPlayerSessionId: string,
+	_mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
 	config: BlueprintConfig,
 	adLib?: boolean,
@@ -52,7 +52,7 @@ export function MakeContentServerCurrentClip(
 					loop: adLib
 				},
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
+					mediaPlayerSession: MEDIA_PLAYER_AUTO
 				},
 				...(AddParentClass(partDefinition) && !adLib ? { classes: [ServerParentClass('studio0', file)] } : {})
 			}),
@@ -70,7 +70,7 @@ export function MakeContentServerCurrentClip(
 					isPgm: 1
 				},
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
+					mediaPlayerSession: MEDIA_PLAYER_AUTO
 				}
 			}),
 
@@ -139,7 +139,7 @@ export function MakeContentServerEnableObject (
 			literal<TimelineObjAbstractAny & TimelineObjectCoreExt>({
 				id: '',
 				enable: {
-					start: 0
+					while: '1'
 				},
 				priority: 1,
 				layer: VirtualAbstractLLayer.ServerEnable,

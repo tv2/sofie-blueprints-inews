@@ -36,6 +36,7 @@ import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 import { MakeContentServerCurrentClip } from './helpers/content/server'
+import { MEDIA_PLAYER_AUTO } from '../types/constants'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -171,7 +172,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					sourceLayerId: SourceLayer.PgmCurrentServerClip,
 					infiniteMode: PieceLifespan.Infinite,
 					metaData: literal<PieceMetaData>({
-						mediaPlayerSessions: [part.externalId]
+						mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
 					}),
 					content: MakeContentServerCurrentClip(part.fields.videoId, part.externalId, part, config),
 					adlibPreroll: config.studio.CasparPrerollDuration

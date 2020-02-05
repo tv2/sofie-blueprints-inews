@@ -267,7 +267,7 @@ export function MakeContentDVE2(
 					literal<TimelineObjAbstractAny & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							start: 0
+							while: '1'
 						},
 						priority: 1,
 						layer: VirtualAbstractLLayer.ServerEnable,
