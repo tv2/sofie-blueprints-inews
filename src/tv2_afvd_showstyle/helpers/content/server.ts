@@ -49,7 +49,8 @@ export function MakeContentServerCurrentClip(
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
-					loop: adLib
+					loop: adLib,
+					neverInterrupt: true
 				},
 				metaData: {
 					mediaPlayerSession: MEDIA_PLAYER_AUTO
