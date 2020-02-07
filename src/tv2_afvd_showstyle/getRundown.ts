@@ -286,12 +286,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	// server ssrc box
 	function makeServerAdlibBoxes(
 		info: { port: number; id: string },
-		rank: number,
-		vo: boolean = false
+		rank: number
 	): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
-			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, -1, true)
+			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port, true)
 
 			res.push({
 				externalId: info.id,
@@ -315,17 +314,6 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							classes: [
 								'serverEnable'
 							]
-						}),
-						literal<TimelineObjSisyfosMessage>({
-							id: '',
-							enable: { while: audioWhile },
-							priority: 1,
-							layer: info.id === '1' ? SisyfosLLAyer.SisyfosSourceServerA : SisyfosLLAyer.SisyfosSourceServerB,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: vo === true ? 2 : 1
-							}
 						})
 					])
 				}
@@ -525,11 +513,9 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	adlibItems.push(
 		...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++, true)
 	)
-	config.mediaPlayers.forEach(player => {
-		adlibItems.push(
-			...makeServerAdlibBoxes({ id: `serv${player.id}`, port: Number(player.val) }, globalRank++)
-		)
-	})
+	adlibItems.push(
+		...makeServerAdlibBoxes({ id: `server`, port: -1 }, globalRank++)
+	)
 
 	adlibItems.push({
 		externalId: 'delayed',
