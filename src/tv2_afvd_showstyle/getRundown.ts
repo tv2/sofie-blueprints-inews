@@ -47,7 +47,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer, VirtualAbstractLLay
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { CONSTANTS } from '../types/constants'
+import { CONSTANTS, MEDIA_PLAYER_AUTO } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
 import { GetEksternMetaData } from './helpers/pieces/ekstern'
@@ -110,7 +110,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 }
 
 function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
-	function makeSsrcAdlibBoxes(layer: SourceLayer, port: number) {
+	function makeSsrcAdlibBoxes(layer: SourceLayer, port: number, mediaPlayer?: boolean) {
 		// Generate boxes with classes to map across each layer
 		const boxObjs = _.map(boxMappings, (m, i) =>
 			literal<TimelineObjAtemSsrc & TimelineBlueprintExt>({
@@ -131,7 +131,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 					}
 				},
 				metaData: {
-					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`
+					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`,
+					mediaPlayerSession: mediaPlayer ? MEDIA_PLAYER_AUTO : undefined
 				}
 			})
 		)
@@ -290,7 +291,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
-			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
+			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, -1, true)
 
 			res.push({
 				externalId: info.id,
