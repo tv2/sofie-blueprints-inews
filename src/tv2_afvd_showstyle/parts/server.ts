@@ -19,7 +19,8 @@ import { CreatePartInvalid } from './invalid'
 export function CreatePartServer(
 	context: PartContext,
 	config: BlueprintConfig,
-	partDefinition: PartDefinition
+	partDefinition: PartDefinition,
+	segmentId: string
 ): BlueprintResultPart {
 	if (partDefinition.fields === undefined) {
 		context.warning('Video ID not set!')
@@ -59,7 +60,7 @@ export function CreatePartServer(
 			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
-			content: MakeContentServerEnableObject(file, partDefinition.externalId, partDefinition, config)
+			content: MakeContentServerEnableObject(file, segmentId, partDefinition, config)
 		})
 	)
 

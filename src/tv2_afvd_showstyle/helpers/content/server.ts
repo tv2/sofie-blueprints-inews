@@ -23,7 +23,7 @@ import { TransitionSettings } from '../transitionSettings'
 
 export function MakeContentServerCurrentClip(
 	file: string,
-	_mediaPlayerSessionId: string,
+	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
 	config: BlueprintConfig,
 	adLib?: boolean,
@@ -53,7 +53,7 @@ export function MakeContentServerCurrentClip(
 					noStarttime: true
 				},
 				metaData: {
-					mediaPlayerSession: MEDIA_PLAYER_AUTO
+					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},
 				...(AddParentClass(partDefinition) && !adLib ? { classes: [ServerParentClass('studio0', file)] } : {})
 			}),
@@ -71,7 +71,7 @@ export function MakeContentServerCurrentClip(
 					isPgm: 1
 				},
 				metaData: {
-					mediaPlayerSession: MEDIA_PLAYER_AUTO
+					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				}
 			}),
 

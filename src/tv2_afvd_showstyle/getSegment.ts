@@ -36,7 +36,6 @@ import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 import { MakeContentServerCurrentClip } from './helpers/content/server'
-import { MEDIA_PLAYER_AUTO } from '../types/constants'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -105,7 +104,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				blueprintParts.push(CreatePartKam(partContext, config, part, totalWords))
 				break
 			case PartType.Server:
-				blueprintParts.push(CreatePartServer(partContext, config, part))
+				blueprintParts.push(CreatePartServer(partContext, config, part, ingestSegment.externalId))
 				break
 			case PartType.Teknik:
 				blueprintParts.push(CreatePartTeknik(partContext, config, part, totalWords))
@@ -172,9 +171,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					sourceLayerId: SourceLayer.PgmCurrentServerClip,
 					infiniteMode: PieceLifespan.OutOnNextSegment,
 					metaData: literal<PieceMetaData>({
-						mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
+						mediaPlayerSessions: [ingestSegment.externalId]
 					}),
-					content: MakeContentServerCurrentClip(part.fields.videoId, part.externalId, part, config),
+					content: MakeContentServerCurrentClip(part.fields.videoId, ingestSegment.externalId, part, config),
 					adlibPreroll: config.studio.CasparPrerollDuration
 				})
 			)
