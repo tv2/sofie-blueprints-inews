@@ -43,7 +43,7 @@ import {
 import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer, VirtualAbstractLLayer } from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer, VirtualAbstractLLayer, CasparPlayerClip } from '../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -282,6 +282,57 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		return res
 	}
 
+	// server ssrc box
+	function makeServerAdlibBoxes(
+		info: { port: number; id: string },
+		rank: number,
+		vo: boolean = false
+	): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
+			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
+
+			res.push({
+				externalId: info.id,
+				name: info.id + '',
+				_rank: rank * 100 + i,
+				sourceLayerId: layer,
+				outputLayerId: 'sec',
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: {
+					timelineObjects: _.compact<TSRTimelineObj>([
+						...boxObjs,
+						literal<TimelineObjAbstractAny>({
+							id: '',
+							enable: { while: audioWhile },
+							priority: 1,
+							layer: VirtualAbstractLLayer.ServerEnable,
+							content: {
+								deviceType: DeviceType.ABSTRACT
+							},
+							classes: [
+								'serverEnable'
+							]
+						}),
+						literal<TimelineObjSisyfosMessage>({
+							id: '',
+							enable: { while: audioWhile },
+							priority: 1,
+							layer: info.id === '1' ? SisyfosLLAyer.SisyfosSourceServerA : SisyfosLLAyer.SisyfosSourceServerB,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: vo === true ? 2 : 1
+							}
+						})
+					])
+				}
+			})
+		})
+		return res
+	}
+
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
@@ -473,6 +524,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	adlibItems.push(
 		...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++, true)
 	)
+	config.mediaPlayers.forEach(player => {
+		adlibItems.push(
+			...makeServerAdlibBoxes({ id: `serv${player.id}`, port: Number(player.val) }, globalRank++)
+		)
+	})
 
 	adlibItems.push({
 		externalId: 'delayed',
@@ -1325,6 +1381,22 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
+
+		...[CasparLLayer.CasparPlayerClipPending, ...config.mediaPlayers.map(mp => CasparPlayerClip(mp.id))].map(
+			layer => {
+				return literal<TimelineObjCCGMedia>({
+					id: '',
+					enable: { while: '1' },
+					priority: 0,
+					layer,
+					content: {
+						deviceType: DeviceType.CASPARCG,
+						type: TimelineContentTypeCasparCg.MEDIA,
+						file: 'empty'
+					}
+				})
+			}
+		),
 
 		literal<TimelineObjAbstractAny>({
 			id: '',

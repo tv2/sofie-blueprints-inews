@@ -103,6 +103,6 @@ export enum VizLLayer {
 	VizLLayerAdLibs = 'viz_layer_adlibs'
 }
 
-export function CasparPlayerClip(i: number) {
+export function CasparPlayerClip(i: number | string) {
 	return `casparcg_player_clip_${i}`
 }
