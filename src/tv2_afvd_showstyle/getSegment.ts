@@ -15,7 +15,8 @@ import {
 	IngestSegment,
 	PartContext,
 	PieceLifespan,
-	SegmentContext
+	SegmentContext,
+	IBlueprintPart
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
@@ -176,14 +177,11 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			part.part.expectedDuration =
 				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
 				(blueprintParts.length - serverParts)
-			part.part.displayDuration =
-				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
-				(blueprintParts.length - serverParts)
 			if (
 				!!part.part.title.match(/(?:kam|cam)(?:era)? ?.*/i) &&
 				part.part.expectedDuration > config.studio.MaximumKamDisplayDuration
 			) {
-				part.part.displayDuration = config.studio.MaximumKamDisplayDuration
+				part.part.expectedDuration = config.studio.MaximumKamDisplayDuration
 			}
 		}
 
@@ -191,19 +189,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 			totalAllocatedTime += part.part.expectedDuration
 		}
 	})
-
-	// TODO: This is where the gap goes
-	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
-	if (
-		extraTime > 0 &&
-		blueprintParts[blueprintParts.length - 1] &&
-		!blueprintParts[blueprintParts.length - 1].pieces.some(piece => piece.sourceLayerId === 'studio0_jingle')
-	) {
-		blueprintParts[blueprintParts.length - 1].part.displayDuration =
-			Number(blueprintParts[blueprintParts.length - 1].part.displayDuration || 0) + extraTime
-		blueprintParts[blueprintParts.length - 1].part.expectedDuration =
-			blueprintParts[blueprintParts.length - 1].part.displayDuration
-	}
 
 	blueprintParts.forEach(part => {
 		if (!part.part.expectedDuration || part.part.expectedDuration < 0) {
@@ -219,6 +204,34 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length === blueprintParts.length
 	) {
 		segment.isHidden = true
+	}
+
+	// TODO: This is where the gap goes
+	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
+	if (
+		extraTime > 0 &&
+		(
+			// Filter out Jingle-only parts
+			blueprintParts.length !== 1 || 
+			blueprintParts[blueprintParts.length - 1] &&
+			!blueprintParts[blueprintParts.length - 1].pieces.some(piece => piece.sourceLayerId === 'studio0_jingle')
+		)
+	) {
+		const gapPart = literal<BlueprintResultPart>({
+			part: literal<IBlueprintPart>({
+				externalId: `${ingestSegment.externalId}-GAP`,
+				title: `Adlib Gap`,
+				metaData: {},
+				typeVariant: '',
+				gap: true,
+				invalid: true,
+				expectedDuration: extraTime,
+				displayDurationGroup: ingestSegment.externalId
+			}),
+			pieces: [],
+			adLibPieces: []
+		})
+		blueprintParts.push(gapPart)
 	}
 
 	if (

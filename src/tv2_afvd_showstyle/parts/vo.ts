@@ -45,7 +45,6 @@ export function CreatePartVO(
 		metaData: {},
 		typeVariant: '',
 		expectedDuration: (sanitisedScript.length / totalWords) * totalTime * 1000 + duration,
-		displayDuration: (sanitisedScript.length / totalWords) * totalTime * 1000 + duration,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})
 

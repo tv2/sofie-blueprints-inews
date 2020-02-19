@@ -40,7 +40,6 @@ export function CreatePartServer(
 		title: partDefinition.rawType,
 		metaData: {},
 		typeVariant: '',
-		displayDuration: duration || 1000,
 		expectedDuration: duration || 1000,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})

@@ -37,15 +37,14 @@ export function CreatePartKam(
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(partDefinition, totalWords, false)
+	const partTime = Math.min(PartTime(partDefinition, totalWords, false), 10000)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
 		typeVariant: '',
-		expectedDuration: partTime > 0 ? partTime : undefined,
-		displayDuration: partTime > 0 ? partTime : undefined
+		expectedDuration: partTime > 0 ? partTime : undefined
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
