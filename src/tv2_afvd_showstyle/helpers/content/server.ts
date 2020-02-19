@@ -6,13 +6,14 @@ import {
 	TimelineContentTypeSisyfos,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny
+	TimelineObjSisyfosAny,
+	TimelineObjAbstractAny
 } from 'timeline-state-resolver-types'
 import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { AddParentClass, ServerParentClass } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { BlueprintConfig } from '../../helpers/config'
@@ -20,7 +21,7 @@ import { STICKY_LAYERS } from '../sisyfos/sisyfos'
 import { TransitionFromString } from '../transitionFromString'
 import { TransitionSettings } from '../transitionSettings'
 
-export function MakeContentServer(
+export function MakeContentServerCurrentClip(
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
@@ -40,7 +41,7 @@ export function MakeContentServer(
 			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
-					start: 0
+					while: '.serverEnable'
 				},
 				priority: 1,
 				layer: CasparLLayer.CasparPlayerClipPending,
@@ -48,7 +49,8 @@ export function MakeContentServer(
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
-					loop: adLib
+					loop: adLib,
+					noStarttime: true
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
@@ -56,6 +58,62 @@ export function MakeContentServer(
 				...(AddParentClass(partDefinition) && !adLib ? { classes: [ServerParentClass('studio0', file)] } : {})
 			}),
 
+			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+				id: '',
+				enable: {
+					while: '.serverEnable'
+				},
+				priority: 1,
+				layer: SisyfosLLAyer.SisyfosSourceClipPending,
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: 1
+				},
+				metaData: {
+					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
+				}
+			}),
+
+			...(stickyLevels
+				? STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								while: '.serverEnable'
+							},
+							priority: 1,
+							layer,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 0
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
+						})
+				  })
+				: [])
+		])
+	})
+}
+
+export function MakeContentServerEnableObject (
+	file: string,
+	mediaPlayerSessionId: string,
+	partDefinition: PartDefinition,
+	config: BlueprintConfig,
+	adLib?: boolean
+): VTContent {
+	return literal<VTContent>({
+		studioLabel: '',
+		fileName: file, // playing casparcg
+		path: `${config.studio.ClipSourcePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		mediaFlowIds: [config.studio.MediaFlowId],
+		firstWords: '',
+		lastWords: '',
+		timelineObjects: [
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
 				enable: {
@@ -79,45 +137,18 @@ export function MakeContentServer(
 				},
 				...(adLib ? { classes: ['adlib_deparent'] } : {})
 			}),
-
-			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+			literal<TimelineObjAbstractAny & TimelineObjectCoreExt>({
 				id: '',
 				enable: {
-					start: 0
+					while: '1'
 				},
 				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceClipPending,
+				layer: VirtualAbstractLLayer.ServerEnable,
 				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					// isPgm: voiceOver ? 2 : 1
-					isPgm: 1
+					deviceType: DeviceType.ABSTRACT
 				},
-				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
-				}
-			}),
-
-			...(stickyLevels
-				? STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-				  })
-				: [])
-		])
+				classes: ['serverEnable']
+			})
+		]
 	})
 }

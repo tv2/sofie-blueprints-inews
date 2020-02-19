@@ -16,7 +16,9 @@ export function VirtualLLayers() {
 	return _.values(VirtualAbstractLLayer)
 }
 
-export enum VirtualAbstractLLayer {}
+export enum VirtualAbstractLLayer {
+	ServerEnable = 'abstract_server_enable'
+}
 
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',
@@ -101,6 +103,6 @@ export enum VizLLayer {
 	VizLLayerAdLibs = 'viz_layer_adlibs'
 }
 
-export function CasparPlayerClip(i: number) {
+export function CasparPlayerClip(i: number | string) {
 	return `casparcg_player_clip_${i}`
 }
