@@ -7,6 +7,7 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
+	TimelineObjAbstractAny,
 	TimelineObjAtemAUX,
 	TimelineObjAtemDSK,
 	TimelineObjAtemME,
@@ -24,8 +25,7 @@ import {
 	TimelineObjVIZMSELoadAllElements,
 	Transition,
 	TSRTimelineObj,
-	TSRTimelineObjBase,
-	TimelineObjAbstractAny
+	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
@@ -43,7 +43,14 @@ import {
 import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer, VirtualAbstractLLayer, CasparPlayerClip } from '../tv2_afvd_studio/layers'
+import {
+	AtemLLayer,
+	CasparLLayer,
+	CasparPlayerClip,
+	SisyfosLLAyer,
+	VirtualAbstractLLayer,
+	VizLLayer
+} from '../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -284,10 +291,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	}
 
 	// server ssrc box
-	function makeServerAdlibBoxes(
-		info: { port: number; id: string },
-		rank: number
-	): IBlueprintAdLibPiece[] {
+	function makeServerAdlibBoxes(info: { port: number; id: string }, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port, true)
@@ -311,9 +315,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							content: {
 								deviceType: DeviceType.ABSTRACT
 							},
-							classes: [
-								'serverEnable'
-							]
+							classes: ['serverEnable']
 						})
 					])
 				}
@@ -513,9 +515,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	adlibItems.push(
 		...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++, true)
 	)
-	adlibItems.push(
-		...makeServerAdlibBoxes({ id: `server`, port: -1 }, globalRank++)
-	)
+	adlibItems.push(...makeServerAdlibBoxes({ id: `server`, port: -1 }, globalRank++))
 
 	adlibItems.push({
 		externalId: 'delayed',
@@ -1369,21 +1369,19 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			}
 		}),
 
-		...[CasparLLayer.CasparPlayerClipPending, ...config.mediaPlayers.map(mp => CasparPlayerClip(mp.id))].map(
-			layer => {
-				return literal<TimelineObjCCGMedia>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer,
-					content: {
-						deviceType: DeviceType.CASPARCG,
-						type: TimelineContentTypeCasparCg.MEDIA,
-						file: 'empty'
-					}
-				})
-			}
-		),
+		...[CasparLLayer.CasparPlayerClipPending, ...config.mediaPlayers.map(mp => CasparPlayerClip(mp.id))].map(layer => {
+			return literal<TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer,
+				content: {
+					deviceType: DeviceType.CASPARCG,
+					type: TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty'
+				}
+			})
+		}),
 
 		literal<TimelineObjAbstractAny>({
 			id: '',

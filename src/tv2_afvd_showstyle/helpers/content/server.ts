@@ -4,10 +4,10 @@ import {
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
+	TimelineObjAbstractAny,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny,
-	TimelineObjAbstractAny
+	TimelineObjSisyfosAny
 } from 'timeline-state-resolver-types'
 import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
@@ -99,7 +99,7 @@ export function MakeContentServerCurrentClip(
 	})
 }
 
-export function MakeContentServerEnableObject (
+export function MakeContentServerEnableObject(
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,

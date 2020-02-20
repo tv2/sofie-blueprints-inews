@@ -11,11 +11,11 @@ import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServerEnableObject } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
+import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 
 export function CreatePartVO(
 	context: PartContext,

@@ -295,7 +295,7 @@ describe('grafik piece', () => {
 						literal<TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
-								while: `.studio0_parent_camera_1 & !.adlib_deparent`
+								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
 							layer: VizLLayer.VizLLayerOverlay,

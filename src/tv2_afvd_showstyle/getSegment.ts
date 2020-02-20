@@ -9,20 +9,21 @@ import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	CameraContent,
+	IBlueprintPart,
 	IBlueprintPiece,
 	IBlueprintRundownDB,
 	IBlueprintSegment,
 	IngestSegment,
 	PartContext,
 	PieceLifespan,
-	SegmentContext,
-	IBlueprintPart,
-	PieceMetaData
+	PieceMetaData,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
+import { MakeContentServerCurrentClip } from './helpers/content/server'
 import { GetNextPartCue } from './helpers/nextPartCue'
 import { ParseBody, PartType } from './inewsConversion/converters/ParseBody'
 import { CueType } from './inewsConversion/converters/ParseCue'
@@ -36,7 +37,6 @@ import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
-import { MakeContentServerCurrentClip } from './helpers/content/server'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -231,12 +231,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
 	if (
 		extraTime > 0 &&
-		(
-			// Filter out Jingle-only parts
-			blueprintParts.length !== 1 || 
-			blueprintParts[blueprintParts.length - 1] &&
-			!blueprintParts[blueprintParts.length - 1].pieces.some(piece => piece.sourceLayerId === 'studio0_jingle')
-		)
+		// Filter out Jingle-only parts
+		(blueprintParts.length !== 1 ||
+			(blueprintParts[blueprintParts.length - 1] &&
+				!blueprintParts[blueprintParts.length - 1].pieces.some(piece => piece.sourceLayerId === 'studio0_jingle')))
 	) {
 		const gapPart = literal<BlueprintResultPart>({
 			part: literal<IBlueprintPart>({

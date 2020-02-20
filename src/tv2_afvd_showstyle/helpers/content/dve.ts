@@ -5,6 +5,7 @@ import {
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
+	TimelineObjAbstractAny,
 	TimelineObjAtemME,
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
@@ -12,8 +13,7 @@ import {
 	TimelineObjCCGTemplate,
 	TimelineObjSisyfosAny,
 	TimelineObjSisyfosMessage,
-	TSRTimelineObj,
-	TimelineObjAbstractAny
+	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
 	CameraContent,
@@ -274,9 +274,7 @@ export function MakeContentDVE2(
 						content: {
 							deviceType: DeviceType.ABSTRACT
 						},
-						classes: [
-							'serverEnable'
-						]
+						classes: ['serverEnable']
 					})
 				)
 				return

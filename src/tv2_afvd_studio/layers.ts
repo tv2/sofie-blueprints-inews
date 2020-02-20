@@ -10,6 +10,7 @@ export function RealLLayers() {
 			.concat(_.values(CasparLLayer))
 			.concat(_.values(SisyfosLLAyer))
 			.concat(_.values(VizLLayer))
+			.concat(_.values(VirtualAbstractLLayer))
 	)
 }
 export function VirtualLLayers() {
