@@ -173,7 +173,7 @@ describe('Body parser', () => {
 		)
 	})
 
-	test('test2', () => {
+	test('test2a', () => {
 		const body2 =
 			'\r\n<p></p>\r\n<p>Thid id thr trext for the next DVE</p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="4"></a></p>\r\n<p><cc>Spib her</cc></p>\r\n<p></p>\r\n\r\n<p>Script here</p>\r\n'
 		const cues2 = [unparsedUnknown, unparsedGrafik1, null, unparsedGrafik3, unparsedEkstern1]
@@ -196,6 +196,51 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					script: 'Script here\n',
+					variant: {},
+					externalId: '',
+					fields: {},
+					modified: 0,
+					storyName: 'test-segment'
+				})
+			])
+		)
+	})
+
+	test('test2b', () => {
+		const body2 =
+			'\r\n<p></p>\r\n<p>Thid id thr trext for the next DVE</p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n<p><cc>Spib her</cc></p>\r\n<p></p>\r\n\r\n<p>Script here</p>\r\n'
+		const cues2 = [['DVE=MORBARN', 'INP1=Kam 1', 'INP2=Kam 2', 'BYNAVN=Live/Odense'], unparsedEkstern1, unparsedGrafik1]
+
+		const result = ParseBody('00000000001', 'test-segment', body2, cues2, fields, 0)
+		console.log(JSON.stringify(result))
+		expect(stripExternalId(result)).toEqual(
+			literal<PartDefinition[]>([
+				literal<PartDefinitionDVE>({
+					type: PartType.DVE,
+					cues: [
+						literal<CueDefinitionDVE>({
+							type: CueType.DVE,
+							template: 'MORBARN',
+							sources: {
+								INP1: 'Kam 1',
+								INP2: 'Kam 2'
+							},
+							labels: ['Live', 'Odense']
+						})
+					],
+					script: 'Thid id thr trext for the next DVE\n',
+					variant: {},
+					externalId: '',
+					rawType: '',
+					fields: {},
+					modified: 0,
+					storyName: 'test-segment'
+				}),
+				literal<PartDefinitionEkstern>({
+					type: PartType.Ekstern,
+					rawType: '',
+					cues: [cueEkstern1, cueGrafik1],
 					script: 'Script here\n',
 					variant: {},
 					externalId: '',

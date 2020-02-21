@@ -13,7 +13,7 @@
 \r\n<p></p>
 \r\n
 
-<!-- test2 -->
+<!-- test2a -->
 \r\n<p></p>
 \r\n<p>Thid id thr trext for the next DVE</p>
 \r\n<p></p>
@@ -24,6 +24,18 @@
 \r\n<p><cc>Spib her</cc></p>
 \r\n<p></p>
 \r\n<p>Script here</p>
+\r\n
+
+<!-- test2b -->
+\r\n<p></p>
+\r\n<p>Thid id thr trext for the next DVE</p>
+\r\n<p></p>
+\r\n<p><pi>***LIVE*** </pi></p>
+\r\n<p><a idref=\"0\"></a></p>
+\r\n<p><a idref=\"1\"></a></p>
+\r\n<p><a idref=\"4\"></a></p>
+\r\n<p><cc>Spib her</cc></p>
+\r\n<p></p>
 \r\n
 
 <!-- test3 -->

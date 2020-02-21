@@ -255,9 +255,12 @@ export function ParseBody(
 
 			parsedCues.forEach(cue => {
 				if (isPrimaryCue(cue)) {
+					let storedScript = ''
 					if (shouldPushDefinition(definition)) {
 						definitions.push(definition)
 						definition = initDefinition(fields, modified, segmentName)
+					} else if (definition.script.length) {
+						storedScript = definition.script
 					}
 
 					definition = makeDefinitionPrimaryCue(
@@ -270,6 +273,8 @@ export function ParseBody(
 						definition.type,
 						cue
 					)
+
+					definition.script = storedScript
 				}
 				definition.cues.push(cue)
 			})
@@ -392,7 +397,9 @@ function isPrimaryCue(cue: CueDefinition) {
 
 function shouldPushDefinition(definition: PartDefinition) {
 	return (
-		(definition.cues.length || definition.script || definition.type !== PartType.Unknown) &&
+		(definition.cues.length ||
+			(definition.script.length && definition.cues.length) ||
+			definition.type !== PartType.Unknown) &&
 		!(definition.type === PartType.Grafik && definition.cues.length === 0)
 	)
 }
