@@ -184,7 +184,7 @@ function GetEnableForGrafik(
 	}
 
 	return {
-		start: 0
+		while: '!.full'
 	}
 }
 
