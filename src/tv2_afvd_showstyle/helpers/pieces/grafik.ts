@@ -175,7 +175,7 @@ function GetEnableForGrafik(
 ): { while: string } | { start: number } {
 	if (isIdentGrafik) {
 		return {
-			while: `.${ControlClasses.ShowIdentGraphic}`
+			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
 		}
 	}
 
