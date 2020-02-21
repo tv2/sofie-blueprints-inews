@@ -115,7 +115,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.VO:
 				blueprintParts.push(
-					CreatePartVO(partContext, config, part, ingestSegment.externalId, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
+					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
 				)
 				break
 			// DVE, Ekstern, Telefon are defined as primary cues.

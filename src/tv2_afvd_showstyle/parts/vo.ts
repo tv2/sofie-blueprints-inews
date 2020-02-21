@@ -21,7 +21,6 @@ export function CreatePartVO(
 	context: PartContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
-	segmentId: string,
 	totalWords: number,
 	totalTime: number
 ): BlueprintResultPart {
@@ -53,7 +52,7 @@ export function CreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const serverContent = MakeContentServerEnableObject(file, segmentId, partDefinition, config)
+	const serverContent = MakeContentServerEnableObject(file, partDefinition.externalId, partDefinition, config)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 
 	pieces.push(
