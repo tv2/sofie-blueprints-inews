@@ -246,7 +246,7 @@ export function MakeContentDVE2(
 						? config.mediaPlayers.find(conf => conf.id === '2')
 						: 'C'
 						? config.studio.AtemSource.ServerC
-						: undefined
+						: -1
 
 				if (!port) {
 					context.warning(`Unknown Server ${sourceInput}`)
