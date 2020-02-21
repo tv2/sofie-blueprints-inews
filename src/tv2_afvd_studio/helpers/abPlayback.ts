@@ -8,7 +8,7 @@ import {
 } from 'timeline-state-resolver-types'
 import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
-import { MEDIA_PLAYER_AUTO } from '../../types/constants'
+import { MEDIA_PLAYER_AUTO, MEDIA_PLAYER_CONTINUE } from '../../types/constants'
 import { CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from '../layers'
 import {
 	MediaPlayerClaim,
@@ -163,6 +163,10 @@ function findNextAvailablePlayer(config: BlueprintConfig, inUse: ActiveRequest[]
 }
 
 export function doesRequestOverlap(thisReq: ActiveRequest, other: ActiveRequest) {
+	if (thisReq.player === MEDIA_PLAYER_CONTINUE) {
+		return true
+	}
+
 	if (thisReq.id === other.id) {
 		return false
 	}
