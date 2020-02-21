@@ -3,6 +3,6 @@ export const CONSTANTS = {
 }
 
 // Note: This doesnt play nice with transitions, so if they are required, then auto cannot be used
-export const MEDIA_PLAYER_AUTO = 'auto'
+export const MEDIA_PLAYER_AUTO: string = 'auto'
 
 export type VizEngine = 'OVL' | 'WALL' | 'FULL'
