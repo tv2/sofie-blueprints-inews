@@ -5,7 +5,6 @@ import {
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
-	TimelineObjAbstractAny,
 	TimelineObjAtemME,
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
@@ -29,10 +28,12 @@ import {
 import * as _ from 'underscore'
 import { createEmptyObject, literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
+import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { FindSourceInfoStrict, SourceInfo, SourceInfoType } from '../../../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { AtemSourceIndex } from '../../../types/atem'
+import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { CueDefinitionDVE, DVEParentClass, DVESources } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
 import { DVEConfig } from '../pieces/dve'
@@ -53,6 +54,7 @@ export const boxMappings = [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, At
 export function MakeContentDVE(
 	context: PartContext,
 	config: BlueprintConfig,
+	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	addClass?: boolean,
@@ -87,7 +89,8 @@ export function MakeContentDVE(
 		graphicsTemplateContent,
 		parsedCue.sources,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
-		adlib
+		adlib,
+		partDefinition
 	)
 }
 
@@ -98,7 +101,8 @@ export function MakeContentDVE2(
 	graphicsTemplateContent: { [key: string]: string },
 	sources: DVESources | undefined,
 	className?: string,
-	adlib?: boolean
+	adlib?: boolean,
+	partDefinition?: PartDefinition
 ): { content: SplitsContent; valid: boolean; stickyLayers: SisyfosLLAyer[] } {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
@@ -121,6 +125,8 @@ export function MakeContentDVE2(
 		const sourceLayer = boxLayers[fromCue as keyof DVESources] as SourceLayer
 		classes.push(`${sourceLayer}_${boxMappings[targetBox - 1]}`)
 
+		let usedServer = false
+
 		if (sources) {
 			const prop = sources[fromCue as keyof DVESources]
 			if (prop?.match(/[K|C]AM(?:era)? ?.*/i)) {
@@ -137,13 +143,14 @@ export function MakeContentDVE2(
 				const match = prop.match(/EVS ?(.*)/i) as RegExpExecArray
 
 				boxMap[targetBox - 1] = { source: `EVS ${match[1]}`, sourceLayer }
-			} else if (prop?.match(/SERVER ?[A-Z]/i)) {
-				const match = prop.match(/SERVER ?([A-Z])/i) as RegExpExecArray
-				boxMap[targetBox - 1] = { source: `SERVER ${match[1]}`, sourceLayer }
-			} else {
-				if (prop) {
-					context.warning(`Unknown input '${prop}' for DVE`)
+			} else if (prop) {
+				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+					usedServer = true
+				} else {
+					boxMap[targetBox - 1] = { source: prop, sourceLayer }
 				}
+			} else {
 				context.warning(`Missing mapping for ${targetBox}`)
 				boxMap[targetBox - 1] = { source: '', sourceLayer }
 			}
@@ -175,6 +182,7 @@ export function MakeContentDVE2(
 	}
 
 	let valid = true
+	let server = false
 
 	boxMap.forEach((mappingFrom, num) => {
 		if (mappingFrom === undefined || mappingFrom.source === '') {
@@ -239,42 +247,57 @@ export function MakeContentDVE2(
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const port =
-					sourceInput === 'A'
-						? config.mediaPlayers.find(conf => conf.id === '1')?.val
-						: 'B'
-						? config.mediaPlayers.find(conf => conf.id === '2')
-						: 'C'
-						? config.studio.AtemSource.ServerC
-						: -1
+				const file = partDefinition ? partDefinition.fields.videoId : undefined
 
-				if (!port) {
-					context.warning(`Unknown Server ${sourceInput}`)
+
+				if (!file || !file.length) {
+					context.warning('No video id provided for ADLIBPIX')
+					valid = false
 					return
 				}
-
+				server = true
 				setBoxSource(
 					num,
 					{
 						type: SourceLayerType.VT,
 						id: 'SERVER',
-						port: Number(port)
+						port: -1
 					},
 					mappingFrom.source
 				)
-
 				dveTimeline.push(
-					literal<TimelineObjAbstractAny & TimelineBlueprintExt>({
+					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							while: '1'
+							start: 0
 						},
 						priority: 1,
-						layer: VirtualAbstractLLayer.ServerEnable,
+						layer: CasparLLayer.CasparPlayerClipPending,
 						content: {
-							deviceType: DeviceType.ABSTRACT
+							deviceType: DeviceType.CASPARCG,
+							type: TimelineContentTypeCasparCg.MEDIA,
+							file,
+							loop: true
 						},
-						classes: ['serverEnable']
+						metaData: {
+							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
+						}
+					}),
+					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: SisyfosLLAyer.SisyfosSourceClipPending,
+						content: {
+							deviceType: DeviceType.SISYFOS,
+							type: TimelineContentTypeSisyfos.SISYFOS,
+							isPgm: 1
+						},
+						metaData: {
+							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
+						}
 					})
 				)
 				return
@@ -341,7 +364,10 @@ export function MakeContentDVE2(
 						type: TimelineContentTypeAtem.SSRC,
 						ssrc: { boxes }
 					},
-					classes: className ? [...classes, className] : classes
+					classes: className ? [...classes, className] : classes,
+					metaData: {
+						mediaPlayerSession: server ? MEDIA_PLAYER_AUTO : undefined // TODO: Maybe this should be segment-level?
+					}
 				}),
 				literal<TimelineObjAtemSsrcProps>({
 					id: '',

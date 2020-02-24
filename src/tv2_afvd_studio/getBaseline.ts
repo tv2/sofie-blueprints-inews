@@ -4,7 +4,6 @@ import {
 	MappingAtemType,
 	TimelineContentTypeAtem,
 	TimelineContentTypeSisyfos,
-	TimelineObjAbstractAny,
 	TimelineObjAtemAUX,
 	TimelineObjAtemME,
 	TimelineObjSisyfosAny,
@@ -14,7 +13,7 @@ import { BlueprintMapping, BlueprintMappings, IStudioContext } from 'tv-automati
 import * as _ from 'underscore'
 import { literal } from '../common/util'
 import { AtemSourceIndex } from '../types/atem'
-import { AtemLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from './layers'
+import { AtemLLayer, SisyfosLLAyer } from './layers'
 import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
@@ -134,15 +133,6 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 					input: AtemSourceIndex.MP1,
 					transition: AtemTransitionStyle.CUT
 				}
-			}
-		}),
-		literal<TimelineObjAbstractAny>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: VirtualAbstractLLayer.ServerEnable,
-			content: {
-				deviceType: DeviceType.ABSTRACT
 			}
 		})
 	]

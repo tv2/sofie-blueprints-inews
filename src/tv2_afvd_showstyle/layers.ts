@@ -18,7 +18,6 @@ export enum SourceLayer {
 	PgmGraphicsOverlay = 'studio0_overlay',
 	PgmDelayed = 'studio0_delayed',
 	PgmContinuity = 'studio0_continuity',
-	PgmCurrentServerClip = 'studio0_current_server_clip',
 
 	// Note: there is a regex in core to ignore some DVE layers. That will need updating if adding more
 	PgmDVEBox1 = 'studio0_dve_box1',

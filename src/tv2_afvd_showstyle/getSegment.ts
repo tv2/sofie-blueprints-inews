@@ -16,14 +16,12 @@ import {
 	IngestSegment,
 	PartContext,
 	PieceLifespan,
-	PieceMetaData,
 	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
-import { MakeContentServerCurrentClip } from './helpers/content/server'
 import { GetNextPartCue } from './helpers/nextPartCue'
 import { ParseBody, PartType } from './inewsConversion/converters/ParseBody'
 import { CueType } from './inewsConversion/converters/ParseCue'
@@ -105,7 +103,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				blueprintParts.push(CreatePartKam(partContext, config, part, totalWords))
 				break
 			case PartType.Server:
-				blueprintParts.push(CreatePartServer(partContext, config, part, ingestSegment.externalId))
+				blueprintParts.push(CreatePartServer(partContext, config, part))
 				break
 			case PartType.Teknik:
 				blueprintParts.push(CreatePartTeknik(partContext, config, part, totalWords))
@@ -160,25 +158,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 					jingleTime += t
 				}
 			}
-		}
-
-		if (blueprintParts.length === 1 && part.fields.videoId) {
-			blueprintParts[0].pieces.push(
-				literal<IBlueprintPiece>({
-					_id: '',
-					externalId: part.externalId,
-					name: `Story clip: ${part.fields.videoId}`,
-					enable: { start: 0 },
-					outputLayerId: 'sec',
-					sourceLayerId: SourceLayer.PgmCurrentServerClip,
-					infiniteMode: PieceLifespan.OutOnNextSegment,
-					metaData: literal<PieceMetaData>({
-						mediaPlayerSessions: [ingestSegment.externalId]
-					}),
-					content: MakeContentServerCurrentClip(part.fields.videoId, ingestSegment.externalId, part, config),
-					adlibPreroll: config.studio.CasparPrerollDuration
-				})
-			)
 		}
 	}
 
