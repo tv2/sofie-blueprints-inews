@@ -228,11 +228,6 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.PRELOAD,
 		lookaheadDepth: 2
 	}),
-	abstract_server_enable: literal<MappingAbstract & BlueprintMapping>({
-		device: DeviceType.ABSTRACT,
-		deviceId: 'abstract0',
-		lookahead: LookaheadMode.NONE
-	}),
 	casparcg_player_clip_1: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar01',
