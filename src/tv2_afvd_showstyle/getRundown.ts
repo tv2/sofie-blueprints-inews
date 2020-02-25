@@ -46,7 +46,6 @@ import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import {
 	AtemLLayer,
 	CasparLLayer,
-	CasparPlayerClip,
 	SisyfosLLAyer,
 	VirtualAbstractLLayer,
 	VizLLayer
@@ -1367,20 +1366,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 					}
 				}
 			}
-		}),
-
-		...[CasparLLayer.CasparPlayerClipPending, ...config.mediaPlayers.map(mp => CasparPlayerClip(mp.id))].map(layer => {
-			return literal<TimelineObjCCGMedia>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer,
-				content: {
-					deviceType: DeviceType.CASPARCG,
-					type: TimelineContentTypeCasparCg.MEDIA,
-					file: 'empty'
-				}
-			})
 		}),
 
 		literal<TimelineObjAbstractAny>({
