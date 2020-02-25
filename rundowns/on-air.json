@@ -32,7 +32,8 @@
                         "onair": "ONAIR",
                         "typecode": "nyx",
                         "programtitle": "Nyhederne 19:00",
-                        "noarchive": "."
+                        "noarchive": ".",
+                        "pageNumber": "01"
                     },
                     "meta": {
                         "words": "6",
@@ -73,7 +74,8 @@
                         "onair": "ONAIR",
                         "typecode": "nyx",
                         "programtitle": "Nyhederne 19:00",
-                        "noarchive": "."
+                        "noarchive": ".",
+                        "pageNumber": "02"
                     },
                     "meta": {
                         "words": "6",
@@ -114,7 +116,8 @@
                         "onair": "ONAIR",
                         "typecode": "nyx",
                         "programtitle": "Nyhederne 19:00",
-                        "noarchive": "."
+                        "noarchive": ".",
+                        "pageNumber": "03"
                     },
                     "meta": {
                         "words": "6",
@@ -160,7 +163,8 @@
                         "typecode": "nyx",
                         "programtitle": "Nyhederne 19:00",
                         "noarchive": ".",
-                        "videoId": "01234A"
+                        "videoId": "01234A",
+                        "pageNumber": "04"
                     },
                     "meta": {
                         "words": "6",
@@ -202,7 +206,8 @@
                         "typecode": "nyx",
                         "programtitle": "Nyhederne 19:00",
                         "noarchive": ".",
-                        "videoId": "01234A"
+                        "videoId": "01234A",
+                        "pageNumber": "05"
                     },
                     "meta": {
                         "words": "6",
@@ -244,7 +249,8 @@
                         "typecode": "nyx",
                         "programtitle": "Nyhederne 19:00",
                         "noarchive": ".",
-                        "videoId": "01234A"
+                        "videoId": "01234A",
+                        "pageNumber": "06"
                     },
                     "meta": {
                         "words": "6",

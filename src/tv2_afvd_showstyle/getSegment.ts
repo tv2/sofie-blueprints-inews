@@ -40,11 +40,10 @@ import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
-		name:
-			ingestSegment.payload.iNewsStory.fields.pageNumber && ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
-				? `${ingestSegment.payload.iNewsStory.fields.pageNumber.trim()} ${ingestSegment.name}`
-				: ingestSegment.name,
-		metaData: {}
+		name: ingestSegment.name,
+		metaData: {},
+		identifier: ingestSegment.payload.iNewsStory.fields.pageNumber && ingestSegment.payload.iNewsStory.fields.pageNumber.trim() ?
+			ingestSegment.payload.iNewsStory.fields.pageNumber.trim() : undefined
 	})
 	const config = parseConfig(context)
 
