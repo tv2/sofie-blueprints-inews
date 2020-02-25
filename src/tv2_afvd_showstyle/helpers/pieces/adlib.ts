@@ -35,7 +35,7 @@ export function EvaluateAdLib(
 				metaData: literal<PieceMetaData>({
 					mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
 				}),
-				content: MakeContentServer(file, partId, partDefinition, config, true, true),
+				content: MakeContentServer(file, MEDIA_PLAYER_AUTO, partDefinition, config, true, true),
 				adlibPreroll: config.studio.CasparPrerollDuration
 			})
 		)

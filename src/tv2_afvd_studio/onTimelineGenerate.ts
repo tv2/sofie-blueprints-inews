@@ -19,9 +19,16 @@ import {
 import * as _ from 'underscore'
 import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { assignMediaPlayers } from './helpers/abPlayback'
+// import { SourceLayer } from '../tv2_afvd_showstyle/layers'
+
+/*const ALLOWED_MEDIA_PLAYER_SESSION_OVERLAPS: { [from: string]: string } = {
+	[SourceLayer.PgmServer]: SourceLayer.PgmVoiceOver,
+	[SourceLayer.PgmVoiceOver]: SourceLayer.PgmServer
+}*/
 
 export interface PartEndStateExt extends PartEndState {
-	stickySisyfosLevels: { [key: string]: number | undefined }
+	stickySisyfosLevels: { [key: string]: number | undefined },
+	mediaPlayerSessions: { [layer: string]: string[] }
 }
 
 export interface MediaPlayerClaim {
@@ -32,6 +39,7 @@ export interface MediaPlayerClaim {
 
 export interface TimelinePersistentStateExt extends TimelinePersistentState {
 	activeMediaPlayers: { [player: string]: MediaPlayerClaim[] | undefined }
+	segmentSession: string
 }
 
 export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
@@ -58,6 +66,57 @@ export function onTimelineGenerate(
 	resolvedPieces: IBlueprintPieceDB[]
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
+
+	const previousSegmentSession = previousPersistentState?.segmentSession
+	const availablePlayers = previousPartEndState2?.mediaPlayerSessions
+	if (
+		previousSegmentSession === context.part.segmentId &&
+		availablePlayers &&
+		Object.keys(availablePlayers).length
+	) {
+		const replacedSessions: { [from: string]: string } = { }
+		_.each(timeline, obj => {
+			if (obj.classes && obj.classes.includes('add_server_segment_session') && !obj.classes.some((cls) => cls.includes('server_segment_session_id'))) {
+				obj.classes.push(`server_segment_session_id_${context.part.segmentId}`)
+			}
+	
+			if (obj.classes && obj.classes.includes('can_continue_server') && obj.classes.some((cls) => cls.includes('server_segment_session_id')) && !obj.isLookahead) {
+				const meta = obj.metaData as TimelineBlueprintExt['metaData']
+				console.log(`Can continue server on ${obj.id} with segment session ${obj.classes.find((cls) => cls.includes('server_segment_session_id'))}`)
+				if (meta && meta.mediaPlayerSession) {
+					console.log(`Replacing media session ${meta.mediaPlayerSession} with ${availablePlayers[Object.keys(availablePlayers)[0]][0]}`)
+					replacedSessions[meta.mediaPlayerSession] = availablePlayers[Object.keys(availablePlayers)[0]][0]
+					obj.metaData!.mediaPlayerSession = availablePlayers[Object.keys(availablePlayers)[0]][0]
+				}
+			}
+		})
+
+		_.each(resolvedPieces, piece => {
+			if (piece.metaData) {
+				const meta = piece.metaData as PieceMetaData
+				if (meta.mediaPlayerSessions) {
+					piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map((session) => {
+						if (Object.keys(replacedSessions).includes(session)) {
+							return replacedSessions[session]
+						}
+
+						return session
+					})
+				}
+			}
+		})
+
+
+		_.each(resolvedPieces, piece => {
+			if (piece.metaData) {
+				const meta = piece.metaData as PieceMetaData
+				if (meta.mediaPlayerSessions) {
+					console.log(`Sessions: ${meta.mediaPlayerSessions}`)
+				}
+			}
+		})
+	}
+
 	copyPreviousSisyfosLevels(
 		context,
 		timeline,
@@ -66,7 +125,8 @@ export function onTimelineGenerate(
 	)
 
 	const persistentState: TimelinePersistentStateExt = {
-		activeMediaPlayers: {}
+		activeMediaPlayers: {},
+		segmentSession: context.part.segmentId
 	}
 	const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt | undefined
 
@@ -96,7 +156,8 @@ export function getEndStateForPart(
 	time: number
 ): PartEndState {
 	const endState: PartEndStateExt = {
-		stickySisyfosLevels: {}
+		stickySisyfosLevels: {},
+		mediaPlayerSessions: {}
 	}
 
 	const previousPartEndState2 = previousPartEndState as Partial<PartEndStateExt> | undefined
@@ -108,6 +169,15 @@ export function getEndStateForPart(
 
 	_.each(activePieces, piece => {
 		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
+	})
+
+	_.each(activePieces, piece => {
+		if (piece.metaData) {
+			const meta = (piece.metaData as PieceMetaData).mediaPlayerSessions
+			if (meta && meta.length) {
+				endState.mediaPlayerSessions[piece.sourceLayerId] = meta
+			}
+		}
 	})
 
 	return endState

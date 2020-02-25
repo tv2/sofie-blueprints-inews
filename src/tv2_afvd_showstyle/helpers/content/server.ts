@@ -40,7 +40,7 @@ export function MakeContentServer(
 			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
-					start: 0
+					while: '1'
 				},
 				priority: 1,
 				layer: CasparLLayer.CasparPlayerClipPending,
@@ -48,12 +48,17 @@ export function MakeContentServer(
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
-					loop: adLib
+					loop: adLib,
+					noStarttime: true
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},
-				...(AddParentClass(partDefinition) && !adLib ? { classes: [ServerParentClass('studio0', file)] } : {})
+				classes: [
+					...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : []),
+					'can_continue_server',
+					'add_server_segment_session'
+				]
 			}),
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
@@ -77,7 +82,10 @@ export function MakeContentServer(
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},
-				...(adLib ? { classes: ['adlib_deparent'] } : {})
+				classes: [
+					...(adLib ? ['adlib_deparent'] : ['can_continue_server']),
+					'add_server_segment_session'
+				]
 			}),
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
@@ -95,7 +103,8 @@ export function MakeContentServer(
 				},
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
-				}
+				},
+				classes: adLib ? [] : ['can_continue_server']
 			}),
 
 			...(stickyLevels

@@ -20,7 +20,8 @@ import { CreatePartInvalid } from './invalid'
 export function CreatePartServer(
 	context: PartContext,
 	config: BlueprintConfig,
-	partDefinition: PartDefinition
+	partDefinition: PartDefinition,
+	segmentExternalId: string
 ): BlueprintResultPart {
 	if (partDefinition.fields === undefined) {
 		context.warning('Video ID not set!')
@@ -60,9 +61,9 @@ export function CreatePartServer(
 			sourceLayerId: SourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [part.externalId]
+				mediaPlayerSessions: [segmentExternalId]
 			}),
-			content: MakeContentServer(file, part.externalId, partDefinition, config),
+			content: MakeContentServer(file, segmentExternalId, partDefinition, config),
 			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
