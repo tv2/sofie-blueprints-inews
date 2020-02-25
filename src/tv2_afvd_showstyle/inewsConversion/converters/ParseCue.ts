@@ -483,10 +483,12 @@ function parseLYD(cue: string[]) {
 		lydCue.variant = command[1]
 	}
 
-	if (isTime(cue[1])) {
-		lydCue = { ...lydCue, ...parseTime(cue[1]) }
-	} else if (cue[1].match(/;x.xx/i)) {
-		lydCue.adlib = true
+	if (cue[1]) {
+		if (isTime(cue[1])) {
+			lydCue = { ...lydCue, ...parseTime(cue[1]) }
+		} else if (cue[1].match(/;x.xx/i)) {
+			lydCue.adlib = true
+		}
 	}
 
 	return lydCue
@@ -573,7 +575,7 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 }
 
 export function isTime(line: string) {
-	return !!line
+	return line && !!line
 		.replace(/\s+/gi, '')
 		.match(/^;\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}(?:(?:-\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}){0,1}|(?:-[BSO]))$/i)
 }
