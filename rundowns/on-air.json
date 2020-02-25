@@ -310,10 +310,16 @@
                     "cues": [
                         [
                             "ADLIBPIX=SERVER"
+                        ],
+                        [
+                            "DVE=morbarn",
+                            "INP1=KAM 1",
+                            "INP2=SERVER",
+                            "BYNAVN=Odense/Kobenhavn"
                         ]
                     ],
                     "id": "341dd48e:011f7352:5da02375",
-                    "body": "\r\n<p><pi>KAM 1</pi><a idref=\"0\"></p>\r\n<p>111111111</p>\r\n<p><pi>****VO****</pi></p>\r\n<p>11111111111111111111</p>\r\n"
+                    "body": "\r\n<p><pi>KAM 1</pi><a idref=\"0\"></p>\r\n<p>111111111</p>\r\n<p><pi>****VO****</pi></p>\r\n<p>11111111111111111111</p>\r\n<pi>****SERVER****</pi><a idref=\"1\"></p>\r\n<p>11111111111111111111</p>\r\n"
                 },
                 "modified": "2019-10-11T06:38:00.000Z",
                 "externalId": "341dd48e:011f7352:5da02375",

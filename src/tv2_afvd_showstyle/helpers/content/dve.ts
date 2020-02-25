@@ -111,7 +111,10 @@ export function MakeContentDVE2(
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
 	const boxMap: Array<{ source: string; sourceLayer: SourceLayer }> = []
 
-	const classes: string[] = []
+	const classes: string[] = [
+		'can_continue_server',
+		'add_server_segment_session'
+	]
 
 	inputs.forEach(source => {
 		const sourceProps = source.split(':')
@@ -252,13 +255,6 @@ export function MakeContentDVE2(
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const file = partDefinition ? partDefinition.fields.videoId : undefined
-
-				if (!file || !file.length) {
-					context.warning('No video id provided for ADLIBPIX')
-					valid = false
-					return
-				}
 				server = true
 				setBoxSource(
 					num,
@@ -273,24 +269,28 @@ export function MakeContentDVE2(
 					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							start: 0
+							while: '1'
 						},
 						priority: 1,
 						layer: CasparLLayer.CasparPlayerClipPending,
 						content: {
 							deviceType: DeviceType.CASPARCG,
 							type: TimelineContentTypeCasparCg.MEDIA,
-							file,
-							loop: true
+							file: 'copy',
+							noStarttime: true
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
-						}
+							mediaPlayerSession: MEDIA_PLAYER_AUTO
+						},
+						classes: [
+							'can_continue_server',
+							'add_server_segment_session'
+						]
 					}),
 					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							start: 0
+							while: '1'
 						},
 						priority: 1,
 						layer: SisyfosLLAyer.SisyfosSourceClipPending,
@@ -300,8 +300,12 @@ export function MakeContentDVE2(
 							isPgm: 1
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
-						}
+							mediaPlayerSession: MEDIA_PLAYER_AUTO
+						},
+						classes: [
+							'can_continue_server',
+							'add_server_segment_session'
+						]
 					})
 				)
 				return

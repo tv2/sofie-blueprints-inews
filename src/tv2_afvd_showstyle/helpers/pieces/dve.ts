@@ -2,7 +2,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan
+	PieceLifespan,
+	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { literal } from '../../../common/util'
@@ -12,6 +13,7 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AddParentClass, CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
 import { CalculateTime } from './evaluateCues'
+import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 
 export interface DVEConfigBox {
 	enabled: boolean
@@ -124,7 +126,10 @@ export function EvaluateDVE(
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
+					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+					metaData: literal<PieceMetaData>({
+						mediaPlayerSessions: [ MEDIA_PLAYER_AUTO ]
+					})
 				})
 			)
 		}
