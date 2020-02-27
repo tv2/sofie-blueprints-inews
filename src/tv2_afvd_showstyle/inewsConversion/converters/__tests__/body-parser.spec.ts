@@ -213,7 +213,6 @@ describe('Body parser', () => {
 		const cues2 = [['DVE=MORBARN', 'INP1=Kam 1', 'INP2=Kam 2', 'BYNAVN=Live/Odense'], unparsedEkstern1, unparsedGrafik1]
 
 		const result = ParseBody('00000000001', 'test-segment', body2, cues2, fields, 0)
-		console.log(JSON.stringify(result))
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
 				literal<PartDefinitionDVE>({
