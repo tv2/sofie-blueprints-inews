@@ -107,3 +107,7 @@ export enum VizLLayer {
 export function CasparPlayerClip(i: number | string) {
 	return `casparcg_player_clip_${i}`
 }
+
+export function CasparPlayerClipLoadingLoop(i: number | string) {
+	return `casparcg_player_clip_${i}_loading_loop`
+}

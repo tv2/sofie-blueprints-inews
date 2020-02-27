@@ -32,6 +32,7 @@ export interface DVEConfigInput {
 
 export interface ShowStyleConfig {
 	MakeAdlibsForFulls: boolean
+	CasparCGLoadingClip: string
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemValue
 	WipesConfig: TableConfigItemValue

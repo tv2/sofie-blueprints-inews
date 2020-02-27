@@ -9,7 +9,8 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	WipesConfig: [],
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,
-	LYDConfig: []
+	LYDConfig: [],
+	CasparCGLoadingClip: ''
 }
 
 describe('Config Manifest', () => {

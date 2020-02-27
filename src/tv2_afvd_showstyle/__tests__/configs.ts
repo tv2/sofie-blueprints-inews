@@ -26,6 +26,7 @@ export const casparABPlaybackConfig: ConfigMap = {
 
 export const defaultShowStyleConfig: ConfigMap = {
 	DefaultTemplateDuration: 4,
+	CasparCGLoadingClip: 'LoadingLoop',
 	DVEStyles: [
 		{
 			_id: '',

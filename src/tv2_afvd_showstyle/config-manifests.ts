@@ -10,6 +10,14 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		required: false
 	},
 	{
+		id: 'CasparCGLoadingClip',
+		name: 'CasparCG Loading Clip',
+		description: 'Clip to play when media is loading',
+		type: ConfigManifestEntryType.STRING,
+		defaultVal: 'LoadingLoop',
+		required: true
+	},
+	{
 		id: 'DVEStyles',
 		name: 'DVE Layouts',
 		description: '',
