@@ -3,6 +3,7 @@ import { showStyleConfigManifest } from '../config-manifests'
 import { ShowStyleConfig } from '../helpers/config'
 
 const blankShowStyleConfig: ShowStyleConfig = {
+	MakeAdlibsForFulls: true,
 	DVEStyles: [],
 	GFXTemplates: [],
 	WipesConfig: [],

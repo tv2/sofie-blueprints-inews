@@ -106,7 +106,7 @@ describe('telefon', () => {
 						literal<TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
-								start: 0
+								while: '!.full'
 							},
 							priority: 1,
 							layer: VizLLayer.VizLLayerOverlay,

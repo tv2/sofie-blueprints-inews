@@ -58,19 +58,11 @@ export function EvaluateMOS(
 	const isOverlay = !!parsedCue.name.match(/MOSART=L/i)
 
 	if (adlib) {
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partId,
-				name: grafikName(config, parsedCue),
-				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
-				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
-				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
-				adlibPreroll: config.studio.PilotPrerollDuration,
-				content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf)
-			})
-		)
+		adlibPieces.push(makeMosAdlib(partId, config, parsedCue, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay))
 	} else {
+		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls) {
+			adlibPieces.push(makeMosAdlib(partId, config, parsedCue, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay))
+		}
 		pieces.push(
 			literal<IBlueprintPiece>({
 				_id: '',
@@ -90,6 +82,28 @@ export function EvaluateMOS(
 				content: GetMosObjContent(config, parsedCue, partId, isOverlay, false, isTlf)
 			})
 		)
+	}
+}
+
+function makeMosAdlib(
+	partId: string,
+	config: BlueprintConfig,
+	parsedCue: CueDefinitionMOS,
+	isOverlay: boolean,
+	isTlf?: boolean,
+	rank?: number,
+	isGrafikPart?: boolean,
+	overrideOverlay?: boolean
+): IBlueprintAdLibPiece {
+	return {
+		_rank: rank || 0,
+		externalId: partId,
+		name: grafikName(config, parsedCue),
+		infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
+		sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
+		outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
+		adlibPreroll: config.studio.PilotPrerollDuration,
+		content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf)
 	}
 }
 

@@ -31,6 +31,7 @@ export interface DVEConfigInput {
 }
 
 export interface ShowStyleConfig {
+	MakeAdlibsForFulls: boolean
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemValue
 	WipesConfig: TableConfigItemValue

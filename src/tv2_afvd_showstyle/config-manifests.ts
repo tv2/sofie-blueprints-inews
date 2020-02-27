@@ -2,6 +2,14 @@ import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofi
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
+		id: 'MakeAdlibsForFulls',
+		name: 'Make Adlibs for FULL graphics',
+		description: '',
+		type: ConfigManifestEntryType.BOOLEAN,
+		defaultVal: true,
+		required: false
+	},
+	{
 		id: 'DVEStyles',
 		name: 'DVE Layouts',
 		description: '',
