@@ -575,9 +575,12 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 }
 
 export function isTime(line: string) {
-	return line && !!line
-		.replace(/\s+/gi, '')
-		.match(/^;\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}(?:(?:-\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}){0,1}|(?:-[BSO]))$/i)
+	return (
+		line &&
+		!!line
+			.replace(/\s+/gi, '')
+			.match(/^;\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}(?:(?:-\d{1,2}(?:(?:\.\d{1,2}){0,1}){0,2}){0,1}|(?:-[BSO]))$/i)
+	)
 }
 
 export function isMosTime(line: string) {

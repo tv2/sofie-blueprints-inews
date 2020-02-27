@@ -42,8 +42,10 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	const segment = literal<IBlueprintSegment>({
 		name: ingestSegment.name,
 		metaData: {},
-		identifier: ingestSegment.payload.iNewsStory.fields.pageNumber && ingestSegment.payload.iNewsStory.fields.pageNumber.trim() ?
-			ingestSegment.payload.iNewsStory.fields.pageNumber.trim() : undefined
+		identifier:
+			ingestSegment.payload.iNewsStory.fields.pageNumber && ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
+				? ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
+				: undefined
 	})
 	const config = parseConfig(context)
 
@@ -114,7 +116,14 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.VO:
 				blueprintParts.push(
-					CreatePartVO(partContext, config, part, ingestSegment.externalId, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
+					CreatePartVO(
+						partContext,
+						config,
+						part,
+						ingestSegment.externalId,
+						totalWords,
+						Number(ingestSegment.payload.iNewsStory.fields.audioTime)
+					)
 				)
 				break
 			// DVE, Ekstern, Telefon are defined as primary cues.
