@@ -248,7 +248,9 @@ const testSegment6: PartDefinition[] = [
 				type: CueType.TargetEngine,
 				rawType: 'GRAFIK=FULL',
 				content: {},
-				engine: 'FULL',
+				data: {
+					engine: 'FULL'
+				},
 				grafik: {
 					type: CueType.MOS,
 					name: 'PROFILE/MEST BRUGTE STARTERE I NBA/08-12-2019',
@@ -627,7 +629,9 @@ describe('Parse Cue Order', () => {
 						type: CueType.TargetEngine,
 						rawType: 'GRAFIK=FULL',
 						content: {},
-						engine: 'FULL',
+						data: {
+							engine: 'FULL'
+						},
 						grafik: {
 							type: CueType.MOS,
 							name: 'PROFILE/MEST BRUGTE STARTERE I NBA/08-12-2019',

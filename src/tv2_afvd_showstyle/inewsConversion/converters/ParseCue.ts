@@ -17,8 +17,7 @@ export enum CueType {
 	Design,
 	Profile,
 	TargetEngine,
-	ClearGrafiks,
-	TargetWall
+	ClearGrafiks
 }
 
 export interface CueTime {
@@ -125,16 +124,14 @@ export interface CueDefinitionProfile extends CueDefinitionBase {
 export interface CueDefinitionTargetEngine extends CueDefinitionBase {
 	type: CueType.TargetEngine
 	rawType: string
-	engine: string
+	data: {
+		engine: string
+		grafik?: CueDefinitionMOS | CueDefinitionGrafik
+	}
 	content: {
 		[key: string]: string
 	}
-	grafik?: CueDefinitionMOS
-}
-
-export interface CueDefinitionTargetWall extends CueDefinitionBase {
-	type: CueType.TargetWall
-	clip: string
+	grafik?: CueDefinitionMOS | CueDefinitionGrafik
 }
 
 export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
@@ -157,7 +154,6 @@ export type CueDefinition =
 	| CueDefinitionProfile
 	| CueDefinitionTargetEngine
 	| CueDefinitionClearGrafiks
-	| CueDefinitionTargetWall
 
 export function ParseCue(cue: UnparsedCue): CueDefinition {
 	if (!cue) {
@@ -182,8 +178,6 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
 		// kg (Grafik)
 		return parsekg(cue)
-	} else if (cue[0].match(/ss=/i)) {
-		return parseTargetWall(cue)
 	} else if (cue[0].match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i)) {
 		// MOS
 		return parseMOS(cue)
@@ -204,7 +198,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	} else if (cue[0].match(/^TELEFON=/i)) {
 		// Telefon
 		return parseTelefon(cue)
-	} else if (cue[0].match(/^(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
+	} else if (cue[0].match(/^SS|(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
 		// Target engine
 		return parseTargetEngine(cue)
 	} else if (cue[0].match(/^VIZ=/i)) {
@@ -512,13 +506,15 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 		type: CueType.TargetEngine,
 		rawType: cue[0],
 		content: {},
-		engine: ''
+		data: {
+			engine: ''
+		}
 	}
 
-	const engine = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
+	const engine = cue[0].match(/^(?:VIZ|GRAFIK|SS)=(.*)$/i)
 
 	if (engine) {
-		engineCue.engine = engine[1]
+		engineCue.data.engine = engine[1]
 	}
 
 	for (let i = 1; i < cue.length; i++) {
@@ -527,27 +523,6 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 		} else {
 			const c = cue[i].split('=')
 			engineCue.content[c[0].toString().toUpperCase()] = c[1]
-		}
-	}
-
-	return engineCue
-}
-
-function parseTargetWall(cue: string[]): CueDefinitionTargetWall {
-	let engineCue: CueDefinitionTargetWall = {
-		type: CueType.TargetWall,
-		clip: ''
-	}
-
-	const clip = cue[0].match(/^SS=(.*)$/i)
-
-	if (clip) {
-		engineCue.clip = clip[1]
-	}
-
-	for (let i = 1; i < cue.length; i++) {
-		if (isTime(cue[i])) {
-			engineCue = { ...engineCue, ...parseTime(cue[i]) }
 		}
 	}
 

@@ -10,11 +10,12 @@ import {
 import _ = require('underscore')
 import { literal } from '../../../common/util'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { CueDefinitionTargetEngine } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
+import { CueDefinitionTargetEngine, CueType } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { CalculateTime } from './evaluateCues'
+import { EvaluateGrafik } from './grafik'
 import { EvaluateMOS } from './mos'
 
 export function EvaluateTargetEngine(
@@ -26,8 +27,8 @@ export function EvaluateTargetEngine(
 	parsedCue: CueDefinitionTargetEngine
 ) {
 	// TODO: Future: Target a specific engine
-	if (!parsedCue.engine.match(/full|ovl/i)) {
-		context.warning(`Unknown engine: ${parsedCue.engine}`)
+	if (!parsedCue.data.engine.match(/full|ovl|wall/i)) {
+		context.warning(`Could not find engine to target for: ${parsedCue.data.engine}`)
 		return
 	}
 	if (!parsedCue.content.INP1 && !parsedCue.content.INP) {
@@ -78,19 +79,32 @@ export function EvaluateTargetEngine(
 	}
 
 	if (parsedCue.grafik) {
-		// TODO target engine
-		EvaluateMOS(
-			config,
-			context,
-			pieces,
-			adlibPeces,
-			partId,
-			parsedCue.grafik,
-			false,
-			false,
-			0,
-			true,
-			!!parsedCue.engine.match(/ovl/i)
-		)
+		if (parsedCue.grafik.type === CueType.Grafik) {
+			EvaluateGrafik(
+				config,
+				context,
+				pieces,
+				adlibPeces,
+				partId,
+				parsedCue.grafik,
+				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : 'OVL',
+				false
+			)
+		} else {
+			EvaluateMOS(
+				config,
+				context,
+				pieces,
+				adlibPeces,
+				partId,
+				parsedCue.grafik,
+				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : 'OVL',
+				false,
+				false,
+				0,
+				true,
+				!!parsedCue.data.engine.match(/ovl/i)
+			)
+		}
 	}
 }

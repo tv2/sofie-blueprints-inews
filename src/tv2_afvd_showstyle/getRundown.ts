@@ -7,7 +7,6 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
-	TimelineObjAbstractAny,
 	TimelineObjAtemAUX,
 	TimelineObjAtemDSK,
 	TimelineObjAtemME,
@@ -48,7 +47,6 @@ import {
 	CasparLLayer,
 	CasparPlayerClipLoadingLoop,
 	SisyfosLLAyer,
-	VirtualAbstractLLayer,
 	VizLLayer
 } from '../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
@@ -290,40 +288,6 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		return res
 	}
 
-	// server ssrc box
-	function makeServerAdlibBoxes(info: { port: number; id: string }, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
-			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port, true)
-
-			res.push({
-				externalId: info.id,
-				name: info.id + '',
-				_rank: rank * 100 + i,
-				sourceLayerId: layer,
-				outputLayerId: 'sec',
-				expectedDuration: 0,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				content: {
-					timelineObjects: _.compact<TSRTimelineObj>([
-						...boxObjs,
-						literal<TimelineObjAbstractAny>({
-							id: '',
-							enable: { while: audioWhile },
-							priority: 1,
-							layer: VirtualAbstractLLayer.ServerEnable,
-							content: {
-								deviceType: DeviceType.ABSTRACT
-							},
-							classes: ['serverEnable']
-						})
-					])
-				}
-			})
-		})
-		return res
-	}
-
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
@@ -515,7 +479,6 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	adlibItems.push(
 		...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++, true)
 	)
-	adlibItems.push(...makeServerAdlibBoxes({ id: `server`, port: -1 }, globalRank++))
 
 	adlibItems.push({
 		externalId: 'delayed',
@@ -1366,16 +1329,6 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 						duration: config.studio.AudioBedSettings.fadeOut
 					}
 				}
-			}
-		}),
-
-		literal<TimelineObjAbstractAny>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: VirtualAbstractLLayer.ServerEnable,
-			content: {
-				deviceType: DeviceType.ABSTRACT
 			}
 		}),
 

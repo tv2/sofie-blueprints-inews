@@ -249,7 +249,6 @@ export function MakeContentDVE2(
 			} else if (sourceType.match(/SERVER/i)) {
 				const file = partDefinition ? partDefinition.fields.videoId : undefined
 
-
 				if (!file || !file.length) {
 					context.warning('No video id provided for ADLIBPIX')
 					valid = false

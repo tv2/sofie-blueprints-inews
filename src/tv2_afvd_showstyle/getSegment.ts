@@ -25,6 +25,7 @@ import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetNextPartCue } from './helpers/nextPartCue'
 import { ParseBody, PartType } from './inewsConversion/converters/ParseBody'
 import { CueType } from './inewsConversion/converters/ParseCue'
+import { TransformCuesIntoShowstyle } from './inewsConversion/TransformCuesIntoShowstyle'
 import { SourceLayer } from './layers'
 import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'
@@ -84,7 +85,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	let serverParts = 0
 	let jingleTime = 0
 	let serverTime = 0
-	for (const part of parsedParts) {
+	for (const par of parsedParts) {
+		// Apply showstyle-specific transformations of cues.
+		const part = TransformCuesIntoShowstyle(config.showStyle, par)
 		const partContext = new PartContext2(context, part.externalId)
 
 		if (
@@ -114,14 +117,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.VO:
 				blueprintParts.push(
-					CreatePartVO(
-						partContext,
-						config,
-						part,
-						ingestSegment.externalId,
-						totalWords,
-						Number(ingestSegment.payload.iNewsStory.fields.audioTime)
-					)
+					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
 				)
 				break
 			// DVE, Ekstern, Telefon are defined as primary cues.

@@ -23,7 +23,6 @@ import {
 	CueDefinitionJingle,
 	CueDefinitionMOS,
 	CueDefinitionTargetEngine,
-	CueDefinitionTargetWall,
 	CueDefinitionTelefon,
 	CueDefinitionUnknown,
 	CueType,
@@ -1079,12 +1078,16 @@ describe('Body parser', () => {
 							textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
 							adlib: true
 						}),
-						literal<CueDefinitionTargetWall>({
-							type: CueType.TargetWall,
+						literal<CueDefinitionTargetEngine>({
+							type: CueType.TargetEngine,
 							start: {
 								seconds: 1
 							},
-							clip: '3-NYH-19-LOOP'
+							data: {
+								engine: '3-NYH-19-LOOP'
+							},
+							rawType: `SS=3-NYH-19-LOOP`,
+							content: {}
 						})
 					]),
 					script: '',
@@ -1358,6 +1361,7 @@ describe('Body parser', () => {
 			]
 		]
 		const result = ParseBody('00000000001', 'test-segment', body26, cues26, fields, 0)
+		console.log(JSON.stringify(result))
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				externalId: '',
@@ -1390,7 +1394,9 @@ describe('Body parser', () => {
 				cues: [
 					literal<CueDefinitionTargetEngine>({
 						type: CueType.TargetEngine,
-						engine: 'full',
+						data: {
+							engine: 'full'
+						},
 						rawType: 'GRAFIK=full',
 						content: {},
 						grafik: literal<CueDefinitionMOS>({
@@ -1485,13 +1491,17 @@ describe('Body parser', () => {
 				variant: {},
 				rawType: 'SERVER',
 				cues: [
-					literal<CueDefinitionTargetWall>({
-						type: CueType.TargetWall,
-						clip: 'SC-LOOP',
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'SC-LOOP'
+						},
 						start: {
 							seconds: 0,
 							frames: 1
-						}
+						},
+						rawType: `SS=SC-LOOP`,
+						content: {}
 					}),
 					literal<CueDefinitionUnknown>({
 						type: CueType.Unknown
@@ -1712,13 +1722,17 @@ describe('Body parser', () => {
 				variant: {},
 				rawType: 'SERVER',
 				cues: [
-					literal<CueDefinitionTargetWall>({
-						type: CueType.TargetWall,
-						clip: 'SC-LOOP',
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'SC-LOOP'
+						},
 						start: {
 							seconds: 0,
 							frames: 1
-						}
+						},
+						rawType: `SS=SC-LOOP`,
+						content: {}
 					}),
 					literal<CueDefinitionUnknown>({
 						type: CueType.Unknown
@@ -1760,13 +1774,17 @@ describe('Body parser', () => {
 				variant: {},
 				rawType: '',
 				cues: [
-					literal<CueDefinitionTargetWall>({
-						type: CueType.TargetWall,
-						clip: 'SC-LOOP',
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'SC-LOOP'
+						},
 						start: {
 							seconds: 0,
 							frames: 1
-						}
+						},
+						rawType: 'SS=SC-LOOP',
+						content: {}
 					}),
 					literal<CueDefinitionUnknown>({
 						type: CueType.Unknown
@@ -1885,13 +1903,17 @@ describe('Body parser', () => {
 						type: CueType.Jingle,
 						clip: 'SN_breaker_kortnyt_start'
 					}),
-					literal<CueDefinitionTargetWall>({
-						type: CueType.TargetWall,
-						clip: 'SC-LOOP',
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'SC-LOOP'
+						},
 						start: {
 							seconds: 0,
 							frames: 1
-						}
+						},
+						rawType: `SS=SC-LOOP`,
+						content: {}
 					}),
 					literal<CueDefinitionMOS>({
 						type: CueType.MOS,
@@ -1943,7 +1965,9 @@ describe('Body parser', () => {
 						content: {
 							INP: 'LIVE 2'
 						},
-						engine: 'OVL',
+						data: {
+							engine: 'OVL'
+						},
 						start: {
 							seconds: 0
 						},
@@ -1997,7 +2021,9 @@ describe('Body parser', () => {
 						type: CueType.TargetEngine,
 						rawType: 'GRAFIK=FULL',
 						content: {},
-						engine: 'FULL',
+						data: {
+							engine: 'FULL'
+						},
 						grafik: {
 							type: CueType.MOS,
 							name: 'PROFILE/MEST BRUGTE STARTERE I NBA/08-12-2019',
@@ -2115,6 +2141,96 @@ describe('Body parser', () => {
 		])
 	})
 
+	test('test 38', () => {
+		const body38 =
+			'\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n<p><a idref="3"></a></p>\r\n'
+		const cues38 = [
+			['GRAFIK=wall'],
+			[
+				'#cg4 pilotdata',
+				'News/Citat/ARFG/LIVE/stoppoints_2',
+				'VCPID=2547767',
+				'ContinueCount=6',
+				'News/Citat/ARFG/LIVE/stoppoints_2'
+			],
+			['SS=SC-STILLS'],
+			[
+				'#cg4 pilotdata',
+				'News/Citat/ARFG/LIVE/stoppoints_3',
+				'VCPID=2547768',
+				'ContinueCount=8',
+				'News/Citat/ARFG/LIVE/stoppoints_3'
+			]
+		]
+		const result = ParseBody('00000000001', 'test-segment', body38, cues38, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				externalId: '',
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				rawType: 'KAM 1',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'wall'
+						},
+						rawType: 'GRAFIK=wall',
+						content: {},
+						grafik: literal<CueDefinitionMOS>({
+							type: CueType.MOS,
+							name: 'News/Citat/ARFG/LIVE/stoppoints_2',
+							vcpid: 2547767,
+							continueCount: 6,
+							engine: '4',
+							start: {
+								seconds: 0
+							}
+						})
+					})
+				],
+				fields,
+				modified: 0,
+				script: '',
+				storyName: 'test-segment'
+			}),
+			literal<PartDefinitionKam>({
+				externalId: '',
+				type: PartType.Kam,
+				variant: {
+					name: '2'
+				},
+				rawType: 'KAM 2',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'SC-STILLS'
+						},
+						rawType: 'SS=SC-STILLS',
+						content: {}
+					}),
+					literal<CueDefinitionMOS>({
+						type: CueType.MOS,
+						name: 'News/Citat/ARFG/LIVE/stoppoints_3',
+						vcpid: 2547768,
+						continueCount: 8,
+						engine: '4',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				fields,
+				modified: 0,
+				script: '',
+				storyName: 'test-segment'
+			})
+		])
+	})
+
 	test('Merge target cues 1', () => {
 		const bodyTarget = '\r\n<p><a idref="0"><a idref="1"></a></p>\r\n<p></p>\r\n'
 		const cuesTarget = [
@@ -2133,7 +2249,9 @@ describe('Body parser', () => {
 						literal<CueDefinitionTargetEngine>({
 							type: CueType.TargetEngine,
 							rawType: 'GRAFIK=FULL',
-							engine: 'FULL',
+							data: {
+								engine: 'FULL'
+							},
 							content: {
 								INP1: '',
 								INP: ''
@@ -2194,7 +2312,9 @@ describe('Body parser', () => {
 						literal<CueDefinitionTargetEngine>({
 							type: CueType.TargetEngine,
 							rawType: 'GRAFIK=FULL',
-							engine: 'FULL',
+							data: {
+								engine: 'FULL'
+							},
 							content: {
 								INP1: '',
 								INP2: ''
@@ -2224,7 +2344,9 @@ describe('Body parser', () => {
 						literal<CueDefinitionTargetEngine>({
 							type: CueType.TargetEngine,
 							rawType: 'GRAFIK=FULL',
-							engine: 'FULL',
+							data: {
+								engine: 'FULL'
+							},
 							content: {
 								INP1: '',
 								INP2: ''
@@ -2264,12 +2386,18 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [
-						literal<CueDefinitionTargetWall>({
-							type: CueType.TargetWall,
-							clip: '3-SPORTSDIGI',
+						literal<CueDefinitionTargetEngine>({
+							type: CueType.TargetEngine,
+							data: {
+								engine: '3-SPORTSDIGI'
+							},
 							start: {
 								frames: 1,
 								seconds: 0
+							},
+							rawType: 'SS=3-SPORTSDIGI',
+							content: {
+								INP1: 'EVS 1'
 							}
 						}),
 						literal<CueDefinitionMOS>({

@@ -29,6 +29,7 @@ export function EvaluateTelefon(
 				adlibPieces,
 				partId,
 				parsedCue.vizObj,
+				'OVL',
 				adlib ? adlib : parsedCue.adlib ? parsedCue.adlib : false,
 				partDefinition,
 				true,
@@ -42,6 +43,7 @@ export function EvaluateTelefon(
 				adlibPieces,
 				partId,
 				parsedCue.vizObj,
+				'OVL', // TODO: Change to full if using a separate engine
 				adlib ? adlib : parsedCue.adlib ? parsedCue.adlib : false,
 				true,
 				rank

@@ -23,6 +23,7 @@ import { literal } from '../../../common/util'
 import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { InfiniteMode } from './evaluateCues'
@@ -35,6 +36,7 @@ export function EvaluateMOS(
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
 	parsedCue: CueDefinitionMOS,
+	engine: VizEngine,
 	adlib?: boolean,
 	isTlf?: boolean,
 	rank?: number,
@@ -58,10 +60,14 @@ export function EvaluateMOS(
 	const isOverlay = !!parsedCue.name.match(/MOSART=L/i)
 
 	if (adlib) {
-		adlibPieces.push(makeMosAdlib(partId, config, parsedCue, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay))
+		adlibPieces.push(
+			makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
+		)
 	} else {
-		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls) {
-			adlibPieces.push(makeMosAdlib(partId, config, parsedCue, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay))
+		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls && engine !== 'WALL') {
+			adlibPieces.push(
+				makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
+			)
 		}
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -75,11 +81,11 @@ export function EvaluateMOS(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
-				sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
+				outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
+				sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
-				infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
-				content: GetMosObjContent(config, parsedCue, partId, isOverlay, false, isTlf)
+				infiniteMode: GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart),
+				content: GetMosObjContent(engine, config, parsedCue, partId, isOverlay, false, isTlf)
 			})
 		)
 	}
@@ -89,6 +95,7 @@ function makeMosAdlib(
 	partId: string,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
+	engine: VizEngine,
 	isOverlay: boolean,
 	isTlf?: boolean,
 	rank?: number,
@@ -99,20 +106,49 @@ function makeMosAdlib(
 		_rank: rank || 0,
 		externalId: partId,
 		name: grafikName(config, parsedCue),
-		infiniteMode: GetInfiniteMode(parsedCue, isTlf, isGrafikPart),
-		sourceLayerId: GetSourceLayer(isTlf, overrideOverlay || isOverlay),
-		outputLayerId: overrideOverlay || isOverlay ? 'overlay' : isTlf || isGrafikPart ? 'pgm' : 'overlay',
+		infiniteMode: GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart),
+		sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
+		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 		adlibPreroll: config.studio.PilotPrerollDuration,
-		content: GetMosObjContent(config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf)
+		content: GetMosObjContent(engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf)
 	}
 }
 
-function GetSourceLayer(isTlf?: boolean, isOverlay?: boolean) {
-	return isTlf ? SourceLayer.PgmGraphicsTLF : isOverlay ? SourceLayer.PgmPilotOverlay : SourceLayer.PgmPilot
+function GetOutputLayer(
+	engine: VizEngine,
+	overrideOverlay: boolean,
+	isOverlay: boolean,
+	isTlf: boolean,
+	isGrafikPart: boolean
+) {
+	return engine === 'WALL'
+		? 'sec'
+		: overrideOverlay || isOverlay
+		? 'overlay'
+		: isTlf || isGrafikPart
+		? 'pgm'
+		: 'overlay'
 }
 
-function GetInfiniteMode(parsedCue: CueDefinitionMOS, isTlf?: boolean, isGrafikPart?: boolean): PieceLifespan {
-	return isTlf || isGrafikPart
+function GetSourceLayer(engine: VizEngine, isTlf?: boolean, isOverlay?: boolean): SourceLayer {
+	return engine === 'WALL'
+		? SourceLayer.WallGraphics
+		: isTlf
+		? SourceLayer.PgmGraphicsTLF
+		: isOverlay
+		? SourceLayer.PgmPilotOverlay
+		: SourceLayer.PgmPilot
+}
+
+function GetInfiniteMode(
+	engine: VizEngine,
+	parsedCue: CueDefinitionMOS,
+	isTlf?: boolean,
+	isGrafikPart?: boolean
+): PieceLifespan {
+	return engine === 'WALL'
+		? PieceLifespan.Infinite
+		: isTlf || isGrafikPart
 		? PieceLifespan.OutOnNextPart
 		: parsedCue.end && parsedCue.end.infiniteMode
 		? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
@@ -120,6 +156,7 @@ function GetInfiniteMode(parsedCue: CueDefinitionMOS, isTlf?: boolean, isGrafikP
 }
 
 function GetMosObjContent(
+	engine: VizEngine,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
 	partId: string,
@@ -137,14 +174,19 @@ function GetMosObjContent(
 					start: 0
 				},
 				priority: 1,
-				layer: isOverlay ? VizLLayer.VizLLayerPilotOverlay : VizLLayer.VizLLayerPilot,
+				layer:
+					engine === 'WALL'
+						? VizLLayer.VizLLayerWall
+						: isOverlay
+						? VizLLayer.VizLLayerPilotOverlay
+						: VizLLayer.VizLLayerPilot,
 				content: {
 					deviceType: DeviceType.VIZMSE,
 					type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
 					templateVcpId: parsedCue.vcpid,
 					continueStep: parsedCue.continueCount,
 					noAutoPreloading: false,
-					channelName: isOverlay ? 'OVL1' : 'FULL1',
+					channelName: engine === 'WALL' ? 'WALL' : isOverlay ? 'OVL1' : 'FULL1',
 					...(isOverlay
 						? {}
 						: {
@@ -154,9 +196,9 @@ function GetMosObjContent(
 								}
 						  })
 				},
-				...(isOverlay || tlf ? {} : { classes: ['full'] })
+				...(isOverlay || tlf || engine === 'WALL' ? {} : { classes: ['full'] })
 			}),
-			...(isOverlay
+			...(isOverlay || engine === 'WALL'
 				? []
 				: [
 						literal<TimelineObjAtemME>({

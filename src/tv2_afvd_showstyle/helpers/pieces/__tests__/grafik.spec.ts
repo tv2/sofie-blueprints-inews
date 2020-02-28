@@ -77,6 +77,7 @@ describe('grafik piece', () => {
 			adLibPieces,
 			partId,
 			cue,
+			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
 			false
@@ -141,6 +142,7 @@ describe('grafik piece', () => {
 			adLibPieces,
 			partId,
 			cue,
+			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
 			false
@@ -204,6 +206,7 @@ describe('grafik piece', () => {
 			adLibPieces,
 			partId,
 			cue,
+			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
 			false
@@ -273,6 +276,7 @@ describe('grafik piece', () => {
 			adLibPieces,
 			partId,
 			cue,
+			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
 			false

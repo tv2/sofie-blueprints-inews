@@ -6,7 +6,6 @@ import {
 	CueDefinitionLYD,
 	CueDefinitionMOS,
 	CueDefinitionTargetEngine,
-	CueDefinitionTargetWall,
 	CueType,
 	isTime,
 	ParseCue,
@@ -523,7 +522,9 @@ describe('Cue parser', () => {
 			literal<CueDefinition>({
 				type: CueType.TargetEngine,
 				rawType: 'GRAFIK=FULL',
-				engine: 'FULL',
+				data: {
+					engine: 'FULL'
+				},
 				content: {
 					INP1: '',
 					INP: ''
@@ -813,8 +814,10 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionTargetEngine>({
 				type: CueType.TargetEngine,
+				data: {
+					engine: 'full'
+				},
 				rawType: 'VIZ=full',
-				engine: 'full',
 				content: {
 					INP1: 'EVS 1'
 				},
@@ -914,13 +917,55 @@ describe('Cue parser', () => {
 		const cueSS = ['SS=3-SPORTSDIGI', ';0.00.01']
 		const result = ParseCue(cueSS)
 		expect(result).toEqual(
-			literal<CueDefinitionTargetWall>({
-				type: CueType.TargetWall,
-				clip: '3-SPORTSDIGI',
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				data: {
+					engine: '3-SPORTSDIGI'
+				},
 				start: {
 					seconds: 0,
 					frames: 1
-				}
+				},
+				rawType: `SS=3-SPORTSDIGI`,
+				content: {}
+			})
+		)
+	})
+
+	test('SS=SC-STILLS', () => {
+		const cueSS = ['SS=SC-STILLS', ';0.00.01']
+		const result = ParseCue(cueSS)
+		expect(result).toEqual(
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				data: {
+					engine: 'SC-STILLS'
+				},
+				start: {
+					seconds: 0,
+					frames: 1
+				},
+				rawType: `SS=SC-STILLS`,
+				content: {}
+			})
+		)
+	})
+
+	test('ss=sc-stills', () => {
+		const cueSS = ['ss=sc-stills', ';0.00.01']
+		const result = ParseCue(cueSS)
+		expect(result).toEqual(
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				data: {
+					engine: 'sc-stills'
+				},
+				start: {
+					seconds: 0,
+					frames: 1
+				},
+				rawType: `ss=sc-stills`,
+				content: {}
 			})
 		)
 	})

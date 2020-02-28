@@ -22,6 +22,7 @@ import {
 } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
 import { EvaluateDesign } from './design'
 import { CalculateTime, InfiniteMode } from './evaluateCues'
@@ -33,8 +34,9 @@ export function EvaluateGrafik(
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
 	parsedCue: CueDefinitionGrafik,
+	engine: VizEngine,
 	adlib: boolean,
-	partDefinition: PartDefinition,
+	partDefinition?: PartDefinition,
 	isTlfPrimary?: boolean,
 	rank?: number
 ) {
@@ -82,9 +84,9 @@ export function EvaluateGrafik(
 				sourceLayerId: isTlfPrimary
 					? SourceLayer.PgmGraphicsTLF
 					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-				outputLayerId: 'overlay',
+				outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
 				...(isTlfPrimary ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
-				infiniteMode: GetInfiniteModeForGrafik(config, parsedCue, isTlfPrimary, isIdentGrafik),
+				infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
@@ -124,16 +126,16 @@ export function EvaluateGrafik(
 							...CreateTimingGrafik(config, parsedCue)
 						}
 				  }),
-			outputLayerId: 'overlay',
+			outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
 			sourceLayerId: sourceLayer,
-			infiniteMode: GetInfiniteModeForGrafik(config, parsedCue, isTlfPrimary, isIdentGrafik),
+			infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 			content: literal<GraphicsContent>({
 				fileName: parsedCue.template,
 				path: parsedCue.template,
 				timelineObjects: literal<TimelineObjVIZMSEAny[]>([
 					literal<TimelineObjVIZMSEElementInternal>({
 						id: '',
-						enable: GetEnableForGrafik(parsedCue, partDefinition, isIdentGrafik),
+						enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
 						priority: 1,
 						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 						content: {
@@ -169,17 +171,23 @@ export function EvaluateGrafik(
 }
 
 function GetEnableForGrafik(
+	engine: VizEngine,
 	cue: CueDefinitionGrafik,
-	partDefinition: PartDefinition,
-	isIdentGrafik: boolean
+	isIdentGrafik: boolean,
+	partDefinition?: PartDefinition
 ): { while: string } | { start: number } {
+	if (engine === 'WALL') {
+		return {
+			while: '1'
+		}
+	}
 	if (isIdentGrafik) {
 		return {
 			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
 		}
 	}
 
-	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') {
+	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B' && partDefinition) {
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
@@ -189,12 +197,15 @@ function GetEnableForGrafik(
 }
 
 export function GetInfiniteModeForGrafik(
+	engine: VizEngine,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionGrafik,
 	isTlf?: boolean,
 	isIdent?: boolean
 ): PieceLifespan {
-	return isTlf
+	return engine === 'WALL'
+		? PieceLifespan.Infinite
+		: isTlf
 		? PieceLifespan.OutOnNextPart
 		: isIdent
 		? PieceLifespan.OutOnNextSegment
@@ -256,6 +267,8 @@ export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string) {
 			return SourceLayer.PgmGraphicsTema
 		case SourceLayer.PgmGraphicsTop:
 			return SourceLayer.PgmGraphicsTop
+		case SourceLayer.WallGraphics:
+			return SourceLayer.WallGraphics
 		default:
 			return SourceLayer.PgmGraphicsOverlay
 	}
@@ -282,6 +295,8 @@ export function GetTimelineLayerForGrafik(config: BlueprintConfig, name: string)
 			return VizLLayer.VizLLayerOverlayHeadline
 		case VizLLayer.VizLLayerOverlayTema:
 			return VizLLayer.VizLLayerOverlayTema
+		case VizLLayer.VizLLayerWall:
+			return VizLLayer.VizLLayerWall
 		default:
 			return VizLLayer.VizLLayerOverlay
 	}

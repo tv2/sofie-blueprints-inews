@@ -16,7 +16,9 @@ describe('Find target pair', () => {
 				literal<CueDefinitionTargetEngine>({
 					type: CueType.TargetEngine,
 					rawType: 'GRAFIK=FULL',
-					engine: 'FULL',
+					data: {
+						engine: 'FULL'
+					},
 					content: {
 						INP1: '',
 						INP: ''
@@ -47,7 +49,9 @@ describe('Find target pair', () => {
 				literal<CueDefinitionTargetEngine>({
 					type: CueType.TargetEngine,
 					rawType: 'GRAFIK=FULL',
-					engine: 'FULL',
+					data: {
+						engine: 'FULL'
+					},
 					content: {
 						INP1: '',
 						INP: ''

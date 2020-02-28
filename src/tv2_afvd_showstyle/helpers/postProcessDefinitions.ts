@@ -80,7 +80,13 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 						break
 					case CueType.TargetEngine:
 						// Pair the engine will the graphic, common to see 'FULL' targeted multiple times in one story
-						id += `-${firstCue.engine}-${JSON.stringify(firstCue.grafik?.vcpid)}`
+						const end =
+							firstCue.grafik?.type === CueType.Grafik
+								? firstCue.grafik.template
+								: firstCue.grafik?.type === CueType.MOS
+								? firstCue.grafik.vcpid
+								: ''
+						id += `-${firstCue.data.engine}-${end}`
 						break
 					case CueType.Telefon:
 						id += `-${firstCue.source}`
