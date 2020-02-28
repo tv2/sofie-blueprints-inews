@@ -19,6 +19,7 @@ import {
 import * as _ from 'underscore'
 import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { assignMediaPlayers } from './helpers/abPlayback'
+import { MEDIA_PLAYER_AUTO } from '../types/constants'
 // import { SourceLayer } from '../tv2_afvd_showstyle/layers'
 
 /*const ALLOWED_MEDIA_PLAYER_SESSION_OVERLAPS: { [from: string]: string } = {
@@ -69,12 +70,12 @@ export function onTimelineGenerate(
 
 	const previousSegmentSession = previousPersistentState?.segmentSession
 	const availablePlayers = previousPartEndState2?.mediaPlayerSessions
+	const replacedSessions: { [from: string]: string } = { }
 	if (
 		previousSegmentSession === context.part.segmentId &&
 		availablePlayers &&
 		Object.keys(availablePlayers).length
 	) {
-		const replacedSessions: { [from: string]: string } = { }
 		_.each(timeline, obj => {
 			if (obj.classes && obj.classes.includes('add_server_segment_session') && !obj.classes.some((cls) => cls.includes('server_segment_session_id'))) {
 				obj.classes.push(`server_segment_session_id_${context.part.segmentId}`)
@@ -90,32 +91,49 @@ export function onTimelineGenerate(
 				}
 			}
 		})
-
-		_.each(resolvedPieces, piece => {
-			if (piece.metaData) {
-				const meta = piece.metaData as PieceMetaData
-				if (meta.mediaPlayerSessions) {
-					piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map((session) => {
-						if (Object.keys(replacedSessions).includes(session)) {
-							return replacedSessions[session]
-						}
-
-						return session
-					})
-				}
+	} else {
+		_.each(timeline, obj => {
+			if (obj.classes && obj.classes.includes('add_server_segment_session') && !obj.classes.some((cls) => cls.includes('server_segment_session_id'))) {
+				obj.classes.push(`server_segment_session_id_${context.part.segmentId}`)
 			}
-		})
 
-
-		_.each(resolvedPieces, piece => {
-			if (piece.metaData) {
-				const meta = piece.metaData as PieceMetaData
-				if (meta.mediaPlayerSessions) {
-					console.log(`Sessions: ${meta.mediaPlayerSessions}`)
+			if (obj.classes && obj.classes.includes('can_continue_server') && obj.classes.some((cls) => cls.includes('server_segment_session_id')) && !obj.isLookahead) {
+				const meta = obj.metaData as TimelineBlueprintExt['metaData']
+				if (meta && meta.mediaPlayerSession) {
+					if (meta.mediaPlayerSession === MEDIA_PLAYER_AUTO) {
+						console.log(`Replacing media session ${meta.mediaPlayerSession} with ${context.part.segmentId}`)
+						replacedSessions[MEDIA_PLAYER_AUTO] = context.part.segmentId
+						obj.metaData!.mediaPlayerSession = context.part.segmentId
+					}
 				}
 			}
 		})
 	}
+
+	_.each(resolvedPieces, piece => {
+		if (piece.metaData) {
+			const meta = piece.metaData as PieceMetaData
+			if (meta.mediaPlayerSessions) {
+				piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map((session) => {
+					if (Object.keys(replacedSessions).includes(session)) {
+						return replacedSessions[session]
+					}
+
+					return session
+				})
+			}
+		}
+	})
+
+
+	_.each(resolvedPieces, piece => {
+		if (piece.metaData) {
+			const meta = piece.metaData as PieceMetaData
+			if (meta.mediaPlayerSessions) {
+				console.log(`Sessions: ${meta.mediaPlayerSessions}`)
+			}
+		}
+	})
 
 	copyPreviousSisyfosLevels(
 		context,

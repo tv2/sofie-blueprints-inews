@@ -102,7 +102,7 @@ export function MakeContentDVE2(
 	sources: DVESources | undefined,
 	className?: string,
 	adlib?: boolean,
-	partDefinition?: PartDefinition
+	partDefinition?: PartDefinition,
 ): { content: SplitsContent; valid: boolean; stickyLayers: SisyfosLLAyer[] } {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
@@ -255,6 +255,14 @@ export function MakeContentDVE2(
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
+				const file: string | undefined = partDefinition ? partDefinition.fields.videoId : undefined
+
+				if (!file || !file.length) {
+					context.warning(`No video Id provided for ADLIBPIX`)
+					valid = false
+					return
+				}
+
 				server = true
 				setBoxSource(
 					num,
@@ -276,11 +284,11 @@ export function MakeContentDVE2(
 						content: {
 							deviceType: DeviceType.CASPARCG,
 							type: TimelineContentTypeCasparCg.MEDIA,
-							file: 'copy',
+							file: adlib ? 'continue' : file,
 							noStarttime: true
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO
+							mediaPlayerSession: adlib ? MEDIA_PLAYER_AUTO : partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO
 						},
 						classes: [
 							'can_continue_server',
@@ -300,7 +308,7 @@ export function MakeContentDVE2(
 							isPgm: 1
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO
+							mediaPlayerSession: adlib ? MEDIA_PLAYER_AUTO : partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO
 						},
 						classes: [
 							'can_continue_server',

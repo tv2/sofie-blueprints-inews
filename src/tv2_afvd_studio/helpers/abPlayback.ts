@@ -4,10 +4,7 @@ import {
 	TimelineObjAtemAny,
 	TimelineObjAtemAUX,
 	TimelineObjAtemME,
-	TimelineObjAtemSsrc,
-	TimelineObjCCGMedia,
-	TimelineObjCasparCGAny,
-	TimelineContentTypeCasparCg
+	TimelineObjAtemSsrc
 } from 'timeline-state-resolver-types'
 import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
@@ -269,28 +266,6 @@ function updateObjectsToMediaPlayer(
 		// Mutate each object to the correct player
 		if (obj.content.deviceType === DeviceType.CASPARCG) {
 			if (obj.layer === CasparLLayer.CasparPlayerClipPending) {
-				const ccgObj = obj as TimelineObjCasparCGAny
-				if (
-					ccgObj.content.type === TimelineContentTypeCasparCg.MEDIA &&
-					ccgObj.content.file === 'copy' &&
-					ccgObj.classes &&
-					ccgObj.classes.includes('can_continue_server')
-				) {
-					const prev = objs.find((ob) => !ob.isLookahead && ob.layer === CasparPlayerClip(playerId))
-					console.log(`ATTEMPTED TO FIND PREVIOUS CLIP, FOUND? ${!!prev}`)
-					if (
-						prev &&
-						prev.content.deviceType === DeviceType.CASPARCG &&
-						(prev as TimelineObjCasparCGAny).content.type === TimelineContentTypeCasparCg.MEDIA
-					) {
-						const prevccg = prev as TimelineObjCCGMedia
-						console.log(`Using file ${prevccg.content.file}`)
-						;(obj as TimelineObjCCGMedia).content.file = prevccg.content.file
-						if (prevccg.content.loop) {
-							(obj as TimelineObjCCGMedia).content.loop = true
-						}
-					}
-				}
 				obj.layer = CasparPlayerClip(playerId)
 			} else if (obj.lookaheadForLayer === CasparLLayer.CasparPlayerClipPending) {
 				// This works on the assumption that layer will contain lookaheadForLayer, but not the exact syntax.
