@@ -48,6 +48,7 @@ export interface PartDefinitionBase {
 	modified: number
 	transition?: PartTransition
 	storyName: string
+	segmentExternalId: string
 	endWords?: string
 }
 
@@ -344,7 +345,8 @@ function initDefinition(fields: any, modified: number, segmentName: string): Par
 		script: '',
 		fields,
 		modified,
-		storyName: segmentName
+		storyName: segmentName,
+		segmentExternalId: ''
 	}
 }
 
@@ -462,7 +464,8 @@ function makeDefinition(
 		script: '',
 		fields,
 		modified,
-		storyName
+		storyName,
+		segmentExternalId: ''
 	}
 
 	return part
