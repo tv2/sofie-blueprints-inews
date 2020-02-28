@@ -54,7 +54,7 @@ import {
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { CONSTANTS, MEDIA_PLAYER_CONTINUE } from '../types/constants'
+import { CONSTANTS, MEDIA_PLAYER_AUTO } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
 import { GetEksternMetaData } from './helpers/pieces/ekstern'
@@ -139,7 +139,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				},
 				metaData: {
 					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`,
-					mediaPlayerSession: mediaPlayer ? MEDIA_PLAYER_CONTINUE : undefined
+					mediaPlayerSession: mediaPlayer ? MEDIA_PLAYER_AUTO : undefined
 				}
 			})
 		)
