@@ -43,10 +43,6 @@ export function EvaluateMOS(
 	isGrafikPart?: boolean,
 	overrideOverlay?: boolean
 ) {
-	if (parsedCue.isActuallyWall) {
-		return
-	}
-
 	if (
 		parsedCue.vcpid === undefined ||
 		parsedCue.vcpid === null ||
@@ -186,8 +182,8 @@ function GetMosObjContent(
 					templateVcpId: parsedCue.vcpid,
 					continueStep: parsedCue.continueCount,
 					noAutoPreloading: false,
-					channelName: engine === 'WALL' ? 'WALL' : isOverlay ? 'OVL1' : 'FULL1',
-					...(isOverlay
+					channelName: engine === 'WALL' ? 'WALL1' : isOverlay ? 'OVL1' : 'FULL1',
+					...(isOverlay || engine === 'WALL'
 						? {}
 						: {
 								outTransition: {

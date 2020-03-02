@@ -26,8 +26,9 @@ export function EvaluateTargetEngine(
 	partId: string,
 	parsedCue: CueDefinitionTargetEngine
 ) {
+	console.log(JSON.stringify(parsedCue))
 	// TODO: Future: Target a specific engine
-	if (!parsedCue.data.engine.match(/full|ovl|wall/i)) {
+	if (!parsedCue.data.engine.match(/full1|ovl1|wall1/i)) {
 		context.warning(`Could not find engine to target for: ${parsedCue.data.engine}`)
 		return
 	}
@@ -78,15 +79,17 @@ export function EvaluateTargetEngine(
 		}
 	}
 
-	if (parsedCue.grafik) {
-		if (parsedCue.grafik.type === CueType.Grafik) {
+	if (parsedCue.data.grafik) {
+		console.log(`GRAFIK:`)
+		console.log(JSON.stringify(parsedCue.data.grafik))
+		if (parsedCue.data.grafik.type === CueType.Grafik) {
 			EvaluateGrafik(
 				config,
 				context,
 				pieces,
 				adlibPeces,
 				partId,
-				parsedCue.grafik,
+				parsedCue.data.grafik,
 				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : 'OVL',
 				false
 			)
@@ -97,7 +100,7 @@ export function EvaluateTargetEngine(
 				pieces,
 				adlibPeces,
 				partId,
-				parsedCue.grafik,
+				parsedCue.data.grafik,
 				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : 'OVL',
 				false,
 				false,

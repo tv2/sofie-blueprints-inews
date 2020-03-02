@@ -119,7 +119,7 @@ export function EvaluateGrafik(
 			_id: '',
 			externalId: partId,
 			name: grafikName(config, parsedCue),
-			...(isTlfPrimary
+			...(isTlfPrimary || engine === 'WALL'
 				? { enable: { start: 0 } }
 				: {
 						enable: {
