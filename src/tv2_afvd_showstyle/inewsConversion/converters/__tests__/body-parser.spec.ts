@@ -1386,11 +1386,11 @@ describe('Body parser', () => {
 				script: '',
 				storyName: 'test-segment'
 			}),
-			literal<PartDefinitionGrafik>({
+			literal<PartDefinitionUnknown>({
 				externalId: '',
-				type: PartType.Grafik,
+				type: PartType.Unknown,
 				variant: {},
-				rawType: '100%GRAFIK',
+				rawType: '',
 				cues: [
 					literal<CueDefinitionTargetEngine>({
 						type: CueType.TargetEngine,
@@ -1398,16 +1398,28 @@ describe('Body parser', () => {
 							engine: 'full'
 						},
 						rawType: 'GRAFIK=full',
-						content: {},
-						grafik: literal<CueDefinitionMOS>({
-							type: CueType.MOS,
-							name: 'TELEFON/KORT//LIVE_KABUL',
-							vcpid: 2552305,
-							continueCount: 3,
-							start: {
-								seconds: 0
-							}
-						})
+						content: {}
+					})
+				],
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment'
+			}),
+			literal<PartDefinitionGrafik>({
+				externalId: '',
+				type: PartType.Grafik,
+				variant: {},
+				rawType: '100%GRAFIK',
+				cues: [
+					literal<CueDefinitionMOS>({
+						type: CueType.MOS,
+						name: 'TELEFON/KORT//LIVE_KABUL',
+						vcpid: 2552305,
+						continueCount: 3,
+						start: {
+							seconds: 0
+						}
 					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
