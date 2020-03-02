@@ -58,7 +58,8 @@ export function EvaluateGrafik(
 					},
 					end: {
 						...parsedCue.end
-					}
+					},
+					iNewsCommand: '#KG'
 				}
 				EvaluateDesign(config, context, pieces, adlibPieces, partId, designCue)
 				return

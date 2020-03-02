@@ -31,6 +31,7 @@ export interface CueDefinitionBase {
 	start?: CueTime
 	end?: CueTime
 	adlib?: boolean
+	iNewsCommand: string
 }
 
 export interface CueDefinitionUnknown extends CueDefinitionBase {
@@ -158,7 +159,8 @@ export type CueDefinition =
 export function ParseCue(cue: UnparsedCue): CueDefinition {
 	if (!cue) {
 		return {
-			type: CueType.Unknown
+			type: CueType.Unknown,
+			iNewsCommand: ''
 		}
 	}
 
@@ -168,7 +170,8 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 
 	if (cue.length === 0) {
 		return {
-			type: CueType.Unknown
+			type: CueType.Unknown,
+			iNewsCommand: ''
 		}
 	}
 
@@ -189,7 +192,8 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		if (eksternSource) {
 			return {
 				type: CueType.Ekstern,
-				source: eksternSource[1]
+				source: eksternSource[1],
+				iNewsCommand: 'EKSTERN'
 			}
 		}
 	} else if (cue[0].match(/^DVE=/i)) {
@@ -215,7 +219,8 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 		return parseJingle(cue)
 	}
 	return {
-		type: CueType.Unknown
+		type: CueType.Unknown,
+		iNewsCommand: ''
 	}
 }
 
@@ -224,7 +229,15 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 		type: CueType.Grafik,
 		template: '',
 		cue: '',
-		textFields: []
+		textFields: [],
+		iNewsCommand: ''
+	}
+
+	const command = cue[0].match(/^([*|#]?kg)/i)
+	if (command) {
+		kgCue.iNewsCommand = command[1]
+	} else {
+		kgCue.iNewsCommand = 'kg'
 	}
 
 	const firstLineValues = cue[0].match(/^[*|#]?kg[ |=]([\w|\d]+)( (.+))*$/i)
@@ -267,7 +280,8 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 		type: CueType.MOS,
 		name: '',
 		vcpid: -1,
-		continueCount: -1
+		continueCount: -1,
+		iNewsCommand: '#cg'
 	}
 	const realCue: string[] = []
 	cue.forEach(line => {
@@ -325,7 +339,8 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 		type: CueType.DVE,
 		template: '',
 		sources: {},
-		labels: []
+		labels: [],
+		iNewsCommand: 'DVE'
 	}
 
 	cue.forEach(c => {
@@ -355,7 +370,8 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 function parseTelefon(cue: string[]): CueDefinitionTelefon {
 	const telefonCue: CueDefinitionTelefon = {
 		type: CueType.Telefon,
-		source: ''
+		source: '',
+		iNewsCommand: 'TELEFON'
 	}
 	const source = cue[0].match(/^TELEFON=(.+)$/i)
 	if (source) {
@@ -379,9 +395,16 @@ function parseVIZCues(cue: string[]): CueDefinitionVIZ {
 		type: CueType.VIZ,
 		rawType: cue[0],
 		content: {},
-		design: ''
+		design: '',
+		iNewsCommand: ''
 	}
 
+	const command = cue[0].match(/^(VIZ|GRAFIK)/i)
+	if (command) {
+		vizCues.iNewsCommand = cue[1]
+	} else {
+		vizCues.iNewsCommand = 'VIZ'
+	}
 	const design = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
 	if (design) {
 		vizCues.design = design[1]
@@ -402,7 +425,8 @@ function parseVIZCues(cue: string[]): CueDefinitionVIZ {
 function parseMic(cue: string[]): CueDefinitionMic {
 	let micCue: CueDefinitionMic = {
 		type: CueType.Mic,
-		mics: {}
+		mics: {},
+		iNewsCommand: 'STUDIE'
 	}
 	cue.forEach(c => {
 		if (!c.match(/^STUDIE=MIC ON OFF$/i)) {
@@ -424,7 +448,8 @@ function parseAdLib(cue: string[]) {
 	const adlib: CueDefinitionAdLib = {
 		type: CueType.AdLib,
 		variant: '',
-		inputs: {}
+		inputs: {},
+		iNewsCommand: 'ADLIBPIX'
 	}
 
 	const variant = cue[0].match(/^ADLIBPI?X=(.+)$/i)
@@ -452,7 +477,8 @@ function parseAdLib(cue: string[]) {
 function parseKommando(cue: string[]) {
 	let kommandoCue: CueDefinitionProfile = {
 		type: CueType.Profile,
-		profile: ''
+		profile: '',
+		iNewsCommand: 'KOMMANDO'
 	}
 
 	if (cue[1]) {
@@ -469,7 +495,8 @@ function parseKommando(cue: string[]) {
 function parseLYD(cue: string[]) {
 	let lydCue: CueDefinitionLYD = {
 		type: CueType.LYD,
-		variant: ''
+		variant: '',
+		iNewsCommand: 'LYD'
 	}
 
 	const command = cue[0].match(/^LYD=(.*)$/i)
@@ -491,7 +518,8 @@ function parseLYD(cue: string[]) {
 function parseJingle(cue: string[]) {
 	const jingleCue: CueDefinitionJingle = {
 		type: CueType.Jingle,
-		clip: ''
+		clip: '',
+		iNewsCommand: 'JINGLE'
 	}
 	const clip = cue[0].match(/^JINGLE\d+=(.*)$/i)
 	if (clip && clip[1]) {
@@ -508,9 +536,16 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 		content: {},
 		data: {
 			engine: ''
-		}
+		},
+		iNewsCommand: ''
 	}
 
+	const command = cue[0].match(/^(VIZ|GRAFIK|SS)/i)
+	if (command) {
+		engineCue.iNewsCommand = command[1]
+	} else {
+		engineCue.iNewsCommand = 'SS'
+	}
 	const engine = cue[0].match(/^(?:VIZ|GRAFIK|SS)=(.*)$/i)
 
 	if (engine) {
@@ -531,7 +566,8 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 
 function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 	let clearCue: CueDefinitionClearGrafiks = {
-		type: CueType.ClearGrafiks
+		type: CueType.ClearGrafiks,
+		iNewsCommand: '#kg'
 	}
 
 	let time = false

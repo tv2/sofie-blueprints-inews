@@ -73,7 +73,7 @@ export function EvaluateCues(
 						adLibPieces,
 						partDefinition.externalId,
 						cue,
-						'OVL',
+						cue.type === CueType.MOS && cue.engine?.match(/FULL/i) ? 'FULL' : 'OVL',
 						shouldAdlib,
 						false,
 						adLibRank,

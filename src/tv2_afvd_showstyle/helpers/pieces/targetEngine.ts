@@ -28,7 +28,7 @@ export function EvaluateTargetEngine(
 ) {
 	console.log(JSON.stringify(parsedCue))
 	// TODO: Future: Target a specific engine
-	if (!parsedCue.data.engine.match(/full1|ovl1|wall1/i)) {
+	if (!parsedCue.data.engine.match(/full|ovl|wall/i)) {
 		context.warning(`Could not find engine to target for: ${parsedCue.data.engine}`)
 		return
 	}
@@ -90,7 +90,7 @@ export function EvaluateTargetEngine(
 				adlibPeces,
 				partId,
 				parsedCue.data.grafik,
-				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : 'OVL',
+				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
 				false
 			)
 		} else {
@@ -101,7 +101,7 @@ export function EvaluateTargetEngine(
 				adlibPeces,
 				partId,
 				parsedCue.data.grafik,
-				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : 'OVL',
+				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
 				false,
 				false,
 				0,
