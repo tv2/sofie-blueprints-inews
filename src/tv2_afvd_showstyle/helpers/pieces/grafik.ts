@@ -103,7 +103,7 @@ export function EvaluateGrafik(
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: mappedTemplate,
 								templateData: parsedCue.textFields,
-								channelName: 'OVL1'
+								channelName: engine.match(/WALL/i) ? 'WALL1' : 'OVL1'
 							}
 						})
 					])
@@ -143,7 +143,7 @@ export function EvaluateGrafik(
 							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 							templateName: mappedTemplate,
 							templateData: parsedCue.textFields,
-							channelName: 'OVL1'
+							channelName: engine.match(/WALL/i) ? 'WALL1' : 'OVL1'
 						}
 					})
 				])
