@@ -495,7 +495,7 @@ export default literal<BlueprintMappings>({
 	}),
 	viz_layer_wall: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
-		deviceId: 'viz1',
+		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	})
 })

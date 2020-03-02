@@ -605,7 +605,7 @@ const SEC: ISourceLayer[] = [
 		_rank: 60,
 		name: 'Wall Graphics',
 		abbreviation: '',
-		type: SourceLayerType.UNKNOWN,
+		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
