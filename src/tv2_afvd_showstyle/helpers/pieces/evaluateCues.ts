@@ -157,6 +157,7 @@ export function EvaluateCues(
 					}
 
 					if (obj.content.type === TimelineContentTypeVizMSE.ELEMENT_INTERNAL) {
+						const o = obj as TimelineObjVIZMSEElementInternal
 						const name = (obj as TimelineObjVIZMSEElementInternal).content.templateName
 						if (name && name.length) {
 							piece.expectedPlayoutItems.push({
@@ -164,7 +165,7 @@ export function EvaluateCues(
 								content: {
 									templateName: (obj as TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TimelineObjVIZMSEElementInternal).content.templateData,
-									channelName: 'OVL1',
+									channelName: o.content.channelName,
 									rundownId: ''
 								}
 							})
