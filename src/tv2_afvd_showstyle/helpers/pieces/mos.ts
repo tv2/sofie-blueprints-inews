@@ -17,7 +17,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan
+	PieceLifespan,
+	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../../common/util'
 import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
@@ -28,6 +29,7 @@ import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { InfiniteMode } from './evaluateCues'
 import { CreateTimingGrafik, grafikName } from './grafik'
+import { SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
 
 export function EvaluateMOS(
 	config: BlueprintConfig,
@@ -236,7 +238,7 @@ function GetMosObjContent(
 							classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 						}),
 						...GetSisyfosTimelineObjForCamera('full'),
-						...MuteSisyfosChannels(partId)
+						...MuteSisyfosChannels(partId, config.sources)
 				  ])
 		]
 	})
@@ -265,7 +267,7 @@ export function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMed
 	})
 }
 
-function MuteSisyfosChannels(partId: string): TimelineObjSisyfosMessage[] {
+function MuteSisyfosChannels(partId: string, sources: SourceInfo[]): TimelineObjSisyfosMessage[] {
 	return [
 		SisyfosLLAyer.SisyfosSourceServerA,
 		SisyfosLLAyer.SisyfosSourceServerB,
@@ -280,8 +282,9 @@ function MuteSisyfosChannels(partId: string): TimelineObjSisyfosMessage[] {
 		SisyfosLLAyer.SisyfosSourceLive_9,
 		SisyfosLLAyer.SisyfosSourceLive_10,
 		SisyfosLLAyer.SisyfosSourceTLF,
-		SisyfosEVSSource('1'),
-		SisyfosEVSSource('2')
+		...[
+			...sources.filter((s) => s.type === SourceLayerType.REMOTE && s.id.match(/^DP/i)).map((s) => SisyfosEVSSource(s.id.replace(/^DP/i, '') as SisyfosLLAyer)) as SisyfosLLAyer[] 
+		]
 	].map<TimelineObjSisyfosMessage>(layer => {
 		return literal<TimelineObjSisyfosMessage>({
 			id: `muteSisyfos-${layer}-${partId}`,
