@@ -191,14 +191,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
-		id: 'AtemSource.DelayedPlayback',
-		name: 'ATEM EVS source',
-		description: 'ATEM input for EVS',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 22
-	},
-	{
 		id: 'AtemSource.Continuity',
 		name: 'ATEM continuity source',
 		description: 'ATEM input for continuity',
