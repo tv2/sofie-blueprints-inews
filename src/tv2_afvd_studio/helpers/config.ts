@@ -33,6 +33,7 @@ export interface StudioConfig {
 	SourcesCam: string
 	SourcesRM: string
 	SourcesSkype: string
+	SourcesDelayedPlayback: string
 	ABMediaPlayers: string
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
@@ -47,8 +48,6 @@ export interface StudioConfig {
 
 		Default: number
 		MixMinusDefault: number
-
-		DelayedPlayback: number
 		Continuity: number
 	}
 

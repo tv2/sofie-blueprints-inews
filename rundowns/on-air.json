@@ -38,11 +38,16 @@
                     "meta": {
                         "words": "6",
                         "rate": "140",
-                        "float": ""
+                        "float": "float"
                     },
-                    "cues": [],
+                    "cues": [
+                        [
+                            "JINGLE2=SN_intro_19",
+                            ";0.00"
+                        ]
+                    ],
                     "id": "341dd48e:011f7352:5da02371",
-                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>1111111</p>\r\n<p><pi>KAM 2</pi></p>\r\n<p>1111111111</p>\r\n"
+                    "body": "\r\n<p><a idref=\"0\"></a></p>\r\n"
                 },
                 "modified": "2019-10-11T06:38:00.000Z",
                 "externalId": "341dd48e:011f7352:5da02371",

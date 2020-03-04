@@ -85,8 +85,7 @@ export enum SisyfosLLAyer {
 	SisyfosSourceServerA = 'sisyfos_source_server_a',
 	SisyfosSourceServerB = 'sisyfos_source_server_b',
 	// SisyfosSourceServerC = 'sisyfos_source_server_c',
-	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
-	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2'
+	SisyfosResync = 'sisyfos_resync'
 }
 
 export enum VizLLayer {
@@ -109,4 +108,8 @@ export function CasparPlayerClip(i: number | string) {
 
 export function CasparPlayerClipLoadingLoop(i: number | string) {
 	return `casparcg_player_clip_${i}_loading_loop`
+}
+
+export function SisyfosEVSSource(i: number | string) {
+	return `sisyfos_source_evs_${i}`
 }

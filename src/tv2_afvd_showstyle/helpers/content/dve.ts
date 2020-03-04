@@ -225,14 +225,19 @@ export function MakeContentDVE2(
 				setBoxSource(num, sourceInfoLive, mappingFrom.source)
 				dveTimeline.push(...GetSisyfosTimelineObjForEkstern(context, mappingFrom.source, audioEnable))
 			} else if (sourceType.match(/EVS/i)) {
-				// TODO: When adding more EVS sources in the future
-				const sourceInfoEVS: SourceInfo = {
-					type: SourceLayerType.REMOTE,
-					id: sourceInput,
-					port: config.studio.AtemSource.DelayedPlayback
+				const sourceInfoDelayedPlayback = FindSourceInfoStrict(
+					context,
+					config.sources,
+					SourceLayerType.REMOTE,
+					mappingFrom.source
+				)
+				if (sourceInfoDelayedPlayback === undefined) {
+					context.warning(`Invalid source: ${mappingFrom.source}`)
+					valid = false
+					return
 				}
 
-				setBoxSource(num, sourceInfoEVS, mappingFrom.source)
+				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
 				dveTimeline.push(...GetSisyfosTimelineObjForCamera('evs'))
 			} else if (sourceType.match(/ENGINE/i)) {
 				if (sourceInput.match(/full/i)) {

@@ -46,6 +46,7 @@ import {
 	AtemLLayer,
 	CasparLLayer,
 	CasparPlayerClipLoadingLoop,
+	SisyfosEVSSource,
 	SisyfosLLAyer,
 	VizLLayer
 } from '../tv2_afvd_studio/layers'
@@ -249,6 +250,74 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		return res
 	}
 
+	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		res.push({
+			externalId: 'delayed',
+			name: `Delayed Playback`,
+			_rank: rank,
+			sourceLayerId: SourceLayer.PgmDelayed,
+			outputLayerId: 'pgm',
+			expectedDuration: 0,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			metaData: GetKeepStudioMicsMetaData(),
+			content: {
+				timelineObjects: _.compact<TSRTimelineObj>([
+					literal<TimelineObjAtemME>({
+						id: '',
+						enable: { while: '1' },
+						priority: 1,
+						layer: AtemLLayer.AtemMEProgram,
+						content: {
+							deviceType: DeviceType.ATEM,
+							type: TimelineContentTypeAtem.ME,
+							me: {
+								input: info.port,
+								transition: AtemTransitionStyle.CUT
+							}
+						},
+						classes: ['adlib_deparent']
+					}),
+					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						id: '',
+						enable: { while: '1' },
+						priority: 1,
+						layer: SisyfosEVSSource(info.id),
+						content: {
+							deviceType: DeviceType.SISYFOS,
+							type: TimelineContentTypeSisyfos.SISYFOS,
+							isPgm: vo ? 2 : 1
+						}
+					}),
+
+					...STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 0
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
+						})
+					}),
+
+					...GetSisyfosTimelineObjForCamera('evs')
+				])
+			}
+		})
+
+		return res
+	}
+
 	// evs ssrc box
 	function makeEvsAdlibBoxes(
 		info: { port: number; id: string },
@@ -274,7 +343,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							id: '',
 							enable: { while: audioWhile },
 							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+							layer: SisyfosEVSSource(info.id),
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
@@ -455,186 +524,86 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAuxStudioAdLibs(o, globalRank++))
 		})
 
-	adlibItems.push(...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++))
-	adlibItems.push(
-		...makeEvsAdlibBoxes({ id: 'evs1', port: config.studio.AtemSource.DelayedPlayback }, globalRank++, true)
-	)
-
-	adlibItems.push({
-		externalId: 'delayed',
-		name: `Delayed Playback`,
-		_rank: 1500,
-		sourceLayerId: SourceLayer.PgmDelayed,
-		outputLayerId: 'pgm',
-		expectedDuration: 0,
-		infiniteMode: PieceLifespan.OutOnNextPart,
-		toBeQueued: true,
-		metaData: GetKeepStudioMicsMetaData(),
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjAtemME>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: AtemLLayer.AtemMEProgram,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.ME,
-						me: {
-							input: config.studio.AtemSource.DelayedPlayback,
-							transition: AtemTransitionStyle.CUT
-						}
-					},
-					classes: ['adlib_deparent']
-				}),
-				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: SisyfosLLAyer.SisyfosSourceEVS_1,
-					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
-						isPgm: 2
-					}
-				}),
-
-				...STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-					return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer,
-						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
-							isPgm: 0
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					})
-				}),
-
-				...GetSisyfosTimelineObjForCamera('evs')
-			])
-		}
-	})
-	adlibItems.push({
-		externalId: 'delayed',
-		name: `Delayed Playback`,
-		_rank: 1550,
-		sourceLayerId: SourceLayer.PgmDelayed,
-		outputLayerId: 'pgm',
-		expectedDuration: 0,
-		infiniteMode: PieceLifespan.OutOnNextPart,
-		toBeQueued: true,
-		metaData: GetKeepStudioMicsMetaData(),
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjAtemME>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: AtemLLayer.AtemMEProgram,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.ME,
-						me: {
-							input: config.studio.AtemSource.DelayedPlayback,
-							transition: AtemTransitionStyle.CUT
-						}
-					},
-					classes: ['adlib_deparent']
-				}),
-				literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: SisyfosLLAyer.SisyfosSourceEVS_1,
-					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
-						isPgm: 1
-					}
-				})
-			])
-		}
-	})
-	adlibItems.push({
-		externalId: 'delayedaux',
-		name: `Delayed Playback in studio aux`,
-		_rank: 1650,
-		sourceLayerId: SourceLayer.AuxStudioScreen,
-		outputLayerId: 'aux',
-		expectedDuration: 0,
-		infiniteMode: PieceLifespan.Infinite,
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjAtemAUX>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: AtemLLayer.AtemAuxAR,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.AUX,
-						aux: {
-							input: config.studio.AtemSource.DelayedPlayback
-						}
-					}
-				})
-			])
-		}
-	})
-	adlibItems.push({
-		externalId: 'delayedaux',
-		name: `Delayed Playback in viz aux`,
-		_rank: 1560,
-		sourceLayerId: SourceLayer.VizFullIn1,
-		outputLayerId: 'aux',
-		expectedDuration: 0,
-		infiniteMode: PieceLifespan.Infinite,
-		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjAtemAUX>({
-					id: '',
-					enable: { while: '1' },
-					priority: 1,
-					layer: AtemLLayer.AtemAuxVizOvlIn1,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.AUX,
-						aux: {
-							input: config.studio.AtemSource.DelayedPlayback
-						}
-					}
-				})
-			])
-		}
-	})
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE && !!u.id.match(`DP`))
+		.forEach(o => {
+			adlibItems.push(...makeEVSAdLibs(o, globalRank++, false))
+			adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
+			adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++))
+			adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++, true))
+			adlibItems.push({
+				externalId: 'delayedaux',
+				name: `Delayed Playback in studio aux`,
+				_rank: globalRank++,
+				sourceLayerId: SourceLayer.AuxStudioScreen,
+				outputLayerId: 'aux',
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.Infinite,
+				content: {
+					timelineObjects: _.compact<TSRTimelineObj>([
+						literal<TimelineObjAtemAUX>({
+							id: '',
+							enable: { while: '1' },
+							priority: 1,
+							layer: AtemLLayer.AtemAuxAR,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.AUX,
+								aux: {
+									input: o.port
+								}
+							}
+						})
+					])
+				}
+			})
+			adlibItems.push({
+				externalId: 'delayedaux',
+				name: `Delayed Playback in viz aux`,
+				_rank: globalRank++,
+				sourceLayerId: SourceLayer.VizFullIn1,
+				outputLayerId: 'aux',
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.Infinite,
+				content: {
+					timelineObjects: _.compact<TSRTimelineObj>([
+						literal<TimelineObjAtemAUX>({
+							id: '',
+							enable: { while: '1' },
+							priority: 1,
+							layer: AtemLLayer.AtemAuxVizOvlIn1,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.AUX,
+								aux: {
+									input: o.port
+								}
+							}
+						})
+					])
+				}
+			})
+		})
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({

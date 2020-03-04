@@ -14,10 +14,12 @@ import {
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
+	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from '../../common/util'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
+import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -29,6 +31,7 @@ import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
 import { EVSParentClass } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
+import { CreatePartInvalid } from './invalid'
 import { PartTime } from './time/partTime'
 
 export function CreatePartEVS(
@@ -49,9 +52,19 @@ export function CreatePartEVS(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
-	const atemInput = config.studio.AtemSource.DelayedPlayback
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+
+	const sourceInfoDelayedPlayback = FindSourceInfoStrict(
+		context,
+		config.sources,
+		SourceLayerType.REMOTE,
+		partDefinition.rawType
+	)
+	if (sourceInfoDelayedPlayback === undefined) {
+		return CreatePartInvalid(partDefinition)
+	}
+	const atemInput = sourceInfoDelayedPlayback.port
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -93,7 +106,7 @@ export function CreatePartEVS(
 							start: 0
 						},
 						priority: 1,
-						layer: SisyfosLLAyer.SisyfosSourceEVS_1,
+						layer: SisyfosEVSSource(sourceInfoDelayedPlayback.id.replace(/^DP/i, '')),
 						content: {
 							deviceType: DeviceType.SISYFOS,
 							type: TimelineContentTypeSisyfos.SISYFOS,

@@ -22,7 +22,7 @@ import {
 import { literal } from '../../../common/util'
 import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
@@ -280,8 +280,8 @@ function MuteSisyfosChannels(partId: string): TimelineObjSisyfosMessage[] {
 		SisyfosLLAyer.SisyfosSourceLive_9,
 		SisyfosLLAyer.SisyfosSourceLive_10,
 		SisyfosLLAyer.SisyfosSourceTLF,
-		SisyfosLLAyer.SisyfosSourceEVS_1,
-		SisyfosLLAyer.SisyfosSourceEVS_2
+		SisyfosEVSSource('1'),
+		SisyfosEVSSource('2')
 	].map<TimelineObjSisyfosMessage>(layer => {
 		return literal<TimelineObjSisyfosMessage>({
 			id: `muteSisyfos-${layer}-${partId}`,

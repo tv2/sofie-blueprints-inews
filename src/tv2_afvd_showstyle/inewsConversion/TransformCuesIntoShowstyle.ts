@@ -9,12 +9,12 @@ export function TransformCuesIntoShowstyle(config: ShowStyleConfig, partDefiniti
 		i++
 		const cue = partDefinition.cues[i]
 
-		if (
-			cue.type === CueType.TargetEngine &&
-			cue.data.engine &&
-			cue.data.engine.toUpperCase() !== 'OVL1'
-		) {
-			const conf = config.GFXTemplates.find(gfx => gfx.INewsName.toUpperCase() === cue.data.engine.toUpperCase() && gfx.INewsCode.toUpperCase() === cue.iNewsCommand.toUpperCase())
+		if (cue.type === CueType.TargetEngine && cue.data.engine && cue.data.engine.toUpperCase() !== 'OVL1') {
+			const conf = config.GFXTemplates.find(
+				gfx =>
+					gfx.INewsName.toUpperCase() === cue.data.engine.toUpperCase() &&
+					gfx.INewsCode.toUpperCase() === cue.iNewsCommand.toUpperCase()
+			)
 
 			if (!conf) {
 				continue
@@ -23,7 +23,9 @@ export function TransformCuesIntoShowstyle(config: ShowStyleConfig, partDefiniti
 				const nextCue = partDefinition.cues[i + 1]
 
 				if (!nextCue) {
-					if (!cue.grafik) continue
+					if (!cue.grafik) {
+						continue
+					}
 					cue.data.grafik = cue.grafik
 					delete cue.grafik
 					cue.data.engine = conf.VizDestination.trim()
@@ -32,7 +34,7 @@ export function TransformCuesIntoShowstyle(config: ShowStyleConfig, partDefiniti
 					if (nextCue.type !== CueType.MOS) {
 						continue
 					}
-	
+
 					cue.data.grafik = nextCue
 					cue.data.engine = conf.VizDestination.trim()
 					partDefinition.cues[i] = cue
