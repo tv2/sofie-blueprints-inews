@@ -283,7 +283,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
-						layer: SisyfosEVSSource(info.id),
+						layer: SisyfosEVSSource(info.id.replace(/^DP/i, '')),
 						content: {
 							deviceType: DeviceType.SISYFOS,
 							type: TimelineContentTypeSisyfos.SISYFOS,
@@ -343,7 +343,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							id: '',
 							enable: { while: audioWhile },
 							priority: 1,
-							layer: SisyfosEVSSource(info.id),
+							layer: SisyfosEVSSource(info.id.replace(/^DP/i, '')),
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
