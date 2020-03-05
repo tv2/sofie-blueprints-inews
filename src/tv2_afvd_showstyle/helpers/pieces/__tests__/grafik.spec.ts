@@ -60,7 +60,8 @@ describe('grafik piece', () => {
 			textFields: ['Odense', 'Copenhagen'],
 			start: {
 				seconds: 0
-			}
+			},
+			iNewsCommand: 'kg'
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -125,7 +126,8 @@ describe('grafik piece', () => {
 			template: 'bund',
 			cue: 'kg',
 			textFields: ['Odense', 'Copenhagen'],
-			adlib: true
+			adlib: true,
+			iNewsCommand: 'kg'
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -189,7 +191,8 @@ describe('grafik piece', () => {
 			textFields: ['Odense', 'Copenhagen'],
 			start: {
 				seconds: 10
-			}
+			},
+			iNewsCommand: 'kg'
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -259,7 +262,8 @@ describe('grafik piece', () => {
 			},
 			end: {
 				infiniteMode: 'B'
-			}
+			},
+			iNewsCommand: 'kg'
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []

@@ -80,8 +80,6 @@ export function EvaluateTargetEngine(
 	}
 
 	if (parsedCue.data.grafik) {
-		console.log(`GRAFIK:`)
-		console.log(JSON.stringify(parsedCue.data.grafik))
 		if (parsedCue.data.grafik.type === CueType.Grafik) {
 			EvaluateGrafik(
 				config,

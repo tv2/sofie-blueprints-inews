@@ -233,12 +233,8 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 		iNewsCommand: ''
 	}
 
-	const command = cue[0].match(/^([*|#]?kg)/i)
-	if (command) {
-		kgCue.iNewsCommand = command[1]
-	} else {
-		kgCue.iNewsCommand = 'kg'
-	}
+	const command = cue[0].match(/^([*|#]?kg|digi)/i)
+	kgCue.iNewsCommand = command ? command[1] : 'kg'
 
 	const firstLineValues = cue[0].match(/^[*|#]?kg[ |=]([\w|\d]+)( (.+))*$/i)
 	if (firstLineValues) {
@@ -281,7 +277,7 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 		name: '',
 		vcpid: -1,
 		continueCount: -1,
-		iNewsCommand: '#cg'
+		iNewsCommand: 'VCP'
 	}
 	const realCue: string[] = []
 	cue.forEach(line => {
@@ -400,11 +396,7 @@ function parseVIZCues(cue: string[]): CueDefinitionVIZ {
 	}
 
 	const command = cue[0].match(/^(VIZ|GRAFIK)/i)
-	if (command) {
-		vizCues.iNewsCommand = cue[1]
-	} else {
-		vizCues.iNewsCommand = 'VIZ'
-	}
+	vizCues.iNewsCommand = command ? command[1] : 'VIZ'
 	const design = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
 	if (design) {
 		vizCues.design = design[1]
@@ -541,11 +533,7 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 	}
 
 	const command = cue[0].match(/^(VIZ|GRAFIK|SS)/i)
-	if (command) {
-		engineCue.iNewsCommand = command[1]
-	} else {
-		engineCue.iNewsCommand = 'SS'
-	}
+	engineCue.iNewsCommand = command ? command[1] : 'SS'
 	const engine = cue[0].match(/^(?:VIZ|GRAFIK|SS)=(.*)$/i)
 
 	if (engine) {
@@ -567,11 +555,15 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 	let clearCue: CueDefinitionClearGrafiks = {
 		type: CueType.ClearGrafiks,
-		iNewsCommand: '#kg'
+		iNewsCommand: ''
 	}
 
 	let time = false
 	cue.forEach(c => {
+		const command = c.match(/^([#* ]?kg)/i)
+		if (command) {
+			clearCue.iNewsCommand = command[1]
+		}
 		if (isTime(c)) {
 			time = true
 			clearCue = { ...clearCue, ...parseTime(c) }

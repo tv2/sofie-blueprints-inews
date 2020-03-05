@@ -32,7 +32,8 @@ import {
 const fields = {}
 
 const cueUnknown: CueDefinitionUnknown = {
-	type: CueType.Unknown
+	type: CueType.Unknown,
+	iNewsCommand: ''
 }
 
 const unparsedUnknown: UnparsedCue = ['Some invalid cue']
@@ -42,7 +43,8 @@ const cueGrafik1: CueDefinitionGrafik = {
 	template: 'bund',
 	cue: 'kg',
 	textFields: ['1'],
-	adlib: true
+	adlib: true,
+	iNewsCommand: 'kg'
 }
 
 const unparsedGrafik1 = ['kg bund 1']
@@ -52,7 +54,8 @@ const cueGrafik2: CueDefinitionGrafik = {
 	template: 'bund',
 	cue: 'kg',
 	textFields: ['2'],
-	adlib: true
+	adlib: true,
+	iNewsCommand: 'kg'
 }
 
 const unparsedGrafik2 = ['kg bund 2']
@@ -62,56 +65,64 @@ const cueGrafik3: CueDefinitionGrafik = {
 	template: 'bund',
 	cue: 'kg',
 	textFields: ['3'],
-	adlib: true
+	adlib: true,
+	iNewsCommand: 'kg'
 }
 
 const unparsedGrafik3 = ['kg bund 3']
 
 const cueEkstern1: CueDefinitionEkstern = {
 	type: CueType.Ekstern,
-	source: '1'
+	source: '1',
+	iNewsCommand: 'EKSTERN'
 }
 
 const unparsedEkstern1 = ['EKSTERN=1']
 
 const cueEkstern2: CueDefinitionEkstern = {
 	type: CueType.Ekstern,
-	source: '2'
+	source: '2',
+	iNewsCommand: 'EKSTERN'
 }
 
 const unparsedEkstern2 = ['EKSTERN=2']
 
 const cueJingle1: CueDefinitionJingle = {
 	type: CueType.Jingle,
-	clip: '1'
+	clip: '1',
+	iNewsCommand: 'JINGLE'
 }
 
 const unparsedJingle1 = ['JINGLE2=1']
 
 const cueJingle2: CueDefinitionJingle = {
 	type: CueType.Jingle,
-	clip: '2'
+	clip: '2',
+	iNewsCommand: 'JINGLE'
 }
 
 const unparsedJingle2 = ['JINGLE2=2']
 
 const cueJingle3: CueDefinitionJingle = {
 	type: CueType.Jingle,
-	clip: '3'
+	clip: '3',
+	iNewsCommand: 'JINGLE'
 }
 
 const unparsedJingle3 = ['JINGLE2=3']
 
 const cueTelefon1: CueDefinitionTelefon = {
 	type: CueType.Telefon,
-	source: 'TLF 1'
+	source: 'TLF 1',
+	iNewsCommand: 'TELEFON'
 }
 
 const unparsedTelefon1 = ['TELEFON=TLF 1']
 
 const cueTelefon2: CueDefinitionTelefon = {
 	type: CueType.Telefon,
-	source: 'TLF 2'
+	source: 'TLF 2',
+	iNewsCommand: 'TELEFON'
 }
 
 const unparsedTelefon2 = ['TELEFON=TLF 2']
@@ -224,7 +235,8 @@ describe('Body parser', () => {
 								INP1: 'Kam 1',
 								INP2: 'Kam 2'
 							},
-							labels: ['Live', 'Odense']
+							labels: ['Live', 'Odense'],
+							iNewsCommand: 'DVE'
 						})
 					],
 					script: 'Thid id thr trext for the next DVE\n',
@@ -1062,21 +1074,24 @@ describe('Body parser', () => {
 							template: 'ident_blank',
 							cue: 'kg',
 							textFields: ['ODENSE', 'KLJ'],
-							adlib: true
+							adlib: true,
+							iNewsCommand: 'kg'
 						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
 							template: 'bund',
 							cue: 'kg',
 							textFields: ['TEXT MORETEXT', 'Inews'],
-							adlib: true
+							adlib: true,
+							iNewsCommand: 'kg'
 						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
 							template: 'bund',
 							cue: 'kg',
 							textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
-							adlib: true
+							adlib: true,
+							iNewsCommand: 'kg'
 						}),
 						literal<CueDefinitionTargetEngine>({
 							type: CueType.TargetEngine,
@@ -1087,7 +1102,8 @@ describe('Body parser', () => {
 								engine: '3-NYH-19-LOOP'
 							},
 							rawType: `SS=3-NYH-19-LOOP`,
-							content: {}
+							content: {},
+							iNewsCommand: 'SS'
 						})
 					]),
 					script: '',
@@ -1172,6 +1188,7 @@ describe('Body parser', () => {
 						literal<CueDefinitionTelefon>({
 							type: CueType.Telefon,
 							source: 'TLF 2',
+							iNewsCommand: 'TELEFON',
 							vizObj: literal<CueDefinitionGrafik>({
 								type: CueType.Grafik,
 								template: 'bund',
@@ -1179,7 +1196,8 @@ describe('Body parser', () => {
 								textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
 								start: {
 									seconds: 2
-								}
+								},
+								iNewsCommand: 'kg'
 							})
 						}),
 						literal<CueDefinitionGrafik>({
@@ -1192,7 +1210,8 @@ describe('Body parser', () => {
 							},
 							end: {
 								infiniteMode: 'S'
-							}
+							},
+							iNewsCommand: 'kg'
 						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
@@ -1204,7 +1223,8 @@ describe('Body parser', () => {
 							},
 							end: {
 								infiniteMode: 'S'
-							}
+							},
+							iNewsCommand: 'kg'
 						})
 					],
 					script: '',
@@ -1260,8 +1280,10 @@ describe('Body parser', () => {
 								textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
 								start: {
 									seconds: 2
-								}
-							})
+								},
+								iNewsCommand: 'kg'
+							}),
+							iNewsCommand: 'TELEFON'
 						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
@@ -1273,7 +1295,8 @@ describe('Body parser', () => {
 							},
 							end: {
 								infiniteMode: 'S'
-							}
+							},
+							iNewsCommand: 'kg'
 						}),
 						literal<CueDefinitionGrafik>({
 							type: CueType.Grafik,
@@ -1285,7 +1308,8 @@ describe('Body parser', () => {
 							},
 							end: {
 								infiniteMode: 'S'
-							}
+							},
+							iNewsCommand: 'kg'
 						})
 					],
 					script: '',
@@ -1361,7 +1385,6 @@ describe('Body parser', () => {
 			]
 		]
 		const result = ParseBody('00000000001', 'test-segment', body26, cues26, fields, 0)
-		console.log(JSON.stringify(result))
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				externalId: '',
@@ -1378,7 +1401,8 @@ describe('Body parser', () => {
 						textFields: ['Dette er tlf top', 'Tester'],
 						start: {
 							seconds: 0
-						}
+						},
+						iNewsCommand: 'kg'
 					})
 				],
 				fields,
@@ -1398,7 +1422,8 @@ describe('Body parser', () => {
 							engine: 'full'
 						},
 						rawType: 'GRAFIK=full',
-						content: {}
+						content: {},
+						iNewsCommand: 'GRAFIK'
 					})
 				],
 				script: '',
@@ -1419,7 +1444,8 @@ describe('Body parser', () => {
 						continueCount: 3,
 						start: {
 							seconds: 0
-						}
+						},
+						iNewsCommand: 'VCP'
 					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
@@ -1428,7 +1454,8 @@ describe('Body parser', () => {
 						textFields: ['KØBENHAVN'],
 						start: {
 							seconds: 0
-						}
+						},
+						iNewsCommand: 'kg'
 					})
 				],
 				fields,
@@ -1513,10 +1540,12 @@ describe('Body parser', () => {
 							frames: 1
 						},
 						rawType: `SS=SC-LOOP`,
-						content: {}
+						content: {},
+						iNewsCommand: 'SS'
 					}),
 					literal<CueDefinitionUnknown>({
-						type: CueType.Unknown
+						type: CueType.Unknown,
+						iNewsCommand: ''
 					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
@@ -1525,7 +1554,8 @@ describe('Body parser', () => {
 						start: {
 							seconds: 0
 						},
-						textFields: ['TEXT MORETEXT', 'Triatlet']
+						textFields: ['TEXT MORETEXT', 'Triatlet'],
+						iNewsCommand: '#kg'
 					})
 				],
 				script: '',
@@ -1547,7 +1577,8 @@ describe('Body parser', () => {
 							INP1: 'KAM 1',
 							INP2: 'LIVE 2'
 						},
-						labels: ['Rodovre']
+						labels: ['Rodovre'],
+						iNewsCommand: 'DVE'
 					})
 				],
 				script: '',
@@ -1563,7 +1594,8 @@ describe('Body parser', () => {
 				cues: [
 					literal<CueDefinitionEkstern>({
 						type: CueType.Ekstern,
-						source: 'LIVE 2'
+						source: 'LIVE 2',
+						iNewsCommand: 'EKSTERN'
 					})
 				],
 				script: 'Some Script here\n',
@@ -1704,7 +1736,8 @@ describe('Body parser', () => {
 							INP1: 'KAM 1',
 							INP2: 'LIVE 2'
 						},
-						labels: ['Rodovre']
+						labels: ['Rodovre'],
+						iNewsCommand: 'DVE'
 					})
 				],
 				script: '',
@@ -1720,7 +1753,8 @@ describe('Body parser', () => {
 				cues: [
 					literal<CueDefinitionEkstern>({
 						type: CueType.Ekstern,
-						source: 'LIVE 2'
+						source: 'LIVE 2',
+						iNewsCommand: 'EKSTERN'
 					})
 				],
 				script: 'And some script\n',
@@ -1744,10 +1778,12 @@ describe('Body parser', () => {
 							frames: 1
 						},
 						rawType: `SS=SC-LOOP`,
-						content: {}
+						content: {},
+						iNewsCommand: 'SS'
 					}),
 					literal<CueDefinitionUnknown>({
-						type: CueType.Unknown
+						type: CueType.Unknown,
+						iNewsCommand: ''
 					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
@@ -1756,7 +1792,8 @@ describe('Body parser', () => {
 						start: {
 							seconds: 0
 						},
-						textFields: ['TEXT MORETEXT', 'Triatlet']
+						textFields: ['TEXT MORETEXT', 'Triatlet'],
+						iNewsCommand: '#kg'
 					})
 				],
 				script: 'Server script\n',
@@ -1796,10 +1833,12 @@ describe('Body parser', () => {
 							frames: 1
 						},
 						rawType: 'SS=SC-LOOP',
-						content: {}
+						content: {},
+						iNewsCommand: 'SS'
 					}),
 					literal<CueDefinitionUnknown>({
-						type: CueType.Unknown
+						type: CueType.Unknown,
+						iNewsCommand: ''
 					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
@@ -1808,7 +1847,8 @@ describe('Body parser', () => {
 						start: {
 							seconds: 0
 						},
-						textFields: ['TEXT MORETEXT', 'Triatlet']
+						textFields: ['TEXT MORETEXT', 'Triatlet'],
+						iNewsCommand: '#kg'
 					})
 				],
 				script: '',
@@ -1830,7 +1870,8 @@ describe('Body parser', () => {
 							INP1: 'KAM 1',
 							INP2: 'LIVE 2'
 						},
-						labels: ['Rodovre']
+						labels: ['Rodovre'],
+						iNewsCommand: 'DVE'
 					})
 				],
 				script: '',
@@ -1846,7 +1887,8 @@ describe('Body parser', () => {
 				cues: [
 					literal<CueDefinitionEkstern>({
 						type: CueType.Ekstern,
-						source: 'LIVE 2'
+						source: 'LIVE 2',
+						iNewsCommand: 'EKSTERN'
 					})
 				],
 				script: 'Some script\n',
@@ -1913,7 +1955,8 @@ describe('Body parser', () => {
 				cues: [
 					literal<CueDefinitionJingle>({
 						type: CueType.Jingle,
-						clip: 'SN_breaker_kortnyt_start'
+						clip: 'SN_breaker_kortnyt_start',
+						iNewsCommand: 'JINGLE'
 					}),
 					literal<CueDefinitionTargetEngine>({
 						type: CueType.TargetEngine,
@@ -1925,7 +1968,8 @@ describe('Body parser', () => {
 							frames: 1
 						},
 						rawType: `SS=SC-LOOP`,
-						content: {}
+						content: {},
+						iNewsCommand: 'SS'
 					}),
 					literal<CueDefinitionMOS>({
 						type: CueType.MOS,
@@ -1938,7 +1982,8 @@ describe('Body parser', () => {
 						},
 						end: {
 							infiniteMode: 'O'
-						}
+						},
+						iNewsCommand: 'VCP'
 					})
 				],
 				script: '',
@@ -1983,6 +2028,7 @@ describe('Body parser', () => {
 						start: {
 							seconds: 0
 						},
+						iNewsCommand: 'VIZ',
 						grafik: literal<CueDefinitionMOS>({
 							type: CueType.MOS,
 							name: 'HojreVideo/12-12-2019/MOSART=L|00:00|O',
@@ -1994,7 +2040,8 @@ describe('Body parser', () => {
 							},
 							end: {
 								infiniteMode: 'O'
-							}
+							},
+							iNewsCommand: 'VCP'
 						})
 					})
 				],
@@ -2043,8 +2090,10 @@ describe('Body parser', () => {
 							continueCount: 2,
 							start: {
 								seconds: 0
-							}
-						}
+							},
+							iNewsCommand: 'VCP'
+						},
+						iNewsCommand: 'GRAFIK'
 					})
 				],
 				script: '',
@@ -2129,7 +2178,8 @@ describe('Body parser', () => {
 				cues: [
 					literal<CueDefinitionEkstern>({
 						type: CueType.Ekstern,
-						source: 'LIVE 1'
+						source: 'LIVE 1',
+						iNewsCommand: 'EKSTERN'
 					})
 				],
 				script: '',
@@ -2199,8 +2249,10 @@ describe('Body parser', () => {
 							engine: '4',
 							start: {
 								seconds: 0
-							}
-						})
+							},
+							iNewsCommand: 'VCP'
+						}),
+						iNewsCommand: 'GRAFIK'
 					})
 				],
 				fields,
@@ -2222,7 +2274,8 @@ describe('Body parser', () => {
 							engine: 'SC-STILLS'
 						},
 						rawType: 'SS=SC-STILLS',
-						content: {}
+						content: {},
+						iNewsCommand: 'SS'
 					}),
 					literal<CueDefinitionMOS>({
 						type: CueType.MOS,
@@ -2232,7 +2285,8 @@ describe('Body parser', () => {
 						engine: '4',
 						start: {
 							seconds: 0
-						}
+						},
+						iNewsCommand: 'VCP'
 					})
 				],
 				fields,
@@ -2268,6 +2322,7 @@ describe('Body parser', () => {
 								INP1: '',
 								INP: ''
 							},
+							iNewsCommand: 'GRAFIK',
 							grafik: literal<CueDefinitionMOS>({
 								type: CueType.MOS,
 								name: 'TELEFON/KORT//LIVE_KABUL',
@@ -2276,7 +2331,8 @@ describe('Body parser', () => {
 									seconds: 0
 								},
 								continueCount: 3,
-								engine: '4'
+								engine: '4',
+								iNewsCommand: 'VCP'
 							})
 						})
 					],
@@ -2331,6 +2387,7 @@ describe('Body parser', () => {
 								INP1: '',
 								INP2: ''
 							},
+							iNewsCommand: 'GRAFIK',
 							grafik: literal<CueDefinitionMOS>({
 								type: CueType.MOS,
 								name: 'Senderplan/23-10-2019',
@@ -2338,7 +2395,8 @@ describe('Body parser', () => {
 								start: {
 									seconds: 0
 								},
-								continueCount: -1
+								continueCount: -1,
+								iNewsCommand: 'VCP'
 							})
 						})
 					],
@@ -2363,6 +2421,7 @@ describe('Body parser', () => {
 								INP1: '',
 								INP2: ''
 							},
+							iNewsCommand: 'GRAFIK',
 							grafik: literal<CueDefinitionMOS>({
 								type: CueType.MOS,
 								name: 'Senderplan/23-10-2019',
@@ -2370,7 +2429,8 @@ describe('Body parser', () => {
 								start: {
 									seconds: 0
 								},
-								continueCount: -1
+								continueCount: -1,
+								iNewsCommand: 'VCP'
 							})
 						})
 					],
@@ -2410,7 +2470,8 @@ describe('Body parser', () => {
 							rawType: 'SS=3-SPORTSDIGI',
 							content: {
 								INP1: 'EVS 1'
-							}
+							},
+							iNewsCommand: 'SS'
 						}),
 						literal<CueDefinitionMOS>({
 							type: CueType.MOS,
@@ -2420,7 +2481,8 @@ describe('Body parser', () => {
 								seconds: 0
 							},
 							continueCount: 3,
-							engine: '4'
+							engine: '4',
+							iNewsCommand: 'VCP'
 						})
 					],
 					script: '',

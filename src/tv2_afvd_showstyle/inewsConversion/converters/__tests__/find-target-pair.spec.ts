@@ -22,7 +22,8 @@ describe('Find target pair', () => {
 					content: {
 						INP1: '',
 						INP: ''
-					}
+					},
+					iNewsCommand: 'GRAFIK'
 				}),
 				literal<CueDefinitionMOS>({
 					type: CueType.MOS,
@@ -32,7 +33,8 @@ describe('Find target pair', () => {
 					start: {
 						seconds: 0
 					},
-					engine: '4'
+					engine: '4',
+					iNewsCommand: 'VCP'
 				})
 			],
 			storyName: ''
@@ -64,8 +66,10 @@ describe('Find target pair', () => {
 						start: {
 							seconds: 0
 						},
-						engine: '4'
-					})
+						engine: '4',
+						iNewsCommand: 'VCP'
+					}),
+					iNewsCommand: 'GRAFIK'
 				})
 			],
 			storyName: ''
@@ -88,7 +92,8 @@ describe('Find target pair', () => {
 			cues: [
 				literal<CueDefinitionTelefon>({
 					type: CueType.Telefon,
-					source: 'TLF 2'
+					source: 'TLF 2',
+					iNewsCommand: 'TELEFON'
 				}),
 				literal<CueDefinitionMOS>({
 					type: CueType.MOS,
@@ -98,7 +103,8 @@ describe('Find target pair', () => {
 					start: {
 						seconds: 0
 					},
-					engine: '4'
+					engine: '4',
+					iNewsCommand: 'VCP'
 				})
 			],
 			storyName: ''
@@ -115,6 +121,7 @@ describe('Find target pair', () => {
 				literal<CueDefinitionTelefon>({
 					type: CueType.Telefon,
 					source: 'TLF 2',
+					iNewsCommand: 'TELEFON',
 					vizObj: literal<CueDefinitionMOS>({
 						type: CueType.MOS,
 						name: 'TELEFON/KORT//LIVE_KABUL',
@@ -123,7 +130,8 @@ describe('Find target pair', () => {
 						start: {
 							seconds: 0
 						},
-						engine: '4'
+						engine: '4',
+						iNewsCommand: 'VCP'
 					})
 				})
 			],

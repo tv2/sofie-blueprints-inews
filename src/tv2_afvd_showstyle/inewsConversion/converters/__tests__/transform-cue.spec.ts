@@ -16,7 +16,7 @@ describe('TransformCuesIntoShowstyle', () => {
 				LayerMapping: 'viz_layer_wall',
 				INewsCode: 'SS',
 				INewsName: 'SC-STILLS',
-				VizDestination: 'Viz-d-wall',
+				VizDestination: 'WALL',
 				OutType: 'O',
 				Argument1: '',
 				Argument2: '',
@@ -28,7 +28,7 @@ describe('TransformCuesIntoShowstyle', () => {
 				LayerMapping: 'viz_layer_wall',
 				INewsCode: 'SS',
 				INewsName: 'SC_LOOP',
-				VizDestination: 'Viz-d-wall',
+				VizDestination: 'WALL',
 				OutType: 'O',
 				Argument1: '',
 				Argument2: '',
@@ -48,7 +48,8 @@ describe('TransformCuesIntoShowstyle', () => {
 				engine: 'SC-STILLS'
 			},
 			rawType: `SS=SC-STILLS`,
-			content: {}
+			content: {},
+			iNewsCommand: 'SS'
 		}
 		const mosCue: CueDefinitionMOS = {
 			type: CueType.MOS,
@@ -60,7 +61,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			},
 			end: {
 				seconds: 10
-			}
+			},
+			iNewsCommand: 'VCP'
 		}
 		const partDefinition: PartDefinitionKam = {
 			type: PartType.Kam,
@@ -92,7 +94,8 @@ describe('TransformCuesIntoShowstyle', () => {
 						grafik: mosCue
 					},
 					rawType: `SS=SC-STILLS`,
-					content: {}
+					content: {},
+					iNewsCommand: 'SS'
 				})
 			],
 			rawType: 'Kam 1',
@@ -110,7 +113,8 @@ describe('TransformCuesIntoShowstyle', () => {
 				engine: 'SC_LOOP'
 			},
 			rawType: `SS=SC_LOOP`,
-			content: {}
+			content: {},
+			iNewsCommand: 'SS'
 		}
 		const mosCue: CueDefinitionMOS = {
 			type: CueType.MOS,
@@ -122,7 +126,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			},
 			end: {
 				seconds: 10
-			}
+			},
+			iNewsCommand: 'VCP'
 		}
 		const partDefinition: PartDefinitionKam = {
 			type: PartType.Kam,
@@ -155,11 +160,13 @@ describe('TransformCuesIntoShowstyle', () => {
 							type: CueType.Grafik,
 							template: 'SC_LOOP_ON',
 							cue: 'SS=SC_LOOP',
-							textFields: []
+							textFields: [],
+							iNewsCommand: 'SS'
 						})
 					},
 					rawType: `SS=SC_LOOP`,
-					content: {}
+					content: {},
+					iNewsCommand: 'SS'
 				}),
 				mosCue
 			],
@@ -178,7 +185,8 @@ describe('TransformCuesIntoShowstyle', () => {
 				engine: 'NEW_WALL_GRAFIK'
 			},
 			rawType: `SS=NEW_WALL_GRAFIK`,
-			content: {}
+			content: {},
+			iNewsCommand: 'SS'
 		}
 		const mosCue: CueDefinitionMOS = {
 			type: CueType.MOS,
@@ -190,7 +198,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			},
 			end: {
 				seconds: 10
-			}
+			},
+			iNewsCommand: 'VCP'
 		}
 		const partDefinition: PartDefinitionKam = {
 			type: PartType.Kam,

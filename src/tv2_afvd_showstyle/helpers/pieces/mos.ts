@@ -23,13 +23,13 @@ import {
 import { literal } from '../../../common/util'
 import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
+import { SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { InfiniteMode } from './evaluateCues'
 import { CreateTimingGrafik, grafikName } from './grafik'
-import { SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
 
 export function EvaluateMOS(
 	config: BlueprintConfig,
@@ -283,7 +283,9 @@ function MuteSisyfosChannels(partId: string, sources: SourceInfo[]): TimelineObj
 		SisyfosLLAyer.SisyfosSourceLive_10,
 		SisyfosLLAyer.SisyfosSourceTLF,
 		...[
-			...sources.filter((s) => s.type === SourceLayerType.REMOTE && s.id.match(/^DP/i)).map((s) => SisyfosEVSSource(s.id.replace(/^DP/i, '') as SisyfosLLAyer)) as SisyfosLLAyer[] 
+			...(sources
+				.filter(s => s.type === SourceLayerType.REMOTE && s.id.match(/^DP/i))
+				.map(s => SisyfosEVSSource(s.id.replace(/^DP/i, '') as SisyfosLLAyer)) as SisyfosLLAyer[])
 		]
 	].map<TimelineObjSisyfosMessage>(layer => {
 		return literal<TimelineObjSisyfosMessage>({
