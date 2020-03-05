@@ -40,7 +40,7 @@
                     },
                     "cues": [],
                     "id": "1dd244cb:00921671:5e1db210",
-                    "body": "\r\n<p><pi>Kam 1</pi></p>\r\n<p></p>\r\n<p>This is a manus with a tape time of 5 minutes, wichis the Editors way of \"givin\" this LIVE a maximum of 5minutes.</p>\r\n<p>This text is XX seconds and are added to the totaltime</p>\r\n<p></p>\r\n",
+                    "body": "\r\n<p><pi>Kam 1</pi></p>\r\n<p></p>\r\n<p>This is a manus with a tape time of 5 minutes, wich is the Editors way of \"giving\" this LIVE a maximum of 5 minutes.</p>\r\n<p>This text is XX seconds and are added to the totaltime</p>\r\n<p></p>\r\n",
                     "fileId": "1DD244CB:0093A9A8:5E1DB5C9"
                 },
                 "modified": "1579008960",
@@ -350,6 +350,67 @@
                 "externalId": "1dd244cb:00921671:5e1db220",
                 "rank": 70,
                 "name": "Scenario 3",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1dd244cb:00921671:5e1db217",
+            "name": "Scenario 4",
+            "rank": 80,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "17",
+                        "title": "Scenario 4",
+                        "var2": "INDSL",
+                        "videoId": "1234A",
+                        "tapeTime": "180",
+                        "audioTime": "7",
+                        "totalTime": "187",
+                        "modifyDate": "1579008960",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "28",
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "DVE=SOMMERFUGL",
+                            "INP1=KAM 1",
+                            "INP2=KAM 2",
+                            "BYNAVN=Odense"
+                        ],
+                        [
+                            "EKSTERN=LIVE 2"
+                        ],
+                        [
+                            "#kg directe Odense",
+                            ";0.00"
+                        ],
+                        [
+                            "#kg bund Test McTestson",
+                            "TV 2 Danmark",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "1dd244cb:00921671:5e1db217",
+                    "body": "\r\n<p><cc>Kam 1: 7 seconds, DVE: 10 seconds, LIVE: 10 seconds</cc><pi>KAM 1</pi></p>\r\n<p>Some script</p>\r\n<p><pi>****LIVE****</pi></p>\r\n<p><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a><a idref=\"3\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1dd244cb:00921671:5e1db217"
+                },
+                "modified": "1579008960",
+                "externalId": "1dd244cb:00921671:5e1db221",
+                "rank": 70,
+                "name": "Scenario 4",
                 "float": false
             },
             "parts": []

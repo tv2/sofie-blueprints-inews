@@ -117,7 +117,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.VO:
 				blueprintParts.push(
-					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
+					CreatePartVO(partContext, config, part, totalWords, Number(ingestSegment.payload.iNewsStory.fields.totalTime))
 				)
 				break
 			// DVE, Ekstern, Telefon are defined as primary cues.
@@ -196,7 +196,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	blueprintParts.forEach(part => {
 		if (!part.part.expectedDuration || part.part.expectedDuration < 0) {
-			part.part.expectedDuration = 4000
+			part.part.expectedDuration = 100000
 		}
 
 		if (part.part.displayDuration && (part.part.displayDuration < 0 || isNaN(part.part.displayDuration))) {
@@ -210,7 +210,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = true
 	}
 
-	// TODO: This is where the gap goes
 	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
 	if (
 		extraTime > 0 &&

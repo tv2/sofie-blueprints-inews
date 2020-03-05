@@ -44,7 +44,7 @@ export function CreatePartVO(
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
 		typeVariant: '',
-		expectedDuration: (sanitisedScript.length / totalWords) * totalTime * 1000 + duration,
+		expectedDuration: ((sanitisedScript.length / totalWords) * ((totalTime * 1000) - duration)) + duration,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
