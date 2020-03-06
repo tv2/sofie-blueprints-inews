@@ -798,6 +798,31 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		}
 	})
 
+	adlibItems.push({
+		externalId: 'resyncSisyfos',
+		name: 'Resync Sisyfos',
+		_rank: 560,
+		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
+		outputLayerId: 'sec',
+		infiniteMode: PieceLifespan.Normal,
+		expectedDuration: 1000,
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjSisyfosMessage>({
+					id: '',
+					enable: { start: 0 },
+					priority: 2,
+					layer: SisyfosLLAyer.SisyfosResync,
+					content: {
+						deviceType: DeviceType.SISYFOS,
+						type: TimelineContentTypeSisyfos.SISYFOS,
+						resync: true
+					}
+				})
+			])
+		}
+	})
+
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
 		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined)
