@@ -300,7 +300,9 @@ export function ParseBody(
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	const index = partDefinition.cues.findIndex(
-		cue => (cue.type === CueType.TargetEngine && !cue.grafik) || (cue.type === CueType.Telefon && !cue.vizObj)
+		cue =>
+			(cue.type === CueType.TargetEngine && !cue.grafik && !!cue.data.engine.match(/FULL|WALL|OVL/i)) ||
+			(cue.type === CueType.Telefon && !cue.vizObj)
 	)
 
 	if (index === -1) {
@@ -391,7 +393,7 @@ function isPrimaryCue(cue: CueDefinition) {
 		cue.type === CueType.Telefon ||
 		cue.type === CueType.Ekstern ||
 		cue.type === CueType.DVE ||
-		(cue.type === CueType.TargetEngine && cue.engine === 'FULL')
+		(cue.type === CueType.TargetEngine && cue.data.engine.toUpperCase() === 'FULL')
 	)
 }
 

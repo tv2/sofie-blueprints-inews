@@ -34,7 +34,10 @@ export enum SourceLayer {
 	PgmJingle = 'studio0_jingle',
 	PgmScript = 'studio0_script',
 	// PgmSlutord = 'studio0_slutord',
-	PgmAudioBed = 'studio0_audio_bed'
+	PgmAudioBed = 'studio0_audio_bed',
+
+	// Wall
+	WallGraphics = 'studio0_wall_graphics'
 }
 
 export enum ControlClasses {

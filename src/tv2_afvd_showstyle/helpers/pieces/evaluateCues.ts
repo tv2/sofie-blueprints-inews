@@ -58,6 +58,7 @@ export function EvaluateCues(
 						adLibPieces,
 						partDefinition.externalId,
 						cue,
+						'OVL',
 						shouldAdlib,
 						partDefinition,
 						false,
@@ -72,6 +73,7 @@ export function EvaluateCues(
 						adLibPieces,
 						partDefinition.externalId,
 						cue,
+						cue.type === CueType.MOS && cue.engine?.match(/FULL/i) ? 'FULL' : 'OVL',
 						shouldAdlib,
 						false,
 						adLibRank,
@@ -133,15 +135,9 @@ export function EvaluateCues(
 					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue, shouldAdlib)
 					break
 				default:
-					if (
-						cue.type !== CueType.Unknown &&
-						cue.type !== CueType.Profile &&
-						cue.type !== CueType.Mic &&
-						cue.type !== CueType.TargetWall
-					) {
+					if (cue.type !== CueType.Unknown && cue.type !== CueType.Profile && cue.type !== CueType.Mic) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
 						// TODO: Mic -> For the future
-						// TODO: Wall -> For the future
 						// context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
 						assertUnreachable(cue)
 					}
@@ -161,6 +157,7 @@ export function EvaluateCues(
 					}
 
 					if (obj.content.type === TimelineContentTypeVizMSE.ELEMENT_INTERNAL) {
+						const o = obj as TimelineObjVIZMSEElementInternal
 						const name = (obj as TimelineObjVIZMSEElementInternal).content.templateName
 						if (name && name.length) {
 							piece.expectedPlayoutItems.push({
@@ -168,7 +165,7 @@ export function EvaluateCues(
 								content: {
 									templateName: (obj as TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TimelineObjVIZMSEElementInternal).content.templateData,
-									channelName: 'OVL1',
+									channelName: o.content.channelName,
 									rundownId: ''
 								}
 							})

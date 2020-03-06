@@ -1,4 +1,4 @@
-import { SisyfosLLAyer } from './layers'
+import { SisyfosEVSSource, SisyfosLLAyer } from './layers'
 
 export interface SisyfosChannel {
 	isPgm: 0 | 1 | 2
@@ -115,11 +115,11 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	// 	label: 'Server C',
 	// 	hideInStudioA: false // for future applications
 	// },
-	[SisyfosLLAyer.SisyfosSourceEVS_1]: {
+	[SisyfosEVSSource('1')]: {
 		isPgm: 0,
 		label: 'EVS 1'
 	},
-	[SisyfosLLAyer.SisyfosSourceEVS_2]: {
+	[SisyfosEVSSource('2')]: {
 		isPgm: 0,
 		label: 'EVS 2'
 	},

@@ -443,6 +443,12 @@ export default literal<BlueprintMappings>({
 		channel: 28,
 		lookahead: LookaheadMode.NONE
 	}),
+	sisyfos_resync: literal<MappingSisyfos & BlueprintMapping>({
+		device: DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		channel: -1,
+		lookahead: LookaheadMode.NONE
+	}),
 	viz_layer_overlay: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
@@ -489,6 +495,11 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.NONE
 	}),
 	viz_layer_adlibs: literal<MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		lookahead: LookaheadMode.NONE
+	}),
+	viz_layer_wall: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE

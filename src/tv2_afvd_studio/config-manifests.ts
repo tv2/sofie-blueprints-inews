@@ -47,6 +47,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'
 	},
 	{
+		id: 'SourcesDelayedPlayback',
+		name: 'EVS Mapping',
+		description: 'EVS number to ATEM input (eg 1:6,2:7)',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: '1:22,2:23'
+	},
+	{
 		id: 'SourcesSkype',
 		name: 'Skype Mapping',
 		description: 'Skype number to ATEM input (eg 1:6,2:7)',
@@ -181,14 +189,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: true,
 		defaultVal: AtemSourceIndex.Col1
-	},
-	{
-		id: 'AtemSource.DelayedPlayback',
-		name: 'ATEM EVS source',
-		description: 'ATEM input for EVS',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 22
 	},
 	{
 		id: 'AtemSource.Continuity',

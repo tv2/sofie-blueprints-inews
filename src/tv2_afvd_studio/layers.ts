@@ -17,9 +17,7 @@ export function VirtualLLayers() {
 	return _.values(VirtualAbstractLLayer)
 }
 
-export enum VirtualAbstractLLayer {
-	ServerEnable = 'abstract_server_enable'
-}
+export enum VirtualAbstractLLayer {}
 
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',
@@ -87,8 +85,7 @@ export enum SisyfosLLAyer {
 	SisyfosSourceServerA = 'sisyfos_source_server_a',
 	SisyfosSourceServerB = 'sisyfos_source_server_b',
 	// SisyfosSourceServerC = 'sisyfos_source_server_c',
-	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
-	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2'
+	SisyfosResync = 'sisyfos_resync'
 }
 
 export enum VizLLayer {
@@ -101,7 +98,8 @@ export enum VizLLayer {
 	VizLLayerPilot = 'viz_layer_pilot',
 	VizLLayerPilotOverlay = 'viz_layer_pilot_overlay',
 	VizLLayerDesign = 'viz_layer_design',
-	VizLLayerAdLibs = 'viz_layer_adlibs'
+	VizLLayerAdLibs = 'viz_layer_adlibs',
+	VizLLayerWall = 'viz_layer_wall'
 }
 
 export function CasparPlayerClip(i: number | string) {
@@ -110,4 +108,8 @@ export function CasparPlayerClip(i: number | string) {
 
 export function CasparPlayerClipLoadingLoop(i: number | string) {
 	return `casparcg_player_clip_${i}_loading_loop`
+}
+
+export function SisyfosEVSSource(i: number | string) {
+	return `sisyfos_source_evs_${i}`
 }

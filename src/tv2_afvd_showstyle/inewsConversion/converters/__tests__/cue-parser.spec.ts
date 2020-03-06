@@ -6,7 +6,7 @@ import {
 	CueDefinitionLYD,
 	CueDefinitionMOS,
 	CueDefinitionTargetEngine,
-	CueDefinitionTargetWall,
+	CueDefinitionUnknown,
 	CueType,
 	isTime,
 	ParseCue,
@@ -18,30 +18,40 @@ describe('Cue parser', () => {
 		const result = ParseCue(null)
 		expect(result).toEqual(
 			literal<CueDefinition>({
-				type: CueType.Unknown
+				type: CueType.Unknown,
+				iNewsCommand: ''
 			})
 		)
 	})
 
 	test('Empty Cue', () => {
 		const result = ParseCue([])
-		expect(result).toEqual({
-			type: CueType.Unknown
-		})
+		expect(result).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.Unknown,
+				iNewsCommand: ''
+			})
+		)
 	})
 
 	test('Empty String', () => {
 		const result = ParseCue([''])
-		expect(result).toEqual({
-			type: CueType.Unknown
-		})
+		expect(result).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.Unknown,
+				iNewsCommand: ''
+			})
+		)
 	})
 
 	test('Cue of spaces', () => {
 		const result = ParseCue(['   '])
-		expect(result).toEqual({
-			type: CueType.Unknown
-		})
+		expect(result).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.Unknown,
+				iNewsCommand: ''
+			})
+		)
 	})
 
 	test('Time with symbolic out', () => {
@@ -109,7 +119,8 @@ describe('Cue parser', () => {
 				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
 				start: {
 					seconds: 2
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -123,7 +134,8 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
-				adlib: true
+				adlib: true,
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -137,7 +149,8 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
-				adlib: true
+				adlib: true,
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -153,7 +166,8 @@ describe('Cue parser', () => {
 				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
 				start: {
 					seconds: 2
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -167,7 +181,8 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
-				adlib: true
+				adlib: true,
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -181,7 +196,8 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
-				adlib: true
+				adlib: true,
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -195,7 +211,8 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['2'],
-				adlib: true
+				adlib: true,
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -209,7 +226,8 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['2'],
-				adlib: true
+				adlib: true,
+				iNewsCommand: '*kg'
 			})
 		)
 	})
@@ -223,7 +241,8 @@ describe('Cue parser', () => {
 				template: 'bund',
 				cue: 'kg',
 				textFields: ['2'],
-				adlib: true
+				adlib: true,
+				iNewsCommand: '#kg'
 			})
 		)
 	})
@@ -239,7 +258,8 @@ describe('Cue parser', () => {
 				start: {
 					seconds: 1
 				},
-				textFields: ['Ident Nyhederne']
+				textFields: ['Ident Nyhederne'],
+				iNewsCommand: '#kg'
 			})
 		)
 	})
@@ -252,7 +272,8 @@ describe('Cue parser', () => {
 				type: CueType.ClearGrafiks,
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -265,7 +286,8 @@ describe('Cue parser', () => {
 				type: CueType.ClearGrafiks,
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -284,7 +306,8 @@ describe('Cue parser', () => {
 				},
 				template: 'bund',
 				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'Comma, sepearated, text']
+				textFields: ['TEXT MORETEXT', 'Comma, sepearated, text'],
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -300,7 +323,8 @@ describe('Cue parser', () => {
 				},
 				template: 'direkte',
 				cue: 'kg',
-				textFields: ['KØBENHAVN']
+				textFields: ['KØBENHAVN'],
+				iNewsCommand: '#kg'
 			})
 		)
 	})
@@ -316,7 +340,8 @@ describe('Cue parser', () => {
 				},
 				template: 'BillederFra_logo',
 				cue: 'kg',
-				textFields: ['KØBENHAVN']
+				textFields: ['KØBENHAVN'],
+				iNewsCommand: '#kg'
 			})
 		)
 	})
@@ -332,7 +357,8 @@ describe('Cue parser', () => {
 				},
 				template: 'VO',
 				cue: 'DIGI',
-				textFields: ['Dette er en VO tekst', 'Dette er linje 2']
+				textFields: ['Dette er en VO tekst', 'Dette er linje 2'],
+				iNewsCommand: 'DIGI'
 			})
 		)
 	})
@@ -349,7 +375,8 @@ describe('Cue parser', () => {
 				},
 				template: 'DESIGN_FODBOLD',
 				cue: 'KG',
-				textFields: []
+				textFields: [],
+				iNewsCommand: 'KG'
 			})
 		)
 		expect(result).toBeTruthy()
@@ -373,7 +400,8 @@ describe('Cue parser', () => {
 				continueCount: 3,
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -396,7 +424,8 @@ describe('Cue parser', () => {
 				continueCount: -1,
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -419,7 +448,8 @@ describe('Cue parser', () => {
 				continueCount: -1,
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -442,7 +472,8 @@ describe('Cue parser', () => {
 				continueCount: 1,
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -457,16 +488,19 @@ describe('Cue parser', () => {
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O'
 		]
 		const result = ParseCue(cueMOS)
-		expect(result).toEqual({
-			type: CueType.MOS,
-			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
-			vcpid: 2520177,
-			continueCount: -1,
-			adlib: true,
-			end: {
-				infiniteMode: 'O'
-			}
-		})
+		expect(result).toEqual(
+			literal<CueDefinitionMOS>({
+				type: CueType.MOS,
+				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
+				vcpid: 2520177,
+				continueCount: -1,
+				adlib: true,
+				end: {
+					infiniteMode: 'O'
+				},
+				iNewsCommand: 'VCP'
+			})
+		)
 	})
 
 	test('MOS object with timing - time + O', () => {
@@ -479,18 +513,21 @@ describe('Cue parser', () => {
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O'
 		]
 		const result = ParseCue(cueMOS)
-		expect(result).toEqual({
-			type: CueType.MOS,
-			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O',
-			vcpid: 2520177,
-			continueCount: -1,
-			start: {
-				seconds: 2
-			},
-			end: {
-				infiniteMode: 'O'
-			}
-		})
+		expect(result).toEqual(
+			literal<CueDefinitionMOS>({
+				type: CueType.MOS,
+				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O',
+				vcpid: 2520177,
+				continueCount: -1,
+				start: {
+					seconds: 2
+				},
+				end: {
+					infiniteMode: 'O'
+				},
+				iNewsCommand: 'VCP'
+			})
+		)
 	})
 
 	test('#cg4 pilotdata', () => {
@@ -511,7 +548,8 @@ describe('Cue parser', () => {
 				start: {
 					seconds: 0
 				},
-				engine: '4'
+				engine: '4',
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -523,11 +561,14 @@ describe('Cue parser', () => {
 			literal<CueDefinition>({
 				type: CueType.TargetEngine,
 				rawType: 'GRAFIK=FULL',
-				engine: 'FULL',
+				data: {
+					engine: 'FULL'
+				},
 				content: {
 					INP1: '',
 					INP: ''
-				}
+				},
+				iNewsCommand: 'GRAFIK'
 			})
 		)
 	})
@@ -550,7 +591,8 @@ describe('Cue parser', () => {
 				start: {
 					seconds: 0
 				},
-				engine: '12'
+				engine: '12',
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -573,7 +615,8 @@ describe('Cue parser', () => {
 				start: {
 					seconds: 0
 				},
-				engine: '4'
+				engine: '4',
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -588,18 +631,21 @@ describe('Cue parser', () => {
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:1O'
 		]
 		const result = ParseCue(cueMOS)
-		expect(result).toEqual({
-			type: CueType.MOS,
-			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:10',
-			vcpid: 2520177,
-			continueCount: -1,
-			start: {
-				seconds: 0
-			},
-			end: {
-				seconds: 10
-			}
-		})
+		expect(result).toEqual(
+			literal<CueDefinitionMOS>({
+				type: CueType.MOS,
+				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:10',
+				vcpid: 2520177,
+				continueCount: -1,
+				start: {
+					seconds: 0
+				},
+				end: {
+					seconds: 10
+				},
+				iNewsCommand: 'VCP'
+			})
+		)
 	})
 
 	test('EKSTERN', () => {
@@ -608,7 +654,8 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinition>({
 				type: CueType.Ekstern,
-				source: 'LIVE 1'
+				source: 'LIVE 1',
+				iNewsCommand: 'EKSTERN'
 			})
 		)
 	})
@@ -621,7 +668,8 @@ describe('Cue parser', () => {
 				type: CueType.DVE,
 				template: 'sommerfugl',
 				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
-				labels: ['Odense', 'København']
+				labels: ['Odense', 'København'],
+				iNewsCommand: 'DVE'
 			})
 		)
 	})
@@ -634,7 +682,8 @@ describe('Cue parser', () => {
 				type: CueType.DVE,
 				template: 'sommerfugl',
 				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
-				labels: ['Odense', 'København']
+				labels: ['Odense', 'København'],
+				iNewsCommand: 'DVE'
 			})
 		)
 	})
@@ -647,7 +696,8 @@ describe('Cue parser', () => {
 				type: CueType.DVE,
 				template: 'sommerfugl',
 				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
-				labels: ['Odense', 'København']
+				labels: ['Odense', 'København'],
+				iNewsCommand: 'DVE'
 			})
 		)
 	})
@@ -666,8 +716,10 @@ describe('Cue parser', () => {
 					},
 					template: 'bund',
 					cue: 'kg',
-					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
-				}
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+					iNewsCommand: 'kg'
+				},
+				iNewsCommand: 'TELEFON'
 			})
 		)
 	})
@@ -695,8 +747,10 @@ describe('Cue parser', () => {
 					adlib: true,
 					end: {
 						infiniteMode: 'O'
-					}
-				}
+					},
+					iNewsCommand: 'VCP'
+				},
+				iNewsCommand: 'TELEFON'
 			})
 		)
 	})
@@ -707,7 +761,8 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinition>({
 				type: CueType.Telefon,
-				source: 'TLF 2'
+				source: 'TLF 2',
+				iNewsCommand: 'TELEFON'
 			})
 		)
 	})
@@ -726,7 +781,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 4,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VIZ'
 			})
 		)
 	})
@@ -745,7 +801,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 4,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VIZ'
 			})
 		)
 	})
@@ -764,7 +821,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 4,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VIZ'
 			})
 		)
 	})
@@ -783,7 +841,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 4,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VIZ'
 			})
 		)
 	})
@@ -802,7 +861,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 4,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VIZ'
 			})
 		)
 	})
@@ -813,14 +873,17 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionTargetEngine>({
 				type: CueType.TargetEngine,
+				data: {
+					engine: 'full'
+				},
 				rawType: 'VIZ=full',
-				engine: 'full',
 				content: {
 					INP1: 'EVS 1'
 				},
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VIZ'
 			})
 		)
 	})
@@ -854,7 +917,8 @@ describe('Cue parser', () => {
 					kom2: false,
 					ST4vrt: true,
 					ST4gst: false
-				}
+				},
+				iNewsCommand: 'STUDIE'
 			})
 		)
 	})
@@ -866,7 +930,8 @@ describe('Cue parser', () => {
 			literal<CueDefinition>({
 				type: CueType.AdLib,
 				variant: 'MORBARN',
-				inputs: { INP1: 'LIVE 1' }
+				inputs: { INP1: 'LIVE 1' },
+				iNewsCommand: 'ADLIBPIX'
 			})
 		)
 	})
@@ -878,7 +943,8 @@ describe('Cue parser', () => {
 			literal<CueDefinition>({
 				type: CueType.AdLib,
 				variant: 'server',
-				inputs: {}
+				inputs: {},
+				iNewsCommand: 'ADLIBPIX'
 			})
 		)
 	})
@@ -890,7 +956,8 @@ describe('Cue parser', () => {
 			literal<CueDefinition>({
 				type: CueType.AdLib,
 				variant: 'server',
-				inputs: {}
+				inputs: {},
+				iNewsCommand: 'ADLIBPIX'
 			})
 		)
 	})
@@ -904,7 +971,8 @@ describe('Cue parser', () => {
 				start: {
 					seconds: 0
 				},
-				profile: 'TV2 SPORT 2016'
+				profile: 'TV2 SPORT 2016',
+				iNewsCommand: 'KOMMANDO'
 			})
 		)
 	})
@@ -914,13 +982,58 @@ describe('Cue parser', () => {
 		const cueSS = ['SS=3-SPORTSDIGI', ';0.00.01']
 		const result = ParseCue(cueSS)
 		expect(result).toEqual(
-			literal<CueDefinitionTargetWall>({
-				type: CueType.TargetWall,
-				clip: '3-SPORTSDIGI',
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				data: {
+					engine: '3-SPORTSDIGI'
+				},
 				start: {
 					seconds: 0,
 					frames: 1
-				}
+				},
+				rawType: `SS=3-SPORTSDIGI`,
+				content: {},
+				iNewsCommand: 'SS'
+			})
+		)
+	})
+
+	test('SS=SC-STILLS', () => {
+		const cueSS = ['SS=SC-STILLS', ';0.00.01']
+		const result = ParseCue(cueSS)
+		expect(result).toEqual(
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				data: {
+					engine: 'SC-STILLS'
+				},
+				start: {
+					seconds: 0,
+					frames: 1
+				},
+				rawType: `SS=SC-STILLS`,
+				content: {},
+				iNewsCommand: 'SS'
+			})
+		)
+	})
+
+	test('ss=sc-stills', () => {
+		const cueSS = ['ss=sc-stills', ';0.00.01']
+		const result = ParseCue(cueSS)
+		expect(result).toEqual(
+			literal<CueDefinitionTargetEngine>({
+				type: CueType.TargetEngine,
+				data: {
+					engine: 'sc-stills'
+				},
+				start: {
+					seconds: 0,
+					frames: 1
+				},
+				rawType: `ss=sc-stills`,
+				content: {},
+				iNewsCommand: 'ss'
 			})
 		)
 	})
@@ -934,7 +1047,8 @@ describe('Cue parser', () => {
 				start: {
 					seconds: 35
 				},
-				variant: 'SPORT_BED'
+				variant: 'SPORT_BED',
+				iNewsCommand: 'LYD'
 			})
 		)
 	})
@@ -946,7 +1060,8 @@ describe('Cue parser', () => {
 			literal<CueDefinitionLYD>({
 				type: CueType.LYD,
 				adlib: true,
-				variant: 'SPORT_BED'
+				variant: 'SPORT_BED',
+				iNewsCommand: 'LYD'
 			})
 		)
 	})
@@ -957,7 +1072,8 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionJingle>({
 				type: CueType.Jingle,
-				clip: 'SN_intro_19'
+				clip: 'SN_intro_19',
+				iNewsCommand: 'JINGLE'
 			})
 		)
 	})
@@ -981,7 +1097,8 @@ describe('Cue parser', () => {
 				isActuallyWall: true,
 				start: {
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'VCP'
 			})
 		)
 	})
@@ -997,7 +1114,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'KG'
 			})
 		)
 	})
@@ -1011,7 +1129,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'KG'
 			})
 		)
 	})
@@ -1025,7 +1144,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -1039,7 +1159,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -1053,7 +1174,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: '#KG'
 			})
 		)
 	})
@@ -1067,7 +1189,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: '#KG'
 			})
 		)
 	})
@@ -1081,7 +1204,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: '#kg'
 			})
 		)
 	})
@@ -1095,7 +1219,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: '#kg'
 			})
 		)
 	})
@@ -1109,7 +1234,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -1123,7 +1249,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -1137,7 +1264,8 @@ describe('Cue parser', () => {
 				start: {
 					frames: 1,
 					seconds: 0
-				}
+				},
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -1148,7 +1276,8 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
-				adlib: true
+				adlib: true,
+				iNewsCommand: 'kg'
 			})
 		)
 	})
@@ -1159,7 +1288,8 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
-				adlib: true
+				adlib: true,
+				iNewsCommand: 'kg'
 			})
 		)
 	})

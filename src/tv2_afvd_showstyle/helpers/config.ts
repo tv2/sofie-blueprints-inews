@@ -14,6 +14,19 @@ import {
 } from '../../tv2_afvd_studio/helpers/config'
 import { showStyleConfigManifest } from '../config-manifests'
 
+export interface TableConfigItemGFXTemplates {
+	VizTemplate: string
+	SourceLayer: string
+	LayerMapping: string
+	INewsCode: string
+	INewsName: string
+	VizDestination: string
+	OutType: string
+	Argument1: string
+	Argument2: string
+	IsDesign: boolean
+}
+
 export interface BlueprintConfig extends BlueprintConfigBase {
 	showStyle: ShowStyleConfig
 }
@@ -34,7 +47,7 @@ export interface ShowStyleConfig {
 	MakeAdlibsForFulls: boolean
 	CasparCGLoadingClip: string
 	DVEStyles: DVEConfigInput[]
-	GFXTemplates: TableConfigItemValue
+	GFXTemplates: TableConfigItemGFXTemplates[]
 	WipesConfig: TableConfigItemValue
 	BreakerConfig: TableConfigItemValue
 	DefaultTemplateDuration: number
