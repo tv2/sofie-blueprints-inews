@@ -25,45 +25,53 @@ const partDefinitionTest1: PartDefinitionKam = {
 			type: CueType.Grafik,
 			template: 'bund',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		// Ekstern 1 - (index 1)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1'
+			source: '1',
+			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'topt',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'topt',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		// Ekstern 2 - (index 4)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '2'
+			source: '2',
+			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'bund',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'bund',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		literal<CueDefinitionLYD>({
 			type: CueType.LYD,
-			variant: 'bed'
+			variant: 'bed',
+			iNewsCommand: 'LYD'
 		}),
 		// DVE 1 - (index 8)
 		literal<CueDefinitionDVE>({
@@ -73,28 +81,33 @@ const partDefinitionTest1: PartDefinitionKam = {
 				INP1: 'Kam 1',
 				INP2: 'Kam 2'
 			},
-			labels: []
+			labels: [],
+			iNewsCommand: 'DVE'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'bund',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'topt',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		// TLF 1 - (index 11)
 		literal<CueDefinitionTelefon>({
 			type: CueType.Telefon,
-			source: 'TLF 1'
+			source: 'TLF 1',
+			iNewsCommand: 'TELEFON'
 		}),
 		literal<CueDefinitionLYD>({
 			type: CueType.LYD,
-			variant: 'bed'
+			variant: 'bed',
+			iNewsCommand: 'LYD'
 		})
 	],
 	storyName: ''
@@ -119,30 +132,35 @@ const partDefinitionTest2: PartDefinitionKam = {
 				INP1: 'Kam 1',
 				INP2: 'Kam 2'
 			},
-			labels: []
+			labels: [],
+			iNewsCommand: 'DVE'
 		}),
 		// Ekstern 1 - (index 1)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1'
+			source: '1',
+			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'direkte',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'bund',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'bund',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		}),
 		// DVE 2 - (index 5)
 		literal<CueDefinitionDVE>({
@@ -152,18 +170,21 @@ const partDefinitionTest2: PartDefinitionKam = {
 				INP1: 'Kam 1',
 				INP2: 'Kam 2'
 			},
-			labels: []
+			labels: [],
+			iNewsCommand: 'DVE'
 		}),
 		// Ekstern 2 - (index 6)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1'
+			source: '1',
+			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGrafik>({
 			type: CueType.Grafik,
 			template: 'direkte',
 			cue: 'kg',
-			textFields: []
+			textFields: [],
+			iNewsCommand: 'kg'
 		})
 	],
 	storyName: ''

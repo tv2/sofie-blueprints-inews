@@ -65,11 +65,13 @@ describe('telefon', () => {
 				type: CueType.Grafik,
 				template: 'bund',
 				cue: 'kg',
-				textFields: ['Odense', 'Copenhagen']
+				textFields: ['Odense', 'Copenhagen'],
+				iNewsCommand: 'kg'
 			}),
 			start: {
 				seconds: 0
-			}
+			},
+			iNewsCommand: 'TELEFON'
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []

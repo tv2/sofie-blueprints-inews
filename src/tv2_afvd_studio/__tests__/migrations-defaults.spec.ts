@@ -30,9 +30,7 @@ describe('Migration Defaults', () => {
 				'casparcg_player_clip_1',
 				'casparcg_player_clip_2',
 				'casparcg_player_clip_1_loading_loop',
-				'casparcg_player_clip_2_loading_loop',
-				'sisyfos_source_evs_1',
-				'sisyfos_source_evs_2'
+				'casparcg_player_clip_2_loading_loop'
 			])
 			.sort()
 

@@ -9,7 +9,8 @@ describe('CreateTiming', () => {
 			type: CueType.Unknown,
 			start: {
 				seconds: 1
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -27,7 +28,8 @@ describe('CreateTiming', () => {
 			type: CueType.Unknown,
 			start: {
 				frames: 1
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -46,7 +48,8 @@ describe('CreateTiming', () => {
 			start: {
 				seconds: 1,
 				frames: 1
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -64,7 +67,8 @@ describe('CreateTiming', () => {
 			type: CueType.Unknown,
 			end: {
 				seconds: 1
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -83,7 +87,8 @@ describe('CreateTiming', () => {
 			type: CueType.Unknown,
 			end: {
 				frames: 1
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -103,7 +108,8 @@ describe('CreateTiming', () => {
 			end: {
 				seconds: 1,
 				frames: 1
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -122,7 +128,8 @@ describe('CreateTiming', () => {
 			type: CueType.Unknown,
 			end: {
 				infiniteMode: 'B'
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -140,7 +147,8 @@ describe('CreateTiming', () => {
 			type: CueType.Unknown,
 			end: {
 				infiniteMode: 'S'
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -158,7 +166,8 @@ describe('CreateTiming', () => {
 			type: CueType.Unknown,
 			end: {
 				infiniteMode: 'O'
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -179,7 +188,8 @@ describe('CreateTiming', () => {
 			},
 			end: {
 				seconds: 1
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
@@ -201,7 +211,8 @@ describe('CreateTiming', () => {
 			},
 			end: {
 				infiniteMode: 'B'
-			}
+			},
+			iNewsCommand: ''
 		}
 		const result = CreateTiming(time)
 		expect(result).toEqual(
