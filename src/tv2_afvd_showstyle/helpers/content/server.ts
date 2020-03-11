@@ -55,9 +55,7 @@ export function MakeContentServer(
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},
 				classes: [
-					...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : []),
-					'can_continue_server',
-					'add_server_segment_session'
+					...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])
 				]
 			}),
 
@@ -83,8 +81,7 @@ export function MakeContentServer(
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},
 				classes: [
-					...(adLib ? ['adlib_deparent'] : ['can_continue_server']),
-					'add_server_segment_session'
+					...(adLib ? ['adlib_deparent'] : [])
 				]
 			}),
 
@@ -104,7 +101,7 @@ export function MakeContentServer(
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},
-				classes: adLib ? [] : ['can_continue_server']
+				classes: []
 			}),
 
 			...(stickyLevels

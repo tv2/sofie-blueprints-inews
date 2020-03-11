@@ -36,6 +36,7 @@ import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
+import { PartMetaData } from '../tv2_afvd_studio/onTimelineGenerate'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -58,7 +59,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = false
 	}
 
-	const blueprintParts: BlueprintResultPart[] = []
+	let blueprintParts: BlueprintResultPart[] = []
 	const parsedParts = ParseBody(
 		ingestSegment.externalId,
 		ingestSegment.name,
@@ -241,6 +242,18 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	) {
 		segment.isHidden = true
 	}
+
+	blueprintParts = blueprintParts.map((part) => {
+		const actualPart = part.part
+		actualPart.metaData = literal<PartMetaData>({
+			...actualPart.metaData,
+			segmentExternalId: ingestSegment.externalId
+		})
+		return {
+			...part,
+			part: actualPart
+		}
+	})
 
 	postProcessPartTimelineObjects(context, config, blueprintParts)
 

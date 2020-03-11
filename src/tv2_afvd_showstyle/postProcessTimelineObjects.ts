@@ -2,11 +2,21 @@ import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
 	NotesContext,
-	SegmentContext
+	SegmentContext,
+	TimelineObjectCoreExt,
+	OnGenerateTimelineObj,
+	TimelineObjHoldMode,
+	SplitsContent,
+	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../tv2_afvd_studio/helpers/config'
 import { PartContext2 } from './getSegment'
+import { TimelineObjAtemME, TimelineObjAtemDSK, DeviceType, TimelineContentTypeAtem, TimelineObjAtemAUX, TSRTimelineObjBase } from 'timeline-state-resolver-types'
+import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
+import { AtemLLayer } from '../tv2_afvd_studio/layers'
+import { literal } from '../common/util'
+import { SourceLayer } from './layers'
 
 export function postProcessPartTimelineObjects(
 	context: SegmentContext,
@@ -22,13 +32,12 @@ export function postProcessPartTimelineObjects(
 
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
-	_context: NotesContext,
-	_config: BlueprintConfig,
-	_piece: IBlueprintPieceGeneric,
-	_isAdlib: boolean
+	context: NotesContext,
+	config: BlueprintConfig,
+	piece: IBlueprintPieceGeneric,
+	isAdlib: boolean
 ) {
-	return
-	/*if (piece.content?.timelineObjects) {
+	if (piece.content?.timelineObjects) {
 		const extraObjs: TimelineObjectCoreExt[] = []
 
 		const atemMeObjs = (piece.content.timelineObjects as Array<
@@ -177,5 +186,5 @@ export function postProcessPieceTimelineObjects(
 		piece.content.timelineObjects = piece.content.timelineObjects.filter(
 			(obj: TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
 		)
-	}*/
+	}
 }
