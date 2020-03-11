@@ -79,9 +79,10 @@ export function onTimelineGenerate(
 		// const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt
 		const activeServerObj = timeline.find(
 			(o) => o.layer.toString() === CasparLLayer.CasparPlayerClipPending &&
-			!o.isLookahead &&
-			!o.id.match(/^previous/i)
+			!o.isLookahead
 		)
+
+		context.warning(`Active server ${JSON.stringify(activeServerObj)}`)
 
 		const objsToReplace = timeline.filter(
 			(o) => o.classes?.includes(`dve_placeholder`) && !o.id.match(/^previous/i)
@@ -89,7 +90,7 @@ export function onTimelineGenerate(
 
 		objsToReplace.forEach(objToReplace => {
 			context.warning(`Replacing: ${JSON.stringify(objToReplace)}`)
-			timeline.splice(timeline.indexOf(objToReplace))
+			const index = timeline.indexOf(objToReplace)
 			if (objToReplace && activeServerObj) {
 				objToReplace.content = activeServerObj.content
 				let replaceMeta = objToReplace.metaData as TimelineBlueprintExt['metaData'] | undefined
@@ -105,7 +106,7 @@ export function onTimelineGenerate(
 	
 				objToReplace.metaData = replaceMeta
 			}
-			timeline.push(objToReplace)
+			timeline[index] = objToReplace
 		})
 	}
 
@@ -130,16 +131,6 @@ export function onTimelineGenerate(
 
 					return session
 				})
-			}
-		}
-	})
-
-
-	_.each(resolvedPieces, piece => {
-		if (piece.metaData) {
-			const meta = piece.metaData as PieceMetaData
-			if (meta.mediaPlayerSessions) {
-				context.warning(`Sessions: ${meta.mediaPlayerSessions}`)
 			}
 		}
 	})
