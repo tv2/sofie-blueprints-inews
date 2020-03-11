@@ -13,7 +13,6 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AddParentClass, CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
 import { CalculateTime } from './evaluateCues'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 
 export interface DVEConfigBox {
 	enabled: boolean
@@ -128,7 +127,7 @@ export function EvaluateDVE(
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 					metaData: literal<PieceMetaData>({
-						mediaPlayerSessions: [ MEDIA_PLAYER_AUTO ]
+						mediaPlayerSessions: [ partDefinition.segmentExternalId ]
 					})
 				})
 			)

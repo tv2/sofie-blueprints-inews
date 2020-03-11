@@ -111,10 +111,7 @@ export function MakeContentDVE2(
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
 	const boxMap: Array<{ source: string; sourceLayer: SourceLayer }> = []
 
-	const classes: string[] = [
-		'can_continue_server',
-		'add_server_segment_session'
-	]
+	const classes: string[] = []
 
 	inputs.forEach(source => {
 		const sourceProps = source.split(':')
@@ -285,15 +282,13 @@ export function MakeContentDVE2(
 							deviceType: DeviceType.CASPARCG,
 							type: TimelineContentTypeCasparCg.MEDIA,
 							file: adlib ? 'continue' : file,
+							loop: false,
 							noStarttime: true
 						},
 						metaData: {
 							mediaPlayerSession: adlib ? MEDIA_PLAYER_AUTO : partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO
 						},
-						classes: [
-							'can_continue_server',
-							'add_server_segment_session'
-						]
+						classes: []
 					}),
 					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
@@ -310,10 +305,7 @@ export function MakeContentDVE2(
 						metaData: {
 							mediaPlayerSession: adlib ? MEDIA_PLAYER_AUTO : partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO
 						},
-						classes: [
-							'can_continue_server',
-							'add_server_segment_session'
-						]
+						classes: []
 					})
 				)
 				return
@@ -382,7 +374,7 @@ export function MakeContentDVE2(
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: {
-						mediaPlayerSession: server ? MEDIA_PLAYER_AUTO : undefined // TODO: Maybe this should be segment-level?
+						mediaPlayerSession: server ? partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO : undefined
 					}
 				}),
 				literal<TimelineObjAtemSsrcProps>({

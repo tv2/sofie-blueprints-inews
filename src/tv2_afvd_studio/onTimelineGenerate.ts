@@ -19,7 +19,7 @@ import {
 import * as _ from 'underscore'
 import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { assignMediaPlayers } from './helpers/abPlayback'
-import { MEDIA_PLAYER_AUTO } from '../types/constants'
+import { CasparLLayer } from './layers'
 // import { SourceLayer } from '../tv2_afvd_showstyle/layers'
 
 /*const ALLOWED_MEDIA_PLAYER_SESSION_OVERLAPS: { [from: string]: string } = {
@@ -59,6 +59,10 @@ export interface PieceMetaData extends PieceMetaDataBase {
 	mediaPlayerOptional?: boolean
 }
 
+export interface PartMetaData {
+	segmentExternalId: string
+}
+
 export function onTimelineGenerate(
 	context: PartEventContext,
 	timeline: OnGenerateTimelineObj[],
@@ -67,48 +71,53 @@ export function onTimelineGenerate(
 	resolvedPieces: IBlueprintPieceDB[]
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
+	const replacedSessions: { [from: string]: string } = { } // TODO: Replace with map
 
-	const previousSegmentSession = previousPersistentState?.segmentSession
-	const availablePlayers = previousPartEndState2?.mediaPlayerSessions
-	const replacedSessions: { [from: string]: string } = { }
-	if (
-		previousSegmentSession === context.part.segmentId &&
-		availablePlayers &&
-		Object.keys(availablePlayers).length
-	) {
-		_.each(timeline, obj => {
-			if (obj.classes && obj.classes.includes('add_server_segment_session') && !obj.classes.some((cls) => cls.includes('server_segment_session_id'))) {
-				obj.classes.push(`server_segment_session_id_${context.part.segmentId}`)
-			}
+	const config = parseConfig(context)
+
+	if (previousPersistentState) {
+		// const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt
+		const activeServerObj = timeline.find(
+			(o) => o.layer.toString() === CasparLLayer.CasparPlayerClipPending &&
+			!o.isLookahead &&
+			!o.id.match(/^previous/i)
+		)
+
+		const objsToReplace = timeline.filter(
+			(o) => o.classes?.includes(`dve_placeholder`) && !o.id.match(/^previous/i)
+		)
+
+		objsToReplace.forEach(objToReplace => {
+			context.warning(`Replacing: ${JSON.stringify(objToReplace)}`)
+			timeline.splice(timeline.indexOf(objToReplace))
+			if (objToReplace && activeServerObj) {
+				objToReplace.content = activeServerObj.content
+				let replaceMeta = objToReplace.metaData as TimelineBlueprintExt['metaData'] | undefined
+				const activeMeta = activeServerObj.metaData as TimelineBlueprintExt['metaData'] | undefined
 	
-			if (obj.classes && obj.classes.includes('can_continue_server') && obj.classes.some((cls) => cls.includes('server_segment_session_id')) && !obj.isLookahead) {
-				const meta = obj.metaData as TimelineBlueprintExt['metaData']
-				console.log(`Can continue server on ${obj.id} with segment session ${obj.classes.find((cls) => cls.includes('server_segment_session_id'))}`)
-				if (meta && meta.mediaPlayerSession) {
-					console.log(`Replacing media session ${meta.mediaPlayerSession} with ${availablePlayers[Object.keys(availablePlayers)[0]][0]}`)
-					replacedSessions[meta.mediaPlayerSession] = availablePlayers[Object.keys(availablePlayers)[0]][0]
-					obj.metaData!.mediaPlayerSession = availablePlayers[Object.keys(availablePlayers)[0]][0]
-				}
-			}
-		})
-	} else {
-		_.each(timeline, obj => {
-			if (obj.classes && obj.classes.includes('add_server_segment_session') && !obj.classes.some((cls) => cls.includes('server_segment_session_id'))) {
-				obj.classes.push(`server_segment_session_id_${context.part.segmentId}`)
-			}
-
-			if (obj.classes && obj.classes.includes('can_continue_server') && obj.classes.some((cls) => cls.includes('server_segment_session_id')) && !obj.isLookahead) {
-				const meta = obj.metaData as TimelineBlueprintExt['metaData']
-				if (meta && meta.mediaPlayerSession) {
-					if (meta.mediaPlayerSession === MEDIA_PLAYER_AUTO) {
-						console.log(`Replacing media session ${meta.mediaPlayerSession} with ${context.part.segmentId}`)
-						replacedSessions[MEDIA_PLAYER_AUTO] = context.part.segmentId
-						obj.metaData!.mediaPlayerSession = context.part.segmentId
+				if (activeMeta && activeMeta.mediaPlayerSession && replaceMeta && replaceMeta.mediaPlayerSession) {
+					replacedSessions[replaceMeta.mediaPlayerSession] = activeMeta.mediaPlayerSession
+					replaceMeta = {
+						...replaceMeta,
+						mediaPlayerSession: activeMeta.mediaPlayerSession
 					}
 				}
+	
+				objToReplace.metaData = replaceMeta
 			}
+			timeline.push(objToReplace)
 		})
 	}
+
+	_.each(timeline, o => {
+		let meta = o.metaData as TimelineBlueprintExt['metaData'] | undefined
+		if (meta && meta.mediaPlayerSession) {
+			if (Object.keys(replacedSessions).includes(meta.mediaPlayerSession)) {
+				meta.mediaPlayerSession = replacedSessions[meta.mediaPlayerSession]
+				o.metaData = meta
+			}
+		}
+	})
 
 	_.each(resolvedPieces, piece => {
 		if (piece.metaData) {
@@ -130,7 +139,7 @@ export function onTimelineGenerate(
 		if (piece.metaData) {
 			const meta = piece.metaData as PieceMetaData
 			if (meta.mediaPlayerSessions) {
-				console.log(`Sessions: ${meta.mediaPlayerSessions}`)
+				context.warning(`Sessions: ${meta.mediaPlayerSessions}`)
 			}
 		}
 	})
@@ -147,8 +156,6 @@ export function onTimelineGenerate(
 		segmentSession: context.part.segmentId
 	}
 	const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt | undefined
-
-	const config = parseConfig(context)
 
 	persistentState.activeMediaPlayers = assignMediaPlayers(
 		context,
