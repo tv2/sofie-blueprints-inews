@@ -139,10 +139,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				metaData: {
 					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`,
 					mediaPlayerSession: mediaPlayer ? 'dve_placeholder' : undefined
-				},
-				classes: mediaPlayer ? [
-					'debug'
-				]: []
+				}
 			})
 		)
 		const audioWhile = boxObjs.map(obj => obj.enable.while as string).join(' | ')
@@ -480,8 +477,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							},
 							metaData: {
 								mediaPlayerSession: 'dve_placeholder'
-							},
-							classes: ['debug']
+							}
 						}),
 						literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 							id: '',
@@ -500,7 +496,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 								mediaPlayerSession: 'dve_placeholder'
 							},
 							classes: [
-								'dve_placeholder', 'debug'
+								'dve_placeholder'
 							]
 						}),
 					])
