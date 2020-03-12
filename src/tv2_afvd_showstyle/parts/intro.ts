@@ -21,7 +21,7 @@ export function CreatePartIntro(
 	partDefinition: PartDefinition,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(partDefinition, totalWords)
+	const partTime = PartTime(config, partDefinition, totalWords)
 
 	const jingleCue = partDefinition.cues.find(cue => {
 		const parsedCue = cue

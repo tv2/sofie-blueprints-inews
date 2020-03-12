@@ -18,7 +18,7 @@ export function CreatePartGrafik(
 	partDefinition: PartDefinition,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(partDefinition, totalWords)
+	const partTime = PartTime(config, partDefinition, totalWords)
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,

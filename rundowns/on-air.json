@@ -126,7 +126,7 @@
                     "meta": {
                         "words": "6",
                         "rate": "140",
-                        "float": "float"
+                        "float": ""
                     },
                     "cues": [
                         [
@@ -371,7 +371,60 @@
                 "modified": "2019-10-11T06:38:00.000Z",
                 "externalId": "341dd48e:011f7352:5da02376",
                 "rank": 0,
-                "name": "Test Segment 4",
+                "name": "Test Segment 6",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02377",
+            "name": "Test Segment 7",
+            "rank": 7,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 7",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "7",
+                        "audioTime": "180",
+                        "totalTime": "187",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "06"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [
+                        [
+                            "DVE=SOMMERFUGL",
+                            "INP1=KAM 1",
+                            "INP2=LIVE 2",
+                            "BYNAVN=Madrid"
+                        ],
+                        [
+                            "EKSTERN=LIVE 2"
+                        ]
+                    ],
+                    "id": "341dd48e:011f7352:5da02377",
+                    "body": "\r\n<p><pi>EVS1</pi></p>\r\n<p>This is some text that should be read in about 7 seconds</p>\r\n<p><pi>****LIVE****</pi><a idref=\"0\"></a><a idref=\"1\"></a></p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02377",
+                "rank": 0,
+                "name": "Test Segment 7",
                 "float": false
             },
             "parts": []
