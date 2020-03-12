@@ -151,8 +151,13 @@ export function MakeContentDVE2(
 					boxMap[targetBox - 1] = { source: prop, sourceLayer }
 				}
 			} else {
-				context.warning(`Missing mapping for ${targetBox}`)
-				boxMap[targetBox - 1] = { source: '', sourceLayer }
+				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+					usedServer = true
+				} else {
+					context.warning(`Missing mapping for ${targetBox}`)
+					boxMap[targetBox - 1] = { source: '', sourceLayer }
+				}
 			}
 		} else {
 			// Need something to keep the layout etc
