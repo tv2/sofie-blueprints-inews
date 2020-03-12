@@ -20,12 +20,6 @@ import * as _ from 'underscore'
 import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { assignMediaPlayers } from './helpers/abPlayback'
 import { CasparLLayer } from './layers'
-// import { SourceLayer } from '../tv2_afvd_showstyle/layers'
-
-/*const ALLOWED_MEDIA_PLAYER_SESSION_OVERLAPS: { [from: string]: string } = {
-	[SourceLayer.PgmServer]: SourceLayer.PgmVoiceOver,
-	[SourceLayer.PgmVoiceOver]: SourceLayer.PgmServer
-}*/
 
 export interface PartEndStateExt extends PartEndState {
 	stickySisyfosLevels: { [key: string]: number | undefined },
@@ -75,41 +69,39 @@ export function onTimelineGenerate(
 
 	const config = parseConfig(context)
 
-	if (previousPersistentState) {
-		// const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt
-		const activeServerObj = timeline.find(
-			(o) => o.layer.toString() === CasparLLayer.CasparPlayerClipPending &&
-			!o.isLookahead
-		)
+	// Find server in pgm
+	const activeServerObj = timeline.find(
+		(o) => o.layer.toString() === CasparLLayer.CasparPlayerClipPending &&
+		!o.isLookahead
+	)
 
-		context.warning(`Active server ${JSON.stringify(activeServerObj)}`)
+	// Find any placeholders to replace
+	const objsToReplace = timeline.filter(
+		(o) => o.classes?.includes(`dve_placeholder`) && !o.id.match(/^previous/i)
+	)
 
-		const objsToReplace = timeline.filter(
-			(o) => o.classes?.includes(`dve_placeholder`) && !o.id.match(/^previous/i)
-		)
+	// Replace contents of placeholder objects
+	objsToReplace.forEach(objToReplace => {
+		const index = timeline.indexOf(objToReplace)
+		if (objToReplace && activeServerObj) {
+			objToReplace.content = activeServerObj.content
+			let replaceMeta = objToReplace.metaData as TimelineBlueprintExt['metaData'] | undefined
+			const activeMeta = activeServerObj.metaData as TimelineBlueprintExt['metaData'] | undefined
 
-		objsToReplace.forEach(objToReplace => {
-			context.warning(`Replacing: ${JSON.stringify(objToReplace)}`)
-			const index = timeline.indexOf(objToReplace)
-			if (objToReplace && activeServerObj) {
-				objToReplace.content = activeServerObj.content
-				let replaceMeta = objToReplace.metaData as TimelineBlueprintExt['metaData'] | undefined
-				const activeMeta = activeServerObj.metaData as TimelineBlueprintExt['metaData'] | undefined
-	
-				if (activeMeta && activeMeta.mediaPlayerSession && replaceMeta && replaceMeta.mediaPlayerSession) {
-					replacedSessions[replaceMeta.mediaPlayerSession] = activeMeta.mediaPlayerSession
-					replaceMeta = {
-						...replaceMeta,
-						mediaPlayerSession: activeMeta.mediaPlayerSession
-					}
+			if (activeMeta && activeMeta.mediaPlayerSession && replaceMeta && replaceMeta.mediaPlayerSession) {
+				replacedSessions[replaceMeta.mediaPlayerSession] = activeMeta.mediaPlayerSession
+				replaceMeta = {
+					...replaceMeta,
+					mediaPlayerSession: activeMeta.mediaPlayerSession
 				}
-	
-				objToReplace.metaData = replaceMeta
 			}
-			timeline[index] = objToReplace
-		})
-	}
 
+			objToReplace.metaData = replaceMeta
+		}
+		timeline[index] = objToReplace
+	})
+
+	// Replace all sessions that have been overwritten
 	_.each(timeline, o => {
 		let meta = o.metaData as TimelineBlueprintExt['metaData'] | undefined
 		if (meta && meta.mediaPlayerSession) {
@@ -120,6 +112,7 @@ export function onTimelineGenerate(
 		}
 	})
 
+	// Do the same for pieces
 	_.each(resolvedPieces, piece => {
 		if (piece.metaData) {
 			const meta = piece.metaData as PieceMetaData
