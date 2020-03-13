@@ -90,6 +90,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		const part = TransformCuesIntoShowstyle(config.showStyle, par)
 		const partContext = new PartContext2(context, part.externalId)
 
+		// Make orphaned secondary cues into adlibs
 		if (
 			GetNextPartCue(part, -1) === -1 &&
 			part.type === PartType.Unknown &&

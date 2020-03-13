@@ -1,6 +1,11 @@
 import { PartDefinition, PartType } from '../../common/inewsConversion/converters/ParseBody'
 import { CueType } from '../../common/inewsConversion/converters/ParseCue'
 
+/**
+ * Finds the index of the next primary cue.
+ * @param partdefinition Part.
+ * @param currentCue Index of current cue.
+ */
 export function GetNextPartCue(partdefinition: PartDefinition, currentCue: number): number {
 	const index = partdefinition.cues
 		.slice(currentCue + 1)
