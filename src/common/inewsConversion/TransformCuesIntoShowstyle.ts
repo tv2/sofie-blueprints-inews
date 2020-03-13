@@ -1,4 +1,4 @@
-import { ShowStyleConfig } from '../helpers/config'
+import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { PartDefinition } from './converters/ParseBody'
 import { CueDefinitionGrafik, CueType } from './converters/ParseCue'
 

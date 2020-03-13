@@ -4,12 +4,12 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition } from '../../common/inewsConversion/converters/ParseBody'
+import { CueDefinition, CueType } from '../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../common/util'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { PartDefinition } from '../inewsConversion/converters/ParseBody'
-import { CueDefinition, CueType } from '../inewsConversion/converters/ParseCue'
 import { GetJinglePartProperties } from './effekt'
 import { PartTime } from './time/partTime'
 

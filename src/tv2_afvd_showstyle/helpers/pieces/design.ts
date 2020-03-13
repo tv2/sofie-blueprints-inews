@@ -12,8 +12,8 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { CueDefinitionDesign } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
-import { CueDefinitionDesign } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'

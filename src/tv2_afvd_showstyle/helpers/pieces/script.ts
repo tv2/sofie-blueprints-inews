@@ -1,13 +1,15 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
 import { literal } from '../../../common/util'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 
 const PREVIEW_CHARACTERS = 30
 
 // export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, slutord: boolean) {
 export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number) {
-	if (!pieces.length) return
+	if (!pieces.length) {
+		return
+	}
 
 	if (duration === 0) {
 		duration = 1000

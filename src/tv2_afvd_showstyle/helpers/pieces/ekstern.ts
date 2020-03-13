@@ -12,13 +12,17 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
+import {
+	AddParentClass,
+	CueDefinitionEkstern,
+	EksternParentClass
+} from '../../../common/inewsConversion/converters/ParseCue'
 import { createEmptyObject, literal } from '../../../common/util'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { AddParentClass, CueDefinitionEkstern, EksternParentClass } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
 import {
 	GetLayerForEkstern,

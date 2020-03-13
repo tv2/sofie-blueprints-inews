@@ -5,11 +5,11 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition, PartType } from '../../common/inewsConversion/converters/ParseBody'
 import { literal } from '../../common/util'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CreateEffektForpart } from './effekt'
 import { PartTime } from './time/partTime'
 

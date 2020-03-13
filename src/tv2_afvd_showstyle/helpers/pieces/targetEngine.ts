@@ -8,9 +8,9 @@ import {
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import _ = require('underscore')
+import { CueDefinitionTargetEngine, CueType } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { CueDefinitionTargetEngine, CueType } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'

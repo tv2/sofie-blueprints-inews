@@ -1,7 +1,7 @@
 import { IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { CueDefinitionUnknown, CueType } from '../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../common/util'
 import { CreateTiming } from '../helpers/pieces/evaluateCues'
-import { CueDefinitionUnknown, CueType } from '../inewsConversion/converters/ParseCue'
 
 describe('CreateTiming', () => {
 	test('Start only (seconds)', () => {

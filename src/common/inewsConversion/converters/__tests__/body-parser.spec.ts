@@ -1,4 +1,4 @@
-import { literal } from '../../../../common/util'
+import { literal } from '../../../util'
 import {
 	ParseBody,
 	PartDefinition,

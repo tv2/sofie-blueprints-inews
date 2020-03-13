@@ -12,15 +12,15 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import { SegmentContext } from '../../../../__mocks__/context'
-import { literal } from '../../../../common/util'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
-import { PartDefinitionKam, PartType } from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
+import { PartDefinitionKam, PartType } from '../../../../common/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
 	CueDefinitionTelefon,
 	CueType
-} from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
+} from '../../../../common/inewsConversion/converters/ParseCue'
+import { literal } from '../../../../common/util'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer, VizLLayer } from '../../../../tv2_afvd_studio/layers'

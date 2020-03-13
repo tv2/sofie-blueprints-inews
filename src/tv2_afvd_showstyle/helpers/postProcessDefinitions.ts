@@ -1,7 +1,7 @@
-import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
+import { PartDefinition, PartType } from '../../common/inewsConversion/converters/ParseBody'
 
+import { CueDefinitionJingle, CueType, DVESources } from '../../common/inewsConversion/converters/ParseCue'
 import { assertUnreachable } from '../../common/util'
-import { CueDefinitionJingle, CueType, DVESources } from '../inewsConversion/converters/ParseCue'
 
 export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmentId: string): PartDefinition[] {
 	const foundMap: { [key: string]: number } = {}

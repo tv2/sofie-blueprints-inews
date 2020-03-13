@@ -1,5 +1,5 @@
-import { literal } from '../../../../common/util'
 import { ShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import { literal } from '../../../util'
 import { TransformCuesIntoShowstyle } from '../../TransformCuesIntoShowstyle'
 import { PartDefinitionKam, PartType } from '../ParseBody'
 import { CueDefinitionGrafik, CueDefinitionMOS, CueDefinitionTargetEngine, CueType } from '../ParseCue'

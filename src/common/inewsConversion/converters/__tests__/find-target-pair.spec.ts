@@ -1,4 +1,4 @@
-import { literal } from '../../../../common/util'
+import { literal } from '../../../util'
 import { FindTargetPair, PartDefinitionUnknown, PartType } from '../ParseBody'
 import { CueDefinitionMOS, CueDefinitionTargetEngine, CueDefinitionTelefon, CueType } from '../ParseCue'
 

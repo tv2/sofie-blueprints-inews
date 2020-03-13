@@ -18,8 +18,8 @@ import {
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { CueDefinitionVIZ } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
-import { CueDefinitionVIZ } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'

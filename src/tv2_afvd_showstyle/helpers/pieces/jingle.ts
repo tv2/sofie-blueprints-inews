@@ -16,9 +16,9 @@ import {
 	TimelineObjectCoreExt,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
+import { CueDefinitionJingle } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
-import { CueDefinitionJingle } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'

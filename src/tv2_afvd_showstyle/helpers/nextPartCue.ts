@@ -1,5 +1,5 @@
-import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
-import { CueType } from '../inewsConversion/converters/ParseCue'
+import { PartDefinition, PartType } from '../../common/inewsConversion/converters/ParseBody'
+import { CueType } from '../../common/inewsConversion/converters/ParseCue'
 
 export function GetNextPartCue(partdefinition: PartDefinition, currentCue: number): number {
 	const index = partdefinition.cues

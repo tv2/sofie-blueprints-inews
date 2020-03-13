@@ -15,12 +15,12 @@ import {
 	TimelineObjectCoreExt,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition } from '../../common/inewsConversion/converters/ParseBody'
+import { CueDefinitionJingle, CueType } from '../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../common/util'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
-import { PartDefinition } from '../inewsConversion/converters/ParseBody'
-import { CueDefinitionJingle, CueType } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { TimeFromFrames } from './time/frameTime'
 

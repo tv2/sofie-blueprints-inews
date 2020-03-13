@@ -5,11 +5,11 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
+import { AddParentClass, CueDefinitionDVE } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AddParentClass, CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
 import { CalculateTime } from './evaluateCues'
 

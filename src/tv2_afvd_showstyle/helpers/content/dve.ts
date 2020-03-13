@@ -26,15 +26,15 @@ import {
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
+import { CueDefinitionDVE, DVEParentClass, DVESources } from '../../../common/inewsConversion/converters/ParseCue'
 import { createEmptyObject, literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { FindSourceInfoStrict, SourceInfo, SourceInfoType } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { AtemSourceIndex } from '../../../types/atem'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
-import { CueDefinitionDVE, DVEParentClass, DVESources } from '../../inewsConversion/converters/ParseCue'
 import { ControlClasses, SourceLayer } from '../../layers'
 import { DVEConfig } from '../pieces/dve'
 import {

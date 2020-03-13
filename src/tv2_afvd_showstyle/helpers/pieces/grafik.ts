@@ -11,15 +11,15 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../../common/util'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
+import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionDesign,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
 	CueType,
 	PartToParentClass
-} from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
+} from '../../../common/inewsConversion/converters/ParseCue'
+import { literal } from '../../../common/util'
 import { ControlClasses, SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { VizEngine } from '../../../types/constants'

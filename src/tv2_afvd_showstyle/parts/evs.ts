@@ -17,6 +17,8 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinitionEVS } from '../../common/inewsConversion/converters/ParseBody'
+import { EVSParentClass } from '../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../common/util'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
@@ -27,8 +29,6 @@ import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera, LIVE_AUDIO } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
-import { PartDefinitionEVS } from '../inewsConversion/converters/ParseBody'
-import { EVSParentClass } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'

@@ -15,6 +15,8 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinitionKam } from '../../common/inewsConversion/converters/ParseBody'
+import { AddParentClass, CameraParentClass } from '../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../common/util'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
@@ -24,8 +26,6 @@ import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera, GetStickyForPiece, STUDIO_MICS } from '../helpers/sisyfos/sisyfos'
 import { TransitionFromString } from '../helpers/transitionFromString'
 import { TransitionSettings } from '../helpers/transitionSettings'
-import { PartDefinitionKam } from '../inewsConversion/converters/ParseBody'
-import { AddParentClass, CameraParentClass } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'

@@ -1,5 +1,5 @@
 import { AtemTransitionSettings } from 'timeline-state-resolver-types'
-import { PartDefinition } from '../inewsConversion/converters/ParseBody'
+import { PartDefinition } from '../../common/inewsConversion/converters/ParseBody'
 
 export function TransitionSettings(part: PartDefinition): AtemTransitionSettings {
 	if (part.transition && part.transition.duration) {

@@ -11,10 +11,10 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
+import { CueDefinition, CueDefinitionBase, CueTime, CueType } from '../../../common/inewsConversion/converters/ParseCue'
 import { assertUnreachable } from '../../../common/util'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
-import { CueDefinition, CueDefinitionBase, CueTime, CueType } from '../../inewsConversion/converters/ParseCue'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
 // import { EvaluateClearGrafiks } from './clearGrafiks'

@@ -1,4 +1,4 @@
-import { PostProcessDefinitions } from '../../helpers/postProcessDefinitions'
+import { PostProcessDefinitions } from '../../../tv2_afvd_showstyle/helpers/postProcessDefinitions'
 import {
 	CueDefinition,
 	CueDefinitionMOS,

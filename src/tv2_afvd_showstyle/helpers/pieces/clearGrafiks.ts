@@ -1,7 +1,7 @@
 import { DeviceType, TimelineContentTypeVizMSE, TimelineObjVIZMSEClearAllElements } from 'timeline-state-resolver-types'
 import { IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { CueDefinitionClearGrafiks } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
-import { CueDefinitionClearGrafiks } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { VizLLayer } from './../../../tv2_afvd_studio/layers'
 import { CreateTimingEnable } from './evaluateCues'

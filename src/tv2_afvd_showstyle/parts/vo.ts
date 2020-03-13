@@ -7,13 +7,13 @@ import {
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinition } from '../../common/inewsConversion/converters/ParseBody'
 import { literal } from '../../common/util'
 import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServer } from '../helpers/content/server'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
-import { PartDefinition } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'

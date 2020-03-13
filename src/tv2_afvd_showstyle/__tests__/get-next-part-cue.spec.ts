@@ -1,6 +1,4 @@
-import { literal } from '../../common/util'
-import { GetNextPartCue } from '../helpers/nextPartCue'
-import { PartDefinitionKam, PartType } from '../inewsConversion/converters/ParseBody'
+import { PartDefinitionKam, PartType } from '../../common/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
@@ -8,7 +6,9 @@ import {
 	CueDefinitionLYD,
 	CueDefinitionTelefon,
 	CueType
-} from '../inewsConversion/converters/ParseCue'
+} from '../../common/inewsConversion/converters/ParseCue'
+import { literal } from '../../common/util'
+import { GetNextPartCue } from '../helpers/nextPartCue'
 
 const partDefinitionTest1: PartDefinitionKam = {
 	type: PartType.Kam,
