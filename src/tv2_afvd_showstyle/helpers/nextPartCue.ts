@@ -19,7 +19,3 @@ export function GetNextPartCue(partdefinition: PartDefinition, currentCue: numbe
 
 	return index + currentCue + 1
 }
-
-export function SliceOutCue() {
-	// TODO: Remove cues from n to m
-}
