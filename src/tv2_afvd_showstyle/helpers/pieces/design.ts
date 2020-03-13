@@ -12,12 +12,12 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { CalculateTime } from '../../../common/cueTiming'
 import { CueDefinitionDesign } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'
-import { CalculateTime } from './evaluateCues'
 
 export function EvaluateDesign(
 	_config: BlueprintConfig,

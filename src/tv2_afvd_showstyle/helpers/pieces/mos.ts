@@ -20,6 +20,7 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
+import { InfiniteMode } from '../../../common/cueTiming'
 import { CueDefinitionMOS } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -28,7 +29,6 @@ import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer, VizLLayer } 
 import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
-import { InfiniteMode } from './evaluateCues'
 import { CreateTimingGrafik, grafikName } from './grafik'
 
 export function EvaluateMOS(

@@ -12,6 +12,7 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
+import { CreateTimingEnable } from '../../../common/cueTiming'
 import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
 import {
 	AddParentClass,
@@ -33,7 +34,6 @@ import {
 } from '../sisyfos/sisyfos'
 import { TransitionFromString } from '../transitionFromString'
 import { TransitionSettings } from '../transitionSettings'
-import { CreateTimingEnable } from './evaluateCues'
 
 export function EvaluateEkstern(
 	context: PartContext,

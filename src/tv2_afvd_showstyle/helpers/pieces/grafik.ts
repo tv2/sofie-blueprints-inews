@@ -11,6 +11,7 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
+import { CalculateTime, InfiniteMode } from '../../../common/cueTiming'
 import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionDesign,
@@ -25,7 +26,6 @@ import { VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
 import { EvaluateDesign } from './design'
-import { CalculateTime, InfiniteMode } from './evaluateCues'
 
 export function EvaluateGrafik(
 	config: BlueprintConfig,

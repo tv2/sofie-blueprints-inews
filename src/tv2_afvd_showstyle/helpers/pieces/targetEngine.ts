@@ -8,13 +8,13 @@ import {
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import _ = require('underscore')
+import { CalculateTime } from '../../../common/cueTiming'
 import { CueDefinitionTargetEngine, CueType } from '../../../common/inewsConversion/converters/ParseCue'
 import { literal } from '../../../common/util'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
-import { CalculateTime } from './evaluateCues'
 import { EvaluateGrafik } from './grafik'
 import { EvaluateMOS } from './mos'
 
