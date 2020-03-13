@@ -22,7 +22,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/l
 import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
-import { TimeFromFrames } from './time/frameTime'
+import { TimeFromFrames } from '../../common/frameTime'
 
 export function GetJinglePartProperties(
 	_context: PartContext,
