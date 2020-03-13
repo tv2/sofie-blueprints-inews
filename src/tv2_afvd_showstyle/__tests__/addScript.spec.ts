@@ -1,8 +1,8 @@
 import { literal } from '../../common/util'
 
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
+import { PartDefinitionKam, PartType } from '../../common/inewsConversion/converters/ParseBody'
 import { AddScript } from '../helpers/pieces/script'
-import { PartDefinitionKam, PartType } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
@@ -20,9 +20,20 @@ describe('addScript', () => {
 			modified: 0,
 			storyName: ''
 		})
-		const result: IBlueprintPiece[] = []
+		const result: IBlueprintPiece[] = [
+			literal<IBlueprintPiece>({
+				_id: '',
+				enable: {
+					start: 0
+				},
+				externalId: '',
+				name: 'Kam 2',
+				sourceLayerId: SourceLayer.PgmCam,
+				outputLayerId: 'pgm'
+			})
+		]
 		AddScript(part, result, 1000)
-		expect(result).toEqual([
+		expect(result).toContainEqual(
 			literal<IBlueprintPiece>({
 				_id: '',
 				externalId: part.externalId,
@@ -42,6 +53,6 @@ describe('addScript', () => {
 					lastModified: part.modified * 1000
 				})
 			})
-		])
+		)
 	})
 })
