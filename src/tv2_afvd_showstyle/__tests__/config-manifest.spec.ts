@@ -10,7 +10,8 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
-	CasparCGLoadingClip: ''
+	CasparCGLoadingClip: '',
+	IsOfftube: false
 }
 
 describe('Config Manifest', () => {

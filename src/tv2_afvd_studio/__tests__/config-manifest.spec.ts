@@ -37,6 +37,7 @@ const blankStudioConfig: StudioConfig = {
 		fadeOut: 0,
 		volume: 0
 	},
+	IsOfftube: false,
 	CasparPrerollDuration: 0,
 	PilotPrerollDuration: 0,
 	PilotKeepaliveDuration: 0,

@@ -52,6 +52,7 @@ export interface ShowStyleConfig {
 	BreakerConfig: TableConfigItemValue
 	DefaultTemplateDuration: number
 	LYDConfig: TableConfigItemValue
+	IsOfftube: boolean
 }
 
 function extendWithShowStyleConfig(

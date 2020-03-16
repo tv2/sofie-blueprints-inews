@@ -64,6 +64,9 @@ export interface StudioConfig {
 		volume: number
 	}
 
+	// TODO: Move to Offtube config
+	IsOfftube: boolean
+
 	// Dev overrides
 
 	// Constants

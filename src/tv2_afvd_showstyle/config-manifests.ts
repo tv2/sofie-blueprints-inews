@@ -414,5 +414,13 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: 1000
 			}
 		]
+	},
+	{
+		id: 'IsOfftube',
+		name: 'Off-tube',
+		description: 'Whether this showstyle is an off-tube',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: false
 	}
 ]

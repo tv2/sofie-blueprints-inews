@@ -277,5 +277,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 10000
+	},
+	{
+		id: 'IsOfftube',
+		name: 'Off-tube',
+		description: 'Whether this is an off-tube studio',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: false
 	}
 ]
