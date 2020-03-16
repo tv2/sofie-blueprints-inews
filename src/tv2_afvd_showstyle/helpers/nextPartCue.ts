@@ -1,5 +1,5 @@
-import { PartDefinition, PartType } from '../../common/inewsConversion/converters/ParseBody'
-import { CueType } from '../../common/inewsConversion/converters/ParseCue'
+import { PartDefinition } from 'tv2-common'
+import { CueType, PartType } from 'tv2-constants'
 
 /**
  * Finds the index of the next primary cue.

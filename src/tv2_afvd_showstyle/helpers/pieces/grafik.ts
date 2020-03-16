@@ -11,16 +11,17 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, InfiniteMode } from '../../../common/cueTiming'
-import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
 import {
+	CalculateTime,
 	CueDefinitionDesign,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
-	CueType,
+	InfiniteMode,
+	literal,
+	PartDefinition,
 	PartToParentClass
-} from '../../../common/inewsConversion/converters/ParseCue'
-import { literal } from '../../../common/util'
+} from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { ControlClasses, SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { VizEngine } from '../../../types/constants'

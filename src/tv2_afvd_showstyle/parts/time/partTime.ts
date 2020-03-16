@@ -1,4 +1,4 @@
-import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
+import { PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 
 export function PartTime(

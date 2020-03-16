@@ -7,6 +7,7 @@ import {
 	TimelineObjAtemSsrc
 } from 'timeline-state-resolver-types'
 import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
+import { MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { MEDIA_PLAYER_AUTO } from '../../types/constants'
 import { CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from '../layers'
@@ -17,11 +18,6 @@ import {
 	TimelinePersistentStateExt
 } from '../onTimelineGenerate'
 import { BlueprintConfig } from './config'
-
-export enum MediaPlayerClaimType {
-	Preloaded,
-	Active
-}
 
 export interface SessionToPlayerMap {
 	[sessionId: string]: MediaPlayerClaim | undefined

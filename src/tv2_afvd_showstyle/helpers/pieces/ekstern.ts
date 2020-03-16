@@ -12,14 +12,15 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { CreateTimingEnable } from '../../../common/cueTiming'
-import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
 import {
 	AddParentClass,
+	createEmptyObject,
+	CreateTimingEnable,
 	CueDefinitionEkstern,
-	EksternParentClass
-} from '../../../common/inewsConversion/converters/ParseCue'
-import { createEmptyObject, literal } from '../../../common/util'
+	EksternParentClass,
+	literal,
+	PartDefinition
+} from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'

@@ -10,8 +10,8 @@ import {
 	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
 import { BlueprintMapping, BlueprintMappings, IStudioContext } from 'tv-automation-sofie-blueprints-integration'
+import { literal } from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../common/util'
 import { AtemSourceIndex } from '../types/atem'
 import { AtemLLayer, SisyfosLLAyer } from './layers'
 import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'

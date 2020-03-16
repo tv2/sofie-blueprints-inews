@@ -6,9 +6,8 @@ import {
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import { PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
-import { CueDefinition, CueType } from '../../../common/inewsConversion/converters/ParseCue'
-import { assertUnreachable } from '../../../common/util'
+import { assertUnreachable, CueDefinition, PartDefinition } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'

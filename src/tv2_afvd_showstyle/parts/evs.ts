@@ -17,9 +17,7 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinitionEVS } from '../../common/inewsConversion/converters/ParseBody'
-import { EVSParentClass } from '../../common/inewsConversion/converters/ParseCue'
-import { literal } from '../../common/util'
+import { EVSParentClass, literal, PartDefinitionEVS } from 'tv2-common'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'

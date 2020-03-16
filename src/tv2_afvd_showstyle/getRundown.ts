@@ -39,8 +39,8 @@ import {
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
+import { literal } from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../common/util'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import {
 	AtemLLayer,

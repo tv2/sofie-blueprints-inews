@@ -4,11 +4,8 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
+import { AddParentClass, CalculateTime, CueDefinitionDVE, literal, PartDefinition } from 'tv2-common'
 import * as _ from 'underscore'
-import { CalculateTime } from '../../../common/cueTiming'
-import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
-import { AddParentClass, CueDefinitionDVE } from '../../../common/inewsConversion/converters/ParseCue'
-import { literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'

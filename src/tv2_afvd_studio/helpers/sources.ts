@@ -1,7 +1,7 @@
 import * as _ from 'underscore'
 
 import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../common/util'
+import { literal } from 'tv2-common'
 import { StudioConfig } from './config'
 
 export function parseMapStr(

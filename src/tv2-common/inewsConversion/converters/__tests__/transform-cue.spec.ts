@@ -1,8 +1,9 @@
+import { CueType, PartType } from 'tv2-constants'
 import { ShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
 import { literal } from '../../../util'
 import { TransformCuesIntoShowstyle } from '../../TransformCuesIntoShowstyle'
-import { PartDefinitionKam, PartType } from '../ParseBody'
-import { CueDefinitionGrafik, CueDefinitionMOS, CueDefinitionTargetEngine, CueType } from '../ParseCue'
+import { PartDefinitionKam } from '../ParseBody'
+import { CueDefinitionGrafik, CueDefinitionMOS, CueDefinitionTargetEngine } from '../ParseCue'
 
 describe('TransformCuesIntoShowstyle', () => {
 	const config: ShowStyleConfig = {

@@ -25,10 +25,8 @@ import {
 	SplitsContentBoxProperties,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
+import { createEmptyObject, CueDefinitionDVE, DVEParentClass, DVESources, literal, PartDefinition } from 'tv2-common'
 import * as _ from 'underscore'
-import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
-import { CueDefinitionDVE, DVEParentClass, DVESources } from '../../../common/inewsConversion/converters/ParseCue'
-import { createEmptyObject, literal } from '../../../common/util'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { FindSourceInfoStrict, SourceInfo, SourceInfoType } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'

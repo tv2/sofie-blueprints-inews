@@ -5,8 +5,8 @@ import {
 	MigrationContextShowStyle,
 	MigrationStepShowStyle
 } from 'tv-automation-sofie-blueprints-integration'
+import { literal } from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../../common/util'
 import OutputlayerDefaults from './outputlayer-defaults'
 import RuntimeArgumentsDefaults from './runtime-arguments-defaults'
 import SourcelayerDefaults from './sourcelayer-defaults'

@@ -1,13 +1,13 @@
-import { PartDefinitionKam, PartType } from '../../common/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
 	CueDefinitionGrafik,
 	CueDefinitionLYD,
 	CueDefinitionTelefon,
-	CueType
-} from '../../common/inewsConversion/converters/ParseCue'
-import { literal } from '../../common/util'
+	literal,
+	PartDefinitionKam
+} from 'tv2-common'
+import { CueType, PartType } from 'tv2-constants'
 import { GetNextPartCue } from '../helpers/nextPartCue'
 
 const partDefinitionTest1: PartDefinitionKam = {

@@ -15,9 +15,7 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinitionKam } from '../../common/inewsConversion/converters/ParseBody'
-import { AddParentClass, CameraParentClass } from '../../common/inewsConversion/converters/ParseCue'
-import { literal } from '../../common/util'
+import { AddParentClass, CameraParentClass, literal, PartDefinitionKam } from 'tv2-common'
 import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'

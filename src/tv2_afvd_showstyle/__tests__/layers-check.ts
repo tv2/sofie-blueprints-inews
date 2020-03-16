@@ -8,7 +8,7 @@ import {
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 
-import { literal } from '../../common/util'
+import { literal } from 'tv2-common'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { parseConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'

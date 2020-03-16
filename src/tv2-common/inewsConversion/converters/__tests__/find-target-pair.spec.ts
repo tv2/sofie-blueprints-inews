@@ -1,6 +1,7 @@
+import { CueType, PartType } from 'tv2-constants'
 import { literal } from '../../../util'
-import { FindTargetPair, PartDefinitionUnknown, PartType } from '../ParseBody'
-import { CueDefinitionMOS, CueDefinitionTargetEngine, CueDefinitionTelefon, CueType } from '../ParseCue'
+import { FindTargetPair, PartDefinitionUnknown } from '../ParseBody'
+import { CueDefinitionMOS, CueDefinitionTargetEngine, CueDefinitionTelefon } from '../ParseCue'
 
 describe('Find target pair', () => {
 	test('TargetEngine + MOS', () => {

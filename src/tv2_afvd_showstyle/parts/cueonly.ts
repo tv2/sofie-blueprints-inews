@@ -4,9 +4,8 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinition } from '../../common/inewsConversion/converters/ParseBody'
-import { CueDefinition, CueType } from '../../common/inewsConversion/converters/ParseCue'
-import { literal } from '../../common/util'
+import { CueDefinition, literal, PartDefinition } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'

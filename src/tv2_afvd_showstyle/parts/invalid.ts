@@ -1,6 +1,5 @@
 import { BlueprintResultPart, IBlueprintPart } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinition } from '../../common/inewsConversion/converters/ParseBody'
-import { literal } from '../../common/util'
+import { literal, PartDefinition } from 'tv2-common'
 
 export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?: string): BlueprintResultPart {
 	const part = literal<IBlueprintPart>({

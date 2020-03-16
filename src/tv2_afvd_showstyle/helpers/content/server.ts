@@ -9,9 +9,7 @@ import {
 	TimelineObjSisyfosAny
 } from 'timeline-state-resolver-types'
 import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinition } from '../../../common/inewsConversion/converters/ParseBody'
-import { AddParentClass, ServerParentClass } from '../../../common/inewsConversion/converters/ParseCue'
-import { literal } from '../../../common/util'
+import { AddParentClass, literal, PartDefinition, ServerParentClass } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants'

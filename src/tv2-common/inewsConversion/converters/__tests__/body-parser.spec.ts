@@ -1,3 +1,4 @@
+import { CueType, PartType } from 'tv2-constants'
 import { literal } from '../../../util'
 import {
 	ParseBody,
@@ -12,8 +13,7 @@ import {
 	PartDefinitionTeknik,
 	PartDefinitionTelefon,
 	PartDefinitionUnknown,
-	PartDefinitionVO,
-	PartType
+	PartDefinitionVO
 } from '../ParseBody'
 import {
 	CueDefinition,
@@ -25,7 +25,6 @@ import {
 	CueDefinitionTargetEngine,
 	CueDefinitionTelefon,
 	CueDefinitionUnknown,
-	CueType,
 	UnparsedCue
 } from '../ParseCue'
 

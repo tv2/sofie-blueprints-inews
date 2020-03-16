@@ -1,12 +1,12 @@
 import { DeviceType } from 'timeline-state-resolver-types'
 import { IBlueprintPieceDB, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
+import { literal } from 'tv2-common'
+import { MediaPlayerClaimType } from 'tv2-constants'
 import { LoggingNotesContext, NotesContext } from '../../../__mocks__/context'
-import { literal } from '../../../common/util'
 import { PieceMetaData, TimelineBlueprintExt, TimelinePersistentStateExt } from '../../onTimelineGenerate'
 import {
 	applyMediaPlayersAssignments,
 	doesRequestOverlap,
-	MediaPlayerClaimType,
 	resolveMediaPlayerAssignments,
 	SessionToPlayerMap
 } from '../abPlayback'

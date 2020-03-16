@@ -1,3 +1,4 @@
+import { CueType } from 'tv2-constants'
 import { literal } from '../../../util'
 import {
 	CueDefinition,
@@ -7,7 +8,6 @@ import {
 	CueDefinitionMOS,
 	CueDefinitionTargetEngine,
 	CueDefinitionUnknown,
-	CueType,
 	isTime,
 	ParseCue,
 	parseTime

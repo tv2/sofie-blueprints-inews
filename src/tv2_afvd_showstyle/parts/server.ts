@@ -6,8 +6,7 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinition } from '../../common/inewsConversion/converters/ParseBody'
-import { literal } from '../../common/util'
+import { literal, PartDefinition } from 'tv2-common'
 import { PieceMetaData } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServer } from '../helpers/content/server'

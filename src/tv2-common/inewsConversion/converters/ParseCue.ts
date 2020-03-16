@@ -1,24 +1,7 @@
-import { PartDefinition, PartType } from './ParseBody'
+import { CueType, PartType } from 'tv2-constants'
+import { PartDefinition } from './ParseBody'
 
 export type UnparsedCue = string[] | null
-
-export enum CueType {
-	Unknown,
-	Grafik,
-	MOS,
-	Ekstern,
-	DVE,
-	Telefon,
-	VIZ,
-	Mic,
-	AdLib,
-	LYD,
-	Jingle,
-	Design,
-	Profile,
-	TargetEngine,
-	ClearGrafiks
-}
 
 export interface CueTime {
 	frames?: number

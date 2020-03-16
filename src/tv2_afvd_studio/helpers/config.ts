@@ -7,8 +7,8 @@ import {
 	ShowStyleContext,
 	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
+import { assertUnreachable } from 'tv2-common'
 import * as _ from 'underscore'
-import { assertUnreachable } from '../../common/util'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { parseMediaPlayers, parseSources, SourceInfo } from './sources'
 

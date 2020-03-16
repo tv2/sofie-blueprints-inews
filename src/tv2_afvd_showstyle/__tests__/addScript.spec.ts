@@ -1,7 +1,6 @@
-import { literal } from '../../common/util'
-
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinitionKam, PartType } from '../../common/inewsConversion/converters/ParseBody'
+import { literal, PartDefinitionKam } from 'tv2-common'
+import { PartType } from 'tv2-constants'
 import { AddScript } from '../helpers/pieces/script'
 import { SourceLayer } from '../layers'
 

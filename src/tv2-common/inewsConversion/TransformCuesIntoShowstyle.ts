@@ -1,6 +1,7 @@
+import { CueType } from 'tv2-constants'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { PartDefinition } from './converters/ParseBody'
-import { CueDefinitionGrafik, CueType } from './converters/ParseCue'
+import { CueDefinitionGrafik } from './converters/ParseCue'
 
 export function TransformCuesIntoShowstyle(config: ShowStyleConfig, partDefinition: PartDefinition): PartDefinition {
 	let i = -1

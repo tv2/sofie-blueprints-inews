@@ -1,5 +1,5 @@
 import { ISourceLayer, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../common/util'
+import { literal } from 'tv2-common'
 import { SourceLayer } from '../layers'
 
 // OVERLAY group

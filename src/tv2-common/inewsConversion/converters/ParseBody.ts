@@ -1,27 +1,13 @@
+import { CueType, PartType } from 'tv2-constants'
 import { PostProcessDefinitions } from '../../../tv2_afvd_showstyle/helpers/postProcessDefinitions'
 import {
 	CueDefinition,
 	CueDefinitionMOS,
 	CueDefinitionTargetEngine,
 	CueDefinitionTelefon,
-	CueType,
 	ParseCue,
 	UnparsedCue
 } from './ParseCue'
-
-export enum PartType {
-	Unknown,
-	Kam,
-	Server,
-	VO,
-	Teknik,
-	Grafik,
-	INTRO,
-	EVS,
-	DVE,
-	Ekstern,
-	Telefon
-}
 
 export interface INewsStory {
 	fields: { [key: string]: string }

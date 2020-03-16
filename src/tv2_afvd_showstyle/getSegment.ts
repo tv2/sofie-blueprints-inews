@@ -18,11 +18,9 @@ import {
 	PieceLifespan,
 	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
+import { assertUnreachable, literal, ParseBody, TransformCuesIntoShowstyle } from 'tv2-common'
+import { CueType, PartType } from 'tv2-constants'
 import * as _ from 'underscore'
-import { ParseBody, PartType } from '../common/inewsConversion/converters/ParseBody'
-import { CueType } from '../common/inewsConversion/converters/ParseCue'
-import { TransformCuesIntoShowstyle } from '../common/inewsConversion/TransformCuesIntoShowstyle'
-import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetNextPartCue } from './helpers/nextPartCue'

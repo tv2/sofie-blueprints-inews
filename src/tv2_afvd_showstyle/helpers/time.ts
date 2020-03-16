@@ -1,5 +1,5 @@
 import { IBlueprintPart } from 'tv-automation-sofie-blueprints-integration'
-import { INewsStory } from '../../common/inewsConversion/converters/ParseBody'
+import { INewsStory } from 'tv2-common'
 
 export function GetTimeFromPart(story: INewsStory): Partial<IBlueprintPart> {
 	return {

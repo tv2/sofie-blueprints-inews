@@ -8,8 +8,8 @@ import {
 	MappingVizMSE
 } from 'timeline-state-resolver-types'
 import { BlueprintMapping, BlueprintMappings, LookaheadMode } from 'tv-automation-sofie-blueprints-integration'
+import { literal } from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../../common/util'
 import { BlueprintConfig, StudioConfig } from '../helpers/config'
 
 export default literal<BlueprintMappings>({

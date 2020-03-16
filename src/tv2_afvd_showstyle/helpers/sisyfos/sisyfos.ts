@@ -6,8 +6,8 @@ import {
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import { NotesContext } from 'tv-automation-sofie-blueprints-integration'
+import { literal } from 'tv2-common'
 import _ = require('underscore')
-import { literal } from '../../../common/util'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
 

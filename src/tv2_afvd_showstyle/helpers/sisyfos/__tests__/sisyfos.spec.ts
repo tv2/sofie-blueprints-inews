@@ -1,5 +1,5 @@
 import { PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../../../common/util'
+import { literal } from 'tv2-common'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
 import { GetStickyForPiece, STUDIO_MICS } from '../sisyfos'
 
