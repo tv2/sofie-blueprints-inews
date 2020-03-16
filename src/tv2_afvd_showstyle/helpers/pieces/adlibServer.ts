@@ -11,18 +11,14 @@ export function CreateAdlibServer(
 	mediaPlayerSession: string,
 	partDefinition: PartDefinition,
 	file: string,
-	vo: boolean,
-	createdForOfftube?: boolean
+	vo: boolean
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: rank,
 		externalId,
+		tags: ['adlib_server'],
 		name: `${partDefinition.storyName} Server: ${file}`,
-		sourceLayerId: vo
-			? SourceLayer.PgmVoiceOver
-			: createdForOfftube
-			? SourceLayer.PgmServerAdlib
-			: SourceLayer.PgmServer, // TODO: OFFTUBE: Different for offtubes
+		sourceLayerId: vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO: OFFTUBE: Different for offtubes
 		outputLayerId: 'pgm',
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		toBeQueued: true,

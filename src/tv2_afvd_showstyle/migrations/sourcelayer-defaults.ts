@@ -341,25 +341,6 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: SourceLayer.PgmServerAdlib,
-		_rank: 0,
-		name: 'Server',
-		abbreviation: 'S',
-		type: SourceLayerType.VT,
-		exclusiveGroup: 'me1',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: true
-	},
-	{
 		_id: SourceLayer.PgmVoiceOver,
 		_rank: 0,
 		name: 'Voice Over',

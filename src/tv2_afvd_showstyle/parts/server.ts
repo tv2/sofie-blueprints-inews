@@ -52,16 +52,7 @@ export function CreatePartServer(
 
 	if (config.showStyle.IsOfftube) {
 		adLibPieces.push(
-			CreateAdlibServer(
-				config,
-				0,
-				partDefinition.externalId,
-				partDefinition.externalId,
-				partDefinition,
-				file,
-				false,
-				true
-			)
+			CreateAdlibServer(config, 0, partDefinition.externalId, partDefinition.externalId, partDefinition, file, false)
 		)
 	}
 
