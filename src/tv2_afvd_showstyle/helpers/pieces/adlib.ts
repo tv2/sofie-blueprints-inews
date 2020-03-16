@@ -1,12 +1,11 @@
-import { IBlueprintAdLibPiece, PartContext, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionAdLib, CueDefinitionDVE, literal, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
-import { MakeContentServer } from '../content/server'
+import { CreateAdlibServer } from './adlibServer'
 import { GetDVETemplate, TemplateIsValid } from './dve'
 
 export function EvaluateAdLib(
@@ -22,22 +21,7 @@ export function EvaluateAdLib(
 		// Create server AdLib
 		const file = partDefinition.fields.videoId
 
-		adLibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank,
-				externalId: partId,
-				name: `${partDefinition.storyName} Server: ${file}`,
-				sourceLayerId: SourceLayer.PgmServer,
-				outputLayerId: 'pgm',
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
-				}),
-				content: MakeContentServer(file, partId, partDefinition, config, true, true),
-				adlibPreroll: config.studio.CasparPrerollDuration
-			})
-		)
+		adLibPieces.push(CreateAdlibServer(config, rank, partId, partId, partDefinition, file, false))
 	} else {
 		// DVE
 		if (!parsedCue.variant) {

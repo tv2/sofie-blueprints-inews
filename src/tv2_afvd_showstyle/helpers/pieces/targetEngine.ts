@@ -23,7 +23,8 @@ export function EvaluateTargetEngine(
 	pieces: IBlueprintPiece[],
 	adlibPeces: IBlueprintAdLibPiece[],
 	partId: string,
-	parsedCue: CueDefinitionTargetEngine
+	parsedCue: CueDefinitionTargetEngine,
+	adlib: boolean
 ) {
 	// TODO: Future: Target a specific engine
 	if (!parsedCue.data.engine.match(/full|ovl|wall/i)) {
@@ -87,7 +88,7 @@ export function EvaluateTargetEngine(
 				partId,
 				parsedCue.data.grafik,
 				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
-				false
+				adlib
 			)
 		} else {
 			EvaluateMOS(
@@ -98,9 +99,9 @@ export function EvaluateTargetEngine(
 				partId,
 				parsedCue.data.grafik,
 				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
+				adlib,
 				false,
-				false,
-				0,
+				adlibPeces.length,
 				true,
 				!!parsedCue.data.engine.match(/ovl/i)
 			)

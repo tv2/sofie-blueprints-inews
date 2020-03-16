@@ -10,6 +10,7 @@ import {
 import { literal, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServer } from '../helpers/content/server'
+import { CreateAdlibServer } from '../helpers/pieces/adlibServer'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
@@ -54,6 +55,12 @@ export function CreatePartVO(
 
 	const serverContent = MakeContentServer(file, partDefinition.externalId, partDefinition, config, false)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
+
+	if (config.showStyle.IsOfftube) {
+		adLibPieces.push(
+			CreateAdlibServer(config, 0, partDefinition.externalId, partDefinition.externalId, partDefinition, file, true)
+		)
+	}
 
 	pieces.push(
 		literal<IBlueprintPiece>({

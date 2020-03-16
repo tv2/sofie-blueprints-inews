@@ -60,7 +60,7 @@ export function EvaluateMOS(
 			makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
 		)
 	} else {
-		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls && engine !== 'WALL') {
+		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls && !adlib && engine !== 'WALL') {
 			adlibPieces.push(
 				makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
 			)
@@ -106,7 +106,7 @@ function makeMosAdlib(
 		sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 		adlibPreroll: config.studio.PilotPrerollDuration,
-		content: GetMosObjContent(engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf),
+		content: GetMosObjContent(engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf, rank),
 		toBeQueued: true
 	}
 }
@@ -159,7 +159,8 @@ function GetMosObjContent(
 	partId: string,
 	isOverlay: boolean,
 	adlib?: boolean,
-	tlf?: boolean
+	tlf?: boolean,
+	adlibrank?: number
 ): GraphicsContent {
 	return literal<GraphicsContent>({
 		fileName: parsedCue.name,
@@ -236,7 +237,7 @@ function GetMosObjContent(
 							classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 						}),
 						...GetSisyfosTimelineObjForCamera('full'),
-						...MuteSisyfosChannels(partId, config.sources)
+						...MuteSisyfosChannels(partId, config.sources, !!adlib, adlibrank ?? 0, parsedCue.vcpid)
 				  ])
 		]
 	})
@@ -265,7 +266,13 @@ export function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMed
 	})
 }
 
-function MuteSisyfosChannels(partId: string, sources: SourceInfo[]): TimelineObjSisyfosMessage[] {
+function MuteSisyfosChannels(
+	partId: string,
+	sources: SourceInfo[],
+	adlib: boolean,
+	adlibRank: number,
+	vcpid: number
+): TimelineObjSisyfosMessage[] {
 	return [
 		SisyfosLLAyer.SisyfosSourceServerA,
 		SisyfosLLAyer.SisyfosSourceServerB,
@@ -287,7 +294,7 @@ function MuteSisyfosChannels(partId: string, sources: SourceInfo[]): TimelineObj
 		]
 	].map<TimelineObjSisyfosMessage>(layer => {
 		return literal<TimelineObjSisyfosMessage>({
-			id: `muteSisyfos-${layer}-${partId}`,
+			id: `muteSisyfos-${layer}-${partId}-${vcpid}-${adlib ? `adlib-${adlibRank}` : ''}`,
 			enable: {
 				start: 0
 			},

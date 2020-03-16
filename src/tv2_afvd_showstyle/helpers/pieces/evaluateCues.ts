@@ -32,15 +32,28 @@ export function EvaluateCues(
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	adlib?: boolean,
-	isGrafikPart?: boolean
+	isGrafikPart?: boolean,
+	adlibStartingRank?: number,
+	/** Should only be set from within this function as a second pass to create adlibs. */
+	createForOfftube?: boolean
 ) {
-	let adLibRank = 0
-	// const filteredCues = cues.filter(cue => cue.type !== CueType.Grafik)
-	// const grafikCues = cues.filter(cue => cue.type === CueType.Grafik)
-	// const isDVE = containsDVE(cues)
-	cues.forEach((cue: CueDefinition) => {
+	console.log(createForOfftube ? 'Offtube' : 'Original')
+	let adLibRank = adlibStartingRank ?? 0
+
+	for (const cue of cues) {
 		if (cue) {
-			const shouldAdlib = adlib ? true : cue.adlib ? true : false
+			let shouldAdlib = adlib ? true : cue.adlib ? true : false
+			// Skip creating an adlib if one has already been created
+			if (shouldAdlib && createForOfftube) {
+				continue
+			}
+			// Adlibs are always created for DVEs.
+			if (createForOfftube && cue.type === CueType.DVE) {
+				continue
+			}
+
+			shouldAdlib = shouldAdlib || !!createForOfftube
+
 			switch (cue.type) {
 				case CueType.Grafik:
 					EvaluateGrafik(
@@ -121,7 +134,9 @@ export function EvaluateCues(
 					EvaluateDesign(config, context, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 					break
 				case CueType.TargetEngine:
-					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue)
+					if (!(createForOfftube && config.showStyle.MakeAdlibsForFulls)) {
+						EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib)
+					}
 					break
 				case CueType.ClearGrafiks:
 					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue, shouldAdlib)
@@ -139,7 +154,17 @@ export function EvaluateCues(
 				adLibRank++
 			}
 		}
-	})
+	}
+
+	// Second iteration, don't create expectedMediaItems again
+	if (createForOfftube) {
+		return
+	}
+
+	if (config.showStyle.IsOfftube) {
+		EvaluateCues(context, config, pieces, adLibPieces, cues, partDefinition, adlib, isGrafikPart, adLibRank++, true)
+	}
+
 	;[...pieces, ...adLibPieces].forEach(piece => {
 		if (piece.content && piece.content.timelineObjects) {
 			piece.content.timelineObjects.forEach((obj: TSRTimelineObj) => {

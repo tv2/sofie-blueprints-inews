@@ -10,6 +10,7 @@ import { literal, PartDefinition } from 'tv2-common'
 import { PieceMetaData } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServer } from '../helpers/content/server'
+import { CreateAdlibServer } from '../helpers/pieces/adlibServer'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { SourceLayer } from '../layers'
@@ -48,6 +49,12 @@ export function CreatePartServer(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 	AddScript(partDefinition, pieces, duration)
+
+	if (config.showStyle.IsOfftube) {
+		adLibPieces.push(
+			CreateAdlibServer(config, 0, partDefinition.externalId, partDefinition.externalId, partDefinition, file, false)
+		)
+	}
 
 	pieces.push(
 		literal<IBlueprintPiece>({
