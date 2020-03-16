@@ -37,7 +37,6 @@ export function EvaluateCues(
 	/** Should only be set from within this function as a second pass to create adlibs. */
 	createForOfftube?: boolean
 ) {
-	console.log(createForOfftube ? 'Offtube' : 'Original')
 	let adLibRank = adlibStartingRank ?? 0
 
 	for (const cue of cues) {

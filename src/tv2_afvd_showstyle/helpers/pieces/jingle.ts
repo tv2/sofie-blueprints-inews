@@ -51,14 +51,16 @@ export function EvaluateJingle(
 	}
 
 	if (adlib) {
-		adlibPieces.push({
-			_rank: rank ?? 0,
-			externalId: `${part.externalId}-JINGLE-adlib`,
-			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
-			sourceLayerId: SourceLayer.PgmJingle,
-			outputLayerId: 'jingle',
-			content: createJingleContent(config, file) // TODO: OFFTUBE: Adlibpreroll + all other such things
-		})
+		adlibPieces.push(
+			literal<IBlueprintAdLibPiece>({
+				_rank: rank ?? 0,
+				externalId: `${part.externalId}-JINGLE-adlib`,
+				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
+				sourceLayerId: SourceLayer.PgmJingle,
+				outputLayerId: 'jingle',
+				content: createJingleContent(config, file) // TODO: OFFTUBE: Adlibpreroll + all other such things
+			})
+		)
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({

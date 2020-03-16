@@ -79,9 +79,12 @@ export function getShowStyleVariantId(
 	if (Object.keys(config).includes('IsOfftube')) {
 		const offTube = config.IsOfftube
 		if (offTube) {
-			console.log(JSON.stringify(showStyleVariants.map(v => v.config)))
-			const v = showStyleVariants.find(v => v.config.findIndex(c => c._id === 'IsOfftube' && c.value === true ) !== -1)
-			if (v) variant = v
+			const vari = showStyleVariants.find(
+				v => v.config.findIndex(c => c._id === 'IsOfftube' && c.value === true) !== -1
+			)
+			if (vari) {
+				variant = vari
+			}
 		}
 	}
 
