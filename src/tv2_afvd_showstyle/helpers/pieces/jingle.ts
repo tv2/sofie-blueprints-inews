@@ -26,11 +26,11 @@ export function EvaluateJingle(
 	context: PartContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
+	adlibPieces: IBlueprintAdLibPiece[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
 	adlib?: boolean,
-	_rank?: number,
+	rank?: number,
 	effekt?: boolean
 ) {
 	if (!config.showStyle.BreakerConfig) {
@@ -51,7 +51,14 @@ export function EvaluateJingle(
 	}
 
 	if (adlib) {
-		context.warning(`Jingles should never be adlibs`)
+		adlibPieces.push({
+			_rank: rank ?? 0,
+			externalId: `${part.externalId}-JINGLE-adlib`,
+			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
+			sourceLayerId: SourceLayer.PgmJingle,
+			outputLayerId: 'jingle',
+			content: createJingleContent(config, file) // TODO: OFFTUBE: Adlibpreroll + all other such things
+		})
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -64,103 +71,107 @@ export function EvaluateJingle(
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				outputLayerId: 'jingle',
 				sourceLayerId: SourceLayer.PgmJingle,
-				content: literal<VTContent>({
-					studioLabel: '',
-					fileName: file,
-					path: file,
-					firstWords: '',
-					lastWords: '',
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: CasparLLayer.CasparPlayerJingle,
-							content: {
-								deviceType: DeviceType.CASPARCG,
-								type: TimelineContentTypeCasparCg.MEDIA,
-								file
-							}
-						}),
-
-						literal<TimelineObjAtemDSK>({
-							id: '',
-							enable: {
-								start: Number(config.studio.CasparPrerollDuration)
-							},
-							priority: 1,
-							layer: AtemLLayer.AtemDSKEffect,
-							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.DSK,
-								dsk: {
-									onAir: true,
-									sources: {
-										fillSource: config.studio.AtemSource.JingleFill,
-										cutSource: config.studio.AtemSource.JingleKey
-									},
-									properties: {
-										tie: false,
-										preMultiply: false,
-										clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-										gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-										mask: {
-											enabled: false
-										}
-									}
-								}
-							},
-							classes: ['MIX_MINUS_OVERRIDE_DSK']
-						}),
-						literal<TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: Number(config.studio.CasparPrerollDuration)
-							},
-							priority: 1,
-							layer: AtemLLayer.AtemCleanUSKEffect,
-							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
-								me: {
-									upstreamKeyers: [
-										{
-											upstreamKeyerId: 0,
-											onAir: true,
-											mixEffectKeyType: 0,
-											flyEnabled: false,
-											fillSource: config.studio.AtemSource.JingleFill,
-											cutSource: config.studio.AtemSource.JingleKey,
-											maskEnabled: false,
-											lumaSettings: {
-												preMultiplied: false,
-												clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
-												gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
-											}
-										}
-									]
-								}
-							}
-						}),
-
-						literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceJingle,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 1
-							}
-						})
-					])
-				})
+				content: createJingleContent(config, file)
 			})
 		)
 	}
+}
+
+function createJingleContent(config: BlueprintConfig, file: string) {
+	return literal<VTContent>({
+		studioLabel: '',
+		fileName: file,
+		path: file,
+		firstWords: '',
+		lastWords: '',
+		timelineObjects: literal<TimelineObjectCoreExt[]>([
+			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
+				id: '',
+				enable: {
+					start: 0
+				},
+				priority: 1,
+				layer: CasparLLayer.CasparPlayerJingle,
+				content: {
+					deviceType: DeviceType.CASPARCG,
+					type: TimelineContentTypeCasparCg.MEDIA,
+					file
+				}
+			}),
+
+			literal<TimelineObjAtemDSK>({
+				id: '',
+				enable: {
+					start: Number(config.studio.CasparPrerollDuration)
+				},
+				priority: 1,
+				layer: AtemLLayer.AtemDSKEffect,
+				content: {
+					deviceType: DeviceType.ATEM,
+					type: TimelineContentTypeAtem.DSK,
+					dsk: {
+						onAir: true,
+						sources: {
+							fillSource: config.studio.AtemSource.JingleFill,
+							cutSource: config.studio.AtemSource.JingleKey
+						},
+						properties: {
+							tie: false,
+							preMultiply: false,
+							clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
+							gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
+							mask: {
+								enabled: false
+							}
+						}
+					}
+				},
+				classes: ['MIX_MINUS_OVERRIDE_DSK']
+			}),
+			literal<TimelineObjAtemME>({
+				id: '',
+				enable: {
+					start: Number(config.studio.CasparPrerollDuration)
+				},
+				priority: 1,
+				layer: AtemLLayer.AtemCleanUSKEffect,
+				content: {
+					deviceType: DeviceType.ATEM,
+					type: TimelineContentTypeAtem.ME,
+					me: {
+						upstreamKeyers: [
+							{
+								upstreamKeyerId: 0,
+								onAir: true,
+								mixEffectKeyType: 0,
+								flyEnabled: false,
+								fillSource: config.studio.AtemSource.JingleFill,
+								cutSource: config.studio.AtemSource.JingleKey,
+								maskEnabled: false,
+								lumaSettings: {
+									preMultiplied: false,
+									clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
+									gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
+								}
+							}
+						]
+					}
+				}
+			}),
+
+			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+				id: '',
+				enable: {
+					start: 0
+				},
+				priority: 1,
+				layer: SisyfosLLAyer.SisyfosSourceJingle,
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: 1
+				}
+			})
+		])
+	})
 }

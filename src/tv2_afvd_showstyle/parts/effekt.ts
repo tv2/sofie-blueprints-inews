@@ -22,6 +22,7 @@ import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 
+// TODO: OFFTUBE: find a way to do this for adlibs
 export function GetJinglePartProperties(
 	_context: PartContext,
 	config: BlueprintConfig,
