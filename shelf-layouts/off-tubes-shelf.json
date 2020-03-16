@@ -1,0 +1,88 @@
+{
+  "_id": "C4x2GbLWBMPoBhmyZ",
+  "name": "Shortcuts and adlib scroll",
+  "showStyleBaseId": "vXKwhB4TqzqgZRbCQ",
+  "filters": [
+    {
+      "_id": "pyRvtqdtAbFE2gekk",
+      "type": "filter",
+      "name": "DVE",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": true,
+      "default": false,
+      "x": -14,
+      "y": 0,
+      "width": 12,
+      "height": 8,
+      "includeClearInRundownBaseline": false,
+      "assignHotKeys": false,
+      "hide": false,
+      "buttonWidthScale": 1.5,
+      "buttonHeightScale": 1.5,
+      "sourceLayerIds": [
+        "studio0_dve"
+      ]
+    },
+    {
+      "_id": "QZ6xdWdFmm5Mu7ZKJ",
+      "type": "filter",
+      "name": "JINGLER / 100% SERVER",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 1,
+      "rundownBaseline": false,
+      "default": false,
+      "width": 12,
+      "height": 8,
+      "y": 0,
+      "x": -1,
+      "includeClearInRundownBaseline": true,
+      "assignHotKeys": true,
+      "hide": false,
+      "buttonWidthScale": 1,
+      "buttonHeightScale": 1,
+      "enableSearch": false,
+      "showAsTimeline": false,
+      "overflowHorizontally": false,
+      "sourceLayerTypes": [
+        2
+      ]
+    },
+    {
+      "_id": "zHX89zpASjzyn7GTz",
+      "type": "filter",
+      "name": "ADLIB / VO SERVER",
+      "currentSegment": true,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": true,
+      "default": false,
+      "x": -1,
+      "y": 10,
+      "height": -12,
+      "width": 12,
+      "includeClearInRundownBaseline": false,
+      "assignHotKeys": false,
+      "sourceLayerIds": [
+        "studio0_voiceover"
+      ]
+    },
+    {
+      "_id": "YC7RNPTbkXd5wnagp",
+      "type": "filter",
+      "name": "KG ELEMENTER",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "x": -1,
+      "height": 9,
+      "y": -1,
+      "width": 12
+    }
+  ],
+  "type": "dashboard_layout"
+}
