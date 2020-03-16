@@ -46,8 +46,9 @@ export function EvaluateCues(
 			if (shouldAdlib && createForOfftube) {
 				continue
 			}
-			// Adlibs are always created for DVEs.
-			if (createForOfftube && cue.type === CueType.DVE) {
+
+			// Adlibs are always created for DVEs and adlib cues.
+			if (createForOfftube && (cue.type === CueType.DVE || cue.type === CueType.AdLib)) {
 				continue
 			}
 

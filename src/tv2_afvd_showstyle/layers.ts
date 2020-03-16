@@ -6,6 +6,8 @@ export enum SourceLayer {
 	PgmDVEAdlib = 'studio0_dve_adlib',
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',
+	/** Only used by offtubes for adlibs to be filtered correctly in the UI */
+	PgmServerAdlib = 'studio0_clip_adlib',
 	PgmPilot = 'studio0_pilot',
 	PgmPilotOverlay = 'studio0_pilotOverlay',
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
