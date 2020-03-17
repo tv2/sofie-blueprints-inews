@@ -60,24 +60,24 @@ export function CreatePartVO(
 		adLibPieces.push(
 			CreateAdlibServer(config, 0, partDefinition.externalId, partDefinition.externalId, partDefinition, file, true)
 		)
+	} else {
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: part.title,
+				enable: { start: 0 },
+				outputLayerId: 'pgm',
+				sourceLayerId: SourceLayer.PgmVoiceOver,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				metaData: literal<PieceMetaData>({
+					mediaPlayerSessions: [part.externalId]
+				}),
+				content: serverContent,
+				adlibPreroll: config.studio.CasparPrerollDuration
+			})
+		)
 	}
-
-	pieces.push(
-		literal<IBlueprintPiece>({
-			_id: '',
-			externalId: partDefinition.externalId,
-			name: part.title,
-			enable: { start: 0 },
-			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmVoiceOver,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [part.externalId]
-			}),
-			content: serverContent,
-			adlibPreroll: config.studio.CasparPrerollDuration
-		})
-	)
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, duration)

@@ -54,24 +54,24 @@ export function CreatePartServer(
 		adLibPieces.push(
 			CreateAdlibServer(config, 0, partDefinition.externalId, partDefinition.externalId, partDefinition, file, false)
 		)
+	} else {
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: file,
+				enable: { start: 0 },
+				outputLayerId: 'pgm',
+				sourceLayerId: SourceLayer.PgmServer,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				metaData: literal<PieceMetaData>({
+					mediaPlayerSessions: [part.externalId]
+				}),
+				content: MakeContentServer(file, part.externalId, partDefinition, config),
+				adlibPreroll: config.studio.CasparPrerollDuration
+			})
+		)
 	}
-
-	pieces.push(
-		literal<IBlueprintPiece>({
-			_id: '',
-			externalId: partDefinition.externalId,
-			name: file,
-			enable: { start: 0 },
-			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmServer,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [part.externalId]
-			}),
-			content: MakeContentServer(file, part.externalId, partDefinition, config),
-			adlibPreroll: config.studio.CasparPrerollDuration
-		})
-	)
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 

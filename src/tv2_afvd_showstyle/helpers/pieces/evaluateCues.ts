@@ -32,27 +32,13 @@ export function EvaluateCues(
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	adlib?: boolean,
-	isGrafikPart?: boolean,
-	adlibStartingRank?: number,
-	/** Should only be set from within this function as a second pass to create adlibs. */
-	createForOfftube?: boolean
+	isGrafikPart?: boolean
 ) {
-	let adLibRank = adlibStartingRank ?? 0
+	let adLibRank = 0
 
 	for (const cue of cues) {
 		if (cue) {
-			let shouldAdlib = adlib ? true : cue.adlib ? true : false
-			// Skip creating an adlib if one has already been created
-			if (shouldAdlib && createForOfftube) {
-				continue
-			}
-
-			// Adlibs are always created for DVEs and adlib cues.
-			if (createForOfftube && (cue.type === CueType.DVE || cue.type === CueType.AdLib)) {
-				continue
-			}
-
-			shouldAdlib = shouldAdlib || !!createForOfftube
+			const shouldAdlib = config.showStyle.IsOfftube || adlib ? true : cue.adlib ? true : false
 
 			switch (cue.type) {
 				case CueType.Grafik:
@@ -134,9 +120,7 @@ export function EvaluateCues(
 					EvaluateDesign(config, context, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 					break
 				case CueType.TargetEngine:
-					if (!(createForOfftube && config.showStyle.MakeAdlibsForFulls)) {
-						EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib)
-					}
+					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib)
 					break
 				case CueType.ClearGrafiks:
 					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue, shouldAdlib)
@@ -154,15 +138,6 @@ export function EvaluateCues(
 				adLibRank++
 			}
 		}
-	}
-
-	// Second iteration, don't create expectedMediaItems again
-	if (createForOfftube) {
-		return
-	}
-
-	if (config.showStyle.IsOfftube) {
-		EvaluateCues(context, config, pieces, adLibPieces, cues, partDefinition, adlib, isGrafikPart, adLibRank++, true)
 	}
 
 	;[...pieces, ...adLibPieces].forEach(piece => {
