@@ -20,8 +20,8 @@
                     "fields" : {
                         "pageNumber" : "01",
                         "title" : "KLAR ON AIR LATINOBOLD",
-                        "audioTime" : "0",
-                        "totalTime" : "0",
+                        "audioTime" : "10",
+                        "totalTime" : "10",
                         "modifyDate" : "1582890240",
                         "modifyBy" : "bede",
                         "ready" : "KLAR",
