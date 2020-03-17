@@ -10,6 +10,7 @@ import {
 } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
@@ -18,6 +19,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionJingle, literal, PartDefinition } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
+import { GetJinglePartProperties } from '../../../tv2_afvd_showstyle/parts/effekt'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../config'
@@ -51,6 +53,18 @@ export function EvaluateJingle(
 	}
 
 	if (adlib) {
+		const p = GetJinglePartProperties(context, config, part)
+
+		if (JSON.stringify(p) === JSON.stringify({})) {
+			context.warning(`Could not create adlib for ${parsedCue.clip}`)
+			return
+		}
+
+		const props = p as Pick<
+			IBlueprintPart,
+			'autoNext' | 'expectedDuration' | 'prerollDuration' | 'autoNextOverlap' | 'disableOutTransition'
+		>
+
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank ?? 0,
@@ -58,7 +72,13 @@ export function EvaluateJingle(
 				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: 'jingle',
-				content: createJingleContent(config, file) // TODO: OFFTUBE: Adlibpreroll + all other such things
+				content: createJingleContent(config, file),
+				toBeQueued: true,
+				adlibAutoNext: props.autoNext,
+				adlibAutoNextOverlap: props.autoNextOverlap,
+				adlibPreroll: props.prerollDuration,
+				expectedDuration: props.expectedDuration,
+				adlibDisableOutTransition: props.disableOutTransition
 			})
 		)
 	} else {
