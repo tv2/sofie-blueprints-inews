@@ -40,6 +40,10 @@ export const enum PartType {
 	Telefon = 'Telefon'
 }
 
+export enum Enablers {
+	OFFTUBE_ENABLE_SERVER = 'offtube_enable_server'
+}
+
 export enum AdlibTags {
 	OFFTUBE_ADLIB_SERVER = 'adlib_server'
 }

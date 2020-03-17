@@ -6,10 +6,12 @@ import {
 	TimelineContentTypeSisyfos,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny
+	TimelineObjSisyfosAny,
+	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
 import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import { AddParentClass, literal, PartDefinition, ServerParentClass } from 'tv2-common'
+import { Enablers } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
@@ -46,8 +48,21 @@ export function MakeContentServer(
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
-					loop: adLib
+					loop: adLib,
+					playing: false
 				},
+				keyframes: [
+					{
+						id: '',
+						enable: {
+							while: `.${Enablers.OFFTUBE_ENABLE_SERVER}`
+						},
+						content: {
+							inPoint: 0,
+							playing: true
+						}
+					}
+				],
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},
@@ -56,9 +71,7 @@ export function MakeContentServer(
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
-				enable: {
-					start: config.studio.CasparPrerollDuration
-				},
+				enable: getServerAdlibEnable(config, !!adLib, config.studio.CasparPrerollDuration),
 				priority: 1,
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
@@ -80,9 +93,7 @@ export function MakeContentServer(
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable: getServerAdlibEnable(config, !!adLib, 0),
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceClipPending,
 				content: {
@@ -100,9 +111,7 @@ export function MakeContentServer(
 				? STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 							id: '',
-							enable: {
-								start: 0
-							},
+							enable: getServerAdlibEnable(config, !!adLib, 0),
 							priority: 1,
 							layer,
 							content: {
@@ -118,4 +127,20 @@ export function MakeContentServer(
 				: [])
 		])
 	})
+}
+
+function getServerAdlibEnable(
+	config: BlueprintConfig,
+	adlib: boolean,
+	startTime: number
+): TSRTimelineObjBase['enable'] {
+	if (adlib && config.showStyle.IsOfftube) {
+		return {
+			while: `.${Enablers.OFFTUBE_ENABLE_SERVER}`
+		}
+	}
+
+	return {
+		start: startTime
+	}
 }

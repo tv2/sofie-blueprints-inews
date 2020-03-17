@@ -7,6 +7,7 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
+	TimelineObjAbstractAny,
 	TimelineObjAtemAUX,
 	TimelineObjAtemDSK,
 	TimelineObjAtemME,
@@ -40,12 +41,14 @@ import {
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
+import { Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import {
 	AtemLLayer,
 	CasparLLayer,
 	CasparPlayerClipLoadingLoop,
+	OfftubeAbstractLLayer,
 	SisyfosEVSSource,
 	SisyfosLLAyer,
 	VizLLayer
@@ -123,12 +126,14 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 			expectedStart: startTime,
 			expectedDuration: endTime - startTime
 		}),
-		globalAdLibPieces: getGlobalAdLibPieces(context, config),
+		globalAdLibPieces: config.showStyle.IsOfftube
+			? getGlobalAdLibPiecesOffTube(context, config)
+			: getGlobalAdLibPiecesAFKD(context, config),
 		baseline: getBaseline(config)
 	}
 }
 
-function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
 	function makeSsrcAdlibBoxes(layer: SourceLayer, port: number, mediaPlayer?: boolean) {
 		// Generate boxes with classes to map across each layer
 		const boxObjs = _.map(boxMappings, (m, i) =>
@@ -927,6 +932,42 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	})
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
+	return adlibItems
+}
+
+function getGlobalAdLibPiecesOffTube(_context: NotesContext, _config: BlueprintConfig): IBlueprintAdLibPiece[] {
+	const adlibItems: IBlueprintAdLibPiece[] = []
+
+	let globalRank = 1000
+
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
+			externalId: 'setNextToServer',
+			name: 'Set Server Next',
+			sourceLayerId: SourceLayer.PgmOffTubePgmSelect,
+			outputLayerId: 'sec',
+			infiniteMode: PieceLifespan.Infinite,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [
+					literal<TimelineObjAbstractAny>({
+						id: '',
+						enable: {
+							while: '1'
+						},
+						priority: 1,
+						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+						content: {
+							deviceType: DeviceType.ABSTRACT
+						},
+						classes: [Enablers.OFFTUBE_ENABLE_SERVER]
+					})
+				]
+			}
+		})
+	)
+
 	return adlibItems
 }
 
