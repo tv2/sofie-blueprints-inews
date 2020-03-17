@@ -22,7 +22,7 @@ export function CreateAdlibServer(
 		name: `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer,
 		outputLayerId: 'pgm',
-		infiniteMode: PieceLifespan.Infinite,
+		infiniteMode: config.showStyle.IsOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
 		toBeQueued: !config.showStyle.IsOfftube,
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: config.showStyle.IsOfftube ? [MEDIA_PLAYER_AUTO] : [mediaPlayerSession]

@@ -97,7 +97,7 @@ export function EvaluateDVE(
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
-					infiniteMode: PieceLifespan.OutOnNextPart,
+					infiniteMode: config.showStyle.IsOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0

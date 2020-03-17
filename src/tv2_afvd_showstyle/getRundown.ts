@@ -947,7 +947,7 @@ function getGlobalAdLibPiecesOffTube(_context: NotesContext, _config: BlueprintC
 			name: 'Set Server Next',
 			sourceLayerId: SourceLayer.PgmOffTubePgmSelect,
 			outputLayerId: 'sec',
-			infiniteMode: PieceLifespan.Infinite,
+			infiniteMode: PieceLifespan.OutOnNextSegment,
 			toBeQueued: true,
 			content: {
 				timelineObjects: [
