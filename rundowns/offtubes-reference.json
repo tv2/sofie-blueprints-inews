@@ -714,6 +714,43 @@
                 "float": false
             },
             "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000015",
+            "name": "EVS",
+            "rank": 15,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "16",
+                        "title" : "EVS",
+                        "tapeTime": "0",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [],
+                    "id" : "00000000:00000000:00000015",
+                    "body" : "\r\n<p><pi>EVS1</pi></p>\r\n<p><pi>EVS2</pi></p>\r\n<p><pi>EVS1VO</pi></p>\r\n<p><pi>EVS2VO</pi></p>\r\n",
+                    "fileId" : "00000000:00000000:00000015",
+                    "identifier" : "00000014"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000015",
+                "rank": 15,
+                "name": "EVS",
+                "float": false
+            },
+            "parts": []
         }
     ]
 }

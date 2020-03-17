@@ -18,7 +18,7 @@ import {
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { EVSParentClass, literal, PartDefinitionEVS } from 'tv2-common'
-import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
+import { FindSourceInfoStrict, SourceInfo } from '../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
@@ -64,80 +64,33 @@ export function CreatePartEVS(
 	}
 	const atemInput = sourceInfoDelayedPlayback.port
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			_id: '',
-			externalId: partDefinition.externalId,
-			name: part.title,
-			enable: { start: 0 },
-			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmLive,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			content: {
-				studioLabel: '',
-				switcherInput: atemInput,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TimelineObjAtemME>({
-						id: ``,
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: AtemLLayer.AtemMEProgram,
-						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.ME,
-							me: {
-								input: atemInput,
-								transition: partDefinition.transition
-									? TransitionFromString(partDefinition.transition.style)
-									: AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(partDefinition)
-							}
-						},
-						classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
-					}),
-
-					literal<TimelineObjSisyfosMessage>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: SisyfosEVSSource(sourceInfoDelayedPlayback.id.replace(/^DP/i, '')),
-						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
-							isPgm: partDefinition.variant.isVO ? 2 : 1
-						}
-					}),
-
-					...(partDefinition.variant.isVO
-						? [...GetSisyfosTimelineObjForCamera('evs')]
-						: [
-								...LIVE_AUDIO.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-									return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-										id: '',
-										enable: {
-											start: 0
-										},
-										priority: 1,
-										layer,
-										content: {
-											deviceType: DeviceType.SISYFOS,
-											type: TimelineContentTypeSisyfos.SISYFOS,
-											isPgm: 0
-										},
-										metaData: {
-											sisyfosPersistLevel: true
-										}
-									})
-								})
-						  ])
-				])
-			}
-		})
-	)
+	if (config.showStyle.IsOfftube) {
+		adLibPieces.push(
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: partDefinition.externalId,
+				name: part.title,
+				outputLayerId: 'pgm',
+				sourceLayerId: SourceLayer.PgmLive,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				toBeQueued: true,
+				content: makeContentEVS(atemInput, partDefinition, sourceInfoDelayedPlayback)
+			})
+		)
+	} else {
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: part.title,
+				enable: { start: 0 },
+				outputLayerId: 'pgm',
+				sourceLayerId: SourceLayer.PgmLive,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				content: makeContentEVS(atemInput, partDefinition, sourceInfoDelayedPlayback)
+			})
+		)
+	}
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, partTime)
@@ -150,5 +103,73 @@ export function CreatePartEVS(
 		part,
 		adLibPieces,
 		pieces
+	}
+}
+
+function makeContentEVS(
+	atemInput: number,
+	partDefinition: PartDefinitionEVS,
+	sourceInfoDelayedPlayback: SourceInfo
+): IBlueprintPiece['content'] {
+	return {
+		studioLabel: '',
+		switcherInput: atemInput,
+		timelineObjects: literal<TimelineObjectCoreExt[]>([
+			literal<TimelineObjAtemME>({
+				id: ``,
+				enable: {
+					start: 0
+				},
+				priority: 1,
+				layer: AtemLLayer.AtemMEProgram,
+				content: {
+					deviceType: DeviceType.ATEM,
+					type: TimelineContentTypeAtem.ME,
+					me: {
+						input: atemInput,
+						transition: partDefinition.transition
+							? TransitionFromString(partDefinition.transition.style)
+							: AtemTransitionStyle.CUT,
+						transitionSettings: TransitionSettings(partDefinition)
+					}
+				},
+				classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
+			}),
+			literal<TimelineObjSisyfosMessage>({
+				id: '',
+				enable: {
+					start: 0
+				},
+				priority: 1,
+				layer: SisyfosEVSSource(sourceInfoDelayedPlayback.id.replace(/^DP/i, '')),
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: partDefinition.variant.isVO ? 2 : 1
+				}
+			}),
+			...(partDefinition.variant.isVO
+				? [...GetSisyfosTimelineObjForCamera('evs')]
+				: [
+						...LIVE_AUDIO.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						})
+				  ])
+		])
 	}
 }
