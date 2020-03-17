@@ -39,3 +39,7 @@ export const enum PartType {
 	Ekstern = 'Ekstern',
 	Telefon = 'Telefon'
 }
+
+export enum AdlibTags {
+	OFFTUBE_ADLIB_SERVER = 'adlib_server'
+}

@@ -1,5 +1,6 @@
 import { IBlueprintAdLibPiece, PieceLifespan, PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
+import { AdlibTags } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../helpers/config'
 import { MakeContentServer } from '../content/server'
@@ -16,7 +17,7 @@ export function CreateAdlibServer(
 	return literal<IBlueprintAdLibPiece>({
 		_rank: rank,
 		externalId,
-		tags: ['adlib_server'],
+		tags: [AdlibTags.OFFTUBE_ADLIB_SERVER],
 		name: `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO: OFFTUBE: Different for offtubes
 		outputLayerId: 'pgm',
