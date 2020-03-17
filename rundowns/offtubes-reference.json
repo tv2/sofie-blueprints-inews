@@ -1,0 +1,756 @@
+{
+    "externalId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+    "name": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+    "type": "inews",
+    "payload": {
+        "externalId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+        "name": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+        "gatewayVersion": "v0.2",
+        "expectedStart": 0,
+        "expectedEnd": 1
+    },
+    "segments": [
+        {
+            "externalId": "00000000:00000000:00000000",
+            "name": "KLAR ON-AIR",
+            "rank": 0,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "01",
+                        "title" : "KLAR ON AIR LATINOBOLD",
+                        "audioTime" : "10",
+                        "totalTime" : "10",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [ 
+                        [ 
+                            "KOMMANDO=GRAPHICSPROFILE", 
+                            "TV2 SPORT 2016", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "STUDIOSETUP=OFF-TUBES", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "VIZ=dve-triopage", 
+                            "GRAFIK=BG_LOADER_FODBOLD_20", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "VIZ=full-triopage", 
+                            "GRAFIK=BG_LOADER_FODBOLD_20", 
+                            ";0.00.01"
+                        ], 
+                        [ 
+                            "STUDIE=ST2p", 
+                            ";0.01"
+                        ], 
+                        [ 
+                            "STUDIE=ST4s", 
+                            ";0.02"
+                        ], 
+                        null, 
+                        [ 
+                            "kg ovl-all-out", 
+                            "CLEAR OVERLAY", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "KG=DESIGN_FODBOLD_20", 
+                            ";0.00.01"
+                        ], 
+                        [ 
+                            "STUDIE=MIC ON OFF", 
+                            "vrt1=OFF", 
+                            "vrt2=OFF", 
+                            "gst1=OFF", 
+                            "gst2=OFF", 
+                            "gst3=OFF", 
+                            "gst4=OFF", 
+                            "kom1=OFF", 
+                            "kom2=OFF", 
+                            "ST4vrt=ON", 
+                            "ST4gst=", 
+                            ";0.00"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000000",
+                    "body" : "\r\n<p><pi>KAM CS 3</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><cc>---load background on DVE------></cc><a idref=\"2\"><cc><------</cc></a></p>\r\n<p><cc>---load background on FULL------></cc><a idref=\"3\"><cc><------</cc></a></p>\r\n<p><cc>---VALG AF STUDIE PRIMÆR--></cc><a idref=\"4\"><cc><--(ST4p, ST2p)</cc></a></p>\r\n<p><cc>--VALG AF STUDIE SEKUNDÆR--></cc><a idref=\"5\"><cc><---(ST4s, ST2s)</cc><tab></tab></a></p>\r\n<p><tab></tab></p>\r\n<p><cc>----all out overlay--></cc><a idref=\"7\"><cc><---</cc></a></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"8\"><cc><------</cc></a></p>\r\n<p></p>\r\n<p><cc>-----slukker mikrofoner--></cc><a idref=\"9\"><cc><-----</cc><tab><tab><tab></tab></tab></tab></a></p>\r\n<p></p>\r\n",
+                    "fileId" : "00000000:00000000:00000000",
+                    "identifier" : "00000000"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000000",
+                "rank": 0,
+                "name": "KLAR ON-AIR",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000001",
+            "name": "DVEs",
+            "rank": 1,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "02",
+                        "title" : "DVEs",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [ 
+                        [
+                            "DVE=MORBARN",
+                            "INP1=KAM 1",
+                            "INP2=LIVE 1"
+                        ],
+                        [
+                            "DVE=BARNMOR",
+                            "INP1=KAM 1",
+                            "INP2=LIVE 1"
+                        ],
+                        [
+                            "DVE=SOMMERFUGL",
+                            "INP1=EVS 1",
+                            "INP2=KAM 1"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000001",
+                    "body" : "\r\n<p><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000001",
+                    "identifier" : "00000001"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000001",
+                "rank": 1,
+                "name": "DVEs",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000002",
+            "name": "FULLs",
+            "rank": 2,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "03",
+                        "title" : "FULLs",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "GRAFIK=FULL"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 2 YNYBB 0 [[ pilotdata",
+                            "Senderplan/23-10-2019",
+                            "VCPID=2565134",
+                            "ContinueCount=-1",
+                            "Senderplan/23-10-2019"
+                        ],
+                        [
+                            "GRAFIK=FULL"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 2 YNYBB 0 [[ pilotdata",
+                            "Senderplan/24-10-2019",
+                            "VCPID=2565134",
+                            "ContinueCount=-1",
+                            "Senderplan/24-10-2019"
+                        ],
+                        [
+                            "GRAFIK=FULL"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 2 YNYBB 0 [[ pilotdata",
+                            "Senderplan/25-10-2019",
+                            "VCPID=2565134",
+                            "ContinueCount=-1",
+                            "Senderplan/25-10-2019"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000002",
+                    "body" : "\r\n<pi>100% GRAFIK</pi>\r\n<p><a idref=\"0\"></a><a idref=\"1\"><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a><a idref=\"5\"></p>\r\n",
+                    "fileId" : "00000000:00000000:00000002",
+                    "identifier" : "00000002"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000002",
+                "rank": 2,
+                "name": "FULLs",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000003",
+            "name": "JINGLE1",
+            "rank": 3,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "04",
+                        "title" : "JINGLE1",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "JINGLE2=SN_intro_19"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000003",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000003",
+                    "identifier" : "00000003"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000003",
+                "rank": 3,
+                "name": "JINGLE1",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000004",
+            "name": "JINGLE2",
+            "rank": 4,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "05",
+                        "title" : "JINGLE2",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "JINGLE2=SN_outro_19"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000004",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000004",
+                    "identifier" : "00000004"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000004",
+                "rank": 4,
+                "name": "JINGLE2",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000005",
+            "name": "JINGLE3",
+            "rank": 5,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "06",
+                        "title" : "JINGLE3",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "JINGLE2=SN_breaker_intro_lukker"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000005",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000005",
+                    "identifier" : "00000005"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000005",
+                "rank": 5,
+                "name": "JINGLE3",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000006",
+            "name": "100% SERVER 1",
+            "rank": 6,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "07",
+                        "title" : "100% SERVER 1",
+                        "tapeTime": "100",
+                        "audioTime" : "0",
+                        "totalTime" : "100",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "01234A"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [],
+                    "id" : "00000000:00000000:00000006",
+                    "body" : "\r\n<p><pi>SERVER</pi></p>\r\n",
+                    "fileId" : "00000000:00000000:00000006",
+                    "identifier" : "00000006"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000006",
+                "rank": 6,
+                "name": "100% SERVER 1",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000007",
+            "name": "100% SERVER 2",
+            "rank": 7,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "08",
+                        "title" : "100% SERVER 2",
+                        "tapeTime": "70",
+                        "audioTime" : "0",
+                        "totalTime" : "70",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "56789A"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [],
+                    "id" : "00000000:00000000:00000007",
+                    "body" : "\r\n<p><pi>SERVER</pi></p>\r\n",
+                    "fileId" : "00000000:00000000:00000007",
+                    "identifier" : "00000007"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000007",
+                "rank": 7,
+                "name": "100% SERVER 2",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000008",
+            "name": "100% SERVER 3",
+            "rank": 8,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "09",
+                        "title" : "100% SERVER 3",
+                        "tapeTime": "20",
+                        "audioTime" : "0",
+                        "totalTime" : "20",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "99999A"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [],
+                    "id" : "00000000:00000000:00000008",
+                    "body" : "\r\n<p><pi>SERVER</pi></p>\r\n",
+                    "fileId" : "00000000:00000000:00000008",
+                    "identifier" : "00000008"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000008",
+                "rank": 8,
+                "name": "100% SERVER 3",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000009",
+            "name": "ADLIB SERVER 1",
+            "rank": 9,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "10",
+                        "title" : "ADLIB SERVER 1",
+                        "tapeTime": "100",
+                        "audioTime" : "0",
+                        "totalTime" : "100",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "01234B"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "ADLIBPIX=SERVER"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000009",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000009",
+                    "identifier" : "00000009"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000009",
+                "rank": 9,
+                "name": "ADLIB SERVER 1",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:00000010",
+            "name": "ADLIB SERVER 2",
+            "rank": 10,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "11",
+                        "title" : "ADLIB SERVER 2",
+                        "tapeTime": "70",
+                        "audioTime" : "0",
+                        "totalTime" : "70",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "56789B"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "ADLIBPIX=SERVER"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000010",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000010",
+                    "identifier" : "00000010"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000010",
+                "rank": 10,
+                "name": "ADLIB SERVER 2",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000011",
+            "name": "ADLIB SERVER 3",
+            "rank": 11,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "12",
+                        "title" : "ADLIB SERVER 3",
+                        "tapeTime": "20",
+                        "audioTime" : "0",
+                        "totalTime" : "20",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "99999B"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "ADLIBPIX=SERVER"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000011",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000011",
+                    "identifier" : "00000011"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000011",
+                "rank": 11,
+                "name": "ADLIB SERVER 3",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000012",
+            "name": "VO SERVER",
+            "rank": 12,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "13",
+                        "title" : "VO SERVER",
+                        "tapeTime": "40",
+                        "audioTime" : "0",
+                        "totalTime" : "40",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "VOVOVA"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [],
+                    "id" : "00000000:00000000:00000012",
+                    "body" : "\r\n<p><pi>VO</pi></p>\r\n",
+                    "fileId" : "00000000:00000000:00000012",
+                    "identifier" : "00000012"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000012",
+                "rank": 12,
+                "name": "VO SERVER",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000013",
+            "name": "VOSB SERVER",
+            "rank": 13,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "14",
+                        "title" : "VOSB SERVER",
+                        "tapeTime": "50",
+                        "audioTime" : "0",
+                        "totalTime" : "50",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "VOVOVA"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [],
+                    "id" : "00000000:00000000:00000013",
+                    "body" : "\r\n<p><pi>VOSB</pi></p>\r\n",
+                    "fileId" : "00000000:00000000:00000013",
+                    "identifier" : "00000013"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000013",
+                "rank": 13,
+                "name": "VOSB SERVER",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000014",
+            "name": "KG ELEMENTER",
+            "rank": 14,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "15",
+                        "title" : "KG ELEMENTER",
+                        "tapeTime": "0",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " ",
+                        "videoId": "VOVOVA"
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "#kg bund Test McTestson",
+                            "Tester",
+                            ";x.xx"
+                        ],
+                        [
+                            "#kg bund Name LastName",
+                            "Another Tester",
+                            ";x.xx"
+                        ],
+                        [
+                            "#kg ident_nyhederne ",
+                            "Ident Nyhederne",
+                            ";x.xx"
+                        ],
+                        [
+                            "#kg bund Some Person",
+                            "Timed Graphic",
+                            ";0.00-10.00"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000014",
+                    "body" : "\r\n<p><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a><a idref=\"3\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000014",
+                    "identifier" : "00000014"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000014",
+                "rank": 14,
+                "name": "KG ELEMENTER",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000015",
+            "name": "EVS",
+            "rank": 15,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "16",
+                        "title" : "EVS",
+                        "tapeTime": "0",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [],
+                    "id" : "00000000:00000000:00000015",
+                    "body" : "\r\n<p><pi>EVS1</pi></p>\r\n<p><pi>EVS2</pi></p>\r\n<p><pi>EVS1VO</pi></p>\r\n<p><pi>EVS2VO</pi></p>\r\n",
+                    "fileId" : "00000000:00000000:00000015",
+                    "identifier" : "00000014"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000015",
+                "rank": 15,
+                "name": "EVS",
+                "float": false
+            },
+            "parts": []
+        }
+    ]
+}
