@@ -26,8 +26,8 @@ export function MakeContentServer(
 	partDefinition: PartDefinition,
 	config: BlueprintConfig,
 	adLib?: boolean,
-	stickyLevels?: boolean
-	// voiceOver?: boolean
+	stickyLevels?: boolean,
+	enabler?: Enablers
 ): VTContent {
 	return literal<VTContent>({
 		studioLabel: '',
@@ -55,7 +55,7 @@ export function MakeContentServer(
 					{
 						id: '',
 						enable: {
-							while: `.${Enablers.OFFTUBE_ENABLE_SERVER}`
+							while: `.${enabler ?? Enablers.OFFTUBE_ENABLE_SERVER}`
 						},
 						content: {
 							inPoint: 0,
@@ -71,7 +71,12 @@ export function MakeContentServer(
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(config, !!adLib, config.studio.CasparPrerollDuration),
+				enable: getServerAdlibEnable(
+					config,
+					!!adLib,
+					config.studio.CasparPrerollDuration,
+					enabler ?? Enablers.OFFTUBE_ENABLE_SERVER
+				),
 				priority: 1,
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
@@ -93,7 +98,7 @@ export function MakeContentServer(
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(config, !!adLib, 0),
+				enable: getServerAdlibEnable(config, !!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER),
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceClipPending,
 				content: {
@@ -111,7 +116,7 @@ export function MakeContentServer(
 				? STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 							id: '',
-							enable: getServerAdlibEnable(config, !!adLib, 0),
+							enable: getServerAdlibEnable(config, !!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER),
 							priority: 1,
 							layer,
 							content: {
@@ -132,11 +137,12 @@ export function MakeContentServer(
 function getServerAdlibEnable(
 	config: BlueprintConfig,
 	adlib: boolean,
-	startTime: number
+	startTime: number,
+	enabler: Enablers
 ): TSRTimelineObjBase['enable'] {
 	if (adlib && config.showStyle.IsOfftube) {
 		return {
-			while: `.${Enablers.OFFTUBE_ENABLE_SERVER}`
+			while: `.${enabler}`
 		}
 	}
 

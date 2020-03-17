@@ -185,8 +185,10 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	} else if (cue[0].match(/^TELEFON=/i)) {
 		// Telefon
 		return parseTelefon(cue)
-	} else if (cue[0].match(/^SS|(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
+	} else if (cue[0].match(/^SS|(?:GRAFIK)=(?:.*)(?:$| )/i)) {
 		// Target engine
+		return parseTargetEngine(cue)
+	} else if (cue[0].match(/^SS|(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/)) {
 		return parseTargetEngine(cue)
 	} else if (cue[0].match(/^VIZ=/i)) {
 		return parseVIZCues(cue)

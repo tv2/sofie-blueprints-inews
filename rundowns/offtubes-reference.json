@@ -174,15 +174,7 @@
                     },
                     "cues" : [
                         [
-                            "GRAFIK=FULL"
-                        ],
-                        [
-                            "]] S3.0 M 0 [[",
-                            "cg4 ]] 2 YNYBB 0 [[ pilotdata",
-                            "Senderplan/23-10-2019",
-                            "VCPID=2565134",
-                            "ContinueCount=-1",
-                            "Senderplan/23-10-2019"
+                            "GRAFIK=Scores"
                         ],
                         [
                             "GRAFIK=FULL"
@@ -208,7 +200,7 @@
                         ]
                     ],
                     "id" : "00000000:00000000:00000002",
-                    "body" : "\r\n<pi>100% GRAFIK</pi>\r\n<p><a idref=\"0\"></a><a idref=\"1\"><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a><a idref=\"5\"></p>\r\n",
+                    "body" : "\r\n<pi>100% GRAFIK</pi>\r\n<p><a idref=\"0\"></a><a idref=\"1\"><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000002",
                     "identifier" : "00000002"
                 },

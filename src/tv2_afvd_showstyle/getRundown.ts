@@ -968,6 +968,34 @@ function getGlobalAdLibPiecesOffTube(_context: NotesContext, _config: BlueprintC
 		})
 	)
 
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
+			externalId: 'setNextToFullGFX',
+			name: 'Set Full GFX Next',
+			sourceLayerId: SourceLayer.PgmOffTubePgmSelect,
+			outputLayerId: 'sec',
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [
+					literal<TimelineObjAbstractAny>({
+						id: '',
+						enable: {
+							while: '1'
+						},
+						priority: 1,
+						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+						content: {
+							deviceType: DeviceType.ABSTRACT
+						},
+						classes: [Enablers.OFFTUBE_ENABLE_FULL]
+					})
+				]
+			}
+		})
+	)
+
 	return adlibItems
 }
 

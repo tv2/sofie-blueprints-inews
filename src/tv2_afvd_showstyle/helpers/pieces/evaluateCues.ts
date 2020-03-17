@@ -16,10 +16,10 @@ import { EvaluateDesign } from './design'
 import { EvaluateDVE } from './dve'
 import { EvaluateEkstern } from './ekstern'
 import { IBlueprintAdLibPieceEPI, IBlueprintPieceEPI } from './expectedPlayoutItems'
-import { EvaluateGrafik } from './grafik'
+import { EvaluateGrafikViz } from './grafikViz'
 import { EvaluateJingle } from './jingle'
 import { EvaluateLYD } from './lyd'
-import { EvaluateMOS } from './mos'
+import { EvaluateMOSViz } from './mos'
 import { EvaluateTargetEngine } from './targetEngine'
 import { EvaluateTelefon } from './telefon'
 import { EvaluateVIZ } from './viz'
@@ -42,7 +42,7 @@ export function EvaluateCues(
 
 			switch (cue.type) {
 				case CueType.Grafik:
-					EvaluateGrafik(
+					EvaluateGrafikViz(
 						config,
 						context,
 						pieces,
@@ -57,7 +57,7 @@ export function EvaluateCues(
 					)
 					break
 				case CueType.MOS:
-					EvaluateMOS(
+					EvaluateMOSViz(
 						config,
 						context,
 						pieces,
@@ -120,7 +120,16 @@ export function EvaluateCues(
 					EvaluateDesign(config, context, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 					break
 				case CueType.TargetEngine:
-					EvaluateTargetEngine(context, config, pieces, adLibPieces, partDefinition.externalId, cue, shouldAdlib)
+					EvaluateTargetEngine(
+						context,
+						config,
+						pieces,
+						adLibPieces,
+						partDefinition.externalId,
+						partDefinition,
+						cue,
+						shouldAdlib
+					)
 					break
 				case CueType.ClearGrafiks:
 					EvaluateClearGrafiks(pieces, partDefinition.externalId, cue, shouldAdlib)

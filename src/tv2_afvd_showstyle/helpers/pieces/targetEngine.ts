@@ -7,22 +7,24 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CueDefinitionTargetEngine, literal } from 'tv2-common'
+import { CalculateTime, CueDefinitionTargetEngine, literal, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
-import { EvaluateGrafik } from './grafik'
-import { EvaluateMOS } from './mos'
+import { EvaluateGrafikCaspar } from './grafikCaspar'
+import { EvaluateGrafikViz } from './grafikViz'
+import { EvaluateMOSViz } from './mos'
 
 export function EvaluateTargetEngine(
 	context: PartContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPeces: IBlueprintAdLibPiece[],
+	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
+	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTargetEngine,
 	adlib: boolean
 ) {
@@ -80,28 +82,32 @@ export function EvaluateTargetEngine(
 
 	if (parsedCue.data.grafik) {
 		if (parsedCue.data.grafik.type === CueType.Grafik) {
-			EvaluateGrafik(
-				config,
-				context,
-				pieces,
-				adlibPeces,
-				partId,
-				parsedCue.data.grafik,
-				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
-				adlib
-			)
+			if (config.showStyle.IsOfftube) {
+				EvaluateGrafikCaspar(config, context, pieces, adlibPieces, parsedCue.data.grafik, partDefinition, true)
+			} else {
+				EvaluateGrafikViz(
+					config,
+					context,
+					pieces,
+					adlibPieces,
+					partId,
+					parsedCue.data.grafik,
+					!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
+					adlib
+				)
+			}
 		} else {
-			EvaluateMOS(
+			EvaluateMOSViz(
 				config,
 				context,
 				pieces,
-				adlibPeces,
+				adlibPieces,
 				partId,
 				parsedCue.data.grafik,
 				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
 				adlib,
 				false,
-				adlibPeces.length,
+				adlibPieces.length,
 				true,
 				!!parsedCue.data.engine.match(/ovl/i)
 			)

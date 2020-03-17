@@ -1,6 +1,6 @@
 import { IBlueprintAdLibPiece, PieceLifespan, PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
-import { AdlibTags } from 'tv2-constants'
+import { AdlibTags, Enablers } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MEDIA_PLAYER_AUTO } from '../../../types/constants' // TODO: Refactor
 import { BlueprintConfig } from '../../helpers/config'
@@ -13,7 +13,8 @@ export function CreateAdlibServer(
 	mediaPlayerSession: string,
 	partDefinition: PartDefinition,
 	file: string,
-	vo: boolean
+	vo: boolean,
+	enabler?: Enablers
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: rank,
@@ -33,7 +34,8 @@ export function CreateAdlibServer(
 			partDefinition,
 			config,
 			true,
-			true
+			true,
+			enabler ?? Enablers.OFFTUBE_ENABLE_SERVER
 		),
 		adlibPreroll: config.studio.CasparPrerollDuration
 	})

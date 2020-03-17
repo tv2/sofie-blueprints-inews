@@ -5,8 +5,8 @@ import { CueType } from 'tv2-constants'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
-import { EvaluateGrafik } from './grafik'
-import { EvaluateMOS } from './mos'
+import { EvaluateGrafikViz } from './grafikViz'
+import { EvaluateMOSViz } from './mos'
 
 export function EvaluateTelefon(
 	config: BlueprintConfig,
@@ -21,7 +21,7 @@ export function EvaluateTelefon(
 ) {
 	if (parsedCue.vizObj) {
 		if (parsedCue.vizObj.type === CueType.Grafik) {
-			EvaluateGrafik(
+			EvaluateGrafikViz(
 				config,
 				context,
 				pieces,
@@ -35,7 +35,7 @@ export function EvaluateTelefon(
 				rank
 			)
 		} else {
-			EvaluateMOS(
+			EvaluateMOSViz(
 				config,
 				context,
 				pieces,

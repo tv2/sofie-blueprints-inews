@@ -27,9 +27,9 @@ import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer, VizLLayer } 
 import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
-import { CreateTimingGrafik, grafikName } from './grafik'
+import { CreateTimingGrafik, grafikName } from './grafikViz'
 
-export function EvaluateMOS(
+export function EvaluateMOSViz(
 	config: BlueprintConfig,
 	context: PartContext,
 	pieces: IBlueprintPiece[],
