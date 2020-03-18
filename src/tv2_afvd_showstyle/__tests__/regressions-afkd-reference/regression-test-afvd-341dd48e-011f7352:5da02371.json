@@ -1,0 +1,217 @@
+{
+    "segment": {
+        "name": "Test Segment 1",
+        "metaData": {},
+        "identifier": "01",
+        "isHidden": false
+    },
+    "parts": [
+        {
+            "part": {
+                "externalId": "341dd48e:011f7352:5da02371-Unknown-SN_intro_19",
+                "title": "Unknown - ",
+                "metaData": {},
+                "typeVariant": "",
+                "autoNext": true,
+                "expectedDuration": 8480,
+                "prerollDuration": 1160,
+                "autoNextOverlap": 240,
+                "disableOutTransition": true,
+                "displayDurationGroup": "341dd48e:011f7352:5da02371"
+            },
+            "adLibPieces": [],
+            "pieces": [
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02371-Unknown-SN_intro_19-JINGLE",
+                    "name": "SN_intro_19",
+                    "enable": {
+                        "start": 0
+                    },
+                    "infiniteMode": 1,
+                    "outputLayerId": "jingle",
+                    "sourceLayerId": "studio0_jingle",
+                    "content": {
+                        "studioLabel": "",
+                        "fileName": "SN_intro_19",
+                        "path": "SN_intro_19",
+                        "firstWords": "",
+                        "lastWords": "",
+                        "timelineObjects": [
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "casparcg_player_jingle",
+                                "content": {
+                                    "deviceType": 1,
+                                    "type": "media",
+                                    "file": "SN_intro_19"
+                                }
+                            },
+                            {
+                                "id": "Ri5GnsQfBu_ZcXXbf_HOA_3TDYc_",
+                                "enable": {
+                                    "start": 280
+                                },
+                                "priority": 1,
+                                "layer": "atem_dsk_effect",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "dsk",
+                                    "dsk": {
+                                        "onAir": true,
+                                        "sources": {
+                                            "fillSource": 6,
+                                            "cutSource": 31
+                                        },
+                                        "properties": {
+                                            "tie": false,
+                                            "preMultiply": false,
+                                            "clip": 500,
+                                            "gain": 125,
+                                            "mask": {
+                                                "enabled": false
+                                            }
+                                        }
+                                    }
+                                },
+                                "classes": [
+                                    "MIX_MINUS_OVERRIDE_DSK"
+                                ],
+                                "metaData": {}
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 280
+                                },
+                                "priority": 1,
+                                "layer": "atem_clean_usk_effect",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "upstreamKeyers": [
+                                            {
+                                                "upstreamKeyerId": 0,
+                                                "onAir": true,
+                                                "mixEffectKeyType": 0,
+                                                "flyEnabled": false,
+                                                "fillSource": 6,
+                                                "cutSource": 31,
+                                                "maskEnabled": false,
+                                                "lumaSettings": {
+                                                    "preMultiplied": false,
+                                                    "clip": 500,
+                                                    "gain": 125
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_jingle",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 280
+                                },
+                                "priority": 1,
+                                "layer": "atem_me_clean",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "dsk",
+                                    "dsk": {
+                                        "onAir": true,
+                                        "sources": {
+                                            "fillSource": 6,
+                                            "cutSource": 31
+                                        },
+                                        "properties": {
+                                            "tie": false,
+                                            "preMultiply": false,
+                                            "clip": 500,
+                                            "gain": 125,
+                                            "mask": {
+                                                "enabled": false
+                                            }
+                                        }
+                                    }
+                                },
+                                "classes": [
+                                    "MIX_MINUS_OVERRIDE_DSK"
+                                ],
+                                "metaData": {
+                                    "context": "Clean for Ri5GnsQfBu_ZcXXbf_HOA_3TDYc_"
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 280
+                                },
+                                "priority": 10,
+                                "layer": "atem_aux_video_mix_minus",
+                                "classes": [
+                                    "MIX_MINUS_OVERRIDE_DSK"
+                                ],
+                                "metaData": {
+                                    "context": "Mix-minus for Ri5GnsQfBu_ZcXXbf_HOA_3TDYc_"
+                                },
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "aux",
+                                    "aux": {
+                                        "input": 6
+                                    }
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 280
+                                },
+                                "priority": 1,
+                                "layer": "atem_clean_usk_effect",
+                                "classes": [
+                                    "MIX_MINUS_OVERRIDE_DSK"
+                                ],
+                                "metaData": {},
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "upstreamKeyers": [
+                                            {
+                                                "upstreamKeyerId": 0
+                                            },
+                                            {
+                                                "upstreamKeyerId": 1,
+                                                "onAir": true
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,9 +1,13 @@
 import * as _ from 'underscore'
 
-import { IBlueprintPieceGeneric, IBlueprintRundownDB, IngestRundown } from 'tv-automation-sofie-blueprints-integration'
-import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
+import {
+	BlueprintResultSegment,
+	IBlueprintPieceGeneric,
+	IBlueprintRundownDB,
+	IngestRundown
+} from 'tv-automation-sofie-blueprints-integration'
+import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
 // import { ConfigMap } from './configs'
-import { checkAllLayers } from './layers-check'
 
 // @ts-ignore
 global.VERSION = 'test'
@@ -11,15 +15,18 @@ global.VERSION = 'test'
 global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
-import { literal } from 'tv2-common'
 import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
+import { literal } from '../../common/util'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { ShowStyleConfig } from '../helpers/config'
 import Blueprints from '../index'
 
 // More ROs can be listed here to make them part of the basic blueprint doesnt crash test
-const rundowns: Array<{ ro: string; studioConfig: StudioConfig; showStyleConfig: ShowStyleConfig }> = [
-	{ ro: '../../../rundowns/on-air.json', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
+const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: ConfigMap }> = [
+	{
+		ro: '../../../rundowns/on-air.json',
+		studioConfig: JSON.parse(JSON.stringify(defaultStudioConfig)),
+		showStyleConfig: defaultShowStyleConfig
+	}
 ]
 
 describe('Rundown exceptions', () => {
@@ -58,11 +65,15 @@ describe('Rundown exceptions', () => {
 					allPieces.push(...part.adLibPieces)
 				})
 
-				checkAllLayers(mockContext, allPieces)
+				const reference = require(`./regressions-afkd-reference/regression-test-afvd-${segment.externalId.replace(
+					':',
+					'-'
+				)}.json`) as BlueprintResultSegment
+
+				expect(res).toEqual(reference)
 
 				// ensure there were no warnings
-				// TODO: Re-enable when the time is right
-				// expect(mockContext.getNotes()).toEqual([])
+				expect(mockContext.getNotes()).toEqual([])
 			})
 		}
 	}
