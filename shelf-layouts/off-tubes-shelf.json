@@ -1,7 +1,7 @@
 {
   "_id": "C4x2GbLWBMPoBhmyZ",
   "name": "Off-tube",
-  "showStyleBaseId": "vXKwhB4TqzqgZRbCQ",
+  "showStyleBaseId": "show0",
   "filters": [
     {
       "_id": "pyRvtqdtAbFE2gekk",
@@ -46,15 +46,19 @@
       "enableSearch": false,
       "showAsTimeline": false,
       "overflowHorizontally": false,
-      "sourceLayerTypes": [
-        2
+      "sourceLayerIds": [
+        "studio0_clip",
+        "studio0_jingle"
+      ],
+      "tags": [
+        "offtube_adlib_100pc_server"
       ]
     },
     {
       "_id": "zHX89zpASjzyn7GTz",
       "type": "filter",
       "name": "ADLIB / VO SERVER",
-      "currentSegment": true,
+      "currentSegment": false,
       "displayStyle": "list",
       "rank": 0,
       "rundownBaseline": true,
@@ -65,8 +69,12 @@
       "width": 14,
       "includeClearInRundownBaseline": false,
       "assignHotKeys": false,
+      "tags": [
+        "offtube_adlib_server"
+      ],
       "sourceLayerIds": [
-        "studio0_voiceover"
+        "studio0_voiceover",
+        "studio0_clip"
       ]
     },
     {
@@ -83,7 +91,9 @@
       "y": -3,
       "width": 14,
       "sourceLayerIds": [
-        "studio0_graphicsIdent"
+        "studio0_graphicsIdent",
+        "studio0_graphicsTop",
+        "studio0_graphicsLower"
       ]
     },
     {
@@ -95,12 +105,12 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "sourceLayerIds": [
-        "studio0_pilot"
-      ],
       "x": 18,
       "width": 14,
-      "height": 7
+      "height": 7,
+      "sourceLayerIds": [
+        "studio0_overlay"
+      ]
     },
     {
       "_id": "swGojWdTHwiEuAsoe",

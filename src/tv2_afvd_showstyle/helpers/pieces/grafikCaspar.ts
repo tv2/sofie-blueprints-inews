@@ -15,6 +15,24 @@ export function EvaluateGrafikCaspar(
 	partDefinition: PartDefinition,
 	adlib: boolean
 ) {
+	if (config.showStyle.GFXTemplates) {
+		const template = config.showStyle.GFXTemplates.find(
+			templ =>
+				templ.INewsName === parsedCue.template &&
+				templ.INewsCode.toString()
+					.replace(/=/gi, '')
+					.toUpperCase() === parsedCue.cue.toUpperCase()
+		)
+		if (template) {
+			console.log(JSON.stringify(template))
+			if (template.IsDesign) {
+				if (config.showStyle.IsOfftube) {
+					return
+				}
+			}
+		}
+	}
+
 	if (adlib) {
 		const piece = CreateAdlibServer(
 			config,
@@ -27,7 +45,7 @@ export function EvaluateGrafikCaspar(
 			false,
 			Enablers.OFFTUBE_ENABLE_FULL
 		)
-		piece.sourceLayerId = SourceLayer.PgmPilotOverlay
+		piece.sourceLayerId = SourceLayer.PgmGraphicsOverlay
 		adlibPieces.push(piece)
 	}
 }

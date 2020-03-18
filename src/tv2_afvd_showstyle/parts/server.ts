@@ -7,6 +7,7 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
+import { AdlibTags } from 'tv2-constants'
 import { PieceMetaData } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { MakeContentServer } from '../helpers/content/server'
@@ -51,18 +52,18 @@ export function CreatePartServer(
 	AddScript(partDefinition, pieces, duration)
 
 	if (config.showStyle.IsOfftube) {
-		adLibPieces.push(
-			CreateAdlibServer(
-				config,
-				0,
-				partDefinition.externalId,
-				partDefinition.externalId,
-				partDefinition,
-				file,
-				false,
-				true
-			)
+		const adlibServer = CreateAdlibServer(
+			config,
+			0,
+			partDefinition.externalId,
+			partDefinition.externalId,
+			partDefinition,
+			file,
+			false,
+			false
 		)
+		adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER]
+		adLibPieces.push(adlibServer)
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({

@@ -41,16 +41,26 @@ export function EvaluateGrafikViz(
 	isTlfPrimary?: boolean,
 	rank?: number
 ) {
+	console.log('~~~~~~~~~~')
+	console.log(parsedCue.cue)
+	console.log(parsedCue.iNewsCommand)
+	console.log(parsedCue.template)
+	console.log('~~~~~~~~~~')
+
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(
 			templ =>
 				templ.INewsName === parsedCue.template &&
 				templ.INewsCode.toString()
-					.replace(/=/gi, '')
+					.replace(/[=#]/gi, '')
 					.toUpperCase() === parsedCue.cue.toUpperCase()
 		)
 		if (template) {
 			if (template.IsDesign) {
+				if (config.showStyle.IsOfftube) {
+					return
+				}
+
 				const designCue: CueDefinitionDesign = {
 					type: CueType.Design,
 					design: parsedCue.template,
