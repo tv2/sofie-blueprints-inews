@@ -15,23 +15,24 @@ export function CreateAdlibServer(
 	file: string,
 	vo: boolean,
 	tagAsAdlib: boolean,
-	enabler?: Enablers
+	enabler?: Enablers,
+	offtube?: boolean
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: rank,
 		externalId,
-		...(config.showStyle.IsOfftube ? { tags: tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [] } : {}),
+		...(offtube ? { tags: tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [] } : {}),
 		name: `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer,
 		outputLayerId: 'pgm',
-		infiniteMode: config.showStyle.IsOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
-		toBeQueued: !config.showStyle.IsOfftube,
+		infiniteMode: offtube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
+		toBeQueued: !offtube,
 		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: config.showStyle.IsOfftube ? [MEDIA_PLAYER_AUTO] : [mediaPlayerSession]
+			mediaPlayerSessions: offtube ? [MEDIA_PLAYER_AUTO] : [mediaPlayerSession]
 		}),
 		content: MakeContentServer(
 			file,
-			config.showStyle.IsOfftube ? MEDIA_PLAYER_AUTO : mediaPlayerSession,
+			offtube ? MEDIA_PLAYER_AUTO : mediaPlayerSession,
 			partDefinition,
 			config,
 			true,

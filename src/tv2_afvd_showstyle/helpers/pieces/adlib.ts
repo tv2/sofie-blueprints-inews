@@ -31,7 +31,7 @@ export function EvaluateAdLib(
 				partDefinition,
 				file,
 				false,
-				config.showStyle.IsOfftube
+				false /*config.showStyle.IsOfftube*/
 			)
 		)
 	} else {

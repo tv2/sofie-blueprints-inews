@@ -10,7 +10,7 @@ export function getShowStyleId(
 	showStyles: IBlueprintShowStyleBase[],
 	_ingestRundown: IngestRundown
 ): string | null {
-	const showStyle = showStyles.find(s => s.config.includes({ _id: 'IsOfftube', value: true })) || _.first(showStyles)
+	const showStyle = _.first(showStyles)
 	if (showStyle) {
 		return showStyle._id
 	}

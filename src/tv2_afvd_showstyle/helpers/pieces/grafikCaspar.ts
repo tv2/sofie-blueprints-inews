@@ -25,7 +25,8 @@ export function EvaluateGrafikCaspar(
 		if (template) {
 			console.log(JSON.stringify(template))
 			if (template.IsDesign) {
-				if (config.showStyle.IsOfftube) {
+				/* config.showStyle.IsOfftube */
+				if ([].length === 999) {
 					return
 				}
 			}

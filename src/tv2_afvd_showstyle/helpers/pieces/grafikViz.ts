@@ -51,7 +51,8 @@ export function EvaluateGrafikViz(
 		)
 		if (template) {
 			if (template.IsDesign) {
-				if (config.showStyle.IsOfftube) {
+				/** config.showStyle.IsOfftube */
+				if ([].length === 999) {
 					return
 				}
 

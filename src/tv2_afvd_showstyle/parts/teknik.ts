@@ -5,11 +5,10 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition } from 'tv2-common'
+import { literal, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { PartTime } from './time/partTime'
 
 export function CreatePartTeknik(
 	context: PartContext,
@@ -17,7 +16,7 @@ export function CreatePartTeknik(
 	partDefinition: PartDefinition,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords)
+	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords)
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,

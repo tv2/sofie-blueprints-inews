@@ -104,11 +104,6 @@ export enum VizLLayer {
 	VizLLayerWall = 'viz_layer_wall'
 }
 
-export enum OfftubeAbstractLLayer {
-	/** Contains the classes to enable infinites */
-	OfftubeAbstractLLayerPgmEnabler = 'offtube_abstract_pgm_enabler'
-}
-
 export function CasparPlayerClip(i: number | string) {
 	return `casparcg_player_clip_${i}`
 }

@@ -18,11 +18,11 @@ import {
 	CreateTimingEnable,
 	CueDefinitionEkstern,
 	EksternParentClass,
+	FindSourceInfoStrict,
 	literal,
 	PartDefinition
 } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { ControlClasses, SourceLayer } from '../../layers'

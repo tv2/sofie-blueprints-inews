@@ -38,7 +38,7 @@ export function EvaluateCues(
 
 	for (const cue of cues) {
 		if (cue) {
-			const shouldAdlib = config.showStyle.IsOfftube || adlib ? true : cue.adlib ? true : false
+			const shouldAdlib = /* config.showStyle.IsOfftube || */ adlib ? true : cue.adlib ? true : false
 
 			switch (cue.type) {
 				case CueType.Grafik:

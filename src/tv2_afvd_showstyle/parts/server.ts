@@ -51,7 +51,8 @@ export function CreatePartServer(
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 	AddScript(partDefinition, pieces, duration)
 
-	if (config.showStyle.IsOfftube) {
+	/** config.showStyle.IsOfftube */
+	if ([].length === 999) {
 		const adlibServer = CreateAdlibServer(
 			config,
 			0,

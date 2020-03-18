@@ -8,10 +8,10 @@ import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import {
 	applyToConfig,
-	BlueprintConfig as BlueprintConfigBase,
 	defaultStudioConfig,
+	OfftubeStudioBlueprintConfig as OffTubeBlueprintConfigBase,
 	parseStudioConfig
-} from '../../tv2_afvd_studio/helpers/config'
+} from '../../tv2_offtube_studio/helpers/config'
 import { showStyleConfigManifest } from '../config-manifests'
 
 export interface TableConfigItemGFXTemplates {
@@ -27,7 +27,7 @@ export interface TableConfigItemGFXTemplates {
 	IsDesign: boolean
 }
 
-export interface BlueprintConfig extends BlueprintConfigBase {
+export interface OffTubeShowstyleBlueprintConfig extends OffTubeBlueprintConfigBase {
 	showStyle: ShowStyleConfig
 }
 
@@ -44,7 +44,6 @@ export interface DVEConfigInput {
 }
 
 export interface ShowStyleConfig {
-	MakeAdlibsForFulls: boolean
 	CasparCGLoadingClip: string
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
@@ -56,10 +55,10 @@ export interface ShowStyleConfig {
 
 function extendWithShowStyleConfig(
 	context: NotesContext,
-	baseConfig: BlueprintConfigBase,
+	baseConfig: OffTubeBlueprintConfigBase,
 	values: { [key: string]: ConfigItemValue }
-): BlueprintConfig {
-	const config = literal<BlueprintConfig>({
+): OffTubeShowstyleBlueprintConfig {
+	const config = literal<OffTubeShowstyleBlueprintConfig>({
 		...baseConfig,
 		showStyle: {} as any
 	})
@@ -69,10 +68,10 @@ function extendWithShowStyleConfig(
 	return config
 }
 
-export function defaultConfig(context: NotesContext): BlueprintConfig {
+export function defaultConfig(context: NotesContext): OffTubeShowstyleBlueprintConfig {
 	return extendWithShowStyleConfig(context, defaultStudioConfig(context), {})
 }
 
-export function parseConfig(context: ShowStyleContext): BlueprintConfig {
+export function parseConfig(context: ShowStyleContext): OffTubeShowstyleBlueprintConfig {
 	return extendWithShowStyleConfig(context, parseStudioConfig(context), context.getShowStyleConfig())
 }

@@ -15,8 +15,14 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddParentClass, CameraParentClass, literal, PartDefinitionKam } from 'tv2-common'
-import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
+import {
+	AddParentClass,
+	CameraParentClass,
+	FindSourceInfoStrict,
+	literal,
+	PartDefinitionKam,
+	PartTime
+} from 'tv2-common'
 import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -27,7 +33,6 @@ import { TransitionSettings } from '../helpers/transitionSettings'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
-import { PartTime } from './time/partTime'
 
 export function CreatePartKam(
 	context: PartContext,
@@ -35,7 +40,7 @@ export function CreatePartKam(
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords, false)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

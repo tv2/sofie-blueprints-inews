@@ -5,14 +5,13 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionJingle, literal, PartDefinition } from 'tv2-common'
+import { CueDefinitionJingle, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { GetJinglePartProperties } from './effekt'
 import { CreatePartInvalid } from './invalid'
-import { PartTime } from './time/partTime'
 
 export function CreatePartIntro(
 	context: PartContext,
@@ -20,7 +19,7 @@ export function CreatePartIntro(
 	partDefinition: PartDefinition,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords)
+	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords)
 
 	const jingleCue = partDefinition.cues.find(cue => {
 		const parsedCue = cue

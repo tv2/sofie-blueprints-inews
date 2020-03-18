@@ -20,9 +20,8 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionMOS, InfiniteMode, literal } from 'tv2-common'
+import { CueDefinitionMOS, InfiniteMode, literal, SourceInfo } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { VizEngine } from '../../../types/constants'
 import { BlueprintConfig } from '../config'
