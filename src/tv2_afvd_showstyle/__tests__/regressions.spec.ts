@@ -15,8 +15,8 @@ global.VERSION = 'test'
 global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
+import { literal } from 'tv2-common'
 import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
-import { literal } from '../../common/util'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import Blueprints from '../index'
 
