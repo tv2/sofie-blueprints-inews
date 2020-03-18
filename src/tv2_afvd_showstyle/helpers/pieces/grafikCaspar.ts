@@ -24,6 +24,7 @@ export function EvaluateGrafikCaspar(
 			partDefinition,
 			parsedCue.template,
 			false,
+			false,
 			Enablers.OFFTUBE_ENABLE_FULL
 		)
 		piece.sourceLayerId = SourceLayer.PgmPilotOverlay

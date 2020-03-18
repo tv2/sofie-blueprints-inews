@@ -21,7 +21,7 @@ export function EvaluateAdLib(
 		// Create server AdLib
 		const file = partDefinition.fields.videoId
 
-		adLibPieces.push(CreateAdlibServer(config, rank, partId, partId, partDefinition, file, false))
+		adLibPieces.push(CreateAdlibServer(config, rank, partId, partId, partDefinition, file, true, false))
 	} else {
 		// DVE
 		if (!parsedCue.variant) {

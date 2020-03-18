@@ -14,12 +14,13 @@ export function CreateAdlibServer(
 	partDefinition: PartDefinition,
 	file: string,
 	vo: boolean,
+	tagAsAdlib: boolean,
 	enabler?: Enablers
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: rank,
 		externalId,
-		tags: [AdlibTags.OFFTUBE_ADLIB_SERVER],
+		tags: tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [],
 		name: `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer,
 		outputLayerId: 'pgm',
