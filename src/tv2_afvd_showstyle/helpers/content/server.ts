@@ -49,20 +49,24 @@ export function MakeContentServer(
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: adLib,
-					playing: false
+					...(config.showStyle.IsOfftube ? { playing: false } : {})
 				},
-				keyframes: [
-					{
-						id: '',
-						enable: {
-							while: `.${enabler ?? Enablers.OFFTUBE_ENABLE_SERVER}`
-						},
-						content: {
-							inPoint: 0,
-							playing: true
-						}
-					}
-				],
+				...(config.showStyle.IsOfftube
+					? {
+							keyframes: [
+								{
+									id: '',
+									enable: {
+										while: `.${enabler ?? Enablers.OFFTUBE_ENABLE_SERVER}`
+									},
+									content: {
+										inPoint: 0,
+										playing: true
+									}
+								}
+							]
+					  }
+					: {}),
 				metaData: {
 					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
 				},

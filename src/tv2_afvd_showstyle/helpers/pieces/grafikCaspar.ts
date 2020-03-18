@@ -3,7 +3,6 @@ import { CueDefinitionGrafik, PartDefinition } from 'tv2-common'
 import { Enablers } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { CreateAdlibServer } from './adlibServer'
 
 export function EvaluateGrafikCaspar(
@@ -38,7 +37,7 @@ export function EvaluateGrafikCaspar(
 			config,
 			0,
 			partDefinition.externalId,
-			MEDIA_PLAYER_AUTO,
+			partDefinition.externalId,
 			partDefinition,
 			parsedCue.template,
 			false,

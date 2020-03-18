@@ -20,7 +20,7 @@ export function CreateAdlibServer(
 	return literal<IBlueprintAdLibPiece>({
 		_rank: rank,
 		externalId,
-		tags: tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [],
+		...(config.showStyle.IsOfftube ? { tags: tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [] } : {}),
 		name: `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer,
 		outputLayerId: 'pgm',

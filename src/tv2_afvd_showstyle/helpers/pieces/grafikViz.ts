@@ -46,7 +46,7 @@ export function EvaluateGrafikViz(
 			templ =>
 				templ.INewsName === parsedCue.template &&
 				templ.INewsCode.toString()
-					.replace(/[=#]/gi, '')
+					.replace(/=/gi, '')
 					.toUpperCase() === parsedCue.cue.toUpperCase()
 		)
 		if (template) {

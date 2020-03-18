@@ -3,6 +3,7 @@ import { CueDefinitionAdLib, CueDefinitionDVE, literal, PartDefinition } from 't
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
+import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 import { CreateAdlibServer } from './adlibServer'
@@ -21,7 +22,18 @@ export function EvaluateAdLib(
 		// Create server AdLib
 		const file = partDefinition.fields.videoId
 
-		adLibPieces.push(CreateAdlibServer(config, rank, partId, partId, partDefinition, file, false, true))
+		adLibPieces.push(
+			CreateAdlibServer(
+				config,
+				rank,
+				partId,
+				MEDIA_PLAYER_AUTO,
+				partDefinition,
+				file,
+				false,
+				config.showStyle.IsOfftube
+			)
+		)
 	} else {
 		// DVE
 		if (!parsedCue.variant) {
