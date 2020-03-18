@@ -241,7 +241,9 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = true
 	}
 
-	postProcessPartTimelineObjects(context, config, blueprintParts)
+	if (!config.showStyle.IsOfftube) {
+		postProcessPartTimelineObjects(context, config, blueprintParts)
+	}
 
 	return {
 		segment,
