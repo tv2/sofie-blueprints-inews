@@ -98,7 +98,7 @@ export function EvaluateDVE(
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
 					infiniteMode: config.showStyle.IsOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
-					toBeQueued: true,
+					toBeQueued: !config.showStyle.IsOfftube,
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
 				})

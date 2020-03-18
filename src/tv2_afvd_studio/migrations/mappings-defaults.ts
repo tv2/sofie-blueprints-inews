@@ -503,6 +503,12 @@ export default literal<BlueprintMappings>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
+	}),
+	// TODO: OFFTUBE: Move to offtube studio migrations
+	offtube_abstract_pgm_enabler: literal<MappingAbstract & BlueprintMapping>({
+		device: DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 })
 

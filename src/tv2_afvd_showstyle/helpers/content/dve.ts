@@ -26,6 +26,7 @@ import {
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import { createEmptyObject, CueDefinitionDVE, DVEParentClass, DVESources, literal, PartDefinition } from 'tv2-common'
+import { Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { FindSourceInfoStrict, SourceInfo, SourceInfoType } from '../../../tv2_afvd_studio/helpers/sources'
@@ -390,7 +391,9 @@ export function MakeContentDVE2(
 
 				literal<TimelineObjAtemME>({
 					id: '',
-					enable: { start: Number(config.studio.CasparPrerollDuration) - 80 }, // let caspar update, but give the ssrc 2 frames to get configured
+					enable: config.showStyle.IsOfftube
+						? { while: Enablers.OFFTUBE_ENABLE_DVE }
+						: { start: Number(config.studio.CasparPrerollDuration) - 80 }, // let caspar update, but give the ssrc 2 frames to get configured
 					priority: 1,
 					layer: AtemLLayer.AtemMEProgram,
 					content: {
