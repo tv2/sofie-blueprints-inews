@@ -1,7 +1,7 @@
 import * as _ from 'underscore'
 
 import { IBlueprintPieceGeneric, IBlueprintRundownDB, IngestRundown } from 'tv-automation-sofie-blueprints-integration'
-import { casparABPlaybackConfig, ConfigMap, defaultShowStyleConfig } from './configs'
+import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
 // import { ConfigMap } from './configs'
 import { checkAllLayers } from './layers-check'
 
@@ -13,12 +13,14 @@ global.VERSION_TSR = 'test'
 global.VERSION_INTEGRATION = 'test'
 import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
 import { literal } from '../../common/util'
+import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
+import { ShowStyleConfig } from '../helpers/config'
 import Blueprints from '../index'
 
 // More ROs can be listed here to make them part of the basic blueprint doesnt crash test
-const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: ConfigMap }> = [
-	{ ro: '../../../rundowns/on-air.json', studioConfig: casparABPlaybackConfig, showStyleConfig: defaultShowStyleConfig }
+const rundowns: Array<{ ro: string; studioConfig: StudioConfig; showStyleConfig: ShowStyleConfig }> = [
+	{ ro: '../../../rundowns/on-air.json', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 ]
 
 describe('Rundown exceptions', () => {

@@ -26,7 +26,6 @@ export function EvaluateTargetEngine(
 	partId: string,
 	parsedCue: CueDefinitionTargetEngine
 ) {
-	console.log(JSON.stringify(parsedCue))
 	// TODO: Future: Target a specific engine
 	if (!parsedCue.data.engine.match(/full|ovl|wall/i)) {
 		context.warning(`Could not find engine to target for: ${parsedCue.data.engine}`)

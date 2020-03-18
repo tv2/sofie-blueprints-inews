@@ -1,7 +1,12 @@
 import * as _ from 'underscore'
 
-import { IBlueprintPieceGeneric, IBlueprintRundownDB, IngestRundown } from 'tv-automation-sofie-blueprints-integration'
-import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
+import {
+	BlueprintResultSegment,
+	IBlueprintPieceGeneric,
+	IBlueprintRundownDB,
+	IngestRundown
+} from 'tv-automation-sofie-blueprints-integration'
+import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
 // import { ConfigMap } from './configs'
 
 // @ts-ignore
@@ -10,16 +15,13 @@ global.VERSION = 'test'
 global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
-import * as fs from 'fs'
 import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
 import { literal } from '../../common/util'
-import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { ShowStyleConfig } from '../helpers/config'
 import Blueprints from '../index'
 
 // More ROs can be listed here to make them part of the basic blueprint doesnt crash test
-const rundowns: Array<{ ro: string; studioConfig: StudioConfig; showStyleConfig: ShowStyleConfig }> = [
+const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: ConfigMap }> = [
 	{
 		ro: '../../../rundowns/on-air.json',
 		studioConfig: JSON.parse(JSON.stringify(defaultStudioConfig)),
@@ -63,7 +65,12 @@ describe('Rundown exceptions', () => {
 					allPieces.push(...part.adLibPieces)
 				})
 
-				fs.writeFileSync(`regression-test-afvd-${segment.externalId.replace(':', '-')}`, JSON.stringify(res))
+				const reference = require(`./regressions-afkd-reference/regression-test-afvd-${segment.externalId.replace(
+					':',
+					'-'
+				)}.json`) as BlueprintResultSegment
+
+				expect(res).toEqual(reference)
 
 				// ensure there were no warnings
 				expect(mockContext.getNotes()).toEqual([])

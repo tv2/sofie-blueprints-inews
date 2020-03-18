@@ -1,32 +1,28 @@
 import { ConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
-import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { ShowStyleConfig } from '../helpers/config'
-// import { DefaultBreakerConfig } from './breakerConfigDefault'
-// import { DefaultGrafikConfig } from './grafikConfigDefault'
+import { DefaultBreakerConfig } from './breakerConfigDefault'
+import { DefaultGrafikConfig } from './grafikConfigDefault'
 
 export interface ConfigMap {
-	[key: string]: ConfigItemValue | ConfigMap
+	[key: string]: ConfigItemValue | ConfigMap | any[]
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
-export const defaultStudioConfig: StudioConfig = {
+export const defaultStudioConfig: ConfigMap = {
 	SourcesCam:
 		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15',
 	SourcesSkype: '1:1,2:2,3:3,4:4,5:5,6:6,7:7',
 	SourcesRM: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10',
-	AtemSource: {
-		MixMinusDefault: 2,
-		DSK1F: 21,
-		DSK1K: 34,
-		ServerC: 28,
-		JingleFill: 6,
-		JingleKey: 31,
-		SplitArtF: 30,
-		SplitArtK: 32,
-		FullFrameGrafikBackground: 36,
-		Default: 2001,
-		Continuity: 2002
-	},
+	'AtemSource.MixMinusDefault': 2,
+	'AtemSource.DSK1F': 21,
+	'AtemSource.DSK1K': 34,
+	'AtemSource.ServerC': 28,
+	'AtemSource.JingleFill': 6,
+	'AtemSource.JingleKey': 31,
+	'AtemSource.SplitArtF': 30,
+	'AtemSource.SplitArtK': 32,
+	'AtemSource.FullFrameGrafikBackground': 36,
+	'AtemSource.Default': 2001,
+	'AtemSource.Continuity': 2002,
 	ClipSourcePath: '/media',
 	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
@@ -34,17 +30,13 @@ export const defaultStudioConfig: StudioConfig = {
 	SourcesDelayedPlayback: '1:5,2:5',
 	ABMediaPlayers: '1:1,2:2',
 	ABPlaybackDebugLogging: false,
-	AtemSettings: {
-		VizClip: 50,
-		VizGain: 12.5,
-		CCGClip: 50,
-		CCGGain: 12.5
-	},
-	AudioBedSettings: {
-		fadeIn: 1000,
-		fadeOut: 1000,
-		volume: 80
-	},
+	'AtemSettings.VizClip': 50,
+	'AtemSettings.VizGain': 12.5,
+	'AtemSettings.CCGClip': 50,
+	'AtemSettings.CCGGain': 12.5,
+	'AudioBedSettings.fadeIn': 1000,
+	'AudioBedSettings.fadeOut': 1000,
+	'AudioBedSettings.volume': 80,
 	CasparPrerollDuration: 280,
 	PilotPrerollDuration: 2000,
 	PilotKeepaliveDuration: 700,
@@ -54,7 +46,7 @@ export const defaultStudioConfig: StudioConfig = {
 	MaximumKamDisplayDuration: 10000
 }
 
-export const defaultShowStyleConfig: ShowStyleConfig & StudioConfig = {
+export const defaultShowStyleConfig: ConfigMap = {
 	...defaultStudioConfig,
 	DefaultTemplateDuration: 4,
 	CasparCGLoadingClip: 'LoadingLoop',
@@ -94,9 +86,9 @@ export const defaultShowStyleConfig: ShowStyleConfig & StudioConfig = {
 		}
 	],
 	WipesConfig: [],
-	BreakerConfig: [], // DefaultBreakerConfig(),
+	BreakerConfig: DefaultBreakerConfig(),
 	MakeAdlibsForFulls: true,
-	GFXTemplates: [], // DefaultGrafikConfig(),
+	GFXTemplates: DefaultGrafikConfig(),
 	LYDConfig: [
 		{
 			_id: '',
