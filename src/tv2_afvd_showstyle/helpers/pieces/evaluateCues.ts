@@ -6,7 +6,13 @@ import {
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import { PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { assertUnreachable, CueDefinition, PartDefinition } from 'tv2-common'
+import {
+	assertUnreachable,
+	CueDefinition,
+	IBlueprintAdLibPieceEPI,
+	IBlueprintPieceEPI,
+	PartDefinition
+} from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
@@ -15,7 +21,6 @@ import { EvaluateClearGrafiks } from './clearGrafiks'
 import { EvaluateDesign } from './design'
 import { EvaluateDVE } from './dve'
 import { EvaluateEkstern } from './ekstern'
-import { IBlueprintAdLibPieceEPI, IBlueprintPieceEPI } from './expectedPlayoutItems'
 import { EvaluateGrafikViz } from './grafikViz'
 import { EvaluateJingle } from './jingle'
 import { EvaluateLYD } from './lyd'

@@ -6,17 +6,14 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { BlueprintConfig } from '../helpers/config'
-import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
-import { CreateEffektForpart } from './effekt'
+import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export function CreatePartUnknown(
 	context: PartContext,
-	config: BlueprintConfig,
+	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
-	asAdlibs?: boolean
+	_asAdlibs?: boolean
 ) {
 	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords)
 
@@ -32,25 +29,10 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
-
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
-	if (!asAdlibs) {
-		AddScript(partDefinition, pieces, partTime)
-	}
+	// EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
-	if (
-		partDefinition.cues.filter(
-			cue => cue.type === CueType.MOS || cue.type === CueType.Telefon || cue.type === CueType.TargetEngine
-		).length &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
-	) {
-		part.prerollDuration = config.studio.PilotPrerollDuration
-		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
-			? Number(config.studio.PilotKeepaliveDuration)
-			: 60000
-	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
+	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
 		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 

@@ -5,12 +5,11 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionJingle, literal, PartDefinition, PartTime } from 'tv2-common'
+import { CueDefinitionJingle, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetJinglePartProperties } from './effekt'
 import { CreatePartInvalid } from './invalid'
 
 export function CreatePartIntro(

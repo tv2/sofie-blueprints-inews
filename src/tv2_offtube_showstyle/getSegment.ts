@@ -1,28 +1,44 @@
 import {
+	AtemTransitionStyle,
+	DeviceType,
+	TimelineContentTypeAtem,
+	TimelineObjAtemAny,
+	TimelineObjAtemME
+} from 'timeline-state-resolver-types'
+import {
+	BlueprintResultPart,
 	BlueprintResultSegment,
+	CameraContent,
+	IBlueprintPiece,
 	IBlueprintRundownDB,
-	IBlueprintSegment,
 	IngestSegment,
 	PartContext,
+	PieceLifespan,
 	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
+import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
+import { OfftubeStudioConfig } from '../tv2_offtube_studio/helpers/config'
+import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
+import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
+import { OffTubeSourceLayer } from './layers'
+import { CreatePartUnknown } from './parts/OfftubeUnknown'
 
-export function getSegment(_context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
-	const segment = literal<IBlueprintSegment>({
-		name: ingestSegment.name,
-		metaData: {},
-		identifier:
-			ingestSegment.payload.iNewsStory.fields.pageNumber && ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
-				? ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
-				: undefined
-	})
-	// const config = parseConfig(context)
+export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+	const result: BlueprintResultSegment = getSegmentBase<OfftubeStudioConfig, OffTubeShowstyleBlueprintConfig>(
+		context,
+		ingestSegment,
+		{
+			parseConfig,
+			TransformCuesIntoShowstyle,
+			CreatePartContinuity,
+			CreatePartUnknown
+		}
+	)
 
 	return {
-		segment,
-		parts: []
+		segment: result.segment,
+		parts: result.parts
 	}
 }
 
@@ -84,4 +100,50 @@ export class PartContext2 implements PartContext {
 	public unhashId(hash: string) {
 		return this.baseContext.unhashId(hash)
 	}
+}
+
+function CreatePartContinuity(config: OffTubeShowstyleBlueprintConfig, ingestSegment: IngestSegment) {
+	return literal<BlueprintResultPart>({
+		part: {
+			externalId: `${ingestSegment.externalId}-CONTINUITY`,
+			title: 'CONTINUITY',
+			typeVariant: ''
+		},
+		pieces: [
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: `${ingestSegment.externalId}-CONTINUITY`,
+				enable: {
+					start: 0
+				},
+				name: 'CONTINUITY',
+				sourceLayerId: OffTubeSourceLayer.PgmContinuity,
+				outputLayerId: 'pgm',
+				infiniteMode: PieceLifespan.OutOnNextSegment,
+				content: literal<CameraContent>({
+					studioLabel: '',
+					switcherInput: config.studio.AtemSource.Continuity,
+					timelineObjects: _.compact<TimelineObjAtemAny>([
+						literal<TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: OfftubeAtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: config.studio.AtemSource.Continuity,
+									transition: AtemTransitionStyle.CUT
+								}
+							}
+						})
+					])
+				})
+			})
+		],
+		adLibPieces: []
+	})
 }

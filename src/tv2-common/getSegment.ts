@@ -48,66 +48,66 @@ export interface GetSegmentShowstyleOptions<
 		totalWords: number,
 		asAdlibs?: boolean
 	) => BlueprintResultPart
-	CreatePartIntro: (
+	CreatePartIntro?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number
 	) => BlueprintResultPart
-	CreatePartKam: (
+	CreatePartKam?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionKam,
 		totalWords: number
 	) => BlueprintResultPart
-	CreatePartServer: (
+	CreatePartServer?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionServer
 	) => BlueprintResultPart
-	CreatePartTeknik: (
+	CreatePartTeknik?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTeknik,
 		totalWords: number
 	) => BlueprintResultPart
-	CreatePartGrafik: (
+	CreatePartGrafik?: (
 		context: PartContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionGrafik,
 		totalWords: number
 	) => BlueprintResultPart
-	CreatePartVO: (
+	CreatePartVO?: (
 		context: PartContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionVO,
 		totalWords: number,
 		totalTime: number
 	) => BlueprintResultPart
-	CreatePartEkstern: (
+	CreatePartEkstern?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEkstern,
 		totalWords: number
 	) => BlueprintResultPart
-	CreatePartTelefon: (
+	CreatePartTelefon?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTelefon,
 		totalWords: number
 	) => BlueprintResultPart
-	CreatePartEVS(
-		context: PartContext,
-		config: ShowStyleConfig,
-		partDefinition: PartDefinitionEVS,
-		totalWords: number
-	): BlueprintResultPart
-	CreatePartDVE(
+	CreatePartDVE?: (
 		context: PartContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionDVE,
 		totalWords: number
-	): BlueprintResultPart
+	) => BlueprintResultPart
+	CreatePartEVS?: (
+		context: PartContext,
+		config: ShowStyleConfig,
+		partDefinition: PartDefinitionEVS,
+		totalWords: number
+	) => BlueprintResultPart
 }
 
 export function getSegmentBase<
@@ -182,39 +182,57 @@ export function getSegmentBase<
 
 		switch (part.type) {
 			case PartType.INTRO:
-				blueprintParts.push(showStyleOptions.CreatePartIntro(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartIntro) {
+					blueprintParts.push(showStyleOptions.CreatePartIntro(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.Kam:
-				blueprintParts.push(showStyleOptions.CreatePartKam(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartKam) {
+					blueprintParts.push(showStyleOptions.CreatePartKam(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.Server:
-				blueprintParts.push(showStyleOptions.CreatePartServer(partContext, config, part))
+				if (showStyleOptions.CreatePartServer) {
+					blueprintParts.push(showStyleOptions.CreatePartServer(partContext, config, part))
+				}
 				break
 			case PartType.Teknik:
-				blueprintParts.push(showStyleOptions.CreatePartTeknik(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartTeknik) {
+					blueprintParts.push(showStyleOptions.CreatePartTeknik(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.Grafik:
-				blueprintParts.push(showStyleOptions.CreatePartGrafik(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartGrafik) {
+					blueprintParts.push(showStyleOptions.CreatePartGrafik(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.VO:
-				blueprintParts.push(
-					showStyleOptions.CreatePartVO(
-						partContext,
-						config,
-						part,
-						totalWords,
-						Number(ingestSegment.payload.iNewsStory.fields.totalTime)
+				if (showStyleOptions.CreatePartVO) {
+					blueprintParts.push(
+						showStyleOptions.CreatePartVO(
+							partContext,
+							config,
+							part,
+							totalWords,
+							Number(ingestSegment.payload.iNewsStory.fields.totalTime)
+						)
 					)
-				)
+				}
 				break
 			case PartType.DVE:
-				blueprintParts.push(showStyleOptions.CreatePartDVE(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartDVE) {
+					blueprintParts.push(showStyleOptions.CreatePartDVE(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.Ekstern:
-				blueprintParts.push(showStyleOptions.CreatePartEkstern(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartEkstern) {
+					blueprintParts.push(showStyleOptions.CreatePartEkstern(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.Telefon:
-				blueprintParts.push(showStyleOptions.CreatePartTelefon(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartTelefon) {
+					blueprintParts.push(showStyleOptions.CreatePartTelefon(partContext, config, part, totalWords))
+				}
 				break
 			case PartType.Unknown:
 				if (part.cues.length) {
@@ -222,7 +240,9 @@ export function getSegmentBase<
 				}
 				break
 			case PartType.EVS:
-				blueprintParts.push(showStyleOptions.CreatePartEVS(partContext, config, part, totalWords))
+				if (showStyleOptions.CreatePartEVS) {
+					blueprintParts.push(showStyleOptions.CreatePartEVS(partContext, config, part, totalWords))
+				}
 				break
 			default:
 				assertUnreachable(part)
