@@ -25,11 +25,20 @@ import {
 	SplitsContentBoxProperties,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
-import { createEmptyObject, CueDefinitionDVE, DVEParentClass, DVESources, literal, PartDefinition } from 'tv2-common'
+import {
+	createEmptyObject,
+	CueDefinitionDVE,
+	DVEParentClass,
+	DVESources,
+	FindSourceInfoStrict,
+	literal,
+	PartDefinition,
+	SourceInfo,
+	SourceInfoType
+} from 'tv2-common'
 import { Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
-import { FindSourceInfoStrict, SourceInfo, SourceInfoType } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { AtemSourceIndex } from '../../../types/atem'
@@ -101,7 +110,8 @@ export function MakeContentDVE2(
 	sources: DVESources | undefined,
 	className?: string,
 	adlib?: boolean,
-	partDefinition?: PartDefinition
+	partDefinition?: PartDefinition,
+	offtube?: boolean
 ): { content: SplitsContent; valid: boolean; stickyLayers: SisyfosLLAyer[] } {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
@@ -391,7 +401,7 @@ export function MakeContentDVE2(
 
 				literal<TimelineObjAtemME>({
 					id: '',
-					enable: config.showStyle.IsOfftube
+					enable: offtube
 						? { while: Enablers.OFFTUBE_ENABLE_DVE }
 						: { start: Number(config.studio.CasparPrerollDuration) - 80 }, // let caspar update, but give the ssrc 2 frames to get configured
 					priority: 1,

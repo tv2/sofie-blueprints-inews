@@ -96,6 +96,7 @@ describe('telefon', () => {
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
 				infiniteMode: PieceLifespan.OutOnNextPart,
+				adlibPreroll: 2000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -106,7 +107,7 @@ describe('telefon', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlay,
+							layer: VizLLayer.VizLLayerOverlayLower,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

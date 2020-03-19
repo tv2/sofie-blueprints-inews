@@ -27,7 +27,8 @@ export function MakeContentServer(
 	config: BlueprintConfig,
 	adLib?: boolean,
 	stickyLevels?: boolean,
-	enabler?: Enablers
+	enabler?: Enablers,
+	offtube?: boolean
 ): VTContent {
 	return literal<VTContent>({
 		studioLabel: '',
@@ -49,9 +50,9 @@ export function MakeContentServer(
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: adLib,
-					...(config.showStyle.IsOfftube ? { playing: false } : {})
+					...(offtube ? { playing: false } : {})
 				},
-				...(config.showStyle.IsOfftube
+				...(offtube
 					? {
 							keyframes: [
 								{
@@ -76,10 +77,10 @@ export function MakeContentServer(
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
 				enable: getServerAdlibEnable(
-					config,
 					!!adLib,
 					config.studio.CasparPrerollDuration,
-					enabler ?? Enablers.OFFTUBE_ENABLE_SERVER
+					enabler ?? Enablers.OFFTUBE_ENABLE_SERVER,
+					!!offtube
 				),
 				priority: 1,
 				layer: AtemLLayer.AtemMEProgram,
@@ -102,7 +103,7 @@ export function MakeContentServer(
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(config, !!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER),
+				enable: getServerAdlibEnable(!!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER, !!offtube),
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceClipPending,
 				content: {
@@ -120,7 +121,7 @@ export function MakeContentServer(
 				? STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 							id: '',
-							enable: getServerAdlibEnable(config, !!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER),
+							enable: getServerAdlibEnable(!!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER, !!offtube),
 							priority: 1,
 							layer,
 							content: {
@@ -139,12 +140,12 @@ export function MakeContentServer(
 }
 
 function getServerAdlibEnable(
-	config: BlueprintConfig,
 	adlib: boolean,
 	startTime: number,
-	enabler: Enablers
+	enabler: Enablers,
+	offtube: boolean
 ): TSRTimelineObjBase['enable'] {
-	if (adlib && config.showStyle.IsOfftube) {
+	if (adlib && offtube) {
 		return {
 			while: `.${enabler}`
 		}

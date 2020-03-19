@@ -14,13 +14,13 @@ import { parseMediaPlayers, parseSources } from './sources'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
 
-export interface BlueprintConfig {
-	studio: StudioConfig
+export interface OfftubeStudioBlueprintConfig {
+	studio: OfftubeStudioConfig
 	sources: SourceInfo[]
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 }
 
-export interface StudioConfig {
+export interface OfftubeStudioConfig {
 	// Injected by core
 	SofieHostURL: string
 
@@ -32,28 +32,20 @@ export interface StudioConfig {
 	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
 	SourcesCam: string
 	SourcesRM: string
-	SourcesSkype: string
-	SourcesDelayedPlayback: string
 	ABMediaPlayers: string
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		DSK1F: number
 		DSK1K: number
-		ServerC: number // Studio
-		JingleFill: number
-		JingleKey: number
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
-		FullFrameGrafikBackground: number
+		SplitBackground: number
 
 		Default: number
-		MixMinusDefault: number
 		Continuity: number
 	}
 
 	AtemSettings: {
-		VizClip: number
-		VizGain: number
 		CCGClip: number
 		CCGGain: number
 	}
@@ -68,11 +60,6 @@ export interface StudioConfig {
 
 	// Constants
 	CasparPrerollDuration: number
-	PilotPrerollDuration: number
-	PilotKeepaliveDuration: number
-	PilotCutToMediaPlayer: number
-	PilotOutTransitionDuration: number
-	ATEMDelay: number
 	MaximumKamDisplayDuration: number
 }
 
@@ -117,8 +104,8 @@ export function applyToConfig(
 	})
 }
 
-export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
-	const config: BlueprintConfig = {
+export function defaultStudioConfig(context: NotesContext): OfftubeStudioBlueprintConfig {
+	const config: OfftubeStudioBlueprintConfig = {
 		studio: {} as any,
 		// showStyle: {} as any,
 		sources: [],
@@ -141,8 +128,8 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	return config
 }
 
-export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
-	const config: BlueprintConfig = {
+export function parseStudioConfig(context: ShowStyleContext): OfftubeStudioBlueprintConfig {
+	const config: OfftubeStudioBlueprintConfig = {
 		studio: {} as any,
 		// showStyle: {} as any,
 		sources: [],

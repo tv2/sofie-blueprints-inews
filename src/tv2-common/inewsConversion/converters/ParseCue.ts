@@ -188,7 +188,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	} else if (cue[0].match(/^SS|(?:GRAFIK)=(?:.*)(?:$| )/i)) {
 		// Target engine
 		return parseTargetEngine(cue)
-	} else if (cue[0].match(/^SS|(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/)) {
+	} else if (cue[0].match(/^SS|(?:GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
 		return parseTargetEngine(cue)
 	} else if (cue[0].match(/^VIZ=/i)) {
 		return parseVIZCues(cue)

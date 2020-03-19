@@ -17,8 +17,7 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { EVSParentClass, literal, PartDefinitionEVS } from 'tv2-common'
-import { FindSourceInfoStrict, SourceInfo } from '../../tv2_afvd_studio/helpers/sources'
+import { EVSParentClass, FindSourceInfoStrict, literal, PartDefinitionEVS, PartTime, SourceInfo } from 'tv2-common'
 import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
@@ -30,7 +29,6 @@ import { TransitionSettings } from '../helpers/transitionSettings'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 import { CreatePartInvalid } from './invalid'
-import { PartTime } from './time/partTime'
 
 export function CreatePartEVS(
 	context: PartContext,
@@ -38,7 +36,7 @@ export function CreatePartEVS(
 	partDefinition: PartDefinitionEVS,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords)
+	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
@@ -64,7 +62,8 @@ export function CreatePartEVS(
 	}
 	const atemInput = sourceInfoDelayedPlayback.port
 
-	if (config.showStyle.IsOfftube) {
+	/*config.showStyle.IsOfftube*/
+	if ([].length === 999) {
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,

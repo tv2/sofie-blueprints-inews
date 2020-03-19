@@ -7,12 +7,11 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CueDefinitionTargetEngine, literal, PartDefinition } from 'tv2-common'
+import { CalculateTime, CueDefinitionTargetEngine, FindSourceInfoStrict, literal, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { EvaluateGrafikCaspar } from './grafikCaspar'
 import { EvaluateGrafikViz } from './grafikViz'
@@ -82,7 +81,8 @@ export function EvaluateTargetEngine(
 
 	if (parsedCue.data.grafik) {
 		if (parsedCue.data.grafik.type === CueType.Grafik) {
-			if (config.showStyle.IsOfftube) {
+			/* config.showStyle.IsOfftube */
+			if ([].length === 999) {
 				EvaluateGrafikCaspar(config, context, pieces, adlibPieces, parsedCue.data.grafik, partDefinition, true)
 			} else {
 				EvaluateGrafikViz(

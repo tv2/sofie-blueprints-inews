@@ -4,13 +4,12 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinition, literal, PartDefinition } from 'tv2-common'
+import { CueDefinition, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { GetJinglePartProperties } from './effekt'
-import { PartTime } from './time/partTime'
 
 export function CreatePartCueOnly(
 	context: PartContext,
@@ -23,7 +22,7 @@ export function CreatePartCueOnly(
 	makeAdlibs?: boolean
 ) {
 	const partDefinitionWithID = { ...partDefinition, ...{ externalId: id } }
-	const partTime = PartTime(config, partDefinitionWithID, totalWords)
+	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinitionWithID, totalWords)
 
 	let part = literal<IBlueprintPart>({
 		externalId: id,

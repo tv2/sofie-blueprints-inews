@@ -56,7 +56,8 @@ export function CreatePartVO(
 	const serverContent = MakeContentServer(file, partDefinition.externalId, partDefinition, config, false)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 
-	if (config.showStyle.IsOfftube) {
+	/* config.showStyle.IsOfftube */
+	if ([].length === 999) {
 		adLibPieces.push(
 			CreateAdlibServer(
 				config,

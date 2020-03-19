@@ -4,13 +4,12 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition } from 'tv2-common'
+import { literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { CreateEffektForpart, GetJinglePartProperties } from './effekt'
-import { PartTime } from './time/partTime'
 
 export function CreatePartUnknown(
 	context: PartContext,
@@ -19,7 +18,7 @@ export function CreatePartUnknown(
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config, partDefinition, totalWords)
+	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

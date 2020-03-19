@@ -618,25 +618,6 @@ const SEC: ISourceLayer[] = [
 		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmOffTubePgmSelect,
-		_rank: 100,
-		name: 'Offtube Pgm',
-		abbreviation: '',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: true,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
 	}
 ]
 

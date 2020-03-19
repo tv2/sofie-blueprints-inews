@@ -37,10 +37,7 @@ export enum SourceLayer {
 	PgmAudioBed = 'studio0_audio_bed',
 
 	// Wall
-	WallGraphics = 'studio0_wall_graphics',
-
-	// OFF-TUBE
-	PgmOffTubePgmSelect = 'studio0_offtube_pgm_select'
+	WallGraphics = 'studio0_wall_graphics'
 }
 
 export enum ControlClasses {

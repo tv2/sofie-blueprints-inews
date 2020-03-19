@@ -36,7 +36,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Camera number to ATEM input (eg 1:1,9:2)',
 		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: '1:11,2:12,3:13,4:14,5:15,1S:16,2S:17,3S:18,4S:19,5S:20'
+		defaultVal: '1:4'
 	},
 	{
 		id: 'SourcesRM',
@@ -44,23 +44,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'RM number to ATEM input (eg 1:6,2:7)',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
-		defaultVal: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'
-	},
-	{
-		id: 'SourcesDelayedPlayback',
-		name: 'EVS Mapping',
-		description: 'EVS number to ATEM input (eg 1:6,2:7)',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: '1:22,2:23'
-	},
-	{
-		id: 'SourcesSkype',
-		name: 'Skype Mapping',
-		description: 'Skype number to ATEM input (eg 1:6,2:7)',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'
+		defaultVal: '1:1,2:2,3:3'
 	},
 	{
 		id: 'ABMediaPlayers',
@@ -68,7 +52,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM inputs for A/B media players',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
-		defaultVal: '1:26,2:27'
+		defaultVal: '1:5,2:6'
 	},
 	{
 		id: 'ABPlaybackDebugLogging',
@@ -84,7 +68,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for DSK1 Fill',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 21
+		defaultVal: 8
 	},
 	{
 		id: 'AtemSource.DSK1K',
@@ -92,47 +76,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for DSK1 Key',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 34
-	},
-	{
-		id: 'AtemSource.ServerC',
-		name: 'CasparCG Server C',
-		description: 'ATEM vision mixer input for ServerC',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 28
-	},
-	{
-		id: 'AtemSource.JingleFill',
-		name: 'Jingle Fill Source',
-		description: 'ATEM vision mixer input for Jingle Fill',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 29
-	},
-	{
-		id: 'AtemSource.JingleKey',
-		name: 'Jingle Key Source',
-		description: 'ATEM vision mixer input for Jingle Source',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 31
-	},
-	{
-		id: 'AtemSettings.VizClip',
-		name: 'Viz keyer clip',
-		description: 'Viz keyer clip',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 50.0
-	},
-	{
-		id: 'AtemSettings.VizGain',
-		name: 'Viz keyer gain',
-		description: 'Viz keyer gain',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 12.5
+		defaultVal: 7
 	},
 	{
 		id: 'AtemSettings.CCGClip',
@@ -156,7 +100,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for Split Screen Art Fill',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 30
+		defaultVal: 10
 	},
 	{
 		id: 'AtemSource.SplitArtK',
@@ -164,15 +108,15 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for Split Screen Art Key',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 32
+		defaultVal: 9
 	},
 	{
-		id: 'AtemSource.FullFrameGrafikBackground',
-		name: 'Full frame grafik background source',
+		id: 'AtemSource.SplitBackground',
+		name: 'ATEM split screen background loop source',
 		description: 'ATEM source for mos full-frame grafik background source',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 36
+		defaultVal: 11
 	},
 	{
 		id: 'AtemSource.Default',
@@ -180,14 +124,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer default source',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: AtemSourceIndex.Col1
-	},
-	{
-		id: 'AtemSource.MixMinusDefault',
-		name: 'ATEM Mix-minus default source',
-		description: 'ATEM vision mixer default source for mix-minus',
-		type: ConfigManifestEntryType.NUMBER,
-		required: true,
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
@@ -229,46 +165,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 200 // 5 frames
-	},
-	{
-		id: 'PilotPrerollDuration',
-		name: 'Pilot Preroll Duration',
-		description: 'ms of preroll before switching to Pilot elements',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 2000
-	},
-	{
-		id: 'PilotKeepaliveDuration',
-		name: 'Pilot Keepalive Duration',
-		description: 'ms to keep old part alive before switching to Pilot elements',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 2000
-	},
-	{
-		id: 'PilotOutTransitionDuration',
-		name: 'Pilot Out Transition Duration',
-		description: 'ms to keep pilot elements alive before transition to next part',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 1000
-	},
-	{
-		id: 'PilotCutToMediaPlayer',
-		name: 'Pilot media Player Cut Point',
-		description: 'ms from start of grafik before switching to background source',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 500
-	},
-	{
-		id: 'ATEMDelay',
-		name: 'ATEM Delay',
-		description: 'Frames of latency in ATEM',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 1
 	},
 	{
 		id: 'MaximumKamDisplayDuration',

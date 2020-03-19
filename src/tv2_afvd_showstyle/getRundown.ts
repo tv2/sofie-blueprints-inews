@@ -7,7 +7,6 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineContentTypeVizMSE,
-	TimelineObjAbstractAny,
 	TimelineObjAtemAUX,
 	TimelineObjAtemDSK,
 	TimelineObjAtemME,
@@ -40,15 +39,12 @@ import {
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
-import { Enablers } from 'tv2-constants'
+import { literal, SourceInfo } from 'tv2-common'
 import * as _ from 'underscore'
-import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import {
 	AtemLLayer,
 	CasparLLayer,
 	CasparPlayerClipLoadingLoop,
-	OfftubeAbstractLLayer,
 	SisyfosEVSSource,
 	SisyfosLLAyer,
 	VizLLayer
@@ -73,23 +69,11 @@ import { GetKeepStudioMicsMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
-	context: IStudioConfigContext,
+	_context: IStudioConfigContext,
 	showStyleVariants: IBlueprintShowStyleVariant[],
 	_ingestRundown: IngestRundown
 ): string | null {
-	const config = context.getStudioConfig()
-	let variant = _.first(showStyleVariants)
-	if (Object.keys(config).includes('IsOfftube')) {
-		const offTube = config.IsOfftube
-		if (offTube) {
-			const vari = showStyleVariants.find(
-				v => v.config.findIndex(c => c._id === 'IsOfftube' && c.value === true) !== -1
-			)
-			if (vari) {
-				variant = vari
-			}
-		}
-	}
+	const variant = _.first(showStyleVariants)
 
 	if (variant) {
 		return variant._id
@@ -126,9 +110,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 			expectedStart: startTime,
 			expectedDuration: endTime - startTime
 		}),
-		globalAdLibPieces: config.showStyle.IsOfftube
-			? getGlobalAdLibPiecesOffTube(context, config)
-			: getGlobalAdLibPiecesAFKD(context, config),
+		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
 		baseline: getBaseline(config)
 	}
 }
@@ -932,98 +914,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	})
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
-	return adlibItems
-}
-
-function getGlobalAdLibPiecesOffTube(_context: NotesContext, _config: BlueprintConfig): IBlueprintAdLibPiece[] {
-	const adlibItems: IBlueprintAdLibPiece[] = []
-
-	let globalRank = 1000
-
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToServer',
-			name: 'Set Server Next',
-			sourceLayerId: SourceLayer.PgmOffTubePgmSelect,
-			outputLayerId: 'sec',
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			content: {
-				timelineObjects: [
-					literal<TimelineObjAbstractAny>({
-						id: '',
-						enable: {
-							while: '1'
-						},
-						priority: 1,
-						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-						content: {
-							deviceType: DeviceType.ABSTRACT
-						},
-						classes: [Enablers.OFFTUBE_ENABLE_SERVER]
-					})
-				]
-			}
-		})
-	)
-
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToFullGFX',
-			name: 'Set Full GFX Next',
-			sourceLayerId: SourceLayer.PgmOffTubePgmSelect,
-			outputLayerId: 'sec',
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			content: {
-				timelineObjects: [
-					literal<TimelineObjAbstractAny>({
-						id: '',
-						enable: {
-							while: '1'
-						},
-						priority: 1,
-						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-						content: {
-							deviceType: DeviceType.ABSTRACT
-						},
-						classes: [Enablers.OFFTUBE_ENABLE_FULL]
-					})
-				]
-			}
-		})
-	)
-
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToDVE',
-			name: 'Set DVE Next',
-			sourceLayerId: SourceLayer.PgmOffTubePgmSelect,
-			outputLayerId: 'sec',
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			content: {
-				timelineObjects: [
-					literal<TimelineObjAbstractAny>({
-						id: '',
-						enable: {
-							while: '1'
-						},
-						priority: 1,
-						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-						content: {
-							deviceType: DeviceType.ABSTRACT
-						},
-						classes: [Enablers.OFFTUBE_ENABLE_DVE]
-					})
-				]
-			}
-		})
-	)
-
 	return adlibItems
 }
 

@@ -9,7 +9,7 @@ const BlueprintEntrypoints = {
 
 const BlueprintBundles = {
 	tv2_afvd_blueprints: ['tv2_afvd_showstyle', 'tv2_afvd_studio', 'tv2_system'],
-	tv2_offtube_blueprints: ['tv2_afvd_showstyle', 'tv2_offtube_studio', 'tv2_system']
+	tv2_offtube_blueprints: ['tv2_offtube_showstyle', 'tv2_offtube_studio', 'tv2_system']
 }
 
 function GetEntrypointsForBundle(id) {
