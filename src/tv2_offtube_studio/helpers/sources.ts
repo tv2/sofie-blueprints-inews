@@ -14,12 +14,6 @@ export function parseMediaPlayers(
 export function parseSources(context: NotesContext | undefined, studioConfig: OfftubeStudioConfig): SourceInfo[] {
 	const rmInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesRM, true)
 	const kamInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesCam, true)
-	const skypeInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesSkype, true)
-	const delayedPlaybackInput: Array<{ id: string; val: number }> = parseMapStr(
-		context,
-		studioConfig.SourcesDelayedPlayback,
-		true
-	)
 
 	const res: SourceInfo[] = []
 
@@ -36,22 +30,6 @@ export function parseSources(context: NotesContext | undefined, studioConfig: Of
 			type: SourceLayerType.CAMERA,
 			id: kam.id,
 			port: kam.val
-		})
-	})
-
-	_.each(skypeInputMap, sk => {
-		res.push({
-			type: SourceLayerType.REMOTE,
-			id: `S${sk.id}`,
-			port: sk.val
-		})
-	})
-
-	_.each(delayedPlaybackInput, dp => {
-		res.push({
-			type: SourceLayerType.REMOTE,
-			id: `DP${dp.id}`,
-			port: dp.val
 		})
 	})
 

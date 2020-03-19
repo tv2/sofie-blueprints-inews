@@ -4,7 +4,6 @@ import {
 	MappingAtemType,
 	TimelineContentTypeAtem,
 	TimelineContentTypeSisyfos,
-	TimelineObjAtemAUX,
 	TimelineObjAtemME,
 	TimelineObjSisyfosAny,
 	TSRTimelineObjBase
@@ -95,19 +94,6 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 		}),
 
 		// have ATEM output default still image
-		literal<TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemAuxLookahead,
-			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.AUX,
-				aux: {
-					input: AtemSourceIndex.Prg1
-				}
-			}
-		}),
 		literal<TimelineObjAtemME>({
 			id: '',
 			enable: { while: '1' },

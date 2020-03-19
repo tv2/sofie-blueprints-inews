@@ -14,21 +14,9 @@ export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel }
 		isPgm: 0,
 		label: 'VRT 2'
 	},
-	[OfftubeSisyfosLLayer.SisyfosSourceGuest_1_ST_A]: {
+	[OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A]: {
 		isPgm: 0,
-		label: 'GST 1'
-	},
-	[OfftubeSisyfosLLayer.SisyfosSourceGuest_2_ST_A]: {
-		isPgm: 0,
-		label: 'GST 2'
-	},
-	[OfftubeSisyfosLLayer.SisyfosSourceGuest_3_ST_A]: {
-		isPgm: 0,
-		label: 'GST 3'
-	},
-	[OfftubeSisyfosLLayer.SisyfosSourceGuest_4_ST_A]: {
-		isPgm: 0,
-		label: 'GST 4'
+		label: 'VRT 3'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1]: {
 		isPgm: 0,
@@ -38,9 +26,13 @@ export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel }
 		isPgm: 0,
 		label: 'LIVE 2'
 	},
-	[OfftubeSisyfosLLayer.SisyfosSourceLive_3]: {
+	[OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo]: {
 		isPgm: 0,
-		label: 'LIVE 3'
+		label: 'WF ST'
+	},
+	[OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround]: {
+		isPgm: 0,
+		label: 'WF 5.1'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceServerA]: {
 		isPgm: 0,
