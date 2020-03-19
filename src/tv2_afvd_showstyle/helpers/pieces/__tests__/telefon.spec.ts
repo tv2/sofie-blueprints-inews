@@ -11,11 +11,10 @@ import {
 	IBlueprintPiece,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionGrafik, CueDefinitionTelefon, literal, PartDefinitionKam } from 'tv2-common'
+import { CueDefinitionGrafik, CueDefinitionTelefon, literal, PartContext2, PartDefinitionKam } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer, VizLLayer } from '../../../../tv2_afvd_studio/layers'

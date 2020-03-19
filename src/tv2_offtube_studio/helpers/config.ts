@@ -7,12 +7,10 @@ import {
 	ShowStyleContext,
 	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
-import { assertUnreachable, SourceInfo } from 'tv2-common'
+import { assertUnreachable, MediaPlayerConfig, SourceInfo } from 'tv2-common'
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { parseMediaPlayers, parseSources } from './sources'
-
-export type MediaPlayerConfig = Array<{ id: string; val: string }>
 
 export interface OfftubeStudioBlueprintConfig {
 	studio: OfftubeStudioConfig

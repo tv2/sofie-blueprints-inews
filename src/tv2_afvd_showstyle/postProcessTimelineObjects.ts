@@ -17,12 +17,11 @@ import {
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
+import { literal, PartContext2 } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
-import { PartContext2 } from './getSegment'
 import { SourceLayer } from './layers'
 
 export function postProcessPartTimelineObjects(

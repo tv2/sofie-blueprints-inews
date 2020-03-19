@@ -8,7 +8,7 @@ import {
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
-import { GetNextPartCue } from '../helpers/nextPartCue'
+import { GetNextPartCue } from './nextPartCue'
 
 const partDefinitionTest1: PartDefinitionKam = {
 	type: PartType.Kam,
