@@ -28,7 +28,7 @@ export interface TableConfigItemGFXTemplates {
 }
 
 export interface OffTubeShowstyleBlueprintConfig extends OffTubeBlueprintConfigBase {
-	showStyle: ShowStyleConfig
+	showStyle: OffTubeShowStyleConfig
 }
 
 export interface DVEConfigInput {
@@ -43,7 +43,7 @@ export interface DVEConfigInput {
 	// [key: string]: BasicConfigItemValue
 }
 
-export interface ShowStyleConfig {
+export interface OffTubeShowStyleConfig {
 	CasparCGLoadingClip: string
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]

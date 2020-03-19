@@ -4,7 +4,8 @@ const BlueprintEntrypoints = {
 	tv2_afvd_showstyle: './src/tv2_afvd_showstyle/index.ts',
 	tv2_afvd_studio: './src/tv2_afvd_studio/index.ts',
 	tv2_system: './src/tv2_system/index.ts',
-	tv2_offtube_studio: './src/tv2_offtube_studio'
+	tv2_offtube_studio: './src/tv2_offtube_studio',
+	tv2_offtube_showstyle: './src/tv2_offtube_showstyle'
 }
 
 const BlueprintBundles = {

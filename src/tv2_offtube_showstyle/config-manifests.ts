@@ -2,14 +2,6 @@ import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofi
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
-		id: 'MakeAdlibsForFulls',
-		name: 'Make Adlibs for FULL graphics',
-		description: '',
-		type: ConfigManifestEntryType.BOOLEAN,
-		defaultVal: true,
-		required: false
-	},
-	{
 		id: 'CasparCGLoadingClip',
 		name: 'CasparCG Loading Clip',
 		description: 'Clip to play when media is loading',
