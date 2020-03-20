@@ -14,9 +14,8 @@ import {
 	TimelineObjectCoreExt,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition, TimeFromFrames } from 'tv2-common'
+import { literal, PartDefinition, TimeFromFrames, TimelineBlueprintExt } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 

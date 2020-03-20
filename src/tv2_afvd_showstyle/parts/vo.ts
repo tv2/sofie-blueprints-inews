@@ -7,16 +7,14 @@ import {
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition } from 'tv2-common'
+import { CreatePartInvalid, literal, MakeContentServer, PartDefinition } from 'tv2-common'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
-import { MakeContentServer } from '../helpers/content/server'
-import { CreateAdlibServer } from '../helpers/pieces/adlibServer'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
-import { CreatePartInvalid } from './invalid'
 
 export function CreatePartVO(
 	context: PartContext,
@@ -53,41 +51,41 @@ export function CreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const serverContent = MakeContentServer(file, partDefinition.externalId, partDefinition, config, false)
+	const serverContent = MakeContentServer(
+		file,
+		partDefinition.externalId,
+		partDefinition,
+		config,
+		{
+			Caspar: {
+				ClipPending: CasparLLayer.CasparPlayerClipPending
+			},
+			Sisyfos: {
+				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+			},
+			ATEM: {
+				MEPGM: AtemLLayer.AtemMEProgram
+			}
+		},
+		false
+	)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
-
-	/* config.showStyle.IsOfftube */
-	if ([].length === 999) {
-		adLibPieces.push(
-			CreateAdlibServer(
-				config,
-				0,
-				partDefinition.externalId,
-				partDefinition.externalId,
-				partDefinition,
-				file,
-				true,
-				true
-			)
-		)
-	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				_id: '',
-				externalId: partDefinition.externalId,
-				name: part.title,
-				enable: { start: 0 },
-				outputLayerId: 'pgm',
-				sourceLayerId: SourceLayer.PgmVoiceOver,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [part.externalId]
-				}),
-				content: serverContent,
-				adlibPreroll: config.studio.CasparPrerollDuration
-			})
-		)
-	}
+	pieces.push(
+		literal<IBlueprintPiece>({
+			_id: '',
+			externalId: partDefinition.externalId,
+			name: part.title,
+			enable: { start: 0 },
+			outputLayerId: 'pgm',
+			sourceLayerId: SourceLayer.PgmVoiceOver,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			metaData: literal<PieceMetaData>({
+				mediaPlayerSessions: [part.externalId]
+			}),
+			content: serverContent,
+			adlibPreroll: config.studio.CasparPrerollDuration
+		})
+	)
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
 	AddScript(partDefinition, pieces, duration)

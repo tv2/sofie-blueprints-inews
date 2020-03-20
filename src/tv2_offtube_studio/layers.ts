@@ -7,7 +7,7 @@ export function RealLLayers() {
 			// @ts-ignore
 			.concat(_.values(OfftubeSisyfosLLayer))
 			.concat(_.values(OfftubeAtemLLayer))
-			.concat(_.values(CasparLLayer))
+			.concat(_.values(OfftubeCasparLLayer))
 	)
 }
 
@@ -39,7 +39,7 @@ export enum OfftubeAtemLLayer {
 	AtemAuxScreen = 'atem_aux_screen'
 }
 
-export enum CasparLLayer {
+export enum OfftubeCasparLLayer {
 	CasparPlayerClipPending = 'casparcg_player_clip_pending',
 	CasparPlayerJingle = 'casparcg_player_jingle',
 	CasparCGDVELoop = 'casparcg_dve_loop',

@@ -1,12 +1,12 @@
 import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionGrafik, PartDefinition } from 'tv2-common'
+import { CreateAdlibServer, CueDefinitionGrafik, PartDefinition } from 'tv2-common'
 import { Enablers } from 'tv2-constants'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { CreateAdlibServer } from './adlibServer'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OffTubeSourceLayer } from '../layers'
 
 export function EvaluateGrafikCaspar(
-	config: BlueprintConfig,
+	config: OffTubeShowstyleBlueprintConfig,
 	_context: PartContext,
 	_pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -42,10 +42,25 @@ export function EvaluateGrafikCaspar(
 			partDefinition,
 			parsedCue.template,
 			false,
-			false,
-			Enablers.OFFTUBE_ENABLE_FULL
+			{
+				Caspar: {
+					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+				},
+				Sisyfos: {
+					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+				},
+				ATEM: {
+					MEPGM: OfftubeAtemLLayer.AtemMEProgram
+				},
+				PgmServer: OffTubeSourceLayer.SelectedAdlibGraphicsFull,
+				PgmVoiceOver: OffTubeSourceLayer.SelectedAdlibGraphicsFull
+			},
+			{
+				isOfftube: true,
+				tagAsAdlib: false,
+				enabler: Enablers.OFFTUBE_ENABLE_FULL
+			}
 		)
-		piece.sourceLayerId = SourceLayer.PgmGraphicsOverlay
 		adlibPieces.push(piece)
 	}
 }

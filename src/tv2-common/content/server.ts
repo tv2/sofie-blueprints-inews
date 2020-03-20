@@ -10,25 +10,44 @@ import {
 	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
 import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
-import { AddParentClass, literal, PartDefinition, ServerParentClass } from 'tv2-common'
-import { Enablers } from 'tv2-constants'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
-import { BlueprintConfig } from '../../helpers/config'
-import { STICKY_LAYERS } from '../sisyfos/sisyfos'
-import { TransitionFromString } from '../transitionFromString'
-import { TransitionSettings } from '../transitionSettings'
+import {
+	AddParentClass,
+	literal,
+	PartDefinition,
+	ServerParentClass,
+	TransitionFromString,
+	TransitionSettings,
+	TV2BlueprintConfigBase,
+	TV2StudioConfigBase
+} from 'tv2-common'
+import { MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { TimelineBlueprintExt } from '../onTimelineGenerate'
+import { AdlibServerOfftubeOptions } from '../pieces'
 
-export function MakeContentServer(
+export interface MakeContentServerSourceLayers {
+	Caspar: {
+		ClipPending: string
+	}
+	ATEM: {
+		MEPGM: string
+	}
+	Sisyfos: {
+		ClipPending: string
+	}
+	STICKY_LAYERS?: string[]
+}
+
+export function MakeContentServer<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
-	config: BlueprintConfig,
+	config: ShowStyleConfig,
+	sourceLayers: MakeContentServerSourceLayers,
 	adLib?: boolean,
-	stickyLevels?: boolean,
-	enabler?: Enablers,
-	offtube?: boolean
+	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
 	return literal<VTContent>({
 		studioLabel: '',
@@ -44,21 +63,21 @@ export function MakeContentServer(
 					start: 0
 				},
 				priority: 1,
-				layer: CasparLLayer.CasparPlayerClipPending,
+				layer: sourceLayers.Caspar.ClipPending,
 				content: {
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: adLib,
-					...(offtube ? { playing: false } : {})
+					...(offtubeOptions?.isOfftube ? { playing: false } : {})
 				},
-				...(offtube
+				...(offtubeOptions?.isOfftube
 					? {
 							keyframes: [
 								{
 									id: '',
 									enable: {
-										while: `.${enabler ?? Enablers.OFFTUBE_ENABLE_SERVER}`
+										while: `.${offtubeOptions.enabler}`
 									},
 									content: {
 										inPoint: 0,
@@ -76,14 +95,9 @@ export function MakeContentServer(
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(
-					!!adLib,
-					config.studio.CasparPrerollDuration,
-					enabler ?? Enablers.OFFTUBE_ENABLE_SERVER,
-					!!offtube
-				),
+				enable: getServerAdlibEnable(!!adLib, config.studio.CasparPrerollDuration, offtubeOptions),
 				priority: 1,
-				layer: AtemLLayer.AtemMEProgram,
+				layer: sourceLayers.ATEM.MEPGM,
 				content: {
 					deviceType: DeviceType.ATEM,
 					type: TimelineContentTypeAtem.ME,
@@ -103,9 +117,9 @@ export function MakeContentServer(
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(!!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER, !!offtube),
+				enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
 				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceClipPending,
+				layer: sourceLayers.Sisyfos.ClipPending,
 				content: {
 					deviceType: DeviceType.SISYFOS,
 					type: TimelineContentTypeSisyfos.SISYFOS,
@@ -117,11 +131,11 @@ export function MakeContentServer(
 				}
 			}),
 
-			...(stickyLevels
-				? STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+			...(sourceLayers.STICKY_LAYERS
+				? sourceLayers.STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 							id: '',
-							enable: getServerAdlibEnable(!!adLib, 0, enabler ?? Enablers.OFFTUBE_ENABLE_SERVER, !!offtube),
+							enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
 							priority: 1,
 							layer,
 							content: {
@@ -142,12 +156,11 @@ export function MakeContentServer(
 function getServerAdlibEnable(
 	adlib: boolean,
 	startTime: number,
-	enabler: Enablers,
-	offtube: boolean
+	offtubeOptions?: AdlibServerOfftubeOptions
 ): TSRTimelineObjBase['enable'] {
-	if (adlib && offtube) {
+	if (adlib && offtubeOptions?.isOfftube) {
 		return {
-			while: `.${enabler}`
+			while: `.${offtubeOptions.enabler}`
 		}
 	}
 

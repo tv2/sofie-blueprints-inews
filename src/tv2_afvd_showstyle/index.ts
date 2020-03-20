@@ -2,7 +2,8 @@ import { BlueprintManifestType, ShowStyleBlueprintManifest } from 'tv-automation
 import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'
 
-import { getEndStateForPart, onTimelineGenerate } from '../tv2_afvd_studio/onTimelineGenerate'
+import { getEndStateForPart } from 'tv2-common'
+import { onTimelineGenerateAFVD } from '../tv2_afvd_studio/onTimelineGenerate'
 import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import onAsRunEvent from './onAsRunEvent'
@@ -25,7 +26,7 @@ const manifest: ShowStyleBlueprintManifest = {
 	getSegment,
 
 	onAsRunEvent,
-	onTimelineGenerate,
+	onTimelineGenerate: onTimelineGenerateAFVD,
 	getEndStateForPart,
 
 	showStyleConfigManifest,

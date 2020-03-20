@@ -6,6 +6,13 @@ export type MediaPlayerConfig = Array<{ id: string; val: string }>
 export interface TV2StudioConfigBase {
 	MaximumKamDisplayDuration: number
 	CasparPrerollDuration: number
+	ClipSourcePath: string
+	ClipFileExtension: string
+	MediaFlowId: string
+	ABPlaybackDebugLogging: boolean
+	AtemSource: {
+		Default: number
+	}
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {

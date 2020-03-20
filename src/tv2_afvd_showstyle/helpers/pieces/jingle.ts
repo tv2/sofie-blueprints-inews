@@ -17,10 +17,9 @@ import {
 	TimelineObjectCoreExt,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionJingle, GetJinglePartProperties, literal, PartDefinition } from 'tv2-common'
+import { CueDefinitionJingle, GetJinglePartProperties, literal, PartDefinition, TimelineBlueprintExt } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig } from '../config'
 
 export function EvaluateJingle(

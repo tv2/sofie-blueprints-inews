@@ -13,7 +13,6 @@ import _ = require('underscore')
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
-import { EvaluateGrafikCaspar } from './grafikCaspar'
 import { EvaluateGrafikViz } from './grafikViz'
 import { EvaluateMOSViz } from './mos'
 
@@ -23,7 +22,7 @@ export function EvaluateTargetEngine(
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
-	partDefinition: PartDefinition,
+	_partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTargetEngine,
 	adlib: boolean
 ) {
@@ -83,7 +82,7 @@ export function EvaluateTargetEngine(
 		if (parsedCue.data.grafik.type === CueType.Grafik) {
 			/* config.showStyle.IsOfftube */
 			if ([].length === 999) {
-				EvaluateGrafikCaspar(config, context, pieces, adlibPieces, parsedCue.data.grafik, partDefinition, true)
+				// EvaluateGrafikCaspar(config, context, pieces, adlibPieces, parsedCue.data.grafik, partDefinition, true)
 			} else {
 				EvaluateGrafikViz(
 					config,

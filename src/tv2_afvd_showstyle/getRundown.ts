@@ -39,7 +39,8 @@ import {
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, SourceInfo } from 'tv2-common'
+import { literal, SourceInfo, TimelineBlueprintExt } from 'tv2-common'
+import { CONSTANTS, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	AtemLLayer,
@@ -49,10 +50,8 @@ import {
 	SisyfosLLAyer,
 	VizLLayer
 } from '../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { CONSTANTS, MEDIA_PLAYER_AUTO } from '../types/constants'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
 import { GetEksternMetaData } from './helpers/pieces/ekstern'

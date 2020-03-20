@@ -2,6 +2,8 @@ import { BlueprintManifestType, ShowStyleBlueprintManifest } from 'tv-automation
 import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'
 
+import { getEndStateForPart } from 'tv2-common'
+import { onTimelineGenerateOfftube } from '../tv2_offtube_showstyle/onTimelineGenerate'
 import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import onAsRunEvent from './onAsRunEvent'
@@ -24,6 +26,8 @@ const manifest: ShowStyleBlueprintManifest = {
 	getSegment,
 
 	onAsRunEvent,
+	onTimelineGenerate: onTimelineGenerateOfftube,
+	getEndStateForPart,
 
 	showStyleConfigManifest,
 	showStyleMigrations

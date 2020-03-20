@@ -9,12 +9,14 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { assertUnreachable, MediaPlayerConfig, SourceInfo } from 'tv2-common'
 import * as _ from 'underscore'
+import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { parseMediaPlayers, parseSources } from './sources'
 
 export interface BlueprintConfig {
 	studio: StudioConfig
 	sources: SourceInfo[]
+	showStyle: ShowStyleConfig
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 }
 
@@ -118,7 +120,7 @@ export function applyToConfig(
 export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	const config: BlueprintConfig = {
 		studio: {} as any,
-		// showStyle: {} as any,
+		showStyle: {} as any,
 		sources: [],
 		mediaPlayers: []
 	}
@@ -142,7 +144,7 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 	const config: BlueprintConfig = {
 		studio: {} as any,
-		// showStyle: {} as any,
+		showStyle: {} as any,
 		sources: [],
 		mediaPlayers: []
 	}

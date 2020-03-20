@@ -1,12 +1,18 @@
 import { IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionAdLib, CueDefinitionDVE, literal, PartDefinition } from 'tv2-common'
-import { CueType } from 'tv2-constants'
+import {
+	CreateAdlibServer,
+	CueDefinitionAdLib,
+	CueDefinitionDVE,
+	literal,
+	PartDefinition,
+	PieceMetaData
+} from 'tv2-common'
+import { CueType, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
-import { CreateAdlibServer } from './adlibServer'
+import { STICKY_LAYERS } from '../sisyfos/sisyfos'
 import { GetDVETemplate, TemplateIsValid } from './dve'
 
 export function EvaluateAdLib(
@@ -23,16 +29,20 @@ export function EvaluateAdLib(
 		const file = partDefinition.fields.videoId
 
 		adLibPieces.push(
-			CreateAdlibServer(
-				config,
-				rank,
-				partId,
-				MEDIA_PLAYER_AUTO,
-				partDefinition,
-				file,
-				false,
-				false /*config.showStyle.IsOfftube*/
-			)
+			CreateAdlibServer(config, rank, partId, MEDIA_PLAYER_AUTO, partDefinition, file, false, {
+				Caspar: {
+					ClipPending: CasparLLayer.CasparPlayerClipPending
+				},
+				Sisyfos: {
+					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+				},
+				ATEM: {
+					MEPGM: AtemLLayer.AtemMEProgram
+				},
+				STICKY_LAYERS,
+				PgmServer: SourceLayer.PgmServer,
+				PgmVoiceOver: SourceLayer.PgmVoiceOver
+			})
 		)
 	} else {
 		// DVE

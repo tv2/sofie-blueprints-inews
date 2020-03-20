@@ -20,11 +20,13 @@ import {
 	EksternParentClass,
 	FindSourceInfoStrict,
 	literal,
-	PartDefinition
+	PartDefinition,
+	PieceMetaData,
+	TransitionFromString,
+	TransitionSettings
 } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { ControlClasses, SourceLayer } from '../../layers'
 import {
 	GetLayerForEkstern,
@@ -33,8 +35,6 @@ import {
 	GetStickyForPiece,
 	STUDIO_MICS
 } from '../sisyfos/sisyfos'
-import { TransitionFromString } from '../transitionFromString'
-import { TransitionSettings } from '../transitionSettings'
 
 export function EvaluateEkstern(
 	context: PartContext,

@@ -34,15 +34,14 @@ import {
 	literal,
 	PartDefinition,
 	SourceInfo,
-	SourceInfoType
+	SourceInfoType,
+	TimelineBlueprintExt
 } from 'tv2-common'
-import { Enablers } from 'tv2-constants'
+import { Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
 import { AtemSourceIndex } from '../../../types/atem'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { ControlClasses, SourceLayer } from '../../layers'
 import { DVEConfig } from '../pieces/dve'
 import {

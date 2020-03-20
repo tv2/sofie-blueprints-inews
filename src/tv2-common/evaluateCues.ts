@@ -27,8 +27,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { CueType } from 'tv2-constants'
-import { VizEngine } from '../types/constants'
+import { CueType, VizEngine } from 'tv2-constants'
 
 export interface EvaluateCuesShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
@@ -167,7 +166,7 @@ export interface EvaluateCuesShowstyleOptions<
 	EvaluateCueUnknown?: () => void
 }
 
-export function EvaluateCues<
+export function EvaluateCuesBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(

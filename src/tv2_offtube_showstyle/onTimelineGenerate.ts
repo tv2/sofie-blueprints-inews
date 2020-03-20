@@ -7,11 +7,10 @@ import {
 	TimelinePersistentState
 } from 'tv-automation-sofie-blueprints-integration'
 import { onTimelineGenerate } from 'tv2-common'
-import * as _ from 'underscore'
-import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
-import { CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from './layers'
+import { CasparPlayerClip, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { parseConfig } from './helpers/config'
 
-export function onTimelineGenerateAFVD(
+export function onTimelineGenerateOfftube(
 	context: PartEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
@@ -27,13 +26,13 @@ export function onTimelineGenerateAFVD(
 		parseConfig,
 		{
 			Caspar: {
-				ClipPending: CasparLLayer.CasparPlayerClipPending,
+				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending,
 				PlayerClip: CasparPlayerClip
 			},
 			Sisyfos: {
-				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-				PlayerA: SisyfosLLAyer.SisyfosSourceServerA,
-				PlayerB: SisyfosLLAyer.SisyfosSourceServerB
+				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+				PlayerA: OfftubeSisyfosLLayer.SisyfosSourceServerA,
+				PlayerB: OfftubeSisyfosLLayer.SisyfosSourceServerB
 			}
 		}
 	)

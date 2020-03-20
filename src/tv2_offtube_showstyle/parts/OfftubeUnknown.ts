@@ -7,13 +7,14 @@ import {
 import { GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 
 export function CreatePartUnknown(
 	context: PartContext,
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
-	_asAdlibs?: boolean
+	asAdlibs?: boolean
 ) {
 	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords)
 
@@ -29,7 +30,7 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	// EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {

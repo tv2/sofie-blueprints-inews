@@ -47,7 +47,7 @@
       "showAsTimeline": false,
       "overflowHorizontally": false,
       "sourceLayerIds": [
-        "studio0_clip",
+        "studio0_offtube_clip",
         "studio0_jingle"
       ],
       "tags": [
@@ -74,7 +74,7 @@
       ],
       "sourceLayerIds": [
         "studio0_voiceover",
-        "studio0_clip"
+        "studio0_offtube_clip"
       ]
     },
     {

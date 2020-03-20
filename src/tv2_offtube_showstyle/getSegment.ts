@@ -18,23 +18,22 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
-import { OfftubeStudioConfig } from '../tv2_offtube_studio/helpers/config'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { OffTubeSourceLayer } from './layers'
+import { OfftubeCreatePartKam } from './parts/OfftubeKam'
+import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
-	const result: BlueprintResultSegment = getSegmentBase<OfftubeStudioConfig, OffTubeShowstyleBlueprintConfig>(
-		context,
-		ingestSegment,
-		{
-			parseConfig,
-			TransformCuesIntoShowstyle,
-			CreatePartContinuity,
-			CreatePartUnknown
-		}
-	)
+	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
+		parseConfig,
+		TransformCuesIntoShowstyle,
+		CreatePartContinuity,
+		CreatePartUnknown,
+		CreatePartKam: OfftubeCreatePartKam,
+		CreatePartServer: OfftubeCreatePartServer
+	})
 
 	return {
 		segment: result.segment,

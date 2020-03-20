@@ -7,21 +7,32 @@ import {
 	TimelineObjAtemSsrc
 } from 'timeline-state-resolver-types'
 import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
-import { MediaPlayerClaimType } from 'tv2-constants'
+import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
-import { MEDIA_PLAYER_AUTO } from '../../types/constants'
-import { CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from '../layers'
+import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import {
 	MediaPlayerClaim,
 	PieceMetaData,
 	TimelineBlueprintExt,
 	TimelinePersistentStateExt
 } from '../onTimelineGenerate'
-import { BlueprintConfig } from './config'
 
 export interface SessionToPlayerMap {
 	[sessionId: string]: MediaPlayerClaim | undefined
 }
+
+export interface ABSourceLayers {
+	Caspar: {
+		ClipPending: string
+		PlayerClip: (id: number | string) => string
+	}
+	Sisyfos: {
+		ClipPending: string
+		PlayerA: string // TODO: Same approach as caspar
+		PlayerB: string
+	}
+}
+
 function reversePreviousAssignment(
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers']
 ): SessionToPlayerMap {
@@ -102,7 +113,10 @@ function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
 	})
 	return sessionRequests
 }
-function findNextAvailablePlayer(config: BlueprintConfig, inUse: ActiveRequest[], req: ActiveRequest) {
+function findNextAvailablePlayer<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(config: ShowStyleConfig, inUse: ActiveRequest[], req: ActiveRequest) {
 	const pickFirstNotInUse = (inUseRequests: ActiveRequest[]) => {
 		const inUseIds = _.compact(_.map(inUseRequests, r => r.player))
 		for (const mp of config.mediaPlayers) {
@@ -178,9 +192,12 @@ export function doesRequestOverlap(thisReq: ActiveRequest, other: ActiveRequest)
 	return false
 }
 
-export function resolveMediaPlayerAssignments(
+export function resolveMediaPlayerAssignments<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
 	context: NotesContext,
-	config: BlueprintConfig,
+	config: ShowStyleConfig,
 	previousAssignmentRev: SessionToPlayerMap,
 	resolvedPieces: IBlueprintPieceDB[]
 ) {
@@ -252,22 +269,26 @@ export function resolveMediaPlayerAssignments(
 	return activeRequests
 }
 
-function updateObjectsToMediaPlayer(
+function updateObjectsToMediaPlayer<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
 	context: NotesContext,
-	config: BlueprintConfig,
+	config: ShowStyleConfig,
 	playerId: number,
-	objs: OnGenerateTimelineObj[]
+	objs: OnGenerateTimelineObj[],
+	sourceLayers: ABSourceLayers
 ) {
 	_.each(objs, obj => {
 		// Mutate each object to the correct player
 		if (obj.content.deviceType === DeviceType.CASPARCG) {
-			if (obj.layer === CasparLLayer.CasparPlayerClipPending) {
-				obj.layer = CasparPlayerClip(playerId)
-			} else if (obj.lookaheadForLayer === CasparLLayer.CasparPlayerClipPending) {
+			if (obj.layer === sourceLayers.Caspar.ClipPending) {
+				obj.layer = sourceLayers.Caspar.PlayerClip(playerId)
+			} else if (obj.lookaheadForLayer === sourceLayers.Caspar.ClipPending) {
 				// This works on the assumption that layer will contain lookaheadForLayer, but not the exact syntax.
 				// Hopefully this will be durable to any potential future core changes
-				obj.layer = (obj.layer + '').replace(obj.lookaheadForLayer.toString(), CasparPlayerClip(playerId))
-				obj.lookaheadForLayer = CasparPlayerClip(playerId)
+				obj.layer = (obj.layer + '').replace(obj.lookaheadForLayer.toString(), sourceLayers.Caspar.PlayerClip(playerId))
+				obj.lookaheadForLayer = sourceLayers.Caspar.PlayerClip(playerId)
 			} else {
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)
@@ -301,14 +322,14 @@ function updateObjectsToMediaPlayer(
 				)
 			}
 		} else if (obj.content.deviceType === DeviceType.SISYFOS) {
-			if (obj.layer === SisyfosLLAyer.SisyfosSourceClipPending) {
+			if (obj.layer === sourceLayers.Sisyfos.ClipPending) {
 				// TODO: Change when adding more servers
-				obj.layer = playerId === 1 ? SisyfosLLAyer.SisyfosSourceServerA : SisyfosLLAyer.SisyfosSourceServerB
-			} else if (obj.lookaheadForLayer === SisyfosLLAyer.SisyfosSourceClipPending) {
+				obj.layer = playerId === 1 ? sourceLayers.Sisyfos.PlayerA : sourceLayers.Sisyfos.PlayerB
+			} else if (obj.lookaheadForLayer === sourceLayers.Sisyfos.ClipPending) {
 				// This works on the assumption that layer will contain lookaheadForLayer, but not the exact syntax.
 				// Hopefully this will be durable to any potential future core changes
 
-				const targetPlayer = playerId === 1 ? SisyfosLLAyer.SisyfosSourceServerA : SisyfosLLAyer.SisyfosSourceServerB
+				const targetPlayer = playerId === 1 ? sourceLayers.Sisyfos.PlayerA : sourceLayers.Sisyfos.PlayerB
 
 				// TODO: Change when adding more servers
 				obj.layer = (obj.layer + '').replace(obj.lookaheadForLayer.toString(), targetPlayer)
@@ -323,24 +344,39 @@ function updateObjectsToMediaPlayer(
 	})
 }
 
-export function assignMediaPlayers(
+export function assignMediaPlayers<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
 	context: NotesContext,
-	config: BlueprintConfig,
+	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintPieceDB[],
+	sourceLayers: ABSourceLayers
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const previousAssignmentRev = reversePreviousAssignment(previousAssignment)
 	const activeRequests = resolveMediaPlayerAssignments(context, config, previousAssignmentRev, resolvedPieces)
 
-	return applyMediaPlayersAssignments(context, config, timelineObjs, previousAssignmentRev, activeRequests)
+	return applyMediaPlayersAssignments(
+		context,
+		config,
+		timelineObjs,
+		previousAssignmentRev,
+		activeRequests,
+		sourceLayers
+	)
 }
-export function applyMediaPlayersAssignments(
+export function applyMediaPlayersAssignments<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
 	context: NotesContext,
-	config: BlueprintConfig,
+	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignmentRev: SessionToPlayerMap,
-	activeRequests: ActiveRequest[]
+	activeRequests: ActiveRequest[],
+	sourceLayers: ABSourceLayers
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const debugLog = config.studio.ABPlaybackDebugLogging
 	const newAssignments: TimelinePersistentStateExt['activeMediaPlayers'] = {}
@@ -372,7 +408,7 @@ export function applyMediaPlayersAssignments(
 		if (request) {
 			if (request.player) {
 				// TODO - what if player is undefined?
-				updateObjectsToMediaPlayer(context, config, Number(request.player) || 0, group)
+				updateObjectsToMediaPlayer(context, config, Number(request.player) || 0, group, sourceLayers)
 				persistAssignment(groupId, Number(request.player) || 0, false)
 			}
 		} else {
@@ -404,7 +440,7 @@ export function applyMediaPlayersAssignments(
 		const objIds = _.map(grp.objs, o => o.id)
 		const prev = previousAssignmentRev[grp.id]
 		if (prev) {
-			updateObjectsToMediaPlayer(context, config, prev.playerId, grp.objs)
+			updateObjectsToMediaPlayer(context, config, prev.playerId, grp.objs, sourceLayers)
 			persistAssignment(grp.id, prev.playerId, false)
 			context.warning(
 				`Found unexpected session remaining on the timeline: "${grp.id}" belonging to ${objIds}. This may cause playback glitches`
@@ -477,7 +513,7 @@ export function applyMediaPlayersAssignments(
 			// Record the assignment, so that the next update can try and reuse it
 			persistAssignment(grp.id, nextPlayer.playerId, true)
 
-			updateObjectsToMediaPlayer(context, config, nextPlayer.playerId, grp.objs)
+			updateObjectsToMediaPlayer(context, config, nextPlayer.playerId, grp.objs, sourceLayers)
 		}
 	})
 
