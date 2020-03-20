@@ -22,7 +22,7 @@
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "sourceLayerIds": [
-        "studio0_dve"
+        "studio0_offtube_dve"
       ]
     },
     {
@@ -48,7 +48,7 @@
       "overflowHorizontally": false,
       "sourceLayerIds": [
         "studio0_offtube_clip",
-        "studio0_jingle"
+        "studio0_offtube_jingle"
       ],
       "tags": [
         "offtube_adlib_100pc_server"
@@ -73,7 +73,7 @@
         "offtube_adlib_server"
       ],
       "sourceLayerIds": [
-        "studio0_voiceover",
+        "studio0_offtube_voiceover",
         "studio0_offtube_clip"
       ]
     },
@@ -91,9 +91,9 @@
       "y": -3,
       "width": 14,
       "sourceLayerIds": [
-        "studio0_graphicsIdent",
-        "studio0_graphicsTop",
-        "studio0_graphicsLower"
+        "studio0_offtube_graphicsIdent",
+        "studio0_offtube_graphicsTop",
+        "studio0_offtube_graphicsLower"
       ]
     },
     {
@@ -109,7 +109,7 @@
       "width": 14,
       "height": 7,
       "sourceLayerIds": [
-        "studio0_overlay"
+        "studio0_offtube_graphicsFull"
       ]
     },
     {
@@ -126,7 +126,7 @@
       "width": 14,
       "height": 0,
       "sourceLayerIds": [
-        "studio0_graphicsTop"
+        "studio0_offtube_graphicsTop"
       ]
     },
     {
@@ -143,13 +143,13 @@
       "width": 14,
       "height": 0,
       "sourceLayerIds": [
-        "studio0_graphicsIdent"
+        "studio0_offtube_graphicsIdent"
       ]
     },
     {
       "_id": "LiFso7gPYn2SPwHwg",
       "type": "external_frame",
-      "name": "New Panel",
+      "name": "Sisyfos",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,

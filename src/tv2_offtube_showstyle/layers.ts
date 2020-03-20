@@ -1,8 +1,8 @@
 export enum OffTubeSourceLayer {
 	// Pgm
-	PgmSourceSelect = 'studio0_pgm_source_select',
+	PgmSourceSelect = 'studio0_offtube_pgm_source_select',
 	PgmDVEBackground = 'studio0_offtube_dve_back',
-	PgmJingle = 'studio0_jingle',
+	PgmJingle = 'studio0_offtube_jingle',
 
 	// Adlib selection
 	SelectedAdLibDVE = 'studio0_offtube_dve',
