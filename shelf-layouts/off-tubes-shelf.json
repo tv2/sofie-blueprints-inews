@@ -230,8 +230,9 @@
       "x": 13,
       "role": "queue",
       "tags": [
-        "offtube_set_worldfeed_next"
-      ]
+        "offtube_set_remote_next"
+      ],
+      "adlibRank": 2
     },
     {
       "_id": "AMrCRTvefKDS6qogp",
@@ -248,9 +249,10 @@
       "width": 10,
       "y": 26,
       "tags": [
-        "offtube_set_rep_next"
+        "offtube_set_remote_next"
       ],
-      "role": "queue"
+      "role": "queue",
+      "adlibRank": 1
     },
     {
       "_id": "HLzpg7NdLk6tdYZfT",
@@ -267,9 +269,10 @@
       "x": 37,
       "y": 26,
       "tags": [
-        "offtube_set_ext_next"
+        "offtube_set_remote_next"
       ],
-      "role": "queue"
+      "role": "queue",
+      "adlibRank": 0
     },
     {
       "_id": "mRPYndcCsfZJL9zYH",
