@@ -13,7 +13,7 @@ import {
 	ShowStyleContext
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
-import { Enablers } from 'tv2-constants'
+import { AdlibTags, Enablers } from 'tv2-constants'
 import { getBaseline } from '../tv2_offtube_studio/getBaseline'
 import { OfftubeAbstractLLayer } from '../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
@@ -98,7 +98,8 @@ function getGlobalAdLibPiecesOffTube(
 						classes: [Enablers.OFFTUBE_ENABLE_SERVER]
 					})
 				]
-			}
+			},
+			tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
 		})
 	)
 

@@ -24,6 +24,7 @@ import { OffTubeSourceLayer } from './layers'
 import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
+import { OfftubeCreatePartVO } from './parts/OfftubeVO'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
@@ -32,7 +33,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartContinuity,
 		CreatePartUnknown,
 		CreatePartKam: OfftubeCreatePartKam,
-		CreatePartServer: OfftubeCreatePartServer
+		CreatePartServer: OfftubeCreatePartServer,
+		CreatePartVO: OfftubeCreatePartVO
 	})
 
 	return {

@@ -48,5 +48,6 @@ export enum Enablers {
 
 export enum AdlibTags {
 	OFFTUBE_ADLIB_SERVER = 'offtube_adlib_server',
-	OFFTUBE_100pc_SERVER = 'offtube_adlib_100pc_server'
+	OFFTUBE_100pc_SERVER = 'offtube_adlib_100pc_server',
+	OFFTUBE_SET_SERVER_NEXT = 'offtube_set_server_next'
 }
