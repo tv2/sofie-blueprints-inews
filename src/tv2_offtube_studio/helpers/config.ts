@@ -38,6 +38,8 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
 		SplitBackground: number
+		GFXFull: number
+		Loop: number
 
 		Default: number
 		Continuity: number

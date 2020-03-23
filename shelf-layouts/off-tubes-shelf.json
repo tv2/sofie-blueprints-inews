@@ -175,7 +175,8 @@
       "y": -2,
       "width": 22,
       "height": -11,
-      "windowNumber": 1
+      "windowNumber": 1,
+      "role": "take"
     },
     {
       "_id": "gho9Kigti38sQYqq3",
@@ -191,7 +192,8 @@
       "width": 22,
       "url": "http://localhost:5255/stream/stream2",
       "height": -11,
-      "y": -2
+      "y": -2,
+      "role": "program"
     },
     {
       "_id": "ooCyWRXeDE6ufYWWQ",
@@ -206,7 +208,11 @@
       "windowNumber": 3,
       "x": 1,
       "width": 10,
-      "y": 26
+      "y": 26,
+      "role": "queue",
+      "tags": [
+        "offtube_set_cam_next"
+      ]
     },
     {
       "_id": "PDKiKYeYB7zcAq6Lp",
@@ -221,7 +227,11 @@
       "windowNumber": 4,
       "y": 26,
       "width": 10,
-      "x": 13
+      "x": 13,
+      "role": "queue",
+      "tags": [
+        "offtube_set_worldfeed_next"
+      ]
     },
     {
       "_id": "AMrCRTvefKDS6qogp",
@@ -236,7 +246,11 @@
       "windowNumber": 5,
       "x": 25,
       "width": 10,
-      "y": 26
+      "y": 26,
+      "tags": [
+        "offtube_set_rep_next"
+      ],
+      "role": "queue"
     },
     {
       "_id": "HLzpg7NdLk6tdYZfT",
@@ -251,7 +265,11 @@
       "windowNumber": 6,
       "width": 10,
       "x": 37,
-      "y": 26
+      "y": 26,
+      "tags": [
+        "offtube_set_ext_next"
+      ],
+      "role": "queue"
     },
     {
       "_id": "mRPYndcCsfZJL9zYH",
@@ -266,7 +284,11 @@
       "windowNumber": 7,
       "x": 1,
       "width": 10,
-      "y": 33
+      "y": 33,
+      "tags": [
+        "offtube_set_full_next"
+      ],
+      "role": "queue"
     },
     {
       "_id": "PDKiKYeYB7zcAq6La",
@@ -281,12 +303,16 @@
       "windowNumber": 8,
       "y": 33,
       "width": 10,
-      "x": 13
+      "x": 13,
+      "role": "queue",
+      "tags": [
+        "offtube_set_jingle_next"
+      ]
     },
     {
       "_id": "AMrCRTvefKDS6qoga",
       "type": "multiview",
-      "name": "VO SERVER",
+      "name": "SERVER",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -296,7 +322,12 @@
       "windowNumber": 9,
       "x": 25,
       "width": 10,
-      "y": 33
+      "y": 33,
+      "role": "queue",
+      "tags": [
+        "offtube_set_server_next"
+      ],
+      "assignHotKeys": false
     },
     {
       "_id": "HLzpg7NdLk6tdYZfa",
@@ -312,7 +343,11 @@
       "width": 10,
       "x": 37,
       "y": 33,
-      "height": 0
+      "height": 0,
+      "tags": [
+        "offtube_set_dve_next"
+      ],
+      "role": "queue"
     },
     {
       "_id": "8Watr4RTSQQx3XxLA",

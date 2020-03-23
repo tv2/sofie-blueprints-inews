@@ -1,6 +1,7 @@
 import * as _ from 'underscore'
 
-import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
+import { AtemLLayer } from 'src/tv2_afvd_studio/layers'
+import { AtemTransitionStyle, DeviceType, TimelineContentTypeAtem, TimelineObjAbstractAny, TimelineObjAtemME } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultRundown,
 	IBlueprintAdLibPiece,
@@ -17,7 +18,7 @@ import { AdlibTags, Enablers } from 'tv2-constants'
 import { getBaseline } from '../tv2_offtube_studio/getBaseline'
 import { OfftubeAbstractLLayer } from '../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
-import { OffTubeSourceLayer } from './layers'
+import { OfftubeOutputLayers, OffTubeSourceLayer } from './layers'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,
@@ -77,10 +78,123 @@ function getGlobalAdLibPiecesOffTube(
 	adlibItems.push(
 		literal<IBlueprintAdLibPiece>({
 			_rank: globalRank++,
+			externalId: 'setNextToCam',
+			name: 'Set Cam Next',
+			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			outputLayerId: OfftubeOutputLayers.SEC,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [] // TODO
+			},
+			tags: [AdlibTags.OFFTUBE_SET_CAM_NEXT]
+		})
+	)
+
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
+			externalId: 'setNextToWorldfeed',
+			name: 'Set Worldfeed Next',
+			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			outputLayerId: OfftubeOutputLayers.SEC,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [] // TODO
+			},
+			tags: [AdlibTags.OFFTUBE_SET_WORLDFEED_NEXT]
+		})
+	)
+
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
+			externalId: 'setNextToRep',
+			name: 'Set Rep Next',
+			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			outputLayerId: OfftubeOutputLayers.SEC,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [] // TODO
+			},
+			tags: [AdlibTags.OFFTUBE_SET_REP_NEXT]
+		})
+	)
+
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
+			externalId: 'setNextToExt',
+			name: 'Set Ext Next',
+			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			outputLayerId: OfftubeOutputLayers.SEC,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [] // TODO
+			},
+			tags: [AdlibTags.OFFTUBE_SET_EXT_NEXT]
+		})
+	)
+
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
+			externalId: 'setNextToFull',
+			name: 'Set GFX Full Next',
+			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			outputLayerId: OfftubeOutputLayers.SEC,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [
+					literal<TimelineObjAtemME>({
+						id: '',
+						enable: {
+							while: '1'
+						},
+						layer: AtemLLayer.AtemMEProgram,
+						content: {
+							deviceType: DeviceType.ATEM,
+							type: TimelineContentTypeAtem.ME,
+							me: {
+								input: _config.studio.AtemSource.GFXFull,
+								transition: AtemTransitionStyle.CUT
+							}
+						}
+					})
+				]
+			},
+			tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT]
+		})
+	)
+
+	// TODO: Future
+	/*adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
+			externalId: 'setNextToJingle',
+			name: 'Set Jingle Next',
+			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			outputLayerId: OfftubeOutputLayers.SEC,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			content: {
+				timelineObjects: [] // TODO
+			},
+			tags: [AdlibTags.OFFTUBE_SET_JINGLE_NEXT]
+		})
+	)*/
+
+	adlibItems.push(
+		literal<IBlueprintAdLibPiece>({
+			_rank: globalRank++,
 			externalId: 'setNextToServer',
 			name: 'Set Server Next',
 			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
-			outputLayerId: 'sec',
+			outputLayerId: OfftubeOutputLayers.SEC,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
 			content: {
@@ -106,38 +220,10 @@ function getGlobalAdLibPiecesOffTube(
 	adlibItems.push(
 		literal<IBlueprintAdLibPiece>({
 			_rank: globalRank++,
-			externalId: 'setNextToFullGFX',
-			name: 'Set Full GFX Next',
-			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
-			outputLayerId: 'sec',
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			content: {
-				timelineObjects: [
-					literal<TimelineObjAbstractAny>({
-						id: '',
-						enable: {
-							while: '1'
-						},
-						priority: 1,
-						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-						content: {
-							deviceType: DeviceType.ABSTRACT
-						},
-						classes: [Enablers.OFFTUBE_ENABLE_FULL]
-					})
-				]
-			}
-		})
-	)
-
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
 			externalId: 'setNextToDVE',
 			name: 'Set DVE Next',
 			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
-			outputLayerId: 'sec',
+			outputLayerId: OfftubeOutputLayers.SEC,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
 			content: {
@@ -155,7 +241,8 @@ function getGlobalAdLibPiecesOffTube(
 						classes: [Enablers.OFFTUBE_ENABLE_DVE]
 					})
 				]
-			}
+			},
+			tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
 		})
 	)
 
