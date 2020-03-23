@@ -1,18 +1,22 @@
 import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CueDefinitionGrafik, PartDefinition } from 'tv2-common'
-import { Enablers } from 'tv2-constants'
+import { Enablers, VizEngine } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OffTubeSourceLayer } from '../layers'
 
-export function EvaluateGrafikCaspar(
+export function OfftubeEvaluateGrafikCaspar(
 	config: OffTubeShowstyleBlueprintConfig,
 	_context: PartContext,
 	_pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_partid: string,
 	parsedCue: CueDefinitionGrafik,
+	_engine: VizEngine,
+	_adlib: boolean,
 	partDefinition: PartDefinition,
-	adlib: boolean
+	_isTlfPrimary?: boolean,
+	_rank?: number
 ) {
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(
@@ -25,42 +29,37 @@ export function EvaluateGrafikCaspar(
 		if (template) {
 			console.log(JSON.stringify(template))
 			if (template.IsDesign) {
-				/* config.showStyle.IsOfftube */
-				if ([].length === 999) {
-					return
-				}
+				return
 			}
 		}
 	}
 
-	if (adlib) {
-		const piece = CreateAdlibServer(
-			config,
-			0,
-			partDefinition.externalId,
-			partDefinition.externalId,
-			partDefinition,
-			parsedCue.template,
-			false,
-			{
-				Caspar: {
-					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-				},
-				Sisyfos: {
-					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-				},
-				ATEM: {
-					MEPGM: OfftubeAtemLLayer.AtemMEProgram
-				},
-				PgmServer: OffTubeSourceLayer.SelectedAdlibGraphicsFull,
-				PgmVoiceOver: OffTubeSourceLayer.SelectedAdlibGraphicsFull
+	const piece = CreateAdlibServer(
+		config,
+		0,
+		partDefinition.externalId,
+		partDefinition.externalId,
+		partDefinition,
+		parsedCue.template,
+		false,
+		{
+			Caspar: {
+				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 			},
-			{
-				isOfftube: true,
-				tagAsAdlib: false,
-				enabler: Enablers.OFFTUBE_ENABLE_FULL
-			}
-		)
-		adlibPieces.push(piece)
-	}
+			Sisyfos: {
+				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+			},
+			ATEM: {
+				MEPGM: OfftubeAtemLLayer.AtemMEProgram
+			},
+			PgmServer: OffTubeSourceLayer.SelectedAdlibGraphicsFull,
+			PgmVoiceOver: OffTubeSourceLayer.SelectedAdlibGraphicsFull
+		},
+		{
+			isOfftube: true,
+			tagAsAdlib: false,
+			enabler: Enablers.OFFTUBE_ENABLE_FULL
+		}
+	)
+	adlibPieces.push(piece)
 }

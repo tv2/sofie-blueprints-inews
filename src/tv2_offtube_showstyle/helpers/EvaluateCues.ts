@@ -7,6 +7,8 @@ import {
 	PartDefinition
 } from 'tv2-common'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
+import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
+import { OfftubeEvaluateTargetEngine } from '../cues/OfftubeTargetEngine'
 import { OfftubeEvaluateVIZ } from '../cues/OfftubeViz'
 import { OffTubeShowstyleBlueprintConfig } from './config'
 
@@ -21,7 +23,12 @@ export function OfftubeEvaluateCues(
 	isGrafikPart?: boolean
 ) {
 	EvaluateCuesBase(
-		{ EvaluateCueVIZ: OfftubeEvaluateVIZ, EvaluateCueDVE: OfftubeEvaluateDVE },
+		{
+			EvaluateCueVIZ: OfftubeEvaluateVIZ,
+			EvaluateCueDVE: OfftubeEvaluateDVE,
+			EvaluateCueTargetEngine: OfftubeEvaluateTargetEngine,
+			EvaluateCueGrafik: OfftubeEvaluateGrafikCaspar
+		},
 		context,
 		config,
 		pieces,
