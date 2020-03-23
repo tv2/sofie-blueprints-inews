@@ -49,5 +49,17 @@ export enum Enablers {
 export enum AdlibTags {
 	OFFTUBE_ADLIB_SERVER = 'offtube_adlib_server',
 	OFFTUBE_100pc_SERVER = 'offtube_adlib_100pc_server',
-	OFFTUBE_SET_SERVER_NEXT = 'offtube_set_server_next'
+	OFFTUBE_SET_CAM_NEXT = 'offtube_set_cam_next',
+	OFFTUBE_SET_WORLDFEED_NEXT = 'offtube_set_worldfeed_next',
+	OFFTUBE_SET_REP_NEXT = 'offtube_set_rep_next',
+	OFFTUBE_SET_EXT_NEXT = 'offtube_set_ext_next',
+	OFFTUBE_SET_FULL_NEXT = 'offtube_set_full_next',
+	OFFTUBE_SET_JINGLE_NEXT = 'offtube_set_jingle_next',
+	OFFTUBE_SET_SERVER_NEXT = 'offtube_set_server_next',
+	OFFTUBE_SET_DVE_NEXT = 'offtube_set_dve_next'
+}
+
+export enum ControlClasses {
+	ShowIdentGraphic = 'show_ident_graphic',
+	DVEOnAir = 'dve_on_air' // DVE Part is on air
 }

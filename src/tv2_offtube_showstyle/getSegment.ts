@@ -21,6 +21,7 @@ import * as _ from 'underscore'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { OffTubeSourceLayer } from './layers'
+import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
 import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
@@ -34,7 +35,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartUnknown,
 		CreatePartKam: OfftubeCreatePartKam,
 		CreatePartServer: OfftubeCreatePartServer,
-		CreatePartVO: OfftubeCreatePartVO
+		CreatePartVO: OfftubeCreatePartVO,
+		CreatePartDVE: OfftubeCreatePartDVE
 	})
 
 	return {

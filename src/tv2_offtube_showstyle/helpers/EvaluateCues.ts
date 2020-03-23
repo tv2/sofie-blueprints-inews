@@ -6,6 +6,7 @@ import {
 	IBlueprintPieceEPI,
 	PartDefinition
 } from 'tv2-common'
+import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateVIZ } from '../cues/OfftubeViz'
 import { OffTubeShowstyleBlueprintConfig } from './config'
 
@@ -20,7 +21,7 @@ export function OfftubeEvaluateCues(
 	isGrafikPart?: boolean
 ) {
 	EvaluateCuesBase(
-		{ EvaluateCueVIZ: OfftubeEvaluateVIZ },
+		{ EvaluateCueVIZ: OfftubeEvaluateVIZ, EvaluateCueDVE: OfftubeEvaluateDVE },
 		context,
 		config,
 		pieces,

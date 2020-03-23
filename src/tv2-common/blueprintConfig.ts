@@ -1,4 +1,5 @@
 import { TableConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
+import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
@@ -12,6 +13,10 @@ export interface TV2StudioConfigBase {
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		Default: number
+		SplitArtF: number
+		SplitArtK: number
+		DSK1F: number
+		DSK1K: number
 	}
 }
 
@@ -24,6 +29,7 @@ export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConf
 export interface TV2ShowstyleBlueprintConfigBase {
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemValue
+	DVEStyles: DVEConfigInput[]
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

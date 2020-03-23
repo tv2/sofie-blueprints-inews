@@ -39,8 +39,8 @@ import {
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, SourceInfo, TimelineBlueprintExt } from 'tv2-common'
-import { CONSTANTS, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { literal, MakeContentDVE2, SourceInfo, TimelineBlueprintExt } from 'tv2-common'
+import { CONSTANTS, ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	AtemLLayer,
@@ -53,7 +53,7 @@ import {
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, parseConfig } from './helpers/config'
-import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
+import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers, boxMappings } from './helpers/content/dve'
 import { GetEksternMetaData } from './helpers/pieces/ekstern'
 import {
 	GetLayerForEkstern,
@@ -63,7 +63,7 @@ import {
 	STICKY_LAYERS,
 	STUDIO_MICS
 } from './helpers/sisyfos/sisyfos'
-import { ControlClasses, SourceLayer } from './layers'
+import { SourceLayer } from './layers'
 import { GetKeepStudioMicsMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -824,8 +824,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
-		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined)
-
+		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, AFVD_DVE_GENERATOR_OPTIONS)
 		if (content.valid) {
 			adlibItems.push({
 				externalId: `dve-${dveConfig.DVEName}`,

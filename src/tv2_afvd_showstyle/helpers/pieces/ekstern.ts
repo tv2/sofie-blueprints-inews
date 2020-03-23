@@ -25,9 +25,10 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
+import { ControlClasses } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { ControlClasses, SourceLayer } from '../../layers'
+import { SourceLayer } from '../../layers'
 import {
 	GetLayerForEkstern,
 	GetSisyfosTimelineObjForCamera,

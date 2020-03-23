@@ -21,9 +21,9 @@ import {
 	PartDefinition,
 	PartToParentClass
 } from 'tv2-common'
-import { CueType, VizEngine } from 'tv2-constants'
+import { ControlClasses, CueType, VizEngine } from 'tv2-constants'
 import { VizLLayer } from '../../../tv2_afvd_studio/layers'
-import { ControlClasses, SourceLayer } from '../../layers'
+import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
 import { EvaluateDesign } from './design'
 

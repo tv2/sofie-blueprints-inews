@@ -115,7 +115,8 @@
                         "ready" : "KLAR",
                         "runsTime" : "0",
                         "typecode" : "spx",
-                        "programtitle" : " "
+                        "programtitle" : " ",
+                        "videoId": "01234A"
                     },
                     "meta" : {
                         "rate" : "165"
@@ -133,7 +134,7 @@
                         ],
                         [
                             "DVE=SOMMERFUGL",
-                            "INP1=EVS 1",
+                            "INP1=SERVER",
                             "INP2=KAM 1"
                         ]
                     ],

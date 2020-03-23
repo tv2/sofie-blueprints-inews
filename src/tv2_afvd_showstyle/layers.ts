@@ -23,6 +23,7 @@ export enum SourceLayer {
 	PgmDVEBox1 = 'studio0_dve_box1',
 	PgmDVEBox2 = 'studio0_dve_box2',
 	PgmDVEBox3 = 'studio0_dve_box3',
+	PgmDVEBox4 = 'studio0_dve_box4',
 
 	VizFullIn1 = 'studio0_aux_viz_full1',
 	AuxStudioScreen = 'studio0_aux_studio_screen',
@@ -38,9 +39,4 @@ export enum SourceLayer {
 
 	// Wall
 	WallGraphics = 'studio0_wall_graphics'
-}
-
-export enum ControlClasses {
-	ShowIdentGraphic = 'show_ident_graphic',
-	DVEOnAir = 'dve_on_air' // DVE Part is on air
 }

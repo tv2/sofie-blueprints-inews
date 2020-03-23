@@ -30,6 +30,7 @@ export enum AtemLLayer {
 	AtemSSrcBox1 = 'atem_supersource_z_box1',
 	AtemSSrcBox2 = 'atem_supersource_z_box2',
 	AtemSSrcBox3 = 'atem_supersource_z_box3',
+	AtemSSrcBox4 = 'atem_supersource_z_box4',
 
 	AtemAuxPGM = 'atem_aux_pgm',
 	AtemAuxClean = 'atem_aux_clean',

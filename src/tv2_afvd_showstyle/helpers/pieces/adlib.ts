@@ -3,9 +3,11 @@ import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	GetDVETemplate,
 	literal,
 	PartDefinition,
-	PieceMetaData
+	PieceMetaData,
+	TemplateIsValid
 } from 'tv2-common'
 import { CueType, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
@@ -13,7 +15,6 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studi
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 import { STICKY_LAYERS } from '../sisyfos/sisyfos'
-import { GetDVETemplate, TemplateIsValid } from './dve'
 
 export function EvaluateAdLib(
 	context: PartContext,

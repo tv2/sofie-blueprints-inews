@@ -36,7 +36,11 @@ export enum OfftubeAtemLLayer {
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
 	AtemAuxClean = 'atem_aux_clean',
-	AtemAuxScreen = 'atem_aux_screen'
+	AtemAuxScreen = 'atem_aux_screen',
+	AtemSSrcBox1 = 'atem_supersource_z_box1',
+	AtemSSrcBox2 = 'atem_supersource_z_box2',
+	AtemSSrcBox3 = 'atem_supersource_z_box3',
+	AtemSSrcBox4 = 'atem_supersource_z_box4'
 }
 
 export enum OfftubeCasparLLayer {
