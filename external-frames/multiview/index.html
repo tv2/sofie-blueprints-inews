@@ -1,0 +1,162 @@
+<html>
+	<head>
+		<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+		}
+		.dashboard {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			overflow: hidden;
+			--dashboard-button-grid-width: 1.875em;
+			--dashboard-button-grid-height: 1.625em;
+			--dashboard-panel-margin-width: 0.938em;
+			--dashboard-panel-margin-height: 2.750em;
+		}
+		.multiview-panel {
+			position: absolute;
+    		text-align: center;
+   			user-select: none;
+		}
+		.multiview-panel-inner {
+			padding-top: 56.25%;
+			position: relative;
+			overflow: hidden;
+			margin: 3px;
+		}
+		.multiview-panel-image {
+			background: #000;
+			position: absolute;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="stream-container" class="dashboard"></div>
+		<script>
+		const layoutFilename = 'off-tubes-shelf.json'
+		const streamId = "stream2"
+		const urlBase = "http://"+window.location.hostname+":5255"
+		const imgSrc = urlBase + "/stream/" + streamId
+		let images = []
+
+		function getWindowPosition (el) {
+			return {
+				width: el.width >= 0 ?
+					`calc((${el.width} * var(--dashboard-button-grid-width)) + var(--dashboard-panel-margin-width))` :
+					undefined,
+				height: el.height >= 0 ?
+					`calc((${el.height} * var(--dashboard-button-grid-height)) + var(--dashboard-panel-margin-height))` :
+					undefined,
+				left: el.x >= 0 ?
+					`calc(${el.x} * var(--dashboard-button-grid-width))` :
+					el.width < 0 ?
+						`calc(${-1 * el.width - 1} * var(--dashboard-button-grid-width))` :
+						undefined,
+				top: el.y >= 0 ?
+					`calc(${el.y} * var(--dashboard-button-grid-height))` :
+					el.height < 0 ?
+						`calc(${-1 * el.height - 1} * var(--dashboard-button-grid-height))` :
+						undefined,
+				right: el.x < 0 ?
+					`calc(${-1 * el.x - 1} * var(--dashboard-button-grid-width))` :
+					el.width < 0 ?
+						`calc(${-1 * el.width - 1} * var(--dashboard-button-grid-width))` :
+						undefined,
+				bottom: el.y < 0 ?
+					`calc(${-1 * el.y - 1} * var(--dashboard-button-grid-height))` :
+					el.height < 0 ?
+						`calc(${-1 * el.height - 1} * var(--dashboard-button-grid-height))` :
+						undefined
+			}
+		}
+
+		const rectangles = [
+			{ x: 0.005, y: 0.0058, width: 0.49, height: 0.487 },
+			{ x: 0.505, y: 0.0058, width: 0.49, height: 0.487 },
+			{ x: 0.005, y: 0.5055, width: 0.24, height: 0.239 },
+			{ x: 0.255, y: 0.5055, width: 0.24, height: 0.239 },
+			{ x: 0.505, y: 0.5055, width: 0.24, height: 0.239 },
+			{ x: 0.755, y: 0.5055, width: 0.24, height: 0.239 },
+			{ x: 0.005, y: 0.7555, width: 0.24, height: 0.239 },
+			{ x: 0.255, y: 0.7555, width: 0.24, height: 0.239 },
+			{ x: 0.505, y: 0.7555, width: 0.24, height: 0.239 },
+			{ x: 0.755, y: 0.7555, width: 0.24, height: 0.239 }
+		]
+
+		function getImagePosition (id) {
+			let rectangle = rectangles[id]
+			if	(!rectangle) {
+				rectangle = { x: 0, y: 0, width: 1, height: 1 }
+			}
+			return {
+				width: (100 / rectangle.width) + '%',
+				height: (100 / rectangle.height) + '%',
+				top: (-100 * rectangle.y / rectangle.height) + '%',
+				left: (-100 * rectangle.x / rectangle.width) + '%'
+			}
+		}
+
+		function checkImages () {
+			let timeout = 1000
+			if (images[0].naturalWidth == 0) {
+				for(let i = 0; i < images.length; i++) {
+					images[i].src = imgSrc+'?hash='+Date.now()
+				}
+				timeout = 5000
+			}
+			window.setTimeout(() => {
+				checkImages()
+			}, timeout)
+		}
+
+		function setupStream (element, panels) {
+			for (let i = 0; i < panels.length; i++) {
+
+				const img = new Image()
+				images.push(img)
+
+				const position = getImagePosition(panels[i].windowNumber-1)
+				Object.assign(img.style, position)
+				img.classList.add('multiview-panel-image')
+				img.src = imgSrc
+
+				const panel = getWindowPosition(panels[i])
+				const div = document.createElement("div")
+				div.classList.add('multiview-panel')
+				Object.assign(div.style, panel)
+
+				const inner = document.createElement("div")
+				inner.classList.add('multiview-panel-inner')
+
+				inner.appendChild(img)
+				div.appendChild(inner)
+				element.appendChild(div)
+			}
+			window.setTimeout(() => {
+				checkImages()
+			}, 5000)
+		}
+
+		function getLayout() {
+			fetch(layoutFilename)
+			.then((response) => {
+				return response.json()
+			})
+			.then((data) => {
+				const panels = data.filters.filter((x) => x.type === 'multiview')
+				setupStream(document.getElementById("stream-container"), panels)
+			})
+			.catch((error) => {
+				console.log('Unable to load', layoutFilename)
+			})
+		}
+
+		getLayout();
+
+		</script>
+	</body>
+</html>
