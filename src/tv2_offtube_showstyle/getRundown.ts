@@ -95,6 +95,7 @@ function getGlobalAdLibPiecesOffTube(
 					outputLayerId: OfftubeOutputLayers.SEC,
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
+					canCombineQueue: true,
 					content: {
 						timelineObjects: [
 							literal<TimelineObjAtemME>({
@@ -132,6 +133,7 @@ function getGlobalAdLibPiecesOffTube(
 					outputLayerId: OfftubeOutputLayers.SEC,
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
+					canCombineQueue: true,
 					content: {
 						timelineObjects: [
 							literal<TimelineObjAtemME>({
@@ -165,6 +167,7 @@ function getGlobalAdLibPiecesOffTube(
 			outputLayerId: OfftubeOutputLayers.SEC,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
+			canCombineQueue: true,
 			content: {
 				timelineObjects: [
 					literal<TimelineObjAtemME>({
@@ -214,6 +217,7 @@ function getGlobalAdLibPiecesOffTube(
 			outputLayerId: OfftubeOutputLayers.SEC,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
+			canCombineQueue: true,
 			content: {
 				timelineObjects: [
 					literal<TimelineObjAbstractAny>({
@@ -243,6 +247,7 @@ function getGlobalAdLibPiecesOffTube(
 			outputLayerId: OfftubeOutputLayers.SEC,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
+			canCombineQueue: true,
 			content: {
 				timelineObjects: [
 					literal<TimelineObjAbstractAny>({

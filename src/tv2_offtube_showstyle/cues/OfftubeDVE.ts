@@ -52,7 +52,8 @@ export function OfftubeEvaluateDVE(
 				outputLayerId: 'pgm',
 				sourceLayerId: OffTubeSourceLayer.SelectedAdLibDVE,
 				infiniteMode: PieceLifespan.OutOnNextSegment,
-				toBeQueued: false, // TODO: This should be true but core ~hacks~ fixes are needed.
+				toBeQueued: true,
+				canCombineQueue: true,
 				content: content.content,
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
 			})
