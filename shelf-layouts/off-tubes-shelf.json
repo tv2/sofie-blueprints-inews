@@ -329,7 +329,7 @@
     {
       "_id": "PTJBfPjrxPMwY4cqW",
       "label": "KLAR ON AIR",
-      "type": "queue_adlib",
+      "type": "klar_on_air",
       "x": -1,
       "y": 0,
       "width": 14,
