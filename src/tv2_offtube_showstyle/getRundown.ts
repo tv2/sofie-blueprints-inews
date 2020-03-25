@@ -1,6 +1,5 @@
 import * as _ from 'underscore'
 
-import { AtemLLayer } from 'src/tv2_afvd_studio/layers'
 import {
 	AtemTransitionStyle,
 	DeviceType,
@@ -23,7 +22,7 @@ import {
 import { literal } from 'tv2-common'
 import { AdlibTags, Enablers } from 'tv2-constants'
 import { getBaseline } from '../tv2_offtube_studio/getBaseline'
-import { OfftubeAbstractLLayer } from '../tv2_offtube_studio/layers'
+import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { OfftubeOutputLayers, OffTubeSourceLayer } from './layers'
 
@@ -103,7 +102,7 @@ function getGlobalAdLibPiecesOffTube(
 								enable: {
 									while: '1'
 								},
-								layer: AtemLLayer.AtemMEProgram,
+								layer: OfftubeAtemLLayer.AtemMEProgram,
 								content: {
 									deviceType: DeviceType.ATEM,
 									type: TimelineContentTypeAtem.ME,
@@ -141,7 +140,7 @@ function getGlobalAdLibPiecesOffTube(
 								enable: {
 									while: '1'
 								},
-								layer: AtemLLayer.AtemMEProgram,
+								layer: OfftubeAtemLLayer.AtemMEProgram,
 								content: {
 									deviceType: DeviceType.ATEM,
 									type: TimelineContentTypeAtem.ME,
@@ -175,7 +174,7 @@ function getGlobalAdLibPiecesOffTube(
 						enable: {
 							while: '1'
 						},
-						layer: AtemLLayer.AtemMEProgram,
+						layer: OfftubeAtemLLayer.AtemMEProgram,
 						content: {
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.ME,
