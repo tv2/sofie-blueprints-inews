@@ -8,6 +8,7 @@ import {
 } from 'tv2-common'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
+import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { OfftubeEvaluateTargetEngine } from '../cues/OfftubeTargetEngine'
 import { OfftubeEvaluateVIZ } from '../cues/OfftubeViz'
 import { OffTubeShowstyleBlueprintConfig } from './config'
@@ -27,7 +28,8 @@ export function OfftubeEvaluateCues(
 			EvaluateCueVIZ: OfftubeEvaluateVIZ,
 			EvaluateCueDVE: OfftubeEvaluateDVE,
 			EvaluateCueTargetEngine: OfftubeEvaluateTargetEngine,
-			EvaluateCueGrafik: OfftubeEvaluateGrafikCaspar
+			EvaluateCueGrafik: OfftubeEvaluateGrafikCaspar,
+			EvaluateCueJingle: OfftubeEvaluateJingle
 		},
 		context,
 		config,
