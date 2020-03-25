@@ -57,6 +57,7 @@ export function OfftubeCreatePartVO(
 			enabler: Enablers.OFFTUBE_ENABLE_SERVER
 		}
 	)
+	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER]
 	adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration

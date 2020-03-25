@@ -55,6 +55,7 @@ export function OfftubeCreatePartServer(
 			enabler: Enablers.OFFTUBE_ENABLE_SERVER
 		}
 	)
+	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER]
 	adLibPieces.push(adlibServer)
