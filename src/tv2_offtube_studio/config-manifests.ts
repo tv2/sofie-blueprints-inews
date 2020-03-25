@@ -119,6 +119,22 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 11
 	},
 	{
+		id: 'AtemSource.GFXFull',
+		name: 'Full graphics source',
+		description: 'ATEM source for full graphics',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 8
+	},
+	{
+		id: 'AtemSource.Loop',
+		name: 'Studio screen loop graphics source',
+		description: 'ATEM source for loop for studio screen',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 12
+	},
+	{
 		id: 'AtemSource.Default',
 		name: 'ATEM Default source',
 		description: 'ATEM vision mixer default source',

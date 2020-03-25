@@ -322,6 +322,25 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
+		_id: SourceLayer.PgmDVEBox4,
+		_rank: 0,
+		name: 'DVE INP4',
+		abbreviation: 'DB4',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
+	{
 		_id: SourceLayer.PgmServer,
 		_rank: 0,
 		name: 'Server',

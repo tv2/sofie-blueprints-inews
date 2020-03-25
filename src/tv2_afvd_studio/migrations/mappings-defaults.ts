@@ -222,6 +222,14 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
+	atem_supersource_z_box4: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookaheadMaxSearchDistance: 1,
+		mappingType: MappingAtemType.SuperSourceBox,
+		index: 0 // 0 = SS
+	}),
 	casparcg_player_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',

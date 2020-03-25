@@ -63,6 +63,38 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
+	atem_supersource_z_box1: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookaheadMaxSearchDistance: 1,
+		mappingType: MappingAtemType.SuperSourceBox,
+		index: 0 // 0 = SS
+	}),
+	atem_supersource_z_box2: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookaheadMaxSearchDistance: 1,
+		mappingType: MappingAtemType.SuperSourceBox,
+		index: 0 // 0 = SS
+	}),
+	atem_supersource_z_box3: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookaheadMaxSearchDistance: 1,
+		mappingType: MappingAtemType.SuperSourceBox,
+		index: 0 // 0 = SS
+	}),
+	atem_supersource_z_box4: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookaheadMaxSearchDistance: 1,
+		mappingType: MappingAtemType.SuperSourceBox,
+		index: 0 // 0 = SS
+	}),
 	sisyfos_source_clip_pending: literal<MappingAbstract & BlueprintMapping>({
 		device: DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
@@ -164,12 +196,28 @@ export default literal<BlueprintMappings>({
 		channel: 2,
 		layer: 109
 	}),
+	casparcg_graphics_overlay: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.PRELOAD,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
 	casparcg_player_jingle: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
 		layer: 110,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_graphics_full: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.PRELOAD,
+		channel: 3,
+		layer: 109,
 		previewWhenNotOnAir: true
 	}),
 	casparcg_cg_dve_template: literal<MappingCasparCG & BlueprintMapping>({
@@ -200,7 +248,7 @@ export default literal<BlueprintMappings>({
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.RETAIN,
 		previewWhenNotOnAir: true,
-		channel: 4,
+		channel: 5,
 		layer: 110
 	}),
 	casparcg_studio_screen_loop: literal<MappingCasparCG & BlueprintMapping>({
@@ -208,7 +256,7 @@ export default literal<BlueprintMappings>({
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.RETAIN,
 		previewWhenNotOnAir: true,
-		channel: 5,
+		channel: 6,
 		layer: 110
 	})
 })
