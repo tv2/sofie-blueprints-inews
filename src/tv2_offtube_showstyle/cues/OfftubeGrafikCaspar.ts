@@ -12,7 +12,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	adlibPieces: IBlueprintAdLibPiece[],
 	_partid: string,
 	parsedCue: CueDefinitionGrafik,
-	_engine: VizEngine,
+	engine: VizEngine,
 	_adlib: boolean,
 	partDefinition: PartDefinition,
 	_isTlfPrimary?: boolean,
@@ -52,8 +52,9 @@ export function OfftubeEvaluateGrafikCaspar(
 			ATEM: {
 				MEPGM: OfftubeAtemLLayer.AtemMEProgram
 			},
-			PgmServer: OffTubeSourceLayer.SelectedAdlibGraphicsFull,
-			PgmVoiceOver: OffTubeSourceLayer.SelectedAdlibGraphicsFull
+			PgmServer: engine === 'FULL' ? OffTubeSourceLayer.SelectedAdlibGraphicsFull : OffTubeSourceLayer.PgmGraphicsLower, // TODO: Get source layer from config
+			PgmVoiceOver:
+				engine === 'FULL' ? OffTubeSourceLayer.SelectedAdlibGraphicsFull : OffTubeSourceLayer.PgmGraphicsLower
 		},
 		{
 			isOfftube: true,
