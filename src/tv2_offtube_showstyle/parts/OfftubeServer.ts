@@ -1,6 +1,6 @@
 import { BlueprintResultPart, IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
-import { AdlibTags, Enablers } from 'tv2-constants'
+import { AdlibTags, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
@@ -32,7 +32,7 @@ export function OfftubeCreatePartServer(
 		config,
 		0,
 		partDefinition.externalId,
-		partDefinition.externalId,
+		MEDIA_PLAYER_AUTO,
 		partDefinition,
 		file,
 		false,
