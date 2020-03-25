@@ -7,7 +7,14 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CueDefinitionTargetEngine, FindSourceInfoStrict, literal, PartDefinition } from 'tv2-common'
+import {
+	CalculateTime,
+	CueDefinitionTargetEngine,
+	FindSourceInfoStrict,
+	literal,
+	PartDefinition,
+	TranslateEngine
+} from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
@@ -91,7 +98,7 @@ export function EvaluateTargetEngine(
 					adlibPieces,
 					partId,
 					parsedCue.data.grafik,
-					!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
+					TranslateEngine(parsedCue.data.engine),
 					adlib
 				)
 			}
@@ -103,7 +110,7 @@ export function EvaluateTargetEngine(
 				adlibPieces,
 				partId,
 				parsedCue.data.grafik,
-				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
+				TranslateEngine(parsedCue.data.engine),
 				adlib,
 				false,
 				adlibPieces.length,

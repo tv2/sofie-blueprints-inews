@@ -3,10 +3,8 @@ import {
 	DeviceType,
 	MappingAtemType,
 	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
 	TimelineContentTypeSisyfos,
 	TimelineObjAtemME,
-	TimelineObjCCGRoute,
 	TimelineObjSisyfosAny,
 	TSRTimelineObjBase
 } from 'timeline-state-resolver-types'
@@ -14,7 +12,7 @@ import { BlueprintMapping, BlueprintMappings, IStudioContext } from 'tv-automati
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from './layers'
+import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from './layers'
 import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
@@ -107,20 +105,6 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 				me: {
 					input: AtemSourceIndex.MP1,
 					transition: AtemTransitionStyle.CUT
-				}
-			}
-		}),
-
-		literal<TimelineObjCCGRoute>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparGraphicsFull,
-			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.ROUTE,
-				mixer: {
-					opacity: 0
 				}
 			}
 		})

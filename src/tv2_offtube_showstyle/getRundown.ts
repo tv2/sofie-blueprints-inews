@@ -199,7 +199,8 @@ function getGlobalAdLibPiecesOffTube(
 								input: config.studio.AtemSource.GFXFull,
 								transition: AtemTransitionStyle.CUT
 							}
-						}
+						},
+						classes: [Enablers.OFFTUBE_ENABLE_FULL]
 					})
 				]
 			},
@@ -491,6 +492,21 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 						type: Transition.CUT,
 						duration: CONSTANTS.DefaultClipFadeOut
 					}
+				}
+			}
+		}),
+
+		literal<TimelineObjCCGMedia>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: OfftubeCasparLLayer.CasparGraphicsFull,
+			content: {
+				deviceType: DeviceType.CASPARCG,
+				type: TimelineContentTypeCasparCg.MEDIA,
+				file: 'empty',
+				mixer: {
+					opacity: 0
 				}
 			}
 		}),

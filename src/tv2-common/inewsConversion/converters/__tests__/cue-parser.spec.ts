@@ -573,6 +573,22 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('GRAFIK=takeover', () => {
+		const cueGrafik = ['GRAFIK=takeover']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.TargetEngine,
+				rawType: 'GRAFIK=takeover',
+				data: {
+					engine: 'takeover'
+				},
+				content: {},
+				iNewsCommand: 'GRAFIK'
+			})
+		)
+	})
+
 	test('cg12 pilotdata', () => {
 		const cueMOS = [
 			'cg12 pilotdata',

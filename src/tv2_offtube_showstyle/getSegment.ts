@@ -36,7 +36,8 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartKam: OfftubeCreatePartKam,
 		CreatePartServer: OfftubeCreatePartServer,
 		CreatePartVO: OfftubeCreatePartVO,
-		CreatePartDVE: OfftubeCreatePartDVE
+		CreatePartDVE: OfftubeCreatePartDVE,
+		CreatePartGrafik: CreatePartUnknown
 	})
 
 	return {
