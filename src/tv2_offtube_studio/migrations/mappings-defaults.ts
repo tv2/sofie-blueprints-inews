@@ -199,7 +199,7 @@ export default literal<BlueprintMappings>({
 	casparcg_graphics_overlay: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.NONE,
 		channel: 3,
 		layer: 111,
 		previewWhenNotOnAir: true
