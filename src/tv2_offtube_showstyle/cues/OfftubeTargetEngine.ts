@@ -1,5 +1,5 @@
 import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionTargetEngine, PartDefinition } from 'tv2-common'
+import { CueDefinitionGrafik, CueDefinitionTargetEngine, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateGrafikCaspar } from './OfftubeGrafikCaspar'
@@ -34,26 +34,29 @@ export function OfftubeEvaluateTargetEngine(
 				adlibPieces,
 				partDefinition.externalId,
 				parsedCue.data.grafik,
-				'FULL',
+				'FULL', // TODO: Target
 				true,
 				partDefinition
 			)
 		} else {
-			// TODO
-			/*EvaluateMOSViz(
+			const cueMosToGrafik: CueDefinitionGrafik = {
+				type: CueType.Grafik,
+				template: parsedCue.data.grafik.vcpid.toString(),
+				cue: parsedCue.data.grafik.iNewsCommand,
+				textFields: [], // TODO ?
+				iNewsCommand: parsedCue.data.grafik.iNewsCommand
+			}
+			OfftubeEvaluateGrafikCaspar(
 				config,
 				context,
 				pieces,
 				adlibPieces,
-				partId,
-				parsedCue.data.grafik,
-				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
-				adlib,
-				false,
-				adlibPieces.length,
+				partDefinition.externalId,
+				cueMosToGrafik,
+				'FULL', // TODO: Target
 				true,
-				!!parsedCue.data.engine.match(/ovl/i)
-			)*/
+				partDefinition
+			)
 		}
 	}
 }
