@@ -32,7 +32,6 @@ export function OfftubeEvaluateJingle(
 	rank?: number,
 	effekt?: boolean
 ) {
-	console.log('JINGLE')
 	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
 		return
