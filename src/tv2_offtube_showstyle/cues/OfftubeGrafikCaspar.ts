@@ -57,7 +57,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			partDefinition.externalId,
 			partDefinition.externalId,
 			partDefinition,
-			parsedCue.template,
+			template?.VizTemplate ?? parsedCue.template,
 			false,
 			{
 				Caspar: {
@@ -78,6 +78,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				enabler: Enablers.OFFTUBE_ENABLE_FULL
 			}
 		)
+		piece.name = template?.VizTemplate ?? parsedCue.template
 		adlibPieces.push(piece)
 	}
 }

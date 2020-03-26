@@ -58,6 +58,7 @@ export function OfftubeCreatePartServer(
 	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER]
+	adlibServer.name = file
 	adLibPieces.push(adlibServer)
 
 	// TODO: Merge graphics into server part as timeline objects

@@ -48,7 +48,7 @@ export function OfftubeEvaluateDVE(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partDefinition.externalId,
-				name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
+				name: `${parsedCue.template}`,
 				outputLayerId: 'pgm',
 				sourceLayerId: OffTubeSourceLayer.SelectedAdLibDVE,
 				infiniteMode: PieceLifespan.OutOnNextSegment,
