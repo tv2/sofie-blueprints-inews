@@ -20,7 +20,9 @@ const blankStudioConfig: OfftubeStudioConfig = {
 		Continuity: 0,
 		SplitBackground: 0,
 		GFXFull: 0,
-		Loop: 0
+		Loop: 0,
+		JingleFill: 0,
+		JingleKey: 0
 	},
 	AtemSettings: {
 		CCGClip: 0,

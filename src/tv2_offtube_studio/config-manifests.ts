@@ -79,6 +79,22 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 7
 	},
 	{
+		id: 'AtemSource.JingleFill',
+		name: 'Jingle Fill Source',
+		description: 'ATEM vision mixer input for Jingle Fill',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 8
+	},
+	{
+		id: 'AtemSource.JingleKey',
+		name: 'Jingle Key Source',
+		description: 'ATEM vision mixer input for Jingle Source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 7
+	},
+	{
 		id: 'AtemSettings.CCGClip',
 		name: 'CasparCG keyer clip',
 		description: 'CasparCG keyer clip',

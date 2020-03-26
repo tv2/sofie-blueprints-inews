@@ -17,6 +17,12 @@ export interface TV2StudioConfigBase {
 		SplitArtK: number
 		DSK1F: number
 		DSK1K: number
+		JingleFill: number
+		JingleKey: number
+	}
+	AtemSettings: {
+		CCGClip: number
+		CCGGain: number
 	}
 }
 

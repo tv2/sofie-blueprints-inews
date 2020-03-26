@@ -1,21 +1,16 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemDSK,
-	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny
-} from 'timeline-state-resolver-types'
-import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
-	TimelineObjectCoreExt,
-	VTContent
+	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionJingle, GetJinglePartProperties, literal, PartDefinition, TimelineBlueprintExt } from 'tv2-common'
+import {
+	CreateJingleContentBase,
+	CueDefinitionJingle,
+	GetJinglePartProperties,
+	literal,
+	PartDefinition
+} from 'tv2-common'
 import { AdlibTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -81,70 +76,15 @@ export function OfftubeEvaluateJingle(
 }
 
 function createJingleContent(config: OffTubeShowstyleBlueprintConfig, file: string) {
-	return literal<VTContent>({
-		studioLabel: '',
-		fileName: file,
-		path: file,
-		firstWords: '',
-		lastWords: '',
-		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
-				id: '',
-				enable: {
-					start: 0
-				},
-				priority: 1,
-				layer: OfftubeCasparLLayer.CasparPlayerJingle,
-				content: {
-					deviceType: DeviceType.CASPARCG,
-					type: TimelineContentTypeCasparCg.MEDIA,
-					file
-				}
-			}),
-
-			literal<TimelineObjAtemDSK>({
-				id: '',
-				enable: {
-					start: Number(config.studio.CasparPrerollDuration)
-				},
-				priority: 1,
-				layer: OfftubeAtemLLayer.AtemDSKGraphics,
-				content: {
-					deviceType: DeviceType.ATEM,
-					type: TimelineContentTypeAtem.DSK,
-					dsk: {
-						onAir: true,
-						sources: {
-							fillSource: config.studio.AtemSource.DSK1F,
-							cutSource: config.studio.AtemSource.DSK1K
-						},
-						properties: {
-							tie: false,
-							preMultiply: false,
-							clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-							gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-							mask: {
-								enabled: false
-							}
-						}
-					}
-				},
-				classes: ['MIX_MINUS_OVERRIDE_DSK']
-			}),
-
-			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-				id: '',
-				enable: {
-					start: 0
-				},
-				priority: 1,
-				layer: OfftubeSisyfosLLayer.SisyfosSourceJingle,
-				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
-					isPgm: 1
-				}
-			})
-		])
+	return CreateJingleContentBase(config, file, {
+		Caspar: {
+			PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle
+		},
+		ATEM: {
+			DSKJingle: OfftubeAtemLLayer.AtemDSKGraphics
+		},
+		Sisyfos: {
+			PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
+		}
 	})
 }
