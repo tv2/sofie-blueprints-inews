@@ -57,6 +57,7 @@ export function OfftubeCreatePartVO(
 			enabler: Enablers.OFFTUBE_ENABLE_SERVER
 		}
 	)
+	adlibServer.name = file
 	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER]
