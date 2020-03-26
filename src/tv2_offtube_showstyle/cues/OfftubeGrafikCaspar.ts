@@ -50,6 +50,7 @@ export function OfftubeEvaluateGrafikCaspar(
 		const piece = CreateFull(config, partDefinition, template?.VizTemplate ?? parsedCue.template)
 		adlibPieces.push(piece)
 	} else {
+		// TODO: HTML Graphics
 		const piece = CreateAdlibServer(
 			config,
 			0,
