@@ -337,7 +337,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 		// keyers
 		literal<TimelineObjAtemDSK>({
 			id: '',
-			enable: { while: '1' },
+			enable: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
 			priority: 0,
 			layer: OfftubeAtemLLayer.AtemDSKGraphics,
 			content: {
