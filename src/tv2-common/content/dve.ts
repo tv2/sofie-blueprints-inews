@@ -278,6 +278,7 @@ export function MakeContentDVE2<
 
 	let valid = true
 	let server = false
+	const timelineStartObjId = `ssrc-${partDefinition?.externalId ?? ''}-${template}`
 
 	boxMap.forEach((mappingFrom, num) => {
 		if (mappingFrom === undefined || mappingFrom.source === '') {
@@ -375,9 +376,7 @@ export function MakeContentDVE2<
 				dveTimeline.push(
 					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
-						enable: {
-							start: 0
-						},
+						enable: getDVEEnable(!!offtube),
 						priority: 1,
 						layer: dveGeneratorOptions.dveLayers.CasparLLayer.ClipPending,
 						content: {
@@ -392,9 +391,7 @@ export function MakeContentDVE2<
 					}),
 					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
-						enable: {
-							start: 0
-						},
+						enable: getDVEEnable(!!offtube),
 						priority: 1,
 						layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.ClipPending,
 						content: {
@@ -429,9 +426,7 @@ export function MakeContentDVE2<
 				.map<TimelineObjSisyfosMessage>(layer => {
 					return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
-						enable: {
-							start: 0
-						},
+						enable: getDVEEnable(!!offtube),
 						priority: 1,
 						layer,
 						content: {
@@ -455,15 +450,15 @@ export function MakeContentDVE2<
 			timelineObjects: _.compact<TSRTimelineObj>([
 				// Setup classes for adlibs to be able to override boxes
 				createEmptyObject({
-					enable: { start: 0 },
+					enable: getDVEEnable(!!offtube),
 					layer: 'dve_lookahead_control',
 					classes: [ControlClasses.DVEOnAir]
 				}),
 
 				// setup ssrc
 				literal<TimelineObjAtemSsrc & TimelineBlueprintExt>({
-					id: '',
-					enable: { start: 0 },
+					id: offtube ? timelineStartObjId : '',
+					enable: getDVEEnable(!!offtube),
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.SSrcDefault,
 					content: {
@@ -478,7 +473,7 @@ export function MakeContentDVE2<
 				}),
 				literal<TimelineObjAtemSsrcProps>({
 					id: '',
-					enable: { start: Number(config.studio.CasparPrerollDuration) - 10 }, // TODO - why 10ms?
+					enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration) - 10, timelineStartObjId), // TODO - why 10ms?
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.SSrcArt,
 					content: {
@@ -495,9 +490,7 @@ export function MakeContentDVE2<
 
 				literal<TimelineObjAtemME>({
 					id: '',
-					enable: offtube
-						? { while: Enablers.OFFTUBE_ENABLE_DVE }
-						: { start: Number(config.studio.CasparPrerollDuration) - 80 }, // let caspar update, but give the ssrc 2 frames to get configured
+					enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration) - 80, timelineStartObjId), // let caspar update, but give the ssrc 2 frames to get configured
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
 					content: {
@@ -514,7 +507,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TimelineObjCCGTemplate>({
 								id: '',
-								enable: { start: 0 },
+								enable: getDVEEnable(!!offtube),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVETemplate,
 								content: {
@@ -541,7 +534,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TimelineObjCCGMedia>({
 								id: '',
-								enable: { start: 0 },
+								enable: getDVEEnable(!!offtube),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEKey,
 								content: {
@@ -560,7 +553,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TimelineObjCCGMedia>({
 								id: '',
-								enable: { start: 0 },
+								enable: getDVEEnable(!!offtube),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEFrame,
 								content: {
@@ -599,4 +592,13 @@ function boxSource(
 		switcherInput: info.port,
 		type: info.type
 	}
+}
+
+function getDVEEnable(offtube: boolean, offsetFromStart?: number, startId?: string): TSRTimelineObj['enable'] {
+	if (offsetFromStart) {
+		return offtube
+			? { start: startId ? `#${startId} + ${offsetFromStart}` : offsetFromStart }
+			: { start: offsetFromStart ?? 0 }
+	}
+	return offtube ? { while: `.${[Enablers.OFFTUBE_ENABLE_DVE]}` } : { start: offsetFromStart ?? 0 }
 }
