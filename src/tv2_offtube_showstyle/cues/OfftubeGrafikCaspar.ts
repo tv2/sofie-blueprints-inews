@@ -1,4 +1,4 @@
-import { DeviceType, TimelineContentTypeCasparCg, TimelineObjCCGMedia } from 'timeline-state-resolver-types'
+import { AtemTransitionStyle, DeviceType, TimelineContentTypeAtem, TimelineContentTypeCasparCg, TimelineObjAtemME, TimelineObjCCGMedia } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -84,7 +84,7 @@ export function OfftubeEvaluateGrafikCaspar(
 }
 
 function CreateFull(
-	_config: OffTubeShowstyleBlueprintConfig,
+	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	template: string
 ): IBlueprintAdLibPiece {
@@ -113,6 +113,22 @@ function CreateFull(
 						loop: true,
 						mixer: {
 							opacity: 100
+						}
+					}
+				}),
+				literal<TimelineObjAtemME>({
+					id: '',
+					enable: {
+						while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
+					},
+					priority: 100,
+					layer: OfftubeCasparLLayer.CasparGraphicsFull,
+					content: {
+						deviceType: DeviceType.ATEM,
+						type: TimelineContentTypeAtem.ME,
+						me: {
+							input: config.studio.AtemSource.GFXFull,
+							transition: AtemTransitionStyle.CUT
 						}
 					}
 				})
