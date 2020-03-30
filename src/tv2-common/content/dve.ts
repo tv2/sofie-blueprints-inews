@@ -597,7 +597,7 @@ function boxSource(
 function getDVEEnable(offtube: boolean, offsetFromStart?: number, startId?: string): TSRTimelineObj['enable'] {
 	if (offsetFromStart) {
 		return offtube
-			? { start: startId ? `#${startId} + ${offsetFromStart}` : offsetFromStart }
+			? { start: startId ? `#${startId}.start + ${offsetFromStart}` : offsetFromStart }
 			: { start: offsetFromStart ?? 0 }
 	}
 	return offtube ? { while: `.${[Enablers.OFFTUBE_ENABLE_DVE]}` } : { start: offsetFromStart ?? 0 }
