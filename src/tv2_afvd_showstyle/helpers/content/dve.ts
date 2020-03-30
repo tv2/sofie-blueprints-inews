@@ -47,7 +47,8 @@ import {
 export const boxLayers: DVESources = {
 	INP1: SourceLayer.PgmDVEBox1,
 	INP2: SourceLayer.PgmDVEBox2,
-	INP3: SourceLayer.PgmDVEBox3
+	INP3: SourceLayer.PgmDVEBox3,
+	INP4: SourceLayer.PgmDVEBox4
 }
 export const boxMappings = [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3]
 
