@@ -1,8 +1,8 @@
 import { literal } from '../../common/util'
 
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinitionKam, PartType } from '../../common/inewsConversion/converters/ParseBody'
 import { AddScript } from '../helpers/pieces/script'
+import { PartDefinitionKam, PartType } from '../inewsConversion/converters/ParseBody'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
