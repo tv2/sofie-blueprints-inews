@@ -12,6 +12,7 @@ describe('Find target pair', () => {
 			rawType: '',
 			fields: {},
 			modified: 0,
+			segmentExternalId: '',
 			cues: [
 				literal<CueDefinitionTargetEngine>({
 					type: CueType.TargetEngine,
@@ -47,6 +48,7 @@ describe('Find target pair', () => {
 			rawType: '',
 			fields: {},
 			modified: 0,
+			segmentExternalId: '',
 			cues: [
 				literal<CueDefinitionTargetEngine>({
 					type: CueType.TargetEngine,
@@ -89,6 +91,7 @@ describe('Find target pair', () => {
 			rawType: '',
 			fields: {},
 			modified: 0,
+			segmentExternalId: '',
 			cues: [
 				literal<CueDefinitionTelefon>({
 					type: CueType.Telefon,
@@ -117,6 +120,7 @@ describe('Find target pair', () => {
 			rawType: '',
 			fields: {},
 			modified: 0,
+			segmentExternalId: '',
 			cues: [
 				literal<CueDefinitionTelefon>({
 					type: CueType.Telefon,
