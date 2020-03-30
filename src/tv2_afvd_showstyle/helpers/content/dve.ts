@@ -103,7 +103,7 @@ export function MakeContentDVE2(
 	sources: DVESources | undefined,
 	className?: string,
 	adlib?: boolean,
-	partDefinition?: PartDefinition,
+	partDefinition?: PartDefinition
 ): { content: SplitsContent; valid: boolean; stickyLayers: SisyfosLLAyer[] } {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
@@ -292,7 +292,11 @@ export function MakeContentDVE2(
 							noStarttime: true
 						},
 						metaData: {
-							mediaPlayerSession: adlib ? MEDIA_PLAYER_AUTO : partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO
+							mediaPlayerSession: adlib
+								? MEDIA_PLAYER_AUTO
+								: partDefinition
+								? partDefinition.segmentExternalId
+								: MEDIA_PLAYER_AUTO
 						},
 						classes: []
 					}),
@@ -309,7 +313,11 @@ export function MakeContentDVE2(
 							isPgm: 1
 						},
 						metaData: {
-							mediaPlayerSession: adlib ? MEDIA_PLAYER_AUTO : partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO
+							mediaPlayerSession: adlib
+								? MEDIA_PLAYER_AUTO
+								: partDefinition
+								? partDefinition.segmentExternalId
+								: MEDIA_PLAYER_AUTO
 						},
 						classes: []
 					})
@@ -380,7 +388,11 @@ export function MakeContentDVE2(
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: {
-						mediaPlayerSession: server ? partDefinition ? partDefinition.segmentExternalId : MEDIA_PLAYER_AUTO : undefined
+						mediaPlayerSession: server
+							? partDefinition
+								? partDefinition.segmentExternalId
+								: MEDIA_PLAYER_AUTO
+							: undefined
 					}
 				}),
 				literal<TimelineObjAtemSsrcProps>({

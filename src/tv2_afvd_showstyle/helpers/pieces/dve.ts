@@ -127,7 +127,7 @@ export function EvaluateDVE(
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 					metaData: literal<PieceMetaData>({
-						mediaPlayerSessions: [ partDefinition.segmentExternalId ]
+						mediaPlayerSessions: [partDefinition.segmentExternalId]
 					})
 				})
 			)

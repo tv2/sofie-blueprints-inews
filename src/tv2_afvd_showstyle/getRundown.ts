@@ -50,7 +50,7 @@ import {
 	SisyfosLLAyer,
 	VizLLayer
 } from '../tv2_afvd_studio/layers'
-import { TimelineBlueprintExt, PieceMetaData } from '../tv2_afvd_studio/onTimelineGenerate'
+import { PieceMetaData, TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { CONSTANTS } from '../types/constants'
@@ -439,10 +439,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	}
 
 	// server ssrc box
-	function makeServerAdlibBoxes(
-		info: { port: number; id: string },
-		rank: number
-	): IBlueprintAdLibPiece[] {
+	function makeServerAdlibBoxes(info: { port: number; id: string }, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port, true)
@@ -456,9 +453,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [
-						'dve_placeholder'
-					]
+					mediaPlayerSessions: ['dve_placeholder']
 				}),
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
@@ -495,10 +490,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 							metaData: {
 								mediaPlayerSession: 'dve_placeholder'
 							},
-							classes: [
-								'dve_placeholder'
-							]
-						}),
+							classes: ['dve_placeholder']
+						})
 					])
 				}
 			})

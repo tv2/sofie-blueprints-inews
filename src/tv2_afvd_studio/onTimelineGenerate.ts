@@ -22,7 +22,7 @@ import { assignMediaPlayers } from './helpers/abPlayback'
 import { CasparLLayer } from './layers'
 
 export interface PartEndStateExt extends PartEndState {
-	stickySisyfosLevels: { [key: string]: number | undefined },
+	stickySisyfosLevels: { [key: string]: number | undefined }
 	mediaPlayerSessions: { [layer: string]: string[] }
 }
 
@@ -65,20 +65,17 @@ export function onTimelineGenerate(
 	resolvedPieces: IBlueprintPieceDB[]
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
-	const replacedSessions: { [from: string]: string } = { } // TODO: Replace with map
+	const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
 
 	const config = parseConfig(context)
 
 	// Find server in pgm
 	const activeServerObj = timeline.find(
-		(o) => o.layer.toString() === CasparLLayer.CasparPlayerClipPending &&
-		!o.isLookahead
+		o => o.layer.toString() === CasparLLayer.CasparPlayerClipPending && !o.isLookahead
 	)
 
 	// Find any placeholders to replace
-	const objsToReplace = timeline.filter(
-		(o) => o.classes?.includes(`dve_placeholder`) && !o.id.match(/^previous/i)
-	)
+	const objsToReplace = timeline.filter(o => o.classes?.includes(`dve_placeholder`) && !o.id.match(/^previous/i))
 
 	// Replace contents of placeholder objects
 	objsToReplace.forEach(objToReplace => {
@@ -103,7 +100,7 @@ export function onTimelineGenerate(
 
 	// Replace all sessions that have been overwritten
 	_.each(timeline, o => {
-		let meta = o.metaData as TimelineBlueprintExt['metaData'] | undefined
+		const meta = o.metaData as TimelineBlueprintExt['metaData'] | undefined
 		if (meta && meta.mediaPlayerSession) {
 			if (Object.keys(replacedSessions).includes(meta.mediaPlayerSession)) {
 				meta.mediaPlayerSession = replacedSessions[meta.mediaPlayerSession]
@@ -117,7 +114,7 @@ export function onTimelineGenerate(
 		if (piece.metaData) {
 			const meta = piece.metaData as PieceMetaData
 			if (meta.mediaPlayerSessions) {
-				piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map((session) => {
+				piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map(session => {
 					if (Object.keys(replacedSessions).includes(session)) {
 						return replacedSessions[session]
 					}

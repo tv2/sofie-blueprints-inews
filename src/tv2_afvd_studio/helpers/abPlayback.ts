@@ -271,7 +271,7 @@ function updateObjectsToMediaPlayer(
 				// This works on the assumption that layer will contain lookaheadForLayer, but not the exact syntax.
 				// Hopefully this will be durable to any potential future core changes
 				obj.layer = (obj.layer + '').replace(obj.lookaheadForLayer.toString(), CasparPlayerClip(playerId))
-				obj.lookaheadForLayer = CasparPlayerClip(playerId)				
+				obj.lookaheadForLayer = CasparPlayerClip(playerId)
 			} else {
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)

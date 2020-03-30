@@ -21,6 +21,7 @@ import {
 import * as _ from 'underscore'
 import { assertUnreachable, literal } from '../common/util'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
+import { PartMetaData } from '../tv2_afvd_studio/onTimelineGenerate'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { GetNextPartCue } from './helpers/nextPartCue'
 import { ParseBody, PartType } from './inewsConversion/converters/ParseBody'
@@ -36,7 +37,6 @@ import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
-import { PartMetaData } from '../tv2_afvd_studio/onTimelineGenerate'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const segment = literal<IBlueprintSegment>({
@@ -118,7 +118,14 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 				break
 			case PartType.VO:
 				blueprintParts.push(
-					CreatePartVO(partContext, config, part, ingestSegment.externalId, totalWords, Number(ingestSegment.payload.iNewsStory.fields.audioTime))
+					CreatePartVO(
+						partContext,
+						config,
+						part,
+						ingestSegment.externalId,
+						totalWords,
+						Number(ingestSegment.payload.iNewsStory.fields.audioTime)
+					)
 				)
 				break
 			// DVE, Ekstern, Telefon are defined as primary cues.
@@ -243,7 +250,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		segment.isHidden = true
 	}
 
-	blueprintParts = blueprintParts.map((part) => {
+	blueprintParts = blueprintParts.map(part => {
 		const actualPart = part.part
 		actualPart.metaData = literal<PartMetaData>({
 			...actualPart.metaData,

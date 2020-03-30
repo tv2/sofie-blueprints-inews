@@ -1,21 +1,28 @@
 import {
+	DeviceType,
+	TimelineContentTypeAtem,
+	TimelineObjAtemAUX,
+	TimelineObjAtemDSK,
+	TimelineObjAtemME,
+	TSRTimelineObjBase
+} from 'timeline-state-resolver-types'
+import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
 	NotesContext,
-	SegmentContext,
-	TimelineObjectCoreExt,
 	OnGenerateTimelineObj,
-	TimelineObjHoldMode,
+	SegmentContext,
+	SourceLayerType,
 	SplitsContent,
-	SourceLayerType
+	TimelineObjectCoreExt,
+	TimelineObjHoldMode
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
-import { BlueprintConfig } from '../tv2_afvd_studio/helpers/config'
-import { PartContext2 } from './getSegment'
-import { TimelineObjAtemME, TimelineObjAtemDSK, DeviceType, TimelineContentTypeAtem, TimelineObjAtemAUX, TSRTimelineObjBase } from 'timeline-state-resolver-types'
-import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
-import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { literal } from '../common/util'
+import { BlueprintConfig } from '../tv2_afvd_studio/helpers/config'
+import { AtemLLayer } from '../tv2_afvd_studio/layers'
+import { TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
+import { PartContext2 } from './getSegment'
 import { SourceLayer } from './layers'
 
 export function postProcessPartTimelineObjects(

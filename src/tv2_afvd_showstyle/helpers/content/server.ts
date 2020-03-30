@@ -53,9 +53,7 @@ export function MakeContentServer(
 				metaData: {
 					mediaPlayerSession: mediaPlayerSessionId
 				},
-				classes: [
-					...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])
-				]
+				classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
 			}),
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
@@ -79,9 +77,7 @@ export function MakeContentServer(
 				metaData: {
 					mediaPlayerSession: mediaPlayerSessionId
 				},
-				classes: [
-					...(adLib ? ['adlib_deparent'] : [])
-				]
+				classes: [...(adLib ? ['adlib_deparent'] : [])]
 			}),
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
