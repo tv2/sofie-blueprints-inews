@@ -18,7 +18,8 @@ describe('addScript', () => {
 			script: 'Hallo, I wnat to tell you......\nHEREEEELLLLOOOK\nYES\n',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: '00000000001'
 		})
 		const result: IBlueprintPiece[] = [
 			literal<IBlueprintPiece>({

@@ -157,6 +157,7 @@ export function ParseBody(
 		})
 		definition.rawType = 'INTRO'
 		definition.externalId = `${segmentId}-${definitions.length}`
+		definition.segmentExternalId = segmentId
 		definitions.push(definition)
 		definition = initDefinition(fields, modified, segmentName)
 		return definitions

@@ -156,7 +156,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -168,7 +168,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -180,7 +180,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -204,7 +204,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -216,7 +216,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -251,7 +251,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -263,7 +263,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -299,7 +299,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionServer>({
 					type: PartType.Server,
@@ -311,7 +311,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -323,7 +323,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -336,7 +336,7 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment',
 					endWords: 'ekstra kick',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -359,7 +359,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -373,7 +373,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -398,7 +398,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionGrafik>({
 					type: PartType.Grafik,
@@ -410,7 +410,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -422,7 +422,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -447,7 +447,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -470,7 +470,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionServer>({
 					type: PartType.Server,
@@ -483,7 +483,7 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment',
 					endWords: 'wauw',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
@@ -498,7 +498,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -523,7 +523,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -535,7 +535,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -560,7 +560,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -572,7 +572,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -598,7 +598,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -610,7 +610,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -635,7 +635,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionVO>({
 					type: PartType.VO,
@@ -647,7 +647,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -672,7 +672,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionVO>({
 					type: PartType.VO,
@@ -684,7 +684,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -709,7 +709,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -732,7 +732,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -762,7 +762,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -774,7 +774,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					type: PartType.Ekstern,
@@ -786,7 +786,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -809,7 +809,7 @@ describe('Body parser', () => {
 					fields: {},
 					modified: 0,
 					storyName: 'INTRO',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -842,7 +842,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionServer>({
 					externalId: '',
@@ -854,7 +854,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -869,7 +869,7 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment',
 					endWords: '',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -883,7 +883,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -918,7 +918,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					externalId: '',
@@ -930,7 +930,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -944,7 +944,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionServer>({
 					externalId: '',
@@ -956,7 +956,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionTelefon>({
 					externalId: '',
@@ -968,7 +968,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionTelefon>({
 					externalId: '',
@@ -981,7 +981,7 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment',
 					endWords: 'Skarpere regler.',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -995,7 +995,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1019,7 +1019,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1045,7 +1045,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionServer>({
 					externalId: '',
@@ -1057,7 +1057,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1080,7 +1080,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1113,7 +1113,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionServer>({
 					externalId: '',
@@ -1162,7 +1162,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1176,7 +1176,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1191,7 +1191,7 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment',
 					endWords: '',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1205,7 +1205,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1234,7 +1234,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionTelefon>({
 					externalId: '',
@@ -1288,7 +1288,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1321,7 +1321,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionTelefon>({
 					externalId: '',
@@ -1375,7 +1375,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1399,7 +1399,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1423,7 +1423,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1471,7 +1471,7 @@ describe('Body parser', () => {
 				modified: 0,
 				script: '',
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionUnknown>({
 				externalId: '',
@@ -1493,7 +1493,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionGrafik>({
 				externalId: '',
@@ -1526,7 +1526,7 @@ describe('Body parser', () => {
 				modified: 0,
 				script: '',
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -1550,7 +1550,7 @@ describe('Body parser', () => {
 				modified: 0,
 				script: 'Skriv din spib her\n',
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -1574,7 +1574,7 @@ describe('Body parser', () => {
 				modified: 0,
 				script: 'Skriv din spib her\n',
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -1630,7 +1630,7 @@ describe('Body parser', () => {
 				modified: 0,
 				storyName: 'test-segment',
 				endWords: 'bare mega fedt',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionDVE>({
 				externalId: '',
@@ -1653,7 +1653,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionEkstern>({
 				externalId: '',
@@ -1671,7 +1671,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -1705,7 +1705,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
 					externalId: '',
@@ -1717,7 +1717,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1731,7 +1731,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionServer>({
 					externalId: '',
@@ -1743,7 +1743,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionTelefon>({
 					externalId: '',
@@ -1755,7 +1755,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionTelefon>({
 					externalId: '',
@@ -1768,7 +1768,7 @@ describe('Body parser', () => {
 					modified: 0,
 					storyName: 'test-segment',
 					endWords: 'Skarpere regler.',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionKam>({
 					externalId: '',
@@ -1782,7 +1782,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -1821,7 +1821,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionEkstern>({
 				externalId: '',
@@ -1839,7 +1839,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionServer>({
 				externalId: '',
@@ -1880,7 +1880,7 @@ describe('Body parser', () => {
 				modified: 0,
 				storyName: 'test-segment',
 				endWords: 'bare mega fedt',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -1936,7 +1936,7 @@ describe('Body parser', () => {
 				modified: 0,
 				storyName: 'test-segment',
 				endWords: 'bare mega fedt',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionDVE>({
 				externalId: '',
@@ -1959,7 +1959,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionEkstern>({
 				externalId: '',
@@ -1977,7 +1977,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionServer>({
 				externalId: '',
@@ -1989,7 +1989,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2011,7 +2011,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2075,7 +2075,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2135,7 +2135,7 @@ describe('Body parser', () => {
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2187,7 +2187,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2210,7 +2210,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionServer>({
 				type: PartType.Server,
@@ -2222,7 +2222,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
@@ -2236,7 +2236,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2260,7 +2260,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionEkstern>({
 				type: PartType.Ekstern,
@@ -2278,7 +2278,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
@@ -2292,7 +2292,7 @@ describe('Body parser', () => {
 				fields: {},
 				modified: 0,
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2353,7 +2353,7 @@ describe('Body parser', () => {
 				modified: 0,
 				script: '',
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionKam>({
 				externalId: '',
@@ -2388,7 +2388,7 @@ describe('Body parser', () => {
 				modified: 0,
 				script: '',
 				storyName: 'test-segment',
-				segmentExternalId: ''
+				segmentExternalId: '00000000001'
 			})
 		])
 	})
@@ -2436,7 +2436,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -2501,7 +2501,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionUnknown>({
 					externalId: '',
@@ -2536,7 +2536,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
@@ -2588,7 +2588,7 @@ describe('Body parser', () => {
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
-					segmentExternalId: ''
+					segmentExternalId: '00000000001'
 				})
 			])
 		)
