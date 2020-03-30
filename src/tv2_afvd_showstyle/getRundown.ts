@@ -39,7 +39,15 @@ import {
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, MakeContentDVE2, SourceInfo, TimelineBlueprintExt } from 'tv2-common'
+import {
+	GetEksternMetaData,
+	GetKeepStudioMicsMetaData,
+	GetSisyfosTimelineObjForEkstern,
+	literal,
+	MakeContentDVE2,
+	SourceInfo,
+	TimelineBlueprintExt
+} from 'tv2-common'
 import { CONSTANTS, ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
@@ -54,17 +62,14 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChann
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers, boxMappings } from './helpers/content/dve'
-import { GetEksternMetaData } from './helpers/pieces/ekstern'
 import {
 	GetLayerForEkstern,
 	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
 	LIVE_AUDIO,
 	STICKY_LAYERS,
 	STUDIO_MICS
 } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
-import { GetKeepStudioMicsMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -159,7 +164,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
-			metaData: GetKeepStudioMicsMetaData(),
+			metaData: GetKeepStudioMicsMetaData(STUDIO_MICS),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -260,7 +265,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetKeepStudioMicsMetaData(),
+			metaData: GetKeepStudioMicsMetaData(STUDIO_MICS),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -359,7 +364,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
+			...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, GetLayerForEkstern),
 			...GetSisyfosTimelineObjForCamera('telefon')
 		]
 		res.push({
@@ -371,7 +376,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(STICKY_LAYERS, STUDIO_MICS, GetLayerForEkstern(`Live ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -454,7 +459,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, { while: audioWhile }),
+						...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, GetLayerForEkstern, { while: audioWhile }),
 						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
 					])
 				}
@@ -474,7 +479,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			outputLayerId: 'aux',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.Infinite,
-			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(STICKY_LAYERS, STUDIO_MICS, GetLayerForEkstern(`Live ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemAUX>({

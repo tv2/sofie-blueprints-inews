@@ -14,6 +14,10 @@ export const STUDIO_MICS = [
 	OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
 ]
 
+export const LIVE_AUDIO = [] // TODO
+
+export const STICKY_LAYERS = [] // TODO
+
 export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Timeline.TimelineEnable): TSRTimelineObj[] {
 	if (!enable) {
 		enable = { start: 0 }
@@ -41,3 +45,26 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Time
 	}
 	return audioTimeline
 }
+
+export function GetLayerForEkstern(sourceType: string): string[] | undefined {
+	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
+	if (eksternProps) {
+		const source = eksternProps[1]
+
+		if (source) {
+			switch (source) {
+				case '1':
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_1]
+				case '2':
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
+				case '3':
+					return [
+						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
+						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
+					]
+			}
+		}
+	}
+	return
+}
+

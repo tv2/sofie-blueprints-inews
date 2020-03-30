@@ -112,8 +112,10 @@ export interface DVETimelineObjectGenerators {
 	GetSisyfosTimelineObjForEkstern: (
 		context: NotesContext,
 		sourceType: string,
+		getLayerForEkstern: (sourceType: string) => string[] | undefined,
 		enable?: Timeline.TimelineEnable
 	) => TSRTimelineObj[]
+	GetLayerForEkstern: (sourceType: string) => string[] | undefined
 }
 
 export interface DVEOptions {
@@ -325,6 +327,7 @@ export function MakeContentDVE2<
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForEkstern(
 						context,
 						mappingFrom.source,
+						dveGeneratorOptions.dveTimelineGenerators.GetLayerForEkstern,
 						audioEnable
 					)
 				)
