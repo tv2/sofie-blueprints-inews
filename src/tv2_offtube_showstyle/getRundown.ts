@@ -380,14 +380,14 @@ function getGlobalAdLibPiecesOffTube(
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
