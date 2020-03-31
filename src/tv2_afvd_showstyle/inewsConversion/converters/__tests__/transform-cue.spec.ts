@@ -75,7 +75,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
@@ -102,7 +103,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		})
 	})
 
@@ -140,7 +142,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
@@ -174,7 +177,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		})
 	})
 
@@ -212,7 +216,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
@@ -228,7 +233,8 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		})
 	})
 })
