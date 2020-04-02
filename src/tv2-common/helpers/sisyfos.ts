@@ -83,17 +83,19 @@ export function GetSisyfosTimelineObjForEkstern(
 	audioTimeline = []
 
 	layers.forEach(layer => {
-		literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: enable!,
-			priority: 1,
-			layer,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 1
-			}
-		})
+		audioTimeline.push(
+			literal<TimelineObjSisyfosMessage>({
+				id: '',
+				enable: enable!,
+				priority: 1,
+				layer,
+				content: {
+					deviceType: DeviceType.SISYFOS,
+					type: TimelineContentTypeSisyfos.SISYFOS,
+					isPgm: 1
+				}
+			})
+		)
 	})
 	return audioTimeline
 }
