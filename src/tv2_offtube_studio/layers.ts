@@ -52,7 +52,15 @@ export enum OfftubeCasparLLayer {
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',
-	CasparStudioScreenLoop = 'casparcg_studio_screen_loop'
+	CasparStudioScreenLoop = 'casparcg_studio_screen_loop',
+	OverlayGraphicArkiv = 'casparcg_overlay_graphic_arkiv',
+	OverlayGraphicBund = 'casparcg_overlay_graphic_bund',
+	OverlayGraphicDirekte = 'casparcg_overlay_graphic_direkte',
+	OverlayGraphicIdentLeft = 'casparcg_overlay_graphic_identLeft',
+	OverlayGraphicIdentRight = 'casparcg_overlay_graphic_identRight',
+	OverlayGraphicsLocators = 'casparcg_overlay_graphic_locators',
+	OverlayGraphicLogo = 'casparcg_overlay_graphic_logo',
+	OverlayGraphicTopt = 'casparcg_overlay_graphic_topt'
 }
 
 export function CasparPlayerClip(i: number | string) {
