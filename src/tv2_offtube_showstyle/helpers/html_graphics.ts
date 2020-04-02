@@ -25,7 +25,7 @@ interface Graphic<T extends GraphicType> {
 	}
 }
 
-enum GraphicName {
+const enum GraphicName {
 	ARKIV = 'ARKIV',
 	BUND = 'BUND',
 	BILLEDERFRA_LOGO = 'BILLEDERFRA_LOGO',

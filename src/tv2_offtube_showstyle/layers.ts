@@ -16,12 +16,16 @@ export enum OffTubeSourceLayer {
 	PgmDVEBox4 = 'studio0_dve_box4',
 
 	// Graphics
+	PgmGraphicsOverlay = 'studio0_offtube_graphicsOverlay',
 	PgmGraphicsIdent = 'studio0_offtube_graphicsIdent',
 	PgmGraphicsIdentPersistent = 'studio0_offtube_graphicsIdent_persistent',
 	PgmGraphicsTop = 'studio0_offtube_graphicsTop',
 	PgmGraphicsLower = 'studio0_offtube_graphicsLower',
 	PgmGraphicsHeadline = 'studio0_offtube_graphicsHeadline',
+	PgmGraphicsTema = 'studio0_offtube_graphicsTema',
+	PgmGraphicsTLF = 'studio0_offtube_graphicsTLF',
 	PgmContinuity = 'studio0_offtube_continuity',
+	WallGraphics = 'studio0_offtube_wall_graphics',
 
 	// Aux
 	AuxStudioScreen = 'studio0_offtube_aux_studio_screen'

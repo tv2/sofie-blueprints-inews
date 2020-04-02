@@ -204,6 +204,86 @@ export default literal<BlueprintMappings>({
 		layer: 111,
 		previewWhenNotOnAir: true
 	}),
+	casparcg_overlay_graphics_arkiv: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_direkte: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_headline: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_identLeft: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_identRight: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_locators: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_logo: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_lower: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_tema: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
+	casparcg_overlay_graphics_topt: literal<MappingCasparCG & BlueprintMapping>({
+		device: DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 111,
+		previewWhenNotOnAir: true
+	}),
 	casparcg_player_jingle: literal<MappingCasparCG & BlueprintMapping>({
 		device: DeviceType.CASPARCG,
 		deviceId: 'caspar01',

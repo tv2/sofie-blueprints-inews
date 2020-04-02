@@ -867,7 +867,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 		// TODO: These should be pulled from config...
 		...[
 			['arkiv', OfftubeCasparLLayer.OverlayGraphicArkiv],
-			['bund', OfftubeCasparLLayer.OverlayGraphicBund],
+			['bund', OfftubeCasparLLayer.OverlayGraphicLower],
 			['direkte', OfftubeCasparLLayer.OverlayGraphicDirekte],
 			['identLeft', OfftubeCasparLLayer.OverlayGraphicIdentLeft],
 			['identRight', OfftubeCasparLLayer.OverlayGraphicIdentRight],

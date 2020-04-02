@@ -53,14 +53,16 @@ export enum OfftubeCasparLLayer {
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',
 	CasparStudioScreenLoop = 'casparcg_studio_screen_loop',
-	OverlayGraphicArkiv = 'casparcg_overlay_graphic_arkiv',
-	OverlayGraphicBund = 'casparcg_overlay_graphic_bund',
-	OverlayGraphicDirekte = 'casparcg_overlay_graphic_direkte',
-	OverlayGraphicIdentLeft = 'casparcg_overlay_graphic_identLeft',
-	OverlayGraphicIdentRight = 'casparcg_overlay_graphic_identRight',
-	OverlayGraphicsLocators = 'casparcg_overlay_graphic_locators',
-	OverlayGraphicLogo = 'casparcg_overlay_graphic_logo',
-	OverlayGraphicTopt = 'casparcg_overlay_graphic_topt'
+	OverlayGraphicArkiv = 'casparcg_overlay_graphics_arkiv',
+	OverlayGraphicLower = 'casparcg_overlay_graphics_lower',
+	OverlayGraphicDirekte = 'casparcg_overlay_graphics_direkte',
+	OverlayGraphicHeadline = 'casparcg_overlay_graphics_headline',
+	OverlayGraphicIdentLeft = 'casparcg_overlay_graphics_identLeft',
+	OverlayGraphicIdentRight = 'casparcg_overlay_graphics_identRight',
+	OverlayGraphicsLocators = 'casparcg_overlay_graphics_locators',
+	OverlayGraphicLogo = 'casparcg_overlay_graphics_logo',
+	OverlayGraphicTopt = 'casparcg_overlay_graphics_topt',
+	OverlayGraphicTema = 'casparcg_overlay_graphics_tema'
 }
 
 export function CasparPlayerClip(i: number | string) {
