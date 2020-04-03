@@ -5,6 +5,7 @@
 
 interface GraphicsCollection {
 	arkiv: Graphic<Arkiv>
+	billederfra_logo: Graphic<BillederFraLogo>
 	bund: Graphic<Bund>
 	direkte: Graphic<Direkte>
 	identLeft: Graphic<Ident>

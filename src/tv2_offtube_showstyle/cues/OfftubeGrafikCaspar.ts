@@ -88,16 +88,7 @@ export function OfftubeEvaluateGrafikCaspar(
 							data: literal<RendererStatePartial>({
 								partialUpdate: true,
 								rendererDisplay: 'program',
-								graphicsCollection: {
-									[GetTemplateName(config, parsedCue)]: {
-										display: 'program',
-										payload: {
-											type: GraphicName.BUND, // TODO
-											firstLine: '',
-											secondLine: ''
-										}
-									}
-								}
+								graphicsCollection: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
 							}),
 							useStopCommand: false
 						}
@@ -107,6 +98,124 @@ export function OfftubeEvaluateGrafikCaspar(
 		})
 		console.log(piece.sourceLayerId)
 		adlibPieces.push(piece)
+	}
+}
+
+function createContentForGraphicTemplate(
+	graphicName: string,
+	parsedCue: CueDefinitionGrafik
+): Partial<GraphicsCollection> {
+	switch (graphicName.toLowerCase()) {
+		// TODO: When creating new templates in the future
+		case 'arkiv':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.ARKIV,
+						text: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'billederfra_logo':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.BILLEDERFRA_LOGO,
+						logo: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'bund':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.BUND,
+						firstLine: parsedCue.textFields[0], // TODO: Should this be more generic?
+						secondLine: parsedCue.textFields[1]
+					}
+				}
+			}
+		case 'direkte':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.DIREKTE,
+						location: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'ident_nyhederne':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.IDENT,
+						variant: 'ident_nyhederne',
+						text: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'ident_news':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.IDENT,
+						variant: 'ident_news',
+						text: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'ident_tv2sport':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.IDENT,
+						variant: 'ident_tv2sport',
+						text: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'ident_blank':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.IDENT,
+						variant: 'ident_blank',
+						text: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'topt':
+			return {
+				[graphicName]: {
+					display: 'program',
+					payload: {
+						type: GraphicName.TOPT,
+						text: parsedCue.textFields[0] // TODO: Should indexing be pulled from config?
+					}
+				}
+			}
+		default:
+			// Unknown template
+			// Loactors are skipped right now
+			/**
+			 * TODO: Maybe we could return the following, to allow for custom templates?
+			 * {
+			 * 		[graphicName]: {
+			 * 			payload: {
+			 * 				text: parsedCue.textFields
+			 * 			}
+			 * 		}
+			 * }
+			 */
+			return {}
 	}
 }
 
