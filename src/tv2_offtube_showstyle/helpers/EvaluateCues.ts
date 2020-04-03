@@ -6,6 +6,7 @@ import {
 	IBlueprintPieceEPI,
 	PartDefinition
 } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
@@ -21,7 +22,13 @@ export function OfftubeEvaluateCues(
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	adlib?: boolean,
-	isGrafikPart?: boolean
+	isGrafikPart?: boolean,
+	/** Passing this arguments sets the types of cues to evaluate. */
+	selectedCueTypes?: CueType[] | undefined,
+	/** Don't evaluate adlibs */
+	excludeAdlibs?: boolean,
+	/** Only evaluate adlibs */
+	adlibsOnly?: boolean
 ) {
 	EvaluateCuesBase(
 		{
@@ -38,6 +45,9 @@ export function OfftubeEvaluateCues(
 		cues,
 		partDefinition,
 		adlib,
-		isGrafikPart
+		isGrafikPart,
+		selectedCueTypes,
+		excludeAdlibs,
+		adlibsOnly
 	)
 }

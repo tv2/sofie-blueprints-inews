@@ -5,7 +5,8 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
-	TimelineObjCCGTemplate
+	TimelineObjCCGTemplate,
+	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
@@ -66,7 +67,6 @@ export function OfftubeEvaluateGrafikCaspar(
 		adlibPieces.push(piece)
 	} else {
 		// TODO: Wall
-		console.log(`GRAFIK`)
 		const piece = literal<IBlueprintAdLibPiece>({
 			_rank: 0,
 			externalId: partDefinition.externalId,
@@ -76,33 +76,49 @@ export function OfftubeEvaluateGrafikCaspar(
 			infiniteMode: PieceLifespan.Infinite,
 			expectedDuration: GetGrafikDuration(config, parsedCue) || GetDefaultOut(config),
 			content: {
-				timelineObjects: [
-					literal<TimelineObjCCGTemplate>({
-						id: '',
-						enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
-						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-						content: {
-							deviceType: DeviceType.CASPARCG,
-							type: TimelineContentTypeCasparCg.TEMPLATE,
-							templateType: 'html',
-							name: GetTemplateName(config, parsedCue),
-							data: literal<RendererStatePartial>({
-								partialUpdate: true,
-								rendererDisplay: 'program',
-								slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
-							}),
-							useStopCommand: false
-						}
-					})
-				]
+				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
 		})
-		console.log(piece.sourceLayerId)
 		adlibPieces.push(piece)
 	}
 }
 
-function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefinitionGrafik): Partial<Slots> {
+export function GetCasparOverlayTimeline(
+	config: OffTubeShowstyleBlueprintConfig,
+	engine: VizEngine,
+	parsedCue: CueDefinitionGrafik,
+	isIdentGrafik: boolean,
+	partDefinition: PartDefinition
+): TSRTimelineObj[] {
+	return [
+		literal<TimelineObjCCGTemplate>({
+			id: '',
+			enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
+			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+			content: {
+				deviceType: DeviceType.CASPARCG,
+				type: TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: GetTemplateName(config, parsedCue),
+				data: literal<RendererStatePartial>({
+					partialUpdate: true,
+					rendererDisplay: 'program',
+					graphicsCollection: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
+				}),
+				useStopCommand: false
+			}
+		})
+	]
+}
+
+function CreateTimingTimelineGrafik () {
+	
+}
+
+function createContentForGraphicTemplate(
+	graphicName: string,
+	parsedCue: CueDefinitionGrafik
+): Partial<GraphicsCollection> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
 		case 'arkiv':

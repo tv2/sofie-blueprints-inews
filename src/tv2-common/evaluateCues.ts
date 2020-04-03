@@ -178,12 +178,18 @@ export function EvaluateCuesBase<
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	adlib?: boolean,
-	isGrafikPart?: boolean
+	isGrafikPart?: boolean,
+	/** Passing this arguments sets the types of cues to evaluate. */
+	selectedCueTypes?: CueType[] | undefined,
+	/** Don't evaluate adlibs */
+	excludeAdlibs?: boolean,
+	/** Only evaluate adlibs */
+	adlibsOnly?: boolean
 ) {
 	let adLibRank = 0
 
 	for (const cue of cues) {
-		if (cue) {
+		if (cue && !SkipCue(cue, selectedCueTypes, excludeAdlibs, adlibsOnly)) {
 			const shouldAdlib = /* config.showStyle.IsOfftube || */ adlib ? true : cue.adlib ? true : false
 
 			switch (cue.type) {
@@ -430,4 +436,25 @@ export function EvaluateCuesBase<
 			})
 		}
 	})
+}
+
+export function SkipCue(
+	cue: CueDefinition,
+	selectedCueTypes?: CueType[] | undefined,
+	excludeAdlibs?: boolean,
+	adlibsOnly?: boolean
+): boolean {
+	if (excludeAdlibs === true && cue.adlib) {
+		return true
+	}
+
+	if (adlibsOnly === true && !cue.adlib) {
+		return true
+	}
+
+	if (selectedCueTypes && !selectedCueTypes.includes(cue.type)) {
+		return true
+	}
+
+	return false
 }
