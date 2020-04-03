@@ -16,13 +16,13 @@ import {
 	CueDefinitionDesign,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
+	GraphicLLayer,
 	InfiniteMode,
 	literal,
 	PartDefinition,
 	PartToParentClass
 } from 'tv2-common'
 import { ControlClasses, CueType, VizEngine } from 'tv2-constants'
-import { VizLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
 import { EvaluateDesign } from './design'
@@ -286,25 +286,25 @@ export function GetTimelineLayerForGrafik(config: BlueprintConfig, name: string)
 		: undefined
 
 	if (!conf) {
-		return VizLLayer.VizLLayerOverlay
+		return GraphicLLayer.GraphicLLayerDesign
 	}
 
 	switch (conf.LayerMapping) {
 		// TODO: When adding more output layers
-		case VizLLayer.VizLLayerOverlayIdent:
-			return VizLLayer.VizLLayerOverlayIdent
-		case VizLLayer.VizLLayerOverlayTopt:
-			return VizLLayer.VizLLayerOverlayTopt
-		case VizLLayer.VizLLayerOverlayLower:
-			return VizLLayer.VizLLayerOverlayLower
-		case VizLLayer.VizLLayerOverlayHeadline:
-			return VizLLayer.VizLLayerOverlayHeadline
-		case VizLLayer.VizLLayerOverlayTema:
-			return VizLLayer.VizLLayerOverlayTema
-		case VizLLayer.VizLLayerWall:
-			return VizLLayer.VizLLayerWall
+		case GraphicLLayer.GraphicLLayerOverlayIdent:
+			return GraphicLLayer.GraphicLLayerOverlayIdent
+		case GraphicLLayer.GraphicLLayerOverlayTopt:
+			return GraphicLLayer.GraphicLLayerOverlayTopt
+		case GraphicLLayer.GraphicLLayerOverlayLower:
+			return GraphicLLayer.GraphicLLayerOverlayLower
+		case GraphicLLayer.GraphicLLayerOverlayHeadline:
+			return GraphicLLayer.GraphicLLayerOverlayHeadline
+		case GraphicLLayer.GraphicLLayerOverlayTema:
+			return GraphicLLayer.GraphicLLayerOverlayTema
+		case GraphicLLayer.GraphicLLayerWall:
+			return GraphicLLayer.GraphicLLayerWall
 		default:
-			return VizLLayer.VizLLayerOverlay
+			return GraphicLLayer.GraphicLLayerOverlay
 	}
 }
 

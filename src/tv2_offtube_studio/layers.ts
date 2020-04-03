@@ -1,3 +1,4 @@
+import { GraphicLLayer } from 'tv2-common'
 import * as _ from 'underscore'
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
@@ -8,6 +9,7 @@ export function RealLLayers() {
 			.concat(_.values(OfftubeSisyfosLLayer))
 			.concat(_.values(OfftubeAtemLLayer))
 			.concat(_.values(OfftubeCasparLLayer))
+			.concat(_.values(GraphicLLayer))
 	)
 }
 
@@ -52,17 +54,7 @@ export enum OfftubeCasparLLayer {
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',
-	CasparStudioScreenLoop = 'casparcg_studio_screen_loop',
-	OverlayGraphicArkiv = 'casparcg_overlay_graphics_arkiv',
-	OverlayGraphicLower = 'casparcg_overlay_graphics_lower',
-	OverlayGraphicDirekte = 'casparcg_overlay_graphics_direkte',
-	OverlayGraphicHeadline = 'casparcg_overlay_graphics_headline',
-	OverlayGraphicIdentLeft = 'casparcg_overlay_graphics_identLeft',
-	OverlayGraphicIdentRight = 'casparcg_overlay_graphics_identRight',
-	OverlayGraphicsLocators = 'casparcg_overlay_graphics_locators',
-	OverlayGraphicLogo = 'casparcg_overlay_graphics_logo',
-	OverlayGraphicTopt = 'casparcg_overlay_graphics_topt',
-	OverlayGraphicTema = 'casparcg_overlay_graphics_tema'
+	CasparStudioScreenLoop = 'casparcg_studio_screen_loop'
 }
 
 export function CasparPlayerClip(i: number | string) {

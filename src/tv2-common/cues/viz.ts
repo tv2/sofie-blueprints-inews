@@ -33,7 +33,7 @@ export interface VizCueSourceLayers {
 	SourceLayerVizFullIn1?: string
 	AtemLLayerAtemAuxVizOvlIn1?: string
 	SourceLayerDesign?: string
-	VizLLayerVizLLayerDesign?: string
+	GraphicLLayerGraphicLLayerDesign?: string
 }
 
 export function EvaluateVIZBase<
@@ -171,7 +171,7 @@ export function EvaluateVIZBase<
 		}
 	} else {
 		if (useVizEngine) {
-			if (sourceLayers.SourceLayerDesign && sourceLayers.VizLLayerVizLLayerDesign) {
+			if (sourceLayers.SourceLayerDesign && sourceLayers.GraphicLLayerGraphicLLayerDesign) {
 				const path = parsedCue.content.triopage ? parsedCue.content.triopage : parsedCue.content.GRAFIK
 
 				if (!path || !path.length) {
@@ -196,7 +196,7 @@ export function EvaluateVIZBase<
 										id: '',
 										enable: { start: 0 },
 										priority: 100,
-										layer: sourceLayers.VizLLayerVizLLayerDesign,
+										layer: sourceLayers.GraphicLLayerGraphicLLayerDesign,
 										content: {
 											deviceType: DeviceType.VIZMSE,
 											type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -228,7 +228,7 @@ export function EvaluateVIZBase<
 										id: '',
 										enable: { start: 0 },
 										priority: 100,
-										layer: sourceLayers.VizLLayerVizLLayerDesign,
+										layer: sourceLayers.GraphicLLayerGraphicLLayerDesign,
 										content: {
 											deviceType: DeviceType.VIZMSE,
 											type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

@@ -20,10 +20,10 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionMOS, InfiniteMode, literal, SourceInfo } from 'tv2-common'
+import { CueDefinitionMOS, GraphicLLayer, InfiniteMode, literal, SourceInfo } from 'tv2-common'
 import { VizEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { CreateTimingGrafik, grafikName } from './grafikViz'
@@ -173,10 +173,10 @@ function GetMosObjContent(
 				priority: 1,
 				layer:
 					engine === 'WALL'
-						? VizLLayer.VizLLayerWall
+						? GraphicLLayer.GraphicLLayerWall
 						: isOverlay
-						? VizLLayer.VizLLayerPilotOverlay
-						: VizLLayer.VizLLayerPilot,
+						? GraphicLLayer.GraphicLLayerPilotOverlay
+						: GraphicLLayer.GraphicLLayerPilot,
 				content: {
 					deviceType: DeviceType.VIZMSE,
 					type: TimelineContentTypeVizMSE.ELEMENT_PILOT,

@@ -43,6 +43,7 @@ import {
 	GetEksternMetaData,
 	GetKeepStudioMicsMetaData,
 	GetSisyfosTimelineObjForEkstern,
+	GraphicLLayer,
 	literal,
 	MakeContentDVE2,
 	SourceInfo,
@@ -55,8 +56,7 @@ import {
 	CasparLLayer,
 	CasparPlayerClipLoadingLoop,
 	SisyfosEVSSource,
-	SisyfosLLAyer,
-	VizLLayer
+	SisyfosLLAyer
 } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -627,7 +627,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
@@ -654,12 +654,12 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
-						reference: VizLLayer.VizLLayerPilot
+						reference: GraphicLLayer.GraphicLLayerPilot
 					}
 				})
 			])
@@ -683,7 +683,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
@@ -710,12 +710,12 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	// 					start: 0,
 	// 					duration: 1000
 	// 				},
-	// 				layer: VizLLayer.VizLLayerAdLibs,
+	// 				layer: GraphicLLayer.GraphicLLayerAdLibs,
 	// 				content: {
 	// 					deviceType: DeviceType.VIZMSE,
 	// 					type: TimelineContentTypeVizMSE.CONTINUE,
 	// 					direction: -1,
-	// 					reference: VizLLayer.VizLLayerPilot
+	// 					reference: GraphicLLayer.GraphicLLayerPilot
 	// 				}
 	// 			})
 	// 		])
@@ -863,7 +863,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						id: '',
 						enable: { start: 0 },
 						priority: 110,
-						layer: VizLLayer.VizLLayerDesign,
+						layer: GraphicLLayer.GraphicLLayerDesign,
 						content: {
 							deviceType: DeviceType.VIZMSE,
 							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
