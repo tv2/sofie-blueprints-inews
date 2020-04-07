@@ -1,0 +1,19 @@
+{
+  "_id": "v5Pa22MpPDnar9Txm",
+  "name": "Sisyfos layout",
+  "showStyleBaseId": "show0",
+  "filters": [
+    {
+      "_id": "mZBzZX3iyerrQk7nT",
+      "type": "external_frame",
+      "name": "Sisyfos",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": true,
+      "url": "http://192.168.0.2:1176"
+    }
+  ],
+  "type": "rundown_layout"
+}
