@@ -88,7 +88,7 @@ export function OfftubeEvaluateGrafikCaspar(
 							data: literal<RendererStatePartial>({
 								partialUpdate: true,
 								rendererDisplay: 'program',
-								graphicsCollection: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
+								slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
 							}),
 							useStopCommand: false
 						}
@@ -101,10 +101,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	}
 }
 
-function createContentForGraphicTemplate(
-	graphicName: string,
-	parsedCue: CueDefinitionGrafik
-): Partial<GraphicsCollection> {
+function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefinitionGrafik): Partial<Slots> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
 		case 'arkiv':

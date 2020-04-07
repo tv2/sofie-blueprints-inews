@@ -889,7 +889,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 				data: literal<RendererState>({
 					partialUpdate: true,
 					rendererDisplay: 'program',
-					graphicsCollection: {
+					slots: {
 						[props[0]]: {
 							display: 'hidden'
 						}

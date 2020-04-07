@@ -3,16 +3,11 @@
  * This will go to the graphics package and become a dependency of the blueprints.
  */
 
-interface GraphicsCollection {
-	arkiv: Graphic<Arkiv>
-	billederfra_logo: Graphic<BillederFraLogo>
-	bund: Graphic<Bund>
-	direkte: Graphic<Direkte>
-	identLeft: Graphic<Ident>
-	identRight: Graphic<Ident>
-	locators: Graphic<Locators>
-	logo: Graphic<BillederFraLogo>
-	topt: Graphic<Topt>
+interface Slots {
+	lowerThird: Graphic<Bund | Headline | Headline2 | Infobox>
+	omlidt: Graphic<Omlidt>
+	topRight: Graphic<Arkiv | BillederFraLogo | Direkte | Ident | Topt>
+	dveLabels: Graphic<Locators>
 }
 
 interface Graphic<T extends GraphicType> {
@@ -88,12 +83,12 @@ interface RendererStateBase {
 }
 
 interface RendererStateFull extends RendererStateBase {
-	graphicsCollection: GraphicsCollection
+	slots: Slots
 }
 
 interface RendererStatePartial extends RendererStateBase {
 	partialUpdate: true
-	graphicsCollection: Partial<GraphicsCollection>
+	slots: Partial<Slots>
 }
 
 type RendererState = RendererStatePartial | RendererStateFull
@@ -101,8 +96,8 @@ type RendererState = RendererStatePartial | RendererStateFull
 const example1: RendererState = {
 	rendererDisplay: 'program',
 	partialUpdate: true,
-	graphicsCollection: {
-		bund: {
+	slots: {
+		lowerThird: {
 			payload: {
 				type: GraphicName.BUND,
 				firstLine: '',
@@ -112,12 +107,25 @@ const example1: RendererState = {
 	}
 }
 
+const example2: RendererState = {
+	rendererDisplay: 'program',
+	partialUpdate: true,
+	slots: {
+		topRight: {
+			payload: {
+				type: GraphicName.TOPT,
+				text: ''
+			}
+		}
+	}
+}
+
 // baseline
 const bundtBaseline: RendererState = {
 	partialUpdate: true,
 	rendererDisplay: 'program',
-	graphicsCollection: {
-		bund: {
+	slots: {
+		lowerThird: {
 			display: 'hidden'
 		}
 	}
@@ -126,8 +134,8 @@ const bundtBaseline: RendererState = {
 const toptBaseline: RendererState = {
 	partialUpdate: true,
 	rendererDisplay: 'program',
-	graphicsCollection: {
-		topt: {
+	slots: {
+		topRight: {
 			display: 'hidden'
 		}
 	}
