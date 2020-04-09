@@ -28,7 +28,11 @@ const enum GraphicName {
 	DIREKTE = 'DIREKTE',
 	IDENT = 'IDENT',
 	TOPT = 'TOPT',
-	LOCATORS = 'LOCATORS'
+	LOCATORS = 'LOCATORS',
+	OMLIDT = 'OMLIDT',
+	HEADLINE = 'HEADLINE',
+	HEADLINE2 = 'HEADLINE2',
+	INFOBOX = 'INFOBOX'
 }
 
 interface GraphicBase {
@@ -57,15 +61,31 @@ interface Direkte extends GraphicBase {
 	tlf?: boolean // tlfdirekte
 }
 
+interface Headline extends GraphicBase {
+	type: GraphicName.HEADLINE
+}
+
+interface Headline2 extends GraphicBase {
+	type: GraphicName.HEADLINE2
+}
+
 interface Ident extends GraphicBase {
 	type: GraphicName.IDENT
 	variant: string // ident_nyhederne, ident_news, ident_tv2sport, ident_blank
 	text?: string
 }
 
+interface Infobox extends GraphicBase {
+	type: GraphicName.INFOBOX
+}
+
 interface Locators extends GraphicBase {
 	type: GraphicName.LOCATORS
 	[key: string]: string
+}
+
+interface Omlidt extends GraphicBase {
+	type: GraphicName.OMLIDT
 }
 
 interface Topt extends GraphicBase {
@@ -75,7 +95,18 @@ interface Topt extends GraphicBase {
 	tlf?: boolean // tlftopt
 }
 
-type GraphicType = Arkiv | Bund | BillederFraLogo | Direkte | Ident | Locators | Topt
+type GraphicType =
+	| Arkiv
+	| Bund
+	| BillederFraLogo
+	| Direkte
+	| Headline
+	| Headline2
+	| Ident
+	| Infobox
+	| Locators
+	| Omlidt
+	| Topt
 
 interface RendererStateBase {
 	rendererDisplay: 'program' | 'preview' | 'hidden' | 'editor'
