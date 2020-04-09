@@ -152,21 +152,6 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 			})
 		})
 	)
-	;[
-		'viz_layer_adlibs',
-		'viz_layer_design',
-		'viz_layer_overlay',
-		'viz_layer_overlay_headline',
-		'viz_layer_overlay_ident',
-		'viz_layer_overlay_lower',
-		'viz_layer_overlay_tema',
-		'viz_layer_overlay_topt',
-		'viz_layer_pilot',
-		'viz_layer_pilot_overlay',
-		'viz_layer_wall'
-	].forEach(layer => {
-		res.push(renameMapping('0.1.0', layer, layer.replace(/^viz_/, 'graphic_')))
-	})
 
 	return res
 }
