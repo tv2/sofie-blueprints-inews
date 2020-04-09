@@ -5,7 +5,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'arkiv',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'arkiv',
 			VizDestination: 'viz-d-ovl',
@@ -17,7 +17,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_news',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_blank',
 			VizDestination: 'viz-d-ovl',
@@ -29,7 +29,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'direkte',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'direkte',
 			VizDestination: 'viz-d-ovl',
@@ -41,7 +41,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'billederfra_txt',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'billederfra_txt',
 			VizDestination: 'viz-d-ovl',
@@ -53,7 +53,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'billederfra_logo',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'billederfra_logo',
 			VizDestination: 'viz-d-ovl',
@@ -65,7 +65,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_nyhederne',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_nyhederne',
 			VizDestination: 'viz-d-ovl',
@@ -77,7 +77,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_news',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_news',
 			VizDestination: 'viz-d-ovl',
@@ -89,7 +89,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_tv2sport',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_tv2sport',
 			VizDestination: 'viz-d-ovl',
@@ -101,7 +101,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'tlfdirekte',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'tlfdirekte',
 			VizDestination: 'viz-d-ovl',
@@ -113,7 +113,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'topt',
 			SourceLayer: 'studio0_graphicsTop',
-			LayerMapping: 'graphic_layer_overlay_topt',
+			LayerMapping: 'graphic_overlay_topt',
 			INewsCode: '#kg',
 			INewsName: 'topt',
 			VizDestination: 'viz-d-ovl',
@@ -125,7 +125,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'tlftopt',
 			SourceLayer: 'studio0_graphicsTop',
-			LayerMapping: 'graphic_layer_overlay_topt',
+			LayerMapping: 'graphic_overlay_topt',
 			INewsCode: '#kg',
 			INewsName: 'tlftopt',
 			VizDestination: 'viz-d-ovl',
@@ -137,7 +137,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'tlftoptlive',
 			SourceLayer: 'studio0_graphicsTop',
-			LayerMapping: 'graphic_layer_overlay_topt',
+			LayerMapping: 'graphic_overlay_topt',
 			INewsCode: '#kg',
 			INewsName: 'tlftoptlive',
 			VizDestination: 'viz-d-ovl',
@@ -149,7 +149,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'bund',
 			SourceLayer: 'studio0_graphicsLower',
-			LayerMapping: 'graphic_layer_overlay_lower',
+			LayerMapping: 'graphic_overlay_lower',
 			INewsCode: '#kg',
 			INewsName: 'bund',
 			VizDestination: 'viz-d-ovl',
@@ -161,7 +161,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'vaerter',
 			SourceLayer: 'studio0_graphicsLower',
-			LayerMapping: 'graphic_layer_overlay_lower',
+			LayerMapping: 'graphic_overlay_lower',
 			INewsCode: '#kg',
 			INewsName: 'vaerter',
 			VizDestination: 'viz-d-ovl',
@@ -173,7 +173,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'vo',
 			SourceLayer: 'studio0_graphicsHeadline',
-			LayerMapping: 'graphic_layer_overlay_headline',
+			LayerMapping: 'graphic_overlay_headline',
 			INewsCode: 'DIGI=',
 			INewsName: 'vo',
 			VizDestination: 'viz-d-ovl',
@@ -185,7 +185,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'trompet',
 			SourceLayer: 'studio0_graphicsHeadline',
-			LayerMapping: 'graphic_layer_overlay_headline',
+			LayerMapping: 'graphic_overlay_headline',
 			INewsCode: 'DIGI=',
 			INewsName: 'trompet',
 			VizDestination: 'viz-d-ovl',
@@ -197,7 +197,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'bund_right',
 			SourceLayer: 'studio0_graphicsTema',
-			LayerMapping: 'graphic_layer_overlay_tema',
+			LayerMapping: 'graphic_overlay_tema',
 			INewsCode: 'KG=',
 			INewsName: 'bundright',
 			VizDestination: 'viz-d-ovl',
@@ -209,7 +209,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'TEMA_Default',
 			SourceLayer: 'studio0_graphicsTema',
-			LayerMapping: 'graphic_layer_overlay_tema',
+			LayerMapping: 'graphic_overlay_tema',
 			INewsCode: 'KG=',
 			INewsName: 'TEMA_default',
 			VizDestination: 'viz-d-ovl',
@@ -221,7 +221,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'TEMA_UPDATE',
 			SourceLayer: 'studio0_graphicsTema',
-			LayerMapping: 'graphic_layer_overlay_tema',
+			LayerMapping: 'graphic_overlay_tema',
 			INewsCode: 'KG=',
 			INewsName: 'TEMA_UPDATE',
 			VizDestination: 'viz-d-ovl',
@@ -233,7 +233,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_AFTERAAR_CYKEL',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_AFTERAAR_CYKEL',
 			VizDestination: 'viz-d-ovl',
@@ -245,7 +245,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_HANDBOLD',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_HANDBOLD',
 			VizDestination: 'viz-d-ovl',
@@ -257,7 +257,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_ISHOCKEY',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ISHOCKEY',
 			VizDestination: 'viz-d-ovl',
@@ -269,7 +269,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_KONTRA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_KONTRA',
 			VizDestination: 'viz-d-ovl',
@@ -281,7 +281,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_NBA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_NBA',
 			VizDestination: 'viz-d-ovl',
@@ -293,7 +293,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_SPORTS_LAB',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_SPORTS_LAB',
 			VizDestination: 'viz-d-ovl',
@@ -305,7 +305,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_WTA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_WTA',
 			VizDestination: 'viz-d-ovl',
@@ -317,7 +317,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_VUELTA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_VUELTA',
 			VizDestination: 'viz-d-ovl',
@@ -329,7 +329,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_VM',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_VM',
 			VizDestination: 'viz-d-ovl',
@@ -341,7 +341,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_WIMBLEDON',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_WIMBLEDON',
 			VizDestination: 'viz-d-ovl',
@@ -353,7 +353,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_TDF',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ESPORT',
 			VizDestination: 'viz-d-ovl',
@@ -365,7 +365,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_ESPORT',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ESPORT',
 			VizDestination: 'viz-d-ovl',
@@ -401,7 +401,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_FODBOLD_20',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_FODBOLD_20',
 			VizDestination: 'viz-d-ovl',
@@ -425,7 +425,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_ATP',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ATP',
 			VizDestination: 'viz-d-ovl',
@@ -449,7 +449,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'VCP',
 			SourceLayer: 'studio0_wall_graphics',
-			LayerMapping: 'graphic_layer_wall',
+			LayerMapping: 'graphic_wall',
 			INewsCode: 'SS',
 			INewsName: 'sc-stills',
 			VizDestination: 'WALL1',
@@ -461,7 +461,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'SN_S4_LOOP_CLEAN',
 			SourceLayer: 'studio0_wall_graphics',
-			LayerMapping: 'graphic_layer_wall',
+			LayerMapping: 'graphic_wall',
 			INewsCode: 'SS',
 			INewsName: 'sc_loop_clean',
 			VizDestination: 'WALL1',
@@ -473,7 +473,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'VCP',
 			SourceLayer: 'studio0_pilot',
-			LayerMapping: 'graphic_layer_pilot',
+			LayerMapping: 'graphic_pilot',
 			INewsCode: 'GRAFIK',
 			INewsName: 'FULL',
 			VizDestination: 'FULL1',
@@ -485,7 +485,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'arkiv',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'arkiv',
 			VizDestination: 'viz-d-ovl',
@@ -497,7 +497,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_news',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_blank',
 			VizDestination: 'viz-d-ovl',
@@ -509,7 +509,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'direkte',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'direkte',
 			VizDestination: 'viz-d-ovl',
@@ -521,7 +521,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'billederfra_txt',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'billederfra_txt',
 			VizDestination: 'viz-d-ovl',
@@ -533,7 +533,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'billederfra_logo',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'billederfra_logo',
 			VizDestination: 'viz-d-ovl',
@@ -545,7 +545,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_nyhederne',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_nyhederne',
 			VizDestination: 'viz-d-ovl',
@@ -557,7 +557,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_news',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_news',
 			VizDestination: 'viz-d-ovl',
@@ -569,7 +569,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'ident_tv2sport',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'ident_tv2sport',
 			VizDestination: 'viz-d-ovl',
@@ -581,7 +581,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'tlfdirekte',
 			SourceLayer: 'studio0_graphicsIdent',
-			LayerMapping: 'graphic_layer_overlay_ident',
+			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
 			INewsName: 'tlfdirekte',
 			VizDestination: 'viz-d-ovl',
@@ -593,7 +593,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'topt',
 			SourceLayer: 'studio0_graphicsTop',
-			LayerMapping: 'graphic_layer_overlay_topt',
+			LayerMapping: 'graphic_overlay_topt',
 			INewsCode: '#kg',
 			INewsName: 'topt',
 			VizDestination: 'viz-d-ovl',
@@ -605,7 +605,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'tlftopt',
 			SourceLayer: 'studio0_graphicsTop',
-			LayerMapping: 'graphic_layer_overlay_topt',
+			LayerMapping: 'graphic_overlay_topt',
 			INewsCode: '#kg',
 			INewsName: 'tlftopt',
 			VizDestination: 'viz-d-ovl',
@@ -617,7 +617,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'tlftoptlive',
 			SourceLayer: 'studio0_graphicsTop',
-			LayerMapping: 'graphic_layer_overlay_topt',
+			LayerMapping: 'graphic_overlay_topt',
 			INewsCode: '#kg',
 			INewsName: 'tlftoptlive',
 			VizDestination: 'viz-d-ovl',
@@ -629,7 +629,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'bund',
 			SourceLayer: 'studio0_graphicsLower',
-			LayerMapping: 'graphic_layer_overlay_lower',
+			LayerMapping: 'graphic_overlay_lower',
 			INewsCode: '#kg',
 			INewsName: 'bund',
 			VizDestination: 'viz-d-ovl',
@@ -641,7 +641,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'vaerter',
 			SourceLayer: 'studio0_graphicsLower',
-			LayerMapping: 'graphic_layer_overlay_lower',
+			LayerMapping: 'graphic_overlay_lower',
 			INewsCode: '#kg',
 			INewsName: 'vaerter',
 			VizDestination: 'viz-d-ovl',
@@ -653,7 +653,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'vo',
 			SourceLayer: 'studio0_graphicsHeadline',
-			LayerMapping: 'graphic_layer_overlay_headline',
+			LayerMapping: 'graphic_overlay_headline',
 			INewsCode: 'DIGI=',
 			INewsName: 'vo',
 			VizDestination: 'viz-d-ovl',
@@ -665,7 +665,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'trompet',
 			SourceLayer: 'studio0_graphicsHeadline',
-			LayerMapping: 'graphic_layer_overlay_headline',
+			LayerMapping: 'graphic_overlay_headline',
 			INewsCode: 'DIGI=',
 			INewsName: 'trompet',
 			VizDestination: 'viz-d-ovl',
@@ -677,7 +677,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'bund_right',
 			SourceLayer: 'studio0_graphicsTema',
-			LayerMapping: 'graphic_layer_overlay_tema',
+			LayerMapping: 'graphic_overlay_tema',
 			INewsCode: 'KG=',
 			INewsName: 'bundright',
 			VizDestination: 'viz-d-ovl',
@@ -689,7 +689,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'TEMA_Default',
 			SourceLayer: 'studio0_graphicsTema',
-			LayerMapping: 'graphic_layer_overlay_tema',
+			LayerMapping: 'graphic_overlay_tema',
 			INewsCode: 'KG=',
 			INewsName: 'TEMA_default',
 			VizDestination: 'viz-d-ovl',
@@ -701,7 +701,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'TEMA_UPDATE',
 			SourceLayer: 'studio0_graphicsTema',
-			LayerMapping: 'graphic_layer_overlay_tema',
+			LayerMapping: 'graphic_overlay_tema',
 			INewsCode: 'KG=',
 			INewsName: 'TEMA_UPDATE',
 			VizDestination: 'viz-d-ovl',
@@ -713,7 +713,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_AFTERAAR_CYKEL',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_AFTERAAR_CYKEL',
 			VizDestination: 'viz-d-ovl',
@@ -725,7 +725,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_HANDBOLD',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_HANDBOLD',
 			VizDestination: 'viz-d-ovl',
@@ -737,7 +737,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_ISHOCKEY',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ISHOCKEY',
 			VizDestination: 'viz-d-ovl',
@@ -749,7 +749,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_KONTRA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_KONTRA',
 			VizDestination: 'viz-d-ovl',
@@ -761,7 +761,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_NBA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_NBA',
 			VizDestination: 'viz-d-ovl',
@@ -773,7 +773,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_SPORTS_LAB',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_SPORTS_LAB',
 			VizDestination: 'viz-d-ovl',
@@ -785,7 +785,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_WTA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_WTA',
 			VizDestination: 'viz-d-ovl',
@@ -797,7 +797,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_VUELTA',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_VUELTA',
 			VizDestination: 'viz-d-ovl',
@@ -809,7 +809,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_VM',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_VM',
 			VizDestination: 'viz-d-ovl',
@@ -821,7 +821,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_WIMBLEDON',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_WIMBLEDON',
 			VizDestination: 'viz-d-ovl',
@@ -833,7 +833,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_TDF',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ESPORT',
 			VizDestination: 'viz-d-ovl',
@@ -845,7 +845,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_ESPORT',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ESPORT',
 			VizDestination: 'viz-d-ovl',
@@ -881,7 +881,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_FODBOLD_20',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_FODBOLD_20',
 			VizDestination: 'viz-d-ovl',
@@ -905,7 +905,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'DESIGN_ATP',
 			SourceLayer: 'studio0_design',
-			LayerMapping: 'graphic_layer_design',
+			LayerMapping: 'graphic_design',
 			INewsCode: '#kg',
 			INewsName: 'DESIGN_ATP',
 			VizDestination: 'viz-d-ovl',
@@ -929,7 +929,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'VCP',
 			SourceLayer: 'studio0_wall_graphics',
-			LayerMapping: 'graphic_layer_wall',
+			LayerMapping: 'graphic_wall',
 			INewsCode: 'SS',
 			INewsName: 'sc-stills',
 			VizDestination: 'WALL1',
@@ -941,7 +941,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'SN_S4_LOOP_CLEAN',
 			SourceLayer: 'studio0_wall_graphics',
-			LayerMapping: 'graphic_layer_wall',
+			LayerMapping: 'graphic_wall',
 			INewsCode: 'SS',
 			INewsName: 'sc_loop_clean',
 			VizDestination: 'WALL1',
@@ -953,7 +953,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 		{
 			VizTemplate: 'VCP',
 			SourceLayer: 'studio0_pilot',
-			LayerMapping: 'graphic_layer_pilot',
+			LayerMapping: 'graphic_pilot',
 			INewsCode: 'GRAFIK',
 			INewsName: 'FULL',
 			VizDestination: 'FULL1',
