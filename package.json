@@ -62,7 +62,6 @@
     "handlebars": "^4.3.0",
     "md5": "^2.2.1",
     "object-path": "^0.11.4",
-    "timeline-state-resolver-types": "git+https://github.com/olzzon/tv-automation-state-timeline-resolver#dist_types20200306_1",
     "tv-automation-sofie-blueprints-integration": "git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#dist20200324_2",
     "underscore": "^1.9.1"
   }
