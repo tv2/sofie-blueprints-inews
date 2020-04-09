@@ -13,7 +13,6 @@ import {
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
 	TimelineObjCCGMedia,
-	TimelineObjCCGTemplate,
 	TimelineObjSisyfosAny,
 	TimelineObjSisyfosMessage,
 	Transition,
@@ -861,42 +860,6 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 						}
 					})
 			  })
-			: []),
-
-		// Graphics baseline
-		// TODO: These should be pulled from config...
-		...[
-			['arkiv', OfftubeCasparLLayer.OverlayGraphicArkiv],
-			['bund', OfftubeCasparLLayer.OverlayGraphicLower],
-			['direkte', OfftubeCasparLLayer.OverlayGraphicDirekte],
-			['identLeft', OfftubeCasparLLayer.OverlayGraphicIdentLeft],
-			['identRight', OfftubeCasparLLayer.OverlayGraphicIdentRight],
-			['locators', OfftubeCasparLLayer.OverlayGraphicsLocators],
-			['logo', OfftubeCasparLLayer.OverlayGraphicLogo],
-			['topt', OfftubeCasparLLayer.OverlayGraphicTopt]
-		].map<TimelineObjCCGTemplate>(props => ({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 0,
-			layer: props[1],
-			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: '', // TODO: Graphics name
-				data: literal<RendererState>({
-					partialUpdate: true,
-					rendererDisplay: 'program',
-					slots: {
-						[props[0]]: {
-							display: 'hidden'
-						}
-					}
-				}),
-				useStopCommand: false
-			}
-		}))
+			: [])
 	]
 }
