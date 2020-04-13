@@ -4,9 +4,10 @@ import {
 	MigrationContextStudio,
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
-	MigrationStepStudio
+	MigrationStepStudio,
+	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
+import { literal, parseMapStr } from 'tv2-common'
 import * as _ from 'underscore'
 import MappingsDefaults from './mappings-defaults'
 
@@ -152,6 +153,40 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 			})
 		})
 	)
+
+	return res
+}
+
+export function moveSourcesToTable(versionStr: string, configName: string): MigrationStepStudio {
+	const res = literal<MigrationStepStudio>({
+		id: `studioConfig.${configName}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const configVal = context.getConfig(configName)
+			if (configVal === undefined || typeof configVal === 'string') {
+				return `${configName} has old format or doesn't exist`
+			}
+			return false
+		},
+		migrate: (context: MigrationContextStudio) => {
+			const configVal = context.getConfig(configName)
+			const table: TableConfigItemValue = []
+			if (configVal === undefined) {
+				context.setConfig(configName, table)
+			} else if (typeof configVal === 'string') {
+				const oldConfig = parseMapStr(undefined, configVal, true)
+				_.each(oldConfig, (source, i) => {
+					table.push({
+						_id: i.toString(),
+						SourceName: source.id,
+						AtemSource: source.val
+					})
+				})
+				context.setConfig(configName, table)
+			}
+		}
+	})
 
 	return res
 }

@@ -1,57 +1,54 @@
 import * as _ from 'underscore'
 
-import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
-import { parseMapStr, SourceInfo } from 'tv2-common'
+import { SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
+import { SourceInfo } from 'tv2-common'
 import { StudioConfig } from './config'
 
-export function parseMediaPlayers(
-	context: NotesContext | undefined,
-	studioConfig: StudioConfig
-): Array<{ id: string; val: string }> {
-	return parseMapStr(context, studioConfig.ABMediaPlayers, false)
+export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: string; val: string }> {
+	const res: Array<{ id: string; val: any }> = []
+
+	_.each(studioConfig.ABMediaPlayers, mp => {
+		res.push({
+			id: mp.SourceName as string,
+			val: mp.AtemSource as number
+		})
+	})
+
+	return res
 }
 
-export function parseSources(context: NotesContext | undefined, studioConfig: StudioConfig): SourceInfo[] {
-	const rmInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesRM, true)
-	const kamInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesCam, true)
-	const skypeInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesSkype, true)
-	const delayedPlaybackInput: Array<{ id: string; val: number }> = parseMapStr(
-		context,
-		studioConfig.SourcesDelayedPlayback,
-		true
-	)
-
+export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 	const res: SourceInfo[] = []
 
-	_.each(rmInputMap, rm => {
+	_.each(studioConfig.SourcesRM, rm => {
 		res.push({
 			type: SourceLayerType.REMOTE,
-			id: rm.id,
-			port: rm.val
+			id: rm.SourceName as string,
+			port: rm.AtemSource as number
 		})
 	})
 
-	_.each(kamInputMap, kam => {
+	_.each(studioConfig.SourcesCam, kam => {
 		res.push({
 			type: SourceLayerType.CAMERA,
-			id: kam.id,
-			port: kam.val
+			id: kam.SourceName as string,
+			port: kam.AtemSource as number
 		})
 	})
 
-	_.each(skypeInputMap, sk => {
+	_.each(studioConfig.SourcesSkype, sk => {
 		res.push({
 			type: SourceLayerType.REMOTE,
-			id: `S${sk.id}`,
-			port: sk.val
+			id: `S${sk.SourceName}`,
+			port: sk.AtemSource as number
 		})
 	})
 
-	_.each(delayedPlaybackInput, dp => {
+	_.each(studioConfig.SourcesDelayedPlayback, dp => {
 		res.push({
 			type: SourceLayerType.REMOTE,
-			id: `DP${dp.id}`,
-			port: dp.val
+			id: `DP${dp.SourceName}`,
+			port: dp.AtemSource as number
 		})
 	})
 
