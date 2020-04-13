@@ -30,11 +30,11 @@ export interface StudioConfig {
 	MediaFlowId: string
 	ClipFileExtension: string
 	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
-	SourcesCam: string
-	SourcesRM: string
-	SourcesSkype: string
-	SourcesDelayedPlayback: string
-	ABMediaPlayers: string
+	SourcesCam: TableConfigItemValue
+	SourcesRM: TableConfigItemValue
+	SourcesSkype: TableConfigItemValue
+	SourcesDelayedPlayback: TableConfigItemValue
+	ABMediaPlayers: TableConfigItemValue
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		DSK1F: number
@@ -104,6 +104,12 @@ export function applyToConfig(
 				case ConfigManifestEntryType.TABLE:
 					newVal = overrideVal as TableConfigItemValue
 					break
+				case ConfigManifestEntryType.LAYER_MAPPINGS:
+					newVal = overrideVal
+					break
+				case ConfigManifestEntryType.SOURCE_LAYERS:
+					newVal = overrideVal
+					break
 				default:
 					assertUnreachable(val)
 					context.warning('Unknown config field type: ' + val)
@@ -135,8 +141,8 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', {})
 	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', {})
 
-	config.sources = parseSources(context, config.studio)
-	config.mediaPlayers = parseMediaPlayers(context, config.studio)
+	config.sources = parseSources(config.studio)
+	config.mediaPlayers = parseMediaPlayers(config.studio)
 
 	return config
 }
@@ -159,8 +165,8 @@ export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', studioConfig)
 	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', context.getShowStyleConfig())
 
-	config.sources = parseSources(context, config.studio)
-	config.mediaPlayers = parseMediaPlayers(context, config.studio)
+	config.sources = parseSources(config.studio)
+	config.mediaPlayers = parseMediaPlayers(config.studio)
 
 	return config
 }

@@ -508,15 +508,13 @@ export default literal<BlueprintMappings>({
 
 export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 	const res: BlueprintMappings = {}
-	const cams = cameras.split(',')
-	cams.forEach(cam => {
-		const props = cam.split(':')
-		if (props[0] && props[1]) {
-			res[`sisyfos_camera_active_${props[0].replace(' ', '_').trim()}`] = literal<MappingSisyfos & BlueprintMapping>({
+	cameras.forEach(cam => {
+		if (cam.SisyfosLayer && typeof cam.SisyfosLayer === 'string') {
+			res[cam.SisyfosLayer] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (cam.AtemSource as number) || 0
 			})
 		}
 	})
@@ -526,29 +524,27 @@ export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 
 export function getRemoteSisyfosMappings(remotes: StudioConfig['SourcesRM']) {
 	const res: BlueprintMappings = {}
-	const rmts = remotes.split(',')
-	rmts.forEach(rmt => {
-		const props = rmt.split(':')
-		if (props[0] && props[1]) {
-			res[`sisyfos_remote_source_${props[0]}`] = literal<MappingSisyfos & BlueprintMapping>({
+	remotes.forEach(rmt => {
+		if (rmt.SourceName !== undefined && rmt.AtemSource !== undefined) {
+			res[`sisyfos_remote_source_${rmt.SourceName}`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_${props[0]}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_${rmt.SourceName}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_${props[0]}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_${rmt.SourceName}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 		}
 	})
@@ -558,29 +554,27 @@ export function getRemoteSisyfosMappings(remotes: StudioConfig['SourcesRM']) {
 
 export function getSkypeSisyfosMappings(remotes: StudioConfig['SourcesSkype']) {
 	const res: BlueprintMappings = {}
-	const rmts = remotes.split(',')
-	rmts.forEach(rmt => {
-		const props = rmt.split(':')
-		if (props[0] && props[1]) {
-			res[`sisyfos_remote_source_skype_${props[0]}`] = literal<MappingSisyfos & BlueprintMapping>({
+	remotes.forEach(rmt => {
+		if (rmt.SourceName !== undefined && rmt.AtemSource !== undefined) {
+			res[`sisyfos_remote_source_skype_${rmt.SourceName}`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_skype_${props[0]}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_skype_${rmt.SourceName}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_skype_${props[0]}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_skype_${rmt.SourceName}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 		}
 	})
