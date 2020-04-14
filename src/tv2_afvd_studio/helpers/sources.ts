@@ -58,3 +58,20 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 
 	return res
 }
+
+export function getLiveAudioLayers(studioConfig: StudioConfig): string[] {
+	const res: string[] = []
+
+	_.each(
+		[studioConfig.SourcesRM, studioConfig.SourcesCam, studioConfig.SourcesSkype, studioConfig.SourcesDelayedPlayback],
+		sources => {
+			_.each(sources, src => {
+				if (src.SisyfosLayers) {
+					res.push(...(src.SisyfosLayers as string[]))
+				}
+			})
+		}
+	)
+
+	return res
+}

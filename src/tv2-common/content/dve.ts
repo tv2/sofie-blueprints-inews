@@ -132,10 +132,6 @@ export interface DVEOptions {
 		INP3: string
 		INP4: string
 	}
-	/** Layers that should be sticky */
-	STICKY_LAYERS: string[]
-	/** Audio layers for live sources */
-	LIVE_AUDIO: string[]
 	/** All audio layers */
 	AUDIO_LAYERS: string[]
 	/** Layers to exclude from filter */
@@ -437,8 +433,9 @@ export function MakeContentDVE2<
 
 	if (adlib) {
 		dveTimeline.push(
-			...dveGeneratorOptions.STICKY_LAYERS.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
-				.filter(layer => dveGeneratorOptions.LIVE_AUDIO.indexOf(layer) === -1)
+			...config.stickyLayers
+				.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
+				.filter(layer => config.liveAudio.indexOf(layer) === -1)
 				.map<TimelineObjSisyfosMessage>(layer => {
 					return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',

@@ -30,6 +30,8 @@ export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConf
 	studio: StudioConfig
 	sources: SourceInfo[]
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	liveAudio: string[]
+	stickyLayers: string[]
 }
 
 export interface TV2ShowstyleBlueprintConfigBase {

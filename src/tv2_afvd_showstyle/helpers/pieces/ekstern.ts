@@ -79,7 +79,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(layer),
+				metaData: GetEksternMetaData(config, layer),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -120,7 +120,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(layer),
+				metaData: GetEksternMetaData(config, layer),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -161,9 +161,9 @@ export function EvaluateEkstern(
 	}
 }
 
-export function GetEksternMetaData(layer?: SisyfosLLAyer): PieceMetaData | undefined {
+export function GetEksternMetaData(config: BlueprintConfig, layer?: SisyfosLLAyer): PieceMetaData | undefined {
 	return layer
-		? GetStickyForPiece([
+		? GetStickyForPiece(config, [
 				{ layer, isPgm: 1 },
 				...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
 					return { layer: l, isPgm: 1 }

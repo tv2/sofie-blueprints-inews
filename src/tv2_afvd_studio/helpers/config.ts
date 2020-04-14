@@ -10,14 +10,17 @@ import {
 import { assertUnreachable, MediaPlayerConfig, SourceInfo } from 'tv2-common'
 import * as _ from 'underscore'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { getStickyLayers } from '../../tv2_afvd_showstyle/helpers/sisyfos/sisyfos'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
-import { parseMediaPlayers, parseSources } from './sources'
+import { getLiveAudioLayers, parseMediaPlayers, parseSources } from './sources'
 
 export interface BlueprintConfig {
 	studio: StudioConfig
 	sources: SourceInfo[]
 	showStyle: ShowStyleConfig
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	liveAudio: string[]
+	stickyLayers: string[]
 }
 
 export interface StudioConfig {
@@ -128,7 +131,9 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 		studio: {} as any,
 		showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
@@ -143,6 +148,8 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
+	config.liveAudio = getLiveAudioLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.liveAudio)
 
 	return config
 }
@@ -152,7 +159,9 @@ export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 		studio: {} as any,
 		showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
@@ -167,6 +176,8 @@ export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
+	config.liveAudio = getLiveAudioLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.liveAudio)
 
 	return config
 }

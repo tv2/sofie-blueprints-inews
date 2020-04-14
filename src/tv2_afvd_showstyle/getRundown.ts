@@ -59,8 +59,6 @@ import {
 	GetLayerForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
-	LIVE_AUDIO,
-	STICKY_LAYERS,
 	STUDIO_MICS
 } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
@@ -159,7 +157,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
-			metaData: GetKeepStudioMicsMetaData(),
+			metaData: GetKeepStudioMicsMetaData(config),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -178,26 +176,26 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						classes: ['adlib_deparent']
 					}),
 					...camSisyfos,
-					...STICKY_LAYERS.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1).map<
-						TimelineObjSisyfosAny & TimelineBlueprintExt
-					>(layer => {
-						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-					}),
+					...config.stickyLayers
+						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						}),
 					// Force server to be muted (for adlibbing over DVE)
 					...[
 						SisyfosLLAyer.SisyfosSourceClipPending,
@@ -260,7 +258,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetKeepStudioMicsMetaData(),
+			metaData: GetKeepStudioMicsMetaData(config),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -290,7 +288,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						}
 					}),
 
-					...STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+					...config.stickyLayers.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 							id: '',
 							enable: {
@@ -371,7 +369,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(config, GetLayerForEkstern(`Live ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -390,8 +388,9 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						classes: ['adlib_deparent']
 					}),
 					...eksternSisyfos,
-					...STICKY_LAYERS.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => LIVE_AUDIO.indexOf(layer) === -1)
+					...config.stickyLayers
+						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.filter(layer => config.liveAudio.indexOf(layer) === -1)
 						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
@@ -474,7 +473,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			outputLayerId: 'aux',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.Infinite,
-			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(config, GetLayerForEkstern(`Live ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemAUX>({

@@ -11,12 +11,7 @@ import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import {
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
-	LIVE_AUDIO,
-	STICKY_LAYERS
-} from '../sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
 
 export const boxLayers: DVESources = {
 	INP1: SourceLayer.PgmDVEBox1,
@@ -55,8 +50,6 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		INP4: SourceLayer.PgmDVEBox4
 	},
 	boxMappings: [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3, AtemLLayer.AtemSSrcBox4],
-	STICKY_LAYERS,
-	LIVE_AUDIO,
 	AUDIO_LAYERS: Object.keys(SisyfosLLAyer),
 	EXCLUDED_LAYERS: [
 		SisyfosLLAyer.SisyfosSourceClipPending,

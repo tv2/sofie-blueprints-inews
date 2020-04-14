@@ -8,6 +8,7 @@ import {
 import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
 import { FindSourceInfoStrict, literal, PieceMetaData, SourceInfo } from 'tv2-common'
 import _ = require('underscore')
+import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
 export const STUDIO_MICS = [
@@ -149,12 +150,13 @@ export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[]
 }
 
 export function GetStickyForPiece(
+	config: BlueprintConfig,
 	layers: Array<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>
 ): PieceMetaData | undefined {
 	return literal<PieceMetaData>({
 		stickySisyfosLevels: _.object(
 			layers
-				.filter(layer => STICKY_LAYERS.indexOf(layer.layer) !== -1)
+				.filter(layer => config.stickyLayers.indexOf(layer.layer) !== -1)
 				.map<[string, { value: number; followsPrevious: boolean }]>(layer => {
 					return [
 						layer.layer,
@@ -166,4 +168,8 @@ export function GetStickyForPiece(
 				})
 		)
 	})
+}
+
+export function getStickyLayers(liveAudio: string[]) {
+	return [...liveAudio, ...STUDIO_MICS]
 }
