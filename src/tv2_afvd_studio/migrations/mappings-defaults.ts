@@ -517,8 +517,8 @@ export default literal<BlueprintMappings>({
 export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 	const res: BlueprintMappings = {}
 	cameras.forEach(cam => {
-		if (cam.SisyfosLayer && typeof cam.SisyfosLayer === 'string') {
-			res[cam.SisyfosLayer] = literal<MappingSisyfos & BlueprintMapping>({
+		if (cam.SourceName !== undefined && cam.AtemSource !== undefined) {
+			res[`sisyfos_camera_active_${cam.SourceName}`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
