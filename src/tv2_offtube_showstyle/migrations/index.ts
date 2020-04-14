@@ -1,14 +1,46 @@
 import { MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
+import { GraphicLLayer, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import {
 	getOutputLayerDefaultsMigrationSteps,
 	getRuntimeArgumentsDefaultsMigrationSteps,
-	getSourceLayerDefaultsMigrationSteps
+	getSourceLayerDefaultsMigrationSteps,
+	remapTableColumnValues
 } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
+
+/**
+ * Old layers, used here for reference. Should not be used anywhere else.
+ */
+enum VizLLayer {
+	VizLLayerOverlay = 'viz_layer_overlay',
+	VizLLayerOverlayIdent = 'viz_layer_overlay_ident',
+	VizLLayerOverlayTopt = 'viz_layer_overlay_topt',
+	VizLLayerOverlayLower = 'viz_layer_overlay_lower',
+	VizLLayerOverlayHeadline = 'viz_layer_overlay_headline',
+	VizLLayerOverlayTema = 'viz_layer_overlay_tema',
+	VizLLayerPilot = 'viz_layer_pilot',
+	VizLLayerPilotOverlay = 'viz_layer_pilot_overlay',
+	VizLLayerDesign = 'viz_layer_design',
+	VizLLayerAdLibs = 'viz_layer_adlibs',
+	VizLLayerWall = 'viz_layer_wall'
+}
+
+export const remapVizLLayer: Array<[string, string]> = [
+	[VizLLayer.VizLLayerOverlay, GraphicLLayer.GraphicLLayerOverlay],
+	[VizLLayer.VizLLayerOverlayIdent, GraphicLLayer.GraphicLLayerOverlayIdent],
+	[VizLLayer.VizLLayerOverlayTopt, GraphicLLayer.GraphicLLayerOverlayIdent],
+	[VizLLayer.VizLLayerOverlayLower, GraphicLLayer.GraphicLLayerOverlayLower],
+	[VizLLayer.VizLLayerOverlayHeadline, GraphicLLayer.GraphicLLayerOverlayHeadline],
+	[VizLLayer.VizLLayerOverlayTema, GraphicLLayer.GraphicLLayerOverlayTema],
+	[VizLLayer.VizLLayerPilot, GraphicLLayer.GraphicLLayerPilot],
+	[VizLLayer.VizLLayerPilotOverlay, GraphicLLayer.GraphicLLayerPilotOverlay],
+	[VizLLayer.VizLLayerDesign, GraphicLLayer.GraphicLLayerDesign],
+	[VizLLayer.VizLLayerAdLibs, GraphicLLayer.GraphicLLayerAdLibs],
+	[VizLLayer.VizLLayerWall, GraphicLLayer.GraphicLLayerWall]
+]
 
 /**
  * Versions:
@@ -21,5 +53,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getCreateVariantMigrationSteps(),
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	...getRuntimeArgumentsDefaultsMigrationSteps(VERSION)
+	...getRuntimeArgumentsDefaultsMigrationSteps(VERSION),
+	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', new Map<string, string>(remapVizLLayer))
 ])
