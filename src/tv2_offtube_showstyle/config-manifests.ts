@@ -129,13 +129,58 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		],
 		columns: [
 			{
+				id: 'INewsCode',
+				name: 'iNews Command (*)',
+				description: 'The code as it will appear in iNews',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 0
+			},
+			{
+				id: 'INewsName',
+				name: 'iNews Name (*)',
+				description: 'The name after the code',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 1
+			},
+			{
 				id: 'VizTemplate',
 				name: 'Viz Template Name (**)',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
-				rank: 0
+				rank: 2
+			},
+			{
+				id: 'VizDestination',
+				name: 'Viz Destination (*)',
+				description: 'The name of the Viz Engine',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 3
+			},
+			{
+				id: 'OutType',
+				name: 'Out type',
+				description: 'The type of out, none follow timecode, S stays on to ??, B stays on to ??, O stays on to ??',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 4
+			},
+			{
+				id: 'IsDesign',
+				name: 'Changes Design',
+				description: 'Whether this cue changes the design',
+				type: ConfigManifestEntryType.BOOLEAN,
+				required: false,
+				defaultVal: false,
+				rank: 5
 			},
 			{
 				id: 'SourceLayer',
@@ -144,7 +189,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
-				rank: 1
+				rank: 6
 			},
 			{
 				id: 'LayerMapping',
@@ -154,70 +199,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
-				rank: 2
-			},
-			{
-				id: 'INewsCode',
-				name: 'iNews Command (*)',
-				description: 'The code as it will appear in iNews',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 3
-			},
-			{
-				id: 'INewsName',
-				name: 'iNews Name (*)',
-				description: 'The name after the code',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 4
-			},
-			{
-				id: 'VizDestination',
-				name: 'Viz Destination (*)',
-				description: 'The name of the Viz Engine',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 5
-			},
-			{
-				id: 'OutType',
-				name: 'Out type',
-				description: 'The type of out, none follow timecode, S stays on to ??, B stays on to ??, O stays on to ??',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 6
-			},
-			{
-				id: 'Argument1',
-				name: 'Variable 1',
-				description: 'Argument passed to Viz',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
 				rank: 7
-			},
-			{
-				id: 'Argument2',
-				name: 'Variable 2',
-				description: 'Argument passed to Viz',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 8
-			},
-			{
-				id: 'IsDesign',
-				name: 'Changes Design',
-				description: 'Whether this cue changes the design',
-				type: ConfigManifestEntryType.BOOLEAN,
-				required: false,
-				defaultVal: false,
-				rank: 9
 			}
 		]
 	},
