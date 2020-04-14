@@ -80,7 +80,7 @@ export function CreatePartEVS(
 				sourceLayerId: SourceLayer.PgmLive,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
-				content: makeContentEVS(atemInput, partDefinition, sourceInfoDelayedPlayback)
+				content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 			})
 		)
 	} else {
@@ -93,7 +93,7 @@ export function CreatePartEVS(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				content: makeContentEVS(atemInput, partDefinition, sourceInfoDelayedPlayback)
+				content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 			})
 		)
 	}
@@ -113,6 +113,8 @@ export function CreatePartEVS(
 }
 
 function makeContentEVS(
+	context: PartContext,
+	config: BlueprintConfig,
 	atemInput: number,
 	partDefinition: PartDefinitionEVS,
 	sourceInfoDelayedPlayback: SourceInfo
@@ -155,7 +157,7 @@ function makeContentEVS(
 				}
 			}),
 			...(partDefinition.variant.isVO
-				? [...GetSisyfosTimelineObjForCamera('evs')]
+				? [...GetSisyfosTimelineObjForCamera(context, config.sources, 'evs')]
 				: [
 						...LIVE_AUDIO.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({

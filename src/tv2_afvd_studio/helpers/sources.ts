@@ -24,7 +24,8 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: rm.SourceName as string,
-			port: rm.AtemSource as number
+			port: rm.AtemSource as number,
+			sisyfosLayers: rm.SisyfosLayers as string[] | undefined
 		})
 	})
 
@@ -32,7 +33,8 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 		res.push({
 			type: SourceLayerType.CAMERA,
 			id: kam.SourceName as string,
-			port: kam.AtemSource as number
+			port: kam.AtemSource as number,
+			sisyfosLayers: kam.SisyfosLayers as string[] | undefined
 		})
 	})
 
@@ -40,7 +42,8 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: `S${sk.SourceName}`,
-			port: sk.AtemSource as number
+			port: sk.AtemSource as number,
+			sisyfosLayers: sk.SisyfosLayers as string[] | undefined
 		})
 	})
 
@@ -48,7 +51,8 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: `DP${dp.SourceName}`,
-			port: dp.AtemSource as number
+			port: dp.AtemSource as number,
+			sisyfosLayers: dp.SisyfosLayers as string[] | undefined
 		})
 	})
 

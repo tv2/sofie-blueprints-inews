@@ -16,6 +16,7 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	NotesContext,
 	PartContext,
 	PieceLifespan,
 	SourceLayerType
@@ -56,12 +57,12 @@ export function EvaluateMOSViz(
 
 	if (adlib) {
 		adlibPieces.push(
-			makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
+			makeMosAdlib(context, partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
 		)
 	} else {
 		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls && !adlib && engine !== 'WALL') {
 			adlibPieces.push(
-				makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
+				makeMosAdlib(context, partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
 			)
 		}
 		pieces.push(
@@ -80,13 +81,14 @@ export function EvaluateMOSViz(
 				sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode: GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart),
-				content: GetMosObjContent(engine, config, parsedCue, partId, isOverlay, false, isTlf)
+				content: GetMosObjContent(context, engine, config, parsedCue, partId, isOverlay, false, isTlf)
 			})
 		)
 	}
 }
 
 function makeMosAdlib(
+	context: NotesContext,
 	partId: string,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
@@ -105,7 +107,7 @@ function makeMosAdlib(
 		sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 		adlibPreroll: config.studio.PilotPrerollDuration,
-		content: GetMosObjContent(engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf, rank),
+		content: GetMosObjContent(context, engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf, rank),
 		toBeQueued: true
 	}
 }
@@ -152,6 +154,7 @@ function GetInfiniteMode(
 }
 
 function GetMosObjContent(
+	context: NotesContext,
 	engine: VizEngine,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
@@ -235,7 +238,7 @@ function GetMosObjContent(
 							},
 							classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 						}),
-						...GetSisyfosTimelineObjForCamera('full'),
+						...GetSisyfosTimelineObjForCamera(context, config.sources, 'full'),
 						...MuteSisyfosChannels(partId, config.sources, !!adlib, adlibrank ?? 0, parsedCue.vcpid)
 				  ])
 		]

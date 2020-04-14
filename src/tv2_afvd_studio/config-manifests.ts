@@ -63,23 +63,23 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: 0
 			},
 			{
-				id: 'SisyfosLayer',
-				name: 'Sisyfos layer',
-				description: 'Sisyfos layer for Camera',
+				id: 'SisyfosLayers',
+				name: 'Sisyfos layers',
+				description: 'Sisyfos layers for Camera',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
 					deviceTypes: [DeviceType.SISYFOS]
 				},
 				required: true,
-				multiple: false,
-				defaultVal: ''
+				multiple: true,
+				defaultVal: []
 			}
 		]
 	},
 	{
 		id: 'SourcesRM',
 		name: 'RM Mapping',
-		description: 'RM number to ATEM input (eg 1:6,2:7)',
+		description: 'RM number to ATEM input',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [
@@ -108,23 +108,23 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: 0
 			},
 			{
-				id: 'SisyfosLayer',
-				name: 'Sisyfos layer',
-				description: 'Sisyfos layer for RM input',
+				id: 'SisyfosLayers',
+				name: 'Sisyfos layers',
+				description: 'Sisyfos layers for RM input',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
 					deviceTypes: [DeviceType.SISYFOS]
 				},
 				required: true,
-				multiple: false,
-				defaultVal: ''
+				multiple: true,
+				defaultVal: []
 			}
 		]
 	},
 	{
 		id: 'SourcesDelayedPlayback',
 		name: 'EVS Mapping',
-		description: 'EVS number to ATEM input (eg 1:6,2:7)',
+		description: 'EVS number to ATEM input',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [
@@ -153,16 +153,16 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: 0
 			},
 			{
-				id: 'SisyfosLayer',
-				name: 'Sisyfos layer',
-				description: 'Sisyfos layer for EVS input',
+				id: 'SisyfosLayers',
+				name: 'Sisyfos layers',
+				description: 'Sisyfos layers for EVS input',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
 					deviceTypes: [DeviceType.SISYFOS]
 				},
 				required: true,
-				multiple: false,
-				defaultVal: ''
+				multiple: true,
+				defaultVal: []
 			}
 		]
 	},
@@ -201,16 +201,16 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: 0
 			},
 			{
-				id: 'SisyfosLayer',
-				name: 'Sisyfos layer',
-				description: 'Sisyfos layer for Skype input',
+				id: 'SisyfosLayers',
+				name: 'Sisyfos layers',
+				description: 'Sisyfos layers for Skype input',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
 					deviceTypes: [DeviceType.SISYFOS]
 				},
 				required: true,
-				multiple: false,
-				defaultVal: ''
+				multiple: true,
+				defaultVal: []
 			}
 		]
 	},

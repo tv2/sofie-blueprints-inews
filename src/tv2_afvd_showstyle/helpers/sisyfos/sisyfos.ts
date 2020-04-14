@@ -5,8 +5,8 @@ import {
 	TimelineObjSisyfosMessage,
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
-import { NotesContext } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PieceMetaData } from 'tv2-common'
+import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
+import { FindSourceInfoStrict, literal, PieceMetaData, SourceInfo } from 'tv2-common'
 import _ = require('underscore')
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
@@ -34,7 +34,12 @@ export const LIVE_AUDIO = [
 
 export const STICKY_LAYERS = [...STUDIO_MICS, ...LIVE_AUDIO]
 
-export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Timeline.TimelineEnable): TSRTimelineObj[] {
+export function GetSisyfosTimelineObjForCamera(
+	context: NotesContext,
+	sources: SourceInfo[],
+	sourceType: string,
+	enable?: Timeline.TimelineEnable
+): TSRTimelineObj[] {
 	if (!enable) {
 		enable = { start: 0 }
 	}
@@ -43,8 +48,13 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Time
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	if ((useMic && camName) || !!sourceType.match(/server|telefon|full|evs/i)) {
+		const camLayers: string[] = [...STUDIO_MICS]
+		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, sourceType)
+		if (sourceInfo && sourceInfo.sisyfosLayers) {
+			camLayers.push(...sourceInfo.sisyfosLayers)
+		}
 		audioTimeline.push(
-			...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
+			...camLayers.map<TimelineObjSisyfosMessage>(layer => {
 				return literal<TimelineObjSisyfosMessage>({
 					id: '',
 					enable: enable ? enable : { start: 0 },
@@ -64,25 +74,22 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Time
 
 export function GetSisyfosTimelineObjForEkstern(
 	context: NotesContext,
+	sources: SourceInfo[],
 	sourceType: string,
 	enable?: Timeline.TimelineEnable
 ): TSRTimelineObj[] {
-	if (!enable) {
-		enable = { start: 0 }
-	}
-
 	let audioTimeline: TSRTimelineObj[] = []
-	const layer = GetLayerForEkstern(sourceType)
+	const layers = GetLayersForEkstern(context, sources, sourceType)
 
-	if (!layer) {
+	if (!layers) {
 		context.warning(`Could not set audio levels for ${sourceType}`)
 		return audioTimeline
 	}
 
-	audioTimeline = [
-		literal<TimelineObjSisyfosMessage>({
+	audioTimeline = layers.map<TimelineObjSisyfosMessage>(layer => {
+		return literal<TimelineObjSisyfosMessage>({
 			id: '',
-			enable,
+			enable: enable ? enable : { start: 0 },
 			priority: 1,
 			layer,
 			content: {
@@ -91,7 +98,8 @@ export function GetSisyfosTimelineObjForEkstern(
 				isPgm: 1
 			}
 		})
-	]
+	})
+
 	return audioTimeline
 }
 
@@ -126,6 +134,18 @@ export function GetLayerForEkstern(sourceType: string) {
 		}
 	}
 	return
+}
+
+export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
+	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
+	const eksternLayers: string[] = []
+	if (eksternProps) {
+		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
+		if (sourceInfo && sourceInfo.sisyfosLayers) {
+			eksternLayers.push(...sourceInfo.sisyfosLayers)
+		}
+	}
+	return eksternLayers
 }
 
 export function GetStickyForPiece(

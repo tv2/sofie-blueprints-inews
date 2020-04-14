@@ -108,9 +108,15 @@ export interface DVELayers {
 }
 
 export interface DVETimelineObjectGenerators {
-	GetSisyfosTimelineObjForCamera: (str: string, enable?: Timeline.TimelineEnable) => TSRTimelineObj[]
+	GetSisyfosTimelineObjForCamera: (
+		context: NotesContext,
+		sources: SourceInfo[],
+		str: string,
+		enable?: Timeline.TimelineEnable
+	) => TSRTimelineObj[]
 	GetSisyfosTimelineObjForEkstern: (
 		context: NotesContext,
+		sources: SourceInfo[],
 		sourceType: string,
 		enable?: Timeline.TimelineEnable
 	) => TSRTimelineObj[]
@@ -310,7 +316,12 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoCam, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(mappingFrom.source, audioEnable)
+					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
+						context,
+						config.sources,
+						mappingFrom.source,
+						audioEnable
+					)
 				)
 			} else if (sourceType.match(/LIVE/i) || sourceType.match(/SKYPE/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
@@ -324,6 +335,7 @@ export function MakeContentDVE2<
 				dveTimeline.push(
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForEkstern(
 						context,
+						config.sources,
 						mappingFrom.source,
 						audioEnable
 					)
@@ -342,7 +354,9 @@ export function MakeContentDVE2<
 				}
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
-				dveTimeline.push(...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera('evs'))
+				dveTimeline.push(
+					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config.sources, 'evs')
+				)
 			} else if (sourceType.match(/ENGINE/i)) {
 				if (sourceInput.match(/full/i)) {
 					const sourceInfoFull: SourceInfo = {
@@ -351,7 +365,9 @@ export function MakeContentDVE2<
 						port: config.studio.AtemSource.DSK1F
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source)
-					dveTimeline.push(...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera('full'))
+					dveTimeline.push(
+						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config.sources, 'full')
+					)
 				} else {
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}

@@ -104,8 +104,8 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, parsedCue.source),
-						...GetSisyfosTimelineObjForCamera('telefon')
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
+						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
 					])
 				})
 			})
@@ -152,8 +152,8 @@ export function EvaluateEkstern(
 							...(AddParentClass(partDefinition) ? { classes: [EksternParentClass('studio0', parsedCue.source)] } : {})
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, parsedCue.source),
-						...GetSisyfosTimelineObjForCamera('telefon')
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
+						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
 					])
 				})
 			})

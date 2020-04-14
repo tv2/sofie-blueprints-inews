@@ -135,7 +135,7 @@ export function CreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(partDefinition.rawType)
+						...GetSisyfosTimelineObjForCamera(context, config.sources, partDefinition.rawType)
 					])
 				}
 			})
