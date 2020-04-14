@@ -93,6 +93,12 @@ export function applyToConfig(
 				case ConfigManifestEntryType.TABLE:
 					newVal = overrideVal as TableConfigItemValue
 					break
+				case ConfigManifestEntryType.LAYER_MAPPINGS:
+					newVal = overrideVal
+					break
+				case ConfigManifestEntryType.SOURCE_LAYERS:
+					newVal = overrideVal
+					break
 				default:
 					assertUnreachable(val)
 					context.warning('Unknown config field type: ' + val)

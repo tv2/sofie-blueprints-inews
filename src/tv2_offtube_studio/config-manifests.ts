@@ -1,3 +1,4 @@
+import { DeviceType } from 'timeline-state-resolver-types'
 import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
@@ -33,26 +34,124 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'SourcesCam',
 		name: 'Camera Mapping',
-		description: 'Camera number to ATEM input (eg 1:1,9:2)',
-		type: ConfigManifestEntryType.STRING,
+		description: 'Camera number to ATEM input and Sisyfos layer',
+		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: '1:4'
+		defaultVal: [
+			{
+				_id: '',
+				SourceName: '',
+				AtemSource: 0,
+				SisyfosLayer: ''
+			}
+		],
+		columns: [
+			{
+				id: 'SourceName',
+				name: 'Camera name',
+				description: 'Camera name as typed in iNews',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: ''
+			},
+			{
+				id: 'AtemSource',
+				name: 'ATEM input',
+				description: 'ATEM vision mixer input for Camera',
+				type: ConfigManifestEntryType.NUMBER,
+				required: true,
+				defaultVal: 0
+			},
+			{
+				id: 'SisyfosLayer',
+				name: 'Sisyfos layers',
+				description: 'Sisyfos layers for Camera',
+				type: ConfigManifestEntryType.LAYER_MAPPINGS,
+				filters: {
+					deviceTypes: [DeviceType.SISYFOS]
+				},
+				required: true,
+				multiple: true,
+				defaultVal: ''
+			}
+		]
 	},
 	{
 		id: 'SourcesRM',
 		name: 'RM Mapping',
-		description: 'RM number to ATEM input (eg 1:6,2:7)',
-		type: ConfigManifestEntryType.STRING,
+		description: 'RM number to ATEM input',
+		type: ConfigManifestEntryType.TABLE,
 		required: false,
-		defaultVal: '1:1,2:2,3:3'
+		defaultVal: [
+			{
+				_id: '',
+				SourceName: '',
+				AtemSource: 0,
+				SisyfosLayer: ''
+			}
+		],
+		columns: [
+			{
+				id: 'SourceName',
+				name: 'RM number',
+				description: 'RM number as typed in iNews',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: ''
+			},
+			{
+				id: 'AtemSource',
+				name: 'ATEM input',
+				description: 'ATEM vision mixer input for RM input',
+				type: ConfigManifestEntryType.NUMBER,
+				required: true,
+				defaultVal: 0
+			},
+			{
+				id: 'SisyfosLayer',
+				name: 'Sisyfos layer',
+				description: 'Sisyfos layer for RM input',
+				type: ConfigManifestEntryType.LAYER_MAPPINGS,
+				filters: {
+					deviceTypes: [DeviceType.SISYFOS]
+				},
+				required: true,
+				multiple: true,
+				defaultVal: ''
+			}
+		]
 	},
 	{
 		id: 'ABMediaPlayers',
 		name: 'Media Players inputs',
 		description: 'ATEM inputs for A/B media players',
-		type: ConfigManifestEntryType.STRING,
+		type: ConfigManifestEntryType.TABLE,
 		required: false,
-		defaultVal: '1:5,2:6'
+		defaultVal: [
+			{
+				_id: '',
+				SourceName: '',
+				AtemSource: 0
+			}
+		],
+		columns: [
+			{
+				id: 'SourceName',
+				name: 'Media player',
+				description: 'Media player name as typed in iNews',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: ''
+			},
+			{
+				id: 'AtemSource',
+				name: 'ATEM input',
+				description: 'ATEM vision mixer input for Media player',
+				type: ConfigManifestEntryType.NUMBER,
+				required: true,
+				defaultVal: 0
+			}
+		]
 	},
 	{
 		id: 'ABPlaybackDebugLogging',
