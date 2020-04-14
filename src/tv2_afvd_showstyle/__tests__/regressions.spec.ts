@@ -29,7 +29,7 @@ const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: Co
 	}
 ]
 
-describe('Rundown exceptions', () => {
+describe.skip('Rundown exceptions', () => {
 	for (const roSpec of rundowns) {
 		const roData = require(roSpec.ro) as IngestRundown
 		test('Valid file: ' + roSpec.ro, () => {

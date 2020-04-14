@@ -16,6 +16,7 @@ import {
 import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
+	GraphicLLayer,
 	InfiniteMode,
 	literal,
 	PartDefinition,
@@ -381,32 +382,32 @@ function GetSourceLayerForGrafik(config: OffTubeShowstyleBlueprintConfig, name: 
 	}
 }
 
-function GetTimelineLayerForGrafik(config: OffTubeShowstyleBlueprintConfig, name: string) {
+export function GetTimelineLayerForGrafik(config: OffTubeShowstyleBlueprintConfig, name: string) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
 
 	if (!conf) {
-		return OfftubeCasparLLayer.CasparGraphicsOverlay
+		return GraphicLLayer.GraphicLLayerOverlay
 	}
 
-	// TODO: In AFVD, these are VizLLayer.X, maybe these should be some generic GraphicLLayer? [1]
+	// TODO: Maybe these should be GraphicsLLayer?
 	switch (conf.LayerMapping) {
 		// TODO: When adding more output layers
-		case OfftubeCasparLLayer.OverlayGraphicIdentLeft:
-			return OfftubeCasparLLayer.OverlayGraphicIdentLeft
-		case OfftubeCasparLLayer.OverlayGraphicTopt:
-			return OfftubeCasparLLayer.OverlayGraphicTopt
-		case OfftubeCasparLLayer.OverlayGraphicLower:
-			return OfftubeCasparLLayer.OverlayGraphicLower
-		case OfftubeCasparLLayer.OverlayGraphicHeadline:
-			return OfftubeCasparLLayer.OverlayGraphicHeadline
-		case OfftubeCasparLLayer.OverlayGraphicTema:
-			return OfftubeCasparLLayer.OverlayGraphicTema
-		case OfftubeCasparLLayer.CasparStudioScreenLoop:
-			return OfftubeCasparLLayer.CasparStudioScreenLoop // TODO: This is WALL in D, see above comment ^[1]
+		case GraphicLLayer.GraphicLLayerOverlayIdent:
+			return GraphicLLayer.GraphicLLayerOverlayIdent
+		case GraphicLLayer.GraphicLLayerOverlayTopt:
+			return GraphicLLayer.GraphicLLayerOverlayTopt
+		case GraphicLLayer.GraphicLLayerOverlayLower:
+			return GraphicLLayer.GraphicLLayerOverlayLower
+		case GraphicLLayer.GraphicLLayerOverlayHeadline:
+			return GraphicLLayer.GraphicLLayerOverlayHeadline
+		case GraphicLLayer.GraphicLLayerOverlayTema:
+			return GraphicLLayer.GraphicLLayerOverlayTema
+		case GraphicLLayer.GraphicLLayerWall:
+			return GraphicLLayer.GraphicLLayerWall
 		default:
-			return OfftubeCasparLLayer.CasparGraphicsOverlay
+			return GraphicLLayer.GraphicLLayerOverlay
 	}
 }
 

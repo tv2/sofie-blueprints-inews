@@ -10,11 +10,10 @@ import {
 	IBlueprintPiece,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionGrafik, literal, PartContext2, PartDefinitionKam } from 'tv2-common'
+import { CueDefinitionGrafik, GraphicLLayer, literal, PartContext2, PartDefinitionKam } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
-import { VizLLayer } from '../../../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
@@ -103,7 +102,7 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayLower,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -166,7 +165,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayLower,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -234,7 +233,7 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayLower,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -304,7 +303,7 @@ describe('grafik piece', () => {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlayLower,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

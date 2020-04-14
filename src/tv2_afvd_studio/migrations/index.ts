@@ -2,7 +2,7 @@ import { MigrationStepStudio } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { deviceMigrations } from './devices'
-import { ensureStudioConfig, getMappingsDefaultsMigrationSteps } from './util'
+import { ensureStudioConfig, getMappingsDefaultsMigrationSteps, renameMapping } from './util'
 
 declare const VERSION: string // Injected by webpack
 
@@ -32,5 +32,18 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	...deviceMigrations,
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getMappingsDefaultsMigrationSteps(VERSION)
+	...getMappingsDefaultsMigrationSteps(VERSION),
+	...[
+		'viz_layer_adlibs',
+		'viz_layer_design',
+		'viz_layer_overlay',
+		'viz_layer_overlay_headline',
+		'viz_layer_overlay_ident',
+		'viz_layer_overlay_lower',
+		'viz_layer_overlay_tema',
+		'viz_layer_overlay_topt',
+		'viz_layer_pilot',
+		'viz_layer_pilot_overlay',
+		'viz_layer_wall'
+	].map(layer => renameMapping('2.0.0', layer, layer.replace(/^viz_/, 'graphic_')))
 ])

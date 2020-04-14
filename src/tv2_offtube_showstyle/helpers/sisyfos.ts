@@ -67,4 +67,3 @@ export function GetLayerForEkstern(sourceType: string): string[] | undefined {
 	}
 	return
 }
-

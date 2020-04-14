@@ -457,57 +457,57 @@ export default literal<BlueprintMappings>({
 		channel: -1,
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_ident: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_ident: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_topt: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_topt: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_lower: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_lower: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_headline: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_headline: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_tema: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_tema: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_pilot: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_pilot: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_pilot_overlay: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_pilot_overlay: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_design: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_design: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_adlibs: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_adlibs: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_wall: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_wall: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
