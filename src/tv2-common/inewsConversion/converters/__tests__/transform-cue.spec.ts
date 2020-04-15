@@ -14,7 +14,7 @@ describe('TransformCuesIntoShowstyle', () => {
 			{
 				VizTemplate: 'VCP',
 				SourceLayer: 'studio0_graphicsWall',
-				LayerMapping: 'viz_layer_wall',
+				LayerMapping: 'graphic_layer_wall',
 				INewsCode: 'SS',
 				INewsName: 'SC-STILLS',
 				VizDestination: 'WALL',
@@ -26,7 +26,7 @@ describe('TransformCuesIntoShowstyle', () => {
 			{
 				VizTemplate: 'SC_LOOP_ON',
 				SourceLayer: 'studio0_graphicsWall',
-				LayerMapping: 'viz_layer_wall',
+				LayerMapping: 'graphic_layer_wall',
 				INewsCode: 'SS',
 				INewsName: 'SC_LOOP',
 				VizDestination: 'WALL',

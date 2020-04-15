@@ -45,5 +45,5 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 		'viz_layer_pilot',
 		'viz_layer_pilot_overlay',
 		'viz_layer_wall'
-	].map(layer => renameMapping('2.0.0', layer, layer.replace(/^viz_/, 'graphic_')))
+	].map(layer => renameMapping('2.0.0', layer, layer.replace(/^viz_layer_/, 'graphic_')))
 ])
