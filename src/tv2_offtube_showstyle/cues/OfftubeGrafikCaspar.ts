@@ -15,6 +15,7 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	CreateTimingEnable,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
 	GraphicLLayer,
@@ -93,7 +94,7 @@ export function GetCasparOverlayTimeline(
 	return [
 		literal<TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
+			enable: GetEnableForGrafikOfftube(engine, parsedCue, isIdentGrafik, partDefinition),
 			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			content: {
 				deviceType: DeviceType.CASPARCG,
@@ -103,7 +104,7 @@ export function GetCasparOverlayTimeline(
 				data: literal<RendererStatePartial>({
 					partialUpdate: true,
 					rendererDisplay: 'program',
-					graphicsCollection: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
+					slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
 				}),
 				useStopCommand: false
 			}
@@ -111,14 +112,7 @@ export function GetCasparOverlayTimeline(
 	]
 }
 
-function CreateTimingTimelineGrafik () {
-	
-}
-
-function createContentForGraphicTemplate(
-	graphicName: string,
-	parsedCue: CueDefinitionGrafik
-): Partial<GraphicsCollection> {
+function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefinitionGrafik): Partial<Slots> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
 		case 'arkiv':
@@ -287,15 +281,15 @@ function CreateFull(
 	})
 }
 
-// TODO: All of the below was copy-pasted from AFVD blueprints, can they be made generic?
+// TODO: All of the below was copy-pasted and then adapted from AFVD blueprints, can they be made generic?
 
 // TODO: Is this valid for offtubes?
-function GetEnableForGrafik(
+function GetEnableForGrafikOfftube(
 	engine: VizEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
-): { while: string } | { start: number } {
+): TSRTimelineObj['enable'] {
 	if (engine === 'WALL') {
 		return {
 			while: '1'
@@ -309,6 +303,12 @@ function GetEnableForGrafik(
 
 	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B' && partDefinition) {
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
+	}
+
+	const timing = CreateTimingEnable(cue)
+
+	if (!timing.infiniteMode) {
+		return timing.enable
 	}
 
 	return {
