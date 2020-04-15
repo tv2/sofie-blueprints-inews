@@ -441,9 +441,15 @@
                     "meta" : {
                         "rate" : "165"
                     },
-                    "cues" : [],
+                    "cues" : [
+                        [
+                            "#kg bund Some Person",
+                            "Timed Graphic",
+                            ";0.05-0.30"
+                        ]
+                    ],
                     "id" : "00000000:00000000:00000008",
-                    "body" : "\r\n<p><pi>SERVER</pi></p>\r\n",
+                    "body" : "\r\n<p><pi>SERVER</pi><a idref=\"0\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000008",
                     "identifier" : "00000008"
                 },
@@ -696,15 +702,10 @@
                             "#kg ident_nyhederne ",
                             "Ident Nyhederne",
                             ";x.xx"
-                        ],
-                        [
-                            "#kg bund Some Person",
-                            "Timed Graphic",
-                            ";0.00-10.00"
                         ]
                     ],
                     "id" : "00000000:00000000:00000014",
-                    "body" : "\r\n<p><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a><a idref=\"3\"></a></p>\r\n",
+                    "body" : "\r\n<p><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000014",
                     "identifier" : "00000014"
                 },

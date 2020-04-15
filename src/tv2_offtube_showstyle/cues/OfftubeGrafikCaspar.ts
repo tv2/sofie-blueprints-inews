@@ -41,7 +41,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	_adlib: boolean,
 	partDefinition: PartDefinition,
 	_isTlfPrimary?: boolean,
-	_rank?: number
+	rank?: number
 ) {
 	let engine = _engine
 	if (config.showStyle.GFXTemplates) {
@@ -69,13 +69,12 @@ export function OfftubeEvaluateGrafikCaspar(
 	} else {
 		// TODO: Wall
 		const piece = literal<IBlueprintAdLibPiece>({
-			_rank: 0,
+			_rank: rank || 0,
 			externalId: partDefinition.externalId,
 			name: `${grafikName(config, parsedCue)}`,
 			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			outputLayerId: OfftubeOutputLayers.OVERLAY,
 			infiniteMode: PieceLifespan.Infinite,
-			expectedDuration: GetGrafikDuration(config, parsedCue) || GetDefaultOut(config),
 			content: {
 				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
@@ -376,7 +375,6 @@ function GetSourceLayerForGrafik(config: OffTubeShowstyleBlueprintConfig, name: 
 	switch (conf.SourceLayer) {
 		// TODO: When adding more sourcelayers
 		// This is here to guard against bad user input
-		// TODO: Should these sourcelayers be shared between showstyles?
 		case OffTubeSourceLayer.PgmGraphicsHeadline:
 			return OffTubeSourceLayer.PgmGraphicsHeadline
 		case OffTubeSourceLayer.PgmGraphicsIdent:
@@ -407,7 +405,6 @@ export function GetTimelineLayerForGrafik(config: OffTubeShowstyleBlueprintConfi
 		return GraphicLLayer.GraphicLLayerOverlay
 	}
 
-	// TODO: Maybe these should be GraphicsLLayer?
 	switch (conf.LayerMapping) {
 		// TODO: When adding more output layers
 		case GraphicLLayer.GraphicLLayerOverlayIdent:
@@ -440,7 +437,7 @@ function grafikName(
 	}
 }
 
-function GetGrafikDuration(
+export function GetGrafikDuration(
 	config: OffTubeShowstyleBlueprintConfig,
 	cue: CueDefinitionGrafik | CueDefinitionMOS
 ): number | undefined {

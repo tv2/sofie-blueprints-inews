@@ -1,4 +1,10 @@
-import { BlueprintResultPart, IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { DeviceType } from 'timeline-state-resolver-types'
+import {
+	BlueprintResultPart,
+	IBlueprintAdLibPiece,
+	PartContext,
+	TimelineObjectCoreExt
+} from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
 import { AdlibTags, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
@@ -59,13 +65,31 @@ export function OfftubeCreatePartServer(
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER]
 	adlibServer.name = file
-	adLibPieces.push(adlibServer)
 
 	// TODO: Merge graphics into server part as timeline objects
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {
 		adlibsOnly: true
 	})
 
+	const piecesForTimeline: IBlueprintAdLibPiece[] = []
+
+	if (adlibServer.content && adlibServer.content.timelineObjects) {
+		OfftubeEvaluateCues(context, config, [], piecesForTimeline, partDefinition.cues, partDefinition, {
+			excludeAdlibs: true
+		})
+
+		piecesForTimeline.forEach(piece => {
+			if (piece.content) {
+				;(adlibServer.content!.timelineObjects as TimelineObjectCoreExt[]).push(
+					...(piece.content.timelineObjects as TimelineObjectCoreExt[]).filter(
+						obj => obj.content.deviceType !== DeviceType.ATEM // Remove any timeline objects that affect PGM
+						// TODO: Keyers?
+					)
+				)
+			}
+		})
+	}
+	adLibPieces.push(adlibServer)
 	if (pieces.length === 0) {
 		part.invalid = true
 	}
