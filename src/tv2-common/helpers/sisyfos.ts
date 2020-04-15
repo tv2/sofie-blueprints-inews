@@ -6,7 +6,8 @@ import {
 	TimelineObjSisyfosMessage,
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
-import { NotesContext, Timeline } from 'tv-automation-sofie-blueprints-integration'
+import { NotesContext, SourceLayerType, Timeline } from 'tv-automation-sofie-blueprints-integration'
+import { FindSourceInfoStrict, SourceInfo } from 'tv2-common'
 import { PieceMetaData } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -64,23 +65,21 @@ export function GetKeepStudioMicsMetaData(STUDIO_MICS: string[]): PieceMetaData 
 
 export function GetSisyfosTimelineObjForEkstern(
 	context: NotesContext,
+	sources: SourceInfo[],
 	sourceType: string,
-	getLayerForEkstern: (sourceType: string) => string[] | undefined,
 	enable?: Timeline.TimelineEnable
 ): TSRTimelineObj[] {
 	if (!enable) {
 		enable = { start: 0 }
 	}
 
-	let audioTimeline: TSRTimelineObj[] = []
-	const layers = getLayerForEkstern(sourceType)
+	const audioTimeline: TSRTimelineObj[] = []
+	const layers = GetLayersForEkstern(context, sources, sourceType)
 
 	if (!layers || !layers.length) {
 		context.warning(`Could not set audio levels for ${sourceType}`)
 		return audioTimeline
 	}
-
-	audioTimeline = []
 
 	layers.forEach(layer => {
 		audioTimeline.push(
@@ -98,4 +97,16 @@ export function GetSisyfosTimelineObjForEkstern(
 		)
 	})
 	return audioTimeline
+}
+
+export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
+	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
+	const eksternLayers: string[] = []
+	if (eksternProps) {
+		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
+		if (sourceInfo && sourceInfo.sisyfosLayers) {
+			eksternLayers.push(...sourceInfo.sisyfosLayers)
+		}
+	}
+	return eksternLayers
 }

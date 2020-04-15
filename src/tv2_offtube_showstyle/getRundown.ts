@@ -253,7 +253,7 @@ function getGlobalAdLibPiecesOffTube(
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, GetLayerForEkstern),
+			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`),
 			...GetSisyfosTimelineObjForCamera('telefon')
 		]
 		res.push({
@@ -348,7 +348,7 @@ function getGlobalAdLibPiecesOffTube(
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, GetLayerForEkstern, { while: audioWhile }),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, { while: audioWhile }),
 						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
 					])
 				}
