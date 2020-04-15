@@ -28,7 +28,7 @@ enum VizLLayer {
 	VizLLayerWall = 'viz_layer_wall'
 }
 
-export const remapVizLLayer: Array<[string, string]> = [
+export const remapVizLLayer: Map<string, string> = new Map([
 	[VizLLayer.VizLLayerOverlay, GraphicLLayer.GraphicLLayerOverlay],
 	[VizLLayer.VizLLayerOverlayIdent, GraphicLLayer.GraphicLLayerOverlayIdent],
 	[VizLLayer.VizLLayerOverlayTopt, GraphicLLayer.GraphicLLayerOverlayIdent],
@@ -40,7 +40,7 @@ export const remapVizLLayer: Array<[string, string]> = [
 	[VizLLayer.VizLLayerDesign, GraphicLLayer.GraphicLLayerDesign],
 	[VizLLayer.VizLLayerAdLibs, GraphicLLayer.GraphicLLayerAdLibs],
 	[VizLLayer.VizLLayerWall, GraphicLLayer.GraphicLLayerWall]
-]
+])
 
 /**
  * Versions:
@@ -54,5 +54,5 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
 	...getRuntimeArgumentsDefaultsMigrationSteps(VERSION),
-	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', new Map<string, string>(remapVizLLayer))
+	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', remapVizLLayer)
 ])
