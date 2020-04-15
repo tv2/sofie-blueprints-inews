@@ -260,12 +260,6 @@ export function MakeContentDVE2(
 			} else if (sourceType.match(/SERVER/i)) {
 				const file: string | undefined = partDefinition ? partDefinition.fields.videoId : undefined
 
-				if (!file || !file.length) {
-					context.warning(`No video Id provided for ADLIBPIX`)
-					valid = false
-					return
-				}
-
 				server = true
 				setBoxSource(
 					num,
@@ -287,7 +281,7 @@ export function MakeContentDVE2(
 						content: {
 							deviceType: DeviceType.CASPARCG,
 							type: TimelineContentTypeCasparCg.MEDIA,
-							file: adlib ? 'continue' : file,
+							file: adlib ? 'continue' : file ? file : 'continue',
 							loop: false,
 							noStarttime: true
 						},
