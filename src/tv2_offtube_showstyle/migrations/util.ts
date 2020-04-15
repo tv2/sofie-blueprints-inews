@@ -123,12 +123,10 @@ export function remapTableColumnValues(
 				const table = context.getBaseConfig(tableId) as TableConfigItemValue | undefined
 
 				if (!table) {
-					console.log(`Table does not exist`)
 					return `Table "${tableId}" does not exist`
 				}
 
 				if (!table.length) {
-					console.log(`Tasble does not have values`)
 					// No values, nothing to remap
 					return false
 				}
@@ -136,18 +134,14 @@ export function remapTableColumnValues(
 				const first = table[0]
 
 				if (!Object.keys(first).includes(columnId)) {
-					console.log(`Column does not exits`)
 					return `Column "${columnId}" does not exist in table "${tableId}"`
 				}
 
 				const ret = remapTableColumnValuesInner(table, columnId, remapping)
 
 				if (typeof ret === 'string' || typeof ret === 'boolean') {
-					console.log(ret)
 					return ret
 				}
-
-				console.log(ret.changed)
 
 				return ret.changed !== 0
 			},
