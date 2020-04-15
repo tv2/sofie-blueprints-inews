@@ -33,8 +33,6 @@ export const LIVE_AUDIO = [
 	SisyfosLLAyer.SisyfosSourceLive_10
 ]
 
-export const STICKY_LAYERS = [...STUDIO_MICS, ...LIVE_AUDIO]
-
 export function GetSisyfosTimelineObjForCamera(
 	context: NotesContext,
 	sources: SourceInfo[],
@@ -50,9 +48,11 @@ export function GetSisyfosTimelineObjForCamera(
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	if ((useMic && camName) || !!sourceType.match(/server|telefon|full|evs/i)) {
 		const camLayers: string[] = [...STUDIO_MICS]
-		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, sourceType)
-		if (sourceInfo && sourceInfo.sisyfosLayers) {
-			camLayers.push(...sourceInfo.sisyfosLayers)
+		if (useMic && camName) {
+			const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, sourceType)
+			if (sourceInfo && sourceInfo.sisyfosLayers) {
+				camLayers.push(...sourceInfo.sisyfosLayers)
+			}
 		}
 		audioTimeline.push(
 			...camLayers.map<TimelineObjSisyfosMessage>(layer => {
@@ -104,39 +104,6 @@ export function GetSisyfosTimelineObjForEkstern(
 	return audioTimeline
 }
 
-export function GetLayerForEkstern(sourceType: string) {
-	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
-	if (eksternProps) {
-		const source = eksternProps[1]
-
-		if (source) {
-			switch (source) {
-				case '1':
-					return SisyfosLLAyer.SisyfosSourceLive_1
-				case '2':
-					return SisyfosLLAyer.SisyfosSourceLive_2
-				case '3':
-					return SisyfosLLAyer.SisyfosSourceLive_3
-				case '4':
-					return SisyfosLLAyer.SisyfosSourceLive_4
-				case '5':
-					return SisyfosLLAyer.SisyfosSourceLive_5
-				case '6':
-					return SisyfosLLAyer.SisyfosSourceLive_6
-				case '7':
-					return SisyfosLLAyer.SisyfosSourceLive_7
-				case '8':
-					return SisyfosLLAyer.SisyfosSourceLive_8
-				case '9':
-					return SisyfosLLAyer.SisyfosSourceLive_9
-				case '10':
-					return SisyfosLLAyer.SisyfosSourceLive_10
-			}
-		}
-	}
-	return
-}
-
 export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
 	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
 	const eksternLayers: string[] = []
@@ -149,9 +116,21 @@ export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[]
 	return eksternLayers
 }
 
+export function GetLayersForCamera(context: NotesContext, sources: SourceInfo[], sourceType: string) {
+	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
+	const eksternLayers: string[] = []
+	if (camName) {
+		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, sourceType)
+		if (sourceInfo && sourceInfo.sisyfosLayers) {
+			eksternLayers.push(...sourceInfo.sisyfosLayers)
+		}
+	}
+	return eksternLayers
+}
+
 export function GetStickyForPiece(
 	config: BlueprintConfig,
-	layers: Array<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>
+	layers: Array<{ layer: string; isPgm: 0 | 1 | 2 }>
 ): PieceMetaData | undefined {
 	return literal<PieceMetaData>({
 		stickySisyfosLevels: _.object(

@@ -53,8 +53,6 @@ export function OfftubeMakeContentDVE(
 				OfftubeAtemLLayer.AtemSSrcBox3,
 				OfftubeAtemLLayer.AtemSSrcBox4
 			],
-			STICKY_LAYERS: [], // TODO
-			LIVE_AUDIO: [], // TODO
 			AUDIO_LAYERS: [], // TODO
 			EXCLUDED_LAYERS: [] // TODO
 		},

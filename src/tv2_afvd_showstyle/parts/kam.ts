@@ -26,7 +26,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
@@ -107,7 +107,7 @@ export function CreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				metaData: GetKeepStudioMicsMetaData(config),
+				metaData: GetCameraMetaData(config, sourceInfoCam.sisyfosLayers),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -156,10 +156,11 @@ export function CreatePartKam(
 	}
 }
 
-export function GetKeepStudioMicsMetaData(config: BlueprintConfig): PieceMetaData | undefined {
-	return GetStickyForPiece(config, [
-		...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
+export function GetCameraMetaData(config: BlueprintConfig, layers?: string[]): PieceMetaData | undefined {
+	return GetStickyForPiece(
+		config,
+		[...(layers || []), ...STUDIO_MICS].map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
 			return { layer: l, isPgm: 1 }
 		})
-	])
+	)
 }

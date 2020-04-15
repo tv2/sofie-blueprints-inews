@@ -46,7 +46,6 @@ import {
 	AtemLLayer,
 	CasparLLayer,
 	CasparPlayerClipLoadingLoop,
-	SisyfosEVSSource,
 	SisyfosLLAyer,
 	VizLLayer
 } from '../tv2_afvd_studio/layers'
@@ -56,13 +55,14 @@ import { BlueprintConfig, parseConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers, boxMappings } from './helpers/content/dve'
 import { GetEksternMetaData } from './helpers/pieces/ekstern'
 import {
-	GetLayerForEkstern,
+	GetLayersForCamera,
+	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	STUDIO_MICS
 } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
-import { GetKeepStudioMicsMetaData } from './parts/kam'
+import { GetCameraMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -157,7 +157,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
-			metaData: GetKeepStudioMicsMetaData(config),
+			metaData: GetCameraMetaData(config, GetLayersForCamera(context, config.sources, `Camera ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -258,7 +258,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetKeepStudioMicsMetaData(config),
+			metaData: GetEksternMetaData(config, info.sisyfosLayers),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -276,37 +276,39 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						},
 						classes: ['adlib_deparent']
 					}),
-					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-						id: '',
-						enable: { while: '1' },
-						priority: 1,
-						layer: SisyfosEVSSource(info.id.replace(/^DP/i, '')),
-						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
-							isPgm: vo ? 2 : 1
-						}
-					}),
-
-					...config.stickyLayers.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					...(info.sisyfosLayers || []).map(l => {
+						return literal<TimelineObjSisyfosMessage>({
 							id: '',
-							enable: {
-								start: 0
-							},
+							enable: { while: '1' },
 							priority: 1,
-							layer,
+							layer: l,
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
+								isPgm: vo ? 2 : 1
 							}
 						})
 					}),
-
+					...config.stickyLayers
+						.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
+						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						}),
 					...GetSisyfosTimelineObjForCamera(context, config.sources, 'evs')
 				])
 			}
@@ -336,16 +338,18 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						literal<TimelineObjSisyfosMessage>({
-							id: '',
-							enable: { while: audioWhile },
-							priority: 1,
-							layer: SisyfosEVSSource(info.id.replace(/^DP/i, '')),
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: vo === true ? 2 : 1
-							}
+						...GetLayersForEkstern(context, config.sources, `Live ${info.id}`).map(l => {
+							return literal<TimelineObjSisyfosMessage>({
+								id: '',
+								enable: { while: audioWhile },
+								priority: 1,
+								layer: l,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: vo === true ? 2 : 1
+								}
+							})
 						})
 					])
 				}
@@ -369,7 +373,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(config, GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(config, GetLayersForEkstern(context, config.sources, `Live ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -473,7 +477,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			outputLayerId: 'aux',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.Infinite,
-			metaData: GetEksternMetaData(config, GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(config, GetLayersForEkstern(context, config.sources, `Live ${info.id}`)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemAUX>({

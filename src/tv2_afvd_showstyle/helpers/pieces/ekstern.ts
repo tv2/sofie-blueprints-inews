@@ -27,10 +27,10 @@ import {
 } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import {
-	GetLayerForEkstern,
+	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GetStickyForPiece,
@@ -68,7 +68,7 @@ export function EvaluateEkstern(
 	}
 	const atemInput = sourceInfoCam.port
 
-	const layer = GetLayerForEkstern(parsedCue.source)
+	const layers = GetLayersForEkstern(context, config.sources, parsedCue.source)
 
 	if (adlib) {
 		adlibPieces.push(
@@ -79,7 +79,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(config, layer),
+				metaData: GetEksternMetaData(config, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -120,7 +120,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(config, layer),
+				metaData: GetEksternMetaData(config, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -161,13 +161,13 @@ export function EvaluateEkstern(
 	}
 }
 
-export function GetEksternMetaData(config: BlueprintConfig, layer?: SisyfosLLAyer): PieceMetaData | undefined {
-	return layer
-		? GetStickyForPiece(config, [
-				{ layer, isPgm: 1 },
-				...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
+export function GetEksternMetaData(config: BlueprintConfig, layers?: string[]): PieceMetaData | undefined {
+	return layers
+		? GetStickyForPiece(
+				config,
+				[...layers, ...STUDIO_MICS].map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
 					return { layer: l, isPgm: 1 }
 				})
-		  ])
+		  )
 		: undefined
 }

@@ -33,7 +33,7 @@ import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera, LIVE_AUDIO } from '../helpers/sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -159,7 +159,7 @@ function makeContentEVS(
 			...(partDefinition.variant.isVO
 				? [...GetSisyfosTimelineObjForCamera(context, config.sources, 'evs')]
 				: [
-						...LIVE_AUDIO.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+						...config.liveAudio.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
 								enable: {

@@ -63,7 +63,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: 0
 			},
 			{
-				id: 'SisyfosLayer',
+				id: 'SisyfosLayers',
 				name: 'Sisyfos layers',
 				description: 'Sisyfos layers for Camera',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
@@ -72,7 +72,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				},
 				required: true,
 				multiple: true,
-				defaultVal: ''
+				defaultVal: []
 			}
 		]
 	},
@@ -108,16 +108,16 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				defaultVal: 0
 			},
 			{
-				id: 'SisyfosLayer',
-				name: 'Sisyfos layer',
-				description: 'Sisyfos layer for RM input',
+				id: 'SisyfosLayers',
+				name: 'Sisyfos layers',
+				description: 'Sisyfos layers for RM input',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
 					deviceTypes: [DeviceType.SISYFOS]
 				},
 				required: true,
 				multiple: true,
-				defaultVal: ''
+				defaultVal: []
 			}
 		]
 	},

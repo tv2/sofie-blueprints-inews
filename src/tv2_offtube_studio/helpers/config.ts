@@ -16,6 +16,8 @@ export interface OfftubeStudioBlueprintConfig {
 	studio: OfftubeStudioConfig
 	sources: SourceInfo[]
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	liveAudio: string[]
+	stickyLayers: string[]
 }
 
 export interface OfftubeStudioConfig extends TV2StudioConfigBase {
@@ -117,7 +119,9 @@ export function defaultStudioConfig(context: NotesContext): OfftubeStudioBluepri
 		studio: {} as any,
 		// showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
@@ -141,7 +145,9 @@ export function parseStudioConfig(context: ShowStyleContext): OfftubeStudioBluep
 		studio: {} as any,
 		// showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
