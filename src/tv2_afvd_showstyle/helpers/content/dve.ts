@@ -292,7 +292,7 @@ export function MakeContentDVE2(
 								? partDefinition.segmentExternalId
 								: MEDIA_PLAYER_AUTO
 						},
-						classes: []
+						classes: [`dve_placeholder`]
 					}),
 					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
