@@ -4,6 +4,7 @@ import {
 	DVEConfigInput,
 	DVEOptions,
 	DVESources,
+	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
 	PartDefinition
 } from 'tv2-common'
@@ -11,7 +12,7 @@ import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import { GetSisyfosTimelineObjForCamera, GetSisyfosTimelineObjForEkstern } from '../sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 
 export const boxLayers: DVESources = {
 	INP1: SourceLayer.PgmDVEBox1,

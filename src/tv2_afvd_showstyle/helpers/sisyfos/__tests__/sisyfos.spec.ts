@@ -1,7 +1,7 @@
 import { PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
+import { GetStickyForPiece, literal } from 'tv2-common'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
-import { GetStickyForPiece, STUDIO_MICS } from '../sisyfos'
+import { STICKY_LAYERS, STUDIO_MICS } from '../sisyfos'
 
 describe('sisyfos', () => {
 	test('GetStickyForPiece', () => {
@@ -11,7 +11,8 @@ describe('sisyfos', () => {
 					layer,
 					isPgm: 1
 				}
-			})
+			}),
+			STICKY_LAYERS
 		)
 		expect(result).toEqual(
 			literal<PieceMetaData>({

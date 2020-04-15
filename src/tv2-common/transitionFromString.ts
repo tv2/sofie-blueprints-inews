@@ -1,13 +1,13 @@
 import { AtemTransitionStyle } from 'timeline-state-resolver-types'
 
 export function TransitionFromString(str: string): AtemTransitionStyle {
-	if (str === 'MIX') {
+	if (str.match(/MIX/i)) {
 		return AtemTransitionStyle.MIX
-	} else if (str === 'DIP') {
+	} else if (str.match(/DIP/i)) {
 		return AtemTransitionStyle.DIP
-	} else if (str === 'WIPE') {
+	} else if (str.match(/WIPE/i)) {
 		return AtemTransitionStyle.WIPE
-	} else if (str === 'STING') {
+	} else if (str.match(/STING/i)) {
 		return AtemTransitionStyle.STING
 	}
 

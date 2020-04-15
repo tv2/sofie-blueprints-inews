@@ -39,28 +39,24 @@ import {
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, MakeContentDVE2, SourceInfo, TimelineBlueprintExt } from 'tv2-common'
+import {
+	GetEksternMetaData,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForEkstern,
+	GraphicLLayer,
+	literal,
+	MakeContentDVE2,
+	SourceInfo,
+	TimelineBlueprintExt
+} from 'tv2-common'
 import { CONSTANTS, ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
-import {
-	AtemLLayer,
-	CasparLLayer,
-	CasparPlayerClipLoadingLoop,
-	SisyfosLLAyer,
-	VizLLayer
-} from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers, boxMappings } from './helpers/content/dve'
-import { GetEksternMetaData } from './helpers/pieces/ekstern'
-import {
-	GetLayersForCamera,
-	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
-	STUDIO_MICS
-} from './helpers/sisyfos/sisyfos'
+import { GetLayersForCamera, GetSisyfosTimelineObjForCamera, STUDIO_MICS } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
 import { GetCameraMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -258,7 +254,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(config, info.sisyfosLayers),
+			metaData: GetEksternMetaData(config.stickyLayers, STUDIO_MICS, info.sisyfosLayers),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -373,7 +369,11 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(config, GetLayersForEkstern(context, config.sources, `Live ${info.id}`)),
+			metaData: GetEksternMetaData(
+				config.stickyLayers,
+				STUDIO_MICS,
+				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+			),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -477,7 +477,11 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			outputLayerId: 'aux',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.Infinite,
-			metaData: GetEksternMetaData(config, GetLayersForEkstern(context, config.sources, `Live ${info.id}`)),
+			metaData: GetEksternMetaData(
+				config.stickyLayers,
+				STUDIO_MICS,
+				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+			),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemAUX>({
@@ -625,7 +629,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
@@ -652,12 +656,12 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
-						reference: VizLLayer.VizLLayerPilot
+						reference: GraphicLLayer.GraphicLLayerPilot
 					}
 				})
 			])
@@ -681,7 +685,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
@@ -708,12 +712,12 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	// 					start: 0,
 	// 					duration: 1000
 	// 				},
-	// 				layer: VizLLayer.VizLLayerAdLibs,
+	// 				layer: GraphicLLayer.GraphicLLayerAdLibs,
 	// 				content: {
 	// 					deviceType: DeviceType.VIZMSE,
 	// 					type: TimelineContentTypeVizMSE.CONTINUE,
 	// 					direction: -1,
-	// 					reference: VizLLayer.VizLLayerPilot
+	// 					reference: GraphicLLayer.GraphicLLayerPilot
 	// 				}
 	// 			})
 	// 		])
@@ -861,7 +865,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						id: '',
 						enable: { start: 0 },
 						priority: 110,
-						layer: VizLLayer.VizLLayerDesign,
+						layer: GraphicLLayer.GraphicLLayerDesign,
 						content: {
 							deviceType: DeviceType.VIZMSE,
 							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

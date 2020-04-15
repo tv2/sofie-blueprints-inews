@@ -43,7 +43,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'The name as it will appear in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 0
 			},
 			{
 				id: 'DVEInputs',
@@ -51,7 +52,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'I.e.: 1:INP1;2:INP3; as an example to chose which ATEM boxes to assign iNews inputs to',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: '1:INP1;2:INP2;3:INP3;4:INP4'
+				defaultVal: '1:INP1;2:INP2;3:INP3;4:INP4',
+				rank: 1
 			},
 			{
 				id: 'DVEJSON',
@@ -59,7 +61,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'DVE config pulled from ATEM',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 2
 			},
 			{
 				id: 'DVEGraphicsTemplate',
@@ -67,7 +70,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'File name (path) for CasparCG overlay template (locators)',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: 'dve/locators'
+				defaultVal: 'dve/locators',
+				rank: 3
 			},
 			{
 				id: 'DVEGraphicsTemplateJSON',
@@ -75,7 +79,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Position (and style) data for the boxes in the CasparCG template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 4
 			},
 			{
 				id: 'DVEGraphicsKey',
@@ -83,7 +88,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Key file for DVE',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 5
 			},
 			{
 				id: 'DVEGraphicsFrame',
@@ -91,7 +97,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Frames file for caspar',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 6
 			}
 		]
 	},
@@ -113,7 +120,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		description:
 			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are aslo required. VizTemplate is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNes i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
-		required: false,
+		required: true,
 		defaultVal: [
 			{
 				_id: '',
@@ -131,12 +138,58 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		],
 		columns: [
 			{
+				id: 'INewsCode',
+				name: 'iNews Command (*)',
+				description: 'The code as it will appear in iNews',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 0
+			},
+			{
+				id: 'INewsName',
+				name: 'iNews Name (*)',
+				description: 'The name after the code',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 1
+			},
+			{
 				id: 'VizTemplate',
 				name: 'Viz Template Name (**)',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 2
+			},
+			{
+				id: 'VizDestination',
+				name: 'Viz Destination (*)',
+				description: 'The name of the Viz Engine',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 3
+			},
+			{
+				id: 'OutType',
+				name: 'Out type',
+				description: 'The type of out, none follow timecode, S stays on to ??, B stays on to ??, O stays on to ??',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 4
+			},
+			{
+				id: 'IsDesign',
+				name: 'Changes Design',
+				description: 'Whether this cue changes the design',
+				type: ConfigManifestEntryType.BOOLEAN,
+				required: false,
+				defaultVal: false,
+				rank: 5
 			},
 			{
 				id: 'SourceLayer',
@@ -160,62 +213,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: ''
 			},
-			{
-				id: 'INewsCode',
-				name: 'iNews Command (*)',
-				description: 'The code as it will appear in iNews',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: ''
-			},
-			{
-				id: 'INewsName',
-				name: 'iNews Name (*)',
-				description: 'The name after the code',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: ''
-			},
-			{
-				id: 'VizDestination',
-				name: 'Viz Destination (*)',
-				description: 'The name of the Viz Engine',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: ''
-			},
-			{
-				id: 'OutType',
-				name: 'Out type',
-				description: 'The type of out, none follow timecode, S stays on to ??, B stays on to ??, O stays on to ??',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: ''
-			},
-			{
-				id: 'Argument1',
-				name: 'Variable 1',
-				description: 'Argument passed to Viz',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: ''
-			},
-			{
-				id: 'Argument2',
-				name: 'Variable 2',
-				description: 'Argument passed to Viz',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: ''
-			},
-			{
-				id: 'IsDesign',
-				name: 'Changes Design',
-				description: 'Whether this cue changes the design',
-				type: ConfigManifestEntryType.BOOLEAN,
-				required: false,
-				defaultVal: false
-			}
 		]
 	},
 	{
@@ -248,7 +245,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'The Effect Number',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 0
 			},
 			{
 				id: 'ClipName',
@@ -256,7 +254,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'The name of the wipe clip',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 1
 			},
 			{
 				id: 'Duration',
@@ -264,7 +263,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Duration of the effekt',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 2
 			},
 			{
 				id: 'StartAlpha',
@@ -272,7 +272,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Number of frames of alpha at start',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 3
 			},
 			{
 				id: 'EndAlpha',
@@ -280,7 +281,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Number of frames of alpha at end',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 4
 			}
 		]
 	},
@@ -316,7 +318,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Breaker name as typed in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 0
 			},
 			{
 				id: 'ClipName',
@@ -324,7 +327,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'The name of the breaker clip to play',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 1
 			},
 			{
 				id: 'Duration',
@@ -332,7 +336,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Duration of the effekt',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 2
 			},
 			{
 				id: 'StartAlpha',
@@ -340,7 +345,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Number of frames of alpha at start',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 3
 			},
 			{
 				id: 'EndAlpha',
@@ -348,7 +354,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Number of frames of alpha at end',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 4
 			},
 			{
 				id: 'Autonext',
@@ -356,7 +363,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: '',
 				type: ConfigManifestEntryType.BOOLEAN,
 				required: true,
-				defaultVal: true
+				defaultVal: true,
+				rank: 5
 			}
 		]
 	},
@@ -393,7 +401,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Name of LYD as in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 0
 			},
 			{
 				id: 'FileName',
@@ -401,7 +410,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'The name of the LYD file',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 1
 			},
 			{
 				id: 'FadeIn',
@@ -409,7 +419,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'ms duration to fade in file',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 1000
+				defaultVal: 1000,
+				rank: 2
 			},
 			{
 				id: 'FadeOut',
@@ -417,7 +428,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'ms duration to fade out file',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 1000
+				defaultVal: 1000,
+				rank: 3
 			}
 		]
 	}

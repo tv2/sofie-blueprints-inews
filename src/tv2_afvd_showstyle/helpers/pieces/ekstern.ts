@@ -19,9 +19,11 @@ import {
 	CueDefinitionEkstern,
 	EksternParentClass,
 	FindSourceInfoStrict,
+	GetEksternMetaData,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForEkstern,
 	literal,
 	PartDefinition,
-	PieceMetaData,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -29,13 +31,7 @@ import { ControlClasses } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import {
-	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
-	GetStickyForPiece,
-	STUDIO_MICS
-} from '../sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera, STUDIO_MICS } from '../sisyfos/sisyfos'
 
 export function EvaluateEkstern(
 	context: PartContext,
@@ -79,7 +75,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(config, layers),
+				metaData: GetEksternMetaData(config.stickyLayers, STUDIO_MICS, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -120,7 +116,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(config, layers),
+				metaData: GetEksternMetaData(config.stickyLayers, STUDIO_MICS, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -152,22 +148,11 @@ export function EvaluateEkstern(
 							...(AddParentClass(partDefinition) ? { classes: [EksternParentClass('studio0', parsedCue.source)] } : {})
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
-						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
+						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon'),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source)
 					])
 				})
 			})
 		)
 	}
-}
-
-export function GetEksternMetaData(config: BlueprintConfig, layers?: string[]): PieceMetaData | undefined {
-	return layers
-		? GetStickyForPiece(
-				config,
-				[...layers, ...STUDIO_MICS].map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
-					return { layer: l, isPgm: 1 }
-				})
-		  )
-		: undefined
 }

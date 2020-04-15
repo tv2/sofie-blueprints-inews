@@ -73,49 +73,6 @@ export function GetSisyfosTimelineObjForCamera(
 	return audioTimeline
 }
 
-export function GetSisyfosTimelineObjForEkstern(
-	context: NotesContext,
-	sources: SourceInfo[],
-	sourceType: string,
-	enable?: Timeline.TimelineEnable
-): TSRTimelineObj[] {
-	let audioTimeline: TSRTimelineObj[] = []
-	const layers = GetLayersForEkstern(context, sources, sourceType)
-
-	if (!layers) {
-		context.warning(`Could not set audio levels for ${sourceType}`)
-		return audioTimeline
-	}
-
-	audioTimeline = layers.map<TimelineObjSisyfosMessage>(layer => {
-		return literal<TimelineObjSisyfosMessage>({
-			id: '',
-			enable: enable ? enable : { start: 0 },
-			priority: 1,
-			layer,
-			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
-				isPgm: 1
-			}
-		})
-	})
-
-	return audioTimeline
-}
-
-export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
-	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
-	const eksternLayers: string[] = []
-	if (eksternProps) {
-		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
-		if (sourceInfo && sourceInfo.sisyfosLayers) {
-			eksternLayers.push(...sourceInfo.sisyfosLayers)
-		}
-	}
-	return eksternLayers
-}
-
 export function GetLayersForCamera(context: NotesContext, sources: SourceInfo[], sourceType: string) {
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	const eksternLayers: string[] = []

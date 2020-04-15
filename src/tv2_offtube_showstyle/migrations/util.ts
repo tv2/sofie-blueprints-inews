@@ -3,7 +3,8 @@ import {
 	IOutputLayer,
 	ISourceLayer,
 	MigrationContextShowStyle,
-	MigrationStepShowStyle
+	MigrationStepShowStyle,
+	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
@@ -78,4 +79,79 @@ export function getRuntimeArgumentsDefaultsMigrationSteps(versionStr: string): M
 			})
 		})
 	)
+}
+
+function remapTableColumnValuesInner(
+	table: TableConfigItemValue,
+	columnId: string,
+	/** Map values [from, to] */
+	remapping: Map<string, string>
+): { changed: number; table: TableConfigItemValue } {
+	let changed = 0
+
+	table.map(row => {
+		const val = row[columnId]
+
+		if (val) {
+			const remap = remapping.get(val.toString())
+
+			if (remap) {
+				row[columnId] = remap
+				changed++
+			}
+		}
+
+		return row
+	})
+
+	return { changed, table }
+}
+
+export function remapTableColumnValues(
+	versionStr: string,
+	tableId: string,
+	columnId: string,
+	/** Map values [from, to] */
+	remapping: Map<string, string>
+): MigrationStepShowStyle[] {
+	return [
+		literal<MigrationStepShowStyle>({
+			id: `remapTableColumnValue.${tableId}`,
+			version: versionStr,
+			canBeRunAutomatically: true,
+			validate: (context: MigrationContextShowStyle) => {
+				const table = context.getBaseConfig(tableId) as TableConfigItemValue | undefined
+
+				if (!table) {
+					return `Table "${tableId}" does not exist`
+				}
+
+				if (!table.length) {
+					// No values, nothing to remap
+					return false
+				}
+
+				const first = table[0]
+
+				if (!Object.keys(first).includes(columnId)) {
+					return `Column "${columnId}" does not exist in table "${tableId}"`
+				}
+
+				const ret = remapTableColumnValuesInner(table, columnId, remapping)
+
+				if (typeof ret === 'string' || typeof ret === 'boolean') {
+					return ret
+				}
+
+				return ret.changed !== 0
+			},
+			migrate: (context: MigrationContextShowStyle) => {
+				const table = context.getBaseConfig(tableId) as TableConfigItemValue
+
+				const ret = remapTableColumnValuesInner(table, columnId, remapping)
+
+				context.setBaseConfig(tableId, ret.table)
+			}
+		})
+	]
 }

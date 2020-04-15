@@ -1,3 +1,4 @@
+import { GraphicLLayer } from 'tv2-common'
 import * as _ from 'underscore'
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
@@ -8,6 +9,7 @@ export function RealLLayers() {
 			.concat(_.values(OfftubeSisyfosLLayer))
 			.concat(_.values(OfftubeAtemLLayer))
 			.concat(_.values(OfftubeCasparLLayer))
+			.concat(_.values(GraphicLLayer))
 	)
 }
 

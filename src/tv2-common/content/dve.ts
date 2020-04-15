@@ -118,8 +118,10 @@ export interface DVETimelineObjectGenerators {
 		context: NotesContext,
 		sources: SourceInfo[],
 		sourceType: string,
+		getLayerForEkstern: (sourceType: string) => string[] | undefined,
 		enable?: Timeline.TimelineEnable
 	) => TSRTimelineObj[]
+	GetLayerForEkstern: (sourceType: string) => string[] | undefined
 }
 
 export interface DVEOptions {
@@ -333,6 +335,7 @@ export function MakeContentDVE2<
 						context,
 						config.sources,
 						mappingFrom.source,
+						dveGeneratorOptions.dveTimelineGenerators.GetLayerForEkstern,
 						audioEnable
 					)
 				)
@@ -610,7 +613,7 @@ function boxSource(
 function getDVEEnable(offtube: boolean, offsetFromStart?: number, startId?: string): TSRTimelineObj['enable'] {
 	if (offsetFromStart) {
 		return offtube
-			? { start: startId ? `#${startId} + ${offsetFromStart}` : offsetFromStart }
+			? { start: startId ? `#${startId}.start + ${offsetFromStart}` : offsetFromStart }
 			: { start: offsetFromStart ?? 0 }
 	}
 	return offtube ? { while: `.${[Enablers.OFFTUBE_ENABLE_DVE]}` } : { start: offsetFromStart ?? 0 }

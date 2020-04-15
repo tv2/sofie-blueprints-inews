@@ -1,0 +1,53 @@
+{
+  "_id": "Evne9f6kKGHhxTdz3",
+  "name": "dve controls",
+  "showStyleBaseId": "show0",
+  "filters": [
+    {
+      "_id": "zMN9rx3kQn99uWC5P",
+      "type": "filter",
+      "name": "LAYOUT AND IP1",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": true,
+      "default": false,
+      "includeClearInRundownBaseline": true,
+      "sourceLayerIds": [
+        "studio0_dve_adlib",
+        "studio0_dve_box1"
+      ]
+    },
+    {
+      "_id": "cfxi2T5fXiddz4s8p",
+      "type": "filter",
+      "name": "IP2",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": "only",
+      "default": false,
+      "includeClearInRundownBaseline": true,
+      "sourceLayerIds": [
+        "studio0_dve_box2"
+      ],
+      "y": 11
+    },
+    {
+      "_id": "KWQqhz6CeB3EBwt5g",
+      "type": "filter",
+      "name": "IP3",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": "only",
+      "default": false,
+      "includeClearInRundownBaseline": true,
+      "sourceLayerIds": [
+        "studio0_dve_box3"
+      ],
+      "y": 23
+    }
+  ],
+  "type": "dashboard_layout"
+}
