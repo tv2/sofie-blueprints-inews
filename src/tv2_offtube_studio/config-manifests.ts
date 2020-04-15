@@ -52,7 +52,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				description: 'Camera name as typed in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 0
 			},
 			{
 				id: 'AtemSource',
@@ -60,7 +61,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				description: 'ATEM vision mixer input for Camera',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 1
 			},
 			{
 				id: 'SisyfosLayers',
@@ -72,7 +74,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				},
 				required: true,
 				multiple: true,
-				defaultVal: []
+				defaultVal: [],
+				rank: 2
 			}
 		]
 	},
@@ -97,7 +100,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				description: 'RM number as typed in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 0
 			},
 			{
 				id: 'AtemSource',
@@ -105,7 +109,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				description: 'ATEM vision mixer input for RM input',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 1
 			},
 			{
 				id: 'SisyfosLayers',
@@ -117,7 +122,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				},
 				required: true,
 				multiple: true,
-				defaultVal: []
+				defaultVal: [],
+				rank: 2
 			}
 		]
 	},
@@ -141,7 +147,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				description: 'Media player name as typed in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 0
 			},
 			{
 				id: 'AtemSource',
@@ -149,7 +156,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 				description: 'ATEM vision mixer input for Media player',
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
-				defaultVal: 0
+				defaultVal: 0,
+				rank: 1
 			}
 		]
 	},

@@ -198,7 +198,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.SOURCE_LAYERS,
 				multiple: false,
 				required: true,
-				defaultVal: ''
+				defaultVal: '',
+				rank: 6
 			},
 			{
 				id: 'LayerMapping',
@@ -211,8 +212,9 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				},
 				multiple: false,
 				required: true,
-				defaultVal: ''
-			},
+				defaultVal: '',
+				rank: 7
+			}
 		]
 	},
 	{
