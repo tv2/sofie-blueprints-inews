@@ -25,7 +25,7 @@ import Blueprints from '../index'
 // More ROs can be listed here to make them part of the basic blueprint doesnt crash test
 const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: ConfigMap }> = [
 	{
-		ro: '../../../rundowns/on-air.json',
+		ro: '../../../rundowns/on-air-reference.json',
 		studioConfig: JSON.parse(JSON.stringify(defaultStudioConfig)),
 		showStyleConfig: defaultShowStyleConfig
 	}

@@ -30,7 +30,7 @@ export function CreatePartLive(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime)
 
 	if (pieces.length === 0) {

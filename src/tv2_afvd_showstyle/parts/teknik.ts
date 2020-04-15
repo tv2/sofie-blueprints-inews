@@ -27,7 +27,7 @@ export function CreatePartTeknik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime)
 
 	if (pieces.length === 0) {

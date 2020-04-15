@@ -30,7 +30,7 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlib: asAdlibs })
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {

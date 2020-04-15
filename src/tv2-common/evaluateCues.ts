@@ -166,6 +166,19 @@ export interface EvaluateCuesShowstyleOptions<
 	EvaluateCueUnknown?: () => void
 }
 
+export interface EvaluateCuesOptions {
+	/** Whether to create cues as adlibs. */
+	adlib?: boolean
+	/** Whether the parent part is a graphic part. */
+	isGrafikPart?: boolean // TODO: Is this needed?
+	/** Passing this arguments sets the types of cues to evaluate. */
+	selectedCueTypes?: CueType[] | undefined
+	/** Don't evaluate adlibs. */
+	excludeAdlibs?: boolean
+	/** Only evaluate adlibs. */
+	adlibsOnly?: boolean
+}
+
 export function EvaluateCuesBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -177,20 +190,13 @@ export function EvaluateCuesBase<
 	adLibPieces: IBlueprintAdLibPieceEPI[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
-	adlib?: boolean,
-	isGrafikPart?: boolean,
-	/** Passing this arguments sets the types of cues to evaluate. */
-	selectedCueTypes?: CueType[] | undefined,
-	/** Don't evaluate adlibs */
-	excludeAdlibs?: boolean,
-	/** Only evaluate adlibs */
-	adlibsOnly?: boolean
+	options: EvaluateCuesOptions
 ) {
 	let adLibRank = 0
 
 	for (const cue of cues) {
-		if (cue && !SkipCue(cue, selectedCueTypes, excludeAdlibs, adlibsOnly)) {
-			const shouldAdlib = /* config.showStyle.IsOfftube || */ adlib ? true : cue.adlib ? true : false
+		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
+			const shouldAdlib = /* config.showStyle.IsOfftube || */ options.adlib ? true : cue.adlib ? true : false
 
 			switch (cue.type) {
 				case CueType.Grafik:
@@ -223,7 +229,7 @@ export function EvaluateCuesBase<
 							shouldAdlib,
 							false,
 							adLibRank,
-							isGrafikPart
+							options.isGrafikPart
 						)
 					}
 					break

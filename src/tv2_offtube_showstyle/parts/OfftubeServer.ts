@@ -62,19 +62,9 @@ export function OfftubeCreatePartServer(
 	adLibPieces.push(adlibServer)
 
 	// TODO: Merge graphics into server part as timeline objects
-	OfftubeEvaluateCues(
-		context,
-		config,
-		pieces,
-		adLibPieces,
-		partDefinition.cues,
-		partDefinition,
-		undefined,
-		undefined,
-		undefined,
-		false,
-		true
-	)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {
+		adlibsOnly: true
+	})
 
 	if (pieces.length === 0) {
 		part.invalid = true

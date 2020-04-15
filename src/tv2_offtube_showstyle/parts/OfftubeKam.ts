@@ -76,7 +76,7 @@ export function OfftubeCreatePartKam(
 		)
 	}
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
 	if (pieces.length === 0) {
 		part.invalid = true

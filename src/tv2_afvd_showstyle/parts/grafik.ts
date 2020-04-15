@@ -27,7 +27,7 @@ export function CreatePartGrafik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, false, true)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { isGrafikPart: true })
 	AddScript(partDefinition, pieces, partTime)
 
 	part.prerollDuration = config.studio.PilotPrerollDuration

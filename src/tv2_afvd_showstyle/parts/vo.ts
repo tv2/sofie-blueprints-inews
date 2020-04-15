@@ -87,7 +87,7 @@ export function CreatePartVO(
 		})
 	)
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, duration)
 
 	if (pieces.length === 0) {

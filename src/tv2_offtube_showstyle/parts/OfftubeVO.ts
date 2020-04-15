@@ -65,7 +65,7 @@ export function OfftubeCreatePartVO(
 	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 	adLibPieces.push(adlibServer)
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
 	if (pieces.length === 0) {
 		part.invalid = true

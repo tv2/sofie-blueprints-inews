@@ -22,7 +22,7 @@ export function OfftubeCreatePartDVE(
 	})
 	const pieces: IBlueprintPiece[] = []
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, true)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlib: true })
 
 	return {
 		part,
