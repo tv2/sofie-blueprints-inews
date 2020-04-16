@@ -37,11 +37,16 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartServer: OfftubeCreatePartServer,
 		CreatePartVO: OfftubeCreatePartVO,
 		CreatePartDVE: OfftubeCreatePartDVE,
-		CreatePartGrafik: CreatePartUnknown
+		CreatePartGrafik: CreatePartUnknown,
+		CreatePartEVS: CreatePartUnknown,
+		CreatePartEkstern: CreatePartUnknown,
+		CreatePartIntro: CreatePartUnknown,
+		CreatePartTeknik: CreatePartUnknown,
+		CreatePartTelefon: CreatePartUnknown
 	})
 
 	return {
-		segment: result.segment,
+		segment: !!ingestSegment.name.match(/^klar on-?air$/i) ? result.segment : { ...result.segment, isHidden: true },
 		parts: result.parts
 	}
 }
