@@ -446,10 +446,22 @@
                             "#kg bund Some Person",
                             "Timed Graphic",
                             ";0.05-0.30"
+                        ],
+                        [
+                            "GRAFIK=OVL",
+                            ";0.01"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 2 YNYBB 0 [[ pilotdata",
+                            "Senderplan/25-10-2019",
+                            "VCPID=2565134",
+                            "ContinueCount=-1",
+                            "Senderplan/25-10-2019"
                         ]
                     ],
                     "id" : "00000000:00000000:00000008",
-                    "body" : "\r\n<p><pi>SERVER</pi><a idref=\"0\"></a></p>\r\n",
+                    "body" : "\r\n<p><pi>SERVER</pi><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000008",
                     "identifier" : "00000008"
                 },

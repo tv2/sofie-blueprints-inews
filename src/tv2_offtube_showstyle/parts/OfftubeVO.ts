@@ -67,7 +67,11 @@ export function OfftubeCreatePartVO(
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlibsOnly: true })
 
-	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [CueType.Grafik])
+	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
+		CueType.Grafik,
+		CueType.TargetEngine,
+		CueType.VIZ
+	])
 
 	adLibPieces.push(adlibServer)
 
