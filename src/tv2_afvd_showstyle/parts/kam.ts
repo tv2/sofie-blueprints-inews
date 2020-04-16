@@ -142,7 +142,7 @@ export function CreatePartKam(
 		)
 	}
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime)
 
 	if (pieces.length === 0) {

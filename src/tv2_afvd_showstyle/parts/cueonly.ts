@@ -33,12 +33,12 @@ export function CreatePartCueOnly(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID)
+	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, {})
 	AddScript(partDefinitionWithID, pieces, partTime)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, true)
+		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, { adlib: true })
 	}
 
 	if (

@@ -14,7 +14,7 @@ export function CreateTiming(
 	}
 }
 
-export function CreateTimingEnable(cue: CueDefinition) {
+export function CreateTimingEnable(cue: CueDefinition): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> {
 	const result: Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> = {
 		enable: {},
 		infiniteMode: PieceLifespan.Normal

@@ -1,9 +1,10 @@
 import { BlueprintResultPart, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
-import { AdlibTags, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
+import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
 import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos'
 import { OffTubeSourceLayer } from '../layers'
 
@@ -30,7 +31,7 @@ export function OfftubeCreatePartVO(
 	// TODO: EFFEKT
 	// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const adlibServer = CreateAdlibServer(
+	let adlibServer = CreateAdlibServer(
 		config,
 		0,
 		partDefinition.externalId,
@@ -63,9 +64,12 @@ export function OfftubeCreatePartVO(
 	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER]
 	adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
-	adLibPieces.push(adlibServer)
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlibsOnly: true })
+
+	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [CueType.Grafik])
+
+	adLibPieces.push(adlibServer)
 
 	if (pieces.length === 0) {
 		part.invalid = true

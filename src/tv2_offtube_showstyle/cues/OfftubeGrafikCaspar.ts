@@ -5,7 +5,8 @@ import {
 	TimelineContentTypeCasparCg,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
-	TimelineObjCCGTemplate
+	TimelineObjCCGTemplate,
+	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
@@ -14,6 +15,7 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	CreateTimingEnable,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
 	GraphicLLayer,
@@ -39,7 +41,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	_adlib: boolean,
 	partDefinition: PartDefinition,
 	_isTlfPrimary?: boolean,
-	_rank?: number
+	rank?: number
 ) {
 	let engine = _engine
 	if (config.showStyle.GFXTemplates) {
@@ -66,40 +68,47 @@ export function OfftubeEvaluateGrafikCaspar(
 		adlibPieces.push(piece)
 	} else {
 		// TODO: Wall
-		console.log(`GRAFIK`)
 		const piece = literal<IBlueprintAdLibPiece>({
-			_rank: 0,
+			_rank: rank || 0,
 			externalId: partDefinition.externalId,
 			name: `${grafikName(config, parsedCue)}`,
 			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			outputLayerId: OfftubeOutputLayers.OVERLAY,
 			infiniteMode: PieceLifespan.Infinite,
-			expectedDuration: GetGrafikDuration(config, parsedCue) || GetDefaultOut(config),
 			content: {
-				timelineObjects: [
-					literal<TimelineObjCCGTemplate>({
-						id: '',
-						enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
-						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-						content: {
-							deviceType: DeviceType.CASPARCG,
-							type: TimelineContentTypeCasparCg.TEMPLATE,
-							templateType: 'html',
-							name: GetTemplateName(config, parsedCue),
-							data: literal<RendererStatePartial>({
-								partialUpdate: true,
-								rendererDisplay: 'program',
-								slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
-							}),
-							useStopCommand: false
-						}
-					})
-				]
+				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
 		})
-		console.log(piece.sourceLayerId)
 		adlibPieces.push(piece)
 	}
+}
+
+export function GetCasparOverlayTimeline(
+	config: OffTubeShowstyleBlueprintConfig,
+	engine: VizEngine,
+	parsedCue: CueDefinitionGrafik,
+	isIdentGrafik: boolean,
+	partDefinition: PartDefinition
+): TSRTimelineObj[] {
+	return [
+		literal<TimelineObjCCGTemplate>({
+			id: '',
+			enable: GetEnableForGrafikOfftube(engine, parsedCue, isIdentGrafik, partDefinition),
+			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+			content: {
+				deviceType: DeviceType.CASPARCG,
+				type: TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: GetTemplateName(config, parsedCue),
+				data: literal<RendererStatePartial>({
+					partialUpdate: true,
+					rendererDisplay: 'program',
+					slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
+				}),
+				useStopCommand: false
+			}
+		})
+	]
 }
 
 function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefinitionGrafik): Partial<Slots> {
@@ -271,15 +280,15 @@ function CreateFull(
 	})
 }
 
-// TODO: All of the below was copy-pasted from AFVD blueprints, can they be made generic?
+// TODO: All of the below was copy-pasted and then adapted from AFVD blueprints, can they be made generic?
 
 // TODO: Is this valid for offtubes?
-function GetEnableForGrafik(
+function GetEnableForGrafikOfftube(
 	engine: VizEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
-): { while: string } | { start: number } {
+): TSRTimelineObj['enable'] {
 	if (engine === 'WALL') {
 		return {
 			while: '1'
@@ -293,6 +302,12 @@ function GetEnableForGrafik(
 
 	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B' && partDefinition) {
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
+	}
+
+	const timing = CreateTimingEnable(cue)
+
+	if (!timing.infiniteMode) {
+		return timing.enable
 	}
 
 	return {
@@ -360,7 +375,6 @@ function GetSourceLayerForGrafik(config: OffTubeShowstyleBlueprintConfig, name: 
 	switch (conf.SourceLayer) {
 		// TODO: When adding more sourcelayers
 		// This is here to guard against bad user input
-		// TODO: Should these sourcelayers be shared between showstyles?
 		case OffTubeSourceLayer.PgmGraphicsHeadline:
 			return OffTubeSourceLayer.PgmGraphicsHeadline
 		case OffTubeSourceLayer.PgmGraphicsIdent:
@@ -391,7 +405,6 @@ export function GetTimelineLayerForGrafik(config: OffTubeShowstyleBlueprintConfi
 		return GraphicLLayer.GraphicLLayerOverlay
 	}
 
-	// TODO: Maybe these should be GraphicsLLayer?
 	switch (conf.LayerMapping) {
 		// TODO: When adding more output layers
 		case GraphicLLayer.GraphicLLayerOverlayIdent:
@@ -424,7 +437,7 @@ function grafikName(
 	}
 }
 
-function GetGrafikDuration(
+export function GetGrafikDuration(
 	config: OffTubeShowstyleBlueprintConfig,
 	cue: CueDefinitionGrafik | CueDefinitionMOS
 ): number | undefined {

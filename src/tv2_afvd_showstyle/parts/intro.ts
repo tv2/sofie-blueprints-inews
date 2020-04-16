@@ -68,7 +68,7 @@ export function CreatePartIntro(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 

@@ -1,9 +1,10 @@
 import { BlueprintResultPart, IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
-import { AdlibTags, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
+import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
 import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartServer(
@@ -28,7 +29,7 @@ export function OfftubeCreatePartServer(
 		...CreateEffektForpart(context, config, partDefinition, pieces)
 	}*/
 
-	const adlibServer: IBlueprintAdLibPiece = CreateAdlibServer(
+	let adlibServer: IBlueprintAdLibPiece = CreateAdlibServer(
 		config,
 		0,
 		partDefinition.externalId,
@@ -59,11 +60,14 @@ export function OfftubeCreatePartServer(
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER]
 	adlibServer.name = file
-	adLibPieces.push(adlibServer)
 
 	// TODO: Merge graphics into server part as timeline objects
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {
+		adlibsOnly: true
+	})
 
+	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [CueType.Grafik])
+	adLibPieces.push(adlibServer)
 	if (pieces.length === 0) {
 		part.invalid = true
 	}

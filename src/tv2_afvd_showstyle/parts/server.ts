@@ -62,7 +62,7 @@ export function CreatePartServer(
 		})
 	)
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
 	if (pieces.length === 0) {
 		part.invalid = true

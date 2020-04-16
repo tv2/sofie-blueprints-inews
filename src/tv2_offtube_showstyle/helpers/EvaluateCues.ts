@@ -2,6 +2,7 @@ import { PartContext } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinition,
 	EvaluateCuesBase,
+	EvaluateCuesOptions,
 	IBlueprintAdLibPieceEPI,
 	IBlueprintPieceEPI,
 	PartDefinition
@@ -20,8 +21,7 @@ export function OfftubeEvaluateCues(
 	adLibPieces: IBlueprintAdLibPieceEPI[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
-	adlib?: boolean,
-	isGrafikPart?: boolean
+	options: EvaluateCuesOptions
 ) {
 	EvaluateCuesBase(
 		{
@@ -37,7 +37,6 @@ export function OfftubeEvaluateCues(
 		adLibPieces,
 		cues,
 		partDefinition,
-		adlib,
-		isGrafikPart
+		options
 	)
 }
