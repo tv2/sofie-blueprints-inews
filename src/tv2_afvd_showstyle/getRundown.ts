@@ -41,7 +41,6 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	GetEksternMetaData,
-	GetLayersForEkstern,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicLLayer,
 	literal,
@@ -56,7 +55,12 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChann
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers, boxMappings } from './helpers/content/dve'
-import { GetLayersForCamera, GetSisyfosTimelineObjForCamera, STUDIO_MICS } from './helpers/sisyfos/sisyfos'
+import {
+	GetLayersForCamera,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForCamera,
+	STUDIO_MICS
+} from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
 import { GetCameraMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -357,7 +361,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`),
+			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
 			...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
 		]
 		res.push({
@@ -457,7 +461,9 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, { while: audioWhile }),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
+							while: audioWhile
+						}),
 						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon', { while: audioWhile })
 					])
 				}

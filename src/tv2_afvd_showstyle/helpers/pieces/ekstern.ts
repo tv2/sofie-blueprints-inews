@@ -20,7 +20,6 @@ import {
 	EksternParentClass,
 	FindSourceInfoStrict,
 	GetEksternMetaData,
-	GetLayersForEkstern,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	PartDefinition,
@@ -31,7 +30,7 @@ import { ControlClasses } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import { GetSisyfosTimelineObjForCamera, STUDIO_MICS } from '../sisyfos/sisyfos'
+import { GetLayersForEkstern, GetSisyfosTimelineObjForCamera, STUDIO_MICS } from '../sisyfos/sisyfos'
 
 export function EvaluateEkstern(
 	context: PartContext,
@@ -100,7 +99,7 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
 						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
 					])
 				})
@@ -148,8 +147,8 @@ export function EvaluateEkstern(
 							...(AddParentClass(partDefinition) ? { classes: [EksternParentClass('studio0', parsedCue.source)] } : {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon'),
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source)
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
+						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
 					])
 				})
 			})

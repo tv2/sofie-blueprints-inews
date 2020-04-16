@@ -12,7 +12,7 @@ import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
+import { GetLayersForEkstern, GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 
 export const boxLayers: DVESources = {
 	INP1: SourceLayer.PgmDVEBox1,
@@ -42,7 +42,8 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	},
 	dveTimelineGenerators: {
 		GetSisyfosTimelineObjForCamera,
-		GetSisyfosTimelineObjForEkstern
+		GetSisyfosTimelineObjForEkstern,
+		GetLayersForEkstern
 	},
 	boxLayers: {
 		INP1: SourceLayer.PgmDVEBox1,

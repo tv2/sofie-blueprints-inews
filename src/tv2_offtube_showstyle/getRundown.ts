@@ -53,7 +53,7 @@ import { AtemSourceIndex } from '../types/atem'
 import { boxLayers, boxMappings, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import {
-	GetLayerForEkstern,
+	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	LIVE_AUDIO,
 	STICKY_LAYERS,
@@ -253,7 +253,7 @@ function getGlobalAdLibPiecesOffTube(
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`),
+			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
 			...GetSisyfosTimelineObjForCamera('telefon')
 		]
 		res.push({
@@ -265,7 +265,11 @@ function getGlobalAdLibPiecesOffTube(
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(STICKY_LAYERS, STUDIO_MICS, GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(
+				STICKY_LAYERS,
+				STUDIO_MICS,
+				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+			),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -348,7 +352,9 @@ function getGlobalAdLibPiecesOffTube(
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, { while: audioWhile }),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
+							while: audioWhile
+						}),
 						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
 					])
 				}

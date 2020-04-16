@@ -1,4 +1,5 @@
 import { ConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
+import { parseMapStr } from 'tv2-common'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -6,12 +7,19 @@ export interface ConfigMap {
 	[key: string]: ConfigItemValue | ConfigMap | any[]
 }
 
+function stringToTable(conf: string): Array<{ SourceName: string; AtemSource: string }> {
+	return parseMapStr(undefined, conf, true).map(c => {
+		return { SourceName: c.id, AtemSource: c.val }
+	})
+}
+
 // in here will be some mock configs that can be referenced paired with ro's for the tests
 export const defaultStudioConfig: ConfigMap = {
-	SourcesCam:
-		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15',
-	SourcesSkype: '1:1,2:2,3:3,4:4,5:5,6:6,7:7',
-	SourcesRM: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10',
+	SourcesCam: stringToTable(
+		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15'
+	),
+	SourcesSkype: stringToTable('1:1,2:2,3:3,4:4,5:5,6:6,7:7'),
+	SourcesRM: stringToTable('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'),
 	'AtemSource.MixMinusDefault': 2,
 	'AtemSource.DSK1F': 21,
 	'AtemSource.DSK1K': 34,
@@ -27,8 +35,11 @@ export const defaultStudioConfig: ConfigMap = {
 	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
 	MediaFlowId: 'testflow0',
-	SourcesDelayedPlayback: '1:5,2:5',
-	ABMediaPlayers: '1:1,2:2',
+	SourcesDelayedPlayback: stringToTable('1:5,2:5'),
+	ABMediaPlayers: [
+		{ SourceName: '1', AtemSource: 1 },
+		{ SourceName: '2', AtemSource: 2 }
+	],
 	ABPlaybackDebugLogging: false,
 	'AtemSettings.VizClip': 50,
 	'AtemSettings.VizGain': 12.5,

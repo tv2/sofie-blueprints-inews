@@ -181,7 +181,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		*/
 		id: 'SourcesSkype',
 		name: 'Skype Mapping',
-		description: 'Skype number to ATEM input (eg 1:6,2:7)',
+		description: 'Skype number to ATEM input',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [
@@ -235,8 +235,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: [
 			{
 				_id: '',
-				SourceName: '',
-				AtemSource: 0
+				SourceName: '1',
+				AtemSource: 26
+			},
+			{
+				_id: '',
+				SourceName: '2',
+				AtemSource: 27
 			}
 		],
 		columns: [

@@ -8,7 +8,7 @@ import {
 import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
 import { FindSourceInfoStrict, literal, PieceMetaData, SourceInfo } from 'tv2-common'
 import _ = require('underscore')
-import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
+import { BlueprintConfig, StudioConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
 export const STUDIO_MICS = [
@@ -32,6 +32,8 @@ export const LIVE_AUDIO = [
 	SisyfosLLAyer.SisyfosSourceLive_9,
 	SisyfosLLAyer.SisyfosSourceLive_10
 ]
+
+export const STICKY_LAYERS = [...STUDIO_MICS, ...LIVE_AUDIO]
 
 export function GetSisyfosTimelineObjForCamera(
 	context: NotesContext,
@@ -106,6 +108,70 @@ export function GetStickyForPiece(
 	})
 }
 
-export function getStickyLayers(liveAudio: string[]) {
-	return [...liveAudio, ...STUDIO_MICS]
+export function getStickyLayers(studioConfig: StudioConfig) {
+	return [...STUDIO_MICS, ...getLiveAudioLayers(studioConfig)]
+}
+
+export function getLiveAudioLayers(studioConfig: StudioConfig): string[] {
+	const res: string[] = [...LIVE_AUDIO]
+
+	_.each(
+		[studioConfig.SourcesRM, studioConfig.SourcesCam, studioConfig.SourcesSkype, studioConfig.SourcesDelayedPlayback],
+		sources => {
+			_.each(sources, src => {
+				if (src.SisyfosLayers) {
+					res.push(...(src.SisyfosLayers as string[]))
+				}
+			})
+		}
+	)
+
+	return res
+}
+
+export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
+	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
+	let eksternLayers: string[] = []
+	if (eksternProps) {
+		const source = eksternProps[1]
+		if (source) {
+			switch (source) {
+				case '1':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_1]
+					break
+				case '2':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_2]
+					break
+				case '3':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_3]
+					break
+				case '4':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_4]
+					break
+				case '5':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_5]
+					break
+				case '6':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_6]
+					break
+				case '7':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_7]
+					break
+				case '8':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_8]
+					break
+				case '9':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_9]
+					break
+				case '10':
+					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_10]
+					break
+			}
+		}
+		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
+		if (sourceInfo && sourceInfo.sisyfosLayers) {
+			eksternLayers.push(...sourceInfo.sisyfosLayers)
+		}
+	}
+	return eksternLayers
 }

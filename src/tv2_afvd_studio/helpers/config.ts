@@ -10,9 +10,9 @@ import {
 import { assertUnreachable, MediaPlayerConfig, SourceInfo } from 'tv2-common'
 import * as _ from 'underscore'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
-import { getStickyLayers } from '../../tv2_afvd_showstyle/helpers/sisyfos/sisyfos'
+import { getLiveAudioLayers, getStickyLayers } from '../../tv2_afvd_showstyle/helpers/sisyfos/sisyfos'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
-import { getLiveAudioLayers, parseMediaPlayers, parseSources } from './sources'
+import { parseMediaPlayers, parseSources } from './sources'
 
 export interface BlueprintConfig {
 	studio: StudioConfig
@@ -149,7 +149,7 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
 	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.liveAudio)
+	config.stickyLayers = getStickyLayers(config.studio)
 
 	return config
 }
@@ -177,7 +177,7 @@ export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
 	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.liveAudio)
+	config.stickyLayers = getStickyLayers(config.studio)
 
 	return config
 }

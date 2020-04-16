@@ -118,8 +118,10 @@ export interface DVETimelineObjectGenerators {
 		context: NotesContext,
 		sources: SourceInfo[],
 		sourceType: string,
+		getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[],
 		enable?: Timeline.TimelineEnable
 	) => TSRTimelineObj[]
+	GetLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[]
 }
 
 export interface DVEOptions {
@@ -333,6 +335,7 @@ export function MakeContentDVE2<
 						context,
 						config.sources,
 						mappingFrom.source,
+						dveGeneratorOptions.dveTimelineGenerators.GetLayersForEkstern,
 						audioEnable
 					)
 				)

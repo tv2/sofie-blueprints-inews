@@ -5,15 +5,17 @@ import { SourceInfo } from 'tv2-common'
 import { StudioConfig } from './config'
 
 export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: string; val: string }> {
-	const res: Array<{ id: string; val: any }> = []
+	const res: Array<{ id: string; val: string }> = []
 
+	console.log(studioConfig.ABMediaPlayers)
 	_.each(studioConfig.ABMediaPlayers, mp => {
 		res.push({
 			id: mp.SourceName as string,
-			val: mp.AtemSource as number
+			val: (mp.AtemSource as number).toString()
 		})
 	})
 
+	console.log(res)
 	return res
 }
 
@@ -55,23 +57,6 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 			sisyfosLayers: dp.SisyfosLayers as string[] | undefined
 		})
 	})
-
-	return res
-}
-
-export function getLiveAudioLayers(studioConfig: StudioConfig): string[] {
-	const res: string[] = []
-
-	_.each(
-		[studioConfig.SourcesRM, studioConfig.SourcesCam, studioConfig.SourcesSkype, studioConfig.SourcesDelayedPlayback],
-		sources => {
-			_.each(sources, src => {
-				if (src.SisyfosLayers) {
-					res.push(...(src.SisyfosLayers as string[]))
-				}
-			})
-		}
-	)
 
 	return res
 }
