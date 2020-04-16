@@ -68,7 +68,9 @@ describe('grafik piece', () => {
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
-				mediaPlayers: []
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
 			},
 			partContext,
 			pieces,
@@ -134,7 +136,9 @@ describe('grafik piece', () => {
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
-				mediaPlayers: []
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
 			},
 			partContext,
 			pieces,
@@ -199,7 +203,9 @@ describe('grafik piece', () => {
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
-				mediaPlayers: []
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
 			},
 			partContext,
 			pieces,
@@ -270,7 +276,9 @@ describe('grafik piece', () => {
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
-				mediaPlayers: []
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
 			},
 			partContext,
 			pieces,
