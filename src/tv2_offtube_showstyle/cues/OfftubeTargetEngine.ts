@@ -21,7 +21,7 @@ export function OfftubeEvaluateTargetEngine(
 	}
 
 	// Offtubes: Only allow full for now
-	if (!parsedCue.data.engine.match(/full/i)) {
+	if (!parsedCue.data.engine.match(/full|ovl/i)) {
 		return
 	}
 
@@ -34,7 +34,7 @@ export function OfftubeEvaluateTargetEngine(
 				adlibPieces,
 				partDefinition.externalId,
 				parsedCue.data.grafik,
-				'FULL', // TODO: Target
+				!!parsedCue.data.engine.match(/full/i) ? 'FULL' : 'OVL', // TODO: Target wall
 				true,
 				partDefinition
 			)
@@ -53,7 +53,7 @@ export function OfftubeEvaluateTargetEngine(
 				adlibPieces,
 				partDefinition.externalId,
 				cueMosToGrafik,
-				'FULL', // TODO: Target
+				!!parsedCue.data.engine.match(/full/i) ? 'FULL' : 'OVL', // TODO: Target wall
 				true,
 				partDefinition
 			)

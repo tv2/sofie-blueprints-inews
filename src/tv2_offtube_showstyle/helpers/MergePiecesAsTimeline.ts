@@ -25,13 +25,21 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 	parentPiece: T,
 	selectedCueTypes?: CueType[]
 ): T {
-	const piecesForTimeline: IBlueprintAdLibPiece[] = []
+	const piecesForTimeline: Array<IBlueprintPiece | IBlueprintAdLibPiece> = []
 
 	if (parentPiece.content && parentPiece.content.timelineObjects) {
-		OfftubeEvaluateCues(context, config, [], piecesForTimeline, partDefinition.cues, partDefinition, {
-			excludeAdlibs: true,
-			selectedCueTypes
-		})
+		OfftubeEvaluateCues(
+			context,
+			config,
+			piecesForTimeline as IBlueprintPiece[],
+			piecesForTimeline as IBlueprintAdLibPiece[],
+			partDefinition.cues,
+			partDefinition,
+			{
+				excludeAdlibs: true,
+				selectedCueTypes
+			}
+		)
 
 		piecesForTimeline.forEach(piece => {
 			if (piece.content) {
