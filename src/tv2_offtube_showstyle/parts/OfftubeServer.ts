@@ -1,15 +1,10 @@
-import { DeviceType } from 'timeline-state-resolver-types'
-import {
-	BlueprintResultPart,
-	IBlueprintAdLibPiece,
-	PartContext,
-	TimelineObjectCoreExt
-} from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintResultPart, IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
-import { AdlibTags, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
+import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
 import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartServer(
@@ -34,7 +29,7 @@ export function OfftubeCreatePartServer(
 		...CreateEffektForpart(context, config, partDefinition, pieces)
 	}*/
 
-	const adlibServer: IBlueprintAdLibPiece = CreateAdlibServer(
+	let adlibServer: IBlueprintAdLibPiece = CreateAdlibServer(
 		config,
 		0,
 		partDefinition.externalId,
@@ -71,24 +66,7 @@ export function OfftubeCreatePartServer(
 		adlibsOnly: true
 	})
 
-	const piecesForTimeline: IBlueprintAdLibPiece[] = []
-
-	if (adlibServer.content && adlibServer.content.timelineObjects) {
-		OfftubeEvaluateCues(context, config, [], piecesForTimeline, partDefinition.cues, partDefinition, {
-			excludeAdlibs: true
-		})
-
-		piecesForTimeline.forEach(piece => {
-			if (piece.content) {
-				;(adlibServer.content!.timelineObjects as TimelineObjectCoreExt[]).push(
-					...(piece.content.timelineObjects as TimelineObjectCoreExt[]).filter(
-						obj => obj.content.deviceType !== DeviceType.ATEM // Remove any timeline objects that affect PGM
-						// TODO: Keyers?
-					)
-				)
-			}
-		})
-	}
+	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [CueType.Grafik])
 	adLibPieces.push(adlibServer)
 	if (pieces.length === 0) {
 		part.invalid = true
