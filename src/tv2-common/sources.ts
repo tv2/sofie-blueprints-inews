@@ -2,6 +2,7 @@ import * as _ from 'underscore'
 
 import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
+import { TableConfigItemSourceMappingWithSisyfos } from './types'
 
 export function parseMapStr(
 	context: NotesContext | undefined,
@@ -41,6 +42,18 @@ export function parseMapStr(
 	})
 
 	return res
+}
+
+export function ParseMappingTable(
+	studioConfig: TableConfigItemSourceMappingWithSisyfos[],
+	type: SourceInfoType
+): SourceInfo[] {
+	return studioConfig.map(conf => ({
+		type,
+		id: conf.SourceName,
+		port: conf.AtemSource,
+		sisyfosLayers: conf.SisyfosLayers
+	}))
 }
 
 export type SourceInfoType =

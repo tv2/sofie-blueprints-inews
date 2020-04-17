@@ -1,8 +1,20 @@
 import { MigrationStepStudio } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
+import { literal, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
+import {
+	manifestAFVDSourcesABMediaPlayers,
+	manifestAFVDSourcesCam,
+	manifestAFVDSourcesDelayedPlayback,
+	manifestAFVDSourcesRM,
+	manifestAFVDSourcesSkype
+} from '../config-manifests'
 import { deviceMigrations } from './devices'
-import { getMappingsDefaultsMigrationSteps, moveSourcesToTable, renameMapping } from './util'
+import {
+	ensureStudioConfig,
+	getMappingsDefaultsMigrationSteps,
+	GetSisyfosLayersForTableMigrationAFVD,
+	renameMapping
+} from './util'
 
 declare const VERSION: string // Injected by webpack
 
@@ -12,12 +24,6 @@ declare const VERSION: string // Injected by webpack
  */
 
 export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStudio[]>([
-	moveSourcesToTable('0.1.0', 'SourcesCam'),
-	moveSourcesToTable('0.1.0', 'SourcesRM'),
-	moveSourcesToTable('0.1.0', 'SourcesDelayedPlayback'),
-	moveSourcesToTable('0.1.0', 'SourcesSkype'),
-	moveSourcesToTable('0.1.0', 'ABMediaPlayers'),
-
 	// ensureStudioConfig(
 	// 	'0.1.0',
 	// 	'SourcesCam',
@@ -35,10 +41,65 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	// 	'Enter the Media player inputs (example: "1:17,2:18,3:19")'
 	// ),
 
+	ensureStudioConfig(
+		'0.1.0',
+		'SourcesCam',
+		manifestAFVDSourcesCam.defaultVal,
+		'text',
+		'Studio config: Camera mappings',
+		'Enter the camera input mapping',
+		manifestAFVDSourcesCam.defaultVal
+	),
+
+	ensureStudioConfig(
+		'0.1.0',
+		'SourcesRM',
+		manifestAFVDSourcesRM.defaultVal,
+		'text',
+		'Studio config: Remote mappings',
+		'Enter the remote input mapping',
+		manifestAFVDSourcesRM.defaultVal
+	),
+
+	ensureStudioConfig(
+		'0.1.0',
+		'SourcesDelayedPlayback',
+		manifestAFVDSourcesDelayedPlayback.defaultVal,
+		'text',
+		'Studio config: Delayed Playback mappings',
+		'Enter the delayed playback input mapping',
+		manifestAFVDSourcesDelayedPlayback.defaultVal
+	),
+
+	ensureStudioConfig(
+		'0.1.0',
+		'SourcesSkype',
+		manifestAFVDSourcesSkype.defaultVal,
+		'text',
+		'Studio config: Skype mappings',
+		'Enter the Skype input mapping',
+		manifestAFVDSourcesSkype.defaultVal
+	),
+
+	ensureStudioConfig(
+		'0.1.0',
+		'ABMediaPlayers',
+		manifestAFVDSourcesABMediaPlayers.defaultVal,
+		'text',
+		'Studio config: AB Media Players mappings',
+		'Enter the AB Media Players input mapping',
+		manifestAFVDSourcesABMediaPlayers.defaultVal
+	),
+
 	...deviceMigrations,
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION),
+	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationAFVD),
+	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationAFVD),
+	MoveSourcesToTable('0.1.0', 'SourcesDelayedPlayback', true, GetSisyfosLayersForTableMigrationAFVD),
+	MoveSourcesToTable('0.1.0', 'SourcesSkype', true, GetSisyfosLayersForTableMigrationAFVD),
+	MoveSourcesToTable('0.1.0', 'ABMediaPlayers', true, GetSisyfosLayersForTableMigrationAFVD),
 	...[
 		'viz_layer_adlibs',
 		'viz_layer_design',

@@ -4,11 +4,11 @@ import {
 	MigrationContextStudio,
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
-	MigrationStepStudio,
-	TableConfigItemValue
+	MigrationStepStudio
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, parseMapStr } from 'tv2-common'
+import { literal } from 'tv2-common'
 import * as _ from 'underscore'
+import { SisyfosLLAyer } from '../layers'
 import MappingsDefaults from './mappings-defaults'
 
 export function ensureStudioConfig(
@@ -157,36 +157,48 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 	return res
 }
 
-export function moveSourcesToTable(versionStr: string, configName: string): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
-		id: `studioConfig.${configName}`,
-		version: versionStr,
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextStudio) => {
-			const configVal = context.getConfig(configName)
-			if (configVal === undefined || typeof configVal === 'string') {
-				return `${configName} has old format or doesn't exist`
+export function GetSisyfosLayersForTableMigrationAFVD(configName: string, val: string): string[] {
+	switch (configName) {
+		case 'SourcesCam':
+			return [
+				SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+				SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+				SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+				SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+				SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+				SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
+			]
+		case 'SourcesRM':
+		case 'SourcesSkype':
+			switch (val) {
+				case '1':
+					return [SisyfosLLAyer.SisyfosSourceLive_1]
+				case '2':
+					return [SisyfosLLAyer.SisyfosSourceLive_2]
+				case '3':
+					return [SisyfosLLAyer.SisyfosSourceLive_3]
+				case '4':
+					return [SisyfosLLAyer.SisyfosSourceLive_4]
+				case '5':
+					return [SisyfosLLAyer.SisyfosSourceLive_5]
+				case '6':
+					return [SisyfosLLAyer.SisyfosSourceLive_6]
+				case '7':
+					return [SisyfosLLAyer.SisyfosSourceLive_7]
+				case '8':
+					return [SisyfosLLAyer.SisyfosSourceLive_8]
+				case '9':
+					return [SisyfosLLAyer.SisyfosSourceLive_9]
+				case '10':
+					return [SisyfosLLAyer.SisyfosSourceLive_10]
 			}
-			return false
-		},
-		migrate: (context: MigrationContextStudio) => {
-			const configVal = context.getConfig(configName)
-			const table: TableConfigItemValue = []
-			if (configVal === undefined) {
-				context.setConfig(configName, table)
-			} else if (typeof configVal === 'string') {
-				const oldConfig = parseMapStr(undefined, configVal, true)
-				_.each(oldConfig, (source, i) => {
-					table.push({
-						_id: i.toString(),
-						SourceName: source.id,
-						AtemSource: source.val
-					})
-				})
-				context.setConfig(configName, table)
-			}
-		}
-	})
+			break
+		case 'SourcesDelayedPlayback':
+		case '1':
+			return [SisyfosLLAyer.SisyfosSourceEVS_1]
+		case '2':
+			return [SisyfosLLAyer.SisyfosSourceEVS_2]
+	}
 
-	return res
+	return []
 }

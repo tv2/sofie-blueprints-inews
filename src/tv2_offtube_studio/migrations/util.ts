@@ -4,11 +4,11 @@ import {
 	MigrationContextStudio,
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
-	MigrationStepStudio,
-	TableConfigItemValue
+	MigrationStepStudio
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, parseMapStr } from 'tv2-common'
+import { literal } from 'tv2-common'
 import * as _ from 'underscore'
+import { OfftubeSisyfosLLayer } from '../layers'
 import MappingsDefaults from './mappings-defaults'
 
 export function ensureStudioConfig(
@@ -157,36 +157,28 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 	return res
 }
 
-export function moveSourcesToTable(versionStr: string, configName: string): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
-		id: `studioConfig.${configName}`,
-		version: versionStr,
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextStudio) => {
-			const configVal = context.getConfig(configName)
-			if (configVal === undefined || typeof configVal === 'string') {
-				return `${configName} has old format or doesn't exist`
+export function GetSisyfosLayersForTableMigrationOfftube(configName: string, val: string): string[] {
+	switch (configName) {
+		case 'SourcesCam':
+			return [
+				OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A,
+				OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A,
+				OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
+			]
+		case 'SourcesRM':
+			switch (val) {
+				case '1':
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_1]
+				case '2':
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
+				case 'WF':
+					return [
+						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
+						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
+					]
 			}
-			return false
-		},
-		migrate: (context: MigrationContextStudio) => {
-			const configVal = context.getConfig(configName)
-			const table: TableConfigItemValue = []
-			if (configVal === undefined) {
-				context.setConfig(configName, table)
-			} else if (typeof configVal === 'string') {
-				const oldConfig = parseMapStr(undefined, configVal, true)
-				_.each(oldConfig, (source, i) => {
-					table.push({
-						_id: i.toString(),
-						SourceName: source.id,
-						AtemSource: source.val
-					})
-				})
-				context.setConfig(configName, table)
-			}
-		}
-	})
+			break
+	}
 
-	return res
+	return []
 }

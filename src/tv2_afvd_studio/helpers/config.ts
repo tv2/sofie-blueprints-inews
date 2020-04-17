@@ -107,6 +107,9 @@ export function applyToConfig(
 				case ConfigManifestEntryType.TABLE:
 					newVal = overrideVal as TableConfigItemValue
 					break
+				case ConfigManifestEntryType.SELECT:
+					newVal = overrideVal
+					break
 				case ConfigManifestEntryType.LAYER_MAPPINGS:
 					newVal = overrideVal
 					break
