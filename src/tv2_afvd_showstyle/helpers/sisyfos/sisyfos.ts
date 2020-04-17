@@ -49,7 +49,7 @@ export function GetSisyfosTimelineObjForCamera(
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	if ((useMic && camName) || !!sourceType.match(/server|telefon|full|evs/i)) {
-		const camLayers: string[] = [...STUDIO_MICS]
+		const camLayers: string[] = []
 		if (useMic && camName) {
 			const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, sourceType)
 			if (sourceInfo && sourceInfo.sisyfosLayers) {
