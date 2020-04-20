@@ -130,43 +130,8 @@ export function getLiveAudioLayers(studioConfig: StudioConfig): string[] {
 
 export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
 	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
-	let eksternLayers: string[] = []
+	const eksternLayers: string[] = []
 	if (eksternProps) {
-		const source = eksternProps[1]
-		if (source) {
-			switch (source) {
-				case '1':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_1]
-					break
-				case '2':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_2]
-					break
-				case '3':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_3]
-					break
-				case '4':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_4]
-					break
-				case '5':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_5]
-					break
-				case '6':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_6]
-					break
-				case '7':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_7]
-					break
-				case '8':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_8]
-					break
-				case '9':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_9]
-					break
-				case '10':
-					eksternLayers = [SisyfosLLAyer.SisyfosSourceLive_10]
-					break
-			}
-		}
 		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
 		if (sourceInfo && sourceInfo.sisyfosLayers) {
 			eksternLayers.push(...sourceInfo.sisyfosLayers)
