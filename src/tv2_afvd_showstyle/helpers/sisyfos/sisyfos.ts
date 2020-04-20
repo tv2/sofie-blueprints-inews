@@ -113,20 +113,19 @@ export function getStickyLayers(studioConfig: StudioConfig) {
 }
 
 export function getLiveAudioLayers(studioConfig: StudioConfig): string[] {
-	const res: string[] = [...LIVE_AUDIO]
+	const res: Set<string> = new Set()
 
-	_.each(
-		[studioConfig.SourcesRM, studioConfig.SourcesCam, studioConfig.SourcesSkype, studioConfig.SourcesDelayedPlayback],
-		sources => {
-			_.each(sources, src => {
-				if (src.SisyfosLayers) {
-					res.push(...(src.SisyfosLayers as string[]))
-				}
-			})
-		}
-	)
+	_.each([studioConfig.SourcesRM, studioConfig.SourcesSkype], sources => {
+		_.each(sources, src => {
+			if (src.SisyfosLayers) {
+				_.each(src.SisyfosLayers, layer => {
+					res.add(layer)
+				})
+			}
+		})
+	})
 
-	return res
+	return Array.from(res)
 }
 
 export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
