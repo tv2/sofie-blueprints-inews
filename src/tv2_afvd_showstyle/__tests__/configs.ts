@@ -7,19 +7,48 @@ export interface ConfigMap {
 	[key: string]: ConfigItemValue | ConfigMap | any[]
 }
 
-function stringToTable(conf: string): Array<{ SourceName: string; AtemSource: string }> {
+function getSisyfosLayers(configName: string, id: string): string[] {
+	switch (configName) {
+		case 'SourcesCam':
+			return [
+				'sisyfos_source_Host_1_st_a',
+				'sisyfos_source_Host_2_st_a',
+				'sisyfos_source_Guest_1_st_a',
+				'sisyfos_source_Guest_2_st_a',
+				'sisyfos_source_Guest_3_st_a',
+				'sisyfos_source_Guest_4_st_a'
+			]
+		case 'SourcesRM':
+		case 'SourcesSkype':
+			return ['sisyfos_source_live_' + id]
+		case 'SourcesDelayedPlayback':
+			return ['sisyfos_source_evs_' + id]
+	}
+
+	return []
+}
+
+function prepareConfig(
+	conf: string,
+	configName: string
+): Array<{ SourceName: string; AtemSource: string; SisyfosLayers: string[] }> {
 	return parseMapStr(undefined, conf, true).map(c => {
-		return { SourceName: c.id, AtemSource: c.val }
+		return {
+			SourceName: c.id,
+			AtemSource: c.val,
+			SisyfosLayers: getSisyfosLayers(configName, c.id)
+		}
 	})
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
 export const defaultStudioConfig: ConfigMap = {
-	SourcesCam: stringToTable(
-		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15'
+	SourcesCam: prepareConfig(
+		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15',
+		'SourcesCam'
 	),
-	SourcesSkype: stringToTable('1:1,2:2,3:3,4:4,5:5,6:6,7:7'),
-	SourcesRM: stringToTable('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'),
+	SourcesSkype: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7', 'SourcesSkype'),
+	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM'),
 	'AtemSource.MixMinusDefault': 2,
 	'AtemSource.DSK1F': 21,
 	'AtemSource.DSK1K': 34,
@@ -35,7 +64,7 @@ export const defaultStudioConfig: ConfigMap = {
 	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
 	MediaFlowId: 'testflow0',
-	SourcesDelayedPlayback: stringToTable('1:5,2:5'),
+	SourcesDelayedPlayback: prepareConfig('1:5,2:5', 'SourcesDelayedPlayback'),
 	ABMediaPlayers: [
 		{ SourceName: '1', AtemSource: 1 },
 		{ SourceName: '2', AtemSource: 2 }
