@@ -11,6 +11,7 @@ const blankStudioConfig: StudioConfig = {
 	SourcesSkype: [],
 	SourcesDelayedPlayback: [],
 	ABMediaPlayers: [],
+	StudioMics: [],
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {

@@ -157,7 +157,7 @@ function makeContentEVS(
 				}
 			}),
 			...(partDefinition.variant.isVO
-				? [...GetSisyfosTimelineObjForCamera(context, config.sources, 'evs')]
+				? [...GetSisyfosTimelineObjForCamera(context, config, 'evs')]
 				: [
 						...config.liveAudio.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({

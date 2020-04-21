@@ -14,18 +14,20 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 	_.each(studioConfig.SourcesRM, rm => {
 		res.push({
 			type: SourceLayerType.REMOTE,
-			id: rm.SourceName as string,
-			port: rm.AtemSource as number,
-			sisyfosLayers: rm.SisyfosLayers as string[]
+			id: rm.SourceName,
+			port: rm.AtemSource,
+			sisyfosLayers: rm.SisyfosLayers,
+			useStudioMics: rm.StudioMics
 		})
 	})
 
 	_.each(studioConfig.SourcesCam, kam => {
 		res.push({
 			type: SourceLayerType.CAMERA,
-			id: kam.SourceName as string,
-			port: kam.AtemSource as number,
-			sisyfosLayers: kam.SisyfosLayers as string[]
+			id: kam.SourceName,
+			port: kam.AtemSource,
+			sisyfosLayers: kam.SisyfosLayers,
+			useStudioMics: kam.StudioMics
 		})
 	})
 
@@ -33,8 +35,9 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: `S${sk.SourceName}`,
-			port: sk.AtemSource as number,
-			sisyfosLayers: sk.SisyfosLayers as string[]
+			port: sk.AtemSource,
+			sisyfosLayers: sk.SisyfosLayers,
+			useStudioMics: sk.StudioMics
 		})
 	})
 
@@ -42,8 +45,9 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: `DP${dp.SourceName}`,
-			port: dp.AtemSource as number,
-			sisyfosLayers: dp.SisyfosLayers as string[]
+			port: dp.AtemSource,
+			sisyfosLayers: dp.SisyfosLayers,
+			useStudioMics: dp.StudioMics
 		})
 	})
 

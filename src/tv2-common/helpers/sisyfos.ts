@@ -34,7 +34,7 @@ export function GetStickyForPiece(
 
 export function GetEksternMetaData(
 	STICKY_LAYERS: string[],
-	STUDIO_MICS: string[],
+	studioMics: string[],
 	layers?: string[]
 ): PieceMetaData | undefined {
 	return layers && layers.length
@@ -43,7 +43,7 @@ export function GetEksternMetaData(
 					...layers.map<{ layer: string; isPgm: 0 | 1 | 2 }>(layer => {
 						return { layer, isPgm: 1 }
 					}),
-					...STUDIO_MICS.map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
+					...studioMics.map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
 						return { layer: l, isPgm: 1 }
 					})
 				],
@@ -52,14 +52,14 @@ export function GetEksternMetaData(
 		: undefined
 }
 
-export function GetKeepStudioMicsMetaData(STUDIO_MICS: string[]): PieceMetaData | undefined {
+export function GetKeepStudioMicsMetaData(studioMics: string[]): PieceMetaData | undefined {
 	return GetStickyForPiece(
 		[
-			...STUDIO_MICS.map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
+			...studioMics.map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
 				return { layer: l, isPgm: 1 }
 			})
 		],
-		STUDIO_MICS
+		studioMics
 	)
 }
 

@@ -45,6 +45,7 @@ export interface StudioConfig {
 	SourcesDelayedPlayback: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
+	StudioMics: string[]
 	AtemSource: {
 		DSK1F: number
 		DSK1K: number

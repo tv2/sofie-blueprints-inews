@@ -30,7 +30,7 @@ import { ControlClasses } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import { GetLayersForEkstern, GetSisyfosTimelineObjForCamera, STUDIO_MICS } from '../sisyfos/sisyfos'
+import { GetLayersForEkstern, GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 
 export function EvaluateEkstern(
 	context: PartContext,
@@ -74,7 +74,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(config.stickyLayers, STUDIO_MICS, layers),
+				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -100,7 +100,7 @@ export function EvaluateEkstern(
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
-						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 					])
 				})
 			})
@@ -115,7 +115,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(config.stickyLayers, STUDIO_MICS, layers),
+				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -148,7 +148,7 @@ export function EvaluateEkstern(
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
-						...GetSisyfosTimelineObjForCamera(context, config.sources, 'telefon')
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 					])
 				})
 			})

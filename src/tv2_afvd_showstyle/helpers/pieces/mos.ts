@@ -238,7 +238,7 @@ function GetMosObjContent(
 							},
 							classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 						}),
-						...GetSisyfosTimelineObjForCamera(context, config.sources, 'full'),
+						...GetSisyfosTimelineObjForCamera(context, config, 'full'),
 						...MuteSisyfosChannels(partId, config.sources, !!adlib, adlibrank ?? 0, parsedCue.vcpid)
 				  ])
 		]

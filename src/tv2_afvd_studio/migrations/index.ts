@@ -6,7 +6,8 @@ import {
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesDelayedPlayback,
 	manifestAFVDSourcesRM,
-	manifestAFVDSourcesSkype
+	manifestAFVDSourcesSkype,
+	manifestAFVDStudioMics
 } from '../config-manifests'
 import { deviceMigrations } from './devices'
 import {
@@ -24,23 +25,6 @@ declare const VERSION: string // Injected by webpack
  */
 
 export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStudio[]>([
-	// ensureStudioConfig(
-	// 	'0.1.0',
-	// 	'SourcesCam',
-	// 	null,
-	// 	'text',
-	// 	'Studio config: Camera mappings',
-	// 	'Enter the Camera input mapping (example: "1:1,2:2,3:3,4:4"'
-	// ),
-	// ensureStudioConfig(
-	// 	'0.1.0',
-	// 	'ABMediaPlayers',
-	// 	null,
-	// 	'text',
-	// 	'Studio config: Media player inputs',
-	// 	'Enter the Media player inputs (example: "1:17,2:18,3:19")'
-	// ),
-
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesCam',
@@ -91,14 +75,24 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 		manifestAFVDSourcesABMediaPlayers.defaultVal
 	),
 
+	ensureStudioConfig(
+		'0.1.0',
+		'StudioMics',
+		manifestAFVDStudioMics.defaultVal,
+		'text',
+		'Studio config: Studio Mics',
+		'Select the Sisyfos layers for Studio Mics',
+		manifestAFVDStudioMics.defaultVal
+	),
+
 	...deviceMigrations,
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION),
-	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationAFVD),
-	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationAFVD),
-	MoveSourcesToTable('0.1.0', 'SourcesDelayedPlayback', true, GetSisyfosLayersForTableMigrationAFVD),
-	MoveSourcesToTable('0.1.0', 'SourcesSkype', true, GetSisyfosLayersForTableMigrationAFVD),
+	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationAFVD, true),
+	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationAFVD, false),
+	MoveSourcesToTable('0.1.0', 'SourcesDelayedPlayback', true, GetSisyfosLayersForTableMigrationAFVD, true),
+	MoveSourcesToTable('0.1.0', 'SourcesSkype', true, GetSisyfosLayersForTableMigrationAFVD, false),
 	MoveSourcesToTable('0.1.0', 'ABMediaPlayers', true, GetSisyfosLayersForTableMigrationAFVD),
 	...[
 		'viz_layer_adlibs',

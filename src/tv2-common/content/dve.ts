@@ -110,7 +110,7 @@ export interface DVELayers {
 export interface DVETimelineObjectGenerators {
 	GetSisyfosTimelineObjForCamera: (
 		context: NotesContext,
-		sources: SourceInfo[],
+		config: { sources: SourceInfo[] },
 		str: string,
 		enable?: Timeline.TimelineEnable
 	) => TSRTimelineObj[]
@@ -316,7 +316,7 @@ export function MakeContentDVE2<
 				dveTimeline.push(
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
 						context,
-						config.sources,
+						config,
 						mappingFrom.source,
 						audioEnable
 					)
@@ -354,7 +354,7 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config.sources, 'evs')
+					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'evs')
 				)
 			} else if (sourceType.match(/ENGINE/i)) {
 				if (sourceInput.match(/full/i)) {
@@ -365,7 +365,7 @@ export function MakeContentDVE2<
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source)
 					dveTimeline.push(
-						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config.sources, 'full')
+						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'full')
 					)
 				} else {
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)

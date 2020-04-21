@@ -5,4 +5,5 @@ export interface TableConfigItemSourceMapping {
 
 export type TableConfigItemSourceMappingWithSisyfos = {
 	SisyfosLayers: string[]
+	StudioMics: boolean
 } & TableConfigItemSourceMapping

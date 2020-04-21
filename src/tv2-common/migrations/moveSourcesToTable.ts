@@ -11,7 +11,8 @@ export function MoveSourcesToTable(
 	versionStr: string,
 	configName: string,
 	withSisyfos: boolean,
-	getSisyfosLayersForMigration: (configName: string, val: string) => string[]
+	getSisyfosLayersForMigration: (configName: string, val: string) => string[],
+	studioMics?: boolean
 ): MigrationStepStudio {
 	const res = literal<MigrationStepStudio>({
 		id: `studioConfig.moveToTable.${configName}`,
@@ -38,7 +39,8 @@ export function MoveSourcesToTable(
 								_id: i.toString(),
 								SourceName: source.id,
 								AtemSource: source.val,
-								SisyfosLayers: getSisyfosLayersForMigration(configName, source.id.toString().toUpperCase())
+								SisyfosLayers: getSisyfosLayersForMigration(configName, source.id.toString().toUpperCase()),
+								StudioMics: !!studioMics
 							})
 						)
 					} else {

@@ -68,6 +68,7 @@ export interface SourceInfo {
 	port: number
 	ptzDevice?: string
 	sisyfosLayers?: string[]
+	useStudioMics?: boolean
 }
 
 export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: string): SourceInfo | undefined {

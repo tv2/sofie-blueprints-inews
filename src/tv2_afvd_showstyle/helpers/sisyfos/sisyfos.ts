@@ -9,35 +9,10 @@ import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-in
 import { FindSourceInfoStrict, literal, PieceMetaData, SourceInfo } from 'tv2-common'
 import _ = require('underscore')
 import { BlueprintConfig, StudioConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-
-export const STUDIO_MICS = [
-	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
-	SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
-	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
-]
-
-export const LIVE_AUDIO = [
-	SisyfosLLAyer.SisyfosSourceLive_1,
-	SisyfosLLAyer.SisyfosSourceLive_2,
-	SisyfosLLAyer.SisyfosSourceLive_3,
-	SisyfosLLAyer.SisyfosSourceLive_4,
-	SisyfosLLAyer.SisyfosSourceLive_5,
-	SisyfosLLAyer.SisyfosSourceLive_6,
-	SisyfosLLAyer.SisyfosSourceLive_7,
-	SisyfosLLAyer.SisyfosSourceLive_8,
-	SisyfosLLAyer.SisyfosSourceLive_9,
-	SisyfosLLAyer.SisyfosSourceLive_10
-]
-
-export const STICKY_LAYERS = [...STUDIO_MICS, ...LIVE_AUDIO]
 
 export function GetSisyfosTimelineObjForCamera(
 	context: NotesContext,
-	sources: SourceInfo[],
+	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
 	sourceType: string,
 	enable?: Timeline.TimelineEnable
 ): TSRTimelineObj[] {
@@ -48,13 +23,21 @@ export function GetSisyfosTimelineObjForCamera(
 	const audioTimeline: TSRTimelineObj[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
-	if ((useMic && camName) || !!sourceType.match(/server|telefon|full|evs/i)) {
+	const nonCam = !!sourceType.match(/server|telefon|full|evs/i)
+	if ((useMic && camName) || nonCam) {
 		const camLayers: string[] = []
 		if (useMic && camName) {
-			const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, sourceType)
-			if (sourceInfo && sourceInfo.sisyfosLayers) {
-				camLayers.push(...sourceInfo.sisyfosLayers)
+			const sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, sourceType)
+			if (sourceInfo) {
+				if (sourceInfo.sisyfosLayers) {
+					camLayers.push(...sourceInfo.sisyfosLayers)
+				}
+				if (sourceInfo.useStudioMics) {
+					camLayers.push(...config.studio.StudioMics)
+				}
 			}
+		} else if (nonCam) {
+			camLayers.push(...config.studio.StudioMics)
 		}
 		audioTimeline.push(
 			...camLayers.map<TimelineObjSisyfosMessage>(layer => {
@@ -109,7 +92,7 @@ export function GetStickyForPiece(
 }
 
 export function getStickyLayers(studioConfig: StudioConfig) {
-	return [...STUDIO_MICS, ...getLiveAudioLayers(studioConfig)]
+	return [...studioConfig.StudioMics, ...getLiveAudioLayers(studioConfig)]
 }
 
 export function getLiveAudioLayers(studioConfig: StudioConfig): string[] {

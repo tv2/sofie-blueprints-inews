@@ -12,7 +12,7 @@ import { SisyfosLLAyer } from './layers'
 
 export const CORE_INJECTED_KEYS = ['SofieHostURL']
 
-const DEFAULT_CAMERA_SISYFOS_LAYERS = [
+const DEFAULT_STUDIO_MICS_LAYERS = [
 	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
 	SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
 	SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
@@ -32,61 +32,71 @@ export const manifestAFVDSourcesCam: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '1',
 			AtemSource: 11,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 12,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '3',
 			AtemSource: 13,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '4',
 			AtemSource: 14,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '5',
 			AtemSource: 15,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '1S',
 			AtemSource: 16,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '2S',
 			AtemSource: 17,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '3S',
 			AtemSource: 18,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '4S',
 			AtemSource: 19,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '5S',
 			AtemSource: 20,
-			SisyfosLayers: DEFAULT_CAMERA_SISYFOS_LAYERS
+			SisyfosLayers: [],
+			StudioMics: true
 		}
 	]),
 	columns: [
@@ -120,6 +130,15 @@ export const manifestAFVDSourcesCam: ConfigManifestEntryTable = {
 			multiple: true,
 			defaultVal: [],
 			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 3
 		}
 	]
 }
@@ -135,61 +154,71 @@ export const manifestAFVDSourcesRM: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '1',
 			AtemSource: 1,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 2,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '3',
 			AtemSource: 3,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '4',
 			AtemSource: 4,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '5',
 			AtemSource: 5,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '6',
 			AtemSource: 6,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '7',
 			AtemSource: 7,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '8',
 			AtemSource: 8,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '9',
 			AtemSource: 9,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '10',
 			AtemSource: 10,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
+			StudioMics: false
 		}
 	]),
 	columns: [
@@ -223,6 +252,15 @@ export const manifestAFVDSourcesRM: ConfigManifestEntryTable = {
 			multiple: true,
 			defaultVal: [],
 			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: false,
+			rank: 3
 		}
 	]
 }
@@ -238,13 +276,15 @@ export const manifestAFVDSourcesDelayedPlayback: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '1',
 			AtemSource: 22,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_1]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_1],
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 23,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2],
+			StudioMics: true
 		}
 	]),
 	columns: [
@@ -278,6 +318,15 @@ export const manifestAFVDSourcesDelayedPlayback: ConfigManifestEntryTable = {
 			multiple: true,
 			defaultVal: [],
 			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 3
 		}
 	]
 }
@@ -296,61 +345,71 @@ export const manifestAFVDSourcesSkype: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '1',
 			AtemSource: 1,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 2,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '3',
 			AtemSource: 3,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '4',
 			AtemSource: 4,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '5',
 			AtemSource: 5,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '6',
 			AtemSource: 6,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '7',
 			AtemSource: 7,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '8',
 			AtemSource: 8,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '9',
 			AtemSource: 9,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '10',
 			AtemSource: 10,
-			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10]
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
+			StudioMics: false
 		}
 	]),
 	columns: [
@@ -384,6 +443,15 @@ export const manifestAFVDSourcesSkype: ConfigManifestEntryTable = {
 			multiple: true,
 			defaultVal: [],
 			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: false,
+			rank: 3
 		}
 	]
 }
@@ -428,6 +496,19 @@ export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	]
 }
 
+export const manifestAFVDStudioMics: ConfigManifestEntry = {
+	id: 'StudioMics',
+	name: 'Studio Mics',
+	description: 'Sisyfos layers for Studio Mics',
+	type: ConfigManifestEntryType.LAYER_MAPPINGS,
+	filters: {
+		deviceTypes: [DeviceType.SISYFOS]
+	},
+	required: true,
+	multiple: true,
+	defaultVal: DEFAULT_STUDIO_MICS_LAYERS
+}
+
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'MediaFlowId',
@@ -459,6 +540,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestAFVDSourcesDelayedPlayback,
 	manifestAFVDSourcesSkype,
 	manifestAFVDSourcesABMediaPlayers,
+	manifestAFVDStudioMics,
 	{
 		id: 'ABPlaybackDebugLogging',
 		name: 'Media players selection debug logging',

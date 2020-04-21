@@ -31,7 +31,7 @@ import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera, STUDIO_MICS } from '../helpers/sisyfos/sisyfos'
+import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -136,7 +136,7 @@ export function CreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(context, config.sources, partDefinition.rawType)
+						...GetSisyfosTimelineObjForCamera(context, config, partDefinition.rawType)
 					])
 				}
 			})
@@ -159,7 +159,7 @@ export function CreatePartKam(
 
 export function GetCameraMetaData(config: BlueprintConfig, layers?: string[]): PieceMetaData | undefined {
 	return GetStickyForPiece(
-		[...(layers || []), ...STUDIO_MICS].map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
+		[...(layers || []), ...config.studio.StudioMics].map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
 			return { layer: l, isPgm: 1 }
 		}),
 		config.stickyLayers
