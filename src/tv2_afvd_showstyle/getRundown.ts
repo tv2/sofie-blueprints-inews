@@ -40,7 +40,11 @@ import {
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	GetCameraMetaData,
 	GetEksternMetaData,
+	GetLayersForCamera,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicLLayer,
 	literal,
@@ -55,9 +59,7 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChann
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, parseConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers, boxMappings } from './helpers/content/dve'
-import { GetLayersForCamera, GetLayersForEkstern, GetSisyfosTimelineObjForCamera } from './helpers/sisyfos/sisyfos'
 import { SourceLayer } from './layers'
-import { GetCameraMetaData } from './parts/kam'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -152,7 +154,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
-			metaData: GetCameraMetaData(config, GetLayersForCamera(context, config.sources, `Camera ${info.id}`)),
+			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({

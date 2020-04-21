@@ -12,6 +12,12 @@ import { OfftubeSisyfosLLayer } from './layers'
 
 export const CORE_INJECTED_KEYS = ['SofieHostURL']
 
+const DEFAULT_STUDIO_MICS_LAYERS = [
+	OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A,
+	OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A,
+	OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
+]
+
 export const manifestOfftubeSourcesCam: ConfigManifestEntryTable = {
 	id: 'SourcesCam',
 	name: 'Camera Mapping',
@@ -23,11 +29,8 @@ export const manifestOfftubeSourcesCam: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '',
 			AtemSource: 0,
-			SisyfosLayers: [
-				OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A,
-				OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A,
-				OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
-			]
+			SisyfosLayers: [],
+			StudioMics: true
 		}
 	]),
 	columns: [
@@ -61,6 +64,15 @@ export const manifestOfftubeSourcesCam: ConfigManifestEntryTable = {
 			multiple: true,
 			defaultVal: [],
 			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 3
 		}
 	]
 }
@@ -76,13 +88,15 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '1',
 			AtemSource: 1,
-			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1]
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1],
+			StudioMics: false
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 2,
-			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2],
+			StudioMics: false
 		},
 		{
 			_id: '',
@@ -91,7 +105,8 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			SisyfosLayers: [
 				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
 				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
-			]
+			],
+			StudioMics: false
 		}
 	]),
 	columns: [
@@ -125,6 +140,15 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			multiple: true,
 			defaultVal: [],
 			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 3
 		}
 	]
 }
@@ -169,6 +193,19 @@ export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	]
 }
 
+export const manifestOfftubeStudioMics: ConfigManifestEntry = {
+	id: 'StudioMics',
+	name: 'Studio Mics',
+	description: 'Sisyfos layers for Studio Mics',
+	type: ConfigManifestEntryType.LAYER_MAPPINGS,
+	filters: {
+		deviceTypes: [DeviceType.SISYFOS]
+	},
+	required: true,
+	multiple: true,
+	defaultVal: DEFAULT_STUDIO_MICS_LAYERS
+}
+
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'MediaFlowId',
@@ -198,6 +235,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
 	manifestOfftubeSourcesABMediaPlayers,
+	manifestOfftubeStudioMics,
 	{
 		id: 'ABPlaybackDebugLogging',
 		name: 'Media players selection debug logging',

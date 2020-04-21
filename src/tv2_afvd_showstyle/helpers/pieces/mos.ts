@@ -21,12 +21,18 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionMOS, GraphicLLayer, InfiniteMode, literal, SourceInfo } from 'tv2-common'
+import {
+	CueDefinitionMOS,
+	GetSisyfosTimelineObjForCamera,
+	GraphicLLayer,
+	InfiniteMode,
+	literal,
+	SourceInfo
+} from 'tv2-common'
 import { VizEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
-import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 import { CreateTimingGrafik, grafikName } from './grafikViz'
 
 export function EvaluateMOSViz(

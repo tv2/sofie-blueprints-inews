@@ -20,6 +20,8 @@ import {
 	EksternParentClass,
 	FindSourceInfoStrict,
 	GetEksternMetaData,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	PartDefinition,
@@ -30,7 +32,6 @@ import { ControlClasses } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import { GetLayersForEkstern, GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
 
 export function EvaluateEkstern(
 	context: PartContext,

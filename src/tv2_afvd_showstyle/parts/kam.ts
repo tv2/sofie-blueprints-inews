@@ -19,11 +19,12 @@ import {
 	CameraParentClass,
 	CreatePartInvalid,
 	FindSourceInfoStrict,
-	GetStickyForPiece,
+	GetCameraMetaData,
+	GetLayersForCamera,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
 	PartTime,
-	PieceMetaData,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -31,7 +32,6 @@ import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -108,7 +108,7 @@ export function CreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				metaData: GetCameraMetaData(config, sourceInfoCam.sisyfosLayers),
+				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -155,13 +155,4 @@ export function CreatePartKam(
 		adLibPieces,
 		pieces
 	}
-}
-
-export function GetCameraMetaData(config: BlueprintConfig, layers?: string[]): PieceMetaData | undefined {
-	return GetStickyForPiece(
-		[...(layers || []), ...config.studio.StudioMics].map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
-			return { layer: l, isPgm: 1 }
-		}),
-		config.stickyLayers
-	)
 }

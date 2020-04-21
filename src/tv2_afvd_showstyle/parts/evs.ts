@@ -21,6 +21,7 @@ import {
 	CreatePartInvalid,
 	EVSParentClass,
 	FindSourceInfoStrict,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionEVS,
 	PartTime,
@@ -33,7 +34,6 @@ import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 

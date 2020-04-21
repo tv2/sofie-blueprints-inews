@@ -5,8 +5,7 @@ import {
 	TimelineObjSisyfosMessage,
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
-import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
-import { FindSourceInfoStrict, literal, SourceInfo } from 'tv2-common'
+import { literal } from 'tv2-common'
 import { OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 
 export const STUDIO_MICS = [
@@ -47,32 +46,32 @@ export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Time
 	return audioTimeline
 }
 
-export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
-	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
-	let eksternLayers: string[] = []
-	if (eksternProps) {
-		const source = eksternProps[1]
+// export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
+// 	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
+// 	let eksternLayers: string[] = []
+// 	if (eksternProps) {
+// 		const source = eksternProps[1]
 
-		if (source) {
-			switch (source) {
-				case '1':
-					eksternLayers = [OfftubeSisyfosLLayer.SisyfosSourceLive_1]
-					break
-				case '2':
-					eksternLayers = [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
-					break
-				case '3':
-					eksternLayers = [
-						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
-						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
-					]
-					break
-			}
-		}
-		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
-		if (sourceInfo && sourceInfo.sisyfosLayers) {
-			eksternLayers.push(...sourceInfo.sisyfosLayers)
-		}
-	}
-	return eksternLayers
-}
+// 		if (source) {
+// 			switch (source) {
+// 				case '1':
+// 					eksternLayers = [OfftubeSisyfosLLayer.SisyfosSourceLive_1]
+// 					break
+// 				case '2':
+// 					eksternLayers = [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
+// 					break
+// 				case '3':
+// 					eksternLayers = [
+// 						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
+// 						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
+// 					]
+// 					break
+// 			}
+// 		}
+// 		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
+// 		if (sourceInfo && sourceInfo.sisyfosLayers) {
+// 			eksternLayers.push(...sourceInfo.sisyfosLayers)
+// 		}
+// 	}
+// 	return eksternLayers
+// }
