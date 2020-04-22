@@ -1,25 +1,11 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineContentTypeVizMSE,
-	TimelineObjAtemDSK,
-	TimelineObjAtemME,
-	TimelineObjCCGMedia,
-	TimelineObjSisyfosMessage,
-	TimelineObjVIZMSEElementPilot,
-	VIZMSETransitionType
-} from 'timeline-state-resolver-types'
-import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	NotesContext,
-	PartContext,
 	PieceLifespan,
-	SourceLayerType
+	SourceLayerType,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinitionMOS,
@@ -27,6 +13,7 @@ import {
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
+	PartContext2,
 	SourceInfo
 } from 'tv2-common'
 import { VizEngine } from 'tv2-constants'
@@ -37,7 +24,7 @@ import { CreateTimingGrafik, grafikName } from './grafikViz'
 
 export function EvaluateMOSViz(
 	config: BlueprintConfig,
-	context: PartContext,
+	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -174,7 +161,7 @@ function GetMosObjContent(
 		fileName: parsedCue.name,
 		path: parsedCue.vcpid.toString(),
 		timelineObjects: [
-			literal<TimelineObjVIZMSEElementPilot>({
+			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
 				enable: {
 					start: 0
@@ -187,8 +174,8 @@ function GetMosObjContent(
 						? GraphicLLayer.GraphicLLayerPilotOverlay
 						: GraphicLLayer.GraphicLLayerPilot,
 				content: {
-					deviceType: DeviceType.VIZMSE,
-					type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
+					deviceType: TSR.DeviceType.VIZMSE,
+					type: TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT,
 					templateVcpId: parsedCue.vcpid,
 					continueStep: parsedCue.continueCount,
 					noAutoPreloading: false,
@@ -197,7 +184,7 @@ function GetMosObjContent(
 						? {}
 						: {
 								outTransition: {
-									type: VIZMSETransitionType.DELAY,
+									type: TSR.VIZMSETransitionType.DELAY,
 									delay: config.studio.PilotOutTransitionDuration
 								}
 						  })
@@ -207,7 +194,7 @@ function GetMosObjContent(
 			...(isOverlay || engine === 'WALL'
 				? []
 				: [
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
 								start: config.studio.PilotCutToMediaPlayer
@@ -215,16 +202,16 @@ function GetMosObjContent(
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: config.studio.AtemSource.FullFrameGrafikBackground,
-									transition: AtemTransitionStyle.CUT
+									transition: TSR.AtemTransitionStyle.CUT
 								}
 							},
 							...(adlib ? { classes: ['adlib_deparent'] } : {})
 						}),
-						literal<TimelineObjAtemDSK>({
+						literal<TSR.TimelineObjAtemDSK>({
 							id: '',
 							enable: {
 								start: config.studio.PilotCutToMediaPlayer
@@ -232,8 +219,8 @@ function GetMosObjContent(
 							priority: 1,
 							layer: AtemLLayer.AtemAuxPGM,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.DSK,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.DSK,
 								dsk: {
 									onAir: true,
 									sources: {
@@ -251,9 +238,9 @@ function GetMosObjContent(
 	})
 }
 
-export function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMedia[] {
+export function CleanUpDVEBackground(config: BlueprintConfig): TSR.TimelineObjCCGMedia[] {
 	return [CasparLLayer.CasparCGDVEFrame, CasparLLayer.CasparCGDVEKey, CasparLLayer.CasparCGDVETemplate].map<
-		TimelineObjCCGMedia
+		TSR.TimelineObjCCGMedia
 	>(layer => {
 		return {
 			id: '',
@@ -263,8 +250,8 @@ export function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMed
 			priority: 2,
 			layer,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.MEDIA,
 				file: 'empty',
 				mixer: {
 					opacity: 0
@@ -280,7 +267,7 @@ function MuteSisyfosChannels(
 	adlib: boolean,
 	adlibRank: number,
 	vcpid: number
-): TimelineObjSisyfosMessage[] {
+): TSR.TimelineObjSisyfosMessage[] {
 	return [
 		SisyfosLLAyer.SisyfosSourceServerA,
 		SisyfosLLAyer.SisyfosSourceServerB,
@@ -300,8 +287,8 @@ function MuteSisyfosChannels(
 				.filter(s => s.type === SourceLayerType.REMOTE && s.id.match(/^DP/i))
 				.map(s => SisyfosEVSSource(s.id.replace(/^DP/i, '') as SisyfosLLAyer)) as SisyfosLLAyer[])
 		]
-	].map<TimelineObjSisyfosMessage>(layer => {
-		return literal<TimelineObjSisyfosMessage>({
+	].map<TSR.TimelineObjSisyfosMessage>(layer => {
+		return literal<TSR.TimelineObjSisyfosMessage>({
 			id: `muteSisyfos-${layer}-${partId}-${vcpid}-${adlib ? `adlib-${adlibRank}` : ''}`,
 			enable: {
 				start: 0
@@ -309,8 +296,8 @@ function MuteSisyfosChannels(
 			priority: 2,
 			layer,
 			content: {
-				deviceType: DeviceType.SISYFOS,
-				type: TimelineContentTypeSisyfos.SISYFOS,
+				deviceType: TSR.DeviceType.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 				isPgm: 0
 			}
 		})

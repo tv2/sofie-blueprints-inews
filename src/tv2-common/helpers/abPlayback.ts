@@ -1,12 +1,9 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemAny,
-	TimelineObjAtemAUX,
-	TimelineObjAtemME,
-	TimelineObjAtemSsrc
-} from 'timeline-state-resolver-types'
-import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
+	IBlueprintPieceInstance,
+	NotesContext,
+	OnGenerateTimelineObj,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
@@ -69,20 +66,20 @@ interface SessionTime {
 	end: number | undefined
 	optional: boolean
 }
-function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
+function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceInstance[]) {
 	const piecesWantingMediaPlayers = _.filter(resolvedPieces, p => {
-		if (!p.metaData) {
+		if (!p.piece.metaData) {
 			return false
 		}
-		const metadata = p.metaData as PieceMetaData
+		const metadata = p.piece.metaData as PieceMetaData
 		return (metadata.mediaPlayerSessions || []).length > 0
 	})
 
 	const sessionRequests: { [sessionId: string]: SessionTime | undefined } = {}
 	_.each(piecesWantingMediaPlayers, p => {
-		const metadata = p.metaData as PieceMetaData
-		const start = p.enable.start as number
-		const duration = p.playoutDuration
+		const metadata = p.piece.metaData as PieceMetaData
+		const start = p.piece.enable.start as number
+		const duration = p.piece.playoutDuration
 		const end = duration !== undefined ? start + duration : undefined
 
 		// Track the range of each session
@@ -92,7 +89,7 @@ function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
 			// Perhaps the id given should be prefixed with the piece(instance) id? And sharing sessions can be figured out when it becomes needed
 
 			if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-				sessionId = `${p.infiniteId || p._id}`
+				sessionId = `${p.piece.infiniteId || p._id}`
 			}
 			// Note: multiple generated sessionIds for a single piece will not work as there will not be enough info to assign objects to different players
 			const val = sessionRequests[sessionId] || undefined
@@ -199,7 +196,7 @@ export function resolveMediaPlayerAssignments<
 	context: NotesContext,
 	config: ShowStyleConfig,
 	previousAssignmentRev: SessionToPlayerMap,
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintPieceInstance[]
 ) {
 	const debugLog = config.studio.ABPlaybackDebugLogging
 	const sessionRequests = calculateSessionTimeRanges(resolvedPieces)
@@ -281,7 +278,7 @@ function updateObjectsToMediaPlayer<
 ) {
 	_.each(objs, obj => {
 		// Mutate each object to the correct player
-		if (obj.content.deviceType === DeviceType.CASPARCG) {
+		if (obj.content.deviceType === TSR.DeviceType.CASPARCG) {
 			if (obj.layer === sourceLayers.Caspar.ClipPending) {
 				obj.layer = sourceLayers.Caspar.PlayerClip(playerId)
 			} else if (obj.lookaheadForLayer === sourceLayers.Caspar.ClipPending) {
@@ -293,22 +290,22 @@ function updateObjectsToMediaPlayer<
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)
 			}
-		} else if (obj.content.deviceType === DeviceType.ATEM) {
+		} else if (obj.content.deviceType === TSR.DeviceType.ATEM) {
 			let atemInput = _.find(config.mediaPlayers, mp => mp.id === playerId.toString())
 			if (!atemInput) {
 				context.warning(`Trying to find atem input for unknown mediaPlayer: #${playerId}`)
 				atemInput = { id: playerId.toString(), val: config.studio.AtemSource.Default.toString() }
 			}
 
-			const atemObj = obj as TimelineObjAtemAny
-			if (atemObj.content.type === TimelineContentTypeAtem.ME) {
-				const atemObj2 = atemObj as TimelineObjAtemME
+			const atemObj = obj as TSR.TimelineObjAtemAny
+			if (atemObj.content.type === TSR.TimelineContentTypeAtem.ME) {
+				const atemObj2 = atemObj as TSR.TimelineObjAtemME
 				atemObj2.content.me.input = Number(atemInput.val) || 0
-			} else if (atemObj.content.type === TimelineContentTypeAtem.AUX) {
-				const atemObj2 = atemObj as TimelineObjAtemAUX
+			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.AUX) {
+				const atemObj2 = atemObj as TSR.TimelineObjAtemAUX
 				atemObj2.content.aux.input = Number(atemInput.val) || 0
-			} else if (atemObj.content.type === TimelineContentTypeAtem.SSRC) {
-				const atemObj2 = atemObj as TimelineObjAtemSsrc
+			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.SSRC) {
+				const atemObj2 = atemObj as TSR.TimelineObjAtemSsrc
 				// Find box with no source
 				const input = Number(atemInput.val) || 0
 				atemObj2.content.ssrc.boxes.forEach((box, i) => {
@@ -321,7 +318,7 @@ function updateObjectsToMediaPlayer<
 					`Trying to move ATEM object of unknown type (${atemObj.content.type}) for media player assignment`
 				)
 			}
-		} else if (obj.content.deviceType === DeviceType.SISYFOS) {
+		} else if (obj.content.deviceType === TSR.DeviceType.SISYFOS) {
 			if (obj.layer === sourceLayers.Sisyfos.ClipPending) {
 				// TODO: Change when adding more servers
 				obj.layer = playerId === 1 ? sourceLayers.Sisyfos.PlayerA : sourceLayers.Sisyfos.PlayerB
@@ -352,7 +349,7 @@ export function assignMediaPlayers<
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
-	resolvedPieces: IBlueprintPieceDB[],
+	resolvedPieces: IBlueprintPieceInstance[],
 	sourceLayers: ABSourceLayers
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const previousAssignmentRev = reversePreviousAssignment(previousAssignment)
@@ -395,7 +392,7 @@ export function applyMediaPlayersAssignments<
 	const groupedObjs = _.groupBy(labelledObjs, o => {
 		const sessionId = (o.metaData || {}).mediaPlayerSession
 		if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-			return o.infinitePieceId || o.pieceId || MEDIA_PLAYER_AUTO
+			return o.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
 		} else {
 			return sessionId
 		}

@@ -1,20 +1,14 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemSsrc,
-	TimelineObjSisyfosAny
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultTimeline,
-	IBlueprintPieceDB,
+	IBlueprintPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
 	PartEventContext,
 	PieceMetaData as PieceMetaDataBase,
 	RundownContext,
 	TimelineObjectCoreExt,
-	TimelinePersistentState
+	TimelinePersistentState,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
@@ -58,7 +52,7 @@ export function onTimelineGenerate<
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintPieceDB[],
+	resolvedPieces: IBlueprintPieceInstance[],
 	parseConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers
 ): Promise<BlueprintResultTimeline> {
@@ -98,7 +92,7 @@ export function getEndStateForPart(
 	_context: RundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintPieceDB[],
+	resolvedPieces: IBlueprintPieceInstance[],
 	time: number
 ): PartEndState {
 	const endState: PartEndStateExt = {
@@ -109,7 +103,10 @@ export function getEndStateForPart(
 
 	const activePieces = _.filter(
 		resolvedPieces,
-		p => p.enable && (p.enable.start as number) <= time && (!p.enable.end || (p.enable.end as number) >= time)
+		p =>
+			p.piece.enable &&
+			(p.piece.enable.start as number) <= time &&
+			(!p.piece.enable.end || (p.piece.enable.end as number) >= time)
 	)
 
 	_.each(activePieces, piece => {
@@ -127,11 +124,11 @@ export function getEndStateForPart(
 function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 	// DVE_box lookahead class
 	_.each(timeline, obj => {
-		const obj2 = obj as TimelineObjAtemSsrc & TimelineBlueprintExt
+		const obj2 = obj as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
 		if (
 			obj2.isLookahead &&
-			obj2.content.deviceType === DeviceType.ATEM &&
-			obj2.content.type === TimelineContentTypeAtem.SSRC
+			obj2.content.deviceType === TSR.DeviceType.ATEM &&
+			obj2.content.type === TSR.TimelineContentTypeAtem.SSRC
 			// obj2.enable &&
 			// (obj2.enable.while === '1' || obj2.enable.while === 1)
 		) {
@@ -147,9 +144,9 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 export function preservePieceSisfosLevel(
 	endState: PartEndStateExt,
 	previousPartEndState: Partial<PartEndStateExt> | undefined,
-	piece: IBlueprintPieceDB
+	piece: IBlueprintPieceInstance
 ) {
-	const metaData = piece.metaData as PieceMetaData | undefined
+	const metaData = piece.piece.metaData as PieceMetaData | undefined
 	if (metaData) {
 		// Loop through rm level persistance
 		if (metaData.stickySisyfosLevels) {
@@ -169,11 +166,11 @@ export function preservePieceSisfosLevel(
 	}
 }
 
-function isSisyfosSource(obj: Partial<TimelineObjSisyfosAny & TimelineObjectCoreExt>) {
+function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosAny & TimelineObjectCoreExt>) {
 	return (
 		obj.content &&
-		obj.content.deviceType === DeviceType.SISYFOS &&
-		obj.content.type === TimelineContentTypeSisyfos.SISYFOS
+		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
+		obj.content.type === TSR.TimelineContentTypeSisyfos.SISYFOS
 	)
 }
 
@@ -181,40 +178,40 @@ export function copyPreviousSisyfosLevels(
 	context: RundownContext,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousLevels: PartEndStateExt['stickySisyfosLevels'],
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintPieceInstance[]
 ) {
 	// This needs to look at previous pieces within the part, to make it work for adlibs
 	const sisyfosObjs = (timelineObjs as Array<
-		TimelineObjSisyfosAny & TimelineBlueprintExt & OnGenerateTimelineObj
+		TSR.TimelineObjSisyfosAny & TimelineBlueprintExt & OnGenerateTimelineObj
 	>).filter(isSisyfosSource)
 
 	// Pieces should be ordered, we shall assume that
-	const groupedPieces = _.groupBy(resolvedPieces, p => p.enable.start)
+	const groupedPieces = _.groupBy(resolvedPieces, p => p.piece.enable.start)
 	_.each(groupedPieces, pieces => {
 		const pieceIds = _.pluck(pieces, '_id') // getPieceGroupId(p._id))
 		// Find all the objs that start here
 		const objs = sisyfosObjs.filter(o => {
-			const groupId = o.pieceId
+			const groupId = o.pieceInstanceId
 			return groupId && pieceIds.indexOf(groupId) !== -1
 		})
 		// Stop if no objects
-		if (objs.length === 0 || !pieces[0].enable) {
+		if (objs.length === 0 || !pieces[0].piece.enable) {
 			return
 		}
 
 		// Find the active pieces before this time
-		const time = pieces[0].enable.start as number
+		const time = pieces[0].piece.enable.start as number
 
 		// Start of part
 		if (time !== 0) {
 			// Calculate the previous 'state'
 			const activePieces = _.filter(resolvedPieces, p => {
-				if (!p.enable) {
+				if (!p.piece.enable) {
 					return false
 				}
 
-				const start = p.enable.start as number // Core should be always setting this to a number
-				const duration = p.playoutDuration
+				const start = p.piece.enable.start as number // Core should be always setting this to a number
+				const duration = p.piece.playoutDuration
 
 				// Piece must start before target, and end at or after target starts
 				return start < time && (duration === undefined || start + duration >= time)
@@ -222,7 +219,7 @@ export function copyPreviousSisyfosLevels(
 
 			const newPreviousLevels: PartEndStateExt['stickySisyfosLevels'] = {}
 			_.each(activePieces, piece => {
-				const metadata = piece.metaData as PieceMetaData | undefined
+				const metadata = piece.piece.metaData as PieceMetaData | undefined
 				if (metadata && metadata.stickySisyfosLevels) {
 					_.each(metadata.stickySisyfosLevels, (val, id) => {
 						// context.warning(

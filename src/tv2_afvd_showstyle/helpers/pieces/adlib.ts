@@ -1,10 +1,11 @@
-import { IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
 	GetDVETemplate,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TemplateIsValid
@@ -16,7 +17,7 @@ import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateAdLib(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	partId: string,

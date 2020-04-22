@@ -1,4 +1,5 @@
-import { IBlueprintPart, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPart } from 'tv-automation-sofie-blueprints-integration'
+import { PartContext2 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { TimeFromFrames } from './frameTime'
@@ -6,7 +7,7 @@ import { CueDefinitionJingle, PartDefinition } from './inewsConversion'
 
 // TODO: OFFTUBE: find a way to do this for adlibs
 export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase>(
-	_context: PartContext,
+	_context: PartContext2,
 	config: TV2BlueprintConfigBase<StudioConfig>,
 	part: PartDefinition
 ):

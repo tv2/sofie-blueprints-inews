@@ -1,5 +1,12 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartDefinition } from 'tv2-common'
+import {
+	CueDefinition,
+	EvaluateCuesBase,
+	EvaluateCuesOptions,
+	IBlueprintAdLibPieceEPI,
+	IBlueprintPieceEPI,
+	PartContext2,
+	PartDefinition
+} from 'tv2-common'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
@@ -8,10 +15,10 @@ import { OfftubeEvaluateVIZ } from '../cues/OfftubeViz'
 import { OffTubeShowstyleBlueprintConfig } from './config'
 
 export function OfftubeEvaluateCues(
-	context: PartContext,
+	context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
-	pieces: IBlueprintPiece[],
-	adLibPieces: IBlueprintAdLibPiece[],
+	pieces: IBlueprintPieceEPI[],
+	adLibPieces: IBlueprintAdLibPieceEPI[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions

@@ -1,15 +1,11 @@
-import {
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PartContext,
-	PieceLifespan
-} from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
 	GetDVETemplate,
 	literal,
+	PartContext2,
 	PartDefinition,
 	TemplateIsValid
 } from 'tv2-common'
@@ -19,7 +15,7 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateDVE(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

@@ -1,16 +1,10 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemME
-} from 'timeline-state-resolver-types'
-import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	RemoteContent,
 	SourceLayerType,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
@@ -24,6 +18,7 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
+	PartContext2,
 	PartDefinition,
 	TransitionFromString,
 	TransitionSettings
@@ -34,7 +29,7 @@ import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -80,7 +75,7 @@ export function EvaluateEkstern(
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
 								start: 0
@@ -88,13 +83,13 @@ export function EvaluateEkstern(
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: atemInput,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
-										: AtemTransitionStyle.CUT,
+										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							}
@@ -127,7 +122,7 @@ export function EvaluateEkstern(
 							layer: 'ekstern_enable_ident',
 							classes: [ControlClasses.ShowIdentGraphic]
 						}),
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
 								start: 0
@@ -135,13 +130,13 @@ export function EvaluateEkstern(
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: atemInput,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
-										: AtemTransitionStyle.CUT,
+										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							},

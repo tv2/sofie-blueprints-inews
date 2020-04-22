@@ -1,12 +1,11 @@
-import { TSRTimelineObj } from 'timeline-state-resolver-types'
-import { PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinition, PartDefinition, SkipCue } from 'tv2-common'
+import { TSR } from 'tv-automation-sofie-blueprints-integration'
+import { CueDefinition, PartContext2, PartDefinition, SkipCue } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GetCasparOverlayTimeline } from '../cues/OfftubeGrafikCaspar'
 import { OffTubeShowstyleBlueprintConfig } from './config'
 
 export function EvaluateCuesIntoTimeline(
-	_context: PartContext,
+	_context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
@@ -14,8 +13,8 @@ export function EvaluateCuesIntoTimeline(
 	selectedCueTypes?: CueType[] | undefined,
 	/** Don't evaluate adlibs */
 	excludeAdlibs?: boolean
-): TSRTimelineObj[] {
-	const timeline: TSRTimelineObj[] = []
+): TSR.TSRTimelineObj[] {
+	const timeline: TSR.TSRTimelineObj[] = []
 
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, selectedCueTypes, excludeAdlibs)) {

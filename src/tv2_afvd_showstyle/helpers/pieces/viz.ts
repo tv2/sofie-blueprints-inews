@@ -1,12 +1,12 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionVIZ, EvaluateVIZBase, GraphicLLayer } from 'tv2-common'
+import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import { CueDefinitionVIZ, EvaluateVIZBase, GraphicLLayer, PartContext2 } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer } from '../../../tv2_afvd_studio/layers'
 
 export function EvaluateVIZ(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

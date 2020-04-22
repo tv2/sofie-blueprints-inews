@@ -2,17 +2,16 @@ import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext
+	IBlueprintPiece
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition, PartTime } from 'tv2-common'
+import { literal, PartContext2, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartLive(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number

@@ -1,21 +1,11 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeVizMSE,
-	TimelineObjAtemAUX,
-	TimelineObjCCGMedia,
-	TimelineObjVIZMSEElementInternal,
-	TSRTimelineObj
-} from 'timeline-state-resolver-types'
-import {
 	CameraContent,
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
-	SourceLayerType
+	SourceLayerType,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CalculateTime,
@@ -26,6 +16,7 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import * as _ from 'underscore'
+import { PartContext2 } from '../partContext2'
 
 export interface VizCueSourceLayers {
 	SourceLayerDVEBackground: string
@@ -40,7 +31,7 @@ export function EvaluateVIZBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext,
+	context: PartContext2,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -66,15 +57,15 @@ export function EvaluateVIZBase<
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
-						timelineObjects: _.compact<TSRTimelineObj>([
-							literal<TimelineObjCCGMedia>({
+						timelineObjects: _.compact<TSR.TSRTimelineObj>([
+							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
 								enable: { start: 0 },
 								priority: 100,
 								layer: sourceLayers.CasparLLayerDVELoop,
 								content: {
-									deviceType: DeviceType.CASPARCG,
-									type: TimelineContentTypeCasparCg.MEDIA,
+									deviceType: TSR.DeviceType.CASPARCG,
+									type: TSR.TimelineContentTypeCasparCg.MEDIA,
 									file: path,
 									loop: true
 								}
@@ -90,7 +81,7 @@ export function EvaluateVIZBase<
 					externalId: partId,
 					name: fileName,
 					enable: {
-						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+						start: parsedCue.start ? CalculateTime(parsedCue.start) ?? null : 0
 					},
 					outputLayerId: 'sec',
 					sourceLayerId: sourceLayers.SourceLayerDVEBackground,
@@ -98,15 +89,15 @@ export function EvaluateVIZBase<
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
-						timelineObjects: _.compact<TSRTimelineObj>([
-							literal<TimelineObjCCGMedia>({
+						timelineObjects: _.compact<TSR.TSRTimelineObj>([
+							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
 								enable: { start: 0 },
 								priority: 100,
 								layer: sourceLayers.CasparLLayerDVELoop,
 								content: {
-									deviceType: DeviceType.CASPARCG,
-									type: TimelineContentTypeCasparCg.MEDIA,
+									deviceType: TSR.DeviceType.CASPARCG,
+									type: TSR.TimelineContentTypeCasparCg.MEDIA,
 									file: path,
 									loop: true
 								}
@@ -138,7 +129,7 @@ export function EvaluateVIZBase<
 						_id: '',
 						externalId: partId,
 						enable: {
-							start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+							start: parsedCue.start ? CalculateTime(parsedCue.start) ?? null : 0
 						},
 						name: parsedCue.content.INP1 || '',
 						outputLayerId: 'aux',
@@ -147,15 +138,15 @@ export function EvaluateVIZBase<
 						content: literal<CameraContent>({
 							studioLabel: '',
 							switcherInput: sourceInfo.port,
-							timelineObjects: _.compact<TSRTimelineObj>([
-								literal<TimelineObjAtemAUX>({
+							timelineObjects: _.compact<TSR.TSRTimelineObj>([
+								literal<TSR.TimelineObjAtemAUX>({
 									id: '',
 									enable: { start: 0 },
 									priority: 100,
 									layer: sourceLayers.AtemLLayerAtemAuxVizOvlIn1,
 									content: {
-										deviceType: DeviceType.ATEM,
-										type: TimelineContentTypeAtem.AUX,
+										deviceType: TSR.DeviceType.ATEM,
+										type: TSR.TimelineContentTypeAtem.AUX,
 										aux: {
 											input: sourceInfo.port
 										}
@@ -191,15 +182,15 @@ export function EvaluateVIZBase<
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,
-								timelineObjects: _.compact<TSRTimelineObj>([
-									literal<TimelineObjVIZMSEElementInternal>({
+								timelineObjects: _.compact<TSR.TSRTimelineObj>([
+									literal<TSR.TimelineObjVIZMSEElementInternal>({
 										id: '',
 										enable: { start: 0 },
 										priority: 100,
 										layer: sourceLayers.GraphicLLayerGraphicLLayerDesign,
 										content: {
-											deviceType: DeviceType.VIZMSE,
-											type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+											deviceType: TSR.DeviceType.VIZMSE,
+											type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 											templateName: path,
 											templateData: []
 										}
@@ -215,7 +206,7 @@ export function EvaluateVIZBase<
 							externalId: partId,
 							name: path,
 							enable: {
-								start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+								start: parsedCue.start ? CalculateTime(parsedCue.start) ?? null : 0
 							},
 							outputLayerId: 'sec',
 							sourceLayerId: sourceLayers.SourceLayerDesign,
@@ -223,15 +214,15 @@ export function EvaluateVIZBase<
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,
-								timelineObjects: _.compact<TSRTimelineObj>([
-									literal<TimelineObjVIZMSEElementInternal>({
+								timelineObjects: _.compact<TSR.TSRTimelineObj>([
+									literal<TSR.TimelineObjVIZMSEElementInternal>({
 										id: '',
 										enable: { start: 0 },
 										priority: 100,
 										layer: sourceLayers.GraphicLLayerGraphicLLayerDesign,
 										content: {
-											deviceType: DeviceType.VIZMSE,
-											type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+											deviceType: TSR.DeviceType.VIZMSE,
+											type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 											templateName: path,
 											templateData: []
 										}

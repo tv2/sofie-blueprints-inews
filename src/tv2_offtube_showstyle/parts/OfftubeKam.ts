@@ -1,26 +1,27 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemME
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinitionKam, PartTime, TransitionFromString, TransitionSettings } from 'tv2-common'
+import {
+	literal,
+	PartContext2,
+	PartDefinitionKam,
+	PartTime,
+	TransitionFromString,
+	TransitionSettings
+} from 'tv2-common'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartKam(
-	context: PartContext,
+	context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
@@ -51,7 +52,7 @@ export function OfftubeCreatePartKam(
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.DSK1F,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: ``,
 							enable: {
 								start: 0
@@ -59,13 +60,13 @@ export function OfftubeCreatePartKam(
 							priority: 1,
 							layer: OfftubeAtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: config.studio.AtemSource.DSK1F,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
-										: AtemTransitionStyle.CUT,
+										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							}

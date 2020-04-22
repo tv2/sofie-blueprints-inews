@@ -1,5 +1,4 @@
-import { DeviceType } from 'timeline-state-resolver-types'
-import { IBlueprintAsRunLogEventContent, LookaheadMode } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAsRunLogEventContent, LookaheadMode, TSR } from 'tv-automation-sofie-blueprints-integration'
 import onAsRunEvent from '../onAsRunEvent'
 
 describe('onAsRunevent', () => {
@@ -31,16 +30,19 @@ describe('onAsRunevent', () => {
 				getSegment: () => {
 					return undefined
 				},
-				getPart: () => {
-					return undefined
-				},
 				getParts: () => {
 					return []
 				},
-				getPiece: () => {
+				getPartInstance: () => {
 					return undefined
 				},
-				getPieces: () => {
+				getIngestDataForPartInstance: () => {
+					return undefined
+				},
+				getPieceInstance: () => {
+					return undefined
+				},
+				getPieceInstances: () => {
 					return []
 				},
 				getIngestDataForRundown: () => {
@@ -61,9 +63,6 @@ describe('onAsRunevent', () => {
 				warning: (_: string) => {
 					return
 				},
-				getNotes: () => {
-					return []
-				},
 				getHashId: (_: string, __?: boolean) => {
 					return ''
 				},
@@ -73,7 +72,7 @@ describe('onAsRunevent', () => {
 				getStudioMappings: () => {
 					return {
 						'1': {
-							device: DeviceType.ATEM,
+							device: TSR.DeviceType.ATEM,
 							deviceId: '',
 							lookahead: LookaheadMode.NONE
 						}

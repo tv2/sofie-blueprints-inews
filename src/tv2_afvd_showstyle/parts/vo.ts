@@ -3,7 +3,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
@@ -12,6 +11,7 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	MakeContentServer,
+	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
@@ -22,7 +22,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartVO(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,

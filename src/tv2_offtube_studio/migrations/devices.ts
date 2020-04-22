@@ -1,9 +1,9 @@
-import { DeviceOptionsAny, DeviceType as PlayoutDeviceType } from 'timeline-state-resolver-types'
 import {
 	MigrationContextStudio,
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
-	MigrationStepStudio
+	MigrationStepStudio,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
@@ -13,13 +13,13 @@ declare const VERSION: string // Injected by webpack
 interface DeviceEntry {
 	id: string
 	firstVersion: string
-	type: PlayoutDeviceType
+	type: TSR.DeviceType
 	defaultValue: (
 		input: MigrationStepInputFilteredResult,
 		context: MigrationContextStudio
-	) => DeviceOptionsAny | undefined
+	) => TSR.DeviceOptionsAny | undefined
 	input?: MigrationStepInput[]
-	validate?: (device: DeviceOptionsAny) => string | boolean
+	validate?: (device: TSR.DeviceOptionsAny) => string | boolean
 	createDependsOn?: string
 	createCondition?: (context: MigrationContextStudio) => boolean
 }
@@ -35,7 +35,7 @@ function validateDevice(spec: DeviceEntry): MigrationStepStudio {
 				return false
 			}
 			if (dev.type !== spec.type) {
-				return `Type is not "${PlayoutDeviceType[spec.type]}"`
+				return `Type is not "${TSR.DeviceType[spec.type]}"`
 			}
 
 			if (spec.validate) {
@@ -93,18 +93,18 @@ const devices: DeviceEntry[] = [
 	{
 		id: 'abstract0',
 		firstVersion: '0.1.0',
-		type: PlayoutDeviceType.ABSTRACT,
+		type: TSR.DeviceType.ABSTRACT,
 		defaultValue: () => ({
-			type: PlayoutDeviceType.ABSTRACT,
+			type: TSR.DeviceType.ABSTRACT,
 			options: {}
 		})
 	},
 	{
 		id: 'caspar01',
 		firstVersion: '0.1.0',
-		type: PlayoutDeviceType.CASPARCG,
+		type: TSR.DeviceType.CASPARCG,
 		defaultValue: input => ({
-			type: PlayoutDeviceType.CASPARCG,
+			type: TSR.DeviceType.CASPARCG,
 			options: {
 				host: input.host,
 				port: 5250,
@@ -141,14 +141,14 @@ const devices: DeviceEntry[] = [
 	{
 		id: 'caspar01-launcher',
 		firstVersion: '0.1.0',
-		type: PlayoutDeviceType.HTTPWATCHER,
+		type: TSR.DeviceType.HTTPWATCHER,
 		defaultValue: (_input: MigrationStepInputFilteredResult, context: MigrationContextStudio) => {
 			const mainDev = context.getDevice('caspar01')
 			if (mainDev && mainDev.options) {
 				const mainOpts = mainDev.options as any
 				if (mainOpts.launcherHost) {
 					return {
-						type: PlayoutDeviceType.HTTPWATCHER,
+						type: TSR.DeviceType.HTTPWATCHER,
 						options: {
 							uri: `http://${mainOpts.launcherHost}:${mainOpts.launcherPort || 8005}/processes`,
 							httpMethod: 'GET',
@@ -186,14 +186,14 @@ const devices: DeviceEntry[] = [
 	{
 		id: 'caspar01-scanner',
 		firstVersion: '0.1.0',
-		type: PlayoutDeviceType.HTTPWATCHER,
+		type: TSR.DeviceType.HTTPWATCHER,
 		defaultValue: (_input: MigrationStepInputFilteredResult, context: MigrationContextStudio) => {
 			const mainDev = context.getDevice('caspar01')
 			if (mainDev && mainDev.options) {
 				const mainOpts = mainDev.options as any
 				if (mainOpts.launcherHost) {
 					return {
-						type: PlayoutDeviceType.HTTPWATCHER,
+						type: TSR.DeviceType.HTTPWATCHER,
 						options: {
 							uri: `http://${mainOpts.host}:8000/stat/seq`,
 							httpMethod: 'GET',
@@ -231,9 +231,9 @@ const devices: DeviceEntry[] = [
 	{
 		id: 'atem0',
 		firstVersion: '0.1.0',
-		type: PlayoutDeviceType.ATEM,
+		type: TSR.DeviceType.ATEM,
 		defaultValue: input => ({
-			type: PlayoutDeviceType.ATEM,
+			type: TSR.DeviceType.ATEM,
 			options: {
 				host: input.host,
 				port: 9910
@@ -264,9 +264,9 @@ const devices: DeviceEntry[] = [
 	{
 		id: 'http0',
 		firstVersion: '0.1.0',
-		type: PlayoutDeviceType.HTTPSEND,
+		type: TSR.DeviceType.HTTPSEND,
 		defaultValue: () => ({
-			type: PlayoutDeviceType.HTTPSEND,
+			type: TSR.DeviceType.HTTPSEND,
 			options: {
 				makeReadyCommands: []
 			}

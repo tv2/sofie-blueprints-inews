@@ -1,5 +1,4 @@
-import { DeviceType } from 'timeline-state-resolver-types'
-import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofie-blueprints-integration'
+import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'tv-automation-sofie-blueprints-integration'
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
@@ -208,7 +207,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 					'The Sofie Layer mapping to use in playback. This will ensure proper viz transition logic by matching the viz layers.',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
-					deviceTypes: [DeviceType.VIZMSE]
+					deviceTypes: [TSR.DeviceType.VIZMSE]
 				},
 				multiple: false,
 				required: true,

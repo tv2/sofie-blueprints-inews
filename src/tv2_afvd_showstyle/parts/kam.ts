@@ -1,18 +1,12 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemME
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
@@ -23,6 +17,7 @@ import {
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	literal,
+	PartContext2,
 	PartDefinitionKam,
 	PartTime,
 	TransitionFromString,
@@ -36,7 +31,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartKam(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
@@ -67,7 +62,7 @@ export function CreatePartKam(
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.JingleFill,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: ``,
 							enable: {
 								start: 0
@@ -75,13 +70,13 @@ export function CreatePartKam(
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: config.studio.AtemSource.JingleFill,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
-										: AtemTransitionStyle.CUT,
+										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							}
@@ -113,7 +108,7 @@ export function CreatePartKam(
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: ``,
 							enable: {
 								start: 0
@@ -121,13 +116,13 @@ export function CreatePartKam(
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: Number(atemInput),
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
-										: AtemTransitionStyle.CUT,
+										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							},

@@ -1,17 +1,17 @@
-import { DeviceType, TimelineContentTypeAtem, TimelineObjAtemAUX, TSRTimelineObj } from 'timeline-state-resolver-types'
 import {
 	CameraContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
-	SourceLayerType
+	SourceLayerType,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CalculateTime,
 	CueDefinitionTargetEngine,
 	FindSourceInfoStrict,
 	literal,
+	PartContext2,
 	PartDefinition,
 	TranslateEngine
 } from 'tv2-common'
@@ -24,7 +24,7 @@ import { EvaluateGrafikViz } from './grafikViz'
 import { EvaluateMOSViz } from './mos'
 
 export function EvaluateTargetEngine(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -55,7 +55,7 @@ export function EvaluateTargetEngine(
 					_id: '',
 					externalId: partId,
 					enable: {
-						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+						start: parsedCue.start ? CalculateTime(parsedCue.start) ?? null : 0
 					},
 					name: parsedCue.content.INP1 || '',
 					outputLayerId: 'aux',
@@ -64,15 +64,15 @@ export function EvaluateTargetEngine(
 					content: literal<CameraContent>({
 						studioLabel: '',
 						switcherInput: sourceInfo.port,
-						timelineObjects: _.compact<TSRTimelineObj>([
-							literal<TimelineObjAtemAUX>({
+						timelineObjects: _.compact<TSR.TSRTimelineObj>([
+							literal<TSR.TimelineObjAtemAUX>({
 								id: '',
 								enable: { start: 0 },
 								priority: 100,
 								layer: AtemLLayer.AtemAuxVizOvlIn1,
 								content: {
-									deviceType: DeviceType.ATEM,
-									type: TimelineContentTypeAtem.AUX,
+									deviceType: TSR.DeviceType.ATEM,
+									type: TSR.TimelineContentTypeAtem.AUX,
 									aux: {
 										input: sourceInfo.port
 									}

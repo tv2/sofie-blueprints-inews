@@ -1,6 +1,6 @@
 import {
 	BlueprintResultTimeline,
-	IBlueprintPieceDB,
+	IBlueprintPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
 	PartEventContext,
@@ -15,7 +15,7 @@ export function onTimelineGenerateOfftube(
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintPieceInstance[]
 ): Promise<BlueprintResultTimeline> {
 	return onTimelineGenerate(
 		context,

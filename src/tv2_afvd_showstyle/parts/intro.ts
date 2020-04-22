@@ -2,14 +2,14 @@ import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext
+	IBlueprintPiece
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreatePartInvalid,
 	CueDefinitionJingle,
 	GetJinglePartProperties,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -19,7 +19,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
 
 export function CreatePartIntro(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number

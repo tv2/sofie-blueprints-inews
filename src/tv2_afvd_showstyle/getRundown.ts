@@ -1,32 +1,4 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	Direction,
-	Ease,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineContentTypeVizMSE,
-	TimelineObjAtemAUX,
-	TimelineObjAtemDSK,
-	TimelineObjAtemME,
-	TimelineObjAtemSsrc,
-	TimelineObjAtemSsrcProps,
-	TimelineObjCCGHTMLPage,
-	TimelineObjCCGMedia,
-	TimelineObjCCGRoute,
-	TimelineObjEmpty,
-	TimelineObjSisyfosAny,
-	TimelineObjSisyfosMessage,
-	TimelineObjVIZMSEClearAllElements,
-	TimelineObjVIZMSEElementContinue,
-	TimelineObjVIZMSEElementInternal,
-	TimelineObjVIZMSELoadAllElements,
-	Transition,
-	TSRTimelineObj,
-	TSRTimelineObjBase
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultRundown,
 	GraphicsContent,
 	IBlueprintAdLibPiece,
@@ -37,7 +9,8 @@ import {
 	NotesContext,
 	PieceLifespan,
 	ShowStyleContext,
-	SourceLayerType
+	SourceLayerType,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	GetCameraMetaData,
@@ -113,14 +86,14 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	function makeSsrcAdlibBoxes(layer: SourceLayer, port: number, mediaPlayer?: boolean) {
 		// Generate boxes with classes to map across each layer
 		const boxObjs = _.map(boxMappings, (m, i) =>
-			literal<TimelineObjAtemSsrc & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
 				id: '',
 				enable: { while: `.${layer}_${m}` },
 				priority: 1,
 				layer: m,
 				content: {
-					deviceType: DeviceType.ATEM,
-					type: TimelineContentTypeAtem.SSRC,
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRC,
 					ssrc: {
 						boxes: [
 							// Pad until we are on the right box
@@ -156,18 +129,18 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			toBeQueued: preview,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
 			content: {
-				timelineObjects: _.compact<TSRTimelineObj>([
-					literal<TimelineObjAtemME>({
+				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
 						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.ME,
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
 							me: {
 								input: info.port,
-								transition: AtemTransitionStyle.CUT
+								transition: TSR.AtemTransitionStyle.CUT
 							}
 						},
 						classes: ['adlib_deparent']
@@ -175,8 +148,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					...camSisyfos,
 					...config.stickyLayers
 						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
 								enable: {
 									start: 0
@@ -184,8 +157,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 								priority: 1,
 								layer,
 								content: {
-									deviceType: DeviceType.SISYFOS,
-									type: TimelineContentTypeSisyfos.SISYFOS,
+									deviceType: TSR.DeviceType.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 									isPgm: 0
 								},
 								metaData: {
@@ -198,8 +171,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						SisyfosLLAyer.SisyfosSourceClipPending,
 						SisyfosLLAyer.SisyfosSourceServerA,
 						SisyfosLLAyer.SisyfosSourceServerB
-					].map<TimelineObjSisyfosMessage>(layer => {
-						return literal<TimelineObjSisyfosMessage>({
+					].map<TSR.TimelineObjSisyfosMessage>(layer => {
+						return literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -207,8 +180,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 							priority: 2,
 							layer,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 0
 							}
 						})
@@ -234,7 +207,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
-					timelineObjects: _.compact<TSRTimelineObj>([
+					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						...boxObjs,
 						...GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`, { while: audioWhile })
 					])
@@ -257,39 +230,39 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			toBeQueued: true,
 			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
 			content: {
-				timelineObjects: _.compact<TSRTimelineObj>([
-					literal<TimelineObjAtemME>({
+				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
 						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.ME,
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
 							me: {
 								input: info.port,
-								transition: AtemTransitionStyle.CUT
+								transition: TSR.AtemTransitionStyle.CUT
 							}
 						},
 						classes: ['adlib_deparent']
 					}),
 					...(info.sisyfosLayers || []).map(l => {
-						return literal<TimelineObjSisyfosMessage>({
+						return literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: { while: '1' },
 							priority: 1,
 							layer: l,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: vo ? 2 : 1
 							}
 						})
 					}),
 					...config.stickyLayers
 						.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
-						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
 								enable: {
 									start: 0
@@ -297,8 +270,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 								priority: 1,
 								layer,
 								content: {
-									deviceType: DeviceType.SISYFOS,
-									type: TimelineContentTypeSisyfos.SISYFOS,
+									deviceType: TSR.DeviceType.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 									isPgm: 0
 								},
 								metaData: {
@@ -333,17 +306,17 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
-					timelineObjects: _.compact<TSRTimelineObj>([
+					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						...boxObjs,
 						...GetLayersForEkstern(context, config.sources, `Live ${info.id}`).map(l => {
-							return literal<TimelineObjSisyfosMessage>({
+							return literal<TSR.TimelineObjSisyfosMessage>({
 								id: '',
 								enable: { while: audioWhile },
 								priority: 1,
 								layer: l,
 								content: {
-									deviceType: DeviceType.SISYFOS,
-									type: TimelineContentTypeSisyfos.SISYFOS,
+									deviceType: TSR.DeviceType.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 									isPgm: vo === true ? 2 : 1
 								}
 							})
@@ -376,18 +349,18 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
 			),
 			content: {
-				timelineObjects: _.compact<TSRTimelineObj>([
-					literal<TimelineObjAtemME>({
+				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
 						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.ME,
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
 							me: {
 								input: info.port,
-								transition: AtemTransitionStyle.CUT
+								transition: TSR.AtemTransitionStyle.CUT
 							}
 						},
 						classes: ['adlib_deparent']
@@ -396,8 +369,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					...config.stickyLayers
 						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
 						.filter(layer => config.liveAudio.indexOf(layer) === -1)
-						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
 								enable: {
 									start: 0
@@ -405,8 +378,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 								priority: 1,
 								layer,
 								content: {
-									deviceType: DeviceType.SISYFOS,
-									type: TimelineContentTypeSisyfos.SISYFOS,
+									deviceType: TSR.DeviceType.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 									isPgm: 0
 								},
 								metaData: {
@@ -419,8 +392,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						SisyfosLLAyer.SisyfosSourceClipPending,
 						SisyfosLLAyer.SisyfosSourceServerA,
 						SisyfosLLAyer.SisyfosSourceServerB
-					].map<TimelineObjSisyfosMessage>(layer => {
-						return literal<TimelineObjSisyfosMessage>({
+					].map<TSR.TimelineObjSisyfosMessage>(layer => {
+						return literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -428,8 +401,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 							priority: 2,
 							layer,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 0
 							}
 						})
@@ -456,7 +429,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
-					timelineObjects: _.compact<TSRTimelineObj>([
+					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						...boxObjs,
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
 							while: audioWhile
@@ -486,15 +459,15 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
 			),
 			content: {
-				timelineObjects: _.compact<TSRTimelineObj>([
-					literal<TimelineObjAtemAUX>({
+				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					literal<TSR.TimelineObjAtemAUX>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
 						layer: AtemLLayer.AtemAuxAR,
 						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.AUX,
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
 							aux: {
 								input: info.port
 							}
@@ -569,15 +542,15 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.Infinite,
 				content: {
-					timelineObjects: _.compact<TSRTimelineObj>([
-						literal<TimelineObjAtemAUX>({
+					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
 							priority: 1,
 							layer: AtemLLayer.AtemAuxAR,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.AUX,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.AUX,
 								aux: {
 									input: o.port
 								}
@@ -595,15 +568,15 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.Infinite,
 				content: {
-					timelineObjects: _.compact<TSRTimelineObj>([
-						literal<TimelineObjAtemAUX>({
+					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
 							priority: 1,
 							layer: AtemLLayer.AtemAuxVizOvlIn1,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.AUX,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.AUX,
 								aux: {
 									input: o.port
 								}
@@ -624,8 +597,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjVIZMSELoadAllElements>({
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				literal<TSR.TimelineObjVIZMSELoadAllElements>({
 					id: 'loadAllElements',
 					enable: {
 						start: 0,
@@ -634,8 +607,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					priority: 100,
 					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
-						deviceType: DeviceType.VIZMSE,
-						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
+						deviceType: TSR.DeviceType.VIZMSE,
+						type: TSR.TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
 					}
 				})
 			])
@@ -651,8 +624,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjVIZMSEElementContinue>({
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				literal<TSR.TimelineObjVIZMSEElementContinue>({
 					id: '',
 					enable: {
 						start: 0,
@@ -661,8 +634,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					priority: 100,
 					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
-						deviceType: DeviceType.VIZMSE,
-						type: TimelineContentTypeVizMSE.CONTINUE,
+						deviceType: TSR.DeviceType.VIZMSE,
+						type: TSR.TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
 						reference: GraphicLLayer.GraphicLLayerPilot
 					}
@@ -680,8 +653,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		expectedDuration: 2000,
 		infiniteMode: PieceLifespan.Normal,
 		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjVIZMSEClearAllElements>({
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				literal<TSR.TimelineObjVIZMSEClearAllElements>({
 					id: '',
 					enable: {
 						start: 1000,
@@ -690,8 +663,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					priority: 100,
 					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
-						deviceType: DeviceType.VIZMSE,
-						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
+						deviceType: TSR.DeviceType.VIZMSE,
+						type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
 					}
 				})
 			])
@@ -735,15 +708,15 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
 		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjAtemDSK>({
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				literal<TSR.TimelineObjAtemDSK>({
 					id: '',
 					enable: { while: '1' },
 					priority: 10,
 					layer: AtemLLayer.AtemDSKGraphics,
 					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.DSK,
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.DSK,
 						dsk: {
 							onAir: false
 						}
@@ -762,16 +735,16 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		infiniteMode: PieceLifespan.Infinite,
 		expectedDuration: 0,
 		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				...config.studio.StudioMics.map<TimelineObjSisyfosMessage>(layer => {
-					return literal<TimelineObjSisyfosMessage>({
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				...config.studio.StudioMics.map<TSR.TimelineObjSisyfosMessage>(layer => {
+					return literal<TSR.TimelineObjSisyfosMessage>({
 						id: '',
 						enable: { start: 0 },
 						priority: 1,
 						layer,
 						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: 1
 						}
 					})
@@ -789,16 +762,16 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		infiniteMode: PieceLifespan.Infinite,
 		expectedDuration: 0,
 		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				...config.studio.StudioMics.map<TimelineObjSisyfosMessage>(layer => {
-					return literal<TimelineObjSisyfosMessage>({
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				...config.studio.StudioMics.map<TSR.TimelineObjSisyfosMessage>(layer => {
+					return literal<TSR.TimelineObjSisyfosMessage>({
 						id: '',
 						enable: { start: 0 },
 						priority: 1,
 						layer,
 						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: 0
 						}
 					})
@@ -816,15 +789,15 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		infiniteMode: PieceLifespan.Normal,
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSRTimelineObj>([
-				literal<TimelineObjSisyfosMessage>({
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				literal<TSR.TimelineObjSisyfosMessage>({
 					id: '',
 					enable: { start: 0 },
 					priority: 2,
 					layer: SisyfosLLAyer.SisyfosResync,
 					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 						resync: true
 					}
 				})
@@ -863,27 +836,27 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			content: literal<GraphicsContent>({
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
-				timelineObjects: _.compact<TSRTimelineObj>([
-					literal<TimelineObjVIZMSEElementInternal>({
+				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
 						enable: { start: 0 },
 						priority: 110,
 						layer: GraphicLLayer.GraphicLLayerDesign,
 						content: {
-							deviceType: DeviceType.VIZMSE,
-							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+							deviceType: TSR.DeviceType.VIZMSE,
+							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 							templateName: 'BG_LOADER_SC',
 							templateData: []
 						}
 					}),
-					literal<TimelineObjCCGMedia>({
+					literal<TSR.TimelineObjCCGMedia>({
 						id: '',
 						enable: { start: 0 },
 						priority: 110,
 						layer: CasparLLayer.CasparCGDVELoop,
 						content: {
-							deviceType: DeviceType.CASPARCG,
-							type: TimelineContentTypeCasparCg.MEDIA,
+							deviceType: TSR.DeviceType.CASPARCG,
+							type: TSR.TimelineContentTypeCasparCg.MEDIA,
 							file: 'dve/BG_LOADER_SC',
 							loop: true
 						}
@@ -903,7 +876,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		infiniteMode: PieceLifespan.Normal,
 		content: {
 			timelineObjects: [
-				literal<TimelineObjEmpty>({
+				literal<TSR.TimelineObjEmpty>({
 					id: '',
 					enable: {
 						start: 0,
@@ -912,7 +885,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					priority: 50,
 					layer: SisyfosLLAyer.SisyfosSourceAudiobed,
 					content: {
-						deviceType: DeviceType.ABSTRACT,
+						deviceType: TSR.DeviceType.ABSTRACT,
 						type: 'empty'
 					},
 					classes: []
@@ -925,99 +898,99 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	return adlibItems
 }
 
-function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
+function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
 		// Default timeline
-		literal<TimelineObjAtemME>({
+		literal<TSR.TimelineObjAtemME>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemMEProgram,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.ME,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					input: config.studio.AtemSource.Default,
-					transition: AtemTransitionStyle.CUT
+					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
 		}),
-		literal<TimelineObjAtemME>({
+		literal<TSR.TimelineObjAtemME>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemMEClean,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.ME,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					input: config.studio.AtemSource.Default,
-					transition: AtemTransitionStyle.CUT
+					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
 		}),
 
 		// route default outputs
-		literal<TimelineObjAtemAUX>({
+		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemAuxPGM,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.AUX,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.AUX,
 				aux: {
 					input: AtemSourceIndex.Prg1
 				}
 			}
 		}),
-		literal<TimelineObjAtemAUX>({
+		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemAuxClean,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.AUX,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.AUX,
 				aux: {
 					input: AtemSourceIndex.Prg4
 				}
 			}
 		}),
-		literal<TimelineObjAtemAUX>({
+		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemAuxLookahead,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.AUX,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.AUX,
 				aux: {
 					input: config.studio.AtemSource.Default
 				}
 			}
 		}),
-		literal<TimelineObjAtemAUX>({
+		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemAuxSSrc,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.AUX,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.AUX,
 				aux: {
 					input: AtemSourceIndex.SSrc
 				}
 			}
 		}),
-		literal<TimelineObjAtemAUX>({
+		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemAuxVideoMixMinus,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.AUX,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.AUX,
 				aux: {
 					input: config.studio.AtemSource.MixMinusDefault
 				}
@@ -1025,27 +998,27 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 		}),
 
 		// render presenter screen
-		literal<TimelineObjCCGHTMLPage>({
+		literal<TSR.TimelineObjCCGHTMLPage>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: CasparLLayer.CasparCountdown,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.HTMLPAGE,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.HTMLPAGE,
 				url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
 			}
 		}),
 
 		// keyers
-		literal<TimelineObjAtemDSK>({
+		literal<TSR.TimelineObjAtemDSK>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemDSKGraphics,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.DSK,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.DSK,
 				dsk: {
 					onAir: true,
 					sources: {
@@ -1064,14 +1037,14 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		literal<TimelineObjAtemDSK>({
+		literal<TSR.TimelineObjAtemDSK>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemDSKEffect,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.DSK,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.DSK,
 				dsk: {
 					onAir: false,
 					sources: {
@@ -1091,14 +1064,14 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			}
 		}),
 		// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
-		literal<TimelineObjAtemME>({
+		literal<TSR.TimelineObjAtemME>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemCleanUSKEffect,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.ME,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					upstreamKeyers: [
 						{
@@ -1119,14 +1092,14 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		literal<TimelineObjAtemSsrcProps>({
+		literal<TSR.TimelineObjAtemSsrcProps>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemSSrcArt,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.SSRCPROPS,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 				ssrcProps: {
 					artFillSource: config.studio.AtemSource.SplitArtF,
 					artCutSource: config.studio.AtemSource.SplitArtK,
@@ -1135,14 +1108,14 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		literal<TimelineObjAtemSsrc>({
+		literal<TSR.TimelineObjAtemSsrc>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: AtemLLayer.AtemSSrcDefault,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.SSRC,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.SSRC,
 				ssrc: {
 					boxes: [
 						{
@@ -1176,91 +1149,91 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 				}
 			}
 		}),
-		literal<TimelineObjCCGMedia>({
+		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: CasparLLayer.CasparCGDVEFrame,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.MEDIA,
 				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
 				transitions: {
 					inTransition: {
-						type: Transition.CUT,
+						type: TSR.Transition.CUT,
 						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
 			}
 		}),
-		literal<TimelineObjCCGMedia>({
+		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: CasparLLayer.CasparCGDVEKey,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.MEDIA,
 				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
 				transitions: {
 					inTransition: {
-						type: Transition.CUT,
+						type: TSR.Transition.CUT,
 						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
 			}
 		}),
-		literal<TimelineObjCCGMedia>({
+		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: CasparLLayer.CasparCGDVETemplate,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.MEDIA,
 				file: 'empty',
 				mixer: {
 					opacity: 0
 				},
 				transitions: {
 					inTransition: {
-						type: Transition.CUT,
+						type: TSR.Transition.CUT,
 						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
 			}
 		}),
-		literal<TimelineObjCCGMedia>({
+		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: CasparLLayer.CasparCGDVELoop,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.MEDIA,
 				file: 'empty',
 				transitions: {
 					inTransition: {
-						type: Transition.CUT,
+						type: TSR.Transition.CUT,
 						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
 			}
 		}),
-		literal<TimelineObjCCGRoute>({
+		literal<TSR.TimelineObjCCGRoute>({
 			id: '',
 			enable: { while: 1 },
 			priority: 0,
 			layer: CasparLLayer.CasparCGFullBg,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.ROUTE,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.ROUTE,
 				mappedLayer: CasparLLayer.CasparCGDVELoop
 			}
 		}),
@@ -1269,14 +1242,14 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 		...Object.keys(sisyfosChannels).map(key => {
 			const llayer = key as SisyfosLLAyer
 			const channel = sisyfosChannels[llayer] as SisyfosChannel
-			return literal<TimelineObjSisyfosMessage>({
+			return literal<TSR.TimelineObjSisyfosMessage>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
 				layer: llayer,
 				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: channel.isPgm,
 					visible: !channel.hideInStudioA,
 					label: channel.label
@@ -1284,50 +1257,50 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 			})
 		}),
 
-		literal<TimelineObjCCGMedia>({
+		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: CasparLLayer.CasparCGLYD,
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.MEDIA,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.MEDIA,
 				loop: true,
 				file: 'EMPTY',
 				mixer: {
 					volume: {
 						_value: 0,
 						inTransition: {
-							type: Transition.MIX,
-							easing: Ease.LINEAR,
-							direction: Direction.LEFT,
+							type: TSR.Transition.MIX,
+							easing: TSR.Ease.LINEAR,
+							direction: TSR.Direction.LEFT,
 							duration: config.studio.AudioBedSettings.fadeIn
 						},
 						changeTransition: {
-							type: Transition.MIX,
-							easing: Ease.LINEAR,
-							direction: Direction.LEFT,
+							type: TSR.Transition.MIX,
+							easing: TSR.Ease.LINEAR,
+							direction: TSR.Direction.LEFT,
 							duration: config.studio.AudioBedSettings.fadeOut
 						},
 						outTransition: {
-							type: Transition.MIX,
-							easing: Ease.LINEAR,
-							direction: Direction.LEFT,
+							type: TSR.Transition.MIX,
+							easing: TSR.Ease.LINEAR,
+							direction: TSR.Direction.LEFT,
 							duration: config.studio.AudioBedSettings.fadeOut
 						}
 					}
 				},
 				transitions: {
 					inTransition: {
-						type: Transition.MIX,
-						easing: Ease.LINEAR,
-						direction: Direction.LEFT,
+						type: TSR.Transition.MIX,
+						easing: TSR.Ease.LINEAR,
+						direction: TSR.Direction.LEFT,
 						duration: config.studio.AudioBedSettings.fadeIn
 					},
 					outTransition: {
-						type: Transition.MIX,
-						easing: Ease.LINEAR,
-						direction: Direction.LEFT,
+						type: TSR.Transition.MIX,
+						easing: TSR.Ease.LINEAR,
+						direction: TSR.Direction.LEFT,
 						duration: config.studio.AudioBedSettings.fadeOut
 					}
 				}
@@ -1336,14 +1309,14 @@ function getBaseline(config: BlueprintConfig): TSRTimelineObjBase[] {
 
 		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
-					return literal<TimelineObjCCGMedia>({
+					return literal<TSR.TimelineObjCCGMedia>({
 						id: '',
 						enable: { while: '1' },
 						priority: 0,
 						layer,
 						content: {
-							deviceType: DeviceType.CASPARCG,
-							type: TimelineContentTypeCasparCg.MEDIA,
+							deviceType: TSR.DeviceType.CASPARCG,
+							type: TSR.TimelineContentTypeCasparCg.MEDIA,
 							file: config.showStyle.CasparCGLoadingClip,
 							loop: true
 						}

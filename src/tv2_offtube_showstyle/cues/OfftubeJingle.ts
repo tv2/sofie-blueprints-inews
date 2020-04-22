@@ -1,14 +1,10 @@
-import {
-	IBlueprintAdLibPiece,
-	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext
-} from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateJingleContentBase,
 	CueDefinitionJingle,
 	GetJinglePartProperties,
 	literal,
+	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { AdlibTags } from 'tv2-constants'
@@ -17,7 +13,7 @@ import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
-	context: PartContext,
+	context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
 	_pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

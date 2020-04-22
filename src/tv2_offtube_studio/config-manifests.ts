@@ -1,9 +1,9 @@
-import { DeviceType } from 'timeline-state-resolver-types'
 import {
 	ConfigManifestEntry,
 	ConfigManifestEntryTable,
 	ConfigManifestEntryType,
-	TableConfigItemValue
+	TableConfigItemValue,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import * as _ from 'underscore'
@@ -58,7 +58,7 @@ export const manifestOfftubeSourcesCam: ConfigManifestEntryTable = {
 			description: 'Sisyfos layers for Camera',
 			type: ConfigManifestEntryType.LAYER_MAPPINGS,
 			filters: {
-				deviceTypes: [DeviceType.SISYFOS]
+				deviceTypes: [TSR.DeviceType.SISYFOS]
 			},
 			required: true,
 			multiple: true,
@@ -134,7 +134,7 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			description: 'Sisyfos layers for RM input',
 			type: ConfigManifestEntryType.LAYER_MAPPINGS,
 			filters: {
-				deviceTypes: [DeviceType.SISYFOS]
+				deviceTypes: [TSR.DeviceType.SISYFOS]
 			},
 			required: true,
 			multiple: true,
@@ -199,7 +199,7 @@ export const manifestOfftubeStudioMics: ConfigManifestEntry = {
 	description: 'Sisyfos layers for Studio Mics',
 	type: ConfigManifestEntryType.LAYER_MAPPINGS,
 	filters: {
-		deviceTypes: [DeviceType.SISYFOS]
+		deviceTypes: [TSR.DeviceType.SISYFOS]
 	},
 	required: true,
 	multiple: true,

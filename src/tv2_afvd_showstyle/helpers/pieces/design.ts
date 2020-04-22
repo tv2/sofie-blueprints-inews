@@ -1,24 +1,18 @@
 import {
-	DeviceType,
-	TimelineContentTypeVizMSE,
-	TimelineObjVIZMSEElementInternal,
-	TSRTimelineObj
-} from 'timeline-state-resolver-types'
-import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
-	PieceLifespan
+	PieceLifespan,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CueDefinitionDesign, GraphicLLayer, literal } from 'tv2-common'
+import { CalculateTime, CueDefinitionDesign, GraphicLLayer, literal, PartContext2 } from 'tv2-common'
 import * as _ from 'underscore'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 
 export function EvaluateDesign(
 	_config: BlueprintConfig,
-	context: PartContext,
+	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -43,15 +37,15 @@ export function EvaluateDesign(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
-					timelineObjects: _.compact<TSRTimelineObj>([
-						literal<TimelineObjVIZMSEElementInternal>({
+					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: { start: 0 },
 							priority: 100,
 							layer: GraphicLLayer.GraphicLLayerDesign,
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: parsedCue.design,
 								templateData: []
 							}
@@ -67,7 +61,7 @@ export function EvaluateDesign(
 				externalId: partId,
 				name: parsedCue.design,
 				enable: {
-					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+					start: parsedCue.start ? CalculateTime(parsedCue.start) ?? null : 0
 				},
 				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,
@@ -75,15 +69,15 @@ export function EvaluateDesign(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
-					timelineObjects: _.compact<TSRTimelineObj>([
-						literal<TimelineObjVIZMSEElementInternal>({
+					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: { start: 0 },
 							priority: 100,
 							layer: GraphicLLayer.GraphicLLayerDesign,
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: parsedCue.design,
 								templateData: []
 							}

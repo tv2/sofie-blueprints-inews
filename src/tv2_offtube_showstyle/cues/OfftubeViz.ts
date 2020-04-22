@@ -1,12 +1,12 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionVIZ, EvaluateVIZBase } from 'tv2-common'
+import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import { CueDefinitionVIZ, EvaluateVIZBase, PartContext2 } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateVIZ(
-	context: PartContext,
+	context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

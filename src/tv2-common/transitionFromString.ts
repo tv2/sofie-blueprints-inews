@@ -1,15 +1,15 @@
-import { AtemTransitionStyle } from 'timeline-state-resolver-types'
+import { TSR } from 'tv-automation-sofie-blueprints-integration'
 
-export function TransitionFromString(str: string): AtemTransitionStyle {
+export function TransitionFromString(str: string): TSR.AtemTransitionStyle {
 	if (str.match(/MIX/i)) {
-		return AtemTransitionStyle.MIX
+		return TSR.AtemTransitionStyle.MIX
 	} else if (str.match(/DIP/i)) {
-		return AtemTransitionStyle.DIP
+		return TSR.AtemTransitionStyle.DIP
 	} else if (str.match(/WIPE/i)) {
-		return AtemTransitionStyle.WIPE
+		return TSR.AtemTransitionStyle.WIPE
 	} else if (str.match(/STING/i)) {
-		return AtemTransitionStyle.STING
+		return TSR.AtemTransitionStyle.STING
 	}
 
-	return AtemTransitionStyle.CUT
+	return TSR.AtemTransitionStyle.CUT
 }

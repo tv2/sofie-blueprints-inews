@@ -1,16 +1,19 @@
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
 import {
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PartContext,
-	PieceLifespan
-} from 'tv-automation-sofie-blueprints-integration'
-import { AddParentClass, CueDefinitionDVE, GetDVETemplate, literal, PartDefinition, TemplateIsValid } from 'tv2-common'
+	AddParentClass,
+	CueDefinitionDVE,
+	GetDVETemplate,
+	literal,
+	PartContext2,
+	PartDefinition,
+	TemplateIsValid
+} from 'tv2-common'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateDVE(
-	context: PartContext,
+	context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
 	_pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

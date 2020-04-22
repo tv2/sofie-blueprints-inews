@@ -1,5 +1,5 @@
-import { BlueprintResultPart, IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
+import { BlueprintResultPart, IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
+import { CreateAdlibServer, CreatePartServerBase, PartContext2, PartDefinition } from 'tv2-common'
 import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -8,7 +8,7 @@ import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
 import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartServer(
-	context: PartContext,
+	context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition
 ): BlueprintResultPart {

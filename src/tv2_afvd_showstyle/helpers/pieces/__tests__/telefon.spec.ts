@@ -1,15 +1,9 @@
 import {
-	DeviceType,
-	TimelineContentTypeSisyfos,
-	TimelineContentTypeVizMSE,
-	TimelineObjSisyfosMessage,
-	TimelineObjVIZMSEElementInternal
-} from 'timeline-state-resolver-types'
-import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan
+	PieceLifespan,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinitionGrafik,
@@ -109,7 +103,7 @@ describe('telefon', () => {
 					fileName: 'bund',
 					path: 'bund',
 					timelineObjects: [
-						literal<TimelineObjVIZMSEElementInternal>({
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -117,14 +111,14 @@ describe('telefon', () => {
 							priority: 1,
 							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
 						}),
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -132,12 +126,12 @@ describe('telefon', () => {
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceTLF,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						}),
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -145,12 +139,12 @@ describe('telefon', () => {
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						}),
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -158,12 +152,12 @@ describe('telefon', () => {
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						}),
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -171,12 +165,12 @@ describe('telefon', () => {
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						}),
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -184,12 +178,12 @@ describe('telefon', () => {
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						}),
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -197,12 +191,12 @@ describe('telefon', () => {
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						}),
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -210,8 +204,8 @@ describe('telefon', () => {
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						})

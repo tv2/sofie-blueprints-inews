@@ -1,5 +1,4 @@
-import { DeviceType } from 'timeline-state-resolver-types'
-import { IBlueprintPieceDB, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPieceInstance, OnGenerateTimelineObj, TSR } from 'tv-automation-sofie-blueprints-integration'
 import {
 	applyMediaPlayersAssignments,
 	doesRequestOverlap,
@@ -33,20 +32,23 @@ export function createBasicPiece(
 	reqId: string | undefined,
 	optional?: boolean
 ) {
-	const piece = literal<IBlueprintPieceDB>({
+	const piece = literal<IBlueprintPieceInstance>({
 		_id: id,
-		externalId: id,
-		name: id,
-		enable: {
-			start
-		},
-		sourceLayerId: '',
-		outputLayerId: '',
-		playoutDuration: duration,
-		metaData: {}
+		piece: {
+			_id: id,
+			externalId: id,
+			name: id,
+			enable: {
+				start
+			},
+			sourceLayerId: '',
+			outputLayerId: '',
+			playoutDuration: duration,
+			metaData: {}
+		}
 	})
 
-	const metadata = piece.metaData as PieceMetaData
+	const metadata = piece.piece.metaData as PieceMetaData
 
 	if (reqId !== undefined) {
 		metadata.mediaPlayerSessions = [reqId]
@@ -397,7 +399,7 @@ describe('applyMediaPlayersAssignments', () => {
 					duration: 1000
 				},
 				content: {
-					deviceType: DeviceType.ABSTRACT
+					deviceType: TSR.DeviceType.ABSTRACT
 				},
 				metaData: {
 					mediaPlayerSession: 'abc'
@@ -412,7 +414,7 @@ describe('applyMediaPlayersAssignments', () => {
 					duration: 1000
 				},
 				content: {
-					deviceType: DeviceType.ABSTRACT
+					deviceType: TSR.DeviceType.ABSTRACT
 				},
 				metaData: {
 					mediaPlayerSession: 'def'

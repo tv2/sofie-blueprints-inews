@@ -16,14 +16,14 @@ export function CreateTiming(
 
 export function CreateTimingEnable(cue: CueDefinition): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> {
 	const result: Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> = {
-		enable: {},
+		enable: {
+			start: 0
+		},
 		infiniteMode: PieceLifespan.Normal
 	}
 
 	if (cue.start) {
 		;(result.enable as any).start = CalculateTime(cue.start)
-	} else {
-		;(result.enable as any).start = 0
 	}
 
 	if (cue.end) {

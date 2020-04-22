@@ -1,19 +1,4 @@
-import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineObjAtemME,
-	TimelineObjCCGMedia,
-	TimelineObjCCGTemplate,
-	TSRTimelineObj
-} from 'timeline-state-resolver-types'
-import {
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PartContext,
-	PieceLifespan
-} from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan, TSR } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateTimingEnable,
 	CueDefinitionGrafik,
@@ -21,6 +6,7 @@ import {
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PartToParentClass,
 	TranslateEngine
@@ -32,7 +18,7 @@ import { OfftubeOutputLayers, OffTubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OffTubeShowstyleBlueprintConfig,
-	_context: PartContext,
+	_context: PartContext2,
 	_pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_partid: string,
@@ -89,15 +75,15 @@ export function GetCasparOverlayTimeline(
 	parsedCue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition: PartDefinition
-): TSRTimelineObj[] {
+): TSR.TSRTimelineObj[] {
 	return [
-		literal<TimelineObjCCGTemplate>({
+		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
 			enable: GetEnableForGrafikOfftube(engine, parsedCue, isIdentGrafik, partDefinition),
 			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			content: {
-				deviceType: DeviceType.CASPARCG,
-				type: TimelineContentTypeCasparCg.TEMPLATE,
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 				templateType: 'html',
 				name: GetTemplateName(config, parsedCue),
 				data: literal<RendererStatePartial>({
@@ -242,7 +228,7 @@ function CreateFull(
 		infiniteMode: PieceLifespan.Infinite,
 		content: {
 			timelineObjects: [
-				literal<TimelineObjCCGMedia>({
+				literal<TSR.TimelineObjCCGMedia>({
 					id: '',
 					enable: {
 						while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
@@ -250,8 +236,8 @@ function CreateFull(
 					priority: 100,
 					layer: OfftubeCasparLLayer.CasparGraphicsFull,
 					content: {
-						deviceType: DeviceType.CASPARCG,
-						type: TimelineContentTypeCasparCg.MEDIA,
+						deviceType: TSR.DeviceType.CASPARCG,
+						type: TSR.TimelineContentTypeCasparCg.MEDIA,
 						file: template,
 						loop: true,
 						mixer: {
@@ -259,7 +245,7 @@ function CreateFull(
 						}
 					}
 				}),
-				literal<TimelineObjAtemME>({
+				literal<TSR.TimelineObjAtemME>({
 					id: '',
 					enable: {
 						while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
@@ -267,11 +253,11 @@ function CreateFull(
 					priority: 100,
 					layer: OfftubeCasparLLayer.CasparGraphicsFull,
 					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.ME,
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
 						me: {
 							input: config.studio.AtemSource.GFXFull,
-							transition: AtemTransitionStyle.CUT
+							transition: TSR.AtemTransitionStyle.CUT
 						}
 					}
 				})
@@ -288,7 +274,7 @@ function GetEnableForGrafikOfftube(
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
-): TSRTimelineObj['enable'] {
+): TSR.TSRTimelineObj['enable'] {
 	if (engine === 'WALL') {
 		return {
 			while: '1'

@@ -1,20 +1,12 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemAny,
-	TimelineObjAtemME
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	CameraContent,
 	IBlueprintPiece,
-	IBlueprintRundownDB,
 	IngestSegment,
-	PartContext,
 	PieceLifespan,
-	SegmentContext
+	SegmentContext,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
@@ -51,66 +43,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	}
 }
 
-export class PartContext2 implements PartContext {
-	public readonly rundownId: string
-	public readonly rundown: IBlueprintRundownDB
-	private baseContext: SegmentContext
-	private externalId: string
-
-	constructor(baseContext: SegmentContext, externalId: string) {
-		this.baseContext = baseContext
-		this.externalId = externalId
-
-		this.rundownId = baseContext.rundownId
-		this.rundown = baseContext.rundown
-	}
-
-	/** PartContext */
-	public getRuntimeArguments() {
-		return this.baseContext.getRuntimeArguments(this.externalId) || {}
-	}
-
-	/** IShowStyleConfigContext */
-	public getShowStyleConfig() {
-		return this.baseContext.getShowStyleConfig()
-	}
-	public getShowStyleConfigRef(configKey: string) {
-		return this.baseContext.getShowStyleConfigRef(configKey)
-	}
-
-	/** IStudioContext */
-	public getStudioMappings() {
-		return this.baseContext.getStudioMappings()
-	}
-
-	/** IStudioConfigContext */
-	public getStudioConfig() {
-		return this.baseContext.getStudioConfig()
-	}
-	public getStudioConfigRef(configKey: string) {
-		return this.baseContext.getStudioConfigRef(configKey)
-	}
-
-	/** NotesContext */
-	public error(message: string) {
-		return this.baseContext.error(message)
-	}
-	public warning(message: string) {
-		return this.baseContext.warning(message)
-	}
-	public getNotes() {
-		return this.baseContext.getNotes()
-	}
-
-	/** ICommonContext */
-	public getHashId(originString: string, originIsNotUnique?: boolean) {
-		return this.baseContext.getHashId(`${this.externalId}_${originString}`, originIsNotUnique)
-	}
-	public unhashId(hash: string) {
-		return this.baseContext.unhashId(hash)
-	}
-}
-
 function CreatePartContinuity(config: OffTubeShowstyleBlueprintConfig, ingestSegment: IngestSegment) {
 	return literal<BlueprintResultPart>({
 		part: {
@@ -132,8 +64,8 @@ function CreatePartContinuity(config: OffTubeShowstyleBlueprintConfig, ingestSeg
 				content: literal<CameraContent>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TimelineObjAtemAny>([
-						literal<TimelineObjAtemME>({
+					timelineObjects: _.compact<TSR.TimelineObjAtemAny>([
+						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
 								start: 0
@@ -141,11 +73,11 @@ function CreatePartContinuity(config: OffTubeShowstyleBlueprintConfig, ingestSeg
 							priority: 1,
 							layer: OfftubeAtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: config.studio.AtemSource.Continuity,
-									transition: AtemTransitionStyle.CUT
+									transition: TSR.AtemTransitionStyle.CUT
 								}
 							}
 						})

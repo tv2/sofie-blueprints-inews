@@ -1,18 +1,12 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemAny,
-	TimelineObjAtemME
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	CameraContent,
 	IBlueprintPiece,
 	IngestSegment,
 	PieceLifespan,
-	SegmentContext
+	SegmentContext,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
@@ -80,8 +74,8 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				content: literal<CameraContent>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TimelineObjAtemAny>([
-						literal<TimelineObjAtemME>({
+					timelineObjects: _.compact<TSR.TimelineObjAtemAny>([
+						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
 								start: 0
@@ -89,11 +83,11 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: config.studio.AtemSource.Continuity,
-									transition: AtemTransitionStyle.CUT
+									transition: TSR.AtemTransitionStyle.CUT
 								}
 							}
 						})

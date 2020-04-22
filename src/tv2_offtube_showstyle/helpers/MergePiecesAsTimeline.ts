@@ -1,11 +1,10 @@
-import { DeviceType } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinition } from 'tv2-common'
+import { PartContext2, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OffTubeShowstyleBlueprintConfig } from './config'
 import { OfftubeEvaluateCues } from './EvaluateCues'
@@ -19,7 +18,7 @@ import { OfftubeEvaluateCues } from './EvaluateCues'
  * @param selectedCueTypes Filter to only extract cues of a certain type.
  */
 export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLibPiece>(
-	context: PartContext,
+	context: PartContext2,
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	parentPiece: T,
@@ -45,7 +44,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 			if (piece.content) {
 				;(parentPiece.content!.timelineObjects as TimelineObjectCoreExt[]).push(
 					...(piece.content.timelineObjects as TimelineObjectCoreExt[]).filter(
-						obj => obj.content.deviceType !== DeviceType.ATEM // Remove any timeline objects that affect PGM
+						obj => obj.content.deviceType !== TSR.DeviceType.ATEM // Remove any timeline objects that affect PGM
 						// TODO: Keyers?
 					)
 				)
