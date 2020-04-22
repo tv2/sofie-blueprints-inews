@@ -1,8 +1,14 @@
 import { MigrationStepStudio } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from 'tv2-common'
+import { literal, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
+import {
+	manifestOfftubeSourcesABMediaPlayers,
+	manifestOfftubeSourcesCam,
+	manifestOfftubeSourcesRM,
+	manifestOfftubeStudioMics
+} from '../config-manifests'
 import { deviceMigrations } from './devices'
-import { ensureStudioConfig, getMappingsDefaultsMigrationSteps } from './util'
+import { ensureStudioConfig, getMappingsDefaultsMigrationSteps, GetSisyfosLayersForTableMigrationOfftube } from './util'
 
 declare const VERSION: string // Injected by webpack
 
@@ -15,22 +21,48 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesCam',
-		null,
+		manifestOfftubeSourcesCam.defaultVal,
 		'text',
 		'Studio config: Camera mappings',
-		'Enter the Camera input mapping (example: "1:1,2:2,3:3,4:4")'
+		'Enter the camera input mapping',
+		manifestOfftubeSourcesCam.defaultVal
 	),
+
+	ensureStudioConfig(
+		'0.1.0',
+		'SourcesRM',
+		manifestOfftubeSourcesRM.defaultVal,
+		'text',
+		'Studio config: Remote mappings',
+		'Enter the remote input mapping',
+		manifestOfftubeSourcesRM.defaultVal
+	),
+
 	ensureStudioConfig(
 		'0.1.0',
 		'ABMediaPlayers',
-		null,
+		manifestOfftubeSourcesABMediaPlayers.defaultVal,
 		'text',
-		'Studio config: Media player inputs',
-		'Enter the Media player inputs (example: "1:5,2:6")'
+		'Studio config: AB Media Players mappings',
+		'Enter the AB Media Players input mapping',
+		manifestOfftubeSourcesABMediaPlayers.defaultVal
+	),
+
+	ensureStudioConfig(
+		'0.1.0',
+		'StudioMics',
+		manifestOfftubeStudioMics.defaultVal,
+		'text',
+		'Studio config: Studio Mics',
+		'Select the Sisyfos layers for Studio Mics',
+		manifestOfftubeStudioMics.defaultVal
 	),
 
 	...deviceMigrations,
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getMappingsDefaultsMigrationSteps(VERSION)
+	...getMappingsDefaultsMigrationSteps(VERSION),
+	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationOfftube, true),
+	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationOfftube, false),
+	MoveSourcesToTable('0.1.0', 'ABMediaPlayers', false, GetSisyfosLayersForTableMigrationOfftube, false)
 ])

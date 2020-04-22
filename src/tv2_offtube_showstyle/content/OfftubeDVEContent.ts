@@ -40,12 +40,10 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	dveTimelineGenerators: {
 		GetSisyfosTimelineObjForCamera: () => [], // TODO
 		GetSisyfosTimelineObjForEkstern: () => [], // TODO,
-		GetLayerForEkstern: () => [] // TODO
+		GetLayersForEkstern: () => [] // TODO
 	},
 	boxLayers,
 	boxMappings,
-	STICKY_LAYERS: [], // TODO
-	LIVE_AUDIO: [], // TODO
 	AUDIO_LAYERS: [], // TODO
 	EXCLUDED_LAYERS: [] // TODO
 }

@@ -21,6 +21,7 @@ import {
 	CreatePartInvalid,
 	EVSParentClass,
 	FindSourceInfoStrict,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionEVS,
 	PartTime,
@@ -33,7 +34,6 @@ import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera, LIVE_AUDIO } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -80,7 +80,7 @@ export function CreatePartEVS(
 				sourceLayerId: SourceLayer.PgmLive,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
-				content: makeContentEVS(atemInput, partDefinition, sourceInfoDelayedPlayback)
+				content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 			})
 		)
 	} else {
@@ -93,7 +93,7 @@ export function CreatePartEVS(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				content: makeContentEVS(atemInput, partDefinition, sourceInfoDelayedPlayback)
+				content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 			})
 		)
 	}
@@ -113,6 +113,8 @@ export function CreatePartEVS(
 }
 
 function makeContentEVS(
+	context: PartContext,
+	config: BlueprintConfig,
 	atemInput: number,
 	partDefinition: PartDefinitionEVS,
 	sourceInfoDelayedPlayback: SourceInfo
@@ -155,9 +157,9 @@ function makeContentEVS(
 				}
 			}),
 			...(partDefinition.variant.isVO
-				? [...GetSisyfosTimelineObjForCamera('evs')]
+				? [...GetSisyfosTimelineObjForCamera(context, config, 'evs')]
 				: [
-						...LIVE_AUDIO.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+						...config.liveAudio.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
 								enable: {

@@ -1,37 +1,16 @@
 import * as _ from 'underscore'
 
-import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
-import { parseMapStr, SourceInfo } from 'tv2-common'
+import { SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
+import { ParseMappingTable, SourceInfo } from 'tv2-common'
 import { OfftubeStudioConfig } from './config'
 
-export function parseMediaPlayers(
-	context: NotesContext | undefined,
-	studioConfig: OfftubeStudioConfig
-): Array<{ id: string; val: string }> {
-	return parseMapStr(context, studioConfig.ABMediaPlayers, false)
+export function parseMediaPlayers(studioConfig: OfftubeStudioConfig): Array<{ id: string; val: string }> {
+	return studioConfig.ABMediaPlayers.map(player => ({ id: player.SourceName, val: player.AtemSource.toString() }))
 }
 
-export function parseSources(context: NotesContext | undefined, studioConfig: OfftubeStudioConfig): SourceInfo[] {
-	const rmInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesRM, true)
-	const kamInputMap: Array<{ id: string; val: number }> = parseMapStr(context, studioConfig.SourcesCam, true)
+export function parseSources(studioConfig: OfftubeStudioConfig): SourceInfo[] {
+	const rmInputMap: SourceInfo[] = ParseMappingTable(studioConfig.SourcesRM, SourceLayerType.REMOTE)
+	const kamInputMap: SourceInfo[] = ParseMappingTable(studioConfig.SourcesCam, SourceLayerType.CAMERA)
 
-	const res: SourceInfo[] = []
-
-	_.each(rmInputMap, rm => {
-		res.push({
-			type: SourceLayerType.REMOTE,
-			id: rm.id,
-			port: rm.val
-		})
-	})
-
-	_.each(kamInputMap, kam => {
-		res.push({
-			type: SourceLayerType.CAMERA,
-			id: kam.id,
-			port: kam.val
-		})
-	})
-
-	return res
+	return rmInputMap.concat(kamInputMap)
 }

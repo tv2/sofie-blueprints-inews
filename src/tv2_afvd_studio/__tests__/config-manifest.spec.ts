@@ -6,11 +6,12 @@ const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
 	MediaFlowId: '',
-	SourcesCam: '',
-	SourcesRM: '',
-	SourcesSkype: '',
-	SourcesDelayedPlayback: '',
-	ABMediaPlayers: '',
+	SourcesCam: [],
+	SourcesRM: [],
+	SourcesSkype: [],
+	SourcesDelayedPlayback: [],
+	ABMediaPlayers: [],
+	StudioMics: [],
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
@@ -52,7 +53,9 @@ function getObjectKeys(obj: any): string[] {
 	const definedKeys: string[] = []
 	const processObj = (prefix: string, o: any) => {
 		_.each(_.keys(o), k => {
-			if (_.isObject(o[k])) {
+			if (_.isArray(o[k])) {
+				definedKeys.push(prefix + k)
+			} else if (_.isObject(o[k])) {
 				processObj(prefix + k + '.', o[k])
 			} else {
 				definedKeys.push(prefix + k)

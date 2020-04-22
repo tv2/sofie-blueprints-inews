@@ -24,12 +24,15 @@ export interface TV2StudioConfigBase {
 		CCGClip: number
 		CCGGain: number
 	}
+	StudioMics: string[]
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
 	studio: StudioConfig
 	sources: SourceInfo[]
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	liveAudio: string[]
+	stickyLayers: string[]
 }
 
 export interface TV2ShowstyleBlueprintConfigBase {

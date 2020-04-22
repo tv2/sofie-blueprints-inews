@@ -19,7 +19,9 @@ import {
 	CameraParentClass,
 	CreatePartInvalid,
 	FindSourceInfoStrict,
-	GetKeepStudioMicsMetaData,
+	GetCameraMetaData,
+	GetLayersForCamera,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
 	PartTime,
@@ -30,7 +32,6 @@ import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera, STUDIO_MICS } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -107,7 +108,7 @@ export function CreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				metaData: GetKeepStudioMicsMetaData(STUDIO_MICS),
+				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -135,7 +136,7 @@ export function CreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(partDefinition.rawType)
+						...GetSisyfosTimelineObjForCamera(context, config, partDefinition.rawType)
 					])
 				}
 			})

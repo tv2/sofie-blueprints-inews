@@ -1,4 +1,5 @@
 import { ConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
+import { parseMapStr } from 'tv2-common'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -6,12 +7,53 @@ export interface ConfigMap {
 	[key: string]: ConfigItemValue | ConfigMap | any[]
 }
 
+function getSisyfosLayers(configName: string, id: string): string[] {
+	switch (configName) {
+		case 'SourcesCam':
+			return []
+		case 'SourcesRM':
+		case 'SourcesSkype':
+			return ['sisyfos_source_live_' + id]
+		case 'SourcesDelayedPlayback':
+			return ['sisyfos_source_evs_' + id]
+	}
+
+	return []
+}
+
+function prepareConfig(
+	conf: string,
+	configName: string,
+	studioMics: boolean
+): Array<{ SourceName: string; AtemSource: string; SisyfosLayers: string[]; StudioMics: boolean }> {
+	return parseMapStr(undefined, conf, true).map(c => {
+		return {
+			SourceName: c.id,
+			AtemSource: c.val,
+			SisyfosLayers: getSisyfosLayers(configName, c.id),
+			StudioMics: studioMics
+		}
+	})
+}
+
 // in here will be some mock configs that can be referenced paired with ro's for the tests
 export const defaultStudioConfig: ConfigMap = {
-	SourcesCam:
+	SourcesCam: prepareConfig(
 		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15',
-	SourcesSkype: '1:1,2:2,3:3,4:4,5:5,6:6,7:7',
-	SourcesRM: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10',
+		'SourcesCam',
+		true
+	),
+	SourcesSkype: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7', 'SourcesSkype', false),
+	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false),
+	SourcesDelayedPlayback: prepareConfig('1:5,2:5', 'SourcesDelayedPlayback', false),
+	StudioMics: [
+		'sisyfos_source_Host_1_st_a',
+		'sisyfos_source_Host_2_st_a',
+		'sisyfos_source_Guest_1_st_a',
+		'sisyfos_source_Guest_2_st_a',
+		'sisyfos_source_Guest_3_st_a',
+		'sisyfos_source_Guest_4_st_a'
+	],
 	'AtemSource.MixMinusDefault': 2,
 	'AtemSource.DSK1F': 21,
 	'AtemSource.DSK1K': 34,
@@ -27,8 +69,10 @@ export const defaultStudioConfig: ConfigMap = {
 	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
 	MediaFlowId: 'testflow0',
-	SourcesDelayedPlayback: '1:5,2:5',
-	ABMediaPlayers: '1:1,2:2',
+	ABMediaPlayers: [
+		{ SourceName: '1', AtemSource: 1 },
+		{ SourceName: '2', AtemSource: 2 }
+	],
 	ABPlaybackDebugLogging: false,
 	'AtemSettings.VizClip': 50,
 	'AtemSettings.VizGain': 12.5,

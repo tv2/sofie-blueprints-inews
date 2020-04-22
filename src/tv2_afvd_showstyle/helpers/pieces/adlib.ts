@@ -14,7 +14,6 @@ import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
-import { STICKY_LAYERS } from '../sisyfos/sisyfos'
 
 export function EvaluateAdLib(
 	context: PartContext,
@@ -40,7 +39,7 @@ export function EvaluateAdLib(
 				ATEM: {
 					MEPGM: AtemLLayer.AtemMEProgram
 				},
-				STICKY_LAYERS,
+				STICKY_LAYERS: config.stickyLayers,
 				PgmServer: SourceLayer.PgmServer,
 				PgmVoiceOver: SourceLayer.PgmVoiceOver
 			})

@@ -108,14 +108,20 @@ export interface DVELayers {
 }
 
 export interface DVETimelineObjectGenerators {
-	GetSisyfosTimelineObjForCamera: (str: string, enable?: Timeline.TimelineEnable) => TSRTimelineObj[]
-	GetSisyfosTimelineObjForEkstern: (
+	GetSisyfosTimelineObjForCamera: (
 		context: NotesContext,
-		sourceType: string,
-		getLayerForEkstern: (sourceType: string) => string[] | undefined,
+		config: { sources: SourceInfo[] },
+		str: string,
 		enable?: Timeline.TimelineEnable
 	) => TSRTimelineObj[]
-	GetLayerForEkstern: (sourceType: string) => string[] | undefined
+	GetSisyfosTimelineObjForEkstern: (
+		context: NotesContext,
+		sources: SourceInfo[],
+		sourceType: string,
+		getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[],
+		enable?: Timeline.TimelineEnable
+	) => TSRTimelineObj[]
+	GetLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[]
 }
 
 export interface DVEOptions {
@@ -128,10 +134,6 @@ export interface DVEOptions {
 		INP3: string
 		INP4: string
 	}
-	/** Layers that should be sticky */
-	STICKY_LAYERS: string[]
-	/** Audio layers for live sources */
-	LIVE_AUDIO: string[]
 	/** All audio layers */
 	AUDIO_LAYERS: string[]
 	/** Layers to exclude from filter */
@@ -312,7 +314,12 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoCam, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(mappingFrom.source, audioEnable)
+					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
+						context,
+						config,
+						mappingFrom.source,
+						audioEnable
+					)
 				)
 			} else if (sourceType.match(/LIVE/i) || sourceType.match(/SKYPE/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
@@ -326,8 +333,9 @@ export function MakeContentDVE2<
 				dveTimeline.push(
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForEkstern(
 						context,
+						config.sources,
 						mappingFrom.source,
-						dveGeneratorOptions.dveTimelineGenerators.GetLayerForEkstern,
+						dveGeneratorOptions.dveTimelineGenerators.GetLayersForEkstern,
 						audioEnable
 					)
 				)
@@ -345,7 +353,9 @@ export function MakeContentDVE2<
 				}
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
-				dveTimeline.push(...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera('evs'))
+				dveTimeline.push(
+					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'evs')
+				)
 			} else if (sourceType.match(/ENGINE/i)) {
 				if (sourceInput.match(/full/i)) {
 					const sourceInfoFull: SourceInfo = {
@@ -354,7 +364,9 @@ export function MakeContentDVE2<
 						port: config.studio.AtemSource.DSK1F
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source)
-					dveTimeline.push(...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera('full'))
+					dveTimeline.push(
+						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'full')
+					)
 				} else {
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
@@ -424,8 +436,9 @@ export function MakeContentDVE2<
 
 	if (adlib) {
 		dveTimeline.push(
-			...dveGeneratorOptions.STICKY_LAYERS.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
-				.filter(layer => dveGeneratorOptions.LIVE_AUDIO.indexOf(layer) === -1)
+			...config.stickyLayers
+				.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
+				.filter(layer => config.liveAudio.indexOf(layer) === -1)
 				.map<TimelineObjSisyfosMessage>(layer => {
 					return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',

@@ -2,6 +2,7 @@ import * as _ from 'underscore'
 
 import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
+import { TableConfigItemSourceMappingWithSisyfos } from './types'
 
 export function parseMapStr(
 	context: NotesContext | undefined,
@@ -43,6 +44,18 @@ export function parseMapStr(
 	return res
 }
 
+export function ParseMappingTable(
+	studioConfig: TableConfigItemSourceMappingWithSisyfos[],
+	type: SourceInfoType
+): SourceInfo[] {
+	return studioConfig.map(conf => ({
+		type,
+		id: conf.SourceName,
+		port: conf.AtemSource,
+		sisyfosLayers: conf.SisyfosLayers
+	}))
+}
+
 export type SourceInfoType =
 	| SourceLayerType.CAMERA
 	| SourceLayerType.REMOTE
@@ -54,6 +67,8 @@ export interface SourceInfo {
 	id: string
 	port: number
 	ptzDevice?: string
+	sisyfosLayers?: string[]
+	useStudioMics?: boolean
 }
 
 export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: string): SourceInfo | undefined {
@@ -67,7 +82,7 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 
 			return _.find(sources, s => s.type === type && s.id === cameraName[1].replace(/minus mic/i, '').trim())
 		case SourceLayerType.REMOTE:
-			const remoteName = id.match(/^(?:LIVE|SKYPE|EVS) ?(\d+).*$/i)
+			const remoteName = id.match(/^(?:LIVE|SKYPE|EVS) ?(.+).*$/i)
 			if (!remoteName) {
 				return undefined
 			}

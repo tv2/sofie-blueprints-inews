@@ -20,6 +20,8 @@ import {
 	EksternParentClass,
 	FindSourceInfoStrict,
 	GetEksternMetaData,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	PartDefinition,
@@ -30,7 +32,6 @@ import { ControlClasses } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import { GetLayerForEkstern, GetSisyfosTimelineObjForCamera, STICKY_LAYERS, STUDIO_MICS } from '../sisyfos/sisyfos'
 
 export function EvaluateEkstern(
 	context: PartContext,
@@ -63,7 +64,7 @@ export function EvaluateEkstern(
 	}
 	const atemInput = sourceInfoCam.port
 
-	const layer = GetLayerForEkstern(parsedCue.source)
+	const layers = GetLayersForEkstern(context, config.sources, parsedCue.source)
 
 	if (adlib) {
 		adlibPieces.push(
@@ -74,7 +75,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(STICKY_LAYERS, STUDIO_MICS, layer),
+				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -99,8 +100,8 @@ export function EvaluateEkstern(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, parsedCue.source, GetLayerForEkstern),
-						...GetSisyfosTimelineObjForCamera('telefon')
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 					])
 				})
 			})
@@ -115,7 +116,7 @@ export function EvaluateEkstern(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmLive,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(STICKY_LAYERS, STUDIO_MICS, layer),
+				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -147,8 +148,8 @@ export function EvaluateEkstern(
 							...(AddParentClass(partDefinition) ? { classes: [EksternParentClass('studio0', parsedCue.source)] } : {})
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, parsedCue.source, GetLayerForEkstern),
-						...GetSisyfosTimelineObjForCamera('telefon')
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 					])
 				})
 			})

@@ -8,7 +8,7 @@ export enum SharedSourceLayers {
 	PgmGraphicsTLF = 'studio0_graphicsTelefon',
 	/** General, 'fallback', overlay layer */
 	PgmGraphicsOverlay = 'studio0_overlay',
-	WallGraphics = 'studio0_offtube_wall_graphics',
+	WallGraphics = 'studio0_wall_graphics',
 
 	// Note: there is a regex in core to ignore some DVE layers. That will need updating if adding more
 	PgmDVEBox1 = 'studio0_dve_box1',

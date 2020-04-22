@@ -32,8 +32,10 @@ import {
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	GetCameraMetaData,
 	GetEksternMetaData,
-	GetKeepStudioMicsMetaData,
+	GetLayersForCamera,
+	GetLayersForEkstern,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	MakeContentDVE2,
@@ -52,13 +54,7 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers, boxMappings, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
-import {
-	GetLayerForEkstern,
-	GetSisyfosTimelineObjForCamera,
-	LIVE_AUDIO,
-	STICKY_LAYERS,
-	STUDIO_MICS
-} from './helpers/sisyfos'
+import { GetSisyfosTimelineObjForCamera } from './helpers/sisyfos'
 import { OfftubeOutputLayers, OffTubeSourceLayer } from './layers'
 
 export function getShowStyleVariantId(
@@ -160,7 +156,7 @@ function getGlobalAdLibPiecesOffTube(
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
-			metaData: GetKeepStudioMicsMetaData(STUDIO_MICS),
+			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -179,26 +175,26 @@ function getGlobalAdLibPiecesOffTube(
 						classes: ['adlib_deparent']
 					}),
 					...camSisyfos,
-					...STICKY_LAYERS.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1).map<
-						TimelineObjSisyfosAny & TimelineBlueprintExt
-					>(layer => {
-						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-					}),
+					...config.stickyLayers
+						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						}),
 					// Force server to be muted (for adlibbing over DVE)
 					...[
 						OfftubeSisyfosLLayer.SisyfosSourceClipPending,
@@ -253,7 +249,7 @@ function getGlobalAdLibPiecesOffTube(
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, GetLayerForEkstern),
+			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
 			...GetSisyfosTimelineObjForCamera('telefon')
 		]
 		res.push({
@@ -265,7 +261,11 @@ function getGlobalAdLibPiecesOffTube(
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(STICKY_LAYERS, STUDIO_MICS, GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(
+				config.stickyLayers,
+				config.studio.StudioMics,
+				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+			),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -284,8 +284,9 @@ function getGlobalAdLibPiecesOffTube(
 						classes: ['adlib_deparent']
 					}),
 					...eksternSisyfos,
-					...STICKY_LAYERS.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => LIVE_AUDIO.indexOf(layer) === -1)
+					...config.stickyLayers
+						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.filter(layer => config.liveAudio.indexOf(layer) === -1)
 						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
@@ -348,7 +349,9 @@ function getGlobalAdLibPiecesOffTube(
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, GetLayerForEkstern, { while: audioWhile }),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
+							while: audioWhile
+						}),
 						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
 					])
 				}

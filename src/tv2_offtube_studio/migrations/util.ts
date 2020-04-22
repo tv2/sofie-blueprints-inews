@@ -8,6 +8,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
+import { OfftubeSisyfosLLayer } from '../layers'
 import MappingsDefaults from './mappings-defaults'
 
 export function ensureStudioConfig(
@@ -154,4 +155,30 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 	)
 
 	return res
+}
+
+export function GetSisyfosLayersForTableMigrationOfftube(configName: string, val: string): string[] {
+	switch (configName) {
+		case 'SourcesCam':
+			return [
+				OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A,
+				OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A,
+				OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
+			]
+		case 'SourcesRM':
+			switch (val) {
+				case '1':
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_1]
+				case '2':
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
+				case 'WF':
+					return [
+						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
+						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
+					]
+			}
+			break
+	}
+
+	return []
 }

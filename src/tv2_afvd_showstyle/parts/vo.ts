@@ -7,12 +7,17 @@ import {
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
-import { CreatePartInvalid, literal, MakeContentServer, PartDefinition } from 'tv2-common'
+import {
+	CreatePartInvalid,
+	GetSisyfosTimelineObjForCamera,
+	literal,
+	MakeContentServer,
+	PartDefinition
+} from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos/sisyfos'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -69,7 +74,7 @@ export function CreatePartVO(
 		},
 		false
 	)
-	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
+	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',

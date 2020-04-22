@@ -14,8 +14,8 @@ describe('Migration Defaults', () => {
 			...MappingsDefaults,
 			// Inject MediaPlayer ones, as they are used directly and part of the enum
 			...getMediaPlayerMappings([]),
-			...getCameraSisyfosMappings(''),
-			...getRemoteSisyfosMappings(''),
+			...getCameraSisyfosMappings([]),
+			...getRemoteSisyfosMappings([]),
 			...getTelefonSisyfosMappings('')
 		}
 		const defaultsIds = _.map(allMappings, (v, id) => {

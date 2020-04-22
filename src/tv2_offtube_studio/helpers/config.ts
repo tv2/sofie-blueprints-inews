@@ -7,7 +7,14 @@ import {
 	ShowStyleContext,
 	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
-import { assertUnreachable, MediaPlayerConfig, SourceInfo, TV2StudioConfigBase } from 'tv2-common'
+import {
+	assertUnreachable,
+	MediaPlayerConfig,
+	SourceInfo,
+	TableConfigItemSourceMapping,
+	TableConfigItemSourceMappingWithSisyfos,
+	TV2StudioConfigBase
+} from 'tv2-common'
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { parseMediaPlayers, parseSources } from './sources'
@@ -16,6 +23,8 @@ export interface OfftubeStudioBlueprintConfig {
 	studio: OfftubeStudioConfig
 	sources: SourceInfo[]
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	liveAudio: string[]
+	stickyLayers: string[]
 }
 
 export interface OfftubeStudioConfig extends TV2StudioConfigBase {
@@ -28,9 +37,9 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	MediaFlowId: string
 	ClipFileExtension: string
 	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
-	SourcesCam: string
-	SourcesRM: string
-	ABMediaPlayers: string
+	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
+	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		DSK1F: number
@@ -93,6 +102,15 @@ export function applyToConfig(
 				case ConfigManifestEntryType.TABLE:
 					newVal = overrideVal as TableConfigItemValue
 					break
+				case ConfigManifestEntryType.SELECT:
+					newVal = overrideVal
+					break
+				case ConfigManifestEntryType.LAYER_MAPPINGS:
+					newVal = overrideVal
+					break
+				case ConfigManifestEntryType.SOURCE_LAYERS:
+					newVal = overrideVal
+					break
 				default:
 					assertUnreachable(val)
 					context.warning('Unknown config field type: ' + val)
@@ -111,7 +129,9 @@ export function defaultStudioConfig(context: NotesContext): OfftubeStudioBluepri
 		studio: {} as any,
 		// showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
@@ -124,8 +144,8 @@ export function defaultStudioConfig(context: NotesContext): OfftubeStudioBluepri
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', {})
 	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', {})
 
-	config.sources = parseSources(context, config.studio)
-	config.mediaPlayers = parseMediaPlayers(context, config.studio)
+	config.sources = parseSources(config.studio)
+	config.mediaPlayers = parseMediaPlayers(config.studio)
 
 	return config
 }
@@ -135,7 +155,9 @@ export function parseStudioConfig(context: ShowStyleContext): OfftubeStudioBluep
 		studio: {} as any,
 		// showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
@@ -148,8 +170,8 @@ export function parseStudioConfig(context: ShowStyleContext): OfftubeStudioBluep
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', studioConfig)
 	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', context.getShowStyleConfig())
 
-	config.sources = parseSources(context, config.studio)
-	config.mediaPlayers = parseMediaPlayers(context, config.studio)
+	config.sources = parseSources(config.studio)
+	config.mediaPlayers = parseMediaPlayers(config.studio)
 
 	return config
 }
