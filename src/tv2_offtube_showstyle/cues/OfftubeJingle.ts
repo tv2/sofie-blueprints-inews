@@ -2,6 +2,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
+	PieceLifespan,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -70,6 +71,7 @@ export function OfftubeEvaluateJingle(
 			adlibPreroll: props.prerollDuration,
 			expectedDuration: props.expectedDuration,
 			adlibDisableOutTransition: props.disableOutTransition,
+			infiniteMode: PieceLifespan.OutOnNextPart,
 			tags: [AdlibTags.OFFTUBE_100pc_SERVER] // TODO: Maybe this should be different?
 		})
 	)
