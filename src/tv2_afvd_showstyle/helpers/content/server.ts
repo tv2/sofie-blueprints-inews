@@ -14,7 +14,6 @@ import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/conv
 import { AddParentClass, ServerParentClass } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { TimelineBlueprintExt } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { BlueprintConfig } from '../../helpers/config'
 import { STICKY_LAYERS } from '../sisyfos/sisyfos'
 import { TransitionFromString } from '../transitionFromString'
@@ -40,7 +39,7 @@ export function MakeContentServer(
 			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
-					start: 0
+					while: '1'
 				},
 				priority: 1,
 				layer: CasparLLayer.CasparPlayerClipPending,
@@ -48,12 +47,13 @@ export function MakeContentServer(
 					deviceType: DeviceType.CASPARCG,
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
-					loop: adLib
+					loop: adLib,
+					noStarttime: true
 				},
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
+					mediaPlayerSession: mediaPlayerSessionId
 				},
-				...(AddParentClass(partDefinition) && !adLib ? { classes: [ServerParentClass('studio0', file)] } : {})
+				classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
 			}),
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
@@ -75,9 +75,9 @@ export function MakeContentServer(
 					}
 				},
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
+					mediaPlayerSession: mediaPlayerSessionId
 				},
-				...(adLib ? { classes: ['adlib_deparent'] } : {})
+				classes: [...(adLib ? ['adlib_deparent'] : [])]
 			}),
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
@@ -94,8 +94,9 @@ export function MakeContentServer(
 					isPgm: 1
 				},
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
-				}
+					mediaPlayerSession: mediaPlayerSessionId
+				},
+				classes: []
 			}),
 
 			...(stickyLevels

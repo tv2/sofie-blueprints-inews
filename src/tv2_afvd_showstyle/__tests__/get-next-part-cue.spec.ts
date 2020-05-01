@@ -110,7 +110,8 @@ const partDefinitionTest1: PartDefinitionKam = {
 			iNewsCommand: 'LYD'
 		})
 	],
-	storyName: ''
+	storyName: '',
+	segmentExternalId: ''
 }
 
 const partDefinitionTest2: PartDefinitionKam = {
@@ -187,7 +188,8 @@ const partDefinitionTest2: PartDefinitionKam = {
 			iNewsCommand: 'kg'
 		})
 	],
-	storyName: ''
+	storyName: '',
+	segmentExternalId: ''
 }
 
 describe('Get Next Part Cue', () => {

@@ -47,7 +47,8 @@ import {
 export const boxLayers: DVESources = {
 	INP1: SourceLayer.PgmDVEBox1,
 	INP2: SourceLayer.PgmDVEBox2,
-	INP3: SourceLayer.PgmDVEBox3
+	INP3: SourceLayer.PgmDVEBox3,
+	INP4: SourceLayer.PgmDVEBox4
 }
 export const boxMappings = [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3]
 
@@ -151,8 +152,13 @@ export function MakeContentDVE2(
 					boxMap[targetBox - 1] = { source: prop, sourceLayer }
 				}
 			} else {
-				context.warning(`Missing mapping for ${targetBox}`)
-				boxMap[targetBox - 1] = { source: '', sourceLayer }
+				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+					usedServer = true
+				} else {
+					context.warning(`Missing mapping for ${targetBox}`)
+					boxMap[targetBox - 1] = { source: '', sourceLayer }
+				}
 			}
 		} else {
 			// Need something to keep the layout etc
@@ -252,13 +258,8 @@ export function MakeContentDVE2(
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const file = partDefinition ? partDefinition.fields.videoId : undefined
+				const file: string | undefined = partDefinition ? partDefinition.fields.videoId : undefined
 
-				if (!file || !file.length) {
-					context.warning('No video id provided for ADLIBPIX')
-					valid = false
-					return
-				}
 				server = true
 				setBoxSource(
 					num,
@@ -273,24 +274,30 @@ export function MakeContentDVE2(
 					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							start: 0
+							while: '1'
 						},
 						priority: 1,
 						layer: CasparLLayer.CasparPlayerClipPending,
 						content: {
 							deviceType: DeviceType.CASPARCG,
 							type: TimelineContentTypeCasparCg.MEDIA,
-							file,
-							loop: true
+							file: adlib ? 'continue' : file ? file : 'continue',
+							loop: false,
+							noStarttime: true
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
-						}
+							mediaPlayerSession: adlib
+								? MEDIA_PLAYER_AUTO
+								: partDefinition
+								? partDefinition.segmentExternalId
+								: MEDIA_PLAYER_AUTO
+						},
+						classes: [`dve_placeholder`]
 					}),
 					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							start: 0
+							while: '1'
 						},
 						priority: 1,
 						layer: SisyfosLLAyer.SisyfosSourceClipPending,
@@ -300,8 +307,13 @@ export function MakeContentDVE2(
 							isPgm: 1
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
-						}
+							mediaPlayerSession: adlib
+								? MEDIA_PLAYER_AUTO
+								: partDefinition
+								? partDefinition.segmentExternalId
+								: MEDIA_PLAYER_AUTO
+						},
+						classes: []
 					})
 				)
 				return
@@ -370,7 +382,11 @@ export function MakeContentDVE2(
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: {
-						mediaPlayerSession: server ? MEDIA_PLAYER_AUTO : undefined // TODO: Maybe this should be segment-level?
+						mediaPlayerSession: server
+							? partDefinition
+								? partDefinition.segmentExternalId
+								: MEDIA_PLAYER_AUTO
+							: undefined
 					}
 				}),
 				literal<TimelineObjAtemSsrcProps>({

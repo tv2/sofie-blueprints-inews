@@ -18,11 +18,23 @@ describe('addScript', () => {
 			script: 'Hallo, I wnat to tell you......\nHEREEEELLLLOOOK\nYES\n',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: '00000000001'
 		})
-		const result: IBlueprintPiece[] = []
+		const result: IBlueprintPiece[] = [
+			literal<IBlueprintPiece>({
+				_id: '',
+				enable: {
+					start: 0
+				},
+				externalId: '',
+				name: 'Kam 2',
+				sourceLayerId: SourceLayer.PgmCam,
+				outputLayerId: 'pgm'
+			})
+		]
 		AddScript(part, result, 1000)
-		expect(result).toEqual([
+		expect(result).toContainEqual(
 			literal<IBlueprintPiece>({
 				_id: '',
 				externalId: part.externalId,
@@ -42,6 +54,6 @@ describe('addScript', () => {
 					lastModified: part.modified * 1000
 				})
 			})
-		])
+		)
 	})
 })

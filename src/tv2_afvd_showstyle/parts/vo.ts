@@ -22,6 +22,7 @@ export function CreatePartVO(
 	context: PartContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
+	segmentExternalId: string,
 	totalWords: number,
 	totalTime: number
 ): BlueprintResultPart {
@@ -53,7 +54,7 @@ export function CreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const serverContent = MakeContentServer(file, partDefinition.externalId, partDefinition, config, false)
+	const serverContent = MakeContentServer(file, segmentExternalId, partDefinition, config, false)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 
 	pieces.push(
@@ -66,7 +67,7 @@ export function CreatePartVO(
 			sourceLayerId: SourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [part.externalId]
+				mediaPlayerSessions: [segmentExternalId]
 			}),
 			content: serverContent,
 			adlibPreroll: config.studio.CasparPrerollDuration

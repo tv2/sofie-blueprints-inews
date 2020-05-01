@@ -7,7 +7,9 @@ const PREVIEW_CHARACTERS = 30
 
 // export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, slutord: boolean) {
 export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number) {
-	if (!pieces.length) return
+	if (!pieces.length) {
+		return
+	}
 
 	if (duration === 0) {
 		duration = 1000

@@ -3,7 +3,6 @@ import { literal } from '../../../common/util'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { MEDIA_PLAYER_AUTO } from '../../../types/constants'
 import { CueDefinitionAdLib, CueDefinitionDVE, CueType } from '../../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
@@ -33,9 +32,9 @@ export function EvaluateAdLib(
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
 				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [MEDIA_PLAYER_AUTO]
+					mediaPlayerSessions: [`adlib_server_${file}`]
 				}),
-				content: MakeContentServer(file, partId, partDefinition, config, true, true),
+				content: MakeContentServer(file, `adlib_server_${file}`, partDefinition, config, true, true),
 				adlibPreroll: config.studio.CasparPrerollDuration
 			})
 		)

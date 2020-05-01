@@ -48,7 +48,8 @@ const dummyPart = literal<PartDefinitionKam>({
 	script: '',
 	storyName: '',
 	fields: {},
-	modified: 0
+	modified: 0,
+	segmentExternalId: ''
 })
 
 describe('grafik piece', () => {
