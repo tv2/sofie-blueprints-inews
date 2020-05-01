@@ -1,11 +1,11 @@
 import { assertUnreachable, CueDefinitionJingle, DVESources, PartDefinition } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 
-export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmentId: string): PartDefinition[] {
+export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmentExternalId: string): PartDefinition[] {
 	const foundMap: { [key: string]: number } = {}
 
 	partDefinitions.forEach((part, i) => {
-		partDefinitions[i] = { ...part, externalId: getExternalId(segmentId, part, foundMap) }
+		partDefinitions[i] = { ...part, externalId: getExternalId(segmentExternalId, part, foundMap), segmentExternalId }
 	})
 
 	return partDefinitions

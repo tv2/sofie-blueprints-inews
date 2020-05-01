@@ -34,6 +34,7 @@ export function onTimelineGenerateOfftube(
 				PlayerA: OfftubeSisyfosLLayer.SisyfosSourceServerA,
 				PlayerB: OfftubeSisyfosLLayer.SisyfosSourceServerB
 			}
-		}
+		},
+		OfftubeCasparLLayer.CasparPlayerClipPending
 	)
 }

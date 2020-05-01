@@ -18,7 +18,7 @@ export function CreatePartUnknown(
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords)
+	const partTime = PartTime(config, partDefinition, totalWords)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

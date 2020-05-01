@@ -36,6 +36,7 @@ import {
 	IStudioConfigContext,
 	NotesContext,
 	PieceLifespan,
+	PieceMetaData,
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
@@ -52,7 +53,7 @@ import {
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { CONSTANTS, ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { CONSTANTS, ControlClasses } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
@@ -132,7 +133,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				},
 				metaData: {
 					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`,
-					mediaPlayerSession: mediaPlayer ? MEDIA_PLAYER_AUTO : undefined
+					mediaPlayerSession: mediaPlayer ? 'dve_placeholder' : undefined
 				}
 			})
 		)
@@ -441,6 +442,67 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		return res
 	}
 
+	// server ssrc box
+	function makeServerAdlibBoxes(info: { port: number; id: string }, rank: number): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		_.forEach(_.values(boxLayers), (layer: SourceLayer, i) => {
+			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port, true)
+
+			res.push({
+				externalId: info.id,
+				name: `Server`,
+				_rank: rank * 100 + i,
+				sourceLayerId: layer,
+				outputLayerId: 'sec',
+				expectedDuration: 0,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				metaData: literal<PieceMetaData>({
+					mediaPlayerSessions: ['dve_placeholder']
+				}),
+				content: {
+					timelineObjects: _.compact<TSRTimelineObj>([
+						...boxObjs,
+						literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								while: audioWhile
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosSourceClipPending,
+							content: {
+								deviceType: DeviceType.SISYFOS,
+								type: TimelineContentTypeSisyfos.SISYFOS,
+								isPgm: 1
+							},
+							metaData: {
+								mediaPlayerSession: 'dve_placeholder'
+							}
+						}),
+						literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: CasparLLayer.CasparPlayerClipPending,
+							content: {
+								deviceType: DeviceType.CASPARCG,
+								type: TimelineContentTypeCasparCg.MEDIA,
+								file: 'copy',
+								noStarttime: true
+							},
+							metaData: {
+								mediaPlayerSession: 'dve_placeholder'
+							},
+							classes: ['dve_placeholder']
+						})
+					])
+				}
+			})
+		})
+		return res
+	}
+
 	// ssrc box
 	function makeRemoteAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
@@ -613,6 +675,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				}
 			})
 		})
+
+	adlibItems.push(...makeServerAdlibBoxes({ port: -1, id: 'Server' }, globalRank++))
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({

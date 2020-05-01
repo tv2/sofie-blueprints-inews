@@ -20,7 +20,6 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
@@ -60,7 +59,7 @@ export function MakeContentServer<
 			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
-					start: 0
+					while: '1'
 				},
 				priority: 1,
 				layer: sourceLayers.Caspar.ClipPending,
@@ -69,6 +68,7 @@ export function MakeContentServer<
 					type: TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: adLib,
+					noStarttime: true,
 					...(offtubeOptions?.isOfftube ? { playing: false } : {})
 				},
 				...(offtubeOptions?.isOfftube
@@ -88,9 +88,9 @@ export function MakeContentServer<
 					  }
 					: {}),
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
+					mediaPlayerSession: mediaPlayerSessionId
 				},
-				...(AddParentClass(partDefinition) && !adLib ? { classes: [ServerParentClass('studio0', file)] } : {})
+				classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
 			}),
 
 			literal<TimelineObjAtemME & TimelineBlueprintExt>({
@@ -110,9 +110,9 @@ export function MakeContentServer<
 					}
 				},
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
+					mediaPlayerSession: mediaPlayerSessionId
 				},
-				...(adLib ? { classes: ['adlib_deparent'] } : {})
+				classes: [...(adLib ? ['adlib_deparent'] : [])]
 			}),
 
 			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
@@ -127,8 +127,9 @@ export function MakeContentServer<
 					isPgm: 1
 				},
 				metaData: {
-					mediaPlayerSession: adLib ? MEDIA_PLAYER_AUTO : mediaPlayerSessionId
-				}
+					mediaPlayerSession: mediaPlayerSessionId
+				},
+				classes: []
 			}),
 
 			...(sourceLayers.STICKY_LAYERS

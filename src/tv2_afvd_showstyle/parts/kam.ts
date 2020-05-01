@@ -41,7 +41,7 @@ export function CreatePartKam(
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinition, totalWords, false)
+	const partTime = PartTime(config, partDefinition, totalWords, false)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

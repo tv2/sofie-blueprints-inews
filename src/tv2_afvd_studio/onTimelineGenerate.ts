@@ -35,6 +35,7 @@ export function onTimelineGenerateAFVD(
 				PlayerA: SisyfosLLAyer.SisyfosSourceServerA,
 				PlayerB: SisyfosLLAyer.SisyfosSourceServerB
 			}
-		}
+		},
+		CasparLLayer.CasparPlayerClipPending
 	)
 }

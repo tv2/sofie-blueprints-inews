@@ -16,7 +16,8 @@ import {
 	PartContext2,
 	PartDefinition,
 	PartDefinitionEVS,
-	PartDefinitionKam
+	PartDefinitionKam,
+	PartMetaData
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -63,7 +64,8 @@ export interface GetSegmentShowstyleOptions<
 	CreatePartServer?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
-		partDefinition: PartDefinitionServer
+		partDefinition: PartDefinitionServer,
+		mediaPlayerSession: string
 	) => BlueprintResultPart
 	CreatePartTeknik?: (
 		context: PartContext2,
@@ -81,6 +83,7 @@ export interface GetSegmentShowstyleOptions<
 		context: PartContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionVO,
+		mediaPlayerSession: string,
 		totalWords: number,
 		totalTime: number
 	) => BlueprintResultPart
@@ -138,7 +141,7 @@ export function getSegmentBase<
 		segment.isHidden = false
 	}
 
-	const blueprintParts: BlueprintResultPart[] = []
+	let blueprintParts: BlueprintResultPart[] = []
 	const parsedParts = ParseBody(
 		ingestSegment.externalId,
 		ingestSegment.name,
@@ -193,7 +196,7 @@ export function getSegmentBase<
 				break
 			case PartType.Server:
 				if (showStyleOptions.CreatePartServer) {
-					blueprintParts.push(showStyleOptions.CreatePartServer(partContext, config, part))
+					blueprintParts.push(showStyleOptions.CreatePartServer(partContext, config, part, ingestSegment.externalId))
 				}
 				break
 			case PartType.Teknik:
@@ -213,8 +216,9 @@ export function getSegmentBase<
 							partContext,
 							config,
 							part,
+							ingestSegment.externalId,
 							totalWords,
-							Number(ingestSegment.payload.iNewsStory.fields.totalTime)
+							Number(ingestSegment.payload.iNewsStory.fields.audioTime)
 						)
 					)
 				}
@@ -345,6 +349,18 @@ export function getSegmentBase<
 	) {
 		segment.isHidden = true
 	}
+
+	blueprintParts = blueprintParts.map(part => {
+		const actualPart = part.part
+		actualPart.metaData = literal<PartMetaData>({
+			...actualPart.metaData,
+			segmentExternalId: ingestSegment.externalId
+		})
+		return {
+			...part,
+			part: actualPart
+		}
+	})
 
 	return {
 		segment,

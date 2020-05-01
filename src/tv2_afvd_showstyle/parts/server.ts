@@ -15,7 +15,8 @@ import { CreateEffektForpart } from './effekt'
 export function CreatePartServer(
 	context: PartContext,
 	config: BlueprintConfig,
-	partDefinition: PartDefinition
+	partDefinition: PartDefinition,
+	segmentExternalId: string
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition)
 
@@ -45,9 +46,9 @@ export function CreatePartServer(
 			sourceLayerId: SourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [part.externalId]
+				mediaPlayerSessions: [segmentExternalId]
 			}),
-			content: MakeContentServer(file, part.externalId, partDefinition, config, {
+			content: MakeContentServer(file, segmentExternalId, partDefinition, config, {
 				Caspar: {
 					ClipPending: CasparLLayer.CasparPlayerClipPending
 				},

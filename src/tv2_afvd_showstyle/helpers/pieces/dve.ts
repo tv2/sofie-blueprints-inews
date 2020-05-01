@@ -2,7 +2,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan
+	PieceLifespan,
+	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
@@ -85,7 +86,10 @@ export function EvaluateDVE(
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
+					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+					metaData: literal<PieceMetaData>({
+						mediaPlayerSessions: [partDefinition.segmentExternalId]
+					})
 				})
 			)
 		}

@@ -21,7 +21,7 @@ export function CreatePartCueOnly(
 	makeAdlibs?: boolean
 ) {
 	const partDefinitionWithID = { ...partDefinition, ...{ externalId: id } }
-	const partTime = PartTime(config.studio.MaximumKamDisplayDuration, partDefinitionWithID, totalWords)
+	const partTime = PartTime(config, partDefinitionWithID, totalWords)
 
 	let part = literal<IBlueprintPart>({
 		externalId: id,

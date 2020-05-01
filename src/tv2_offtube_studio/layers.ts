@@ -46,7 +46,7 @@ export enum OfftubeAtemLLayer {
 }
 
 export enum OfftubeCasparLLayer {
-	CasparPlayerClipPending = 'casparcg_player_clip_pending',
+	CasparPlayerClipPending = 'casparcg_player_clip_pending', // TODO: This is a shared layer
 	CasparGraphicsOverlay = 'casparcg_graphics_overlay',
 	CasparPlayerJingle = 'casparcg_player_jingle',
 	CasparGraphicsFull = 'casparcg_graphics_full',

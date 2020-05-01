@@ -250,8 +250,13 @@ export function MakeContentDVE2<
 					boxMap[targetBox - 1] = { source: prop, sourceLayer }
 				}
 			} else {
-				context.warning(`Missing mapping for ${targetBox}`)
-				boxMap[targetBox - 1] = { source: '', sourceLayer }
+				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+					usedServer = true
+				} else {
+					context.warning(`Missing mapping for ${targetBox}`)
+					boxMap[targetBox - 1] = { source: '', sourceLayer }
+				}
 			}
 		} else {
 			// Need something to keep the layout etc
@@ -371,13 +376,8 @@ export function MakeContentDVE2<
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const file = partDefinition ? partDefinition.fields.videoId : undefined
+				const file: string | undefined = partDefinition ? partDefinition.fields.videoId : undefined
 
-				if (!file || !file.length) {
-					context.warning('No video id provided for ADLIBPIX')
-					valid = false
-					return
-				}
 				server = true
 				setBoxSource(
 					num,
@@ -391,22 +391,27 @@ export function MakeContentDVE2<
 				dveTimeline.push(
 					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
-						enable: getDVEEnable(!!offtube),
+						enable: getDVEEnable(!!offtube, undefined, undefined, true),
 						priority: 1,
 						layer: dveGeneratorOptions.dveLayers.CasparLLayer.ClipPending,
 						content: {
 							deviceType: DeviceType.CASPARCG,
 							type: TimelineContentTypeCasparCg.MEDIA,
-							file,
+							file: adlib ? 'continue' : file ? file : 'continue', // If adlib, or if no file, continue existing file // TODO: Adlib with clip specified?
 							loop: true
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
-						}
+							mediaPlayerSession: server
+								? partDefinition
+									? partDefinition.segmentExternalId
+									: MEDIA_PLAYER_AUTO
+								: undefined
+						},
+						classes: [`dve_placeholder`]
 					}),
 					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
-						enable: getDVEEnable(!!offtube),
+						enable: getDVEEnable(!!offtube, undefined, undefined, true),
 						priority: 1,
 						layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.ClipPending,
 						content: {
@@ -415,8 +420,13 @@ export function MakeContentDVE2<
 							isPgm: 1
 						},
 						metaData: {
-							mediaPlayerSession: MEDIA_PLAYER_AUTO // TODO: Maybe this should be segment-level?
-						}
+							mediaPlayerSession: server
+								? partDefinition
+									? partDefinition.segmentExternalId
+									: MEDIA_PLAYER_AUTO
+								: undefined
+						},
+						classes: []
 					})
 				)
 				return
@@ -484,7 +494,11 @@ export function MakeContentDVE2<
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: {
-						mediaPlayerSession: server ? MEDIA_PLAYER_AUTO : undefined // TODO: Maybe this should be segment-level?
+						mediaPlayerSession: server
+							? partDefinition
+								? partDefinition.segmentExternalId
+								: MEDIA_PLAYER_AUTO
+							: undefined
 					}
 				}),
 				literal<TimelineObjAtemSsrcProps>({
@@ -610,11 +624,20 @@ function boxSource(
 	}
 }
 
-function getDVEEnable(offtube: boolean, offsetFromStart?: number, startId?: string): TSRTimelineObj['enable'] {
+function getDVEEnable(
+	offtube: boolean,
+	offsetFromStart?: number,
+	startId?: string,
+	media?: boolean
+): TSRTimelineObj['enable'] {
 	if (offsetFromStart) {
 		return offtube
 			? { start: startId ? `#${startId}.start + ${offsetFromStart}` : offsetFromStart }
 			: { start: offsetFromStart ?? 0 }
 	}
-	return offtube ? { while: `.${[Enablers.OFFTUBE_ENABLE_DVE]}` } : { start: offsetFromStart ?? 0 }
+	return offtube
+		? { while: `.${[Enablers.OFFTUBE_ENABLE_DVE]}` }
+		: media
+		? { while: '1' }
+		: { start: offsetFromStart ?? 0 }
 }

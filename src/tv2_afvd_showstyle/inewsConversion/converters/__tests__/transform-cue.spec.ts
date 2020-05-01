@@ -106,35 +106,39 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
 
-		expect(res).toEqual({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '',
-			cues: [
-				literal<CueDefinitionTargetEngine>({
-					type: CueType.TargetEngine,
-					data: {
-						engine: 'WALL',
-						grafik: mosCue
-					},
-					rawType: `SS=SC-STILLS`,
-					content: {},
-					iNewsCommand: 'SS'
-				})
-			],
-			rawType: 'Kam 1',
-			script: '',
-			fields: {},
-			modified: 0,
-			storyName: ''
-		})
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'WALL',
+							grafik: mosCue
+						},
+						rawType: `SS=SC-STILLS`,
+						content: {},
+						iNewsCommand: 'SS'
+					})
+				],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
 	})
 
 	test('Preserve internal', () => {
@@ -158,42 +162,46 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
 
-		expect(res).toEqual({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '',
-			cues: [
-				literal<CueDefinitionTargetEngine>({
-					type: CueType.TargetEngine,
-					data: {
-						engine: 'WALL',
-						grafik: literal<CueDefinitionGrafik>({
-							type: CueType.Grafik,
-							template: 'SC_LOOP_ON',
-							cue: 'SS=SC_LOOP',
-							textFields: [],
-							iNewsCommand: 'SS'
-						})
-					},
-					rawType: `SS=SC_LOOP`,
-					content: {},
-					iNewsCommand: 'SS'
-				}),
-				mosCue
-			],
-			rawType: 'Kam 1',
-			script: '',
-			fields: {},
-			modified: 0,
-			storyName: ''
-		})
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'WALL',
+							grafik: literal<CueDefinitionGrafik>({
+								type: CueType.Grafik,
+								template: 'SC_LOOP_ON',
+								cue: 'SS=SC_LOOP',
+								textFields: [],
+								iNewsCommand: 'SS'
+							})
+						},
+						rawType: `SS=SC_LOOP`,
+						content: {},
+						iNewsCommand: 'SS'
+					}),
+					mosCue
+				],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
 	})
 
 	test('Preserves unconfigured target wall', () => {
@@ -218,24 +226,28 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
 
-		expect(res).toEqual({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '',
-			cues: [targetWallCue, mosCue],
-			rawType: 'Kam 1',
-			script: '',
-			fields: {},
-			modified: 0,
-			storyName: ''
-		})
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [targetWallCue, mosCue],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
 	})
 
 	test('Handles VCP for #kg (other cues)', () => {
@@ -258,35 +270,39 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
 
-		expect(res).toEqual({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '',
-			cues: [
-				literal<CueDefinitionTargetEngine>({
-					type: CueType.TargetEngine,
-					rawType: '#kg bund',
-					data: {
-						engine: 'FULL',
-						grafik: mosCue
-					},
-					iNewsCommand: '#kg',
-					content: {}
-				})
-			],
-			rawType: 'Kam 1',
-			script: '',
-			fields: {},
-			modified: 0,
-			storyName: ''
-		})
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						rawType: '#kg bund',
+						data: {
+							engine: 'FULL',
+							grafik: mosCue
+						},
+						iNewsCommand: '#kg',
+						content: {}
+					})
+				],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
 	})
 
 	test('Handles VCP for VIZ= (other cues)', () => {
@@ -309,34 +325,38 @@ describe('TransformCuesIntoShowstyle', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentExternalId: ''
 		}
 
 		const res = TransformCuesIntoShowstyle(config, partDefinition)
 
-		expect(res).toEqual({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '',
-			cues: [
-				literal<CueDefinitionTargetEngine>({
-					type: CueType.TargetEngine,
-					rawType: 'VIZ=bund',
-					data: {
-						engine: 'OVL',
-						grafik: mosCue
-					},
-					iNewsCommand: 'VIZ',
-					content: {}
-				})
-			],
-			rawType: 'Kam 1',
-			script: '',
-			fields: {},
-			modified: 0,
-			storyName: ''
-		})
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						rawType: 'VIZ=bund',
+						data: {
+							engine: 'OVL',
+							grafik: mosCue
+						},
+						iNewsCommand: 'VIZ',
+						content: {}
+					})
+				],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
 	})
 })

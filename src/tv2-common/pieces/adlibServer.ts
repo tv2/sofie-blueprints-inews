@@ -39,7 +39,7 @@ export function CreateAdlibServer<
 		infiniteMode: offtubeOptions?.isOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
 		toBeQueued: !offtubeOptions?.isOfftube,
 		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: [mediaPlayerSession]
+			mediaPlayerSessions: offtubeOptions?.isOfftube ? [MEDIA_PLAYER_AUTO] : [mediaPlayerSession]
 		}),
 		content: MakeContentServer(
 			file,

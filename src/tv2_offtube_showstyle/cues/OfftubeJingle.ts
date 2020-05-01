@@ -2,8 +2,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PieceLifespan,
-	PartContext
+	PartContext,
+	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateJingleContentBase,

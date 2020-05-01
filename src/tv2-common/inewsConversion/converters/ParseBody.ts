@@ -34,6 +34,7 @@ export interface PartDefinitionBase {
 	modified: number
 	transition?: PartTransition
 	storyName: string
+	segmentExternalId: string
 	endWords?: string
 }
 
@@ -142,6 +143,7 @@ export function ParseBody(
 		})
 		definition.rawType = 'INTRO'
 		definition.externalId = `${segmentId}-${definitions.length}`
+		definition.segmentExternalId = segmentId
 		definitions.push(definition)
 		definition = initDefinition(fields, modified, segmentName)
 		return definitions
@@ -330,7 +332,8 @@ function initDefinition(fields: any, modified: number, segmentName: string): Par
 		script: '',
 		fields,
 		modified,
-		storyName: segmentName
+		storyName: segmentName,
+		segmentExternalId: ''
 	}
 }
 
@@ -448,7 +451,8 @@ function makeDefinition(
 		script: '',
 		fields,
 		modified,
-		storyName
+		storyName,
+		segmentExternalId: ''
 	}
 
 	return part
