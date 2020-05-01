@@ -381,9 +381,17 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 200 // 5 frames
 	},
 	{
-		id: 'MaximumKamDisplayDuration',
-		name: 'Maximum Kam Display Duration',
-		description: 'Maximum duration (ms) to give Kam parts in UI',
+		id: 'MaximumPartDuration',
+		name: 'Maximum Part Duration',
+		description: 'Maximum duration (ms) to give parts in UI',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 10000
+	},
+	{
+		id: 'DefaultPartDuration',
+		name: 'Default Part Duration',
+		description: 'Duration to give parts by default',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 10000

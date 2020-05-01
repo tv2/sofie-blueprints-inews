@@ -218,7 +218,7 @@ export function getSegmentBase<
 							part,
 							ingestSegment.externalId,
 							totalWords,
-							Number(ingestSegment.payload.iNewsStory.fields.audioTime)
+							Number(ingestSegment.payload.iNewsStory.fields.totalTime)
 						)
 					)
 				}
@@ -291,9 +291,9 @@ export function getSegmentBase<
 				(blueprintParts.length - serverParts)
 			if (
 				!!part.part.title.match(/(?:kam|cam)(?:era)? ?.*/i) &&
-				part.part.expectedDuration > config.studio.MaximumKamDisplayDuration
+				part.part.expectedDuration > config.studio.MaximumPartDuration
 			) {
-				part.part.expectedDuration = config.studio.MaximumKamDisplayDuration
+				part.part.expectedDuration = config.studio.MaximumPartDuration
 			}
 		}
 
@@ -304,7 +304,7 @@ export function getSegmentBase<
 
 	blueprintParts.forEach(part => {
 		if (!part.part.expectedDuration || part.part.expectedDuration < 0) {
-			part.part.expectedDuration = 100000
+			part.part.expectedDuration = config.studio.DefaultPartDuration
 		}
 
 		if (part.part.displayDuration && (part.part.displayDuration < 0 || isNaN(part.part.displayDuration))) {

@@ -37,7 +37,8 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	CasparPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
 	ClipSourcePath: '/',
-	MaximumKamDisplayDuration: 0
+	MaximumPartDuration: 0,
+	DefaultPartDuration: 0
 }
 
 function getObjectKeys(obj: any): string[] {

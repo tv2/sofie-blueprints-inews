@@ -46,7 +46,8 @@ const blankStudioConfig: StudioConfig = {
 	ClipFileExtension: 'mxf',
 	ClipSourcePath: '/',
 	ATEMDelay: 1,
-	MaximumKamDisplayDuration: 0
+	MaximumPartDuration: 0,
+	DefaultPartDuration: 0
 }
 
 function getObjectKeys(obj: any): string[] {

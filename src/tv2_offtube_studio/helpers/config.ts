@@ -71,7 +71,6 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 	// Constants
 	CasparPrerollDuration: number
-	MaximumKamDisplayDuration: number
 }
 
 export function applyToConfig(

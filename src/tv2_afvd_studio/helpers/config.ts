@@ -12,7 +12,8 @@ import {
 	MediaPlayerConfig,
 	SourceInfo,
 	TableConfigItemSourceMapping,
-	TableConfigItemSourceMappingWithSisyfos
+	TableConfigItemSourceMappingWithSisyfos,
+	TV2StudioConfigBase
 } from 'tv2-common'
 import * as _ from 'underscore'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
@@ -29,7 +30,7 @@ export interface BlueprintConfig {
 	stickyLayers: string[]
 }
 
-export interface StudioConfig {
+export interface StudioConfig extends TV2StudioConfigBase {
 	// Injected by core
 	SofieHostURL: string
 
@@ -83,7 +84,6 @@ export interface StudioConfig {
 	PilotCutToMediaPlayer: number
 	PilotOutTransitionDuration: number
 	ATEMDelay: number
-	MaximumKamDisplayDuration: number
 }
 
 export function applyToConfig(

@@ -5,7 +5,8 @@ import { SourceInfo } from './sources'
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
 
 export interface TV2StudioConfigBase {
-	MaximumKamDisplayDuration: number
+	MaximumPartDuration: number
+	DefaultPartDuration: number
 	CasparPrerollDuration: number
 	ClipSourcePath: string
 	ClipFileExtension: string
