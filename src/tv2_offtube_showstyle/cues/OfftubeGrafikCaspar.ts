@@ -241,6 +241,7 @@ function CreateFull(
 		canCombineQueue: true,
 		infiniteMode: PieceLifespan.Infinite,
 		content: {
+			fileName: template,
 			timelineObjects: [
 				literal<TimelineObjCCGMedia>({
 					id: '',
