@@ -160,11 +160,7 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 export function GetSisyfosLayersForTableMigrationOfftube(configName: string, val: string): string[] {
 	switch (configName) {
 		case 'SourcesCam':
-			return [
-				OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A,
-				OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A,
-				OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
-			]
+			return []
 		case 'SourcesRM':
 			switch (val) {
 				case '1':
@@ -172,6 +168,7 @@ export function GetSisyfosLayersForTableMigrationOfftube(configName: string, val
 				case '2':
 					return [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
 				case 'WF':
+				case '3':
 					return [
 						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
 						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround

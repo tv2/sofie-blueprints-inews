@@ -160,14 +160,7 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 export function GetSisyfosLayersForTableMigrationAFVD(configName: string, val: string): string[] {
 	switch (configName) {
 		case 'SourcesCam':
-			return [
-				SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
-				SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
-				SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
-				SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
-				SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
-				SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
-			]
+			return []
 		case 'SourcesRM':
 		case 'SourcesSkype':
 			switch (val) {
