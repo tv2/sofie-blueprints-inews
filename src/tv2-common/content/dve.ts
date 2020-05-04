@@ -520,7 +520,7 @@ export function MakeContentDVE2<
 
 				literal<TimelineObjAtemME>({
 					id: '',
-					enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration) - 80, timelineStartObjId), // let caspar update, but give the ssrc 2 frames to get configured
+					enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration), timelineStartObjId),
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
 					content: {
