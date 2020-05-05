@@ -141,7 +141,7 @@ export function EvaluateGrafikViz(
 				timelineObjects: literal<TimelineObjVIZMSEAny[]>([
 					literal<TimelineObjVIZMSEElementInternal>({
 						id: '',
-						enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
+						enable: GetEnableForGrafik(config, engine, parsedCue, isIdentGrafik, partDefinition),
 						priority: 1,
 						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 						content: {
@@ -177,6 +177,7 @@ export function EvaluateGrafikViz(
 }
 
 function GetEnableForGrafik(
+	config: BlueprintConfig,
 	engine: VizEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
@@ -197,8 +198,14 @@ function GetEnableForGrafik(
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
+	if (config.studio.BlockOverlayGraphicOnFullscreen) {
+		return {
+			while: '!.full'
+		}
+	}
+
 	return {
-		while: '!.full'
+		while: '1'
 	}
 }
 

@@ -84,6 +84,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	PilotCutToMediaPlayer: number
 	PilotOutTransitionDuration: number
 	ATEMDelay: number
+	BlockOverlayGraphicOnFullscreen: boolean
 }
 
 export function applyToConfig(

@@ -47,7 +47,8 @@ const blankStudioConfig: StudioConfig = {
 	ClipSourcePath: '/',
 	ATEMDelay: 1,
 	MaximumPartDuration: 0,
-	DefaultPartDuration: 0
+	DefaultPartDuration: 0,
+	BlockOverlayGraphicOnFullscreen: true
 }
 
 function getObjectKeys(obj: any): string[] {

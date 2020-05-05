@@ -756,5 +756,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 10000
+	},
+	{
+		id: 'BlockOverlayGraphicOnFullscreen',
+		name: 'Block Overlay Graphic on Fullscreen',
+		description: "Don't allow overlay graphics when a full graphic is being displayed",
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: true
 	}
 ]

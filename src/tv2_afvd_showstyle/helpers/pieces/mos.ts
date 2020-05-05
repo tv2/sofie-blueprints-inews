@@ -176,9 +176,14 @@ function GetMosObjContent(
 		timelineObjects: [
 			literal<TimelineObjVIZMSEElementPilot>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable:
+					isOverlay && config.studio.BlockOverlayGraphicOnFullscreen
+						? {
+								while: '!.full'
+						  }
+						: {
+								start: 0
+						  },
 				priority: 1,
 				layer:
 					engine === 'WALL'

@@ -87,7 +87,8 @@ export const defaultStudioConfig: ConfigMap = {
 	PilotCutToMediaPlayer: 1500,
 	PilotOutTransitionDuration: 280,
 	ATEMDelay: 1,
-	MaximumKamDisplayDuration: 10000
+	MaximumKamDisplayDuration: 10000,
+	BlockOverlayGraphicOnFullscreen: true
 }
 
 export const defaultShowStyleConfig: ConfigMap = {
