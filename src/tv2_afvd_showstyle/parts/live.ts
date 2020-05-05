@@ -5,13 +5,11 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../common/util'
+import { literal, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
 import { CreateEffektForpart } from './effekt'
-import { PartTime } from './time/partTime'
 
 export function CreatePartLive(
 	context: PartContext,
@@ -22,7 +20,7 @@ export function CreatePartLive(
 	const partTime = PartTime(config, partDefinition, totalWords)
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
+		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
 		typeVariant: ''
 	})
@@ -32,7 +30,7 @@ export function CreatePartLive(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime)
 
 	if (pieces.length === 0) {

@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const moment = require('moment')
 const pkg = require('../package.json')
 const { GetEntrypointsForBundle, BlueprintEntrypoints } = require('../scripts/blueprint-map')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = env => {
 	if (!env) env = {}
@@ -19,10 +20,8 @@ module.exports = env => {
 		versionStr = () => JSON.stringify(pkg.version + '+dev-' + moment().format('YYYYMMDD-HHmm'))
 	}
 
-	let versionTSRTypes = pkg.dependencies['timeline-state-resolver-types']
 	let versionIntegration = pkg.dependencies['tv-automation-sofie-blueprints-integration']
 
-	if (!versionTSRTypes) throw Error('timeline-state-resolver-types version missing!')
 	if (!versionIntegration) throw Error('tv-automation-sofie-blueprints-integration version missing!')
 
 	// versionTSRTypes = versionTSRTypes.replace(/[^\d.]/g, '') || '0.0.0'
@@ -56,6 +55,11 @@ module.exports = env => {
 			]
 		},
 		resolve: {
+			plugins: [
+				new TsconfigPathsPlugin({
+					configFile: "./tsconfig.json"
+				})
+			],
 			extensions: ['.tsx', '.ts', '.js']
 		},
 		output: {

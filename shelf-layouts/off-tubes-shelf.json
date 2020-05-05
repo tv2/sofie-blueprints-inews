@@ -1,0 +1,339 @@
+{
+  "_id": "C4x2GbLWBMPoBhmyZ",
+  "name": "off-tubes-shelf",
+  "showStyleBaseId": "show0",
+  "filters": [
+    {
+      "_id": "WDtxkxn2FdrtMwRyk",
+      "type": "external_frame",
+      "name": "MultiView frame",
+      "currentSegment": false,
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "url": "http://localhost:8005/multiview/",
+      "width": -1,
+      "height": -1,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "_id": "pyRvtqdtAbFE2gekk",
+      "type": "filter",
+      "name": "DVE",
+      "currentSegment": false,
+      "displayStyle": "offtube_list",
+      "rank": 0,
+      "rundownBaseline": true,
+      "default": false,
+      "x": -16,
+      "y": 0,
+      "width": -36,
+      "height": 7,
+      "includeClearInRundownBaseline": false,
+      "assignHotKeys": false,
+      "hide": false,
+      "buttonWidthScale": 1.5,
+      "buttonHeightScale": 1.5,
+      "sourceLayerIds": [
+        "studio0_offtube_dve"
+      ]
+    },
+    {
+      "_id": "QZ6xdWdFmm5Mu7ZKJ",
+      "type": "filter",
+      "name": "JINGLER / 100% SERVER",
+      "currentSegment": false,
+      "displayStyle": "offtube_list",
+      "rank": 1,
+      "rundownBaseline": false,
+      "default": false,
+      "width": 14,
+      "height": 9,
+      "y": 3,
+      "x": -1,
+      "includeClearInRundownBaseline": true,
+      "assignHotKeys": true,
+      "hide": false,
+      "buttonWidthScale": 1,
+      "buttonHeightScale": 1,
+      "enableSearch": false,
+      "showAsTimeline": false,
+      "overflowHorizontally": false,
+      "sourceLayerIds": [
+        "studio0_offtube_clip",
+        "studio0_offtube_jingle"
+      ],
+      "tags": [
+        "offtube_adlib_100pc_server"
+      ]
+    },
+    {
+      "_id": "zHX89zpASjzyn7GTz",
+      "type": "filter",
+      "name": "ADLIB / VO SERVER",
+      "currentSegment": false,
+      "displayStyle": "offtube_list",
+      "rank": 0,
+      "rundownBaseline": true,
+      "default": false,
+      "x": -1,
+      "y": 14,
+      "height": -15,
+      "width": 14,
+      "includeClearInRundownBaseline": false,
+      "assignHotKeys": false,
+      "tags": [
+        "offtube_adlib_server"
+      ],
+      "sourceLayerIds": [
+        "studio0_offtube_voiceover",
+        "studio0_offtube_clip"
+      ]
+    },
+    {
+      "_id": "YC7RNPTbkXd5wnagp",
+      "type": "filter",
+      "name": "KG ELEMENTER",
+      "currentSegment": false,
+      "displayStyle": "offtube_list",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "x": -1,
+      "height": 12,
+      "y": -1,
+      "width": 14,
+      "displayTakeButtons": true,
+      "sourceLayerIds": [
+        "studio0_graphicsIdent",
+        "studio0_graphicsTop",
+        "studio0_graphicsLower"
+      ]
+    },
+    {
+      "_id": "icuekg6wiJxejsYsZ",
+      "type": "filter",
+      "name": "GFX FULL",
+      "currentSegment": false,
+      "displayStyle": "offtube_list",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "x": 23,
+      "width": 11,
+      "height": 7,
+      "sourceLayerIds": [
+        "studio0_offtube_graphicsFull"
+      ]
+    },
+    {
+      "_id": "LiFso7gPYn2SPwHwg",
+      "type": "external_frame",
+      "name": "Sisyfos",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "x": 0,
+      "y": 0,
+      "width": 22,
+      "height": 7,
+      "url": "192.168.1.1"
+    },
+    {
+      "_id": "6GDpdq547HjjZL9YK",
+      "type": "multiview",
+      "name": "Preview",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "x": 1,
+      "y": -2,
+      "width": 22,
+      "height": -11,
+      "windowNumber": 1,
+      "role": "take"
+    },
+    {
+      "_id": "gho9Kigti38sQYqq3",
+      "type": "multiview",
+      "name": "Program",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 2,
+      "x": 25,
+      "width": 22,
+      "height": -11,
+      "y": -2,
+      "role": "program"
+    },
+    {
+      "_id": "ooCyWRXeDE6ufYWWQ",
+      "type": "multiview",
+      "name": "Cam 1",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 3,
+      "x": 1,
+      "width": 10,
+      "y": 26,
+      "role": "queue",
+      "tags": [
+        "offtube_set_cam_next"
+      ]
+    },
+    {
+      "_id": "PDKiKYeYB7zcAq6Lp",
+      "type": "multiview",
+      "name": "Worldfeed",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 4,
+      "y": 26,
+      "width": 10,
+      "x": 13,
+      "role": "queue",
+      "tags": [
+        "offtube_set_remote_next"
+      ],
+      "adlibRank": 2
+    },
+    {
+      "_id": "AMrCRTvefKDS6qogp",
+      "type": "multiview",
+      "name": "Rep Cam",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 5,
+      "x": 25,
+      "width": 10,
+      "y": 26,
+      "tags": [
+        "offtube_set_remote_next"
+      ],
+      "role": "queue",
+      "adlibRank": 1
+    },
+    {
+      "_id": "HLzpg7NdLk6tdYZfT",
+      "type": "multiview",
+      "name": "EXT",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 6,
+      "width": 10,
+      "x": 37,
+      "y": 26,
+      "tags": [
+        "offtube_set_remote_next"
+      ],
+      "role": "queue",
+      "adlibRank": 0
+    },
+    {
+      "_id": "mRPYndcCsfZJL9zYH",
+      "type": "multiview",
+      "name": "GFX FULL",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 7,
+      "x": 1,
+      "width": 10,
+      "y": 33,
+      "tags": [
+        "offtube_set_full_next"
+      ],
+      "role": "queue"
+    },
+    {
+      "_id": "PDKiKYeYB7zcAq6La",
+      "type": "multiview",
+      "name": "JINGLE",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 8,
+      "y": 33,
+      "width": 10,
+      "x": 13,
+      "role": "queue",
+      "tags": [
+        "offtube_set_jingle_next"
+      ]
+    },
+    {
+      "_id": "AMrCRTvefKDS6qoga",
+      "type": "multiview",
+      "name": "SERVER",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 9,
+      "x": 25,
+      "width": 10,
+      "y": 33,
+      "role": "queue",
+      "tags": [
+        "offtube_set_server_next"
+      ],
+      "assignHotKeys": false
+    },
+    {
+      "_id": "HLzpg7NdLk6tdYZfa",
+      "type": "multiview",
+      "name": "DVE",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "windowNumber": 10,
+      "width": 10,
+      "x": 37,
+      "y": 33,
+      "height": 0,
+      "tags": [
+        "offtube_set_dve_next"
+      ],
+      "role": "queue"
+    }
+  ],
+  "type": "dashboard_layout",
+  "actionButtons": [
+    {
+      "_id": "PTJBfPjrxPMwY4cqW",
+      "label": "KLAR ON AIR",
+      "type": "klar_on_air",
+      "x": -1,
+      "y": 0,
+      "width": 14,
+      "height": 1.3
+    }
+  ]
+}

@@ -49,6 +49,7 @@
     "ts-jest": "^24.0.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.0.3",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
@@ -61,8 +62,7 @@
     "handlebars": "^4.3.0",
     "md5": "^2.2.1",
     "object-path": "^0.11.4",
-    "timeline-state-resolver-types": "git+https://github.com/olzzon/tv-automation-state-timeline-resolver#dist_types20200306_1",
-    "tv-automation-sofie-blueprints-integration": "git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#dist20200306_1",
+    "tv-automation-sofie-blueprints-integration": "git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#dist20200417_1",
     "underscore": "^1.9.1"
   }
 }

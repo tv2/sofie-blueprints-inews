@@ -1,0 +1,433 @@
+{
+    "externalId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+    "name": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+    "type": "inews",
+    "payload": {
+        "externalId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+        "name": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+        "gatewayVersion": "v0.2",
+        "expectedStart": 0,
+        "expectedEnd": 1
+    },
+    "segments": [
+        {
+            "externalId": "341dd48e:011f7352:5da02370",
+            "name": "KLAR ON-AIR",
+            "rank": 0,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "01",
+                        "title" : "KLAR ON AIR LATINOBOLD",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [ 
+                        [ 
+                            "KOMMANDO=GRAPHICSPROFILE", 
+                            "TV2 SPORT 2016", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "STUDIOSETUP=afvikling C", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "VIZ=dve-triopage", 
+                            "GRAFIK=BG_LOADER_FODBOLD_20", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "VIZ=full-triopage", 
+                            "GRAFIK=BG_LOADER_FODBOLD_20", 
+                            ";0.00.01"
+                        ], 
+                        [ 
+                            "STUDIE=ST2p", 
+                            ";0.01"
+                        ], 
+                        [ 
+                            "STUDIE=ST4s", 
+                            ";0.02"
+                        ], 
+                        null, 
+                        [ 
+                            "kg ovl-all-out", 
+                            "CLEAR OVERLAY", 
+                            ";0.00"
+                        ], 
+                        [ 
+                            "KG=DESIGN_FODBOLD_20", 
+                            ";0.00.01"
+                        ], 
+                        [ 
+                            "STUDIE=MIC ON OFF", 
+                            "vrt1=OFF", 
+                            "vrt2=OFF", 
+                            "gst1=OFF", 
+                            "gst2=OFF", 
+                            "gst3=OFF", 
+                            "gst4=OFF", 
+                            "kom1=OFF", 
+                            "kom2=OFF", 
+                            "ST4vrt=ON", 
+                            "ST4gst=", 
+                            ";0.00"
+                        ]
+                    ],
+                    "id" : "17598229:0021e96a:5e58ef29",
+                    "body" : "\r\n<p><pi>KAM CS 3</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><cc>---load background on DVE------></cc><a idref=\"2\"><cc><------</cc></a></p>\r\n<p><cc>---load background on FULL------></cc><a idref=\"3\"><cc><------</cc></a></p>\r\n<p><cc>---VALG AF STUDIE PRIMÆR--></cc><a idref=\"4\"><cc><--(ST4p, ST2p)</cc></a></p>\r\n<p><cc>--VALG AF STUDIE SEKUNDÆR--></cc><a idref=\"5\"><cc><---(ST4s, ST2s)</cc><tab></tab></a></p>\r\n<p><tab></tab></p>\r\n<p><cc>----all out overlay--></cc><a idref=\"7\"><cc><---</cc></a></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"8\"><cc><------</cc></a></p>\r\n<p></p>\r\n<p><cc>-----slukker mikrofoner--></cc><a idref=\"9\"><cc><-----</cc><tab><tab><tab></tab></tab></tab></a></p>\r\n<p></p>\r\n",
+                    "fileId" : "17598229:0021E96A:5E58EF29",
+                    "identifier" : "17598229"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02370",
+                "rank": 0,
+                "name": "KLAR ON-AIR",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02371",
+            "name": "Test Segment 1",
+            "rank": 0.5,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 1",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "0",
+                        "audioTime": "17",
+                        "totalTime": "17",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "pageNumber": "01"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [
+                        [
+                            "JINGLE2=SN_intro_19",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "341dd48e:011f7352:5da02371",
+                    "body": "\r\n<p><a idref=\"0\"></a></p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02371",
+                "rank": 0.5,
+                "name": "Test Segment 1",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02372",
+            "name": "Test Segment 2",
+            "rank": 1,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 2",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "0",
+                        "audioTime": "17",
+                        "totalTime": "17",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "pageNumber": "02"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [],
+                    "id": "341dd48e:011f7352:5da02372",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>1111111</p>\r\n<p><pi>EVS1</pi></p>\r\n<p>1111111111</p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02372",
+                "rank": 0,
+                "name": "Test Segment 2",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02373",
+            "name": "Test Segment 3",
+            "rank": 3,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 3",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "0",
+                        "audioTime": "17",
+                        "totalTime": "17",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "pageNumber": "03"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [
+                        [
+                            "EKSTERN=LIVE 1"
+                        ]
+                    ],
+                    "id": "341dd48e:011f7352:5da02373",
+                    "body": "\r\n<p><pi>KAM 2</pi></p>\r\n<p>1111111</p>\r\n<p><pi>***LIVE***</pi><a idref=\"0\"></a></p>\r\n<p>1111111111</p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02373",
+                "rank": 0,
+                "name": "Test Segment 3",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02374",
+            "name": "Test Segment 4",
+            "rank": 4,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 4",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "0",
+                        "audioTime": "28",
+                        "totalTime": "28",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "04"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [],
+                    "id": "341dd48e:011f7352:5da02374",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>11111111</p>\r\n<p><pi>****VO****</pi></p>\r\n<p>11111111111111111111</p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02374",
+                "rank": 0,
+                "name": "Test Segment 4",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02375",
+            "name": "Test Segment 5",
+            "rank": 5,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 5",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "5",
+                        "audioTime": "29",
+                        "totalTime": "34",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "05"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [
+                        [
+                            "ADLIBPIX=SERVER"
+                        ]
+                    ],
+                    "id": "341dd48e:011f7352:5da02375",
+                    "body": "\r\n<p><pi>KAM 1</pi><a idref=\"0\"></p>\r\n<p>111111111</p>\r\n<p><pi>****VO****</pi></p>\r\n<p>11111111111111111111</p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02375",
+                "rank": 0,
+                "name": "Test Segment 4",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02376",
+            "name": "Test Segment 6",
+            "rank": 6,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 6",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "7",
+                        "audioTime": "180",
+                        "totalTime": "187",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "06"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [
+                        [
+                            "DVE=SOMMERFUGL",
+                            "INP1=KAM 1",
+                            "INP2=LIVE 2",
+                            "BYNAVN=Madrid"
+                        ],
+                        [
+                            "EKSTERN=LIVE 2"
+                        ]
+                    ],
+                    "id": "341dd48e:011f7352:5da02376",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>This is some text that should be read in about 7 seconds</p>\r\n<p><pi>****LIVE****</pi><a idref=\"0\"></a><a idref=\"1\"></a></p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02376",
+                "rank": 0,
+                "name": "Test Segment 6",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02377",
+            "name": "Test Segment 7",
+            "rank": 7,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 7",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "7",
+                        "audioTime": "180",
+                        "totalTime": "187",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "06"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [
+                        [
+                            "DVE=SOMMERFUGL",
+                            "INP1=KAM 1",
+                            "INP2=LIVE 2",
+                            "BYNAVN=Madrid"
+                        ],
+                        [
+                            "EKSTERN=LIVE 2"
+                        ]
+                    ],
+                    "id": "341dd48e:011f7352:5da02377",
+                    "body": "\r\n<p><pi>EVS1</pi></p>\r\n<p>This is some text that should be read in about 7 seconds</p>\r\n<p><pi>****LIVE****</pi><a idref=\"0\"></a><a idref=\"1\"></a></p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02377",
+                "rank": 0,
+                "name": "Test Segment 7",
+                "float": false
+            },
+            "parts": []
+        }
+    ]
+}

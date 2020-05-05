@@ -1,7 +1,5 @@
-import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
-
-import { assertUnreachable } from '../../common/util'
-import { CueDefinitionJingle, CueType, DVESources } from '../inewsConversion/converters/ParseCue'
+import { assertUnreachable, CueDefinitionJingle, DVESources, PartDefinition } from 'tv2-common'
+import { CueType, PartType } from 'tv2-constants'
 
 export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmentExternalId: string): PartDefinition[] {
 	const foundMap: { [key: string]: number } = {}
@@ -14,7 +12,7 @@ export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmen
 }
 
 function getExternalId(segmentId: string, partDefinition: PartDefinition, foundMap: { [key: string]: number }): string {
-	let id = `${segmentId}-${PartType[partDefinition.type].toString()}`
+	let id = `${segmentId}-${partDefinition.type.toString()}`
 
 	switch (partDefinition.type) {
 		case PartType.EVS:

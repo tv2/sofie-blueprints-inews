@@ -11,13 +11,10 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
+import { CalculateTime, CueDefinitionDesign, GraphicLLayer, literal } from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../../../common/util'
-import { CueDefinitionDesign } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { VizLLayer } from '../../../tv2_afvd_studio/layers'
-import { CalculateTime } from './evaluateCues'
 
 export function EvaluateDesign(
 	_config: BlueprintConfig,
@@ -51,7 +48,7 @@ export function EvaluateDesign(
 							id: '',
 							enable: { start: 0 },
 							priority: 100,
-							layer: VizLLayer.VizLLayerDesign,
+							layer: GraphicLLayer.GraphicLLayerDesign,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -83,7 +80,7 @@ export function EvaluateDesign(
 							id: '',
 							enable: { start: 0 },
 							priority: 100,
-							layer: VizLLayer.VizLLayerDesign,
+							layer: GraphicLLayer.GraphicLLayerDesign,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

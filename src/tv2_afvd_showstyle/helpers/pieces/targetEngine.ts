@@ -7,26 +7,32 @@ import {
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
+import {
+	CalculateTime,
+	CueDefinitionTargetEngine,
+	FindSourceInfoStrict,
+	literal,
+	PartDefinition,
+	TranslateEngine
+} from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import _ = require('underscore')
-import { literal } from '../../../common/util'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { CueDefinitionTargetEngine, CueType } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { FindSourceInfoStrict } from '../../../tv2_afvd_studio/helpers/sources'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
-import { CalculateTime } from './evaluateCues'
-import { EvaluateGrafik } from './grafik'
-import { EvaluateMOS } from './mos'
+import { EvaluateGrafikViz } from './grafikViz'
+import { EvaluateMOSViz } from './mos'
 
 export function EvaluateTargetEngine(
 	context: PartContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPeces: IBlueprintAdLibPiece[],
+	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
-	parsedCue: CueDefinitionTargetEngine
+	_partDefinition: PartDefinition,
+	parsedCue: CueDefinitionTargetEngine,
+	adlib: boolean
 ) {
-	console.log(JSON.stringify(parsedCue))
 	// TODO: Future: Target a specific engine
 	if (!parsedCue.data.engine.match(/full|ovl|wall/i)) {
 		context.warning(`Could not find engine to target for: ${parsedCue.data.engine}`)
@@ -81,28 +87,33 @@ export function EvaluateTargetEngine(
 
 	if (parsedCue.data.grafik) {
 		if (parsedCue.data.grafik.type === CueType.Grafik) {
-			EvaluateGrafik(
-				config,
-				context,
-				pieces,
-				adlibPeces,
-				partId,
-				parsedCue.data.grafik,
-				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
-				false
-			)
+			/* config.showStyle.IsOfftube */
+			if ([].length === 999) {
+				// EvaluateGrafikCaspar(config, context, pieces, adlibPieces, parsedCue.data.grafik, partDefinition, true)
+			} else {
+				EvaluateGrafikViz(
+					config,
+					context,
+					pieces,
+					adlibPieces,
+					partId,
+					parsedCue.data.grafik,
+					TranslateEngine(parsedCue.data.engine),
+					adlib
+				)
+			}
 		} else {
-			EvaluateMOS(
+			EvaluateMOSViz(
 				config,
 				context,
 				pieces,
-				adlibPeces,
+				adlibPieces,
 				partId,
 				parsedCue.data.grafik,
-				!!parsedCue.data.engine.match(/WALL/i) ? 'WALL' : !!parsedCue.data.engine.match(/FULL/i) ? 'FULL' : 'OVL',
+				TranslateEngine(parsedCue.data.engine),
+				adlib,
 				false,
-				false,
-				0,
+				adlibPieces.length,
 				true,
 				!!parsedCue.data.engine.match(/ovl/i)
 			)

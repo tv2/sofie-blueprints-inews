@@ -7,20 +7,30 @@ import {
 	ShowStyleContext,
 	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
+import {
+	assertUnreachable,
+	MediaPlayerConfig,
+	SourceInfo,
+	TableConfigItemSourceMapping,
+	TableConfigItemSourceMappingWithSisyfos,
+	TV2StudioConfigBase
+} from 'tv2-common'
 import * as _ from 'underscore'
-import { assertUnreachable } from '../../common/util'
+import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { getLiveAudioLayers, getStickyLayers } from '../../tv2_afvd_showstyle/helpers/sisyfos/sisyfos'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
-import { parseMediaPlayers, parseSources, SourceInfo } from './sources'
-
-export type MediaPlayerConfig = Array<{ id: string; val: string }>
+import { parseMediaPlayers, parseSources } from './sources'
 
 export interface BlueprintConfig {
 	studio: StudioConfig
 	sources: SourceInfo[]
+	showStyle: ShowStyleConfig
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	liveAudio: string[]
+	stickyLayers: string[]
 }
 
-export interface StudioConfig {
+export interface StudioConfig extends TV2StudioConfigBase {
 	// Injected by core
 	SofieHostURL: string
 
@@ -30,12 +40,13 @@ export interface StudioConfig {
 	MediaFlowId: string
 	ClipFileExtension: string
 	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
-	SourcesCam: string
-	SourcesRM: string
-	SourcesSkype: string
-	SourcesDelayedPlayback: string
-	ABMediaPlayers: string
+	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesDelayedPlayback: TableConfigItemSourceMappingWithSisyfos[]
+	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
+	StudioMics: string[]
 	AtemSource: {
 		DSK1F: number
 		DSK1K: number
@@ -73,7 +84,6 @@ export interface StudioConfig {
 	PilotCutToMediaPlayer: number
 	PilotOutTransitionDuration: number
 	ATEMDelay: number
-	MaximumKamDisplayDuration: number
 }
 
 export function applyToConfig(
@@ -104,6 +114,15 @@ export function applyToConfig(
 				case ConfigManifestEntryType.TABLE:
 					newVal = overrideVal as TableConfigItemValue
 					break
+				case ConfigManifestEntryType.SELECT:
+					newVal = overrideVal
+					break
+				case ConfigManifestEntryType.LAYER_MAPPINGS:
+					newVal = overrideVal
+					break
+				case ConfigManifestEntryType.SOURCE_LAYERS:
+					newVal = overrideVal
+					break
 				default:
 					assertUnreachable(val)
 					context.warning('Unknown config field type: ' + val)
@@ -120,9 +139,11 @@ export function applyToConfig(
 export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	const config: BlueprintConfig = {
 		studio: {} as any,
-		// showStyle: {} as any,
+		showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
@@ -135,8 +156,10 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', {})
 	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', {})
 
-	config.sources = parseSources(context, config.studio)
-	config.mediaPlayers = parseMediaPlayers(context, config.studio)
+	config.sources = parseSources(config.studio)
+	config.mediaPlayers = parseMediaPlayers(config.studio)
+	config.liveAudio = getLiveAudioLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio)
 
 	return config
 }
@@ -144,9 +167,11 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 	const config: BlueprintConfig = {
 		studio: {} as any,
-		// showStyle: {} as any,
+		showStyle: {} as any,
 		sources: [],
-		mediaPlayers: []
+		mediaPlayers: [],
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	// Load values injected by core, not via manifest
@@ -159,8 +184,10 @@ export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', studioConfig)
 	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', context.getShowStyleConfig())
 
-	config.sources = parseSources(context, config.studio)
-	config.mediaPlayers = parseMediaPlayers(context, config.studio)
+	config.sources = parseSources(config.studio)
+	config.mediaPlayers = parseMediaPlayers(config.studio)
+	config.liveAudio = getLiveAudioLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio)
 
 	return config
 }

@@ -36,37 +36,31 @@ import {
 	IStudioConfigContext,
 	NotesContext,
 	PieceLifespan,
+	PieceMetaData,
 	ShowStyleContext,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import * as _ from 'underscore'
-import { literal } from '../common/util'
-import { SourceInfo } from '../tv2_afvd_studio/helpers/sources'
 import {
-	AtemLLayer,
-	CasparLLayer,
-	CasparPlayerClipLoadingLoop,
-	SisyfosEVSSource,
-	SisyfosLLAyer,
-	VizLLayer
-} from '../tv2_afvd_studio/layers'
-import { PieceMetaData, TimelineBlueprintExt } from '../tv2_afvd_studio/onTimelineGenerate'
-import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
-import { AtemSourceIndex } from '../types/atem'
-import { CONSTANTS } from '../types/constants'
-import { BlueprintConfig, parseConfig } from './helpers/config'
-import { boxLayers, boxMappings, MakeContentDVE2 } from './helpers/content/dve'
-import { GetEksternMetaData } from './helpers/pieces/ekstern'
-import {
-	GetLayerForEkstern,
+	GetCameraMetaData,
+	GetEksternMetaData,
+	GetLayersForCamera,
+	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
-	LIVE_AUDIO,
-	STICKY_LAYERS,
-	STUDIO_MICS
-} from './helpers/sisyfos/sisyfos'
-import { ControlClasses, SourceLayer } from './layers'
-import { GetKeepStudioMicsMetaData } from './parts/kam'
+	GraphicLLayer,
+	literal,
+	MakeContentDVE2,
+	SourceInfo,
+	TimelineBlueprintExt
+} from 'tv2-common'
+import { CONSTANTS, ControlClasses } from 'tv2-constants'
+import * as _ from 'underscore'
+import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
+import { AtemSourceIndex } from '../types/atem'
+import { BlueprintConfig, parseConfig } from './helpers/config'
+import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers, boxMappings } from './helpers/content/dve'
+import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -75,6 +69,7 @@ export function getShowStyleVariantId(
 	_ingestRundown: IngestRundown
 ): string | null {
 	const variant = _.first(showStyleVariants)
+
 	if (variant) {
 		return variant._id
 	}
@@ -110,12 +105,12 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 			expectedStart: startTime,
 			expectedDuration: endTime - startTime
 		}),
-		globalAdLibPieces: getGlobalAdLibPieces(context, config),
+		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
 		baseline: getBaseline(config)
 	}
 }
 
-function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
 	function makeSsrcAdlibBoxes(layer: SourceLayer, port: number, mediaPlayer?: boolean) {
 		// Generate boxes with classes to map across each layer
 		const boxObjs = _.map(boxMappings, (m, i) =>
@@ -150,7 +145,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	}
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
+		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
 		res.push({
 			externalId: 'cam',
 			name: preview ? `K${info.id}` : `${info.id}`,
@@ -160,7 +155,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
-			metaData: GetKeepStudioMicsMetaData(),
+			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -179,26 +174,26 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						classes: ['adlib_deparent']
 					}),
 					...camSisyfos,
-					...STICKY_LAYERS.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1).map<
-						TimelineObjSisyfosAny & TimelineBlueprintExt
-					>(layer => {
-						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-					}),
+					...config.stickyLayers
+						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						}),
 					// Force server to be muted (for adlibbing over DVE)
 					...[
 						SisyfosLLAyer.SisyfosSourceClipPending,
@@ -242,7 +237,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`, { while: audioWhile })
+						...GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`, { while: audioWhile })
 					])
 				}
 			})
@@ -261,7 +256,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetKeepStudioMicsMetaData(),
+			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -279,38 +274,40 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						},
 						classes: ['adlib_deparent']
 					}),
-					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
-						id: '',
-						enable: { while: '1' },
-						priority: 1,
-						layer: SisyfosEVSSource(info.id.replace(/^DP/i, '')),
-						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
-							isPgm: vo ? 2 : 1
-						}
-					}),
-
-					...STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					...(info.sisyfosLayers || []).map(l => {
+						return literal<TimelineObjSisyfosMessage>({
 							id: '',
-							enable: {
-								start: 0
-							},
+							enable: { while: '1' },
 							priority: 1,
-							layer,
+							layer: l,
 							content: {
 								deviceType: DeviceType.SISYFOS,
 								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
+								isPgm: vo ? 2 : 1
 							}
 						})
 					}),
-
-					...GetSisyfosTimelineObjForCamera('evs')
+					...config.stickyLayers
+						.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
+						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						}),
+					...GetSisyfosTimelineObjForCamera(context, config, 'evs')
 				])
 			}
 		})
@@ -339,16 +336,18 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						literal<TimelineObjSisyfosMessage>({
-							id: '',
-							enable: { while: audioWhile },
-							priority: 1,
-							layer: SisyfosEVSSource(info.id.replace(/^DP/i, '')),
-							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
-								isPgm: vo === true ? 2 : 1
-							}
+						...GetLayersForEkstern(context, config.sources, `Live ${info.id}`).map(l => {
+							return literal<TimelineObjSisyfosMessage>({
+								id: '',
+								enable: { while: audioWhile },
+								priority: 1,
+								layer: l,
+								content: {
+									deviceType: DeviceType.SISYFOS,
+									type: TimelineContentTypeSisyfos.SISYFOS,
+									isPgm: vo === true ? 2 : 1
+								}
+							})
 						})
 					])
 				}
@@ -360,8 +359,8 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`),
-			...GetSisyfosTimelineObjForCamera('telefon')
+			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
+			...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 		]
 		res.push({
 			externalId: 'live',
@@ -372,7 +371,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(
+				config.stickyLayers,
+				config.studio.StudioMics,
+				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+			),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemME>({
@@ -391,8 +394,9 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						classes: ['adlib_deparent']
 					}),
 					...eksternSisyfos,
-					...STICKY_LAYERS.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => LIVE_AUDIO.indexOf(layer) === -1)
+					...config.stickyLayers
+						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.filter(layer => config.liveAudio.indexOf(layer) === -1)
 						.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
 							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
@@ -516,8 +520,10 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 				content: {
 					timelineObjects: _.compact<TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(context, `Live ${info.id}`, { while: audioWhile }),
-						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
+							while: audioWhile
+						}),
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', { while: audioWhile })
 					])
 				}
 			})
@@ -536,7 +542,11 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 			outputLayerId: 'aux',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.Infinite,
-			metaData: GetEksternMetaData(GetLayerForEkstern(`Live ${info.id}`)),
+			metaData: GetEksternMetaData(
+				config.stickyLayers,
+				config.studio.StudioMics,
+				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+			),
 			content: {
 				timelineObjects: _.compact<TSRTimelineObj>([
 					literal<TimelineObjAtemAUX>({
@@ -686,7 +696,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
@@ -713,12 +723,12 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
-						reference: VizLLayer.VizLLayerPilot
+						reference: GraphicLLayer.GraphicLLayerPilot
 					}
 				})
 			])
@@ -742,7 +752,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						duration: 1000
 					},
 					priority: 100,
-					layer: VizLLayer.VizLLayerAdLibs,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
 						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
@@ -769,12 +779,12 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 	// 					start: 0,
 	// 					duration: 1000
 	// 				},
-	// 				layer: VizLLayer.VizLLayerAdLibs,
+	// 				layer: GraphicLLayer.GraphicLLayerAdLibs,
 	// 				content: {
 	// 					deviceType: DeviceType.VIZMSE,
 	// 					type: TimelineContentTypeVizMSE.CONTINUE,
 	// 					direction: -1,
-	// 					reference: VizLLayer.VizLLayerPilot
+	// 					reference: GraphicLLayer.GraphicLLayerPilot
 	// 				}
 	// 			})
 	// 		])
@@ -817,7 +827,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
-				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
+				...config.studio.StudioMics.map<TimelineObjSisyfosMessage>(layer => {
 					return literal<TimelineObjSisyfosMessage>({
 						id: '',
 						enable: { start: 0 },
@@ -844,7 +854,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
-				...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
+				...config.studio.StudioMics.map<TimelineObjSisyfosMessage>(layer => {
 					return literal<TimelineObjSisyfosMessage>({
 						id: '',
 						enable: { start: 0 },
@@ -888,8 +898,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
-		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined)
-
+		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, AFVD_DVE_GENERATOR_OPTIONS)
 		if (content.valid) {
 			adlibItems.push({
 				externalId: `dve-${dveConfig.DVEName}`,
@@ -923,7 +932,7 @@ function getGlobalAdLibPieces(context: NotesContext, config: BlueprintConfig): I
 						id: '',
 						enable: { start: 0 },
 						priority: 110,
-						layer: VizLLayer.VizLLayerDesign,
+						layer: GraphicLLayer.GraphicLLayerDesign,
 						content: {
 							deviceType: DeviceType.VIZMSE,
 							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

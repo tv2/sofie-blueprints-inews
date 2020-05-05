@@ -4,8 +4,8 @@ import {
 	ShowStyleContext,
 	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
+import { literal, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../../common/util'
 import {
 	applyToConfig,
 	BlueprintConfig as BlueprintConfigBase,
@@ -31,22 +31,9 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 	showStyle: ShowStyleConfig
 }
 
-export interface DVEConfigInput {
-	// _id: string
-	DVEName: string
-	DVEJSON: string
-	DVEGraphicsTemplate: string
-	DVEGraphicsTemplateJSON: string
-	DVEInputs: string
-	DVEGraphicsKey: string
-	DVEGraphicsFrame: string
-	// [key: string]: BasicConfigItemValue
-}
-
-export interface ShowStyleConfig {
+export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	MakeAdlibsForFulls: boolean
 	CasparCGLoadingClip: string
-	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
 	WipesConfig: TableConfigItemValue
 	BreakerConfig: TableConfigItemValue

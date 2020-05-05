@@ -1,0 +1,373 @@
+{
+    "segment": {
+        "name": "KLAR ON-AIR",
+        "metaData": {},
+        "identifier": "01",
+        "isHidden": false
+    },
+    "parts": [
+        {
+            "part": {
+                "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                "title": "KAM CS 3",
+                "metaData": {},
+                "typeVariant": "",
+                "expectedDuration": 100000,
+                "displayDurationGroup": "341dd48e:011f7352:5da02370"
+            },
+            "adLibPieces": [],
+            "pieces": [
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CS 3 (JINGLE)",
+                    "enable": {
+                        "start": 0
+                    },
+                    "outputLayerId": "pgm",
+                    "sourceLayerId": "studio0_jingle",
+                    "infiniteMode": 1,
+                    "content": {
+                        "studioLabel": "",
+                        "switcherInput": 6,
+                        "timelineObjects": [
+                            {
+                                "id": "N7k_5Hy6uHJj0_MrnSSBZcHKAmE_",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_me_program",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "input": 6,
+                                        "transition": 5,
+                                        "transitionSettings": {}
+                                    }
+                                },
+                                "metaData": {}
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_me_clean",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "input": 6,
+                                        "transition": 5,
+                                        "transitionSettings": {}
+                                    }
+                                },
+                                "metaData": {
+                                    "context": "Clean for N7k_5Hy6uHJj0_MrnSSBZcHKAmE_"
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 0,
+                                "layer": "atem_aux_lookahead",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "aux",
+                                    "aux": {
+                                        "input": 6
+                                    }
+                                },
+                                "metaData": {
+                                    "context": "Lookahead-lookahead for N7k_5Hy6uHJj0_MrnSSBZcHKAmE_"
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_aux_video_mix_minus",
+                                "metaData": {
+                                    "context": "Mix-minus for N7k_5Hy6uHJj0_MrnSSBZcHKAmE_"
+                                },
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "aux",
+                                    "aux": {
+                                        "input": 6
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "BG_LOADER_FODBOLD_20",
+                    "enable": {
+                        "start": 0
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_dve_back",
+                    "infiniteMode": 3,
+                    "content": {
+                        "fileName": "BG_LOADER_FODBOLD_20",
+                        "path": "dve/BG_LOADER_FODBOLD_20",
+                        "timelineObjects": [
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 100,
+                                "layer": "casparcg_dve_loop",
+                                "content": {
+                                    "deviceType": 1,
+                                    "type": "media",
+                                    "file": "dve/BG_LOADER_FODBOLD_20",
+                                    "loop": true
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "BG_LOADER_FODBOLD_20",
+                    "enable": {
+                        "start": 40
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_design",
+                    "infiniteMode": 3,
+                    "content": {
+                        "fileName": "BG_LOADER_FODBOLD_20",
+                        "path": "BG_LOADER_FODBOLD_20",
+                        "timelineObjects": [
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 100,
+                                "layer": "viz_layer_design",
+                                "content": {
+                                    "deviceType": 13,
+                                    "type": "element_internal",
+                                    "templateName": "BG_LOADER_FODBOLD_20",
+                                    "templateData": []
+                                }
+                            }
+                        ]
+                    },
+                    "expectedPlayoutItems": [
+                        {
+                            "deviceSubType": 13,
+                            "content": {
+                                "templateName": "BG_LOADER_FODBOLD_20",
+                                "templateData": [],
+                                "rundownId": ""
+                            }
+                        }
+                    ]
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_graphicsIdent",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_graphicsIdent",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_graphicsIdent_persistent",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_graphicsIdent_persistent",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_graphicsTop",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_graphicsTop",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_graphicsLower",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_graphicsLower",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_graphicsHeadline",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_graphicsHeadline",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_graphicsTema",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_graphicsTema",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_overlay",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_overlay",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR studio0_graphicsTelefon",
+                    "enable": {
+                        "start": 0,
+                        "duration": 1000
+                    },
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_graphicsTelefon",
+                    "infiniteMode": 0,
+                    "virtual": true
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "CLEAR",
+                    "enable": {
+                        "start": 0
+                    },
+                    "infiniteMode": 0,
+                    "outputLayerId": "sec",
+                    "sourceLayerId": "studio0_adlib_viz_cmd",
+                    "content": {
+                        "timelineObjects": [
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0,
+                                    "duration": 1000
+                                },
+                                "priority": 100,
+                                "layer": "viz_layer_adlibs",
+                                "content": {
+                                    "deviceType": 13,
+                                    "type": "clear_all_elements"
+                                }
+                            }
+                        ]
+                    },
+                    "expectedPlayoutItems": [
+                        {
+                            "deviceSubType": 13,
+                            "content": {
+                                "templateName": "altud",
+                                "channelName": "OVL1",
+                                "templateData": [],
+                                "rundownId": ""
+                            }
+                        }
+                    ]
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02370-Kam-KAM-CS-3-CS-9",
+                    "name": "DESIGN_FODBOLD_20",
+                    "enable": {
+                        "start": 40,
+                        "duration": 4000
+                    },
+                    "outputLayerId": "overlay",
+                    "sourceLayerId": "studio0_overlay",
+                    "infiniteMode": 0,
+                    "content": {
+                        "fileName": "DESIGN_FODBOLD_20",
+                        "path": "DESIGN_FODBOLD_20",
+                        "timelineObjects": [
+                            {
+                                "id": "",
+                                "enable": {
+                                    "while": "!.full"
+                                },
+                                "priority": 1,
+                                "layer": "viz_layer_overlay",
+                                "content": {
+                                    "deviceType": 13,
+                                    "type": "element_internal",
+                                    "templateName": "DESIGN_FODBOLD_20",
+                                    "templateData": [],
+                                    "channelName": "OVL1"
+                                }
+                            }
+                        ]
+                    },
+                    "expectedPlayoutItems": [
+                        {
+                            "deviceSubType": 13,
+                            "content": {
+                                "templateName": "DESIGN_FODBOLD_20",
+                                "templateData": [],
+                                "channelName": "OVL1",
+                                "rundownId": ""
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

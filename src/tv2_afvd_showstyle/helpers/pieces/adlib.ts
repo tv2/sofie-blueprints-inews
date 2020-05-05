@@ -1,13 +1,19 @@
-import { IBlueprintAdLibPiece, PartContext, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../../common/util'
+import { IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import {
+	CreateAdlibServer,
+	CueDefinitionAdLib,
+	CueDefinitionDVE,
+	GetDVETemplate,
+	literal,
+	PartDefinition,
+	PieceMetaData,
+	TemplateIsValid
+} from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
-import { PieceMetaData } from '../../../tv2_afvd_studio/onTimelineGenerate'
-import { CueDefinitionAdLib, CueDefinitionDVE, CueType } from '../../inewsConversion/converters/ParseCue'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
-import { MakeContentServer } from '../content/server'
-import { GetDVETemplate, TemplateIsValid } from './dve'
 
 export function EvaluateAdLib(
 	context: PartContext,
@@ -23,19 +29,19 @@ export function EvaluateAdLib(
 		const file = partDefinition.fields.videoId
 
 		adLibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank,
-				externalId: partId,
-				name: `${partDefinition.storyName} Server: ${file}`,
-				sourceLayerId: SourceLayer.PgmServer,
-				outputLayerId: 'pgm',
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [`adlib_server_${file}`]
-				}),
-				content: MakeContentServer(file, `adlib_server_${file}`, partDefinition, config, true, true),
-				adlibPreroll: config.studio.CasparPrerollDuration
+			CreateAdlibServer(config, rank, partId, `adlib_server_${file}`, partDefinition, file, false, {
+				Caspar: {
+					ClipPending: CasparLLayer.CasparPlayerClipPending
+				},
+				Sisyfos: {
+					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+				},
+				ATEM: {
+					MEPGM: AtemLLayer.AtemMEProgram
+				},
+				STICKY_LAYERS: config.stickyLayers,
+				PgmServer: SourceLayer.PgmServer,
+				PgmVoiceOver: SourceLayer.PgmVoiceOver
 			})
 		)
 	} else {

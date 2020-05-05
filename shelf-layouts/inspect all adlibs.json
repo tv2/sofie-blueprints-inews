@@ -1,0 +1,25 @@
+{
+  "_id": "7rEPZKnDgDd6p83Nw",
+  "name": "inspect all adlibs",
+  "showStyleBaseId": "show0",
+  "filters": [
+    {
+      "_id": "gcEsn8RfZN8aierZF",
+      "type": "filter",
+      "name": "New Tab",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": true,
+      "default": false,
+      "includeClearInRundownBaseline": true,
+      "hide": false,
+      "overflowHorizontally": false,
+      "x": 0,
+      "y": 0,
+      "width": -1,
+      "height": -1
+    }
+  ],
+  "type": "dashboard_layout"
+}

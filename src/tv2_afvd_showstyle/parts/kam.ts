@@ -11,25 +11,29 @@ import {
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
-	PieceMetaData,
 	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../common/util'
-import { FindSourceInfoStrict } from '../../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import {
+	AddParentClass,
+	CameraParentClass,
+	CreatePartInvalid,
+	FindSourceInfoStrict,
+	GetCameraMetaData,
+	GetLayersForCamera,
+	GetSisyfosTimelineObjForCamera,
+	literal,
+	PartDefinitionKam,
+	PartTime,
+	TransitionFromString,
+	TransitionSettings
+} from 'tv2-common'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { GetSisyfosTimelineObjForCamera, GetStickyForPiece, STUDIO_MICS } from '../helpers/sisyfos/sisyfos'
-import { TransitionFromString } from '../helpers/transitionFromString'
-import { TransitionSettings } from '../helpers/transitionSettings'
-import { PartDefinitionKam } from '../inewsConversion/converters/ParseBody'
-import { AddParentClass, CameraParentClass } from '../inewsConversion/converters/ParseCue'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
-import { CreatePartInvalid } from './invalid'
-import { PartTime } from './time/partTime'
 
 export function CreatePartKam(
 	context: PartContext,
@@ -104,7 +108,7 @@ export function CreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
-				metaData: GetKeepStudioMicsMetaData(),
+				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -132,14 +136,14 @@ export function CreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(partDefinition.rawType)
+						...GetSisyfosTimelineObjForCamera(context, config, partDefinition.rawType)
 					])
 				}
 			})
 		)
 	}
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime)
 
 	if (pieces.length === 0) {
@@ -151,12 +155,4 @@ export function CreatePartKam(
 		adLibPieces,
 		pieces
 	}
-}
-
-export function GetKeepStudioMicsMetaData(): PieceMetaData | undefined {
-	return GetStickyForPiece([
-		...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
-			return { layer: l, isPgm: 1 }
-		})
-	])
 }

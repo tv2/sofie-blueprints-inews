@@ -8,8 +8,8 @@ import {
 	MappingVizMSE
 } from 'timeline-state-resolver-types'
 import { BlueprintMapping, BlueprintMappings, LookaheadMode } from 'tv-automation-sofie-blueprints-integration'
+import { literal } from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../../common/util'
 import { BlueprintConfig, StudioConfig } from '../helpers/config'
 
 export default literal<BlueprintMappings>({
@@ -215,6 +215,14 @@ export default literal<BlueprintMappings>({
 		index: 0 // 0 = SS
 	}),
 	atem_supersource_z_box3: literal<MappingAtem & BlueprintMapping>({
+		device: DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookaheadMaxSearchDistance: 1,
+		mappingType: MappingAtemType.SuperSourceBox,
+		index: 0 // 0 = SS
+	}),
+	atem_supersource_z_box4: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
@@ -449,57 +457,57 @@ export default literal<BlueprintMappings>({
 		channel: -1,
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_ident: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_ident: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_topt: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_topt: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_lower: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_lower: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_headline: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_headline: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_overlay_tema: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_overlay_tema: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_pilot: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_pilot: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_pilot_overlay: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_pilot_overlay: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_design: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_design: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_adlibs: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_adlibs: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
 	}),
-	viz_layer_wall: literal<MappingVizMSE & BlueprintMapping>({
+	graphic_wall: literal<MappingVizMSE & BlueprintMapping>({
 		device: DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
@@ -508,15 +516,13 @@ export default literal<BlueprintMappings>({
 
 export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 	const res: BlueprintMappings = {}
-	const cams = cameras.split(',')
-	cams.forEach(cam => {
-		const props = cam.split(':')
-		if (props[0] && props[1]) {
-			res[`sisyfos_camera_active_${props[0].replace(' ', '_').trim()}`] = literal<MappingSisyfos & BlueprintMapping>({
+	cameras.forEach(cam => {
+		if (cam.SourceName !== undefined && cam.AtemSource !== undefined) {
+			res[`sisyfos_camera_active_${cam.SourceName}`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (cam.AtemSource as number) || 0
 			})
 		}
 	})
@@ -526,29 +532,27 @@ export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 
 export function getRemoteSisyfosMappings(remotes: StudioConfig['SourcesRM']) {
 	const res: BlueprintMappings = {}
-	const rmts = remotes.split(',')
-	rmts.forEach(rmt => {
-		const props = rmt.split(':')
-		if (props[0] && props[1]) {
-			res[`sisyfos_remote_source_${props[0]}`] = literal<MappingSisyfos & BlueprintMapping>({
+	remotes.forEach(rmt => {
+		if (rmt.SourceName !== undefined && rmt.AtemSource !== undefined) {
+			res[`sisyfos_remote_source_${rmt.SourceName}`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_${props[0]}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_${rmt.SourceName}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_${props[0]}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_${rmt.SourceName}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 		}
 	})
@@ -558,29 +562,27 @@ export function getRemoteSisyfosMappings(remotes: StudioConfig['SourcesRM']) {
 
 export function getSkypeSisyfosMappings(remotes: StudioConfig['SourcesSkype']) {
 	const res: BlueprintMappings = {}
-	const rmts = remotes.split(',')
-	rmts.forEach(rmt => {
-		const props = rmt.split(':')
-		if (props[0] && props[1]) {
-			res[`sisyfos_remote_source_skype_${props[0]}`] = literal<MappingSisyfos & BlueprintMapping>({
+	remotes.forEach(rmt => {
+		if (rmt.SourceName !== undefined && rmt.AtemSource !== undefined) {
+			res[`sisyfos_remote_source_skype_${rmt.SourceName}`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_skype_${props[0]}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_skype_${rmt.SourceName}_spor_2`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 
-			res[`sisyfos_remote_source_skype_${props[0]}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
+			res[`sisyfos_remote_source_skype_${rmt.SourceName}_stereo`] = literal<MappingSisyfos & BlueprintMapping>({
 				device: DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: (rmt.AtemSource as number) || 0
 			})
 		}
 	})

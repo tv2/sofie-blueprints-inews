@@ -4,14 +4,12 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../common/util'
+import { GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { PartDefinition, PartType } from '../inewsConversion/converters/ParseBody'
-import { CueType } from '../inewsConversion/converters/ParseCue'
-import { CreateEffektForpart, GetJinglePartProperties } from './effekt'
-import { PartTime } from './time/partTime'
+import { CreateEffektForpart } from './effekt'
 
 export function CreatePartUnknown(
 	context: PartContext,
@@ -24,7 +22,7 @@ export function CreatePartUnknown(
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: PartType[partDefinition.type] + ' - ' + partDefinition.rawType,
+		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
 		typeVariant: '',
 		autoNext: false,
@@ -36,7 +34,7 @@ export function CreatePartUnknown(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, asAdlibs)
+	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlib: asAdlibs })
 	if (!asAdlibs) {
 		AddScript(partDefinition, pieces, partTime)
 	}

@@ -1,7 +1,30 @@
 import { PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../../../common/util'
+import { GetStickyForPiece, literal } from 'tv2-common'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
-import { GetStickyForPiece, STUDIO_MICS } from '../sisyfos'
+
+export const STUDIO_MICS = [
+	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
+]
+
+export const LIVE_AUDIO = [
+	SisyfosLLAyer.SisyfosSourceLive_1,
+	SisyfosLLAyer.SisyfosSourceLive_2,
+	SisyfosLLAyer.SisyfosSourceLive_3,
+	SisyfosLLAyer.SisyfosSourceLive_4,
+	SisyfosLLAyer.SisyfosSourceLive_5,
+	SisyfosLLAyer.SisyfosSourceLive_6,
+	SisyfosLLAyer.SisyfosSourceLive_7,
+	SisyfosLLAyer.SisyfosSourceLive_8,
+	SisyfosLLAyer.SisyfosSourceLive_9,
+	SisyfosLLAyer.SisyfosSourceLive_10
+]
+
+export const STICKY_LAYERS = [...STUDIO_MICS, ...LIVE_AUDIO]
 
 describe('sisyfos', () => {
 	test('GetStickyForPiece', () => {
@@ -11,7 +34,8 @@ describe('sisyfos', () => {
 					layer,
 					isPgm: 1
 				}
-			})
+			}),
+			STICKY_LAYERS
 		)
 		expect(result).toEqual(
 			literal<PieceMetaData>({

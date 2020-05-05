@@ -5,58 +5,19 @@ import {
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
+import {
+	AddParentClass,
+	CalculateTime,
+	CueDefinitionDVE,
+	GetDVETemplate,
+	literal,
+	PartDefinition,
+	TemplateIsValid
+} from 'tv2-common'
 import * as _ from 'underscore'
-import { literal } from '../../../common/util'
-import { BlueprintConfig, DVEConfigInput } from '../../../tv2_afvd_showstyle/helpers/config'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
+import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AddParentClass, CueDefinitionDVE } from '../../inewsConversion/converters/ParseCue'
 import { MakeContentDVE } from '../content/dve'
-import { CalculateTime } from './evaluateCues'
-
-export interface DVEConfigBox {
-	enabled: boolean
-	source: number
-	x: number
-	y: number
-	size: number
-	cropped: boolean
-	cropTop: number
-	cropBottom: number
-	cropLeft: number
-	cropRight: number
-}
-
-export interface DVEConfig {
-	boxes: {
-		[key: number]: DVEConfigBox
-	}
-	index: number
-	properties: {
-		artFillSource: number
-		artCutSource: number
-		artOption: number
-		artPreMultiplied: boolean
-		artClip: number
-		artGain: number
-		artInvertKey: boolean
-	}
-	border: {
-		borderEnabled: boolean
-		borderBevel: number
-		borderOuterWidth: number
-		borderInnerWidth: number
-		borderOuterSoftness: number
-		borderInnerSoftness: number
-		borderBevelSoftness: number
-		borderBevelPosition: number
-		borderHue: number
-		borderSaturation: number
-		borderLuma: number
-		borderLightSourceDirection: number
-		borderLightSourceAltitude: number
-	}
-}
 
 export function EvaluateDVE(
 	context: PartContext,
@@ -133,71 +94,4 @@ export function EvaluateDVE(
 			)
 		}
 	}
-}
-
-/**
- * Check that a template string is valid.
- * @param template User-provided template.
- */
-export function TemplateIsValid(template: any): boolean {
-	let boxesValid = false
-	let indexValid = false
-	let propertiesValid = false
-	let borderValid = false
-	if (Object.keys(template).indexOf('boxes') !== -1) {
-		if (_.isEqual(Object.keys(template.boxes), ['0', '1', '2', '3'])) {
-			boxesValid = true
-		}
-	}
-
-	if (Object.keys(template).indexOf('index') !== -1) {
-		indexValid = true
-	}
-
-	if (Object.keys(template).indexOf('properties') !== -1) {
-		if (
-			_.isEqual(Object.keys(template.properties), [
-				'artFillSource',
-				'artCutSource',
-				'artOption',
-				'artPreMultiplied',
-				'artClip',
-				'artGain',
-				'artInvertKey'
-			])
-		) {
-			propertiesValid = true
-		}
-	}
-
-	if (Object.keys(template).indexOf('border') !== -1) {
-		if (
-			_.isEqual(Object.keys(template.border), [
-				'borderEnabled',
-				'borderBevel',
-				'borderOuterWidth',
-				'borderInnerWidth',
-				'borderOuterSoftness',
-				'borderInnerSoftness',
-				'borderBevelSoftness',
-				'borderBevelPosition',
-				'borderHue',
-				'borderSaturation',
-				'borderLuma',
-				'borderLightSourceDirection',
-				'borderLightSourceAltitude'
-			])
-		) {
-			borderValid = true
-		}
-	}
-
-	if (boxesValid && indexValid && propertiesValid && borderValid) {
-		return true
-	}
-	return false
-}
-
-export function GetDVETemplate(config: DVEConfigInput[], templateName: string): DVEConfigInput | undefined {
-	return config ? config.find(c => c.DVEName.toString().toUpperCase() === templateName.toUpperCase()) : undefined
 }

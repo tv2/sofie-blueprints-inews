@@ -1,3 +1,4 @@
+import { GraphicLLayer } from 'tv2-common'
 import * as _ from 'underscore'
 
 export type LLayer = VirtualAbstractLLayer | AtemLLayer | CasparLLayer | SisyfosLLAyer
@@ -9,7 +10,7 @@ export function RealLLayers() {
 			// @ts-ignore
 			.concat(_.values(CasparLLayer))
 			.concat(_.values(SisyfosLLAyer))
-			.concat(_.values(VizLLayer))
+			.concat(_.values(GraphicLLayer))
 			.concat(_.values(VirtualAbstractLLayer))
 	)
 }
@@ -30,6 +31,7 @@ export enum AtemLLayer {
 	AtemSSrcBox1 = 'atem_supersource_z_box1',
 	AtemSSrcBox2 = 'atem_supersource_z_box2',
 	AtemSSrcBox3 = 'atem_supersource_z_box3',
+	AtemSSrcBox4 = 'atem_supersource_z_box4',
 
 	AtemAuxPGM = 'atem_aux_pgm',
 	AtemAuxClean = 'atem_aux_clean',
@@ -88,20 +90,6 @@ export enum SisyfosLLAyer {
 	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
 	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2',
 	SisyfosResync = 'sisyfos_resync'
-}
-
-export enum VizLLayer {
-	VizLLayerOverlay = 'viz_layer_overlay',
-	VizLLayerOverlayIdent = 'viz_layer_overlay_ident',
-	VizLLayerOverlayTopt = 'viz_layer_overlay_topt',
-	VizLLayerOverlayLower = 'viz_layer_overlay_lower',
-	VizLLayerOverlayHeadline = 'viz_layer_overlay_headline',
-	VizLLayerOverlayTema = 'viz_layer_overlay_tema',
-	VizLLayerPilot = 'viz_layer_pilot',
-	VizLLayerPilotOverlay = 'viz_layer_pilot_overlay',
-	VizLLayerDesign = 'viz_layer_design',
-	VizLLayerAdLibs = 'viz_layer_adlibs',
-	VizLLayerWall = 'viz_layer_wall'
 }
 
 export function CasparPlayerClip(i: number | string) {

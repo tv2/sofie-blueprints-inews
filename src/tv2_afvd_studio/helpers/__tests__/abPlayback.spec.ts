@@ -1,16 +1,30 @@
 import { DeviceType } from 'timeline-state-resolver-types'
 import { IBlueprintPieceDB, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
-import { LoggingNotesContext, NotesContext } from '../../../__mocks__/context'
-import { literal } from '../../../common/util'
-import { PieceMetaData, TimelineBlueprintExt, TimelinePersistentStateExt } from '../../onTimelineGenerate'
 import {
 	applyMediaPlayersAssignments,
 	doesRequestOverlap,
-	MediaPlayerClaimType,
+	literal,
+	PieceMetaData,
 	resolveMediaPlayerAssignments,
-	SessionToPlayerMap
-} from '../abPlayback'
+	SessionToPlayerMap,
+	TimelineBlueprintExt,
+	TimelinePersistentStateExt
+} from 'tv2-common'
+import { MediaPlayerClaimType } from 'tv2-constants'
+import { LoggingNotesContext, NotesContext } from '../../../__mocks__/context'
 import { defaultStudioConfig } from '../config'
+
+const playerSourceLayers = {
+	Caspar: {
+		ClipPending: 'test0_caspar_player_clip_pending',
+		PlayerClip: (id: string | number) => `test0_caspar_player_clip_${id}`
+	},
+	Sisyfos: {
+		ClipPending: 'test0_sisyfos_player_clip_pending',
+		PlayerA: 'test0_sisyfos_player_a',
+		PlayerB: 'test0_sisyfos_player_b'
+	}
+}
 
 export function createBasicPiece(
 	id: string,
@@ -343,7 +357,7 @@ describe('applyMediaPlayersAssignments', () => {
 	const config = defaultStudioConfig(context)
 
 	test('Test no assignments', () => {
-		const res = applyMediaPlayersAssignments(context, config, [], {}, [])
+		const res = applyMediaPlayersAssignments(context, config, [], {}, [], playerSourceLayers)
 		expect(res).toEqual({})
 	})
 
@@ -361,7 +375,7 @@ describe('applyMediaPlayersAssignments', () => {
 			}
 		}
 
-		const res = applyMediaPlayersAssignments(context, config, [], previousAssignments, [])
+		const res = applyMediaPlayersAssignments(context, config, [], previousAssignments, [], playerSourceLayers)
 		expect(res).toEqual({})
 	})
 
@@ -406,7 +420,7 @@ describe('applyMediaPlayersAssignments', () => {
 			})
 		]
 
-		const res = applyMediaPlayersAssignments(context, config, objects, previousAssignments, [])
+		const res = applyMediaPlayersAssignments(context, config, objects, previousAssignments, [], playerSourceLayers)
 		// expect(context.getNotes()).toHaveLength(0)
 		expect(res).toEqual(
 			literal<TimelinePersistentStateExt['activeMediaPlayers']>({

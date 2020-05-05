@@ -29,5 +29,14 @@ module.exports = {
 	coverageDirectory: './coverage/',
 	collectCoverage: true,
 	preset: 'ts-jest',
-  }
-  
+	roots: [
+		"<rootDir>"
+	],
+	modulePaths: [
+		"<rootDir>"
+	],
+	moduleDirectories: [
+		"node_modules",
+		"src"
+	]
+}

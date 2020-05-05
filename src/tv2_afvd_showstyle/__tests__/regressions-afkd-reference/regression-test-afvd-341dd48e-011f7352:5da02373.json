@@ -1,0 +1,484 @@
+{
+    "segment": {
+        "name": "Test Segment 3",
+        "metaData": {},
+        "identifier": "03",
+        "isHidden": false
+    },
+    "parts": [
+        {
+            "part": {
+                "externalId": "341dd48e:011f7352:5da02373-Kam-KAM-2-2-0",
+                "title": "KAM 2",
+                "metaData": {},
+                "typeVariant": "",
+                "expectedDuration": 7000,
+                "displayDurationGroup": "341dd48e:011f7352:5da02373"
+            },
+            "adLibPieces": [],
+            "pieces": [
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02373-Kam-KAM-2-2-0",
+                    "name": "KAM 2",
+                    "enable": {
+                        "start": 0
+                    },
+                    "outputLayerId": "pgm",
+                    "sourceLayerId": "studio0_camera",
+                    "infiniteMode": 1,
+                    "metaData": {
+                        "stickySisyfosLevels": {
+                            "sisyfos_source_Host_1_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Host_2_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_1_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_2_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_3_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_4_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            }
+                        }
+                    },
+                    "content": {
+                        "studioLabel": "",
+                        "switcherInput": "2",
+                        "timelineObjects": [
+                            {
+                                "id": "UrCInIxCbogaZJVfeBdz3kiv1JY_",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_me_program",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "input": 2,
+                                        "transition": 5,
+                                        "transitionSettings": {}
+                                    }
+                                },
+                                "metaData": {}
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Host_1_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Host_2_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_1_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_2_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_3_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_4_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_me_clean",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "input": 2,
+                                        "transition": 5,
+                                        "transitionSettings": {}
+                                    }
+                                },
+                                "metaData": {
+                                    "context": "Clean for UrCInIxCbogaZJVfeBdz3kiv1JY_"
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 0,
+                                "layer": "atem_aux_lookahead",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "aux",
+                                    "aux": {
+                                        "input": 2
+                                    }
+                                },
+                                "metaData": {
+                                    "context": "Lookahead-lookahead for UrCInIxCbogaZJVfeBdz3kiv1JY_"
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_aux_video_mix_minus",
+                                "metaData": {
+                                    "context": "Mix-minus for UrCInIxCbogaZJVfeBdz3kiv1JY_"
+                                },
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "aux",
+                                    "aux": {
+                                        "input": 2
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02373-Kam-KAM-2-2-0",
+                    "name": "1111111",
+                    "enable": {
+                        "start": 0,
+                        "duration": 7000
+                    },
+                    "outputLayerId": "manus",
+                    "sourceLayerId": "studio0_script",
+                    "infiniteMode": 1,
+                    "content": {
+                        "firstWords": "1111111",
+                        "lastWords": "1111111",
+                        "fullScript": "1111111",
+                        "sourceDuration": 7000,
+                        "lastModified": 1570775924000
+                    }
+                }
+            ]
+        },
+        {
+            "part": {
+                "externalId": "341dd48e:011f7352:5da02373-Ekstern-LIVE-1",
+                "title": "Ekstern - ",
+                "metaData": {},
+                "typeVariant": "",
+                "autoNext": false,
+                "expectedDuration": 10000,
+                "displayDurationGroup": "341dd48e:011f7352:5da02373"
+            },
+            "adLibPieces": [],
+            "pieces": [
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02373-Ekstern-LIVE-1",
+                    "name": "LIVE 1",
+                    "enable": {
+                        "start": 0
+                    },
+                    "infiniteMode": 1,
+                    "outputLayerId": "pgm",
+                    "sourceLayerId": "studio0_live",
+                    "toBeQueued": true,
+                    "metaData": {
+                        "stickySisyfosLevels": {
+                            "sisyfos_source_live_1": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Host_1_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Host_2_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_1_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_2_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_3_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            },
+                            "sisyfos_source_Guest_4_st_a": {
+                                "value": 1,
+                                "followsPrevious": false
+                            }
+                        }
+                    },
+                    "content": {
+                        "studioLabel": "",
+                        "switcherInput": "1",
+                        "timelineObjects": [
+                            {
+                                "id": "",
+                                "priority": 0,
+                                "enable": {
+                                    "start": 0
+                                },
+                                "layer": "ekstern_enable_ident",
+                                "classes": [
+                                    "show_ident_graphic"
+                                ],
+                                "content": {
+                                    "deviceType": 0,
+                                    "type": "empty"
+                                }
+                            },
+                            {
+                                "id": "NwrJTkBu_xQL372U0XtKQmRvzIM_",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_me_program",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "input": "1",
+                                        "transition": 5,
+                                        "transitionSettings": {}
+                                    }
+                                },
+                                "metaData": {}
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_live_1",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Host_1_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Host_2_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_1_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_2_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_3_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "sisyfos_source_Guest_4_st_a",
+                                "content": {
+                                    "deviceType": 11,
+                                    "type": "sisyfos",
+                                    "isPgm": 1
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 1,
+                                "layer": "atem_me_clean",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "me",
+                                    "me": {
+                                        "input": "1",
+                                        "transition": 5,
+                                        "transitionSettings": {}
+                                    }
+                                },
+                                "metaData": {
+                                    "context": "Clean for NwrJTkBu_xQL372U0XtKQmRvzIM_"
+                                }
+                            },
+                            {
+                                "id": "",
+                                "enable": {
+                                    "start": 0
+                                },
+                                "priority": 0,
+                                "layer": "atem_aux_lookahead",
+                                "content": {
+                                    "deviceType": 2,
+                                    "type": "aux",
+                                    "aux": {
+                                        "input": "1"
+                                    }
+                                },
+                                "metaData": {
+                                    "context": "Lookahead-lookahead for NwrJTkBu_xQL372U0XtKQmRvzIM_"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "_id": "",
+                    "externalId": "341dd48e:011f7352:5da02373-Ekstern-LIVE-1",
+                    "name": "1111111111",
+                    "enable": {
+                        "start": 0,
+                        "duration": 10000
+                    },
+                    "outputLayerId": "manus",
+                    "sourceLayerId": "studio0_script",
+                    "infiniteMode": 1,
+                    "content": {
+                        "firstWords": "1111111111",
+                        "lastWords": "1111111111",
+                        "fullScript": "1111111111",
+                        "sourceDuration": 10000,
+                        "lastModified": 1570775924000
+                    }
+                }
+            ]
+        }
+    ]
+}

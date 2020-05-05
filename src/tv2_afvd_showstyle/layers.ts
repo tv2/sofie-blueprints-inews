@@ -1,4 +1,6 @@
-export enum SourceLayer {
+import { SharedSourceLayers } from 'tv2-common'
+
+export enum AFVDSourceLayer {
 	// Pgm
 	PgmCam = 'studio0_camera',
 	PgmLive = 'studio0_live',
@@ -6,24 +8,12 @@ export enum SourceLayer {
 	PgmDVEAdlib = 'studio0_dve_adlib',
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',
+	/** "Full" */
 	PgmPilot = 'studio0_pilot',
+	/** Viz-specific */
 	PgmPilotOverlay = 'studio0_pilotOverlay',
-	PgmGraphicsIdent = 'studio0_graphicsIdent',
-	PgmGraphicsIdentPersistent = 'studio0_graphicsIdent_persistent',
-	PgmGraphicsTop = 'studio0_graphicsTop',
-	PgmGraphicsLower = 'studio0_graphicsLower',
-	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
-	PgmGraphicsTema = 'studio0_graphicsTema',
-	PgmGraphicsTLF = 'studio0_graphicsTelefon',
-	PgmGraphicsOverlay = 'studio0_overlay',
 	PgmDelayed = 'studio0_delayed',
 	PgmContinuity = 'studio0_continuity',
-
-	// Note: there is a regex in core to ignore some DVE layers. That will need updating if adding more
-	PgmDVEBox1 = 'studio0_dve_box1',
-	PgmDVEBox2 = 'studio0_dve_box2',
-	PgmDVEBox3 = 'studio0_dve_box3',
-	PgmDVEBox4 = 'studio0_dve_box4',
 
 	VizFullIn1 = 'studio0_aux_viz_full1',
 	AuxStudioScreen = 'studio0_aux_studio_screen',
@@ -41,7 +31,9 @@ export enum SourceLayer {
 	WallGraphics = 'studio0_wall_graphics'
 }
 
-export enum ControlClasses {
-	ShowIdentGraphic = 'show_ident_graphic',
-	DVEOnAir = 'dve_on_air' // DVE Part is on air
+// tslint:disable-next-line: variable-name
+export const SourceLayer = {
+	...AFVDSourceLayer,
+	...SharedSourceLayers
 }
+export type SourceLayer = AFVDSourceLayer | SharedSourceLayers

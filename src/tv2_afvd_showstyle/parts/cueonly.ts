@@ -4,14 +4,11 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../common/util'
+import { CueDefinition, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { AddScript } from '../helpers/pieces/script'
-import { PartDefinition } from '../inewsConversion/converters/ParseBody'
-import { CueDefinition, CueType } from '../inewsConversion/converters/ParseCue'
-import { GetJinglePartProperties } from './effekt'
-import { PartTime } from './time/partTime'
 
 export function CreatePartCueOnly(
 	context: PartContext,
@@ -36,12 +33,12 @@ export function CreatePartCueOnly(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID)
+	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, {})
 	AddScript(partDefinitionWithID, pieces, partTime)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, true)
+		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, { adlib: true })
 	}
 
 	if (

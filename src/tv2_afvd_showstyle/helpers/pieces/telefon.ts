@@ -1,13 +1,11 @@
 import { DeviceType, TimelineContentTypeSisyfos, TimelineObjSisyfosMessage } from 'timeline-state-resolver-types'
 import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../../common/util'
-import { PartDefinition } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
-import { CueDefinitionTelefon, CueType } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
+import { CueDefinitionTelefon, GetSisyfosTimelineObjForCamera, literal, PartDefinition } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
-import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
-import { EvaluateGrafik } from './grafik'
-import { EvaluateMOS } from './mos'
+import { EvaluateGrafikViz } from './grafikViz'
+import { EvaluateMOSViz } from './mos'
 
 export function EvaluateTelefon(
 	config: BlueprintConfig,
@@ -22,7 +20,7 @@ export function EvaluateTelefon(
 ) {
 	if (parsedCue.vizObj) {
 		if (parsedCue.vizObj.type === CueType.Grafik) {
-			EvaluateGrafik(
+			EvaluateGrafikViz(
 				config,
 				context,
 				pieces,
@@ -36,7 +34,7 @@ export function EvaluateTelefon(
 				rank
 			)
 		} else {
-			EvaluateMOS(
+			EvaluateMOSViz(
 				config,
 				context,
 				pieces,
@@ -69,7 +67,7 @@ export function EvaluateTelefon(
 								isPgm: 1
 							},
 
-							...GetSisyfosTimelineObjForCamera('telefon')
+							...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 						})
 					)
 					adlibPiece.name = `${parsedCue.source}`
@@ -95,7 +93,7 @@ export function EvaluateTelefon(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForCamera('telefon')
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 					)
 					piece.name = `${parsedCue.source}`
 					piece.adlibPreroll = config.studio.PilotPrerollDuration

@@ -11,19 +11,20 @@ import {
 	IBlueprintPiece,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { SegmentContext } from '../../../../__mocks__/context'
-import { literal } from '../../../../common/util'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { PartContext2 } from '../../../../tv2_afvd_showstyle/getSegment'
-import { PartDefinitionKam, PartType } from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseBody'
 import {
 	CueDefinitionGrafik,
 	CueDefinitionTelefon,
-	CueType
-} from '../../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
+	GraphicLLayer,
+	literal,
+	PartContext2,
+	PartDefinitionKam
+} from 'tv2-common'
+import { CueType, PartType } from 'tv2-constants'
+import { SegmentContext } from '../../../../__mocks__/context'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
-import { SisyfosLLAyer, VizLLayer } from '../../../../tv2_afvd_studio/layers'
+import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { ShowStyleConfig } from '../../config'
 import { EvaluateTelefon } from '../telefon'
@@ -82,7 +83,9 @@ describe('telefon', () => {
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
-				mediaPlayers: []
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
 			},
 			partContext,
 			pieces,
@@ -102,6 +105,7 @@ describe('telefon', () => {
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
 				infiniteMode: PieceLifespan.OutOnNextPart,
+				adlibPreroll: 2000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -112,7 +116,7 @@ describe('telefon', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: VizLLayer.VizLLayerOverlay,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: DeviceType.VIZMSE,
 								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

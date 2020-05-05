@@ -1,6 +1,6 @@
+import { CueDefinition, CueDefinitionGrafik, CueDefinitionTargetEngine, PartDefinition } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { ShowStyleConfig } from '../helpers/config'
-import { PartDefinition } from './converters/ParseBody'
-import { CueDefinitionGrafik, CueType } from './converters/ParseCue'
 
 export function TransformCuesIntoShowstyle(config: ShowStyleConfig, partDefinition: PartDefinition): PartDefinition {
 	let i = -1
@@ -9,50 +9,93 @@ export function TransformCuesIntoShowstyle(config: ShowStyleConfig, partDefiniti
 		i++
 		const cue = partDefinition.cues[i]
 
-		if (cue.type === CueType.TargetEngine && cue.data.engine && cue.data.engine.toUpperCase() !== 'OVL1') {
-			const conf = config.GFXTemplates.find(
-				gfx =>
-					gfx.INewsName.toUpperCase() === cue.data.engine.toUpperCase() &&
-					gfx.INewsCode.toUpperCase() === cue.iNewsCommand.toUpperCase()
-			)
+		let p: PartDefinition | undefined
+		if (cue.type === CueType.TargetEngine && cue.data.engine) {
+			p = checkAndMerge(config, partDefinition, cue.iNewsCommand, cue.data.engine, cue, i)
+		} else if (cue.type === CueType.Grafik) {
+			p = checkAndMerge(config, partDefinition, cue.iNewsCommand, cue.template, cue, i)
+		} else if (cue.type === CueType.VIZ) {
+			p = checkAndMerge(config, partDefinition, cue.iNewsCommand, cue.design, cue, i)
+		}
 
-			if (!conf) {
-				continue
+		if (p) {
+			partDefinition = p
+		}
+	}
+
+	return partDefinition
+}
+
+function checkAndMerge(
+	config: ShowStyleConfig,
+	partDefinition: PartDefinition,
+	code: string,
+	name: string,
+	cue: CueDefinition,
+	i: number
+) {
+	const conf = config.GFXTemplates.find(
+		gfx => gfx.INewsName.toUpperCase() === name.toUpperCase() && gfx.INewsCode.toUpperCase() === code.toUpperCase()
+	)
+
+	if (!conf) {
+		return
+	}
+
+	let retCue: CueDefinitionTargetEngine = {
+		type: CueType.TargetEngine,
+		rawType: '',
+		data: {
+			engine: ''
+		},
+		content: {},
+		iNewsCommand: cue.iNewsCommand
+	}
+
+	if (conf.VizTemplate.toUpperCase() === 'VCP') {
+		const nextCue = partDefinition.cues[i + 1]
+
+		if (!nextCue) {
+			if (cue.type !== CueType.TargetEngine || !cue.grafik) {
+				return
 			}
-			if (conf.VizTemplate.toUpperCase() === 'VCP') {
-				const nextCue = partDefinition.cues[i + 1]
+			retCue = cue
+			retCue.data.grafik = cue.grafik
+			delete cue.grafik
+			retCue.data.engine = conf.VizDestination.trim()
+			partDefinition.cues[i] = retCue
+		} else {
+			if (nextCue.type !== CueType.MOS) {
+				return
+			}
 
-				if (!nextCue) {
-					if (!cue.grafik) {
-						continue
-					}
-					cue.data.grafik = cue.grafik
-					delete cue.grafik
-					cue.data.engine = conf.VizDestination.trim()
-					partDefinition.cues[i] = cue
-				} else {
-					if (nextCue.type !== CueType.MOS) {
-						continue
-					}
-
-					cue.data.grafik = nextCue
-					cue.data.engine = conf.VizDestination.trim()
-					partDefinition.cues[i] = cue
-					i++
-					partDefinition.cues.splice(i, 1)
-				}
+			if (cue.type === CueType.TargetEngine) {
+				retCue = cue
+			} else if (cue.type === CueType.VIZ) {
+				retCue.rawType = cue.rawType
 			} else {
-				const gfxGue: CueDefinitionGrafik = {
-					type: CueType.Grafik,
-					template: conf.VizTemplate.toUpperCase(),
-					cue: `${cue.iNewsCommand}=${cue.data.engine}`,
-					textFields: [],
-					iNewsCommand: cue.iNewsCommand
-				}
-				cue.data.engine = conf.VizDestination.trim()
-				cue.data.grafik = gfxGue
-				partDefinition.cues[i] = cue
+				retCue.rawType = `${code} ${name}`
 			}
+
+			retCue.data.grafik = nextCue
+			retCue.data.engine = conf.VizDestination.trim()
+			partDefinition.cues[i] = retCue
+			i++
+			partDefinition.cues.splice(i, 1)
+		}
+	} else {
+		if (cue.type === CueType.TargetEngine) {
+			retCue = cue
+			const gfxGue: CueDefinitionGrafik = {
+				type: CueType.Grafik,
+				template: conf.VizTemplate.toUpperCase(),
+				cue: `${cue.iNewsCommand}=${retCue.data.engine}`,
+				textFields: [],
+				iNewsCommand: cue.iNewsCommand
+			}
+			retCue.data.engine = conf.VizDestination.trim()
+			retCue.data.grafik = gfxGue
+			partDefinition.cues[i] = retCue
 		}
 	}
 

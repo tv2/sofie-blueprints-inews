@@ -16,22 +16,26 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	NotesContext,
 	PartContext,
 	PieceLifespan,
 	SourceLayerType
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal } from '../../../common/util'
-import { CueDefinitionMOS } from '../../../tv2_afvd_showstyle/inewsConversion/converters/ParseCue'
+import {
+	CueDefinitionMOS,
+	GetSisyfosTimelineObjForCamera,
+	GraphicLLayer,
+	InfiniteMode,
+	literal,
+	SourceInfo
+} from 'tv2-common'
+import { VizEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { SourceInfo } from '../../../tv2_afvd_studio/helpers/sources'
-import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer, VizLLayer } from '../../../tv2_afvd_studio/layers'
-import { VizEngine } from '../../../types/constants'
+import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
-import { GetSisyfosTimelineObjForCamera } from '../sisyfos/sisyfos'
-import { InfiniteMode } from './evaluateCues'
-import { CreateTimingGrafik, grafikName } from './grafik'
+import { CreateTimingGrafik, grafikName } from './grafikViz'
 
-export function EvaluateMOS(
+export function EvaluateMOSViz(
 	config: BlueprintConfig,
 	context: PartContext,
 	pieces: IBlueprintPiece[],
@@ -59,12 +63,12 @@ export function EvaluateMOS(
 
 	if (adlib) {
 		adlibPieces.push(
-			makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
+			makeMosAdlib(context, partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
 		)
 	} else {
-		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls && engine !== 'WALL') {
+		if (!isOverlay && !overrideOverlay && config.showStyle.MakeAdlibsForFulls && !adlib && engine !== 'WALL') {
 			adlibPieces.push(
-				makeMosAdlib(partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
+				makeMosAdlib(context, partId, config, parsedCue, engine, isOverlay, isTlf, rank, isGrafikPart, overrideOverlay)
 			)
 		}
 		pieces.push(
@@ -83,13 +87,14 @@ export function EvaluateMOS(
 				sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
 				infiniteMode: GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart),
-				content: GetMosObjContent(engine, config, parsedCue, partId, isOverlay, false, isTlf)
+				content: GetMosObjContent(context, engine, config, parsedCue, partId, isOverlay, false, isTlf)
 			})
 		)
 	}
 }
 
 function makeMosAdlib(
+	context: NotesContext,
 	partId: string,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
@@ -108,7 +113,7 @@ function makeMosAdlib(
 		sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 		adlibPreroll: config.studio.PilotPrerollDuration,
-		content: GetMosObjContent(engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf),
+		content: GetMosObjContent(context, engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf, rank),
 		toBeQueued: true
 	}
 }
@@ -155,13 +160,15 @@ function GetInfiniteMode(
 }
 
 function GetMosObjContent(
+	context: NotesContext,
 	engine: VizEngine,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
 	partId: string,
 	isOverlay: boolean,
 	adlib?: boolean,
-	tlf?: boolean
+	tlf?: boolean,
+	adlibrank?: number
 ): GraphicsContent {
 	return literal<GraphicsContent>({
 		fileName: parsedCue.name,
@@ -175,10 +182,10 @@ function GetMosObjContent(
 				priority: 1,
 				layer:
 					engine === 'WALL'
-						? VizLLayer.VizLLayerWall
+						? GraphicLLayer.GraphicLLayerWall
 						: isOverlay
-						? VizLLayer.VizLLayerPilotOverlay
-						: VizLLayer.VizLLayerPilot,
+						? GraphicLLayer.GraphicLLayerPilotOverlay
+						: GraphicLLayer.GraphicLLayerPilot,
 				content: {
 					deviceType: DeviceType.VIZMSE,
 					type: TimelineContentTypeVizMSE.ELEMENT_PILOT,
@@ -237,8 +244,8 @@ function GetMosObjContent(
 							},
 							classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 						}),
-						...GetSisyfosTimelineObjForCamera('full'),
-						...MuteSisyfosChannels(partId, config.sources)
+						...GetSisyfosTimelineObjForCamera(context, config, 'full'),
+						...MuteSisyfosChannels(partId, config.sources, !!adlib, adlibrank ?? 0, parsedCue.vcpid)
 				  ])
 		]
 	})
@@ -267,7 +274,13 @@ export function CleanUpDVEBackground(config: BlueprintConfig): TimelineObjCCGMed
 	})
 }
 
-function MuteSisyfosChannels(partId: string, sources: SourceInfo[]): TimelineObjSisyfosMessage[] {
+function MuteSisyfosChannels(
+	partId: string,
+	sources: SourceInfo[],
+	adlib: boolean,
+	adlibRank: number,
+	vcpid: number
+): TimelineObjSisyfosMessage[] {
 	return [
 		SisyfosLLAyer.SisyfosSourceServerA,
 		SisyfosLLAyer.SisyfosSourceServerB,
@@ -289,7 +302,7 @@ function MuteSisyfosChannels(partId: string, sources: SourceInfo[]): TimelineObj
 		]
 	].map<TimelineObjSisyfosMessage>(layer => {
 		return literal<TimelineObjSisyfosMessage>({
-			id: `muteSisyfos-${layer}-${partId}`,
+			id: `muteSisyfos-${layer}-${partId}-${vcpid}-${adlib ? `adlib-${adlibRank}` : ''}`,
 			enable: {
 				start: 0
 			},

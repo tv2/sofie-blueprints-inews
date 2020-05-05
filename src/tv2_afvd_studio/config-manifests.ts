@@ -1,8 +1,513 @@
-import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofie-blueprints-integration'
+import { DeviceType } from 'timeline-state-resolver-types'
+import {
+	ConfigManifestEntry,
+	ConfigManifestEntryTable,
+	ConfigManifestEntryType,
+	TableConfigItemValue
+} from 'tv-automation-sofie-blueprints-integration'
+import { literal, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
+import { SisyfosLLAyer } from './layers'
 
 export const CORE_INJECTED_KEYS = ['SofieHostURL']
+
+const DEFAULT_STUDIO_MICS_LAYERS = [
+	SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
+]
+
+export const manifestAFVDSourcesCam: ConfigManifestEntryTable = {
+	id: 'SourcesCam',
+	name: 'Camera Mapping',
+	description: 'Camera number to ATEM input and Sisyfos layer',
+	type: ConfigManifestEntryType.TABLE,
+	required: true,
+	defaultVal: literal<Array<TableConfigItemSourceMappingWithSisyfos & TableConfigItemValue[0]>>([
+		{
+			_id: '',
+			SourceName: '1',
+			AtemSource: 11,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '2',
+			AtemSource: 12,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '3',
+			AtemSource: 13,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '4',
+			AtemSource: 14,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '5',
+			AtemSource: 15,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '1S',
+			AtemSource: 16,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '2S',
+			AtemSource: 17,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '3S',
+			AtemSource: 18,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '4S',
+			AtemSource: 19,
+			SisyfosLayers: [],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '5S',
+			AtemSource: 20,
+			SisyfosLayers: [],
+			StudioMics: true
+		}
+	]),
+	columns: [
+		{
+			id: 'SourceName',
+			name: 'Camera name',
+			description: 'Camera name as typed in iNews',
+			type: ConfigManifestEntryType.STRING,
+			required: true,
+			defaultVal: '',
+			rank: 0
+		},
+		{
+			id: 'AtemSource',
+			name: 'ATEM input',
+			description: 'ATEM vision mixer input for Camera',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 0,
+			rank: 1
+		},
+		{
+			id: 'SisyfosLayers',
+			name: 'Sisyfos layers',
+			description: 'Sisyfos layers for Camera',
+			type: ConfigManifestEntryType.LAYER_MAPPINGS,
+			filters: {
+				deviceTypes: [DeviceType.SISYFOS]
+			},
+			required: true,
+			multiple: true,
+			defaultVal: [],
+			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 3
+		}
+	]
+}
+
+export const manifestAFVDSourcesRM: ConfigManifestEntryTable = {
+	id: 'SourcesRM',
+	name: 'RM Mapping',
+	description: 'RM number to ATEM input',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: literal<Array<TableConfigItemSourceMappingWithSisyfos & TableConfigItemValue[0]>>([
+		{
+			_id: '',
+			SourceName: '1',
+			AtemSource: 1,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '2',
+			AtemSource: 2,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '3',
+			AtemSource: 3,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '4',
+			AtemSource: 4,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '5',
+			AtemSource: 5,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '6',
+			AtemSource: 6,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '7',
+			AtemSource: 7,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '8',
+			AtemSource: 8,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '9',
+			AtemSource: 9,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '10',
+			AtemSource: 10,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
+			StudioMics: false
+		}
+	]),
+	columns: [
+		{
+			id: 'SourceName',
+			name: 'RM number',
+			description: 'RM number as typed in iNews',
+			type: ConfigManifestEntryType.STRING,
+			required: true,
+			defaultVal: '',
+			rank: 0
+		},
+		{
+			id: 'AtemSource',
+			name: 'ATEM input',
+			description: 'ATEM vision mixer input for RM input',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 0,
+			rank: 1
+		},
+		{
+			id: 'SisyfosLayers',
+			name: 'Sisyfos layers',
+			description: 'Sisyfos layers for RM input',
+			type: ConfigManifestEntryType.LAYER_MAPPINGS,
+			filters: {
+				deviceTypes: [DeviceType.SISYFOS]
+			},
+			required: true,
+			multiple: true,
+			defaultVal: [],
+			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: false,
+			rank: 3
+		}
+	]
+}
+
+export const manifestAFVDSourcesDelayedPlayback: ConfigManifestEntryTable = {
+	id: 'SourcesDelayedPlayback',
+	name: 'EVS Mapping',
+	description: 'EVS number to ATEM input',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: literal<Array<TableConfigItemSourceMappingWithSisyfos & TableConfigItemValue[0]>>([
+		{
+			_id: '',
+			SourceName: '1',
+			AtemSource: 22,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_1],
+			StudioMics: true
+		},
+		{
+			_id: '',
+			SourceName: '2',
+			AtemSource: 23,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2],
+			StudioMics: true
+		}
+	]),
+	columns: [
+		{
+			id: 'SourceName',
+			name: 'EVS number',
+			description: 'EVS number as typed in iNews',
+			type: ConfigManifestEntryType.STRING,
+			required: true,
+			defaultVal: '',
+			rank: 0
+		},
+		{
+			id: 'AtemSource',
+			name: 'ATEM input',
+			description: 'ATEM vision mixer input for RM input',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 0,
+			rank: 1
+		},
+		{
+			id: 'SisyfosLayers',
+			name: 'Sisyfos layers',
+			description: 'Sisyfos layers for EVS input',
+			type: ConfigManifestEntryType.LAYER_MAPPINGS,
+			filters: {
+				deviceTypes: [DeviceType.SISYFOS]
+			},
+			required: true,
+			multiple: true,
+			defaultVal: [],
+			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 3
+		}
+	]
+}
+
+export const manifestAFVDSourcesSkype: ConfigManifestEntryTable = {
+	/*
+
+	*/
+	id: 'SourcesSkype',
+	name: 'Skype Mapping',
+	description: 'Skype number to ATEM input',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: literal<Array<TableConfigItemSourceMappingWithSisyfos & TableConfigItemValue[0]>>([
+		{
+			_id: '',
+			SourceName: '1',
+			AtemSource: 1,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '2',
+			AtemSource: 2,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '3',
+			AtemSource: 3,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '4',
+			AtemSource: 4,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '5',
+			AtemSource: 5,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '6',
+			AtemSource: 6,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '7',
+			AtemSource: 7,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '8',
+			AtemSource: 8,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '9',
+			AtemSource: 9,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
+			StudioMics: false
+		},
+		{
+			_id: '',
+			SourceName: '10',
+			AtemSource: 10,
+			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
+			StudioMics: false
+		}
+	]),
+	columns: [
+		{
+			id: 'SourceName',
+			name: 'Skype number',
+			description: 'Skype number as typed in iNews',
+			type: ConfigManifestEntryType.STRING,
+			required: true,
+			defaultVal: '',
+			rank: 0
+		},
+		{
+			id: 'AtemSource',
+			name: 'ATEM input',
+			description: 'ATEM vision mixer input for Skype input',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 0,
+			rank: 1
+		},
+		{
+			id: 'SisyfosLayers',
+			name: 'Sisyfos layers',
+			description: 'Sisyfos layers for Skype input',
+			type: ConfigManifestEntryType.LAYER_MAPPINGS,
+			filters: {
+				deviceTypes: [DeviceType.SISYFOS]
+			},
+			required: true,
+			multiple: true,
+			defaultVal: [],
+			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: false,
+			rank: 3
+		}
+	]
+}
+
+export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
+	id: 'ABMediaPlayers',
+	name: 'Media Players inputs',
+	description: 'ATEM inputs for A/B media players',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: literal<Array<TableConfigItemSourceMapping & TableConfigItemValue[0]>>([
+		{
+			_id: '',
+			SourceName: '1',
+			AtemSource: 26
+		},
+		{
+			_id: '',
+			SourceName: '2',
+			AtemSource: 27
+		}
+	]),
+	columns: [
+		{
+			id: 'SourceName',
+			name: 'Media player',
+			description: 'Media player name as typed in iNews',
+			type: ConfigManifestEntryType.STRING,
+			required: true,
+			defaultVal: '',
+			rank: 0
+		},
+		{
+			id: 'AtemSource',
+			name: 'ATEM input',
+			description: 'ATEM vision mixer input for Media player',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 0,
+			rank: 1
+		}
+	]
+}
+
+export const manifestAFVDStudioMics: ConfigManifestEntry = {
+	id: 'StudioMics',
+	name: 'Studio Mics',
+	description: 'Sisyfos layers for Studio Mics',
+	type: ConfigManifestEntryType.LAYER_MAPPINGS,
+	filters: {
+		deviceTypes: [DeviceType.SISYFOS]
+	},
+	required: true,
+	multiple: true,
+	defaultVal: DEFAULT_STUDIO_MICS_LAYERS
+}
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
@@ -30,46 +535,12 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		required: true,
 		defaultVal: ''
 	},
-	{
-		id: 'SourcesCam',
-		name: 'Camera Mapping',
-		description: 'Camera number to ATEM input (eg 1:1,9:2)',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: '1:11,2:12,3:13,4:14,5:15,1S:16,2S:17,3S:18,4S:19,5S:20'
-	},
-	{
-		id: 'SourcesRM',
-		name: 'RM Mapping',
-		description: 'RM number to ATEM input (eg 1:6,2:7)',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'
-	},
-	{
-		id: 'SourcesDelayedPlayback',
-		name: 'EVS Mapping',
-		description: 'EVS number to ATEM input (eg 1:6,2:7)',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: '1:22,2:23'
-	},
-	{
-		id: 'SourcesSkype',
-		name: 'Skype Mapping',
-		description: 'Skype number to ATEM input (eg 1:6,2:7)',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: '1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10'
-	},
-	{
-		id: 'ABMediaPlayers',
-		name: 'Media Players inputs',
-		description: 'ATEM inputs for A/B media players',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: '1:26,2:27'
-	},
+	manifestAFVDSourcesCam,
+	manifestAFVDSourcesRM,
+	manifestAFVDSourcesDelayedPlayback,
+	manifestAFVDSourcesSkype,
+	manifestAFVDSourcesABMediaPlayers,
+	manifestAFVDStudioMics,
 	{
 		id: 'ABPlaybackDebugLogging',
 		name: 'Media players selection debug logging',
@@ -271,9 +742,17 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 1
 	},
 	{
-		id: 'MaximumKamDisplayDuration',
-		name: 'Maximum Kam Display Duration',
-		description: 'Maximum duration (ms) to give Kam parts in UI',
+		id: 'MaximumPartDuration',
+		name: 'Maximum Part Duration',
+		description: 'Maximum duration (ms) to give parts in UI',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 10000
+	},
+	{
+		id: 'DefaultPartDuration',
+		name: 'Default Part Duration',
+		description: 'Duration to give parts by default',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 10000

@@ -11,6 +11,7 @@ import {
 	SegmentContext as ISegmentContext,
 	ShowStyleContext as IShowStyleContext
 } from 'tv-automation-sofie-blueprints-integration'
+import { NoteType } from 'tv2-constants'
 
 export function getHash(str: string): string {
 	const hash = crypto.createHash('sha1')
@@ -43,10 +44,7 @@ export class CommonContext implements ICommonContext {
 		return this.hashed[hash] || hash
 	}
 }
-export enum NoteType {
-	WARNING = 1,
-	ERROR = 2
-}
+
 export interface PartNote {
 	type: NoteType
 	origin: {
