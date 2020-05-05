@@ -1,3 +1,4 @@
+import { DeviceType } from 'timeline-state-resolver-types'
 import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofie-blueprints-integration'
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
@@ -186,7 +187,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'SourceLayer',
 				name: 'Source layer (**)',
 				description: 'The ID of the source layer to place the piece on in Sofie UI',
-				type: ConfigManifestEntryType.STRING,
+				type: ConfigManifestEntryType.SOURCE_LAYERS,
+				multiple: false,
 				required: true,
 				defaultVal: '',
 				rank: 6
@@ -195,8 +197,12 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'LayerMapping',
 				name: 'Layer mapping (**)',
 				description:
-					'The Sofie Layer mapping to use in playback. This will ensure proper viz transition logic by matching the viz layers.',
-				type: ConfigManifestEntryType.STRING,
+					'The Sofie Layer mapping to use in playback. This will ensure proper graphic transition logic by matching the graphic layers.',
+				type: ConfigManifestEntryType.LAYER_MAPPINGS,
+				filters: {
+					deviceTypes: [DeviceType.CASPARCG]
+				},
+				multiple: false,
 				required: true,
 				defaultVal: '',
 				rank: 7
