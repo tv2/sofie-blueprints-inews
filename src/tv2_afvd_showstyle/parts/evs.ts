@@ -63,7 +63,7 @@ export function CreatePartEVS(
 		context,
 		config.sources,
 		SourceLayerType.REMOTE,
-		partDefinition.rawType
+		partDefinition.rawType.replace(/ ?VO/i, '')
 	)
 	if (sourceInfoDelayedPlayback === undefined) {
 		return CreatePartInvalid(partDefinition)
