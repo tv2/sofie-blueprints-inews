@@ -42,6 +42,8 @@ export const remapVizLLayer: Map<string, string> = new Map([
 	[VizLLayer.VizLLayerWall, GraphicLLayer.GraphicLLayerWall]
 ])
 
+export const remapVizDOvl: Map<string, string> = new Map([['viz-d-ovl', 'OVL1']])
+
 /**
  * Versions:
  * 0.1.0: Core 0.24.0

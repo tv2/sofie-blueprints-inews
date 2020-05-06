@@ -116,7 +116,7 @@ export function remapTableColumnValues(
 ): MigrationStepShowStyle[] {
 	return [
 		literal<MigrationStepShowStyle>({
-			id: `remapTableColumnValue.${tableId}`,
+			id: `remapTableColumnValue.${tableId}.${columnId}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
 			validate: (context: MigrationContextShowStyle) => {

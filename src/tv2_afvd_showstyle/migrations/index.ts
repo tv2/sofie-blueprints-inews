@@ -1,7 +1,7 @@
 import { MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
-import { remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
+import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import {
 	getOutputLayerDefaultsMigrationSteps,
@@ -24,5 +24,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
 	...getRuntimeArgumentsDefaultsMigrationSteps(VERSION),
-	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', remapVizLLayer)
+	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', remapVizLLayer),
+	// Rename "viz-d-ovl" to "OVL1"
+	...remapTableColumnValues(VERSION, 'GFXTemplates', 'VizDestination', remapVizDOvl)
 ])

@@ -166,11 +166,13 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'VizDestination',
-				name: 'Viz Destination (*)',
-				description: 'The name of the Viz Engine',
-				type: ConfigManifestEntryType.STRING,
+				name: 'Graphic Engine Destination (*)',
+				description: 'The name of the graphics engine to play this graphic on',
+				type: ConfigManifestEntryType.SELECT,
 				required: false,
-				defaultVal: '',
+				multiple: false,
+				options: ['OVL1', 'FULL1', 'WALL1'],
+				defaultVal: 'OVL1',
 				rank: 3
 			},
 			{
