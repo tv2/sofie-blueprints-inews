@@ -17,7 +17,7 @@ export function CreatePartTeknik(
 	totalWords: number,
 	reservedTime: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, reservedTime)
+	const partTime = PartTime(config, partDefinition, totalWords, reservedTime, false)
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,

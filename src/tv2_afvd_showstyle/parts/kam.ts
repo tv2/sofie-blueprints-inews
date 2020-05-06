@@ -42,7 +42,7 @@ export function CreatePartKam(
 	totalWords: number,
 	reservedTime: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, reservedTime, true)
+	const partTime = PartTime(config, partDefinition, totalWords, reservedTime, false)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
@@ -91,6 +91,7 @@ export function CreatePartKam(
 				}
 			})
 		)
+		part.expectedDuration = Number(partDefinition.fields.totalTime) * 1000 || 0
 	} else {
 		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
 		if (sourceInfoCam === undefined) {

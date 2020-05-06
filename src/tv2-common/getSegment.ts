@@ -175,7 +175,9 @@ export function getSegmentBase<
 		}
 	}
 
-	const reservedTime = parsedParts.filter(part => part.script.length === 0).length * config.studio.DefaultPartDuration
+	const partsWithScript = parsedParts.filter(part => part.script.length > 0).length
+	const partsWithoutScript = parsedParts.filter(part => part.script.length === 0).length
+	const reservedTime = partsWithScript > 0 ? partsWithoutScript * config.studio.DefaultPartDuration : 0
 
 	let serverParts = 0
 	let jingleTime = 0
@@ -303,14 +305,11 @@ export function getSegmentBase<
 				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
 				(blueprintParts.length - serverParts)
 
-			if (part.part.expectedDuration < 0) {
+			if (part.part.expectedDuration! < 0) {
 				part.part.expectedDuration = 0
 			}
 
-			if (
-				!!part.part.title.match(/(?:kam|cam)(?:era)? ?.*/i) &&
-				part.part.expectedDuration > config.studio.MaximumPartDuration
-			) {
+			if (part.part.expectedDuration! > config.studio.MaximumPartDuration) {
 				part.part.expectedDuration = config.studio.MaximumPartDuration
 			}
 		}
@@ -320,10 +319,19 @@ export function getSegmentBase<
 		}
 	})
 
+	let extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
+
 	blueprintParts.forEach(part => {
 		if (!part.part.expectedDuration || part.part.expectedDuration < 0) {
-			part.part.expectedDuration = config.studio.DefaultPartDuration
+			part.part.expectedDuration =
+				extraTime > config.studio.DefaultPartDuration
+					? extraTime > config.studio.MaximumPartDuration
+						? config.studio.MaximumPartDuration
+						: extraTime
+					: config.studio.DefaultPartDuration
 		}
+
+		extraTime -= part.part.expectedDuration
 
 		if (part.part.displayDuration && (part.part.displayDuration < 0 || isNaN(part.part.displayDuration))) {
 			part.part.displayDuration = 0
@@ -336,7 +344,6 @@ export function getSegmentBase<
 		segment.isHidden = true
 	}
 
-	const extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
 	if (
 		extraTime > 0 &&
 		// Filter out Jingle-only parts

@@ -44,7 +44,7 @@ export function CreatePartEVS(
 	totalWords: number,
 	reservedTime: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, reservedTime)
+	const partTime = PartTime(config, partDefinition, totalWords, reservedTime, false)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

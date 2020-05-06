@@ -19,7 +19,7 @@ export function CreatePartUnknown(
 	reservedTime: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config, partDefinition, totalWords, reservedTime)
+	const partTime = PartTime(config, partDefinition, totalWords, reservedTime, false)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
