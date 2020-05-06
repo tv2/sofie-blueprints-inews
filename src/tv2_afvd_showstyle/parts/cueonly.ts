@@ -18,10 +18,11 @@ export function CreatePartCueOnly(
 	title: string,
 	cue: CueDefinition,
 	totalWords: number,
+	reservedTime: number,
 	makeAdlibs?: boolean
 ) {
 	const partDefinitionWithID = { ...partDefinition, ...{ externalId: id } }
-	const partTime = PartTime(config, partDefinitionWithID, totalWords)
+	const partTime = PartTime(config, partDefinitionWithID, totalWords, reservedTime)
 
 	let part = literal<IBlueprintPart>({
 		externalId: id,

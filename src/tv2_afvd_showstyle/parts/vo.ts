@@ -27,6 +27,8 @@ export function CreatePartVO(
 	partDefinition: PartDefinition,
 	segmentExternalId: string,
 	totalWords: number,
+	/** Amount of time reserved for parts without a script. */
+	reservedTime: number, // config.studio.DefaultPartDuration * partsWithoutScript
 	totalTime: number
 ): BlueprintResultPart {
 	if (partDefinition.fields === undefined) {
@@ -48,7 +50,7 @@ export function CreatePartVO(
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
 		typeVariant: '',
-		expectedDuration: (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration,
+		expectedDuration: (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration - reservedTime) + duration,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})
 

@@ -14,6 +14,7 @@ export function OfftubeCreatePartVO(
 	partDefinition: PartDefinition,
 	segmentExternalId: string,
 	totalWords: number,
+	_reservedTime: number,
 	totalTime: number
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition)
