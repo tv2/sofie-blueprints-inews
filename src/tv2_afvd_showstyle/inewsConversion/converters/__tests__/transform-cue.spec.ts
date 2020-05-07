@@ -70,6 +70,18 @@ describe('TransformCuesIntoShowstyle', () => {
 				VizTemplate: 'VCP',
 				SourceLayer: 'studio0_graphics_pilotOverlay',
 				LayerMapping: 'viz_layer_pilot_overlay',
+				INewsCode: 'GRAFIK',
+				INewsName: 'FULL',
+				VizDestination: 'FULL',
+				OutType: '',
+				Argument1: '',
+				Argument2: '',
+				IsDesign: false
+			},
+			{
+				VizTemplate: 'VCP',
+				SourceLayer: 'studio0_graphics_pilotOverlay',
+				LayerMapping: 'viz_layer_pilot_overlay',
 				INewsCode: 'VIZ',
 				INewsName: 'bund',
 				VizDestination: 'OVL',
@@ -130,6 +142,66 @@ describe('TransformCuesIntoShowstyle', () => {
 						content: {},
 						iNewsCommand: 'SS'
 					})
+				],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
+	})
+
+	test('Merge once', () => {
+		const partDefinition = literal<PartDefinitionKam>({
+			type: PartType.Kam,
+			variant: {
+				name: '1'
+			},
+			externalId: '',
+			cues: [
+				literal<CueDefinitionTargetEngine>({
+					type: CueType.TargetEngine,
+					data: {
+						engine: 'FULL',
+						grafik: mosCue
+					},
+					rawType: `GRAFIK=FULL`,
+					content: {},
+					iNewsCommand: 'GRAFIK'
+				}),
+				mosCue
+			],
+			rawType: 'Kam 1',
+			script: '',
+			fields: {},
+			modified: 0,
+			storyName: '',
+			segmentExternalId: ''
+		})
+
+		const res = TransformCuesIntoShowstyle(config, partDefinition)
+
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionTargetEngine>({
+						type: CueType.TargetEngine,
+						data: {
+							engine: 'FULL',
+							grafik: mosCue
+						},
+						rawType: `GRAFIK=FULL`,
+						content: {},
+						iNewsCommand: 'GRAFIK'
+					}),
+					mosCue
 				],
 				rawType: 'Kam 1',
 				script: '',

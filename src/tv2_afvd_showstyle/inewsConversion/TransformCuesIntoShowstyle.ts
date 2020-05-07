@@ -70,6 +70,10 @@ function checkAndMerge(
 			}
 
 			if (cue.type === CueType.TargetEngine) {
+				if (cue.data.grafik) {
+					return
+				}
+
 				retCue = cue
 			} else if (cue.type === CueType.VIZ) {
 				retCue.rawType = cue.rawType
