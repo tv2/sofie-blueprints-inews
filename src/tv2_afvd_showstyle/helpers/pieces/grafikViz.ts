@@ -50,11 +50,6 @@ export function EvaluateGrafikViz(
 		)
 		if (template) {
 			if (template.IsDesign) {
-				/** config.showStyle.IsOfftube */
-				if ([].length === 999) {
-					return
-				}
-
 				const designCue: CueDefinitionDesign = {
 					type: CueType.Design,
 					design: parsedCue.template,

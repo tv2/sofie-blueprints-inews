@@ -87,21 +87,16 @@ export function EvaluateTargetEngine(
 
 	if (parsedCue.data.grafik) {
 		if (parsedCue.data.grafik.type === CueType.Grafik) {
-			/* config.showStyle.IsOfftube */
-			if ([].length === 999) {
-				// EvaluateGrafikCaspar(config, context, pieces, adlibPieces, parsedCue.data.grafik, partDefinition, true)
-			} else {
-				EvaluateGrafikViz(
-					config,
-					context,
-					pieces,
-					adlibPieces,
-					partId,
-					parsedCue.data.grafik,
-					TranslateEngine(parsedCue.data.engine),
-					adlib
-				)
-			}
+			EvaluateGrafikViz(
+				config,
+				context,
+				pieces,
+				adlibPieces,
+				partId,
+				parsedCue.data.grafik,
+				TranslateEngine(parsedCue.data.engine),
+				adlib
+			)
 		} else {
 			EvaluateMOSViz(
 				config,

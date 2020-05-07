@@ -70,34 +70,18 @@ export function CreatePartEVS(
 	}
 	const atemInput = sourceInfoDelayedPlayback.port
 
-	/*config.showStyle.IsOfftube*/
-	if ([].length === 999) {
-		adLibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: 0,
-				externalId: partDefinition.externalId,
-				name: part.title,
-				outputLayerId: 'pgm',
-				sourceLayerId: SourceLayer.PgmLive,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
-			})
-		)
-	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				_id: '',
-				externalId: partDefinition.externalId,
-				name: part.title,
-				enable: { start: 0 },
-				outputLayerId: 'pgm',
-				sourceLayerId: SourceLayer.PgmLive,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
-			})
-		)
-	}
+	pieces.push(
+		literal<IBlueprintPiece>({
+			_id: '',
+			externalId: partDefinition.externalId,
+			name: part.title,
+			enable: { start: 0 },
+			outputLayerId: 'pgm',
+			sourceLayerId: SourceLayer.PgmLive,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
+		})
+	)
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime)
