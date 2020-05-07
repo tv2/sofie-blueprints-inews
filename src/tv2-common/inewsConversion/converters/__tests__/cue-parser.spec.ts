@@ -140,6 +140,78 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('Grafik (kg) - AdLib ;x.xx-O', () => {
+		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-O']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.Grafik,
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+				adlib: true,
+				iNewsCommand: 'kg',
+				end: {
+					infiniteMode: 'O'
+				}
+			})
+		)
+	})
+
+	test('Grafik (kg) - AdLib ;x.xx-S', () => {
+		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-S']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.Grafik,
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+				adlib: true,
+				iNewsCommand: 'kg',
+				end: {
+					infiniteMode: 'S'
+				}
+			})
+		)
+	})
+
+	test('Grafik (kg) - AdLib ;x.xx-B', () => {
+		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-B']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.Grafik,
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+				adlib: true,
+				iNewsCommand: 'kg',
+				end: {
+					infiniteMode: 'B'
+				}
+			})
+		)
+	})
+
+	test('Grafik (kg) - AdLib ;x.xx-0.30', () => {
+		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-0.30']
+		const result = ParseCue(cueGrafik)
+		expect(result).toEqual(
+			literal<CueDefinition>({
+				type: CueType.Grafik,
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+				adlib: true,
+				iNewsCommand: 'kg',
+				end: {
+					seconds: 30
+				}
+			})
+		)
+	})
+
 	test('Grafik (kg) - Inline first text field, blank time', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx']
 		const result = ParseCue(cueGrafik)
@@ -497,6 +569,31 @@ describe('Cue parser', () => {
 				adlib: true,
 				end: {
 					infiniteMode: 'O'
+				},
+				iNewsCommand: 'VCP'
+			})
+		)
+	})
+
+	test('MOS object with timing - adlib + 00:30', () => {
+		const cueMOS = [
+			']] S3.0 M 0 [[',
+			'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30',
+			'VCPID=2520177',
+			'ContinueCount=-1',
+			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30'
+		]
+		const result = ParseCue(cueMOS)
+		expect(result).toEqual(
+			literal<CueDefinitionMOS>({
+				type: CueType.MOS,
+				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30',
+				vcpid: 2520177,
+				continueCount: -1,
+				adlib: true,
+				end: {
+					seconds: 30
 				},
 				iNewsCommand: 'VCP'
 			})

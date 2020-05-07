@@ -243,6 +243,10 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 		textFields += 1
 	} else {
 		kgCue.adlib = true
+		const end = parseTime(cue[cue.length - 1]).end
+		if (end) {
+			kgCue = { ...kgCue, end }
+		}
 	}
 
 	for (let i = 1; i < textFields; i++) {

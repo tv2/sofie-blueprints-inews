@@ -86,7 +86,9 @@ export function EvaluateGrafikViz(
 					? SourceLayer.PgmGraphicsTLF
 					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 				outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
-				...(isTlfPrimary ? {} : { expectedDuration: GetGrafikDuration(config, parsedCue) }),
+				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
+					? {}
+					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 				infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
@@ -144,7 +146,7 @@ export function EvaluateGrafikViz(
 							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 							templateName: mappedTemplate,
 							templateData: parsedCue.textFields,
-							channelName: engine.match(/WALL/i) ? 'WALL1' : 'OVL1'
+							channelName: !!engine.match(/WALL/i) ? 'WALL1' : 'OVL1'
 						}
 					})
 				])

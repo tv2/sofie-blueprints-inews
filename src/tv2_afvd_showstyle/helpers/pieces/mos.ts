@@ -33,7 +33,7 @@ import { VizEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
-import { CreateTimingGrafik, grafikName } from './grafikViz'
+import { CreateTimingGrafik, GetDefaultOut, grafikName } from './grafikViz'
 
 export function EvaluateMOSViz(
 	config: BlueprintConfig,
@@ -76,7 +76,7 @@ export function EvaluateMOSViz(
 				_id: '',
 				externalId: partId,
 				name: grafikName(config, parsedCue),
-				...(isTlf || isGrafikPart
+				...(isTlf
 					? { enable: { start: 0 } }
 					: {
 							enable: {
@@ -105,11 +105,15 @@ function makeMosAdlib(
 	isGrafikPart?: boolean,
 	overrideOverlay?: boolean
 ): IBlueprintAdLibPiece {
+	const duration = CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config)
+	const infiniteMode = GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart)
 	return {
 		_rank: rank || 0,
 		externalId: partId,
 		name: grafikName(config, parsedCue),
-		infiniteMode: GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart),
+		expectedDuration:
+			!(parsedCue.end && parsedCue.end.infiniteMode) && infiniteMode === PieceLifespan.Normal ? duration : undefined,
+		infiniteMode,
 		sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 		adlibPreroll: config.studio.PilotPrerollDuration,
