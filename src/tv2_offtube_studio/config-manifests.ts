@@ -394,6 +394,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Duration to give parts by default',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 10000
+		defaultVal: 4000
 	}
 ]
