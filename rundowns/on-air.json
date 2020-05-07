@@ -30,7 +30,8 @@
                         "programtitle" : " "
                     },
                     "meta" : {
-                        "rate" : "165"
+                        "rate" : "165",
+                        "float": ""
                     },
                     "cues" : [ 
                         [ 
@@ -175,9 +176,45 @@
                         "rate": "140",
                         "float": ""
                     },
-                    "cues": [],
+                    "cues": [
+                        [
+                            "#kg bund Name Nameson",
+                            ";x.xx-0.30"
+                        ],
+                        [
+                            "LYD=SN_intro",
+                            ";x.xx"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 1 YNYAB 0 [[ pilotdata",
+                            "LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O",
+                            "VCPID=2520177",
+                            "ContinueCount=-1",
+                            "LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 1 YNYAB 0 [[ pilotdata",
+                            "LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30",
+                            "VCPID=2520177",
+                            "ContinueCount=-1",
+                            "LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30"
+                        ],
+                        [
+                            "GRAFIK=FULL"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 1 YNYAB 0 [[ pilotdata",
+                            "LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|B",
+                            "VCPID=2520177",
+                            "ContinueCount=-1",
+                            "LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|B"
+                        ]
+                    ],
                     "id": "341dd48e:011f7352:5da02372",
-                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>1111111</p>\r\n<p><pi>EVS1</pi></p>\r\n<p>1111111111</p>\r\n"
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>1111111<a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a><a idref=\"5\"></a></p>\r\n<p><pi>EVS1</pi></p>\r\n<p>1111111111</p>\r\n"
                 },
                 "modified": "2019-10-11T06:38:00.000Z",
                 "externalId": "341dd48e:011f7352:5da02372",
@@ -245,8 +282,8 @@
                         "var2": "INDSL",
                         "var3": " ",
                         "tapeTime": "0",
-                        "audioTime": "28",
-                        "totalTime": "28",
+                        "audioTime": "19",
+                        "totalTime": "19",
                         "modifyDate": "1570775924",
                         "modifyBy": "sofie",
                         "var16": "ååmmdd",
@@ -266,7 +303,7 @@
                     },
                     "cues": [],
                     "id": "341dd48e:011f7352:5da02374",
-                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>11111111</p>\r\n<p><pi>****VO****</pi></p>\r\n<p>11111111111111111111</p>\r\n"
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p>11111111</p>\r\n<p><pi>****VO****</pi></p>\r\n<p>11111111111111111111</p>\r\n<p><pi>KAM 1</pi></p>\r\n"
                 },
                 "modified": "2019-10-11T06:38:00.000Z",
                 "externalId": "341dd48e:011f7352:5da02374",
