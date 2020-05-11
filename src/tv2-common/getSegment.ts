@@ -282,7 +282,6 @@ export function getSegmentBase<
 		allocatedTime = 0
 	}
 
-	let totalAllocatedTime = 0
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
 		if (!part.part.expectedDuration && Number(ingestSegment.payload.iNewsStory.fields.totalTime) > 0) {
@@ -297,14 +296,14 @@ export function getSegmentBase<
 			if (part.part.expectedDuration! > config.studio.MaximumPartDuration) {
 				part.part.expectedDuration = config.studio.MaximumPartDuration
 			}
-		}
 
-		if (part.part.expectedDuration) {
-			totalAllocatedTime += part.part.expectedDuration
+			if (part.part.expectedDuration < config.studio.DefaultPartDuration) {
+				part.part.expectedDuration = config.studio.DefaultPartDuration
+			}
 		}
 	})
 
-	let extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - totalAllocatedTime
+	let extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000
 
 	blueprintParts.forEach(part => {
 		if (!part.part.expectedDuration || part.part.expectedDuration < 0) {
