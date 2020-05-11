@@ -44,13 +44,14 @@ export function CreatePartVO(
 	const file = partDefinition.fields.videoId
 	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
+	const actualDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration - reservedTime) + duration
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
 		typeVariant: '',
-		expectedDuration: (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration - reservedTime) + duration,
+		expectedDuration: actualDuration,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
@@ -96,7 +97,7 @@ export function CreatePartVO(
 	)
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
-	AddScript(partDefinition, pieces, duration)
+	AddScript(partDefinition, pieces, actualDuration)
 
 	if (pieces.length === 0) {
 		part.invalid = true

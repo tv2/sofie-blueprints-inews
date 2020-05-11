@@ -10,10 +10,6 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 		return
 	}
 
-	if (duration === 0) {
-		duration = 1000
-	}
-
 	let script = part.script.replace(/^\**/i, '').trim()
 	if (part.endWords) {
 		script = script.length ? `${script} SLUTORD: ${part.endWords}` : part.endWords
