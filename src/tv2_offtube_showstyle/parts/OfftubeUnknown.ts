@@ -14,10 +14,9 @@ export function CreatePartUnknown(
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
-	reservedTime: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config, partDefinition, totalWords, reservedTime)
+	const partTime = PartTime(config, partDefinition, totalWords)
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

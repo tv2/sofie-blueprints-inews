@@ -47,22 +47,19 @@ export interface GetSegmentShowstyleOptions<
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number,
-		reservedTime: number,
 		asAdlibs?: boolean
 	) => BlueprintResultPart
 	CreatePartIntro?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 	CreatePartKam?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionKam,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 	CreatePartServer?: (
 		context: PartContext2,
@@ -74,15 +71,13 @@ export interface GetSegmentShowstyleOptions<
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTeknik,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 	CreatePartGrafik?: (
 		context: PartContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionGrafik,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 	CreatePartVO?: (
 		context: PartContext,
@@ -90,36 +85,31 @@ export interface GetSegmentShowstyleOptions<
 		partDefinition: PartDefinitionVO,
 		mediaPlayerSession: string,
 		totalWords: number,
-		totalTime: number,
-		reservedTime: number
+		totalTime: number
 	) => BlueprintResultPart
 	CreatePartEkstern?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEkstern,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 	CreatePartTelefon?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTelefon,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 	CreatePartDVE?: (
 		context: PartContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionDVE,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 	CreatePartEVS?: (
 		context: PartContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEVS,
-		totalWords: number,
-		reservedTime: number
+		totalWords: number
 	) => BlueprintResultPart
 }
 
@@ -175,10 +165,6 @@ export function getSegmentBase<
 		}
 	}
 
-	const partsWithScript = parsedParts.filter(part => part.script.length > 0).length
-	const partsWithoutScript = parsedParts.filter(part => part.script.length === 0).length
-	const reservedTime = partsWithScript > 0 ? partsWithoutScript * config.studio.DefaultPartDuration : 0
-
 	let serverParts = 0
 	let jingleTime = 0
 	let serverTime = 0
@@ -193,19 +179,19 @@ export function getSegmentBase<
 			part.type === PartType.Unknown &&
 			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
-			blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords, reservedTime, true))
+			blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords, true))
 			continue
 		}
 
 		switch (part.type) {
 			case PartType.INTRO:
 				if (showStyleOptions.CreatePartIntro) {
-					blueprintParts.push(showStyleOptions.CreatePartIntro(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartIntro(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.Kam:
 				if (showStyleOptions.CreatePartKam) {
-					blueprintParts.push(showStyleOptions.CreatePartKam(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartKam(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.Server:
@@ -215,12 +201,12 @@ export function getSegmentBase<
 				break
 			case PartType.Teknik:
 				if (showStyleOptions.CreatePartTeknik) {
-					blueprintParts.push(showStyleOptions.CreatePartTeknik(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartTeknik(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.Grafik:
 				if (showStyleOptions.CreatePartGrafik) {
-					blueprintParts.push(showStyleOptions.CreatePartGrafik(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartGrafik(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.VO:
@@ -232,7 +218,6 @@ export function getSegmentBase<
 							part,
 							ingestSegment.externalId,
 							totalWords,
-							reservedTime,
 							Number(ingestSegment.payload.iNewsStory.fields.totalTime)
 						)
 					)
@@ -240,27 +225,27 @@ export function getSegmentBase<
 				break
 			case PartType.DVE:
 				if (showStyleOptions.CreatePartDVE) {
-					blueprintParts.push(showStyleOptions.CreatePartDVE(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartDVE(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.Ekstern:
 				if (showStyleOptions.CreatePartEkstern) {
-					blueprintParts.push(showStyleOptions.CreatePartEkstern(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartEkstern(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.Telefon:
 				if (showStyleOptions.CreatePartTelefon) {
-					blueprintParts.push(showStyleOptions.CreatePartTelefon(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartTelefon(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.Unknown:
 				if (part.cues.length) {
-					blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords))
 				}
 				break
 			case PartType.EVS:
 				if (showStyleOptions.CreatePartEVS) {
-					blueprintParts.push(showStyleOptions.CreatePartEVS(partContext, config, part, totalWords, reservedTime))
+					blueprintParts.push(showStyleOptions.CreatePartEVS(partContext, config, part, totalWords))
 				}
 				break
 			default:

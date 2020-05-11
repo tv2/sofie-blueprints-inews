@@ -23,10 +23,9 @@ export function OfftubeCreatePartKam(
 	context: PartContext,
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
-	totalWords: number,
-	reservedTime: number
+	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, reservedTime, false)
+	const partTime = PartTime(config, partDefinition, totalWords, false)
 
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

@@ -27,8 +27,6 @@ export function CreatePartVO(
 	partDefinition: PartDefinition,
 	segmentExternalId: string,
 	totalWords: number,
-	/** Amount of time reserved for parts without a script. */
-	reservedTime: number, // config.studio.DefaultPartDuration * partsWithoutScript
 	totalTime: number
 ): BlueprintResultPart {
 	if (partDefinition.fields === undefined) {
@@ -44,7 +42,7 @@ export function CreatePartVO(
 	const file = partDefinition.fields.videoId
 	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
-	const actualDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration - reservedTime) + duration
+	const actualDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
