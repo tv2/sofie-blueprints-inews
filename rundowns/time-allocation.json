@@ -561,7 +561,7 @@
         {
             "externalId": "1dd244cb:00921671:5e1db300",
             "name": "Ekstern editorial time test",
-            "rank": 100,
+            "rank": 110,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
                 "iNewsStory": {
@@ -600,8 +600,51 @@
                 },
                 "modified": "1579008960",
                 "externalId": "1dd244cb:00921671:5e1db300",
-                "rank": 100,
+                "rank": 110,
                 "name": "Ekstern editorial time test",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1dd244cb:00921671:5e1db301",
+            "name": "Segment with parts after scripted parts",
+            "rank": 120,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "17",
+                        "title": "Segment with parts after scripted parts",
+                        "var2": "INDSL",
+                        "videoId": "1234A",
+                        "tapeTime": "0",
+                        "audioTime": "18",
+                        "totalTime": "18",
+                        "modifyDate": "1579008960",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "28",  
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [],
+                    "id": "1dd244cb:00921671:5e1db301",
+                    "body": "\r\n<p><cc>KAM 1: 6 seconds</cc><pi>KAM 1</pi></p>\r\n<p>111111</p>\r\n<p><pi>VO</pi></p>\r\n<p>111111111111</p>\r\n<p><pi>KAM 2</pi><p>\r\n",
+                    "fileId": "1dd244cb:00921671:5e1db301"
+                },
+                "modified": "1579008960",
+                "externalId": "1dd244cb:00921671:5e1db301",
+                "rank": 120,
+                "name": "Segment with parts after scripted parts",
                 "float": false
             },
             "parts": []

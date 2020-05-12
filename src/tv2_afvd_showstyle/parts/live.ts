@@ -22,7 +22,8 @@ export function CreatePartLive(
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
-		typeVariant: ''
+		typeVariant: '',
+		expectedDuration: partTime > 0 ? partTime : 0
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
