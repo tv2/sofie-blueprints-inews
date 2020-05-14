@@ -755,7 +755,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
-						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
+						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+						channelsToSendCommands: ['OVL1', 'FULL1', 'WALL1']
 					}
 				})
 			])
