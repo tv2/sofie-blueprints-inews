@@ -148,7 +148,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
 		res.push({
 			externalId: 'cam',
-			name: preview ? `K${info.id}` : `${info.id}`,
+			name: `Kamera ${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmCam,
 			outputLayerId: 'pgm',
@@ -364,7 +364,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		]
 		res.push({
 			externalId: 'live',
-			name: info.id + '',
+			name: `Ekstern ${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLive,
 			outputLayerId: 'pgm',
