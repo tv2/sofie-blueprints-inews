@@ -533,7 +533,7 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: ',space,q',
+		activateKeyboardHotkeys: ',space,,q',
 		clearKeyboardHotkey: '',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,

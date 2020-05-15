@@ -687,6 +687,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: 'sec',
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
+		tags: ['static_button'],
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				literal<TimelineObjVIZMSELoadAllElements>({
@@ -714,6 +715,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: 'sec',
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
+		tags: ['static_button'],
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				literal<TimelineObjVIZMSEElementContinue>({
@@ -736,9 +738,40 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	})
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
+		// TODO: This sould be an adlib function that clears the graphics sourcelayers as well
+		// See: https://app.asana.com/0/1144308403817753/1175546502993537/f
 		externalId: 'clearAllGFX',
 		name: 'GFX Clear',
 		_rank: 300,
+		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+		outputLayerId: 'sec',
+		expectedDuration: 2000,
+		infiniteMode: PieceLifespan.Normal,
+		tags: ['static_button'],
+		content: {
+			timelineObjects: _.compact<TSRTimelineObj>([
+				literal<TimelineObjVIZMSEClearAllElements>({
+					id: '',
+					enable: {
+						start: 1000,
+						duration: 1000
+					},
+					priority: 100,
+					layer: GraphicLLayer.GraphicLLayerAdLibs,
+					content: {
+						deviceType: DeviceType.VIZMSE,
+						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+						channelsToSendCommands: ['OVL1', 'FULL1', 'WALL1']
+					}
+				})
+			])
+		}
+	})
+
+	adlibItems.push({
+		externalId: 'sendAltud',
+		name: 'GFX Altud',
+		_rank: 400,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
 		expectedDuration: 2000,
@@ -755,8 +788,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					layer: GraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: DeviceType.VIZMSE,
-						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-						channelsToSendCommands: ['OVL1', 'FULL1', 'WALL1']
+						type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
 					}
 				})
 			])
@@ -799,6 +831,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmDSK,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
+		tags: ['static_button'],
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
 				literal<TimelineObjAtemDSK>({
@@ -825,6 +858,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
+		tags: ['static_button'],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
@@ -852,6 +886,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
+		tags: ['static_button'],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
@@ -879,6 +914,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Normal,
+		tags: ['static_button'],
 		expectedDuration: 1000,
 		content: {
 			timelineObjects: _.compact<TSRTimelineObj>([
