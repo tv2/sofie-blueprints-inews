@@ -46,7 +46,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	})
 
 	return {
-		segment: !!ingestSegment.name.match(/^klar on-?air$/i) ? result.segment : { ...result.segment, isHidden: true },
+		segment: !!ingestSegment.name.match(/^klar on-?air/i) ? result.segment : { ...result.segment, isHidden: true },
 		parts: result.parts
 	}
 }
