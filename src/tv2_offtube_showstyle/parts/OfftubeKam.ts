@@ -11,9 +11,23 @@ import {
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
+	SourceLayerType,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinitionKam, PartTime, TransitionFromString, TransitionSettings } from 'tv2-common'
+import {
+	AddParentClass,
+	CameraParentClass,
+	CreatePartInvalid,
+	FindSourceInfoStrict,
+	GetCameraMetaData,
+	GetLayersForCamera,
+	GetSisyfosTimelineObjForCamera,
+	literal,
+	PartDefinitionKam,
+	PartTime,
+	TransitionFromString,
+	TransitionSettings
+} from 'tv2-common'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
@@ -70,6 +84,58 @@ export function OfftubeCreatePartKam(
 								}
 							}
 						})
+					])
+				}
+			})
+		)
+	} else {
+		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		if (sourceInfoCam === undefined) {
+			return CreatePartInvalid(partDefinition)
+		}
+		const atemInput = sourceInfoCam.port
+
+		// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+		// TODO: EFFEKT
+
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: part.title,
+				enable: { start: 0 },
+				outputLayerId: 'pgm',
+				sourceLayerId: OffTubeSourceLayer.PgmSourceSelect, // TODO: Next Cam
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+				content: {
+					studioLabel: '',
+					switcherInput: atemInput,
+					timelineObjects: literal<TimelineObjectCoreExt[]>([
+						literal<TimelineObjAtemME>({
+							id: ``,
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: OfftubeAtemLLayer.AtemMEProgram,
+							content: {
+								deviceType: DeviceType.ATEM,
+								type: TimelineContentTypeAtem.ME,
+								me: {
+									input: Number(atemInput),
+									transition: partDefinition.transition
+										? TransitionFromString(partDefinition.transition.style)
+										: AtemTransitionStyle.CUT,
+									transitionSettings: TransitionSettings(partDefinition)
+								}
+							},
+							...(AddParentClass(partDefinition)
+								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
+								: {})
+						}),
+
+						...GetSisyfosTimelineObjForCamera(context, config, partDefinition.rawType)
 					])
 				}
 			})
