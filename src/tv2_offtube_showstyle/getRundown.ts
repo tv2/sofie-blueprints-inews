@@ -438,6 +438,7 @@ function getGlobalAdLibPiecesOffTube(
 									while: '1'
 								},
 								layer: OfftubeAtemLLayer.AtemMEProgram,
+								priority: 1,
 								content: {
 									deviceType: DeviceType.ATEM,
 									type: TimelineContentTypeAtem.ME,
@@ -476,6 +477,7 @@ function getGlobalAdLibPiecesOffTube(
 									while: '1'
 								},
 								layer: OfftubeAtemLLayer.AtemMEProgram,
+								priority: 1,
 								content: {
 									deviceType: DeviceType.ATEM,
 									type: TimelineContentTypeAtem.ME,
@@ -510,6 +512,7 @@ function getGlobalAdLibPiecesOffTube(
 							while: '1'
 						},
 						layer: OfftubeAtemLLayer.AtemMEProgram,
+						priority: 1,
 						content: {
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.ME,
