@@ -512,7 +512,7 @@ function getGlobalAdLibPiecesOffTube(
 							while: '1'
 						},
 						layer: OfftubeAtemLLayer.AtemMEProgram,
-						priority: 1,
+						priority: 10,
 						content: {
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.ME,
