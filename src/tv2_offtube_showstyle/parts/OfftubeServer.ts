@@ -123,6 +123,7 @@ export function OfftubeCreatePartServer(
 	])
 	adLibPieces.push(adlibServer)
 
+	// Flow producer
 	adlibServer.tags = ['flow_producer']
 	adlibServer.content!.timelineObjects.push(
 		literal<TimelineObjAbstractAny>({
@@ -138,6 +139,8 @@ export function OfftubeCreatePartServer(
 			classes: [Enablers.OFFTUBE_ENABLE_SERVER]
 		})
 	)
+	adlibServer.infiniteMode = PieceLifespan.OutOnNextPart
+	adlibServer.canCombineQueue = false
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -244,8 +244,8 @@ function CreateFull(
 		sourceLayerId: OffTubeSourceLayer.SelectedAdlibGraphicsFull,
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
 		toBeQueued: true,
-		canCombineQueue: true,
-		infiniteMode: PieceLifespan.Infinite,
+		canCombineQueue: !flowProducer,
+		infiniteMode: flowProducer ? PieceLifespan.OutOnNextPart : PieceLifespan.Infinite,
 		tags: flowProducer ? ['flow_producer'] : [],
 		content: {
 			fileName: template,
