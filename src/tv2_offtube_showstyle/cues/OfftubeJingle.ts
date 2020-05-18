@@ -70,7 +70,7 @@ export function OfftubeEvaluateJingle(
 			adlibAutoNextOverlap: props.autoNextOverlap,
 			adlibPreroll: props.prerollDuration,
 			expectedDuration: props.expectedDuration,
-			adlibDisableOutTransition: props.disableOutTransition,
+			adlibDisableOutTransition: false,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			tags: [AdlibTags.OFFTUBE_100pc_SERVER] // TODO: Maybe this should be different?
 		})

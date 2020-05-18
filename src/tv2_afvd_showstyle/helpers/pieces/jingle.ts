@@ -70,7 +70,7 @@ export function EvaluateJingle(
 				adlibAutoNextOverlap: props.autoNextOverlap,
 				adlibPreroll: props.prerollDuration,
 				expectedDuration: props.expectedDuration,
-				adlibDisableOutTransition: props.disableOutTransition
+				adlibDisableOutTransition: false
 			})
 		)
 	} else {

@@ -34,8 +34,8 @@ export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase
 						TimeFromFrames(Number(realBreaker.StartAlpha)),
 					prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(realBreaker.StartAlpha)),
 					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
-					autoNext: realBreaker.Autonext === true,
-					disableOutTransition: true
+					disableOutTransition: false,
+					autoNext: realBreaker.Autonext === true
 				}
 			}
 		}
