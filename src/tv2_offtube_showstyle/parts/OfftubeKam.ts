@@ -48,6 +48,8 @@ export function OfftubeCreatePartKam(
 		typeVariant: '',
 		expectedDuration: partTime > 0 ? partTime : undefined
 	})
+	// TODO: Script
+	// AddScript(partDefinition, pieces, duration)
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
