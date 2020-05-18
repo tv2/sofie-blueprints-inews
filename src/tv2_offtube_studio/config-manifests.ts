@@ -261,6 +261,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 7
 	},
 	{
+		id: 'AtemSource.GraphicsUSK',
+		name: 'ATEM DSK1 Key',
+		description: 'ATEM USK for graphics',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 0
+	},
+	{
 		id: 'AtemSource.JingleFill',
 		name: 'Jingle Fill Source',
 		description: 'ATEM vision mixer input for Jingle Fill',
@@ -275,6 +283,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 7
+	},
+	{
+		id: 'AtemSource.JingleUSK',
+		name: 'ATEM DSK1 Key',
+		description: 'ATEM USK for jingles',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 0
 	},
 	{
 		id: 'AtemSettings.CCGClip',

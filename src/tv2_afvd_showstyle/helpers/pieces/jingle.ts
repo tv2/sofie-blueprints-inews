@@ -107,7 +107,6 @@ function createJingleContent(config: BlueprintConfig, file: string) {
 				PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
 			}
 		},
-		false,
 		false
 	)
 

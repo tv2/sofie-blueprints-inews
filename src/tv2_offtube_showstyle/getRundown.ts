@@ -666,7 +666,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 				me: {
 					upstreamKeyers: [
 						{
-							upstreamKeyerId: 0, // TODO: Mapping
+							upstreamKeyerId: config.studio.AtemSource.GraphicsUSK,
 							onAir: true,
 							mixEffectKeyType: 0,
 							flyEnabled: false,

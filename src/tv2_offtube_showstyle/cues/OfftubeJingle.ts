@@ -93,6 +93,9 @@ function createJingleContent(config: OffTubeShowstyleBlueprintConfig, file: stri
 			}
 		},
 		true,
-		true
+		{
+			useUSK: true,
+			sourceUSK: config.studio.AtemSource.JingleUSK
+		}
 	)
 }
