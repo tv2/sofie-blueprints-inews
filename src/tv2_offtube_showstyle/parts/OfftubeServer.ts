@@ -9,6 +9,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, literal, MakeContentServer, PartDefinition } from 'tv2-common'
 import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import _ = require('underscore')
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -124,8 +125,9 @@ export function OfftubeCreatePartServer(
 	adLibPieces.push(adlibServer)
 
 	// Flow producer
-	adlibServer.tags = ['flow_producer']
-	adlibServer.content!.timelineObjects.push(
+	const adlibServerFlowProducer = _.clone(adlibServer)
+	adlibServerFlowProducer.tags = ['flow_producer']
+	adlibServerFlowProducer.content!.timelineObjects.push(
 		literal<TimelineObjAbstractAny>({
 			id: '',
 			enable: {
@@ -139,8 +141,9 @@ export function OfftubeCreatePartServer(
 			classes: [Enablers.OFFTUBE_ENABLE_SERVER]
 		})
 	)
-	adlibServer.infiniteMode = PieceLifespan.OutOnNextPart
-	adlibServer.canCombineQueue = false
+	adlibServerFlowProducer.infiniteMode = PieceLifespan.OutOnNextPart
+	adlibServerFlowProducer.canCombineQueue = false
+	adLibPieces.push(adlibServerFlowProducer)
 
 	if (pieces.length === 0) {
 		part.invalid = true
