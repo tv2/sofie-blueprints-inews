@@ -1,4 +1,4 @@
-import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
+// import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
@@ -9,9 +9,9 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, literal, MakeContentServer, PartDefinition } from 'tv2-common'
 import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
-import _ = require('underscore')
+// import _ = require('underscore')
 import {
-	OfftubeAbstractLLayer,
+	// OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
 	OfftubeCasparLLayer,
 	OfftubeSisyfosLLayer
@@ -125,7 +125,7 @@ export function OfftubeCreatePartServer(
 	adLibPieces.push(adlibServer)
 
 	// Flow producer
-	const adlibServerFlowProducer = _.clone(adlibServer)
+	/*const adlibServerFlowProducer = _.clone(adlibServer)
 	adlibServerFlowProducer.tags = ['flow_producer']
 	adlibServerFlowProducer.content!.timelineObjects.push(
 		literal<TimelineObjAbstractAny>({
@@ -144,7 +144,7 @@ export function OfftubeCreatePartServer(
 	adlibServerFlowProducer.infiniteMode = PieceLifespan.OutOnNextPart
 	adlibServerFlowProducer.canCombineQueue = false
 	adlibServerFlowProducer.externalId = `${adlibServerFlowProducer.externalId}-flowProducer`
-	adLibPieces.push(adlibServerFlowProducer)
+	adLibPieces.push(adlibServerFlowProducer)*/
 
 	if (pieces.length === 0) {
 		part.invalid = true
