@@ -1,4 +1,4 @@
-// import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
+import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
@@ -9,9 +9,8 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { CreateAdlibServer, CreatePartServerBase, literal, MakeContentServer, PartDefinition } from 'tv2-common'
 import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
-// import _ = require('underscore')
 import {
-	// OfftubeAbstractLLayer,
+	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
 	OfftubeCasparLLayer,
 	OfftubeSisyfosLLayer
@@ -74,12 +73,6 @@ export function OfftubeCreatePartServer(
 		})
 	)
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
-
-	if (pieces.length === 0) {
-		part.invalid = true
-	}
-
 	let adlibServer: IBlueprintAdLibPiece = CreateAdlibServer(
 		config,
 		0,
@@ -124,9 +117,40 @@ export function OfftubeCreatePartServer(
 	])
 	adLibPieces.push(adlibServer)
 
-	// Flow producer
-	/*const adlibServerFlowProducer = _.clone(adlibServer)
+	// TODO: Clean up
+	const adlibServerFlowProducer: IBlueprintAdLibPiece = CreateAdlibServer(
+		config,
+		0,
+		partDefinition.externalId,
+		MEDIA_PLAYER_AUTO,
+		partDefinition,
+		file,
+		false,
+		{
+			PgmServer: OffTubeSourceLayer.SelectedAdLibServer,
+			PgmVoiceOver: OffTubeSourceLayer.SelectedAdLibVoiceOver,
+			Caspar: {
+				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+			},
+			ATEM: {
+				MEPGM: OfftubeAtemLLayer.AtemMEClean
+			},
+			Sisyfos: {
+				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+			}
+		},
+		{
+			isOfftube: true,
+			tagAsAdlib: true,
+			enabler: Enablers.OFFTUBE_ENABLE_SERVER
+		}
+	)
+	adlibServerFlowProducer.toBeQueued = true
 	adlibServerFlowProducer.tags = ['flow_producer']
+	adlibServerFlowProducer.canCombineQueue = false
+	adlibServerFlowProducer.name = file
+	adlibServerFlowProducer.infiniteMode = PieceLifespan.OutOnNextPart
+	adlibServerFlowProducer.externalId = `${adlibServerFlowProducer.externalId}-flowProducer`
 	adlibServerFlowProducer.content!.timelineObjects.push(
 		literal<TimelineObjAbstractAny>({
 			id: '',
@@ -141,10 +165,8 @@ export function OfftubeCreatePartServer(
 			classes: [Enablers.OFFTUBE_ENABLE_SERVER]
 		})
 	)
-	adlibServerFlowProducer.infiniteMode = PieceLifespan.OutOnNextPart
-	adlibServerFlowProducer.canCombineQueue = false
-	adlibServerFlowProducer.externalId = `${adlibServerFlowProducer.externalId}-flowProducer`
-	adLibPieces.push(adlibServerFlowProducer)*/
+
+	adLibPieces.push(adlibServerFlowProducer)
 
 	if (pieces.length === 0) {
 		part.invalid = true
