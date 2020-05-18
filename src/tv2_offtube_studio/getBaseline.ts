@@ -107,6 +107,21 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 					transition: AtemTransitionStyle.CUT
 				}
 			}
+		}),
+
+		// Route ME 2 PGM to ME 1 PGM
+		literal<TimelineObjAtemME>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: OfftubeAtemLLayer.AtemMEMultiview,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.ME,
+				me: {
+					previewInput: AtemSourceIndex.Prg1
+				}
+			}
 		})
 	]
 }

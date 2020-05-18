@@ -33,8 +33,11 @@ export enum OfftubeSisyfosLLayer {
 }
 
 export enum OfftubeAtemLLayer {
+	// ME used to mix the program feed. (ME 2)
 	AtemMEProgram = 'atem_me_program',
-	AtemDSKGraphics = 'atem_dsk_graphics',
+	// ME used to show multiview to user. (ME 1)
+	AtemMEMultiview = 'atem_me_multiview',
+	AtemUSKGraphics = 'atem_usk_graphics',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
 	AtemAuxClean = 'atem_aux_clean',

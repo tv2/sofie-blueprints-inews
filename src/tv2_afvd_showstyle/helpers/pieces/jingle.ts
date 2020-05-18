@@ -92,18 +92,24 @@ export function EvaluateJingle(
 }
 
 function createJingleContent(config: BlueprintConfig, file: string) {
-	const content = CreateJingleContentBase(config, file, {
-		Caspar: {
-			PlayerJingle: CasparLLayer.CasparPlayerJingle
+	const content = CreateJingleContentBase(
+		config,
+		file,
+		{
+			Caspar: {
+				PlayerJingle: CasparLLayer.CasparPlayerJingle
+			},
+			ATEM: {
+				DSKJingle: AtemLLayer.AtemDSKEffect,
+				USKCleanEffekt: AtemLLayer.AtemCleanUSKEffect
+			},
+			Sisyfos: {
+				PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
+			}
 		},
-		ATEM: {
-			DSKJingle: AtemLLayer.AtemDSKEffect,
-			USKCleanEffekt: AtemLLayer.AtemCleanUSKEffect
-		},
-		Sisyfos: {
-			PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
-		}
-	})
+		false,
+		false
+	)
 
 	return content
 }

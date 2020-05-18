@@ -78,15 +78,21 @@ export function OfftubeEvaluateJingle(
 }
 
 function createJingleContent(config: OffTubeShowstyleBlueprintConfig, file: string) {
-	return CreateJingleContentBase(config, file, {
-		Caspar: {
-			PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle
+	return CreateJingleContentBase(
+		config,
+		file,
+		{
+			Caspar: {
+				PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle
+			},
+			ATEM: {
+				DSKJingle: OfftubeAtemLLayer.AtemUSKGraphics
+			},
+			Sisyfos: {
+				PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
+			}
 		},
-		ATEM: {
-			DSKJingle: OfftubeAtemLLayer.AtemDSKGraphics
-		},
-		Sisyfos: {
-			PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
-		}
-	})
+		true,
+		true
+	)
 }
