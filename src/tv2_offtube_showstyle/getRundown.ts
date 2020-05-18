@@ -862,7 +862,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.ME,
 				me: {
-					input: AtemSourceIndex.Prg1,
+					input: AtemSourceIndex.Prg2,
 					transition: AtemTransitionStyle.CUT
 				}
 			}
