@@ -47,7 +47,7 @@ export function OfftubeCreatePartVO(
 				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 			},
 			ATEM: {
-				MEPGM: OfftubeAtemLLayer.AtemMEProgram
+				MEPGM: OfftubeAtemLLayer.AtemMEClean
 			},
 			Sisyfos: {
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending

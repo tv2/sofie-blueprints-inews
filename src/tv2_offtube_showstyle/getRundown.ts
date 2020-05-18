@@ -163,7 +163,7 @@ function getGlobalAdLibPiecesOffTube(
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEProgram,
+						layer: OfftubeAtemLLayer.AtemMEClean,
 						content: {
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.ME,
@@ -272,7 +272,7 @@ function getGlobalAdLibPiecesOffTube(
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEProgram,
+						layer: OfftubeAtemLLayer.AtemMEClean,
 						content: {
 							deviceType: DeviceType.ATEM,
 							type: TimelineContentTypeAtem.ME,
@@ -437,7 +437,7 @@ function getGlobalAdLibPiecesOffTube(
 								enable: {
 									while: '1'
 								},
-								layer: OfftubeAtemLLayer.AtemMEProgram,
+								layer: OfftubeAtemLLayer.AtemMEClean,
 								priority: 1,
 								content: {
 									deviceType: DeviceType.ATEM,
@@ -476,7 +476,7 @@ function getGlobalAdLibPiecesOffTube(
 								enable: {
 									while: '1'
 								},
-								layer: OfftubeAtemLLayer.AtemMEProgram,
+								layer: OfftubeAtemLLayer.AtemMEClean,
 								priority: 1,
 								content: {
 									deviceType: DeviceType.ATEM,
@@ -511,7 +511,7 @@ function getGlobalAdLibPiecesOffTube(
 						enable: {
 							while: '1'
 						},
-						layer: OfftubeAtemLLayer.AtemMEProgram,
+						layer: OfftubeAtemLLayer.AtemMEClean,
 						priority: 10,
 						content: {
 							deviceType: DeviceType.ATEM,
@@ -616,7 +616,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEProgram,
+			layer: OfftubeAtemLLayer.AtemMEClean,
 			content: {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.ME,
@@ -637,7 +637,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.AUX,
 				aux: {
-					input: AtemSourceIndex.Prg4
+					input: AtemSourceIndex.Prg2
 				}
 			}
 		}),
@@ -856,7 +856,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEMultiview,
+			layer: OfftubeAtemLLayer.AtemMEProgram,
 			content: {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.ME,

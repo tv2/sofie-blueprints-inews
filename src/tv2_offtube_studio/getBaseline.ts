@@ -98,7 +98,7 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEProgram,
+			layer: OfftubeAtemLLayer.AtemMEClean,
 			content: {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.ME,
@@ -114,7 +114,7 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEMultiview,
+			layer: OfftubeAtemLLayer.AtemMEProgram,
 			content: {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.ME,

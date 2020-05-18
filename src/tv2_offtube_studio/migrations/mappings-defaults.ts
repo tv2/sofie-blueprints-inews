@@ -21,14 +21,14 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	atem_me_program: literal<MappingAtem & BlueprintMapping>({
+	atem_me_clean: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: MappingAtemType.MixEffect,
 		index: 1 // 1 = ME2
 	}),
-	atem_me_multiview: literal<MappingAtem & BlueprintMapping>({
+	atem_me_program: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,

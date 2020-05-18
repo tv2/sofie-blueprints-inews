@@ -33,9 +33,9 @@ export enum OfftubeSisyfosLLayer {
 }
 
 export enum OfftubeAtemLLayer {
-	AtemMEProgram = 'atem_me_program',
+	AtemMEClean = 'atem_me_clean',
 	AtemDSKGraphics = 'atem_dsk_graphics',
-	AtemMEMultiview = 'atem_me_multiview',
+	AtemMEProgram = 'atem_me_program',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
 	AtemAuxClean = 'atem_aux_clean',
