@@ -119,7 +119,8 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 				deviceType: DeviceType.ATEM,
 				type: TimelineContentTypeAtem.ME,
 				me: {
-					previewInput: AtemSourceIndex.Prg1
+					input: AtemSourceIndex.Prg1,
+					transition: AtemTransitionStyle.CUT
 				}
 			}
 		})
