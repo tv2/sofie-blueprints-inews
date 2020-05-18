@@ -852,6 +852,22 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 			})
 		}),
 
+		// Route ME 2 PGM to ME 1 PGM
+		literal<TimelineObjAtemME>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: OfftubeAtemLLayer.AtemMEMultiview,
+			content: {
+				deviceType: DeviceType.ATEM,
+				type: TimelineContentTypeAtem.ME,
+				me: {
+					input: AtemSourceIndex.Prg1,
+					transition: AtemTransitionStyle.CUT
+				}
+			}
+		}),
+
 		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
 					return literal<TimelineObjCCGMedia>({
