@@ -23,9 +23,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 		GFXFull: 0,
 		Loop: 0,
 		JingleFill: 0,
-		JingleKey: 0,
-		GraphicsUSK: 0,
-		JingleUSK: 0
+		JingleKey: 0
 	},
 	AtemSettings: {
 		CCGClip: 0,

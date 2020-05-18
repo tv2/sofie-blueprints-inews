@@ -44,7 +44,6 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	AtemSource: {
 		DSK1F: number
 		DSK1K: number
-		GraphicsUSK: number
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
 		SplitBackground: number
@@ -55,7 +54,6 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 		Continuity: number
 		JingleFill: number
 		JingleKey: number
-		JingleUSK: number
 	}
 
 	AtemSettings: {

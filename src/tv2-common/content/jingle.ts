@@ -26,15 +26,10 @@ export interface JingleLayers {
 	}
 }
 
-export interface JingleUSK {
-	useUSK: boolean
-	sourceUSK: number
-}
-
 export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(config: ShowStyleConfig, file: string, layers: JingleLayers, preMultiplied: boolean, usk?: JingleUSK) {
+>(config: ShowStyleConfig, file: string, layers: JingleLayers, preMultiplied: boolean, usk: boolean) {
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
@@ -56,7 +51,7 @@ export function CreateJingleContentBase<
 				}
 			}),
 
-			...(usk?.useUSK
+			...(usk
 				? [
 						literal<TimelineObjAtemME>({
 							id: '',
@@ -71,7 +66,7 @@ export function CreateJingleContentBase<
 								me: {
 									upstreamKeyers: [
 										{
-											upstreamKeyerId: usk.sourceUSK,
+											upstreamKeyerId: 0, // TODO: Mapping
 											onAir: true,
 											mixEffectKeyType: 0,
 											flyEnabled: false,
