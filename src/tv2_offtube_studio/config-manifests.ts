@@ -262,7 +262,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'AtemSource.GraphicsUSK',
-		name: 'ATEM Graphics USK',
+		name: 'ATEM DSK1 Key',
 		description: 'ATEM USK for graphics',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
@@ -286,7 +286,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'AtemSource.JingleUSK',
-		name: 'ATEM Jingle USK',
+		name: 'ATEM DSK1 Key',
 		description: 'ATEM USK for jingles',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
