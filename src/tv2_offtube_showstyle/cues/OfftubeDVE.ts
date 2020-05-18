@@ -55,7 +55,8 @@ export function OfftubeEvaluateDVE(
 				toBeQueued: true,
 				canCombineQueue: true,
 				content: content.content,
-				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
+				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+				tags: ['flow_producer']
 			})
 		)
 	}
