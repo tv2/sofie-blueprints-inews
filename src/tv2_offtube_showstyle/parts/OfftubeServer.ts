@@ -143,6 +143,7 @@ export function OfftubeCreatePartServer(
 	)
 	adlibServerFlowProducer.infiniteMode = PieceLifespan.OutOnNextPart
 	adlibServerFlowProducer.canCombineQueue = false
+	adlibServerFlowProducer.externalId = `${adlibServerFlowProducer.externalId}-flowProducer`
 	adLibPieces.push(adlibServerFlowProducer)
 
 	if (pieces.length === 0) {
