@@ -3,6 +3,7 @@ import {
 	DeviceType,
 	TimelineContentTypeAtem,
 	TimelineContentTypeCasparCg,
+	TimelineObjAbstractAny,
 	TimelineObjAtemME,
 	TimelineObjCCGMedia,
 	TimelineObjCCGTemplate,
@@ -26,7 +27,7 @@ import {
 	TranslateEngine
 } from 'tv2-common'
 import { ControlClasses, CueType, Enablers, VizEngine } from 'tv2-constants'
-import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAbstractLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OffTubeSourceLayer } from '../layers'
 
@@ -64,7 +65,10 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
 	if (engine === 'FULL') {
-		const piece = CreateFull(config, partDefinition, GetTemplateName(config, parsedCue))
+		let piece = CreateFull(config, partDefinition, GetTemplateName(config, parsedCue))
+		adlibPieces.push(piece)
+		// Repeat for flow producer
+		piece = CreateFull(config, partDefinition, GetTemplateName(config, parsedCue), true)
 		adlibPieces.push(piece)
 	} else {
 		// TODO: Wall
@@ -75,6 +79,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			outputLayerId: OfftubeOutputLayers.OVERLAY,
 			infiniteMode: PieceLifespan.Infinite,
+			tags: ['flow_producer'],
 			content: {
 				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
@@ -229,7 +234,8 @@ function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefi
 function CreateFull(
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	template: string
+	template: string,
+	flowProducer?: boolean
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
@@ -240,6 +246,7 @@ function CreateFull(
 		toBeQueued: true,
 		canCombineQueue: true,
 		infiniteMode: PieceLifespan.Infinite,
+		tags: flowProducer ? ['flow_producer'] : [],
 		content: {
 			fileName: template,
 			path: `${config.studio.ClipSourcePath}\\${template}${config.studio.ClipFileExtension}`, // full path on the source network storage
@@ -277,7 +284,23 @@ function CreateFull(
 							transition: AtemTransitionStyle.CUT
 						}
 					}
-				})
+				}),
+				...(flowProducer
+					? [
+							literal<TimelineObjAbstractAny>({
+								id: '',
+								enable: {
+									while: '1'
+								},
+								priority: 1,
+								layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+								content: {
+									deviceType: DeviceType.ABSTRACT
+								},
+								classes: [Enablers.OFFTUBE_ENABLE_FULL]
+							})
+					  ]
+					: [])
 			]
 		}
 	})
