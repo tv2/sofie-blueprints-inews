@@ -35,7 +35,7 @@ export default literal<BlueprintMappings>({
 		mappingType: MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	}),
-	atem_usk_graphics: literal<MappingAtem & BlueprintMapping>({
+	atem_dsk_graphics: literal<MappingAtem & BlueprintMapping>({
 		device: DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,

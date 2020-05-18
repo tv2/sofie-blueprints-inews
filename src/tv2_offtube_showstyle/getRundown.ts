@@ -8,6 +8,7 @@ import {
 	TimelineContentTypeSisyfos,
 	TimelineObjAbstractAny,
 	TimelineObjAtemAUX,
+	TimelineObjAtemDSK,
 	TimelineObjAtemME,
 	TimelineObjAtemSsrc,
 	TimelineObjAtemSsrcProps,
@@ -655,31 +656,29 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSRTimelineObjBas
 		}),
 
 		// keyers
-		literal<TimelineObjAtemME>({
+		literal<TimelineObjAtemDSK>({
 			id: '',
 			enable: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
 			priority: 0,
-			layer: OfftubeAtemLLayer.AtemUSKGraphics,
+			layer: OfftubeAtemLLayer.AtemDSKGraphics,
 			content: {
 				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.ME,
-				me: {
-					upstreamKeyers: [
-						{
-							upstreamKeyerId: 0, // TODO: Mapping
-							onAir: true,
-							mixEffectKeyType: 0,
-							flyEnabled: false,
-							fillSource: config.studio.AtemSource.DSK1F,
-							cutSource: config.studio.AtemSource.DSK1K,
-							maskEnabled: false,
-							lumaSettings: {
-								preMultiplied: true,
-								clip: config.studio.AtemSettings.CCGClip,
-								gain: config.studio.AtemSettings.CCGGain
-							}
+				type: TimelineContentTypeAtem.DSK,
+				dsk: {
+					onAir: true,
+					sources: {
+						fillSource: config.studio.AtemSource.DSK1F,
+						cutSource: config.studio.AtemSource.DSK1K
+					},
+					properties: {
+						tie: false,
+						preMultiply: true,
+						clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
+						gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
+						mask: {
+							enabled: false
 						}
-					]
+					}
 				}
 			}
 		}),
