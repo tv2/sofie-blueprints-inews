@@ -606,6 +606,41 @@ function getGlobalAdLibPiecesOffTube(
 		})
 	)
 
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeCameraAdlibBoxes(o, globalRank++))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.slice(0, 10) // the first x cameras to create live-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
+		})
+
 	return adlibItems
 }
 
