@@ -29,7 +29,7 @@ import {
 	TranslateEngine
 } from 'tv2-common'
 import { AdlibTags, ControlClasses, CueType, Enablers, VizEngine } from 'tv2-constants'
-import { OfftubeAbstractLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAbstractLLayer, OfftubeCasparLLayer, OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OffTubeSourceLayer } from '../layers'
 
@@ -332,7 +332,7 @@ function CreateFullContent(
 					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
 				},
 				priority: 100,
-				layer: OfftubeCasparLLayer.CasparGraphicsFull,
+				layer: OfftubeAtemLLayer.AtemMEClean,
 				content: {
 					deviceType: DeviceType.ATEM,
 					type: TimelineContentTypeAtem.ME,
