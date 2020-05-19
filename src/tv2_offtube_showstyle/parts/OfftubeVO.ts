@@ -1,5 +1,5 @@
 import { BlueprintResultPart, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
+import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition } from 'tv2-common'
 import { AdlibTags, CueType, Enablers } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -75,6 +75,8 @@ export function OfftubeCreatePartVO(
 	])
 
 	adLibPieces.push(adlibServer)
+
+	AddScript(partDefinition, pieces, duration, OffTubeSourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

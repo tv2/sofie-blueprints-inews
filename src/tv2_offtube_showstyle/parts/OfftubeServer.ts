@@ -7,7 +7,14 @@ import {
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
-import { CreateAdlibServer, CreatePartServerBase, literal, MakeContentServer, PartDefinition } from 'tv2-common'
+import {
+	AddScript,
+	CreateAdlibServer,
+	CreatePartServerBase,
+	literal,
+	MakeContentServer,
+	PartDefinition
+} from 'tv2-common'
 import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
@@ -36,15 +43,13 @@ export function OfftubeCreatePartServer(
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
 	const file = basePartProps.file
-	// const duration = basePartProps.duration
+	const duration = basePartProps.duration
 
 	part = {
 		...part
 		// TODO: Effekt
 		// ...CreateEffektForpart(context, config, partDefinition, pieces)
 	}
-	// TODO: Script
-	// AddScript(partDefinition, pieces, duration)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -53,7 +58,7 @@ export function OfftubeCreatePartServer(
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
-			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect, // TODO: Server
+			sourceLayerId: OffTubeSourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [segmentExternalId]
@@ -104,6 +109,8 @@ export function OfftubeCreatePartServer(
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER]
 	adlibServer.name = file
+	// TODO: This should happen in above function
+	adlibServer.expectedDuration = duration
 
 	// TODO: Merge graphics into server part as timeline objects
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {
@@ -167,6 +174,8 @@ export function OfftubeCreatePartServer(
 	)
 
 	adLibPieces.push(adlibServerFlowProducer)
+
+	AddScript(partDefinition, pieces, duration, OffTubeSourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true
