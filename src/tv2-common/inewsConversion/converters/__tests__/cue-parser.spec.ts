@@ -1037,13 +1037,13 @@ describe('Cue parser', () => {
 	})
 
 	test('AdLib', () => {
-		const cueAdLib = ['ADLIBPIX=MORBARN', 'INP1=LIVE 1', 'BYNAVN=']
+		const cueAdLib = ['ADLIBPIX=MORBARN', 'INP1=LIVE 1', 'INP2=KAM 1', 'BYNAVN=']
 		const result = ParseCue(cueAdLib)
 		expect(result).toEqual(
 			literal<CueDefinition>({
 				type: CueType.AdLib,
 				variant: 'MORBARN',
-				inputs: { INP1: 'LIVE 1' },
+				inputs: { INP1: 'LIVE 1', INP2: 'KAM 1' },
 				iNewsCommand: 'ADLIBPIX'
 			})
 		)

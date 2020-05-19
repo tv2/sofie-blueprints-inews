@@ -54,7 +54,8 @@ export function OfftubeMakeContentDVE(
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
-	addClass?: boolean
+	addClass?: boolean,
+	adlib?: boolean
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	return MakeContentDVEBase(
 		context,
@@ -64,6 +65,6 @@ export function OfftubeMakeContentDVE(
 		dveConfig,
 		OFFTUBE_DVE_GENERATOR_OPTIONS,
 		addClass,
-		true
+		adlib
 	)
 }

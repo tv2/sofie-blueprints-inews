@@ -204,7 +204,7 @@
                         ]
                     ],
                     "id" : "00000000:00000000:00000002",
-                    "body" : "\r\n<pi>100% GRAFIK</pi>\r\n<p><a idref=\"0\"></a><a idref=\"1\"><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a></p>\r\n",
+                    "body" : "\r\n<pi>100% GRAFIK</pi>\r\n<p><a idref=\"0\"></a><a idref=\"1\"><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a><a idref=\"5\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000002",
                     "identifier" : "00000002"
                 },
@@ -755,12 +755,51 @@
                     "id" : "00000000:00000000:00000015",
                     "body" : "\r\n<p><pi>EVS1</pi></p>\r\n<p><pi>EVS2</pi></p>\r\n<p><pi>EVS1VO</pi></p>\r\n<p><pi>EVS2VO</pi></p>\r\n",
                     "fileId" : "00000000:00000000:00000015",
-                    "identifier" : "00000014"
+                    "identifier" : "00000015"
                 },
                 "modified": "2019-10-11T06:38:00.000Z",
                 "externalId": "00000000:00000000:00000015",
                 "rank": 15,
                 "name": "EVS",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000016",
+            "name": "AdLib DVE",
+            "rank": 16,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "17",
+                        "title" : "AdLib DVE",
+                        "tapeTime": "0",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        ["ADLIBPIX=MORBARN", "INP1=LIVE 1", "INP2=SERVER A", "BYNAVN="]
+                    ],
+                    "id" : "00000000:00000000:00000016",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000016",
+                    "identifier" : "00000016"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000016",
+                "rank": 16,
+                "name": "AdLib DVE",
                 "float": false
             },
             "parts": []

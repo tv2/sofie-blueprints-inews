@@ -43,7 +43,17 @@ export function OfftubeEvaluateDVE(
 		return
 	}
 
-	const content = OfftubeMakeContentDVE(
+	const adlibContent = OfftubeMakeContentDVE(
+		context,
+		config,
+		partDefinition,
+		parsedCue,
+		rawTemplate,
+		AddParentClass(partDefinition),
+		true
+	)
+
+	const pieceContent = OfftubeMakeContentDVE(
 		context,
 		config,
 		partDefinition,
@@ -52,7 +62,7 @@ export function OfftubeEvaluateDVE(
 		AddParentClass(partDefinition)
 	)
 
-	if (content.valid) {
+	if (adlibContent.valid && pieceContent.valid) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
@@ -63,7 +73,7 @@ export function OfftubeEvaluateDVE(
 				infiniteMode: PieceLifespan.OutOnNextSegment,
 				toBeQueued: true,
 				canCombineQueue: true,
-				content: content.content,
+				content: adlibContent.content,
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 				tags: ['flow_producer']
 			})
@@ -84,7 +94,7 @@ export function OfftubeEvaluateDVE(
 				sourceLayerId: OffTubeSourceLayer.PgmDVE,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
-				content: content.content,
+				content: pieceContent.content,
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 				metaData: literal<PieceMetaData>({
 					mediaPlayerSessions: [partDefinition.segmentExternalId]

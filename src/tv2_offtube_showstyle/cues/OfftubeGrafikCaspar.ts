@@ -10,6 +10,7 @@ import {
 	TSRTimelineObj
 } from 'timeline-state-resolver-types'
 import {
+	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
@@ -34,7 +35,7 @@ import { OfftubeOutputLayers, OffTubeSourceLayer } from '../layers'
 export function OfftubeEvaluateGrafikCaspar(
 	config: OffTubeShowstyleBlueprintConfig,
 	_context: PartContext,
-	_pieces: IBlueprintPiece[],
+	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_partid: string,
 	parsedCue: CueDefinitionGrafik,
@@ -65,11 +66,14 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
 	if (engine === 'FULL') {
-		let piece = CreateFull(config, partDefinition, GetTemplateName(config, parsedCue))
-		adlibPieces.push(piece)
+		let adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), false)
+		adlibPieces.push(adLibPiece)
 		// Repeat for flow producer
-		piece = CreateFull(config, partDefinition, GetTemplateName(config, parsedCue), true)
-		adlibPieces.push(piece)
+		adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), true)
+		adlibPieces.push(adLibPiece)
+
+		const piece = CreateFullPiece(config, partDefinition, GetTemplateName(config, parsedCue))
+		pieces.push(piece)
 	} else {
 		// TODO: Wall
 		const piece = literal<IBlueprintAdLibPiece>({
@@ -231,11 +235,30 @@ function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefi
 	}
 }
 
-function CreateFull(
+function CreateFullPiece(
+	config: OffTubeShowstyleBlueprintConfig,
+	partDefinition: PartDefinition,
+	template: string
+): IBlueprintPiece {
+	return literal<IBlueprintPiece>({
+		_id: '',
+		enable: {
+			start: 0 // TODO: Time
+		},
+		externalId: partDefinition.externalId,
+		name: `${template}`,
+		sourceLayerId: OffTubeSourceLayer.SelectedAdlibGraphicsFull, // TODO: Something else?
+		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB, // TODO: PGM
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		content: CreateFullContent(config, partDefinition, template, true)
+	})
+}
+
+function CreateFullAdLib(
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	template: string,
-	flowProducer?: boolean
+	flowProducer: boolean
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
@@ -247,63 +270,72 @@ function CreateFull(
 		canCombineQueue: !flowProducer,
 		infiniteMode: flowProducer ? PieceLifespan.OutOnNextPart : PieceLifespan.OutOnNextSegment,
 		tags: flowProducer ? ['flow_producer'] : [],
-		content: {
-			fileName: template,
-			path: `${config.studio.ClipSourcePath}\\${template}${config.studio.ClipFileExtension}`, // full path on the source network storage
-			mediaFlowIds: [config.studio.MediaFlowId],
-			timelineObjects: [
-				literal<TimelineObjCCGMedia>({
-					id: '',
-					enable: {
-						while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
-					},
-					priority: 100,
-					layer: OfftubeCasparLLayer.CasparGraphicsFull,
-					content: {
-						deviceType: DeviceType.CASPARCG,
-						type: TimelineContentTypeCasparCg.MEDIA,
-						file: template,
-						loop: true,
-						mixer: {
-							opacity: 100
-						}
-					}
-				}),
-				literal<TimelineObjAtemME>({
-					id: '',
-					enable: {
-						while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
-					},
-					priority: 100,
-					layer: OfftubeCasparLLayer.CasparGraphicsFull,
-					content: {
-						deviceType: DeviceType.ATEM,
-						type: TimelineContentTypeAtem.ME,
-						me: {
-							input: config.studio.AtemSource.GFXFull,
-							transition: AtemTransitionStyle.CUT
-						}
-					}
-				}),
-				...(flowProducer
-					? [
-							literal<TimelineObjAbstractAny>({
-								id: '',
-								enable: {
-									while: '1'
-								},
-								priority: 1,
-								layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-								content: {
-									deviceType: DeviceType.ABSTRACT
-								},
-								classes: [Enablers.OFFTUBE_ENABLE_FULL]
-							})
-					  ]
-					: [])
-			]
-		}
+		content: CreateFullContent(config, partDefinition, template, flowProducer)
 	})
+}
+
+function CreateFullContent(
+	config: OffTubeShowstyleBlueprintConfig,
+	_partDefinition: PartDefinition,
+	template: string,
+	flowProducer: boolean
+): GraphicsContent {
+	return {
+		fileName: template,
+		path: `${config.studio.ClipSourcePath}\\${template}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		mediaFlowIds: [config.studio.MediaFlowId],
+		timelineObjects: [
+			literal<TimelineObjCCGMedia>({
+				id: '',
+				enable: {
+					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
+				},
+				priority: 100,
+				layer: OfftubeCasparLLayer.CasparGraphicsFull,
+				content: {
+					deviceType: DeviceType.CASPARCG,
+					type: TimelineContentTypeCasparCg.MEDIA,
+					file: template,
+					loop: true,
+					mixer: {
+						opacity: 100
+					}
+				}
+			}),
+			literal<TimelineObjAtemME>({
+				id: '',
+				enable: {
+					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
+				},
+				priority: 100,
+				layer: OfftubeCasparLLayer.CasparGraphicsFull,
+				content: {
+					deviceType: DeviceType.ATEM,
+					type: TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.AtemSource.GFXFull,
+						transition: AtemTransitionStyle.CUT
+					}
+				}
+			}),
+			...(flowProducer
+				? [
+						literal<TimelineObjAbstractAny>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+							content: {
+								deviceType: DeviceType.ABSTRACT
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_FULL]
+						})
+				  ]
+				: [])
+		]
+	}
 }
 
 // TODO: All of the below was copy-pasted and then adapted from AFVD blueprints, can they be made generic?
