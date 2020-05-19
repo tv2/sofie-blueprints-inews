@@ -17,6 +17,7 @@ import {
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	CalculateTime,
 	CreateTimingEnable,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
@@ -42,7 +43,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	_engine: VizEngine,
 	_adlib: boolean,
 	partDefinition: PartDefinition,
-	_isTlfPrimary?: boolean,
+	isTlfPrimary?: boolean,
 	rank?: number
 ) {
 	let engine = _engine
@@ -76,7 +77,7 @@ export function OfftubeEvaluateGrafikCaspar(
 		pieces.push(piece)
 	} else {
 		// TODO: Wall
-		const piece = literal<IBlueprintAdLibPiece>({
+		const adLibPiece = literal<IBlueprintAdLibPiece>({
 			_rank: rank || 0,
 			externalId: partDefinition.externalId,
 			name: `${grafikName(config, parsedCue)}`,
@@ -88,7 +89,30 @@ export function OfftubeEvaluateGrafikCaspar(
 				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
 		})
-		adlibPieces.push(piece)
+		adlibPieces.push(adLibPiece)
+
+		const piece = literal<IBlueprintPiece>({
+			_id: '',
+			externalId: partDefinition.externalId,
+			name: `${grafikName(config, parsedCue)}`,
+			...(isTlfPrimary || engine === 'WALL'
+				? { enable: { start: 0 } }
+				: {
+						enable: {
+							...CreateTimingGrafik(config, parsedCue)
+						}
+				  }),
+			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+			outputLayerId: OfftubeOutputLayers.OVERLAY,
+			infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+			...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
+				? {}
+				: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
+			content: {
+				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
+			}
+		})
+		pieces.push(piece)
 	}
 }
 
@@ -522,6 +546,28 @@ export function GetGrafikDuration(
 	}
 
 	return GetDefaultOut(config)
+}
+
+// TODO: This is copied from gallery D
+export function CreateTimingGrafik(
+	config: OffTubeShowstyleBlueprintConfig,
+	cue: CueDefinitionGrafik | CueDefinitionMOS
+): { start: number; duration?: number } {
+	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
+	const start = cue.start ? CalculateTime(cue.start) : 0
+	start !== undefined ? (ret.start = start) : (ret.start = 0)
+
+	const duration = GetGrafikDuration(config, cue)
+	const end = cue.end
+		? cue.end.infiniteMode
+			? undefined
+			: CalculateTime(cue.end)
+		: duration
+		? ret.start + duration
+		: undefined
+	ret.duration = end ? end - ret.start : undefined
+
+	return ret
 }
 
 function GetTemplateName(config: OffTubeShowstyleBlueprintConfig, cue: CueDefinitionGrafik): string {
