@@ -71,6 +71,23 @@ export function OfftubeEvaluateGrafikCaspar(
 		adlibPieces.push(adLibPiece)
 		// Repeat for flow producer
 		adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), true)
+		adLibPiece.sourceLayerId = OffTubeSourceLayer.PgmFull
+		adLibPiece.infiniteMode = PieceLifespan.OutOnNextPart
+		adLibPiece.tags = [AdlibTags.ADLIB_FLOW_PRODUCER]
+		adLibPiece.content!.timelineObjects.push(
+			literal<TimelineObjAbstractAny>({
+				id: '',
+				enable: {
+					while: '1'
+				},
+				priority: 1,
+				layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+				content: {
+					deviceType: DeviceType.ABSTRACT
+				},
+				classes: [Enablers.OFFTUBE_ENABLE_FULL]
+			})
+		)
 		adlibPieces.push(adLibPiece)
 
 		const piece = CreateFullPiece(config, partDefinition, GetTemplateName(config, parsedCue))
@@ -84,38 +101,12 @@ export function OfftubeEvaluateGrafikCaspar(
 			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			outputLayerId: OfftubeOutputLayers.OVERLAY,
 			infiniteMode: PieceLifespan.Infinite,
+			tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 			content: {
 				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
 		})
 		adlibPieces.push(adLibPiece)
-
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				...adLibPiece,
-				sourceLayerId: OffTubeSourceLayer.PgmFull,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				content: {
-					...adLibPiece.content,
-					timelineObjects: [
-						...adLibPiece.content!.timelineObjects,
-						literal<TimelineObjAbstractAny>({
-							id: '',
-							enable: {
-								while: '1'
-							},
-							priority: 1,
-							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-							content: {
-								deviceType: DeviceType.ABSTRACT
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_FULL]
-						})
-					]
-				}
-			})
-		)
 
 		const piece = literal<IBlueprintPiece>({
 			_id: '',
