@@ -71,24 +71,6 @@ export function OfftubeEvaluateGrafikCaspar(
 		adlibPieces.push(adLibPiece)
 		// Repeat for flow producer
 		adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), true)
-		adLibPiece.sourceLayerId = OffTubeSourceLayer.PgmFull
-		adLibPiece.infiniteMode = PieceLifespan.OutOnNextPart
-		adLibPiece.tags = [AdlibTags.ADLIB_FLOW_PRODUCER]
-		adLibPiece.outputLayerId = OfftubeOutputLayers.PGM
-		adLibPiece.content!.timelineObjects.push(
-			literal<TimelineObjAbstractAny>({
-				id: '',
-				enable: {
-					while: '1'
-				},
-				priority: 1,
-				layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-				content: {
-					deviceType: DeviceType.ABSTRACT
-				},
-				classes: [Enablers.OFFTUBE_ENABLE_FULL]
-			})
-		)
 		adlibPieces.push(adLibPiece)
 
 		const piece = CreateFullPiece(config, partDefinition, GetTemplateName(config, parsedCue))
@@ -306,8 +288,8 @@ function CreateFullAdLib(
 		_rank: 0,
 		externalId: partDefinition.externalId,
 		name: `${template}`,
-		sourceLayerId: OffTubeSourceLayer.SelectedAdlibGraphicsFull,
-		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
+		sourceLayerId: flowProducer ? OffTubeSourceLayer.PgmFull : OffTubeSourceLayer.SelectedAdlibGraphicsFull,
+		outputLayerId: flowProducer ? OfftubeOutputLayers.PGM : OfftubeOutputLayers.SELECTED_ADLIB,
 		toBeQueued: true,
 		canCombineQueue: !flowProducer,
 		infiniteMode: flowProducer ? PieceLifespan.OutOnNextPart : PieceLifespan.OutOnNextSegment,
@@ -367,7 +349,7 @@ function CreateFullContent(
 							enable: {
 								while: '1'
 							},
-							priority: 1,
+							priority: 100, // TODO: Fix priority
 							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
 							content: {
 								deviceType: DeviceType.ABSTRACT
