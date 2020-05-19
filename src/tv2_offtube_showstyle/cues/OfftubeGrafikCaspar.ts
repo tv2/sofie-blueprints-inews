@@ -28,7 +28,7 @@ import {
 	PartToParentClass,
 	TranslateEngine
 } from 'tv2-common'
-import { ControlClasses, CueType, Enablers, VizEngine } from 'tv2-constants'
+import { AdlibTags, ControlClasses, CueType, Enablers, VizEngine } from 'tv2-constants'
 import { OfftubeAbstractLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OffTubeSourceLayer } from '../layers'
@@ -84,12 +84,38 @@ export function OfftubeEvaluateGrafikCaspar(
 			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			outputLayerId: OfftubeOutputLayers.OVERLAY,
 			infiniteMode: PieceLifespan.Infinite,
-			tags: ['flow_producer'],
 			content: {
 				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
 		})
 		adlibPieces.push(adLibPiece)
+
+		adlibPieces.push(
+			literal<IBlueprintAdLibPiece>({
+				...adLibPiece,
+				sourceLayerId: OffTubeSourceLayer.PgmFull,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+				content: {
+					...adLibPiece.content,
+					timelineObjects: [
+						...adLibPiece.content!.timelineObjects,
+						literal<TimelineObjAbstractAny>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+							content: {
+								deviceType: DeviceType.ABSTRACT
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_FULL]
+						})
+					]
+				}
+			})
+		)
 
 		const piece = literal<IBlueprintPiece>({
 			_id: '',
