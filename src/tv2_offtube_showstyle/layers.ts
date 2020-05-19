@@ -5,7 +5,10 @@ export enum SourceLayer {
 	PgmSourceSelect = 'studio0_offtube_pgm_source_select',
 	PgmDVEBackground = 'studio0_offtube_dve_back',
 	PgmJingle = 'studio0_offtube_jingle',
+	// TODO: This should be a shared sourcelayer, needs migration for pilot graphics.
+	PgmFull = 'studio0_full',
 
+	// TODO: These will be removed by adlib actions
 	// Adlib selection
 	SelectedAdLibDVE = 'studio0_offtube_dve',
 	SelectedAdLibServer = 'studio0_offtube_clip',
@@ -30,5 +33,6 @@ export enum OfftubeOutputLayers {
 	OVERLAY = 'overlay',
 	JINGLE = 'jingle',
 	SELECTED_ADLIB = 'selectedAdlib',
-	AUX = 'aux'
+	AUX = 'aux',
+	PGM = 'pgm'
 }

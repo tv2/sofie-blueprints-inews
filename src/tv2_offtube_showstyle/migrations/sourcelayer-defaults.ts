@@ -319,6 +319,25 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
+		_id: OffTubeSourceLayer.PgmFull,
+		_rank: 0,
+		name: 'Full',
+		abbreviation: 'Full',
+		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: 'me2',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: ',',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: true
+	},
+	{
 		_id: OffTubeSourceLayer.PgmDVEBackground,
 		_rank: 50,
 		name: 'DVE Background',

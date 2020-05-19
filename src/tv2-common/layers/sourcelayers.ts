@@ -6,7 +6,7 @@ export enum SharedSourceLayers {
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',
 
-	// Grahpics
+	// Graphics
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
 	PgmGraphicsIdentPersistent = 'studio0_graphicsIdent_persistent',
 	PgmGraphicsTop = 'studio0_graphicsTop',
