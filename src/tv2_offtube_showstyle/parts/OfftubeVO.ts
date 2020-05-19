@@ -1,7 +1,5 @@
-import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
 import {
 	BlueprintResultPart,
-	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
@@ -15,13 +13,8 @@ import {
 	MakeContentServer,
 	PartDefinition
 } from 'tv2-common'
-import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../../tv2_offtube_studio/layers'
+import { AdlibTags, CueType, Enablers } from 'tv2-constants'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
@@ -122,57 +115,6 @@ export function OfftubeCreatePartVO(
 	])
 
 	adLibPieces.push(adlibServer)
-
-	// TODO: Clean up
-	const adlibServerFlowProducer: IBlueprintAdLibPiece = CreateAdlibServer(
-		config,
-		0,
-		partDefinition.externalId,
-		MEDIA_PLAYER_AUTO,
-		partDefinition,
-		file,
-		false,
-		{
-			PgmServer: OffTubeSourceLayer.SelectedAdLibServer,
-			PgmVoiceOver: OffTubeSourceLayer.SelectedAdLibVoiceOver,
-			Caspar: {
-				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-			},
-			ATEM: {
-				MEPGM: OfftubeAtemLLayer.AtemMEClean
-			},
-			Sisyfos: {
-				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-			}
-		},
-		{
-			isOfftube: true,
-			tagAsAdlib: true,
-			enabler: Enablers.OFFTUBE_ENABLE_SERVER
-		}
-	)
-	adlibServerFlowProducer.toBeQueued = true
-	adlibServerFlowProducer.tags = ['flow_producer']
-	adlibServerFlowProducer.canCombineQueue = false
-	adlibServerFlowProducer.name = file
-	adlibServerFlowProducer.infiniteMode = PieceLifespan.OutOnNextPart
-	adlibServerFlowProducer.externalId = `${adlibServerFlowProducer.externalId}-flowProducer`
-	adlibServerFlowProducer.content!.timelineObjects.push(
-		literal<TimelineObjAbstractAny>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 1,
-			layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-			content: {
-				deviceType: DeviceType.ABSTRACT
-			},
-			classes: [Enablers.OFFTUBE_ENABLE_SERVER]
-		})
-	)
-
-	adLibPieces.push(adlibServerFlowProducer)
 
 	AddScript(partDefinition, pieces, duration, OffTubeSourceLayer.PgmScript)
 
