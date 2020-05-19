@@ -74,6 +74,7 @@ export function OfftubeEvaluateGrafikCaspar(
 		adLibPiece.sourceLayerId = OffTubeSourceLayer.PgmFull
 		adLibPiece.infiniteMode = PieceLifespan.OutOnNextPart
 		adLibPiece.tags = [AdlibTags.ADLIB_FLOW_PRODUCER]
+		adLibPiece.outputLayerId = OfftubeOutputLayers.PGM
 		adLibPiece.content!.timelineObjects.push(
 			literal<TimelineObjAbstractAny>({
 				id: '',
