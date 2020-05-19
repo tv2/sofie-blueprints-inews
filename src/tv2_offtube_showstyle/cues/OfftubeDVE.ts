@@ -2,9 +2,18 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan
+	PieceLifespan,
+	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddParentClass, CueDefinitionDVE, GetDVETemplate, literal, PartDefinition, TemplateIsValid } from 'tv2-common'
+import {
+	AddParentClass,
+	CalculateTime,
+	CueDefinitionDVE,
+	GetDVETemplate,
+	literal,
+	PartDefinition,
+	TemplateIsValid
+} from 'tv2-common'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OffTubeSourceLayer } from '../layers'
@@ -12,7 +21,7 @@ import { OffTubeSourceLayer } from '../layers'
 export function OfftubeEvaluateDVE(
 	context: PartContext,
 	config: OffTubeShowstyleBlueprintConfig,
-	_pieces: IBlueprintPiece[],
+	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
@@ -57,6 +66,29 @@ export function OfftubeEvaluateDVE(
 				content: content.content,
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 				tags: ['flow_producer']
+			})
+		)
+		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
+		start = start ? start : 0
+		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
+		pieces.push(
+			literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: `DVE: ${parsedCue.template}`,
+				enable: {
+					start,
+					...(end ? { duration: end - start } : {})
+				},
+				outputLayerId: 'pgm',
+				sourceLayerId: OffTubeSourceLayer.PgmDVE,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				toBeQueued: true,
+				content: content.content,
+				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+				metaData: literal<PieceMetaData>({
+					mediaPlayerSessions: [partDefinition.segmentExternalId]
+				})
 			})
 		)
 	}
