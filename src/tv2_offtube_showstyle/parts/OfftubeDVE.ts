@@ -5,21 +5,26 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinitionDVE } from 'tv2-common'
+import { AddScript, literal, PartDefinitionDVE, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
+import { OffTubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartDVE(
 	context: PartContext,
 	config: OffTubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionDVE,
-	_totalWords: number
+	totalWords: number
 ): BlueprintResultPart {
+	const partTime = PartTime(config, partDefinition, totalWords, false)
+
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: `DVE`,
-		typeVariant: ''
+		typeVariant: '',
+		autoNext: false,
+		expectedDuration: partTime
 	})
 	const pieces: IBlueprintPiece[] = []
 	const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -32,6 +37,8 @@ export function OfftubeCreatePartDVE(
 	if (pieces.length === 0) {
 		part.invalid = true
 	}
+
+	AddScript(partDefinition, pieces, partTime, OffTubeSourceLayer.PgmScript)
 
 	return {
 		part,
