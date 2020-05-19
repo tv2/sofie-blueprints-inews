@@ -51,6 +51,38 @@ export function OfftubeEvaluateAdLib(
 		adlibServer.expectedDuration = duration
 
 		adLibPieces.push(adlibServer)
+
+		const adlibFlowProducer = CreateAdlibServer(
+			config,
+			rank,
+			partId,
+			`adlib_server_${file}`,
+			partDefinition,
+			file,
+			false,
+			{
+				Caspar: {
+					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+				},
+				Sisyfos: {
+					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+				},
+				ATEM: {
+					MEPGM: OfftubeAtemLLayer.AtemMEProgram
+				},
+				STICKY_LAYERS: config.stickyLayers,
+				PgmServer: OffTubeSourceLayer.PgmServer,
+				PgmVoiceOver: OffTubeSourceLayer.PgmVoiceOver
+			}
+		)
+		adlibFlowProducer.toBeQueued = true
+		adlibFlowProducer.canCombineQueue = true
+		adlibFlowProducer.tags = [AdlibTags.ADLIB_FLOW_PRODUCER]
+		adlibFlowProducer.name = file
+		// TODO: This should happen in above function
+		adlibFlowProducer.expectedDuration = duration
+
+		adLibPieces.push(adlibFlowProducer)
 	} else {
 		// DVE
 		if (!parsedCue.variant) {
@@ -102,6 +134,23 @@ export function OfftubeEvaluateAdLib(
 				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid,
+				metaData: literal<PieceMetaData>({
+					stickySisyfosLevels: sticky
+				})
+			})
+		)
+
+		adLibPieces.push(
+			literal<IBlueprintAdLibPiece>({
+				_rank: rank,
+				externalId: partId,
+				name: `DVE: ${parsedCue.variant}`,
+				sourceLayerId: OffTubeSourceLayer.PgmDVE,
+				outputLayerId: 'pgm',
+				toBeQueued: true,
+				content: content.content,
+				invalid: !content.valid,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				metaData: literal<PieceMetaData>({
 					stickySisyfosLevels: sticky
 				})

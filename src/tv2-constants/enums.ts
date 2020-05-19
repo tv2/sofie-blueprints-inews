@@ -54,7 +54,8 @@ export enum AdlibTags {
 	OFFTUBE_SET_FULL_NEXT = 'offtube_set_full_next',
 	OFFTUBE_SET_JINGLE_NEXT = 'offtube_set_jingle_next',
 	OFFTUBE_SET_SERVER_NEXT = 'offtube_set_server_next',
-	OFFTUBE_SET_DVE_NEXT = 'offtube_set_dve_next'
+	OFFTUBE_SET_DVE_NEXT = 'offtube_set_dve_next',
+	ADLIB_FLOW_PRODUCER = 'flow_producer'
 }
 
 export enum ControlClasses {
