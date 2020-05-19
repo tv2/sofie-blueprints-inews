@@ -16,6 +16,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
+	AddScript,
 	CameraParentClass,
 	CreatePartInvalid,
 	FindSourceInfoStrict,
@@ -31,7 +32,6 @@ import {
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -145,7 +145,7 @@ export function CreatePartKam(
 	}
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
-	AddScript(partDefinition, pieces, partTime)
+	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -4,11 +4,11 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinition, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, CueDefinition, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
+import { SourceLayer } from '../layers'
 
 export function CreatePartCueOnly(
 	context: PartContext,
@@ -34,7 +34,7 @@ export function CreatePartCueOnly(
 	const pieces: IBlueprintPiece[] = []
 
 	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, {})
-	AddScript(partDefinitionWithID, pieces, partTime)
+	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {

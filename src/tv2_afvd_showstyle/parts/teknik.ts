@@ -5,10 +5,10 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, literal, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
+import { SourceLayer } from '../layers'
 
 export function CreatePartTeknik(
 	context: PartContext,
@@ -28,7 +28,7 @@ export function CreatePartTeknik(
 	const pieces: IBlueprintPiece[] = []
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
-	AddScript(partDefinition, pieces, partTime)
+	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

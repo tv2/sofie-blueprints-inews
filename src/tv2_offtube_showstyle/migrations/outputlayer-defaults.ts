@@ -30,6 +30,12 @@ export default literal<IOutputLayer[]>([
 		isDefaultCollapsed: true
 	},
 	{
+		_id: 'manus',
+		name: 'MANUS',
+		isPGM: false,
+		_rank: 23
+	},
+	{
 		_id: 'sec',
 		name: 'SEC',
 		isPGM: false,

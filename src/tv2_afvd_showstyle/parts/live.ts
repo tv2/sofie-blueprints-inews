@@ -5,10 +5,10 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, literal, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
+import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartLive(
@@ -32,7 +32,7 @@ export function CreatePartLive(
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
-	AddScript(partDefinition, pieces, partTime)
+	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -16,6 +16,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
+	AddScript,
 	CameraParentClass,
 	CreatePartInvalid,
 	FindSourceInfoStrict,
@@ -48,11 +49,10 @@ export function OfftubeCreatePartKam(
 		typeVariant: '',
 		expectedDuration: partTime > 0 ? partTime : undefined
 	})
-	// TODO: Script
-	// AddScript(partDefinition, pieces, duration)
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -107,7 +107,7 @@ export function OfftubeCreatePartKam(
 				name: part.title,
 				enable: { start: 0 },
 				outputLayerId: 'pgm',
-				sourceLayerId: OffTubeSourceLayer.PgmSourceSelect, // TODO: Next Cam
+				sourceLayerId: OffTubeSourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 				content: {
@@ -146,6 +146,8 @@ export function OfftubeCreatePartKam(
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
+	AddScript(partDefinition, pieces, partTime, OffTubeSourceLayer.PgmScript)
+
 	if (pieces.length === 0) {
 		part.invalid = true
 	}
@@ -156,11 +158,3 @@ export function OfftubeCreatePartKam(
 		pieces
 	}
 }
-
-/*export function GetKeepStudioMicsMetaData(): PieceMetaData | undefined {
-	return GetStickyForPiece([
-		...STUDIO_MICS.map<{ layer: SisyfosLLAyer; isPgm: 0 | 1 | 2 }>(l => {
-			return { layer: l, isPgm: 1 }
-		})
-	])
-}*/

@@ -1,11 +1,10 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
-import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 
 const PREVIEW_CHARACTERS = 30
 
 // export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, slutord: boolean) {
-export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number) {
+export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], duration: number, sourceLayerId: string) {
 	if (!pieces.length) {
 		return
 	}
@@ -26,8 +25,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 					duration
 				},
 				outputLayerId: 'manus',
-				// sourceLayerId: slutord ? SourceLayer.PgmSlutord : SourceLayer.PgmScript,
-				sourceLayerId: SourceLayer.PgmScript,
+				sourceLayerId,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: literal<ScriptContent>({
 					firstWords: script.slice(0, stripLength),

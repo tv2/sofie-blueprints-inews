@@ -18,6 +18,7 @@ import {
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	AddScript,
 	CreatePartInvalid,
 	EVSParentClass,
 	FindSourceInfoStrict,
@@ -33,7 +34,6 @@ import {
 import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -83,7 +83,7 @@ export function CreatePartEVS(
 	)
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
-	AddScript(partDefinition, pieces, partTime)
+	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

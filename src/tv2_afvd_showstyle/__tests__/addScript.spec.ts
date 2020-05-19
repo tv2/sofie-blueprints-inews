@@ -1,7 +1,6 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinitionKam } from 'tv2-common'
+import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
 import { PartType } from 'tv2-constants'
-import { AddScript } from '../helpers/pieces/script'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
@@ -32,7 +31,7 @@ describe('addScript', () => {
 				outputLayerId: 'pgm'
 			})
 		]
-		AddScript(part, result, 1000)
+		AddScript(part, result, 1000, SourceLayer.PgmScript)
 		expect(result).toContainEqual(
 			literal<IBlueprintPiece>({
 				_id: '',

@@ -22,5 +22,8 @@ export enum SharedSourceLayers {
 	PgmDVEBox1 = 'studio0_dve_box1',
 	PgmDVEBox2 = 'studio0_dve_box2',
 	PgmDVEBox3 = 'studio0_dve_box3',
-	PgmDVEBox4 = 'studio0_dve_box4'
+	PgmDVEBox4 = 'studio0_dve_box4',
+
+	// Other / sec / manus
+	PgmScript = 'studio0_script'
 }

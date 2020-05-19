@@ -5,10 +5,10 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, literal, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
+import { SourceLayer } from '../layers'
 
 export function CreatePartGrafik(
 	context: PartContext,
@@ -28,7 +28,7 @@ export function CreatePartGrafik(
 	const pieces: IBlueprintPiece[] = []
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { isGrafikPart: true })
-	AddScript(partDefinition, pieces, partTime)
+	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	part.prerollDuration = config.studio.PilotPrerollDuration
 	part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration

@@ -6,6 +6,7 @@ import {
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	AddScript,
 	CreatePartInvalid,
 	CueDefinitionJingle,
 	GetJinglePartProperties,
@@ -16,7 +17,7 @@ import {
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
+import { SourceLayer } from '../layers'
 
 export function CreatePartIntro(
 	context: PartContext,
@@ -69,7 +70,7 @@ export function CreatePartIntro(
 	const pieces: IBlueprintPiece[] = []
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
-	AddScript(partDefinition, pieces, partTime)
+	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (pieces.length === 0) {

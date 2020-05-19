@@ -4,11 +4,11 @@ import {
 	IBlueprintPiece,
 	PartContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
+import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartUnknown(
@@ -36,7 +36,7 @@ export function CreatePartUnknown(
 
 	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlib: asAdlibs })
 	if (!asAdlibs) {
-		AddScript(partDefinition, pieces, partTime)
+		AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	}
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 

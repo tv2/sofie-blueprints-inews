@@ -4,11 +4,10 @@ import {
 	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { CreatePartServerBase, literal, MakeContentServer, PartDefinition, PieceMetaData } from 'tv2-common'
+import { AddScript, CreatePartServerBase, literal, MakeContentServer, PartDefinition, PieceMetaData } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-import { AddScript } from '../helpers/pieces/script'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
@@ -34,7 +33,7 @@ export function CreatePartServer(
 		...part,
 		...CreateEffektForpart(context, config, partDefinition, pieces)
 	}
-	AddScript(partDefinition, pieces, duration)
+	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
 
 	pieces.push(
 		literal<IBlueprintPiece>({

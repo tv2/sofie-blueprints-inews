@@ -436,6 +436,29 @@ const PGM: ISourceLayer[] = [
 	}
 ]
 
+// MANUS group
+const MANUS: ISourceLayer[] = [
+	{
+		_id: OffTubeSourceLayer.PgmScript,
+		_rank: 20,
+		name: 'Manus',
+		abbreviation: '',
+		type: SourceLayerType.SCRIPT,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	}
+]
+
 // SEC group
 const SEC: ISourceLayer[] = []
 
@@ -543,4 +566,4 @@ const AUX: ISourceLayer[] = [
 	}
 ]
 
-export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...SEC, ...SELECTED_ADLIB, ...AUX])
+export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...MANUS, ...SEC, ...SELECTED_ADLIB, ...AUX])
