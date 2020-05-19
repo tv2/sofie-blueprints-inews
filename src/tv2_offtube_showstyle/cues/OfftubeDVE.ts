@@ -1,3 +1,4 @@
+import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -14,6 +15,8 @@ import {
 	PartDefinition,
 	TemplateIsValid
 } from 'tv2-common'
+import { AdlibTags, Enablers } from 'tv2-constants'
+import { OfftubeAbstractLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OffTubeSourceLayer } from '../layers'
@@ -63,21 +66,47 @@ export function OfftubeEvaluateDVE(
 	)
 
 	if (adlibContent.valid && pieceContent.valid) {
+		const dveAdlib = literal<IBlueprintAdLibPiece>({
+			_rank: rank || 0,
+			externalId: partDefinition.externalId,
+			name: `${parsedCue.template}`,
+			outputLayerId: 'pgm',
+			sourceLayerId: OffTubeSourceLayer.SelectedAdLibDVE,
+			infiniteMode: PieceLifespan.OutOnNextSegment,
+			toBeQueued: true,
+			canCombineQueue: true,
+			content: adlibContent.content,
+			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
+		})
+		adlibPieces.push(dveAdlib)
+
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partDefinition.externalId,
-				name: `${parsedCue.template}`,
-				outputLayerId: 'pgm',
-				sourceLayerId: OffTubeSourceLayer.SelectedAdLibDVE,
-				infiniteMode: PieceLifespan.OutOnNextSegment,
-				toBeQueued: true,
-				canCombineQueue: true,
-				content: adlibContent.content,
-				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-				tags: ['flow_producer']
+				...dveAdlib,
+				sourceLayerId: OffTubeSourceLayer.PgmDVE,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+				content: {
+					...dveAdlib.content,
+					timelineObjects: [
+						...dveAdlib.content!.timelineObjects,
+						literal<TimelineObjAbstractAny>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+							content: {
+								deviceType: DeviceType.ABSTRACT
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_DVE]
+						})
+					]
+				}
 			})
 		)
+
 		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
 		start = start ? start : 0
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
