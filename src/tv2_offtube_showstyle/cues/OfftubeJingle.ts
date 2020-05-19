@@ -20,7 +20,7 @@ import { OffTubeSourceLayer } from '../layers'
 export function OfftubeEvaluateJingle(
 	context: PartContext,
 	config: OffTubeShowstyleBlueprintConfig,
-	_pieces: IBlueprintPiece[],
+	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
@@ -73,6 +73,21 @@ export function OfftubeEvaluateJingle(
 			adlibDisableOutTransition: false,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			tags: [AdlibTags.OFFTUBE_100pc_SERVER] // TODO: Maybe this should be different?
+		})
+	)
+
+	pieces.push(
+		literal<IBlueprintPiece>({
+			_id: '',
+			externalId: `${part.externalId}-JINGLE`,
+			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
+			enable: {
+				start: 0
+			},
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			outputLayerId: 'jingle',
+			sourceLayerId: OffTubeSourceLayer.PgmJingle,
+			content: createJingleContent(config, file)
 		})
 	)
 }
