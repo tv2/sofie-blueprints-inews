@@ -149,9 +149,9 @@ function getGlobalAdLibPiecesOffTube(
 		const camSisyfos = GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
 		res.push({
 			externalId: 'cam',
-			name: preview ? `K${info.id}` : `${info.id}`,
+			name: `Kamera ${info.id}`,
 			_rank: rank,
-			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			sourceLayerId: OffTubeSourceLayer.PgmSourceCam,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,

@@ -3,6 +3,7 @@ import { SharedSourceLayers } from 'tv2-common'
 export enum SourceLayer {
 	// Pgm
 	PgmSourceSelect = 'studio0_offtube_pgm_source_select',
+	PgmSourceCam = 'studio0_offtube_pgm_source_cam',
 	PgmDVEBackground = 'studio0_offtube_dve_back',
 	PgmJingle = 'studio0_offtube_jingle',
 
