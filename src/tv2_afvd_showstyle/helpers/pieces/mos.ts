@@ -76,7 +76,7 @@ export function EvaluateMOSViz(
 				_id: '',
 				externalId: partId,
 				name: grafikName(config, parsedCue),
-				...(isTlf
+				...(isTlf || isGrafikPart
 					? { enable: { start: 0 } }
 					: {
 							enable: {
@@ -105,14 +105,16 @@ function makeMosAdlib(
 	isGrafikPart?: boolean,
 	overrideOverlay?: boolean
 ): IBlueprintAdLibPiece {
-	const duration = CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config)
+	const duration = CreateTimingGrafik(config, parsedCue).duration || !isGrafikPart ? GetDefaultOut(config) : undefined
 	const infiniteMode = GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart)
 	return {
 		_rank: rank || 0,
 		externalId: partId,
 		name: grafikName(config, parsedCue),
 		expectedDuration:
-			!(parsedCue.end && parsedCue.end.infiniteMode) && infiniteMode === PieceLifespan.Normal ? duration : undefined,
+			!(parsedCue.end && parsedCue.end.infiniteMode) && infiniteMode === PieceLifespan.Normal && duration
+				? duration
+				: undefined,
 		infiniteMode,
 		sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
