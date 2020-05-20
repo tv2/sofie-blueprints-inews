@@ -361,6 +361,15 @@ export function getSegmentBase<
 			...actualPart.metaData,
 			segmentExternalId: ingestSegment.externalId
 		})
+
+		if (actualPart.autoNext === undefined) {
+			actualPart.autoNext = false
+		}
+
+		if (actualPart.invalid === undefined) {
+			actualPart.invalid = false
+		}
+
 		return {
 			...part,
 			part: actualPart
