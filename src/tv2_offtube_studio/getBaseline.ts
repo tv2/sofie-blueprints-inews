@@ -110,7 +110,7 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					programInput: AtemSourceIndex.Prg2
-				} as any
+				}
 			}
 		})
 	]

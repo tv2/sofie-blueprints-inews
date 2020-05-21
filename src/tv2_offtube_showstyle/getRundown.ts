@@ -893,7 +893,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					programInput: AtemSourceIndex.Prg2
-				} as any
+				}
 			}
 		}),
 
