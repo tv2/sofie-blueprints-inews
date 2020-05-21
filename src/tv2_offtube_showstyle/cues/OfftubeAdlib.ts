@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, PartContext, TimelineObjectCoreExt } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
@@ -108,8 +108,6 @@ export function OfftubeEvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		console.log(JSON.stringify(cueDVE))
-
 		const content = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
 		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
@@ -148,7 +146,10 @@ export function OfftubeEvaluateAdLib(
 				sourceLayerId: OffTubeSourceLayer.PgmDVE,
 				outputLayerId: 'pgm',
 				toBeQueued: true,
-				content: content.content,
+				content: {
+					...content.content,
+					timelineObjects: makeofftubeDVEIDsUniqueForFlow(content.content.timelineObjects)
+				},
 				invalid: !content.valid,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				metaData: literal<PieceMetaData>({
@@ -157,4 +158,34 @@ export function OfftubeEvaluateAdLib(
 			})
 		)
 	}
+}
+
+export function makeofftubeDVEIDsUniqueForFlow(timeline: TimelineObjectCoreExt[]): TimelineObjectCoreExt[] {
+	const startIdObj = timeline.find(tlObj => tlObj.layer === OfftubeAtemLLayer.AtemSSrcDefault)
+
+	if (!startIdObj) {
+		return timeline
+	}
+
+	const startId = startIdObj.id
+
+	if (!startId.length) {
+		return timeline
+	}
+
+	const newId = `${startId}-flow`
+
+	return timeline.map(tlObj => {
+		const enable = tlObj.enable
+
+		if (enable.start && typeof enable.start === 'string') {
+			enable.start = enable.start.replace(startId, newId)
+		}
+
+		return {
+			...tlObj,
+			id: tlObj.id.replace(startId, newId),
+			enable
+		}
+	})
 }

@@ -136,7 +136,8 @@ export function MakeContentDVEBase<
 	dveConfig: DVEConfigInput | undefined,
 	dveGeneratorOptions: DVEOptions,
 	addClass?: boolean,
-	adlib?: boolean
+	adlib?: boolean,
+	offtube?: boolean
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	if (!dveConfig) {
 		context.warning(`DVE ${parsedCue.template} is not configured`)
@@ -169,7 +170,8 @@ export function MakeContentDVEBase<
 		dveGeneratorOptions,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
-		partDefinition
+		partDefinition,
+		offtube
 	)
 }
 
@@ -272,7 +274,7 @@ export function MakeContentDVE2<
 
 	let valid = true
 	let server = false
-	const timelineStartObjId = `ssrc-${partDefinition?.externalId ?? ''}-${template}`
+	const timelineStartObjId = `ssrc-${partDefinition?.externalId ?? ''}-${dveConfig.DVEName}`
 
 	boxMap.forEach((mappingFrom, num) => {
 		if (mappingFrom === undefined || mappingFrom.source === '') {

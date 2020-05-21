@@ -3,7 +3,6 @@ import {
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
-	PieceMetaData,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -13,6 +12,7 @@ import {
 	GetDVETemplate,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibTags, Enablers } from 'tv2-constants'
@@ -20,6 +20,7 @@ import { OfftubeAbstractLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OffTubeSourceLayer } from '../layers'
+import { makeofftubeDVEIDsUniqueForFlow } from './OfftubeAdlib'
 
 export function OfftubeEvaluateDVE(
 	context: PartContext,
@@ -89,7 +90,7 @@ export function OfftubeEvaluateDVE(
 				content: {
 					...dveAdlib.content,
 					timelineObjects: [
-						...dveAdlib.content!.timelineObjects,
+						...makeofftubeDVEIDsUniqueForFlow(dveAdlib.content!.timelineObjects),
 						literal<TSR.TimelineObjAbstractAny>({
 							id: '',
 							enable: {

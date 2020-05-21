@@ -65,6 +65,7 @@ export function OfftubeMakeContentDVE(
 		dveConfig,
 		OFFTUBE_DVE_GENERATOR_OPTIONS,
 		addClass,
-		adlib
+		adlib,
+		true
 	)
 }
