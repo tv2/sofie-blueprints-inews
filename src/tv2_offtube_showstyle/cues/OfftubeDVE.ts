@@ -124,7 +124,24 @@ export function OfftubeEvaluateDVE(
 				sourceLayerId: OffTubeSourceLayer.PgmDVE,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
-				content: pieceContent.content,
+				content: {
+					...pieceContent.content,
+					timelineObjects: [
+						...pieceContent.content.timelineObjects,
+						literal<TSR.TimelineObjAbstractAny>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_DVE]
+						})
+					]
+				},
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 				metaData: literal<PieceMetaData>({
 					mediaPlayerSessions: [partDefinition.segmentExternalId]
