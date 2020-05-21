@@ -1,5 +1,4 @@
-import { DeviceType, TimelineContentTypeSisyfos, TimelineObjSisyfosMessage } from 'timeline-state-resolver-types'
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext, TSR } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionTelefon, GetSisyfosTimelineObjForCamera, literal, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
@@ -54,7 +53,7 @@ export function EvaluateTelefon(
 				const adlibPiece = adlibPieces[index]
 				if (adlibPiece.content && adlibPiece.content.timelineObjects) {
 					adlibPiece.content.timelineObjects.push(
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -62,8 +61,8 @@ export function EvaluateTelefon(
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceTLF,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							},
 
@@ -79,7 +78,7 @@ export function EvaluateTelefon(
 				const piece = pieces[index]
 				if (piece.content && piece.content.timelineObjects) {
 					piece.content.timelineObjects.push(
-						literal<TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosMessage>({
 							id: '',
 							enable: {
 								start: 0
@@ -87,8 +86,8 @@ export function EvaluateTelefon(
 							priority: 1,
 							layer: SisyfosLLAyer.SisyfosSourceTLF,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 1
 							}
 						}),

@@ -1,12 +1,6 @@
 import * as _ from 'underscore'
 
-import {
-	DeviceType,
-	TimelineContentTypeSisyfos,
-	TimelineObjSisyfosMessage,
-	TSRTimelineObj
-} from 'timeline-state-resolver-types'
-import { NotesContext, SourceLayerType, Timeline } from 'tv-automation-sofie-blueprints-integration'
+import { NotesContext, SourceLayerType, Timeline, TSR } from 'tv-automation-sofie-blueprints-integration'
 import { FindSourceInfoStrict, SourceInfo, TV2StudioBlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 import { PieceMetaData } from '../onTimelineGenerate'
 import { literal } from '../util'
@@ -70,12 +64,12 @@ export function GetSisyfosTimelineObjForEkstern(
 	sourceType: string,
 	getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
 	enable?: Timeline.TimelineEnable
-): TSRTimelineObj[] {
+): TSR.TSRTimelineObj[] {
 	if (!enable) {
 		enable = { start: 0 }
 	}
 
-	const audioTimeline: TSRTimelineObj[] = []
+	const audioTimeline: TSR.TSRTimelineObj[] = []
 	const layers = getLayersForEkstern(context, sources, sourceType)
 
 	if (!layers || !layers.length) {
@@ -85,14 +79,14 @@ export function GetSisyfosTimelineObjForEkstern(
 
 	layers.forEach(layer => {
 		audioTimeline.push(
-			literal<TimelineObjSisyfosMessage>({
+			literal<TSR.TimelineObjSisyfosMessage>({
 				id: '',
 				enable: enable!,
 				priority: 1,
 				layer,
 				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: 1
 				}
 			})
@@ -118,12 +112,12 @@ export function GetSisyfosTimelineObjForCamera(
 	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
 	sourceType: string,
 	enable?: Timeline.TimelineEnable
-): TSRTimelineObj[] {
+): TSR.TSRTimelineObj[] {
 	if (!enable) {
 		enable = { start: 0 }
 	}
 
-	const audioTimeline: TSRTimelineObj[] = []
+	const audioTimeline: TSR.TSRTimelineObj[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	const nonCam = !!sourceType.match(/server|telefon|full|evs/i)
@@ -143,15 +137,15 @@ export function GetSisyfosTimelineObjForCamera(
 			camLayers.push(...config.studio.StudioMics)
 		}
 		audioTimeline.push(
-			...camLayers.map<TimelineObjSisyfosMessage>(layer => {
-				return literal<TimelineObjSisyfosMessage>({
+			...camLayers.map<TSR.TimelineObjSisyfosMessage>(layer => {
+				return literal<TSR.TimelineObjSisyfosMessage>({
 					id: '',
 					enable: enable ? enable : { start: 0 },
 					priority: 1,
 					layer,
 					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: 1
 					}
 				})

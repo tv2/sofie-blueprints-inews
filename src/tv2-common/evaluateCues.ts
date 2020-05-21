@@ -1,11 +1,4 @@
-import {
-	DeviceType,
-	TimelineContentTypeVizMSE,
-	TimelineObjVIZMSEElementInternal,
-	TimelineObjVIZMSEElementPilot,
-	TSRTimelineObj
-} from 'timeline-state-resolver-types'
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext, TSR } from 'tv-automation-sofie-blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,
@@ -395,41 +388,41 @@ export function EvaluateCuesBase<
 
 	;[...pieces, ...adLibPieces].forEach(piece => {
 		if (piece.content && piece.content.timelineObjects) {
-			piece.content.timelineObjects.forEach((obj: TSRTimelineObj) => {
-				if (obj.content.deviceType === DeviceType.VIZMSE) {
+			piece.content.timelineObjects.forEach((obj: TSR.TSRTimelineObj) => {
+				if (obj.content.deviceType === TSR.DeviceType.VIZMSE) {
 					if (!piece.expectedPlayoutItems) {
 						piece.expectedPlayoutItems = []
 					}
 
-					if (obj.content.type === TimelineContentTypeVizMSE.ELEMENT_INTERNAL) {
-						const o = obj as TimelineObjVIZMSEElementInternal
-						const name = (obj as TimelineObjVIZMSEElementInternal).content.templateName
+					if (obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL) {
+						const o = obj as TSR.TimelineObjVIZMSEElementInternal
+						const name = (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName
 						if (name && name.length) {
 							piece.expectedPlayoutItems.push({
-								deviceSubType: DeviceType.VIZMSE,
+								deviceSubType: TSR.DeviceType.VIZMSE,
 								content: {
-									templateName: (obj as TimelineObjVIZMSEElementInternal).content.templateName,
-									templateData: (obj as TimelineObjVIZMSEElementInternal).content.templateData,
+									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
+									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
 									channelName: o.content.channelName,
 									rundownId: ''
 								}
 							})
 						}
-					} else if (obj.content.type === TimelineContentTypeVizMSE.ELEMENT_PILOT) {
-						const name = (obj as TimelineObjVIZMSEElementPilot).content.templateVcpId
+					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT) {
+						const name = (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId
 						if (name !== undefined && name.toString().length) {
 							piece.expectedPlayoutItems.push({
-								deviceSubType: DeviceType.VIZMSE,
+								deviceSubType: TSR.DeviceType.VIZMSE,
 								content: {
-									templateName: (obj as TimelineObjVIZMSEElementPilot).content.templateVcpId,
-									channelName: (obj as TimelineObjVIZMSEElementPilot).content.channelName,
+									templateName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
+									channelName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName,
 									rundownId: ''
 								}
 							})
 						}
-					} else if (obj.content.type === TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS) {
+					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS) {
 						piece.expectedPlayoutItems.push({
-							deviceSubType: DeviceType.VIZMSE,
+							deviceSubType: TSR.DeviceType.VIZMSE,
 							content: {
 								templateName: 'altud',
 								channelName: 'OVL1',

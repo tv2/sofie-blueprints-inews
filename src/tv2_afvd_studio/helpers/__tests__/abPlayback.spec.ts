@@ -1,5 +1,4 @@
-import { DeviceType } from 'timeline-state-resolver-types'
-import { IBlueprintPieceDB, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPieceDB, OnGenerateTimelineObj, TSR } from 'tv-automation-sofie-blueprints-integration'
 import {
 	applyMediaPlayersAssignments,
 	doesRequestOverlap,
@@ -397,7 +396,7 @@ describe('applyMediaPlayersAssignments', () => {
 					duration: 1000
 				},
 				content: {
-					deviceType: DeviceType.ABSTRACT
+					deviceType: TSR.DeviceType.ABSTRACT
 				},
 				metaData: {
 					mediaPlayerSession: 'abc'
@@ -412,7 +411,7 @@ describe('applyMediaPlayersAssignments', () => {
 					duration: 1000
 				},
 				content: {
-					deviceType: DeviceType.ABSTRACT
+					deviceType: TSR.DeviceType.ABSTRACT
 				},
 				metaData: {
 					mediaPlayerSession: 'def'

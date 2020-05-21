@@ -1,12 +1,4 @@
-import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemAny,
-	TimelineObjAtemAUX,
-	TimelineObjAtemME,
-	TimelineObjAtemSsrc
-} from 'timeline-state-resolver-types'
-import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj, TSR } from 'tv-automation-sofie-blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
@@ -281,7 +273,7 @@ function updateObjectsToMediaPlayer<
 ) {
 	_.each(objs, obj => {
 		// Mutate each object to the correct player
-		if (obj.content.deviceType === DeviceType.CASPARCG) {
+		if (obj.content.deviceType === TSR.DeviceType.CASPARCG) {
 			if (obj.layer === sourceLayers.Caspar.ClipPending) {
 				obj.layer = sourceLayers.Caspar.PlayerClip(playerId)
 			} else if (obj.lookaheadForLayer === sourceLayers.Caspar.ClipPending) {
@@ -293,22 +285,22 @@ function updateObjectsToMediaPlayer<
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)
 			}
-		} else if (obj.content.deviceType === DeviceType.ATEM) {
+		} else if (obj.content.deviceType === TSR.DeviceType.ATEM) {
 			let atemInput = _.find(config.mediaPlayers, mp => mp.id === playerId.toString())
 			if (!atemInput) {
 				context.warning(`Trying to find atem input for unknown mediaPlayer: #${playerId}`)
 				atemInput = { id: playerId.toString(), val: config.studio.AtemSource.Default.toString() }
 			}
 
-			const atemObj = obj as TimelineObjAtemAny
-			if (atemObj.content.type === TimelineContentTypeAtem.ME) {
-				const atemObj2 = atemObj as TimelineObjAtemME
+			const atemObj = obj as TSR.TimelineObjAtemAny
+			if (atemObj.content.type === TSR.TimelineContentTypeAtem.ME) {
+				const atemObj2 = atemObj as TSR.TimelineObjAtemME
 				atemObj2.content.me.input = Number(atemInput.val) || 0
-			} else if (atemObj.content.type === TimelineContentTypeAtem.AUX) {
-				const atemObj2 = atemObj as TimelineObjAtemAUX
+			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.AUX) {
+				const atemObj2 = atemObj as TSR.TimelineObjAtemAUX
 				atemObj2.content.aux.input = Number(atemInput.val) || 0
-			} else if (atemObj.content.type === TimelineContentTypeAtem.SSRC) {
-				const atemObj2 = atemObj as TimelineObjAtemSsrc
+			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.SSRC) {
+				const atemObj2 = atemObj as TSR.TimelineObjAtemSsrc
 				// Find box with no source
 				const input = Number(atemInput.val) || 0
 				atemObj2.content.ssrc.boxes.forEach((box, i) => {
@@ -321,7 +313,7 @@ function updateObjectsToMediaPlayer<
 					`Trying to move ATEM object of unknown type (${atemObj.content.type}) for media player assignment`
 				)
 			}
-		} else if (obj.content.deviceType === DeviceType.SISYFOS) {
+		} else if (obj.content.deviceType === TSR.DeviceType.SISYFOS) {
 			if (obj.layer === sourceLayers.Sisyfos.ClipPending) {
 				// TODO: Change when adding more servers
 				obj.layer = playerId === 1 ? sourceLayers.Sisyfos.PlayerA : sourceLayers.Sisyfos.PlayerB

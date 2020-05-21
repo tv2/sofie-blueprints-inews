@@ -1,14 +1,4 @@
-import {
-	AtemTransitionStyle,
-	DeviceType,
-	MappingAtemType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemME,
-	TimelineObjSisyfosAny,
-	TSRTimelineObjBase
-} from 'timeline-state-resolver-types'
-import { BlueprintMapping, BlueprintMappings, IStudioContext } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, IStudioContext, TSR } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
@@ -34,29 +24,29 @@ function convertMappings<T>(input: BlueprintMappings, func: (k: string, v: Bluep
 	return _.map(_.keys(input), k => func(k, input[k]))
 }
 
-export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
+export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 	const mappings = context.getStudioMappings()
 
 	const atemMeMappings = filterMappings(
 		mappings,
-		(_id, v) => v.device === DeviceType.ATEM && (v as any).mappingType === MappingAtemType.MixEffect
+		(_id, v) => v.device === TSR.DeviceType.ATEM && (v as any).mappingType === TSR.MappingAtemType.MixEffect
 	)
 
-	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === DeviceType.SISYFOS)
+	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
 	return [
 		...convertMappings(atemMeMappings, id =>
-			literal<TimelineObjAtemME>({
+			literal<TSR.TimelineObjAtemME>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
 				layer: id,
 				content: {
-					deviceType: DeviceType.ATEM,
-					type: TimelineContentTypeAtem.ME,
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
 						input: AtemSourceIndex.Bars,
-						transition: AtemTransitionStyle.CUT
+						transition: TSR.AtemTransitionStyle.CUT
 					}
 				}
 			})
@@ -64,28 +54,28 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 		...convertMappings(sisyfosMappings, id => {
 			const sisyfosChannel = sisyfosChannels[id as OfftubeSisyfosLLayer] as SisyfosChannel | undefined
 			if (sisyfosChannel) {
-				return literal<TimelineObjSisyfosAny>({
+				return literal<TSR.TimelineObjSisyfosAny>({
 					id: '',
 					enable: { while: '1' },
 					priority: 0,
 					layer: id,
 					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: sisyfosChannel.isPgm,
 						label: sisyfosChannel.label,
 						visible: true
 					}
 				})
 			} else {
-				return literal<TimelineObjSisyfosAny>({
+				return literal<TSR.TimelineObjSisyfosAny>({
 					id: '',
 					enable: { while: '1' },
 					priority: 0,
 					layer: id,
 					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: 0,
 						label: ''
 					}
@@ -94,33 +84,33 @@ export function getBaseline(context: IStudioContext): TSRTimelineObjBase[] {
 		}),
 
 		// have ATEM output default still image
-		literal<TimelineObjAtemME>({
+		literal<TSR.TimelineObjAtemME>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: OfftubeAtemLLayer.AtemMEClean,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.ME,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					input: AtemSourceIndex.MP1,
-					transition: AtemTransitionStyle.CUT
+					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
 		}),
 
 		// Route ME 2 PGM to ME 1 PGM
-		literal<TimelineObjAtemME>({
+		literal<TSR.TimelineObjAtemME>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
 			layer: OfftubeAtemLLayer.AtemMEProgram,
 			content: {
-				deviceType: DeviceType.ATEM,
-				type: TimelineContentTypeAtem.ME,
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					input: AtemSourceIndex.Prg2,
-					transition: AtemTransitionStyle.CUT
+					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
 		})

@@ -1,11 +1,11 @@
 import * as _ from 'underscore'
 
-import { DeviceType, TSRTimelineObjBase } from 'timeline-state-resolver-types'
 import {
 	BlueprintMappings,
 	IBlueprintPieceGeneric,
 	ShowStyleContext,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 
 import { literal } from 'tv2-common'
@@ -17,7 +17,7 @@ import OutputlayerDefaults from '../migrations/outputlayer-defaults'
 export function checkAllLayers(
 	context: ShowStyleContext,
 	pieces: IBlueprintPieceGeneric[],
-	otherObjs?: TSRTimelineObjBase[]
+	otherObjs?: TSR.TSRTimelineObjBase[]
 ) {
 	const missingSourceLayers: string[] = []
 	const missingOutputLayers: string[] = []
@@ -35,11 +35,11 @@ export function checkAllLayers(
 	})
 
 	const validateObject = (obj: TimelineObjectCoreExt) => {
-		const isAbstract = obj.content.deviceType === DeviceType.ABSTRACT
+		const isAbstract = obj.content.deviceType === TSR.DeviceType.ABSTRACT
 		const mapping = allMappings[obj.layer]
 
 		const isMediaPlayerPending =
-			(obj.layer + '').endsWith('_pending') && mapping && mapping.device === DeviceType.ABSTRACT
+			(obj.layer + '').endsWith('_pending') && mapping && mapping.device === TSR.DeviceType.ABSTRACT
 		if (
 			mapping &&
 			mapping.device !== obj.content.deviceType &&

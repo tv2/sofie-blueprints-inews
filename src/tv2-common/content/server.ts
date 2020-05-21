@@ -1,15 +1,4 @@
-import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemME,
-	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny,
-	TSRTimelineObjBase
-} from 'timeline-state-resolver-types'
-import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
 	literal,
@@ -56,7 +45,7 @@ export function MakeContentServer<
 		firstWords: '',
 		lastWords: '',
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
 					while: '1'
@@ -64,8 +53,8 @@ export function MakeContentServer<
 				priority: 1,
 				layer: sourceLayers.Caspar.ClipPending,
 				content: {
-					deviceType: DeviceType.CASPARCG,
-					type: TimelineContentTypeCasparCg.MEDIA,
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
 					noStarttime: true,
@@ -93,19 +82,19 @@ export function MakeContentServer<
 				classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
 			}),
 
-			literal<TimelineObjAtemME & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
 				enable: getServerAdlibEnable(!!adLib, config.studio.CasparPrerollDuration, offtubeOptions),
 				priority: 1,
 				layer: sourceLayers.ATEM.MEPGM,
 				content: {
-					deviceType: DeviceType.ATEM,
-					type: TimelineContentTypeAtem.ME,
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
 						input: undefined,
 						transition: partDefinition.transition
 							? TransitionFromString(partDefinition.transition.style)
-							: AtemTransitionStyle.CUT,
+							: TSR.AtemTransitionStyle.CUT,
 						transitionSettings: TransitionSettings(partDefinition)
 					}
 				},
@@ -115,14 +104,14 @@ export function MakeContentServer<
 				classes: [...(adLib ? ['adlib_deparent'] : [])]
 			}),
 
-			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 				id: '',
 				enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
 				priority: 1,
 				layer: sourceLayers.Sisyfos.ClipPending,
 				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 					// isPgm: voiceOver ? 2 : 1
 					isPgm: 1
 				},
@@ -133,15 +122,15 @@ export function MakeContentServer<
 			}),
 
 			...(sourceLayers.STICKY_LAYERS
-				? sourceLayers.STICKY_LAYERS.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-						return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+				? sourceLayers.STICKY_LAYERS.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+						return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 							id: '',
 							enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
 							priority: 1,
 							layer,
 							content: {
-								deviceType: DeviceType.SISYFOS,
-								type: TimelineContentTypeSisyfos.SISYFOS,
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 								isPgm: 0
 							},
 							metaData: {
@@ -158,7 +147,7 @@ function getServerAdlibEnable(
 	adlib: boolean,
 	startTime: number,
 	offtubeOptions?: AdlibServerOfftubeOptions
-): TSRTimelineObjBase['enable'] {
+): TSR.TSRTimelineObjBase['enable'] {
 	if (adlib && offtubeOptions?.isOfftube) {
 		return {
 			while: `.${offtubeOptions.enabler}`

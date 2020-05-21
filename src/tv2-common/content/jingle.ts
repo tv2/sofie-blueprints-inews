@@ -1,14 +1,4 @@
-import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemDSK,
-	TimelineObjAtemME,
-	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny
-} from 'timeline-state-resolver-types'
-import { TimelineObjectCoreExt, VTContent } from 'tv-automation-sofie-blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
@@ -37,7 +27,7 @@ export function CreateJingleContentBase<
 		firstWords: '',
 		lastWords: '',
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
 					start: 0
@@ -45,13 +35,13 @@ export function CreateJingleContentBase<
 				priority: 1,
 				layer: layers.Caspar.PlayerJingle,
 				content: {
-					deviceType: DeviceType.CASPARCG,
-					type: TimelineContentTypeCasparCg.MEDIA,
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file
 				}
 			}),
 
-			literal<TimelineObjAtemDSK>({
+			literal<TSR.TimelineObjAtemDSK>({
 				id: '',
 				enable: {
 					start: Number(config.studio.CasparPrerollDuration)
@@ -59,8 +49,8 @@ export function CreateJingleContentBase<
 				priority: 1,
 				layer: layers.ATEM.DSKJingle,
 				content: {
-					deviceType: DeviceType.ATEM,
-					type: TimelineContentTypeAtem.DSK,
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.DSK,
 					dsk: {
 						onAir: true,
 						sources: {
@@ -83,7 +73,7 @@ export function CreateJingleContentBase<
 
 			...(layers.ATEM.USKCleanEffekt
 				? [
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
 								start: Number(config.studio.CasparPrerollDuration)
@@ -91,8 +81,8 @@ export function CreateJingleContentBase<
 							priority: 1,
 							layer: layers.ATEM.USKCleanEffekt,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									upstreamKeyers: [
 										{
@@ -116,7 +106,7 @@ export function CreateJingleContentBase<
 				  ]
 				: []),
 
-			literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 				id: '',
 				enable: {
 					start: 0
@@ -124,8 +114,8 @@ export function CreateJingleContentBase<
 				priority: 1,
 				layer: layers.Sisyfos.PlayerJingle,
 				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: 1
 				}
 			})

@@ -1,15 +1,10 @@
 import {
-	DeviceType,
-	TimelineContentTypeVizMSE,
-	TimelineObjVIZMSEAny,
-	TimelineObjVIZMSEElementInternal
-} from 'timeline-state-resolver-types'
-import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	PieceLifespan
+	PieceLifespan,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CalculateTime,
@@ -93,8 +88,8 @@ export function EvaluateGrafikViz(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
-						literal<TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
 								start: 0
@@ -102,8 +97,8 @@ export function EvaluateGrafikViz(
 							priority: 1,
 							layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: mappedTemplate,
 								templateData: parsedCue.textFields,
 								channelName: engine.match(/WALL/i) ? 'WALL1' : 'OVL1'
@@ -135,15 +130,15 @@ export function EvaluateGrafikViz(
 			content: literal<GraphicsContent>({
 				fileName: parsedCue.template,
 				path: parsedCue.template,
-				timelineObjects: literal<TimelineObjVIZMSEAny[]>([
-					literal<TimelineObjVIZMSEElementInternal>({
+				timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
 						enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
 						priority: 1,
 						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 						content: {
-							deviceType: DeviceType.VIZMSE,
-							type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+							deviceType: TSR.DeviceType.VIZMSE,
+							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 							templateName: mappedTemplate,
 							templateData: parsedCue.textFields,
 							channelName: !!engine.match(/WALL/i) ? 'WALL1' : 'OVL1'

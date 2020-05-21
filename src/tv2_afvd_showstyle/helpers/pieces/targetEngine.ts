@@ -1,11 +1,11 @@
-import { DeviceType, TimelineContentTypeAtem, TimelineObjAtemAUX, TSRTimelineObj } from 'timeline-state-resolver-types'
 import {
 	CameraContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
-	SourceLayerType
+	SourceLayerType,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CalculateTime,
@@ -64,15 +64,15 @@ export function EvaluateTargetEngine(
 					content: literal<CameraContent>({
 						studioLabel: '',
 						switcherInput: sourceInfo.port,
-						timelineObjects: _.compact<TSRTimelineObj>([
-							literal<TimelineObjAtemAUX>({
+						timelineObjects: _.compact<TSR.TSRTimelineObj>([
+							literal<TSR.TimelineObjAtemAUX>({
 								id: '',
 								enable: { start: 0 },
 								priority: 100,
 								layer: AtemLLayer.AtemAuxVizOvlIn1,
 								content: {
-									deviceType: DeviceType.ATEM,
-									type: TimelineContentTypeAtem.AUX,
+									deviceType: TSR.DeviceType.ATEM,
+									type: TSR.TimelineContentTypeAtem.AUX,
 									aux: {
 										input: sourceInfo.port
 									}

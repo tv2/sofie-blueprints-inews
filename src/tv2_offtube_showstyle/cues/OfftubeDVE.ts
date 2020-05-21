@@ -1,10 +1,10 @@
-import { DeviceType, TimelineObjAbstractAny } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
-	PieceMetaData
+	PieceMetaData,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
@@ -90,7 +90,7 @@ export function OfftubeEvaluateDVE(
 					...dveAdlib.content,
 					timelineObjects: [
 						...dveAdlib.content!.timelineObjects,
-						literal<TimelineObjAbstractAny>({
+						literal<TSR.TimelineObjAbstractAny>({
 							id: '',
 							enable: {
 								while: '1'
@@ -98,7 +98,7 @@ export function OfftubeEvaluateDVE(
 							priority: 1,
 							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
 							content: {
-								deviceType: DeviceType.ABSTRACT
+								deviceType: TSR.DeviceType.ABSTRACT
 							},
 							classes: [Enablers.OFFTUBE_ENABLE_DVE]
 						})

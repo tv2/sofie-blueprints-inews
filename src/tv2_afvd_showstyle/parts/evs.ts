@@ -1,13 +1,4 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemME,
-	TimelineObjSisyfosAny,
-	TimelineObjSisyfosMessage
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -15,7 +6,8 @@ import {
 	PartContext,
 	PieceLifespan,
 	SourceLayerType,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddScript,
@@ -107,7 +99,7 @@ function makeContentEVS(
 		studioLabel: '',
 		switcherInput: atemInput,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TimelineObjAtemME>({
+			literal<TSR.TimelineObjAtemME>({
 				id: ``,
 				enable: {
 					start: 0
@@ -115,19 +107,19 @@ function makeContentEVS(
 				priority: 1,
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
-					deviceType: DeviceType.ATEM,
-					type: TimelineContentTypeAtem.ME,
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
 						input: atemInput,
 						transition: partDefinition.transition
 							? TransitionFromString(partDefinition.transition.style)
-							: AtemTransitionStyle.CUT,
+							: TSR.AtemTransitionStyle.CUT,
 						transitionSettings: TransitionSettings(partDefinition)
 					}
 				},
 				classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
 			}),
-			literal<TimelineObjSisyfosMessage>({
+			literal<TSR.TimelineObjSisyfosMessage>({
 				id: '',
 				enable: {
 					start: 0
@@ -135,16 +127,16 @@ function makeContentEVS(
 				priority: 1,
 				layer: SisyfosEVSSource(sourceInfoDelayedPlayback.id.replace(/^DP/i, '')),
 				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: partDefinition.variant.isVO ? 2 : 1
 				}
 			}),
 			...(partDefinition.variant.isVO
 				? [...GetSisyfosTimelineObjForCamera(context, config, 'evs')]
 				: [
-						...config.liveAudio.map<TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-							return literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						...config.liveAudio.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 								id: '',
 								enable: {
 									start: 0
@@ -152,8 +144,8 @@ function makeContentEVS(
 								priority: 1,
 								layer,
 								content: {
-									deviceType: DeviceType.SISYFOS,
-									type: TimelineContentTypeSisyfos.SISYFOS,
+									deviceType: TSR.DeviceType.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 									isPgm: 0
 								},
 								metaData: {

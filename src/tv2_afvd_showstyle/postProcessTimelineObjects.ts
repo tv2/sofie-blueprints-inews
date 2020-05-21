@@ -1,12 +1,4 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemAUX,
-	TimelineObjAtemDSK,
-	TimelineObjAtemME,
-	TSRTimelineObjBase
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
 	NotesContext,
@@ -15,7 +7,8 @@ import {
 	SourceLayerType,
 	SplitsContent,
 	TimelineObjectCoreExt,
-	TimelineObjHoldMode
+	TimelineObjHoldMode,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartContext2, TimelineBlueprintExt } from 'tv2-common'
 import * as _ from 'underscore'
@@ -46,13 +39,13 @@ export function postProcessPieceTimelineObjects(
 		const extraObjs: TimelineObjectCoreExt[] = []
 
 		const atemMeObjs = (piece.content.timelineObjects as Array<
-			| (TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj)
-			| (TimelineObjAtemDSK & TimelineBlueprintExt & OnGenerateTimelineObj)
+			| (TSR.TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj)
+			| (TSR.TimelineObjAtemDSK & TimelineBlueprintExt & OnGenerateTimelineObj)
 		>).filter(
 			obj =>
 				obj.content &&
-				obj.content.deviceType === DeviceType.ATEM &&
-				(obj.content.type === TimelineContentTypeAtem.ME || obj.content.type === TimelineContentTypeAtem.DSK)
+				obj.content.deviceType === TSR.DeviceType.ATEM &&
+				(obj.content.type === TSR.TimelineContentTypeAtem.ME || obj.content.type === TSR.TimelineContentTypeAtem.DSK)
 		)
 		_.each(atemMeObjs, tlObj => {
 			if (tlObj.layer === AtemLLayer.AtemMEProgram || tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
@@ -78,15 +71,15 @@ export function postProcessPieceTimelineObjects(
 					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					// Create a lookahead-lookahead object for this me-program
-					const lookaheadObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
+					const lookaheadObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 						id: '',
 						enable: { start: 0 },
 						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
 						layer: AtemLLayer.AtemAuxLookahead,
 						holdMode: tlObj.holdMode,
 						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.AUX,
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
 							aux: {
 								input: tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
 							}
@@ -103,9 +96,9 @@ export function postProcessPieceTimelineObjects(
 				let mixMinusSource: number | undefined | null // TODO - what about clips?
 				// tslint:disable-next-line:prefer-conditional-expression
 				if (tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
-					mixMinusSource = (tlObj as TimelineObjAtemDSK).content.dsk.sources?.fillSource
+					mixMinusSource = (tlObj as TSR.TimelineObjAtemDSK).content.dsk.sources?.fillSource
 				} else {
-					mixMinusSource = (tlObj as TimelineObjAtemME).content.me.input
+					mixMinusSource = (tlObj as TSR.TimelineObjAtemME).content.me.input
 				}
 
 				if (piece.sourceLayerId === SourceLayer.PgmLive && !piece.name.match(/EVS ?\d+/i)) {
@@ -123,15 +116,15 @@ export function postProcessPieceTimelineObjects(
 					mixMinusSource = kamSources.length === 1 ? Number(kamSources[0].switcherInput) : null
 				}
 				if (mixMinusSource !== null) {
-					const mixMinusObj = literal<TimelineObjAtemAUX & TimelineBlueprintExt>({
+					const mixMinusObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 						..._.omit(tlObj, 'content'),
-						...literal<Partial<TimelineObjAtemAUX & TimelineBlueprintExt>>({
+						...literal<Partial<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>>({
 							id: '',
 							layer: AtemLLayer.AtemAuxVideoMixMinus,
 							priority: tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK') ? 10 : tlObj.priority,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.AUX,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.AUX,
 								aux: {
 									input: mixMinusSource !== undefined ? mixMinusSource : config.studio.AtemSource.MixMinusDefault
 								}
@@ -150,9 +143,11 @@ export function postProcessPieceTimelineObjects(
 			}
 		})
 
-		const atemDskObjs = (piece.content.timelineObjects as TimelineObjAtemDSK[]).filter(
+		const atemDskObjs = (piece.content.timelineObjects as TSR.TimelineObjAtemDSK[]).filter(
 			obj =>
-				obj.content && obj.content.deviceType === DeviceType.ATEM && obj.content.type === TimelineContentTypeAtem.DSK
+				obj.content &&
+				obj.content.deviceType === TSR.DeviceType.ATEM &&
+				obj.content.type === TSR.TimelineContentTypeAtem.DSK
 		)
 		_.each(atemDskObjs, tlObj => {
 			if (tlObj.layer === AtemLLayer.AtemDSKEffect) {
@@ -161,14 +156,14 @@ export function postProcessPieceTimelineObjects(
 					context.warning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
 				}
 
-				const cleanObj = literal<TimelineObjAtemME & TimelineBlueprintExt>({
+				const cleanObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 					..._.omit(tlObj, 'content'),
-					...literal<Partial<TimelineObjAtemME & TimelineBlueprintExt>>({
+					...literal<Partial<TSR.TimelineObjAtemME & TimelineBlueprintExt>>({
 						id: '',
 						layer: AtemLLayer.AtemCleanUSKEffect,
 						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.ME,
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
 							me: {
 								upstreamKeyers: [
 									{
@@ -189,7 +184,7 @@ export function postProcessPieceTimelineObjects(
 
 		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
 		piece.content.timelineObjects = piece.content.timelineObjects.filter(
-			(obj: TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
+			(obj: TSR.TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
 		)
 	}
 }

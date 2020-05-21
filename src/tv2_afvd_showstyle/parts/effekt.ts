@@ -1,17 +1,9 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemDSK,
-	TimelineObjCCGMedia,
-	TimelineObjSisyfosAny
-} from 'timeline-state-resolver-types'
-import {
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
+	TSR,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartDefinition, TimeFromFrames, TimelineBlueprintExt } from 'tv2-common'
@@ -77,7 +69,7 @@ export function CreateEffektForpart(
 				firstWords: '',
 				lastWords: '',
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TimelineObjCCGMedia & TimelineBlueprintExt>({
+					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
 						enable: {
 							start: 0
@@ -85,12 +77,12 @@ export function CreateEffektForpart(
 						priority: 1,
 						layer: CasparLLayer.CasparPlayerJingle,
 						content: {
-							deviceType: DeviceType.CASPARCG,
-							type: TimelineContentTypeCasparCg.MEDIA,
+							deviceType: TSR.DeviceType.CASPARCG,
+							type: TSR.TimelineContentTypeCasparCg.MEDIA,
 							file
 						}
 					}),
-					literal<TimelineObjAtemDSK>({
+					literal<TSR.TimelineObjAtemDSK>({
 						id: '',
 						enable: {
 							start: Number(config.studio.CasparPrerollDuration)
@@ -98,8 +90,8 @@ export function CreateEffektForpart(
 						priority: 1,
 						layer: AtemLLayer.AtemDSKEffect,
 						content: {
-							deviceType: DeviceType.ATEM,
-							type: TimelineContentTypeAtem.DSK,
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.DSK,
 							dsk: {
 								onAir: true,
 								sources: {
@@ -118,7 +110,7 @@ export function CreateEffektForpart(
 							}
 						}
 					}),
-					literal<TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
 						id: '',
 						enable: {
 							start: 0
@@ -126,8 +118,8 @@ export function CreateEffektForpart(
 						priority: 1,
 						layer: SisyfosLLAyer.SisyfosSourceJingle,
 						content: {
-							deviceType: DeviceType.SISYFOS,
-							type: TimelineContentTypeSisyfos.SISYFOS,
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 							isPgm: 1
 						}
 					})

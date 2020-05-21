@@ -1,18 +1,11 @@
 import {
-	DeviceType,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeSisyfos,
-	TimelineObjCCGMedia,
-	TimelineObjEmpty,
-	TimelineObjSisyfosMessage
-} from 'timeline-state-resolver-types'
-import {
 	BaseContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { CalculateTime, CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -85,7 +78,7 @@ export function LydContent(
 	if (stop) {
 		return literal<BaseContent>({
 			timelineObjects: [
-				literal<TimelineObjEmpty>({
+				literal<TSR.TimelineObjEmpty>({
 					id: '',
 					enable: {
 						start: 0
@@ -93,7 +86,7 @@ export function LydContent(
 					priority: 50,
 					layer: SisyfosLLAyer.SisyfosSourceAudiobed,
 					content: {
-						deviceType: DeviceType.ABSTRACT,
+						deviceType: TSR.DeviceType.ABSTRACT,
 						type: 'empty'
 					},
 					classes: []
@@ -105,7 +98,7 @@ export function LydContent(
 	const id = `${file.trim().replace(/ /gi, '_')}`
 	return literal<BaseContent>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TimelineObjCCGMedia>({
+			literal<TSR.TimelineObjCCGMedia>({
 				id,
 				enable: {
 					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
@@ -114,8 +107,8 @@ export function LydContent(
 				priority: 1,
 				layer: CasparLLayer.CasparCGLYD,
 				content: {
-					deviceType: DeviceType.CASPARCG,
-					type: TimelineContentTypeCasparCg.MEDIA,
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
 					channelLayout: 'bed',
 					loop: true,
@@ -124,7 +117,7 @@ export function LydContent(
 					}
 				}
 			}),
-			literal<TimelineObjSisyfosMessage>({
+			literal<TSR.TimelineObjSisyfosMessage>({
 				id: '',
 				enable: {
 					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
@@ -133,8 +126,8 @@ export function LydContent(
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceAudiobed,
 				content: {
-					deviceType: DeviceType.SISYFOS,
-					type: TimelineContentTypeSisyfos.SISYFOS,
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 					isPgm: 1
 				}
 			})

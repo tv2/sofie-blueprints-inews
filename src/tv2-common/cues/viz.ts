@@ -1,21 +1,12 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeCasparCg,
-	TimelineContentTypeVizMSE,
-	TimelineObjAtemAUX,
-	TimelineObjCCGMedia,
-	TimelineObjVIZMSEElementInternal,
-	TSRTimelineObj
-} from 'timeline-state-resolver-types'
-import {
 	CameraContent,
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
-	SourceLayerType
+	SourceLayerType,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CalculateTime,
@@ -66,15 +57,15 @@ export function EvaluateVIZBase<
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
-						timelineObjects: _.compact<TSRTimelineObj>([
-							literal<TimelineObjCCGMedia>({
+						timelineObjects: _.compact<TSR.TSRTimelineObj>([
+							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
 								enable: { start: 0 },
 								priority: 100,
 								layer: sourceLayers.CasparLLayerDVELoop,
 								content: {
-									deviceType: DeviceType.CASPARCG,
-									type: TimelineContentTypeCasparCg.MEDIA,
+									deviceType: TSR.DeviceType.CASPARCG,
+									type: TSR.TimelineContentTypeCasparCg.MEDIA,
 									file: path,
 									loop: true
 								}
@@ -98,15 +89,15 @@ export function EvaluateVIZBase<
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
-						timelineObjects: _.compact<TSRTimelineObj>([
-							literal<TimelineObjCCGMedia>({
+						timelineObjects: _.compact<TSR.TSRTimelineObj>([
+							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
 								enable: { start: 0 },
 								priority: 100,
 								layer: sourceLayers.CasparLLayerDVELoop,
 								content: {
-									deviceType: DeviceType.CASPARCG,
-									type: TimelineContentTypeCasparCg.MEDIA,
+									deviceType: TSR.DeviceType.CASPARCG,
+									type: TSR.TimelineContentTypeCasparCg.MEDIA,
 									file: path,
 									loop: true
 								}
@@ -147,15 +138,15 @@ export function EvaluateVIZBase<
 						content: literal<CameraContent>({
 							studioLabel: '',
 							switcherInput: sourceInfo.port,
-							timelineObjects: _.compact<TSRTimelineObj>([
-								literal<TimelineObjAtemAUX>({
+							timelineObjects: _.compact<TSR.TSRTimelineObj>([
+								literal<TSR.TimelineObjAtemAUX>({
 									id: '',
 									enable: { start: 0 },
 									priority: 100,
 									layer: sourceLayers.AtemLLayerAtemAuxVizOvlIn1,
 									content: {
-										deviceType: DeviceType.ATEM,
-										type: TimelineContentTypeAtem.AUX,
+										deviceType: TSR.DeviceType.ATEM,
+										type: TSR.TimelineContentTypeAtem.AUX,
 										aux: {
 											input: sourceInfo.port
 										}
@@ -191,15 +182,15 @@ export function EvaluateVIZBase<
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,
-								timelineObjects: _.compact<TSRTimelineObj>([
-									literal<TimelineObjVIZMSEElementInternal>({
+								timelineObjects: _.compact<TSR.TSRTimelineObj>([
+									literal<TSR.TimelineObjVIZMSEElementInternal>({
 										id: '',
 										enable: { start: 0 },
 										priority: 100,
 										layer: sourceLayers.GraphicLLayerGraphicLLayerDesign,
 										content: {
-											deviceType: DeviceType.VIZMSE,
-											type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+											deviceType: TSR.DeviceType.VIZMSE,
+											type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 											templateName: path,
 											templateData: []
 										}
@@ -223,15 +214,15 @@ export function EvaluateVIZBase<
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,
-								timelineObjects: _.compact<TSRTimelineObj>([
-									literal<TimelineObjVIZMSEElementInternal>({
+								timelineObjects: _.compact<TSR.TSRTimelineObj>([
+									literal<TSR.TimelineObjVIZMSEElementInternal>({
 										id: '',
 										enable: { start: 0 },
 										priority: 100,
 										layer: sourceLayers.GraphicLLayerGraphicLLayerDesign,
 										content: {
-											deviceType: DeviceType.VIZMSE,
-											type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+											deviceType: TSR.DeviceType.VIZMSE,
+											type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 											templateName: path,
 											templateData: []
 										}

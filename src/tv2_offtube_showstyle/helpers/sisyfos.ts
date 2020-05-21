@@ -1,10 +1,4 @@
-import {
-	DeviceType,
-	Timeline,
-	TimelineContentTypeSisyfos,
-	TimelineObjSisyfosMessage,
-	TSRTimelineObj
-} from 'timeline-state-resolver-types'
+import { TSR } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import { OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 
@@ -18,25 +12,28 @@ export const LIVE_AUDIO = [] // TODO
 
 export const STICKY_LAYERS = [] // TODO
 
-export function GetSisyfosTimelineObjForCamera(sourceType: string, enable?: Timeline.TimelineEnable): TSRTimelineObj[] {
+export function GetSisyfosTimelineObjForCamera(
+	sourceType: string,
+	enable?: TSR.Timeline.TimelineEnable
+): TSR.TSRTimelineObj[] {
 	if (!enable) {
 		enable = { start: 0 }
 	}
 
-	const audioTimeline: TSRTimelineObj[] = []
+	const audioTimeline: TSR.TSRTimelineObj[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	if ((useMic && camName) || !!sourceType.match(/server|telefon|full|evs/i)) {
 		audioTimeline.push(
-			...STUDIO_MICS.map<TimelineObjSisyfosMessage>(layer => {
-				return literal<TimelineObjSisyfosMessage>({
+			...STUDIO_MICS.map<TSR.TimelineObjSisyfosMessage>(layer => {
+				return literal<TSR.TimelineObjSisyfosMessage>({
 					id: '',
 					enable: enable ? enable : { start: 0 },
 					priority: 1,
 					layer,
 					content: {
-						deviceType: DeviceType.SISYFOS,
-						type: TimelineContentTypeSisyfos.SISYFOS,
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
 						isPgm: 1
 					}
 				})

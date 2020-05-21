@@ -1,10 +1,4 @@
 import {
-	AtemTransitionStyle,
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineObjAtemME
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -12,7 +6,8 @@ import {
 	PartContext,
 	PieceLifespan,
 	SourceLayerType,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
@@ -67,7 +62,7 @@ export function OfftubeCreatePartKam(
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.DSK1F,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: ``,
 							enable: {
 								start: 0
@@ -75,13 +70,13 @@ export function OfftubeCreatePartKam(
 							priority: 1,
 							layer: OfftubeAtemLLayer.AtemMEClean,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: config.studio.AtemSource.DSK1F,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
-										: AtemTransitionStyle.CUT,
+										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							}
@@ -114,7 +109,7 @@ export function OfftubeCreatePartKam(
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TimelineObjAtemME>({
+						literal<TSR.TimelineObjAtemME>({
 							id: ``,
 							enable: {
 								start: 0
@@ -122,13 +117,13 @@ export function OfftubeCreatePartKam(
 							priority: 1,
 							layer: OfftubeAtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: DeviceType.ATEM,
-								type: TimelineContentTypeAtem.ME,
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: Number(atemInput),
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
-										: AtemTransitionStyle.CUT,
+										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							},

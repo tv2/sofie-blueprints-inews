@@ -1,5 +1,4 @@
-import { DeviceType, TimelineContentTypeVizMSE, TimelineObjVIZMSEClearAllElements } from 'timeline-state-resolver-types'
-import { IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, TSR } from 'tv-automation-sofie-blueprints-integration'
 import { CreateTimingEnable, CueDefinitionClearGrafiks, GraphicLLayer, literal } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 
@@ -49,7 +48,7 @@ export function EvaluateClearGrafiks(
 			infiniteMode: PieceLifespan.Normal,
 			content: {
 				timelineObjects: [
-					literal<TimelineObjVIZMSEClearAllElements>({
+					literal<TSR.TimelineObjVIZMSEClearAllElements>({
 						id: '',
 						enable: {
 							start: 0,
@@ -58,8 +57,8 @@ export function EvaluateClearGrafiks(
 						priority: 100,
 						layer: GraphicLLayer.GraphicLLayerAdLibs,
 						content: {
-							deviceType: DeviceType.VIZMSE,
-							type: TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
+							deviceType: TSR.DeviceType.VIZMSE,
+							type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
 						}
 					})
 				]

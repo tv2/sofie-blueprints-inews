@@ -1,9 +1,9 @@
-import { DeviceType } from 'timeline-state-resolver-types'
 import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -45,7 +45,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 			if (piece.content) {
 				;(parentPiece.content!.timelineObjects as TimelineObjectCoreExt[]).push(
 					...(piece.content.timelineObjects as TimelineObjectCoreExt[]).filter(
-						obj => obj.content.deviceType !== DeviceType.ATEM // Remove any timeline objects that affect PGM
+						obj => obj.content.deviceType !== TSR.DeviceType.ATEM // Remove any timeline objects that affect PGM
 						// TODO: Keyers?
 					)
 				)

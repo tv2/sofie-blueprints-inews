@@ -1,14 +1,9 @@
 import {
-	DeviceType,
-	TimelineContentTypeVizMSE,
-	TimelineObjVIZMSEAny,
-	TimelineObjVIZMSEElementInternal
-} from 'timeline-state-resolver-types'
-import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan
+	PieceLifespan,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionGrafik, GraphicLLayer, literal, PartContext2, PartDefinitionKam } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
@@ -98,8 +93,8 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
-						literal<TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -107,8 +102,8 @@ describe('grafik piece', () => {
 							priority: 1,
 							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
@@ -163,8 +158,8 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
-						literal<TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
 								start: 0
@@ -172,8 +167,8 @@ describe('grafik piece', () => {
 							priority: 1,
 							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
@@ -233,8 +228,8 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
-						literal<TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -242,8 +237,8 @@ describe('grafik piece', () => {
 							priority: 1,
 							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
@@ -305,8 +300,8 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
-					timelineObjects: literal<TimelineObjVIZMSEAny[]>([
-						literal<TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
@@ -314,8 +309,8 @@ describe('grafik piece', () => {
 							priority: 1,
 							layer: GraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
-								deviceType: DeviceType.VIZMSE,
-								type: TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'

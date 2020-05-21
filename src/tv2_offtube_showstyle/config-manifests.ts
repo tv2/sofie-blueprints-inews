@@ -1,5 +1,4 @@
-import { DeviceType } from 'timeline-state-resolver-types'
-import { ConfigManifestEntry, ConfigManifestEntryType } from 'tv-automation-sofie-blueprints-integration'
+import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'tv-automation-sofie-blueprints-integration'
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
@@ -200,7 +199,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 					'The Sofie Layer mapping to use in playback. This will ensure proper graphic transition logic by matching the graphic layers.',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
-					deviceTypes: [DeviceType.CASPARCG]
+					deviceTypes: [TSR.DeviceType.CASPARCG]
 				},
 				multiple: false,
 				required: true,

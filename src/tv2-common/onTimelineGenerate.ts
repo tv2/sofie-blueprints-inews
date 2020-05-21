@@ -1,11 +1,4 @@
 import {
-	DeviceType,
-	TimelineContentTypeAtem,
-	TimelineContentTypeSisyfos,
-	TimelineObjAtemSsrc,
-	TimelineObjSisyfosAny
-} from 'timeline-state-resolver-types'
-import {
 	BlueprintResultTimeline,
 	IBlueprintPieceDB,
 	OnGenerateTimelineObj,
@@ -14,7 +7,8 @@ import {
 	PieceMetaData as PieceMetaDataBase,
 	RundownContext,
 	TimelineObjectCoreExt,
-	TimelinePersistentState
+	TimelinePersistentState,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
@@ -203,11 +197,11 @@ export function getEndStateForPart(
 function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 	// DVE_box lookahead class
 	_.each(timeline, obj => {
-		const obj2 = obj as TimelineObjAtemSsrc & TimelineBlueprintExt
+		const obj2 = obj as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
 		if (
 			obj2.isLookahead &&
-			obj2.content.deviceType === DeviceType.ATEM &&
-			obj2.content.type === TimelineContentTypeAtem.SSRC
+			obj2.content.deviceType === TSR.DeviceType.ATEM &&
+			obj2.content.type === TSR.TimelineContentTypeAtem.SSRC
 			// obj2.enable &&
 			// (obj2.enable.while === '1' || obj2.enable.while === 1)
 		) {
@@ -245,11 +239,11 @@ export function preservePieceSisfosLevel(
 	}
 }
 
-function isSisyfosSource(obj: Partial<TimelineObjSisyfosAny & TimelineObjectCoreExt>) {
+function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosAny & TimelineObjectCoreExt>) {
 	return (
 		obj.content &&
-		obj.content.deviceType === DeviceType.SISYFOS &&
-		obj.content.type === TimelineContentTypeSisyfos.SISYFOS
+		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
+		obj.content.type === TSR.TimelineContentTypeSisyfos.SISYFOS
 	)
 }
 
@@ -261,7 +255,7 @@ export function copyPreviousSisyfosLevels(
 ) {
 	// This needs to look at previous pieces within the part, to make it work for adlibs
 	const sisyfosObjs = (timelineObjs as Array<
-		TimelineObjSisyfosAny & TimelineBlueprintExt & OnGenerateTimelineObj
+		TSR.TimelineObjSisyfosAny & TimelineBlueprintExt & OnGenerateTimelineObj
 	>).filter(isSisyfosSource)
 
 	// Pieces should be ordered, we shall assume that
