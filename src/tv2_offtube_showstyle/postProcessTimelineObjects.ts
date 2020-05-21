@@ -70,7 +70,8 @@ export function postProcessPieceTimelineObjects(
 							type: TSR.TimelineContentTypeAtem.ME,
 							me: {
 								previewInput:
-									tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
+									tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default,
+								transitionPreview: true
 							}
 						},
 						metaData: {
