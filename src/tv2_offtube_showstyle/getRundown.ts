@@ -648,7 +648,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEClean,
+			layer: OfftubeAtemLLayer.AtemMENext,
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
