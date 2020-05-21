@@ -642,6 +642,19 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				}
 			}
 		}),
+		literal<TSR.TimelineObjAtemME>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: OfftubeAtemLLayer.AtemMEClean,
+			content: {
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
+				me: {
+					previewInput: config.studio.AtemSource.Default
+				}
+			}
+		}),
 
 		// route default outputs
 		literal<TSR.TimelineObjAtemAUX>({
