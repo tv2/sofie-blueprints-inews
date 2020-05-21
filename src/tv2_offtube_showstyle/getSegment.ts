@@ -18,8 +18,11 @@ import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
 import { OfftubeCreatePartVO } from './parts/OfftubeVO'
+import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+	const config = parseConfig(context)
+
 	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
 		parseConfig,
 		TransformCuesIntoShowstyle,
@@ -37,9 +40,13 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartTelefon: CreatePartUnknown
 	})
 
+	const blueprintParts = result.parts
+
+	postProcessPartTimelineObjects(context, config, blueprintParts)
+
 	return {
 		segment: result.segment,
-		parts: result.parts
+		parts: blueprintParts
 	}
 }
 

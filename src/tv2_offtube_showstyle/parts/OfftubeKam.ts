@@ -115,7 +115,7 @@ export function OfftubeCreatePartKam(
 								start: 0
 							},
 							priority: 1,
-							layer: OfftubeAtemLLayer.AtemMEProgram,
+							layer: OfftubeAtemLLayer.AtemMEClean,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,

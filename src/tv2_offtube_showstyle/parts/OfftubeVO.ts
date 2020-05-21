@@ -65,7 +65,7 @@ export function OfftubeCreatePartVO(
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 				},
 				ATEM: {
-					MEPGM: OfftubeAtemLLayer.AtemMEProgram
+					MEPGM: OfftubeAtemLLayer.AtemMEClean
 				}
 			}),
 			adlibPreroll: config.studio.CasparPrerollDuration

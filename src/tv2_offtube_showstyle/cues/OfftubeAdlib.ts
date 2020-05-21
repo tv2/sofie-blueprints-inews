@@ -37,7 +37,7 @@ export function OfftubeEvaluateAdLib(
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 			},
 			ATEM: {
-				MEPGM: OfftubeAtemLLayer.AtemMEProgram
+				MEPGM: OfftubeAtemLLayer.AtemMEClean
 			},
 			STICKY_LAYERS: config.stickyLayers,
 			PgmServer: OffTubeSourceLayer.SelectedAdLibServer,
@@ -68,7 +68,7 @@ export function OfftubeEvaluateAdLib(
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 				},
 				ATEM: {
-					MEPGM: OfftubeAtemLLayer.AtemMEProgram
+					MEPGM: OfftubeAtemLLayer.AtemMEClean
 				},
 				STICKY_LAYERS: config.stickyLayers,
 				PgmServer: OffTubeSourceLayer.PgmServer,
