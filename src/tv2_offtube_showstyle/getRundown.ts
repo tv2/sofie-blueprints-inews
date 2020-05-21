@@ -37,6 +37,7 @@ import { boxLayers, boxMappings, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content
 import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { GetSisyfosTimelineObjForCamera } from './helpers/sisyfos'
 import { OfftubeOutputLayers, OffTubeSourceLayer } from './layers'
+import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,
@@ -622,6 +623,7 @@ function getGlobalAdLibPiecesOffTube(
 			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
 		})
 
+	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
 }
 
