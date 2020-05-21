@@ -653,8 +653,7 @@ function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					previewInput: config.studio.AtemSource.Default,
-					transitionPreview: true
+					previewInput: config.studio.AtemSource.Default
 				}
 			}
 		}),
