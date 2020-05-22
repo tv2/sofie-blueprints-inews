@@ -274,7 +274,7 @@ export function MakeContentDVE2<
 
 	let valid = true
 	let server = false
-	const timelineStartObjId = `ssrc-${partDefinition?.externalId ?? ''}-${dveConfig.DVEName}`
+	const timelineStartObjId = `ssrc_${partDefinition?.externalId ?? ''}_${dveConfig.DVEName}`.replace(/-/g, '_')
 
 	boxMap.forEach((mappingFrom, num) => {
 		if (mappingFrom === undefined || mappingFrom.source === '') {
