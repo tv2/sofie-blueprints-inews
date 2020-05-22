@@ -803,6 +803,45 @@
                 "float": false
             },
             "parts": []
+        },
+        {
+            "externalId": "00000000:00000000:0000017",
+            "name": "EKSTERN",
+            "rank": 17,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "18",
+                        "title" : "EKSTERN",
+                        "tapeTime": "0",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        ["EKSTERN=LIVE 1"]
+                    ],
+                    "id" : "00000000:00000000:00000017",
+                    "body" : "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000017",
+                    "identifier" : "00000017"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000017",
+                "rank": 17,
+                "name": "EKSTERN",
+                "float": false
+            },
+            "parts": []
         }
     ]
 }

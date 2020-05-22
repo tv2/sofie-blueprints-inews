@@ -1,14 +1,14 @@
 import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition } from 'tv2-common'
-import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
-import { SourceLayer } from '../../layers'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
+import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OffTubeSourceLayer } from '../layers'
 
-export function EvaluateEkstern(
+export function OfftubeEvaluateEkstern(
 	context: PartContext,
-	config: BlueprintConfig,
+	config: OffTubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
+	_adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
@@ -19,16 +19,16 @@ export function EvaluateEkstern(
 		context,
 		config,
 		pieces,
-		adlibPieces,
+		[],
 		partId,
 		parsedCue,
 		partDefinition,
 		{
 			SourceLayer: {
-				PgmLive: SourceLayer.PgmLive
+				PgmLive: OffTubeSourceLayer.PgmLive
 			},
 			ATEM: {
-				MEProgram: AtemLLayer.AtemMEProgram
+				MEProgram: OfftubeAtemLLayer.AtemMEProgram
 			}
 		},
 		adlib,

@@ -2,6 +2,7 @@ import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automatio
 import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartDefinition } from 'tv2-common'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
+import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
 import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { OfftubeEvaluateTargetEngine } from '../cues/OfftubeTargetEngine'
@@ -24,7 +25,8 @@ export function OfftubeEvaluateCues(
 			EvaluateCueTargetEngine: OfftubeEvaluateTargetEngine,
 			EvaluateCueGrafik: OfftubeEvaluateGrafikCaspar,
 			EvaluateCueJingle: OfftubeEvaluateJingle,
-			EvaluateCueAdLib: OfftubeEvaluateAdLib
+			EvaluateCueAdLib: OfftubeEvaluateAdLib,
+			EvaluateCueEkstern: OfftubeEvaluateEkstern
 		},
 		context,
 		config,
