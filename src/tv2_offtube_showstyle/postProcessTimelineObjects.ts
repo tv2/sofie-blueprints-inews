@@ -76,7 +76,8 @@ export function postProcessPieceTimelineObjects(
 						metaData: {
 							context: `Lookahead-lookahead for ${tlObj.id}`,
 							mediaPlayerSession: tlObj.metaData?.mediaPlayerSession // TODO - does this work the same?
-						}
+						},
+						classes: ['ab_on_preview']
 					})
 					extraObjs.push(lookaheadObj)
 				}

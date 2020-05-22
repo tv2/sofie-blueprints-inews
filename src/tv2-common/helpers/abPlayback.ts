@@ -295,7 +295,11 @@ function updateObjectsToMediaPlayer<
 			const atemObj = obj as TSR.TimelineObjAtemAny
 			if (atemObj.content.type === TSR.TimelineContentTypeAtem.ME) {
 				const atemObj2 = atemObj as TSR.TimelineObjAtemME
-				atemObj2.content.me.input = Number(atemInput.val) || 0
+				if (atemObj2.classes?.includes('ab_on_preview')) {
+					atemObj2.content.me.previewInput = Number(atemInput.val) || 0
+				} else {
+					atemObj2.content.me.input = Number(atemInput.val) || 0
+				}
 			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.AUX) {
 				const atemObj2 = atemObj as TSR.TimelineObjAtemAUX
 				atemObj2.content.aux.input = Number(atemInput.val) || 0
