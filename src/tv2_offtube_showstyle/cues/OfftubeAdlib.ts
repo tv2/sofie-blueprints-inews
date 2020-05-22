@@ -89,7 +89,7 @@ export function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant) // TODO - is this correct?
+		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
 			context.warning(`Could not find template ${parsedCue.variant}`)
 			return

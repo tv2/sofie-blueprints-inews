@@ -19,13 +19,13 @@ if (rundownData.length !== 1) {
 segmentData.forEach(seg => {
     let parts = partData.filter(e => e.segmentId === seg.segmentId)
     parts = parts.map(e => e.data)
-    parts = parts.sort((a, b) => b.rank - a.rank) // TODO - check order
+    parts = parts.sort((a, b) => b.rank - a.rank)
 
     seg.data.parts = parts
 })
 
 let segments = segmentData.map(s => s.data)
-segments = segments.sort((a, b) => b.rank - a.rank) // TODO - check order
+segments = segments.sort((a, b) => b.rank - a.rank)
 
 const rundown = rundownData[0].data
 rundown.segments = segments
