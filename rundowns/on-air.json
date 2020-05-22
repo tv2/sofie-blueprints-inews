@@ -476,6 +476,147 @@
                 "float": false
             },
             "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02378",
+            "name": "Test Segment 8",
+            "rank": 8,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 8",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "7",
+                        "audioTime": "180",
+                        "totalTime": "187",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "06"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [
+                        [
+                            "GRAFIK=FULL",
+                            "INP1=LIVE 1"
+                        ],
+                        [
+                            "#cg4 pilotdata",
+                            "Senderplan/15-05-2020",
+                            "VCPID=2616731",
+                            "Continuecount=-1",
+                            "Senderplan/15-05-2020"
+                        ]
+                    ],
+                    "id": "341dd48e:011f7352:5da02378",
+                    "body": "\r\n<p><pi>100%GRAFIK</pi></p>\r\n<p><a idref=\"0\"></a><a idref=\"1\"></a></p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02378",
+                "rank": 0,
+                "name": "Test Segment 8",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da02379",
+            "name": "Test Segment 9",
+            "rank": 9,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 9",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "06"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [],
+                    "id": "341dd48e:011f7352:5da02379",
+                    "body": "\r\n<p><pi>EVS1VO</pi></p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02379",
+                "rank": 0,
+                "name": "Test Segment 9",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "341dd48e:011f7352:5da023780",
+            "name": "Test Segment 10",
+            "rank": 10,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.ON-AIR",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Test Segment 10",
+                        "var2": "INDSL",
+                        "var3": " ",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1570775924",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 19:00",
+                        "noarchive": ".",
+                        "videoId": "01234A",
+                        "pageNumber": "06"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140",
+                        "float": ""
+                    },
+                    "cues": [],
+                    "id": "341dd48e:011f7352:5da02380",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "341dd48e:011f7352:5da02380",
+                "rank": 0,
+                "name": "Test Segment 10",
+                "float": false
+            },
+            "parts": []
         }
     ]
 }
