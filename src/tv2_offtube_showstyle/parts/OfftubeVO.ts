@@ -106,7 +106,7 @@ export function OfftubeCreatePartVO(
 	adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlibsOnly: true })
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
 	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
 		CueType.Grafik,
