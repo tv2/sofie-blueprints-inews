@@ -28,7 +28,7 @@ export function OfftubeEvaluateEkstern(
 				PgmLive: OffTubeSourceLayer.PgmLive
 			},
 			ATEM: {
-				MEProgram: OfftubeAtemLLayer.AtemMEProgram
+				MEProgram: OfftubeAtemLLayer.AtemMEClean
 			}
 		},
 		adlib,
