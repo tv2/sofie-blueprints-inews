@@ -107,9 +107,7 @@ export function OfftubeCreatePartServer(
 	adlibServer.expectedDuration = duration
 
 	// TODO: Merge graphics into server part as timeline objects
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {
-		adlibsOnly: true
-	})
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
 	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
 		CueType.Grafik,
