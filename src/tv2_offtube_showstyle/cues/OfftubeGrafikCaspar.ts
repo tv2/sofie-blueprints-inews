@@ -74,35 +74,55 @@ export function OfftubeEvaluateGrafikCaspar(
 			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			outputLayerId: OfftubeOutputLayers.OVERLAY,
 			infiniteMode: PieceLifespan.Infinite, // TODO: Flow producer graphic timing
-			tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
+			tags: [AdlibTags.ADLIB_KOMMENTATOR],
 			content: {
 				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
 		})
 		adlibPieces.push(adLibPiece)
 
-		const piece = literal<IBlueprintPiece>({
-			_id: '',
-			externalId: partDefinition.externalId,
-			name: `${grafikName(config, parsedCue)}`,
-			...(isTlfPrimary || engine === 'WALL'
-				? { enable: { start: 0 } }
-				: {
-						enable: {
-							...CreateTimingGrafik(config, parsedCue)
-						}
-				  }),
-			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-			outputLayerId: OfftubeOutputLayers.OVERLAY,
-			infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
-			...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
-				? {}
-				: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
-			content: {
-				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
-			}
-		})
-		pieces.push(piece)
+		if (parsedCue.adlib) {
+			adlibPieces.push(
+				literal<IBlueprintAdLibPiece>({
+					_rank: rank || 0,
+					externalId: partDefinition.externalId,
+					name: `${grafikName(config, parsedCue)}`,
+					sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+					outputLayerId: OfftubeOutputLayers.OVERLAY,
+					infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+					...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
+						? {}
+						: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
+					content: {
+						timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
+					}
+				})
+			)
+		} else {
+			const piece = literal<IBlueprintPiece>({
+				_id: '',
+				externalId: partDefinition.externalId,
+				name: `${grafikName(config, parsedCue)}`,
+				...(isTlfPrimary || engine === 'WALL'
+					? { enable: { start: 0 } }
+					: {
+							enable: {
+								...CreateTimingGrafik(config, parsedCue)
+							}
+					  }),
+				sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+				outputLayerId: OfftubeOutputLayers.OVERLAY,
+				infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
+					? {}
+					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
+				content: {
+					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
+				}
+			})
+			pieces.push(piece)
+		}
 	}
 }
 
