@@ -10,6 +10,7 @@ import {
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibTags, CueType } from 'tv2-constants'
+import _ = require('underscore')
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -176,7 +177,7 @@ export function makeofftubeDVEIDsUniqueForFlow(timeline: TimelineObjectCoreExt[]
 	const newId = `${startId}_flow`
 
 	return timeline.map(tlObj => {
-		const enable = tlObj.enable
+		const enable = _.clone(tlObj.enable)
 
 		if (enable.start && typeof enable.start === 'string') {
 			enable.start = enable.start.replace(startId, newId)
