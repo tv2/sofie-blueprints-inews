@@ -71,7 +71,7 @@ export function OfftubeEvaluateDVE(
 			_rank: rank || 0,
 			externalId: partDefinition.externalId,
 			name: `${parsedCue.template}`,
-			outputLayerId: 'pgm',
+			outputLayerId: 'selectedAdlib',
 			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
 			infiniteMode: PieceLifespan.OutOnNextSegment,
 			toBeQueued: true,

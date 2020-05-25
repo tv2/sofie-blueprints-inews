@@ -128,7 +128,7 @@ export function OfftubeEvaluateAdLib(
 				externalId: partId,
 				name: `DVE: ${parsedCue.variant}`,
 				sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
-				outputLayerId: 'pgm',
+				outputLayerId: 'selectedAdlib',
 				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid,
