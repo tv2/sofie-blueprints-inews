@@ -52,7 +52,7 @@ export function OfftubeCreatePartVO(
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
-			sourceLayerId: OfftubeSourceLayer.PgmServer,
+			sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [segmentExternalId]
