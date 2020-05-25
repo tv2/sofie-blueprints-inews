@@ -10,6 +10,7 @@ import {
 	TimelinePersistentState,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
+import { ControlClasses } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
@@ -72,7 +73,9 @@ export function onTimelineGenerate<
 	const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)
 
 	// Find any placeholders to replace
-	const objsToReplace = timeline.filter(o => o.classes?.includes(`dve_placeholder`) && !o.id.match(/^previous/i))
+	const objsToReplace = timeline.filter(
+		o => o.classes?.includes(ControlClasses.DVEPlaceholder) && !o.id.match(/^previous/i)
+	)
 
 	// Replace contents of placeholder objects
 	// TOD: Replace this with an adlib action

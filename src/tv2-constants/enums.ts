@@ -60,5 +60,8 @@ export enum AdlibTags {
 
 export enum ControlClasses {
 	ShowIdentGraphic = 'show_ident_graphic',
-	DVEOnAir = 'dve_on_air' // DVE Part is on air
+	/** Indicates that a DVE is currently on air */
+	DVEOnAir = 'dve_on_air',
+	/** Used as a placeholder for onTimelineGenerate to do clips-in-DVE. */
+	DVEPlaceholder = 'dve_placeholder'
 }

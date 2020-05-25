@@ -106,7 +106,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				},
 				metaData: {
 					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`,
-					mediaPlayerSession: mediaPlayer ? 'dve_placeholder' : undefined
+					mediaPlayerSession: mediaPlayer ? ControlClasses.DVEPlaceholder : undefined
 				}
 			})
 		)
@@ -430,7 +430,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: ['dve_placeholder']
+					mediaPlayerSessions: [ControlClasses.DVEPlaceholder]
 				}),
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -448,7 +448,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 								isPgm: 1
 							},
 							metaData: {
-								mediaPlayerSession: 'dve_placeholder'
+								mediaPlayerSession: ControlClasses.DVEPlaceholder
 							}
 						}),
 						literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
@@ -465,9 +465,9 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 								noStarttime: true
 							},
 							metaData: {
-								mediaPlayerSession: 'dve_placeholder'
+								mediaPlayerSession: ControlClasses.DVEPlaceholder
 							},
-							classes: ['dve_placeholder']
+							classes: [ControlClasses.DVEPlaceholder]
 						})
 					])
 				}
