@@ -20,7 +20,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { CueType, VizEngine } from 'tv2-constants'
+import { CueType, GraphicEngine } from 'tv2-constants'
 
 export interface EvaluateCuesShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
@@ -33,7 +33,7 @@ export interface EvaluateCuesShowstyleOptions<
 		adlibPieces: IBlueprintAdLibPiece[],
 		partId: string,
 		parsedCue: CueDefinitionGrafik,
-		engine: VizEngine, // TODO: Generic name for offtubes?
+		engine: GraphicEngine, // TODO: Generic name for offtubes?
 		adlib: boolean,
 		partDefinition?: PartDefinition,
 		isTlfPrimary?: boolean,
@@ -46,7 +46,7 @@ export interface EvaluateCuesShowstyleOptions<
 		adlibPieces: IBlueprintAdLibPiece[],
 		partId: string,
 		parsedCue: CueDefinitionMOS,
-		engine: VizEngine,
+		engine: GraphicEngine,
 		adlib?: boolean,
 		isTlf?: boolean,
 		rank?: number,

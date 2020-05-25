@@ -18,7 +18,7 @@ import {
 	PartToParentClass,
 	TranslateEngine
 } from 'tv2-common'
-import { AdlibTags, ControlClasses, CueType, Enablers, VizEngine } from 'tv2-constants'
+import { AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine } from 'tv2-constants'
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -30,7 +30,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	adlibPieces: IBlueprintAdLibPiece[],
 	_partid: string,
 	parsedCue: CueDefinitionGrafik,
-	_engine: VizEngine,
+	_engine: GraphicEngine,
 	_adlib: boolean,
 	partDefinition: PartDefinition,
 	isTlfPrimary?: boolean,
@@ -108,7 +108,7 @@ export function OfftubeEvaluateGrafikCaspar(
 
 export function GetCasparOverlayTimeline(
 	config: OfftubeShowstyleBlueprintConfig,
-	engine: VizEngine,
+	engine: GraphicEngine,
 	parsedCue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition: PartDefinition
@@ -356,7 +356,7 @@ function CreateFullContent(
 
 // TODO: Is this valid for offtubes?
 function GetEnableForGrafikOfftube(
-	engine: VizEngine,
+	engine: GraphicEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
@@ -388,7 +388,7 @@ function GetEnableForGrafikOfftube(
 }
 
 export function GetInfiniteModeForGrafik(
-	engine: VizEngine,
+	engine: GraphicEngine,
 	config: OfftubeShowstyleBlueprintConfig,
 	parsedCue: CueDefinitionGrafik,
 	isTlf?: boolean,

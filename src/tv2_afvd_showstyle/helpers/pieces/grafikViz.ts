@@ -17,7 +17,7 @@ import {
 	PartDefinition,
 	PartToParentClass
 } from 'tv2-common'
-import { ControlClasses, CueType, VizEngine } from 'tv2-constants'
+import { ControlClasses, CueType, GraphicEngine } from 'tv2-constants'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
 import { EvaluateDesign } from './design'
@@ -29,7 +29,7 @@ export function EvaluateGrafikViz(
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
 	parsedCue: CueDefinitionGrafik,
-	engine: VizEngine,
+	engine: GraphicEngine,
 	adlib: boolean,
 	partDefinition?: PartDefinition,
 	isTlfPrimary?: boolean,
@@ -169,7 +169,7 @@ export function EvaluateGrafikViz(
 }
 
 function GetEnableForGrafik(
-	engine: VizEngine,
+	engine: GraphicEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
@@ -195,7 +195,7 @@ function GetEnableForGrafik(
 }
 
 export function GetInfiniteModeForGrafik(
-	engine: VizEngine,
+	engine: GraphicEngine,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionGrafik,
 	isTlf?: boolean,

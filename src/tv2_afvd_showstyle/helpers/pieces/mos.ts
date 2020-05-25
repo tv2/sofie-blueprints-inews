@@ -16,7 +16,7 @@ import {
 	literal,
 	SourceInfo
 } from 'tv2-common'
-import { VizEngine } from 'tv2-constants'
+import { GraphicEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -29,7 +29,7 @@ export function EvaluateMOSViz(
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
 	parsedCue: CueDefinitionMOS,
-	engine: VizEngine,
+	engine: GraphicEngine,
 	adlib?: boolean,
 	isTlf?: boolean,
 	rank?: number,
@@ -85,7 +85,7 @@ function makeMosAdlib(
 	partId: string,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
-	engine: VizEngine,
+	engine: GraphicEngine,
 	isOverlay: boolean,
 	isTlf?: boolean,
 	rank?: number,
@@ -112,7 +112,7 @@ function makeMosAdlib(
 }
 
 function GetOutputLayer(
-	engine: VizEngine,
+	engine: GraphicEngine,
 	overrideOverlay: boolean,
 	isOverlay: boolean,
 	isTlf: boolean,
@@ -127,7 +127,7 @@ function GetOutputLayer(
 		: 'overlay'
 }
 
-function GetSourceLayer(engine: VizEngine, isTlf?: boolean, isOverlay?: boolean): SourceLayer {
+function GetSourceLayer(engine: GraphicEngine, isTlf?: boolean, isOverlay?: boolean): SourceLayer {
 	return engine === 'WALL'
 		? SourceLayer.WallGraphics
 		: isTlf
@@ -138,7 +138,7 @@ function GetSourceLayer(engine: VizEngine, isTlf?: boolean, isOverlay?: boolean)
 }
 
 function GetInfiniteMode(
-	engine: VizEngine,
+	engine: GraphicEngine,
 	parsedCue: CueDefinitionMOS,
 	isTlf?: boolean,
 	isGrafikPart?: boolean
@@ -154,7 +154,7 @@ function GetInfiniteMode(
 
 function GetMosObjContent(
 	context: NotesContext,
-	engine: VizEngine,
+	engine: GraphicEngine,
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionMOS,
 	partId: string,
