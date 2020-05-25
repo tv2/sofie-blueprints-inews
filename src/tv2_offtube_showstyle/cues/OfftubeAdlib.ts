@@ -173,7 +173,7 @@ export function makeofftubeDVEIDsUniqueForFlow(timeline: TimelineObjectCoreExt[]
 		return timeline
 	}
 
-	const newId = `${startId}-flow`
+	const newId = `${startId}_flow`
 
 	return timeline.map(tlObj => {
 		const enable = tlObj.enable
