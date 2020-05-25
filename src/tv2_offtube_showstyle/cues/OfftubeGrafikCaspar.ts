@@ -283,7 +283,7 @@ function CreateFullAdLib(
 		toBeQueued: true,
 		canCombineQueue: !flowProducer,
 		infiniteMode: flowProducer ? PieceLifespan.OutOnNextPart : PieceLifespan.OutOnNextSegment,
-		tags: flowProducer ? ['flow_producer'] : [],
+		tags: flowProducer ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [],
 		content: CreateFullContent(config, partDefinition, template, flowProducer)
 	})
 }
