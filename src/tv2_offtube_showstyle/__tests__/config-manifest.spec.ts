@@ -1,8 +1,8 @@
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'
-import { OffTubeShowStyleConfig } from '../helpers/config'
+import { OfftubeShowStyleConfig } from '../helpers/config'
 
-const blankShowStyleConfig: OffTubeShowStyleConfig = {
+const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	DVEStyles: [],
 	GFXTemplates: [],
 	WipesConfig: [],

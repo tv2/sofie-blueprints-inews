@@ -2,12 +2,12 @@ import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automatio
 import { CueDefinitionVIZ, EvaluateVIZBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateVIZ(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -24,7 +24,7 @@ export function OfftubeEvaluateVIZ(
 		parsedCue,
 		false,
 		{
-			SourceLayerDVEBackground: OffTubeSourceLayer.PgmDVEBackground,
+			SourceLayerDVEBackground: OfftubeSourceLayer.PgmDVEBackground,
 			CasparLLayerDVELoop: OfftubeCasparLLayer.CasparCGDVELoop
 		},
 		adlib,

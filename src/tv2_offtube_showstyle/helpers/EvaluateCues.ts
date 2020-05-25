@@ -7,11 +7,11 @@ import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { OfftubeEvaluateTargetEngine } from '../cues/OfftubeTargetEngine'
 import { OfftubeEvaluateVIZ } from '../cues/OfftubeViz'
-import { OffTubeShowstyleBlueprintConfig } from './config'
+import { OfftubeShowstyleBlueprintConfig } from './config'
 
 export function OfftubeEvaluateCues(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	cues: CueDefinition[],

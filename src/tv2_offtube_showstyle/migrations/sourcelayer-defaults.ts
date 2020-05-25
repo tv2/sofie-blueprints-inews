@@ -1,11 +1,11 @@
 import { ISourceLayer, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeSourceLayer } from '../layers'
 
 // OVERLAY group
 const OVERLAY: ISourceLayer[] = [
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsIdent,
+		_id: OfftubeSourceLayer.PgmGraphicsIdent,
 		_rank: 10,
 		name: 'Ident',
 		abbreviation: 'G',
@@ -24,7 +24,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsIdentPersistent,
+		_id: OfftubeSourceLayer.PgmGraphicsIdentPersistent,
 		_rank: 10,
 		name: 'Ident Persistent',
 		abbreviation: 'G',
@@ -43,7 +43,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsTop,
+		_id: OfftubeSourceLayer.PgmGraphicsTop,
 		_rank: 20,
 		name: 'Top',
 		abbreviation: 'G',
@@ -62,7 +62,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsLower,
+		_id: OfftubeSourceLayer.PgmGraphicsLower,
 		_rank: 30,
 		name: 'Bund',
 		abbreviation: 'G',
@@ -81,7 +81,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsHeadline,
+		_id: OfftubeSourceLayer.PgmGraphicsHeadline,
 		_rank: 40,
 		name: 'Headline',
 		abbreviation: 'G',
@@ -100,7 +100,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsOverlay,
+		_id: OfftubeSourceLayer.PgmGraphicsOverlay,
 		_rank: 50,
 		name: 'Overlay',
 		abbreviation: 'O',
@@ -119,7 +119,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsTLF,
+		_id: OfftubeSourceLayer.PgmGraphicsTLF,
 		_rank: 60,
 		name: 'Telefon',
 		abbreviation: 'TLF',
@@ -138,7 +138,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmGraphicsTema,
+		_id: OfftubeSourceLayer.PgmGraphicsTema,
 		_rank: 70,
 		name: 'Tema',
 		abbreviation: 'T',
@@ -157,7 +157,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.WallGraphics,
+		_id: OfftubeSourceLayer.WallGraphics,
 		_rank: 80,
 		name: 'Wall',
 		abbreviation: 'Wall',
@@ -180,7 +180,7 @@ const OVERLAY: ISourceLayer[] = [
 // JINGLE group
 const JINGLE: ISourceLayer[] = [
 	{
-		_id: OffTubeSourceLayer.PgmJingle,
+		_id: OfftubeSourceLayer.PgmJingle,
 		_rank: 10,
 		name: 'Jingle',
 		abbreviation: '',
@@ -203,7 +203,7 @@ const JINGLE: ISourceLayer[] = [
 // PGM group
 const PGM: ISourceLayer[] = [
 	{
-		_id: OffTubeSourceLayer.PgmSourceSelect,
+		_id: OfftubeSourceLayer.PgmSourceSelect,
 		_rank: 0,
 		name: 'Source Select',
 		abbreviation: '',
@@ -222,7 +222,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmCam,
+		_id: OfftubeSourceLayer.PgmCam,
 		_rank: 0,
 		name: 'Kam',
 		abbreviation: 'K',
@@ -241,7 +241,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.PgmLive,
+		_id: OfftubeSourceLayer.PgmLive,
 		_rank: 0,
 		name: 'Live',
 		abbreviation: 'L',
@@ -261,7 +261,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.PgmDVE,
+		_id: OfftubeSourceLayer.PgmDVE,
 		_rank: 0,
 		name: 'DVE',
 		abbreviation: 'D',
@@ -281,7 +281,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.PgmServer,
+		_id: OfftubeSourceLayer.PgmServer,
 		_rank: 0,
 		name: 'Server',
 		abbreviation: 'S',
@@ -300,7 +300,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.PgmVoiceOver,
+		_id: OfftubeSourceLayer.PgmVoiceOver,
 		_rank: 0,
 		name: 'Voice Over',
 		abbreviation: 'VO',
@@ -319,7 +319,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.PgmFull,
+		_id: OfftubeSourceLayer.PgmFull,
 		_rank: 0,
 		name: 'Full',
 		abbreviation: 'Full',
@@ -338,7 +338,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.PgmDVEBackground,
+		_id: OfftubeSourceLayer.PgmDVEBackground,
 		_rank: 50,
 		name: 'DVE Background',
 		abbreviation: '',
@@ -357,7 +357,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmContinuity,
+		_id: OfftubeSourceLayer.PgmContinuity,
 		_rank: 50,
 		name: 'CONTINUITY',
 		abbreviation: 'CONTINUITY',
@@ -376,7 +376,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.PgmDVEBox1,
+		_id: OfftubeSourceLayer.PgmDVEBox1,
 		_rank: 0,
 		name: 'DVE INP1',
 		abbreviation: 'DB1',
@@ -396,7 +396,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmDVEBox2,
+		_id: OfftubeSourceLayer.PgmDVEBox2,
 		_rank: 0,
 		name: 'DVE INP2',
 		abbreviation: 'DB2',
@@ -416,7 +416,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmDVEBox3,
+		_id: OfftubeSourceLayer.PgmDVEBox3,
 		_rank: 0,
 		name: 'DVE INP3',
 		abbreviation: 'DB3',
@@ -435,7 +435,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OffTubeSourceLayer.PgmDVEBox4,
+		_id: OfftubeSourceLayer.PgmDVEBox4,
 		_rank: 0,
 		name: 'DVE INP4',
 		abbreviation: 'DB4',
@@ -458,7 +458,7 @@ const PGM: ISourceLayer[] = [
 // MANUS group
 const MANUS: ISourceLayer[] = [
 	{
-		_id: OffTubeSourceLayer.PgmScript,
+		_id: OfftubeSourceLayer.PgmScript,
 		_rank: 20,
 		name: 'Manus',
 		abbreviation: '',
@@ -484,7 +484,7 @@ const SEC: ISourceLayer[] = []
 // SELECTED_ADLIB group
 const SELECTED_ADLIB: ISourceLayer[] = [
 	{
-		_id: OffTubeSourceLayer.SelectedAdLibDVE,
+		_id: OfftubeSourceLayer.SelectedAdLibDVE,
 		_rank: 0,
 		name: 'DVE',
 		abbreviation: 'D',
@@ -503,7 +503,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.SelectedAdLibServer,
+		_id: OfftubeSourceLayer.SelectedAdLibServer,
 		_rank: 0,
 		name: 'Server',
 		abbreviation: 'S',
@@ -522,7 +522,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.SelectedAdLibVoiceOver,
+		_id: OfftubeSourceLayer.SelectedAdLibVoiceOver,
 		_rank: 0,
 		name: 'Voice Over',
 		abbreviation: 'VO',
@@ -541,7 +541,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OffTubeSourceLayer.SelectedAdlibGraphicsFull,
+		_id: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
 		_rank: 0,
 		name: 'GFX Full',
 		abbreviation: 'GFX Full',
@@ -564,7 +564,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 // AUX group
 const AUX: ISourceLayer[] = [
 	{
-		_id: OffTubeSourceLayer.AuxStudioScreen,
+		_id: OfftubeSourceLayer.AuxStudioScreen,
 		_rank: 20,
 		name: 'Studio',
 		abbreviation: '',

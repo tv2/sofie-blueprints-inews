@@ -25,13 +25,13 @@ import {
 	TransitionSettings
 } from 'tv2-common'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartKam(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
@@ -56,7 +56,7 @@ export function OfftubeCreatePartKam(
 				name: 'CS 3 (JINGLE)',
 				enable: { start: 0 },
 				outputLayerId: 'pgm',
-				sourceLayerId: OffTubeSourceLayer.PgmJingle,
+				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
 					studioLabel: '',
@@ -102,7 +102,7 @@ export function OfftubeCreatePartKam(
 				name: part.title,
 				enable: { start: 0 },
 				outputLayerId: 'pgm',
-				sourceLayerId: OffTubeSourceLayer.PgmCam,
+				sourceLayerId: OfftubeSourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 				content: {
@@ -141,7 +141,7 @@ export function OfftubeCreatePartKam(
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
-	AddScript(partDefinition, pieces, partTime, OffTubeSourceLayer.PgmScript)
+	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

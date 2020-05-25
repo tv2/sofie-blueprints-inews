@@ -18,13 +18,13 @@ import {
 import { AdlibTags, Enablers } from 'tv2-constants'
 import { OfftubeAbstractLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeSourceLayer } from '../layers'
 import { makeofftubeDVEIDsUniqueForFlow } from './OfftubeAdlib'
 
 export function OfftubeEvaluateDVE(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partDefinition: PartDefinition,
@@ -72,7 +72,7 @@ export function OfftubeEvaluateDVE(
 			externalId: partDefinition.externalId,
 			name: `${parsedCue.template}`,
 			outputLayerId: 'pgm',
-			sourceLayerId: OffTubeSourceLayer.SelectedAdLibDVE,
+			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
 			infiniteMode: PieceLifespan.OutOnNextSegment,
 			toBeQueued: true,
 			canCombineQueue: true,
@@ -84,7 +84,7 @@ export function OfftubeEvaluateDVE(
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				...dveAdlib,
-				sourceLayerId: OffTubeSourceLayer.PgmDVE,
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				content: {
@@ -121,7 +121,7 @@ export function OfftubeEvaluateDVE(
 					...(end ? { duration: end - start } : {})
 				},
 				outputLayerId: 'pgm',
-				sourceLayerId: OffTubeSourceLayer.PgmDVE,
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
 				content: {

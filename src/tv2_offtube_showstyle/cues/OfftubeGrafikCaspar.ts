@@ -20,11 +20,11 @@ import {
 } from 'tv2-common'
 import { AdlibTags, ControlClasses, CueType, Enablers, VizEngine } from 'tv2-constants'
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OfftubeOutputLayers, OffTubeSourceLayer } from '../layers'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	_context: PartContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -107,7 +107,7 @@ export function OfftubeEvaluateGrafikCaspar(
 }
 
 export function GetCasparOverlayTimeline(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	engine: VizEngine,
 	parsedCue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
@@ -250,7 +250,7 @@ function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefi
 }
 
 function CreateFullPiece(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	template: string
 ): IBlueprintPiece {
@@ -261,7 +261,7 @@ function CreateFullPiece(
 		},
 		externalId: partDefinition.externalId,
 		name: `${template}`,
-		sourceLayerId: OffTubeSourceLayer.SelectedAdlibGraphicsFull, // TODO: Something else?
+		sourceLayerId: OfftubeSourceLayer.SelectedAdlibGraphicsFull, // TODO: Something else?
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB, // TODO: PGM
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		content: CreateFullContent(config, partDefinition, template, true)
@@ -269,7 +269,7 @@ function CreateFullPiece(
 }
 
 function CreateFullAdLib(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	template: string,
 	flowProducer: boolean
@@ -278,7 +278,7 @@ function CreateFullAdLib(
 		_rank: 0,
 		externalId: partDefinition.externalId,
 		name: `${template}`,
-		sourceLayerId: flowProducer ? OffTubeSourceLayer.PgmFull : OffTubeSourceLayer.SelectedAdlibGraphicsFull,
+		sourceLayerId: flowProducer ? OfftubeSourceLayer.PgmFull : OfftubeSourceLayer.SelectedAdlibGraphicsFull,
 		outputLayerId: flowProducer ? OfftubeOutputLayers.PGM : OfftubeOutputLayers.SELECTED_ADLIB,
 		toBeQueued: true,
 		canCombineQueue: !flowProducer,
@@ -289,7 +289,7 @@ function CreateFullAdLib(
 }
 
 function CreateFullContent(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	_partDefinition: PartDefinition,
 	template: string,
 	flowProducer: boolean
@@ -389,7 +389,7 @@ function GetEnableForGrafikOfftube(
 
 export function GetInfiniteModeForGrafik(
 	engine: VizEngine,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	parsedCue: CueDefinitionGrafik,
 	isTlf?: boolean,
 	isIdent?: boolean
@@ -406,7 +406,7 @@ export function GetInfiniteModeForGrafik(
 }
 
 export function FindInfiniteModeFromConfig(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	parsedCue: CueDefinitionGrafik
 ): PieceLifespan {
 	if (config.showStyle.GFXTemplates) {
@@ -435,40 +435,40 @@ export function FindInfiniteModeFromConfig(
 	return PieceLifespan.Normal
 }
 
-function GetSourceLayerForGrafik(config: OffTubeShowstyleBlueprintConfig, name: string) {
+function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
 
 	if (!conf) {
-		return OffTubeSourceLayer.PgmGraphicsOverlay
+		return OfftubeSourceLayer.PgmGraphicsOverlay
 	}
 
 	switch (conf.SourceLayer) {
 		// TODO: When adding more sourcelayers
 		// This is here to guard against bad user input
-		case OffTubeSourceLayer.PgmGraphicsHeadline:
-			return OffTubeSourceLayer.PgmGraphicsHeadline
-		case OffTubeSourceLayer.PgmGraphicsIdent:
-			return OffTubeSourceLayer.PgmGraphicsIdent
-		case OffTubeSourceLayer.PgmGraphicsLower:
-			return OffTubeSourceLayer.PgmGraphicsLower
-		case OffTubeSourceLayer.PgmGraphicsOverlay:
-			return OffTubeSourceLayer.PgmGraphicsOverlay
-		case OffTubeSourceLayer.PgmGraphicsTLF:
-			return OffTubeSourceLayer.PgmGraphicsTLF
-		case OffTubeSourceLayer.PgmGraphicsTema:
-			return OffTubeSourceLayer.PgmGraphicsTema
-		case OffTubeSourceLayer.PgmGraphicsTop:
-			return OffTubeSourceLayer.PgmGraphicsTop
-		case OffTubeSourceLayer.WallGraphics:
-			return OffTubeSourceLayer.WallGraphics
+		case OfftubeSourceLayer.PgmGraphicsHeadline:
+			return OfftubeSourceLayer.PgmGraphicsHeadline
+		case OfftubeSourceLayer.PgmGraphicsIdent:
+			return OfftubeSourceLayer.PgmGraphicsIdent
+		case OfftubeSourceLayer.PgmGraphicsLower:
+			return OfftubeSourceLayer.PgmGraphicsLower
+		case OfftubeSourceLayer.PgmGraphicsOverlay:
+			return OfftubeSourceLayer.PgmGraphicsOverlay
+		case OfftubeSourceLayer.PgmGraphicsTLF:
+			return OfftubeSourceLayer.PgmGraphicsTLF
+		case OfftubeSourceLayer.PgmGraphicsTema:
+			return OfftubeSourceLayer.PgmGraphicsTema
+		case OfftubeSourceLayer.PgmGraphicsTop:
+			return OfftubeSourceLayer.PgmGraphicsTop
+		case OfftubeSourceLayer.WallGraphics:
+			return OfftubeSourceLayer.WallGraphics
 		default:
-			return OffTubeSourceLayer.PgmGraphicsOverlay
+			return OfftubeSourceLayer.PgmGraphicsOverlay
 	}
 }
 
-export function GetTimelineLayerForGrafik(config: OffTubeShowstyleBlueprintConfig, name: string) {
+export function GetTimelineLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
@@ -497,7 +497,7 @@ export function GetTimelineLayerForGrafik(config: OffTubeShowstyleBlueprintConfi
 }
 
 function grafikName(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	parsedCue: CueDefinitionGrafik | CueDefinitionMOS
 ): string {
 	if (parsedCue.type === CueType.Grafik) {
@@ -510,7 +510,7 @@ function grafikName(
 }
 
 export function GetGrafikDuration(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	cue: CueDefinitionGrafik | CueDefinitionMOS
 ): number | undefined {
 	if (config.showStyle.GFXTemplates) {
@@ -540,7 +540,7 @@ export function GetGrafikDuration(
 
 // TODO: This is copied from gallery D
 export function CreateTimingGrafik(
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	cue: CueDefinitionGrafik | CueDefinitionMOS
 ): { start: number; duration?: number } {
 	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
@@ -560,7 +560,7 @@ export function CreateTimingGrafik(
 	return ret
 }
 
-function GetTemplateName(config: OffTubeShowstyleBlueprintConfig, cue: CueDefinitionGrafik): string {
+function GetTemplateName(config: OfftubeShowstyleBlueprintConfig, cue: CueDefinitionGrafik): string {
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(templ =>
 			templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
@@ -574,7 +574,7 @@ function GetTemplateName(config: OffTubeShowstyleBlueprintConfig, cue: CueDefini
 	return cue.template
 }
 
-function GetDefaultOut(config: OffTubeShowstyleBlueprintConfig): number {
+function GetDefaultOut(config: OfftubeShowstyleBlueprintConfig): number {
 	if (config.showStyle.DefaultTemplateDuration !== undefined) {
 		return Number(config.showStyle.DefaultTemplateDuration) * 1000
 	}

@@ -1,14 +1,14 @@
 import { PartContext, SplitsContent } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionDVE, DVEConfigInput, DVEOptions, MakeContentDVEBase, PartDefinition } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeSourceLayer } from '../layers'
 
 export const boxLayers = {
-	INP1: OffTubeSourceLayer.PgmDVEBox1,
-	INP2: OffTubeSourceLayer.PgmDVEBox2,
-	INP3: OffTubeSourceLayer.PgmDVEBox3,
-	INP4: OffTubeSourceLayer.PgmDVEBox4
+	INP1: OfftubeSourceLayer.PgmDVEBox1,
+	INP2: OfftubeSourceLayer.PgmDVEBox2,
+	INP3: OfftubeSourceLayer.PgmDVEBox3,
+	INP4: OfftubeSourceLayer.PgmDVEBox4
 }
 
 export const boxMappings: [string, string, string, string] = [
@@ -50,7 +50,7 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 
 export function OfftubeMakeContentDVE(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,

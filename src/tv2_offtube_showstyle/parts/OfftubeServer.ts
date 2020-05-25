@@ -16,14 +16,14 @@ import {
 } from 'tv2-common'
 import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartServer(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	segmentExternalId: string
 ): BlueprintResultPart {
@@ -52,7 +52,7 @@ export function OfftubeCreatePartServer(
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
-			sourceLayerId: OffTubeSourceLayer.PgmServer,
+			sourceLayerId: OfftubeSourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [segmentExternalId]
@@ -81,8 +81,8 @@ export function OfftubeCreatePartServer(
 		file,
 		false,
 		{
-			PgmServer: OffTubeSourceLayer.SelectedAdLibServer,
-			PgmVoiceOver: OffTubeSourceLayer.SelectedAdLibVoiceOver,
+			PgmServer: OfftubeSourceLayer.SelectedAdLibServer,
+			PgmVoiceOver: OfftubeSourceLayer.SelectedAdLibVoiceOver,
 			Caspar: {
 				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 			},
@@ -116,7 +116,7 @@ export function OfftubeCreatePartServer(
 	])
 	adLibPieces.push(adlibServer)
 
-	AddScript(partDefinition, pieces, duration, OffTubeSourceLayer.PgmScript)
+	AddScript(partDefinition, pieces, duration, OfftubeSourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

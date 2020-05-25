@@ -7,7 +7,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { OffTubeShowstyleBlueprintConfig } from './config'
+import { OfftubeShowstyleBlueprintConfig } from './config'
 import { OfftubeEvaluateCues } from './EvaluateCues'
 
 /**
@@ -20,7 +20,7 @@ import { OfftubeEvaluateCues } from './EvaluateCues'
  */
 export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLibPiece>(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	parentPiece: T,
 	selectedCueTypes?: CueType[]

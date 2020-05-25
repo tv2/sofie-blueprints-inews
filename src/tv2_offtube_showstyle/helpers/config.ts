@@ -9,7 +9,7 @@ import * as _ from 'underscore'
 import {
 	applyToConfig,
 	defaultStudioConfig,
-	OfftubeStudioBlueprintConfig as OffTubeBlueprintConfigBase,
+	OfftubeStudioBlueprintConfig,
 	parseStudioConfig
 } from '../../tv2_offtube_studio/helpers/config'
 import { showStyleConfigManifest } from '../config-manifests'
@@ -27,8 +27,8 @@ export interface TableConfigItemGFXTemplates {
 	IsDesign: boolean
 }
 
-export interface OffTubeShowstyleBlueprintConfig extends OffTubeBlueprintConfigBase {
-	showStyle: OffTubeShowStyleConfig
+export interface OfftubeShowstyleBlueprintConfig extends OfftubeStudioBlueprintConfig {
+	showStyle: OfftubeShowStyleConfig
 }
 
 export interface DVEConfigInput {
@@ -43,7 +43,7 @@ export interface DVEConfigInput {
 	// [key: string]: BasicConfigItemValue
 }
 
-export interface OffTubeShowStyleConfig {
+export interface OfftubeShowStyleConfig {
 	CasparCGLoadingClip: string
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
@@ -55,10 +55,10 @@ export interface OffTubeShowStyleConfig {
 
 function extendWithShowStyleConfig(
 	context: NotesContext,
-	baseConfig: OffTubeBlueprintConfigBase,
+	baseConfig: OfftubeStudioBlueprintConfig,
 	values: { [key: string]: ConfigItemValue }
-): OffTubeShowstyleBlueprintConfig {
-	const config = literal<OffTubeShowstyleBlueprintConfig>({
+): OfftubeShowstyleBlueprintConfig {
+	const config = literal<OfftubeShowstyleBlueprintConfig>({
 		...baseConfig,
 		showStyle: {} as any
 	})
@@ -68,10 +68,10 @@ function extendWithShowStyleConfig(
 	return config
 }
 
-export function defaultConfig(context: NotesContext): OffTubeShowstyleBlueprintConfig {
+export function defaultConfig(context: NotesContext): OfftubeShowstyleBlueprintConfig {
 	return extendWithShowStyleConfig(context, defaultStudioConfig(context), {})
 }
 
-export function parseConfig(context: ShowStyleContext): OffTubeShowstyleBlueprintConfig {
+export function parseConfig(context: ShowStyleContext): OfftubeShowstyleBlueprintConfig {
 	return extendWithShowStyleConfig(context, parseStudioConfig(context), context.getShowStyleConfig())
 }

@@ -11,11 +11,11 @@ import {
 import { literal, PartContext2, TimelineBlueprintExt } from 'tv2-common'
 import _ = require('underscore')
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig } from './helpers/config'
+import { OfftubeShowstyleBlueprintConfig } from './helpers/config'
 
 export function postProcessPartTimelineObjects(
 	context: SegmentContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	parts: BlueprintResultPart[]
 ) {
 	_.each(parts, part => {
@@ -28,7 +28,7 @@ export function postProcessPartTimelineObjects(
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
 	context: NotesContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean
 ) {

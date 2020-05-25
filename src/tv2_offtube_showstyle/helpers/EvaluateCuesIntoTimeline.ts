@@ -2,11 +2,11 @@ import { PartContext, TSR } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinition, PartDefinition, SkipCue } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GetCasparOverlayTimeline } from '../cues/OfftubeGrafikCaspar'
-import { OffTubeShowstyleBlueprintConfig } from './config'
+import { OfftubeShowstyleBlueprintConfig } from './config'
 
 export function EvaluateCuesIntoTimeline(
 	_context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	/** Passing this arguments sets the types of cues to evaluate. */

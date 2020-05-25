@@ -7,13 +7,13 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { AddScript, literal, PartDefinitionDVE, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartDVE(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionDVE,
 	totalWords: number
 ): BlueprintResultPart {
@@ -38,7 +38,7 @@ export function OfftubeCreatePartDVE(
 		part.invalid = true
 	}
 
-	AddScript(partDefinition, pieces, partTime, OffTubeSourceLayer.PgmScript)
+	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
 	return {
 		part,

@@ -14,12 +14,12 @@ import {
 } from 'tv2-common'
 import { AdlibTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	parsedCue: CueDefinitionJingle,
@@ -62,7 +62,7 @@ export function OfftubeEvaluateJingle(
 			_rank: rank ?? 0,
 			externalId: `${part.externalId}-JINGLE-adlib`,
 			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
-			sourceLayerId: OffTubeSourceLayer.PgmJingle,
+			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			outputLayerId: 'jingle',
 			content: createJingleContent(config, file),
 			toBeQueued: true,
@@ -86,13 +86,13 @@ export function OfftubeEvaluateJingle(
 			},
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			outputLayerId: 'jingle',
-			sourceLayerId: OffTubeSourceLayer.PgmJingle,
+			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			content: createJingleContent(config, file)
 		})
 	)
 }
 
-function createJingleContent(config: OffTubeShowstyleBlueprintConfig, file: string) {
+function createJingleContent(config: OfftubeShowstyleBlueprintConfig, file: string) {
 	return CreateJingleContentBase(
 		config,
 		file,

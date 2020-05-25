@@ -6,13 +6,13 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { AddScript, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeSourceLayer } from '../layers'
 
 export function CreatePartUnknown(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
 	asAdlibs?: boolean
@@ -38,7 +38,7 @@ export function CreatePartUnknown(
 		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
-	AddScript(partDefinition, pieces, partTime, OffTubeSourceLayer.PgmScript)
+	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -11,8 +11,8 @@ import {
 import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
-import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
-import { OffTubeSourceLayer } from './layers'
+import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
+import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
 import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
@@ -50,7 +50,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 	}
 }
 
-function CreatePartContinuity(config: OffTubeShowstyleBlueprintConfig, ingestSegment: IngestSegment) {
+function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSegment: IngestSegment) {
 	return literal<BlueprintResultPart>({
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
@@ -65,7 +65,7 @@ function CreatePartContinuity(config: OffTubeShowstyleBlueprintConfig, ingestSeg
 					start: 0
 				},
 				name: 'CONTINUITY',
-				sourceLayerId: OffTubeSourceLayer.PgmContinuity,
+				sourceLayerId: OfftubeSourceLayer.PgmContinuity,
 				outputLayerId: 'pgm',
 				infiniteMode: PieceLifespan.OutOnNextSegment,
 				content: literal<CameraContent>({

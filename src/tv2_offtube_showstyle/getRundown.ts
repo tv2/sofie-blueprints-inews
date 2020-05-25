@@ -34,9 +34,9 @@ import {
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers, boxMappings, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
-import { OffTubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
+import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { GetSisyfosTimelineObjForCamera } from './helpers/sisyfos'
-import { OfftubeOutputLayers, OffTubeSourceLayer } from './layers'
+import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -81,20 +81,20 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 			expectedStart: startTime,
 			expectedDuration: endTime - startTime
 		}),
-		globalAdLibPieces: getGlobalAdLibPiecesOffTube(context, config),
+		globalAdLibPieces: getGlobalAdLibPiecesOfftube(context, config),
 		baseline: getBaseline(config)
 	}
 }
 
-function getGlobalAdLibPiecesOffTube(
+function getGlobalAdLibPiecesOfftube(
 	context: NotesContext,
-	config: OffTubeShowstyleBlueprintConfig
+	config: OfftubeShowstyleBlueprintConfig
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
 	let globalRank = 1000
 
-	function makeSsrcAdlibBoxes(layer: OffTubeSourceLayer, port: number, mediaPlayer?: boolean) {
+	function makeSsrcAdlibBoxes(layer: OfftubeSourceLayer, port: number, mediaPlayer?: boolean) {
 		// Generate boxes with classes to map across each layer
 		const boxObjs = _.map(boxMappings, (m, i) =>
 			literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
@@ -133,7 +133,7 @@ function getGlobalAdLibPiecesOffTube(
 			externalId: 'cam',
 			name: `Kamera ${info.id}`,
 			_rank: rank,
-			sourceLayerId: OffTubeSourceLayer.PgmCam,
+			sourceLayerId: OfftubeSourceLayer.PgmCam,
 			outputLayerId: OfftubeOutputLayers.PGM,
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
@@ -206,7 +206,7 @@ function getGlobalAdLibPiecesOffTube(
 	// ssrc box
 	function makeCameraAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		_.forEach(_.values(boxLayers), (layer: OffTubeSourceLayer, i) => {
+		_.forEach(_.values(boxLayers), (layer: OfftubeSourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
 
 			res.push({
@@ -238,7 +238,7 @@ function getGlobalAdLibPiecesOffTube(
 			externalId: 'live',
 			name: info.id + '',
 			_rank: rank,
-			sourceLayerId: OffTubeSourceLayer.PgmLive,
+			sourceLayerId: OfftubeSourceLayer.PgmLive,
 			outputLayerId: OfftubeOutputLayers.PGM,
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
@@ -317,7 +317,7 @@ function getGlobalAdLibPiecesOffTube(
 	// ssrc box
 	function makeRemoteAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		_.forEach(_.values(boxLayers), (layer: OffTubeSourceLayer, i) => {
+		_.forEach(_.values(boxLayers), (layer: OfftubeSourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
 
 			res.push({
@@ -386,7 +386,7 @@ function getGlobalAdLibPiecesOffTube(
 				externalId: `dve-${dveConfig.DVEName}`,
 				name: (dveConfig.DVEName || 'DVE') + '',
 				_rank: 200 + i,
-				sourceLayerId: OffTubeSourceLayer.SelectedAdLibDVE,
+				sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				expectedDuration: 0,
 				infiniteMode: PieceLifespan.OutOnNextPart,
@@ -407,7 +407,7 @@ function getGlobalAdLibPiecesOffTube(
 					_rank: globalRank++,
 					externalId: 'setNextToCam',
 					name: `Kamera ${o.id}`,
-					sourceLayerId: OffTubeSourceLayer.PgmCam,
+					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
@@ -446,7 +446,7 @@ function getGlobalAdLibPiecesOffTube(
 					_rank: globalRank++,
 					externalId: `setNextToRemote-${o.id}`,
 					name: `Live ${o.id}`,
-					sourceLayerId: OffTubeSourceLayer.PgmLive,
+					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
@@ -481,7 +481,7 @@ function getGlobalAdLibPiecesOffTube(
 			_rank: globalRank++,
 			externalId: 'setNextToFull',
 			name: 'Full Graphic',
-			sourceLayerId: OffTubeSourceLayer.PgmFull,
+			sourceLayerId: OfftubeSourceLayer.PgmFull,
 			outputLayerId: OfftubeOutputLayers.PGM,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
@@ -517,7 +517,7 @@ function getGlobalAdLibPiecesOffTube(
 			_rank: globalRank++,
 			externalId: 'setNextToJingle',
 			name: 'Set Jingle Next',
-			sourceLayerId: OffTubeSourceLayer.PgmSourceSelect,
+			sourceLayerId: OfftubeSourceLayer.PgmSourceSelect,
 			outputLayerId: OfftubeOutputLayers.SEC,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
@@ -533,7 +533,7 @@ function getGlobalAdLibPiecesOffTube(
 			_rank: globalRank++,
 			externalId: 'setNextToServer',
 			name: 'Server',
-			sourceLayerId: OffTubeSourceLayer.PgmServer,
+			sourceLayerId: OfftubeSourceLayer.PgmServer,
 			outputLayerId: OfftubeOutputLayers.PGM,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
@@ -563,7 +563,7 @@ function getGlobalAdLibPiecesOffTube(
 			_rank: globalRank++,
 			externalId: 'setNextToDVE',
 			name: 'DVE',
-			sourceLayerId: OffTubeSourceLayer.PgmDVE,
+			sourceLayerId: OfftubeSourceLayer.PgmDVE,
 			outputLayerId: OfftubeOutputLayers.PGM,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
@@ -627,7 +627,7 @@ function getGlobalAdLibPiecesOffTube(
 	return adlibItems
 }
 
-function getBaseline(config: OffTubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
+function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
 		// Default timeline
 		literal<TSR.TimelineObjAtemME>({

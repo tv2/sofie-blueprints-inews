@@ -12,12 +12,12 @@ import {
 import { AdlibTags, CueType } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
-import { OffTubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OffTubeSourceLayer } from '../layers'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateAdLib(
 	context: PartContext,
-	config: OffTubeShowstyleBlueprintConfig,
+	config: OfftubeShowstyleBlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
@@ -40,8 +40,8 @@ export function OfftubeEvaluateAdLib(
 				MEPGM: OfftubeAtemLLayer.AtemMEClean
 			},
 			STICKY_LAYERS: config.stickyLayers,
-			PgmServer: OffTubeSourceLayer.SelectedAdLibServer,
-			PgmVoiceOver: OffTubeSourceLayer.SelectedAdLibVoiceOver
+			PgmServer: OfftubeSourceLayer.SelectedAdLibServer,
+			PgmVoiceOver: OfftubeSourceLayer.SelectedAdLibVoiceOver
 		})
 		adlibServer.toBeQueued = true
 		adlibServer.canCombineQueue = true
@@ -71,8 +71,8 @@ export function OfftubeEvaluateAdLib(
 					MEPGM: OfftubeAtemLLayer.AtemMEClean
 				},
 				STICKY_LAYERS: config.stickyLayers,
-				PgmServer: OffTubeSourceLayer.PgmServer,
-				PgmVoiceOver: OffTubeSourceLayer.PgmVoiceOver
+				PgmServer: OfftubeSourceLayer.PgmServer,
+				PgmVoiceOver: OfftubeSourceLayer.PgmVoiceOver
 			}
 		)
 		adlibFlowProducer.toBeQueued = true
@@ -127,7 +127,7 @@ export function OfftubeEvaluateAdLib(
 				_rank: rank,
 				externalId: partId,
 				name: `DVE: ${parsedCue.variant}`,
-				sourceLayerId: OffTubeSourceLayer.SelectedAdLibDVE,
+				sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
 				outputLayerId: 'pgm',
 				toBeQueued: true,
 				content: content.content,
@@ -143,7 +143,7 @@ export function OfftubeEvaluateAdLib(
 				_rank: rank,
 				externalId: partId,
 				name: `DVE: ${parsedCue.variant}`,
-				sourceLayerId: OffTubeSourceLayer.PgmDVE,
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				outputLayerId: 'pgm',
 				toBeQueued: true,
 				content: {

@@ -22,11 +22,11 @@ export enum SourceLayer {
 }
 
 // tslint:disable-next-line: variable-name
-export const OffTubeSourceLayer = {
+export const OfftubeSourceLayer = {
 	...SourceLayer,
 	...SharedSourceLayers
 }
-export type OffTubeSourceLayer = SourceLayer | SharedSourceLayers
+export type OfftubeSourceLayer = SourceLayer | SharedSourceLayers
 
 export enum OfftubeOutputLayers {
 	SEC = 'sec',
