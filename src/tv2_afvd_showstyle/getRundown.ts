@@ -660,7 +660,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: 'sec',
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
-		tags: [AdlibTags.STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSELoadAllElements>({
@@ -688,7 +688,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: 'sec',
 		expectedDuration: 1000,
 		infiniteMode: PieceLifespan.Normal,
-		tags: [AdlibTags.STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSEElementContinue>({
@@ -720,7 +720,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: 'sec',
 		expectedDuration: 2000,
 		infiniteMode: PieceLifespan.Normal,
-		tags: [AdlibTags.STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSEClearAllElements>({
@@ -804,7 +804,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmDSK,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
-		tags: [AdlibTags.STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjAtemDSK>({
@@ -831,7 +831,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
-		tags: [AdlibTags.STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -859,7 +859,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
-		tags: [AdlibTags.STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -887,7 +887,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Normal,
-		tags: [AdlibTags.STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 1000,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([

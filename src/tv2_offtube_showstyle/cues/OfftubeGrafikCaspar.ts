@@ -73,8 +73,8 @@ export function OfftubeEvaluateGrafikCaspar(
 			name: `${grafikName(config, parsedCue)}`,
 			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			outputLayerId: OfftubeOutputLayers.OVERLAY,
-			infiniteMode: PieceLifespan.Infinite,
-			tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+			infiniteMode: PieceLifespan.Infinite, // TODO: Flow producer graphic timing
+			tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
 			content: {
 				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
@@ -283,7 +283,7 @@ function CreateFullAdLib(
 		toBeQueued: true,
 		canCombineQueue: !flowProducer,
 		infiniteMode: flowProducer ? PieceLifespan.OutOnNextPart : PieceLifespan.OutOnNextSegment,
-		tags: flowProducer ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [],
+		tags: flowProducer ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [AdlibTags.ADLIB_KOMMENTATOR],
 		content: CreateFullContent(config, partDefinition, template, flowProducer)
 	})
 }

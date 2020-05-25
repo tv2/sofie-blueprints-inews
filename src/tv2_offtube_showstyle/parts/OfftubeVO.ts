@@ -102,7 +102,7 @@ export function OfftubeCreatePartVO(
 	adlibServer.name = file
 	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
-	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER]
+	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 	adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
 

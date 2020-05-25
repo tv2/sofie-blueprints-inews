@@ -72,7 +72,7 @@ export function OfftubeEvaluateJingle(
 			expectedDuration: props.expectedDuration,
 			adlibDisableOutTransition: false,
 			infiniteMode: PieceLifespan.OutOnNextPart,
-			tags: [AdlibTags.OFFTUBE_100pc_SERVER] // TODO: Maybe this should be different?
+			tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR] // TODO: Maybe this should be different?
 		})
 	)
 

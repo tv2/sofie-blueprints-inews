@@ -77,7 +77,8 @@ export function OfftubeEvaluateDVE(
 			toBeQueued: true,
 			canCombineQueue: true,
 			content: adlibContent.content,
-			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
+			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+			tags: [AdlibTags.ADLIB_KOMMENTATOR]
 		})
 		adlibPieces.push(dveAdlib)
 
