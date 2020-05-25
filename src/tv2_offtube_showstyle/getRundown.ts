@@ -16,6 +16,7 @@ import {
 	GetEksternMetaData,
 	GetLayersForCamera,
 	GetLayersForEkstern,
+	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	MakeContentDVE2,
@@ -35,7 +36,6 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers, boxMappings, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
-import { GetSisyfosTimelineObjForCamera } from './helpers/sisyfos'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -128,7 +128,7 @@ function getGlobalAdLibPiecesOfftube(
 	}
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`)
+		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
 		res.push({
 			externalId: 'cam',
 			name: `Kamera ${info.id}`,
@@ -220,7 +220,7 @@ function getGlobalAdLibPiecesOfftube(
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForCamera(`Kamera ${info.id}`, { while: audioWhile })
+						...GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`, { while: audioWhile })
 					])
 				}
 			})
@@ -232,7 +232,7 @@ function getGlobalAdLibPiecesOfftube(
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
 			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
-			...GetSisyfosTimelineObjForCamera('telefon')
+			...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
 		]
 		res.push({
 			externalId: 'live',
@@ -334,7 +334,7 @@ function getGlobalAdLibPiecesOfftube(
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
 							while: audioWhile
 						}),
-						...GetSisyfosTimelineObjForCamera('telefon', { while: audioWhile })
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', { while: audioWhile })
 					])
 				}
 			})

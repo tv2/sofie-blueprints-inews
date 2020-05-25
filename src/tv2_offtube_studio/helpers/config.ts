@@ -9,10 +9,11 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	assertUnreachable,
+	getLiveAudioLayers,
+	getStickyLayers,
 	MediaPlayerConfig,
 	SourceInfo,
 	TableConfigItemSourceMapping,
-	TableConfigItemSourceMappingWithSisyfos,
 	TV2StudioConfigBase
 } from 'tv2-common'
 import * as _ from 'underscore'
@@ -37,8 +38,6 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	MediaFlowId: string
 	ClipFileExtension: string
 	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
-	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
-	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
@@ -145,6 +144,8 @@ export function defaultStudioConfig(context: NotesContext): OfftubeStudioBluepri
 
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
+	config.liveAudio = getLiveAudioLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio)
 
 	return config
 }

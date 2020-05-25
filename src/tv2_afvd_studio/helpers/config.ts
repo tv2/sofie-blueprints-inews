@@ -9,6 +9,8 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	assertUnreachable,
+	getLiveAudioLayers,
+	getStickyLayers,
 	MediaPlayerConfig,
 	SourceInfo,
 	TableConfigItemSourceMapping,
@@ -17,7 +19,6 @@ import {
 } from 'tv2-common'
 import * as _ from 'underscore'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
-import { getLiveAudioLayers, getStickyLayers } from '../../tv2_afvd_showstyle/helpers/sisyfos/sisyfos'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { parseMediaPlayers, parseSources } from './sources'
 
@@ -40,9 +41,6 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	MediaFlowId: string
 	ClipFileExtension: string
 	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
-	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
-	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
-	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesDelayedPlayback: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean

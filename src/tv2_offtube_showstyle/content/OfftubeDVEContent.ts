@@ -1,5 +1,14 @@
 import { PartContext, SplitsContent } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionDVE, DVEConfigInput, DVEOptions, MakeContentDVEBase, PartDefinition } from 'tv2-common'
+import {
+	CueDefinitionDVE,
+	DVEConfigInput,
+	DVEOptions,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEkstern,
+	MakeContentDVEBase,
+	PartDefinition
+} from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
@@ -38,9 +47,9 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		}
 	},
 	dveTimelineGenerators: {
-		GetSisyfosTimelineObjForCamera: () => [], // TODO
-		GetSisyfosTimelineObjForEkstern: () => [], // TODO,
-		GetLayersForEkstern: () => [] // TODO
+		GetSisyfosTimelineObjForCamera,
+		GetSisyfosTimelineObjForEkstern,
+		GetLayersForEkstern
 	},
 	boxLayers,
 	boxMappings,

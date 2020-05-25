@@ -9,6 +9,7 @@ import {
 	AddScript,
 	CreateAdlibServer,
 	CreatePartServerBase,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	MakeContentServer,
 	PartDefinition
@@ -18,7 +19,6 @@ import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '..
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
-import { GetSisyfosTimelineObjForCamera } from '../helpers/sisyfos'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartVO(
@@ -104,7 +104,7 @@ export function OfftubeCreatePartVO(
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 	adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
-	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera('server'))
+	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
