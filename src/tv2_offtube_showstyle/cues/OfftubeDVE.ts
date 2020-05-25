@@ -84,6 +84,7 @@ export function OfftubeEvaluateDVE(
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				...dveAdlib,
+				outputLayerId: 'pgm',
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
