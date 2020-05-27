@@ -61,7 +61,7 @@ export function postProcessPieceTimelineObjects(
 					// Create a lookahead-lookahead object for this me-program
 					const lookaheadObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 						id: '',
-						enable: { start: 0 },
+						enable: tlObj.enable.while ? { while: tlObj.enable.while } : { start: 0 },
 						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
 						layer: OfftubeAtemLLayer.AtemMENext,
 						holdMode: tlObj.holdMode,
