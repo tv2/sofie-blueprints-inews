@@ -571,7 +571,7 @@ function getGlobalAdLibPiecesOfftube(
 			content: {
 				timelineObjects: [
 					literal<TSR.TimelineObjAbstractAny>({
-						id: '',
+						id: 'dveProgramEnabler',
 						enable: {
 							while: '1'
 						},
@@ -581,6 +581,23 @@ function getGlobalAdLibPiecesOfftube(
 							deviceType: TSR.DeviceType.ABSTRACT
 						},
 						classes: [Enablers.OFFTUBE_ENABLE_DVE]
+					}),
+					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+						id: '',
+						enable: { start: 0 },
+						priority: 0, // Must be below lookahead, except when forced by hold
+						layer: OfftubeAtemLLayer.AtemMENext,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								previewInput: AtemSourceIndex.SSrc
+							}
+						},
+						metaData: {
+							context: `Lookahead-lookahead for dveProgramEnabler`
+						},
+						classes: ['ab_on_preview']
 					})
 				]
 			},
