@@ -329,7 +329,7 @@ function CreateFullContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: template,
+					file: `${template}.png`, // TODO: REMOVEME: .png hardcoded for simulated tests
 					loop: true,
 					mixer: {
 						opacity: 100
