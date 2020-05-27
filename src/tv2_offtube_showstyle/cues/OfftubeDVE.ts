@@ -76,7 +76,15 @@ export function OfftubeEvaluateDVE(
 			infiniteMode: PieceLifespan.OutOnNextSegment,
 			toBeQueued: true,
 			canCombineQueue: true,
-			content: adlibContent.content,
+			content: {
+				...adlibContent.content,
+				timelineObjects: adlibContent.content.timelineObjects.map(tlObj => {
+					return {
+						...tlObj,
+						classes: tlObj.classes ? [...tlObj.classes, 'dont_create_lookahead'] : undefined
+					}
+				})
+			},
 			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 			tags: [AdlibTags.ADLIB_KOMMENTATOR]
 		})

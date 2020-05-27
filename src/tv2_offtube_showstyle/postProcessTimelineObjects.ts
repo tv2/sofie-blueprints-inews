@@ -56,7 +56,8 @@ export function postProcessPieceTimelineObjects(
 				if (
 					(!isAdlib || piece.toBeQueued) &&
 					'me' in tlObj.content &&
-					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined)
+					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined) &&
+					!tlObj.classes?.includes('dont_create_lookahead')
 				) {
 					// Create a lookahead-lookahead object for this me-program
 					const lookaheadObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
