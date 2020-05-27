@@ -67,7 +67,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				name: 'CONTINUITY',
 				sourceLayerId: OfftubeSourceLayer.PgmContinuity,
 				outputLayerId: 'pgm',
-				infiniteMode: PieceLifespan.OutOnNextSegment,
+				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: literal<CameraContent>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
