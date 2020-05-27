@@ -101,7 +101,7 @@ export function OfftubeCreatePartServer(
 	)
 	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
-	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER]
+	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 	adlibServer.name = file
 	// TODO: This should happen in above function
 	adlibServer.expectedDuration = duration
