@@ -9,7 +9,7 @@ import {
 import { onTimelineGenerate } from 'tv2-common'
 import * as _ from 'underscore'
 import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
-import { CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from './layers'
+import { AtemLLayer, CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from './layers'
 
 export function onTimelineGenerateAFVD(
 	context: PartEventContext,
@@ -36,6 +36,7 @@ export function onTimelineGenerateAFVD(
 				PlayerB: SisyfosLLAyer.SisyfosSourceServerB
 			}
 		},
-		CasparLLayer.CasparPlayerClipPending
+		CasparLLayer.CasparPlayerClipPending,
+		AtemLLayer.AtemMEProgram
 	)
 }

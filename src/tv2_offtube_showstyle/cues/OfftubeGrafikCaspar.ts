@@ -350,7 +350,8 @@ function CreateFullContent(
 						input: config.studio.AtemSource.GFXFull,
 						transition: TSR.AtemTransitionStyle.CUT
 					}
-				}
+				},
+				classes: [ControlClasses.NOLookahead]
 			}),
 			...(flowProducer
 				? [

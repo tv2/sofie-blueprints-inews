@@ -10,7 +10,7 @@ import {
 	TimelinePersistentState,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { ControlClasses } from 'tv2-constants'
+import { ControlClasses, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
@@ -37,6 +37,8 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 		context?: string
 		sisyfosPersistLevel?: boolean
 		mediaPlayerSession?: string
+		/** Use for when onTimelineGenerate should assign based on some conditions */
+		mediaPlayerSessionToAssign?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 	}
 }
@@ -62,7 +64,8 @@ export function onTimelineGenerate<
 	resolvedPieces: IBlueprintPieceDB[],
 	parseConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
-	casparLayerClipPending: string
+	casparLayerClipPending: string,
+	atemLayerNext: string
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
@@ -71,6 +74,44 @@ export function onTimelineGenerate<
 
 	// Find server in pgm
 	const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)
+	const activeMediaPlayerSession = (activeServerObj?.metaData as TimelineBlueprintExt['metaData'])?.mediaPlayerSession
+
+	const lookaheadServerObjIndex = timeline.findIndex(
+		o => o.layer.toString() === atemLayerNext && o.isLookahead && o.metaData?.mediaPlayerSessionToAssign !== undefined
+	)
+	const lookaheadServerObj = lookaheadServerObjIndex > -1 ? timeline[lookaheadServerObjIndex] : undefined
+	const lookaheadMediaPlayerSession = (lookaheadServerObj?.metaData as TimelineBlueprintExt['metaData'])
+		?.mediaPlayerSessionToAssign
+	let lookaheadServerEnableIndex = timeline.findIndex(
+		o =>
+			o.layer.toString() === atemLayerNext &&
+			o.isLookahead &&
+			o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD)
+	)
+
+	if (lookaheadServerEnableIndex > -1 && lookaheadMediaPlayerSession && lookaheadServerObj) {
+		lookaheadServerObj.metaData = {
+			...lookaheadServerObj.metaData,
+			mediaPlayerSession: lookaheadMediaPlayerSession
+		}
+		timeline[lookaheadServerEnableIndex] = lookaheadServerObj
+		timeline.splice(lookaheadServerEnableIndex, 1)
+	} else {
+		if (lookaheadServerObjIndex > -1) {
+			timeline.splice(lookaheadServerObjIndex, 1)
+		}
+
+		lookaheadServerEnableIndex = timeline.findIndex(
+			o =>
+				o.layer.toString() === atemLayerNext &&
+				o.isLookahead &&
+				o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD)
+		)
+
+		if (lookaheadServerEnableIndex > -1) {
+			timeline.splice(lookaheadServerEnableIndex, 1)
+		}
+	}
 
 	// Find any placeholders to replace
 	const objsToReplace = timeline.filter(
@@ -84,13 +125,12 @@ export function onTimelineGenerate<
 		if (objToReplace && activeServerObj) {
 			objToReplace.content = activeServerObj.content
 			let replaceMeta = objToReplace.metaData as TimelineBlueprintExt['metaData'] | undefined
-			const activeMeta = activeServerObj.metaData as TimelineBlueprintExt['metaData'] | undefined
 
-			if (activeMeta && activeMeta.mediaPlayerSession && replaceMeta && replaceMeta.mediaPlayerSession) {
-				replacedSessions[replaceMeta.mediaPlayerSession] = activeMeta.mediaPlayerSession
+			if (activeMediaPlayerSession && replaceMeta && replaceMeta.mediaPlayerSession) {
+				replacedSessions[replaceMeta.mediaPlayerSession] = activeMediaPlayerSession
 				replaceMeta = {
 					...replaceMeta,
-					mediaPlayerSession: activeMeta.mediaPlayerSession
+					mediaPlayerSession: activeMediaPlayerSession
 				}
 			}
 
@@ -123,6 +163,21 @@ export function onTimelineGenerate<
 
 					return session
 				})
+			}
+		} else if (lookaheadMediaPlayerSession && piece.content && piece.content.timelineObjects) {
+			const objToCopyMediaPlayerSessionToIndex = (piece.content
+				.timelineObjects as TimelineBlueprintExt[]).findIndex(obj =>
+				obj.classes?.includes(ControlClasses.CopyMediaPlayerSession)
+			)
+
+			if (objToCopyMediaPlayerSessionToIndex > -1) {
+				piece.content.metadata = {
+					mediaPlayerSessions: [lookaheadMediaPlayerSession]
+				}
+				;(piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData = {
+					...(piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData,
+					mediaPlayerSession: lookaheadMediaPlayerSession
+				}
 			}
 		}
 	})

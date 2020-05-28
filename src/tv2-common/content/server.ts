@@ -57,7 +57,7 @@ export function MakeContentServer<
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
-					noStarttime: true,
+					noStarttime: offtubeOptions?.isOfftube ? false : true,
 					...(offtubeOptions?.isOfftube ? { playing: false } : {})
 				},
 				...(offtubeOptions?.isOfftube
@@ -98,9 +98,14 @@ export function MakeContentServer<
 						transitionSettings: TransitionSettings(partDefinition)
 					}
 				},
-				metaData: {
-					mediaPlayerSession: mediaPlayerSessionId
-				},
+				metaData:
+					offtubeOptions?.isOfftube && adLib
+						? {
+								mediaPlayerSessionToAssign: mediaPlayerSessionId
+						  }
+						: {
+								mediaPlayerSession: mediaPlayerSessionId
+						  },
 				classes: [...(adLib ? ['adlib_deparent'] : [])]
 			}),
 

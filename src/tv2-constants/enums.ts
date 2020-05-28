@@ -43,7 +43,8 @@ export const enum PartType {
 export enum Enablers {
 	OFFTUBE_ENABLE_SERVER = 'offtube_enable_server',
 	OFFTUBE_ENABLE_FULL = 'offtube_enable_full',
-	OFFTUBE_ENABLE_DVE = 'offtube_enable_dve'
+	OFFTUBE_ENABLE_DVE = 'offtube_enable_dve',
+	OFFTUBE_ENABLE_SERVER_LOOKAHEAD = 'offtube_enable_full_lookahead'
 }
 
 export enum AdlibTags {
@@ -65,5 +66,7 @@ export enum ControlClasses {
 	/** Indicates that a DVE is currently on air */
 	DVEOnAir = 'dve_on_air',
 	/** Used as a placeholder for onTimelineGenerate to do clips-in-DVE. */
-	DVEPlaceholder = 'dve_placeholder'
+	DVEPlaceholder = 'dve_placeholder',
+	NOLookahead = 'no_lookahead',
+	CopyMediaPlayerSession = 'copy_media_player_session'
 }

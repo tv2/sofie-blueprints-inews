@@ -9,6 +9,7 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartContext2, TimelineBlueprintExt } from 'tv2-common'
+import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from './helpers/config'
@@ -56,8 +57,10 @@ export function postProcessPieceTimelineObjects(
 				if (
 					(!isAdlib || piece.toBeQueued) &&
 					'me' in tlObj.content &&
-					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined) &&
-					!tlObj.classes?.includes('dont_create_lookahead')
+					(tlObj.content.me.input !== undefined ||
+						tlObj.metaData?.mediaPlayerSession !== undefined ||
+						tlObj.metaData.mediaPlayerSessionToAssign !== undefined) &&
+					!tlObj.classes?.includes(ControlClasses.NOLookahead)
 				) {
 					// Create a lookahead-lookahead object for this me-program
 					const lookaheadObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
@@ -76,7 +79,8 @@ export function postProcessPieceTimelineObjects(
 						},
 						metaData: {
 							context: `Lookahead-lookahead for ${tlObj.id}`,
-							mediaPlayerSession: tlObj.metaData?.mediaPlayerSession
+							mediaPlayerSession: tlObj.metaData?.mediaPlayerSession,
+							mediaPlayerSessionToAssign: tlObj.metaData.mediaPlayerSessionToAssign
 						},
 						classes: ['ab_on_preview']
 					})

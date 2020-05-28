@@ -15,7 +15,7 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibTags, Enablers } from 'tv2-constants'
+import { AdlibTags, ControlClasses, Enablers } from 'tv2-constants'
 import { OfftubeAbstractLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -81,7 +81,7 @@ export function OfftubeEvaluateDVE(
 				timelineObjects: adlibContent.content.timelineObjects.map(tlObj => {
 					return {
 						...tlObj,
-						classes: tlObj.classes ? [...tlObj.classes, 'dont_create_lookahead'] : undefined
+						classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : undefined
 					}
 				})
 			},

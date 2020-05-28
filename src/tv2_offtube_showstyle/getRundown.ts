@@ -489,7 +489,7 @@ function getGlobalAdLibPiecesOfftube(
 			content: {
 				timelineObjects: [
 					literal<TSR.TimelineObjAtemME>({
-						id: '',
+						id: 'fullProgramEnabler',
 						enable: {
 							while: '1'
 						},
@@ -504,6 +504,23 @@ function getGlobalAdLibPiecesOfftube(
 							}
 						},
 						classes: [Enablers.OFFTUBE_ENABLE_FULL]
+					}),
+					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+						id: '',
+						enable: { start: 0 },
+						priority: 0,
+						layer: OfftubeAtemLLayer.AtemMENext,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								previewInput: config.studio.AtemSource.GFXFull
+							}
+						},
+						metaData: {
+							context: `Lookahead-lookahead for fullProgramEnabler`
+						},
+						classes: ['ab_on_preview']
 					})
 				]
 			},
@@ -541,7 +558,7 @@ function getGlobalAdLibPiecesOfftube(
 			content: {
 				timelineObjects: [
 					literal<TSR.TimelineObjAbstractAny>({
-						id: '',
+						id: 'serverProgramEnabler',
 						enable: {
 							while: '1'
 						},
@@ -551,6 +568,23 @@ function getGlobalAdLibPiecesOfftube(
 							deviceType: TSR.DeviceType.ABSTRACT
 						},
 						classes: [Enablers.OFFTUBE_ENABLE_SERVER]
+					}),
+					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+						id: '',
+						enable: { start: 0 },
+						priority: 0,
+						layer: OfftubeAtemLLayer.AtemMENext,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								previewInput: undefined
+							}
+						},
+						metaData: {
+							context: `Lookahead-lookahead for fullProgramEnabler`
+						},
+						classes: ['ab_on_preview', ControlClasses.CopyMediaPlayerSession, Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD]
 					})
 				]
 			},

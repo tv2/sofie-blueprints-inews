@@ -7,7 +7,12 @@ import {
 	TimelinePersistentState
 } from 'tv-automation-sofie-blueprints-integration'
 import { onTimelineGenerate } from 'tv2-common'
-import { CasparPlayerClip, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import {
+	CasparPlayerClip,
+	OfftubeAtemLLayer,
+	OfftubeCasparLLayer,
+	OfftubeSisyfosLLayer
+} from '../tv2_offtube_studio/layers'
 import { parseConfig } from './helpers/config'
 
 export function onTimelineGenerateOfftube(
@@ -35,6 +40,7 @@ export function onTimelineGenerateOfftube(
 				PlayerB: OfftubeSisyfosLLayer.SisyfosSourceServerB
 			}
 		},
-		OfftubeCasparLLayer.CasparPlayerClipPending
+		OfftubeCasparLLayer.CasparPlayerClipPending,
+		OfftubeAtemLLayer.AtemMENext
 	)
 }
