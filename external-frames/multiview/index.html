@@ -38,7 +38,7 @@
 		<div id="stream-container" class="dashboard"></div>
 		<script>
 		const layoutFilename = 'off-tubes-shelf.json'
-		const streamId = "stream2"
+		const streamId = "stream3"
 		const urlBase = "http://"+window.location.hostname+":5255"
 		const imgSrc = urlBase + "/stream/" + streamId
 		let images = []
@@ -103,10 +103,7 @@
 		function checkImages () {
 			let timeout = 1000
 			if (images[0].naturalWidth == 0) {
-				for(let i = 0; i < images.length; i++) {
-					images[i].src = imgSrc+'?hash='+Date.now()
-				}
-				timeout = 5000
+				window.location.reload(true)
 			}
 			window.setTimeout(() => {
 				checkImages()
