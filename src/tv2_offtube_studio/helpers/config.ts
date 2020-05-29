@@ -172,6 +172,8 @@ export function parseStudioConfig(context: ShowStyleContext): OfftubeStudioBluep
 
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
+	config.liveAudio = getLiveAudioLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio)
 
 	return config
 }

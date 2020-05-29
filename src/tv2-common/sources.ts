@@ -52,7 +52,8 @@ export function ParseMappingTable(
 		type,
 		id: conf.SourceName,
 		port: conf.AtemSource,
-		sisyfosLayers: conf.SisyfosLayers
+		sisyfosLayers: conf.SisyfosLayers,
+		useStudioMics: conf.StudioMics
 	}))
 }
 
