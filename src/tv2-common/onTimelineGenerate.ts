@@ -113,6 +113,15 @@ export function onTimelineGenerate<
 		}
 	}
 
+	_.each(timeline, obj => {
+		if (obj.metaData && obj.metaData.mediaPlayerSessionToAssign) {
+			obj.metaData = {
+				...obj.metaData,
+				mediaPlayerSession: obj.metaData.mediaPlayerSessionToAssign
+			}
+		}
+	})
+
 	// Find any placeholders to replace
 	const objsToReplace = timeline.filter(
 		o => o.classes?.includes(ControlClasses.DVEPlaceholder) && !o.id.match(/^previous/i)
