@@ -79,7 +79,6 @@ export function OfftubeEvaluateAdLib(
 		adlibFlowProducer.toBeQueued = true
 		adlibFlowProducer.canCombineQueue = true
 		adlibFlowProducer.tags = [AdlibTags.ADLIB_FLOW_PRODUCER]
-		adlibFlowProducer.name = file
 		// TODO: This should happen in above function
 		adlibFlowProducer.expectedDuration = duration
 

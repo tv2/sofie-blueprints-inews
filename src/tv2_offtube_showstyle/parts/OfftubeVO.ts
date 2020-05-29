@@ -15,7 +15,12 @@ import {
 	PartDefinition
 } from 'tv2-common'
 import { AdlibTags, CueType, Enablers } from 'tv2-constants'
-import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import {
+	OfftubeAbstractLLayer,
+	OfftubeAtemLLayer,
+	OfftubeCasparLLayer,
+	OfftubeSisyfosLLayer
+} from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
@@ -100,7 +105,6 @@ export function OfftubeCreatePartVO(
 			serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 		}
 	)
-	adlibServer.name = file
 	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
