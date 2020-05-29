@@ -37,6 +37,7 @@ export function MakeContentServer<
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
+	const timelineStartObjId = `clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/-/g, '_')
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file, // playing casparcg
@@ -64,7 +65,7 @@ export function MakeContentServer<
 					? {
 							keyframes: [
 								{
-									id: '',
+									id: timelineStartObjId,
 									enable: {
 										while: `.${offtubeOptions.enabler}`
 									},
@@ -84,7 +85,9 @@ export function MakeContentServer<
 
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(!!adLib, config.studio.CasparPrerollDuration, offtubeOptions),
+				enable: {
+					start: `#${timelineStartObjId}.start + ${config.studio.CasparPrerollDuration}`
+				},
 				priority: 1,
 				layer: sourceLayers.ATEM.MEPGM,
 				content: {
