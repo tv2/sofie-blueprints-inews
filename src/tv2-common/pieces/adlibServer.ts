@@ -8,6 +8,7 @@ export interface AdlibServerOfftubeOptions {
 	isOfftube: true
 	tagAsAdlib: boolean
 	enabler: Enablers
+	serverEnable: string
 }
 
 export interface CreateAdlibServerSourceLayers extends MakeContentServerSourceLayers {

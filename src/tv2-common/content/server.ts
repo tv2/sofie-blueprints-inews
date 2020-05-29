@@ -9,6 +9,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
+import { Enablers } from 'tv2-constants'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
@@ -65,7 +66,7 @@ export function MakeContentServer<
 					? {
 							keyframes: [
 								{
-									id: timelineStartObjId,
+									id: '',
 									enable: {
 										while: `.${offtubeOptions.enabler}`
 									},
@@ -83,6 +84,21 @@ export function MakeContentServer<
 				classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
 			}),
 
+			...(offtubeOptions && offtubeOptions.isOfftube
+				? [
+						literal<TSR.TSRTimelineObjAbstract & TimelineBlueprintExt>({
+							id: timelineStartObjId,
+							enable: {
+								while: `.${Enablers.OFFTUBE_ENABLE_SERVER}`
+							},
+							priority: 1,
+							layer: offtubeOptions.serverEnable,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							}
+						})
+				  ]
+				: []),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
 				enable: {
