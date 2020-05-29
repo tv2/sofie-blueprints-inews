@@ -101,9 +101,12 @@ export function MakeContentServer<
 				: []),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
-				enable: {
-					start: `#${timelineStartObjId}.start + ${config.studio.CasparPrerollDuration}`
-				},
+				enable:
+					offtubeOptions && offtubeOptions.isOfftube
+						? {
+								start: `#${timelineStartObjId}.start + ${config.studio.CasparPrerollDuration}`
+						  }
+						: getServerAdlibEnable(!!adLib, config.studio.CasparPrerollDuration, offtubeOptions),
 				priority: 1,
 				layer: sourceLayers.ATEM.MEPGM,
 				content: {
