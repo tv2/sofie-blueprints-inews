@@ -114,7 +114,7 @@ export function onTimelineGenerate<
 	}
 
 	_.each(timeline, obj => {
-		if (obj.metaData && obj.metaData.mediaPlayerSessionToAssign) {
+		if (obj.metaData && obj.metaData.mediaPlayerSessionToAssign && !obj.isLookahead) {
 			obj.metaData = {
 				...obj.metaData,
 				mediaPlayerSession: obj.metaData.mediaPlayerSessionToAssign
