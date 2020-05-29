@@ -44,7 +44,7 @@ export enum Enablers {
 	OFFTUBE_ENABLE_SERVER = 'offtube_enable_server',
 	OFFTUBE_ENABLE_FULL = 'offtube_enable_full',
 	OFFTUBE_ENABLE_DVE = 'offtube_enable_dve',
-	OFFTUBE_ENABLE_SERVER_LOOKAHEAD = 'offtube_enable_full_lookahead'
+	OFFTUBE_ENABLE_SERVER_LOOKAHEAD = 'offtube_enable_server_lookahead'
 }
 
 export enum AdlibTags {

@@ -83,10 +83,7 @@ export function onTimelineGenerate<
 	const lookaheadMediaPlayerSession = (lookaheadServerObj?.metaData as TimelineBlueprintExt['metaData'])
 		?.mediaPlayerSessionToAssign
 	let lookaheadServerEnableIndex = timeline.findIndex(
-		o =>
-			o.layer.toString() === atemLayerNext &&
-			o.isLookahead &&
-			o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD)
+		o => o.layer.toString() === atemLayerNext && o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD)
 	)
 
 	if (lookaheadServerEnableIndex > -1 && lookaheadMediaPlayerSession && lookaheadServerObj) {
