@@ -139,6 +139,7 @@ function getGlobalAdLibPiecesOfftube(
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
+			tags: preview ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
@@ -248,6 +249,7 @@ function getGlobalAdLibPiecesOfftube(
 				config.studio.StudioMics,
 				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
 			),
+			tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
@@ -396,85 +398,6 @@ function getGlobalAdLibPiecesOfftube(
 			})
 		}
 	})
-
-	// Multiview adlibs
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(
-				literal<IBlueprintAdLibPiece>({
-					_rank: globalRank++,
-					externalId: 'setNextToCam',
-					name: `Kamera ${o.id}`,
-					sourceLayerId: OfftubeSourceLayer.PgmCam,
-					outputLayerId: OfftubeOutputLayers.PGM,
-					infiniteMode: PieceLifespan.OutOnNextPart,
-					toBeQueued: true,
-					canCombineQueue: true,
-					content: {
-						timelineObjects: [
-							literal<TSR.TimelineObjAtemME>({
-								id: '',
-								enable: {
-									while: '1'
-								},
-								layer: OfftubeAtemLLayer.AtemMEClean,
-								priority: 1,
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.ME,
-									me: {
-										input: o.port,
-										transition: TSR.AtemTransitionStyle.CUT
-									}
-								}
-							})
-						]
-					},
-					tags: [AdlibTags.OFFTUBE_SET_CAM_NEXT]
-				})
-			)
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, 5)
-		.forEach(o => {
-			adlibItems.push(
-				literal<IBlueprintAdLibPiece>({
-					_rank: globalRank++,
-					externalId: `setNextToRemote-${o.id}`,
-					name: `Live ${o.id}`,
-					sourceLayerId: OfftubeSourceLayer.PgmLive,
-					outputLayerId: OfftubeOutputLayers.PGM,
-					infiniteMode: PieceLifespan.OutOnNextPart,
-					toBeQueued: true,
-					canCombineQueue: true,
-					content: {
-						timelineObjects: [
-							literal<TSR.TimelineObjAtemME>({
-								id: '',
-								enable: {
-									while: '1'
-								},
-								layer: OfftubeAtemLLayer.AtemMEClean,
-								priority: 1,
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.ME,
-									me: {
-										input: o.port,
-										transition: TSR.AtemTransitionStyle.CUT
-									}
-								}
-							})
-						]
-					},
-					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT]
-				})
-			)
-		})
 
 	adlibItems.push(
 		literal<IBlueprintAdLibPiece>({
