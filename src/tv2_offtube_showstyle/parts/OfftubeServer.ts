@@ -109,7 +109,8 @@ export function OfftubeCreatePartServer(
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 	// TODO: This should happen in above function
-	adlibServer.expectedDuration = duration
+	// TODO: This breaks infinites
+	// adlibServer.expectedDuration = duration
 
 	// TODO: Merge graphics into server part as timeline objects
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})

@@ -31,8 +31,8 @@ export function OfftubeCreatePartVO(
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	segmentExternalId: string,
-	totalWords: number,
-	totalTime: number
+	_totalWords: number,
+	_totalTime: number
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition)
 
@@ -45,7 +45,7 @@ export function OfftubeCreatePartVO(
 	const adLibPieces = basePartProps.part.adLibPieces
 	const file = basePartProps.file
 	const duration = basePartProps.duration
-	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
+	// const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 
 	// TODO: EFFEKT
 	// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
@@ -108,7 +108,8 @@ export function OfftubeCreatePartVO(
 	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
 	adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
-	adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
+	// TODO: This breaks infinites
+	// adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})

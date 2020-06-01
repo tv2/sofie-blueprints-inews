@@ -49,7 +49,8 @@ export function OfftubeEvaluateAdLib(
 		adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 		adlibServer.name = file
 		// TODO: This should happen in above function
-		adlibServer.expectedDuration = duration
+		// TODO: This breaks infinites
+		// adlibServer.expectedDuration = duration
 
 		adLibPieces.push(adlibServer)
 
