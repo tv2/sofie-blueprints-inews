@@ -62,7 +62,7 @@ export function OfftubeCreatePartVO(
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [segmentExternalId]
 			}),
-			content: MakeContentServer(file, segmentExternalId, partDefinition, config, {
+			content: MakeContentServer(file, `adlib_server_${file}`, partDefinition, config, {
 				Caspar: {
 					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 				},
