@@ -505,7 +505,7 @@ function getGlobalAdLibPiecesOfftube(
 							}
 						},
 						metaData: {
-							context: `Lookahead-lookahead for fullProgramEnabler`
+							context: `Lookahead-lookahead for serverProgramEnabler`
 						},
 						classes: ['ab_on_preview', ControlClasses.CopyMediaPlayerSession, Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD]
 					})

@@ -77,40 +77,33 @@ export function onTimelineGenerate<
 	const activeMediaPlayerSession = (activeServerObj?.metaData as TimelineBlueprintExt['metaData'])?.mediaPlayerSession
 
 	const lookaheadServerObjIndex = timeline.findIndex(
-		o => o.layer.toString() === atemLayerNext && o.isLookahead && o.metaData?.mediaPlayerSessionToAssign !== undefined
+		o =>
+			o.layer.toString() === atemLayerNext &&
+			o.isLookahead &&
+			o.metaData?.mediaPlayerSessionToAssign !== undefined &&
+			o.priority &&
+			o.priority > 0 &&
+			!!o.id.match(/future/)
 	)
 	const lookaheadServerObj = lookaheadServerObjIndex > -1 ? timeline[lookaheadServerObjIndex] : undefined
 	const lookaheadMediaPlayerSession = (lookaheadServerObj?.metaData as TimelineBlueprintExt['metaData'])
 		?.mediaPlayerSessionToAssign
-	let lookaheadServerEnableIndex = timeline.findIndex(
+	const lookaheadServerEnableIndex = timeline.findIndex(
 		o =>
 			o.layer.toString() === atemLayerNext &&
 			o.isLookahead &&
-			o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD)
+			o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD) &&
+			o.priority &&
+			o.priority > 0 &&
+			!!o.id.match(/future/)
 	)
 
 	if (lookaheadServerEnableIndex > -1 && lookaheadMediaPlayerSession && lookaheadServerObj) {
-		lookaheadServerObj.metaData = {
+		timeline[lookaheadServerEnableIndex].metaData = {
 			...lookaheadServerObj.metaData,
 			mediaPlayerSession: lookaheadMediaPlayerSession
 		}
-		timeline[lookaheadServerObjIndex] = lookaheadServerObj
-		timeline.splice(lookaheadServerEnableIndex, 1)
-	} else {
-		if (lookaheadServerObjIndex > -1) {
-			timeline.splice(lookaheadServerObjIndex, 1)
-		}
-
-		lookaheadServerEnableIndex = timeline.findIndex(
-			o =>
-				o.layer.toString() === atemLayerNext &&
-				o.isLookahead &&
-				o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD)
-		)
-
-		if (lookaheadServerEnableIndex > -1) {
-			timeline.splice(lookaheadServerEnableIndex, 1)
-		}
+		timeline.splice(lookaheadServerObjIndex, 1)
 	}
 
 	_.each(timeline, obj => {
