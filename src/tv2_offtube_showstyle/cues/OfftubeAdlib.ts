@@ -9,9 +9,14 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibTags, CueType } from 'tv2-constants'
+import { AdlibTags, CueType, Enablers } from 'tv2-constants'
 import _ = require('underscore')
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import {
+	OfftubeAbstractLLayer,
+	OfftubeAtemLLayer,
+	OfftubeCasparLLayer,
+	OfftubeSisyfosLLayer
+} from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
@@ -30,25 +35,39 @@ export function OfftubeEvaluateAdLib(
 		const file = partDefinition.fields.videoId
 		const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
-		const adlibServer = CreateAdlibServer(config, rank, partId, `adlib_server_${file}`, partDefinition, file, false, {
-			Caspar: {
-				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+		const adlibServer = CreateAdlibServer(
+			config,
+			rank,
+			partId,
+			`adlib_server_${file}`,
+			partDefinition,
+			file,
+			false,
+			{
+				Caspar: {
+					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+				},
+				Sisyfos: {
+					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+				},
+				ATEM: {
+					MEPGM: OfftubeAtemLLayer.AtemMEClean
+				},
+				STICKY_LAYERS: config.stickyLayers,
+				PgmServer: OfftubeSourceLayer.SelectedAdLibServer,
+				PgmVoiceOver: OfftubeSourceLayer.SelectedAdLibVoiceOver
 			},
-			Sisyfos: {
-				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-			},
-			ATEM: {
-				MEPGM: OfftubeAtemLLayer.AtemMEClean
-			},
-			STICKY_LAYERS: config.stickyLayers,
-			PgmServer: OfftubeSourceLayer.SelectedAdLibServer,
-			PgmVoiceOver: OfftubeSourceLayer.SelectedAdLibVoiceOver
-		})
+			{
+				isOfftube: true,
+				tagAsAdlib: true,
+				enabler: Enablers.OFFTUBE_ENABLE_SERVER,
+				serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
+			}
+		)
 		adlibServer.toBeQueued = true
 		adlibServer.canCombineQueue = true
 		adlibServer.outputLayerId = 'selectedAdlib'
 		adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
-		adlibServer.name = file
 		// TODO: This should happen in above function
 		// TODO: This breaks infinites
 		// adlibServer.expectedDuration = duration

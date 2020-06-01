@@ -59,8 +59,9 @@ export function MakeContentServer<
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
-					noStarttime: offtubeOptions?.isOfftube ? false : true,
-					...(offtubeOptions?.isOfftube ? { playing: false } : {})
+					noStarttime: true,
+					...(offtubeOptions?.isOfftube ? { playing: false } : {}),
+					...(offtubeOptions?.isOfftube ? { seek: 0 } : {})
 				},
 				...(offtubeOptions?.isOfftube
 					? {
@@ -71,8 +72,8 @@ export function MakeContentServer<
 										while: `.${offtubeOptions.enabler}`
 									},
 									content: {
-										inPoint: 0,
-										playing: true
+										playing: true,
+										seek: 0
 									}
 								}
 							]
