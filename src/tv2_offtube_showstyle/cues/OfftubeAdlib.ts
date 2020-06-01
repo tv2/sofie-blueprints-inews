@@ -46,6 +46,7 @@ export function OfftubeEvaluateAdLib(
 		})
 		adlibServer.toBeQueued = true
 		adlibServer.canCombineQueue = true
+		adlibServer.outputLayerId = 'selectedAdlib'
 		adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 		adlibServer.name = file
 		// TODO: This should happen in above function

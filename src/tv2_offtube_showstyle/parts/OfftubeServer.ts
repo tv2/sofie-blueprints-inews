@@ -107,6 +107,7 @@ export function OfftubeCreatePartServer(
 	)
 	adlibServer.toBeQueued = true
 	adlibServer.canCombineQueue = true
+	adlibServer.outputLayerId = 'selectedAdlib'
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 	// TODO: This should happen in above function
 	// TODO: This breaks infinites
