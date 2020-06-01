@@ -138,6 +138,7 @@ function getGlobalAdLibPiecesOfftube(
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
+			canCombineQueue: true,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
 			tags: preview ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
 			content: {
@@ -244,6 +245,7 @@ function getGlobalAdLibPiecesOfftube(
 			expectedDuration: 0,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
+			canCombineQueue: true,
 			metaData: GetEksternMetaData(
 				config.stickyLayers,
 				config.studio.StudioMics,
