@@ -30,7 +30,7 @@ export function OfftubeCreatePartServer(
 	context: PartContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	segmentExternalId: string
+	_segmentExternalId: string
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition)
 
@@ -60,7 +60,7 @@ export function OfftubeCreatePartServer(
 			sourceLayerId: OfftubeSourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [segmentExternalId]
+				mediaPlayerSessions: [`adlib_server_${file}`]
 			}),
 			content: MakeContentServer(file, `adlib_server_${file}`, partDefinition, config, {
 				Caspar: {

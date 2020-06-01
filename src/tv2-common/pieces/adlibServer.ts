@@ -1,6 +1,6 @@
 import { IBlueprintAdLibPiece, PieceLifespan, PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartDefinition, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
-import { AdlibTags, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { AdlibTags, Enablers } from 'tv2-constants'
 import { MakeContentServer, MakeContentServerSourceLayers } from '../content/server'
 
 export interface AdlibServerOfftubeOptions {
@@ -40,7 +40,7 @@ export function CreateAdlibServer<
 		infiniteMode: offtubeOptions?.isOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
 		toBeQueued: !offtubeOptions?.isOfftube,
 		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: offtubeOptions?.isOfftube ? [MEDIA_PLAYER_AUTO] : [mediaPlayerSession]
+			mediaPlayerSessions: [mediaPlayerSession]
 		}),
 		content: MakeContentServer(file, mediaPlayerSession, partDefinition, config, sourceLayers, true, offtubeOptions),
 		adlibPreroll: config.studio.CasparPrerollDuration

@@ -30,7 +30,7 @@ export function OfftubeCreatePartVO(
 	context: PartContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	segmentExternalId: string,
+	_segmentExternalId: string,
 	_totalWords: number,
 	_totalTime: number
 ): BlueprintResultPart {
@@ -60,7 +60,7 @@ export function OfftubeCreatePartVO(
 			sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [segmentExternalId]
+				mediaPlayerSessions: [`adlib_server_${file}`]
 			}),
 			content: MakeContentServer(file, `adlib_server_${file}`, partDefinition, config, {
 				Caspar: {
