@@ -136,6 +136,7 @@ function getGlobalAdLibPiecesOfftube(
 			sourceLayerId: OfftubeSourceLayer.PgmCam,
 			outputLayerId: OfftubeOutputLayers.PGM,
 			expectedDuration: 0,
+			adlibPreroll: 80,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
 			canCombineQueue: true,
@@ -218,6 +219,7 @@ function getGlobalAdLibPiecesOfftube(
 				sourceLayerId: layer,
 				outputLayerId: 'sec',
 				expectedDuration: 0,
+				adlibPreroll: 80,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
