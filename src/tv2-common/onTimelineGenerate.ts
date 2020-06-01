@@ -104,6 +104,10 @@ export function onTimelineGenerate<
 			mediaPlayerSession: lookaheadMediaPlayerSession
 		}
 		timeline.splice(lookaheadServerObjIndex, 1)
+	} else {
+		if (lookaheadServerObjIndex > -1) {
+			timeline.splice(lookaheadServerObjIndex, 1)
+		}
 	}
 
 	_.each(timeline, obj => {
