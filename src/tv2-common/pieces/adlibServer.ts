@@ -42,15 +42,7 @@ export function CreateAdlibServer<
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: offtubeOptions?.isOfftube ? [MEDIA_PLAYER_AUTO] : [mediaPlayerSession]
 		}),
-		content: MakeContentServer(
-			file,
-			offtubeOptions?.isOfftube ? MEDIA_PLAYER_AUTO : mediaPlayerSession,
-			partDefinition,
-			config,
-			sourceLayers,
-			true,
-			offtubeOptions
-		),
+		content: MakeContentServer(file, mediaPlayerSession, partDefinition, config, sourceLayers, true, offtubeOptions),
 		adlibPreroll: config.studio.CasparPrerollDuration
 	})
 }

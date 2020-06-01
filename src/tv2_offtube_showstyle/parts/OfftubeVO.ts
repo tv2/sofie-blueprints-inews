@@ -81,7 +81,7 @@ export function OfftubeCreatePartVO(
 		config,
 		0,
 		partDefinition.externalId,
-		segmentExternalId,
+		`adlib_server_${file}`,
 		partDefinition,
 		file,
 		true,

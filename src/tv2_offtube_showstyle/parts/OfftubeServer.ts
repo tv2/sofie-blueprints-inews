@@ -14,7 +14,7 @@ import {
 	MakeContentServer,
 	PartDefinition
 } from 'tv2-common'
-import { AdlibTags, CueType, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { AdlibTags, CueType, Enablers } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -81,7 +81,7 @@ export function OfftubeCreatePartServer(
 		config,
 		0,
 		partDefinition.externalId,
-		MEDIA_PLAYER_AUTO,
+		`adlib_server_${file}`,
 		partDefinition,
 		file,
 		false,
