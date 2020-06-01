@@ -67,9 +67,9 @@ export function OfftubeEvaluateJingle(
 			content: createJingleContent(config, file),
 			toBeQueued: true,
 			adlibAutoNext: props.autoNext,
-			adlibAutoNextOverlap: props.autoNextOverlap,
+			adlibAutoNextOverlap: props.autoNextOverlap ? props.autoNextOverlap + 40 : undefined,
 			adlibPreroll: props.prerollDuration,
-			expectedDuration: props.expectedDuration,
+			expectedDuration: props.expectedDuration ? props.expectedDuration - 40 : undefined, // TODO: Expose +-40 as a setting, this is the delay from routing ME1 to ME2
 			adlibDisableOutTransition: false,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR] // TODO: Maybe this should be different?
