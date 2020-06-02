@@ -201,10 +201,20 @@
                             "VCPID=2565134",
                             "ContinueCount=-1",
                             "Senderplan/25-10-2019"
+                        ],
+                        [
+                            "GRAFIK=FULL"
+                        ],
+                        [
+                            "#cg4 pilotdata",
+                            "PIX/zoom/stoppoints_1/LIVE",
+                            "VCPID=2598145",
+                            "ContinueCount=2",
+                            "PIX/zoom/stoppoints_1/LIVE"
                         ]
                     ],
                     "id" : "00000000:00000000:00000002",
-                    "body" : "\r\n<pi>100% GRAFIK</pi>\r\n<p><a idref=\"0\"></a><a idref=\"1\"><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a><a idref=\"5\"></a></p>\r\n",
+                    "body" : "\r\n<pi>100% GRAFIK</pi>\r\n<p><a idref=\"0\"></a><a idref=\"1\"><a idref=\"2\"></a><a idref=\"3\"></a><a idref=\"4\"></a><a idref=\"5\"></a><a idref=\"6\"></a><a idref=\"7\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000002",
                     "identifier" : "00000002"
                 },
@@ -419,14 +429,14 @@
         },
         {
             "externalId": "00000000:00000000:00000008",
-            "name": "100% SERVER 3",
+            "name": "100% ATTACK 1",
             "rank": 8,
             "payload": {
                 "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
                 "iNewsStory": {
                     "fields" : {
                         "pageNumber" : "09",
-                        "title" : "100% SERVER 3",
+                        "title" : "100% ATTACK 1",
                         "tapeTime": "20",
                         "audioTime" : "0",
                         "totalTime" : "20",
@@ -460,14 +470,14 @@
                         ]
                     ],
                     "id" : "00000000:00000000:00000008",
-                    "body" : "\r\n<p><pi>SERVER</pi><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a></p>\r\n",
+                    "body" : "\r\n<p><pi>***ATTACK***</pi><a idref=\"0\"></a><a idref=\"1\"></a><a idref=\"2\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000008",
                     "identifier" : "00000008"
                 },
                 "modified": "2019-10-11T06:38:00.000Z",
                 "externalId": "00000000:00000000:00000008",
                 "rank": 8,
-                "name": "100% SERVER 3",
+                "name": "100% ATTACK 3",
                 "float": false
             },
             "parts": []
@@ -491,7 +501,7 @@
                         "runsTime" : "0",
                         "typecode" : "spx",
                         "programtitle" : " ",
-                        "videoId": "01234B"
+                        "videoId": "01234A"
                     },
                     "meta" : {
                         "rate" : "165"
@@ -617,7 +627,7 @@
                         "runsTime" : "0",
                         "typecode" : "spx",
                         "programtitle" : " ",
-                        "videoId": "VOVOVA"
+                        "videoId": "[Nightcore] You're Gonna Go Far Kid-ttoTFeYqCtg"
                     },
                     "meta" : {
                         "rate" : "165"
