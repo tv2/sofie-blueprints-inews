@@ -38,7 +38,7 @@ export function MakeContentServer<
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
-	const timelineStartObjId = `clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/-/g, '_')
+	const timelineStartObjId = `clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/\W/g, '')
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file, // playing casparcg
