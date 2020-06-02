@@ -83,7 +83,8 @@ export function onTimelineGenerate<
 			o.metaData?.mediaPlayerSessionToAssign !== undefined &&
 			o.priority &&
 			o.priority > 0 &&
-			!!o.id.match(/future/)
+			!!o.id.match(/future/) &&
+			!resolvedPieces.some(piece => o.id.includes(piece._id))
 	)
 	const lookaheadServerObj = lookaheadServerObjIndex > -1 ? timeline[lookaheadServerObjIndex] : undefined
 	const lookaheadMediaPlayerSession = (lookaheadServerObj?.metaData as TimelineBlueprintExt['metaData'])
@@ -95,7 +96,8 @@ export function onTimelineGenerate<
 			o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD) &&
 			o.priority &&
 			o.priority > 0 &&
-			!!o.id.match(/future/)
+			!!o.id.match(/future/) &&
+			!resolvedPieces.some(piece => o.id.includes(piece._id))
 	)
 
 	if (lookaheadServerEnableIndex > -1 && lookaheadMediaPlayerSession && lookaheadServerObj) {
@@ -107,6 +109,20 @@ export function onTimelineGenerate<
 	} else {
 		if (lookaheadServerObjIndex > -1) {
 			timeline.splice(lookaheadServerObjIndex, 1)
+		}
+
+		const lookaheadOnCurrentPiece = timeline.findIndex(
+			o =>
+				o.layer.toString() === atemLayerNext &&
+				(o.isLookahead === undefined || o.isLookahead === null) &&
+				o.priority !== undefined &&
+				o.priority === 0 &&
+				!o.id.match(/future/) &&
+				resolvedPieces.some(piece => o.id.includes(piece._id))
+		)
+
+		if (lookaheadOnCurrentPiece > -1) {
+			timeline.splice(lookaheadOnCurrentPiece, 1)
 		}
 	}
 
