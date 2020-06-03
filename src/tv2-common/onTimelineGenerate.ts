@@ -109,11 +109,7 @@ export function onTimelineGenerate<
 		timeline.splice(lookaheadServerObjIndex, 1)
 	} else {
 		if (lookaheadServerObjIndex > -1 && lookaheadServerObj) {
-			// timeline.splice(lookaheadServerObjIndex, 1)
-			timeline[lookaheadServerObjIndex].metaData = {
-				...lookaheadServerObj.metaData,
-				mediaPlayerSession: lookaheadMediaPlayerSession
-			}
+			timeline.splice(lookaheadServerObjIndex, 1)
 		}
 
 		timeline = timeline.filter(
