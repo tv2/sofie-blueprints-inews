@@ -8,6 +8,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	MediaFlowId: '',
 	SourcesCam: [],
 	SourcesRM: [],
+	SourcesSkype: [],
 	ABMediaPlayers: [],
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,

@@ -153,6 +153,57 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 	]
 }
 
+export const manifestOfftubeSourcesSkype: ConfigManifestEntryTable = {
+	id: 'SourcesSkype',
+	name: 'Skype Mapping',
+	description: 'Skype number to ATEM input',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: literal<Array<TableConfigItemSourceMappingWithSisyfos & TableConfigItemValue[0]>>([]),
+	columns: [
+		{
+			id: 'SourceName',
+			name: 'Name',
+			description: 'Source name as typed in iNews',
+			type: ConfigManifestEntryType.STRING,
+			required: true,
+			defaultVal: '',
+			rank: 0
+		},
+		{
+			id: 'AtemSource',
+			name: 'ATEM input',
+			description: 'ATEM vision mixer input for Skype input',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 0,
+			rank: 1
+		},
+		{
+			id: 'SisyfosLayers',
+			name: 'Sisyfos layers',
+			description: 'Sisyfos layers for Skype input',
+			type: ConfigManifestEntryType.LAYER_MAPPINGS,
+			filters: {
+				deviceTypes: [TSR.DeviceType.SISYFOS]
+			},
+			required: true,
+			multiple: true,
+			defaultVal: [],
+			rank: 2
+		},
+		{
+			id: 'StudioMics',
+			name: 'Use Studio Mics',
+			description: 'Add Sisyfos layers for Studio Mics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 3
+		}
+	]
+}
+
 export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	id: 'ABMediaPlayers',
 	name: 'Media Players inputs',
@@ -234,6 +285,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
+	manifestOfftubeSourcesSkype,
 	manifestOfftubeSourcesABMediaPlayers,
 	manifestOfftubeStudioMics,
 	{

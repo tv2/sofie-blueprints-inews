@@ -60,6 +60,13 @@ export default literal<BlueprintMappings>({
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 1 // 1 = out 2
 	}),
+	atem_aux_server_lookahead: literal<TSR.MappingAtem & BlueprintMapping>({
+		device: TSR.DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingAtemType.Auxilliary,
+		index: 2 // 2 = out 3
+	}),
 	atem_supersource_art: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
