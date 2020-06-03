@@ -515,7 +515,8 @@ function getGlobalAdLibPiecesOfftube(
 					})
 				]
 			},
-			tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
+			tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT],
+			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
 
