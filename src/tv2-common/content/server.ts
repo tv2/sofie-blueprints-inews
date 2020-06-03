@@ -1,3 +1,4 @@
+import { OfftubeAtemLLayer } from 'src/tv2_offtube_studio/layers'
 import { TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
@@ -98,6 +99,24 @@ export function MakeContentServer<
 							layer: offtubeOptions.serverEnable,
 							content: {
 								deviceType: TSR.DeviceType.ABSTRACT
+							}
+						}),
+						literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							priority: 0,
+							layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.AUX,
+								aux: {
+									input: -1
+								}
+							},
+							metaData: {
+								mediaPlayerSession: mediaPlayerSessionId
 							}
 						})
 				  ]
