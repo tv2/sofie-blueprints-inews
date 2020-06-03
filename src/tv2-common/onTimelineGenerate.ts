@@ -140,6 +140,9 @@ export function onTimelineGenerate<
 					...obj,
 					id: `${obj.id}_server_aux`,
 					layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
+					enable: {
+						start: 280
+					},
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.AUX,
