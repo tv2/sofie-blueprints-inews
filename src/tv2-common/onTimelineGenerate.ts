@@ -124,7 +124,7 @@ export function onTimelineGenerate<
 		)
 	}
 
-	const extraObjs: OnGenerateTimelineObj[] = []
+	let extraObjs: OnGenerateTimelineObj[] = []
 
 	_.each(timeline, obj => {
 		if (obj.metaData && obj.metaData.mediaPlayerSessionToAssign) {
@@ -133,7 +133,9 @@ export function onTimelineGenerate<
 					...obj.metaData,
 					mediaPlayerSession: obj.metaData.mediaPlayerSessionToAssign
 				}
-			} else if (obj.layer === atemLayerNext) {
+			}
+
+			if (obj.layer === atemLayerNext || obj.layer === OfftubeAtemLLayer.AtemMEClean) {
 				// tslint:disable-next-line: no-object-literal-type-assertion
 				extraObjs.push({
 					...obj,
@@ -143,11 +145,20 @@ export function onTimelineGenerate<
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.AUX,
 						aux: {}
+					},
+					metaData: {
+						...obj.metaData,
+						originalLayer: obj.layer
 					}
 				} as OnGenerateTimelineObj)
 			}
 		}
 	})
+
+	// Get rid of anything in PGM if there's a lookahead available
+	if (extraObjs.some(o => o.metaData && o.metaData.originalLayer === atemLayerNext)) {
+		extraObjs = extraObjs.filter(o => o.metaData && o.metaData.originalLayer === atemLayerNext)
+	}
 
 	timeline = [...timeline, ...extraObjs]
 
