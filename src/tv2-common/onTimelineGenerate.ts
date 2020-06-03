@@ -134,12 +134,17 @@ export function onTimelineGenerate<
 					mediaPlayerSession: obj.metaData.mediaPlayerSessionToAssign
 				}
 			} else if (obj.layer === atemLayerNext) {
-				console.log(`MAKING EXTRA`)
+				// tslint:disable-next-line: no-object-literal-type-assertion
 				extraObjs.push({
 					...obj,
 					id: `${obj.id}_server_aux`,
-					layer: OfftubeAtemLLayer.AtemAuxServerLookahead
-				})
+					layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.AUX,
+						aux: {}
+					}
+				} as OnGenerateTimelineObj)
 			}
 		}
 	})
