@@ -118,7 +118,8 @@ export function onTimelineGenerate<
 				o.priority !== undefined &&
 				o.priority === 0 &&
 				!o.id.match(/future/) &&
-				resolvedPieces.some(piece => o.id.includes(piece._id))
+				(resolvedPieces.some(piece => o.id.includes(piece._id)) ||
+					resolvedPieces.some(piece => piece.infiniteId && o.id.includes(piece.infiniteId)))
 		)
 
 		if (lookaheadOnCurrentPiece > -1) {
