@@ -1,4 +1,3 @@
-import { OfftubeAtemLLayer } from 'src/tv2_offtube_studio/layers'
 import { TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddParentClass,
@@ -11,6 +10,7 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { ControlClasses, Enablers } from 'tv2-constants'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
@@ -51,9 +51,7 @@ export function MakeContentServer<
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
-					while: offtubeOptions?.isOfftube
-						? `.${offtubeOptions?.enabler} | .${Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD}`
-						: '1'
+					while: '1'
 				},
 				priority: 1,
 				layer: sourceLayers.Caspar.ClipPending,
