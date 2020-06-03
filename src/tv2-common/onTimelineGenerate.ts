@@ -12,7 +12,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { ControlClasses, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
-import { OfftubeAbstractLLayer } from '../tv2_offtube_studio/layers'
+import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
@@ -124,14 +124,27 @@ export function onTimelineGenerate<
 		)
 	}
 
+	const extraObjs: OnGenerateTimelineObj[] = []
+
 	_.each(timeline, obj => {
-		if (obj.metaData && obj.metaData.mediaPlayerSessionToAssign && !obj.isLookahead) {
-			obj.metaData = {
-				...obj.metaData,
-				mediaPlayerSession: obj.metaData.mediaPlayerSessionToAssign
+		if (obj.metaData && obj.metaData.mediaPlayerSessionToAssign) {
+			if (!obj.isLookahead) {
+				obj.metaData = {
+					...obj.metaData,
+					mediaPlayerSession: obj.metaData.mediaPlayerSessionToAssign
+				}
+			} else if (obj.layer === atemLayerNext) {
+				console.log(`MAKING EXTRA`)
+				extraObjs.push({
+					...obj,
+					id: `${obj.id}_server_aux`,
+					layer: OfftubeAtemLLayer.AtemAuxServerLookahead
+				})
 			}
 		}
 	})
+
+	timeline = [...timeline, ...extraObjs]
 
 	// Find any placeholders to replace
 	const objsToReplace = timeline.filter(
