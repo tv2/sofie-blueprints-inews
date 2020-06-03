@@ -61,8 +61,8 @@ export function MakeContentServer<
 					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
 					noStarttime: true,
-					...(offtubeOptions?.isOfftube ? { playing: false } : {}),
-					...(offtubeOptions?.isOfftube ? { seek: 0 } : {})
+					...(offtubeOptions?.isOfftube ? { playing: false } : {})
+					// ...(offtubeOptions?.isOfftube ? { seek: 0 } : {})
 				},
 				...(offtubeOptions?.isOfftube
 					? {
