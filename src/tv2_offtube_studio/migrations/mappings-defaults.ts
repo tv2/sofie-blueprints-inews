@@ -21,7 +21,7 @@ export default literal<BlueprintMappings>({
 	offtube_abstract_layer_abstract_lookahead: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.WHEN_CLEAR
 	}),
 	atem_me_clean: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
