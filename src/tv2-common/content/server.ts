@@ -9,7 +9,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { Enablers } from 'tv2-constants'
+import { ControlClasses, Enablers } from 'tv2-constants'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
@@ -131,7 +131,10 @@ export function MakeContentServer<
 						: {
 								mediaPlayerSession: mediaPlayerSessionId
 						  },
-				classes: [...(adLib ? ['adlib_deparent'] : [])]
+				classes: [
+					...(adLib ? ['adlib_deparent'] : []),
+					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
+				]
 			}),
 
 			literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({

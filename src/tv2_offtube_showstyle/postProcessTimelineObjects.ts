@@ -11,7 +11,7 @@ import {
 import { literal, PartContext2, TimelineBlueprintExt } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
-import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
+import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from './helpers/config'
 
 export function postProcessPartTimelineObjects(
@@ -62,29 +62,50 @@ export function postProcessPieceTimelineObjects(
 						tlObj.metaData.mediaPlayerSessionToAssign !== undefined) &&
 					!tlObj.classes?.includes(ControlClasses.NOLookahead)
 				) {
-					// Create a lookahead-lookahead object for this me-program
-					const lookaheadObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-						id: '',
-						enable: { start: 0 },
-						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
-						layer: OfftubeAtemLLayer.AtemMENext,
-						holdMode: tlObj.holdMode,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								previewInput:
-									tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
-							}
-						},
-						metaData: {
-							context: `Lookahead-lookahead for ${tlObj.id}`,
-							mediaPlayerSession: tlObj.metaData?.mediaPlayerSession,
-							mediaPlayerSessionToAssign: tlObj.metaData.mediaPlayerSessionToAssign
-						},
-						classes: ['ab_on_preview']
-					})
-					extraObjs.push(lookaheadObj)
+					if (tlObj.classes?.includes(ControlClasses.AbstractLookahead)) {
+						// Create a lookahead-lookahead object for this me-program
+						const lookaheadObj = literal<TSR.TimelineObjAbstractAny & TimelineBlueprintExt>({
+							id: '',
+							enable: { start: 0 },
+							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerAbstractLookahead,
+							holdMode: tlObj.holdMode,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							},
+							metaData: {
+								context: `Lookahead-lookahead for ${tlObj.id}`,
+								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession,
+								mediaPlayerSessionToAssign: tlObj.metaData.mediaPlayerSessionToAssign
+							},
+							classes: ['ab_on_preview']
+						})
+						extraObjs.push(lookaheadObj)
+					} else {
+						// Create a lookahead-lookahead object for this me-program
+						const lookaheadObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+							id: '',
+							enable: { start: 0 },
+							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
+							layer: OfftubeAtemLLayer.AtemMENext,
+							holdMode: tlObj.holdMode,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									previewInput:
+										tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
+								}
+							},
+							metaData: {
+								context: `Lookahead-lookahead for ${tlObj.id}`,
+								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession,
+								mediaPlayerSessionToAssign: tlObj.metaData.mediaPlayerSessionToAssign
+							},
+							classes: ['ab_on_preview']
+						})
+						extraObjs.push(lookaheadObj)
+					}
 				}
 			}
 		})

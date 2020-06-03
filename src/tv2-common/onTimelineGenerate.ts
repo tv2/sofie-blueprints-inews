@@ -12,6 +12,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { ControlClasses, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
+import { OfftubeAbstractLLayer } from '../tv2_offtube_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
@@ -78,7 +79,7 @@ export function onTimelineGenerate<
 
 	const lookaheadServerObjIndex = timeline.findIndex(
 		o =>
-			o.layer.toString() === atemLayerNext &&
+			o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerAbstractLookahead &&
 			o.isLookahead &&
 			o.metaData?.mediaPlayerSessionToAssign !== undefined &&
 			o.priority &&
@@ -111,20 +112,16 @@ export function onTimelineGenerate<
 			timeline.splice(lookaheadServerObjIndex, 1)
 		}
 
-		const lookaheadOnCurrentPiece = timeline.findIndex(
+		timeline = timeline.filter(
 			o =>
-				o.layer.toString() === atemLayerNext &&
-				(o.isLookahead === undefined || o.isLookahead === null) &&
-				o.priority !== undefined &&
-				o.priority === 0 &&
-				!o.id.match(/future/) &&
-				(resolvedPieces.some(piece => o.id.includes(piece._id)) ||
-					resolvedPieces.some(piece => piece.infiniteId && o.id.includes(piece.infiniteId)))
+				!(
+					o.layer === atemLayerNext &&
+					o.metaData &&
+					o.metaData.context &&
+					// (o.metaData.context.match(/serverProgramEnabler/) || o.metaData.context.match(/dveProgramEnabler/)) &&
+					resolvedPieces.some(piece => o.id.includes(piece._id))
+				)
 		)
-
-		if (lookaheadOnCurrentPiece > -1) {
-			timeline.splice(lookaheadOnCurrentPiece, 1)
-		}
 	}
 
 	_.each(timeline, obj => {

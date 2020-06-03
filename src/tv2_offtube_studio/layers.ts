@@ -16,7 +16,8 @@ export function RealLLayers() {
 export enum OfftubeAbstractLLayer {
 	/** Contains the classes to enable infinites */
 	OfftubeAbstractLLayerPgmEnabler = 'offtube_abstract_pgm_enabler',
-	OfftubeAbstractLLayerServerEnable = 'offtube_abstract_server_enable'
+	OfftubeAbstractLLayerServerEnable = 'offtube_abstract_server_enable',
+	OfftubeAbstractLLayerAbstractLookahead = 'offtube_abstract_layer_abstract_lookahead'
 }
 
 export enum OfftubeSisyfosLLayer {

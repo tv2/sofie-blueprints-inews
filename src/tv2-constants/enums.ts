@@ -68,5 +68,6 @@ export enum ControlClasses {
 	/** Used as a placeholder for onTimelineGenerate to do clips-in-DVE. */
 	DVEPlaceholder = 'dve_placeholder',
 	NOLookahead = 'no_lookahead',
-	CopyMediaPlayerSession = 'copy_media_player_session'
+	CopyMediaPlayerSession = 'copy_media_player_session',
+	AbstractLookahead = 'abstract_lookahead'
 }
