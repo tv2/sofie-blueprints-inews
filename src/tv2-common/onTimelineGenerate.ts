@@ -108,9 +108,9 @@ export function onTimelineGenerate<
 		}
 		timeline.splice(lookaheadServerObjIndex, 1)
 	} else {
-		if (lookaheadServerObjIndex > -1) {
+		/*if (lookaheadServerObjIndex > -1) {
 			timeline.splice(lookaheadServerObjIndex, 1)
-		}
+		}*/
 
 		timeline = timeline.filter(
 			o =>
