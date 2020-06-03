@@ -84,8 +84,7 @@ export function onTimelineGenerate<
 			o.metaData?.mediaPlayerSessionToAssign !== undefined &&
 			o.priority &&
 			o.priority > 0 &&
-			!!o.id.match(/future/) &&
-			!resolvedPieces.some(piece => o.id.includes(piece._id))
+			!!o.id.match(/future/)
 	)
 	const lookaheadServerObj = lookaheadServerObjIndex > -1 ? timeline[lookaheadServerObjIndex] : undefined
 	const lookaheadMediaPlayerSession = (lookaheadServerObj?.metaData as TimelineBlueprintExt['metaData'])
