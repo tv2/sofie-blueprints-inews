@@ -13,13 +13,15 @@ import {
 	literal,
 	PartDefinition,
 	PieceMetaData,
-	TemplateIsValid
+	TemplateIsValid,
+	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibTags, ControlClasses, Enablers } from 'tv2-constants'
-import { OfftubeAbstractLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
+import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OfftubeSourceLayer } from '../layers'
+import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 import { makeofftubeDVEIDsUniqueForFlow } from './OfftubeAdlib'
 
 export function OfftubeEvaluateDVE(
@@ -88,6 +90,52 @@ export function OfftubeEvaluateDVE(
 			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 			tags: [AdlibTags.ADLIB_KOMMENTATOR]
 		})
+		dveAdlib.additionalPieces = [
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: 'setNextToDVE',
+				name: 'DVE',
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				toBeQueued: true,
+				canCombineQueue: true,
+				content: {
+					timelineObjects: [
+						literal<TSR.TimelineObjAbstractAny>({
+							id: 'dveProgramEnabler',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_DVE]
+						}),
+						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+							id: '',
+							enable: { start: 0 },
+							priority: 0, // Must be below lookahead, except when forced by hold
+							layer: OfftubeAtemLLayer.AtemMENext,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									previewInput: AtemSourceIndex.SSrc
+								}
+							},
+							metaData: {
+								context: `Lookahead-lookahead for dveProgramEnabler`
+							},
+							classes: ['ab_on_preview']
+						})
+					]
+				},
+				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
+			})
+		]
 		adlibPieces.push(dveAdlib)
 
 		adlibPieces.push(
@@ -97,6 +145,7 @@ export function OfftubeEvaluateDVE(
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+				additionalPieces: [],
 				content: {
 					...dveAdlib.content,
 					timelineObjects: [

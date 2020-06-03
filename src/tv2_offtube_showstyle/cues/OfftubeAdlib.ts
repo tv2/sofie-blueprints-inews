@@ -1,4 +1,10 @@
-import { IBlueprintAdLibPiece, PartContext, TimelineObjectCoreExt } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintAdLibPiece,
+	PartContext,
+	PieceLifespan,
+	TimelineObjectCoreExt,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
@@ -7,9 +13,10 @@ import {
 	literal,
 	PartDefinition,
 	PieceMetaData,
-	TemplateIsValid
+	TemplateIsValid,
+	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibTags, CueType, Enablers } from 'tv2-constants'
+import { AdlibTags, ControlClasses, CueType, Enablers } from 'tv2-constants'
 import _ = require('underscore')
 import {
 	OfftubeAbstractLLayer,
@@ -17,9 +24,10 @@ import {
 	OfftubeCasparLLayer,
 	OfftubeSisyfosLLayer
 } from '../../tv2_offtube_studio/layers'
+import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OfftubeSourceLayer } from '../layers'
+import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateAdLib(
 	context: PartContext,
@@ -71,6 +79,58 @@ export function OfftubeEvaluateAdLib(
 		// TODO: This should happen in above function
 		// TODO: This breaks infinites
 		// adlibServer.expectedDuration = duration
+
+		// HACK: Replace with adlib action
+		adlibServer.additionalPieces = [
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: 'setNextToServer',
+				name: 'Server',
+				sourceLayerId: OfftubeSourceLayer.PgmServer,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				toBeQueued: true,
+				canCombineQueue: true,
+				content: {
+					timelineObjects: [
+						literal<TSR.TimelineObjAbstractAny>({
+							id: 'serverProgramEnabler',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_SERVER]
+						}),
+						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+							id: '',
+							enable: { start: 0 },
+							priority: 0,
+							layer: OfftubeAtemLLayer.AtemMENext,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									previewInput: undefined
+								}
+							},
+							metaData: {
+								context: `Lookahead-lookahead for serverProgramEnabler`
+							},
+							classes: [
+								'ab_on_preview',
+								ControlClasses.CopyMediaPlayerSession,
+								Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD
+							]
+						})
+					]
+				},
+				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
+			})
+		]
 
 		adLibPieces.push(adlibServer)
 
@@ -143,21 +203,71 @@ export function OfftubeEvaluateAdLib(
 			}
 		})
 
-		adLibPieces.push(
+		const adlibDVE = literal<IBlueprintAdLibPiece>({
+			_rank: rank,
+			externalId: partId,
+			name: `DVE: ${parsedCue.variant}`,
+			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
+			outputLayerId: 'selectedAdlib',
+			toBeQueued: true,
+			canCombineQueue: true,
+			content: content.content,
+			invalid: !content.valid,
+			infiniteMode: PieceLifespan.OutOnNextSegment,
+			metaData: literal<PieceMetaData>({
+				stickySisyfosLevels: sticky
+			}),
+			tags: [AdlibTags.ADLIB_KOMMENTATOR]
+		})
+
+		adlibDVE.additionalPieces = [
 			literal<IBlueprintAdLibPiece>({
-				_rank: rank,
-				externalId: partId,
-				name: `DVE: ${parsedCue.variant}`,
-				sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
-				outputLayerId: 'selectedAdlib',
+				_rank: 0,
+				externalId: 'setNextToDVE',
+				name: 'DVE',
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
-				content: content.content,
-				invalid: !content.valid,
-				metaData: literal<PieceMetaData>({
-					stickySisyfosLevels: sticky
-				})
+				canCombineQueue: true,
+				content: {
+					timelineObjects: [
+						literal<TSR.TimelineObjAbstractAny>({
+							id: 'dveProgramEnabler',
+							enable: {
+								while: '1'
+							},
+							priority: 1,
+							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_DVE]
+						}),
+						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+							id: '',
+							enable: { start: 0 },
+							priority: 0, // Must be below lookahead, except when forced by hold
+							layer: OfftubeAtemLLayer.AtemMENext,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									previewInput: AtemSourceIndex.SSrc
+								}
+							},
+							metaData: {
+								context: `Lookahead-lookahead for dveProgramEnabler`
+							},
+							classes: ['ab_on_preview']
+						})
+					]
+				},
+				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
 			})
-		)
+		]
+
+		adLibPieces.push(adlibDVE)
 
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({

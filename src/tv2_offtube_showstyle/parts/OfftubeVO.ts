@@ -1,9 +1,11 @@
 import {
 	BlueprintResultPart,
+	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
 	PieceLifespan,
-	PieceMetaData
+	PieceMetaData,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddScript,
@@ -12,9 +14,10 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	MakeContentServer,
-	PartDefinition
+	PartDefinition,
+	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibTags, CueType, Enablers } from 'tv2-constants'
+import { AdlibTags, ControlClasses, CueType, Enablers } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -24,7 +27,7 @@ import {
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
-import { OfftubeSourceLayer } from '../layers'
+import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartVO(
 	context: PartContext,
@@ -112,6 +115,53 @@ export function OfftubeCreatePartVO(
 	// TODO: This breaks infinites
 	// adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
+	// HACK: Replace with adlib action
+	adlibServer.additionalPieces = [
+		literal<IBlueprintAdLibPiece>({
+			_rank: 0,
+			externalId: 'setNextToServer',
+			name: 'Server',
+			sourceLayerId: OfftubeSourceLayer.PgmServer,
+			outputLayerId: OfftubeOutputLayers.PGM,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: true,
+			canCombineQueue: true,
+			content: {
+				timelineObjects: [
+					literal<TSR.TimelineObjAbstractAny>({
+						id: 'serverProgramEnabler',
+						enable: {
+							while: '1'
+						},
+						priority: 1,
+						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
+						content: {
+							deviceType: TSR.DeviceType.ABSTRACT
+						},
+						classes: [Enablers.OFFTUBE_ENABLE_SERVER]
+					}),
+					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+						id: '',
+						enable: { start: 0 },
+						priority: 0,
+						layer: OfftubeAtemLLayer.AtemMENext,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								previewInput: undefined
+							}
+						},
+						metaData: {
+							context: `Lookahead-lookahead for serverProgramEnabler`
+						},
+						classes: ['ab_on_preview', ControlClasses.CopyMediaPlayerSession, Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD]
+					})
+				]
+			},
+			tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
+		})
+	]
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
