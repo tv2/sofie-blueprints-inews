@@ -16,6 +16,7 @@ import {
 	literal,
 	PartDefinition,
 	PartToParentClass,
+	TimelineBlueprintExt,
 	TranslateEngine
 } from 'tv2-common'
 import { AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine } from 'tv2-constants'
@@ -58,6 +59,57 @@ export function OfftubeEvaluateGrafikCaspar(
 
 	if (engine === 'FULL') {
 		let adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), false)
+		adLibPiece.additionalPieces = [
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: 'setNextToFull',
+				name: 'Full Graphic',
+				sourceLayerId: OfftubeSourceLayer.PgmFull,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				infiniteMode: PieceLifespan.OutOnNextPart,
+				toBeQueued: true,
+				canCombineQueue: true,
+				content: {
+					timelineObjects: [
+						literal<TSR.TimelineObjAtemME>({
+							id: 'fullProgramEnabler',
+							enable: {
+								while: '1'
+							},
+							layer: OfftubeAtemLLayer.AtemMEClean,
+							priority: 10,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									input: config.studio.AtemSource.GFXFull,
+									transition: TSR.AtemTransitionStyle.CUT
+								}
+							},
+							classes: [Enablers.OFFTUBE_ENABLE_FULL]
+						}),
+						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+							id: '',
+							enable: { start: 0 },
+							priority: 0,
+							layer: OfftubeAtemLLayer.AtemMENext,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									previewInput: config.studio.AtemSource.GFXFull
+								}
+							},
+							metaData: {
+								context: `Lookahead-lookahead for fullProgramEnabler`
+							},
+							classes: ['ab_on_preview']
+						})
+					]
+				},
+				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT]
+			})
+		]
 		adlibPieces.push(adLibPiece)
 		// Repeat for flow producer
 		adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), true)
