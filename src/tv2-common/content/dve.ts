@@ -505,21 +505,25 @@ export function MakeContentDVE2<
 					}
 				}),
 
-				literal<TSR.TimelineObjAtemME>({
-					id: '',
-					enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration), timelineStartObjId),
-					priority: 1,
-					layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
-					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.ME,
-						me: {
-							input: AtemSourceIndex.SSrc,
-							transition: TSR.AtemTransitionStyle.CUT
-						}
-					},
-					...(adlib ? { classes: ['adlib_deparent'] } : {})
-				}),
+				...(!offtube
+					? [
+							literal<TSR.TimelineObjAtemME>({
+								id: '',
+								enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration), timelineStartObjId),
+								priority: 1,
+								layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
+								content: {
+									deviceType: TSR.DeviceType.ATEM,
+									type: TSR.TimelineContentTypeAtem.ME,
+									me: {
+										input: AtemSourceIndex.SSrc,
+										transition: TSR.AtemTransitionStyle.CUT
+									}
+								},
+								...(adlib ? { classes: ['adlib_deparent'] } : {})
+							})
+					  ]
+					: []),
 				...(graphicsTemplateName
 					? [
 							literal<TSR.TimelineObjCCGTemplate>({
