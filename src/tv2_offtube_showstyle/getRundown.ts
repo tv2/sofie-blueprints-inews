@@ -239,7 +239,7 @@ function getGlobalAdLibPiecesOfftube(
 		]
 		res.push({
 			externalId: 'live',
-			name: info.id + '',
+			name: `Live ${info.id}`,
 			_rank: rank,
 			sourceLayerId: OfftubeSourceLayer.PgmLive,
 			outputLayerId: OfftubeOutputLayers.PGM,
