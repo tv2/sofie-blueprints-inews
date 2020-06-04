@@ -114,6 +114,21 @@ export function OfftubeEvaluateDVE(
 							},
 							classes: [Enablers.OFFTUBE_ENABLE_DVE]
 						}),
+						literal<TSR.TimelineObjAtemME>({
+							id: '',
+							enable: { start: Number(config.studio.CasparPrerollDuration) },
+							priority: 1,
+							layer: OfftubeAtemLLayer.AtemMEClean,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									input: AtemSourceIndex.SSrc,
+									transition: TSR.AtemTransitionStyle.CUT
+								}
+							},
+							classes: ['adlib_deparent']
+						}),
 						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 							id: '',
 							enable: { start: 0 },
