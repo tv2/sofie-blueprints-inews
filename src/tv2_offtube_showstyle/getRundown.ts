@@ -722,20 +722,14 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 							// left
 							enabled: true,
 							source: AtemSourceIndex.Bars,
-							size: 580,
-							x: -800,
-							y: 50,
-							cropped: true,
-							cropRight: 2000
+							size: 1000,
+							x: 0,
+							y: 0,
+							cropped: false
 						},
 						{
 							// right
-							enabled: true,
-							source: AtemSourceIndex.Bars,
-							size: 580,
-							x: 800,
-							y: 50
-							// note: this sits behind box1, so don't crop it to ensure there is no gap between
+							enabled: false
 						},
 						{
 							// box 3
