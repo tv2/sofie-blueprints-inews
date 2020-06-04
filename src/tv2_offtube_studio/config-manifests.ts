@@ -89,14 +89,14 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			SourceName: '1',
 			AtemSource: 1,
 			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1],
-			StudioMics: false
+			StudioMics: true
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 2,
 			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2],
-			StudioMics: false
+			StudioMics: true
 		},
 		{
 			_id: '',
@@ -106,7 +106,7 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
 				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
 			],
-			StudioMics: false
+			StudioMics: true
 		}
 	]),
 	columns: [
