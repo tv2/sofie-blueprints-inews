@@ -1,0 +1,2041 @@
+{
+    "externalId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+    "name": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+    "type": "inews",
+    "payload": {
+        "externalId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+        "name": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+        "gatewayVersion": "v0.2"
+    },
+    "segments": [
+        {
+            "externalId": "1D59822A",
+            "name": "CONTINUITY",
+            "rank": 40000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "CONTINUITY",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582732680",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "break": "break"
+                    },
+                    "cues": [],
+                    "id": "1d59822a:0037ec9b:5e568795",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1D59822A:0037EC9B:5E568795",
+                    "identifier": "1D59822A"
+                },
+                "modified": "1582732680",
+                "externalId": "1D59822A",
+                "rank": 40000,
+                "name": "CONTINUITY",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1C59822A",
+            "name": "Soundbed",
+            "rank": 39000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "32",
+                        "title": "Soundbed",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890300",
+                        "presenter": "nafi",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "spx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "180"
+                    },
+                    "cues": [
+                        [
+                            "LYD=SN_soundbed_1",
+                            ";x.xx"
+                        ]
+                    ],
+                    "id": "1c59822a:0021e9d3:5e58ef2c",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref=\"0\"> <cc>Sport intro soundbed</cc></a></p>\r\n<p></p>\r\n<p></p>\r\n",
+                    "fileId": "1C59822A:0021E9D3:5E58EF2C",
+                    "identifier": "1C59822A"
+                },
+                "modified": "1582890300",
+                "externalId": "1C59822A",
+                "rank": 39000,
+                "name": "Soundbed",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1B59822A",
+            "name": "Soundbed",
+            "rank": 38000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "Soundbed",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582732680",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "break": "break"
+                    },
+                    "cues": [],
+                    "id": "1b59822a:0037ec9f:5e568795",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1B59822A:0037EC9F:5E568795",
+                    "identifier": "1B59822A"
+                },
+                "modified": "1582732680",
+                "externalId": "1B59822A",
+                "rank": 38000,
+                "name": "Soundbed",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1A59822A",
+            "name": "ADLIB BarnMor",
+            "rank": 37000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "31",
+                        "title": "ADLIB BarnMor",
+                        "tjekSport": "1",
+                        "var2": "ATTAC",
+                        "var3": "nmar",
+                        "videoId": "#_Mosartur_SB",
+                        "eventStatus": "ONLINE",
+                        "tapeTime": "7",
+                        "audioTime": "0",
+                        "totalTime": "8",
+                        "modifyDate": "1582890300",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "1",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": ".",
+                        "starttid": "07.12",
+                        "layout": "s"
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "mcserror": "mcserror",
+                        "float": "float"
+                    },
+                    "cues": [
+                        [
+                            "ADLIBPIX=BARNMOR",
+                            "INP1=LIVE 2",
+                            "BYNAVN=Oslo"
+                        ]
+                    ],
+                    "id": "1a59822a:00383e60:5e58ef37",
+                    "body": "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId": "1A59822A:00383E60:5E58EF37",
+                    "identifier": "1A59822A"
+                },
+                "modified": "1582890300",
+                "externalId": "1A59822A",
+                "rank": 37000,
+                "name": "ADLIB BarnMor",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1959822A",
+            "name": "ADLIB MorBarn",
+            "rank": 36000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "30",
+                        "title": "ADLIB MorBarn",
+                        "tjekSport": "1",
+                        "var2": "ATTAC",
+                        "var3": "nmar",
+                        "videoId": "#_Mosartur_SB",
+                        "eventStatus": "ONLINE",
+                        "tapeTime": "7",
+                        "audioTime": "0",
+                        "totalTime": "8",
+                        "modifyDate": "1582890300",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "1",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": ".",
+                        "starttid": "07.12",
+                        "layout": "s"
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "mcserror": "mcserror",
+                        "float": "float"
+                    },
+                    "cues": [
+                        [
+                            "ADLIBPIX=MORBARN",
+                            "INP2=LIVE 1",
+                            "BYNAVN=Bergen"
+                        ]
+                    ],
+                    "id": "1959822a:00383e66:5e58ef38",
+                    "body": "\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId": "1959822A:00383E66:5E58EF38",
+                    "identifier": "1959822A"
+                },
+                "modified": "1582890300",
+                "externalId": "1959822A",
+                "rank": 36000,
+                "name": "ADLIB MorBarn",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1859822A",
+            "name": "ADLIB 100%",
+            "rank": 35000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "29",
+                        "title": "ADLIB 100%",
+                        "tjekSport": "1",
+                        "var2": "ATTAC",
+                        "var3": "nmar",
+                        "videoId": "#_Mosartur_SB",
+                        "eventStatus": "ONLINE",
+                        "tapeTime": "7",
+                        "audioTime": "13",
+                        "totalTime": "21",
+                        "modifyDate": "1588150800",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "1",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": ".",
+                        "starttid": "07.12",
+                        "layout": "s"
+                    },
+                    "meta": {
+                        "words": "31",
+                        "rate": "140",
+                        "mcserror": "mcserror"
+                    },
+                    "cues": [
+                        [
+                            "ADLIBPIX=SERVER"
+                        ]
+                    ],
+                    "id": "1859822a:005a473e:5ea92619",
+                    "body": "\r\n<p><a idref=\"0\"></a></p>\r\n<p>dette er en tekst som lkjasdoh oih ia oi aij afja pja pofja fpoaj paoj poj poj asojfakjnfkdjf pkafpkj pj pakfjjoajshf o isfkjsdfdskfpjpj poj poj pjf poaugavfpij pij aokha poij psad </p>\r\n",
+                    "fileId": "1859822A:005A473E:5EA92619",
+                    "identifier": "1859822A"
+                },
+                "modified": "1588150800",
+                "externalId": "1859822A",
+                "rank": 35000,
+                "name": "ADLIB 100%",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1759822A",
+            "name": "ADLIB",
+            "rank": 34000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "ADLIB",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "break": "break"
+                    },
+                    "cues": [],
+                    "id": "1759822a:0021e9c7:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1759822A:0021E9C7:5E58EF29",
+                    "identifier": "1759822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1759822A",
+                "rank": 34000,
+                "name": "ADLIB",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1659822A",
+            "name": "LIVE barnmor",
+            "rank": 33000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "28",
+                        "title": "LIVE barnmor",
+                        "externer": "EX",
+                        "var8": "B",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "endorseBy": "anry",
+                        "runsTime": "0",
+                        "redOk": " ",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 18:00",
+                        "noarchive": ".",
+                        "livetype": "SNG/QL",
+                        "ikbook": "X",
+                        "kilde": "xborg",
+                        "kanal": "NEWS"
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "DVE=barnmor",
+                            "INP1=KAM 3",
+                            "INP2=LIVE 3",
+                            "BYNAVN=København"
+                        ],
+                        [
+                            "EKSTERN=LIVE 3"
+                        ],
+                        [
+                            "#kg direkte København",
+                            "; 0.00"
+                        ]
+                    ],
+                    "id": "1659822a:0021e9c4:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"></a></p>\r\n<p><cc>Spib her</cc></p>\r\n<p></p>\r\n",
+                    "fileId": "1659822A:0021E9C4:5E58EF29",
+                    "identifier": "1659822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1659822A",
+                "rank": 33000,
+                "name": "LIVE barnmor",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1559822A",
+            "name": "LIVE morbarn",
+            "rank": 32000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "27",
+                        "title": "LIVE morbarn",
+                        "externer": "EX",
+                        "var8": "B",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "endorseBy": "anry",
+                        "runsTime": "0",
+                        "redOk": " ",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 18:00",
+                        "noarchive": ".",
+                        "livetype": "SNG/QL",
+                        "ikbook": "X",
+                        "kilde": "xborg",
+                        "kanal": "NEWS"
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "DVE=morbarn",
+                            "INP1=KAM 2",
+                            "INP2=LIVE 2",
+                            "BYNAVN=København"
+                        ],
+                        [
+                            "EKSTERN=LIVE 2"
+                        ],
+                        [
+                            "#kg direkte København",
+                            "; 0.00"
+                        ]
+                    ],
+                    "id": "1559822a:0021e9c2:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"></a></p>\r\n<p><cc>Spib her</cc></p>\r\n<p></p>\r\n",
+                    "fileId": "1559822A:0021E9C2:5E58EF29",
+                    "identifier": "1559822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1559822A",
+                "rank": 32000,
+                "name": "LIVE morbarn",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1459822A",
+            "name": "LIVE sommerfugl",
+            "rank": 31000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "26",
+                        "title": "LIVE sommerfugl",
+                        "externer": "EX",
+                        "var8": "B",
+                        "tapeTime": "0",
+                        "audioTime": "2",
+                        "totalTime": "2",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "endorseBy": "anry",
+                        "runsTime": "0",
+                        "redOk": " ",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 18:00",
+                        "noarchive": ".",
+                        "livetype": "SNG/QL",
+                        "ikbook": "X",
+                        "kilde": "xborg",
+                        "kanal": "NEWS"
+                    },
+                    "meta": {
+                        "words": "6",
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "DVE=sommerfugl",
+                            "INP1=KAM 1",
+                            "INP2=LIVE 1",
+                            "BYNAVN=Odense/Copenhagen"
+                        ],
+                        [
+                            "EKSTERN=LIVE 1"
+                        ],
+                        [
+                            "#kg direkte Odense",
+                            "; 0.00"
+                        ]
+                    ],
+                    "id": "1459822a:0021e9c3:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref=\"0\"><pi>***LIVE*** </pi></a></p>\r\n<p>Thid id thr trext for the next DVE</p>\r\n<p></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"></a></p>\r\n<p><cc>Spib her</cc></p>\r\n<p></p>\r\n",
+                    "fileId": "1459822A:0021E9C3:5E58EF29",
+                    "identifier": "1459822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1459822A",
+                "rank": 31000,
+                "name": "LIVE sommerfugl",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1359822A",
+            "name": "DVE / LIVE",
+            "rank": 30000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "DVE / LIVE",
+                        "var2": " ",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "break": "break"
+                    },
+                    "cues": [],
+                    "id": "1359822a:0021e9be:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n",
+                    "fileId": "1359822A:0021E9BE:5E58EF29",
+                    "identifier": "1359822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1359822A",
+                "rank": 30000,
+                "name": "DVE / LIVE",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1259822A",
+            "name": "gfx popup sendeplan",
+            "rank": 29000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "25",
+                        "title": "gfx popup sendeplan",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        null,
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 2 YNYAB 0 [[ pilotdata",
+                            "Senderplan/SENDEPLAN/HTH Ligaen HÅNDBOLD2-26/Mosart=L|00:00|S",
+                            "VCPID=2597958",
+                            "ContinueCount=1",
+                            "Senderplan/SENDEPLAN/HTH Ligaen HÅNDBOLD2-26/Mosart=L|00:00|S"
+                        ]
+                    ],
+                    "id": "1259822a:0021e9c0:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1259822A:0021E9C0:5E58EF29",
+                    "identifier": "1259822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1259822A",
+                "rank": 29000,
+                "name": "gfx popup sendeplan",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0D59822A",
+            "name": "Trumpet test",
+            "rank": 28000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "23",
+                        "title": "Trumpet test",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "DIGI=TROMPET",
+                            "Dette er en VO tekst",
+                            "Dette er linje 2",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "0d59822a:0021e9c1:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1</pi></p>\r\n<p><cc>--vo-></cc><a idref=\"0\"><cc><--</cc></a></p>\r\n<p></p>\r\n<p><pi>KAM 2 </pi></p>\r\n<p></p>\r\n<p></p>\r\n",
+                    "fileId": "0D59822A:0021E9C1:5E58EF29",
+                    "identifier": "0D59822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0D59822A",
+                "rank": 28000,
+                "name": "Trumpet test",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1159822A",
+            "name": "Fakta boks",
+            "rank": 27000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "24",
+                        "title": "Fakta boks",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        null,
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 2 YNYAB 0 [[ pilotdata",
+                            "SC-H/Fakta/TV 2 SPORT/Mosart=L|00:00|00:10",
+                            "VCPID=2597957",
+                            "ContinueCount=-1",
+                            "SC-H/Fakta/TV 2 SPORT/Mosart=L|00:00|00:10"
+                        ]
+                    ],
+                    "id": "1159822a:0021e9bc:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1159822A:0021E9BC:5E58EF29",
+                    "identifier": "1159822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1159822A",
+                "rank": 27000,
+                "name": "Fakta boks",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1059822A",
+            "name": "GRAFIK:",
+            "rank": 26000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "22",
+                        "title": "GRAFIK:",
+                        "var2": "100% VIZ",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "GRAFIK=FULL",
+                            "INP1=LIVE 1"
+                        ],
+                        [
+                            "]] S3.0 M 0 [[",
+                            "cg4 ]] 1 YNYAB 0 [[ pilotdata",
+                            "PIX/zoom/stoppoints_1/LIVE",
+                            "VCPID=2598145",
+                            "ContinueCount=22",
+                            "PIX/zoom/stoppoints_1/LIVE"
+                        ]
+                    ],
+                    "id": "1059822a:0021e9b8:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>************ 100%GRAFIK ***********</pi></p>\r\n<p><a idref=\"0\"><cc>LOAD GRAFIK PÅ FULLSCREEN</cc></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n",
+                    "fileId": "1059822A:0021E9B8:5E58EF29",
+                    "identifier": "1059822A"
+                },
+                "modified": "1582890240",
+                "externalId": "1059822A",
+                "rank": 26000,
+                "name": "GRAFIK:",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0C59822A",
+            "name": "VO test",
+            "rank": 25000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "21",
+                        "title": "VO test",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890480",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "DIGI=VO",
+                            "Dette er en VO tekst",
+                            "Dette er linje 2",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "0c59822a:0021e99e:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1</pi></p>\r\n<p><cc>--vo-></cc><a idref=\"0\"><cc><--</cc></a></p>\r\n<p></p>\r\n<p><pi>KAM 2 </pi></p>\r\n<p></p>\r\n",
+                    "fileId": "0C59822A:0021E99E:5E58EFEE",
+                    "identifier": "0C59822A"
+                },
+                "modified": "1582890480",
+                "externalId": "0C59822A",
+                "rank": 25000,
+                "name": "VO test",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0F59822A",
+            "name": "PILOT ELEMENTER",
+            "rank": 24000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "PILOT ELEMENTER",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "break": "break"
+                    },
+                    "cues": [],
+                    "id": "0f59822a:0021e9a5:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "0F59822A:0021E9A5:5E58EF29",
+                    "identifier": "0F59822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0F59822A",
+                "rank": 24000,
+                "name": "PILOT ELEMENTER",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0B59822A",
+            "name": "Bundter, topter",
+            "rank": 23000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "20",
+                        "title": "Bundter, topter",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "kg topt Test Testersen",
+                            "Tester",
+                            ";0.00"
+                        ],
+                        [
+                            "kg bund TEST TESTERSEN",
+                            "tester",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "0b59822a:0021e99f:5e58ef29",
+                    "body": "\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--bund-></cc><a idref=\"1\"><cc><--</cc></a></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--topt-></cc><a idref=\"0\"><cc><--</cc></a></p>\r\n",
+                    "fileId": "0B59822A:0021E99F:5E58EF29",
+                    "identifier": "0B59822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0B59822A",
+                "rank": 23000,
+                "name": "Bundter, topter",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "19598984",
+            "name": "IDENTER test",
+            "rank": 22000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "19",
+                        "title": "IDENTER test",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582891260",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        null,
+                        [
+                            "kg ident_blank",
+                            "LINJE 1",
+                            "LINJE 2",
+                            ";0.00"
+                        ],
+                        [
+                            "EKSTERN=LIVE 2"
+                        ],
+                        [
+                            "kg direkte KØBENHAVN",
+                            ";0.00"
+                        ],
+                        [
+                            "kg arkiv skriv her",
+                            ";0.00"
+                        ],
+                        [
+                            "kg billederfra_txt skriv her",
+                            ";0.00"
+                        ],
+                        [
+                            "kg ident_nyhederne ",
+                            "Ident Nyhederne",
+                            ";0.00"
+                        ],
+                        [
+                            "kg ident_news",
+                            "Ident News",
+                            ";0.00"
+                        ],
+                        [
+                            "kg ident_tv2sport",
+                            "Ident TV2sport",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "19598984:003883c9:5e58f312",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"><pi> </pi></a></p>\r\n<p><a idref=\"3\"></a></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--arkiv--></cc><a idref=\"4\"><cc><--</cc></a></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--billederfra_txt-></cc><a idref=\"5\"><cc><--</cc></a></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--Ident nyhederne-></cc><a idref=\"6\"><cc><--</cc></a></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--Ident News-></cc><a idref=\"7\"><cc><--</cc></a></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p><cc>--Ident Tv2Sport-></cc><a idref=\"8\"><cc><--</cc></a></p>\r\n<p></p>\r\n",
+                    "fileId": "19598984:003883C9:5E58F312",
+                    "identifier": "19598984"
+                },
+                "modified": "1582891260",
+                "externalId": "19598984",
+                "rank": 22000,
+                "name": "IDENTER test",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0959822A",
+            "name": "ALT UD",
+            "rank": 21000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "18",
+                        "title": "ALT UD",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "kg altud",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "0959822a:0021e9a3:5e58ef29",
+                    "body": "\r\n<p><pi>KAM 2</pi></p>\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId": "0959822A:0021E9A3:5E58EF29",
+                    "identifier": "0959822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0959822A",
+                "rank": 21000,
+                "name": "ALT UD",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0859822A",
+            "name": "Overlay styles",
+            "rank": 20999.740600585938,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "17",
+                        "title": "Overlay styles",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "presenter": "std-read",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "160"
+                    },
+                    "cues": [
+                        [
+                            "KG=DESIGN_FODBOLD",
+                            ";0.00.01"
+                        ],
+                        [
+                            "KG=DESIGN_SC",
+                            ";0.00.01"
+                        ]
+                    ],
+                    "id": "0859822a:0021e99c:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"0\"><cc><------</cc></a></p>\r\n<p></p>\r\n<p><pi>KAM 1 </pi></p>\r\n<p></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"1\"><cc><------</cc></a></p>\r\n<p></p>\r\n",
+                    "fileId": "0859822A:0021E99C:5E58EF29",
+                    "identifier": "0859822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0859822A",
+                "rank": 20999.740600585938,
+                "name": "Overlay styles",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0759822A",
+            "name": "OVERLAY GRAFIK",
+            "rank": 20999.481201171875,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "OVERLAY GRAFIK",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "break": "break"
+                    },
+                    "cues": [],
+                    "id": "0759822a:0021e99a:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "0759822A:0021E99A:5E58EF29",
+                    "identifier": "0759822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0759822A",
+                "rank": 20999.481201171875,
+                "name": "OVERLAY GRAFIK",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0659822A",
+            "name": "EVS VO",
+            "rank": 20998.96240234375,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "16",
+                        "title": "EVS VO",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "0659822a:0021e993:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><pi>EVS1VO</pi></p>\r\n<p><pi>EVS1VO_spor3</pi></p>\r\n<p></p>\r\n",
+                    "fileId": "0659822A:0021E993:5E58EF29",
+                    "identifier": "0659822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0659822A",
+                "rank": 20998.96240234375,
+                "name": "EVS VO",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0559822A",
+            "name": "EVS",
+            "rank": 20997.9248046875,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "15",
+                        "title": "EVS",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "0559822a:0021e994:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><pi>EVS1</pi></p>\r\n<p></p>\r\n",
+                    "fileId": "0559822A:0021E994:5E58EF29",
+                    "identifier": "0559822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0559822A",
+                "rank": 20997.9248046875,
+                "name": "EVS",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0459822A",
+            "name": "VOV",
+            "rank": 20995.849609375,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "14",
+                        "title": "VOV",
+                        "var2": "INDSL",
+                        "videoId": "#_Mosartur_SB",
+                        "tapeTime": "0",
+                        "audioTime": "22",
+                        "totalTime": "22",
+                        "modifyDate": "1582890240",
+                        "presenter": "std-read",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "60",
+                        "rate": "160"
+                    },
+                    "cues": [],
+                    "id": "0459822a:0021e995:5e58ef29",
+                    "body": "\r\n<p><a idref=\"0\"><pi>VOV EFFEKT 37 </pi><cc>VOSB VOV</cc></a></p>\r\n<p></p>\r\n<p>Multiline script.</p>\r\n<p></p>\r\n<p>Continued script.</p>\r\n<p></p>\r\n<p>Yet more script.</p>\r\n<p></p>\r\n",
+                    "fileId": "0459822A:0021E995:5E58EF29",
+                    "identifier": "0459822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0459822A",
+                "rank": 20995.849609375,
+                "name": "VOV",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0359822A",
+            "name": "VO",
+            "rank": 20991.69921875,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "13",
+                        "title": "VO",
+                        "var2": "INDSL",
+                        "videoId": "#_Mosartur_SB",
+                        "tapeTime": "0",
+                        "audioTime": "22",
+                        "totalTime": "22",
+                        "modifyDate": "1582890240",
+                        "presenter": "std-read",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "60",
+                        "rate": "160"
+                    },
+                    "cues": [],
+                    "id": "0359822a:0021e996:5e58ef29",
+                    "body": "\r\n<p><a idref=\"0\"><pi>VO </pi><cc>VOSB VOV</cc></a></p>\r\n<p></p>\r\n<p>Another multiline script.</p>\r\n<p></p>\r\n<p>Continued on another line.</p>\r\n<p></p>\r\n<p></p>\r\n<p>Continued again</p>\r\n<p></p>\r\n",
+                    "fileId": "0359822A:0021E996:5E58EF29",
+                    "identifier": "0359822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0359822A",
+                "rank": 20991.69921875,
+                "name": "VO",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0259822A",
+            "name": "ATTACK",
+            "rank": 20983.3984375,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "12",
+                        "title": "ATTACK",
+                        "var2": "INDSL",
+                        "videoId": "#_Mosartur_SB",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "presenter": "std-read",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "1",
+                        "rate": "160"
+                    },
+                    "cues": [
+                        [
+                            "kg bund Name Nameson",
+                            "fake@email.fakeTLD",
+                            ";0.02"
+                        ],
+                        [
+                            "kg bund Another Person",
+                            "Title, Job Description, Institution",
+                            ";0.11"
+                        ],
+                        [
+                            "kg bund Person Peopleperson",
+                            ";0.27-0.31"
+                        ],
+                        [
+                            "kg bund A Name",
+                            "Subtitle",
+                            ";0.40"
+                        ],
+                        [
+                            "kg bund A different name",
+                            "A longer subtitle, with a description clarifying their credentials",
+                            ";0.54"
+                        ],
+                        [
+                            "kg bund Some more names",
+                            "Representative for place",
+                            ";1.08-1.13"
+                        ],
+                        [
+                            "kg bund Last Name",
+                            ";1.15"
+                        ]
+                    ],
+                    "id": "0259822a:0021e998:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>***ATTACK*** </pi></p>\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"></a></p>\r\n<p><a idref=\"3\"></a></p>\r\n<p><a idref=\"4\"></a></p>\r\n<p><a idref=\"5\"></a></p>\r\n<p><a idref=\"6\"></a></p>\r\n<p></p>\r\n<p><pi>SLUTORD:</pi></p>\r\n<p></p>\r\n<p><pi>Slutord:... Skarpere regler.</pi></p>\r\n<p></p>\r\n<p>.</p>\r\n<p></p>\r\n",
+                    "fileId": "0259822A:0021E998:5E58EF29",
+                    "identifier": "0259822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0259822A",
+                "rank": 20983.3984375,
+                "name": "ATTACK",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0159822A",
+            "name": "INDSLAG missing",
+            "rank": 20966.796875,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "11",
+                        "title": "INDSLAG missing",
+                        "var2": "INDSL",
+                        "videoId": "missing",
+                        "tapeTime": "0",
+                        "audioTime": "35",
+                        "totalTime": "35",
+                        "modifyDate": "1583748360",
+                        "presenter": "std-read",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "95",
+                        "rate": "160"
+                    },
+                    "cues": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        [
+                            "kg bund Name Nameson",
+                            "fake@email.fakeTLD",
+                            ";0.02"
+                        ],
+                        [
+                            "kg bund Another Person",
+                            "Title, Job Description, Institution",
+                            ";0.11"
+                        ],
+                        [
+                            "kg bund Person Peopleperson",
+                            ";0.27-0.31"
+                        ],
+                        [
+                            "kg bund A Name",
+                            "Subtitle",
+                            ";0.40"
+                        ],
+                        [
+                            "kg bund A different name",
+                            "A longer subtitle, with a description clarifying their credentials",
+                            ";0.54"
+                        ],
+                        [
+                            "kg bund Some more names",
+                            "Representative for place",
+                            ";1.08-1.13"
+                        ],
+                        [
+                            "kg bund Last Name",
+                            ";1.15"
+                        ]
+                    ],
+                    "id": "0159822a:004e551f:5e660718",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"><pi>KAM 1</pi></a></p>\r\n<p></p>\r\n<p>Some script about what's going on.</p>\r\n<p></p>\r\n<p>A question?</p>\r\n<p></p>\r\n<p>Introduction to server:</p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>***SERVER*** </pi></p>\r\n<p></p>\r\n<p><a idref=\"4\"></a></p>\r\n<p><a idref=\"5\"></a></p>\r\n<p><a idref=\"6\"></a></p>\r\n<p><a idref=\"7\"></a></p>\r\n<p><a idref=\"8\"></a></p>\r\n<p><a idref=\"9\"></a></p>\r\n<p><a idref=\"10\"></a></p>\r\n<p></p>\r\n<p><pi>SLUTORD:</pi></p>\r\n<p></p>\r\n<p><pi>Slutord:... Skarpere regler.</pi></p>\r\n<p></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p></p>\r\n<p>Script under server</p>\r\n<p></p>\r\n",
+                    "fileId": "0159822A:004E551F:5E660718",
+                    "identifier": "0159822A"
+                },
+                "modified": "1583748360",
+                "externalId": "0159822A",
+                "rank": 20966.796875,
+                "name": "INDSLAG missing",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "3859F5AB",
+            "name": "INDSLAG",
+            "rank": 20933.59375,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "11",
+                        "title": "INDSLAG",
+                        "var2": "INDSL",
+                        "videoId": "#_Mosartur_SB",
+                        "tapeTime": "0",
+                        "audioTime": "35",
+                        "totalTime": "35",
+                        "modifyDate": "1583748300",
+                        "presenter": "std-read",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "words": "95",
+                        "rate": "160"
+                    },
+                    "cues": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        [
+                            "kg bund Name Nameson",
+                            "fake@email.fakeTLD",
+                            ";0.02"
+                        ],
+                        [
+                            "kg bund Another Person",
+                            "Title, Job Description, Institution",
+                            ";0.11"
+                        ],
+                        [
+                            "kg bund Person Peopleperson",
+                            ";0.27-0.31"
+                        ],
+                        [
+                            "kg bund A Name",
+                            "Subtitle",
+                            ";0.40"
+                        ],
+                        [
+                            "kg bund A different name",
+                            "A longer subtitle, with a description clarifying their credentials",
+                            ";0.54"
+                        ],
+                        [
+                            "kg bund Some more names",
+                            "Representative for place",
+                            ";1.08-1.13"
+                        ],
+                        [
+                            "kg bund Last Name",
+                            ";1.15"
+                        ]
+                    ],
+                    "id": "3859f5ab:004e60cb:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"><pi>KAM 1</pi></a></p>\r\n<p></p>\r\n<p>Script here.</p>\r\n<p></p>\r\n<p>More script.</p>\r\n<p></p>\r\n<p>Introduce server:</p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>***SERVER*** </pi></p>\r\n<p></p>\r\n<p><a idref=\"4\"></a></p>\r\n<p><a idref=\"5\"></a></p>\r\n<p><a idref=\"6\"></a></p>\r\n<p><a idref=\"7\"></a></p>\r\n<p><a idref=\"8\"></a></p>\r\n<p><a idref=\"9\"></a></p>\r\n<p><a idref=\"10\"></a></p>\r\n<p></p>\r\n<p><pi>SLUTORD:</pi></p>\r\n<p></p>\r\n<p><pi>Slutord:... Skarpere regler.</pi></p>\r\n<p></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p></p>\r\n<p>Script under server.</p>\r\n<p></p>\r\n",
+                    "fileId": "3859F5AB:004E60CB:5E6606ED",
+                    "identifier": "3859F5AB"
+                },
+                "modified": "1583748300",
+                "externalId": "3859F5AB",
+                "rank": 20933.59375,
+                "name": "INDSLAG",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "0059822A",
+            "name": "Kam editorial time test",
+            "rank": 20867.1875,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "10",
+                        "title": "Kam editorial time test",
+                        "var2": "INDSL",
+                        "tapeTime": "180",
+                        "audioTime": "0",
+                        "totalTime": "180",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "0059822a:0021e975:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><pi>KAM 1</pi></p>\r\n",
+                    "fileId": "0059822A:0021E975:5E58EF29",
+                    "identifier": "0059822A"
+                },
+                "modified": "1582890240",
+                "externalId": "0059822A",
+                "rank": 20867.1875,
+                "name": "Kam editorial time test",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1F598229",
+            "name": "OUTRO SERIE A",
+            "rank": 20734.375,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "09",
+                        "title": "OUTRO SERIE A",
+                        "tapeTime": "8",
+                        "audioTime": "0",
+                        "totalTime": "8",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "JINGLE2=OUTRO_SERIE_A"
+                        ]
+                    ],
+                    "id": "1f598229:0021e976:5e58ef29",
+                    "body": "\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1F598229:0021E976:5E58EF29",
+                    "identifier": "1F598229"
+                },
+                "modified": "1582890240",
+                "externalId": "1F598229",
+                "rank": 20734.375,
+                "name": "OUTRO SERIE A",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1E598229",
+            "name": "LIVE 1",
+            "rank": 20468.75,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "08",
+                        "title": "LIVE 1",
+                        "externer": "EX",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "endorseBy": "anry",
+                        "runsTime": "0",
+                        "onair": "ONAIR",
+                        "typecode": "spx",
+                        "programtitle": "Håndbold: studie",
+                        "noarchive": ".",
+                        "livetype": "SNG/QL",
+                        "ikbook": "X",
+                        "kilde": "xborg",
+                        "kanal": "NEWS"
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "EKSTERN=LIVE 1"
+                        ],
+                        [
+                            "kg direkte",
+                            ";0.0X"
+                        ],
+                        [
+                            "kg bund Person 1 &amp; Person 2",
+                            "Hosts, Show",
+                            ";x.xx"
+                        ]
+                    ],
+                    "id": "1e598229:0021e977:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><cc>tema--> <--</cc></p>\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1E598229:0021E977:5E58EF29",
+                    "identifier": "1E598229"
+                },
+                "modified": "1582890240",
+                "externalId": "1E598229",
+                "rank": 20468.75,
+                "name": "LIVE 1",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1D598229",
+            "name": "WIPE seria A",
+            "rank": 19937.5,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "07",
+                        "title": "WIPE seria A",
+                        "tapeTime": "3",
+                        "audioTime": "0",
+                        "totalTime": "3",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "1d598229:0021e978:5e58ef29",
+                    "body": "\r\n<p><cc>WIPE TIL SERIE A</cc></p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>***KAM 1 EFFEKT 37***</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1D598229:0021E978:5E58EF29",
+                    "identifier": "1D598229"
+                },
+                "modified": "1582890240",
+                "externalId": "1D598229",
+                "rank": 19937.5,
+                "name": "WIPE seria A",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1B598229",
+            "name": "BREAKER 1  SERIE A",
+            "rank": 16750,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "05",
+                        "title": "BREAKER 1  SERIE A",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "JINGLE2=BREAKER_SERIE_A"
+                        ]
+                    ],
+                    "id": "1b598229:0021e972:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><cc>BREAKER SERIE A</cc></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "1B598229:0021E972:5E58EF29",
+                    "identifier": "1B598229"
+                },
+                "modified": "1582890240",
+                "externalId": "1B598229",
+                "rank": 16750,
+                "name": "BREAKER 1  SERIE A",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "1A598229",
+            "name": "Studie",
+            "rank": 12500,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "04",
+                        "title": "Studie",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "typecode": "spx",
+                        "programtitle": "OL"
+                    },
+                    "meta": {
+                        "rate": "165"
+                    },
+                    "cues": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        [
+                            "kg bund Person 1",
+                            "Host",
+                            ";x.xx"
+                        ],
+                        [
+                            "kg bund person 2",
+                            "Expert",
+                            ";x.xx"
+                        ]
+                    ],
+                    "id": "1a598229:0021e973:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p></p>\r\n<p><a idref=\"7\"><a idref=\"8\"></a></a></p>\r\n",
+                    "fileId": "1A598229:0021E973:5E58EF29",
+                    "identifier": "1A598229"
+                },
+                "modified": "1582890240",
+                "externalId": "1A598229",
+                "rank": 12500,
+                "name": "Studie",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "19598229",
+            "name": "KAMERAER",
+            "rank": 4000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "03",
+                        "title": "KAMERAER",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "19598229:0021e96c:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><pi>KAM 1</pi></p>\r\n<p><pi>KAM 1 minus mic</pi></p>\r\n<p></p>\r\n<p><pi>KAM 2 </pi></p>\r\n<p><pi>KAM 2 minus mic</pi></p>\r\n<p></p>\r\n<p><pi>KAM 3 </pi></p>\r\n<p><pi>KAM 3 minus mic</pi></p>\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 4 </pi></p>\r\n<p><pi>KAM 4 minus mic</pi></p>\r\n<p></p>\r\n<p><pi>KAM 5</pi></p>\r\n<p></p>\r\n<p><pi>KAM SORT</pi></p>\r\n<p><pi>KAM HVID</pi></p>\r\n<p></p>\r\n<p><pi>KAM CS3</pi></p>\r\n<p></p>\r\n",
+                    "fileId": "19598229:0021E96C:5E58EF29",
+                    "identifier": "19598229"
+                },
+                "modified": "1582890240",
+                "externalId": "19598229",
+                "rank": 4000,
+                "name": "KAMERAER",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "18598229",
+            "name": "INTRO SERIE A",
+            "rank": 3000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "02",
+                        "title": "INTRO SERIE A",
+                        "tapeTime": "11",
+                        "audioTime": "0",
+                        "totalTime": "11",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "JINGLE2=INTRO_SERIE_A"
+                        ]
+                    ],
+                    "id": "18598229:0021e96d:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><cc>INTRO TIL SERIE A</cc></p>\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n<p></p>\r\n",
+                    "fileId": "18598229:0021E96D:5E58EF29",
+                    "identifier": "18598229"
+                },
+                "modified": "1582890240",
+                "externalId": "18598229",
+                "rank": 3000,
+                "name": "INTRO SERIE A",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "17598229",
+            "name": "KLAR ON AIR LATINOBOLD",
+            "rank": 2000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "01",
+                        "title": "KLAR ON AIR LATINOBOLD",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1589557440",
+                        "modifyBy": "sofie",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "typecode": "spx",
+                        "programtitle": " "
+                    },
+                    "meta": {
+                        "rate": "165"
+                    },
+                    "cues": [
+                        [
+                            "KOMMANDO=GRAPHICSPROFILE",
+                            "TV2 SPORT 2016",
+                            ";0.00"
+                        ],
+                        [
+                            "STUDIOSETUP=afvikling C",
+                            ";0.00"
+                        ],
+                        [
+                            "VIZ=dve-triopage",
+                            "GRAFIK=BG_LOADER_FODBOLD_20",
+                            ";0.00"
+                        ],
+                        [
+                            "VIZ=full-triopage",
+                            "GRAFIK=BG_LOADER_FODBOLD_20",
+                            ";0.00.01"
+                        ],
+                        [
+                            "STUDIE=ST2p",
+                            ";0.01"
+                        ],
+                        [
+                            "STUDIE=ST4s",
+                            ";0.02"
+                        ],
+                        [
+                            "kg altud",
+                            ";0.00"
+                        ],
+                        [
+                            "KG=DESIGN_FODBOLD_20",
+                            ";0.00.01"
+                        ],
+                        [
+                            "STUDIE=MIC ON OFF",
+                            "vrt1=OFF",
+                            "vrt2=OFF",
+                            "gst1=OFF",
+                            "gst2=OFF",
+                            "gst3=OFF",
+                            "gst4=OFF",
+                            "kom1=OFF",
+                            "kom2=OFF",
+                            "ST4vrt=ON",
+                            "ST4gst=",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "17598229:00147c8d:5ebe9ca7",
+                    "body": "\r\n<p><pi>KAM CS 3</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><cc>---load background on DVE------></cc><a idref=\"2\"><cc><------</cc></a></p>\r\n<p><cc>---load background on FULL------></cc><a idref=\"3\"><cc><------</cc></a></p>\r\n<p><cc>---VALG AF STUDIE PRIMÆR--></cc><a idref=\"4\"><cc><--(ST4p, ST2p)</cc></a></p>\r\n<p><cc>--VALG AF STUDIE SEKUNDÆR--></cc><a idref=\"5\"><cc><---(ST4s, ST2s)</cc><tab></tab></a></p>\r\n<p><tab></tab></p>\r\n<p><cc>----all out overlay--></cc><a idref=\"6\"><cc><---</cc></a></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"7\"><cc><------</cc></a></p>\r\n<p></p>\r\n<p><cc>-----slukker mikrofoner--></cc><a idref=\"8\"><cc><-----</cc><tab><tab><tab></tab></tab></tab></a></p>\r\n<p></p>\r\n",
+                    "fileId": "17598229:00147C8D:5EBE9CA7",
+                    "identifier": "17598229"
+                },
+                "modified": "1589557440",
+                "externalId": "17598229",
+                "rank": 2000,
+                "name": "KLAR ON AIR LATINOBOLD",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "16598229",
+            "name": "BREAKERE",
+            "rank": 1000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "title": "BREAKERE",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582728720",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140",
+                        "break": "break"
+                    },
+                    "cues": [],
+                    "id": "16598229:0037ec2a:5e56783a",
+                    "body": "\r\n<p></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "16598229:0037EC2A:5E56783A",
+                    "identifier": "16598229"
+                },
+                "modified": "1582728720",
+                "externalId": "16598229",
+                "rank": 1000,
+                "name": "BREAKERE",
+                "float": false
+            },
+            "parts": []
+        }
+    ]
+}
