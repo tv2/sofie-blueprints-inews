@@ -24,14 +24,16 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 function prepareConfig(
 	conf: string,
 	configName: string,
-	studioMics: boolean
+	studioMics: boolean,
+	keepAudioInStudio?: boolean
 ): Array<{ SourceName: string; AtemSource: string; SisyfosLayers: string[]; StudioMics: boolean }> {
 	return parseMapStr(undefined, conf, true).map(c => {
 		return {
 			SourceName: c.id,
 			AtemSource: c.val,
 			SisyfosLayers: getSisyfosLayers(configName, c.id),
-			StudioMics: studioMics
+			StudioMics: studioMics,
+			KeepAudioInStudio: keepAudioInStudio
 		}
 	})
 }
@@ -44,7 +46,7 @@ export const defaultStudioConfig: ConfigMap = {
 		true
 	),
 	SourcesSkype: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7', 'SourcesSkype', false),
-	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false),
+	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false, true),
 	SourcesDelayedPlayback: prepareConfig('1:5,2:5', 'SourcesDelayedPlayback', false),
 	StudioMics: [
 		'sisyfos_source_Host_1_st_a',

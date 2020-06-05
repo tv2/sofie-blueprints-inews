@@ -155,70 +155,80 @@ export const manifestAFVDSourcesRM: ConfigManifestEntryTable = {
 			SourceName: '1',
 			AtemSource: 1,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 2,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '3',
 			AtemSource: 3,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '4',
 			AtemSource: 4,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '5',
 			AtemSource: 5,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '6',
 			AtemSource: 6,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '7',
 			AtemSource: 7,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '8',
 			AtemSource: 8,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '9',
 			AtemSource: 9,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '10',
 			AtemSource: 10,
 			SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
-			StudioMics: false
+			StudioMics: false,
+			KeepAudioInStudio: true
 		}
 	]),
 	columns: [
@@ -261,6 +271,15 @@ export const manifestAFVDSourcesRM: ConfigManifestEntryTable = {
 			required: true,
 			defaultVal: false,
 			rank: 3
+		},
+		{
+			id: 'KeepAudioInStudio',
+			name: 'Keep audio in Studio',
+			description: 'Keep audio in Studio',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 4
 		}
 	]
 }

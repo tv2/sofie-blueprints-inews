@@ -1,5 +1,8 @@
 import { TableConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
-import { TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import {
+	TableConfigItemSourceMappingWithSisyfos,
+	TableConfigItemSourceMappingWithSisyfosAndKeepAudio
+} from 'tv2-common'
 import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
 
@@ -27,7 +30,7 @@ export interface TV2StudioConfigBase {
 		CCGGain: number
 	}
 	StudioMics: string[]
-	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesRM: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
 	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
 }
