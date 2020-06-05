@@ -189,11 +189,11 @@ export function OfftubeEvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const content = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
+		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
 		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
 
-		content.stickyLayers.forEach(layer => {
+		adlibContent.stickyLayers.forEach(layer => {
 			sticky = {
 				...sticky,
 				[layer]: {
@@ -211,8 +211,16 @@ export function OfftubeEvaluateAdLib(
 			outputLayerId: 'selectedAdlib',
 			toBeQueued: true,
 			canCombineQueue: true,
-			content: content.content,
-			invalid: !content.valid,
+			content: {
+				...adlibContent.content,
+				timelineObjects: adlibContent.content.timelineObjects.map(tlObj => {
+					return {
+						...tlObj,
+						classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : [ControlClasses.NOLookahead]
+					}
+				})
+			},
+			invalid: !adlibContent.valid,
 			infiniteMode: PieceLifespan.OutOnNextSegment,
 			metaData: literal<PieceMetaData>({
 				stickySisyfosLevels: sticky
@@ -293,10 +301,10 @@ export function OfftubeEvaluateAdLib(
 				outputLayerId: 'pgm',
 				toBeQueued: true,
 				content: {
-					...content.content,
-					timelineObjects: makeofftubeDVEIDsUniqueForFlow(content.content.timelineObjects)
+					...adlibContent.content,
+					timelineObjects: makeofftubeDVEIDsUniqueForFlow(adlibContent.content.timelineObjects)
 				},
-				invalid: !content.valid,
+				invalid: !adlibContent.valid,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				metaData: literal<PieceMetaData>({
 					stickySisyfosLevels: sticky

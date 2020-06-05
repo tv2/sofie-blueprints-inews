@@ -83,7 +83,7 @@ export function OfftubeEvaluateDVE(
 				timelineObjects: adlibContent.content.timelineObjects.map(tlObj => {
 					return {
 						...tlObj,
-						classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : undefined
+						classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : [ControlClasses.NOLookahead]
 					}
 				})
 			},

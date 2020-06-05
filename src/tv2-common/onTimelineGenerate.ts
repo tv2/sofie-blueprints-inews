@@ -12,7 +12,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { ControlClasses, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
-import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
+import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer } from '../tv2_offtube_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
@@ -100,31 +100,6 @@ export function onTimelineGenerate<
 			!resolvedPieces.some(piece => o.id.includes(piece._id))
 	)
 
-	const dveSetAsNextIncurrentPartIndex = timeline.findIndex(
-		o =>
-			o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler &&
-			o.classes?.includes(Enablers.OFFTUBE_ENABLE_DVE) &&
-			!o.isLookahead &&
-			resolvedPieces.some(piece => piece._id === o.pieceId) &&
-			!o.id.match(/previous/)
-	)
-	const dveLayoutInCurrentPartIndex = timeline.findIndex(
-		o =>
-			o.layer.toString() === OfftubeAtemLLayer.AtemSSrcDefault &&
-			!o.isLookahead &&
-			!o.id.match(/previous/) &&
-			!o.id.match(/future/) &&
-			o.classes?.includes(ControlClasses.NOLookahead)
-	)
-	const dveLayoutInFuturePartIndex = timeline.findIndex(
-		o =>
-			o.layer.toString() === OfftubeAtemLLayer.AtemSSrcDefault &&
-			o.isLookahead &&
-			!o.id.match(/previous/) &&
-			!!o.id.match(/future/) &&
-			o.classes?.includes(ControlClasses.NOLookahead)
-	)
-
 	if (lookaheadServerEnableIndex > -1 && lookaheadMediaPlayerSession && lookaheadServerObj) {
 		timeline[lookaheadServerEnableIndex].metaData = {
 			...lookaheadServerObj.metaData,
@@ -148,22 +123,54 @@ export function onTimelineGenerate<
 		)
 	}
 
-	if (dveLayoutInFuturePartIndex > -1 && dveSetAsNextIncurrentPartIndex === -1 && dveLayoutInCurrentPartIndex > -1) {
-		const current = timeline[dveLayoutInCurrentPartIndex]
-		console.log(JSON.stringify(current))
-		timeline = timeline.filter(
+	;[
+		OfftubeAtemLLayer.AtemSSrcDefault,
+		OfftubeCasparLLayer.CasparCGDVEFrame,
+		OfftubeCasparLLayer.CasparCGDVEKey,
+		OfftubeCasparLLayer.CasparCGDVETemplate
+	].forEach(layer => {
+		const dveSetAsNextIncurrentPartIndex = timeline.findIndex(
 			o =>
-				!(
-					o.layer.toString() === OfftubeAtemLLayer.AtemSSrcDefault &&
-					!o.id.match(/previous/) &&
-					!o.id.match(/future/) &&
-					o.classes?.includes(ControlClasses.NOLookahead) &&
-					o.pieceId &&
-					current.pieceId &&
-					!!o.pieceId.match(current.pieceId)
-				)
+				o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler &&
+				o.classes?.includes(Enablers.OFFTUBE_ENABLE_DVE) &&
+				!o.isLookahead &&
+				resolvedPieces.some(piece => piece._id === o.pieceId) &&
+				!o.id.match(/previous/)
 		)
-	}
+		const dveLayoutInCurrentPartIndex = timeline.findIndex(
+			o =>
+				o.layer.toString() === layer &&
+				!o.isLookahead &&
+				!o.id.match(/previous/) &&
+				!o.id.match(/future/) &&
+				o.classes?.includes(ControlClasses.NOLookahead)
+		)
+		const dveLayoutInFuturePartIndex = timeline.findIndex(
+			o =>
+				o.layer.toString() === layer &&
+				o.isLookahead &&
+				!o.id.match(/previous/) &&
+				!!o.id.match(/future/) &&
+				o.classes?.includes(ControlClasses.NOLookahead)
+		)
+
+		if (dveLayoutInFuturePartIndex > -1 && dveSetAsNextIncurrentPartIndex === -1 && dveLayoutInCurrentPartIndex > -1) {
+			const current = timeline[dveLayoutInCurrentPartIndex]
+			console.log(JSON.stringify(current))
+			timeline = timeline.filter(
+				o =>
+					!(
+						o.layer.toString() === layer &&
+						!o.id.match(/previous/) &&
+						!o.id.match(/future/) &&
+						o.classes?.includes(ControlClasses.NOLookahead) &&
+						o.pieceId &&
+						current.pieceId &&
+						!!o.pieceId.match(current.pieceId)
+					)
+			)
+		}
+	})
 
 	let extraObjs: OnGenerateTimelineObj[] = []
 
