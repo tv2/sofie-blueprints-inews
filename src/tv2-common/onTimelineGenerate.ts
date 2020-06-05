@@ -100,6 +100,31 @@ export function onTimelineGenerate<
 			!resolvedPieces.some(piece => o.id.includes(piece._id))
 	)
 
+	const dveSetAsNextIncurrentPartIndex = timeline.findIndex(
+		o =>
+			o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler &&
+			o.classes?.includes(Enablers.OFFTUBE_ENABLE_DVE) &&
+			!o.isLookahead &&
+			resolvedPieces.some(piece => piece._id === o.pieceId) &&
+			!o.id.match(/previous/)
+	)
+	const dveLayoutInCurrentPartIndex = timeline.findIndex(
+		o =>
+			o.layer.toString() === OfftubeAtemLLayer.AtemSSrcDefault &&
+			!o.isLookahead &&
+			!o.id.match(/previous/) &&
+			!o.id.match(/future/) &&
+			o.classes?.includes(ControlClasses.NOLookahead)
+	)
+	const dveLayoutInFuturePartIndex = timeline.findIndex(
+		o =>
+			o.layer.toString() === OfftubeAtemLLayer.AtemSSrcDefault &&
+			o.isLookahead &&
+			!o.id.match(/previous/) &&
+			!!o.id.match(/future/) &&
+			o.classes?.includes(ControlClasses.NOLookahead)
+	)
+
 	if (lookaheadServerEnableIndex > -1 && lookaheadMediaPlayerSession && lookaheadServerObj) {
 		timeline[lookaheadServerEnableIndex].metaData = {
 			...lookaheadServerObj.metaData,
@@ -119,6 +144,23 @@ export function onTimelineGenerate<
 					o.metaData.context &&
 					// (o.metaData.context.match(/serverProgramEnabler/) || o.metaData.context.match(/dveProgramEnabler/)) &&
 					resolvedPieces.some(piece => o.id.includes(piece._id))
+				)
+		)
+	}
+
+	if (dveLayoutInFuturePartIndex > -1 && dveSetAsNextIncurrentPartIndex === -1 && dveLayoutInCurrentPartIndex > -1) {
+		const current = timeline[dveLayoutInCurrentPartIndex]
+		console.log(JSON.stringify(current))
+		timeline = timeline.filter(
+			o =>
+				!(
+					o.layer.toString() === OfftubeAtemLLayer.AtemSSrcDefault &&
+					!o.id.match(/previous/) &&
+					!o.id.match(/future/) &&
+					o.classes?.includes(ControlClasses.NOLookahead) &&
+					o.pieceId &&
+					current.pieceId &&
+					!!o.pieceId.match(current.pieceId)
 				)
 		)
 	}

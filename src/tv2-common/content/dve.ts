@@ -471,7 +471,9 @@ export function MakeContentDVE2<
 				// setup ssrc
 				literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
 					id: offtube ? timelineStartObjId : '',
-					enable: getDVEEnable(!!offtube),
+					enable: {
+						while: '1'
+					},
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.SSrcDefault,
 					content: {
