@@ -253,7 +253,7 @@ export function OfftubeEvaluateAdLib(
 							classes: [Enablers.OFFTUBE_ENABLE_DVE]
 						}),
 						literal<TSR.TimelineObjAtemME>({
-							id: '',
+							id: `dvePgmAdlib`,
 							enable: { start: Number(config.studio.CasparPrerollDuration) },
 							priority: 1,
 							layer: OfftubeAtemLLayer.AtemMEClean,
@@ -268,7 +268,7 @@ export function OfftubeEvaluateAdLib(
 							classes: ['adlib_deparent']
 						}),
 						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-							id: '',
+							id: `dveNextAdlib`,
 							enable: { start: 0 },
 							priority: 0, // Must be below lookahead, except when forced by hold
 							layer: OfftubeAtemLLayer.AtemMENext,
