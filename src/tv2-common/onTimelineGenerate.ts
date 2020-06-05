@@ -187,6 +187,7 @@ export function onTimelineGenerate<
 				// tslint:disable-next-line: no-object-literal-type-assertion
 				extraObjs.push({
 					...obj,
+					_id: `${(obj as any)._id}_server_aux`,
 					id: `${obj.id}_server_aux`,
 					layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
 					content: {
