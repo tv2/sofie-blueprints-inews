@@ -10,6 +10,7 @@ export interface JingleLayers {
 	ATEM: {
 		DSKJingle: string
 		USKCleanEffekt?: string
+		USKJinglePreview?: string
 	}
 	Sisyfos: {
 		PlayerJingle: string
@@ -70,6 +71,59 @@ export function CreateJingleContentBase<
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
+
+			...(layers.ATEM.USKJinglePreview
+				? [
+						literal<TSR.TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: 0,
+								duration: 1
+							},
+							priority: 1,
+							layer: layers.ATEM.USKJinglePreview,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									transitionProperties: {
+										selection: 0b11 // PGM + Key1
+									},
+									upstreamKeyers: [
+										{
+											upstreamKeyerId: 0,
+											onAir: false,
+											mixEffectKeyType: 0,
+											flyEnabled: false,
+											fillSource: config.studio.AtemSource.JingleFill,
+											cutSource: config.studio.AtemSource.JingleKey,
+											maskEnabled: false,
+											lumaSettings: {
+												preMultiplied,
+												clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
+												gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
+											}
+										}
+									]
+								} as any
+							}
+						}),
+						literal<TSR.TimelineObjAtemME>({
+							id: '',
+							enable: {
+								// Deactive while on air
+								start: 1
+							},
+							priority: 1,
+							layer: layers.ATEM.USKJinglePreview,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {}
+							}
+						})
+				  ]
+				: []),
 
 			...(layers.ATEM.USKCleanEffekt
 				? [

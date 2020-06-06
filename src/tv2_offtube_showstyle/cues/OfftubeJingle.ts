@@ -101,7 +101,8 @@ function createJingleContent(config: OfftubeShowstyleBlueprintConfig, file: stri
 				PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle
 			},
 			ATEM: {
-				DSKJingle: OfftubeAtemLLayer.AtemDSKGraphics
+				DSKJingle: OfftubeAtemLLayer.AtemDSKGraphics,
+				USKJinglePreview: OfftubeAtemLLayer.AtemMENextJingle
 			},
 			Sisyfos: {
 				PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle

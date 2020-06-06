@@ -39,6 +39,7 @@ export enum OfftubeAtemLLayer {
 	AtemDSKGraphics = 'atem_dsk_graphics',
 	AtemMEProgram = 'atem_me_program',
 	AtemMENext = 'atem_me_next',
+	AtemMENextJingle = 'atem_me_next_jingle',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
 	AtemAuxClean = 'atem_aux_clean',
