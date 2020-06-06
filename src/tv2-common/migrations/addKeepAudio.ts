@@ -15,13 +15,12 @@ export function AddKeepAudio(versionStr: string, configName: string): MigrationS
 			const configVal = context.getConfig(configName)
 			if (
 				configVal === undefined ||
-				typeof configVal === 'string' ||
 				(Array.isArray(configVal) &&
 					configVal.length &&
 					typeof configVal[0] === 'object' &&
 					configVal[0].KeepAudioInStudio === undefined)
 			) {
-				return `${configName} has old format or doesn't exist`
+				return `${configName} is missing KeepAudioInStudio or doesn't exist`
 			}
 			return false
 		},

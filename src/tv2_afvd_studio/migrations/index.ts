@@ -1,7 +1,6 @@
 import { MigrationStepStudio } from 'tv-automation-sofie-blueprints-integration'
-import { literal, MoveSourcesToTable } from 'tv2-common'
+import { AddKeepAudio, literal, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
-import { AddKeepAudio } from '../../tv2-common/migrations/addKeepAudio'
 import {
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDSourcesCam,
