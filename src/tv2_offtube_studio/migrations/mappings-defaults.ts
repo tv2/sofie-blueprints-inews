@@ -47,7 +47,8 @@ export default literal<BlueprintMappings>({
 	atem_me_next_jingle: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.RETAIN,
+		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	}),
