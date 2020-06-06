@@ -47,17 +47,24 @@ export function CreatePartServer(
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [segmentExternalId]
 			}),
-			content: MakeContentServer(file, segmentExternalId, partDefinition, config, {
-				Caspar: {
-					ClipPending: CasparLLayer.CasparPlayerClipPending
+			content: MakeContentServer(
+				file,
+				segmentExternalId,
+				partDefinition,
+				config,
+				{
+					Caspar: {
+						ClipPending: CasparLLayer.CasparPlayerClipPending
+					},
+					Sisyfos: {
+						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+					},
+					ATEM: {
+						MEPGM: AtemLLayer.AtemMEProgram
+					}
 				},
-				Sisyfos: {
-					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
-				},
-				ATEM: {
-					MEPGM: AtemLLayer.AtemMEProgram
-				}
-			}),
+				duration
+			),
 			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)

@@ -29,20 +29,30 @@ export function EvaluateAdLib(
 		const file = partDefinition.fields.videoId
 
 		adLibPieces.push(
-			CreateAdlibServer(config, rank, partId, `adlib_server_${file}`, partDefinition, file, false, {
-				Caspar: {
-					ClipPending: CasparLLayer.CasparPlayerClipPending
+			CreateAdlibServer(
+				config,
+				rank,
+				partId,
+				`adlib_server_${file}`,
+				partDefinition,
+				file,
+				false,
+				{
+					Caspar: {
+						ClipPending: CasparLLayer.CasparPlayerClipPending
+					},
+					Sisyfos: {
+						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+					},
+					ATEM: {
+						MEPGM: AtemLLayer.AtemMEProgram
+					},
+					STICKY_LAYERS: config.stickyLayers,
+					PgmServer: SourceLayer.PgmServer,
+					PgmVoiceOver: SourceLayer.PgmVoiceOver
 				},
-				Sisyfos: {
-					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
-				},
-				ATEM: {
-					MEPGM: AtemLLayer.AtemMEProgram
-				},
-				STICKY_LAYERS: config.stickyLayers,
-				PgmServer: SourceLayer.PgmServer,
-				PgmVoiceOver: SourceLayer.PgmVoiceOver
-			})
+				0 // TODO: duration
+			)
 		)
 	} else {
 		// DVE

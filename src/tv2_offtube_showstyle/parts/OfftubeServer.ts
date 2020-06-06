@@ -64,17 +64,24 @@ export function OfftubeCreatePartServer(
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [`adlib_server_${file}`]
 			}),
-			content: MakeContentServer(file, `adlib_server_${file}`, partDefinition, config, {
-				Caspar: {
-					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+			content: MakeContentServer(
+				file,
+				`adlib_server_${file}`,
+				partDefinition,
+				config,
+				{
+					Caspar: {
+						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+					},
+					Sisyfos: {
+						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+					},
+					ATEM: {
+						MEPGM: OfftubeAtemLLayer.AtemMEClean
+					}
 				},
-				Sisyfos: {
-					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-				},
-				ATEM: {
-					MEPGM: OfftubeAtemLLayer.AtemMEClean
-				}
-			}),
+				duration
+			),
 			adlibPreroll: config.studio.CasparPrerollDuration
 		})
 	)
@@ -100,6 +107,7 @@ export function OfftubeCreatePartServer(
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 			}
 		},
+		duration,
 		{
 			isOfftube: true,
 			tagAsAdlib: true,

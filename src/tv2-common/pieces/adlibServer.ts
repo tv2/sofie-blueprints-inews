@@ -28,6 +28,7 @@ export function CreateAdlibServer<
 	file: string,
 	vo: boolean,
 	sourceLayers: CreateAdlibServerSourceLayers,
+	duration: number,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
@@ -42,7 +43,16 @@ export function CreateAdlibServer<
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: [mediaPlayerSession]
 		}),
-		content: MakeContentServer(file, mediaPlayerSession, partDefinition, config, sourceLayers, true, offtubeOptions),
+		content: MakeContentServer(
+			file,
+			mediaPlayerSession,
+			partDefinition,
+			config,
+			sourceLayers,
+			duration,
+			true,
+			offtubeOptions
+		),
 		adlibPreroll: config.studio.CasparPrerollDuration
 	})
 }

@@ -65,6 +65,7 @@ export function OfftubeEvaluateAdLib(
 				PgmServer: OfftubeSourceLayer.SelectedAdLibServer,
 				PgmVoiceOver: OfftubeSourceLayer.SelectedAdLibVoiceOver
 			},
+			duration,
 			{
 				isOfftube: true,
 				tagAsAdlib: true,
@@ -155,7 +156,8 @@ export function OfftubeEvaluateAdLib(
 				STICKY_LAYERS: config.stickyLayers,
 				PgmServer: OfftubeSourceLayer.PgmServer,
 				PgmVoiceOver: OfftubeSourceLayer.PgmVoiceOver
-			}
+			},
+			duration
 		)
 		adlibFlowProducer.toBeQueued = true
 		adlibFlowProducer.canCombineQueue = true
