@@ -576,9 +576,9 @@ function grafikName(
 	parsedCue: CueDefinitionGrafik | CueDefinitionMOS
 ): string {
 	if (parsedCue.type === CueType.Grafik) {
-		return `${parsedCue.template ? `${GetTemplateName(config, parsedCue)}` : ''}${parsedCue.textFields
-			.filter(txt => !txt.match(/^;.\.../i))
-			.map(txt => ` - ${txt}`)}`.replace(/,/gi, '')
+		return `${
+			parsedCue.template ? `${GetTemplateName(config, parsedCue)}${parsedCue.textFields.length ? ' - ' : ''}` : ''
+		}${parsedCue.textFields.filter(txt => !txt.match(/^;.\.../i)).join('\n - ')}`.replace(/,/gi, '')
 	} else {
 		return `${parsedCue.name ? parsedCue.name : ''}`
 	}
