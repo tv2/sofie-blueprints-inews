@@ -74,6 +74,7 @@ export function CreatePartVO(
 				MEPGM: AtemLLayer.AtemMEProgram
 			}
 		},
+		duration,
 		false
 	)
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))

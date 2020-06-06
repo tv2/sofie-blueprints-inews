@@ -28,13 +28,14 @@ export function CreateAdlibServer<
 	file: string,
 	vo: boolean,
 	sourceLayers: CreateAdlibServerSourceLayers,
+	duration: number,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: rank,
 		externalId,
 		...(offtubeOptions?.isOfftube ? { tags: offtubeOptions.tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [] } : {}),
-		name: `${partDefinition.storyName} Server: ${file}`,
+		name: offtubeOptions?.isOfftube ? partDefinition.storyName : `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? sourceLayers.PgmVoiceOver : sourceLayers.PgmServer,
 		outputLayerId: offtubeOptions?.isOfftube ? 'selectedAdlib' : 'pgm',
 		infiniteMode: offtubeOptions?.isOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
@@ -42,7 +43,16 @@ export function CreateAdlibServer<
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: [mediaPlayerSession]
 		}),
-		content: MakeContentServer(file, mediaPlayerSession, partDefinition, config, sourceLayers, true, offtubeOptions),
+		content: MakeContentServer(
+			file,
+			mediaPlayerSession,
+			partDefinition,
+			config,
+			sourceLayers,
+			duration,
+			true,
+			offtubeOptions
+		),
 		adlibPreroll: config.studio.CasparPrerollDuration
 	})
 }
