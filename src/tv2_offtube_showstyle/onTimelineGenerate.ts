@@ -36,7 +36,11 @@ export function onTimelineGenerateOfftube(
 	if (!currentServerOnAir) {
 		const currentAdlibServerPieceGroup = timeline.find(
 			obj =>
-				obj.isGroup && obj.layer === OfftubeSourceLayer.SelectedAdLibServer && obj.pieceId && currentPieces[obj.pieceId]
+				obj.isGroup &&
+				(obj.layer === OfftubeSourceLayer.SelectedAdLibServer ||
+					obj.layer === OfftubeSourceLayer.SelectedAdLibVoiceOver) &&
+				obj.pieceId &&
+				currentPieces[obj.pieceId]
 		)
 		if (currentAdlibServerPieceGroup) {
 			const enableObj = timeline.find(
