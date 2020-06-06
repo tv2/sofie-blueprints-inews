@@ -248,6 +248,7 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.RETAIN,
+		lookaheadMaxSearchDistance: 1,
 		channel: 4,
 		layer: 120
 	}),
@@ -255,6 +256,7 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.RETAIN,
+		lookaheadMaxSearchDistance: 1,
 		previewWhenNotOnAir: true,
 		channel: 4,
 		layer: 109
@@ -263,6 +265,7 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.RETAIN,
+		lookaheadMaxSearchDistance: 1,
 		previewWhenNotOnAir: true,
 		channel: 4,
 		layer: 111
