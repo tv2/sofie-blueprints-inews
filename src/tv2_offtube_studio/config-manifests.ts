@@ -89,14 +89,16 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			SourceName: '1',
 			AtemSource: 1,
 			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1],
-			StudioMics: true
+			StudioMics: true,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
 			SourceName: '2',
 			AtemSource: 2,
 			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2],
-			StudioMics: true
+			StudioMics: true,
+			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
@@ -106,7 +108,8 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
 				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
 			],
-			StudioMics: true
+			StudioMics: true,
+			KeepAudioInStudio: true
 		}
 	]),
 	columns: [
@@ -149,6 +152,15 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			required: true,
 			defaultVal: true,
 			rank: 3
+		},
+		{
+			id: 'KeepAudioInStudio',
+			name: 'Keep audio in Studio',
+			description: 'Keep audio in Studio',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: true,
+			rank: 4
 		}
 	]
 }

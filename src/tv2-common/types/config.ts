@@ -7,3 +7,7 @@ export type TableConfigItemSourceMappingWithSisyfos = {
 	SisyfosLayers: string[]
 	StudioMics: boolean
 } & TableConfigItemSourceMapping
+
+export type TableConfigItemSourceMappingWithSisyfosAndKeepAudio = {
+	KeepAudioInStudio: boolean
+} & TableConfigItemSourceMappingWithSisyfos
