@@ -34,7 +34,7 @@ export function CreateAdlibServer<
 		_rank: rank,
 		externalId,
 		...(offtubeOptions?.isOfftube ? { tags: offtubeOptions.tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [] } : {}),
-		name: `${partDefinition.storyName} Server: ${file}`,
+		name: offtubeOptions?.isOfftube ? partDefinition.storyName : `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? sourceLayers.PgmVoiceOver : sourceLayers.PgmServer,
 		outputLayerId: offtubeOptions?.isOfftube ? 'selectedAdlib' : 'pgm',
 		infiniteMode: offtubeOptions?.isOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
