@@ -1,6 +1,6 @@
 {
   "_id": "C4x2GbLWBMPoBhmyZ",
-  "name": "off-tubes-shelf",
+  "name": "Kommentator",
   "showStyleBaseId": "show0",
   "filters": [
     {
@@ -11,7 +11,7 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "url": "http://localhost:8005/multiview/",
+      "url": "http://10.201.76.13:8005/multiview",
       "width": -1,
       "height": -1,
       "x": 0,
@@ -24,7 +24,7 @@
       "currentSegment": false,
       "displayStyle": "offtube_list",
       "rank": 0,
-      "rundownBaseline": true,
+      "rundownBaseline": false,
       "default": false,
       "x": -16,
       "y": 0,
@@ -37,6 +37,9 @@
       "buttonHeightScale": 1.5,
       "sourceLayerIds": [
         "studio0_offtube_dve"
+      ],
+      "tags": [
+        "kommentator"
       ]
     },
     {
@@ -65,7 +68,8 @@
         "studio0_offtube_jingle"
       ],
       "tags": [
-        "offtube_adlib_100pc_server"
+        "offtube_adlib_100pc_server",
+        "kommentator"
       ]
     },
     {
@@ -84,7 +88,8 @@
       "includeClearInRundownBaseline": false,
       "assignHotKeys": false,
       "tags": [
-        "offtube_adlib_server"
+        "offtube_adlib_server",
+        "kommentator"
       ],
       "sourceLayerIds": [
         "studio0_offtube_voiceover",
@@ -109,6 +114,9 @@
         "studio0_graphicsIdent",
         "studio0_graphicsTop",
         "studio0_graphicsLower"
+      ],
+      "tags": [
+        "kommentator"
       ]
     },
     {
@@ -125,6 +133,9 @@
       "height": 7,
       "sourceLayerIds": [
         "studio0_offtube_graphicsFull"
+      ],
+      "tags": [
+        "kommentator"
       ]
     },
     {
@@ -140,11 +151,12 @@
       "y": 0,
       "width": 22,
       "height": 7,
-      "url": "192.168.1.1"
+      "url": "http://10.209.81.14:1176?minimonitor=1",
+      "scale": 0.75
     },
     {
       "_id": "6GDpdq547HjjZL9YK",
-      "type": "multiview",
+      "type": "adlib_region",
       "name": "Preview",
       "currentSegment": false,
       "displayStyle": "buttons",
@@ -156,11 +168,12 @@
       "width": 22,
       "height": -11,
       "windowNumber": 1,
-      "role": "take"
+      "role": "take",
+      "scale": 1
     },
     {
       "_id": "gho9Kigti38sQYqq3",
-      "type": "multiview",
+      "type": "adlib_region",
       "name": "Program",
       "currentSegment": false,
       "displayStyle": "buttons",
@@ -176,7 +189,7 @@
     },
     {
       "_id": "ooCyWRXeDE6ufYWWQ",
-      "type": "multiview",
+      "type": "adlib_region",
       "name": "Cam 1",
       "currentSegment": false,
       "displayStyle": "buttons",
@@ -194,8 +207,8 @@
     },
     {
       "_id": "PDKiKYeYB7zcAq6Lp",
-      "type": "multiview",
-      "name": "Worldfeed",
+      "type": "adlib_region",
+      "name": "Worldfeed 5.1",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -213,8 +226,8 @@
     },
     {
       "_id": "AMrCRTvefKDS6qogp",
-      "type": "multiview",
-      "name": "Rep Cam",
+      "type": "adlib_region",
+      "name": "LIVE 1",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -228,12 +241,12 @@
         "offtube_set_remote_next"
       ],
       "role": "queue",
-      "adlibRank": 1
+      "adlibRank": 0
     },
     {
       "_id": "HLzpg7NdLk6tdYZfT",
-      "type": "multiview",
-      "name": "EXT",
+      "type": "adlib_region",
+      "name": "Worldfeed stereo",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -247,11 +260,11 @@
         "offtube_set_remote_next"
       ],
       "role": "queue",
-      "adlibRank": 0
+      "adlibRank": 1
     },
     {
       "_id": "mRPYndcCsfZJL9zYH",
-      "type": "multiview",
+      "type": "adlib_region",
       "name": "GFX FULL",
       "currentSegment": false,
       "displayStyle": "buttons",
@@ -265,11 +278,14 @@
       "tags": [
         "offtube_set_full_next"
       ],
-      "role": "queue"
+      "role": "queue",
+      "thumbnailSourceLayerIds": [
+        "studio0_offtube_graphicsFull"
+      ]
     },
     {
       "_id": "PDKiKYeYB7zcAq6La",
-      "type": "multiview",
+      "type": "adlib_region",
       "name": "JINGLE",
       "currentSegment": false,
       "displayStyle": "buttons",
@@ -283,11 +299,14 @@
       "role": "queue",
       "tags": [
         "offtube_set_jingle_next"
+      ],
+      "thumbnailSourceLayerIds": [
+        "studio0_offtube_jingle"
       ]
     },
     {
       "_id": "AMrCRTvefKDS6qoga",
-      "type": "multiview",
+      "type": "adlib_region",
       "name": "SERVER",
       "currentSegment": false,
       "displayStyle": "buttons",
@@ -306,7 +325,7 @@
     },
     {
       "_id": "HLzpg7NdLk6tdYZfa",
-      "type": "multiview",
+      "type": "adlib_region",
       "name": "DVE",
       "currentSegment": false,
       "displayStyle": "buttons",
@@ -335,5 +354,18 @@
       "width": 14,
       "height": 1.3
     }
-  ]
+  ],
+  "exposeAsStandalone": true,
+  "iconColor": "#8e44ad",
+  "icon": {
+    "prefix": "fas",
+    "iconName": "microphone-alt",
+    "icon": [
+      352,
+      512,
+      [],
+      "f3c9",
+      "M336 192h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16zM176 352c53.02 0 96-42.98 96-96h-85.33c-5.89 0-10.67-3.58-10.67-8v-16c0-4.42 4.78-8 10.67-8H272v-32h-85.33c-5.89 0-10.67-3.58-10.67-8v-16c0-4.42 4.78-8 10.67-8H272v-32h-85.33c-5.89 0-10.67-3.58-10.67-8v-16c0-4.42 4.78-8 10.67-8H272c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96z"
+    ]
+  }
 }
