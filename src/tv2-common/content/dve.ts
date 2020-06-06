@@ -294,7 +294,7 @@ export function MakeContentDVE2<
 			}
 			const audioEnable: TSR.Timeline.TimelineEnable = {
 				while: offtube
-					? `!\$${mappingFrom.sourceLayer} && .${Enablers.OFFTUBE_ENABLE_DVE}`
+					? `!\$${mappingFrom.sourceLayer} & .${Enablers.OFFTUBE_ENABLE_DVE}`
 					: `!\$${mappingFrom.sourceLayer}`
 				// while: `!.${ControlClasses.DVEBoxOverridePrefix + boxMappings[num]}`
 			} // TODO - test
