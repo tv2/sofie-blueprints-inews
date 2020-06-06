@@ -34,8 +34,8 @@ export function OfftubeCreatePartVO(
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	_segmentExternalId: string,
-	_totalWords: number,
-	_totalTime: number
+	totalWords: number,
+	totalTime: number
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition)
 
@@ -48,6 +48,8 @@ export function OfftubeCreatePartVO(
 	const adLibPieces = basePartProps.part.adLibPieces
 	const file = basePartProps.file
 	const duration = basePartProps.duration
+	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
+	const actualDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	// const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 
 	// TODO: EFFEKT
@@ -81,7 +83,7 @@ export function OfftubeCreatePartVO(
 						MEPGM: OfftubeAtemLLayer.AtemMEClean
 					}
 				},
-				duration
+				actualDuration
 			),
 			adlibPreroll: config.studio.CasparPrerollDuration
 		})
@@ -108,7 +110,7 @@ export function OfftubeCreatePartVO(
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 			}
 		},
-		duration,
+		actualDuration,
 		{
 			isOfftube: true,
 			tagAsAdlib: true,
@@ -181,7 +183,7 @@ export function OfftubeCreatePartVO(
 
 	adLibPieces.push(adlibServer)
 
-	AddScript(partDefinition, pieces, duration, OfftubeSourceLayer.PgmScript)
+	AddScript(partDefinition, pieces, actualDuration, OfftubeSourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
 		part.invalid = true
