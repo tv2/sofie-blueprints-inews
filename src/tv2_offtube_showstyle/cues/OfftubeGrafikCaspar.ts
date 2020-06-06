@@ -368,7 +368,7 @@ function CreateFullContent(
 ): GraphicsContent {
 	return {
 		fileName: template,
-		path: `${config.studio.ClipSourcePath}\\${template}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		path: `${config.studio.ClipSourcePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.MediaFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGMedia>({
