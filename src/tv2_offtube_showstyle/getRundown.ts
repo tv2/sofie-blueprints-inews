@@ -530,6 +530,7 @@ function getGlobalAdLibPiecesOfftube(
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: true,
 			canCombineQueue: true,
+			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 			content: {
 				timelineObjects: [
 					literal<TSR.TimelineObjAbstractAny>({
