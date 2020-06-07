@@ -341,6 +341,22 @@
         "offtube_set_dve_next"
       ],
       "role": "queue"
+    },
+    {
+      "_id": "ef3tJJbDJF2sZi3w4",
+      "type": "part_countdown",
+      "name": "Part Countdown",
+      "currentSegment": false,
+      "displayStyle": "list",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "x": 26,
+      "y": 25,
+      "sourceLayerIds": [
+        "studio0_offtube_clip",
+        "studio0_offtube_voiceover"
+      ]
     }
   ],
   "type": "dashboard_layout",
