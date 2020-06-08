@@ -9,10 +9,10 @@ import {
 import { onTimelineGenerate } from 'tv2-common'
 import {
 	CasparPlayerClip,
+	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
 	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer,
-	OfftubeAbstractLLayer
+	OfftubeSisyfosLLayer
 } from '../tv2_offtube_studio/layers'
 import { parseConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
