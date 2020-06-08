@@ -61,7 +61,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'DVE config pulled from ATEM',
 				type: ConfigManifestEntryType.JSON,
 				required: true,
-				defaultVal: '',
+				defaultVal: '{}',
 				rank: 2
 			},
 			{
@@ -79,7 +79,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				description: 'Position (and style) data for the boxes in the CasparCG template',
 				type: ConfigManifestEntryType.JSON,
 				required: true,
-				defaultVal: '',
+				defaultVal: '{}',
 				rank: 4
 			},
 			{
