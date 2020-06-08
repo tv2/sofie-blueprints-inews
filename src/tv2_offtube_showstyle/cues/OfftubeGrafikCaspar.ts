@@ -363,7 +363,7 @@ function CreateFullAdLib(
 function CreateFullContent(
 	config: OfftubeShowstyleBlueprintConfig,
 	_partDefinition: PartDefinition,
-	template: string,
+	_template: string,
 	flowProducer: boolean
 ): GraphicsContent {
 	return {
@@ -383,7 +383,9 @@ function CreateFullContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: `${template}.png`, // TODO: REMOVEME: .png hardcoded for simulated tests
+					playing: true,
+					// file: `${template}`,
+					file: '1313794A',
 					loop: true,
 					mixer: {
 						opacity: 100
