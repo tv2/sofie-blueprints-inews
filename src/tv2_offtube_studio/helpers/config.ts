@@ -98,6 +98,9 @@ export function applyToConfig(
 				case ConfigManifestEntryType.ENUM:
 					newVal = overrideVal as string
 					break
+				case ConfigManifestEntryType.JSON:
+					newVal = overrideVal as string
+					break
 				case ConfigManifestEntryType.TABLE:
 					newVal = overrideVal as TableConfigItemValue
 					break
