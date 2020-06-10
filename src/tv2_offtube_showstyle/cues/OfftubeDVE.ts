@@ -76,7 +76,9 @@ export function OfftubeEvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(partDefinition)
+		AddParentClass(partDefinition),
+		false,
+		true
 	)
 
 	if (adlibContent.valid && pieceContent.valid) {
