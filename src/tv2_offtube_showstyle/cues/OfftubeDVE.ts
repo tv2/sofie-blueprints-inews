@@ -175,12 +175,7 @@ export function OfftubeEvaluateDVE(
 				content: {
 					...adlibContentFlow.content,
 					timelineObjects: makeofftubeDVEIDsUniqueForFlow([
-						...adlibContentFlow.content.timelineObjects.map(tlObj => {
-							return {
-								...tlObj,
-								classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : [ControlClasses.NOLookahead]
-							}
-						}),
+						...adlibContentFlow.content.timelineObjects,
 						literal<TSR.TimelineObjAbstractAny>({
 							id: '',
 							enable: {
