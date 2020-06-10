@@ -59,6 +59,17 @@ export function OfftubeEvaluateDVE(
 		true
 	)
 
+	const adlibContentFlow = OfftubeMakeContentDVE(
+		context,
+		config,
+		partDefinition,
+		parsedCue,
+		rawTemplate,
+		AddParentClass(partDefinition),
+		true,
+		true
+	)
+
 	const pieceContent = OfftubeMakeContentDVE(
 		context,
 		config,
@@ -162,9 +173,14 @@ export function OfftubeEvaluateDVE(
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				additionalPieces: [],
 				content: {
-					...dveAdlib.content,
-					timelineObjects: [
-						...makeofftubeDVEIDsUniqueForFlow(dveAdlib.content!.timelineObjects),
+					...adlibContentFlow.content,
+					timelineObjects: makeofftubeDVEIDsUniqueForFlow([
+						...adlibContentFlow.content.timelineObjects.map(tlObj => {
+							return {
+								...tlObj,
+								classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : [ControlClasses.NOLookahead]
+							}
+						}),
 						literal<TSR.TimelineObjAbstractAny>({
 							id: '',
 							enable: {
@@ -177,7 +193,7 @@ export function OfftubeEvaluateDVE(
 							},
 							classes: [Enablers.OFFTUBE_ENABLE_DVE]
 						})
-					]
+					])
 				}
 			})
 		)

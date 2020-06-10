@@ -137,7 +137,8 @@ export function MakeContentDVEBase<
 	dveGeneratorOptions: DVEOptions,
 	addClass?: boolean,
 	adlib?: boolean,
-	offtube?: boolean
+	offtube?: boolean,
+	flowProducer?: boolean
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	if (!dveConfig) {
 		context.warning(`DVE ${parsedCue.template} is not configured`)
@@ -171,7 +172,8 @@ export function MakeContentDVEBase<
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
 		partDefinition,
-		offtube
+		offtube,
+		flowProducer
 	)
 }
 
@@ -188,7 +190,8 @@ export function MakeContentDVE2<
 	className?: string,
 	adlib?: boolean,
 	partDefinition?: PartDefinition,
-	offtube?: boolean
+	offtube?: boolean,
+	flowProducer?: boolean
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
@@ -509,7 +512,7 @@ export function MakeContentDVE2<
 					}
 				}),
 
-				...(!offtube
+				...(!offtube || flowProducer
 					? [
 							literal<TSR.TimelineObjAtemME>({
 								id: '',
