@@ -193,20 +193,32 @@ export function GetCasparOverlayTimeline(
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: GetTemplateName(config, parsedCue),
-				data: literal<RendererStatePartial>({
+				// tslint:disable-next-line: prettier
+				templateType: "html",
+				// tslint:disable-next-line: prettier
+				name: "sport-overlay/index",
+				data: `<templateData>${encodeURI(
+					JSON.stringify({
+						// tslint:disable-next-line: prettier
+						display: "program",
+						slots: {
+							// tslint:disable-next-line: prettier
+							lowerThird: { display: "program", payload: { type: "Headline", trompet: "Test Test", text: "Hello World" } }
+						}
+					})
+				)}</templateData>`,
+				/*data: literal<RendererStatePartial>({
 					partialUpdate: true,
-					rendererDisplay: 'program',
+					display: 'program',
 					slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
-				}),
+				}),*/
 				useStopCommand: false
 			}
 		})
 	]
 }
 
-function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefinitionGrafik): Partial<Slots> {
+export function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefinitionGrafik): Partial<Slots> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
 		case 'arkiv':
@@ -230,13 +242,14 @@ function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefi
 				}
 			}
 		case 'bund':
+		case 'lowerThird':
 			return {
-				[graphicName]: {
+				lowerThird: {
 					display: 'program',
 					payload: {
-						type: GraphicName.BUND,
-						firstLine: parsedCue.textFields[0], // TODO: Should this be more generic?
-						secondLine: parsedCue.textFields[1]
+						type: GraphicName.HEADLINE,
+						trompet: 'Hello', // parsedCue.textFields[0],
+						text: 'World' // parsedCue.textFields[1]
 					}
 				}
 			}

@@ -30,7 +30,7 @@ const enum GraphicName {
 	TOPT = 'TOPT',
 	LOCATORS = 'LOCATORS',
 	OMLIDT = 'OMLIDT',
-	HEADLINE = 'HEADLINE',
+	HEADLINE = 'Headline',
 	HEADLINE2 = 'HEADLINE2',
 	INFOBOX = 'INFOBOX'
 }
@@ -63,6 +63,8 @@ interface Direkte extends GraphicBase {
 
 interface Headline extends GraphicBase {
 	type: GraphicName.HEADLINE
+	trompet: string
+	text: string
 }
 
 interface Headline2 extends GraphicBase {
@@ -109,7 +111,7 @@ type GraphicType =
 	| Topt
 
 interface RendererStateBase {
-	rendererDisplay: 'program' | 'preview' | 'hidden' | 'editor'
+	display: 'program' | 'preview' | 'hidden' | 'editor'
 	rendererStyle?: {}
 }
 
@@ -125,7 +127,7 @@ interface RendererStatePartial extends RendererStateBase {
 type RendererState = RendererStatePartial | RendererStateFull
 
 const example1: RendererState = {
-	rendererDisplay: 'program',
+	display: 'program',
 	partialUpdate: true,
 	slots: {
 		lowerThird: {
@@ -139,7 +141,7 @@ const example1: RendererState = {
 }
 
 const example2: RendererState = {
-	rendererDisplay: 'program',
+	display: 'program',
 	partialUpdate: true,
 	slots: {
 		topRight: {
@@ -154,7 +156,7 @@ const example2: RendererState = {
 // baseline
 const bundtBaseline: RendererState = {
 	partialUpdate: true,
-	rendererDisplay: 'program',
+	display: 'program',
 	slots: {
 		lowerThird: {
 			display: 'hidden'
@@ -164,7 +166,7 @@ const bundtBaseline: RendererState = {
 
 const toptBaseline: RendererState = {
 	partialUpdate: true,
-	rendererDisplay: 'program',
+	display: 'program',
 	slots: {
 		topRight: {
 			display: 'hidden'

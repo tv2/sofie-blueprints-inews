@@ -18,6 +18,7 @@ import {
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
+	GraphicLLayer,
 	literal,
 	MakeContentDVE2,
 	SourceInfo,
@@ -624,6 +625,29 @@ function getGlobalAdLibPiecesOfftube(
 
 function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
+		literal<TSR.TimelineObjCCGTemplate>({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			layer: GraphicLLayer.GraphicLLayerOverlayLower,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+				// tslint:disable-next-line: prettier
+				templateType: "html",
+				// tslint:disable-next-line: prettier
+				name: "sport-overlay/index",
+				data: `<templateData>${encodeURI(
+					JSON.stringify({
+						// tslint:disable-next-line: prettier
+						display: "program",
+						slots: {}
+					})
+				)}</templateData>`,
+				useStopCommand: false
+			}
+		}),
 		// Default timeline
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
