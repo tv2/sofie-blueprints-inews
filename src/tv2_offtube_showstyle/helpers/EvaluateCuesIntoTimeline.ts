@@ -21,7 +21,7 @@ export function EvaluateCuesIntoTimeline(
 			switch (cue.type) {
 				case CueType.Grafik:
 					timeline.push(
-						...GetCasparOverlayTimeline(config, 'FULL', cue, !!cue.template.match(/direkte/i), partDefinition)
+						...GetCasparOverlayTimeline(config, 'FULL', cue, !!cue.template.match(/direkte/i), partDefinition, true)
 					)
 					break
 				default:
