@@ -128,7 +128,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			infiniteMode: PieceLifespan.Infinite, // TODO: Flow producer graphic timing
 			tags: [AdlibTags.ADLIB_KOMMENTATOR],
 			content: {
-				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition, false)
+				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 			}
 		})
 		adlibPieces.push(adLibPiece)
@@ -147,7 +147,7 @@ export function OfftubeEvaluateGrafikCaspar(
 						? {}
 						: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 					content: {
-						timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition, false)
+						timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 					}
 				})
 			)
@@ -170,7 +170,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 				content: {
-					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition, false)
+					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 				}
 			})
 			pieces.push(piece)
@@ -184,12 +184,15 @@ export function GetCasparOverlayTimeline(
 	parsedCue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition: PartDefinition,
-	commentator: boolean
+	timelineObjStartId?: string,
+	commentator?: boolean
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: commentator ? GetEnableForGrafikOfftube(engine, parsedCue, isIdentGrafik, partDefinition) : { start: 0 },
+			enable: commentator
+				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition, timelineObjStartId)
+				: { start: 0 },
 			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
@@ -455,10 +458,12 @@ function CreateFullContent(
 
 // TODO: Is this valid for offtubes?
 function GetEnableForGrafikOfftube(
+	config: OfftubeShowstyleBlueprintConfig,
 	engine: GraphicEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
-	partDefinition?: PartDefinition
+	partDefinition?: PartDefinition,
+	timelineObjStartId?: string
 ): TSR.TSRTimelineObj['enable'] {
 	if (engine === 'WALL') {
 		return {
@@ -475,7 +480,7 @@ function GetEnableForGrafikOfftube(
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
-	const timing = CreateTimingEnable(cue)
+	const timing = CreateTimingEnable(cue, GetDefaultOut(config), timelineObjStartId)
 
 	if (!timing.infiniteMode) {
 		return timing.enable

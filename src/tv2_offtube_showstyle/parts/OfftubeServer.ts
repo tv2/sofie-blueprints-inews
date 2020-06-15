@@ -25,7 +25,7 @@ import {
 } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
-import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
+import { EvaluateCuesIntoTimeline } from '../helpers/EvaluateCuesIntoTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartServer(
@@ -86,7 +86,7 @@ export function OfftubeCreatePartServer(
 		})
 	)
 
-	let adlibServer: IBlueprintAdLibPiece = CreateAdlibServer(
+	const adlibServer: IBlueprintAdLibPiece = CreateAdlibServer(
 		config,
 		0,
 		partDefinition.externalId,
@@ -173,11 +173,25 @@ export function OfftubeCreatePartServer(
 	// TODO: Merge graphics into server part as timeline objects
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
 
-	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
+	/*adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
 		CueType.Grafik,
 		CueType.TargetEngine,
 		CueType.VIZ
-	])
+	])*/
+	if (adlibServer.content && adlibServer.content.timelineObjects) {
+		adlibServer.content.timelineObjects.push(
+			...EvaluateCuesIntoTimeline(
+				context,
+				config,
+				partDefinition.cues,
+				partDefinition,
+				`clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/\W/g, ''), // TODO: This is copy-pasted code
+				[CueType.Grafik],
+				true
+			)
+		)
+	}
+
 	adLibPieces.push(adlibServer)
 
 	AddScript(partDefinition, pieces, duration, OfftubeSourceLayer.PgmScript)

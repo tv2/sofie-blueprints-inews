@@ -11,6 +11,7 @@ import {
 	CueDefinitionDesign,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
+	GetDefaultOut,
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
@@ -372,12 +373,4 @@ export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafi
 
 	// This means unconfigured templates will still be supported, with default out.
 	return cue.template
-}
-
-export function GetDefaultOut(config: BlueprintConfig): number {
-	if (config.showStyle.DefaultTemplateDuration !== undefined) {
-		return Number(config.showStyle.DefaultTemplateDuration) * 1000
-	}
-
-	return 4 * 1000
 }

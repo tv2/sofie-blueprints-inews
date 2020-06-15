@@ -1,20 +1,37 @@
 import { CueDefinition, CueDefinitionBase, CueTime } from './inewsConversion/converters/ParseCue'
 
 import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 const FRAME_TIME = 1000 / 25 // TODO: This should be pulled from config.
 
+export function GetDefaultOut<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(config: ShowStyleConfig): number {
+	if (config.showStyle.DefaultTemplateDuration !== undefined) {
+		return Number(config.showStyle.DefaultTemplateDuration) * 1000
+	}
+
+	return 4 * 1000
+}
+
 export function CreateTiming(
-	cue: CueDefinition
+	cue: CueDefinition,
+	defaultOut: number
 ): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> | Pick<IBlueprintAdLibPiece, 'infiniteMode' | 'expectedDuration'> {
 	if (cue.adlib) {
 		return CreateTimingAdLib(cue)
 	} else {
-		return CreateTimingEnable(cue)
+		return CreateTimingEnable(cue, defaultOut)
 	}
 }
 
-export function CreateTimingEnable(cue: CueDefinition): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> {
+export function CreateTimingEnable(
+	cue: CueDefinition,
+	defaultOut: number,
+	timelineObjStartId?: string
+): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> {
 	const result: Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> = {
 		enable: {},
 		infiniteMode: PieceLifespan.Normal
@@ -38,7 +55,17 @@ export function CreateTimingEnable(cue: CueDefinition): Pick<IBlueprintPiece, 'e
 				: undefined
 		}
 	} else {
-		result.infiniteMode = PieceLifespan.OutOnNextPart
+		result.enable.duration = defaultOut
+	}
+
+	if (timelineObjStartId) {
+		if (result.enable.start !== undefined) {
+			result.enable.start = `#${timelineObjStartId}.start + ${result.enable.start}`
+		}
+
+		if (result.enable.end !== undefined) {
+			result.enable.end = `#${timelineObjStartId}.start + ${result.enable.end}`
+		}
 	}
 
 	return result

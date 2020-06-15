@@ -146,6 +146,7 @@ export interface EvaluateCuesShowstyleOptions<
 		adlib: boolean
 	) => void
 	EvaluateCueClearGrafiks?: (
+		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		partId: string,
 		parsedCue: CueDefinitionClearGrafiks,
@@ -368,7 +369,7 @@ export function EvaluateCuesBase<
 					break
 				case CueType.ClearGrafiks:
 					if (showStyleOptions.EvaluateCueClearGrafiks) {
-						showStyleOptions.EvaluateCueClearGrafiks(pieces, partDefinition.externalId, cue, shouldAdlib)
+						showStyleOptions.EvaluateCueClearGrafiks(config, pieces, partDefinition.externalId, cue, shouldAdlib)
 					}
 					break
 				default:

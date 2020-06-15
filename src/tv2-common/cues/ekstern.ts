@@ -48,6 +48,7 @@ export function EvaluateEksternBase<
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
 	layersEkstern: EksternLayers,
+	getDefaultOut: (config: ShowStyleConfig) => number,
 	adlib?: boolean,
 	rank?: number
 ) {
@@ -119,7 +120,7 @@ export function EvaluateEksternBase<
 				_id: '',
 				externalId: partId,
 				name: eksternProps[0],
-				...CreateTimingEnable(parsedCue),
+				...CreateTimingEnable(parsedCue, getDefaultOut(config)),
 				outputLayerId: 'pgm',
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				toBeQueued: true,

@@ -156,7 +156,6 @@ export function onTimelineGenerate<
 
 		if (dveLayoutInFuturePartIndex > -1 && dveSetAsNextIncurrentPartIndex === -1 && dveLayoutInCurrentPartIndex > -1) {
 			const current = timeline[dveLayoutInCurrentPartIndex]
-			console.log(JSON.stringify(current))
 			timeline = timeline.filter(
 				o =>
 					!(

@@ -44,6 +44,7 @@ export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConf
 }
 
 export interface TV2ShowstyleBlueprintConfigBase {
+	DefaultTemplateDuration: number
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemValue
 	DVEStyles: DVEConfigInput[]

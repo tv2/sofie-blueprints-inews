@@ -13,13 +13,14 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
-					start: 1000
+					start: 1000,
+					duration: 4000
 				},
-				infiniteMode: PieceLifespan.OutOnNextPart
+				infiniteMode: PieceLifespan.Normal
 			})
 		)
 	})
@@ -32,13 +33,14 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
-					start: 40
+					start: 40,
+					duration: 4000
 				},
-				infiniteMode: PieceLifespan.OutOnNextPart
+				infiniteMode: PieceLifespan.Normal
 			})
 		)
 	})
@@ -52,13 +54,14 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
-					start: 1040
+					start: 1040,
+					duration: 4000
 				},
-				infiniteMode: PieceLifespan.OutOnNextPart
+				infiniteMode: PieceLifespan.Normal
 			})
 		)
 	})
@@ -71,7 +74,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
@@ -91,7 +94,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
@@ -112,7 +115,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
@@ -132,7 +135,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
@@ -151,7 +154,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
@@ -170,7 +173,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
@@ -192,7 +195,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {
@@ -215,7 +218,7 @@ describe('CreateTiming', () => {
 			},
 			iNewsCommand: ''
 		}
-		const result = CreateTiming(time)
+		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
 				enable: {

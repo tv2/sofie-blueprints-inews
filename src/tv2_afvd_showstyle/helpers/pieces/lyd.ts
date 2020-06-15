@@ -7,7 +7,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition } from 'tv2-common'
+import { CalculateTime, CreateTimingEnable, CueDefinitionLYD, GetDefaultOut, literal, PartDefinition } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -53,7 +53,9 @@ export function EvaluateLYD(
 				_id: '',
 				externalId: part.externalId,
 				name: parsedCue.variant,
-				...(stop ? { enable: { start: CreateTimingEnable(parsedCue).enable.start } } : CreateTimingEnable(parsedCue)),
+				...(stop
+					? { enable: { start: CreateTimingEnable(parsedCue, GetDefaultOut(config)).enable.start } }
+					: CreateTimingEnable(parsedCue, GetDefaultOut(config))),
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
 				infiniteMode: stop ? PieceLifespan.Normal : PieceLifespan.Infinite,
