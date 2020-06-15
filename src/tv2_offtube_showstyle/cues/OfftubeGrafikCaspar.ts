@@ -201,10 +201,7 @@ export function GetCasparOverlayTimeline(
 					JSON.stringify({
 						// tslint:disable-next-line: prettier
 						display: "program",
-						slots: {
-							// tslint:disable-next-line: prettier
-							lowerThird: { display: "program", payload: { type: "Headline", trompet: "Test Test", text: "Hello World" } }
-						}
+						slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
 					})
 				)}</templateData>`,
 				/*data: literal<RendererStatePartial>({
@@ -248,8 +245,8 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					display: 'program',
 					payload: {
 						type: GraphicName.HEADLINE,
-						trompet: 'Hello', // parsedCue.textFields[0],
-						text: 'World' // parsedCue.textFields[1]
+						trompet: parsedCue.textFields[0],
+						text: parsedCue.textFields[1]
 					}
 				}
 			}
