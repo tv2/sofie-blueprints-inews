@@ -128,7 +128,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			infiniteMode: PieceLifespan.Infinite, // TODO: Flow producer graphic timing
 			tags: [AdlibTags.ADLIB_KOMMENTATOR],
 			content: {
-				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
+				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition, false)
 			}
 		})
 		adlibPieces.push(adLibPiece)
@@ -147,7 +147,7 @@ export function OfftubeEvaluateGrafikCaspar(
 						? {}
 						: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 					content: {
-						timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
+						timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition, false)
 					}
 				})
 			)
@@ -170,7 +170,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 				content: {
-					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
+					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition, false)
 				}
 			})
 			pieces.push(piece)
@@ -183,12 +183,13 @@ export function GetCasparOverlayTimeline(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
-	partDefinition: PartDefinition
+	partDefinition: PartDefinition,
+	commentator: boolean
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGrafikOfftube(engine, parsedCue, isIdentGrafik, partDefinition),
+			enable: commentator ? GetEnableForGrafikOfftube(engine, parsedCue, isIdentGrafik, partDefinition) : { start: 0 },
 			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
