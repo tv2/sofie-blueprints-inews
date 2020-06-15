@@ -23,7 +23,7 @@ interface Graphic<T extends GraphicType> {
 
 const enum GraphicName {
 	ARKIV = 'ARKIV',
-	BUND = 'BUND',
+	BUND = 'Bund',
 	BILLEDERFRA_LOGO = 'BILLEDERFRA_LOGO',
 	DIREKTE = 'DIREKTE',
 	IDENT = 'IDENT',
@@ -46,8 +46,8 @@ interface Arkiv extends GraphicBase {
 
 interface Bund extends GraphicBase {
 	type: GraphicName.BUND
-	firstLine: string
-	secondLine: string
+	trompet: string
+	name: string // TODO: title:
 }
 
 interface BillederFraLogo extends GraphicBase {
@@ -133,8 +133,8 @@ const example1: RendererState = {
 		lowerThird: {
 			payload: {
 				type: GraphicName.BUND,
-				firstLine: '',
-				secondLine: ''
+				trompet: '',
+				name: ''
 			}
 		}
 	}

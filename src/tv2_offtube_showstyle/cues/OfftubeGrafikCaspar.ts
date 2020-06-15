@@ -244,9 +244,9 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 				lowerThird: {
 					display: 'program',
 					payload: {
-						type: GraphicName.HEADLINE,
-						trompet: parsedCue.textFields[0],
-						text: parsedCue.textFields[1]
+						type: GraphicName.BUND,
+						trompet: parsedCue.textFields[0], // TODO: Should be text:
+						name: parsedCue.textFields[1]
 					}
 				}
 			}
@@ -257,6 +257,17 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					payload: {
 						type: GraphicName.DIREKTE,
 						location: parsedCue.textFields[0]
+					}
+				}
+			}
+		case 'headline':
+			return {
+				lowerThird: {
+					display: 'program',
+					payload: {
+						type: GraphicName.HEADLINE,
+						trompet: parsedCue.textFields[0],
+						text: parsedCue.textFields[1]
 					}
 				}
 			}
