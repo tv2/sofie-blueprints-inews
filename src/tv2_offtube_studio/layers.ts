@@ -57,6 +57,7 @@ export enum OfftubeCasparLLayer {
 	CasparPlayerJingle = 'casparcg_player_jingle',
 	CasparGraphicsFull = 'casparcg_graphics_full',
 	CasparCGDVELoop = 'casparcg_dve_loop',
+	CasparCGDVEKeyedLoop = 'casparcg_dve_keyed_loop',
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',

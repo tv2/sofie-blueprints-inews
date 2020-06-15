@@ -680,6 +680,17 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				}
 			}
 		}),
+		literal<TSR.TimelineObjCCGRoute>({
+			id: '',
+			enable: { while: 1 },
+			priority: 0,
+			layer: OfftubeCasparLLayer.CasparCGDVEKeyedLoop,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.ROUTE,
+				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+			}
+		}),
 
 		// keyers
 		literal<TSR.TimelineObjAtemDSK>({
