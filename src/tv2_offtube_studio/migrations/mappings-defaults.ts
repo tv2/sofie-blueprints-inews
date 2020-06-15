@@ -271,7 +271,7 @@ export default literal<BlueprintMappings>({
 	}),
 	casparcg_dve_keyed_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
-		deviceId: 'caspar02',
+		deviceId: 'caspar01',
 		lookahead: LookaheadMode.RETAIN,
 		previewWhenNotOnAir: true,
 		channel: 4,
