@@ -36,7 +36,7 @@ export function MakeContentServer<
 	partDefinition: PartDefinition,
 	config: ShowStyleConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	duration: number,
+	_duration: number,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
@@ -48,7 +48,6 @@ export function MakeContentServer<
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
-		sourceDuration: duration,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
