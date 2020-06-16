@@ -150,7 +150,7 @@ export function MakeContentServer<
 								mediaPlayerSession: mediaPlayerSessionId
 						  },
 				classes: [
-					...(adLib ? ['adlib_deparent'] : []),
+					...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
 					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
 				]
 			}),
