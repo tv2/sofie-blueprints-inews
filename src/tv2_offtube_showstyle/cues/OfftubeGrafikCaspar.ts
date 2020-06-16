@@ -119,21 +119,22 @@ export function OfftubeEvaluateGrafikCaspar(
 		pieces.push(piece)
 	} else {
 		// TODO: Wall
-		const adLibPiece = literal<IBlueprintAdLibPiece>({
-			_rank: rank || 0,
-			externalId: partDefinition.externalId,
-			name: `${grafikName(config, parsedCue)}`,
-			sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
-			outputLayerId: OfftubeOutputLayers.OVERLAY,
-			infiniteMode: PieceLifespan.Infinite, // TODO: Flow producer graphic timing
-			tags: [AdlibTags.ADLIB_KOMMENTATOR],
-			content: {
-				timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
-			}
-		})
-		adlibPieces.push(adLibPiece)
 
 		if (parsedCue.adlib) {
+			const adLibPiece = literal<IBlueprintAdLibPiece>({
+				_rank: rank || 0,
+				externalId: partDefinition.externalId,
+				name: `${grafikName(config, parsedCue)}`,
+				sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+				outputLayerId: OfftubeOutputLayers.OVERLAY,
+				infiniteMode: PieceLifespan.Infinite, // TODO: Flow producer graphic timing
+				tags: [AdlibTags.ADLIB_KOMMENTATOR],
+				content: {
+					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
+				}
+			})
+			adlibPieces.push(adLibPiece)
+
 			adlibPieces.push(
 				literal<IBlueprintAdLibPiece>({
 					_rank: rank || 0,
