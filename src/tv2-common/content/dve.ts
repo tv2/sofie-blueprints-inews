@@ -535,7 +535,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TSR.TimelineObjCCGTemplate>({
 								id: '',
-								enable: getDVEEnable(!!offtube),
+								enable: getDVEEnable(false),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVETemplate,
 								content: {
@@ -562,7 +562,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
-								enable: getDVEEnable(!!offtube),
+								enable: getDVEEnable(false),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEKey,
 								content: {
@@ -581,7 +581,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
-								enable: getDVEEnable(!!offtube),
+								enable: getDVEEnable(false),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEFrame,
 								content: {
