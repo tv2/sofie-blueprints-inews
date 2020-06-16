@@ -208,7 +208,7 @@ export function OfftubeEvaluateAdLib(
 		const adlibDVE = literal<IBlueprintAdLibPiece>({
 			_rank: rank,
 			externalId: partId,
-			name: `DVE: ${parsedCue.variant}`,
+			name: `${partDefinition.storyName}`,
 			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
 			outputLayerId: 'selectedAdlib',
 			toBeQueued: true,

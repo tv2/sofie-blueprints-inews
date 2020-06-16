@@ -85,7 +85,7 @@ export function OfftubeEvaluateDVE(
 		const dveAdlib = literal<IBlueprintAdLibPiece>({
 			_rank: rank || 0,
 			externalId: partDefinition.externalId,
-			name: `${parsedCue.template}`,
+			name: `${partDefinition.storyName}`,
 			outputLayerId: 'selectedAdlib',
 			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
 			infiniteMode: PieceLifespan.OutOnNextSegment,
@@ -202,7 +202,7 @@ export function OfftubeEvaluateDVE(
 			literal<IBlueprintPiece>({
 				_id: '',
 				externalId: partDefinition.externalId,
-				name: `DVE: ${parsedCue.template}`,
+				name: `${parsedCue.template}`,
 				enable: {
 					start,
 					...(end ? { duration: end - start } : {})
