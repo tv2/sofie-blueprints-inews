@@ -127,7 +127,8 @@ export function OfftubeEvaluateGrafikCaspar(
 				name: `${grafikName(config, parsedCue)}`,
 				sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
-				infiniteMode: PieceLifespan.Infinite, // TODO: Flow producer graphic timing
+				infiniteMode: PieceLifespan.Normal,
+				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
 				content: {
 					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
