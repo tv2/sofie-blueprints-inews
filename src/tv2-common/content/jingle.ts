@@ -21,7 +21,7 @@ export interface JingleLayers {
 export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(config: ShowStyleConfig, file: string, layers: JingleLayers, preMultiplied: boolean) {
+>(config: ShowStyleConfig, file: string, loadFirstFrame: boolean, layers: JingleLayers, preMultiplied: boolean) {
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
@@ -44,18 +44,22 @@ export function CreateJingleContentBase<
 				classes: ['jingleIsOnAir']
 			}),
 
-			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-				id: '',
-				enable: { while: `!.jingleIsOnAir` }, // Works because lookaheads ignore wile, breaks if lookaheads ever care about while
-				priority: 1,
-				layer: layers.Caspar.PlayerJingleLookahead,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file
-				},
-				classes: ['DEBUG_CLASS']
-			}),
+			...(loadFirstFrame
+				? [
+						literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+							id: '',
+							enable: { while: `!.jingleIsOnAir` }, // Works because lookaheads ignore wile, breaks if lookaheads ever care about while
+							priority: 1,
+							layer: layers.Caspar.PlayerJingleLookahead,
+							content: {
+								deviceType: TSR.DeviceType.CASPARCG,
+								type: TSR.TimelineContentTypeCasparCg.MEDIA,
+								file
+							},
+							classes: ['DEBUG_CLASS']
+						})
+				  ]
+				: []),
 
 			literal<TSR.TimelineObjAtemDSK>({
 				id: '',

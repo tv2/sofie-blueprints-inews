@@ -64,7 +64,7 @@ export function EvaluateJingle(
 				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: 'jingle',
-				content: createJingleContent(config, file),
+				content: createJingleContent(config, file, jingle.LoadFirstFrame),
 				toBeQueued: true,
 				adlibAutoNext: props.autoNext,
 				adlibAutoNextOverlap: props.autoNextOverlap,
@@ -85,16 +85,17 @@ export function EvaluateJingle(
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				outputLayerId: 'jingle',
 				sourceLayerId: SourceLayer.PgmJingle,
-				content: createJingleContent(config, file)
+				content: createJingleContent(config, file, jingle.LoadFirstFrame)
 			})
 		)
 	}
 }
 
-function createJingleContent(config: BlueprintConfig, file: string) {
+function createJingleContent(config: BlueprintConfig, file: string, loadFirstFrame: boolean) {
 	const content = CreateJingleContentBase(
 		config,
 		file,
+		loadFirstFrame,
 		{
 			Caspar: {
 				PlayerJingle: CasparLLayer.CasparPlayerJingle,

@@ -64,7 +64,7 @@ export function OfftubeEvaluateJingle(
 			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			outputLayerId: 'jingle',
-			content: createJingleContent(config, file),
+			content: createJingleContent(config, file, jingle.LoadFirstFrame),
 			toBeQueued: true,
 			canCombineQueue: true,
 			adlibAutoNext: props.autoNext,
@@ -88,15 +88,16 @@ export function OfftubeEvaluateJingle(
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			outputLayerId: 'jingle',
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
-			content: createJingleContent(config, file)
+			content: createJingleContent(config, file, jingle.LoadFirstFrame)
 		})
 	)
 }
 
-function createJingleContent(config: OfftubeShowstyleBlueprintConfig, file: string) {
+function createJingleContent(config: OfftubeShowstyleBlueprintConfig, file: string, loadFirstFrame: boolean) {
 	return CreateJingleContentBase(
 		config,
 		file,
+		loadFirstFrame,
 		{
 			Caspar: {
 				PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
