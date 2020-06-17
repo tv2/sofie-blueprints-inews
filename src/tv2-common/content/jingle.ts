@@ -40,12 +40,13 @@ export function CreateJingleContentBase<
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file
-				}
+				},
+				classes: ['jingleIsOnAir']
 			}),
 
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
-				enable: { start: 0 },
+				enable: { while: `!.jingleIsOnAir` }, // Works because lookaheads ignore wile, breaks if lookaheads ever care about while
 				priority: 1,
 				layer: layers.Caspar.PlayerJingleLookahead,
 				content: {
