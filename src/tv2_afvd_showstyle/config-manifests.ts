@@ -371,7 +371,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'LoadFirstFrame',
-				name: 'LoadFirstFrame',
+				name: 'Load First Frame',
 				description: '',
 				type: ConfigManifestEntryType.BOOLEAN,
 				required: true,
