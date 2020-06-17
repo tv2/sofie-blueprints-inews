@@ -21,6 +21,7 @@ export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(config: ShowStyleConfig, file: string, layers: JingleLayers, preMultiplied: boolean) {
+	const tlObjId = `jingle_${file.replace(/\W/, '_')}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
@@ -29,7 +30,7 @@ export function CreateJingleContentBase<
 		lastWords: '',
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-				id: '',
+				id: `jingle_${file.replace(/\W/, '_')}`,
 				enable: {
 					start: 0
 				},
@@ -39,6 +40,22 @@ export function CreateJingleContentBase<
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file
+				}
+			}),
+
+			// Create a lookahead-lookahead object for this me-program
+			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+				id: '',
+				enable: { start: 0 },
+				priority: 0,
+				layer: layers.Caspar.PlayerJingle,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file
+				},
+				metaData: {
+					context: `Lookahead-lookahead for ${tlObjId}`
 				}
 			}),
 

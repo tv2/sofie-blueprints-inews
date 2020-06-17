@@ -33,11 +33,8 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	MakeAdlibsForFulls: boolean
-	CasparCGLoadingClip: string
 	GFXTemplates: TableConfigItemGFXTemplates[]
 	WipesConfig: TableConfigItemValue
-	BreakerConfig: TableConfigItemValue
-	DefaultTemplateDuration: number
 	LYDConfig: TableConfigItemValue
 }
 

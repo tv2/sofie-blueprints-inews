@@ -1,4 +1,3 @@
-import { TableConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
 import {
 	TableConfigItemSourceMappingWithSisyfos,
 	TableConfigItemSourceMappingWithSisyfosAndKeepAudio
@@ -7,6 +6,16 @@ import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
+
+export interface TableConfigItemBreakers {
+	BreakerName: string
+	ClipName: string
+	Duration: number
+	StartAlpha: number
+	EndAlpha: number
+	Autonext: boolean
+	LoadFirstFrame: boolean
+}
 
 export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
@@ -46,7 +55,7 @@ export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConf
 export interface TV2ShowstyleBlueprintConfigBase {
 	DefaultTemplateDuration: number
 	CasparCGLoadingClip: string
-	BreakerConfig: TableConfigItemValue
+	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
 }
 
