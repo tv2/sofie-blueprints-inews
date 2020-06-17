@@ -46,7 +46,7 @@ export function CreateJingleContentBase<
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: { start: 0 },
-				priority: 0,
+				priority: 1,
 				layer: layers.Caspar.PlayerJingleLookahead,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
