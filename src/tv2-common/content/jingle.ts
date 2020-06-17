@@ -56,7 +56,8 @@ export function CreateJingleContentBase<
 				},
 				metaData: {
 					context: `Lookahead-lookahead for ${tlObjId}`
-				}
+				},
+				classes: ['DEBUG_CLASS']
 			}),
 
 			literal<TSR.TimelineObjAtemDSK>({
