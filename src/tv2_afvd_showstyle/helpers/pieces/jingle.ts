@@ -97,7 +97,8 @@ function createJingleContent(config: BlueprintConfig, file: string) {
 		file,
 		{
 			Caspar: {
-				PlayerJingle: CasparLLayer.CasparPlayerJingle
+				PlayerJingle: CasparLLayer.CasparPlayerJingle,
+				PlayerJingleLookahead: CasparLLayer.CasparPlayerJingle
 			},
 			ATEM: {
 				DSKJingle: AtemLLayer.AtemDSKEffect,

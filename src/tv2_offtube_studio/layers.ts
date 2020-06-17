@@ -55,6 +55,7 @@ export enum OfftubeCasparLLayer {
 	CasparPlayerClipPending = 'casparcg_player_clip_pending', // TODO: This is a shared layer
 	CasparGraphicsOverlay = 'casparcg_graphics_overlay',
 	CasparPlayerJingle = 'casparcg_player_jingle',
+	CasparPlayerJingleLookahead = 'casparcg_player_jingle_looakhead',
 	CasparGraphicsFull = 'casparcg_graphics_full',
 	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGDVEKeyedLoop = 'casparcg_dve_keyed_loop',

@@ -239,7 +239,14 @@ export default literal<BlueprintMappings>({
 	casparcg_player_jingle: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 110
+	}),
+	casparcg_player_jingle_looakhead: literal<TSR.MappingCasparCG & BlueprintMapping>({
+		device: TSR.DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		channel: 3,
 		layer: 110,
 		previewWhenNotOnAir: true

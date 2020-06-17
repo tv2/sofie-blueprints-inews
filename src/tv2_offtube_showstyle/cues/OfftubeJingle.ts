@@ -99,7 +99,8 @@ function createJingleContent(config: OfftubeShowstyleBlueprintConfig, file: stri
 		file,
 		{
 			Caspar: {
-				PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle
+				PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
+				PlayerJingleLookahead: OfftubeCasparLLayer.CasparPlayerJingleLookahead
 			},
 			ATEM: {
 				DSKJingle: OfftubeAtemLLayer.AtemDSKGraphics,
