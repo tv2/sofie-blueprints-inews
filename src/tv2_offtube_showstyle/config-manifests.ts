@@ -358,6 +358,15 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: true,
 				rank: 5
+			},
+			{
+				id: 'LoadFirstFrame',
+				name: 'LoadFirstFrame',
+				description: '',
+				type: ConfigManifestEntryType.BOOLEAN,
+				required: true,
+				defaultVal: true,
+				rank: 6
 			}
 		]
 	},
