@@ -349,42 +349,6 @@ function getGlobalAdLibPiecesOfftube(
 		return res
 	}
 
-	// Shortcuts
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdlibBoxes(o, globalRank++))
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, 10) // the first x cameras to create live-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
-		})
-
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
 		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, OFFTUBE_DVE_GENERATOR_OPTIONS)
