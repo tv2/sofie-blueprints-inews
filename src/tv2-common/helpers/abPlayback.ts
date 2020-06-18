@@ -26,12 +26,23 @@ export interface ABSourceLayers {
 }
 
 function reversePreviousAssignment(
-	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers']
+	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
+	timeline: OnGenerateTimelineObj[]
 ): SessionToPlayerMap {
 	const previousAssignmentRev: { [sessionId: string]: MediaPlayerClaim | undefined } = {}
 	for (const key of _.keys(previousAssignment)) {
 		_.each(previousAssignment[key] || [], v2 => {
-			previousAssignmentRev[v2.sessionId] = v2
+			if (
+				timeline.some(
+					obj =>
+						!obj.id.match(/previous/) &&
+						!obj.id.match(/future/) &&
+						obj.metaData &&
+						obj.metaData.mediaPlayerSession === v2.sessionId
+				)
+			) {
+				previousAssignmentRev[v2.sessionId] = v2
+			}
 		})
 	}
 	return previousAssignmentRev
@@ -203,14 +214,17 @@ export function resolveMediaPlayerAssignments<
 	_.each(sessionRequests, (r, sessionId) => {
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
-			activeRequests.push({
-				id: sessionId,
-				start: r.start,
-				end: r.end,
-				player: prev ? prev.playerId.toString() : undefined, // Persist previous assignments
-				type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active,
-				optional: r.optional
-			})
+			const sessionHasEnded = r.end && r.end < Date.now()
+			if (!sessionHasEnded) {
+				activeRequests.push({
+					id: sessionId,
+					start: r.start,
+					end: r.end,
+					player: prev ? prev.playerId.toString() : undefined, // Persist previous assignments
+					type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active,
+					optional: r.optional
+				})
+			}
 		}
 	})
 	_.sortBy(activeRequests, r => r.start)
@@ -334,7 +348,7 @@ function updateObjectsToMediaPlayer<
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)
 			}
-		} else {
+		} else if (obj.content.deviceType !== TSR.DeviceType.ABSTRACT) {
 			context.warning(`Trying to move object of unknown type (${obj.content.deviceType}) for media player assignment`)
 		}
 	})
@@ -351,7 +365,7 @@ export function assignMediaPlayers<
 	resolvedPieces: IBlueprintPieceDB[],
 	sourceLayers: ABSourceLayers
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
-	const previousAssignmentRev = reversePreviousAssignment(previousAssignment)
+	const previousAssignmentRev = reversePreviousAssignment(previousAssignment, timelineObjs)
 	const activeRequests = resolveMediaPlayerAssignments(context, config, previousAssignmentRev, resolvedPieces)
 
 	return applyMediaPlayersAssignments(
@@ -419,7 +433,7 @@ export function applyMediaPlayersAssignments<
 
 	_.each(remainingGroups, grp => {
 		// If this is lookahead for a future part (no end set on the object)
-		const isFuturePartLookahead = _.all(
+		const isFuturePartLookahead = _.some(
 			grp.objs,
 			o =>
 				!!o.isLookahead /*|| (o as any).wasLookahead*/ && o.enable.duration === undefined && o.enable.end === undefined
