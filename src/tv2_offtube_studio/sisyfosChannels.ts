@@ -20,19 +20,19 @@ export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel }
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1]: {
 		isPgm: 0,
-		label: 'LIVE 1'
+		label: 'LIVE 1 Stereo'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_2]: {
 		isPgm: 0,
-		label: 'LIVE 2'
+		label: 'LIVE 1 5.1'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo]: {
 		isPgm: 0,
-		label: 'WF ST'
+		label: 'Live 2 Stereo'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround]: {
 		isPgm: 0,
-		label: 'WF 5.1'
+		label: 'Live 3 Reporter'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceServerA]: {
 		isPgm: 0,
