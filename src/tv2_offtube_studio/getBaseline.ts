@@ -27,11 +27,6 @@ function convertMappings<T>(input: BlueprintMappings, func: (k: string, v: Bluep
 export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 	const mappings = context.getStudioMappings()
 
-	const atemMeMappings = filterMappings(
-		mappings,
-		(_id, v) => v.device === TSR.DeviceType.ATEM && (v as any).mappingType === TSR.MappingAtemType.MixEffect
-	)
-
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
 	return [
