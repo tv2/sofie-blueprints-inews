@@ -2,6 +2,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PartContext,
+	PieceLifespan,
 	RemoteContent,
 	SourceLayerType,
 	TimelineObjectCoreExt,
@@ -123,6 +124,7 @@ export function EvaluateEksternBase<
 				...CreateTimingEnable(parsedCue, getDefaultOut(config)),
 				outputLayerId: 'pgm',
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
+				infiniteMode: PieceLifespan.OutOnNextPart,
 				toBeQueued: true,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({
