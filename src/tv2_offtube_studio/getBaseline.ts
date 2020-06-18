@@ -72,7 +72,7 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: 0, // cam 1 by default
+					input: 1, // cam 1 by default
 					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
