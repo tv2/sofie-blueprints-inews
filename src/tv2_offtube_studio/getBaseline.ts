@@ -35,22 +35,6 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
 	return [
-		...convertMappings(atemMeMappings, id =>
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: id,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: AtemSourceIndex.Bars,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
-				}
-			})
-		),
 		...convertMappings(sisyfosMappings, id => {
 			const sisyfosChannel = sisyfosChannels[id as OfftubeSisyfosLLayer] as SisyfosChannel | undefined
 			if (sisyfosChannel) {
@@ -93,7 +77,7 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: AtemSourceIndex.MP1,
+					input: 0, // cam 1 by default
 					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
