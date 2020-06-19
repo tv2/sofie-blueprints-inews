@@ -26,10 +26,10 @@ export enum OfftubeSisyfosLLayer {
 	SisyfosSourceHost_1_ST_A = 'sisyfos_source_Host_1_st_a',
 	SisyfosSourceHost_2_ST_A = 'sisyfos_source_Host_2_st_a',
 	SisyfosSourceHost_3_ST_A = 'sisyfos_source_Host_3_st_a',
-	SisyfosSourceLive_1 = 'sisyfos_source_live_1',
-	SisyfosSourceLive_2 = 'sisyfos_source_live_2',
-	SisyfosSourceWorldFeed_Stereo = 'sisyfos_source_world_feed_stereo',
-	SisyfosSourceWorldFeed_Surround = 'sisyfos_source_world_feed_surround',
+	SisyfosSourceLive_1_Stereo = 'sisyfos_source_live_1_stereo',
+	SisyfosSourceLive_1_Surround = 'sisyfos_source_live_1_surround',
+	SisyfosSourceLive_2_Stereo = 'sisyfos_source_live_2_stereo',
+	SisyfosSourceLive_3 = 'sisyfos_source_live_3',
 	SisyfosSourceServerA = 'sisyfos_source_server_a',
 	SisyfosSourceServerB = 'sisyfos_source_server_b'
 }

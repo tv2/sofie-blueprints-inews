@@ -164,15 +164,12 @@ export function GetSisyfosLayersForTableMigrationOfftube(configName: string, val
 		case 'SourcesRM':
 			switch (val) {
 				case '1':
-					return [OfftubeSisyfosLLayer.SisyfosSourceLive_1]
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo]
 				case '2':
-					return [OfftubeSisyfosLLayer.SisyfosSourceLive_2]
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround]
 				case 'WF':
 				case '3':
-					return [
-						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
-						OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
-					]
+					return [OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo, OfftubeSisyfosLLayer.SisyfosSourceLive_3]
 			}
 			break
 	}

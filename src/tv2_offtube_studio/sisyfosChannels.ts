@@ -18,19 +18,19 @@ export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel }
 		isPgm: 0,
 		label: 'VRT 3'
 	},
-	[OfftubeSisyfosLLayer.SisyfosSourceLive_1]: {
+	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo]: {
 		isPgm: 0,
 		label: 'LIVE 1 Stereo'
 	},
-	[OfftubeSisyfosLLayer.SisyfosSourceLive_2]: {
+	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround]: {
 		isPgm: 0,
 		label: 'LIVE 1 5.1'
 	},
-	[OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo]: {
+	[OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo]: {
 		isPgm: 0,
 		label: 'Live 2 Stereo'
 	},
-	[OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround]: {
+	[OfftubeSisyfosLLayer.SisyfosSourceLive_3]: {
 		isPgm: 0,
 		label: 'Live 3 Reporter'
 	},

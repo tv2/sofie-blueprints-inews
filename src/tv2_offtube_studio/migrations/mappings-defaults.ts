@@ -150,25 +150,25 @@ export default literal<BlueprintMappings>({
 		channel: 2,
 		lookahead: LookaheadMode.NONE
 	}),
-	sisyfos_source_live_1: literal<TSR.MappingSisyfos & BlueprintMapping>({
+	sisyfos_source_live_1_stereo: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 3,
 		lookahead: LookaheadMode.NONE
 	}),
-	sisyfos_source_live_2: literal<TSR.MappingSisyfos & BlueprintMapping>({
+	sisyfos_source_live_1_surround: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 4,
 		lookahead: LookaheadMode.NONE
 	}),
-	sisyfos_source_world_feed_stereo: literal<TSR.MappingSisyfos & BlueprintMapping>({
+	sisyfos_source_live_2_stereo: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 5,
 		lookahead: LookaheadMode.NONE
 	}),
-	sisyfos_source_world_feed_surround: literal<TSR.MappingSisyfos & BlueprintMapping>({
+	sisyfos_source_live_3: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 6,

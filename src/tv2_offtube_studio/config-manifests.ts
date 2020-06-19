@@ -88,7 +88,10 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '1',
 			AtemSource: 1,
-			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1],
+			SisyfosLayers: [
+				OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo,
+				OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround
+			],
 			StudioMics: true,
 			KeepAudioInStudio: true
 		},
@@ -96,18 +99,15 @@ export const manifestOfftubeSourcesRM: ConfigManifestEntryTable = {
 			_id: '',
 			SourceName: '2',
 			AtemSource: 2,
-			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2],
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo],
 			StudioMics: true,
 			KeepAudioInStudio: true
 		},
 		{
 			_id: '',
-			SourceName: 'WF',
+			SourceName: '3',
 			AtemSource: 3,
-			SisyfosLayers: [
-				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Stereo,
-				OfftubeSisyfosLLayer.SisyfosSourceWorldFeed_Surround
-			],
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
 			StudioMics: true,
 			KeepAudioInStudio: true
 		}
