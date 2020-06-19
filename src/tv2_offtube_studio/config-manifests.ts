@@ -459,5 +459,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 4000
+	},
+	{
+		id: 'IdleSource',
+		name: 'Idle Source',
+		description: 'Source to display when studio is off-air',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1
 	}
 ]

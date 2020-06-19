@@ -2,6 +2,7 @@ import { BlueprintMapping, BlueprintMappings, IStudioContext, TSR } from 'tv-aut
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
+import { OfftubeStudioConfig } from './helpers/config'
 import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from './layers'
 import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
 
@@ -26,6 +27,7 @@ function convertMappings<T>(input: BlueprintMappings, func: (k: string, v: Bluep
 
 export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 	const mappings = context.getStudioMappings()
+	const config = (context.getStudioConfig() as unknown) as OfftubeStudioConfig
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
@@ -72,7 +74,7 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: 4, // cam 1 by default
+					input: config.IdleSource,
 					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
