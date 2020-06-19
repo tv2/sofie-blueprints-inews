@@ -32,15 +32,7 @@ function reversePreviousAssignment(
 	const previousAssignmentRev: { [sessionId: string]: MediaPlayerClaim | undefined } = {}
 	for (const key of _.keys(previousAssignment)) {
 		_.each(previousAssignment[key] || [], v2 => {
-			if (
-				timeline.some(
-					obj =>
-						!obj.id.match(/previous/) &&
-						!obj.id.match(/future/) &&
-						obj.metaData &&
-						obj.metaData.mediaPlayerSession === v2.sessionId
-				)
-			) {
+			if (timeline.some(obj => obj.metaData && obj.metaData.mediaPlayerSession === v2.sessionId)) {
 				previousAssignmentRev[v2.sessionId] = v2
 			}
 		})
