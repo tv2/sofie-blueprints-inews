@@ -42,7 +42,8 @@ export default literal<BlueprintMappings>({
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.MixEffect,
-		index: 0 // 0 = ME1
+		index: 0, // 0 = ME1
+		lookaheadDepth: 1
 	}),
 	atem_me_next_jingle: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
@@ -83,14 +84,15 @@ export default literal<BlueprintMappings>({
 	atem_supersource_art: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.RETAIN,
+		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceProperties,
 		index: 0 // 0 = SS
 	}),
 	atem_supersource_default: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.RETAIN, // TODO - verify
+		lookahead: LookaheadMode.RETAIN,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS

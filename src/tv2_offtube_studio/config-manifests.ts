@@ -27,8 +27,8 @@ export const manifestOfftubeSourcesCam: ConfigManifestEntryTable = {
 	defaultVal: literal<Array<TableConfigItemSourceMappingWithSisyfos & TableConfigItemValue[0]>>([
 		{
 			_id: '',
-			SourceName: '',
-			AtemSource: 0,
+			SourceName: '1',
+			AtemSource: 4,
 			SisyfosLayers: [],
 			StudioMics: true
 		}
@@ -226,12 +226,12 @@ export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 		{
 			_id: '',
 			SourceName: '1',
-			AtemSource: 6
+			AtemSource: 5
 		},
 		{
 			_id: '',
 			SourceName: '2',
-			AtemSource: 5
+			AtemSource: 6
 		}
 	]),
 	columns: [
@@ -314,7 +314,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for DSK1 Fill',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 8
+		defaultVal: 7
 	},
 	{
 		id: 'AtemSource.DSK1K',
@@ -322,7 +322,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for DSK1 Key',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 7
+		defaultVal: 8
 	},
 	{
 		id: 'AtemSource.JingleFill',
@@ -330,7 +330,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for Jingle Fill',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 8
+		defaultVal: 7
 	},
 	{
 		id: 'AtemSource.JingleKey',
@@ -338,7 +338,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM vision mixer input for Jingle Source',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 7
+		defaultVal: 8
 	},
 	{
 		id: 'AtemSettings.CCGClip',
