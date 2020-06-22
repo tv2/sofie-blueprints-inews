@@ -22,6 +22,7 @@ export interface TV2StudioConfigBase {
 	DefaultPartDuration: number
 	CasparPrerollDuration: number
 	ClipSourcePath: string
+	JingleSourcePath: string
 	ClipFileExtension: string
 	MediaFlowId: string
 	ABPlaybackDebugLogging: boolean

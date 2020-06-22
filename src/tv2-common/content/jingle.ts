@@ -16,6 +16,7 @@ export interface JingleLayers {
 	Sisyfos: {
 		PlayerJingle: string
 	}
+	basePath: string
 }
 
 export function CreateJingleContentBase<
@@ -39,7 +40,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file
+					file: `${layers.basePath.replace(/[\/\\]*$/, '')}/file`
 				}
 			}),
 

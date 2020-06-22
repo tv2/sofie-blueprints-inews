@@ -554,6 +554,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		required: true,
 		defaultVal: ''
 	},
+	{
+		id: 'JingleSourcePath',
+		name: 'Jingle base path',
+		description: 'The base path for jingle clips',
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: 'jingler'
+	},
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesDelayedPlayback,

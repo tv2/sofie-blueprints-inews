@@ -107,7 +107,8 @@ function createJingleContent(config: BlueprintConfig, file: string, loadFirstFra
 			},
 			Sisyfos: {
 				PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
-			}
+			},
+			basePath: config.studio.JingleSourcePath
 		},
 		false
 	)

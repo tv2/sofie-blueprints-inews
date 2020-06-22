@@ -38,8 +38,10 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	CasparPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
 	ClipSourcePath: '/',
+	JingleSourcePath: 'jingler',
 	MaximumPartDuration: 0,
-	DefaultPartDuration: 0
+	DefaultPartDuration: 0,
+	IdleSource: 0
 }
 
 function getObjectKeys(obj: any): string[] {
