@@ -1,5 +1,6 @@
 import { TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { SanitizePath } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -23,7 +24,7 @@ export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(config: ShowStyleConfig, file: string, loadFirstFrame: boolean, layers: JingleLayers, preMultiplied: boolean) {
-	const jinglePath = `${layers.basePath.replace(/[\/\\]*$/, '')}/${file}`
+	const jinglePath = `${SanitizePath(layers.basePath)}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,

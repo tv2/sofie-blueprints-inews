@@ -46,6 +46,7 @@ const blankStudioConfig: StudioConfig = {
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
 	JingleBasePath: 'jingler',
+	ClipBasePath: 'clips',
 	ATEMDelay: 1,
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0

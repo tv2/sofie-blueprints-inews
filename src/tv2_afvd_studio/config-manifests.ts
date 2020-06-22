@@ -562,6 +562,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		required: true,
 		defaultVal: 'jingler'
 	},
+	{
+		id: 'ClipBasePath',
+		name: 'Clip base path',
+		description: 'The base path for server clips',
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: 'clips'
+	},
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesDelayedPlayback,

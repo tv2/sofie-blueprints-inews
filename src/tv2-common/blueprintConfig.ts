@@ -23,6 +23,7 @@ export interface TV2StudioConfigBase {
 	CasparPrerollDuration: number
 	NetworkBasePath: string
 	JingleBasePath: string
+	ClipBasePath: string
 	ClipFileExtension: string
 	MediaFlowId: string
 	ABPlaybackDebugLogging: boolean

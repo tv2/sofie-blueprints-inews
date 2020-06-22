@@ -39,6 +39,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	ClipFileExtension: string
 	NetworkBasePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
 	JingleBasePath: string
+	ClipBasePath: string
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {

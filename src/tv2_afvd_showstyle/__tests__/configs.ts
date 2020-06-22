@@ -90,7 +90,8 @@ export const defaultStudioConfig: ConfigMap = {
 	PilotOutTransitionDuration: 280,
 	ATEMDelay: 1,
 	MaximumKamDisplayDuration: 10000,
-	JingleBasePath: 'jingler'
+	JingleBasePath: 'jingler',
+	ClipBasePath: 'clips'
 }
 
 export const defaultShowStyleConfig: ConfigMap = {

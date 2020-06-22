@@ -39,6 +39,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
 	JingleBasePath: 'jingler',
+	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0

@@ -11,6 +11,7 @@ import {
 } from 'tv2-common'
 import { ControlClasses, Enablers } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
+import { SanitizePath } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
@@ -41,10 +42,11 @@ export function MakeContentServer<
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
 	const timelineStartObjId = `clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/\W/g, '')
+	const filePath = `${SanitizePath(config.studio.ClipBasePath)}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file, // playing casparcg
-		path: `${config.studio.NetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		path: `${config.studio.NetworkBasePath}\\${config.studio.ClipBasePath}\\${file}\\${config.studio.ClipFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
@@ -59,7 +61,7 @@ export function MakeContentServer<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file,
+					file: filePath,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
 					noStarttime: true,
 					...(offtubeOptions?.isOfftube ? { playing: false } : {})
