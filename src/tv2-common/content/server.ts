@@ -46,7 +46,7 @@ export function MakeContentServer<
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: filePath, // playing casparcg
-		path: `${config.studio.NetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		path: filePath,
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
