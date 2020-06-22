@@ -1,6 +1,5 @@
 import { TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
-import { SanitizePath } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
 

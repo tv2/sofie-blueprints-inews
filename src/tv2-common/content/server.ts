@@ -11,7 +11,6 @@ import {
 } from 'tv2-common'
 import { ControlClasses, Enablers } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
-import { SanitizePath } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
