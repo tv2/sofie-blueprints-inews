@@ -40,8 +40,8 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	// Intended overrides
 	MediaFlowId: string
 	ClipFileExtension: string
-	ClipSourcePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
-	JingleSourcePath: string
+	NetworkBasePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
+	JingleBasePath: string
 	SourcesDelayedPlayback: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean

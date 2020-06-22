@@ -110,7 +110,7 @@ function createJingleContent(config: OfftubeShowstyleBlueprintConfig, file: stri
 			Sisyfos: {
 				PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
 			},
-			basePath: config.studio.JingleSourcePath
+			basePath: config.studio.JingleBasePath
 		},
 		true
 	)

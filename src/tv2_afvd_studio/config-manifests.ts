@@ -546,7 +546,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: '.mxf'
 	},
 	{
-		id: 'ClipSourcePath',
+		id: 'NetworkBasePath',
 		name: 'Network base path',
 		description:
 			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
@@ -555,7 +555,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: ''
 	},
 	{
-		id: 'JingleSourcePath',
+		id: 'JingleBasePath',
 		name: 'Jingle base path',
 		description: 'The base path for jingle clips',
 		type: ConfigManifestEntryType.STRING,

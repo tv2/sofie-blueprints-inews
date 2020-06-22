@@ -67,7 +67,7 @@ export const defaultStudioConfig: ConfigMap = {
 	'AtemSource.FullFrameGrafikBackground': 36,
 	'AtemSource.Default': 2001,
 	'AtemSource.Continuity': 2002,
-	ClipSourcePath: '/media',
+	NetworkBasePath: '/media',
 	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
 	MediaFlowId: 'testflow0',
@@ -90,7 +90,7 @@ export const defaultStudioConfig: ConfigMap = {
 	PilotOutTransitionDuration: 280,
 	ATEMDelay: 1,
 	MaximumKamDisplayDuration: 10000,
-	JingleSourcePath: 'jingler'
+	JingleBasePath: 'jingler'
 }
 
 export const defaultShowStyleConfig: ConfigMap = {

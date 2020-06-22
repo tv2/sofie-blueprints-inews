@@ -3,7 +3,7 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddKeepAudio, literal, MoveSourcesToTable } from 'tv2-common'
+import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
 import {
 	manifestOfftubeSourcesABMediaPlayers,
@@ -225,5 +225,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_live_1'),
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_live_2'),
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_stereo'),
-	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_surround')
+	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_surround'),
+	MoveClipSourcePath('0.2.0', 'Offtube_Q2')
 ])

@@ -395,7 +395,7 @@ function CreateFullContent(
 ): GraphicsContent {
 	return {
 		// fileName: template,
-		// path: `${config.studio.ClipSourcePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
+		// path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
 		fileName: '1313794A',
 		path: `\\\\vantageod1.tv2.local\\sofie\\ccg\\1313794A.mxf`,
 		mediaFlowIds: [config.studio.MediaFlowId],

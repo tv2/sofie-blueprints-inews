@@ -44,8 +44,8 @@ const blankStudioConfig: StudioConfig = {
 	PilotCutToMediaPlayer: 0,
 	PilotOutTransitionDuration: 0,
 	ClipFileExtension: 'mxf',
-	ClipSourcePath: '/',
-	JingleSourcePath: 'jingler',
+	NetworkBasePath: '/',
+	JingleBasePath: 'jingler',
 	ATEMDelay: 1,
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0

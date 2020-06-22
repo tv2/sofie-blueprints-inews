@@ -60,3 +60,27 @@ export function MoveSourcesToTable(
 
 	return res
 }
+
+export function MoveClipSourcePath(versionStr: string, studio: string): MigrationStepStudio {
+	const res = literal<MigrationStepStudio>({
+		id: `studioConfig.moveClipSourcePath.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const configVal = context.getConfig('ClipSourcePath')
+			if (configVal !== undefined) {
+				return `ClipSourcePath needs updating`
+			}
+			return false
+		},
+		migrate: (context: MigrationContextStudio) => {
+			const configVal = context.getConfig('ClipSourcePath')
+			if (configVal !== undefined) {
+				context.setConfig('NetworkBasePath', configVal.toString())
+				context.removeConfig('ClipSourcePath')
+			}
+		}
+	})
+
+	return res
+}

@@ -1,5 +1,5 @@
 import { MigrationStepStudio } from 'tv-automation-sofie-blueprints-integration'
-import { AddKeepAudio, literal, MoveSourcesToTable } from 'tv2-common'
+import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
 import {
 	manifestAFVDSourcesABMediaPlayers,
@@ -106,6 +106,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 		'viz_layer_pilot',
 		'viz_layer_pilot_overlay',
 		'viz_layer_wall'
-	].map(layer => renameMapping('2.0.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
-	AddKeepAudio('0.1.0', 'SourcesRM')
+	].map(layer => renameMapping('0.2.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
+	AddKeepAudio('0.2.0', 'SourcesRM'),
+	MoveClipSourcePath('0.2.0', 'AFVD')
 ])
