@@ -24,11 +24,11 @@ export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(config: ShowStyleConfig, file: string, loadFirstFrame: boolean, layers: JingleLayers, preMultiplied: boolean) {
-	const jinglePath = `${SanitizePath(layers.basePath)}/${file}`
+	// const jinglePath = `${SanitizePath(layers.basePath)}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
-		path: jinglePath,
+		path: file,
 		firstWords: '',
 		lastWords: '',
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
@@ -42,7 +42,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: jinglePath
+					file
 				}
 			}),
 
@@ -56,7 +56,7 @@ export function CreateJingleContentBase<
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.MEDIA,
-								file: jinglePath
+								file
 							},
 							classes: ['DEBUG_CLASS']
 						})

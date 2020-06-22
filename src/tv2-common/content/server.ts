@@ -42,11 +42,11 @@ export function MakeContentServer<
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
 	const timelineStartObjId = `clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/\W/g, '')
-	const filePath = `${SanitizePath(config.studio.ClipBasePath)}/${file}`
+	// const filePath = `${SanitizePath(config.studio.ClipBasePath)}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
-		fileName: filePath, // playing casparcg
-		path: `${config.studio.NetworkBasePath}\\${config.studio.ClipBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		fileName: file, // playing casparcg
+		path: `${config.studio.NetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
@@ -61,7 +61,7 @@ export function MakeContentServer<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: filePath,
+					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
 					noStarttime: true,
 					...(offtubeOptions?.isOfftube ? { playing: false } : {})
