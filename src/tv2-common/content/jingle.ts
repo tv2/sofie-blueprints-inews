@@ -23,7 +23,7 @@ export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(config: ShowStyleConfig, file: string, loadFirstFrame: boolean, layers: JingleLayers, preMultiplied: boolean) {
-	const jinglePath = `${layers.basePath.replace(/[\/\\]*$/, '')}/file`
+	const jinglePath = `${layers.basePath.replace(/[\/\\]*$/, '')}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
