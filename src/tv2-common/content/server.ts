@@ -45,7 +45,7 @@ export function MakeContentServer<
 	const filePath = `${SanitizePath(config.studio.ClipBasePath)}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
-		fileName: `FOO/${filePath}`, // playing casparcg
+		fileName: filePath, // playing casparcg
 		path: `${config.studio.NetworkBasePath}\\${config.studio.ClipBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
