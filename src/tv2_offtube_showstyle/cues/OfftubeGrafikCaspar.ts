@@ -391,17 +391,20 @@ function CreateFullAdLib(
 
 function CreateFullContent(
 	config: OfftubeShowstyleBlueprintConfig,
-	_partDefinition: PartDefinition,
+	partDefinition: PartDefinition,
 	template: string,
 	flowProducer: boolean
 ): GraphicsContent {
+	const startObjId = `fullMedia_${partDefinition.externalId.replace(/\W/g, '_')}_${template}_${
+		flowProducer ? 'flow' : 'commentator'
+	}`
 	return {
 		fileName: template,
 		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.MediaFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGMedia>({
-				id: '',
+				id: startObjId,
 				enable: {
 					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
 				},
@@ -421,7 +424,7 @@ function CreateFullContent(
 			literal<TSR.TimelineObjAtemME>({
 				id: '',
 				enable: {
-					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
+					start: `#${startObjId}.start + ${config.studio.CasparPrerollDuration}`
 				},
 				priority: 100,
 				layer: OfftubeAtemLLayer.AtemMEClean,
@@ -447,7 +450,7 @@ function CreateFullContent(
 			literal<TSR.TimelineObjAtemDSK>({
 				id: '',
 				enable: {
-					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
+					start: `#${startObjId}.start + ${config.studio.CasparPrerollDuration}`
 				},
 				priority: 100,
 				layer: OfftubeAtemLLayer.AtemDSKGraphics,
