@@ -14,6 +14,7 @@ import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
+import { OfftubeCreatePartGrafik } from './parts/OfftubeGrafik'
 import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
@@ -32,7 +33,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartServer: OfftubeCreatePartServer,
 		CreatePartVO: OfftubeCreatePartVO,
 		CreatePartDVE: OfftubeCreatePartDVE,
-		CreatePartGrafik: CreatePartUnknown,
+		CreatePartGrafik: OfftubeCreatePartGrafik,
 		CreatePartEVS: CreatePartUnknown,
 		CreatePartEkstern: CreatePartUnknown,
 		CreatePartIntro: CreatePartUnknown,

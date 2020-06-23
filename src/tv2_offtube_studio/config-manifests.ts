@@ -483,5 +483,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 1
+	},
+	{
+		id: 'FullKeepAliveDuration',
+		name: 'Full Keep Alive Duration',
+		description: 'How long to keep the old part alive when going to a full',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
 	}
 ]

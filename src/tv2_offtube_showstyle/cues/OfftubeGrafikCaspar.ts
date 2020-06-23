@@ -381,6 +381,8 @@ function CreateFullAdLib(
 		outputLayerId: flowProducer ? OfftubeOutputLayers.PGM : OfftubeOutputLayers.SELECTED_ADLIB,
 		toBeQueued: true,
 		canCombineQueue: !flowProducer,
+		adlibPreroll: config.studio.CasparPrerollDuration,
+		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
 		infiniteMode: flowProducer ? PieceLifespan.OutOnNextPart : PieceLifespan.OutOnNextSegment,
 		tags: flowProducer ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [AdlibTags.ADLIB_KOMMENTATOR],
 		content: CreateFullContent(config, partDefinition, template, flowProducer)

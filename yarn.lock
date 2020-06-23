@@ -4897,9 +4897,9 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-"tv-automation-sofie-blueprints-integration@git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#dist20200603_1":
+"tv-automation-sofie-blueprints-integration@git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#dist20200623_1":
   version "1.2.0"
-  resolved "git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#9fd1727f9cff8c01c1bdbbef613c311aec16f0a5"
+  resolved "git+https://github.com/olzzon/tv-automation-sofie-blueprints-integration.git#455dbe5d228a4884241bd8b4720f37d61d28134d"
   dependencies:
     moment "^2.22.2"
     timeline-state-resolver-types "git+https://github.com/olzzon/tv-automation-state-timeline-resolver#dist_types20200521_1"

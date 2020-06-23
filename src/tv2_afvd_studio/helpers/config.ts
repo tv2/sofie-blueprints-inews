@@ -123,6 +123,9 @@ export function applyToConfig(
 				case ConfigManifestEntryType.SOURCE_LAYERS:
 					newVal = overrideVal
 					break
+				case ConfigManifestEntryType.JSON:
+					newVal = overrideVal
+					break
 				default:
 					assertUnreachable(val)
 					context.warning('Unknown config field type: ' + val)

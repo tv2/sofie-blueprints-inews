@@ -72,6 +72,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 	// Constants
 	CasparPrerollDuration: number
+	FullKeepAliveDuration: number
 	IdleSource: number
 }
 
@@ -110,6 +111,9 @@ export function applyToConfig(
 					newVal = overrideVal
 					break
 				case ConfigManifestEntryType.SOURCE_LAYERS:
+					newVal = overrideVal
+					break
+				case ConfigManifestEntryType.JSON:
 					newVal = overrideVal
 					break
 				default:

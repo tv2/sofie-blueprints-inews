@@ -42,7 +42,8 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
-	IdleSource: 0
+	IdleSource: 0,
+	FullKeepAliveDuration: 0
 }
 
 function getObjectKeys(obj: any): string[] {
