@@ -194,7 +194,7 @@ export function GetCasparOverlayTimeline(
 			id: '',
 			enable: commentator
 				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition, timelineObjStartId)
-				: { start: 0 },
+				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
 			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
@@ -390,14 +390,12 @@ function CreateFullAdLib(
 function CreateFullContent(
 	config: OfftubeShowstyleBlueprintConfig,
 	_partDefinition: PartDefinition,
-	_template: string,
+	template: string,
 	flowProducer: boolean
 ): GraphicsContent {
 	return {
-		// fileName: template,
-		// path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
-		fileName: '1313794A',
-		path: `\\\\vantageod1.tv2.local\\sofie\\ccg\\1313794A.mxf`,
+		fileName: template,
+		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.MediaFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGMedia>({
@@ -411,8 +409,7 @@ function CreateFullContent(
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					playing: true,
-					// file: `${template}`,
-					file: '1313794A',
+					file: `${template}`,
 					loop: true,
 					mixer: {
 						opacity: 100
@@ -431,10 +428,34 @@ function CreateFullContent(
 					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
 						input: config.studio.AtemSource.GFXFull,
-						transition: TSR.AtemTransitionStyle.CUT
+						transition: TSR.AtemTransitionStyle.WIPE,
+						transitionSettings: {
+							wipe: {
+								// TODO: Expose to settings
+								rate: 25, // 1s
+								pattern: 1, // Vertical wipe
+								borderSoftness: 7000,
+								reverseDirection: true
+							}
+						}
 					}
 				},
 				classes: [ControlClasses.NOLookahead]
+			}),
+			literal<TSR.TimelineObjAtemDSK>({
+				id: '',
+				enable: {
+					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
+				},
+				priority: 100,
+				layer: OfftubeAtemLLayer.AtemDSKGraphics,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.DSK,
+					dsk: {
+						onAir: false
+					}
+				}
 			}),
 			...(flowProducer
 				? [
