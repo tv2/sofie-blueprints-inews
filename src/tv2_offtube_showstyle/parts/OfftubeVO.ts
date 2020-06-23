@@ -2,7 +2,6 @@ import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	PieceMetaData,
 	TSR
@@ -15,6 +14,7 @@ import {
 	getStickyLayers,
 	literal,
 	MakeContentServer,
+	PartContext2,
 	PartDefinition,
 	TimelineBlueprintExt
 } from 'tv2-common'
@@ -31,7 +31,7 @@ import { MergePiecesAsTimeline } from '../helpers/MergePiecesAsTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartVO(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	_segmentExternalId: string,

@@ -163,8 +163,8 @@ function getGlobalAdLibPiecesOfftube(
 					...camSisyfos,
 					...config.stickyLayers
 						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 								id: '',
 								enable: {
 									start: 0
@@ -173,7 +173,7 @@ function getGlobalAdLibPiecesOfftube(
 								layer,
 								content: {
 									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 									isPgm: 0
 								},
 								metaData: {
@@ -186,8 +186,8 @@ function getGlobalAdLibPiecesOfftube(
 						OfftubeSisyfosLLayer.SisyfosSourceClipPending,
 						OfftubeSisyfosLLayer.SisyfosSourceServerA,
 						OfftubeSisyfosLLayer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosMessage>(layer => {
-						return literal<TSR.TimelineObjSisyfosMessage>({
+					].map<TSR.TimelineObjSisyfosChannel>(layer => {
+						return literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -196,7 +196,7 @@ function getGlobalAdLibPiecesOfftube(
 							layer,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 0
 							}
 						})
@@ -276,8 +276,8 @@ function getGlobalAdLibPiecesOfftube(
 					...config.stickyLayers
 						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
 						.filter(layer => config.liveAudio.indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 								id: '',
 								enable: {
 									start: 0
@@ -286,7 +286,7 @@ function getGlobalAdLibPiecesOfftube(
 								layer,
 								content: {
 									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 									isPgm: 0
 								},
 								metaData: {
@@ -299,8 +299,8 @@ function getGlobalAdLibPiecesOfftube(
 						OfftubeSisyfosLLayer.SisyfosSourceClipPending,
 						OfftubeSisyfosLLayer.SisyfosSourceServerA,
 						OfftubeSisyfosLLayer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosMessage>(layer => {
-						return literal<TSR.TimelineObjSisyfosMessage>({
+					].map<TSR.TimelineObjSisyfosChannel>(layer => {
+						return literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -309,7 +309,7 @@ function getGlobalAdLibPiecesOfftube(
 							layer,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 0
 							}
 						})
@@ -855,14 +855,14 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 		...Object.keys(sisyfosChannels).map(key => {
 			const llayer = key as OfftubeSisyfosLLayer
 			const channel = sisyfosChannels[llayer] as SisyfosChannel
-			return literal<TSR.TimelineObjSisyfosMessage>({
+			return literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
 				layer: llayer,
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 					isPgm: channel.isPgm,
 					visible: true,
 					label: channel.label

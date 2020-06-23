@@ -91,8 +91,7 @@ describe('regressions-migrations', () => {
 				{
 					part: {
 						externalId: '',
-						title: '',
-						typeVariant: ''
+						title: ''
 					},
 					pieces: [
 						{
@@ -195,8 +194,7 @@ describe('regressions-migrations', () => {
 				{
 					part: {
 						externalId: '',
-						title: '',
-						typeVariant: ''
+						title: ''
 					},
 					pieces: [
 						{

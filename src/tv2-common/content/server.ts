@@ -156,14 +156,14 @@ export function MakeContentServer<
 				]
 			}),
 
-			literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 				id: '',
 				enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
 				priority: 1,
 				layer: sourceLayers.Sisyfos.ClipPending,
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 					// isPgm: voiceOver ? 2 : 1
 					isPgm: 1
 				},
@@ -174,15 +174,15 @@ export function MakeContentServer<
 			}),
 
 			...(sourceLayers.STICKY_LAYERS
-				? sourceLayers.STICKY_LAYERS.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-						return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+				? sourceLayers.STICKY_LAYERS.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
+						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 							id: '',
 							enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
 							priority: 1,
 							layer,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 0
 							},
 							metaData: {

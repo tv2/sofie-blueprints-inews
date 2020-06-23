@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, TSR } from 'tv-automation-sofie-blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,
@@ -16,6 +16,7 @@ import {
 	CueDefinitionVIZ,
 	IBlueprintAdLibPieceEPI,
 	IBlueprintPieceEPI,
+	PartContext2,
 	PartDefinition,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -28,7 +29,7 @@ export interface EvaluateCuesShowstyleOptions<
 > {
 	EvaluateCueGrafik?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		partId: string,
@@ -41,7 +42,7 @@ export interface EvaluateCuesShowstyleOptions<
 	) => void
 	EvaluateCueMOS?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		partId: string,
@@ -54,7 +55,7 @@ export interface EvaluateCuesShowstyleOptions<
 		overrideOverlay?: boolean
 	) => void
 	EvaluateCueEkstern?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -65,7 +66,7 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number
 	) => void
 	EvaluateCueDVE?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -75,7 +76,7 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number
 	) => void
 	EvaluateCueAdLib?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		adLibPieces: IBlueprintAdLibPiece[],
 		partId: string,
@@ -85,7 +86,7 @@ export interface EvaluateCuesShowstyleOptions<
 	) => void
 	EvaluateCueTelefon?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		partId: string,
@@ -95,7 +96,7 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number
 	) => void
 	EvaluateCueVIZ?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -105,7 +106,7 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number
 	) => void
 	EvaluateCueJingle?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -116,7 +117,7 @@ export interface EvaluateCuesShowstyleOptions<
 		effekt?: boolean
 	) => void
 	EvaluateCueLYD?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -127,7 +128,7 @@ export interface EvaluateCuesShowstyleOptions<
 	) => void
 	EvaluateCueDesign?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		partId: string,
@@ -136,7 +137,7 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number
 	) => void
 	EvaluateCueTargetEngine?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -178,7 +179,7 @@ export function EvaluateCuesBase<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	showStyleOptions: EvaluateCuesShowstyleOptions<StudioConfig, ShowStyleConfig>,
-	context: PartContext,
+	context: PartContext2,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPieceEPI[],
 	adLibPieces: IBlueprintAdLibPieceEPI[],

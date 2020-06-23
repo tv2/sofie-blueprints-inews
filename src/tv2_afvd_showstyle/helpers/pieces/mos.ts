@@ -3,7 +3,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	NotesContext,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
 	TSR
@@ -15,6 +14,7 @@ import {
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
+	PartContext2,
 	SourceInfo
 } from 'tv2-common'
 import { GraphicEngine } from 'tv2-constants'
@@ -25,7 +25,7 @@ import { CreateTimingGrafik, grafikName } from './grafikViz'
 
 export function EvaluateMOSViz(
 	config: BlueprintConfig,
-	context: PartContext,
+	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -274,7 +274,7 @@ function MuteSisyfosChannels(
 	adlib: boolean,
 	adlibRank: number,
 	vcpid: number
-): TSR.TimelineObjSisyfosMessage[] {
+): TSR.TimelineObjSisyfosChannel[] {
 	return [
 		SisyfosLLAyer.SisyfosSourceServerA,
 		SisyfosLLAyer.SisyfosSourceServerB,
@@ -294,8 +294,8 @@ function MuteSisyfosChannels(
 				.filter(s => s.type === SourceLayerType.REMOTE && s.id.match(/^DP/i))
 				.map(s => SisyfosEVSSource(s.id.replace(/^DP/i, '') as SisyfosLLAyer)) as SisyfosLLAyer[])
 		]
-	].map<TSR.TimelineObjSisyfosMessage>(layer => {
-		return literal<TSR.TimelineObjSisyfosMessage>({
+	].map<TSR.TimelineObjSisyfosChannel>(layer => {
+		return literal<TSR.TimelineObjSisyfosChannel>({
 			id: `muteSisyfos-${layer}-${partId}-${vcpid}-${adlib ? `adlib-${adlibRank}` : ''}`,
 			enable: {
 				start: 0
@@ -304,7 +304,7 @@ function MuteSisyfosChannels(
 			layer,
 			content: {
 				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 				isPgm: 0
 			}
 		})

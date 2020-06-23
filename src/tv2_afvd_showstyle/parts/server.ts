@@ -1,10 +1,13 @@
+import { BlueprintResultPart, IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
 import {
-	BlueprintResultPart,
-	IBlueprintPiece,
-	PartContext,
-	PieceLifespan
-} from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, CreatePartServerBase, literal, MakeContentServer, PartDefinition, PieceMetaData } from 'tv2-common'
+	AddScript,
+	CreatePartServerBase,
+	literal,
+	MakeContentServer,
+	PartContext2,
+	PartDefinition,
+	PieceMetaData
+} from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -12,7 +15,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartServer(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	segmentExternalId: string

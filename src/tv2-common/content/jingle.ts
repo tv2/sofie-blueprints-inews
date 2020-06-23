@@ -180,7 +180,7 @@ export function CreateJingleContentBase<
 				  ]
 				: []),
 
-			literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+			literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 				id: '',
 				enable: {
 					start: 0
@@ -189,7 +189,7 @@ export function CreateJingleContentBase<
 				layer: layers.Sisyfos.PlayerJingle,
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 					isPgm: 1
 				}
 			})

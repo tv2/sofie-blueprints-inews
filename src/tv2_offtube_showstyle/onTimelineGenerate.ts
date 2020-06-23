@@ -1,6 +1,6 @@
 import {
 	BlueprintResultTimeline,
-	IBlueprintPieceDB,
+	IBlueprintResolvedPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
 	PartEventContext,
@@ -22,25 +22,27 @@ export function onTimelineGenerateOfftube(
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ): Promise<BlueprintResultTimeline> {
 	// If we are not in a server, then disable the server adlib piece
 	const currentPartId = context.part._id
-	const currentPieces: { [id: string]: IBlueprintPieceDB } = {}
+	const currentPieces: { [id: string]: IBlueprintResolvedPieceInstance } = {}
 	for (const piece of resolvedPieces) {
-		if (piece.partId === currentPartId) {
+		if (piece.piece.partId === currentPartId) {
 			currentPieces[piece._id] = piece
 		}
 	}
-	const currentServerOnAir = Object.values(currentPieces).find(p => p.sourceLayerId === OfftubeSourceLayer.PgmServer)
+	const currentServerOnAir = Object.values(currentPieces).find(
+		p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer
+	)
 	if (!currentServerOnAir) {
 		const currentAdlibServerPieceGroup = timeline.find(
 			obj =>
 				obj.isGroup &&
 				(obj.layer === OfftubeSourceLayer.SelectedAdLibServer ||
 					obj.layer === OfftubeSourceLayer.SelectedAdLibVoiceOver) &&
-				obj.pieceId &&
-				currentPieces[obj.pieceId]
+				obj.pieceInstanceId &&
+				currentPieces[obj.pieceInstanceId]
 		)
 		if (currentAdlibServerPieceGroup) {
 			const enableObj = timeline.find(

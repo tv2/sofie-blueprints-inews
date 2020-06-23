@@ -1,4 +1,9 @@
-import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj, TSR } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintResolvedPieceInstance,
+	NotesContext,
+	OnGenerateTimelineObj,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
@@ -64,20 +69,20 @@ interface SessionTime {
 	end: number | undefined
 	optional: boolean
 }
-function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
+function calculateSessionTimeRanges(resolvedPieces: IBlueprintResolvedPieceInstance[]) {
 	const piecesWantingMediaPlayers = _.filter(resolvedPieces, p => {
-		if (!p.metaData) {
+		if (!p.piece.metaData) {
 			return false
 		}
-		const metadata = p.metaData as PieceMetaData
+		const metadata = p.piece.metaData as PieceMetaData
 		return (metadata.mediaPlayerSessions || []).length > 0
 	})
 
 	const sessionRequests: { [sessionId: string]: SessionTime | undefined } = {}
 	_.each(piecesWantingMediaPlayers, p => {
-		const metadata = p.metaData as PieceMetaData
-		const start = p.enable.start as number
-		const duration = p.playoutDuration
+		const metadata = p.piece.metaData as PieceMetaData
+		const start = p.piece.enable.start as number
+		const duration = p.piece.playoutDuration
 		const end = duration !== undefined ? start + duration : undefined
 
 		// Track the range of each session
@@ -87,7 +92,7 @@ function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
 			// Perhaps the id given should be prefixed with the piece(instance) id? And sharing sessions can be figured out when it becomes needed
 
 			if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-				sessionId = `${p.infiniteId || p._id}`
+				sessionId = `${p.piece.infiniteId || p._id}`
 			}
 			// Note: multiple generated sessionIds for a single piece will not work as there will not be enough info to assign objects to different players
 			const val = sessionRequests[sessionId] || undefined
@@ -194,7 +199,7 @@ export function resolveMediaPlayerAssignments<
 	context: NotesContext,
 	config: ShowStyleConfig,
 	previousAssignmentRev: SessionToPlayerMap,
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
 	const debugLog = config.studio.ABPlaybackDebugLogging
 	const sessionRequests = calculateSessionTimeRanges(resolvedPieces)
@@ -354,7 +359,7 @@ export function assignMediaPlayers<
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
-	resolvedPieces: IBlueprintPieceDB[],
+	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const previousAssignmentRev = reversePreviousAssignment(previousAssignment, timelineObjs)
@@ -397,7 +402,7 @@ export function applyMediaPlayersAssignments<
 	const groupedObjs = _.groupBy(labelledObjs, o => {
 		const sessionId = (o.metaData || {}).mediaPlayerSession
 		if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-			return o.infinitePieceId || o.pieceId || MEDIA_PLAYER_AUTO
+			return o.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
 		} else {
 			return sessionId
 		}

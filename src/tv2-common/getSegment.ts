@@ -4,7 +4,6 @@ import {
 	IBlueprintPart,
 	IBlueprintSegment,
 	IngestSegment,
-	PartContext,
 	SegmentContext,
 	ShowStyleContext
 } from 'tv-automation-sofie-blueprints-integration'
@@ -74,13 +73,13 @@ export interface GetSegmentShowstyleOptions<
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartGrafik?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionGrafik,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartVO?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionVO,
 		mediaPlayerSession: string,
@@ -100,13 +99,13 @@ export interface GetSegmentShowstyleOptions<
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartDVE?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionDVE,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartEVS?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEVS,
 		totalWords: number
@@ -336,7 +335,6 @@ export function getSegmentBase<
 				externalId: `${ingestSegment.externalId}-GAP`,
 				title: `Adlib Gap`,
 				metaData: {},
-				typeVariant: '',
 				gap: true,
 				invalid: true,
 				expectedDuration: extraTime,

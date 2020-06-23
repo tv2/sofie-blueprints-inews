@@ -2,7 +2,6 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
@@ -15,6 +14,7 @@ import {
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PartToParentClass
 } from 'tv2-common'
@@ -25,7 +25,7 @@ import { EvaluateDesign } from './design'
 
 export function EvaluateGrafikViz(
 	config: BlueprintConfig,
-	context: PartContext,
+	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,

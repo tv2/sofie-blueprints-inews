@@ -2,7 +2,6 @@ import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	PieceMetaData,
 	TSR
@@ -13,6 +12,7 @@ import {
 	CreatePartServerBase,
 	literal,
 	MakeContentServer,
+	PartContext2,
 	PartDefinition,
 	TimelineBlueprintExt
 } from 'tv2-common'
@@ -29,7 +29,7 @@ import { EvaluateCuesIntoTimeline } from '../helpers/EvaluateCuesIntoTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartServer(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	_segmentExternalId: string

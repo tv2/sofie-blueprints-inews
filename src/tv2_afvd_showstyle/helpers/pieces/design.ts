@@ -2,18 +2,17 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CueDefinitionDesign, GraphicLLayer, literal } from 'tv2-common'
+import { CalculateTime, CueDefinitionDesign, GraphicLLayer, literal, PartContext2 } from 'tv2-common'
 import * as _ from 'underscore'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 
 export function EvaluateDesign(
 	_config: BlueprintConfig,
-	context: PartContext,
+	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -21,6 +20,7 @@ export function EvaluateDesign(
 	adlib?: boolean,
 	rank?: number
 ) {
+	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
 	if (!parsedCue.design || !parsedCue.design.length) {
 		context.warning(`No valid design found for ${parsedCue.design}`)
 		return
@@ -62,7 +62,7 @@ export function EvaluateDesign(
 				externalId: partId,
 				name: parsedCue.design,
 				enable: {
-					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+					start
 				},
 				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,

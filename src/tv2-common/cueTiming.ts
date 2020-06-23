@@ -33,7 +33,9 @@ export function CreateTimingEnable(
 	timelineObjStartId?: string
 ): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> {
 	const result: Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> = {
-		enable: {},
+		enable: {
+			start: 0
+		},
 		infiniteMode: PieceLifespan.Normal
 	}
 

@@ -1,18 +1,17 @@
 import {
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition, TimeFromFrames, TimelineBlueprintExt } from 'tv2-common'
+import { literal, PartContext2, PartDefinition, TimeFromFrames, TimelineBlueprintExt } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 
 export function CreateEffektForpart(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[]
@@ -110,7 +109,7 @@ export function CreateEffektForpart(
 							}
 						}
 					}),
-					literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',
 						enable: {
 							start: 0
@@ -119,7 +118,7 @@ export function CreateEffektForpart(
 						layer: SisyfosLLAyer.SisyfosSourceJingle,
 						content: {
 							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 							isPgm: 1
 						}
 					})

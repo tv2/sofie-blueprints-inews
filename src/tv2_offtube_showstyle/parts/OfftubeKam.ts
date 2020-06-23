@@ -3,7 +3,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
 	TimelineObjectCoreExt,
@@ -19,6 +18,7 @@ import {
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	literal,
+	PartContext2,
 	PartDefinitionKam,
 	PartTime,
 	TransitionFromString,
@@ -30,7 +30,7 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartKam(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
@@ -41,7 +41,6 @@ export function OfftubeCreatePartKam(
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
-		typeVariant: '',
 		expectedDuration: partTime > 0 ? partTime : undefined
 	})
 

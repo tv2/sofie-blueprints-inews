@@ -1,11 +1,11 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionGrafik, CueDefinitionTargetEngine, PartDefinition } from 'tv2-common'
+import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import { CueDefinitionGrafik, CueDefinitionTargetEngine, PartContext2, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateGrafikCaspar } from './OfftubeGrafikCaspar'
 
 export function OfftubeEvaluateTargetEngine(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

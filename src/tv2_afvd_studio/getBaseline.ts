@@ -54,28 +54,28 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 		...convertMappings(sisyfosMappings, id => {
 			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer] as SisyfosChannel | undefined
 			if (sisyfosChannel) {
-				return literal<TSR.TimelineObjSisyfosAny>({
+				return literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { while: '1' },
 					priority: 0,
 					layer: id,
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 						isPgm: sisyfosChannel.isPgm,
 						label: sisyfosChannel.label,
 						visible: !sisyfosChannel.hideInStudioA
 					}
 				})
 			} else {
-				return literal<TSR.TimelineObjSisyfosAny>({
+				return literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { while: '1' },
 					priority: 0,
 					layer: id,
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 						isPgm: 0,
 						label: ''
 					}

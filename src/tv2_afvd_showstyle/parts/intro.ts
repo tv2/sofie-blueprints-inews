@@ -2,8 +2,7 @@ import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext
+	IBlueprintPiece
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddScript,
@@ -11,6 +10,7 @@ import {
 	CueDefinitionJingle,
 	GetJinglePartProperties,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -20,7 +20,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartIntro(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
@@ -62,8 +62,7 @@ export function CreatePartIntro(
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
-		metaData: {},
-		typeVariant: ''
+		metaData: {}
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []

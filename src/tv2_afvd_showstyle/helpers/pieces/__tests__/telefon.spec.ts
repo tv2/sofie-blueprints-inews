@@ -119,7 +119,7 @@ describe('telefon', () => {
 								channelName: 'OVL1'
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -128,11 +128,11 @@ describe('telefon', () => {
 							layer: SisyfosLLAyer.SisyfosSourceTLF,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -141,11 +141,11 @@ describe('telefon', () => {
 							layer: SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -154,11 +154,11 @@ describe('telefon', () => {
 							layer: SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -167,11 +167,11 @@ describe('telefon', () => {
 							layer: SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -180,11 +180,11 @@ describe('telefon', () => {
 							layer: SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -193,11 +193,11 @@ describe('telefon', () => {
 							layer: SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosMessage>({
+						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
 								start: 0
@@ -206,7 +206,7 @@ describe('telefon', () => {
 							layer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
 							}
 						})

@@ -1,6 +1,7 @@
-import { BlueprintResultPart, IBlueprintPart, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintResultPart, IBlueprintPart } from 'tv-automation-sofie-blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { PartDefinition } from '../inewsConversion'
+import { PartContext2 } from '../partContext2'
 import { literal } from '../util'
 import { CreatePartInvalid } from './invalid'
 
@@ -8,7 +9,7 @@ export function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext,
+	context: PartContext2,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition
 ): { part: BlueprintResultPart; file: string; duration: number; invalid?: true } {
@@ -29,7 +30,6 @@ export function CreatePartServerBase<
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
-		typeVariant: '',
 		expectedDuration: duration || 1000,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})

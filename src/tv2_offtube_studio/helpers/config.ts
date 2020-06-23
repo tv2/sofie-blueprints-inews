@@ -116,6 +116,9 @@ export function applyToConfig(
 				case ConfigManifestEntryType.JSON:
 					newVal = overrideVal
 					break
+				case ConfigManifestEntryType.MULTILINE_STRING:
+					newVal = overrideVal
+					break
 				default:
 					assertUnreachable(val)
 					context.warning('Unknown config field type: ' + val)

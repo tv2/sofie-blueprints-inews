@@ -2,7 +2,6 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
@@ -14,6 +13,7 @@ import {
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PartToParentClass,
 	TimelineBlueprintExt,
@@ -26,7 +26,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	_context: PartContext,
+	_context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_partid: string,

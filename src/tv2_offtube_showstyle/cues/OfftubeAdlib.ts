@@ -1,6 +1,5 @@
 import {
 	IBlueprintAdLibPiece,
-	PartContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR
@@ -11,6 +10,7 @@ import {
 	CueDefinitionDVE,
 	GetDVETemplate,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TemplateIsValid,
@@ -30,7 +30,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateAdLib(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	partId: string,

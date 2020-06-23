@@ -79,14 +79,14 @@ export function GetSisyfosTimelineObjForEkstern(
 
 	layers.forEach(layer => {
 		audioTimeline.push(
-			literal<TSR.TimelineObjSisyfosMessage>({
+			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
 				enable: enable!,
 				priority: 1,
 				layer,
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 					isPgm: 1
 				}
 			})
@@ -137,15 +137,15 @@ export function GetSisyfosTimelineObjForCamera(
 			camLayers.push(...config.studio.StudioMics)
 		}
 		audioTimeline.push(
-			...camLayers.map<TSR.TimelineObjSisyfosMessage>(layer => {
-				return literal<TSR.TimelineObjSisyfosMessage>({
+			...camLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
+				return literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: enable ? enable : { start: 0 },
 					priority: 1,
 					layer,
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 						isPgm: 1
 					}
 				})

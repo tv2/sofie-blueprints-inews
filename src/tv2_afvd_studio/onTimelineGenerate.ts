@@ -1,6 +1,6 @@
 import {
 	BlueprintResultTimeline,
-	IBlueprintPieceDB,
+	IBlueprintResolvedPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
 	PartEventContext,
@@ -16,7 +16,7 @@ export function onTimelineGenerateAFVD(
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ): Promise<BlueprintResultTimeline> {
 	return onTimelineGenerate(
 		context,

@@ -2,7 +2,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -10,6 +9,7 @@ import {
 	CueDefinitionJingle,
 	GetJinglePartProperties,
 	literal,
+	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -17,7 +17,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studi
 import { BlueprintConfig } from '../config'
 
 export function EvaluateJingle(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

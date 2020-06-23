@@ -6,7 +6,6 @@ export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?:
 		externalId: ingestPart.externalId + (externalIdSuffix ? `_${externalIdSuffix}` : ''),
 		title: ingestPart.rawType || 'Unknown',
 		metaData: {},
-		typeVariant: '',
 		invalid: true,
 		autoNext: true
 	})

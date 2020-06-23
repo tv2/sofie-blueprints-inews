@@ -57,8 +57,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 	return literal<BlueprintResultPart>({
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
-			title: 'CONTINUITY',
-			typeVariant: ''
+			title: 'CONTINUITY'
 		},
 		pieces: [
 			literal<IBlueprintPiece>({

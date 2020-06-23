@@ -1,17 +1,20 @@
+import { IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
 import {
-	IBlueprintAdLibPiece,
-	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext
-} from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, CueDefinition, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
+	AddScript,
+	CueDefinition,
+	GetJinglePartProperties,
+	literal,
+	PartContext2,
+	PartDefinition,
+	PartTime
+} from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartCueOnly(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	id: string,
@@ -26,8 +29,7 @@ export function CreatePartCueOnly(
 	let part = literal<IBlueprintPart>({
 		externalId: id,
 		title,
-		metaData: {},
-		typeVariant: ''
+		metaData: {}
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []

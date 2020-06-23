@@ -1,17 +1,12 @@
-import {
-	IBlueprintAdLibPiece,
-	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext
-} from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
+import { IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import { AddScript, GetJinglePartProperties, literal, PartContext2, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export function CreatePartUnknown(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
@@ -23,7 +18,6 @@ export function CreatePartUnknown(
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
-		typeVariant: '',
 		autoNext: false,
 		expectedDuration: partTime
 	})

@@ -2,7 +2,6 @@ import {
 	CameraContent,
 	GraphicsContent,
 	NotesContext,
-	PartContext,
 	RemoteContent,
 	SourceLayerType,
 	SplitsContent,
@@ -28,6 +27,7 @@ import {
 import { ControlClasses, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
+import { PartContext2 } from '../partContext2'
 
 export interface DVEConfigBox {
 	enabled: boolean
@@ -129,7 +129,7 @@ export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext,
+	context: PartContext2,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
@@ -401,14 +401,14 @@ export function MakeContentDVE2<
 						},
 						classes: [ControlClasses.DVEPlaceholder]
 					}),
-					literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',
 						enable: getDVEEnable(!!offtube, undefined, undefined, true),
 						priority: 1,
 						layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.ClipPending,
 						content: {
 							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 							isPgm: 1
 						},
 						metaData: {
@@ -441,15 +441,15 @@ export function MakeContentDVE2<
 			...config.stickyLayers
 				.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
 				.filter(layer => config.liveAudio.indexOf(layer) === -1)
-				.map<TSR.TimelineObjSisyfosMessage>(layer => {
-					return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+				.map<TSR.TimelineObjSisyfosChannel>(layer => {
+					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',
 						enable: getDVEEnable(!!offtube),
 						priority: 1,
 						layer,
 						content: {
 							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 							isPgm: 0
 						},
 						metaData: {

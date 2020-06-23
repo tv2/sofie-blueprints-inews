@@ -3,7 +3,6 @@ import {
 	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
 	TSR
@@ -17,6 +16,7 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import * as _ from 'underscore'
+import { PartContext2 } from '../partContext2'
 
 export interface VizCueSourceLayers {
 	SourceLayerDVEBackground: string
@@ -31,7 +31,7 @@ export function EvaluateVIZBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext,
+	context: PartContext2,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -42,6 +42,7 @@ export function EvaluateVIZBase<
 	adlib?: boolean,
 	rank?: number
 ) {
+	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
 	if (parsedCue.design.match(/^dve-triopage$/i)) {
 		const fileName = parsedCue.content.TRIOPAGE ? parsedCue.content.TRIOPAGE : parsedCue.content.GRAFIK
 		const path = `dve/${fileName}`
@@ -81,7 +82,7 @@ export function EvaluateVIZBase<
 					externalId: partId,
 					name: fileName,
 					enable: {
-						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+						start
 					},
 					outputLayerId: 'sec',
 					sourceLayerId: sourceLayers.SourceLayerDVEBackground,
@@ -129,7 +130,7 @@ export function EvaluateVIZBase<
 						_id: '',
 						externalId: partId,
 						enable: {
-							start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+							start
 						},
 						name: parsedCue.content.INP1 || '',
 						outputLayerId: 'aux',
@@ -206,7 +207,7 @@ export function EvaluateVIZBase<
 							externalId: partId,
 							name: path,
 							enable: {
-								start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+								start
 							},
 							outputLayerId: 'sec',
 							sourceLayerId: sourceLayers.SourceLayerDesign,
