@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -7,6 +8,7 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectServerClip,
 	AddScript,
 	CreateAdlibServer,
 	CreatePartServerBase,
@@ -16,7 +18,7 @@ import {
 	PartDefinition,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibTags, ControlClasses, CueType, Enablers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -43,6 +45,7 @@ export function OfftubeCreatePartServer(
 	let part = basePartProps.part.part
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
+	const actions: IBlueprintActionManifest[] = []
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 
@@ -119,6 +122,25 @@ export function OfftubeCreatePartServer(
 	adlibServer.canCombineQueue = true
 	adlibServer.outputLayerId = 'selectedAdlib'
 	adlibServer.tags = [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
+
+	actions.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.SELECT_SERVER_CLIP,
+			userData: literal<ActionSelectServerClip>({
+				type: AdlibActionType.SELECT_SERVER_CLIP,
+				file,
+				partDefinition,
+				duration
+			}),
+			userDataManifest: {},
+			display: {
+				label: `${partDefinition.storyName} ACTION`,
+				sourceLayerId: OfftubeSourceLayer.PgmServer,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				content: { ...adlibServer.content, timelineObjects: [] } // TODO: No timeline
+			}
+		})
+	)
 	// HACK: Replace with adlib action
 	adlibServer.additionalPieces = [
 		literal<IBlueprintAdLibPiece>({
@@ -176,8 +198,8 @@ export function OfftubeCreatePartServer(
 	/*adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
 		CueType.Grafik,
 		CueType.TargetEngine,
-		CueType.VIZ
-	])*/
+		CueType.VIZ*/
+
 	if (adlibServer.content && adlibServer.content.timelineObjects) {
 		adlibServer.content.timelineObjects.push(
 			...EvaluateCuesIntoTimeline(
@@ -203,6 +225,7 @@ export function OfftubeCreatePartServer(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

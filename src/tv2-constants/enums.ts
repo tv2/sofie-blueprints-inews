@@ -71,3 +71,7 @@ export enum ControlClasses {
 	CopyMediaPlayerSession = 'copy_media_player_session',
 	AbstractLookahead = 'abstract_lookahead'
 }
+
+export enum AdlibActionType {
+	SELECT_SERVER_CLIP = 'select_server_clip'
+}
