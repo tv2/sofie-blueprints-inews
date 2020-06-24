@@ -13,7 +13,12 @@ import {
 } from '../config-manifests'
 import { OfftubeSisyfosLLayer } from '../layers'
 import { deviceMigrations } from './devices'
-import { ensureStudioConfig, getMappingsDefaultsMigrationSteps, GetSisyfosLayersForTableMigrationOfftube } from './util'
+import {
+	ensureStudioConfig,
+	GetMappingDefaultMigrationStepForLayer,
+	getMappingsDefaultsMigrationSteps,
+	GetSisyfosLayersForTableMigrationOfftube
+} from './util'
 
 declare const VERSION: string // Injected by webpack
 
@@ -214,7 +219,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	...deviceMigrations,
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getMappingsDefaultsMigrationSteps(VERSION),
+	...getMappingsDefaultsMigrationSteps('0.1.0'),
 	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationOfftube, true),
 	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationOfftube, false),
 	MoveSourcesToTable('0.1.0', 'ABMediaPlayers', false, GetSisyfosLayersForTableMigrationOfftube, false),
@@ -226,5 +231,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_live_2'),
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_stereo'),
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_surround'),
-	MoveClipSourcePath('0.2.0', 'Offtube_Q2')
+	MoveClipSourcePath('0.2.0', 'Offtube_Q2'),
+	GetMappingDefaultMigrationStepForLayer('0.3.0', OfftubeSisyfosLLayer.SisyfosConfig)
 ])
