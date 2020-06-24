@@ -1,0 +1,71 @@
+Deactivated studio
+Timeline objects: 14
+Sisyfos: 10
+    Host_1_st_a
+    Host_2_st_a
+    Host_3_st_a
+    Jingle
+    Live_1_Surround
+    Live_1_Stereo
+    Live_2_Stereo
+    Live_3
+    Server_a
+    Server_b
+
+
+Activated (Before first take)
+Timeline objects: 36
+Sisyfos: 10
+    Host_1_st_a
+    Host_2_st_a
+    Host_3_st_a
+    Jingle
+    Live_1_Surround
+    Live_1_Stereo
+    Live_2_Stereo
+    Live_3
+    Server_a
+    Server_b
+
+Camera on air
+Timeline objects: 47
+Sisyfos: 13
+    Host_1_st_a x2
+    Host_2_st_a x2
+    Host_3_st_a x2
+    Jingle
+    Live_1_Surround
+    Live_1_Stereo
+    Live_2_Stereo
+    Live_3
+    Server_a
+    Server_b
+
+Live 1 on air
+Timeline objects: 54
+Sisyfos: 14
+    Host_1_st_a x2
+    Host_2_st_a x2
+    Host_3_st_a x2
+    Jingle
+    Live_1_Surround
+    Live_1_Stereo x2
+    Live_2_Stereo
+    Live_3
+    Server_a
+    Server_b
+
+Sequence: Live 1 -> Adlib Camera
+Timeline objects: 67
+Sisyfos: 24
+    Host_1_st_a x3
+    Host_2_st_a x3
+    Host_3_st_a x3
+    Jingle
+    Live_1_Surround x2
+    Live_1_Stereo x3
+    Live_2_Stereo x2
+    Live_3 x2
+    Clip_Pending
+    Server_a x2
+    Server_b x2
