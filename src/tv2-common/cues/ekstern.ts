@@ -10,7 +10,6 @@ import {
 import {
 	AddParentClass,
 	createEmptyObject,
-	CreateTimingEnable,
 	CueDefinitionEkstern,
 	EksternParentClass,
 	FindSourceInfoStrict,
@@ -49,7 +48,7 @@ export function EvaluateEksternBase<
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
 	layersEkstern: EksternLayers,
-	getDefaultOut: (config: ShowStyleConfig) => number,
+	_getDefaultOut: (config: ShowStyleConfig) => number,
 	adlib?: boolean,
 	rank?: number
 ) {
@@ -121,7 +120,9 @@ export function EvaluateEksternBase<
 				_id: '',
 				externalId: partId,
 				name: eksternProps[0],
-				...CreateTimingEnable(parsedCue, getDefaultOut(config)),
+				enable: {
+					start: 0
+				},
 				outputLayerId: 'pgm',
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				infiniteMode: PieceLifespan.OutOnNextPart,
