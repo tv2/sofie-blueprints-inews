@@ -86,6 +86,7 @@ export interface DVELayers {
 	}
 	SisyfosLLayer: {
 		ClipPending: string
+		StudioMics: string
 	}
 	CasparLLayer: {
 		ClipPending: string
@@ -104,7 +105,8 @@ export interface DVETimelineObjectGenerators {
 	GetSisyfosTimelineObjForCamera: (
 		context: NotesContext,
 		config: { sources: SourceInfo[] },
-		str: string,
+		sourceType: string,
+		channelLayer: string,
 		enable?: TSR.Timeline.TimelineEnable
 	) => TSR.TSRTimelineObj[]
 	GetSisyfosTimelineObjForEkstern: (
@@ -319,6 +321,7 @@ export function MakeContentDVE2<
 						context,
 						config,
 						mappingFrom.source,
+						dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics,
 						audioEnable
 					)
 				)
@@ -355,7 +358,12 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'evs')
+					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
+						context,
+						config,
+						'evs',
+						dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics
+					)
 				)
 			} else if (sourceType.match(/ENGINE/i)) {
 				if (sourceInput.match(/full/i)) {
@@ -366,7 +374,12 @@ export function MakeContentDVE2<
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source, mappingFrom.source)
 					dveTimeline.push(
-						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'full')
+						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
+							context,
+							config,
+							'full',
+							dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics
+						)
 					)
 				} else {
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)

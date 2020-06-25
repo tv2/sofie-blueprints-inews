@@ -23,12 +23,6 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.WHEN_CLEAR
 	}),
-	sisyfos_config: literal<TSR.MappingSisyfosChannels & BlueprintMapping>({
-		device: TSR.DeviceType.SISYFOS,
-		deviceId: 'sisyfos0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNELS
-	}),
 	atem_me_clean: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
@@ -134,6 +128,24 @@ export default literal<BlueprintMappings>({
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
+	}),
+	sisyfos_config: literal<TSR.MappingSisyfosChannels & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNELS
+	}),
+	sisyfos_group_studio_mics: literal<TSR.MappingSisyfosChannels & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNELS
+	}),
+	sisyfos_group_server: literal<TSR.MappingSisyfosChannels & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNELS
 	}),
 	sisyfos_source_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,

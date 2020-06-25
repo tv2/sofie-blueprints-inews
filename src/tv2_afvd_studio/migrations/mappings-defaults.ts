@@ -257,6 +257,12 @@ export default literal<BlueprintMappings>({
 		channel: 2,
 		layer: 109
 	}),
+	sisyfos_group_studio_mics: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNELS
+	}),
 	sisyfos_source_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',

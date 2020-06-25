@@ -74,7 +74,7 @@ export function EvaluateTelefon(
 								isPgm: 1
 							},
 
-							...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+							...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 						})
 					)
 					adlibPiece.name = `${parsedCue.source}`
@@ -100,7 +100,7 @@ export function EvaluateTelefon(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 					)
 					piece.name = `${parsedCue.source}`
 					piece.adlibPreroll = config.studio.PilotPrerollDuration

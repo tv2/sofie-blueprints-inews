@@ -111,6 +111,7 @@ export function GetSisyfosTimelineObjForCamera(
 	context: NotesContext,
 	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
 	sourceType: string,
+	channelLayer: string,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	if (!enable) {
@@ -136,19 +137,24 @@ export function GetSisyfosTimelineObjForCamera(
 		} else if (nonCam) {
 			camLayers.push(...config.studio.StudioMics)
 		}
+		const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
+		camLayers.forEach(layer => {
+			mappedChannels.push({
+				mappedLayer: layer,
+				isPgm: 1
+			})
+		})
 		audioTimeline.push(
-			...camLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: enable ? enable : { start: 0 },
-					priority: 1,
-					layer,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: 1
-					}
-				})
+			literal<TSR.TimelineObjSisyfosChannels>({
+				id: '',
+				enable: enable ? enable : { start: 0 },
+				priority: 1,
+				layer: channelLayer,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					channels: mappedChannels
+				}
 			})
 		)
 	}

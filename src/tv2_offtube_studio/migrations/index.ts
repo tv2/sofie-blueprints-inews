@@ -232,5 +232,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_stereo'),
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_surround'),
 	MoveClipSourcePath('0.2.0', 'Offtube_Q2'),
-	GetMappingDefaultMigrationStepForLayer('0.3.0', OfftubeSisyfosLLayer.SisyfosConfig)
+	GetMappingDefaultMigrationStepForLayer('0.3.0', OfftubeSisyfosLLayer.SisyfosConfig),
+	GetMappingDefaultMigrationStepForLayer('0.3.0', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
 ])

@@ -24,7 +24,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -129,7 +129,12 @@ export function CreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(context, config, partDefinition.rawType)
+						...GetSisyfosTimelineObjForCamera(
+							context,
+							config,
+							partDefinition.rawType,
+							SisyfosLLAyer.SisyfosGroupStudioMics
+						)
 					])
 				}
 			})

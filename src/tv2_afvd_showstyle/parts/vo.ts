@@ -78,7 +78,9 @@ export function CreatePartVO(
 		duration,
 		false
 	)
-	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
+	serverContent.timelineObjects.push(
+		...GetSisyfosTimelineObjForCamera(context, config, 'server', SisyfosLLAyer.SisyfosGroupStudioMics)
+	)
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',

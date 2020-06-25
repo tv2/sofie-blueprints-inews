@@ -121,7 +121,12 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	}*/
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
+		const camSisyfos = GetSisyfosTimelineObjForCamera(
+			context,
+			config,
+			`Kamera ${info.id}`,
+			SisyfosLLAyer.SisyfosGroupStudioMics
+		)
 		res.push({
 			externalId: 'cam',
 			name: `Kamera ${info.id}`,
@@ -213,7 +218,15 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`, { while: audioWhile })
+						...GetSisyfosTimelineObjForCamera(
+							context,
+							config,
+							`Kamera ${info.id}`,
+							SisyfosLLAyer.SisyfosGroupStudioMics,
+							{
+								while: audioWhile
+							}
+						)
 					])
 				}
 			})
@@ -283,7 +296,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 								}
 							})
 						}),
-					...GetSisyfosTimelineObjForCamera(context, config, 'evs')
+					...GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
 				])
 			}
 		})
@@ -336,7 +349,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
 			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
-			...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+			...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 		]
 		res.push({
 			externalId: 'live',
@@ -499,7 +512,9 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
 							while: audioWhile
 						}),
-						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', { while: audioWhile })
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics, {
+							while: audioWhile
+						})
 					])
 				}
 			})

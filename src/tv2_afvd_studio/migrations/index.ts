@@ -9,9 +9,11 @@ import {
 	manifestAFVDSourcesSkype,
 	manifestAFVDStudioMics
 } from '../config-manifests'
+import { SisyfosLLAyer } from '../layers'
 import { deviceMigrations } from './devices'
 import {
 	ensureStudioConfig,
+	GetMappingDefaultMigrationStepForLayer,
 	getMappingsDefaultsMigrationSteps,
 	GetSisyfosLayersForTableMigrationAFVD,
 	renameMapping
@@ -108,5 +110,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 		'viz_layer_wall'
 	].map(layer => renameMapping('0.2.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
 	AddKeepAudio('0.2.0', 'SourcesRM'),
-	MoveClipSourcePath('0.2.0', 'AFVD')
+	MoveClipSourcePath('0.2.0', 'AFVD'),
+	GetMappingDefaultMigrationStepForLayer('0.3.0', SisyfosLLAyer.SisyfosGroupStudioMics)
 ])

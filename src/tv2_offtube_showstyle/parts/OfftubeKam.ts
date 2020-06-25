@@ -24,7 +24,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -130,7 +130,12 @@ export function OfftubeCreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(context, config, partDefinition.rawType)
+						...GetSisyfosTimelineObjForCamera(
+							context,
+							config,
+							partDefinition.rawType,
+							OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+						)
 					])
 				}
 			})

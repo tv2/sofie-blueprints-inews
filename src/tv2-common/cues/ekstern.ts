@@ -34,6 +34,9 @@ interface EksternLayers {
 	ATEM: {
 		MEProgram: string
 	}
+	Sisyfos: {
+		StudioMics: string
+	}
 }
 
 export function EvaluateEksternBase<
@@ -109,7 +112,7 @@ export function EvaluateEksternBase<
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
-						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
 					])
 				})
 			})
@@ -160,7 +163,7 @@ export function EvaluateEksternBase<
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
-						...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
 					])
 				})
 			})

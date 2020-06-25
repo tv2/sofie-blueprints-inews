@@ -24,7 +24,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -135,7 +135,7 @@ function makeContentEVS(
 				}
 			}),
 			...(partDefinition.variant.isVO
-				? [...GetSisyfosTimelineObjForCamera(context, config, 'evs')]
+				? [...GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)]
 				: [
 						...config.liveAudio.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
 							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({

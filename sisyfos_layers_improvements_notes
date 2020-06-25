@@ -1,3 +1,7 @@
+# Sisyfos Notes
+
+## Before changes (Offtube)
+
 Deactivated studio
 Timeline objects: 14
 Sisyfos: 10
@@ -69,3 +73,13 @@ Sisyfos: 24
     Clip_Pending
     Server_a x2
     Server_b x2
+
+## After changes (Offtube)
+
+Deactivated studio
+Timeline objects: 5 (-9)
+Sisyfos: 1 (-9)
+
+Activated (Before first take)
+Timeline objects: 27 (-9)
+Sisyfos: 1 (-9)
