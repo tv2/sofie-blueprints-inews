@@ -16,6 +16,7 @@ import {
 	DVEParentClass,
 	DVESources,
 	FindSourceInfoStrict,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinition,
 	SourceInfo,
@@ -102,13 +103,6 @@ export interface DVEBoxInfo {
 }
 
 export interface DVETimelineObjectGenerators {
-	GetSisyfosTimelineObjForCamera: (
-		context: NotesContext,
-		config: { sources: SourceInfo[] },
-		sourceType: string,
-		channelLayer: string,
-		enable?: TSR.Timeline.TimelineEnable
-	) => TSR.TSRTimelineObj[]
 	GetSisyfosTimelineObjForEkstern: (
 		context: NotesContext,
 		sources: SourceInfo[],
@@ -317,7 +311,7 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoCam, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
+					GetSisyfosTimelineObjForCamera(
 						context,
 						config,
 						mappingFrom.source,
@@ -358,12 +352,7 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
-						context,
-						config,
-						'evs',
-						dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics
-					)
+					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
 				)
 			} else if (sourceType.match(/ENGINE/i)) {
 				if (sourceInput.match(/full/i)) {
@@ -374,7 +363,7 @@ export function MakeContentDVE2<
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source, mappingFrom.source)
 					dveTimeline.push(
-						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
+						GetSisyfosTimelineObjForCamera(
 							context,
 							config,
 							'full',

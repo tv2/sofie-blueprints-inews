@@ -130,7 +130,7 @@ export function OfftubeCreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(
+						GetSisyfosTimelineObjForCamera(
 							context,
 							config,
 							partDefinition.rawType,

@@ -59,7 +59,7 @@ export function onTimelineGenerate<
 	context: PartEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
-	_previousPartEndState: PartEndState | undefined,
+	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	parseConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
@@ -277,12 +277,12 @@ export function onTimelineGenerate<
 		}
 	})*/
 
-	/*copyPreviousSisyfosLevels(
+	copyPreviousSisyfosLevels(
 		context,
 		timeline,
 		previousPartEndState2 ? previousPartEndState2.stickySisyfosLevels : {},
 		resolvedPieces
-	)*/
+	)
 
 	const persistentState: TimelinePersistentStateExt = {
 		activeMediaPlayers: {},
@@ -332,6 +332,8 @@ export function getEndStateForPart(
 	_.each(activePieces, piece => {
 		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
 	})
+
+	console.log(`END STATE: ${JSON.stringify(endState.stickySisyfosLevels)}`)
 
 	_.each(activePieces, piece => {
 		if (piece.piece.metaData) {
@@ -403,12 +405,70 @@ function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosChannel & TimelineOb
 	)
 }
 
+function isSisyfosPersistObject(obj: TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt) {
+	return (
+		obj.layer === OfftubeSisyfosLLayer.SisyfosPersistedLevels &&
+		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
+		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNELS &&
+		obj.metaData?.sisyfosPersistLevel &&
+		!obj.id.match(/previous/i) &&
+		!obj.id.match(/future/)
+	)
+}
+
+function isSisyfosChannels(obj: TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt) {
+	return (
+		obj.content &&
+		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
+		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNELS
+	)
+}
+
+function isSisyfosObject(obj: (TSR.TimelineObjSisyfosChannels | TSR.TimelineObjSisyfosChannel) & TimelineBlueprintExt) {
+	return (
+		isSisyfosSource(obj as TSR.TimelineObjSisyfosChannel) || isSisyfosChannels(obj as TSR.TimelineObjSisyfosChannels)
+	)
+}
+
 export function copyPreviousSisyfosLevels(
 	context: RundownContext,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousLevels: PartEndStateExt['stickySisyfosLevels'],
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
+	const objectsLookingToPersistLevels: Array<TSR.TimelineObjSisyfosChannels &
+		TimelineBlueprintExt> = (timelineObjs as Array<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>).filter(
+		isSisyfosPersistObject
+	)
+
+	const layersToPersist = objectsLookingToPersistLevels
+		.map(o => o.content.channels.map(c => c.mappedLayer))
+		.reduce((prev, curr) => prev.concat(curr.filter(l => !prev.includes(l))), [])
+
+	console.log(`LAYERS TO PERSISTS: ${JSON.stringify(layersToPersist)}`)
+
+	const levelsOnLayersToPersist = (timelineObjs as Array<
+		(TSR.TimelineObjSisyfosChannel | TSR.TimelineObjSisyfosChannels) & TimelineBlueprintExt & OnGenerateTimelineObj
+	>)
+		.filter(isSisyfosObject)
+		.filter(obj => {
+			if (isSisyfosSource(obj as TSR.TimelineObjSisyfosChannel)) {
+				return layersToPersist.includes(obj.layer.toString())
+			} else if (isSisyfosChannels(obj as TSR.TimelineObjSisyfosChannels)) {
+				return (obj as TSR.TimelineObjSisyfosChannels).content.channels.some(l =>
+					layersToPersist.includes(l.mappedLayer)
+				)
+			}
+
+			return false
+		})
+		.filter(obj => obj.priority && obj.priority > 0)
+		.filter(
+			obj =>
+				obj.layer !== OfftubeSisyfosLLayer.SisyfosConfig && obj.layer !== OfftubeSisyfosLLayer.SisyfosPersistedLevels
+		)
+
+	console.log(`LEVELS: ${JSON.stringify(levelsOnLayersToPersist)}`)
 	// This needs to look at previous pieces within the part, to make it work for adlibs
 	const sisyfosObjs = (timelineObjs as Array<
 		TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt & OnGenerateTimelineObj
@@ -470,6 +530,8 @@ export function copyPreviousSisyfosLevels(
 			// Apply newly calculated levels
 			previousLevels = newPreviousLevels
 		}
+
+		console.log(`LEVELS: ${JSON.stringify(previousLevels)}`)
 
 		// Apply newly calculated levels
 		_.each(objs, sisyfosObj => {

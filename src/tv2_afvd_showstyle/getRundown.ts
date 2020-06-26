@@ -154,9 +154,9 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						},
 						classes: ['adlib_deparent']
 					}),
-					...camSisyfos,
+					camSisyfos,
 					...config.stickyLayers
-						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
 						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
 							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 								id: '',
@@ -218,15 +218,9 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						...boxObjs,
-						...GetSisyfosTimelineObjForCamera(
-							context,
-							config,
-							`Kamera ${info.id}`,
-							SisyfosLLAyer.SisyfosGroupStudioMics,
-							{
-								while: audioWhile
-							}
-						)
+						GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`, SisyfosLLAyer.SisyfosGroupStudioMics, {
+							while: audioWhile
+						})
 					])
 				}
 			})
@@ -296,7 +290,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 								}
 							})
 						}),
-					...GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
+					GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
 				])
 			}
 		})
@@ -349,7 +343,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
 			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
-			...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
+			GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 		]
 		res.push({
 			externalId: 'live',
@@ -512,7 +506,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
 							while: audioWhile
 						}),
-						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics, {
+						GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics, {
 							while: audioWhile
 						})
 					])

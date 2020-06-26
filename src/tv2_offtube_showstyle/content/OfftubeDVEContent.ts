@@ -4,7 +4,6 @@ import {
 	DVEConfigInput,
 	DVEOptions,
 	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
 	PartContext2,
@@ -49,7 +48,6 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		}
 	},
 	dveTimelineGenerators: {
-		GetSisyfosTimelineObjForCamera,
 		GetSisyfosTimelineObjForEkstern,
 		GetLayersForEkstern
 	},

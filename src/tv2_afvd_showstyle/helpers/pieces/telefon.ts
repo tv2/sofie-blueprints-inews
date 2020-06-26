@@ -72,10 +72,10 @@ export function EvaluateTelefon(
 								deviceType: TSR.DeviceType.SISYFOS,
 								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 								isPgm: 1
-							},
+							}
+						}),
 
-							...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
-						})
+						GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 					)
 					adlibPiece.name = `${parsedCue.source}`
 					adlibPiece.adlibPreroll = config.studio.PilotPrerollDuration
@@ -100,7 +100,7 @@ export function EvaluateTelefon(
 							}
 						}),
 
-						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
+						GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 					)
 					piece.name = `${parsedCue.source}`
 					piece.adlibPreroll = config.studio.PilotPrerollDuration

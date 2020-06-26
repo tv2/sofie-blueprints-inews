@@ -155,27 +155,30 @@ function getGlobalAdLibPiecesOfftube(
 						},
 						classes: ['adlib_deparent']
 					}),
-					...camSisyfos,
-					/*...config.stickyLayers
-						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),*/
+					camSisyfos,
+					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: OfftubeSisyfosLLayer.SisyfosPersistedLevels,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							channels: config.stickyLayers
+								.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
+								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+									return {
+										mappedLayer: layer,
+										isPgm: 0
+									}
+								})
+						},
+						metaData: {
+							sisyfosPersistLevel: true
+						}
+					}),
 					// Force server to be muted (for adlibbing over DVE)
 					literal<TSR.TimelineObjSisyfosChannels>({
 						id: '',
