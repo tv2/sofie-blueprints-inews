@@ -171,12 +171,14 @@ export function getStickyLayers(studioConfig: TV2StudioConfigBase) {
 }
 
 export function getLiveAudioLayers(studioConfig: TV2StudioConfigBase): string[] {
-	const res: Set<string> = new Set()
+	const res: string[] = []
 
 	_.each(studioConfig.SourcesRM, src => {
 		if (src.SisyfosLayers && src.KeepAudioInStudio) {
 			_.each(src.SisyfosLayers, layer => {
-				res.add(layer)
+				if (!res.includes(layer)) {
+					res.push(layer)
+				}
 			})
 		}
 	})
@@ -184,7 +186,9 @@ export function getLiveAudioLayers(studioConfig: TV2StudioConfigBase): string[] 
 	_.each(studioConfig.SourcesSkype, src => {
 		if (src.SisyfosLayers) {
 			_.each(src.SisyfosLayers, layer => {
-				res.add(layer)
+				if (!res.includes(layer)) {
+					res.push(layer)
+				}
 			})
 		}
 	})
