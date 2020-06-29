@@ -1,7 +1,6 @@
-import { BlueprintResultPart, IBlueprintPart } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintResultPart, IBlueprintPart, NotesContext } from 'tv-automation-sofie-blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { PartDefinition } from '../inewsConversion'
-import { PartContext2 } from '../partContext2'
 import { literal } from '../util'
 import { CreatePartInvalid } from './invalid'
 
@@ -9,7 +8,7 @@ export function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext2,
+	context: NotesContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition
 ): { part: BlueprintResultPart; file: string; duration: number; invalid?: true } {

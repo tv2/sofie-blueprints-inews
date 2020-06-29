@@ -5,7 +5,7 @@ import {
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
-import { ActionSelectServerClip, literal, MakeContentServer } from 'tv2-common'
+import { ActionSelectServerClip, CreatePartServerBase, literal, MakeContentServer } from 'tv2-common'
 import { AdlibActionType } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { parseConfig } from './helpers/config'
@@ -29,8 +29,8 @@ function executeActionSelectServerClip(
 	const duration = userData.duration
 	const config = parseConfig(context)
 
-	context.insertPiece(
-		'next',
+	const part = CreatePartServerBase(context, config, partDefinition)
+	context.queuePart(part.part.part, [
 		literal<IBlueprintPiece>({
 			_id: '',
 			externalId: `adlib_action_${file}`,
@@ -61,6 +61,20 @@ function executeActionSelectServerClip(
 				duration
 			),
 			adlibPreroll: config.studio.CasparPrerollDuration
+		}),
+		literal<IBlueprintPiece>({
+			_id: '',
+			externalId: `selected_server_${file}`,
+			name: file,
+			enable: {
+				start: 0
+			},
+			outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
+			sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
+			infiniteMode: PieceLifespan.OutOnNextSegment,
+			metaData: {
+				userData
+			}
 		})
-	)
+	])
 }

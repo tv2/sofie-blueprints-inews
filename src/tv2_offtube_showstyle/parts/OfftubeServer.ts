@@ -135,9 +135,10 @@ export function OfftubeCreatePartServer(
 			userDataManifest: {},
 			display: {
 				label: `${partDefinition.storyName} ACTION`,
-				sourceLayerId: OfftubeSourceLayer.PgmServer,
+				sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
-				content: { ...adlibServer.content, timelineObjects: [] } // TODO: No timeline
+				content: { ...adlibServer.content, timelineObjects: [] }, // TODO: No timeline
+				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 			}
 		})
 	)
