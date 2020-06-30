@@ -322,8 +322,16 @@ function executeActionCutSourceToBox(
 	const currentPieces = context.getPieceInstances('current')
 	const nextPieces = context.getPieceInstances('next')
 
-	const currentDVE = currentPieces.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE)
-	const nextDVE = nextPieces.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE)
+	const currentDVE = currentPieces.find(
+		p =>
+			p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE ||
+			p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE
+	)
+	const nextDVE = nextPieces.find(
+		p =>
+			p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE ||
+			p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE
+	)
 
 	let modify: undefined | 'current' | 'next'
 	let modifiedPiece: IBlueprintPieceInstance | undefined
