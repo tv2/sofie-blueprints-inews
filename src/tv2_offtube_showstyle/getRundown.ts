@@ -211,7 +211,7 @@ function getGlobalAdLibPiecesOfftube(
 	}*/
 
 	// ssrc box
-	function makeCameraAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	/*function makeCameraAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: OfftubeSourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
@@ -233,7 +233,7 @@ function getGlobalAdLibPiecesOfftube(
 			})
 		})
 		return res
-	}
+	}*/
 
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
@@ -565,12 +565,12 @@ function getGlobalAdLibPiecesOfftube(
 			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
 		})*/
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeCameraAdlibBoxes(o, globalRank++))
-		})
+		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
@@ -596,28 +596,39 @@ function getGlobalAdlibActionsOfftube(
 ): IBlueprintActionManifest[] {
 	const res: IBlueprintActionManifest[] = []
 
+	function makeKameraAction(name: string, queue: boolean) {
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.CUT_TO_CAMERA,
+				userData: literal<ActionCutToCamera>({
+					type: AdlibActionType.CUT_TO_CAMERA,
+					queue,
+					name
+				}),
+				userDataManifest: {},
+				display: {
+					label: `Kamera ${name} ACTION`,
+					sourceLayerId: OfftubeSourceLayer.PgmCam,
+					outputLayerId: OfftubeOutputLayers.PGM,
+					content: {},
+					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : []
+				}
+			})
+		)
+	}
+
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			res.push(
-				literal<IBlueprintActionManifest>({
-					actionId: AdlibActionType.CUT_TO_CAMERA,
-					userData: literal<ActionCutToCamera>({
-						type: AdlibActionType.CUT_TO_CAMERA,
-						queue: true,
-						name: o.id
-					}),
-					userDataManifest: {},
-					display: {
-						label: `Kamera ${o.id} ACTION`,
-						sourceLayerId: OfftubeSourceLayer.PgmCam,
-						outputLayerId: OfftubeOutputLayers.PGM,
-						content: {},
-						tags: [AdlibTags.OFFTUBE_SET_CAM_NEXT]
-					}
-				})
-			)
+			makeKameraAction(o.id, false)
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
+		.forEach(o => {
+			makeKameraAction(o.id, true)
 		})
 
 	return res

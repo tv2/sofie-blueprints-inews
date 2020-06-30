@@ -192,5 +192,9 @@ function executeActionCutToCamera(context: ActionExecutionContext, _actionId: st
 		}
 	})
 
-	context.queuePart(part, [kamPiece])
+	if (userData.queue) {
+		context.queuePart(part, [kamPiece])
+	} else {
+		context.insertPiece('current', kamPiece)
+	}
 }
