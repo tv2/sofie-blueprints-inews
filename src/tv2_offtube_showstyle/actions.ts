@@ -360,12 +360,12 @@ function executeActionCutSourceToBox(
 	}
 
 	const content = modifiedPiece.piece.content as SplitsContent
-	const replacedSource = content.boxSourceConfiguration[userData.box] as SplitsContentBoxContent &
-		SplitsContentBoxProperties &
-		DVEBoxInfo
+	const replacedSource = content.boxSourceConfiguration[userData.box] as
+		| (SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo)
+		| undefined
 
 	// Don't do anything if the source is already routed to the target box
-	if (replacedSource.rawType === userData.name) {
+	if (replacedSource && replacedSource.rawType === userData.name) {
 		return
 	}
 
@@ -377,6 +377,17 @@ function executeActionCutSourceToBox(
 
 	modifiedPiece.piece.content.timelineObjects[tlObjIndex] = obj
 
+	if (userData.box + 1 > content.boxSourceConfiguration.length) {
+		for (let box = content.boxSourceConfiguration.length; box < userData.box; box++) {
+			content.boxSourceConfiguration[box] = {
+				type: SourceLayerType.UNKNOWN,
+				studioLabel: '',
+				switcherInput: 0,
+				rawType: ''
+			}
+		}
+	}
+
 	content.boxSourceConfiguration[userData.box] = literal<
 		SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo
 	>({
@@ -385,8 +396,6 @@ function executeActionCutSourceToBox(
 		switcherInput: userData.port,
 		rawType: userData.name
 	})
-
-	modifiedPiece.piece.content = content
 
 	const activeLayers: string[] = []
 
@@ -411,6 +420,8 @@ function executeActionCutSourceToBox(
 				break
 		}
 	})
+
+	modifiedPiece.piece.content = content
 
 	modifiedPiece.piece.content.timelineObjects = modifiedPiece.piece.content.timelineObjects!.filter(
 		t => t.content.deviceType !== TSR.DeviceType.SISYFOS || activeLayers.includes(t.layer.toString()) // TODO: Combined sisyfos layers
