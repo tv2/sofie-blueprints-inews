@@ -325,10 +325,11 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 			return {
 				[graphicName]: {
 					display: 'program',
-					payload: {
+					payload: literal<Topt>({
 						type: GraphicName.TOPT,
-						text: parsedCue.textFields[0] // TODO: Should indexing be pulled from config?
-					}
+						name: parsedCue.textFields[0],
+						title: parsedCue.textFields[1]
+					})
 				}
 			}
 		default:
