@@ -18,6 +18,7 @@ import {
 	ActionCutToRemote,
 	ActionSelectServerClip,
 	CreatePartServerBase,
+	DVEBoxInfo,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
 	GetEksternMetaData,
@@ -319,6 +320,8 @@ function executeActionCutSourceToBox(
 	_actionId: string,
 	userData: ActionCutSourceToBox
 ) {
+	const config = parseConfig(context)
+
 	const currentPieces = context.getPieceInstances('current')
 	const nextPieces = context.getPieceInstances('next')
 
@@ -356,7 +359,17 @@ function executeActionCutSourceToBox(
 		return
 	}
 
-	const obj = modifiedPiece.piece.content.timelineObjects[tlObjIndex] as TSR.TimelineObjAtemSsrc
+	const content = modifiedPiece.piece.content as SplitsContent
+	const replacedSource = content.boxSourceConfiguration[userData.box] as SplitsContentBoxContent &
+		SplitsContentBoxProperties &
+		DVEBoxInfo
+
+	// Don't do anything if the source is already routed to the target box
+	if (replacedSource.rawType === userData.name) {
+		return
+	}
+
+	const obj = modifiedPiece.piece.content.timelineObjects[tlObjIndex] as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
 	obj.content.ssrc.boxes[userData.box] = {
 		...obj.content.ssrc.boxes[userData.box],
 		source: userData.port
@@ -364,14 +377,71 @@ function executeActionCutSourceToBox(
 
 	modifiedPiece.piece.content.timelineObjects[tlObjIndex] = obj
 
-	const content = modifiedPiece.piece.content as SplitsContent
-	content.boxSourceConfiguration[userData.box] = literal<SplitsContentBoxContent & SplitsContentBoxProperties>({
+	content.boxSourceConfiguration[userData.box] = literal<
+		SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo
+	>({
 		type: userData.sourceType,
 		studioLabel: '',
-		switcherInput: userData.port
+		switcherInput: userData.port,
+		rawType: userData.name
 	})
 
 	modifiedPiece.piece.content = content
+
+	const activeLayers: string[] = []
+
+	content.boxSourceConfiguration.forEach((box: SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo) => {
+		switch (box.type) {
+			case SourceLayerType.CAMERA:
+				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, box.rawType)
+				if (sourceInfoCam) {
+					GetLayersForCamera(config, sourceInfoCam).forEach(layer => {
+						if (!activeLayers.includes(layer)) {
+							activeLayers.push(layer)
+						}
+					})
+				}
+				break
+			case SourceLayerType.REMOTE:
+				;[...GetLayersForEkstern(context, config.sources, box.rawType), ...config.studio.StudioMics].forEach(layer => {
+					if (!activeLayers.includes(layer)) {
+						activeLayers.push(layer)
+					}
+				})
+				break
+		}
+	})
+
+	modifiedPiece.piece.content.timelineObjects = modifiedPiece.piece.content.timelineObjects!.filter(
+		t => t.content.deviceType !== TSR.DeviceType.SISYFOS || activeLayers.includes(t.layer.toString()) // TODO: Combined sisyfos layers
+	)
+
+	const existingLayers: string[] = []
+
+	modifiedPiece.piece.content.timelineObjects?.forEach(t => {
+		if (t.content.deviceType === TSR.DeviceType.SISYFOS) {
+			existingLayers.push(t.layer.toString())
+		}
+	})
+
+	const newLayers = activeLayers.filter(layer => !existingLayers.includes(layer))
+
+	newLayers.forEach(layer => {
+		modifiedPiece!.piece.content!.timelineObjects!.push(
+			literal<TSR.TimelineObjSisyfosChannel>({
+				id: '',
+				enable: {
+					while: '1'
+				},
+				layer,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+					isPgm: 1
+				}
+			})
+		)
+	})
 
 	context.updatePieceInstance(modifiedPiece._id, modifiedPiece.piece)
 }

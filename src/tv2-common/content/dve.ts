@@ -92,6 +92,14 @@ export interface DVELayers {
 	}
 }
 
+export interface DVEMetaData {
+	mediaPlayerSession?: string
+}
+
+export interface DVEBoxInfo {
+	rawType: string
+}
+
 export interface DVETimelineObjectGenerators {
 	GetSisyfosTimelineObjForCamera: (
 		context: NotesContext,
@@ -257,9 +265,10 @@ export function MakeContentDVE2<
 	const boxes = _.map(template.boxes, box => ({ ...box, source: config.studio.AtemSource.Default }))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) &
-		SplitsContentBoxProperties> = []
+		SplitsContentBoxProperties &
+		DVEBoxInfo> = []
 
-	const setBoxSource = (num: number, sourceInfo: SourceInfo, mappingFrom: string) => {
+	const setBoxSource = (num: number, sourceInfo: SourceInfo, rawType: string, mappingFrom: string) => {
 		if (boxes[num]) {
 			boxes[num].source = Number(sourceInfo.port)
 
@@ -270,7 +279,12 @@ export function MakeContentDVE2<
 					studioLabel: '',
 					switcherInput: Number(sourceInfo.port),
 					timelineObjects: []
-				})
+				}),
+				rawType: rawType
+					.replace(/kam /i, 'Kamera ')
+					.replace('kamera', 'Kamera')
+					.replace(/cam /i, 'Kamera ')
+					.replace('camera', 'Kamera')
 			})
 		}
 	}
@@ -296,9 +310,7 @@ export function MakeContentDVE2<
 				return
 			}
 			const audioEnable: TSR.Timeline.TimelineEnable = {
-				while: offtube
-					? `!\$${mappingFrom.sourceLayer} & .${Enablers.OFFTUBE_ENABLE_DVE}`
-					: `!\$${mappingFrom.sourceLayer}`
+				while: offtube ? `.${Enablers.OFFTUBE_ENABLE_DVE}` : `1`
 				// while: `!.${ControlClasses.DVEBoxOverridePrefix + boxMappings[num]}`
 			} // TODO - test
 			if (sourceType.match(/KAM/i)) {
@@ -309,7 +321,7 @@ export function MakeContentDVE2<
 					return
 				}
 
-				setBoxSource(num, sourceInfoCam, mappingFrom.source)
+				setBoxSource(num, sourceInfoCam, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
 						context,
@@ -326,7 +338,7 @@ export function MakeContentDVE2<
 					return
 				}
 
-				setBoxSource(num, sourceInfoLive, mappingFrom.source)
+				setBoxSource(num, sourceInfoLive, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForEkstern(
 						context,
@@ -349,7 +361,7 @@ export function MakeContentDVE2<
 					return
 				}
 
-				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
+				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'evs')
 				)
@@ -360,7 +372,7 @@ export function MakeContentDVE2<
 						id: 'full',
 						port: config.studio.AtemSource.DSK1F
 					}
-					setBoxSource(num, sourceInfoFull, mappingFrom.source)
+					setBoxSource(num, sourceInfoFull, mappingFrom.source, mappingFrom.source)
 					dveTimeline.push(
 						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'full')
 					)
@@ -378,6 +390,7 @@ export function MakeContentDVE2<
 						id: 'SERVER',
 						port: -1
 					},
+					mappingFrom.source,
 					mappingFrom.source
 				)
 				dveTimeline.push(
@@ -487,13 +500,13 @@ export function MakeContentDVE2<
 						ssrc: { boxes }
 					},
 					classes: className ? [...classes, className] : classes,
-					metaData: {
+					metaData: literal<DVEMetaData>({
 						mediaPlayerSession: server
 							? partDefinition
 								? partDefinition.segmentExternalId
 								: MEDIA_PLAYER_AUTO
 							: undefined
-					}
+					})
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({
 					id: '',
