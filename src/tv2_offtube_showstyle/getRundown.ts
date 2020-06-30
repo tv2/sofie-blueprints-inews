@@ -1,5 +1,6 @@
 import {
 	BlueprintResultRundown,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
@@ -12,9 +13,10 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
-	GetCameraMetaData,
+	ActionCutToCamera,
+	// GetCameraMetaData,
 	GetEksternMetaData,
-	GetLayersForCamera,
+	// GetLayersForCamera,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
@@ -24,7 +26,7 @@ import {
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibTags, CONSTANTS, ControlClasses, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, ControlClasses, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -83,6 +85,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 			expectedDuration: endTime - startTime
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesOfftube(context, config),
+		globalActions: getGlobalAdlibActionsOfftube(context, config),
 		baseline: getBaseline(config)
 	}
 }
@@ -127,7 +130,7 @@ function getGlobalAdLibPiecesOfftube(
 			audioWhile: `(.${Enablers.OFFTUBE_ENABLE_DVE}) & (${audioWhile})`
 		}
 	}
-	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
+	/*function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
 		res.push({
@@ -205,7 +208,7 @@ function getGlobalAdLibPiecesOfftube(
 			}
 		})
 		return res
-	}
+	}*/
 
 	// ssrc box
 	function makeCameraAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
@@ -548,19 +551,19 @@ function getGlobalAdLibPiecesOfftube(
 		})
 	)
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
-		})
+		})*/
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
-		})
+		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
@@ -585,6 +588,39 @@ function getGlobalAdLibPiecesOfftube(
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
+}
+
+function getGlobalAdlibActionsOfftube(
+	_context: ShowStyleContext,
+	config: OfftubeShowstyleBlueprintConfig
+): IBlueprintActionManifest[] {
+	const res: IBlueprintActionManifest[] = []
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
+		.forEach(o => {
+			res.push(
+				literal<IBlueprintActionManifest>({
+					actionId: AdlibActionType.CUT_TO_CAMERA,
+					userData: literal<ActionCutToCamera>({
+						type: AdlibActionType.CUT_TO_CAMERA,
+						queue: true,
+						name: o.id
+					}),
+					userDataManifest: {},
+					display: {
+						label: `Kamera ${o.id} ACTION`,
+						sourceLayerId: OfftubeSourceLayer.PgmCam,
+						outputLayerId: OfftubeOutputLayers.PGM,
+						content: {},
+						tags: [AdlibTags.OFFTUBE_SET_CAM_NEXT]
+					}
+				})
+			)
+		})
+
+	return res
 }
 
 function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {

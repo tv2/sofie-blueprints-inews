@@ -12,4 +12,10 @@ export interface ActionSelectServerClip extends ActionBase {
 	duration: number
 }
 
+export interface ActionCutToCamera extends ActionBase {
+	type: AdlibActionType.CUT_TO_CAMERA
+	queue: boolean
+	name: string
+}
+
 export type TV2AdlibAction = ActionSelectServerClip

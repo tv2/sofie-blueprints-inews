@@ -1,7 +1,6 @@
 import {
 	BlueprintResultPart,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	SourceLayerType,
@@ -13,6 +12,7 @@ import {
 	AddScript,
 	CameraParentClass,
 	CreatePartInvalid,
+	CreatePartKamBase,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
 	GetLayersForCamera,
@@ -20,7 +20,6 @@ import {
 	literal,
 	PartContext2,
 	PartDefinitionKam,
-	PartTime,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -35,14 +34,10 @@ export function OfftubeCreatePartKam(
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
-	const part = literal<IBlueprintPart>({
-		externalId: partDefinition.externalId,
-		title: partDefinition.rawType,
-		metaData: {},
-		expectedDuration: partTime > 0 ? partTime : undefined
-	})
+	const part = partKamBase.part.part
+	const partTime = partKamBase.duration
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
