@@ -15,18 +15,14 @@ import {
 import {
 	ActionCutToCamera,
 	// GetCameraMetaData,
-	GetEksternMetaData,
+	ActionCutToRemote,
 	// GetLayersForCamera,
-	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
 	GraphicLLayer,
 	literal,
 	MakeContentDVE2,
-	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, ControlClasses, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, ControlClasses, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -37,7 +33,7 @@ import {
 } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { boxLayers, boxMappings, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
+import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -98,7 +94,7 @@ function getGlobalAdLibPiecesOfftube(
 
 	let globalRank = 1000
 
-	function makeSsrcAdlibBoxes(layer: OfftubeSourceLayer, port: number, mediaPlayer?: boolean) {
+	/*function makeSsrcAdlibBoxes(layer: OfftubeSourceLayer, port: number, mediaPlayer?: boolean) {
 		// Generate boxes with classes to map across each layer
 		const boxObjs = _.map(boxMappings, (m, i) =>
 			literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
@@ -129,7 +125,7 @@ function getGlobalAdLibPiecesOfftube(
 			boxObjs,
 			audioWhile: `(.${Enablers.OFFTUBE_ENABLE_DVE}) & (${audioWhile})`
 		}
-	}
+	}*/
 	/*function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
@@ -235,7 +231,7 @@ function getGlobalAdLibPiecesOfftube(
 		return res
 	}*/
 
-	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	/*function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
 			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
@@ -322,10 +318,10 @@ function getGlobalAdLibPiecesOfftube(
 		})
 
 		return res
-	}
+	}*/
 
 	// ssrc box
-	function makeRemoteAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	/*function makeRemoteAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		_.forEach(_.values(boxLayers), (layer: OfftubeSourceLayer, i) => {
 			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
@@ -350,7 +346,7 @@ function getGlobalAdLibPiecesOfftube(
 			})
 		})
 		return res
-	}
+	}*/
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
@@ -572,19 +568,19 @@ function getGlobalAdLibPiecesOfftube(
 			adlibItems.push(...makeCameraAdlibBoxes(o, globalRank++))
 		})*/
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
-		})
+		})*/
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
-		})
+		})*/
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
@@ -596,7 +592,9 @@ function getGlobalAdlibActionsOfftube(
 ): IBlueprintActionManifest[] {
 	const res: IBlueprintActionManifest[] = []
 
-	function makeKameraAction(name: string, queue: boolean) {
+	let globalRank = 1000
+
+	function makeKameraAction(name: string, queue: boolean, rank: number) {
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.CUT_TO_CAMERA,
@@ -607,6 +605,7 @@ function getGlobalAdlibActionsOfftube(
 				}),
 				userDataManifest: {},
 				display: {
+					_rank: rank,
 					label: `Kamera ${name} ACTION`,
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: OfftubeOutputLayers.PGM,
@@ -617,18 +616,47 @@ function getGlobalAdlibActionsOfftube(
 		)
 	}
 
+	function makeRemoteAction(name: string, port: number, rank: number) {
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.CUT_TO_REMOTE,
+				userData: literal<ActionCutToRemote>({
+					type: AdlibActionType.CUT_TO_REMOTE,
+					name,
+					port
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: rank,
+					label: `Live ${name} ACTION`,
+					sourceLayerId: OfftubeSourceLayer.PgmLive,
+					outputLayerId: OfftubeOutputLayers.PGM,
+					content: {},
+					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT]
+				}
+			})
+		)
+	}
+
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			makeKameraAction(o.id, false)
+			makeKameraAction(o.id, false, globalRank++)
 		})
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			makeKameraAction(o.id, true)
+			makeKameraAction(o.id, true, globalRank++)
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.slice(0, 10) // the first x cameras to create live-adlibs from
+		.forEach(o => {
+			makeRemoteAction(o.id, o.port, globalRank++)
 		})
 
 	return res

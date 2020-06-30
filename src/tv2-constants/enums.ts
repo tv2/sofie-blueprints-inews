@@ -74,5 +74,6 @@ export enum ControlClasses {
 
 export enum AdlibActionType {
 	SELECT_SERVER_CLIP = 'select_server_clip',
-	CUT_TO_CAMERA = 'cut_to_camera'
+	CUT_TO_CAMERA = 'cut_to_camera',
+	CUT_TO_REMOTE = 'cut_to_remote'
 }

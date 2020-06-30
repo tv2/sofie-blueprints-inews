@@ -10,12 +10,16 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionCutToCamera,
+	ActionCutToRemote,
 	ActionSelectServerClip,
 	CreatePartServerBase,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
+	GetEksternMetaData,
 	GetLayersForCamera,
+	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEkstern,
 	literal,
 	MakeContentServer,
 	TimelineBlueprintExt
@@ -33,6 +37,9 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 			break
 		case AdlibActionType.CUT_TO_CAMERA:
 			executeActionCutToCamera(context, actionId, userData as ActionCutToCamera)
+			break
+		case AdlibActionType.CUT_TO_REMOTE:
+			executeActionCutToRemote(context, actionId, userData as ActionCutToRemote)
 			break
 	}
 }
@@ -197,4 +204,104 @@ function executeActionCutToCamera(context: ActionExecutionContext, _actionId: st
 	} else {
 		context.insertPiece('current', kamPiece)
 	}
+}
+
+function executeActionCutToRemote(context: ActionExecutionContext, _actionId: string, userData: ActionCutToRemote) {
+	const config = parseConfig(context)
+
+	const externalId = `adlib-action_${context.getHashId(`cut_to_remote_${userData.name}`)}`
+
+	const part = literal<IBlueprintPart>({
+		externalId,
+		title: `Live ${userData.name}`,
+		metaData: {},
+		expectedDuration: 0
+	})
+
+	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
+		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`, GetLayersForEkstern),
+		...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+	]
+
+	const remotePiece = literal<IBlueprintPiece>({
+		_id: '',
+		externalId: 'live',
+		name: `Live ${userData.name}`,
+		enable: {
+			start: 0
+		},
+		sourceLayerId: OfftubeSourceLayer.PgmLive,
+		outputLayerId: OfftubeOutputLayers.PGM,
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		toBeQueued: true,
+		canCombineQueue: true,
+		metaData: GetEksternMetaData(
+			config.stickyLayers,
+			config.studio.StudioMics,
+			GetLayersForEkstern(context, config.sources, `Live ${userData.name}`)
+		),
+		content: {
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: OfftubeAtemLLayer.AtemMEClean,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: userData.port,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					},
+					classes: ['adlib_deparent']
+				}),
+				...eksternSisyfos,
+				...config.stickyLayers
+					.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+					.filter(layer => config.liveAudio.indexOf(layer) === -1)
+					.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
+						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer,
+							content: {
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+								isPgm: 0
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
+						})
+					}),
+				// Force server to be muted (for adlibbing over DVE)
+				...[
+					OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+					OfftubeSisyfosLLayer.SisyfosSourceServerA,
+					OfftubeSisyfosLLayer.SisyfosSourceServerB
+				].map<TSR.TimelineObjSisyfosChannel>(layer => {
+					return literal<TSR.TimelineObjSisyfosChannel>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 2,
+						layer,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+							isPgm: 0
+						}
+					})
+				})
+			])
+		}
+	})
+
+	context.queuePart(part, [remotePiece])
 }

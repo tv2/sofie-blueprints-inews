@@ -64,12 +64,12 @@ export function GetSisyfosTimelineObjForEkstern(
 	sourceType: string,
 	getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
 	enable?: Timeline.TimelineEnable
-): TSR.TSRTimelineObj[] {
+): TSR.TimelineObjSisyfosAny[] {
 	if (!enable) {
 		enable = { start: 0 }
 	}
 
-	const audioTimeline: TSR.TSRTimelineObj[] = []
+	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
 	const layers = getLayersForEkstern(context, sources, sourceType)
 
 	if (!layers || !layers.length) {
@@ -112,12 +112,12 @@ export function GetSisyfosTimelineObjForCamera(
 	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
 	sourceType: string,
 	enable?: Timeline.TimelineEnable
-): TSR.TSRTimelineObj[] {
+): TSR.TimelineObjSisyfosAny[] {
 	if (!enable) {
 		enable = { start: 0 }
 	}
 
-	const audioTimeline: TSR.TSRTimelineObj[] = []
+	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	const nonCam = !!sourceType.match(/server|telefon|full|evs/i)

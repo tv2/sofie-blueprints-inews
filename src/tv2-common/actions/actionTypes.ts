@@ -18,4 +18,10 @@ export interface ActionCutToCamera extends ActionBase {
 	name: string
 }
 
-export type TV2AdlibAction = ActionSelectServerClip
+export interface ActionCutToRemote extends ActionBase {
+	type: AdlibActionType.CUT_TO_REMOTE
+	name: string
+	port: number
+}
+
+export type TV2AdlibAction = ActionSelectServerClip | ActionCutToCamera | ActionCutToRemote
