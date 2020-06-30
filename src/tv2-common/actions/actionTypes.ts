@@ -1,3 +1,4 @@
+import { SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
 import { AdlibActionType } from 'tv2-constants'
 import { PartDefinition } from '../inewsConversion'
 
@@ -22,6 +23,14 @@ export interface ActionCutToRemote extends ActionBase {
 	type: AdlibActionType.CUT_TO_REMOTE
 	name: string
 	port: number
+}
+
+export interface ActionCutSourceToBox extends ActionBase {
+	type: AdlibActionType.CUT_SOURCE_TO_BOX
+	sourceType: SourceLayerType
+	name: string
+	port: number
+	box: number
 }
 
 export type TV2AdlibAction = ActionSelectServerClip | ActionCutToCamera | ActionCutToRemote

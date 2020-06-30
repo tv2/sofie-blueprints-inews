@@ -13,13 +13,15 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
-	ActionCutToCamera,
+	ActionCutSourceToBox,
 	// GetCameraMetaData,
-	ActionCutToRemote,
+	ActionCutToCamera,
 	// GetLayersForCamera,
+	ActionCutToRemote,
 	GraphicLLayer,
 	literal,
 	MakeContentDVE2,
+	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, ControlClasses, Enablers } from 'tv2-constants'
@@ -33,7 +35,7 @@ import {
 } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
+import { boxLayers, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -93,260 +95,6 @@ function getGlobalAdLibPiecesOfftube(
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
 	let globalRank = 1000
-
-	/*function makeSsrcAdlibBoxes(layer: OfftubeSourceLayer, port: number, mediaPlayer?: boolean) {
-		// Generate boxes with classes to map across each layer
-		const boxObjs = _.map(boxMappings, (m, i) =>
-			literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
-				id: '',
-				enable: { while: `.${layer}_${m}` },
-				priority: 1,
-				layer: m,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.SSRC,
-					ssrc: {
-						boxes: [
-							// Pad until we are on the right box
-							..._.range(i).map(() => ({})),
-							// Add the source setter
-							{ source: port }
-						]
-					}
-				},
-				metaData: {
-					dveAdlibEnabler: `.${layer}_${m} & !.${ControlClasses.DVEOnAir}`,
-					mediaPlayerSession: mediaPlayer ? MEDIA_PLAYER_AUTO : undefined
-				}
-			})
-		)
-		const audioWhile = boxObjs.map(obj => obj.enable.while as string).join(' | ')
-		return {
-			boxObjs,
-			audioWhile: `(.${Enablers.OFFTUBE_ENABLE_DVE}) & (${audioWhile})`
-		}
-	}*/
-	/*function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
-		res.push({
-			externalId: 'cam',
-			name: `Kamera ${info.id}`,
-			_rank: rank,
-			sourceLayerId: OfftubeSourceLayer.PgmCam,
-			outputLayerId: OfftubeOutputLayers.PGM,
-			expectedDuration: 0,
-			adlibPreroll: 80,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: preview,
-			canCombineQueue: true,
-			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
-			tags: preview ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
-			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
-						enable: { while: '1' },
-						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEClean,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: info.port,
-								transition: TSR.AtemTransitionStyle.CUT
-							}
-						},
-						classes: ['adlib_deparent']
-					}),
-					...camSisyfos,
-					...config.stickyLayers
-						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
-					// Force server to be muted (for adlibbing over DVE)
-					...[
-						OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-						OfftubeSisyfosLLayer.SisyfosSourceServerA,
-						OfftubeSisyfosLLayer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
-					})
-				])
-			}
-		})
-		return res
-	}*/
-
-	// ssrc box
-	/*function makeCameraAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		_.forEach(_.values(boxLayers), (layer: OfftubeSourceLayer, i) => {
-			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
-
-			res.push({
-				externalId: 'cam',
-				name: info.id + '',
-				_rank: rank * 100 + i,
-				sourceLayerId: layer,
-				outputLayerId: 'sec',
-				expectedDuration: 0,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
-						...boxObjs,
-						...GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`, { while: audioWhile })
-					])
-				}
-			})
-		})
-		return res
-	}*/
-
-	/*function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
-			...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
-		]
-		res.push({
-			externalId: 'live',
-			name: `Live ${info.id}`,
-			_rank: rank,
-			sourceLayerId: OfftubeSourceLayer.PgmLive,
-			outputLayerId: OfftubeOutputLayers.PGM,
-			expectedDuration: 0,
-			adlibPreroll: 80,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			canCombineQueue: true,
-			metaData: GetEksternMetaData(
-				config.stickyLayers,
-				config.studio.StudioMics,
-				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
-			),
-			tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
-			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
-						enable: { while: '1' },
-						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEClean,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: info.port,
-								transition: TSR.AtemTransitionStyle.CUT
-							}
-						},
-						classes: ['adlib_deparent']
-					}),
-					...eksternSisyfos,
-					...config.stickyLayers
-						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => config.liveAudio.indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
-					// Force server to be muted (for adlibbing over DVE)
-					...[
-						OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-						OfftubeSisyfosLLayer.SisyfosSourceServerA,
-						OfftubeSisyfosLLayer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
-					})
-				])
-			}
-		})
-
-		return res
-	}*/
-
-	// ssrc box
-	/*function makeRemoteAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		_.forEach(_.values(boxLayers), (layer: OfftubeSourceLayer, i) => {
-			const { boxObjs, audioWhile } = makeSsrcAdlibBoxes(layer, info.port)
-
-			res.push({
-				externalId: 'cam',
-				name: info.id + '',
-				_rank: rank * 100 + i,
-				sourceLayerId: layer,
-				outputLayerId: 'sec',
-				expectedDuration: 0,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
-						...boxObjs,
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern, {
-							while: audioWhile
-						}),
-						...GetSisyfosTimelineObjForCamera(context, config, 'telefon', { while: audioWhile })
-					])
-				}
-			})
-		})
-		return res
-	}*/
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
@@ -547,41 +295,6 @@ function getGlobalAdLibPiecesOfftube(
 		})
 	)
 
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
-		})*/
-
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
-		})*/
-
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdlibBoxes(o, globalRank++))
-		})*/
-
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
-		.slice(0, 10) // the first x cameras to create live-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
-		})*/
-
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
-		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
-		})*/
-
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
 }
@@ -638,6 +351,32 @@ function getGlobalAdlibActionsOfftube(
 		)
 	}
 
+	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live', rank: number) {
+		Object.values(boxLayers).forEach((layer, box) => {
+			res.push(
+				literal<IBlueprintActionManifest>({
+					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+					userData: literal<ActionCutSourceToBox>({
+						type: AdlibActionType.CUT_SOURCE_TO_BOX,
+						name: `${type} ${info.id}`,
+						port: info.port,
+						sourceType: info.type,
+						box
+					}),
+					userDataManifest: {},
+					display: {
+						_rank: rank + 0.1 * box,
+						label: `Cut ${type} ${info.id} to box ${box + 1}`,
+						sourceLayerId: layer,
+						outputLayerId: OfftubeOutputLayers.PGM,
+						content: {},
+						tags: []
+					}
+				})
+			)
+		})
+	}
+
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
@@ -653,10 +392,24 @@ function getGlobalAdlibActionsOfftube(
 		})
 
 	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
+		.forEach(o => {
+			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
+		})
+
+	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			makeRemoteAction(o.id, o.port, globalRank++)
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
+		.forEach(o => {
+			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
 
 	return res

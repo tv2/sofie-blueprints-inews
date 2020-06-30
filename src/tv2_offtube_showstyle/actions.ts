@@ -3,12 +3,17 @@ import {
 	ActionUserData,
 	IBlueprintPart,
 	IBlueprintPiece,
+	IBlueprintPieceInstance,
 	PieceLifespan,
 	PieceMetaData,
 	SourceLayerType,
+	SplitsContent,
+	SplitsContentBoxContent,
+	SplitsContentBoxProperties,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionSelectServerClip,
@@ -40,6 +45,9 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 			break
 		case AdlibActionType.CUT_TO_REMOTE:
 			executeActionCutToRemote(context, actionId, userData as ActionCutToRemote)
+			break
+		case AdlibActionType.CUT_SOURCE_TO_BOX:
+			executeActionCutSourceToBox(context, actionId, userData as ActionCutSourceToBox)
 			break
 	}
 }
@@ -304,4 +312,58 @@ function executeActionCutToRemote(context: ActionExecutionContext, _actionId: st
 	})
 
 	context.queuePart(part, [remotePiece])
+}
+
+function executeActionCutSourceToBox(
+	context: ActionExecutionContext,
+	_actionId: string,
+	userData: ActionCutSourceToBox
+) {
+	const currentPieces = context.getPieceInstances('current')
+	const nextPieces = context.getPieceInstances('next')
+
+	const currentDVE = currentPieces.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE)
+	const nextDVE = nextPieces.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE)
+
+	let modify: undefined | 'current' | 'next'
+	let modifiedPiece: IBlueprintPieceInstance | undefined
+
+	if (currentDVE) {
+		modify = 'current'
+		modifiedPiece = currentDVE
+	} else if (nextDVE) {
+		modify = 'next'
+		modifiedPiece = nextDVE
+	}
+
+	if (!modifiedPiece || !modify || !modifiedPiece.piece.content || !modifiedPiece.piece.content.timelineObjects) {
+		return
+	}
+
+	const tlObjIndex = (modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+		t => t.content.deviceType === TSR.DeviceType.ATEM && t.content.type === TSR.TimelineContentTypeAtem.SSRC
+	)
+
+	if (tlObjIndex === -1) {
+		return
+	}
+
+	const obj = modifiedPiece.piece.content.timelineObjects[tlObjIndex] as TSR.TimelineObjAtemSsrc
+	obj.content.ssrc.boxes[userData.box] = {
+		...obj.content.ssrc.boxes[userData.box],
+		source: userData.port
+	}
+
+	modifiedPiece.piece.content.timelineObjects[tlObjIndex] = obj
+
+	const content = modifiedPiece.piece.content as SplitsContent
+	content.boxSourceConfiguration[userData.box] = literal<SplitsContentBoxContent & SplitsContentBoxProperties>({
+		type: userData.sourceType,
+		studioLabel: '',
+		switcherInput: userData.port
+	})
+
+	modifiedPiece.piece.content = content
+
+	context.updatePieceInstance(modifiedPiece._id, modifiedPiece.piece)
 }
