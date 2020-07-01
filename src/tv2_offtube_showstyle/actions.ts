@@ -30,11 +30,19 @@ import {
 	MakeContentServer,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType } from 'tv2-constants'
+import { AdlibActionType, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { parseConfig } from './helpers/config'
+import { EvaluateCuesIntoTimeline } from './helpers/EvaluateCuesIntoTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
+
+const SELECTED_ADLIB_LAYERS = [
+	OfftubeSourceLayer.SelectedAdLibDVE,
+	OfftubeSourceLayer.SelectedAdLibServer,
+	OfftubeSourceLayer.SelectedAdLibVoiceOver,
+	OfftubeSourceLayer.SelectedAdlibGraphicsFull
+]
 
 export function executeAction(context: ActionExecutionContext, actionId: string, userData: ActionUserData): void {
 	switch (actionId) {
@@ -53,6 +61,17 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 	}
 }
 
+function getPiecesToPreserve(
+	context: ActionExecutionContext,
+	adlibLayers: string[],
+	ingoreLayers: string[]
+): IBlueprintPiece[] {
+	return context
+		.getPieceInstances('next')
+		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
+		.map<IBlueprintPiece>(p => p.piece)
+}
+
 function executeActionSelectServerClip(
 	context: ActionExecutionContext,
 	_actionId: string,
@@ -65,53 +84,75 @@ function executeActionSelectServerClip(
 
 	const externalId = `adlib-action_${context.getHashId(`select_server_clip_${file}`)}`
 
+	const activeServerPiece = literal<IBlueprintPiece>({
+		_id: '',
+		externalId,
+		name: file,
+		enable: { start: 0 },
+		outputLayerId: OfftubeOutputLayers.PGM,
+		sourceLayerId: OfftubeSourceLayer.PgmServer,
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		metaData: literal<PieceMetaData>({
+			mediaPlayerSessions: [externalId]
+		}),
+		content: MakeContentServer(
+			file,
+			externalId,
+			partDefinition,
+			config,
+			{
+				Caspar: {
+					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+				},
+				Sisyfos: {
+					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+				},
+				ATEM: {
+					MEPGM: OfftubeAtemLLayer.AtemMEClean
+				}
+			},
+			duration
+		),
+		adlibPreroll: config.studio.CasparPrerollDuration
+	})
+
+	// TODO: Maybe these should be created as pieces rather than timeline objects?
+	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
+		activeServerPiece.content.timelineObjects.push(
+			...EvaluateCuesIntoTimeline(
+				config,
+				partDefinition.cues,
+				partDefinition,
+				`clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/\W/g, ''), // TODO: This is copy-pasted code
+				[CueType.Grafik],
+				true
+			)
+		)
+	}
+
+	const serverDataStore = literal<IBlueprintPiece>({
+		_id: '',
+		externalId: `${externalId}_dataStore`,
+		name: file,
+		enable: {
+			start: 0
+		},
+		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
+		sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
+		infiniteMode: PieceLifespan.OutOnNextSegment,
+		metaData: {
+			userData
+		}
+	})
+
 	const part = CreatePartServerBase(context, config, partDefinition)
 	context.queuePart(part.part.part, [
-		literal<IBlueprintPiece>({
-			_id: '',
-			externalId,
-			name: file,
-			enable: { start: 0 },
-			outputLayerId: OfftubeOutputLayers.PGM,
-			sourceLayerId: OfftubeSourceLayer.PgmServer,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [externalId]
-			}),
-			content: MakeContentServer(
-				file,
-				externalId,
-				partDefinition,
-				config,
-				{
-					Caspar: {
-						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-					},
-					Sisyfos: {
-						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-					},
-					ATEM: {
-						MEPGM: OfftubeAtemLLayer.AtemMEClean
-					}
-				},
-				duration
-			),
-			adlibPreroll: config.studio.CasparPrerollDuration
-		}),
-		literal<IBlueprintPiece>({
-			_id: '',
-			externalId: `${externalId}_dataStore`,
-			name: file,
-			enable: {
-				start: 0
-			},
-			outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
-			sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
-			infiniteMode: PieceLifespan.OutOnNextSegment,
-			metaData: {
-				userData
-			}
-		})
+		activeServerPiece,
+		serverDataStore,
+		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [
+			OfftubeSourceLayer.SelectedAdLibServer,
+			OfftubeSourceLayer.SelectedAdLibVoiceOver
+		])
 	])
 }
 
@@ -209,7 +250,7 @@ function executeActionCutToCamera(context: ActionExecutionContext, _actionId: st
 	})
 
 	if (userData.queue) {
-		context.queuePart(part, [kamPiece])
+		context.queuePart(part, [kamPiece, ...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [])])
 	} else {
 		context.insertPiece('current', kamPiece)
 	}
@@ -312,7 +353,7 @@ function executeActionCutToRemote(context: ActionExecutionContext, _actionId: st
 		}
 	})
 
-	context.queuePart(part, [remotePiece])
+	context.queuePart(part, [remotePiece, ...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [])])
 }
 
 function executeActionCutSourceToBox(
