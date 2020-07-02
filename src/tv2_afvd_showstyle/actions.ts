@@ -28,7 +28,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType } from 'tv2-constants'
 import _ = require('underscore')
-import { AtemLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { parseConfig } from './helpers/config'
 import { SourceLayer } from './layers'
 
@@ -268,6 +268,9 @@ function executeActionCutSourceToBox(
 
 	const currentDVE = currentPieces.find(p => p.piece.sourceLayerId === SourceLayer.PgmDVEAdlib)
 	const nextDVE = nextPieces.find(p => p.piece.sourceLayerId === SourceLayer.PgmDVEAdlib)
+	const currentServer = currentPieces.find(
+		p => p.piece.sourceLayerId === SourceLayer.PgmServer || p.piece.sourceLayerId === SourceLayer.PgmVoiceOver
+	)
 
 	let modify: undefined | 'current' | 'next'
 	let modifiedPiece: IBlueprintPieceInstance | undefined
@@ -302,6 +305,69 @@ function executeActionCutSourceToBox(
 		return
 	}
 
+	if (replacedSource?.type === SourceLayerType.VT || userData.server) {
+		if (!modifiedPiece.piece.metaData) {
+			modifiedPiece.piece.metaData = {}
+		}
+
+		// Clear media player sessions
+		modifiedPiece.piece.metaData!.mediaPlayerSessions = []
+
+		const serverObj = modifiedPiece.piece.content?.timelineObjects
+			? (modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+					t =>
+						t.layer === CasparLLayer.CasparPlayerClipPending &&
+						t.content.deviceType === TSR.DeviceType.CASPARCG &&
+						t.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
+			  )
+			: -1
+
+		// Remove any existing server objects
+		if (serverObj > -1) {
+			;(modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).splice(serverObj, 1)
+		}
+	}
+
+	if (userData.server) {
+		if (!currentServer) {
+			return
+		}
+		const serverObj = currentServer.piece.content?.timelineObjects
+			? ((currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+					t =>
+						t.layer === CasparLLayer.CasparPlayerClipPending &&
+						t.content.deviceType === TSR.DeviceType.CASPARCG &&
+						t.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
+			  ) as TSR.TimelineObjCCGMedia)
+			: undefined
+
+		const sisyfosObj = currentServer.piece.content?.timelineObjects
+			? ((currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+					t =>
+						t.layer === SisyfosLLAyer.SisyfosSourceClipPending &&
+						t.content.deviceType === TSR.DeviceType.SISYFOS &&
+						t.content.type === TSR.TimelineContentTypeSisyfos.CHANNEL
+			  ) as TSR.TimelineObjSisyfosChannel)
+			: undefined
+
+		if (!serverObj || !sisyfosObj) {
+			return
+		}
+
+		// Update media player sessions
+		modifiedPiece.piece.metaData!.mediaPlayerSessions = currentServer.piece.metaData!.mediaPlayerSessions
+		;(modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).push(
+			literal<TSR.TSRTimelineObj & { _id: '' }>({
+				...serverObj,
+				_id: ''
+			}),
+			literal<TSR.TSRTimelineObj & { _id: '' }>({
+				...sisyfosObj,
+				_id: ''
+			})
+		)
+	}
+
 	const obj = modifiedPiece.piece.content.timelineObjects[tlObjIndex] as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
 	obj.content.ssrc.boxes[userData.box] = {
 		...obj.content.ssrc.boxes[userData.box],
@@ -331,6 +397,7 @@ function executeActionCutSourceToBox(
 	})
 
 	const activeLayers: string[] = []
+	const activeLevels: { [layer: string]: 0 | 1 | 2 | undefined } = {}
 
 	content.boxSourceConfiguration.forEach((box: SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo) => {
 		switch (box.type) {
@@ -340,6 +407,7 @@ function executeActionCutSourceToBox(
 					GetLayersForCamera(config, sourceInfoCam).forEach(layer => {
 						if (!activeLayers.includes(layer)) {
 							activeLayers.push(layer)
+							activeLevels[layer] = 1
 						}
 					})
 				}
@@ -348,6 +416,7 @@ function executeActionCutSourceToBox(
 				;[...GetLayersForEkstern(context, config.sources, box.rawType), ...config.studio.StudioMics].forEach(layer => {
 					if (!activeLayers.includes(layer)) {
 						activeLayers.push(layer)
+						activeLevels[layer] = userData.vo ? 2 : 1
 					}
 				})
 				break
@@ -361,14 +430,17 @@ function executeActionCutSourceToBox(
 	)
 
 	const existingLayers: string[] = []
+	const existingLevels: { [layer: string]: 0 | 1 | 2 | undefined } = {}
 
 	modifiedPiece.piece.content.timelineObjects?.forEach(t => {
 		if (t.content.deviceType === TSR.DeviceType.SISYFOS) {
 			existingLayers.push(t.layer.toString())
+			existingLevels[t.layer.toString()] = (t as TSR.TimelineObjSisyfosChannel).content.isPgm
 		}
 	})
 
 	const newLayers = activeLayers.filter(layer => !existingLayers.includes(layer))
+	const changedLayers = existingLayers.filter(layer => activeLevels[layer] !== existingLevels[layer])
 
 	newLayers.forEach(layer => {
 		modifiedPiece!.piece.content!.timelineObjects!.push(
@@ -381,7 +453,27 @@ function executeActionCutSourceToBox(
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: 1
+					isPgm: activeLevels[layer]
+				}
+			})
+		)
+	})
+
+	changedLayers.forEach(layer => {
+		modifiedPiece!.piece.content!.timelineObjects! = (modifiedPiece!.piece.content!
+			.timelineObjects as TSR.TSRTimelineObj[]).filter(t => t.layer !== layer)
+
+		modifiedPiece!.piece.content!.timelineObjects!.push(
+			literal<TSR.TimelineObjSisyfosChannel>({
+				id: '',
+				enable: {
+					while: '1'
+				},
+				layer,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+					isPgm: activeLevels[layer]
 				}
 			})
 		)

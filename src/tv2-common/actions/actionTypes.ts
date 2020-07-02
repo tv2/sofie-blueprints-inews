@@ -31,6 +31,8 @@ export interface ActionCutSourceToBox extends ActionBase {
 	name: string
 	port: number
 	box: number
+	vo?: boolean
+	server?: boolean
 }
 
 export type TV2AdlibAction = ActionSelectServerClip | ActionCutToCamera | ActionCutToRemote

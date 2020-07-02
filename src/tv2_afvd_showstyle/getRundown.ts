@@ -581,8 +581,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		.forEach(o => {
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, false))
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
-			// adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++))
-			// adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++, true))
 			adlibItems.push({
 				externalId: 'delayedaux',
 				name: `Delayed Playback in studio aux`,
@@ -1063,6 +1061,60 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 	}
 
+	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
+		Object.values(boxLayers).forEach((layer, box) => {
+			res.push(
+				literal<IBlueprintActionManifest>({
+					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+					userData: literal<ActionCutSourceToBox>({
+						type: AdlibActionType.CUT_SOURCE_TO_BOX,
+						name: `DP ${info.id}`,
+						port: info.port,
+						sourceType: info.type,
+						box,
+						vo
+					}),
+					userDataManifest: {},
+					display: {
+						_rank: rank + 0.1 * box,
+						label: `Cut EVS ${info.id}${vo ? 'VO' : ''} to box ${box + 1}`,
+						sourceLayerId: layer,
+						outputLayerId: 'sec',
+						content: {},
+						tags: []
+					}
+				})
+			)
+		})
+	}
+
+	function makeServerAdlibBoxesActions(rank: number) {
+		Object.values(boxLayers).forEach((layer, box) => {
+			res.push(
+				literal<IBlueprintActionManifest>({
+					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+					userData: literal<ActionCutSourceToBox>({
+						type: AdlibActionType.CUT_SOURCE_TO_BOX,
+						name: `SERVER`,
+						port: -1,
+						sourceType: SourceLayerType.VT,
+						box,
+						server: true
+					}),
+					userDataManifest: {},
+					display: {
+						_rank: rank + 0.1 * box,
+						label: `Cut server to box ${box + 1}`,
+						sourceLayerId: layer,
+						outputLayerId: 'sec',
+						content: {},
+						tags: []
+					}
+				})
+			)
+		})
+	}
+
 	/*config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
@@ -1098,6 +1150,16 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE && !!u.id.match(`DP`))
+		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
+		.forEach(o => {
+			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)
+			makeAdlibBoxesActionsDirectPlayback(o, true, globalRank++)
+		})
+
+	makeServerAdlibBoxesActions(globalRank++)
 
 	return res
 }
