@@ -85,7 +85,7 @@ function executeActionCutToCamera(context: ActionExecutionContext, _actionId: st
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
-					layer: AtemLLayer.AtemMEClean,
+					layer: AtemLLayer.AtemMEProgram,
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
@@ -188,7 +188,7 @@ function executeActionCutToRemote(context: ActionExecutionContext, _actionId: st
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
-					layer: AtemLLayer.AtemMEClean,
+					layer: AtemLLayer.AtemMEProgram,
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
