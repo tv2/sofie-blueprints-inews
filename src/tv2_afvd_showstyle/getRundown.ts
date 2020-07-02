@@ -15,12 +15,17 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionCutSourceToBox,
-	ActionCutToCamera,
-	ActionCutToRemote,
+	GetCameraMetaData,
+	GetEksternMetaData,
+	GetLayersForCamera,
+	GetLayersForEkstern,
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEkstern,
 	GraphicLLayer,
 	literal,
 	MakeContentDVE2,
-	SourceInfo
+	SourceInfo,
+	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -113,7 +118,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			audioWhile: `(\$${SourceLayer.PgmDVE} | \$${SourceLayer.PgmDVEAdlib}) & (${audioWhile})`
 		}
 	}*/
-	/*function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
+	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
 		res.push({
@@ -188,7 +193,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			}
 		})
 		return res
-	}*/
+	}
 
 	// ssrc box
 	/*function makeCameraAdlibBoxes(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
@@ -215,7 +220,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		return res
 	}*/
 
-	/*function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
+	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'delayed',
@@ -283,7 +288,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		})
 
 		return res
-	}*/
+	}
 
 	// evs ssrc box
 	/*function makeEvsAdlibBoxes(
@@ -326,7 +331,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		return res
 	}*/
 
-	/*function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
 			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
@@ -410,7 +415,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		})
 
 		return res
-	}*/
+	}
 
 	// server ssrc box
 	/*function makeServerAdlibBoxes(info: { port: number; id: string }, rank: number): IBlueprintAdLibPiece[] {
@@ -502,7 +507,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	}*/
 
 	// aux adlibs
-	/*function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'auxstudio',
@@ -537,13 +542,13 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		})
 
 		return res
-	}*/
+	}
 
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
-	// const globalRank = 1000
+	let globalRank = 1000
 
-	/*config.sources
+	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
@@ -558,24 +563,10 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdlibBoxes(o, globalRank++))
-		})
-
-	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
-		.slice(0, 10) // the first x cameras to create INP1/2/3 live-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeRemoteAdlibBoxes(o, globalRank++))
 		})
 
 	config.sources
@@ -590,8 +581,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		.forEach(o => {
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, false))
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
-			adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++))
-			adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++, true))
+			// adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++))
+			// adlibItems.push(...makeEvsAdlibBoxes(o, globalRank++, true))
 			adlibItems.push({
 				externalId: 'delayedaux',
 				name: `Delayed Playback in studio aux`,
@@ -646,7 +637,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			})
 		})
 
-	adlibItems.push(...makeServerAdlibBoxes({ port: -1, id: 'Server' }, globalRank++))*/
+	// adlibItems.push(...makeServerAdlibBoxes({ port: -1, id: 'Server' }, globalRank++))
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
@@ -1001,7 +992,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 
 	let globalRank = 1000
 
-	function makeKameraAction(name: string, queue: boolean, rank: number) {
+	/*function makeKameraAction(name: string, queue: boolean, rank: number) {
+		console.log(`RANK ${rank}`)
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.CUT_TO_CAMERA,
@@ -1021,9 +1013,9 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				}
 			})
 		)
-	}
+	}*/
 
-	function makeRemoteAction(name: string, port: number, rank: number) {
+	/*function makeRemoteAction(name: string, port: number, rank: number) {
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.CUT_TO_REMOTE,
@@ -1043,7 +1035,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				}
 			})
 		)
-	}
+	}*/
 
 	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live', rank: number) {
 		Object.values(boxLayers).forEach((layer, box) => {
@@ -1071,10 +1063,11 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 	}
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
+			console.log(`MAKE ACTION FOR KAM ${o.id}`)
 			makeKameraAction(o.id, false, globalRank++)
 		})
 
@@ -1083,7 +1076,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			makeKameraAction(o.id, true, globalRank++)
-		})
+		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
@@ -1092,12 +1085,12 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
 		})
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			makeRemoteAction(o.id, o.port, globalRank++)
-		})
+		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))

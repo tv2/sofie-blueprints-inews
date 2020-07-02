@@ -145,6 +145,14 @@ function executeActionCutToCamera(context: ActionExecutionContext, _actionId: st
 		context.queuePart(part, [kamPiece])
 	} else {
 		context.insertPiece('current', kamPiece)
+		// TODO: This should be handled by exclusivity groups incore
+		context.stopPiecesOnLayers([
+			SourceLayer.PgmJingle,
+			SourceLayer.PgmDVE,
+			SourceLayer.PgmServer,
+			SourceLayer.PgmLive,
+			SourceLayer.PgmPilot
+		])
 	}
 }
 
