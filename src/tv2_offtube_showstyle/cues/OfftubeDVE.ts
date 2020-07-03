@@ -17,21 +17,20 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses } from 'tv2-constants'
+import { AdlibActionType, AdlibTags } from 'tv2-constants'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
-import { makeofftubeDVEIDsUniqueForFlow } from './OfftubeAdlib'
 
 export function OfftubeEvaluateDVE(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
+	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
-	_adlib?: boolean,
+	adlib?: boolean,
 	rank?: number
 ) {
 	if (!parsedCue.template) {
@@ -59,16 +58,6 @@ export function OfftubeEvaluateDVE(
 		true
 	)
 
-	const adlibContentFlow = OfftubeMakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(partDefinition),
-		true
-	)
-
 	const pieceContent = OfftubeMakeContentDVE(
 		context,
 		config,
@@ -80,43 +69,6 @@ export function OfftubeEvaluateDVE(
 	)
 
 	if (adlibContent.valid && pieceContent.valid) {
-		const dveAdlib = literal<IBlueprintAdLibPiece>({
-			_rank: rank || 0,
-			externalId: partDefinition.externalId,
-			name: `${partDefinition.storyName}`,
-			outputLayerId: 'selectedAdlib',
-			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
-			infiniteMode: PieceLifespan.OutOnNextSegment,
-			toBeQueued: true,
-			canCombineQueue: true,
-			content: {
-				...adlibContent.content,
-				timelineObjects: adlibContent.content.timelineObjects.map(tlObj => {
-					return {
-						...tlObj,
-						classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : [ControlClasses.NOLookahead]
-					}
-				})
-			},
-			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-			tags: [AdlibTags.ADLIB_KOMMENTATOR]
-		})
-
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				...dveAdlib,
-				outputLayerId: 'pgm',
-				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				additionalPieces: [],
-				content: {
-					...adlibContentFlow.content,
-					timelineObjects: makeofftubeDVEIDsUniqueForFlow([...adlibContentFlow.content.timelineObjects])
-				}
-			})
-		)
-
 		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
 		start = start ? start : 0
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
@@ -154,10 +106,11 @@ export function OfftubeEvaluateDVE(
 				}),
 				userDataManifest: {},
 				display: {
+					_rank: rank,
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					label: `${partDefinition.storyName} Action`,
-					tags: [AdlibTags.ADLIB_KOMMENTATOR],
+					tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
 					content: literal<SplitsContent>({
 						...pieceContent.content,
 						timelineObjects: []
