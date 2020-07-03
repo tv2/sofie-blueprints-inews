@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -41,6 +42,7 @@ export function OfftubeCreatePartKam(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
@@ -133,7 +135,7 @@ export function OfftubeCreatePartKam(
 		)
 	}
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 

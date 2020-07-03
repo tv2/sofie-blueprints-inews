@@ -132,7 +132,7 @@ export function onTimelineGenerate<
 		const dveSetAsNextIncurrentPartIndex = timeline.findIndex(
 			o =>
 				o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler &&
-				o.classes?.includes(Enablers.OFFTUBE_ENABLE_DVE) &&
+				o.classes?.includes('offtube_enable_dve') && // TODO: This has gone away now
 				!o.isLookahead &&
 				resolvedPieces.some(piece => piece._id === o.pieceInstanceId) &&
 				!o.id.match(/previous/)

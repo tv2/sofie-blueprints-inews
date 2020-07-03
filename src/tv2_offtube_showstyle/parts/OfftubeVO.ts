@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -47,6 +48,7 @@ export function OfftubeCreatePartVO(
 	const part = basePartProps.part.part
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
+	const actions: IBlueprintActionManifest[] = []
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
@@ -175,7 +177,7 @@ export function OfftubeCreatePartVO(
 		})
 	]
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 
 	adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
 		CueType.Grafik,
@@ -194,6 +196,7 @@ export function OfftubeCreatePartVO(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

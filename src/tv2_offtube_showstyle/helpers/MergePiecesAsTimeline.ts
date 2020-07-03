@@ -1,4 +1,5 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	TimelineObjectCoreExt,
@@ -25,6 +26,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 	selectedCueTypes?: CueType[]
 ): T {
 	const piecesForTimeline: Array<IBlueprintPiece | IBlueprintAdLibPiece> = []
+	const actions: IBlueprintActionManifest[] = []
 
 	if (parentPiece.content && parentPiece.content.timelineObjects) {
 		OfftubeEvaluateCues(
@@ -32,6 +34,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 			config,
 			piecesForTimeline as IBlueprintPiece[],
 			piecesForTimeline as IBlueprintAdLibPiece[],
+			actions,
 			partDefinition.cues,
 			partDefinition,
 			{

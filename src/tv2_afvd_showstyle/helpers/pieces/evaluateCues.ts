@@ -1,3 +1,4 @@
+import { IBlueprintActionManifest } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinition,
 	EvaluateCuesBase,
@@ -27,6 +28,7 @@ export function EvaluateCues(
 	config: BlueprintConfig,
 	pieces: IBlueprintPieceEPI[],
 	adLibPieces: IBlueprintAdLibPieceEPI[],
+	actions: IBlueprintActionManifest[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -50,6 +52,7 @@ export function EvaluateCues(
 		config,
 		pieces,
 		adLibPieces,
+		actions,
 		cues,
 		partDefinition,
 		options

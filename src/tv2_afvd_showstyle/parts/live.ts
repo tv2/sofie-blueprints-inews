@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece
@@ -26,10 +27,11 @@ export function CreatePartLive(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
@@ -39,6 +41,7 @@ export function CreatePartLive(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

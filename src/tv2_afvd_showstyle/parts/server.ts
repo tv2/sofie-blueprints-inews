@@ -1,4 +1,9 @@
-import { BlueprintResultPart, IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import {
+	BlueprintResultPart,
+	IBlueprintActionManifest,
+	IBlueprintPiece,
+	PieceLifespan
+} from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddScript,
 	CreatePartServerBase,
@@ -31,6 +36,7 @@ export function CreatePartServer(
 	const adLibPieces = basePartProps.part.adLibPieces
 	const file = basePartProps.file
 	const duration = basePartProps.duration
+	const actions: IBlueprintActionManifest[] = []
 
 	part = {
 		...part,
@@ -72,7 +78,7 @@ export function CreatePartServer(
 		})
 	)
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 
 	if (pieces.length === 0) {
 		part.invalid = true
@@ -81,6 +87,7 @@ export function CreatePartServer(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

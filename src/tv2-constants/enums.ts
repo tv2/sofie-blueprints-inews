@@ -43,7 +43,6 @@ export const enum PartType {
 export enum Enablers {
 	OFFTUBE_ENABLE_SERVER = 'offtube_enable_server',
 	OFFTUBE_ENABLE_FULL = 'offtube_enable_full',
-	OFFTUBE_ENABLE_DVE = 'offtube_enable_dve',
 	OFFTUBE_ENABLE_SERVER_LOOKAHEAD = 'offtube_enable_server_lookahead'
 }
 
@@ -74,6 +73,7 @@ export enum ControlClasses {
 
 export enum AdlibActionType {
 	SELECT_SERVER_CLIP = 'select_server_clip',
+	SELECT_DVE = 'select_dve',
 	CUT_TO_CAMERA = 'cut_to_camera',
 	CUT_TO_REMOTE = 'cut_to_remote',
 	CUT_SOURCE_TO_BOX = 'cut_source_to_box'

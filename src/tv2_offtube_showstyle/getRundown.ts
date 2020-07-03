@@ -232,7 +232,7 @@ function getGlobalAdLibPiecesOfftube(
 		})
 	)
 
-	adlibItems.push(
+	/*adlibItems.push(
 		literal<IBlueprintAdLibPiece>({
 			_rank: globalRank++,
 			externalId: 'setNextToDVE',
@@ -293,7 +293,7 @@ function getGlobalAdLibPiecesOfftube(
 			},
 			tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
 		})
-	)
+	)*/
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems

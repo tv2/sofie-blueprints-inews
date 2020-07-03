@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece
@@ -24,8 +25,11 @@ export function CreatePartGrafik(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { isGrafikPart: true })
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {
+		isGrafikPart: true
+	})
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	part.prerollDuration = config.studio.PilotPrerollDuration
@@ -40,6 +44,7 @@ export function CreatePartGrafik(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

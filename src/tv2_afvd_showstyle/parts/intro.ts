@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece
@@ -67,8 +68,9 @@ export function CreatePartIntro(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
@@ -79,6 +81,7 @@ export function CreatePartIntro(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

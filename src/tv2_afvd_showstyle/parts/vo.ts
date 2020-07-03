@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
@@ -54,6 +55,7 @@ export function CreatePartVO(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
@@ -94,7 +96,7 @@ export function CreatePartVO(
 		})
 	)
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, actualDuration, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
@@ -104,6 +106,7 @@ export function CreatePartVO(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

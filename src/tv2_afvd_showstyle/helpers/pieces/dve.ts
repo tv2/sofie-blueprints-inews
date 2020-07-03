@@ -1,4 +1,5 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -24,6 +25,7 @@ export function EvaluateDVE(
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	adlib?: boolean,

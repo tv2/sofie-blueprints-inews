@@ -1,4 +1,9 @@
-import { IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPart,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
 import { AddScript, literal, PartContext2, PartDefinition, PartTime } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
@@ -23,8 +28,11 @@ export function OfftubeCreatePartGrafik(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlib: asAdlibs })
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {
+		adlib: asAdlibs
+	})
 	part.prerollDuration = config.studio.CasparPrerollDuration
 	part.transitionKeepaliveDuration = config.studio.FullKeepAliveDuration
 		? Number(config.studio.FullKeepAliveDuration)
@@ -39,6 +47,7 @@ export function OfftubeCreatePartGrafik(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

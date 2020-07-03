@@ -24,7 +24,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, Enablers, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { PartContext2 } from '../partContext2'
@@ -144,9 +144,7 @@ export function MakeContentDVEBase<
 	dveConfig: DVEConfigInput | undefined,
 	dveGeneratorOptions: DVEOptions,
 	addClass?: boolean,
-	adlib?: boolean,
-	offtube?: boolean,
-	flowProducer?: boolean
+	adlib?: boolean
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	if (!dveConfig) {
 		context.warning(`DVE ${parsedCue.template} is not configured`)
@@ -179,9 +177,7 @@ export function MakeContentDVEBase<
 		dveGeneratorOptions,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
-		partDefinition,
-		offtube,
-		flowProducer
+		partDefinition
 	)
 }
 
@@ -197,9 +193,7 @@ export function MakeContentDVE2<
 	dveGeneratorOptions: DVEOptions,
 	className?: string,
 	adlib?: boolean,
-	partDefinition?: PartDefinition,
-	offtube?: boolean,
-	flowProducer?: boolean
+	partDefinition?: PartDefinition
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
 
@@ -291,7 +285,6 @@ export function MakeContentDVE2<
 
 	let valid = true
 	let server = false
-	const timelineStartObjId = `ssrc_${partDefinition?.externalId ?? ''}_${dveConfig.DVEName}`.replace(/-/g, '_')
 
 	boxMap.forEach((mappingFrom, num) => {
 		if (mappingFrom === undefined || mappingFrom.source === '') {
@@ -310,9 +303,8 @@ export function MakeContentDVE2<
 				return
 			}
 			const audioEnable: TSR.Timeline.TimelineEnable = {
-				while: offtube ? `.${Enablers.OFFTUBE_ENABLE_DVE}` : `1`
-				// while: `!.${ControlClasses.DVEBoxOverridePrefix + boxMappings[num]}`
-			} // TODO - test
+				while: `1`
+			}
 			if (sourceType.match(/KAM/i)) {
 				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
 				if (sourceInfoCam === undefined) {
@@ -396,7 +388,7 @@ export function MakeContentDVE2<
 				dveTimeline.push(
 					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
-						enable: getDVEEnable(!!offtube, undefined, undefined, true),
+						enable: getDVEEnable(undefined, true),
 						priority: 1,
 						layer: dveGeneratorOptions.dveLayers.CasparLLayer.ClipPending,
 						content: {
@@ -416,7 +408,7 @@ export function MakeContentDVE2<
 					}),
 					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',
-						enable: getDVEEnable(!!offtube, undefined, undefined, true),
+						enable: getDVEEnable(undefined, true),
 						priority: 1,
 						layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.ClipPending,
 						content: {
@@ -457,7 +449,7 @@ export function MakeContentDVE2<
 				.map<TSR.TimelineObjSisyfosChannel>(layer => {
 					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',
-						enable: getDVEEnable(!!offtube),
+						enable: getDVEEnable(),
 						priority: 1,
 						layer,
 						content: {
@@ -481,14 +473,14 @@ export function MakeContentDVE2<
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				// Setup classes for adlibs to be able to override boxes
 				createEmptyObject({
-					enable: getDVEEnable(!!offtube),
+					enable: getDVEEnable(),
 					layer: 'dve_lookahead_control',
 					classes: [ControlClasses.DVEOnAir]
 				}),
 
 				// setup ssrc
 				literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
-					id: offtube ? timelineStartObjId : '',
+					id: '',
 					enable: {
 						while: '1'
 					},
@@ -510,7 +502,7 @@ export function MakeContentDVE2<
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({
 					id: '',
-					enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration) - 10, timelineStartObjId), // TODO - why 10ms?
+					enable: getDVEEnable(Number(config.studio.CasparPrerollDuration) - 10), // TODO - why 10ms?
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.SSrcArt,
 					content: {
@@ -524,31 +516,26 @@ export function MakeContentDVE2<
 						}
 					}
 				}),
-
-				...(!offtube || flowProducer
-					? [
-							literal<TSR.TimelineObjAtemME>({
-								id: '',
-								enable: getDVEEnable(!!offtube, Number(config.studio.CasparPrerollDuration), timelineStartObjId),
-								priority: 1,
-								layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.ME,
-									me: {
-										input: AtemSourceIndex.SSrc,
-										transition: TSR.AtemTransitionStyle.CUT
-									}
-								},
-								...(adlib ? { classes: ['adlib_deparent'] } : {})
-							})
-					  ]
-					: []),
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					enable: getDVEEnable(Number(config.studio.CasparPrerollDuration)),
+					priority: 1,
+					layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: AtemSourceIndex.SSrc,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					},
+					...(adlib ? { classes: ['adlib_deparent'] } : {})
+				}),
 				...(graphicsTemplateName
 					? [
 							literal<TSR.TimelineObjCCGTemplate>({
 								id: '',
-								enable: getDVEEnable(false),
+								enable: getDVEEnable(),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVETemplate,
 								content: {
@@ -575,7 +562,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
-								enable: getDVEEnable(false),
+								enable: getDVEEnable(),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEKey,
 								content: {
@@ -594,7 +581,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
-								enable: getDVEEnable(false),
+								enable: getDVEEnable(),
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEFrame,
 								content: {
@@ -635,20 +622,9 @@ function boxSource(
 	}
 }
 
-function getDVEEnable(
-	offtube: boolean,
-	offsetFromStart?: number,
-	startId?: string,
-	media?: boolean
-): TSR.TSRTimelineObj['enable'] {
+function getDVEEnable(offsetFromStart?: number, media?: boolean): TSR.TSRTimelineObj['enable'] {
 	if (offsetFromStart) {
-		return offtube
-			? { start: startId ? `#${startId}.start + ${offsetFromStart}` : offsetFromStart }
-			: { start: offsetFromStart ?? 0 }
+		return { start: offsetFromStart ?? 0 }
 	}
-	return offtube
-		? { while: `.${[Enablers.OFFTUBE_ENABLE_DVE]}` }
-		: media
-		? { while: '1' }
-		: { start: offsetFromStart ?? 0 }
+	return media ? { while: '1' } : { start: offsetFromStart ?? 0 }
 }

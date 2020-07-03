@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -42,6 +43,8 @@ export function CreatePartKam(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
+
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -133,7 +136,7 @@ export function CreatePartKam(
 		)
 	}
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
@@ -143,6 +146,7 @@ export function CreatePartKam(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece
@@ -26,7 +27,10 @@ export function OfftubeCreatePartDVE(
 	})
 	const pieces: IBlueprintPiece[] = []
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlib: true })
+	const actions: IBlueprintActionManifest[] = []
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {
+		adlib: true
+	})
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
 		part.prerollDuration = config.studio.CasparPrerollDuration
@@ -41,6 +45,7 @@ export function OfftubeCreatePartDVE(
 	return {
 		part,
 		pieces,
-		adLibPieces
+		adLibPieces,
+		actions
 	}
 }

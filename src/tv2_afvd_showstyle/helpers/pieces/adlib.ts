@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
@@ -20,6 +20,7 @@ export function EvaluateAdLib(
 	context: PartContext2,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,

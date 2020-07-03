@@ -1,10 +1,13 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	PieceLifespan,
+	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectDVE,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
@@ -16,7 +19,7 @@ import {
 	TemplateIsValid,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibTags, ControlClasses, CueType, Enablers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers } from 'tv2-constants'
 import _ = require('underscore')
 import {
 	OfftubeAbstractLLayer,
@@ -24,7 +27,6 @@ import {
 	OfftubeCasparLLayer,
 	OfftubeSisyfosLLayer
 } from '../../tv2_offtube_studio/layers'
-import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -33,6 +35,7 @@ export function OfftubeEvaluateAdLib(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -205,94 +208,27 @@ export function OfftubeEvaluateAdLib(
 			}
 		})
 
-		const adlibDVE = literal<IBlueprintAdLibPiece>({
-			_rank: rank,
-			externalId: partId,
-			name: `${partDefinition.storyName}`,
-			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
-			outputLayerId: 'selectedAdlib',
-			toBeQueued: true,
-			canCombineQueue: true,
-			content: {
-				...adlibContent.content,
-				timelineObjects: adlibContent.content.timelineObjects.map(tlObj => {
-					return {
-						...tlObj,
-						classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : [ControlClasses.NOLookahead]
-					}
-				})
-			},
-			invalid: !adlibContent.valid,
-			infiniteMode: PieceLifespan.OutOnNextSegment,
-			metaData: literal<PieceMetaData>({
-				stickySisyfosLevels: sticky
-			}),
-			tags: [AdlibTags.ADLIB_KOMMENTATOR]
-		})
-
-		adlibDVE.additionalPieces = [
-			literal<IBlueprintAdLibPiece>({
-				_rank: 0,
-				externalId: 'setNextToDVE',
-				name: 'DVE',
-				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				canCombineQueue: true,
-				content: {
-					timelineObjects: [
-						literal<TSR.TimelineObjAbstractAny>({
-							id: 'dveProgramEnabler',
-							enable: {
-								while: '1'
-							},
-							priority: 1,
-							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_DVE]
-						}),
-						literal<TSR.TimelineObjAtemME>({
-							id: `dvePgmAdlib`,
-							enable: { start: Number(config.studio.CasparPrerollDuration) },
-							priority: 1,
-							layer: OfftubeAtemLLayer.AtemMEClean,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: AtemSourceIndex.SSrc,
-									transition: TSR.AtemTransitionStyle.CUT
-								}
-							},
-							classes: ['adlib_deparent']
-						}),
-						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-							id: `dveNextAdlib`,
-							enable: { start: 0 },
-							priority: 0, // Must be below lookahead, except when forced by hold
-							layer: OfftubeAtemLLayer.AtemMENext,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									previewInput: AtemSourceIndex.SSrc
-								}
-							},
-							metaData: {
-								context: `Lookahead-lookahead for dveProgramEnabler`
-							},
-							classes: ['ab_on_preview']
-						})
-					]
-				},
-				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
+		actions.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_DVE,
+				userData: literal<ActionSelectDVE>({
+					type: AdlibActionType.SELECT_DVE,
+					config: cueDVE,
+					part: partDefinition
+				}),
+				userDataManifest: {},
+				display: {
+					sourceLayerId: OfftubeSourceLayer.PgmDVE,
+					outputLayerId: OfftubeOutputLayers.PGM,
+					label: `${partDefinition.storyName} Action`,
+					tags: [AdlibTags.ADLIB_KOMMENTATOR],
+					content: literal<SplitsContent>({
+						...adlibContent.content,
+						timelineObjects: []
+					})
+				}
 			})
-		]
-
-		adLibPieces.push(adlibDVE)
+		)
 
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({

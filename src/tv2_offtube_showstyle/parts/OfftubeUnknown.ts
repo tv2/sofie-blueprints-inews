@@ -1,4 +1,9 @@
-import { IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPart,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
 import { AddScript, GetJinglePartProperties, literal, PartContext2, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -24,8 +29,11 @@ export function CreatePartUnknown(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, { adlib: asAdlibs })
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {
+		adlib: asAdlibs
+	})
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
@@ -41,6 +49,7 @@ export function CreatePartUnknown(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

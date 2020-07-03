@@ -125,13 +125,13 @@ export function OfftubeCreatePartServer(
 				label: `${partDefinition.storyName} ACTION`,
 				sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
-				content: { actionContent, timelineObjects: [] }, // TODO: No timeline
+				content: { ...actionContent, timelineObjects: [] }, // TODO: No timeline
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
 			}
 		})
 	)
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 
 	AddScript(partDefinition, pieces, duration, OfftubeSourceLayer.PgmScript)
 

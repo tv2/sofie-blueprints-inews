@@ -1,4 +1,9 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, TSR } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,
@@ -70,6 +75,7 @@ export interface EvaluateCuesShowstyleOptions<
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionDVE,
 		adlib?: boolean,
@@ -79,6 +85,7 @@ export interface EvaluateCuesShowstyleOptions<
 		context: PartContext2,
 		config: ShowStyleConfig,
 		adLibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
@@ -183,6 +190,7 @@ export function EvaluateCuesBase<
 	config: ShowStyleConfig,
 	pieces: IBlueprintPieceEPI[],
 	adLibPieces: IBlueprintAdLibPieceEPI[],
+	actions: IBlueprintActionManifest[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -250,6 +258,7 @@ export function EvaluateCuesBase<
 							config,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition,
 							cue,
 							shouldAdlib,
@@ -262,6 +271,7 @@ export function EvaluateCuesBase<
 								config,
 								pieces,
 								adLibPieces,
+								actions,
 								partDefinition,
 								cue,
 								true,
@@ -276,6 +286,7 @@ export function EvaluateCuesBase<
 							context,
 							config,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							cue,
 							partDefinition,

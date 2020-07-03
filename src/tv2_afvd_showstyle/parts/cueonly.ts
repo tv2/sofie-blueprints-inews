@@ -1,4 +1,9 @@
-import { IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPart,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddScript,
 	CueDefinition,
@@ -34,13 +39,14 @@ export function CreatePartCueOnly(
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, [cue], partDefinitionWithID, {})
 	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, { adlib: true })
+		EvaluateCues(context, config, pieces, adLibPieces, actions, [cue], partDefinitionWithID, { adlib: true })
 	}
 
 	if (
@@ -64,6 +70,7 @@ export function CreatePartCueOnly(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

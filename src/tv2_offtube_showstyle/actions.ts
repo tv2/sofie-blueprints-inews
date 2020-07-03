@@ -16,23 +16,28 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionSelectDVE,
 	ActionSelectServerClip,
+	CalculateTime,
 	CreatePartServerBase,
 	DVEBoxInfo,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
+	GetDVETemplate,
 	GetEksternMetaData,
 	GetLayersForCamera,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
+	MakeContentDVE2,
 	MakeContentServer,
 	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { parseConfig } from './helpers/config'
 import { EvaluateCuesIntoTimeline } from './helpers/EvaluateCuesIntoTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
@@ -48,6 +53,9 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 	switch (actionId) {
 		case AdlibActionType.SELECT_SERVER_CLIP:
 			executeActionSelectServerClip(context, actionId, userData as ActionSelectServerClip)
+			break
+		case AdlibActionType.SELECT_DVE:
+			executeActionSelectDVE(context, actionId, userData as ActionSelectDVE)
 			break
 		case AdlibActionType.CUT_TO_CAMERA:
 			executeActionCutToCamera(context, actionId, userData as ActionCutToCamera)
@@ -153,6 +161,94 @@ function executeActionSelectServerClip(
 			OfftubeSourceLayer.SelectedAdLibServer,
 			OfftubeSourceLayer.SelectedAdLibVoiceOver
 		])
+	])
+}
+
+function executeActionSelectDVE(context: ActionExecutionContext, _actionId: string, userData: ActionSelectDVE) {
+	const externalId = `adlib-action_${context.getHashId(`select_server_dve_${userData.config.template}`)}`
+
+	const config = parseConfig(context)
+
+	const parsedCue = userData.config
+
+	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
+	if (!rawTemplate) {
+		return
+	}
+
+	const graphicsTemplateContent: { [key: string]: string } = {}
+	parsedCue.labels.forEach((label, i) => {
+		graphicsTemplateContent[`locator${i + 1}`] = label
+	})
+
+	const pieceContent = MakeContentDVE2(
+		context,
+		config,
+		rawTemplate,
+		graphicsTemplateContent,
+		parsedCue.sources,
+		OFFTUBE_DVE_GENERATOR_OPTIONS,
+		undefined,
+		false,
+		{ ...userData.part, segmentExternalId: externalId }
+	)
+
+	let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
+	start = start ? start : 0
+	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
+
+	const dvePiece = literal<IBlueprintPiece>({
+		_id: '',
+		externalId,
+		name: `${parsedCue.template}`,
+		enable: {
+			start,
+			...(end ? { duration: end - start } : {})
+		},
+		outputLayerId: 'pgm',
+		sourceLayerId: OfftubeSourceLayer.PgmDVE,
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		toBeQueued: true,
+		content: {
+			...pieceContent.content,
+			timelineObjects: [...pieceContent.content.timelineObjects]
+		},
+		adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+		metaData: literal<PieceMetaData>({
+			mediaPlayerSessions: [externalId]
+		})
+	})
+
+	const serverDataStore = literal<IBlueprintPiece>({
+		_id: '',
+		externalId: `${externalId}_dataStore`,
+		name: userData.config.template,
+		enable: {
+			start: 0
+		},
+		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
+		sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
+		infiniteMode: PieceLifespan.OutOnNextSegment,
+		metaData: {
+			userData
+		},
+		content: {
+			...pieceContent.content,
+			timelineObjects: []
+		}
+	})
+
+	const part = literal<IBlueprintPart>({
+		externalId,
+		title: `${parsedCue.template}`,
+		metaData: {},
+		expectedDuration: 0
+	})
+
+	context.queuePart(part, [
+		dvePiece,
+		serverDataStore,
+		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdLibDVE])
 	])
 }
 
