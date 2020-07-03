@@ -13,10 +13,12 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
-	ActionCutSourceToBox,
+	ActionCommentatorSelectDVE,
 	// GetCameraMetaData,
-	ActionCutToCamera,
+	ActionCommentatorSelectServer,
 	// GetLayersForCamera,
+	ActionCutSourceToBox,
+	ActionCutToCamera,
 	ActionCutToRemote,
 	GraphicLLayer,
 	literal,
@@ -24,7 +26,7 @@ import {
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, ControlClasses, Enablers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -183,105 +185,6 @@ function getGlobalAdLibPiecesOfftube(
 		})
 	)*/
 
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToServer',
-			name: 'Server',
-			sourceLayerId: OfftubeSourceLayer.PgmServer,
-			outputLayerId: OfftubeOutputLayers.PGM,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			canCombineQueue: true,
-			content: {
-				timelineObjects: [
-					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-						id: '',
-						enable: { start: 0 },
-						priority: 0,
-						layer: OfftubeAtemLLayer.AtemMENext,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								previewInput: undefined
-							}
-						},
-						metaData: {
-							context: `Lookahead-lookahead for serverProgramEnabler`
-						},
-						classes: ['ab_on_preview', ControlClasses.CopyMediaPlayerSession, Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD]
-					})
-				]
-			},
-			tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT],
-			adlibPreroll: config.studio.CasparPrerollDuration
-		})
-	)
-
-	/*adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToDVE',
-			name: 'DVE',
-			sourceLayerId: OfftubeSourceLayer.PgmDVE,
-			outputLayerId: OfftubeOutputLayers.PGM,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			canCombineQueue: true,
-			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-			content: {
-				timelineObjects: [
-					literal<TSR.TimelineObjAbstractAny>({
-						id: 'dveProgramEnabler',
-						enable: {
-							while: '1'
-						},
-						priority: 1,
-						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-						content: {
-							deviceType: TSR.DeviceType.ABSTRACT
-						},
-						classes: [Enablers.OFFTUBE_ENABLE_DVE]
-					}),
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
-						enable: { start: Number(config.studio.CasparPrerollDuration) },
-						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEClean,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: AtemSourceIndex.SSrc,
-								transition: TSR.AtemTransitionStyle.CUT
-							}
-						},
-						classes: ['adlib_deparent']
-					}),
-					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-						id: '',
-						enable: { start: 0 },
-						priority: 0, // Must be below lookahead, except when forced by hold
-						layer: OfftubeAtemLLayer.AtemMENext,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								previewInput: AtemSourceIndex.SSrc
-							}
-						},
-						metaData: {
-							context: `Lookahead-lookahead for dveProgramEnabler`
-						},
-						classes: ['ab_on_preview']
-					})
-				]
-			},
-			tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
-		})
-	)*/
-
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
 }
@@ -363,6 +266,42 @@ function getGlobalAdlibActionsOfftube(
 			)
 		})
 	}
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.COMMENTATOR_SELECT_SERVER,
+			userData: literal<ActionCommentatorSelectServer>({
+				type: AdlibActionType.COMMENTATOR_SELECT_SERVER
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: globalRank++,
+				label: 'Server',
+				sourceLayerId: OfftubeSourceLayer.PgmServer,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				content: {},
+				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
+			}
+		})
+	)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.COMMENTATOR_SELECT_DVE,
+			userData: literal<ActionCommentatorSelectDVE>({
+				type: AdlibActionType.COMMENTATOR_SELECT_DVE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: globalRank++,
+				label: 'DVE',
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				content: {},
+				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
+			}
+		})
+	)
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)

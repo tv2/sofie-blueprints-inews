@@ -41,4 +41,18 @@ export interface ActionCutSourceToBox extends ActionBase {
 	server?: boolean
 }
 
-export type TV2AdlibAction = ActionSelectServerClip | ActionCutToCamera | ActionCutToRemote | ActionSelectDVE
+export interface ActionCommentatorSelectServer extends ActionBase {
+	type: AdlibActionType.COMMENTATOR_SELECT_SERVER
+}
+
+export interface ActionCommentatorSelectDVE extends ActionBase {
+	type: AdlibActionType.COMMENTATOR_SELECT_DVE
+}
+
+export type TV2AdlibAction =
+	| ActionSelectServerClip
+	| ActionCutToCamera
+	| ActionCutToRemote
+	| ActionSelectDVE
+	| ActionCommentatorSelectServer
+	| ActionCommentatorSelectDVE

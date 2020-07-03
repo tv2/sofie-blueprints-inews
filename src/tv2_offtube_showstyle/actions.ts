@@ -13,6 +13,8 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionCommentatorSelectDVE,
+	ActionCommentatorSelectServer,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
@@ -32,7 +34,8 @@ import {
 	literal,
 	MakeContentDVE2,
 	MakeContentServer,
-	TimelineBlueprintExt
+	TimelineBlueprintExt,
+	TV2AdlibAction
 } from 'tv2-common'
 import { AdlibActionType, CueType } from 'tv2-constants'
 import _ = require('underscore')
@@ -65,6 +68,12 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 			break
 		case AdlibActionType.CUT_SOURCE_TO_BOX:
 			executeActionCutSourceToBox(context, actionId, userData as ActionCutSourceToBox)
+			break
+		case AdlibActionType.COMMENTATOR_SELECT_DVE:
+			executeActionCommentatorSelectDVE(context, actionId, userData as ActionCommentatorSelectDVE)
+			break
+		case AdlibActionType.COMMENTATOR_SELECT_SERVER:
+			executeActionCommentatorSelectServer(context, actionId, userData as ActionCommentatorSelectServer)
 			break
 	}
 }
@@ -592,4 +601,63 @@ function executeActionCutSourceToBox(
 	})
 
 	context.updatePieceInstance(modifiedPiece._id, modifiedPiece.piece)
+}
+
+function findDataStore<T extends TV2AdlibAction>(
+	context: ActionExecutionContext,
+	dataStoreLayers: string[]
+): T | undefined {
+	const currentPieces = context.getPieceInstances('current')
+	const nextPieces = context.getPieceInstances('next')
+
+	const currentServer = currentPieces.find(p => dataStoreLayers.includes(p.piece.sourceLayerId))
+
+	const nextServer = nextPieces.find(p => dataStoreLayers.includes(p.piece.sourceLayerId))
+
+	let serverToPlay: IBlueprintPieceInstance | undefined
+
+	if (nextServer) {
+		serverToPlay = nextServer
+	} else if (currentServer) {
+		serverToPlay = currentServer
+	}
+
+	if (!serverToPlay) {
+		return
+	}
+
+	const data = serverToPlay.piece.metaData?.userData as T | undefined
+
+	return data
+}
+
+function executeActionCommentatorSelectServer(
+	context: ActionExecutionContext,
+	_actionId: string,
+	_userData: ActionCommentatorSelectServer
+) {
+	const data = findDataStore<ActionSelectServerClip>(context, [
+		OfftubeSourceLayer.SelectedAdLibServer,
+		OfftubeSourceLayer.SelectedAdLibServer
+	])
+
+	if (!data) {
+		return
+	}
+
+	executeActionSelectServerClip(context, AdlibActionType.SELECT_SERVER_CLIP, data)
+}
+
+function executeActionCommentatorSelectDVE(
+	context: ActionExecutionContext,
+	_actionId: string,
+	_userData: ActionCommentatorSelectDVE
+) {
+	const data = findDataStore<ActionSelectDVE>(context, [OfftubeSourceLayer.SelectedAdLibDVE])
+
+	if (!data) {
+		return
+	}
+
+	executeActionSelectDVE(context, AdlibActionType.SELECT_DVE, data)
 }
