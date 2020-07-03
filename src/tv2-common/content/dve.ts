@@ -404,7 +404,7 @@ export function MakeContentDVE2<
 									: MEDIA_PLAYER_AUTO
 								: undefined
 						},
-						classes: [ControlClasses.DVEPlaceholder]
+						classes: file ? [] : [ControlClasses.DVEPlaceholder]
 					}),
 					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',

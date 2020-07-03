@@ -219,8 +219,7 @@ function executeActionSelectDVE(context: ActionExecutionContext, _actionId: stri
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		toBeQueued: true,
 		content: {
-			...pieceContent.content,
-			timelineObjects: [...pieceContent.content.timelineObjects]
+			...pieceContent.content
 		},
 		adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 		metaData: literal<PieceMetaData>({
@@ -251,7 +250,8 @@ function executeActionSelectDVE(context: ActionExecutionContext, _actionId: stri
 		externalId,
 		title: `${parsedCue.template}`,
 		metaData: {},
-		expectedDuration: 0
+		expectedDuration: 0,
+		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
 	context.queuePart(part, [
