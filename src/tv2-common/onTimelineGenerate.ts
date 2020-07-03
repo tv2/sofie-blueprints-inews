@@ -10,9 +10,7 @@ import {
 	TimelinePersistentState,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { ControlClasses, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
-import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer } from '../tv2_offtube_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
@@ -65,16 +63,16 @@ export function onTimelineGenerate<
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	parseConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
-	casparLayerClipPending: string,
-	atemLayerNext: string
+	_casparLayerClipPending: string,
+	_atemLayerNext: string
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
-	const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
+	// const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
 
 	const config = parseConfig(context)
 
 	// Find server in pgm
-	const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)
+	/*const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)
 	const activeMediaPlayerSession = (activeServerObj?.metaData as TimelineBlueprintExt['metaData'])?.mediaPlayerSession
 
 	const lookaheadServerObjIndex = timeline.findIndex(
@@ -277,7 +275,7 @@ export function onTimelineGenerate<
 				}
 			}
 		}
-	})
+	})*/
 
 	copyPreviousSisyfosLevels(
 		context,

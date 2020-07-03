@@ -9,13 +9,11 @@ import {
 import { onTimelineGenerate } from 'tv2-common'
 import {
 	CasparPlayerClip,
-	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
 	OfftubeCasparLLayer,
 	OfftubeSisyfosLLayer
 } from '../tv2_offtube_studio/layers'
 import { parseConfig } from './helpers/config'
-import { OfftubeSourceLayer } from './layers'
 
 export function onTimelineGenerateOfftube(
 	context: PartEventContext,
@@ -25,7 +23,7 @@ export function onTimelineGenerateOfftube(
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ): Promise<BlueprintResultTimeline> {
 	// If we are not in a server, then disable the server adlib piece
-	const currentPartId = context.part._id
+	/*const currentPartId = context.part._id
 	const currentPieces: { [id: string]: IBlueprintResolvedPieceInstance } = {}
 	for (const piece of resolvedPieces) {
 		if (piece.piece.partId === currentPartId) {
@@ -55,7 +53,7 @@ export function onTimelineGenerateOfftube(
 				enableObj.enable = { while: '0' }
 			}
 		}
-	}
+	}*/
 
 	return onTimelineGenerate(
 		context,
