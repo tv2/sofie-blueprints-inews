@@ -9,7 +9,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, Enablers } from 'tv2-constants'
+import { ControlClasses } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
@@ -40,7 +40,6 @@ export function MakeContentServer<
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
-	const timelineStartObjId = `clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/\W/g, '')
 	// const filePath = `${SanitizePath(config.studio.ClipBasePath)}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
@@ -62,26 +61,9 @@ export function MakeContentServer<
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
-					noStarttime: true,
-					...(offtubeOptions?.isOfftube ? { playing: false } : {})
+					noStarttime: true
 					// ...(offtubeOptions?.isOfftube ? { seek: 0 } : {})
 				},
-				...(offtubeOptions?.isOfftube
-					? {
-							keyframes: [
-								{
-									id: '',
-									enable: {
-										while: `.${offtubeOptions.enabler}`
-									},
-									content: {
-										playing: true,
-										seek: 0
-									}
-								}
-							]
-					  }
-					: {}),
 				metaData: {
 					mediaPlayerSession: mediaPlayerSessionId
 				},
@@ -90,17 +72,6 @@ export function MakeContentServer<
 
 			...(offtubeOptions && offtubeOptions.isOfftube
 				? [
-						literal<TSR.TSRTimelineObjAbstract & TimelineBlueprintExt>({
-							id: timelineStartObjId,
-							enable: {
-								while: `.${Enablers.OFFTUBE_ENABLE_SERVER}`
-							},
-							priority: 1,
-							layer: offtubeOptions.serverEnable,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							}
-						}),
 						literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 							id: '',
 							enable: {
@@ -123,12 +94,7 @@ export function MakeContentServer<
 				: []),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
-				enable:
-					offtubeOptions && offtubeOptions.isOfftube
-						? {
-								start: `#${timelineStartObjId}.start + ${config.studio.CasparPrerollDuration}`
-						  }
-						: getServerAdlibEnable(!!adLib, config.studio.CasparPrerollDuration, offtubeOptions),
+				enable: getServerAdlibEnable(config.studio.CasparPrerollDuration),
 				priority: 1,
 				layer: sourceLayers.ATEM.MEPGM,
 				content: {
@@ -158,7 +124,7 @@ export function MakeContentServer<
 
 			literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
+				enable: getServerAdlibEnable(0),
 				priority: 1,
 				layer: sourceLayers.Sisyfos.ClipPending,
 				content: {
@@ -177,7 +143,7 @@ export function MakeContentServer<
 				? sourceLayers.STICKY_LAYERS.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
 						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 							id: '',
-							enable: getServerAdlibEnable(!!adLib, 0, offtubeOptions),
+							enable: getServerAdlibEnable(0),
 							priority: 1,
 							layer,
 							content: {
@@ -195,17 +161,7 @@ export function MakeContentServer<
 	})
 }
 
-function getServerAdlibEnable(
-	adlib: boolean,
-	startTime: number,
-	offtubeOptions?: AdlibServerOfftubeOptions
-): TSR.TSRTimelineObjBase['enable'] {
-	if (adlib && offtubeOptions?.isOfftube) {
-		return {
-			while: `.${offtubeOptions.enabler}`
-		}
-	}
-
+function getServerAdlibEnable(startTime: number): TSR.TSRTimelineObjBase['enable'] {
 	return {
 		start: startTime
 	}

@@ -14,7 +14,7 @@ import {
 	PartContext2,
 	PartDefinition
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, Enablers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -106,7 +106,6 @@ export function OfftubeCreatePartServer(
 		{
 			isOfftube: true,
 			tagAsAdlib: true,
-			enabler: Enablers.OFFTUBE_ENABLE_SERVER,
 			serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 		}
 	)

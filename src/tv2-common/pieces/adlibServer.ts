@@ -1,13 +1,12 @@
 import { IBlueprintAdLibPiece, PieceLifespan, PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
 import { literal, PartDefinition, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
-import { AdlibTags, Enablers } from 'tv2-constants'
+import { AdlibTags } from 'tv2-constants'
 import { MakeContentServer, MakeContentServerSourceLayers } from '../content/server'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
 	isOfftube: true
 	tagAsAdlib: boolean
-	enabler: Enablers
 	serverEnable: string
 }
 

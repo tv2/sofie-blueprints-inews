@@ -28,7 +28,6 @@ import { AdlibActionType, AdlibTags, CONSTANTS, ControlClasses, Enablers } from 
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
-	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
 	OfftubeCasparLLayer,
 	OfftubeSisyfosLLayer
@@ -196,18 +195,6 @@ function getGlobalAdLibPiecesOfftube(
 			canCombineQueue: true,
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAbstractAny>({
-						id: 'serverProgramEnabler',
-						enable: {
-							while: '1'
-						},
-						priority: 1,
-						layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-						content: {
-							deviceType: TSR.DeviceType.ABSTRACT
-						},
-						classes: [Enablers.OFFTUBE_ENABLE_SERVER]
-					}),
 					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 						id: '',
 						enable: { start: 0 },

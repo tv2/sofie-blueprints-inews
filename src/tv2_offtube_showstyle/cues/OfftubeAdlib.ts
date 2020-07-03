@@ -1,10 +1,8 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	PieceLifespan,
 	SplitsContent,
-	TimelineObjectCoreExt,
-	TSR
+	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectDVE,
@@ -16,10 +14,9 @@ import {
 	PartContext2,
 	PartDefinition,
 	PieceMetaData,
-	TemplateIsValid,
-	TimelineBlueprintExt
+	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import {
 	OfftubeAbstractLLayer,
@@ -72,7 +69,6 @@ export function OfftubeEvaluateAdLib(
 			{
 				isOfftube: true,
 				tagAsAdlib: true,
-				enabler: Enablers.OFFTUBE_ENABLE_SERVER,
 				serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 			}
 		)
@@ -83,58 +79,6 @@ export function OfftubeEvaluateAdLib(
 		// TODO: This should happen in above function
 		// TODO: This breaks infinites
 		// adlibServer.expectedDuration = duration
-
-		// HACK: Replace with adlib action
-		adlibServer.additionalPieces = [
-			literal<IBlueprintAdLibPiece>({
-				_rank: 0,
-				externalId: 'setNextToServer',
-				name: 'Server',
-				sourceLayerId: OfftubeSourceLayer.PgmServer,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				canCombineQueue: true,
-				content: {
-					timelineObjects: [
-						literal<TSR.TimelineObjAbstractAny>({
-							id: 'serverProgramEnabler',
-							enable: {
-								while: '1'
-							},
-							priority: 1,
-							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_SERVER]
-						}),
-						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-							id: '',
-							enable: { start: 0 },
-							priority: 0,
-							layer: OfftubeAtemLLayer.AtemMENext,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									previewInput: undefined
-								}
-							},
-							metaData: {
-								context: `Lookahead-lookahead for serverProgramEnabler`
-							},
-							classes: [
-								'ab_on_preview',
-								ControlClasses.CopyMediaPlayerSession,
-								Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD
-							]
-						})
-					]
-				},
-				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
-			})
-		]
 
 		adLibPieces.push(adlibServer)
 
