@@ -145,14 +145,7 @@ function executeActionSelectServerClip(
 	// TODO: Maybe these should be created as pieces rather than timeline objects?
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		activeServerPiece.content.timelineObjects.push(
-			...EvaluateCuesIntoTimeline(
-				config,
-				partDefinition.cues,
-				partDefinition,
-				`clip_${partDefinition?.externalId ?? ''}_${file}`.replace(/\W/g, ''), // TODO: This is copy-pasted code
-				[CueType.Grafik],
-				true
-			)
+			...EvaluateCuesIntoTimeline(config, partDefinition.cues, partDefinition, [CueType.Grafik], true)
 		)
 
 		if (userData.vo) {

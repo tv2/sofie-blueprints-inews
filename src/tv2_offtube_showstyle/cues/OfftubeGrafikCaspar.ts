@@ -186,14 +186,13 @@ export function GetCasparOverlayTimeline(
 	parsedCue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition: PartDefinition,
-	timelineObjStartId?: string,
 	commentator?: boolean
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
 			enable: commentator
-				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition, timelineObjStartId)
+				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition)
 				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
 			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
 			content: {
@@ -491,8 +490,7 @@ function GetEnableForGrafikOfftube(
 	engine: GraphicEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
-	partDefinition?: PartDefinition,
-	timelineObjStartId?: string
+	partDefinition?: PartDefinition
 ): TSR.TSRTimelineObj['enable'] {
 	if (engine === 'WALL') {
 		return {
@@ -509,7 +507,7 @@ function GetEnableForGrafikOfftube(
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
-	const timing = CreateTimingEnable(cue, GetDefaultOut(config), timelineObjStartId)
+	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
 
 	if (!timing.infiniteMode) {
 		return timing.enable

@@ -8,7 +8,6 @@ export function EvaluateCuesIntoTimeline(
 	config: OfftubeShowstyleBlueprintConfig,
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
-	timelineObjStartId: string,
 	/** Passing this arguments sets the types of cues to evaluate. */
 	selectedCueTypes?: CueType[] | undefined,
 	/** Don't evaluate adlibs */
@@ -21,15 +20,7 @@ export function EvaluateCuesIntoTimeline(
 			switch (cue.type) {
 				case CueType.Grafik:
 					timeline.push(
-						...GetCasparOverlayTimeline(
-							config,
-							'FULL',
-							cue,
-							!!cue.template.match(/direkte/i),
-							partDefinition,
-							timelineObjStartId,
-							true
-						)
+						...GetCasparOverlayTimeline(config, 'FULL', cue, !!cue.template.match(/direkte/i), partDefinition, true)
 					)
 					break
 				default:
@@ -37,6 +28,8 @@ export function EvaluateCuesIntoTimeline(
 			}
 		}
 	}
+
+	console.log(JSON.stringify(timeline))
 
 	return timeline
 }
