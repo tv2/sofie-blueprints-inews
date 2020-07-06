@@ -78,6 +78,14 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 	}
 }
 
+// Cannot insert pieces with start "now", change to start 0
+function sanitizePieceStart(piece: IBlueprintPiece): IBlueprintPiece {
+	if (piece.enable.start === 'now') {
+		piece.enable.start = 0
+	}
+	return piece
+}
+
 function getPiecesToPreserve(
 	context: ActionExecutionContext,
 	adlibLayers: string[],
@@ -87,6 +95,7 @@ function getPiecesToPreserve(
 		.getPieceInstances('next')
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
 		.map<IBlueprintPiece>(p => p.piece)
+		.map(p => sanitizePieceStart(p))
 }
 
 function executeActionSelectServerClip(
@@ -107,7 +116,7 @@ function executeActionSelectServerClip(
 		name: file,
 		enable: { start: 0 },
 		outputLayerId: OfftubeOutputLayers.PGM,
-		sourceLayerId: OfftubeSourceLayer.PgmServer,
+		sourceLayerId: userData.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: [externalId]
@@ -145,6 +154,10 @@ function executeActionSelectServerClip(
 				true
 			)
 		)
+
+		if (userData.vo) {
+			activeServerPiece.content.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
+		}
 	}
 
 	const serverDataStore = literal<IBlueprintPiece>({
@@ -155,7 +168,7 @@ function executeActionSelectServerClip(
 			start: 0
 		},
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
-		sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
+		sourceLayerId: userData.vo ? OfftubeSourceLayer.SelectedAdLibVoiceOver : OfftubeSourceLayer.SelectedAdLibServer,
 		infiniteMode: PieceLifespan.OutOnNextSegment,
 		metaData: {
 			userData

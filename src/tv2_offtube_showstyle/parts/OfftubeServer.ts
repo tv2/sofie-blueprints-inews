@@ -117,7 +117,8 @@ export function OfftubeCreatePartServer(
 				type: AdlibActionType.SELECT_SERVER_CLIP,
 				file,
 				partDefinition,
-				duration
+				duration,
+				vo: false
 			}),
 			userDataManifest: {},
 			display: {

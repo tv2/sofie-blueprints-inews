@@ -11,6 +11,7 @@ export interface ActionSelectServerClip extends ActionBase {
 	file: string
 	partDefinition: PartDefinition
 	duration: number
+	vo: boolean
 }
 
 export interface ActionSelectDVE extends ActionBase {

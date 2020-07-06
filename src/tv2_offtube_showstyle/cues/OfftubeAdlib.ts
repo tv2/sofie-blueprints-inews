@@ -6,6 +6,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectDVE,
+	ActionSelectServerClip,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
@@ -72,47 +73,27 @@ export function OfftubeEvaluateAdLib(
 				serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 			}
 		)
-		adlibServer.toBeQueued = true
-		adlibServer.canCombineQueue = true
-		adlibServer.outputLayerId = 'selectedAdlib'
-		adlibServer.tags = [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
-		// TODO: This should happen in above function
-		// TODO: This breaks infinites
-		// adlibServer.expectedDuration = duration
 
-		adLibPieces.push(adlibServer)
-
-		const adlibFlowProducer = CreateAdlibServer(
-			config,
-			rank,
-			partId,
-			`adlib_server_${file}`,
-			partDefinition,
-			file,
-			false,
-			{
-				Caspar: {
-					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-				},
-				Sisyfos: {
-					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-				},
-				ATEM: {
-					MEPGM: OfftubeAtemLLayer.AtemMEClean
-				},
-				STICKY_LAYERS: config.stickyLayers,
-				PgmServer: OfftubeSourceLayer.PgmServer,
-				PgmVoiceOver: OfftubeSourceLayer.PgmVoiceOver
-			},
-			duration
+		actions.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_SERVER_CLIP,
+				userData: literal<ActionSelectServerClip>({
+					type: AdlibActionType.SELECT_SERVER_CLIP,
+					file,
+					partDefinition,
+					duration,
+					vo: false
+				}),
+				userDataManifest: {},
+				display: {
+					label: `${partDefinition.storyName} ACTION`,
+					sourceLayerId: OfftubeSourceLayer.PgmServer,
+					outputLayerId: OfftubeOutputLayers.PGM,
+					content: { ...adlibServer.content, timelineObjects: [] },
+					tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER]
+				}
+			})
 		)
-		adlibFlowProducer.toBeQueued = true
-		adlibFlowProducer.canCombineQueue = true
-		adlibFlowProducer.tags = [AdlibTags.ADLIB_FLOW_PRODUCER]
-		// TODO: This should happen in above function
-		adlibFlowProducer.expectedDuration = duration
-
-		adLibPieces.push(adlibFlowProducer)
 	} else {
 		// DVE
 		if (!parsedCue.variant) {
