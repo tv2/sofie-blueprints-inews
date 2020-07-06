@@ -47,7 +47,6 @@ import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { parseConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
-import { EvaluateCuesIntoTimeline } from './helpers/EvaluateCuesIntoTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 
 const SELECTED_ADLIB_LAYERS = [
