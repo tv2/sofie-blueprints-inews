@@ -21,10 +21,14 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	GetCameraMetaData,
+	GetLayersForCamera,
+	GetSisyfosTimelineObjForCamera,
 	GraphicLLayer,
 	literal,
 	MakeContentDVE2,
-	SourceInfo
+	SourceInfo,
+	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -95,6 +99,8 @@ function getGlobalAdLibPiecesOfftube(
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
+	let globalRank = 1000
+
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
 		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, OFFTUBE_DVE_GENERATOR_OPTIONS)
@@ -114,6 +120,83 @@ function getGlobalAdLibPiecesOfftube(
 		}
 	})
 
+	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
+		const res: IBlueprintAdLibPiece[] = []
+		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
+		res.push({
+			externalId: 'cam',
+			name: `Kamera ${info.id}`,
+			_rank: rank,
+			sourceLayerId: OfftubeSourceLayer.PgmCam,
+			outputLayerId: 'pgm',
+			expectedDuration: 0,
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			toBeQueued: preview,
+			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
+			content: {
+				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					literal<TSR.TimelineObjAtemME>({
+						id: '',
+						enable: { while: '1' },
+						priority: 1,
+						layer: OfftubeAtemLLayer.AtemMEProgram,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								input: info.port,
+								transition: TSR.AtemTransitionStyle.CUT
+							}
+						},
+						classes: ['adlib_deparent']
+					}),
+					...camSisyfos,
+					...config.stickyLayers
+						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer,
+								content: {
+									deviceType: TSR.DeviceType.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+									isPgm: 0
+								},
+								metaData: {
+									sisyfosPersistLevel: true
+								}
+							})
+						}),
+					// Force server to be muted (for adlibbing over DVE)
+					...[
+						OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+						OfftubeSisyfosLLayer.SisyfosSourceServerA,
+						OfftubeSisyfosLLayer.SisyfosSourceServerB
+					].map<TSR.TimelineObjSisyfosChannel>(layer => {
+						return literal<TSR.TimelineObjSisyfosChannel>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 2,
+							layer,
+							content: {
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+								isPgm: 0
+							}
+						})
+					})
+				])
+			}
+		})
+		return res
+	}
+
 	// TODO: Future
 	/*adlibItems.push(
 		literal<IBlueprintAdLibPiece>({
@@ -131,6 +214,13 @@ function getGlobalAdLibPiecesOfftube(
 		})
 	)*/
 
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach(o => {
+			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
+		})
+
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
 }
@@ -141,7 +231,7 @@ function getGlobalAdlibActionsOfftube(
 ): IBlueprintActionManifest[] {
 	const res: IBlueprintActionManifest[] = []
 
-	let globalRank = 1000
+	let globalRank = 2000
 
 	function makeKameraAction(name: string, queue: boolean, rank: number) {
 		res.push(
@@ -267,12 +357,12 @@ function getGlobalAdlibActionsOfftube(
 		})
 	)
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			makeKameraAction(o.id, false, globalRank++)
-		})
+		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
