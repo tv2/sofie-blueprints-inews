@@ -132,7 +132,7 @@ export function OfftubeCreatePartVO(
 			}),
 			userDataManifest: {},
 			display: {
-				label: `${partDefinition.storyName} ACTION`,
+				label: `${partDefinition.storyName}`,
 				sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...adlibServer.content, timelineObjects: [] },
@@ -140,17 +140,6 @@ export function OfftubeCreatePartVO(
 			}
 		})
 	)
-	// TODO: This breaks infinites
-	// adlibServer.expectedDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
-	// adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
-
-	/*adlibServer = MergePiecesAsTimeline(context, config, partDefinition, adlibServer, [
-		CueType.Grafik,
-		CueType.TargetEngine,
-		CueType.VIZ
-	])*/
-
-	// adLibPieces.push(adlibServer)
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, actualDuration, OfftubeSourceLayer.PgmScript)

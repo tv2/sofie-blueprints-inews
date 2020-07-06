@@ -122,7 +122,7 @@ export function OfftubeCreatePartServer(
 			}),
 			userDataManifest: {},
 			display: {
-				label: `${partDefinition.storyName} ACTION`,
+				label: `${partDefinition.storyName}`,
 				sourceLayerId: OfftubeSourceLayer.PgmServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...actionContent, timelineObjects: [] }, // TODO: No timeline

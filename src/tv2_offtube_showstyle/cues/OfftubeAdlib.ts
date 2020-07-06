@@ -86,7 +86,7 @@ export function OfftubeEvaluateAdLib(
 				}),
 				userDataManifest: {},
 				display: {
-					label: `${partDefinition.storyName} ACTION`,
+					label: `${partDefinition.storyName}`,
 					sourceLayerId: OfftubeSourceLayer.PgmServer,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adlibServer.content, timelineObjects: [] },
@@ -145,7 +145,7 @@ export function OfftubeEvaluateAdLib(
 				display: {
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
-					label: `${partDefinition.storyName} Action`,
+					label: `${partDefinition.storyName}`,
 					tags: [AdlibTags.ADLIB_KOMMENTATOR],
 					content: literal<SplitsContent>({
 						...adlibContent.content,

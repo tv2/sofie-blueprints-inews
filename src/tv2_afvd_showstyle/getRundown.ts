@@ -1119,7 +1119,6 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			console.log(`MAKE ACTION FOR KAM ${o.id}`)
 			makeKameraAction(o.id, false, globalRank++)
 		})
 
