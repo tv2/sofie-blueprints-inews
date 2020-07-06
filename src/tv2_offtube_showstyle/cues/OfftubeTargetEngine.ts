@@ -1,4 +1,8 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionGrafik, CueDefinitionTargetEngine, PartContext2, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -9,6 +13,7 @@ export function OfftubeEvaluateTargetEngine(
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	_partId: string,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTargetEngine,
@@ -32,6 +37,7 @@ export function OfftubeEvaluateTargetEngine(
 				context,
 				pieces,
 				adlibPieces,
+				actions,
 				partDefinition.externalId,
 				parsedCue.data.grafik,
 				!!parsedCue.data.engine.match(/full/i) ? 'FULL' : 'OVL', // TODO: Target wall
@@ -51,6 +57,7 @@ export function OfftubeEvaluateTargetEngine(
 				context,
 				pieces,
 				adlibPieces,
+				actions,
 				partDefinition.externalId,
 				cueMosToGrafik,
 				!!parsedCue.data.engine.match(/full/i) ? 'FULL' : 'OVL', // TODO: Target wall

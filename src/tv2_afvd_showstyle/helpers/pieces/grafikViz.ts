@@ -1,5 +1,6 @@
 import {
 	GraphicsContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -11,6 +12,7 @@ import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
 	GetDefaultOut,
+	GetFullGrafikTemplateNameFromCue,
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
@@ -28,6 +30,7 @@ export function EvaluateGrafikViz(
 	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGrafik,
 	engine: GraphicEngine,
@@ -57,7 +60,7 @@ export function EvaluateGrafikViz(
 					},
 					iNewsCommand: '#KG'
 				}
-				EvaluateDesign(config, context, pieces, adlibPieces, partId, designCue)
+				EvaluateDesign(config, context, pieces, adlibPieces, actions, partId, designCue)
 				return
 			}
 		}
@@ -65,7 +68,7 @@ export function EvaluateGrafikViz(
 
 	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
-	const mappedTemplate = GetTemplateName(config, parsedCue)
+	const mappedTemplate = GetFullGrafikTemplateNameFromCue(config, parsedCue)
 
 	if (!mappedTemplate || !mappedTemplate.length) {
 		context.warning(`No valid template found for ${parsedCue.template}`)
@@ -80,7 +83,7 @@ export function EvaluateGrafikViz(
 				name: grafikName(config, parsedCue),
 				sourceLayerId: isTlfPrimary
 					? SourceLayer.PgmGraphicsTLF
-					: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+					: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
 				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
@@ -96,7 +99,7 @@ export function EvaluateGrafikViz(
 								start: 0
 							},
 							priority: 1,
-							layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+							layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -112,7 +115,7 @@ export function EvaluateGrafikViz(
 	} else {
 		const sourceLayer = isTlfPrimary
 			? SourceLayer.PgmGraphicsTLF
-			: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue))
+			: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue))
 
 		const piece = literal<IBlueprintPiece>({
 			_id: '',
@@ -136,7 +139,7 @@ export function EvaluateGrafikViz(
 						id: '',
 						enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
 						priority: 1,
-						layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+						layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -215,7 +218,7 @@ export function GetInfiniteModeForGrafik(
 
 export function FindInfiniteModeFromConfig(config: BlueprintConfig, parsedCue: CueDefinitionGrafik): PieceLifespan {
 	if (config.showStyle.GFXTemplates) {
-		const template = GetTemplateName(config, parsedCue)
+		const template = GetFullGrafikTemplateNameFromCue(config, parsedCue)
 		const conf = config.showStyle.GFXTemplates.find(cnf =>
 			cnf.VizTemplate ? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() : false
 		)
@@ -303,9 +306,9 @@ export function GetTimelineLayerForGrafik(config: BlueprintConfig, name: string)
 
 export function grafikName(config: BlueprintConfig, parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
 	if (parsedCue.type === CueType.Grafik) {
-		return `${parsedCue.template ? `${GetTemplateName(config, parsedCue)}` : ''}${parsedCue.textFields
-			.filter(txt => !txt.match(/^;.\.../i))
-			.map(txt => ` - ${txt}`)}`.replace(/,/gi, '')
+		return `${
+			parsedCue.template ? `${GetFullGrafikTemplateNameFromCue(config, parsedCue)}` : ''
+		}${parsedCue.textFields.filter(txt => !txt.match(/^;.\.../i)).map(txt => ` - ${txt}`)}`.replace(/,/gi, '')
 	} else {
 		return `${parsedCue.name ? parsedCue.name : ''}`
 	}
@@ -359,18 +362,4 @@ export function GetGrafikDuration(
 	}
 
 	return GetDefaultOut(config)
-}
-
-export function GetTemplateName(config: BlueprintConfig, cue: CueDefinitionGrafik): string {
-	if (config.showStyle.GFXTemplates) {
-		const template = config.showStyle.GFXTemplates.find(templ =>
-			templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
-		)
-		if (template && template.VizTemplate.toString().length) {
-			return template.VizTemplate.toString()
-		}
-	}
-
-	// This means unconfigured templates will still be supported, with default out.
-	return cue.template
 }

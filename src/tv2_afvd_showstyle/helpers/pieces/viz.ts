@@ -1,4 +1,8 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionVIZ, EvaluateVIZBase, GraphicLLayer, PartContext2 } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
@@ -10,6 +14,7 @@ export function EvaluateVIZ(
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionVIZ,
 	adlib?: boolean,

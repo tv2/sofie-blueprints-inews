@@ -19,6 +19,7 @@ import {
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionSelectDVE,
+	ActionSelectFullGrafik,
 	ActionSelectServerClip,
 	CalculateTime,
 	CreatePartServerBase,
@@ -27,6 +28,7 @@ import {
 	GetCameraMetaData,
 	GetDVETemplate,
 	GetEksternMetaData,
+	GetFullGrafikTemplateName,
 	GetLayersForCamera,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
@@ -41,6 +43,7 @@ import { AdlibActionType, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
+import { CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { parseConfig } from './helpers/config'
 import { EvaluateCuesIntoTimeline } from './helpers/EvaluateCuesIntoTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
@@ -59,6 +62,9 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 			break
 		case AdlibActionType.SELECT_DVE:
 			executeActionSelectDVE(context, actionId, userData as ActionSelectDVE)
+			break
+		case AdlibActionType.SELECT_FULL_GRAFIK:
+			executeActionSelectFull(context, actionId, userData as ActionSelectFullGrafik)
 			break
 		case AdlibActionType.CUT_TO_CAMERA:
 			executeActionCutToCamera(context, actionId, userData as ActionCutToCamera)
@@ -264,6 +270,44 @@ function executeActionSelectDVE(context: ActionExecutionContext, _actionId: stri
 		dvePiece,
 		serverDataStore,
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdLibDVE])
+	])
+}
+
+function executeActionSelectFull(context: ActionExecutionContext, _actionId: string, userData: ActionSelectFullGrafik) {
+	const config = parseConfig(context)
+
+	const template = GetFullGrafikTemplateName(config, userData.template)
+
+	const externalId = `adlib-action_${context.getHashId(`cut_to_kam_${template}`)}`
+
+	const part = literal<IBlueprintPart>({
+		externalId,
+		title: `Full ${template}`,
+		metaData: {},
+		expectedDuration: 0
+	})
+
+	const fullPiece = CreateFullPiece(config, externalId, template)
+
+	const fullDataStore = literal<IBlueprintPiece>({
+		_id: '',
+		externalId: `${externalId}_dataStore`,
+		name: template,
+		enable: {
+			start: 0
+		},
+		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
+		sourceLayerId: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
+		infiniteMode: PieceLifespan.OutOnNextSegment,
+		metaData: {
+			userData
+		}
+	})
+
+	context.queuePart(part, [
+		fullPiece,
+		fullDataStore,
+		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdlibGraphicsFull])
 	])
 }
 

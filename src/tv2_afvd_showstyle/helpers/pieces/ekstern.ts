@@ -1,4 +1,8 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, GetDefaultOut, PartContext2, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
@@ -9,6 +13,7 @@ export function EvaluateEkstern(
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,

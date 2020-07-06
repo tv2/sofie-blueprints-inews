@@ -1,5 +1,6 @@
 import {
 	GraphicsContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -71,6 +72,7 @@ describe('telefon', () => {
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 		EvaluateTelefon(
 			{
@@ -84,6 +86,7 @@ describe('telefon', () => {
 			partContext,
 			pieces,
 			adLibPieces,
+			actions,
 			partId,
 			dummyPart,
 			cue

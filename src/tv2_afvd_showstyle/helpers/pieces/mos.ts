@@ -1,5 +1,6 @@
 import {
 	GraphicsContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	NotesContext,
@@ -28,6 +29,7 @@ export function EvaluateMOSViz(
 	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionMOS,
 	engine: GraphicEngine,

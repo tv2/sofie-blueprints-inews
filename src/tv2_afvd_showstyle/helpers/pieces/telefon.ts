@@ -1,4 +1,9 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, TSR } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionTelefon, GetSisyfosTimelineObjForCamera, literal, PartContext2, PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
@@ -11,6 +16,7 @@ export function EvaluateTelefon(
 	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	partId: string,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTelefon,
@@ -24,6 +30,7 @@ export function EvaluateTelefon(
 				context,
 				pieces,
 				adlibPieces,
+				actions,
 				partId,
 				parsedCue.vizObj,
 				'OVL',
@@ -38,6 +45,7 @@ export function EvaluateTelefon(
 				context,
 				pieces,
 				adlibPieces,
+				actions,
 				partId,
 				parsedCue.vizObj,
 				'OVL', // TODO: Change to full if using a separate engine

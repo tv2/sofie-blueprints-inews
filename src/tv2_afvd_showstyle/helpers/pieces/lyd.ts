@@ -1,5 +1,6 @@
 import {
 	BaseContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -24,6 +25,7 @@ export function EvaluateLYD(
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionLYD,
 	part: PartDefinition,
 	adlib?: boolean,

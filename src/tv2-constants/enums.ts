@@ -73,6 +73,7 @@ export enum ControlClasses {
 export enum AdlibActionType {
 	SELECT_SERVER_CLIP = 'select_server_clip',
 	SELECT_DVE = 'select_dve',
+	SELECT_FULL_GRAFIK = 'select_full_grafik',
 	CUT_TO_CAMERA = 'cut_to_camera',
 	CUT_TO_REMOTE = 'cut_to_remote',
 	CUT_SOURCE_TO_BOX = 'cut_source_to_box',

@@ -1,5 +1,6 @@
 import {
 	GraphicsContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -15,6 +16,7 @@ export function EvaluateDesign(
 	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionDesign,
 	adlib?: boolean,

@@ -1,4 +1,5 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
@@ -22,6 +23,7 @@ export function OfftubeEvaluateJingle(
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
 	_adlib?: boolean,

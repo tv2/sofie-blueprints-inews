@@ -14,6 +14,11 @@ export interface ActionSelectServerClip extends ActionBase {
 	vo: boolean
 }
 
+export interface ActionSelectFullGrafik extends ActionBase {
+	type: AdlibActionType.SELECT_FULL_GRAFIK
+	template: string
+}
+
 export interface ActionSelectDVE extends ActionBase {
 	type: AdlibActionType.SELECT_DVE
 	config: CueDefinitionDVE

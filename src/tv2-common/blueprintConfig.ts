@@ -17,6 +17,19 @@ export interface TableConfigItemBreakers {
 	LoadFirstFrame: boolean
 }
 
+export interface TableConfigItemGFXTemplates {
+	VizTemplate: string
+	SourceLayer: string
+	LayerMapping: string
+	INewsCode: string
+	INewsName: string
+	VizDestination: string
+	OutType: string
+	Argument1: string
+	Argument2: string
+	IsDesign: boolean
+}
+
 export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
@@ -59,6 +72,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
+	GFXTemplates: TableConfigItemGFXTemplates[]
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

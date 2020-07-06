@@ -1,4 +1,5 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
@@ -21,6 +22,7 @@ export function EvaluateJingle(
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
 	adlib?: boolean,

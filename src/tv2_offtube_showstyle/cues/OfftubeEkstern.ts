@@ -1,4 +1,8 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, GetDefaultOut, PartContext2, PartDefinition } from 'tv2-common'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -9,6 +13,7 @@ export function OfftubeEvaluateEkstern(
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
