@@ -78,5 +78,6 @@ export enum AdlibActionType {
 	CUT_TO_REMOTE = 'cut_to_remote',
 	CUT_SOURCE_TO_BOX = 'cut_source_to_box',
 	COMMENTATOR_SELECT_SERVER = 'commentator_select_server',
-	COMMENTATOR_SELECT_DVE = 'commentator_select_dve'
+	COMMENTATOR_SELECT_DVE = 'commentator_select_dve',
+	COMMENTATOR_SELECT_FULL = 'commentator_select_full'
 }

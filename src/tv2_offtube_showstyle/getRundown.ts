@@ -15,16 +15,16 @@ import {
 import {
 	ActionCommentatorSelectDVE,
 	// GetCameraMetaData,
-	ActionCommentatorSelectServer,
+	ActionCommentatorSelectFull,
 	// GetLayersForCamera,
+	ActionCommentatorSelectServer,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
 	GraphicLLayer,
 	literal,
 	MakeContentDVE2,
-	SourceInfo,
-	TimelineBlueprintExt
+	SourceInfo
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -95,8 +95,6 @@ function getGlobalAdLibPiecesOfftube(
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
-	let globalRank = 1000
-
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
 		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, OFFTUBE_DVE_GENERATOR_OPTIONS)
@@ -115,58 +113,6 @@ function getGlobalAdLibPiecesOfftube(
 			})
 		}
 	})
-
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToFull',
-			name: 'Full Graphic',
-			sourceLayerId: OfftubeSourceLayer.PgmFull,
-			outputLayerId: OfftubeOutputLayers.PGM,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			canCombineQueue: true,
-			content: {
-				timelineObjects: [
-					literal<TSR.TimelineObjAtemME>({
-						id: 'fullProgramEnabler',
-						enable: {
-							while: '1'
-						},
-						layer: OfftubeAtemLLayer.AtemMEClean,
-						priority: 10,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: config.studio.AtemSource.GFXFull,
-								transition: TSR.AtemTransitionStyle.CUT
-							}
-						},
-						classes: [Enablers.OFFTUBE_ENABLE_FULL]
-					}),
-					literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-						id: '',
-						enable: { start: 0 },
-						priority: 0,
-						layer: OfftubeAtemLLayer.AtemMENext,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								previewInput: config.studio.AtemSource.GFXFull
-							}
-						},
-						metaData: {
-							context: `Lookahead-lookahead for fullProgramEnabler`
-						},
-						classes: ['ab_on_preview']
-					})
-				]
-			},
-			tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT]
-		})
-	)
 
 	// TODO: Future
 	/*adlibItems.push(
@@ -299,6 +245,24 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
+			}
+		})
+	)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.COMMENTATOR_SELECT_FULL,
+			userData: literal<ActionCommentatorSelectFull>({
+				type: AdlibActionType.COMMENTATOR_SELECT_FULL
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: globalRank++,
+				label: 'GFX FULL',
+				sourceLayerId: OfftubeSourceLayer.PgmFull,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				content: {},
+				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT]
 			}
 		})
 	)

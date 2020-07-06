@@ -14,6 +14,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionCommentatorSelectDVE,
+	ActionCommentatorSelectFull,
 	ActionCommentatorSelectServer,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
@@ -81,6 +82,9 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 			break
 		case AdlibActionType.COMMENTATOR_SELECT_SERVER:
 			executeActionCommentatorSelectServer(context, actionId, userData as ActionCommentatorSelectServer)
+			break
+		case AdlibActionType.COMMENTATOR_SELECT_FULL:
+			executeActionCommentatorSelectFull(context, actionId, userData as ActionCommentatorSelectFull)
 			break
 	}
 }
@@ -723,4 +727,18 @@ function executeActionCommentatorSelectDVE(
 	}
 
 	executeActionSelectDVE(context, AdlibActionType.SELECT_DVE, data)
+}
+
+function executeActionCommentatorSelectFull(
+	context: ActionExecutionContext,
+	_actionId: string,
+	_userData: ActionCommentatorSelectFull
+) {
+	const data = findDataStore<ActionSelectFullGrafik>(context, [OfftubeSourceLayer.SelectedAdlibGraphicsFull])
+
+	if (!data) {
+		return
+	}
+
+	executeActionSelectFull(context, AdlibActionType.SELECT_FULL_GRAFIK, data)
 }

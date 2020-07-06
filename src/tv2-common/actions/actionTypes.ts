@@ -55,10 +55,16 @@ export interface ActionCommentatorSelectDVE extends ActionBase {
 	type: AdlibActionType.COMMENTATOR_SELECT_DVE
 }
 
+export interface ActionCommentatorSelectFull extends ActionBase {
+	type: AdlibActionType.COMMENTATOR_SELECT_FULL
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
+	| ActionSelectDVE
+	| ActionSelectFullGrafik
 	| ActionCutToCamera
 	| ActionCutToRemote
-	| ActionSelectDVE
 	| ActionCommentatorSelectServer
 	| ActionCommentatorSelectDVE
+	| ActionCommentatorSelectFull
