@@ -36,6 +36,7 @@ import {
 	literal,
 	MakeContentDVE2,
 	MakeContentServer,
+	PartContext2,
 	TimelineBlueprintExt,
 	TV2AdlibAction
 } from 'tv2-common'
@@ -45,6 +46,7 @@ import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '..
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { parseConfig } from './helpers/config'
+import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { EvaluateCuesIntoTimeline } from './helpers/EvaluateCuesIntoTimeline'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 
@@ -148,12 +150,23 @@ function executeActionSelectServerClip(
 		adlibPreroll: config.studio.CasparPrerollDuration
 	})
 
-	// TODO: Maybe these should be created as pieces rather than timeline objects?
-	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
-		activeServerPiece.content.timelineObjects.push(
-			...EvaluateCuesIntoTimeline(config, partDefinition.cues, partDefinition, [CueType.Grafik], true)
-		)
+	const grafikPieces: IBlueprintPiece[] = []
 
+	OfftubeEvaluateCues(
+		(context as unknown) as PartContext2,
+		config,
+		grafikPieces,
+		[],
+		[],
+		partDefinition.cues,
+		partDefinition,
+		{
+			excludeAdlibs: true,
+			selectedCueTypes: [CueType.Grafik]
+		}
+	)
+
+	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		if (userData.vo) {
 			activeServerPiece.content.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
 		}
@@ -178,6 +191,7 @@ function executeActionSelectServerClip(
 	context.queuePart(part.part.part, [
 		activeServerPiece,
 		serverDataStore,
+		...grafikPieces,
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [
 			OfftubeSourceLayer.SelectedAdLibServer,
 			OfftubeSourceLayer.SelectedAdLibVoiceOver
