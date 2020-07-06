@@ -14,7 +14,6 @@ import {
 	literal,
 	PartContext2,
 	PartDefinition,
-	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
@@ -32,7 +31,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 export function OfftubeEvaluateAdLib(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
-	adLibPieces: IBlueprintAdLibPiece[],
+	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
@@ -146,32 +145,12 @@ export function OfftubeEvaluateAdLib(
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					label: `${partDefinition.storyName}`,
-					tags: [AdlibTags.ADLIB_KOMMENTATOR],
+					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
 					content: literal<SplitsContent>({
 						...adlibContent.content,
 						timelineObjects: []
 					})
 				}
-			})
-		)
-
-		adLibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank,
-				externalId: partId,
-				name: `DVE: ${parsedCue.variant}`,
-				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				outputLayerId: 'pgm',
-				toBeQueued: true,
-				content: {
-					...adlibContent.content,
-					timelineObjects: makeofftubeDVEIDsUniqueForFlow(adlibContent.content.timelineObjects)
-				},
-				invalid: !adlibContent.valid,
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				metaData: literal<PieceMetaData>({
-					stickySisyfosLevels: sticky
-				})
 			})
 		)
 	}

@@ -41,7 +41,7 @@ import {
 	TimelineBlueprintExt,
 	TV2AdlibAction
 } from 'tv2-common'
-import { AdlibActionType, CueType } from 'tv2-constants'
+import { AdlibActionType, ControlClasses, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
@@ -283,6 +283,86 @@ function executeActionSelectDVE(context: ActionExecutionContext, _actionId: stri
 			mediaPlayerSessions: [externalId]
 		})
 	})
+
+	// Check if DVE should continue server + copy server properties
+	if (dvePiece.content?.timelineObjects) {
+		const placeHolders = (dvePiece.content.timelineObjects as Array<
+			TSR.TSRTimelineObj & TimelineBlueprintExt
+		>).filter(obj => obj.classes?.includes(ControlClasses.DVEPlaceholder))
+
+		if (placeHolders.length) {
+			dvePiece.content.timelineObjects = (dvePiece.content.timelineObjects as Array<
+				TSR.TSRTimelineObj & TimelineBlueprintExt
+			>).filter(obj => !obj.classes?.includes(ControlClasses.DVEPlaceholder))
+		}
+
+		const currentPieces = context.getPieceInstances('current')
+		const currentServer = currentPieces.find(
+			p =>
+				(p.piece.sourceLayerId =
+					OfftubeSourceLayer.PgmServer || p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver)
+		)
+
+		if (!currentServer) {
+			context.warning(`No server is playing, cannot start DVE`)
+			return
+		}
+
+		// Find placeholder CasparCG object
+		const casparObj = placeHolders.find(
+			obj => obj.layer === OfftubeCasparLLayer.CasparPlayerClipPending
+		) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
+		// Find placeholder sisyfos object
+		const sisyfosObj = placeHolders.find(
+			obj => obj.layer === OfftubeSisyfosLLayer.SisyfosSourceClipPending
+		) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
+		// Find SSRC object in DVE piece
+		const ssrcObjIndex = dvePiece.content?.timelineObjects
+			? (dvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+					obj => obj.layer === OfftubeAtemLLayer.AtemSSrcDefault
+			  )
+			: -1
+
+		if (
+			!casparObj ||
+			!sisyfosObj ||
+			ssrcObjIndex === -1 ||
+			!casparObj.metaData ||
+			!casparObj.metaData.mediaPlayerSession
+		) {
+			console.log(JSON.stringify(casparObj))
+			console.log(JSON.stringify(sisyfosObj))
+			console.log(ssrcObjIndex)
+			console.log(casparObj.metaData?.mediaPlayerSession)
+			context.error(`Failed to start DVE with server`)
+			return
+		}
+
+		const ssrcObj = (dvePiece.content.timelineObjects as Array<TSR.TSRTimelineObj & TimelineBlueprintExt>)[ssrcObjIndex]
+
+		ssrcObj.metaData = {
+			...ssrcObj.metaData,
+			mediaPlayerSession: casparObj.metaData.mediaPlayerSession
+		}
+
+		dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
+		;(dvePiece.content.timelineObjects as TSR.TSRTimelineObj[]).push(
+			{
+				...casparObj,
+				id: ''
+			},
+			{
+				...sisyfosObj,
+				id: ''
+			}
+		)
+
+		if (!dvePiece.metaData) {
+			dvePiece.metaData = {}
+		}
+
+		dvePiece.metaData.mediaPlayerSessions = [casparObj.metaData.mediaPlayerSession]
+	}
 
 	postProcessPieceTimelineObjects(context, config, dvePiece, false)
 

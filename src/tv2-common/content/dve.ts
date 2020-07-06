@@ -423,7 +423,7 @@ export function MakeContentDVE2<
 									: MEDIA_PLAYER_AUTO
 								: undefined
 						},
-						classes: []
+						classes: file ? [] : [ControlClasses.DVEPlaceholder]
 					})
 				)
 				return
