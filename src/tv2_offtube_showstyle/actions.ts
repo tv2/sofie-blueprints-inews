@@ -49,6 +49,7 @@ import { CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { parseConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
+import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 const SELECTED_ADLIB_LAYERS = [
 	OfftubeSourceLayer.SelectedAdLibDVE,
@@ -153,6 +154,12 @@ function executeActionSelectServerClip(
 		adlibPreroll: config.studio.CasparPrerollDuration
 	})
 
+	postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
+
+	const lookaheadObj = (activeServerPiece.content?.timelineObjects as Array<
+		TSR.TSRTimelineObj & TimelineBlueprintExt
+	>).find(t => t.layer === OfftubeAtemLLayer.AtemMENext)
+
 	const grafikPieces: IBlueprintPiece[] = []
 
 	OfftubeEvaluateCues(
@@ -186,7 +193,28 @@ function executeActionSelectServerClip(
 		sourceLayerId: userData.vo ? OfftubeSourceLayer.SelectedAdLibVoiceOver : OfftubeSourceLayer.SelectedAdLibServer,
 		infiniteMode: PieceLifespan.OutOnNextSegment,
 		metaData: {
-			userData
+			userData,
+			mediaPlayerSessions: [externalId]
+		},
+		content: {
+			timelineObjects: lookaheadObj
+				? [
+						// Lookahead AUX
+						literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+							id: '',
+							enable: lookaheadObj.enable,
+							layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.AUX,
+								aux: {
+									input: config.studio.AtemSource.Default
+								}
+							},
+							metaData: lookaheadObj.metaData
+						})
+				  ]
+				: []
 		}
 	})
 
@@ -256,7 +284,9 @@ function executeActionSelectDVE(context: ActionExecutionContext, _actionId: stri
 		})
 	})
 
-	const serverDataStore = literal<IBlueprintPiece>({
+	postProcessPieceTimelineObjects(context, config, dvePiece, false)
+
+	const dveDataStore = literal<IBlueprintPiece>({
 		_id: '',
 		externalId: `${externalId}_dataStore`,
 		name: userData.config.template,
@@ -285,7 +315,7 @@ function executeActionSelectDVE(context: ActionExecutionContext, _actionId: stri
 
 	context.queuePart(part, [
 		dvePiece,
-		serverDataStore,
+		dveDataStore,
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdLibDVE])
 	])
 }
@@ -305,6 +335,8 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 	})
 
 	const fullPiece = CreateFullPiece(config, externalId, template)
+
+	postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
 	const fullDataStore = literal<IBlueprintPiece>({
 		_id: '',
