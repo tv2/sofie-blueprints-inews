@@ -318,7 +318,8 @@ export function getSegmentBase<
 	})
 
 	if (
-		blueprintParts.filter(part => part.pieces.length === 0 && part.adLibPieces.length).length === blueprintParts.length
+		blueprintParts.filter(part => part.pieces.length === 0 && (part.adLibPieces.length || part.actions?.length))
+			.length === blueprintParts.length
 	) {
 		segment.isHidden = true
 	}
