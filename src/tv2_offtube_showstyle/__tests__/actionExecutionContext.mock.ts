@@ -9,18 +9,31 @@ import {
 	IBlueprintResolvedPieceInstance,
 	OmitId
 } from 'tv-automation-sofie-blueprints-integration'
+import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { OfftubeStudioConfig } from '../../tv2_offtube_studio/helpers/config'
+import { OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowStyleConfig } from '../helpers/config'
 
 const mockStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
 	MediaFlowId: '',
-	SourcesCam: [],
+	SourcesCam: [
+		literal<TableConfigItemSourceMappingWithSisyfos>({
+			SisyfosLayers: [],
+			StudioMics: true,
+			SourceName: '1',
+			AtemSource: 4
+		})
+	],
 	SourcesRM: [],
 	SourcesSkype: [],
 	ABMediaPlayers: [],
-	StudioMics: [],
+	StudioMics: [
+		OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A,
+		OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A,
+		OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
+	],
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
@@ -57,7 +70,26 @@ const mockStudioConfig: OfftubeStudioConfig = {
 }
 
 const mockShowStyleConfig: OfftubeShowStyleConfig = {
-	DVEStyles: [],
+	DVEStyles: [
+		literal<DVEConfigInput>({
+			DVEName: 'morbarn',
+			DVEJSON: '{}',
+			DVEGraphicsTemplate: '',
+			DVEGraphicsFrame: '',
+			DVEGraphicsKey: '',
+			DVEGraphicsTemplateJSON: '',
+			DVEInputs: ''
+		}),
+		literal<DVEConfigInput>({
+			DVEName: 'barnmor',
+			DVEJSON: '{}',
+			DVEGraphicsTemplate: '',
+			DVEGraphicsFrame: '',
+			DVEGraphicsKey: '',
+			DVEGraphicsTemplateJSON: '',
+			DVEInputs: ''
+		})
+	],
 	GFXTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
@@ -69,26 +101,17 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 export class MockContext implements ActionExecutionContext {
 	public warnings: string[] = []
 	public errors: string[] = []
-	public currentPart: IBlueprintPartInstance
-	public currentPieceInstances: IBlueprintPieceInstance[]
-	public nextPart?: IBlueprintPartInstance
-	public nextPieceInstances?: IBlueprintPieceInstance[]
 
 	/** Get the mappings for the studio */
 	public getStudioMappings: () => Readonly<BlueprintMappings>
 
 	constructor(
-		currentPart: IBlueprintPartInstance,
-		currentPieceInstances: IBlueprintPieceInstance[],
-		nextPart?: IBlueprintPartInstance,
-		nextPieceInstances?: IBlueprintPieceInstance[]
-	) {
-		this.currentPart = currentPart
-		this.nextPart = nextPart
-
-		this.currentPieceInstances = currentPieceInstances
-		this.nextPieceInstances = nextPieceInstances
-	}
+		public segmentId: string,
+		public currentPart: IBlueprintPartInstance,
+		public currentPieceInstances: IBlueprintPieceInstance[],
+		public nextPart?: IBlueprintPartInstance,
+		public nextPieceInstances?: IBlueprintPieceInstance[]
+	) {}
 	/** Returns a map of the ShowStyle configs */
 	public getShowStyleConfig(): Readonly<{
 		[key: string]: ConfigItemValue
@@ -192,16 +215,27 @@ export class MockContext implements ActionExecutionContext {
 		}
 	}
 	/** Insert a queued part to follow the current part */
-	public queuePart(part: IBlueprintPart, _pieces: IBlueprintPiece[]): IBlueprintPartInstance {
-		return {
+	public queuePart(part: IBlueprintPart, pieces: IBlueprintPiece[]): IBlueprintPartInstance {
+		const instance = literal<IBlueprintPartInstance>({
 			_id: '',
-			segmentId: '',
+			segmentId: this.segmentId,
 			part: {
 				_id: '',
-				segmentId: '',
-				...part
+				...part,
+				segmentId: this.segmentId
 			}
-		}
+		})
+
+		this.nextPart = instance
+		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance>(p => ({
+			_id: '',
+			piece: {
+				...p,
+				partId: ''
+			}
+		}))
+
+		return instance
 	}
 	/** Destructive actions */
 	/** Stop any piecesInstances on the specified sourceLayers. Returns ids of piecesInstances that were affected */
