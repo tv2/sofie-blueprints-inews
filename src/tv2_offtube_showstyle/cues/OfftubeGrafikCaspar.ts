@@ -356,7 +356,7 @@ function CreateFullAdLib(
 	})
 }
 
-function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, template: string): GraphicsContent {
+export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, template: string): GraphicsContent {
 	return {
 		fileName: template,
 		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension

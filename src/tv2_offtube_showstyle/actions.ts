@@ -45,7 +45,7 @@ import { AdlibActionType, ControlClasses, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
-import { CreateFullPiece } from './cues/OfftubeGrafikCaspar'
+import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { parseConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
@@ -469,6 +469,10 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		infiniteMode: PieceLifespan.OutOnNextSegment,
 		metaData: {
 			userData
+		},
+		content: {
+			...CreateFullContent(config, template),
+			timelineObjects: []
 		}
 	})
 
