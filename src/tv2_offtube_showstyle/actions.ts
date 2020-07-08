@@ -248,7 +248,7 @@ function executeActionSelectServerClip(
 									deviceType: TSR.DeviceType.ATEM,
 									type: TSR.TimelineContentTypeAtem.AUX,
 									aux: {
-										input: config.studio.AtemSource.Default
+										input: -1
 									}
 								},
 								metaData: lookaheadObj.metaData

@@ -10,7 +10,6 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
@@ -69,29 +68,6 @@ export function MakeContentServer<
 				},
 				classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
 			}),
-
-			...(offtubeOptions && offtubeOptions.isOfftube
-				? [
-						literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								while: '1'
-							},
-							priority: 0,
-							layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.AUX,
-								aux: {
-									input: -1
-								}
-							},
-							metaData: {
-								mediaPlayerSession: mediaPlayerSessionId
-							}
-						})
-				  ]
-				: []),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
 				enable: getServerAdlibEnable(config.studio.CasparPrerollDuration),
