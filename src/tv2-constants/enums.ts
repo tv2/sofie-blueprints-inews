@@ -80,5 +80,6 @@ export enum AdlibActionType {
 	CUT_SOURCE_TO_BOX = 'cut_source_to_box',
 	COMMENTATOR_SELECT_SERVER = 'commentator_select_server',
 	COMMENTATOR_SELECT_DVE = 'commentator_select_dve',
-	COMMENTATOR_SELECT_FULL = 'commentator_select_full'
+	COMMENTATOR_SELECT_FULL = 'commentator_select_full',
+	CLEAR_GRAPHICS = 'clear_graphics'
 }

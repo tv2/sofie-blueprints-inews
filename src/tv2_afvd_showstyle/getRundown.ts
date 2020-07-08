@@ -14,6 +14,7 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionClearGraphics,
 	ActionCutSourceToBox,
 	GetCameraMetaData,
 	GetEksternMetaData,
@@ -696,7 +697,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		}
 	})
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
-	adlibItems.push({
+	/*adlibItems.push({
 		// TODO: This sould be an adlib function that clears the graphics sourcelayers as well
 		// See: https://app.asana.com/0/1144308403817753/1175546502993537/f
 		externalId: 'clearAllGFX',
@@ -725,7 +726,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				})
 			])
 		}
-	})
+	})*/
 
 	adlibItems.push({
 		externalId: 'sendAltud',
@@ -1159,6 +1160,24 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 
 	makeServerAdlibBoxesActions(globalRank++)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			userData: literal<ActionClearGraphics>({
+				type: AdlibActionType.CLEAR_GRAPHICS
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 400,
+				label: `GFX Clear`,
+				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+				outputLayerId: 'sec',
+				content: {},
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON]
+			}
+		})
+	)
 
 	return res
 }

@@ -12,6 +12,7 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
@@ -23,6 +24,7 @@ import {
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
+	GraphicLLayer,
 	literal,
 	TimelineBlueprintExt
 } from 'tv2-common'
@@ -44,6 +46,9 @@ export function executeAction(context: ActionExecutionContext, actionId: string,
 			break
 		case AdlibActionType.CUT_SOURCE_TO_BOX:
 			executeActionCutSourceToBox(context, actionId, userData as ActionCutSourceToBox)
+			break
+		case AdlibActionType.CLEAR_GRAPHICS:
+			executeActionClearGraphics(context, actionId, userData as ActionClearGraphics)
 			break
 	}
 }
@@ -480,4 +485,54 @@ function executeActionCutSourceToBox(
 	})
 
 	context.updatePieceInstance(modifiedPiece._id, modifiedPiece.piece)
+}
+
+function executeActionClearGraphics(
+	context: ActionExecutionContext,
+	_actionId: string,
+	_userData: ActionClearGraphics
+) {
+	context.stopPiecesOnLayers([
+		SourceLayer.PgmGraphicsIdent,
+		SourceLayer.PgmGraphicsIdentPersistent,
+		SourceLayer.PgmGraphicsTop,
+		SourceLayer.PgmGraphicsLower,
+		SourceLayer.PgmGraphicsHeadline,
+		SourceLayer.PgmGraphicsTema,
+		SourceLayer.PgmGraphicsOverlay,
+		SourceLayer.PgmPilotOverlay,
+		SourceLayer.PgmGraphicsTLF
+	])
+	context.insertPiece(
+		'current',
+		literal<IBlueprintPiece>({
+			_id: '',
+			enable: {
+				start: 0,
+				duration: 2000
+			},
+			externalId: 'clearAllGFX',
+			name: 'GFX Clear',
+			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+			outputLayerId: 'sec',
+			infiniteMode: PieceLifespan.Normal,
+			content: {
+				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					literal<TSR.TimelineObjVIZMSEClearAllElements>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 100,
+						layer: GraphicLLayer.GraphicLLayerAdLibs,
+						content: {
+							deviceType: TSR.DeviceType.VIZMSE,
+							type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+							channelsToSendCommands: ['OVL1', 'FULL1', 'WALL1']
+						}
+					})
+				])
+			}
+		})
+	)
 }

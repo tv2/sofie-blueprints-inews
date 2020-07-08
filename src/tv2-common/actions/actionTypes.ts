@@ -59,6 +59,10 @@ export interface ActionCommentatorSelectFull extends ActionBase {
 	type: AdlibActionType.COMMENTATOR_SELECT_FULL
 }
 
+export interface ActionClearGraphics extends ActionBase {
+	type: AdlibActionType.CLEAR_GRAPHICS
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -68,3 +72,4 @@ export type TV2AdlibAction =
 	| ActionCommentatorSelectServer
 	| ActionCommentatorSelectDVE
 	| ActionCommentatorSelectFull
+	| ActionClearGraphics
