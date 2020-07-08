@@ -113,7 +113,8 @@ function getPiecesToPreserve(
 function executeActionSelectServerClip(
 	context: ActionExecutionContext,
 	_actionId: string,
-	userData: ActionSelectServerClip
+	userData: ActionSelectServerClip,
+	sessionToContinue?: string
 ) {
 	const file = userData.file
 	const partDefinition = userData.partDefinition
@@ -131,11 +132,11 @@ function executeActionSelectServerClip(
 		sourceLayerId: userData.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: [externalId]
+			mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
 		}),
 		content: MakeContentServer(
 			file,
-			externalId,
+			sessionToContinue ?? externalId,
 			partDefinition,
 			config,
 			{
@@ -159,6 +160,14 @@ function executeActionSelectServerClip(
 	const lookaheadObj = (activeServerPiece.content?.timelineObjects as Array<
 		TSR.TSRTimelineObj & TimelineBlueprintExt
 	>).find(t => t.layer === OfftubeAtemLLayer.AtemMENext)
+	const mediaObj = (activeServerPiece.content?.timelineObjects as Array<
+		TSR.TSRTimelineObj & TimelineBlueprintExt
+	>).find(
+		t =>
+			t.layer === OfftubeCasparLLayer.CasparPlayerClipPending &&
+			t.content.deviceType === TSR.DeviceType.CASPARCG &&
+			t.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
+	) as (TSR.TimelineObjCCGMedia & TimelineBlueprintExt) | undefined
 
 	const grafikPieces: IBlueprintPiece[] = []
 
@@ -194,27 +203,58 @@ function executeActionSelectServerClip(
 		infiniteMode: PieceLifespan.OutOnNextSegment,
 		metaData: {
 			userData,
-			mediaPlayerSessions: [externalId]
+			mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
 		},
 		content: {
-			timelineObjects: lookaheadObj
-				? [
-						// Lookahead AUX
-						literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-							id: '',
-							enable: lookaheadObj.enable,
-							layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.AUX,
-								aux: {
-									input: config.studio.AtemSource.Default
-								}
-							},
-							metaData: lookaheadObj.metaData
-						})
-				  ]
-				: []
+			timelineObjects:
+				lookaheadObj && mediaObj
+					? [
+							literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+								id: '',
+								enable: {
+									while: '1'
+								},
+								priority: 1,
+								layer: OfftubeCasparLLayer.CasparPlayerClipPending,
+								metaData: mediaObj.metaData,
+								content: {
+									deviceType: TSR.DeviceType.CASPARCG,
+									type: TSR.TimelineContentTypeCasparCg.MEDIA,
+									file: mediaObj.content.file,
+									noStarttime: true
+								},
+								keyframes: [
+									{
+										id: '',
+										enable: {
+											while: `!.${ControlClasses.ServerOnAir}`
+										},
+										content: {
+											deviceType: TSR.DeviceType.CASPARCG,
+											type: TSR.TimelineContentTypeCasparCg.MEDIA,
+											playing: false,
+											seek: 0
+										}
+									}
+								]
+							}),
+							// Lookahead AUX
+							literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+								id: '',
+								enable: lookaheadObj.enable,
+								priority: 0,
+								layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
+								content: {
+									deviceType: TSR.DeviceType.ATEM,
+									type: TSR.TimelineContentTypeAtem.AUX,
+									aux: {
+										input: config.studio.AtemSource.Default
+									}
+								},
+								metaData: lookaheadObj.metaData
+							})
+					  ]
+					: []
 		}
 	})
 
@@ -781,10 +821,10 @@ function executeActionCutSourceToBox(
 	context.updatePieceInstance(modifiedPiece._id, modifiedPiece.piece)
 }
 
-function findDataStore<T extends TV2AdlibAction>(
+function findPieceToRecoverDataFrom(
 	context: ActionExecutionContext,
 	dataStoreLayers: string[]
-): T | undefined {
+): { piece: IBlueprintPieceInstance; part: 'current' | 'next' } | undefined {
 	const currentPieces = context.getPieceInstances('current')
 	const nextPieces = context.getPieceInstances('next')
 
@@ -792,21 +832,63 @@ function findDataStore<T extends TV2AdlibAction>(
 
 	const nextServer = nextPieces.find(p => dataStoreLayers.includes(p.piece.sourceLayerId))
 
-	let serverToPlay: IBlueprintPieceInstance | undefined
+	let pieceToRecoverDataFrom: IBlueprintPieceInstance | undefined
+
+	let part: 'current' | 'next' = 'current'
 
 	if (nextServer) {
-		serverToPlay = nextServer
+		part = 'next'
+		pieceToRecoverDataFrom = nextServer
 	} else if (currentServer) {
-		serverToPlay = currentServer
+		part = 'current'
+		pieceToRecoverDataFrom = currentServer
 	}
+
+	if (!pieceToRecoverDataFrom) {
+		return
+	}
+
+	return {
+		piece: pieceToRecoverDataFrom,
+		part
+	}
+}
+
+function findDataStore<T extends TV2AdlibAction>(
+	context: ActionExecutionContext,
+	dataStoreLayers: string[]
+): T | undefined {
+	const serverToPlay = findPieceToRecoverDataFrom(context, dataStoreLayers)
 
 	if (!serverToPlay) {
 		return
 	}
 
-	const data = serverToPlay.piece.metaData?.userData as T | undefined
+	const data = serverToPlay.piece.piece.metaData?.userData as T | undefined
 
 	return data
+}
+
+function findMediaPlayerSessions(
+	context: ActionExecutionContext,
+	sessionLayers: string[]
+): { session: string | undefined; part: 'current' | 'next' | undefined } {
+	const mediaPlayerSessionPiece = findPieceToRecoverDataFrom(context, sessionLayers)
+
+	if (!mediaPlayerSessionPiece) {
+		return {
+			session: undefined,
+			part: undefined
+		}
+	}
+
+	const sessions = mediaPlayerSessionPiece.piece.piece.metaData?.mediaPlayerSessions
+
+	return {
+		// Assume there will be only one session
+		session: sessions && sessions.length ? sessions[0] : undefined,
+		part: mediaPlayerSessionPiece.part
+	}
 }
 
 function executeActionCommentatorSelectServer(
@@ -816,14 +898,24 @@ function executeActionCommentatorSelectServer(
 ) {
 	const data = findDataStore<ActionSelectServerClip>(context, [
 		OfftubeSourceLayer.SelectedAdLibServer,
-		OfftubeSourceLayer.SelectedAdLibServer
+		OfftubeSourceLayer.SelectedAdLibVoiceOver
+	])
+
+	const sessions = findMediaPlayerSessions(context, [
+		OfftubeSourceLayer.SelectedAdLibServer,
+		OfftubeSourceLayer.SelectedAdLibVoiceOver
 	])
 
 	if (!data) {
 		return
 	}
 
-	executeActionSelectServerClip(context, AdlibActionType.SELECT_SERVER_CLIP, data)
+	let session: string | undefined
+	if (sessions.session && sessions.part && sessions.part === 'current') {
+		session = sessions.session
+	}
+
+	executeActionSelectServerClip(context, AdlibActionType.SELECT_SERVER_CLIP, data, session)
 }
 
 function executeActionCommentatorSelectDVE(

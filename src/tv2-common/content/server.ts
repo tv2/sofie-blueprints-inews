@@ -118,7 +118,8 @@ export function MakeContentServer<
 						  },
 				classes: [
 					...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
-					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
+					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : []),
+					ControlClasses.ServerOnAir
 				]
 			}),
 

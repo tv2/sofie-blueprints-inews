@@ -63,6 +63,7 @@ export enum ControlClasses {
 	ShowIdentGraphic = 'show_ident_graphic',
 	/** Indicates that a DVE is currently on air */
 	DVEOnAir = 'dve_on_air',
+	ServerOnAir = 'server_on_air',
 	/** Used as a placeholder for onTimelineGenerate to do clips-in-DVE. */
 	DVEPlaceholder = 'dve_placeholder',
 	NOLookahead = 'no_lookahead',

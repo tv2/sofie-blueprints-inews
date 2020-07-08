@@ -27,7 +27,7 @@ export function CreatePartServerBase<
 
 	const basePart = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: partDefinition.rawType,
+		title: file,
 		metaData: {},
 		expectedDuration: duration || 1000,
 		prerollDuration: config.studio.CasparPrerollDuration
