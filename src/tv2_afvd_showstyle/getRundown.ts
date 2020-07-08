@@ -787,7 +787,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	adlibItems.push({
 		externalId: 'dskoff',
 		name: 'DSK OFF',
-		_rank: 400,
+		_rank: 500,
 		sourceLayerId: SourceLayer.PgmDSK,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
@@ -814,7 +814,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	adlibItems.push({
 		externalId: 'micUp',
 		name: 'Mics Up',
-		_rank: 500,
+		_rank: 600,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
@@ -842,7 +842,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	adlibItems.push({
 		externalId: 'micDown',
 		name: 'Mics Down',
-		_rank: 550,
+		_rank: 650,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Infinite,
@@ -870,7 +870,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	adlibItems.push({
 		externalId: 'resyncSisyfos',
 		name: 'Resync Sisyfos',
-		_rank: 560,
+		_rank: 700,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
 		infiniteMode: PieceLifespan.Normal,
@@ -1169,7 +1169,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			}),
 			userDataManifest: {},
 			display: {
-				_rank: 400,
+				_rank: 300,
 				label: `GFX Clear`,
 				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 				outputLayerId: 'sec',
