@@ -453,7 +453,9 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		externalId,
 		title: `Full ${template}`,
 		metaData: {},
-		expectedDuration: 0
+		expectedDuration: 0,
+		prerollDuration: config.studio.CasparPrerollDuration,
+		transitionKeepaliveDuration: config.studio.FullKeepAliveDuration
 	})
 
 	const fullPiece = CreateFullPiece(config, externalId, template)

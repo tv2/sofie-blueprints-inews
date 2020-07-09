@@ -26,6 +26,10 @@ const CURRENT_PART_ID = 'MOCK_PART_CURRENT'
 const CURRENT_PART_EXTERNAL_ID = `${CURRENT_PART_ID}_EXTERNAL`
 const SERVER_DURATION_A = 12000
 const VO_DURATION_A = 20000
+const SERVER_PREROLL = 280
+const DVE_PREROLL = 280
+const FULL_PREROLL = 280
+const FULL_KEEPALIVE = 1000
 
 const currentPartMock: IBlueprintPartInstance = {
 	_id: CURRENT_PART_ID,
@@ -283,6 +287,16 @@ function validateNextPartExistsWithDuration(context: MockContext, duration: numb
 	expect(context.nextPart?.part.expectedDuration).toEqual(duration)
 }
 
+function validateNextPartExistsWithPreRoll(context: MockContext, duration: number) {
+	expect(context.nextPart).toBeTruthy()
+	expect(context.nextPart?.part.prerollDuration).toEqual(duration)
+}
+
+function validateNextPartExistsWithTransitionKeepAlive(context: MockContext, duration: number) {
+	expect(context.nextPart).toBeTruthy()
+	expect(context.nextPart?.part.transitionKeepaliveDuration).toEqual(duration)
+}
+
 describe('Select Server Action', () => {
 	it('Inserts a new part when no next part is present', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
@@ -292,6 +306,7 @@ describe('Select Server Action', () => {
 		const pieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(pieces)
 		expect(pieces.dataStore?.piece.infiniteMode).toEqual(PieceLifespan.OutOnNextSegment)
 
@@ -328,6 +343,7 @@ describe('Combination Actions', () => {
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
@@ -336,6 +352,7 @@ describe('Combination Actions', () => {
 		const dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)
 	})
@@ -348,6 +365,7 @@ describe('Combination Actions', () => {
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		executeAction(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
@@ -356,6 +374,8 @@ describe('Combination Actions', () => {
 		const fullGrafikPieces = getFullGrafikPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, FULL_PREROLL)
+		validateNextPartExistsWithTransitionKeepAlive(context, FULL_KEEPALIVE)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(fullGrafikPieces)
 	})
@@ -368,6 +388,7 @@ describe('Combination Actions', () => {
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
@@ -376,6 +397,7 @@ describe('Combination Actions', () => {
 		const voPieces = getVOPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(serverPieces)
 		validateSourcePiecesExist(voPieces)
 		expect(voPieces.dataStore?.piece.name).toEqual('VOVOA')
@@ -389,6 +411,7 @@ describe('Combination Actions', () => {
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
@@ -397,6 +420,7 @@ describe('Combination Actions', () => {
 		const dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)
 	})
@@ -409,6 +433,7 @@ describe('Combination Actions', () => {
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		executeAction(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
@@ -429,6 +454,7 @@ describe('Combination Actions', () => {
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		executeAction(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
@@ -449,6 +475,7 @@ describe('Combination Actions', () => {
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
 		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -456,6 +483,7 @@ describe('Combination Actions', () => {
 		const serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(serverPieces)
 	})
@@ -467,6 +495,7 @@ describe('Combination Actions', () => {
 
 		let dvePieces = getDVEPieces(context, 'next')
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateSourcePiecesExist(dvePieces)
 
 		executeAction(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
@@ -475,6 +504,8 @@ describe('Combination Actions', () => {
 		const fullGrafikPieces = getFullGrafikPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, FULL_PREROLL)
+		validateNextPartExistsWithTransitionKeepAlive(context, FULL_KEEPALIVE)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(fullGrafikPieces)
 	})
@@ -487,6 +518,7 @@ describe('Combination Actions', () => {
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
 		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
@@ -494,6 +526,7 @@ describe('Combination Actions', () => {
 		const voPieces = getVOPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(voPieces)
 	})
@@ -506,6 +539,7 @@ describe('Combination Actions', () => {
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
 		executeAction(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -525,6 +559,7 @@ describe('Combination Actions', () => {
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
 		executeAction(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
@@ -545,6 +580,7 @@ describe('Combination Actions', () => {
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		// DVE (A)
@@ -554,6 +590,7 @@ describe('Combination Actions', () => {
 		let dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)
 
@@ -565,6 +602,7 @@ describe('Combination Actions', () => {
 		dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(serverPieces)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(voPieces)
@@ -578,6 +616,7 @@ describe('Combination Actions', () => {
 		dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateSourcePiecesExist(dvePieces)
 		validateSelectionRemoved(serverPieces)
 		validateOnlySelectionIsPreserved(voPieces)
@@ -623,6 +662,7 @@ describe('Combination Actions', () => {
 		remotePiece = getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(voPieces)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(serverPieces)
@@ -639,6 +679,7 @@ describe('Combination Actions', () => {
 		remotePiece = getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateSelectionRemoved(voPieces)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)
