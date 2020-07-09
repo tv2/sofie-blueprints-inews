@@ -14,9 +14,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionCommentatorSelectDVE,
-	// GetCameraMetaData,
 	ActionCommentatorSelectFull,
-	// GetLayersForCamera,
 	ActionCommentatorSelectServer,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
@@ -356,13 +354,6 @@ function getGlobalAdlibActionsOfftube(
 			}
 		})
 	)
-
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
-			makeKameraAction(o.id, false, globalRank++)
-		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
