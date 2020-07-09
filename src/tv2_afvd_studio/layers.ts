@@ -62,6 +62,7 @@ export enum CasparLLayer {
 
 export enum SisyfosLLAyer {
 	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
+	SisyfosGroupLive = 'sisyfos_group_live',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
 	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',

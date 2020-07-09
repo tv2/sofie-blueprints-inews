@@ -137,24 +137,26 @@ function makeContentEVS(
 			...(partDefinition.variant.isVO
 				? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)]
 				: [
-						// TODO: Reduce to single object
-						...config.liveAudio.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
+						literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosGroupLive,
+							content: {
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+								channels: config.liveAudio.map(layer => {
+									return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+										mappedLayer: layer,
+										isPgm: 0
+									})
+								})
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
 						})
 				  ])
 		])
