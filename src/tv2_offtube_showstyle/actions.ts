@@ -258,8 +258,11 @@ function executeActionSelectServerClip(
 		}
 	})
 
-	const part = CreatePartServerBase(context, config, partDefinition)
-	context.queuePart(part.part.part, [
+	const part = CreatePartServerBase(context, config, partDefinition).part.part
+
+	// EFFEKT
+
+	context.queuePart(part, [
 		activeServerPiece,
 		serverDataStore,
 		...grafikPieces,

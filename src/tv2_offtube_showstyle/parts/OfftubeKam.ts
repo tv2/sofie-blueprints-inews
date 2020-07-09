@@ -91,6 +91,8 @@ export function OfftubeCreatePartKam(
 		// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 		// TODO: EFFEKT
 
+		// KAM 1 EFFEKT 3
+
 		pieces.push(
 			literal<IBlueprintPiece>({
 				_id: '',
