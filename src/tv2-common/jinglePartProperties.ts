@@ -5,7 +5,6 @@ import { TimeFromFrames } from './frameTime'
 import { CueDefinitionJingle, PartDefinition } from './inewsConversion'
 import { PartContext2 } from './partContext2'
 
-// TODO: OFFTUBE: find a way to do this for adlibs
 export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase>(
 	_context: PartContext2,
 	config: TV2BlueprintConfigBase<StudioConfig>,

@@ -2,7 +2,6 @@ export enum SharedSourceLayers {
 	PgmCam = 'studio0_camera',
 	PgmLive = 'studio0_live',
 	PgmDVE = 'studio0_dve',
-	// PgmDVEAdlib = 'studio0_dve_adlib', // TODO: Future: Adlib functions?
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',
 
