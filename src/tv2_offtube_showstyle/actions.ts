@@ -123,6 +123,15 @@ function executeActionSelectServerClip(
 
 	const externalId = `adlib-action_${context.getHashId(`select_server_clip_${file}`)}`
 
+	const conflictingPiece = context
+		.getPieceInstances('current')
+		.find(
+			p =>
+				p.piece.sourceLayerId ===
+					(userData.vo ? OfftubeSourceLayer.SelectedAdLibServer : OfftubeSourceLayer.SelectedAdLibVoiceOver) &&
+				p.piece.infiniteMode === PieceLifespan.OutOnNextSegment
+		)
+
 	const activeServerPiece = literal<IBlueprintPiece>({
 		_id: '',
 		externalId,
@@ -258,6 +267,22 @@ function executeActionSelectServerClip(
 		}
 	})
 
+	const blockingPiece = conflictingPiece
+		? literal<IBlueprintPiece>({
+				_id: '',
+				externalId,
+				name: conflictingPiece.piece.name,
+				enable: {
+					start: 0,
+					end: 1
+				},
+				infiniteMode: PieceLifespan.Normal,
+				sourceLayerId: conflictingPiece.piece.sourceLayerId,
+				outputLayerId: conflictingPiece.piece.outputLayerId,
+				content: {}
+		  })
+		: undefined
+
 	const part = CreatePartServerBase(context, config, partDefinition).part.part
 
 	// EFFEKT
@@ -265,6 +290,7 @@ function executeActionSelectServerClip(
 	context.queuePart(part, [
 		activeServerPiece,
 		serverDataStore,
+		...(blockingPiece ? [blockingPiece] : []),
 		...grafikPieces,
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [
 			OfftubeSourceLayer.SelectedAdLibServer,

@@ -68,8 +68,9 @@ interface SessionTime {
 	start: number
 	end: number | undefined
 	optional: boolean
+	duration: number | undefined
 }
-function calculateSessionTimeRanges(resolvedPieces: IBlueprintResolvedPieceInstance[]) {
+function calculateSessionTimeRanges(_context: NotesContext, resolvedPieces: IBlueprintResolvedPieceInstance[]) {
 	const piecesWantingMediaPlayers = _.filter(resolvedPieces, p => {
 		if (!p.piece.metaData) {
 			return false
@@ -100,13 +101,15 @@ function calculateSessionTimeRanges(resolvedPieces: IBlueprintResolvedPieceInsta
 				sessionRequests[sessionId] = {
 					start: Math.min(val.start, start),
 					end: maxUndefined(val.end, end),
-					optional: val.optional && (metadata.mediaPlayerOptional || false)
+					optional: val.optional && (metadata.mediaPlayerOptional || false),
+					duration: p.resolvedDuration
 				}
 			} else {
 				sessionRequests[sessionId] = {
 					start,
 					end,
-					optional: metadata.mediaPlayerOptional || false
+					optional: metadata.mediaPlayerOptional || false,
+					duration: p.resolvedDuration
 				}
 			}
 		})
@@ -202,7 +205,7 @@ export function resolveMediaPlayerAssignments<
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
 	const debugLog = config.studio.ABPlaybackDebugLogging
-	const sessionRequests = calculateSessionTimeRanges(resolvedPieces)
+	const sessionRequests = calculateSessionTimeRanges(context, resolvedPieces)
 
 	// In future this may want a better fit algorithm than this. This only applies if being done for multiple clips playing simultaneously, and more players
 
@@ -211,7 +214,7 @@ export function resolveMediaPlayerAssignments<
 	_.each(sessionRequests, (r, sessionId) => {
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
-			const sessionHasEnded = r.end && r.end < Date.now()
+			const sessionHasEnded = (r.end && r.end < Date.now()) || !!r.duration
 			if (!sessionHasEnded) {
 				activeRequests.push({
 					id: sessionId,
