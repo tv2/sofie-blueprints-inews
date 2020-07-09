@@ -196,7 +196,9 @@ function executeActionSelectServerClip(
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		if (userData.vo) {
-			activeServerPiece.content.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
+			activeServerPiece.content.timelineObjects.push(
+				GetSisyfosTimelineObjForCamera(context, config, 'server', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
+			)
 		}
 	}
 
@@ -532,7 +534,12 @@ function executeActionCutToCamera(context: ActionExecutionContext, _actionId: st
 	}
 	const atemInput = sourceInfoCam.port
 
-	const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${userData.name}`)
+	const camSisyfos = GetSisyfosTimelineObjForCamera(
+		context,
+		config,
+		`Kamera ${userData.name}`,
+		OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+	)
 
 	const kamPiece = literal<IBlueprintPiece>({
 		_id: '',
@@ -562,9 +569,9 @@ function executeActionCutToCamera(context: ActionExecutionContext, _actionId: st
 					},
 					classes: ['adlib_deparent']
 				}),
-				...camSisyfos,
+				camSisyfos,
 				...config.stickyLayers
-					.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+					.filter(layer => camSisyfos.content.channels.map(obj => obj.mappedLayer).indexOf(layer) === -1)
 					.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
 						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 							id: '',
@@ -628,7 +635,7 @@ function executeActionCutToRemote(context: ActionExecutionContext, _actionId: st
 
 	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
 		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`, GetLayersForEkstern),
-		...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+		GetSisyfosTimelineObjForCamera(context, config, 'telefon', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
 	]
 
 	const remotePiece = literal<IBlueprintPiece>({

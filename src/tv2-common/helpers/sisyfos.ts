@@ -118,7 +118,6 @@ export function GetSisyfosTimelineObjForCamera(
 		enable = { start: 0 }
 	}
 
-	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	const nonCam = !!sourceType.match(/server|telefon|full|evs/i)
@@ -145,6 +144,7 @@ export function GetSisyfosTimelineObjForCamera(
 			})
 		})
 	}
+
 	return literal<TSR.TimelineObjSisyfosChannels>({
 		id: '',
 		enable: enable ? enable : { start: 0 },

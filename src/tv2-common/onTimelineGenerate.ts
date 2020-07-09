@@ -11,6 +11,7 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
@@ -59,7 +60,7 @@ export function onTimelineGenerate<
 	context: PartEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
-	previousPartEndState: PartEndState | undefined,
+	_previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	parseConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
@@ -277,12 +278,12 @@ export function onTimelineGenerate<
 		}
 	})*/
 
-	copyPreviousSisyfosLevels(
+	/*copyPreviousSisyfosLevels(
 		context,
 		timeline,
 		previousPartEndState2 ? previousPartEndState2.stickySisyfosLevels : {},
 		resolvedPieces
-	)
+	)*/
 
 	const persistentState: TimelinePersistentStateExt = {
 		activeMediaPlayers: {},

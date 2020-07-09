@@ -118,7 +118,9 @@ export function OfftubeCreatePartVO(
 			serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 		}
 	)
-	adlibServer.content?.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
+	adlibServer.content?.timelineObjects.push(
+		GetSisyfosTimelineObjForCamera(context, config, 'server', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
+	)
 
 	actions.push(
 		literal<IBlueprintActionManifest>({
