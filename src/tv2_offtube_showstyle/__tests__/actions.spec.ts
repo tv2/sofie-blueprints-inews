@@ -16,7 +16,7 @@ import {
 	PartDefinitionUnknown
 } from 'tv2-common'
 import { AdlibActionType, CueType, PartType } from 'tv2-constants'
-import { executeAction } from '../actions'
+import { executeActionOfftube } from '../actions'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 import { MockContext } from './actionExecutionContext.mock'
 
@@ -26,6 +26,10 @@ const CURRENT_PART_ID = 'MOCK_PART_CURRENT'
 const CURRENT_PART_EXTERNAL_ID = `${CURRENT_PART_ID}_EXTERNAL`
 const SERVER_DURATION_A = 12000
 const VO_DURATION_A = 20000
+const SERVER_PREROLL = 280
+const DVE_PREROLL = 280
+const FULL_PREROLL = 280
+const FULL_KEEPALIVE = 1000
 
 const currentPartMock: IBlueprintPartInstance = {
 	_id: CURRENT_PART_ID,
@@ -283,15 +287,26 @@ function validateNextPartExistsWithDuration(context: MockContext, duration: numb
 	expect(context.nextPart?.part.expectedDuration).toEqual(duration)
 }
 
+function validateNextPartExistsWithPreRoll(context: MockContext, duration: number) {
+	expect(context.nextPart).toBeTruthy()
+	expect(context.nextPart?.part.prerollDuration).toEqual(duration)
+}
+
+function validateNextPartExistsWithTransitionKeepAlive(context: MockContext, duration: number) {
+	expect(context.nextPart).toBeTruthy()
+	expect(context.nextPart?.part.transitionKeepaliveDuration).toEqual(duration)
+}
+
 describe('Select Server Action', () => {
 	it('Inserts a new part when no next part is present', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		const pieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(pieces)
 		expect(pieces.dataStore?.piece.infiniteMode).toEqual(PieceLifespan.OutOnNextSegment)
 
@@ -304,7 +319,7 @@ describe('Select Server Action', () => {
 			selectedServerPieceInstance
 		])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		const currentPieces = getServerPieces(context, 'current')
 		const nextPieces = getServerPieces(context, 'next')
@@ -323,19 +338,21 @@ describe('Combination Actions', () => {
 	it('Server -> DVE', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		serverPieces = getServerPieces(context, 'next')
 		const dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)
 	})
@@ -343,19 +360,22 @@ describe('Combination Actions', () => {
 	it('Server -> Full', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
-		executeAction(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
 
 		serverPieces = getServerPieces(context, 'next')
 		const fullGrafikPieces = getFullGrafikPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, FULL_PREROLL)
+		validateNextPartExistsWithTransitionKeepAlive(context, FULL_KEEPALIVE)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(fullGrafikPieces)
 	})
@@ -363,19 +383,21 @@ describe('Combination Actions', () => {
 	it('Server -> VO', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
 		serverPieces = getServerPieces(context, 'next')
 		const voPieces = getVOPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(serverPieces)
 		validateSourcePiecesExist(voPieces)
 		expect(voPieces.dataStore?.piece.name).toEqual('VOVOA')
@@ -384,19 +406,21 @@ describe('Combination Actions', () => {
 	it('Server -> DVE', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		serverPieces = getServerPieces(context, 'next')
 		const dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)
 	})
@@ -404,14 +428,15 @@ describe('Combination Actions', () => {
 	it('Server -> CAM', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
-		executeAction(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
 		serverPieces = getServerPieces(context, 'next')
 		const camPiece = getCameraPiece(context, 'next')
@@ -424,14 +449,15 @@ describe('Combination Actions', () => {
 	it('Server -> LIVE', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
-		executeAction(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
 		serverPieces = getServerPieces(context, 'next')
 		const remotePiece = getRemotePiece(context, 'next')
@@ -444,18 +470,20 @@ describe('Combination Actions', () => {
 	it('DVE -> Server', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		dvePieces = getDVEPieces(context, 'next')
 		const serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(serverPieces)
 	})
@@ -463,18 +491,21 @@ describe('Combination Actions', () => {
 	it('DVE -> Full', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		let dvePieces = getDVEPieces(context, 'next')
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateSourcePiecesExist(dvePieces)
 
-		executeAction(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
 
 		dvePieces = getDVEPieces(context, 'next')
 		const fullGrafikPieces = getFullGrafikPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, FULL_PREROLL)
+		validateNextPartExistsWithTransitionKeepAlive(context, FULL_KEEPALIVE)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(fullGrafikPieces)
 	})
@@ -482,18 +513,20 @@ describe('Combination Actions', () => {
 	it('DVE -> VO', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
 		dvePieces = getDVEPieces(context, 'next')
 		const voPieces = getVOPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(voPieces)
 	})
@@ -501,13 +534,14 @@ describe('Combination Actions', () => {
 	it('DVE -> CAM', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeAction(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
 		dvePieces = getDVEPieces(context, 'next')
 		const camPiece = getCameraPiece(context, 'next')
@@ -520,13 +554,14 @@ describe('Combination Actions', () => {
 	it('DVE -> LIVE', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		let dvePieces = getDVEPieces(context, 'next')
 		validateSourcePiecesExist(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeAction(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
 		dvePieces = getDVEPieces(context, 'next')
 		const remotePiece = getRemotePiece(context, 'next')
@@ -540,51 +575,55 @@ describe('Combination Actions', () => {
 		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		// SERVER (A)
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		let serverPieces = getServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(serverPieces)
 
 		// DVE (A)
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
 		serverPieces = getServerPieces(context, 'next')
 		let dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)
 
 		// VO (A)
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
 		let voPieces = getVOPieces(context, 'next')
 		serverPieces = getServerPieces(context, 'next')
 		dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(serverPieces)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(voPieces)
 
 		// DVE (B)
 		expect(dvePieces.dataStore?.piece.name).toEqual('morbarn')
-		executeAction(context, AdlibActionType.SELECT_DVE, selectDVEActionBarnmor)
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionBarnmor)
 
 		voPieces = getVOPieces(context, 'next')
 		serverPieces = getServerPieces(context, 'next')
 		dvePieces = getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateSourcePiecesExist(dvePieces)
 		validateSelectionRemoved(serverPieces)
 		validateOnlySelectionIsPreserved(voPieces)
 		expect(dvePieces.dataStore?.piece.name).toEqual('barnmor')
 
 		// CAM (1)
-		executeAction(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
 		voPieces = getVOPieces(context, 'next')
 		serverPieces = getServerPieces(context, 'next')
@@ -598,7 +637,7 @@ describe('Combination Actions', () => {
 		validateCameraPiece(camPiece)
 
 		// LIVE (2)
-		executeAction(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
 		voPieces = getVOPieces(context, 'next')
 		serverPieces = getServerPieces(context, 'next')
@@ -614,7 +653,7 @@ describe('Combination Actions', () => {
 		validateRemotePiece(remotePiece)
 
 		// SERVER (A)
-		executeAction(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
 		voPieces = getVOPieces(context, 'next')
 		serverPieces = getServerPieces(context, 'next')
@@ -623,6 +662,7 @@ describe('Combination Actions', () => {
 		remotePiece = getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(voPieces)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateSourcePiecesExist(serverPieces)
@@ -630,7 +670,7 @@ describe('Combination Actions', () => {
 		expect(remotePiece).toBeFalsy()
 
 		// Commentator Select DVE
-		executeAction(context, AdlibActionType.COMMENTATOR_SELECT_DVE, commentatorSelectDVE)
+		executeActionOfftube(context, AdlibActionType.COMMENTATOR_SELECT_DVE, commentatorSelectDVE)
 
 		voPieces = getVOPieces(context, 'next')
 		serverPieces = getServerPieces(context, 'next')
@@ -639,6 +679,7 @@ describe('Combination Actions', () => {
 		remotePiece = getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateSelectionRemoved(voPieces)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateSourcePiecesExist(dvePieces)

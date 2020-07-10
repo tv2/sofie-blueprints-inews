@@ -58,7 +58,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 		fadeOut: 0,
 		volume: 0
 	},
-	CasparPrerollDuration: 0,
+	CasparPrerollDuration: 280,
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
 	JingleBasePath: 'jingler',
@@ -66,7 +66,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
-	FullKeepAliveDuration: 0
+	FullKeepAliveDuration: 1000
 }
 
 const mockShowStyleConfig: OfftubeShowStyleConfig = {
