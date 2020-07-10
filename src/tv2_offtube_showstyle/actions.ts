@@ -49,6 +49,7 @@ import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { parseConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
+import { CreateEffektForpart } from './parts/OfftubeEffekt'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 const SELECTED_ADLIB_LAYERS = [
@@ -258,9 +259,10 @@ function executeActionSelectServerClip(
 		}
 	})
 
-	const part = CreatePartServerBase(context, config, partDefinition).part.part
+	let part = CreatePartServerBase(context, config, partDefinition).part.part
 
-	// EFFEKT
+	const effektPieces: IBlueprintPiece[] = []
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, effektPieces) }
 
 	context.queuePart(part, [
 		activeServerPiece,
@@ -269,7 +271,8 @@ function executeActionSelectServerClip(
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [
 			OfftubeSourceLayer.SelectedAdLibServer,
 			OfftubeSourceLayer.SelectedAdLibVoiceOver
-		])
+		]),
+		...effektPieces
 	])
 }
 

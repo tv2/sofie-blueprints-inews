@@ -24,6 +24,7 @@ import {
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
+import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartServer(
 	context: PartContext2,
@@ -44,11 +45,7 @@ export function OfftubeCreatePartServer(
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 
-	part = {
-		...part
-		// TODO: Effekt
-		// ...CreateEffektForpart(context, config, partDefinition, pieces)
-	}
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	pieces.push(
 		literal<IBlueprintPiece>({

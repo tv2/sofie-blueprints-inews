@@ -28,6 +28,7 @@ import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
+import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartKam(
 	context: PartContext2,
@@ -37,7 +38,7 @@ export function OfftubeCreatePartKam(
 ): BlueprintResultPart {
 	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
-	const part = partKamBase.part.part
+	let part = partKamBase.part.part
 	const partTime = partKamBase.duration
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -88,10 +89,7 @@ export function OfftubeCreatePartKam(
 		}
 		const atemInput = sourceInfoCam.port
 
-		// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
-		// TODO: EFFEKT
-
-		// KAM 1 EFFEKT 3
+		part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 		pieces.push(
 			literal<IBlueprintPiece>({

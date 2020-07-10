@@ -27,6 +27,7 @@ import {
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
+import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartVO(
 	context: PartContext2,
@@ -42,7 +43,7 @@ export function OfftubeCreatePartVO(
 		return basePartProps.part
 	}
 
-	const part = basePartProps.part.part
+	let part = basePartProps.part.part
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
 	const actions: IBlueprintActionManifest[] = []
@@ -52,8 +53,7 @@ export function OfftubeCreatePartVO(
 	const actualDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	// const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 
-	// TODO: EFFEKT
-	// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	pieces.push(
 		literal<IBlueprintPiece>({
