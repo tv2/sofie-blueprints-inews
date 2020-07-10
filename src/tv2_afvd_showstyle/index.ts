@@ -4,7 +4,7 @@ import { showStyleMigrations } from './migrations'
 
 import { getEndStateForPart } from 'tv2-common'
 import { onTimelineGenerateAFVD } from '../tv2_afvd_studio/onTimelineGenerate'
-import { executeAction } from './actions'
+import { executeActionAFVD } from './actions'
 import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import onAsRunEvent from './onAsRunEvent'
@@ -29,7 +29,7 @@ const manifest: ShowStyleBlueprintManifest = {
 	onAsRunEvent,
 	onTimelineGenerate: onTimelineGenerateAFVD,
 	getEndStateForPart,
-	executeAction,
+	executeAction: executeActionAFVD,
 
 	showStyleConfigManifest,
 	showStyleMigrations
