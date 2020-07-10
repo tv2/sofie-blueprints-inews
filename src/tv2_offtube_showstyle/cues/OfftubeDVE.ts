@@ -10,6 +10,7 @@ import {
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
 	PartContext2,
@@ -90,8 +91,10 @@ export function OfftubeEvaluateDVE(
 					timelineObjects: [...pieceContent.content.timelineObjects]
 				},
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [partDefinition.segmentExternalId]
+				metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					mediaPlayerSessions: [partDefinition.segmentExternalId],
+					sources: parsedCue.sources,
+					config: rawTemplate
 				})
 			})
 		)

@@ -16,6 +16,7 @@ import {
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
+	ActionSelectDVELayout,
 	GetCameraMetaData,
 	GetEksternMetaData,
 	GetLayersForCamera,
@@ -24,7 +25,6 @@ import {
 	GetSisyfosTimelineObjForEkstern,
 	GraphicLLayer,
 	literal,
-	MakeContentDVE2,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
@@ -34,7 +34,7 @@ import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop, SisyfosLLAyer } 
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, parseConfig } from './helpers/config'
-import { AFVD_DVE_GENERATOR_OPTIONS, boxLayers } from './helpers/content/dve'
+import { boxLayers } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -644,25 +644,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		}
 	})
 
-	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		// const boxSources = ['', '', '', '']
-		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, AFVD_DVE_GENERATOR_OPTIONS)
-		if (content.valid) {
-			adlibItems.push({
-				externalId: `dve-${dveConfig.DVEName}`,
-				name: (dveConfig.DVEName || 'DVE') + '',
-				_rank: 200 + i,
-				sourceLayerId: SourceLayer.PgmDVEAdlib,
-				outputLayerId: 'pgm',
-				expectedDuration: 0,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				content: content.content,
-				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
-			})
-		}
-	})
-
 	// viz styles and dve backgrounds
 	adlibItems.push(
 		literal<IBlueprintAdLibPiece>({
@@ -863,6 +844,26 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			}
 		})
 	)
+
+	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
+		// const boxSources = ['', '', '', '']
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
+				userData: literal<ActionSelectDVELayout>({
+					type: AdlibActionType.SELECT_DVE_LAYOUT,
+					config: dveConfig
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: 200 + i,
+					label: dveConfig.DVEName,
+					sourceLayerId: SourceLayer.PgmDVEAdlib,
+					outputLayerId: 'pgm'
+				}
+			})
+		)
+	})
 
 	return res
 }

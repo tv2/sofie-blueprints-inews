@@ -1,5 +1,6 @@
 import { SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
 import { AdlibActionType } from 'tv2-constants'
+import { DVEConfigInput } from '../helpers'
 import { CueDefinitionDVE, PartDefinition } from '../inewsConversion'
 
 interface ActionBase {
@@ -23,6 +24,11 @@ export interface ActionSelectDVE extends ActionBase {
 	type: AdlibActionType.SELECT_DVE
 	config: CueDefinitionDVE
 	part: PartDefinition
+}
+
+export interface ActionSelectDVELayout extends ActionBase {
+	type: AdlibActionType.SELECT_DVE_LAYOUT
+	config: DVEConfigInput
 }
 
 export interface ActionCutToCamera extends ActionBase {
@@ -66,6 +72,7 @@ export interface ActionClearGraphics extends ActionBase {
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
+	| ActionSelectDVELayout
 	| ActionSelectFullGrafik
 	| ActionCutToCamera
 	| ActionCutToRemote

@@ -96,6 +96,11 @@ export interface DVEMetaData {
 	mediaPlayerSession?: string
 }
 
+export interface DVEPieceMetaData {
+	config: DVEConfigInput
+	sources: DVESources
+}
+
 export interface DVEBoxInfo {
 	rawType: string
 }
@@ -234,6 +239,8 @@ export function MakeContentDVE2<
 				const match = prop.match(/EVS ?(.*)/i) as RegExpExecArray
 
 				boxMap[targetBox - 1] = { source: `EVS ${match[1]}`, sourceLayer }
+			} else if (prop?.match(/DEFAULT/)) {
+				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE`, sourceLayer }
 			} else if (prop) {
 				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
 					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
@@ -305,7 +312,18 @@ export function MakeContentDVE2<
 			const audioEnable: TSR.Timeline.TimelineEnable = {
 				while: `1`
 			}
-			if (sourceType.match(/KAM/i)) {
+			if (sourceType.match(/DEFAULT/)) {
+				setBoxSource(
+					num,
+					{
+						type: SourceLayerType.UNKNOWN,
+						id: 'DEFAULT',
+						port: config.studio.AtemSource.Default
+					},
+					mappingFrom.source,
+					mappingFrom.source
+				)
+			} else if (sourceType.match(/KAM/i)) {
 				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
 				if (sourceInfoCam === undefined) {
 					context.warning(`Invalid source: ${mappingFrom.source}`)

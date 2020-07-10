@@ -9,6 +9,7 @@ import {
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
 	PartContext2,
@@ -67,7 +68,11 @@ export function EvaluateDVE(
 					infiniteMode: PieceLifespan.OutOnNextPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
+					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+					metaData: literal<DVEPieceMetaData>({
+						sources: parsedCue.sources,
+						config: rawTemplate
+					})
 				})
 			)
 		} else {
@@ -89,8 +94,10 @@ export function EvaluateDVE(
 					toBeQueued: true,
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: literal<PieceMetaData>({
-						mediaPlayerSessions: [partDefinition.segmentExternalId]
+					metaData: literal<PieceMetaData & DVEPieceMetaData>({
+						mediaPlayerSessions: [partDefinition.segmentExternalId],
+						sources: parsedCue.sources,
+						config: rawTemplate
 					})
 				})
 			)

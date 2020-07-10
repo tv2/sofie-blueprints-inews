@@ -19,12 +19,12 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionSelectDVELayout,
 	GetCameraMetaData,
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	GraphicLLayer,
 	literal,
-	MakeContentDVE2,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
@@ -38,7 +38,7 @@ import {
 } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { boxLayers, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
+import { boxLayers } from './content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -98,25 +98,6 @@ function getGlobalAdLibPiecesOfftube(
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
 	let globalRank = 1000
-
-	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		// const boxSources = ['', '', '', '']
-		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, OFFTUBE_DVE_GENERATOR_OPTIONS)
-		if (content.valid) {
-			adlibItems.push({
-				externalId: `dve-${dveConfig.DVEName}`,
-				name: (dveConfig.DVEName || 'DVE') + '',
-				_rank: 200 + i,
-				sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				expectedDuration: 0,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				content: content.content,
-				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
-			})
-		}
-	})
 
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
@@ -354,6 +335,26 @@ function getGlobalAdlibActionsOfftube(
 			}
 		})
 	)
+
+	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
+		// const boxSources = ['', '', '', '']
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
+				userData: literal<ActionSelectDVELayout>({
+					type: AdlibActionType.SELECT_DVE_LAYOUT,
+					config: dveConfig
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: 200 + i,
+					label: dveConfig.DVEName,
+					sourceLayerId: OfftubeSourceLayer.PgmDVE,
+					outputLayerId: 'pgm'
+				}
+			})
+		)
+	})
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)

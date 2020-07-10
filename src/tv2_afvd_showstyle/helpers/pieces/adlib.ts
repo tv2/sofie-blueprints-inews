@@ -3,6 +3,7 @@ import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
 	PartContext2,
@@ -105,8 +106,10 @@ export function EvaluateAdLib(
 				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid,
-				metaData: literal<PieceMetaData>({
-					stickySisyfosLevels: sticky
+				metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					stickySisyfosLevels: sticky,
+					sources: cueDVE.sources,
+					config: rawTemplate
 				})
 			})
 		)

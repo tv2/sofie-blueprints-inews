@@ -12,9 +12,6 @@ import {
 	PieceMetaData,
 	ShowStyleContext,
 	SourceLayerType,
-	SplitsContent,
-	SplitsContentBoxContent,
-	SplitsContentBoxProperties,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -31,7 +28,6 @@ import {
 	CalculateTime,
 	CreatePartServerBase,
 	CueDefinition,
-	DVEBoxInfo,
 	DVEOptions,
 	EvaluateCuesOptions,
 	FindSourceInfoStrict,
@@ -82,6 +78,7 @@ export interface ActionExecutionSettings<
 		Server: string
 		VO: string
 		DVE: string
+		DVEAdLib?: string
 		Cam: string
 		Live: string
 		Effekt: string
@@ -147,6 +144,9 @@ export function executeAction<
 			break
 		case AdlibActionType.SELECT_DVE:
 			executeActionSelectDVE(context, settings, actionId, userData as ActionSelectDVE)
+			break
+		case AdlibActionType.SELECT_DVE_LAYOUT:
+			executeActionSelectDVELayout(context, settings, actionId, userData as ActionSelectDVELayout)
 			break
 		case AdlibActionType.SELECT_FULL_GRAFIK:
 			if (settings.executeActionSelectFull) {
@@ -467,8 +467,10 @@ function executeActionSelectDVE<
 			...pieceContent.content
 		},
 		adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: [externalId]
+		metaData: literal<PieceMetaData & DVEPieceMetaData>({
+			mediaPlayerSessions: [externalId],
+			sources: parsedCue.sources,
+			config: rawTemplate
 		})
 	})
 
@@ -589,6 +591,91 @@ function executeActionSelectDVE<
 			  ])
 			: [])
 	])
+}
+
+function executeActionSelectDVELayout<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	_actionId: string,
+	userData: ActionSelectDVELayout
+) {
+	const config = settings.parseConfig(context)
+
+	if (!settings.SourceLayers.DVEAdLib) {
+		return
+	}
+
+	const sources: DVESources = {
+		INP1: 'DEFAULT',
+		INP2: 'DEFAULT'
+	}
+
+	const externalId = `adlib-action_${context.getHashId(`select_dve_layout_${userData.config.DVEName}`)}`
+
+	const nextPart = context.getPartInstance('next')
+
+	const nextInstances = context.getPieceInstances('next')
+	const nextDVE = nextInstances.find(
+		p =>
+			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
+			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE) ||
+			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
+	)
+
+	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
+
+	if (!nextPart || !nextDVE || !meta) {
+		const content = MakeContentDVE2(context, config, userData.config, {}, sources, settings.DVEGeneratorOptions)
+
+		if (!content.valid) {
+			return
+		}
+
+		context.queuePart(
+			literal<IBlueprintPart>({
+				externalId,
+				title: userData.config.DVEName,
+				prerollDuration: config.studio.CasparPrerollDuration
+			}),
+			[
+				literal<IBlueprintPiece>({
+					_id: '',
+					externalId,
+					enable: {
+						start: 0
+					},
+					infiniteMode: PieceLifespan.OutOnNextPart,
+					name: userData.config.DVEName,
+					sourceLayerId: settings.SourceLayers.DVEAdLib,
+					outputLayerId: settings.OutputLayer.PGM,
+					metaData: literal<DVEPieceMetaData>({
+						sources,
+						config: userData.config
+					}),
+					content: content.content
+				}),
+				...(settings.SelectedAdlibs
+					? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
+							settings.SelectedAdlibs.SourceLayer.DVE
+					  ])
+					: [])
+			]
+		)
+		return
+	}
+
+	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
+
+	context.updatePieceInstance(nextDVE._id, {
+		content: pieceContent,
+		metaData: literal<PieceMetaData & DVEPieceMetaData>({
+			...meta,
+			config: userData.config
+		})
+	})
 }
 
 function executeActionCutToCamera<
@@ -832,12 +919,14 @@ function executeActionCutSourceToBox<
 	const currentDVE = currentPieces.find(
 		p =>
 			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE)
+			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE) ||
+			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
 	)
 	const nextDVE = nextPieces.find(
 		p =>
 			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE)
+			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE) ||
+			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
 	)
 
 	let modify: undefined | 'current' | 'next'
@@ -851,114 +940,25 @@ function executeActionCutSourceToBox<
 		modifiedPiece = nextDVE
 	}
 
-	if (!modifiedPiece || !modify || !modifiedPiece.piece.content || !modifiedPiece.piece.content.timelineObjects) {
+	const meta: DVEPieceMetaData | undefined = modifiedPiece?.piece.metaData as PieceMetaData & DVEPieceMetaData
+
+	if (
+		!modifiedPiece ||
+		!modify ||
+		!modifiedPiece.piece.content ||
+		!modifiedPiece.piece.content.timelineObjects ||
+		!meta
+	) {
 		return
 	}
 
-	const tlObjIndex = (modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
-		t => t.content.deviceType === TSR.DeviceType.ATEM && t.content.type === TSR.TimelineContentTypeAtem.SSRC
-	)
+	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.name
 
-	if (tlObjIndex === -1) {
-		return
+	const newPiece = MakeContentDVE2(context, config, meta.config, {}, meta.sources, settings.DVEGeneratorOptions)
+
+	if (newPiece.valid) {
+		context.updatePieceInstance(modifiedPiece._id, { content: newPiece.content, metaData: meta })
 	}
-
-	const content = modifiedPiece.piece.content as SplitsContent
-	const replacedSource = content.boxSourceConfiguration[userData.box] as
-		| (SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo)
-		| undefined
-
-	// Don't do anything if the source is already routed to the target box
-	if (replacedSource && replacedSource.rawType === userData.name) {
-		return
-	}
-
-	const obj = modifiedPiece.piece.content.timelineObjects[tlObjIndex] as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
-	obj.content.ssrc.boxes[userData.box] = {
-		...obj.content.ssrc.boxes[userData.box],
-		source: userData.port
-	}
-
-	modifiedPiece.piece.content.timelineObjects[tlObjIndex] = obj
-
-	if (userData.box + 1 > content.boxSourceConfiguration.length) {
-		for (let box = content.boxSourceConfiguration.length; box < userData.box; box++) {
-			content.boxSourceConfiguration[box] = {
-				type: SourceLayerType.UNKNOWN,
-				studioLabel: '',
-				switcherInput: 0,
-				rawType: ''
-			}
-		}
-	}
-
-	content.boxSourceConfiguration[userData.box] = literal<
-		SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo
-	>({
-		type: userData.sourceType,
-		studioLabel: '',
-		switcherInput: userData.port,
-		rawType: userData.name
-	})
-
-	const activeLayers: string[] = []
-
-	content.boxSourceConfiguration.forEach((box: SplitsContentBoxContent & SplitsContentBoxProperties & DVEBoxInfo) => {
-		switch (box.type) {
-			case SourceLayerType.CAMERA:
-				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, box.rawType)
-				if (sourceInfoCam) {
-					GetLayersForCamera(config, sourceInfoCam).forEach(layer => {
-						if (!activeLayers.includes(layer)) {
-							activeLayers.push(layer)
-						}
-					})
-				}
-				break
-			case SourceLayerType.REMOTE:
-				;[...GetLayersForEkstern(context, config.sources, box.rawType), ...config.studio.StudioMics].forEach(layer => {
-					if (!activeLayers.includes(layer)) {
-						activeLayers.push(layer)
-					}
-				})
-				break
-		}
-	})
-
-	modifiedPiece.piece.content = content
-
-	modifiedPiece.piece.content.timelineObjects = modifiedPiece.piece.content.timelineObjects!.filter(
-		t => t.content.deviceType !== TSR.DeviceType.SISYFOS || activeLayers.includes(t.layer.toString()) // TODO: Combined sisyfos layers
-	)
-
-	const existingLayers: string[] = []
-
-	modifiedPiece.piece.content.timelineObjects?.forEach(t => {
-		if (t.content.deviceType === TSR.DeviceType.SISYFOS) {
-			existingLayers.push(t.layer.toString())
-		}
-	})
-
-	const newLayers = activeLayers.filter(layer => !existingLayers.includes(layer))
-
-	newLayers.forEach(layer => {
-		modifiedPiece!.piece.content!.timelineObjects!.push(
-			literal<TSR.TimelineObjSisyfosChannel>({
-				id: '',
-				enable: {
-					while: '1'
-				},
-				layer,
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: 1
-				}
-			})
-		)
-	})
-
-	context.updatePieceInstance(modifiedPiece._id, modifiedPiece.piece)
 }
 
 function findPieceToRecoverDataFrom(
