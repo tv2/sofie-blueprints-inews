@@ -69,6 +69,10 @@ export interface ActionClearGraphics extends ActionBase {
 	type: AdlibActionType.CLEAR_GRAPHICS
 }
 
+export interface ActionTakeWithTransition extends ActionBase {
+	type: AdlibActionType.TAKE_WITH_TRANSITION
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -80,3 +84,4 @@ export type TV2AdlibAction =
 	| ActionCommentatorSelectDVE
 	| ActionCommentatorSelectFull
 	| ActionClearGraphics
+	| ActionTakeWithTransition

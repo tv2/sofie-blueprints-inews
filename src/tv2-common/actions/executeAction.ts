@@ -174,6 +174,9 @@ export function executeAction<
 		case AdlibActionType.COMMENTATOR_SELECT_FULL:
 			executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
 			break
+		case AdlibActionType.TAKE_WITH_TRANSITION:
+			context.takeAfterExecuteAction(true)
+			break
 	}
 }
 

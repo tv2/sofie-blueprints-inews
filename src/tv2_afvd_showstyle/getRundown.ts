@@ -17,6 +17,7 @@ import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionSelectDVELayout,
+	ActionTakeWithTransition,
 	GetCameraMetaData,
 	GetEksternMetaData,
 	GetLayersForCamera,
@@ -841,6 +842,22 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				outputLayerId: 'sec',
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON]
+			}
+		})
+	)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+			userData: literal<ActionTakeWithTransition>({
+				type: AdlibActionType.TAKE_WITH_TRANSITION
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 800,
+				label: 'TAKE WITH TRANSITION',
+				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+				outputLayerId: 'pgm'
 			}
 		})
 	)
