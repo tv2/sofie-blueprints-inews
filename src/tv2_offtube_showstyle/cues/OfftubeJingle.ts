@@ -68,7 +68,6 @@ export function OfftubeEvaluateJingle(
 			outputLayerId: 'jingle',
 			content: createJingleContent(config, file, jingle.LoadFirstFrame),
 			toBeQueued: true,
-			canCombineQueue: true,
 			adlibAutoNext: props.autoNext,
 			adlibAutoNextOverlap: props.autoNextOverlap,
 			adlibPreroll: props.prerollDuration,

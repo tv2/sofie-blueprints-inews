@@ -187,5 +187,6 @@ export const defaultShowStyleConfig: ConfigMap = {
 			FadeIn: 0,
 			FadeOut: 0
 		}
-	]
+	],
+	OneButtonTransition: 'MIX 12'
 }

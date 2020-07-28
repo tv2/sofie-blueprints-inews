@@ -9,7 +9,8 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
-	CasparCGLoadingClip: ''
+	CasparCGLoadingClip: '',
+	OneButtonTransition: 'MIX 12'
 }
 
 describe('Config Manifest', () => {

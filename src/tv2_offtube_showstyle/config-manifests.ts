@@ -10,6 +10,14 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		required: true
 	},
 	{
+		id: 'OneButtonTransition',
+		name: 'One Button Transition',
+		description: 'Transition to use for transition button (e.g. MIX 12 / EFFEKT 1)',
+		type: ConfigManifestEntryType.STRING,
+		defaultVal: 'MIX 12',
+		required: false
+	},
+	{
 		id: 'DVEStyles',
 		name: 'DVE Layouts',
 		description: '',

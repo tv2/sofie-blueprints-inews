@@ -23,7 +23,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		description: 'Transition to use for transition button (e.g. MIX 12 / EFFEKT 1)',
 		type: ConfigManifestEntryType.STRING,
 		defaultVal: 'MIX 12',
-		required: true
+		required: false
 	},
 	{
 		id: 'DVEStyles',

@@ -80,7 +80,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
-	DefaultTransitions: TableConfigItemDefaultTransitions[]
+	// DefaultTransitions: TableConfigItemDefaultTransitions[]
 	OneButtonTransition: string
 }
 

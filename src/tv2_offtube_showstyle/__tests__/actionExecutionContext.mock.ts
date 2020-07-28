@@ -2,6 +2,7 @@ import {
 	ActionExecutionContext,
 	BlueprintMappings,
 	ConfigItemValue,
+	IBlueprintMutatablePart,
 	IBlueprintPart,
 	IBlueprintPartInstance,
 	IBlueprintPiece,
@@ -95,7 +96,8 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
-	CasparCGLoadingClip: ''
+	CasparCGLoadingClip: '',
+	OneButtonTransition: 'MIX 12'
 }
 
 export class MockContext implements ActionExecutionContext {
@@ -200,7 +202,7 @@ export class MockContext implements ActionExecutionContext {
 			}
 		}
 	}
-	/** Update a piecesInstances */
+	/** Update a pieceInstance */
 	public updatePieceInstance(
 		_pieceInstanceId: string,
 		piece: Partial<OmitId<IBlueprintPiece>>
@@ -237,6 +239,10 @@ export class MockContext implements ActionExecutionContext {
 
 		return instance
 	}
+	/** Update a partInstance */
+	public updatePartInstance(_part: 'current' | 'next', _props: Partial<IBlueprintMutatablePart>): void {
+		return
+	}
 	/** Destructive actions */
 	/** Stop any piecesInstances on the specified sourceLayers. Returns ids of piecesInstances that were affected */
 	public stopPiecesOnLayers(_sourceLayerIds: string[], _timeOffset?: number): string[] {
@@ -245,5 +251,13 @@ export class MockContext implements ActionExecutionContext {
 	/** Stop piecesInstances by id. Returns ids of piecesInstances that were removed */
 	public stopPieceInstances(_pieceInstanceIds: string[], _timeOffset?: number): string[] {
 		return []
+	}
+	/** Remove piecesInstances by id. Returns ids of piecesInstances that were removed */
+	public removePieceInstances(_part: 'current' | 'next', _pieceInstanceIds: string[]): void {
+		return
+	}
+	/** Set flag to perform take after executing the current action. Returns state of the flag after each call. */
+	public takeAfterExecuteAction(take: boolean): boolean {
+		return take
 	}
 }

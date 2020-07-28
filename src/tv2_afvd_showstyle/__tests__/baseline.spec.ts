@@ -1,4 +1,4 @@
-import { IngestRundown } from 'tv-automation-sofie-blueprints-integration'
+import { ExtendedIngestRundown } from 'tv-automation-sofie-blueprints-integration'
 import { ShowStyleContext } from '../../__mocks__/context'
 import { checkAllLayers } from './layers-check'
 
@@ -20,12 +20,13 @@ describe('Baseline', () => {
 			expect(configSpec.studioConfig).toBeTruthy()
 			expect(configSpec.showStyleConfig).toBeTruthy()
 
-			const rundown: IngestRundown = {
+			const rundown: ExtendedIngestRundown = {
 				externalId: 'abc',
 				name: 'Mock RO',
 				type: 'mock',
 				payload: {},
-				segments: []
+				segments: [],
+				coreData: undefined
 			}
 
 			const mockContext = new ShowStyleContext(rundown.name, mappingsDefaults)

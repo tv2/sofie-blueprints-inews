@@ -39,7 +39,8 @@ describe('TransformCuesIntoShowstyle', () => {
 		WipesConfig: [],
 		BreakerConfig: [],
 		DefaultTemplateDuration: 3000,
-		LYDConfig: []
+		LYDConfig: [],
+		OneButtonTransition: 'MIX 12'
 	}
 
 	test('Merge VCP', () => {
