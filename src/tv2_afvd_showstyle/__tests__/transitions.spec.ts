@@ -7,12 +7,15 @@ import {
 	IngestSegment,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
+import { TimeFromFrames } from 'tv2-common'
 import * as _ from 'underscore'
 import { SegmentContext } from '../../__mocks__/context'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getSegment } from '../getSegment'
+import { ShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
+import { MOCK_EFFEKT_1, MOCK_EFFEKT_2 } from './breakerConfigDefault'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
 
 const templateSegment: IngestSegment = {
@@ -83,10 +86,20 @@ function checkPartExistsWithProperties(segment: BlueprintResultSegment, props: P
 
 	for (const k in props) {
 		if (k in part.part) {
-			expect(part.part[k as keyof IBlueprintPart]).toEqual(props[k as keyof IBlueprintPart])
+			expect({ [k]: part.part[k as keyof IBlueprintPart] }).toEqual({ [k]: props[k as keyof IBlueprintPart] })
 		} else {
-			fail(`Invalid key provided for props: ${k}`)
+			fail(`Key "${k}" not found in part`)
 		}
+	}
+}
+
+function getTransitionProperties(effekt: ShowStyleConfig['WipesConfig'][0]): Partial<IBlueprintPart> {
+	const preroll = defaultShowStyleConfig.CasparPrerollDuration as number
+	return {
+		transitionDuration: TimeFromFrames(Number(effekt.Duration)) + preroll,
+		transitionKeepaliveDuration: TimeFromFrames(Number(effekt.StartAlpha)) + preroll,
+		transitionPrerollDuration:
+			TimeFromFrames(Number(effekt.Duration)) - TimeFromFrames(Number(effekt.EndAlpha)) + preroll
 	}
 }
 
@@ -109,87 +122,263 @@ function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	return atemMEObj
 }
 
+function testNotes(context: SegmentContext) {
+	expect(context.getNotes()).toStrictEqual([])
+}
+
 describe('Primary Cue Transitions', () => {
 	it('Cuts by default for KAM', () => {
 		const ingestSegment = _.clone(templateSegment)
 
-		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER</pi><p>'
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1</pi><p>'
 
-		const segment = getSegment(makeMockContext(), ingestSegment)
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
 
-		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		testNotes(context)
 
-		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmServer)
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmCam)
 		const atemCutObj = getATEMMEObj(piece)
 
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds effekt to KAM', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1 EFFEKT 2</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmCam)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_2))
+
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds mix to KAM', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1 Mix 11</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmCam)
+		const atemCutObj = getATEMMEObj(piece)
+
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(11)
 	})
 
 	it('Cuts by default for EVS1', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const atemCutObj = getATEMMEObj(piece)
+
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds effekt to EVS1', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 EFFEKT 1</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds mix to EVS1', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 Mix 15</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const atemCutObj = getATEMMEObj(piece)
+
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(15)
 	})
 
 	it('Cuts by default for EVS1VO', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS1VO</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const atemCutObj = getATEMMEObj(piece)
+
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds effekt to EVS1VO', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1VO EFFEKT 1</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds mix to EVS1VO', () => {
-		fail('Empty test')
-	})
+		const ingestSegment = _.clone(templateSegment)
 
-	it('Cuts by default for EKSTERN', () => {
-		fail('Empty test')
-	})
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 VO Mix 25</pi><p>'
 
-	it('Adds effekt to EKSTERN', () => {
-		fail('Empty test')
-	})
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
 
-	it('Adds mix to EKSTERN', () => {
-		fail('Empty test')
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const atemCutObj = getATEMMEObj(piece)
+
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(25)
 	})
 
 	it('Cuts by default for SERVER', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmServer)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds effekt to SERVER', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER EFFEKT 2</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmServer)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_2))
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds mix to SERVER', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER Mix 20</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmServer)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
 	})
 
 	it('Cuts by default for VO', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmVoiceOver)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds effekt to VO', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO EFFEKT 1</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmVoiceOver)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
 	it('Adds mix to VO', () => {
-		fail('Empty test')
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO Mix 20</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmVoiceOver)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
 	})
 })

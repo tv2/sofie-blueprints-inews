@@ -514,7 +514,8 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			variant: {
 				evs: strippedToken && strippedToken[1] ? strippedToken[1] : '1',
 				isVO: !!strippedToken && !!strippedToken[2]
-			}
+			},
+			...definition
 		}
 	} else if (firstToken.match(/VOV?/i)) {
 		return {
