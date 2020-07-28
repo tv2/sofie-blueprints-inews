@@ -18,12 +18,12 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		required: true
 	},
 	{
-		id: 'OneButtonTransition',
-		name: 'One Button Transition',
-		description: 'Transition to use for transition button (e.g. MIX 12 / EFFEKT 1)',
-		type: ConfigManifestEntryType.STRING,
-		defaultVal: 'MIX 12',
-		required: false
+		id: 'TakeWithMixDuration',
+		name: 'Take With Mix Duration',
+		description: 'Default mix duration when taking with a mix (frames)',
+		type: ConfigManifestEntryType.NUMBER,
+		defaultVal: 12,
+		required: true
 	},
 	{
 		id: 'DVEStyles',
@@ -450,6 +450,25 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: 1000,
 				rank: 3
+			}
+		]
+	},
+	{
+		id: 'TakeEffekts',
+		name: 'Take Effekts',
+		description: 'Effekts avalable for take shortcuts',
+		type: ConfigManifestEntryType.TABLE,
+		required: true,
+		defaultVal: [],
+		columns: [
+			{
+				id: 'Effekt',
+				name: 'Effekt',
+				description: 'Name of Effekt (e.g. 1)',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 0
 			}
 		]
 	}
