@@ -2,6 +2,7 @@ import {
 	TableConfigItemSourceMappingWithSisyfos,
 	TableConfigItemSourceMappingWithSisyfosAndKeepAudio
 } from 'tv2-common'
+import { PartType } from 'tv2-constants'
 import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
 
@@ -28,6 +29,12 @@ export interface TableConfigItemGFXTemplates {
 	Argument1: string
 	Argument2: string
 	IsDesign: boolean
+}
+
+export interface TableConfigItemDefaultTransitions {
+	Type: PartType
+	Variant: string
+	DefaultTransition?: string
 }
 
 export interface TV2StudioConfigBase {
@@ -73,6 +80,8 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
+	DefaultTransitions: TableConfigItemDefaultTransitions[]
+	OneButtonTransition: string
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

@@ -82,5 +82,6 @@ export enum AdlibActionType {
 	COMMENTATOR_SELECT_SERVER = 'commentator_select_server',
 	COMMENTATOR_SELECT_DVE = 'commentator_select_dve',
 	COMMENTATOR_SELECT_FULL = 'commentator_select_full',
-	CLEAR_GRAPHICS = 'clear_graphics'
+	CLEAR_GRAPHICS = 'clear_graphics',
+	TAKE_WITH_TRANSITION = 'take_with_transition'
 }

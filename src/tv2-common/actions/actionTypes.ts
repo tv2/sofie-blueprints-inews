@@ -69,6 +69,34 @@ export interface ActionClearGraphics extends ActionBase {
 	type: AdlibActionType.CLEAR_GRAPHICS
 }
 
+export interface ActionTakeWithTransitionVariantBase {
+	type: 'cut' | 'mix' | 'effekt'
+}
+
+export interface ActionTakeWithTransitionVariantCut extends ActionTakeWithTransitionVariantBase {
+	type: 'cut'
+}
+
+export interface ActionTakeWithTransitionVariantMix extends ActionTakeWithTransitionVariantBase {
+	type: 'mix'
+	frames: number
+}
+
+export interface ActionTakeWithTransitionVariantEffekt extends ActionTakeWithTransitionVariantBase {
+	type: 'effekt'
+	effekt: number
+}
+
+export type ActionTakeWithTransitionVariant =
+	| ActionTakeWithTransitionVariantCut
+	| ActionTakeWithTransitionVariantMix
+	| ActionTakeWithTransitionVariantEffekt
+
+export interface ActionTakeWithTransition extends ActionBase {
+	type: AdlibActionType.TAKE_WITH_TRANSITION
+	variant: ActionTakeWithTransitionVariant
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -80,3 +108,4 @@ export type TV2AdlibAction =
 	| ActionCommentatorSelectDVE
 	| ActionCommentatorSelectFull
 	| ActionClearGraphics
+	| ActionTakeWithTransition

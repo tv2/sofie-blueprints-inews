@@ -1,5 +1,25 @@
 import { ShowStyleConfig } from '../helpers/config'
 
+export const MOCK_EFFEKT_1: ShowStyleConfig['WipesConfig'][0] = {
+	_id: 'Qj29Tp2iMBoufTRsR',
+	BreakerName: '1',
+	ClipName: 'EFFEKT_1',
+	Duration: 100,
+	StartAlpha: 12,
+	EndAlpha: 10,
+	Autonext: false
+}
+
+export const MOCK_EFFEKT_2: ShowStyleConfig['WipesConfig'][0] = {
+	_id: 'Qj29Tp2iMBoufTR5E',
+	BreakerName: '2',
+	ClipName: 'EFFEKT_2',
+	Duration: 200,
+	StartAlpha: 24,
+	EndAlpha: 20,
+	Autonext: false
+}
+
 export function DefaultBreakerConfig(): ShowStyleConfig['WipesConfig'] {
 	return [
 		{
@@ -219,15 +239,6 @@ export function DefaultBreakerConfig(): ShowStyleConfig['WipesConfig'] {
 			Autonext: true
 		},
 		{
-			_id: 'ERTL7XdpJkvnQKT9a',
-			BreakerName: '1',
-			ClipName: '2019_sporten_wipe_a_v02',
-			Duration: 83,
-			StartAlpha: 7,
-			EndAlpha: 76,
-			Autonext: false
-		},
-		{
 			_id: 'tvjuKkrKfzJmbgxYi',
 			BreakerName: '30',
 			ClipName: 'NBA - Wipe Alpha IN - 75f',
@@ -289,6 +300,8 @@ export function DefaultBreakerConfig(): ShowStyleConfig['WipesConfig'] {
 			StartAlpha: 12,
 			EndAlpha: 0,
 			Autonext: false
-		}
+		},
+		MOCK_EFFEKT_1,
+		MOCK_EFFEKT_2
 	]
 }
