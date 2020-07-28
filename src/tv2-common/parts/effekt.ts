@@ -1,4 +1,5 @@
 import {
+	IBlueprintPart,
 	IBlueprintPiece,
 	NotesContext,
 	PieceLifespan,
@@ -30,21 +31,52 @@ export function CreateEffektForPartBase<
 		sisyfosLayer: string
 	}
 ):
-	| {
-			tranisitionDuration: number
-			transitionKeepaliveDuration: number
-			transitionPrerollDuration: number
-			autoNext: false
-	  }
+	| Pick<
+			IBlueprintPart,
+			'transitionDuration' | 'transitionKeepaliveDuration' | 'transitionPrerollDuration' | 'autoNext'
+	  >
 	| {} {
 	const effekt = partDefinition.effekt
 	if (effekt === undefined) {
 		return {}
 	}
 
+	const ret = CreateEffektForPartInner(
+		context,
+		config,
+		pieces,
+		effekt,
+		`${partDefinition.externalId}-EFFEKT-${effekt}`,
+		layers
+	)
+
+	return ret ?? {}
+}
+
+export function CreateEffektForPartInner<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: NotesContext,
+	config: ShowStyleConfig,
+	pieces: IBlueprintPiece[],
+	effekt: number,
+	externalId: string,
+	layers: {
+		sourceLayer: string
+		atemLayer: string
+		casparLayer: string
+		sisyfosLayer: string
+	}
+):
+	| Pick<
+			IBlueprintPart,
+			'transitionDuration' | 'transitionKeepaliveDuration' | 'transitionPrerollDuration' | 'autoNext'
+	  >
+	| false {
 	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
-		return {}
+		return false
 	}
 
 	const effektConfig = config.showStyle.BreakerConfig.find(
@@ -55,20 +87,20 @@ export function CreateEffektForPartBase<
 	)
 	if (!effektConfig) {
 		context.warning(`Could not find effekt ${effekt}`)
-		return {}
+		return false
 	}
 
 	const file = effektConfig.ClipName.toString()
 
 	if (!file) {
 		context.warning(`Could not find file for ${effekt}`)
-		return {}
+		return false
 	}
 
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',
-			externalId: `${partDefinition.externalId}-EFFEKT-${effekt}`,
+			externalId,
 			name: `EFFEKT-${effekt}`,
 			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
 			outputLayerId: 'jingle',

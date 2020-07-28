@@ -1,5 +1,6 @@
 import { ConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
-import { parseMapStr } from 'tv2-common'
+import { literal, parseMapStr, TableConfigItemDefaultTransitions } from 'tv2-common'
+import { PartType } from 'tv2-constants'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -137,6 +138,23 @@ export const defaultShowStyleConfig: ConfigMap = {
 	BreakerConfig: DefaultBreakerConfig(),
 	MakeAdlibsForFulls: true,
 	GFXTemplates: DefaultGrafikConfig(),
+	DefaultTransitions: literal<TableConfigItemDefaultTransitions[]>([
+		literal<TableConfigItemDefaultTransitions>({
+			Type: PartType.Kam,
+			Variant: '1',
+			DefaultTransition: 'Cut'
+		}),
+		literal<TableConfigItemDefaultTransitions>({
+			Type: PartType.Kam,
+			Variant: '2',
+			DefaultTransition: 'CUT'
+		}),
+		literal<TableConfigItemDefaultTransitions>({
+			Type: PartType.VO,
+			Variant: 'SB',
+			DefaultTransition: 'Cut'
+		})
+	]),
 	LYDConfig: [
 		{
 			_id: '',

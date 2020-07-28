@@ -846,21 +846,94 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 	)
 
-	res.push(
-		literal<IBlueprintActionManifest>({
-			actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-			userData: literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION
-			}),
-			userDataManifest: {},
-			display: {
-				_rank: 800,
-				label: 'TAKE WITH TRANSITION',
-				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-				outputLayerId: 'pgm'
+	// One-button transition
+	if (config.showStyle.OneButtonTransition) {
+		const type: 'effekt' | 'mix' | 'cut' = !!config.showStyle.OneButtonTransition.match(/EFFEKT/i)
+			? 'effekt'
+			: !!config.showStyle.OneButtonTransition.match(/MIX/i)
+			? 'mix'
+			: 'cut'
+
+		switch (type) {
+			case 'cut': {
+				res.push(
+					literal<IBlueprintActionManifest>({
+						actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+						userData: literal<ActionTakeWithTransition>({
+							type: AdlibActionType.TAKE_WITH_TRANSITION,
+							variant: {
+								type: 'cut'
+							}
+						}),
+						userDataManifest: {},
+						display: {
+							_rank: 800,
+							label: 'Cut',
+							sourceLayerId: SourceLayer.PgmJingle,
+							outputLayerId: 'pgm'
+						}
+					})
+				)
+				break
 			}
-		})
-	)
+			case 'mix': {
+				const match = config.showStyle.OneButtonTransition.match(/MIX (\d+)/i)
+				const frames = match ? Number(match[1]) : undefined
+
+				if (frames === undefined) {
+					break
+				}
+				res.push(
+					literal<IBlueprintActionManifest>({
+						actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+						userData: literal<ActionTakeWithTransition>({
+							type: AdlibActionType.TAKE_WITH_TRANSITION,
+							variant: {
+								type: 'mix',
+								frames
+							}
+						}),
+						userDataManifest: {},
+						display: {
+							_rank: 800,
+							label: config.showStyle.OneButtonTransition,
+							sourceLayerId: SourceLayer.PgmJingle,
+							outputLayerId: 'pgm'
+						}
+					})
+				)
+				break
+			}
+			case 'effekt': {
+				const match = config.showStyle.OneButtonTransition.match(/EFFEKT (\d+)/i)
+				const effekt = match ? Number(match[1]) : undefined
+
+				if (effekt === undefined) {
+					break
+				}
+				res.push(
+					literal<IBlueprintActionManifest>({
+						actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+						userData: literal<ActionTakeWithTransition>({
+							type: AdlibActionType.TAKE_WITH_TRANSITION,
+							variant: {
+								type: 'effekt',
+								effekt
+							}
+						}),
+						userDataManifest: {},
+						display: {
+							_rank: 800,
+							label: config.showStyle.OneButtonTransition,
+							sourceLayerId: SourceLayer.PgmJingle,
+							outputLayerId: 'pgm'
+						}
+					})
+				)
+				break
+			}
+		}
+	}
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']

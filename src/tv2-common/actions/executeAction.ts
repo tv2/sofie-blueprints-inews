@@ -53,7 +53,8 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, ControlClasses, CueType } from 'tv2-constants'
 import _ = require('underscore')
-import { CreateEffektForPartBase } from '../parts'
+import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
+import { ActionTakeWithTransition } from './actionTypes'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -175,7 +176,7 @@ export function executeAction<
 			executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
 			break
 		case AdlibActionType.TAKE_WITH_TRANSITION:
-			context.takeAfterExecuteAction(true)
+			executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
 			break
 	}
 }
@@ -824,7 +825,7 @@ function executeActionCutToRemote<
 
 	const remotePiece = literal<IBlueprintPiece>({
 		_id: '',
-		externalId: 'live',
+		externalId,
 		name: `Live ${userData.name}`,
 		enable: {
 			start: 0
@@ -833,7 +834,6 @@ function executeActionCutToRemote<
 		outputLayerId: settings.OutputLayer.PGM,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		toBeQueued: true,
-		canCombineQueue: true,
 		metaData: GetEksternMetaData(
 			config.stickyLayers,
 			config.studio.StudioMics,
@@ -965,6 +965,84 @@ function executeActionCutSourceToBox<
 	if (newPiece.valid) {
 		context.updatePieceInstance(modifiedPiece._id, { content: newPiece.content, metaData: meta })
 	}
+}
+
+function executeActionTakeWithTransition<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	_actionId: string,
+	userData: ActionTakeWithTransition
+) {
+	const externalId = `adlib-action_${context.getHashId(`take_with_transition_${userData.variant.type}`)}`
+
+	switch (userData.variant.type) {
+		case 'cut':
+			break
+		case 'effekt': {
+			const config = settings.parseConfig(context)
+			const pieces: IBlueprintPiece[] = []
+			const partProps = CreateEffektForPartInner(context, config, pieces, userData.variant.effekt, externalId, {
+				sourceLayer: settings.SourceLayers.Effekt,
+				atemLayer: settings.LLayer.Atem.Effekt,
+				casparLayer: settings.LLayer.Caspar.Effekt,
+				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
+			})
+
+			if (partProps) {
+				context.updatePartInstance('next', partProps)
+				pieces.forEach(p => context.insertPiece('next', p))
+			}
+			break
+		}
+		case 'mix': {
+			const pieces = context.getPieceInstances('next')
+			const piece = pieces.find(p =>
+				[
+					settings.SourceLayers.Cam,
+					settings.SourceLayers.DVE,
+					settings.SourceLayers.DVEAdLib,
+					settings.SourceLayers.Live,
+					settings.SourceLayers.Server,
+					settings.SourceLayers.VO
+				].includes(p.piece.sourceLayerId)
+			)
+			if (!piece || !piece.piece.content) {
+				break
+			}
+
+			const tlObjIndex = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+				obj =>
+					obj.layer === settings.LLayer.Atem.MEProgram &&
+					obj.content.deviceType === TSR.DeviceType.ATEM &&
+					obj.content.type === TSR.TimelineContentTypeAtem.ME
+			)
+
+			const tlObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[tlObjIndex] as TSR.TimelineObjAtemME
+
+			if (tlObjIndex === -1 || !tlObj) {
+				break
+			}
+
+			tlObj.content.me.transition = TSR.AtemTransitionStyle.MIX
+			tlObj.content.me.transitionSettings = {
+				...tlObj.content.me.transitionSettings,
+				mix: {
+					rate: userData.variant.frames
+				}
+			}
+
+			piece.piece.content.timelineObjects[tlObjIndex] = tlObj
+
+			context.updatePieceInstance(piece._id, piece.piece)
+
+			break
+		}
+	}
+
+	context.takeAfterExecuteAction(true)
 }
 
 function findPieceToRecoverDataFrom(
