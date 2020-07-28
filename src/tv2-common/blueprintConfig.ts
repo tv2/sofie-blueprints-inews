@@ -37,6 +37,10 @@ export interface TableConfigItemDefaultTransitions {
 	DefaultTransition?: string
 }
 
+export interface TableConfigItemTakeEffekts {
+	Effekt: string
+}
+
 export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
@@ -81,7 +85,8 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
 	// DefaultTransitions: TableConfigItemDefaultTransitions[]
-	OneButtonTransition: string
+	TakeWithMixDuration: number
+	TakeEffekts: TableConfigItemTakeEffekts[]
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

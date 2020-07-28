@@ -846,94 +846,47 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 	)
 
-	// One-button transition
-	if (config.showStyle.OneButtonTransition) {
-		const type: 'effekt' | 'mix' | 'cut' = !!config.showStyle.OneButtonTransition.match(/EFFEKT/i)
-			? 'effekt'
-			: !!config.showStyle.OneButtonTransition.match(/MIX/i)
-			? 'mix'
-			: 'cut'
-
-		switch (type) {
-			case 'cut': {
-				res.push(
-					literal<IBlueprintActionManifest>({
-						actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-						userData: literal<ActionTakeWithTransition>({
-							type: AdlibActionType.TAKE_WITH_TRANSITION,
-							variant: {
-								type: 'cut'
-							}
-						}),
-						userDataManifest: {},
-						display: {
-							_rank: 800,
-							label: 'Cut',
-							sourceLayerId: SourceLayer.PgmJingle,
-							outputLayerId: 'pgm'
-						}
-					})
-				)
-				break
-			}
-			case 'mix': {
-				const match = config.showStyle.OneButtonTransition.match(/MIX (\d+)/i)
-				const frames = match ? Number(match[1]) : undefined
-
-				if (frames === undefined) {
-					break
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+			userData: literal<ActionTakeWithTransition>({
+				type: AdlibActionType.TAKE_WITH_TRANSITION,
+				variant: {
+					type: 'mix',
+					frames: config.showStyle.TakeWithMixDuration
 				}
-				res.push(
-					literal<IBlueprintActionManifest>({
-						actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-						userData: literal<ActionTakeWithTransition>({
-							type: AdlibActionType.TAKE_WITH_TRANSITION,
-							variant: {
-								type: 'mix',
-								frames
-							}
-						}),
-						userDataManifest: {},
-						display: {
-							_rank: 800,
-							label: config.showStyle.OneButtonTransition,
-							sourceLayerId: SourceLayer.PgmJingle,
-							outputLayerId: 'pgm'
-						}
-					})
-				)
-				break
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 800,
+				label: 'MIX',
+				sourceLayerId: SourceLayer.PgmJingle,
+				outputLayerId: 'pgm'
 			}
-			case 'effekt': {
-				const match = config.showStyle.OneButtonTransition.match(/EFFEKT (\d+)/i)
-				const effekt = match ? Number(match[1]) : undefined
+		})
+	)
 
-				if (effekt === undefined) {
-					break
+	config.showStyle.TakeEffekts.forEach(effekt => {
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+				userData: literal<ActionTakeWithTransition>({
+					type: AdlibActionType.TAKE_WITH_TRANSITION,
+					variant: {
+						type: 'effekt',
+						effekt: Number(effekt.Effekt)
+					}
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: 810,
+					label: `EFFEKT ${effekt.Effekt}`,
+					sourceLayerId: SourceLayer.PgmJingle,
+					outputLayerId: 'pgm'
 				}
-				res.push(
-					literal<IBlueprintActionManifest>({
-						actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-						userData: literal<ActionTakeWithTransition>({
-							type: AdlibActionType.TAKE_WITH_TRANSITION,
-							variant: {
-								type: 'effekt',
-								effekt
-							}
-						}),
-						userDataManifest: {},
-						display: {
-							_rank: 800,
-							label: config.showStyle.OneButtonTransition,
-							sourceLayerId: SourceLayer.PgmJingle,
-							outputLayerId: 'pgm'
-						}
-					})
-				)
-				break
-			}
-		}
-	}
+			})
+		)
+	})
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']

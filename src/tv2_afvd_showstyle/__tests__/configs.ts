@@ -188,5 +188,5 @@ export const defaultShowStyleConfig: ConfigMap = {
 			FadeOut: 0
 		}
 	],
-	OneButtonTransition: 'MIX 12'
+	TakeWithMixDuration: 12
 }

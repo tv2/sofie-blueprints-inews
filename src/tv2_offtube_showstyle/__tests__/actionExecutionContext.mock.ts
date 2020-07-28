@@ -97,7 +97,8 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
 	CasparCGLoadingClip: '',
-	OneButtonTransition: 'MIX 12'
+	TakeWithMixDuration: 12,
+	TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }]
 }
 
 export class MockContext implements ActionExecutionContext {

@@ -95,7 +95,8 @@ describe('TransformCuesIntoShowstyle', () => {
 		BreakerConfig: [],
 		DefaultTemplateDuration: 3000,
 		LYDConfig: [],
-		OneButtonTransition: 'MIX 12'
+		TakeWithMixDuration: 12,
+		TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }]
 	}
 
 	test('Merge VCP', () => {
