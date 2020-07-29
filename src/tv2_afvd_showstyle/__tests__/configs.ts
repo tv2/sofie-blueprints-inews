@@ -188,5 +188,6 @@ export const defaultShowStyleConfig: ConfigMap = {
 			FadeOut: 0
 		}
 	],
-	TakeWithMixDuration: 12
+	TakeWithMixDuration: 12,
+	TakeEffekts: [{ effekt: '1' }, { effekt: '2' }]
 }

@@ -200,7 +200,21 @@ export function MakeContentDVE2<
 	adlib?: boolean,
 	partDefinition?: PartDefinition
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
-	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
+	let template: DVEConfig
+	try {
+		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
+	} catch (e) {
+		context.warning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
+		return {
+			valid: false,
+			content: {
+				boxSourceConfiguration: [],
+				timelineObjects: [],
+				dveConfiguration: []
+			},
+			stickyLayers: []
+		}
+	}
 
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
@@ -453,9 +467,15 @@ export function MakeContentDVE2<
 	})
 
 	const graphicsTemplateName = dveConfig.DVEGraphicsTemplate ? dveConfig.DVEGraphicsTemplate.toString() : ''
-	const graphicsTemplateStyle = dveConfig.DVEGraphicsTemplateJSON
-		? JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
-		: ''
+	let graphicsTemplateStyle: any = ''
+	try {
+		if (dveConfig.DVEGraphicsTemplateJSON) {
+			graphicsTemplateStyle = JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
+		}
+	} catch {
+		context.warning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
+	}
+
 	const keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : ''
 	const frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : ''
 

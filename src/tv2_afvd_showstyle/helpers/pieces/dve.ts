@@ -42,7 +42,7 @@ export function EvaluateDVE(
 		return
 	}
 
-	if (!TemplateIsValid(JSON.parse(rawTemplate.DVEJSON as string))) {
+	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 		context.warning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}

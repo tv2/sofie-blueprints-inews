@@ -3,9 +3,15 @@ import { DVEConfigInput } from '../helpers'
 
 /**
  * Check that a template string is valid.
- * @param template User-provided template.
+ * @param templateRaw User-provided template.
  */
-export function TemplateIsValid(template: any): boolean {
+export function TemplateIsValid(templateRaw: string): boolean {
+	let template: any
+	try {
+		template = JSON.parse(templateRaw)
+	} catch (e) {
+		return false
+	}
 	let boxesValid = false
 	let indexValid = false
 	let propertiesValid = false
