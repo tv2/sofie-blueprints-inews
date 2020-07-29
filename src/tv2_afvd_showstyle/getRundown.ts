@@ -861,12 +861,13 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				_rank: 800,
 				label: 'MIX',
 				sourceLayerId: SourceLayer.PgmJingle,
-				outputLayerId: 'pgm'
+				outputLayerId: 'pgm',
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON]
 			}
 		})
 	)
 
-	config.showStyle.TakeEffekts.forEach(effekt => {
+	config.showStyle.TakeEffekts.forEach((effekt, i) => {
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
@@ -879,10 +880,11 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				}),
 				userDataManifest: {},
 				display: {
-					_rank: 810,
+					_rank: 810 + 0.01 * i,
 					label: `EFFEKT ${effekt.Effekt}`,
 					sourceLayerId: SourceLayer.PgmJingle,
-					outputLayerId: 'pgm'
+					outputLayerId: 'pgm',
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON]
 				}
 			})
 		)

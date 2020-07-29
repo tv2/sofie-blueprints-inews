@@ -101,7 +101,7 @@ export function CreateEffektForPartInner<
 		literal<IBlueprintPiece>({
 			_id: '',
 			externalId,
-			name: `EFFEKT-${effekt}`,
+			name: `EFFEKT ${effekt}`,
 			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
 			outputLayerId: 'jingle',
 			sourceLayerId: layers.sourceLayer,
