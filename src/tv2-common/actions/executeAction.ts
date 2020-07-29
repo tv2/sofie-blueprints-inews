@@ -558,7 +558,7 @@ function executeActionSelectDVE<
 		}
 	}
 
-	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
+	settings.postProcessPieceTimelineObjects(context, config, dvePiece, true)
 
 	const dveDataStore = settings.SelectedAdlibs
 		? literal<IBlueprintPiece>({
