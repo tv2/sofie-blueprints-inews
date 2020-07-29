@@ -558,7 +558,7 @@ function executeActionSelectDVE<
 		}
 	}
 
-	settings.postProcessPieceTimelineObjects(context, config, dvePiece, true)
+	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
 	const dveDataStore = settings.SelectedAdlibs
 		? literal<IBlueprintPiece>({
@@ -641,6 +641,25 @@ function executeActionSelectDVELayout<
 			return
 		}
 
+		const newDVEPiece = literal<IBlueprintPiece>({
+			_id: '',
+			externalId,
+			enable: {
+				start: 0
+			},
+			infiniteMode: PieceLifespan.OutOnNextPart,
+			name: userData.config.DVEName,
+			sourceLayerId: settings.SourceLayers.DVEAdLib,
+			outputLayerId: settings.OutputLayer.PGM,
+			metaData: literal<DVEPieceMetaData>({
+				sources,
+				config: userData.config
+			}),
+			content: content.content
+		})
+
+		settings.postProcessPieceTimelineObjects(context, config, newDVEPiece, false)
+
 		context.queuePart(
 			literal<IBlueprintPart>({
 				externalId,
@@ -648,22 +667,7 @@ function executeActionSelectDVELayout<
 				prerollDuration: config.studio.CasparPrerollDuration
 			}),
 			[
-				literal<IBlueprintPiece>({
-					_id: '',
-					externalId,
-					enable: {
-						start: 0
-					},
-					infiniteMode: PieceLifespan.OutOnNextPart,
-					name: userData.config.DVEName,
-					sourceLayerId: settings.SourceLayers.DVEAdLib,
-					outputLayerId: settings.OutputLayer.PGM,
-					metaData: literal<DVEPieceMetaData>({
-						sources,
-						config: userData.config
-					}),
-					content: content.content
-				}),
+				newDVEPiece,
 				...(settings.SelectedAdlibs
 					? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 							settings.SelectedAdlibs.SourceLayer.DVE
@@ -675,14 +679,18 @@ function executeActionSelectDVELayout<
 	}
 
 	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
-
-	context.updatePieceInstance(nextDVE._id, {
+	const dvePiece = {
+		...nextDVE.piece,
 		content: pieceContent,
 		metaData: literal<PieceMetaData & DVEPieceMetaData>({
 			...meta,
 			config: userData.config
 		})
-	})
+	}
+
+	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
+
+	context.updatePieceInstance(nextDVE._id, dvePiece)
 }
 
 function executeActionCutToCamera<
