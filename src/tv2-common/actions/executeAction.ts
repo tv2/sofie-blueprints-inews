@@ -968,10 +968,13 @@ function executeActionCutSourceToBox<
 
 	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.name
 
-	const newPiece = MakeContentDVE2(context, config, meta.config, {}, meta.sources, settings.DVEGeneratorOptions)
+	const newPieceContent = MakeContentDVE2(context, config, meta.config, {}, meta.sources, settings.DVEGeneratorOptions)
 
-	if (newPiece.valid) {
-		context.updatePieceInstance(modifiedPiece._id, { content: newPiece.content, metaData: meta })
+	const newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
+	settings.postProcessPieceTimelineObjects(context, config, newDVEPiece, false)
+
+	if (newPieceContent.valid) {
+		context.updatePieceInstance(modifiedPiece._id, newDVEPiece)
 	}
 }
 
