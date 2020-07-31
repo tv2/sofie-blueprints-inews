@@ -63,6 +63,14 @@ const templateSegment: IngestSegment = {
 	parts: []
 }
 
+function makeMockContextWithoutTransitionsConfig(): SegmentContext {
+	const context = makeMockContext()
+
+	// context.showStyleConfig.DefaultTransitions = []
+
+	return context
+}
+
 function makeMockContext(): SegmentContext {
 	const config = { id: 'default', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 
@@ -126,13 +134,13 @@ function testNotes(context: SegmentContext) {
 	expect(context.getNotes()).toStrictEqual([])
 }
 
-describe('Primary Cue Transitions', () => {
+describe('Primary Cue Transitions Without Config', () => {
 	it('Cuts by default for KAM', () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -148,7 +156,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1 EFFEKT 2</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -166,7 +174,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1 Mix 11</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -183,7 +191,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -199,7 +207,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 EFFEKT 1</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -216,7 +224,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 Mix 15</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -233,7 +241,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS1VO</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -249,7 +257,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1VO EFFEKT 1</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -266,7 +274,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 VO Mix 25</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -283,7 +291,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -300,7 +308,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER EFFEKT 2</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -317,7 +325,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER Mix 20</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -335,7 +343,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -352,7 +360,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO EFFEKT 1</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -369,7 +377,7 @@ describe('Primary Cue Transitions', () => {
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO Mix 20</pi><p>'
 
-		const context = makeMockContext()
+		const context = makeMockContextWithoutTransitionsConfig()
 		const segment = getSegment(context, ingestSegment)
 
 		testNotes(context)
@@ -382,3 +390,59 @@ describe('Primary Cue Transitions', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
 	})
 })
+
+/*describe('Primary Cue Transitions With Config', () => {
+	it('Mixes to KAM 2 over 20 frames by default', () => {
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 2</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmCam)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
+	})
+
+	it('Mixes to KAM 2 over 25 frames (iNews)', () => {
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 2 MIX 25</pi><p>'
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmCam)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(25)
+	})
+
+	it('Adds EFFEKT 1 to LIVE 1 by default', () => {
+		const ingestSegment = _.clone(templateSegment)
+
+		ingestSegment.payload.iNewsStory.body = '\r\n<p><a idref="0"></a><p>'
+		ingestSegment.payload.iNewsStory.cues = [['EKSTERN=LIVE 1']]
+
+		const context = makeMockContext()
+		const segment = getSegment(context, ingestSegment)
+
+		testNotes(context)
+
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const atemCutObj = getATEMMEObj(piece)
+
+		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+	})
+})*/
