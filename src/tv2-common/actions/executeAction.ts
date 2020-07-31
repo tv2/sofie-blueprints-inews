@@ -989,10 +989,63 @@ function executeActionTakeWithTransition<
 ) {
 	const externalId = `adlib-action_${context.getHashId(`take_with_transition_${userData.variant.type}`)}`
 
+	const nextPieces = context.getPieceInstances('next')
+	const primaryPiece = nextPieces.find(p =>
+		[
+			settings.SourceLayers.Cam,
+			settings.SourceLayers.DVE,
+			settings.SourceLayers.DVEAdLib,
+			settings.SourceLayers.Live,
+			settings.SourceLayers.Server,
+			settings.SourceLayers.VO
+		].includes(p.piece.sourceLayerId)
+	)
+
+	context.takeAfterExecuteAction(userData.takeNow)
+
+	if (!primaryPiece || !primaryPiece.piece.content) {
+		return
+	}
+
+	const tlObjIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+		obj =>
+			obj.layer === settings.LLayer.Atem.MEProgram &&
+			obj.content.deviceType === TSR.DeviceType.ATEM &&
+			obj.content.type === TSR.TimelineContentTypeAtem.ME
+	)
+
+	const tlObj =
+		tlObjIndex > -1
+			? ((primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[tlObjIndex] as TSR.TimelineObjAtemME)
+			: undefined
+
+	if (!tlObj) {
+		return
+	}
+
+	const existingEffektPiece = nextPieces.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt)
+
+	if (existingEffektPiece) {
+		context.removePieceInstances('next', [existingEffektPiece._id])
+	}
+
 	switch (userData.variant.type) {
 		case 'cut':
+			{
+				tlObj.content.me.transition = TSR.AtemTransitionStyle.CUT
+
+				primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
+
+				context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+			}
 			break
 		case 'effekt': {
+			tlObj.content.me.transition = TSR.AtemTransitionStyle.CUT
+
+			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
+
+			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+
 			const config = settings.parseConfig(context)
 			const pieces: IBlueprintPiece[] = []
 			const partProps = CreateEffektForPartInner(context, config, pieces, userData.variant.effekt, externalId, {
@@ -1009,34 +1062,6 @@ function executeActionTakeWithTransition<
 			break
 		}
 		case 'mix': {
-			const pieces = context.getPieceInstances('next')
-			const piece = pieces.find(p =>
-				[
-					settings.SourceLayers.Cam,
-					settings.SourceLayers.DVE,
-					settings.SourceLayers.DVEAdLib,
-					settings.SourceLayers.Live,
-					settings.SourceLayers.Server,
-					settings.SourceLayers.VO
-				].includes(p.piece.sourceLayerId)
-			)
-			if (!piece || !piece.piece.content) {
-				break
-			}
-
-			const tlObjIndex = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
-				obj =>
-					obj.layer === settings.LLayer.Atem.MEProgram &&
-					obj.content.deviceType === TSR.DeviceType.ATEM &&
-					obj.content.type === TSR.TimelineContentTypeAtem.ME
-			)
-
-			const tlObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[tlObjIndex] as TSR.TimelineObjAtemME
-
-			if (tlObjIndex === -1 || !tlObj) {
-				break
-			}
-
 			tlObj.content.me.transition = TSR.AtemTransitionStyle.MIX
 			tlObj.content.me.transitionSettings = {
 				...tlObj.content.me.transitionSettings,
@@ -1045,15 +1070,13 @@ function executeActionTakeWithTransition<
 				}
 			}
 
-			piece.piece.content.timelineObjects[tlObjIndex] = tlObj
+			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
 
-			context.updatePieceInstance(piece._id, piece.piece)
+			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 			break
 		}
 	}
-
-	context.takeAfterExecuteAction(true)
 }
 
 function findPieceToRecoverDataFrom(

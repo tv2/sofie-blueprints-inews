@@ -11,6 +11,7 @@ import {
 	OmitId
 } from 'tv-automation-sofie-blueprints-integration'
 import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import { DefaultBreakerConfig } from '../../tv2_afvd_showstyle/__tests__/breakerConfigDefault'
 import { OfftubeStudioConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowStyleConfig } from '../helpers/config'
@@ -93,7 +94,7 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	],
 	GFXTemplates: [],
 	WipesConfig: [],
-	BreakerConfig: [],
+	BreakerConfig: DefaultBreakerConfig(),
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
 	CasparCGLoadingClip: '',
@@ -104,6 +105,8 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 export class MockContext implements ActionExecutionContext {
 	public warnings: string[] = []
 	public errors: string[] = []
+
+	public takeAfterExecute: boolean = false
 
 	/** Get the mappings for the studio */
 	public getStudioMappings: () => Readonly<BlueprintMappings>
@@ -187,21 +190,23 @@ export class MockContext implements ActionExecutionContext {
 	/** Creative actions */
 	/** Insert a piece. Returns id of new PieceInstance. Any timelineObjects will have their ids changed, so are not safe to reference from another piece */
 	public insertPiece(part: 'current' | 'next', piece: IBlueprintPiece): IBlueprintPieceInstance {
-		let partId: string = ''
-		if (part === 'current') {
-			partId = this.currentPart.part._id
-		} else {
-			if (this.nextPart) {
-				partId = this.nextPart.part._id
-			}
-		}
-		return {
+		const pieceInstance: IBlueprintPieceInstance = {
 			_id: '',
 			piece: {
 				...piece,
-				partId: partId || ''
+				partId: ''
 			}
 		}
+		if (part === 'current') {
+			pieceInstance.piece.partId = this.currentPart.part._id
+			this.currentPieceInstances.push(pieceInstance)
+		} else {
+			if (this.nextPart && this.nextPieceInstances) {
+				pieceInstance.piece.partId = this.nextPart.part._id
+				this.nextPieceInstances.push(pieceInstance)
+			}
+		}
+		return pieceInstance
 	}
 	/** Update a pieceInstance */
 	public updatePieceInstance(
@@ -241,8 +246,12 @@ export class MockContext implements ActionExecutionContext {
 		return instance
 	}
 	/** Update a partInstance */
-	public updatePartInstance(_part: 'current' | 'next', _props: Partial<IBlueprintMutatablePart>): void {
-		return
+	public updatePartInstance(part: 'current' | 'next', props: Partial<IBlueprintMutatablePart>): void {
+		if (part === 'current') {
+			this.currentPart.part = { ...this.currentPart.part, ...props }
+		} else if (this.nextPart) {
+			this.nextPart.part = { ...this.nextPart.part, ...props }
+		}
 	}
 	/** Destructive actions */
 	/** Stop any piecesInstances on the specified sourceLayers. Returns ids of piecesInstances that were affected */
@@ -254,11 +263,17 @@ export class MockContext implements ActionExecutionContext {
 		return []
 	}
 	/** Remove piecesInstances by id. Returns ids of piecesInstances that were removed */
-	public removePieceInstances(_part: 'current' | 'next', _pieceInstanceIds: string[]): void {
-		return
+	public removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): void {
+		if (part === 'current') {
+			this.currentPieceInstances = this.currentPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+		} else if (this.nextPieceInstances) {
+			this.nextPieceInstances = this.nextPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+		}
 	}
 	/** Set flag to perform take after executing the current action. Returns state of the flag after each call. */
 	public takeAfterExecuteAction(take: boolean): boolean {
+		this.takeAfterExecute = take
+
 		return take
 	}
 }

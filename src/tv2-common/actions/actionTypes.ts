@@ -95,6 +95,8 @@ export type ActionTakeWithTransitionVariant =
 export interface ActionTakeWithTransition extends ActionBase {
 	type: AdlibActionType.TAKE_WITH_TRANSITION
 	variant: ActionTakeWithTransitionVariant
+	/** Whether to take when this action is called. Set to false to just set the next transition. */
+	takeNow: boolean
 }
 
 export type TV2AdlibAction =
