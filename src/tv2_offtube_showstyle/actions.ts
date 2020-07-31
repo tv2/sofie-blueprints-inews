@@ -48,7 +48,8 @@ export function executeActionOfftube(
 				Effekt: OfftubeSourceLayer.PgmJingle
 			},
 			OutputLayer: {
-				PGM: OfftubeOutputLayers.PGM
+				PGM: OfftubeOutputLayers.PGM,
+				EFFEKT: OfftubeOutputLayers.JINGLE
 			},
 			LLayer: {
 				Caspar: {

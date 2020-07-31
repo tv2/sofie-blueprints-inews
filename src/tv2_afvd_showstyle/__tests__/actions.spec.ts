@@ -209,7 +209,7 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EFFEKT 1',
 		sourceLayerId: SourceLayer.PgmJingle,
-		outputLayerId: 'JINGLE',
+		outputLayerId: 'jingle',
 		infiniteMode: PieceLifespan.Normal,
 		content: {
 			timelineObjects: []
@@ -229,11 +229,6 @@ function getTransitionPiece(context: MockContext, part: 'current' | 'next'): IBl
 	expect(piece).toBeTruthy()
 
 	return piece!
-}
-
-function expectNoTransitionPiece(context: MockContext, part: 'current' | 'next') {
-	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmJingle)
-	expect(piece).toBeFalsy()
 }
 
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
@@ -314,6 +309,8 @@ describe('Take with CUT', () => {
 
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
 	})
 
@@ -334,6 +331,8 @@ describe('Take with CUT', () => {
 
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
 	})
 
@@ -354,7 +353,8 @@ describe('Take with CUT', () => {
 
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
-		expectNoTransitionPiece(context, 'next')
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
 	})
 })
@@ -378,6 +378,8 @@ describe('Take with MIX', () => {
 
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
 	})
 
@@ -399,6 +401,8 @@ describe('Take with MIX', () => {
 
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
 	})
 
@@ -420,7 +424,8 @@ describe('Take with MIX', () => {
 
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
-		expectNoTransitionPiece(context, 'next')
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
 	})
 })

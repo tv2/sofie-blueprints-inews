@@ -854,7 +854,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				variant: {
 					type: 'mix',
 					frames: config.showStyle.TakeWithMixDuration
-				}
+				},
+				takeNow: false
 			}),
 			userDataManifest: {},
 			display: {
@@ -876,7 +877,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					variant: {
 						type: 'effekt',
 						effekt: Number(effekt.Effekt)
-					}
+					},
+					takeNow: false
 				}),
 				userDataManifest: {},
 				display: {

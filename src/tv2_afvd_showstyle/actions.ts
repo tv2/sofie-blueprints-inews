@@ -32,7 +32,8 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				Effekt: SourceLayer.PgmJingle
 			},
 			OutputLayer: {
-				PGM: 'pgm'
+				PGM: 'pgm',
+				EFFEKT: 'jingle'
 			},
 			LLayer: {
 				Caspar: {

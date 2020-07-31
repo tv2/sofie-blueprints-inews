@@ -3,7 +3,8 @@ import {
 	IBlueprintPartInstance,
 	IBlueprintPieceDB,
 	IBlueprintPieceInstance,
-	PieceLifespan
+	PieceLifespan,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionCommentatorSelectDVE,
@@ -12,10 +13,13 @@ import {
 	ActionSelectDVE,
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
+	ActionTakeWithTransition,
 	literal,
 	PartDefinitionUnknown
 } from 'tv2-common'
 import { AdlibActionType, CueType, PartType } from 'tv2-constants'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { executeActionOfftube } from '../actions'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 import { MockContext } from './actionExecutionContext.mock'
@@ -54,7 +58,26 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 		name: 'KAM 1',
 		sourceLayerId: OfftubeSourceLayer.PgmCam,
 		outputLayerId: OfftubeOutputLayers.PGM,
-		infiniteMode: PieceLifespan.OutOnNextPart
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		content: {
+			timelineObjects: [
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					enable: {
+						start: 0
+					},
+					layer: AtemLLayer.AtemMEClean,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: 1,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					}
+				})
+			]
+		}
 	})
 }
 
@@ -207,6 +230,15 @@ const selectFullGrafikAction = literal<ActionSelectFullGrafik>({
 	template: 'scoreboard'
 })
 
+const setMIX20AsTransition = literal<ActionTakeWithTransition>({
+	type: AdlibActionType.TAKE_WITH_TRANSITION,
+	variant: {
+		type: 'mix',
+		frames: 20
+	},
+	takeNow: false
+})
+
 interface ActivePiecesForSource {
 	activePiece: IBlueprintPieceInstance | undefined
 	dataStore: IBlueprintPieceInstance | undefined
@@ -295,6 +327,31 @@ function validateNextPartExistsWithPreRoll(context: MockContext, duration: numbe
 function validateNextPartExistsWithTransitionKeepAlive(context: MockContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.transitionKeepaliveDuration).toEqual(duration)
+}
+
+function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
+	const atemObj = (piece.piece.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
+		obj =>
+			obj.layer === OfftubeAtemLLayer.AtemMEClean &&
+			obj.content.deviceType === TSR.DeviceType.ATEM &&
+			obj.content.type === TSR.TimelineContentTypeAtem.ME
+	) as TSR.TimelineObjAtemME | undefined
+	expect(atemObj).toBeTruthy()
+
+	return atemObj!
+}
+
+function expectATEMToCut(piece: IBlueprintPieceInstance) {
+	const atemObj = getATEMMEObj(piece)
+
+	expect(atemObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+}
+
+function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
+	const atemObj = getATEMMEObj(piece)
+
+	expect(atemObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
+	expect(atemObj.content.me.transitionSettings?.mix).toStrictEqual({ rate: frames })
 }
 
 describe('Select Server Action', () => {
@@ -686,5 +743,125 @@ describe('Combination Actions', () => {
 		expect(camPiece).toBeFalsy()
 		expect(remotePiece).toBeFalsy()
 		expect(dvePieces.activePiece?.piece.name).toEqual('barnmor')
+	})
+
+	it('CAM -> MIX 20 (No Take) -> LIVE (2)', () => {
+		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+
+		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+
+		let camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToCut(camPiece!)
+
+		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+
+		camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToMixOver(camPiece!, 20)
+
+		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+
+		const livePiece = getRemotePiece(context, 'next')
+		camPiece = getCameraPiece(context, 'next')
+
+		expect(camPiece).toBeFalsy()
+		validateNextPartExistsWithDuration(context, 0)
+		validateRemotePiece(livePiece)
+		expectATEMToMixOver(livePiece!, 20)
+	})
+
+	it('CAM -> MIX 20 (No Take) -> SERVER', () => {
+		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+
+		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+
+		let camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToCut(camPiece!)
+
+		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+
+		camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToMixOver(camPiece!, 20)
+
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+
+		const serverPieces = getServerPieces(context, 'next')
+		camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
+		validateSourcePiecesExist(serverPieces)
+		expect(camPiece).toBeFalsy()
+		expectATEMToMixOver(serverPieces.activePiece!, 20)
+	})
+
+	it('CAM -> MIX 20 (No Take) -> VO', () => {
+		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+
+		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+
+		let camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToCut(camPiece!)
+
+		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+
+		camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToMixOver(camPiece!, 20)
+
+		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+
+		const serverPieces = getVOPieces(context, 'next')
+		camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, VO_DURATION_A)
+		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
+		validateSourcePiecesExist(serverPieces)
+		expect(camPiece).toBeFalsy()
+		expectATEMToMixOver(serverPieces.activePiece!, 20)
+	})
+
+	it('CAM -> MIX 20 (No Take) -> DVE', () => {
+		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+
+		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+
+		let camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToCut(camPiece!)
+
+		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+
+		camPiece = getCameraPiece(context, 'next')
+
+		validateNextPartExistsWithDuration(context, 0)
+		validateCameraPiece(camPiece)
+		expectATEMToMixOver(camPiece!, 20)
+
+		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+
+		const dvePieces = getDVEPieces(context, 'next')
+		validateNextPartExistsWithDuration(context, 0)
+		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
+		validateSourcePiecesExist(dvePieces)
+		expectATEMToMixOver(dvePieces.activePiece!, 20)
 	})
 })

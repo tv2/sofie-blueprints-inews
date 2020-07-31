@@ -89,6 +89,7 @@ export interface ActionExecutionSettings<
 	}
 	OutputLayer: {
 		PGM: string
+		EFFEKT: string
 	}
 	LLayer: {
 		Caspar: {
@@ -142,6 +143,8 @@ export function executeAction<
 	actionId: string,
 	userData: ActionUserData
 ): void {
+	const existingTransition = getExistingTransition(context, settings, 'next')
+
 	switch (actionId) {
 		case AdlibActionType.SELECT_SERVER_CLIP:
 			executeActionSelectServerClip(context, settings, actionId, userData as ActionSelectServerClip)
@@ -179,6 +182,12 @@ export function executeAction<
 			executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
 			break
 	}
+
+	if (actionId !== AdlibActionType.TAKE_WITH_TRANSITION) {
+		if (existingTransition) {
+			executeActionTakeWithTransition(context, settings, AdlibActionType.TAKE_WITH_TRANSITION, existingTransition)
+		}
+	}
 }
 
 // Cannot insert pieces with start "now", change to start 0
@@ -187,6 +196,61 @@ function sanitizePieceStart(piece: IBlueprintPiece): IBlueprintPiece {
 		piece.enable.start = 0
 	}
 	return piece
+}
+
+function getExistingTransition<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	part: 'current' | 'next'
+): ActionTakeWithTransition | undefined {
+	const existingTransition = context
+		.getPieceInstances(part)
+		.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt)
+
+	if (!existingTransition) {
+		return
+	}
+
+	const transition = existingTransition.piece.name
+
+	// Case sensitive! Blueprints will set these names correctly.
+	const transitionProps = transition.match(/CUT|MIX (\d+)|EFFEKT (\d+)/)
+	if (!transitionProps || !transitionProps[0]) {
+		return
+	}
+
+	if (transitionProps[0].match(/CUT/)) {
+		return literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: {
+				type: 'cut'
+			},
+			takeNow: false
+		})
+	} else if (transitionProps[0].match(/MIX/) && transitionProps[1] !== undefined) {
+		return literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: {
+				type: 'mix',
+				frames: Number(transitionProps[1])
+			},
+			takeNow: false
+		})
+	} else if (transitionProps[0].match(/EFFEKT/) && transitionProps[1] !== undefined) {
+		return literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: {
+				type: 'effekt',
+				effekt: Number(transitionProps[1])
+			},
+			takeNow: false
+		})
+	} else {
+		return
+	}
 }
 
 export function getPiecesToPreserve(
@@ -253,7 +317,10 @@ function executeActionSelectServerClip<
 					ClipPending: settings.LLayer.Sisyfos.ClipPending
 				},
 				ATEM: {
-					MEPGM: settings.LLayer.Atem.MEProgram
+					MEPGM:
+						settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
+							? settings.LLayer.Atem.MEClean
+							: settings.LLayer.Atem.MEProgram
 				}
 			},
 			duration
@@ -1009,7 +1076,8 @@ function executeActionTakeWithTransition<
 
 	const tlObjIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
 		obj =>
-			obj.layer === settings.LLayer.Atem.MEProgram &&
+			// SelectedAdlibs is being used here to identify offtubes. Needs work.
+			obj.layer === (settings.SelectedAdlibs ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	)
@@ -1037,6 +1105,19 @@ function executeActionTakeWithTransition<
 				primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
 
 				context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+
+				const cutTransitionPiece: IBlueprintPiece = {
+					_id: '',
+					enable: {
+						start: 0
+					},
+					externalId,
+					name: 'CUT',
+					sourceLayerId: settings.SourceLayers.Effekt,
+					outputLayerId: settings.OutputLayer.EFFEKT
+				}
+
+				context.insertPiece('next', cutTransitionPiece)
 			}
 			break
 		case 'effekt': {
@@ -1073,6 +1154,19 @@ function executeActionTakeWithTransition<
 			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
 
 			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+
+			const mixTransitionPiece: IBlueprintPiece = {
+				_id: '',
+				enable: {
+					start: 0
+				},
+				externalId,
+				name: `MIX ${userData.variant.frames}`,
+				sourceLayerId: settings.SourceLayers.Effekt,
+				outputLayerId: settings.OutputLayer.EFFEKT
+			}
+
+			context.insertPiece('next', mixTransitionPiece)
 
 			break
 		}
