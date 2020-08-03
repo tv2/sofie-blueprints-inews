@@ -53,6 +53,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, ControlClasses, CueType } from 'tv2-constants'
 import _ = require('underscore')
+import { TimeFromFrames } from '../frameTime'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
 import { ActionTakeWithTransition } from './actionTypes'
 
@@ -1162,12 +1163,14 @@ function executeActionTakeWithTransition<
 			const mixTransitionPiece: IBlueprintPiece = {
 				_id: '',
 				enable: {
-					start: 0
+					start: 0,
+					duration: Math.max(TimeFromFrames(userData.variant.frames), 1000)
 				},
 				externalId,
 				name: `MIX ${userData.variant.frames}`,
 				sourceLayerId: settings.SourceLayers.Effekt,
-				outputLayerId: settings.OutputLayer.EFFEKT
+				outputLayerId: settings.OutputLayer.EFFEKT,
+				infiniteMode: PieceLifespan.Normal
 			}
 
 			context.insertPiece('next', mixTransitionPiece)
