@@ -101,7 +101,7 @@ function checkPartExistsWithProperties(segment: BlueprintResultSegment, props: P
 	}
 }
 
-function getTransitionProperties(effekt: ShowStyleConfig['WipesConfig'][0]): Partial<IBlueprintPart> {
+function getTransitionProperties(effekt: ShowStyleConfig['BreakerConfig'][0]): Partial<IBlueprintPart> {
 	const preroll = defaultShowStyleConfig.CasparPrerollDuration as number
 	return {
 		transitionDuration: TimeFromFrames(Number(effekt.Duration)) + preroll,
