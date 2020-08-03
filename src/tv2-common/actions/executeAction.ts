@@ -55,6 +55,7 @@ import { AdlibActionType, ControlClasses, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { TimeFromFrames } from '../frameTime'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
+import { assertUnreachable } from '../util'
 import { ActionTakeWithTransition } from './actionTypes'
 
 export interface ActionExecutionSettings<
@@ -141,10 +142,12 @@ export function executeAction<
 >(
 	context: ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	actionId: string,
+	actionIdStr: string,
 	userData: ActionUserData
 ): void {
 	const existingTransition = getExistingTransition(context, settings, 'next')
+
+	const actionId = actionIdStr as AdlibActionType
 
 	switch (actionId) {
 		case AdlibActionType.SELECT_SERVER_CLIP:
@@ -159,6 +162,11 @@ export function executeAction<
 		case AdlibActionType.SELECT_FULL_GRAFIK:
 			if (settings.executeActionSelectFull) {
 				settings.executeActionSelectFull(context, actionId, userData as ActionSelectFullGrafik)
+			}
+			break
+		case AdlibActionType.CLEAR_GRAPHICS:
+			if (settings.executeActionClearGraphics) {
+				settings.executeActionClearGraphics(context, actionId, userData as ActionClearGraphics)
 			}
 			break
 		case AdlibActionType.CUT_TO_CAMERA:
@@ -181,6 +189,9 @@ export function executeAction<
 			break
 		case AdlibActionType.TAKE_WITH_TRANSITION:
 			executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
+			break
+		default:
+			assertUnreachable(actionId)
 			break
 	}
 
