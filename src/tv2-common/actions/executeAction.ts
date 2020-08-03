@@ -265,13 +265,17 @@ export function getPiecesToPreserve(
 		.map(p => sanitizePieceStart(p))
 }
 
+function generateExternalId(context: ActionExecutionContext, actionId: string, args: string[]): string {
+	return `adlib_action_${actionId}_${context.getHashId(args.join('_'))}`
+}
+
 function executeActionSelectServerClip<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
+	actionId: string,
 	userData: ActionSelectServerClip,
 	sessionToContinue?: string
 ) {
@@ -280,7 +284,7 @@ function executeActionSelectServerClip<
 	const duration = userData.duration
 	const config = settings.parseConfig(context)
 
-	const externalId = `adlib-action_${context.getHashId(`select_server_clip_${file}`)}`
+	const externalId = generateExternalId(context, actionId, [file])
 
 	const conflictingPiece = settings.SelectedAdlibs
 		? context
@@ -489,10 +493,10 @@ function executeActionSelectDVE<
 >(
 	context: ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
+	actionId: string,
 	userData: ActionSelectDVE
 ) {
-	const externalId = `adlib-action_${context.getHashId(`select_server_dve_${userData.config.template}`)}`
+	const externalId = generateExternalId(context, actionId, [userData.config.template])
 
 	const config = settings.parseConfig(context)
 
@@ -673,7 +677,7 @@ function executeActionSelectDVELayout<
 >(
 	context: ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
+	actionId: string,
 	userData: ActionSelectDVELayout
 ) {
 	const config = settings.parseConfig(context)
@@ -687,7 +691,7 @@ function executeActionSelectDVELayout<
 		INP2: 'DEFAULT'
 	}
 
-	const externalId = `adlib-action_${context.getHashId(`select_dve_layout_${userData.config.DVEName}`)}`
+	const externalId = generateExternalId(context, actionId, [userData.config.DVEName])
 
 	const nextPart = context.getPartInstance('next')
 
@@ -766,12 +770,12 @@ function executeActionCutToCamera<
 >(
 	context: ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
+	actionId: string,
 	userData: ActionCutToCamera
 ) {
 	const config = settings.parseConfig(context)
 
-	const externalId = `adlib-action_${context.getHashId(`cut_to_kam_${userData.name}`)}`
+	const externalId = generateExternalId(context, actionId, [userData.name])
 
 	const part = literal<IBlueprintPart>({
 		externalId,
@@ -879,12 +883,12 @@ function executeActionCutToRemote<
 >(
 	context: ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
+	actionId: string,
 	userData: ActionCutToRemote
 ) {
 	const config = settings.parseConfig(context)
 
-	const externalId = `adlib-action_${context.getHashId(`cut_to_remote_${userData.name}`)}`
+	const externalId = generateExternalId(context, actionId, [userData.name])
 
 	const part = literal<IBlueprintPart>({
 		externalId,
@@ -1051,10 +1055,10 @@ function executeActionTakeWithTransition<
 >(
 	context: ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
+	actionId: string,
 	userData: ActionTakeWithTransition
 ) {
-	const externalId = `adlib-action_${context.getHashId(`take_with_transition_${userData.variant.type}`)}`
+	const externalId = generateExternalId(context, actionId, [userData.variant.type])
 
 	const nextPieces = context.getPieceInstances('next')
 	const primaryPiece = nextPieces.find(p =>
