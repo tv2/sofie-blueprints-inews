@@ -1052,6 +1052,14 @@ function executeActionCutSourceToBox<
 	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.name
 
 	const newPieceContent = MakeContentDVE2(context, config, meta.config, {}, meta.sources, settings.DVEGeneratorOptions)
+	if (userData.vo) {
+		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs')
+		// Replace any existing instances of studio mics with VO values
+		newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
+			obj => !studioMics.some(o => o.layer === obj.layer)
+		)
+		newPieceContent.content.timelineObjects.push(...studioMics)
+	}
 
 	const newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
 	settings.postProcessPieceTimelineObjects(context, config, newDVEPiece, false)
