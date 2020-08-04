@@ -739,7 +739,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Cut ${type} ${info.id} to box ${box + 1}`,
+						label: `${type} ${info.id} to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: 'sec',
 						content: {},
@@ -766,7 +766,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Cut EVS ${info.id}${vo ? 'VO' : ''} to box ${box + 1}`,
+						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''} to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: 'sec',
 						content: {},
@@ -793,7 +793,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Cut server to box ${box + 1}`,
+						label: `Server to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: 'sec',
 						content: {},
