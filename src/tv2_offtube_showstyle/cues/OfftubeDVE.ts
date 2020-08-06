@@ -12,6 +12,7 @@ import {
 	CueDefinitionDVE,
 	DVEPieceMetaData,
 	GetDVETemplate,
+	GetTagForDVE,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -117,7 +118,9 @@ export function OfftubeEvaluateDVE(
 					content: literal<SplitsContent>({
 						...pieceContent.content,
 						timelineObjects: []
-					})
+					}),
+					onAirTags: [GetTagForDVE(parsedCue)],
+					setNextTags: [GetTagForDVE(parsedCue)]
 				}
 			})
 		)

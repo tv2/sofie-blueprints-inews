@@ -7,12 +7,15 @@ import {
 import {
 	AddScript,
 	CreatePartServerBase,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
 	PartContext2,
 	PartDefinition,
 	PieceMetaData
 } from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -74,7 +77,8 @@ export function CreatePartServer(
 				},
 				duration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [GetTagForServer(file, false), GetTagForServerNext(file, false), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 

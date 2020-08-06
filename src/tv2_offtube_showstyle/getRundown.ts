@@ -23,12 +23,14 @@ import {
 	GetCameraMetaData,
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
+	GetTagForKam,
+	GetTagForLive,
 	GraphicLLayer,
 	literal,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, Enablers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, Enablers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -112,6 +114,8 @@ function getGlobalAdLibPiecesOfftube(
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			toBeQueued: preview,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
+			onAirTags: [GetTagForKam(info.id)],
+			setNextTags: [GetTagForKam(info.id)],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
@@ -228,7 +232,9 @@ function getGlobalAdlibActionsOfftube(
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
-					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : []
+					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
+					onAirTags: [GetTagForKam(name)],
+					setNextTags: [GetTagForKam(name)]
 				}
 			})
 		)
@@ -250,7 +256,9 @@ function getGlobalAdlibActionsOfftube(
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
-					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT]
+					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
+					onAirTags: [GetTagForLive(name)],
+					setNextTags: [GetTagForLive(name)]
 				}
 			})
 		)
@@ -295,7 +303,9 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: OfftubeSourceLayer.PgmServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
-				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
+				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT],
+				onAirTags: [TallyTags.SERVER_IS_LIVE],
+				setNextTags: [TallyTags.SERVER_IS_LIVE]
 			}
 		})
 	)
@@ -313,7 +323,9 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
-				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
+				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT],
+				onAirTags: [TallyTags.DVE_IS_LIVE],
+				setNextTags: [TallyTags.DVE_IS_LIVE]
 			}
 		})
 	)
@@ -331,7 +343,9 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: OfftubeSourceLayer.PgmFull,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
-				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT]
+				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT],
+				onAirTags: [TallyTags.FULL_IS_LIVE],
+				setNextTags: [TallyTags.FULL_IS_LIVE]
 			}
 		})
 	)

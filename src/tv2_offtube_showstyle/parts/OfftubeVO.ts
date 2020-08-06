@@ -12,12 +12,14 @@ import {
 	CreatePartServerBase,
 	GetSisyfosTimelineObjForCamera,
 	getStickyLayers,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
 	PartContext2,
 	PartDefinition
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -85,7 +87,8 @@ export function OfftubeCreatePartVO(
 				},
 				actualDuration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [GetTagForServer(file, true), GetTagForServerNext(file, true), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 
@@ -136,7 +139,9 @@ export function OfftubeCreatePartVO(
 				sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...adlibServer.content, timelineObjects: [] },
-				tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER]
+				tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
+				onAirTags: [GetTagForServer(file, true)],
+				setNextTags: [GetTagForServerNext(file, true)]
 			}
 		})
 	)
