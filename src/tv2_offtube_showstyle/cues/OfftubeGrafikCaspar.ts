@@ -13,6 +13,8 @@ import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
 	GetFullGrafikTemplateNameFromCue,
+	GetTagForFull,
+	GetTagForFullNext,
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
@@ -352,6 +354,8 @@ function CreateFullAdLib(
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
+		onAirTags: [GetTagForFull(template)],
+		setNextTags: [GetTagForFullNext(template)],
 		content: CreateFullContent(config, template)
 	})
 }

@@ -41,3 +41,11 @@ export function GetTagForDVE(cue: CueDefinitionDVE) {
 export function GetTagForDVENext(cue: CueDefinitionDVE) {
 	return `${GetTagForDVE(cue)}_NEXT`
 }
+
+export function GetTagForFull(graphic: string) {
+	return `${TallyTags.FULL}_${graphic.replace(/\W/g, '_')}`
+}
+
+export function GetTagForFullNext(graphic: string) {
+	return `${GetTagForFull(graphic)}_NEXT`
+}

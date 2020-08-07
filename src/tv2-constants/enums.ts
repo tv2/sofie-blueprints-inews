@@ -96,6 +96,7 @@ export enum TallyTags {
 	LIVE = 'EKSTERN',
 	CLIP = 'CLIP',
 	DVE = 'DVE',
+	FULL = 'FULL',
 
 	// ANY of source type is live
 	SERVER_IS_LIVE = 'SERVER_IS_LIVE',

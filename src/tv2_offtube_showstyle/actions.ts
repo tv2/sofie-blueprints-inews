@@ -10,8 +10,11 @@ import {
 	executeAction,
 	GetFullGrafikTemplateName,
 	getPiecesToPreserve,
+	GetTagForFull,
+	GetTagForFullNext,
 	literal
 } from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
@@ -127,7 +130,8 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		content: {
 			...CreateFullContent(config, template),
 			timelineObjects: []
-		}
+		},
+		tags: [GetTagForFull(template), GetTagForFullNext(template), TallyTags.FULL_IS_LIVE]
 	})
 
 	context.queuePart(part, [

@@ -55,7 +55,14 @@ import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constan
 import _ = require('underscore')
 import { TimeFromFrames } from '../frameTime'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
-import { GetTagForDVE, GetTagForServer, GetTagForServerNext, GetTagForTransition } from '../pieces'
+import {
+	GetTagForDVE,
+	GetTagForKam,
+	GetTagForLive,
+	GetTagForServer,
+	GetTagForServerNext,
+	GetTagForTransition
+} from '../pieces'
 import { assertUnreachable } from '../util'
 import { ActionTakeWithTransition } from './actionTypes'
 
@@ -564,7 +571,7 @@ function executeActionSelectDVE<
 			sources: parsedCue.sources,
 			config: rawTemplate
 		}),
-		tags: [GetTagForDVE(parsedCue)]
+		tags: [GetTagForDVE(parsedCue), TallyTags.DVE_IS_LIVE]
 	})
 
 	// Check if DVE should continue server + copy server properties
@@ -816,6 +823,7 @@ function executeActionCutToCamera<
 		sourceLayerId: settings.SourceLayers.Cam,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+		tags: [GetTagForKam(userData.name)],
 		content: {
 			studioLabel: '',
 			switcherInput: atemInput,
@@ -933,6 +941,7 @@ function executeActionCutToRemote<
 			config.studio.StudioMics,
 			GetLayersForEkstern(context, config.sources, `Live ${userData.name}`)
 		),
+		tags: [GetTagForLive(userData.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				...(settings.LLayer.Atem.MEClean
