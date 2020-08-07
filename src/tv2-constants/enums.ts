@@ -85,3 +85,21 @@ export enum AdlibActionType {
 	CLEAR_GRAPHICS = 'clear_graphics',
 	TAKE_WITH_TRANSITION = 'take_with_transition'
 }
+
+export enum TallyTags {
+	// Actions
+	GFX_CLEAR = 'GFX_CLEAR',
+	TAKE_WITH_TRANSITION = 'TAKE_WITH_TRANSITION',
+
+	// A particular source is live
+	KAM = 'KAM',
+	LIVE = 'EKSTERN',
+	CLIP = 'CLIP',
+	DVE = 'DVE',
+	FULL = 'FULL',
+
+	// ANY of source type is live
+	SERVER_IS_LIVE = 'SERVER_IS_LIVE',
+	DVE_IS_LIVE = 'DVE_IS_LIVE',
+	FULL_IS_LIVE = 'FULL_IS_LIVE'
+}

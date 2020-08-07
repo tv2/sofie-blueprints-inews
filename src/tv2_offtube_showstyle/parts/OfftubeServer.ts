@@ -9,12 +9,14 @@ import {
 	ActionSelectServerClip,
 	AddScript,
 	CreatePartServerBase,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
 	PartContext2,
 	PartDefinition
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -77,7 +79,8 @@ export function OfftubeCreatePartServer(
 				},
 				duration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [GetTagForServer(file, false), GetTagForServerNext(file, false), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 
@@ -123,7 +126,9 @@ export function OfftubeCreatePartServer(
 				sourceLayerId: OfftubeSourceLayer.PgmServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...actionContent, timelineObjects: [] }, // TODO: No timeline
-				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
+				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
+				onAirTags: [GetTagForServer(file, false)],
+				setNextTags: [GetTagForServerNext(file, false)]
 			}
 		})
 	)

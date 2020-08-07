@@ -24,12 +24,13 @@ import {
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
+	GetTagForTransition,
 	GraphicLLayer,
 	literal,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
@@ -841,52 +842,64 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 				outputLayerId: 'sec',
 				content: {},
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON]
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				onAirTags: [TallyTags.GFX_CLEAR],
+				setNextTags: [TallyTags.GFX_CLEAR]
 			}
 		})
 	)
 
+	const userDataMix = literal<ActionTakeWithTransition>({
+		type: AdlibActionType.TAKE_WITH_TRANSITION,
+		variant: {
+			type: 'mix',
+			frames: config.showStyle.TakeWithMixDuration
+		},
+		takeNow: true
+	})
+	const tagMix = GetTagForTransition(userDataMix.variant)
+
 	res.push(
 		literal<IBlueprintActionManifest>({
 			actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-			userData: literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: {
-					type: 'mix',
-					frames: config.showStyle.TakeWithMixDuration
-				},
-				takeNow: true
-			}),
+			userData: userDataMix,
 			userDataManifest: {},
 			display: {
 				_rank: 800,
 				label: 'MIX',
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: 'pgm',
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON]
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				onAirTags: [tagMix],
+				setNextTags: [tagMix]
 			}
 		})
 	)
 
 	config.showStyle.TakeEffekts.forEach((effekt, i) => {
+		const userData = literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: {
+				type: 'effekt',
+				effekt: Number(effekt.Effekt)
+			},
+			takeNow: true
+		})
+		const tag = GetTagForTransition(userData.variant)
+
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-				userData: literal<ActionTakeWithTransition>({
-					type: AdlibActionType.TAKE_WITH_TRANSITION,
-					variant: {
-						type: 'effekt',
-						effekt: Number(effekt.Effekt)
-					},
-					takeNow: true
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: 810 + 0.01 * i,
 					label: `EFFEKT ${effekt.Effekt}`,
 					sourceLayerId: SourceLayer.PgmJingle,
 					outputLayerId: 'pgm',
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON]
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					onAirTags: [tag],
+					setNextTags: [tag]
 				}
 			})
 		)
