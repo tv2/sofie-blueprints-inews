@@ -4,7 +4,7 @@ import {
 	ShowStyleContext,
 	TableConfigItemValue
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { literal, TableConfigItemGFXTemplates, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import {
 	applyToConfig,
@@ -13,19 +13,6 @@ import {
 	parseStudioConfig
 } from '../../tv2_afvd_studio/helpers/config'
 import { showStyleConfigManifest } from '../config-manifests'
-
-export interface TableConfigItemGFXTemplates {
-	VizTemplate: string
-	SourceLayer: string
-	LayerMapping: string
-	INewsCode: string
-	INewsName: string
-	VizDestination: string
-	OutType: string
-	Argument1: string
-	Argument2: string
-	IsDesign: boolean
-}
 
 export interface BlueprintConfig extends BlueprintConfigBase {
 	showStyle: ShowStyleConfig

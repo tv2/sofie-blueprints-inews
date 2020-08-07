@@ -1,22 +1,31 @@
 import {
 	BaseContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CreateTimingEnable, CueDefinitionLYD, GetDefaultOut, literal, PartDefinition } from 'tv2-common'
+import {
+	CalculateTime,
+	CreateTimingEnable,
+	CueDefinitionLYD,
+	GetDefaultOut,
+	literal,
+	PartContext2,
+	PartDefinition
+} from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export function EvaluateLYD(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionLYD,
 	part: PartDefinition,
 	adlib?: boolean,
@@ -119,7 +128,7 @@ export function LydContent(
 					}
 				}
 			}),
-			literal<TSR.TimelineObjSisyfosMessage>({
+			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
 				enable: {
 					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
@@ -129,7 +138,7 @@ export function LydContent(
 				layer: SisyfosLLAyer.SisyfosSourceAudiobed,
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 					isPgm: 1
 				}
 			})

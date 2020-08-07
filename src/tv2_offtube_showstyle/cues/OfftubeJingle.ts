@@ -1,8 +1,8 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -10,6 +10,7 @@ import {
 	CueDefinitionJingle,
 	GetJinglePartProperties,
 	literal,
+	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { AdlibTags } from 'tv2-constants'
@@ -18,10 +19,11 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
 	_adlib?: boolean,
@@ -66,7 +68,6 @@ export function OfftubeEvaluateJingle(
 			outputLayerId: 'jingle',
 			content: createJingleContent(config, file, jingle.LoadFirstFrame),
 			toBeQueued: true,
-			canCombineQueue: true,
 			adlibAutoNext: props.autoNext,
 			adlibAutoNextOverlap: props.autoNextOverlap,
 			adlibPreroll: props.prerollDuration,

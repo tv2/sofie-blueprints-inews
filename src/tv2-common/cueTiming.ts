@@ -29,11 +29,12 @@ export function CreateTiming(
 
 export function CreateTimingEnable(
 	cue: CueDefinition,
-	defaultOut: number,
-	timelineObjStartId?: string
+	defaultOut: number
 ): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> {
 	const result: Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> = {
-		enable: {},
+		enable: {
+			start: 0
+		},
 		infiniteMode: PieceLifespan.Normal
 	}
 
@@ -56,16 +57,6 @@ export function CreateTimingEnable(
 		}
 	} else {
 		result.enable.duration = defaultOut
-	}
-
-	if (timelineObjStartId) {
-		if (result.enable.start !== undefined) {
-			result.enable.start = `#${timelineObjStartId}.start + ${result.enable.start}`
-		}
-
-		if (result.enable.end !== undefined) {
-			result.enable.end = `#${timelineObjStartId}.start + ${result.enable.end}`
-		}
 	}
 
 	return result

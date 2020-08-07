@@ -1,6 +1,10 @@
 import * as _ from 'underscore'
 
-import { IBlueprintPieceGeneric, IBlueprintRundownDB, IngestRundown } from 'tv-automation-sofie-blueprints-integration'
+import {
+	ExtendedIngestRundown,
+	IBlueprintPieceGeneric,
+	IBlueprintRundownDB
+} from 'tv-automation-sofie-blueprints-integration'
 import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
 // import { ConfigMap } from './configs'
 import { checkAllLayers } from './layers-check'
@@ -23,7 +27,7 @@ const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: Co
 
 describe('Rundown exceptions', () => {
 	for (const roSpec of rundowns) {
-		const roData = require(roSpec.ro) as IngestRundown
+		const roData = require(roSpec.ro) as ExtendedIngestRundown
 		test('Valid file: ' + roSpec.ro, () => {
 			expect(roData).toBeTruthy()
 			expect(roData.externalId).toBeTruthy()

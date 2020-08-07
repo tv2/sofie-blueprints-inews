@@ -48,7 +48,7 @@ export default literal<BlueprintMappings>({
 	atem_me_next_jingle: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
@@ -77,14 +77,14 @@ export default literal<BlueprintMappings>({
 	atem_aux_server_lookahead: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookahead: LookaheadMode.PRELOAD,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 2 // 2 = out 3
 	}),
 	atem_supersource_art: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceProperties,
 		index: 0 // 0 = SS
@@ -92,7 +92,7 @@ export default literal<BlueprintMappings>({
 	atem_supersource_default: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
@@ -138,61 +138,71 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 0,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Host_2_st_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 1,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Host_3_st_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 2,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_1_stereo: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 3,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_1_surround: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 4,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_2_stereo: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 5,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_3: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 6,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_server_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 7,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_server_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 8,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_jingle: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 9,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
@@ -264,7 +274,7 @@ export default literal<BlueprintMappings>({
 	casparcg_cg_dve_template: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		channel: 4,
 		layer: 120
@@ -272,7 +282,7 @@ export default literal<BlueprintMappings>({
 	casparcg_dve_key: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		previewWhenNotOnAir: true,
 		channel: 4,
@@ -281,7 +291,7 @@ export default literal<BlueprintMappings>({
 	casparcg_dve_keyed_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 4,
 		layer: 110
@@ -289,7 +299,7 @@ export default literal<BlueprintMappings>({
 	casparcg_dve_frame: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		previewWhenNotOnAir: true,
 		channel: 4,
@@ -298,7 +308,7 @@ export default literal<BlueprintMappings>({
 	casparcg_dve_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 5,
 		layer: 110
@@ -306,7 +316,7 @@ export default literal<BlueprintMappings>({
 	casparcg_studio_screen_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 6,
 		layer: 110

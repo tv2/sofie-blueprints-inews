@@ -1,5 +1,6 @@
 import {
 	GraphicsContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -58,6 +59,7 @@ describe('grafik piece', () => {
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 		EvaluateGrafikViz(
 			{
@@ -71,6 +73,7 @@ describe('grafik piece', () => {
 			partContext,
 			pieces,
 			adLibPieces,
+			actions,
 			partId,
 			cue,
 			'OVL',
@@ -126,6 +129,7 @@ describe('grafik piece', () => {
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 		EvaluateGrafikViz(
 			{
@@ -139,6 +143,7 @@ describe('grafik piece', () => {
 			partContext,
 			pieces,
 			adLibPieces,
+			actions,
 			partId,
 			cue,
 			'OVL',
@@ -193,6 +198,7 @@ describe('grafik piece', () => {
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 		EvaluateGrafikViz(
 			{
@@ -206,6 +212,7 @@ describe('grafik piece', () => {
 			partContext,
 			pieces,
 			adLibPieces,
+			actions,
 			partId,
 			cue,
 			'OVL',
@@ -266,6 +273,7 @@ describe('grafik piece', () => {
 		}
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 		EvaluateGrafikViz(
 			{
@@ -279,6 +287,7 @@ describe('grafik piece', () => {
 			partContext,
 			pieces,
 			adLibPieces,
+			actions,
 			partId,
 			cue,
 			'OVL',

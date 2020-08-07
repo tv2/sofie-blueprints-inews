@@ -1,4 +1,9 @@
-import { IBlueprintPieceDB, NotesContext, OnGenerateTimelineObj, TSR } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintResolvedPieceInstance,
+	NotesContext,
+	OnGenerateTimelineObj,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
@@ -63,21 +68,22 @@ interface SessionTime {
 	start: number
 	end: number | undefined
 	optional: boolean
+	duration: number | undefined
 }
-function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
+function calculateSessionTimeRanges(_context: NotesContext, resolvedPieces: IBlueprintResolvedPieceInstance[]) {
 	const piecesWantingMediaPlayers = _.filter(resolvedPieces, p => {
-		if (!p.metaData) {
+		if (!p.piece.metaData) {
 			return false
 		}
-		const metadata = p.metaData as PieceMetaData
+		const metadata = p.piece.metaData as PieceMetaData
 		return (metadata.mediaPlayerSessions || []).length > 0
 	})
 
 	const sessionRequests: { [sessionId: string]: SessionTime | undefined } = {}
 	_.each(piecesWantingMediaPlayers, p => {
-		const metadata = p.metaData as PieceMetaData
-		const start = p.enable.start as number
-		const duration = p.playoutDuration
+		const metadata = p.piece.metaData as PieceMetaData
+		const start = p.piece.enable.start as number
+		const duration = p.piece.playoutDuration
 		const end = duration !== undefined ? start + duration : undefined
 
 		// Track the range of each session
@@ -87,7 +93,7 @@ function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
 			// Perhaps the id given should be prefixed with the piece(instance) id? And sharing sessions can be figured out when it becomes needed
 
 			if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-				sessionId = `${p.infiniteId || p._id}`
+				sessionId = `${p.piece.infiniteId || p._id}`
 			}
 			// Note: multiple generated sessionIds for a single piece will not work as there will not be enough info to assign objects to different players
 			const val = sessionRequests[sessionId] || undefined
@@ -95,13 +101,15 @@ function calculateSessionTimeRanges(resolvedPieces: IBlueprintPieceDB[]) {
 				sessionRequests[sessionId] = {
 					start: Math.min(val.start, start),
 					end: maxUndefined(val.end, end),
-					optional: val.optional && (metadata.mediaPlayerOptional || false)
+					optional: val.optional && (metadata.mediaPlayerOptional || false),
+					duration: p.resolvedDuration
 				}
 			} else {
 				sessionRequests[sessionId] = {
 					start,
 					end,
-					optional: metadata.mediaPlayerOptional || false
+					optional: metadata.mediaPlayerOptional || false,
+					duration: p.resolvedDuration
 				}
 			}
 		})
@@ -194,10 +202,10 @@ export function resolveMediaPlayerAssignments<
 	context: NotesContext,
 	config: ShowStyleConfig,
 	previousAssignmentRev: SessionToPlayerMap,
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
 	const debugLog = config.studio.ABPlaybackDebugLogging
-	const sessionRequests = calculateSessionTimeRanges(resolvedPieces)
+	const sessionRequests = calculateSessionTimeRanges(context, resolvedPieces)
 
 	// In future this may want a better fit algorithm than this. This only applies if being done for multiple clips playing simultaneously, and more players
 
@@ -206,7 +214,7 @@ export function resolveMediaPlayerAssignments<
 	_.each(sessionRequests, (r, sessionId) => {
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
-			const sessionHasEnded = r.end && r.end < Date.now()
+			const sessionHasEnded = (r.end && r.end < Date.now()) || !!r.duration
 			if (!sessionHasEnded) {
 				activeRequests.push({
 					id: sessionId,
@@ -354,7 +362,7 @@ export function assignMediaPlayers<
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
-	resolvedPieces: IBlueprintPieceDB[],
+	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const previousAssignmentRev = reversePreviousAssignment(previousAssignment, timelineObjs)
@@ -397,7 +405,7 @@ export function applyMediaPlayersAssignments<
 	const groupedObjs = _.groupBy(labelledObjs, o => {
 		const sessionId = (o.metaData || {}).mediaPlayerSession
 		if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-			return o.infinitePieceId || o.pieceId || MEDIA_PLAYER_AUTO
+			return o.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
 		} else {
 			return sessionId
 		}

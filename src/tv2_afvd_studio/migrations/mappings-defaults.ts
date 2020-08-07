@@ -12,7 +12,7 @@ export default literal<BlueprintMappings>({
 	casparcg_dve_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 2,
 		layer: 110
@@ -27,14 +27,14 @@ export default literal<BlueprintMappings>({
 	casparcg_cg_dve_template: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		channel: 2,
 		layer: 120
 	}),
 	casparcg_dve_key: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 2,
 		layer: 109
@@ -42,7 +42,7 @@ export default literal<BlueprintMappings>({
 	casparcg_dve_frame: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.RETAIN,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 2,
 		layer: 111
@@ -185,7 +185,7 @@ export default literal<BlueprintMappings>({
 	atem_supersource_default: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.RETAIN, // TODO - verify
+		lookahead: LookaheadMode.WHEN_CLEAR, // TODO - verify
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
@@ -266,145 +266,169 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 0,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Host_2_st_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 1,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_1_st_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 2,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_2_st_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 3,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_3_st_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 4,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_4_st_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 5,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Host_1_st_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 6,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Host_2_st_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 7,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_1_st_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 8,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_2_st_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 9,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_3_st_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 10,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_Guest_4_st_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 11,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_1: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 12,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_2: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 13,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_3: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 14,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_4: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 15,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_5: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 16,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_6: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 17,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_7: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 18,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_8: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 19,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_9: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 20,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_live_10: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 21,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_server_a: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 22,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_server_b: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 23,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	// sisyfos_source_server_c: literal<TSR.MappingSisyfos & BlueprintMapping>({
 	// 	device: TSR.DeviceType.SISYFOS,
@@ -416,37 +440,43 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 24,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_evs_2: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 25,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_jingle: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 26,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_audiobed: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 27,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_source_tlf_hybrid: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: 28,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	sisyfos_resync: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: -1,
-		lookahead: LookaheadMode.NONE
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	graphic_overlay: literal<TSR.MappingVizMSE & BlueprintMapping>({
 		device: TSR.DeviceType.VIZMSE,
@@ -513,7 +543,8 @@ export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: (cam.AtemSource as number) || 0
+				channel: (cam.AtemSource as number) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 		}
 	})
@@ -529,21 +560,24 @@ export function getRemoteSisyfosMappings(remotes: StudioConfig['SourcesRM']) {
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0
+				channel: (rmt.AtemSource as number) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 
 			res[`sisyfos_remote_source_${rmt.SourceName}_spor_2`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0
+				channel: (rmt.AtemSource as number) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 
 			res[`sisyfos_remote_source_${rmt.SourceName}_stereo`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0
+				channel: (rmt.AtemSource as number) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 		}
 	})
@@ -559,21 +593,24 @@ export function getSkypeSisyfosMappings(remotes: StudioConfig['SourcesSkype']) {
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0
+				channel: (rmt.AtemSource as number) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 
 			res[`sisyfos_remote_source_skype_${rmt.SourceName}_spor_2`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0
+				channel: (rmt.AtemSource as number) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 
 			res[`sisyfos_remote_source_skype_${rmt.SourceName}_stereo`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0
+				channel: (rmt.AtemSource as number) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 		}
 	})
@@ -593,7 +630,8 @@ export function getTelefonSisyfosMappings(mappings: string) {
 				device: TSR.DeviceType.SISYFOS,
 				deviceId: 'sisyfos0',
 				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0
+				channel: Number(props[1]) || 0,
+				mappingType: TSR.MappingSisyfosType.CHANNEL
 			})
 		}
 	})
@@ -628,7 +666,8 @@ export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlaye
 			device: TSR.DeviceType.SISYFOS,
 			deviceId: 'sisyfos0',
 			lookahead: LookaheadMode.NONE,
-			channel: Number(mp.id) || 0
+			channel: Number(mp.id) || 0,
+			mappingType: TSR.MappingSisyfosType.CHANNEL
 		})
 	}
 

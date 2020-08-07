@@ -101,6 +101,9 @@ export function applyToConfig(
 				case ConfigManifestEntryType.ENUM:
 					newVal = overrideVal as string
 					break
+				case ConfigManifestEntryType.JSON:
+					newVal = overrideVal as string
+					break
 				case ConfigManifestEntryType.TABLE:
 					newVal = overrideVal as TableConfigItemValue
 					break
@@ -113,7 +116,7 @@ export function applyToConfig(
 				case ConfigManifestEntryType.SOURCE_LAYERS:
 					newVal = overrideVal
 					break
-				case ConfigManifestEntryType.JSON:
+				case ConfigManifestEntryType.MULTILINE_STRING:
 					newVal = overrideVal
 					break
 				default:

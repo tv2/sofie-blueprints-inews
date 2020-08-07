@@ -1,4 +1,4 @@
-import { PartContext, SplitsContent } from 'tv-automation-sofie-blueprints-integration'
+import { SplitsContent } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinitionDVE,
 	DVEConfigInput,
@@ -7,6 +7,7 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
+	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
@@ -58,14 +59,13 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 }
 
 export function OfftubeMakeContentDVE(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	addClass?: boolean,
-	adlib?: boolean,
-	flowProducer?: boolean
+	adlib?: boolean
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	return MakeContentDVEBase(
 		context,
@@ -75,8 +75,6 @@ export function OfftubeMakeContentDVE(
 		dveConfig,
 		OFFTUBE_DVE_GENERATOR_OPTIONS,
 		addClass,
-		adlib,
-		true,
-		flowProducer
+		adlib
 	)
 }

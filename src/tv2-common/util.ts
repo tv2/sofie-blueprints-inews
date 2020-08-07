@@ -7,31 +7,6 @@ export function assertUnreachable(_never: never): never {
 	throw new Error('Switch validation failed, look for assertUnreachable(...)')
 }
 
-export function createVirtualPiece(
-	layer: string,
-	enable: number | TSR.Timeline.TimelineEnable,
-	mainPiece?: IBlueprintPiece
-): IBlueprintPiece {
-	return {
-		_id: '',
-		name: '',
-		externalId: mainPiece ? mainPiece.externalId : '-',
-		enable:
-			typeof enable === 'number'
-				? {
-						start: enable,
-						duration: 0
-				  }
-				: enable,
-		sourceLayerId: layer,
-		outputLayerId: 'pgm',
-		virtual: true,
-		content: {
-			timelineObjects: []
-		}
-	}
-}
-
 export type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
 export type EmptyBaseObj = OptionalExceptFor<Omit<TSR.TimelineObjEmpty, 'content'>, 'layer' | 'enable' | 'classes'>
 export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {

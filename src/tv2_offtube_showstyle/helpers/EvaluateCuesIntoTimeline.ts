@@ -1,15 +1,13 @@
-import { PartContext, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { TSR } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinition, PartDefinition, SkipCue } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GetCasparOverlayTimeline } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeShowstyleBlueprintConfig } from './config'
 
 export function EvaluateCuesIntoTimeline(
-	_context: PartContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
-	timelineObjStartId: string,
 	/** Passing this arguments sets the types of cues to evaluate. */
 	selectedCueTypes?: CueType[] | undefined,
 	/** Don't evaluate adlibs */
@@ -22,15 +20,7 @@ export function EvaluateCuesIntoTimeline(
 			switch (cue.type) {
 				case CueType.Grafik:
 					timeline.push(
-						...GetCasparOverlayTimeline(
-							config,
-							'FULL',
-							cue,
-							!!cue.template.match(/direkte/i),
-							partDefinition,
-							timelineObjStartId,
-							true
-						)
+						...GetCasparOverlayTimeline(config, 'FULL', cue, !!cue.template.match(/direkte/i), partDefinition, true)
 					)
 					break
 				default:

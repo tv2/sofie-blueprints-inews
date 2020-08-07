@@ -30,16 +30,7 @@ describe('onAsRunevent', () => {
 				getSegment: () => {
 					return undefined
 				},
-				getPart: () => {
-					return undefined
-				},
 				getParts: () => {
-					return []
-				},
-				getPiece: () => {
-					return undefined
-				},
-				getPieces: () => {
 					return []
 				},
 				getIngestDataForRundown: () => {
@@ -59,9 +50,6 @@ describe('onAsRunevent', () => {
 				},
 				warning: (_: string) => {
 					return
-				},
-				getNotes: () => {
-					return []
 				},
 				getHashId: (_: string, __?: boolean) => {
 					return ''
@@ -93,6 +81,24 @@ describe('onAsRunevent', () => {
 				},
 				getShowStyleConfigRef: (key: string) => {
 					return key
+				},
+				getCurrentTime: () => {
+					return 0
+				},
+				getAllQueuedMessages: () => {
+					return []
+				},
+				getPartInstance: () => {
+					return undefined
+				},
+				getPieceInstance: () => {
+					return undefined
+				},
+				getPieceInstances: () => {
+					return []
+				},
+				getIngestDataForPartInstance: () => {
+					return undefined
 				}
 			})
 		).toBeTruthy()

@@ -1,9 +1,9 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
 	TimelineObjectCoreExt,
@@ -16,6 +16,7 @@ import {
 	FindSourceInfoStrict,
 	GetSisyfosTimelineObjForCamera,
 	literal,
+	PartContext2,
 	PartDefinitionEVS,
 	PartTime,
 	SourceInfo,
@@ -30,7 +31,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartEVS(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionEVS,
 	totalWords: number
@@ -41,12 +42,12 @@ export function CreatePartEVS(
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
-		typeVariant: '',
 		expectedDuration: partTime > 0 ? partTime : 0
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
@@ -74,7 +75,7 @@ export function CreatePartEVS(
 		})
 	)
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
@@ -84,12 +85,13 @@ export function CreatePartEVS(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }
 
 function makeContentEVS(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	atemInput: number,
 	partDefinition: PartDefinitionEVS,
@@ -119,7 +121,7 @@ function makeContentEVS(
 				},
 				classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
 			}),
-			literal<TSR.TimelineObjSisyfosMessage>({
+			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
 				enable: {
 					start: 0
@@ -128,15 +130,15 @@ function makeContentEVS(
 				layer: SisyfosEVSSource(sourceInfoDelayedPlayback.id.replace(/^DP/i, '')),
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 					isPgm: partDefinition.variant.isVO ? 2 : 1
 				}
 			}),
 			...(partDefinition.variant.isVO
 				? [...GetSisyfosTimelineObjForCamera(context, config, 'evs')]
 				: [
-						...config.liveAudio.map<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosAny & TimelineBlueprintExt>({
+						...config.liveAudio.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
+							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 								id: '',
 								enable: {
 									start: 0
@@ -145,7 +147,7 @@ function makeContentEVS(
 								layer,
 								content: {
 									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.SISYFOS,
+									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 									isPgm: 0
 								},
 								metaData: {

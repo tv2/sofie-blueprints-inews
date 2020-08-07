@@ -1,8 +1,8 @@
 import {
 	CameraContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
 	TSR
@@ -12,6 +12,7 @@ import {
 	CueDefinitionTargetEngine,
 	FindSourceInfoStrict,
 	literal,
+	PartContext2,
 	PartDefinition,
 	TranslateEngine
 } from 'tv2-common'
@@ -24,15 +25,17 @@ import { EvaluateGrafikViz } from './grafikViz'
 import { EvaluateMOSViz } from './mos'
 
 export function EvaluateTargetEngine(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	partId: string,
 	_partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTargetEngine,
 	adlib: boolean
 ) {
+	const time = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
 	// TODO: Future: Target a specific engine
 	if (!parsedCue.data.engine.match(/full|ovl|wall/i)) {
 		context.warning(`Could not find engine to target for: ${parsedCue.data.engine}`)
@@ -55,7 +58,7 @@ export function EvaluateTargetEngine(
 					_id: '',
 					externalId: partId,
 					enable: {
-						start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+						start: time
 					},
 					name: parsedCue.content.INP1 || '',
 					outputLayerId: 'aux',
@@ -92,6 +95,7 @@ export function EvaluateTargetEngine(
 				context,
 				pieces,
 				adlibPieces,
+				actions,
 				partId,
 				parsedCue.data.grafik,
 				TranslateEngine(parsedCue.data.engine),
@@ -103,6 +107,7 @@ export function EvaluateTargetEngine(
 				context,
 				pieces,
 				adlibPieces,
+				actions,
 				partId,
 				parsedCue.data.grafik,
 				TranslateEngine(parsedCue.data.engine),

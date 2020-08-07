@@ -1,4 +1,9 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PartContext, TSR } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,
@@ -16,6 +21,7 @@ import {
 	CueDefinitionVIZ,
 	IBlueprintAdLibPieceEPI,
 	IBlueprintPieceEPI,
+	PartContext2,
 	PartDefinition,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -28,9 +34,10 @@ export interface EvaluateCuesShowstyleOptions<
 > {
 	EvaluateCueGrafik?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionGrafik,
 		engine: GraphicEngine, // TODO: Generic name for offtubes?
@@ -41,9 +48,10 @@ export interface EvaluateCuesShowstyleOptions<
 	) => void
 	EvaluateCueMOS?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionMOS,
 		engine: GraphicEngine,
@@ -54,10 +62,11 @@ export interface EvaluateCuesShowstyleOptions<
 		overrideOverlay?: boolean
 	) => void
 	EvaluateCueEkstern?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionEkstern,
 		partDefinition: PartDefinition,
@@ -65,19 +74,21 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number
 	) => void
 	EvaluateCueDVE?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionDVE,
 		adlib?: boolean,
 		rank?: number
 	) => void
 	EvaluateCueAdLib?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		adLibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
@@ -85,9 +96,10 @@ export interface EvaluateCuesShowstyleOptions<
 	) => void
 	EvaluateCueTelefon?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTelefon,
@@ -95,20 +107,22 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number
 	) => void
 	EvaluateCueVIZ?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionVIZ,
 		adlib?: boolean,
 		rank?: number
 	) => void
 	EvaluateCueJingle?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		parsedCue: CueDefinitionJingle,
 		part: PartDefinition,
 		adlib?: boolean,
@@ -116,10 +130,11 @@ export interface EvaluateCuesShowstyleOptions<
 		effekt?: boolean
 	) => void
 	EvaluateCueLYD?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		parsedCue: CueDefinitionLYD,
 		part: PartDefinition,
 		adlib?: boolean,
@@ -127,19 +142,21 @@ export interface EvaluateCuesShowstyleOptions<
 	) => void
 	EvaluateCueDesign?: (
 		config: ShowStyleConfig,
-		context: PartContext,
+		context: PartContext2,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionDesign,
 		adlib?: boolean,
 		rank?: number
 	) => void
 	EvaluateCueTargetEngine?: (
-		context: PartContext,
+		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTargetEngine,
@@ -148,6 +165,8 @@ export interface EvaluateCuesShowstyleOptions<
 	EvaluateCueClearGrafiks?: (
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
+		adlibPieces: IBlueprintAdLibPiece[],
+		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionClearGrafiks,
 		shouldAdlib: boolean
@@ -178,10 +197,11 @@ export function EvaluateCuesBase<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	showStyleOptions: EvaluateCuesShowstyleOptions<StudioConfig, ShowStyleConfig>,
-	context: PartContext,
+	context: PartContext2,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPieceEPI[],
 	adLibPieces: IBlueprintAdLibPieceEPI[],
+	actions: IBlueprintActionManifest[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -200,6 +220,7 @@ export function EvaluateCuesBase<
 							context,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							cue,
 							'OVL',
@@ -217,6 +238,7 @@ export function EvaluateCuesBase<
 							context,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							cue,
 							cue.type === CueType.MOS && cue.engine?.match(/FULL/i) ? 'FULL' : 'OVL',
@@ -234,6 +256,7 @@ export function EvaluateCuesBase<
 							config,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							cue,
 							partDefinition,
@@ -249,6 +272,7 @@ export function EvaluateCuesBase<
 							config,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition,
 							cue,
 							shouldAdlib,
@@ -261,6 +285,7 @@ export function EvaluateCuesBase<
 								config,
 								pieces,
 								adLibPieces,
+								actions,
 								partDefinition,
 								cue,
 								true,
@@ -275,6 +300,7 @@ export function EvaluateCuesBase<
 							context,
 							config,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							cue,
 							partDefinition,
@@ -289,6 +315,7 @@ export function EvaluateCuesBase<
 							context,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							partDefinition,
 							cue,
@@ -304,6 +331,7 @@ export function EvaluateCuesBase<
 							config,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							cue,
 							shouldAdlib,
@@ -318,6 +346,7 @@ export function EvaluateCuesBase<
 							config,
 							pieces,
 							adLibPieces,
+							actions,
 							cue,
 							partDefinition,
 							shouldAdlib,
@@ -332,6 +361,7 @@ export function EvaluateCuesBase<
 							config,
 							pieces,
 							adLibPieces,
+							actions,
 							cue,
 							partDefinition,
 							shouldAdlib,
@@ -346,6 +376,7 @@ export function EvaluateCuesBase<
 							context,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							cue,
 							shouldAdlib,
@@ -360,6 +391,7 @@ export function EvaluateCuesBase<
 							config,
 							pieces,
 							adLibPieces,
+							actions,
 							partDefinition.externalId,
 							partDefinition,
 							cue,
@@ -369,7 +401,15 @@ export function EvaluateCuesBase<
 					break
 				case CueType.ClearGrafiks:
 					if (showStyleOptions.EvaluateCueClearGrafiks) {
-						showStyleOptions.EvaluateCueClearGrafiks(config, pieces, partDefinition.externalId, cue, shouldAdlib)
+						showStyleOptions.EvaluateCueClearGrafiks(
+							config,
+							pieces,
+							adLibPieces,
+							actions,
+							partDefinition.externalId,
+							cue,
+							shouldAdlib
+						)
 					}
 					break
 				default:

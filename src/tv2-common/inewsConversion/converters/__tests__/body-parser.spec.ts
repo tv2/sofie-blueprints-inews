@@ -2592,6 +2592,31 @@ describe('Body parser', () => {
 			])
 		)
 	})
+
+	test('EVS 1 with EFFEKT', () => {
+		const body27 =
+			'\r\n<p></p>\r\n<p></p>\r\n<p><pi>EVS 1 EFFEKT 1</pi></p>\r\n<p></p>\r\n<p></p>\r\n<p><a idref="0"><a idref="1"><a idref="2"></a></a></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p>Skriv din spib her</p>\r\n<p></p>\r\n'
+		const cues27 = [unparsedGrafik1, unparsedGrafik2, unparsedGrafik3]
+		const result = ParseBody('00000000001', 'test-segment', body27, cues27, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionEVS>({
+				externalId: '',
+				type: PartType.EVS,
+				rawType: 'EVS 1',
+				variant: {
+					evs: '1',
+					isVO: false
+				},
+				effekt: 1,
+				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
+				fields,
+				modified: 0,
+				script: 'Skriv din spib her\n',
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
 })
 
 export function stripExternalId(definitions: PartDefinition[]) {

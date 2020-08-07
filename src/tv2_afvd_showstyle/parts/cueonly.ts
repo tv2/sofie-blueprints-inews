@@ -1,17 +1,25 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	PartContext
+	IBlueprintPiece
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, CueDefinition, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
+import {
+	AddScript,
+	CueDefinition,
+	GetJinglePartProperties,
+	literal,
+	PartContext2,
+	PartDefinition,
+	PartTime
+} from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartCueOnly(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	id: string,
@@ -26,19 +34,19 @@ export function CreatePartCueOnly(
 	let part = literal<IBlueprintPart>({
 		externalId: id,
 		title,
-		metaData: {},
-		typeVariant: ''
+		metaData: {}
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, [cue], partDefinitionWithID, {})
 	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, pieces, adLibPieces, [cue], partDefinitionWithID, { adlib: true })
+		EvaluateCues(context, config, pieces, adLibPieces, actions, [cue], partDefinitionWithID, { adlib: true })
 	}
 
 	if (
@@ -62,6 +70,7 @@ export function CreatePartCueOnly(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

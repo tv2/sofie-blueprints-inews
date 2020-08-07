@@ -137,6 +137,28 @@ export const defaultShowStyleConfig: ConfigMap = {
 	BreakerConfig: DefaultBreakerConfig(),
 	MakeAdlibsForFulls: true,
 	GFXTemplates: DefaultGrafikConfig(),
+	/*DefaultTransitions: literal<TableConfigItemDefaultTransitions[]>([
+		literal<TableConfigItemDefaultTransitions>({
+			Type: PartType.Kam,
+			Variant: '1',
+			DefaultTransition: 'Cut'
+		}),
+		literal<TableConfigItemDefaultTransitions>({
+			Type: PartType.Kam,
+			Variant: '2',
+			DefaultTransition: 'MIX 20'
+		}),
+		literal<TableConfigItemDefaultTransitions>({
+			Type: PartType.VO,
+			Variant: 'SB',
+			DefaultTransition: 'Cut'
+		}),
+		literal<TableConfigItemDefaultTransitions>({
+			Type: PartType.Ekstern,
+			Variant: '1',
+			DefaultTransition: 'EFFEKT 1'
+		})
+	]),*/
 	LYDConfig: [
 		{
 			_id: '',
@@ -169,5 +191,7 @@ export const defaultShowStyleConfig: ConfigMap = {
 			FadeIn: 0,
 			FadeOut: 0
 		}
-	]
+	],
+	TakeWithMixDuration: 12,
+	TakeEffekts: [{ effekt: '1' }, { effekt: '2' }]
 }

@@ -8,6 +8,7 @@ interface Slots {
 	omlidt: Graphic<Omlidt>
 	topRight: Graphic<Arkiv | BillederFraLogo | Direkte | Ident | Topt>
 	dveLabels: Graphic<Locators>
+	topt: Graphic<Topt>
 }
 
 interface Graphic<T extends GraphicType> {
@@ -27,7 +28,7 @@ const enum GraphicName {
 	BILLEDERFRA_LOGO = 'BILLEDERFRA_LOGO',
 	DIREKTE = 'DIREKTE',
 	IDENT = 'IDENT',
-	TOPT = 'TOPT',
+	TOPT = 'Topt',
 	LOCATORS = 'LOCATORS',
 	OMLIDT = 'OMLIDT',
 	HEADLINE = 'Headline',
@@ -92,9 +93,8 @@ interface Omlidt extends GraphicBase {
 
 interface Topt extends GraphicBase {
 	type: GraphicName.TOPT
-	text: string
-	live?: boolean
-	tlf?: boolean // tlftopt
+	name: string
+	title: string
 }
 
 type GraphicType =
@@ -147,7 +147,8 @@ const example2: RendererState = {
 		topRight: {
 			payload: {
 				type: GraphicName.TOPT,
-				text: ''
+				name: '',
+				title: ''
 			}
 		}
 	}

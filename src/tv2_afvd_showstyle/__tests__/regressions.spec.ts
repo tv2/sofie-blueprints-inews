@@ -2,9 +2,9 @@ import * as _ from 'underscore'
 
 import {
 	BlueprintResultSegment,
+	ExtendedIngestRundown,
 	IBlueprintPieceGeneric,
 	IBlueprintRundownDB,
-	IngestRundown,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
@@ -33,7 +33,7 @@ const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: Co
 
 describe.skip('Rundown exceptions', () => {
 	for (const roSpec of rundowns) {
-		const roData = require(roSpec.ro) as IngestRundown
+		const roData = require(roSpec.ro) as ExtendedIngestRundown
 		test('Valid file: ' + roSpec.ro, () => {
 			expect(roData).toBeTruthy()
 			expect(roData.externalId).toBeTruthy()
@@ -91,8 +91,7 @@ describe('regressions-migrations', () => {
 				{
 					part: {
 						externalId: '',
-						title: '',
-						typeVariant: ''
+						title: ''
 					},
 					pieces: [
 						{
@@ -195,8 +194,7 @@ describe('regressions-migrations', () => {
 				{
 					part: {
 						externalId: '',
-						title: '',
-						typeVariant: ''
+						title: ''
 					},
 					pieces: [
 						{

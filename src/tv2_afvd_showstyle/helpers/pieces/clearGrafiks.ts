@@ -1,4 +1,10 @@
-import { IBlueprintPiece, PieceLifespan, TSR } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece,
+	PieceLifespan,
+	TSR
+} from 'tv-automation-sofie-blueprints-integration'
 import { CreateTimingEnable, CueDefinitionClearGrafiks, GetDefaultOut, GraphicLLayer, literal } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
@@ -6,6 +12,8 @@ import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 export function EvaluateClearGrafiks(
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
+	_adLibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionClearGrafiks,
 	shouldAdlib: boolean

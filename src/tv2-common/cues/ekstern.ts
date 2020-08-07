@@ -1,7 +1,6 @@
 import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	RemoteContent,
 	SourceLayerType,
@@ -26,6 +25,7 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
+import { PartContext2 } from '../partContext2'
 
 interface EksternLayers {
 	SourceLayer: {
@@ -40,7 +40,7 @@ export function EvaluateEksternBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext,
+	context: PartContext2,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

@@ -63,6 +63,7 @@ export type SourceInfoType =
 	| SourceLayerType.AUDIO
 	| SourceLayerType.VT
 	| SourceLayerType.GRAPHICS
+	| SourceLayerType.UNKNOWN
 export interface SourceInfo {
 	type: SourceInfoType
 	id: string

@@ -11,7 +11,6 @@
                 "externalId": "341dd48e:011f7352:5da02373-Kam-KAM-2-2-0",
                 "title": "KAM 2",
                 "metaData": {},
-                "typeVariant": "",
                 "expectedDuration": 7000,
                 "displayDurationGroup": "341dd48e:011f7352:5da02373"
             },
@@ -240,7 +239,6 @@
                 "externalId": "341dd48e:011f7352:5da02373-Ekstern-LIVE-1",
                 "title": "Ekstern - ",
                 "metaData": {},
-                "typeVariant": "",
                 "autoNext": false,
                 "expectedDuration": 10000,
                 "displayDurationGroup": "341dd48e:011f7352:5da02373"

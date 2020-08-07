@@ -1,9 +1,8 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
 	TimelineObjectCoreExt,
@@ -14,13 +13,14 @@ import {
 	AddScript,
 	CameraParentClass,
 	CreatePartInvalid,
+	CreatePartKamBase,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	literal,
+	PartContext2,
 	PartDefinitionKam,
-	PartTime,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -28,25 +28,22 @@ import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
+import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartKam(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
-	const part = literal<IBlueprintPart>({
-		externalId: partDefinition.externalId,
-		title: partDefinition.rawType,
-		metaData: {},
-		typeVariant: '',
-		expectedDuration: partTime > 0 ? partTime : undefined
-	})
+	let part = partKamBase.part.part
+	const partTime = partKamBase.duration
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
@@ -92,8 +89,7 @@ export function OfftubeCreatePartKam(
 		}
 		const atemInput = sourceInfoCam.port
 
-		// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
-		// TODO: EFFEKT
+		part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -139,7 +135,7 @@ export function OfftubeCreatePartKam(
 		)
 	}
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 

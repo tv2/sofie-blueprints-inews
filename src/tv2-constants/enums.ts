@@ -41,9 +41,7 @@ export const enum PartType {
 }
 
 export enum Enablers {
-	OFFTUBE_ENABLE_SERVER = 'offtube_enable_server',
 	OFFTUBE_ENABLE_FULL = 'offtube_enable_full',
-	OFFTUBE_ENABLE_DVE = 'offtube_enable_dve',
 	OFFTUBE_ENABLE_SERVER_LOOKAHEAD = 'offtube_enable_server_lookahead'
 }
 
@@ -65,9 +63,43 @@ export enum ControlClasses {
 	ShowIdentGraphic = 'show_ident_graphic',
 	/** Indicates that a DVE is currently on air */
 	DVEOnAir = 'dve_on_air',
+	ServerOnAir = 'server_on_air',
 	/** Used as a placeholder for onTimelineGenerate to do clips-in-DVE. */
 	DVEPlaceholder = 'dve_placeholder',
 	NOLookahead = 'no_lookahead',
 	CopyMediaPlayerSession = 'copy_media_player_session',
 	AbstractLookahead = 'abstract_lookahead'
+}
+
+export enum AdlibActionType {
+	SELECT_SERVER_CLIP = 'select_server_clip',
+	SELECT_DVE = 'select_dve',
+	SELECT_DVE_LAYOUT = 'select_dve_layout',
+	SELECT_FULL_GRAFIK = 'select_full_grafik',
+	CUT_TO_CAMERA = 'cut_to_camera',
+	CUT_TO_REMOTE = 'cut_to_remote',
+	CUT_SOURCE_TO_BOX = 'cut_source_to_box',
+	COMMENTATOR_SELECT_SERVER = 'commentator_select_server',
+	COMMENTATOR_SELECT_DVE = 'commentator_select_dve',
+	COMMENTATOR_SELECT_FULL = 'commentator_select_full',
+	CLEAR_GRAPHICS = 'clear_graphics',
+	TAKE_WITH_TRANSITION = 'take_with_transition'
+}
+
+export enum TallyTags {
+	// Actions
+	GFX_CLEAR = 'GFX_CLEAR',
+	TAKE_WITH_TRANSITION = 'TAKE_WITH_TRANSITION',
+
+	// A particular source is live
+	KAM = 'KAM',
+	LIVE = 'EKSTERN',
+	CLIP = 'CLIP',
+	DVE = 'DVE',
+	FULL = 'FULL',
+
+	// ANY of source type is live
+	SERVER_IS_LIVE = 'SERVER_IS_LIVE',
+	DVE_IS_LIVE = 'DVE_IS_LIVE',
+	FULL_IS_LIVE = 'FULL_IS_LIVE'
 }

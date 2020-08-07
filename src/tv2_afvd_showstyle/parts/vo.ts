@@ -1,9 +1,9 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
@@ -11,10 +11,14 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	GetSisyfosTimelineObjForCamera,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
+	PartContext2,
 	PartDefinition
 } from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -22,7 +26,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartVO(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	segmentExternalId: string,
@@ -48,13 +52,13 @@ export function CreatePartVO(
 		externalId: partDefinition.externalId,
 		title: `${partDefinition.rawType} - ${partDefinition.fields.videoId}`,
 		metaData: {},
-		typeVariant: '',
 		expectedDuration: actualDuration,
 		prerollDuration: config.studio.CasparPrerollDuration
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
@@ -91,11 +95,12 @@ export function CreatePartVO(
 				mediaPlayerSessions: [segmentExternalId]
 			}),
 			content: serverContent,
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [GetTagForServer(file, true), GetTagForServerNext(file, true), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, actualDuration, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
@@ -105,6 +110,7 @@ export function CreatePartVO(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

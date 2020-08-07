@@ -1,34 +1,39 @@
 import {
 	GraphicsContent,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectFullGrafik,
 	CalculateTime,
 	CreateTimingEnable,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
+	GetFullGrafikTemplateNameFromCue,
+	GetTagForFull,
+	GetTagForFullNext,
 	GraphicLLayer,
 	InfiniteMode,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PartToParentClass,
-	TimelineBlueprintExt,
 	TranslateEngine
 } from 'tv2-common'
-import { AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine } from 'tv2-constants'
-import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine } from 'tv2-constants'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	_context: PartContext,
+	_context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	_partid: string,
 	parsedCue: CueDefinitionGrafik,
 	_engine: GraphicEngine,
@@ -58,64 +63,35 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
 	if (engine === 'FULL') {
-		let adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), false)
-		adLibPiece.additionalPieces = [
-			literal<IBlueprintAdLibPiece>({
-				_rank: 0,
-				externalId: 'setNextToFull',
-				name: 'Full Graphic',
-				sourceLayerId: OfftubeSourceLayer.PgmFull,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				canCombineQueue: true,
-				content: {
-					timelineObjects: [
-						literal<TSR.TimelineObjAtemME>({
-							id: 'fullProgramEnabler',
-							enable: {
-								while: '1'
-							},
-							layer: OfftubeAtemLLayer.AtemMEClean,
-							priority: 10,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: config.studio.AtemSource.GFXFull,
-									transition: TSR.AtemTransitionStyle.CUT
-								}
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_FULL]
-						}),
-						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-							id: '',
-							enable: { start: 0 },
-							priority: 0,
-							layer: OfftubeAtemLLayer.AtemMENext,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									previewInput: config.studio.AtemSource.GFXFull
-								}
-							},
-							metaData: {
-								context: `Lookahead-lookahead for fullProgramEnabler`
-							},
-							classes: ['ab_on_preview']
-						})
-					]
-				},
-				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT]
-			})
-		]
-		adlibPieces.push(adLibPiece)
-		// Repeat for flow producer
-		adLibPiece = CreateFullAdLib(config, partDefinition, GetTemplateName(config, parsedCue), true)
-		adlibPieces.push(adLibPiece)
+		const adLibPiece = CreateFullAdLib(
+			config,
+			partDefinition.externalId,
+			GetFullGrafikTemplateNameFromCue(config, parsedCue)
+		)
 
-		const piece = CreateFullPiece(config, partDefinition, GetTemplateName(config, parsedCue))
+		actions.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_FULL_GRAFIK,
+				userData: literal<ActionSelectFullGrafik>({
+					type: AdlibActionType.SELECT_FULL_GRAFIK,
+					template: parsedCue.template
+				}),
+				userDataManifest: {},
+				display: {
+					label: GetFullGrafikTemplateNameFromCue(config, parsedCue),
+					sourceLayerId: OfftubeSourceLayer.PgmFull,
+					outputLayerId: OfftubeOutputLayers.PGM,
+					content: { ...adLibPiece.content, timelineObjects: [] },
+					tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER]
+				}
+			})
+		)
+
+		const piece = CreateFullPiece(
+			config,
+			partDefinition.externalId,
+			GetFullGrafikTemplateNameFromCue(config, parsedCue)
+		)
 		pieces.push(piece)
 	} else {
 		// TODO: Wall
@@ -125,7 +101,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				_rank: rank || 0,
 				externalId: partDefinition.externalId,
 				name: `${grafikName(config, parsedCue)}`,
-				sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				infiniteMode: PieceLifespan.Normal,
 				expectedDuration: 5000,
@@ -141,7 +117,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					_rank: rank || 0,
 					externalId: partDefinition.externalId,
 					name: `${grafikName(config, parsedCue)}`,
-					sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+					sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 					outputLayerId: OfftubeOutputLayers.OVERLAY,
 					infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
@@ -165,7 +141,7 @@ export function OfftubeEvaluateGrafikCaspar(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				sourceLayerId: GetSourceLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
@@ -186,16 +162,15 @@ export function GetCasparOverlayTimeline(
 	parsedCue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
 	partDefinition: PartDefinition,
-	timelineObjStartId?: string,
 	commentator?: boolean
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
 			enable: commentator
-				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition, timelineObjStartId)
+				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition)
 				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
-			layer: GetTimelineLayerForGrafik(config, GetTemplateName(config, parsedCue)),
+			layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -207,14 +182,9 @@ export function GetCasparOverlayTimeline(
 					JSON.stringify({
 						// tslint:disable-next-line: prettier
 						display: "program",
-						slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
+						slots: createContentForGraphicTemplate(GetFullGrafikTemplateNameFromCue(config, parsedCue), parsedCue)
 					})
 				)}</templateData>`,
-				/*data: literal<RendererStatePartial>({
-					partialUpdate: true,
-					display: 'program',
-					slots: createContentForGraphicTemplate(GetTemplateName(config, parsedCue), parsedCue)
-				}),*/
 				useStopCommand: false
 			}
 		})
@@ -325,10 +295,11 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 			return {
 				[graphicName]: {
 					display: 'program',
-					payload: {
+					payload: literal<Topt>({
 						type: GraphicName.TOPT,
-						text: parsedCue.textFields[0] // TODO: Should indexing be pulled from config?
-					}
+						name: parsedCue.textFields[0],
+						title: parsedCue.textFields[1]
+					})
 				}
 			}
 		default:
@@ -348,9 +319,9 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 	}
 }
 
-function CreateFullPiece(
+export function CreateFullPiece(
 	config: OfftubeShowstyleBlueprintConfig,
-	partDefinition: PartDefinition,
+	externalId: string,
 	template: string
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
@@ -358,55 +329,47 @@ function CreateFullPiece(
 		enable: {
 			start: 0 // TODO: Time
 		},
-		externalId: partDefinition.externalId,
+		externalId,
 		name: `${template}`,
-		sourceLayerId: OfftubeSourceLayer.SelectedAdlibGraphicsFull, // TODO: Something else?
-		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB, // TODO: PGM
+		sourceLayerId: OfftubeSourceLayer.PgmFull,
+		outputLayerId: OfftubeOutputLayers.PGM,
 		infiniteMode: PieceLifespan.OutOnNextPart,
-		content: CreateFullContent(config, partDefinition, template, true)
+		content: CreateFullContent(config, template)
 	})
 }
 
 function CreateFullAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
-	partDefinition: PartDefinition,
-	template: string,
-	flowProducer: boolean
+	externalId: string,
+	template: string
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
-		externalId: partDefinition.externalId,
+		externalId,
 		name: `${template}`,
-		sourceLayerId: flowProducer ? OfftubeSourceLayer.PgmFull : OfftubeSourceLayer.SelectedAdlibGraphicsFull,
-		outputLayerId: flowProducer ? OfftubeOutputLayers.PGM : OfftubeOutputLayers.SELECTED_ADLIB,
+		sourceLayerId: OfftubeSourceLayer.PgmFull,
+		outputLayerId: OfftubeOutputLayers.PGM,
 		toBeQueued: true,
-		canCombineQueue: !flowProducer,
 		adlibPreroll: config.studio.CasparPrerollDuration,
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
-		infiniteMode: flowProducer ? PieceLifespan.OutOnNextPart : PieceLifespan.OutOnNextSegment,
-		tags: flowProducer ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [AdlibTags.ADLIB_KOMMENTATOR],
-		content: CreateFullContent(config, partDefinition, template, flowProducer)
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
+		onAirTags: [GetTagForFull(template)],
+		setNextTags: [GetTagForFullNext(template)],
+		content: CreateFullContent(config, template)
 	})
 }
 
-function CreateFullContent(
-	config: OfftubeShowstyleBlueprintConfig,
-	partDefinition: PartDefinition,
-	template: string,
-	flowProducer: boolean
-): GraphicsContent {
-	const startObjId = `fullMedia_${partDefinition.externalId.replace(/\W/g, '_')}_${template}_${
-		flowProducer ? 'flow' : 'commentator'
-	}`
+export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, template: string): GraphicsContent {
 	return {
 		fileName: template,
 		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.MediaFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGMedia>({
-				id: startObjId,
+				id: '',
 				enable: {
-					while: `.${Enablers.OFFTUBE_ENABLE_FULL}`
+					while: '1'
 				},
 				priority: 100,
 				layer: OfftubeCasparLLayer.CasparGraphicsFull,
@@ -424,7 +387,7 @@ function CreateFullContent(
 			literal<TSR.TimelineObjAtemME>({
 				id: '',
 				enable: {
-					start: `#${startObjId}.start + ${config.studio.CasparPrerollDuration}`
+					start: config.studio.CasparPrerollDuration
 				},
 				priority: 100,
 				layer: OfftubeAtemLLayer.AtemMEClean,
@@ -450,7 +413,7 @@ function CreateFullContent(
 			literal<TSR.TimelineObjAtemDSK>({
 				id: '',
 				enable: {
-					start: `#${startObjId}.start + ${config.studio.CasparPrerollDuration}`
+					start: config.studio.CasparPrerollDuration
 				},
 				priority: 100,
 				layer: OfftubeAtemLLayer.AtemDSKGraphics,
@@ -461,23 +424,7 @@ function CreateFullContent(
 						onAir: false
 					}
 				}
-			}),
-			...(flowProducer
-				? [
-						literal<TSR.TimelineObjAbstractAny>({
-							id: '',
-							enable: {
-								while: '1'
-							},
-							priority: 100, // TODO: Fix priority
-							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_FULL]
-						})
-				  ]
-				: [])
+			})
 		]
 	}
 }
@@ -490,8 +437,7 @@ function GetEnableForGrafikOfftube(
 	engine: GraphicEngine,
 	cue: CueDefinitionGrafik,
 	isIdentGrafik: boolean,
-	partDefinition?: PartDefinition,
-	timelineObjStartId?: string
+	partDefinition?: PartDefinition
 ): TSR.TSRTimelineObj['enable'] {
 	if (engine === 'WALL') {
 		return {
@@ -508,7 +454,7 @@ function GetEnableForGrafikOfftube(
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
-	const timing = CreateTimingEnable(cue, GetDefaultOut(config), timelineObjStartId)
+	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
 
 	if (!timing.infiniteMode) {
 		return timing.enable
@@ -542,7 +488,7 @@ export function FindInfiniteModeFromConfig(
 	parsedCue: CueDefinitionGrafik
 ): PieceLifespan {
 	if (config.showStyle.GFXTemplates) {
-		const template = GetTemplateName(config, parsedCue)
+		const template = GetFullGrafikTemplateNameFromCue(config, parsedCue)
 		const conf = config.showStyle.GFXTemplates.find(cnf =>
 			cnf.VizTemplate ? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() : false
 		)
@@ -634,7 +580,9 @@ function grafikName(
 ): string {
 	if (parsedCue.type === CueType.Grafik) {
 		return `${
-			parsedCue.template ? `${GetTemplateName(config, parsedCue)}${parsedCue.textFields.length ? ' - ' : ''}` : ''
+			parsedCue.template
+				? `${GetFullGrafikTemplateNameFromCue(config, parsedCue)}${parsedCue.textFields.length ? ' - ' : ''}`
+				: ''
 		}${parsedCue.textFields.filter(txt => !txt.match(/^;.\.../i)).join('\n - ')}`.replace(/,/gi, '')
 	} else {
 		return `${parsedCue.name ? parsedCue.name : ''}`
@@ -690,20 +638,6 @@ export function CreateTimingGrafik(
 	ret.duration = end ? end - ret.start : undefined
 
 	return ret
-}
-
-function GetTemplateName(config: OfftubeShowstyleBlueprintConfig, cue: CueDefinitionGrafik): string {
-	if (config.showStyle.GFXTemplates) {
-		const template = config.showStyle.GFXTemplates.find(templ =>
-			templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
-		)
-		if (template && template.VizTemplate.toString().length) {
-			return template.VizTemplate.toString()
-		}
-	}
-
-	// This means unconfigured templates will still be supported, with default out.
-	return cue.template
 }
 
 function GetDefaultOut(config: OfftubeShowstyleBlueprintConfig): number {

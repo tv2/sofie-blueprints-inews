@@ -1,6 +1,6 @@
-import { IBlueprintRundownDB, PartContext, SegmentContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintRundownDB, SegmentContext } from 'tv-automation-sofie-blueprints-integration'
 
-export class PartContext2 implements PartContext {
+export class PartContext2 implements SegmentContext {
 	public readonly rundownId: string
 	public readonly rundown: IBlueprintRundownDB
 	private baseContext: SegmentContext
@@ -46,9 +46,6 @@ export class PartContext2 implements PartContext {
 	}
 	public warning(message: string) {
 		return this.baseContext.warning(message)
-	}
-	public getNotes() {
-		return this.baseContext.getNotes()
 	}
 
 	/** ICommonContext */

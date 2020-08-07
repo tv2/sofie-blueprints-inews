@@ -9,7 +9,9 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
-	CasparCGLoadingClip: ''
+	CasparCGLoadingClip: '',
+	TakeWithMixDuration: 12,
+	TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }]
 }
 
 describe('Config Manifest', () => {

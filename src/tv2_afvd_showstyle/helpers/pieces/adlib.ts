@@ -1,10 +1,12 @@
-import { IBlueprintAdLibPiece, PartContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TemplateIsValid
@@ -16,9 +18,10 @@ import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateAdLib(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
+	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -66,7 +69,7 @@ export function EvaluateAdLib(
 			return
 		}
 
-		if (!TemplateIsValid(JSON.parse(rawTemplate.DVEJSON as string))) {
+		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 			context.warning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
@@ -103,8 +106,10 @@ export function EvaluateAdLib(
 				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid,
-				metaData: literal<PieceMetaData>({
-					stickySisyfosLevels: sticky
+				metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					stickySisyfosLevels: sticky,
+					sources: cueDVE.sources,
+					config: rawTemplate
 				})
 			})
 		)

@@ -1,37 +1,38 @@
 import {
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
-	TSR
+	SplitsContent
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectDVE,
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
+	GetTagForDVE,
 	literal,
+	PartContext2,
 	PartDefinition,
 	PieceMetaData,
-	TemplateIsValid,
-	TimelineBlueprintExt
+	TemplateIsValid
 } from 'tv2-common'
-import { AdlibTags, ControlClasses, Enablers } from 'tv2-constants'
-import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
-import { AtemSourceIndex } from '../../types/atem'
+import { AdlibActionType, AdlibTags } from 'tv2-constants'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
-import { makeofftubeDVEIDsUniqueForFlow } from './OfftubeAdlib'
 
 export function OfftubeEvaluateDVE(
-	context: PartContext,
+	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
+	_adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
-	_adlib?: boolean,
+	adlib?: boolean,
 	rank?: number
 ) {
 	if (!parsedCue.template) {
@@ -44,7 +45,7 @@ export function OfftubeEvaluateDVE(
 		return
 	}
 
-	if (!TemplateIsValid(JSON.parse(rawTemplate.DVEJSON as string))) {
+	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 		context.warning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
@@ -59,17 +60,6 @@ export function OfftubeEvaluateDVE(
 		true
 	)
 
-	const adlibContentFlow = OfftubeMakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(partDefinition),
-		true,
-		true
-	)
-
 	const pieceContent = OfftubeMakeContentDVE(
 		context,
 		config,
@@ -77,124 +67,10 @@ export function OfftubeEvaluateDVE(
 		parsedCue,
 		rawTemplate,
 		AddParentClass(partDefinition),
-		false,
-		true
+		false
 	)
 
 	if (adlibContent.valid && pieceContent.valid) {
-		const dveAdlib = literal<IBlueprintAdLibPiece>({
-			_rank: rank || 0,
-			externalId: partDefinition.externalId,
-			name: `${partDefinition.storyName}`,
-			outputLayerId: 'selectedAdlib',
-			sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
-			infiniteMode: PieceLifespan.OutOnNextSegment,
-			toBeQueued: true,
-			canCombineQueue: true,
-			content: {
-				...adlibContent.content,
-				timelineObjects: adlibContent.content.timelineObjects.map(tlObj => {
-					return {
-						...tlObj,
-						classes: tlObj.classes ? [...tlObj.classes, ControlClasses.NOLookahead] : [ControlClasses.NOLookahead]
-					}
-				})
-			},
-			adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-			tags: [AdlibTags.ADLIB_KOMMENTATOR]
-		})
-		dveAdlib.additionalPieces = [
-			literal<IBlueprintAdLibPiece>({
-				_rank: 0,
-				externalId: 'setNextToDVE',
-				name: 'DVE',
-				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				canCombineQueue: true,
-				content: {
-					timelineObjects: [
-						literal<TSR.TimelineObjAbstractAny>({
-							id: 'dveProgramEnabler',
-							enable: {
-								while: '1'
-							},
-							priority: 1,
-							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_DVE]
-						}),
-						literal<TSR.TimelineObjAtemME>({
-							id: `dvePgm`,
-							enable: { start: Number(config.studio.CasparPrerollDuration) },
-							priority: 1,
-							layer: OfftubeAtemLLayer.AtemMEClean,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: AtemSourceIndex.SSrc,
-									transition: TSR.AtemTransitionStyle.CUT
-								}
-							},
-							classes: ['adlib_deparent']
-						}),
-						literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-							id: `dveNext`,
-							enable: { start: 0 },
-							priority: 0, // Must be below lookahead, except when forced by hold
-							layer: OfftubeAtemLLayer.AtemMENext,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									previewInput: AtemSourceIndex.SSrc
-								}
-							},
-							metaData: {
-								context: `Lookahead-lookahead for dveProgramEnabler`
-							},
-							classes: ['ab_on_preview']
-						})
-					]
-				},
-				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
-			})
-		]
-		adlibPieces.push(dveAdlib)
-
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				...dveAdlib,
-				outputLayerId: 'pgm',
-				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				additionalPieces: [],
-				content: {
-					...adlibContentFlow.content,
-					timelineObjects: makeofftubeDVEIDsUniqueForFlow([
-						...adlibContentFlow.content.timelineObjects,
-						literal<TSR.TimelineObjAbstractAny>({
-							id: '',
-							enable: {
-								while: '1'
-							},
-							priority: 1,
-							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_DVE]
-						})
-					])
-				}
-			})
-		)
-
 		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
 		start = start ? start : 0
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
@@ -213,26 +89,39 @@ export function OfftubeEvaluateDVE(
 				toBeQueued: true,
 				content: {
 					...pieceContent.content,
-					timelineObjects: [
-						...pieceContent.content.timelineObjects,
-						literal<TSR.TimelineObjAbstractAny>({
-							id: '',
-							enable: {
-								while: '1'
-							},
-							priority: 1,
-							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							},
-							classes: [Enablers.OFFTUBE_ENABLE_DVE]
-						})
-					]
+					timelineObjects: [...pieceContent.content.timelineObjects]
 				},
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [partDefinition.segmentExternalId]
+				metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					mediaPlayerSessions: [partDefinition.segmentExternalId],
+					sources: parsedCue.sources,
+					config: rawTemplate
 				})
+			})
+		)
+
+		actions.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_DVE,
+				userData: literal<ActionSelectDVE>({
+					type: AdlibActionType.SELECT_DVE,
+					config: parsedCue,
+					part: partDefinition
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: rank,
+					sourceLayerId: OfftubeSourceLayer.PgmDVE,
+					outputLayerId: OfftubeOutputLayers.PGM,
+					label: `${partDefinition.storyName}`,
+					tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
+					content: literal<SplitsContent>({
+						...pieceContent.content,
+						timelineObjects: []
+					}),
+					onAirTags: [GetTagForDVE(parsedCue)],
+					setNextTags: [GetTagForDVE(parsedCue)]
+				}
 			})
 		)
 	}

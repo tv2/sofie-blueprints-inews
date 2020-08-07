@@ -4,6 +4,7 @@ import { showStyleMigrations } from './migrations'
 
 import { getEndStateForPart } from 'tv2-common'
 import { onTimelineGenerateOfftube } from '../tv2_offtube_showstyle/onTimelineGenerate'
+import { executeActionOfftube } from './actions'
 import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import onAsRunEvent from './onAsRunEvent'
@@ -19,7 +20,7 @@ const manifest: ShowStyleBlueprintManifest = {
 	integrationVersion: VERSION_INTEGRATION,
 	TSRVersion: VERSION_TSR,
 
-	minimumCoreVersion: '1.2.0',
+	minimumCoreVersion: '1.9.0',
 
 	getShowStyleVariantId,
 	getRundown,
@@ -28,6 +29,7 @@ const manifest: ShowStyleBlueprintManifest = {
 	onAsRunEvent,
 	onTimelineGenerate: onTimelineGenerateOfftube,
 	getEndStateForPart,
+	executeAction: executeActionOfftube,
 
 	showStyleConfigManifest,
 	showStyleMigrations

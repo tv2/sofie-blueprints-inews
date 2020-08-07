@@ -1,10 +1,21 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, CreatePartServerBase, literal, MakeContentServer, PartDefinition, PieceMetaData } from 'tv2-common'
+import {
+	AddScript,
+	CreatePartServerBase,
+	GetTagForServer,
+	GetTagForServerNext,
+	literal,
+	MakeContentServer,
+	PartContext2,
+	PartDefinition,
+	PieceMetaData
+} from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -12,7 +23,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartServer(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	segmentExternalId: string
@@ -28,6 +39,7 @@ export function CreatePartServer(
 	const adLibPieces = basePartProps.part.adLibPieces
 	const file = basePartProps.file
 	const duration = basePartProps.duration
+	const actions: IBlueprintActionManifest[] = []
 
 	part = {
 		...part,
@@ -65,11 +77,12 @@ export function CreatePartServer(
 				},
 				duration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [GetTagForServer(file, false), GetTagForServerNext(file, false), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 
 	if (pieces.length === 0) {
 		part.invalid = true
@@ -78,6 +91,7 @@ export function CreatePartServer(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

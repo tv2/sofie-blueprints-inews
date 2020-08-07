@@ -1,6 +1,6 @@
 import {
 	BlueprintResultTimeline,
-	IBlueprintPieceDB,
+	IBlueprintResolvedPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
 	PartEventContext,
@@ -10,14 +10,12 @@ import {
 	TimelinePersistentState,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { ControlClasses, Enablers } from 'tv2-constants'
 import * as _ from 'underscore'
-import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer } from '../tv2_offtube_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
 export interface PartEndStateExt extends PartEndState {
-	stickySisyfosLevels: { [key: string]: number | undefined }
+	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
 	mediaPlayerSessions: { [layer: string]: string[] }
 }
 
@@ -62,19 +60,19 @@ export function onTimelineGenerate<
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintPieceDB[],
+	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	parseConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
-	casparLayerClipPending: string,
-	atemLayerNext: string
+	_casparLayerClipPending: string,
+	_atemLayerNext: string
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
-	const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
+	// const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
 
 	const config = parseConfig(context)
 
 	// Find server in pgm
-	const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)
+	/*const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)
 	const activeMediaPlayerSession = (activeServerObj?.metaData as TimelineBlueprintExt['metaData'])?.mediaPlayerSession
 
 	const lookaheadServerObjIndex = timeline.findIndex(
@@ -132,9 +130,9 @@ export function onTimelineGenerate<
 		const dveSetAsNextIncurrentPartIndex = timeline.findIndex(
 			o =>
 				o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler &&
-				o.classes?.includes(Enablers.OFFTUBE_ENABLE_DVE) &&
+				o.classes?.includes('offtube_enable_dve') && // TODO: This has gone away now
 				!o.isLookahead &&
-				resolvedPieces.some(piece => piece._id === o.pieceId) &&
+				resolvedPieces.some(piece => piece._id === o.pieceInstanceId) &&
 				!o.id.match(/previous/)
 		)
 		const dveLayoutInCurrentPartIndex = timeline.findIndex(
@@ -163,9 +161,9 @@ export function onTimelineGenerate<
 						!o.id.match(/previous/) &&
 						!o.id.match(/future/) &&
 						o.classes?.includes(ControlClasses.NOLookahead) &&
-						o.pieceId &&
-						current.pieceId &&
-						!!o.pieceId.match(current.pieceId)
+						o.pieceInstanceId &&
+						current.pieceInstanceId &&
+						!!o.pieceInstanceId.match(current.pieceInstanceId)
 					)
 			)
 		}
@@ -250,10 +248,10 @@ export function onTimelineGenerate<
 
 	// Do the same for pieces
 	_.each(resolvedPieces, piece => {
-		if (piece.metaData) {
-			const meta = piece.metaData as PieceMetaData
+		if (piece.piece.metaData) {
+			const meta = piece.piece.metaData as PieceMetaData
 			if (meta.mediaPlayerSessions) {
-				piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map(session => {
+				piece.piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map(session => {
 					if (Object.keys(replacedSessions).includes(session)) {
 						return replacedSessions[session]
 					}
@@ -261,23 +259,23 @@ export function onTimelineGenerate<
 					return session
 				})
 			}
-		} else if (lookaheadMediaPlayerSession && piece.content && piece.content.timelineObjects) {
-			const objToCopyMediaPlayerSessionToIndex = (piece.content
+		} else if (lookaheadMediaPlayerSession && piece.piece.content && piece.piece.content.timelineObjects) {
+			const objToCopyMediaPlayerSessionToIndex = (piece.piece.content
 				.timelineObjects as TimelineBlueprintExt[]).findIndex(obj =>
 				obj.classes?.includes(ControlClasses.CopyMediaPlayerSession)
 			)
 
 			if (objToCopyMediaPlayerSessionToIndex > -1) {
-				piece.content.metadata = {
+				piece.piece.content.metadata = {
 					mediaPlayerSessions: [lookaheadMediaPlayerSession]
 				}
-				;(piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData = {
-					...(piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData,
+				;(piece.piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData = {
+					...(piece.piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData,
 					mediaPlayerSession: lookaheadMediaPlayerSession
 				}
 			}
 		}
-	})
+	})*/
 
 	copyPreviousSisyfosLevels(
 		context,
@@ -313,7 +311,7 @@ export function getEndStateForPart(
 	_context: RundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintPieceDB[],
+	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	time: number
 ): PartEndState {
 	const endState: PartEndStateExt = {
@@ -325,7 +323,10 @@ export function getEndStateForPart(
 
 	const activePieces = _.filter(
 		resolvedPieces,
-		p => p.enable && (p.enable.start as number) <= time && (!p.enable.end || (p.enable.end as number) >= time)
+		p =>
+			p.piece.enable &&
+			(p.piece.enable.start as number) <= time &&
+			(!p.piece.enable.end || (p.piece.enable.end as number) >= time)
 	)
 
 	_.each(activePieces, piece => {
@@ -333,10 +334,10 @@ export function getEndStateForPart(
 	})
 
 	_.each(activePieces, piece => {
-		if (piece.metaData) {
-			const meta = (piece.metaData as PieceMetaData).mediaPlayerSessions
+		if (piece.piece.metaData) {
+			const meta = (piece.piece.metaData as PieceMetaData).mediaPlayerSessions
 			if (meta && meta.length) {
-				endState.mediaPlayerSessions[piece.sourceLayerId] = meta
+				endState.mediaPlayerSessions[piece.piece.sourceLayerId] = meta
 			}
 		}
 	})
@@ -372,9 +373,9 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 export function preservePieceSisfosLevel(
 	endState: PartEndStateExt,
 	previousPartEndState: Partial<PartEndStateExt> | undefined,
-	piece: IBlueprintPieceDB
+	piece: IBlueprintResolvedPieceInstance
 ) {
-	const metaData = piece.metaData as PieceMetaData | undefined
+	const metaData = piece.piece.metaData as PieceMetaData | undefined
 	if (metaData) {
 		// Loop through rm level persistance
 		if (metaData.stickySisyfosLevels) {
@@ -394,11 +395,11 @@ export function preservePieceSisfosLevel(
 	}
 }
 
-function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosAny & TimelineObjectCoreExt>) {
+function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosChannel & TimelineObjectCoreExt>) {
 	return (
 		obj.content &&
 		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
-		obj.content.type === TSR.TimelineContentTypeSisyfos.SISYFOS
+		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNEL
 	)
 }
 
@@ -406,40 +407,40 @@ export function copyPreviousSisyfosLevels(
 	context: RundownContext,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousLevels: PartEndStateExt['stickySisyfosLevels'],
-	resolvedPieces: IBlueprintPieceDB[]
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
 	// This needs to look at previous pieces within the part, to make it work for adlibs
 	const sisyfosObjs = (timelineObjs as Array<
-		TSR.TimelineObjSisyfosAny & TimelineBlueprintExt & OnGenerateTimelineObj
+		TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt & OnGenerateTimelineObj
 	>).filter(isSisyfosSource)
 
 	// Pieces should be ordered, we shall assume that
-	const groupedPieces = _.groupBy(resolvedPieces, p => p.enable.start)
+	const groupedPieces = _.groupBy(resolvedPieces, p => p.piece.enable.start)
 	_.each(groupedPieces, pieces => {
 		const pieceIds = _.pluck(pieces, '_id') // getPieceGroupId(p._id))
 		// Find all the objs that start here
 		const objs = sisyfosObjs.filter(o => {
-			const groupId = o.pieceId
+			const groupId = o.pieceInstanceId
 			return groupId && pieceIds.indexOf(groupId) !== -1
 		})
 		// Stop if no objects
-		if (objs.length === 0 || !pieces[0].enable) {
+		if (objs.length === 0 || !pieces[0].piece.enable) {
 			return
 		}
 
 		// Find the active pieces before this time
-		const time = pieces[0].enable.start as number
+		const time = pieces[0].piece.enable.start as number
 
 		// Start of part
 		if (time !== 0) {
 			// Calculate the previous 'state'
 			const activePieces = _.filter(resolvedPieces, p => {
-				if (!p.enable) {
+				if (!p.piece.enable) {
 					return false
 				}
 
-				const start = p.enable.start as number // Core should be always setting this to a number
-				const duration = p.playoutDuration
+				const start = p.piece.enable.start as number // Core should be always setting this to a number
+				const duration = p.piece.playoutDuration
 
 				// Piece must start before target, and end at or after target starts
 				return start < time && (duration === undefined || start + duration >= time)
@@ -447,7 +448,7 @@ export function copyPreviousSisyfosLevels(
 
 			const newPreviousLevels: PartEndStateExt['stickySisyfosLevels'] = {}
 			_.each(activePieces, piece => {
-				const metadata = piece.metaData as PieceMetaData | undefined
+				const metadata = piece.piece.metaData as PieceMetaData | undefined
 				if (metadata && metadata.stickySisyfosLevels) {
 					_.each(metadata.stickySisyfosLevels, (val, id) => {
 						// context.warning(
@@ -459,7 +460,7 @@ export function copyPreviousSisyfosLevels(
 							if (val.followsPrevious && previousLevels[id] !== undefined) {
 								newPreviousLevels[id] = previousLevels[id]
 							} else {
-								newPreviousLevels[id] = val.value
+								newPreviousLevels[id] = val.value as 0 | 1 | 2 | undefined
 							}
 						}
 					})

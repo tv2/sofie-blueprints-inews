@@ -1,9 +1,8 @@
 import {
 	BlueprintResultPart,
+	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
-	PartContext,
 	PieceLifespan,
 	SourceLayerType,
 	TimelineObjectCoreExt,
@@ -14,13 +13,14 @@ import {
 	AddScript,
 	CameraParentClass,
 	CreatePartInvalid,
+	CreatePartKamBase,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	literal,
+	PartContext2,
 	PartDefinitionKam,
-	PartTime,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -31,23 +31,20 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartKam(
-	context: PartContext,
+	context: PartContext2,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
-	let part = literal<IBlueprintPart>({
-		externalId: partDefinition.externalId,
-		title: partDefinition.rawType,
-		metaData: {},
-		typeVariant: '',
-		expectedDuration: partTime > 0 ? partTime : 0
-	})
+	let part = partKamBase.part.part
+	const partTime = partKamBase.duration
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
+	const actions: IBlueprintActionManifest[] = []
+
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -139,7 +136,7 @@ export function CreatePartKam(
 		)
 	}
 
-	EvaluateCues(context, config, pieces, adLibPieces, partDefinition.cues, partDefinition, {})
+	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	if (pieces.length === 0) {
@@ -149,6 +146,7 @@ export function CreatePartKam(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }
