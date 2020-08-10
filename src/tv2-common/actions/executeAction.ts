@@ -591,17 +591,17 @@ function executeActionSelectDVE<
 					p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
 			)
 
-			if (!currentServer) {
+			if (!currentServer || !currentServer.piece.content?.timelineObjects) {
 				context.warning(`No server is playing, cannot start DVE`)
 				return
 			}
 
-			// Find placeholder CasparCG object
-			const casparObj = placeHolders.find(
+			// Find existing CasparCG object
+			const existingCasparObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 				obj => obj.layer === settings.LLayer.Caspar.ClipPending
 			) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
-			// Find placeholder sisyfos object
-			const sisyfosObj = placeHolders.find(
+			// Find existing sisyfos object
+			const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 				obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
 			) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
 			// Find SSRC object in DVE piece
@@ -612,11 +612,11 @@ function executeActionSelectDVE<
 				: -1
 
 			if (
-				!casparObj ||
-				!sisyfosObj ||
+				!existingCasparObj ||
+				!existingSisyfosObj ||
 				ssrcObjIndex === -1 ||
-				!casparObj.metaData ||
-				!casparObj.metaData.mediaPlayerSession
+				!existingCasparObj.metaData ||
+				!existingCasparObj.metaData.mediaPlayerSession
 			) {
 				context.error(`Failed to start DVE with server`)
 				return
@@ -628,17 +628,17 @@ function executeActionSelectDVE<
 
 			ssrcObj.metaData = {
 				...ssrcObj.metaData,
-				mediaPlayerSession: casparObj.metaData.mediaPlayerSession
+				mediaPlayerSession: existingCasparObj.metaData.mediaPlayerSession
 			}
 
 			dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
 			;(dvePiece.content.timelineObjects as TSR.TSRTimelineObj[]).push(
 				{
-					...casparObj,
+					...existingCasparObj,
 					id: ''
 				},
 				{
-					...sisyfosObj,
+					...existingSisyfosObj,
 					id: ''
 				}
 			)
@@ -647,7 +647,7 @@ function executeActionSelectDVE<
 				dvePiece.metaData = {}
 			}
 
-			dvePiece.metaData.mediaPlayerSessions = [casparObj.metaData.mediaPlayerSession]
+			dvePiece.metaData.mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 		}
 	}
 
