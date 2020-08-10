@@ -550,7 +550,7 @@ function executeActionSelectDVE<
 	start = start ? start : 0
 	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 
-	const dvePiece = literal<IBlueprintPiece>({
+	let dvePiece = literal<IBlueprintPiece>({
 		_id: '',
 		externalId,
 		name: `${parsedCue.template}`,
@@ -574,82 +574,7 @@ function executeActionSelectDVE<
 		tags: [GetTagForDVE(parsedCue), TallyTags.DVE_IS_LIVE]
 	})
 
-	// Check if DVE should continue server + copy server properties
-	if (dvePiece.content?.timelineObjects) {
-		const placeHolders = (dvePiece.content.timelineObjects as Array<
-			TSR.TSRTimelineObj & TimelineBlueprintExt
-		>).filter(obj => obj.classes?.includes(ControlClasses.DVEPlaceholder))
-
-		if (placeHolders.length) {
-			dvePiece.content.timelineObjects = (dvePiece.content.timelineObjects as Array<
-				TSR.TSRTimelineObj & TimelineBlueprintExt
-			>).filter(obj => !obj.classes?.includes(ControlClasses.DVEPlaceholder))
-
-			const currentPieces = context.getPieceInstances('current')
-			const currentServer = currentPieces.find(
-				p =>
-					p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
-			)
-
-			if (!currentServer || !currentServer.piece.content?.timelineObjects) {
-				context.warning(`No server is playing, cannot start DVE`)
-				return
-			}
-
-			// Find existing CasparCG object
-			const existingCasparObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-				obj => obj.layer === settings.LLayer.Caspar.ClipPending
-			) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
-			// Find existing sisyfos object
-			const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-				obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
-			) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
-			// Find SSRC object in DVE piece
-			const ssrcObjIndex = dvePiece.content?.timelineObjects
-				? (dvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
-						obj => obj.layer === settings.LLayer.Atem.SSrcDefault
-				  )
-				: -1
-
-			if (
-				!existingCasparObj ||
-				!existingSisyfosObj ||
-				ssrcObjIndex === -1 ||
-				!existingCasparObj.metaData ||
-				!existingCasparObj.metaData.mediaPlayerSession
-			) {
-				context.error(`Failed to start DVE with server`)
-				return
-			}
-
-			const ssrcObj = (dvePiece.content.timelineObjects as Array<TSR.TSRTimelineObj & TimelineBlueprintExt>)[
-				ssrcObjIndex
-			]
-
-			ssrcObj.metaData = {
-				...ssrcObj.metaData,
-				mediaPlayerSession: existingCasparObj.metaData.mediaPlayerSession
-			}
-
-			dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
-			;(dvePiece.content.timelineObjects as TSR.TSRTimelineObj[]).push(
-				{
-					...existingCasparObj,
-					id: ''
-				},
-				{
-					...existingSisyfosObj,
-					id: ''
-				}
-			)
-
-			if (!dvePiece.metaData) {
-				dvePiece.metaData = {}
-			}
-
-			dvePiece.metaData.mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
-		}
-	}
+	dvePiece = cutServerToBox(context, settings, dvePiece)
 
 	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
@@ -693,6 +618,94 @@ function executeActionSelectDVE<
 	])
 }
 
+function cutServerToBox<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	dvePiece: IBlueprintPiece
+): IBlueprintPiece {
+	// Check if DVE should continue server + copy server properties
+	if (dvePiece.content?.timelineObjects) {
+		const placeHolders = (dvePiece.content.timelineObjects as Array<
+			TSR.TSRTimelineObj & TimelineBlueprintExt
+		>).filter(obj => obj.classes?.includes(ControlClasses.DVEPlaceholder))
+
+		if (placeHolders.length) {
+			dvePiece.content.timelineObjects = (dvePiece.content.timelineObjects as Array<
+				TSR.TSRTimelineObj & TimelineBlueprintExt
+			>).filter(obj => !obj.classes?.includes(ControlClasses.DVEPlaceholder))
+
+			const currentPieces = context.getPieceInstances('current')
+			const currentServer = currentPieces.find(
+				p =>
+					p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
+			)
+
+			if (!currentServer || !currentServer.piece.content?.timelineObjects) {
+				context.warning(`No server is playing, cannot start DVE`)
+				return dvePiece
+			}
+
+			// Find existing CasparCG object
+			const existingCasparObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+				obj => obj.layer === settings.LLayer.Caspar.ClipPending
+			) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
+			// Find existing sisyfos object
+			const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+				obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
+			) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
+			// Find SSRC object in DVE piece
+			const ssrcObjIndex = dvePiece.content?.timelineObjects
+				? (dvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+						obj => obj.layer === settings.LLayer.Atem.SSrcDefault
+				  )
+				: -1
+
+			if (
+				!existingCasparObj ||
+				!existingSisyfosObj ||
+				ssrcObjIndex === -1 ||
+				!existingCasparObj.metaData ||
+				!existingCasparObj.metaData.mediaPlayerSession
+			) {
+				context.error(`Failed to start DVE with server`)
+				return dvePiece
+			}
+
+			const ssrcObj = (dvePiece.content.timelineObjects as Array<TSR.TSRTimelineObj & TimelineBlueprintExt>)[
+				ssrcObjIndex
+			]
+
+			ssrcObj.metaData = {
+				...ssrcObj.metaData,
+				mediaPlayerSession: existingCasparObj.metaData.mediaPlayerSession
+			}
+
+			dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
+			;(dvePiece.content.timelineObjects as TSR.TSRTimelineObj[]).push(
+				{
+					...existingCasparObj,
+					id: ''
+				},
+				{
+					...existingSisyfosObj,
+					id: ''
+				}
+			)
+
+			if (!dvePiece.metaData) {
+				dvePiece.metaData = {}
+			}
+
+			dvePiece.metaData.mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
+		}
+	}
+
+	return dvePiece
+}
+
 function executeActionSelectDVELayout<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -734,7 +747,7 @@ function executeActionSelectDVELayout<
 			return
 		}
 
-		const newDVEPiece = literal<IBlueprintPiece>({
+		let newDVEPiece = literal<IBlueprintPiece>({
 			_id: '',
 			externalId,
 			enable: {
@@ -750,6 +763,8 @@ function executeActionSelectDVELayout<
 			}),
 			content: content.content
 		})
+
+		newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
 
 		settings.postProcessPieceTimelineObjects(context, config, newDVEPiece, false)
 
@@ -772,7 +787,7 @@ function executeActionSelectDVELayout<
 	}
 
 	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
-	const dvePiece = {
+	let dvePiece: IBlueprintPiece = {
 		...nextDVE.piece,
 		content: pieceContent,
 		metaData: literal<PieceMetaData & DVEPieceMetaData>({
@@ -780,6 +795,8 @@ function executeActionSelectDVELayout<
 			config: userData.config
 		})
 	}
+
+	dvePiece = cutServerToBox(context, settings, dvePiece)
 
 	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
@@ -1073,7 +1090,8 @@ function executeActionCutSourceToBox<
 		newPieceContent.content.timelineObjects.push(...studioMics)
 	}
 
-	const newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
+	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
+	newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
 	settings.postProcessPieceTimelineObjects(context, config, newDVEPiece, false)
 
 	if (newPieceContent.valid) {
