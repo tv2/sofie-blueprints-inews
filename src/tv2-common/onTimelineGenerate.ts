@@ -324,9 +324,10 @@ export function getEndStateForPart(
 	const activePieces = _.filter(
 		resolvedPieces,
 		p =>
+			_.isNumber(p.piece.enable.start) &&
 			p.piece.enable &&
 			(p.piece.enable.start as number) <= time &&
-			(!p.piece.enable.end || (p.piece.enable.end as number) >= time)
+			(!p.piece.enable.duration || p.piece.enable.start + (p.piece.enable.duration as number) >= time)
 	)
 
 	_.each(activePieces, piece => {

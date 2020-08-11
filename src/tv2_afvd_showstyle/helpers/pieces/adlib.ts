@@ -1,4 +1,8 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
+import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	PieceLifespan
+} from 'tv-automation-sofie-blueprints-integration'
 import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
@@ -106,6 +110,7 @@ export function EvaluateAdLib(
 				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid,
+				lifespan: PieceLifespan.WithinPart,
 				metaData: literal<PieceMetaData & DVEPieceMetaData>({
 					stickySisyfosLevels: sticky,
 					sources: cueDVE.sources,

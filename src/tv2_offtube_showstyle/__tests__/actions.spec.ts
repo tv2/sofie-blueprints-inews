@@ -53,12 +53,11 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 		enable: {
 			start: 0
 		},
-		partId: CURRENT_PART_ID,
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: OfftubeSourceLayer.PgmCam,
 		outputLayerId: OfftubeOutputLayers.PGM,
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
@@ -88,12 +87,11 @@ const playingServerPieceInstance: IBlueprintPieceInstance = {
 		enable: {
 			start: 0
 		},
-		partId: CURRENT_PART_ID,
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'Playing Server',
 		sourceLayerId: OfftubeSourceLayer.PgmServer,
 		outputLayerId: OfftubeOutputLayers.PGM,
-		infiniteMode: PieceLifespan.OutOnNextPart
+		lifespan: PieceLifespan.WithinPart
 	})
 }
 
@@ -104,12 +102,11 @@ const selectedServerPieceInstance: IBlueprintPieceInstance = {
 		enable: {
 			start: 0
 		},
-		partId: CURRENT_PART_ID,
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'Selected Server',
 		sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
-		infiniteMode: PieceLifespan.OutOnNextSegment
+		lifespan: PieceLifespan.OutOnSegmentEnd
 	})
 }
 
@@ -365,7 +362,7 @@ describe('Select Server Action', () => {
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
 		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSourcePiecesExist(pieces)
-		expect(pieces.dataStore?.piece.infiniteMode).toEqual(PieceLifespan.OutOnNextSegment)
+		expect(pieces.dataStore?.piece.lifespan).toEqual(PieceLifespan.OutOnSegmentEnd)
 
 		validateNoWarningsOrErrors(context)
 	})

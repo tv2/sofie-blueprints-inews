@@ -65,7 +65,7 @@ export function EvaluateDVE(
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
-					infiniteMode: PieceLifespan.OutOnNextPart,
+					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
@@ -81,7 +81,6 @@ export function EvaluateDVE(
 			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 			pieces.push(
 				literal<IBlueprintPiece>({
-					_id: '',
 					externalId: partDefinition.externalId,
 					name: `DVE: ${parsedCue.template}`,
 					enable: {
@@ -90,7 +89,7 @@ export function EvaluateDVE(
 					},
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
-					infiniteMode: PieceLifespan.OutOnNextPart,
+					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,

@@ -48,13 +48,12 @@ export function CreatePartKam(
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partDefinition.externalId,
 				name: 'CS 3 (JINGLE)',
 				enable: { start: 0 },
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmJingle,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				content: {
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.JingleFill,
@@ -94,13 +93,12 @@ export function CreatePartKam(
 
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partDefinition.externalId,
 				name: part.title,
 				enable: { start: 0 },
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmCam,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 				content: {
 					studioLabel: '',

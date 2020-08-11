@@ -49,13 +49,12 @@ export function CreatePartServer(
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmServer,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [segmentExternalId]
 			}),

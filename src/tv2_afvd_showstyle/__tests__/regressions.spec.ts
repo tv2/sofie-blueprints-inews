@@ -5,6 +5,7 @@ import {
 	ExtendedIngestRundown,
 	IBlueprintPieceGeneric,
 	IBlueprintRundownDB,
+	PieceLifespan,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
@@ -95,7 +96,6 @@ describe('regressions-migrations', () => {
 					},
 					pieces: [
 						{
-							_id: '',
 							externalId: '',
 							enable: {
 								start: 0
@@ -103,6 +103,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({
@@ -146,6 +147,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({
@@ -186,7 +188,7 @@ describe('regressions-migrations', () => {
 			]
 		}
 
-		const ref = {
+		const ref: BlueprintResultSegment = {
 			segment: {
 				name: 'Regresstions Migrations Test 1'
 			},
@@ -198,7 +200,6 @@ describe('regressions-migrations', () => {
 					},
 					pieces: [
 						{
-							_id: '',
 							externalId: '',
 							enable: {
 								start: 0
@@ -206,6 +207,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({
@@ -249,6 +251,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({

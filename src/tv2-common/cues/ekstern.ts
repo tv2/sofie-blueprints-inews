@@ -83,6 +83,7 @@ export function EvaluateEksternBase<
 				outputLayerId: 'pgm',
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				toBeQueued: true,
+				lifespan: PieceLifespan.WithinPart,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
@@ -117,7 +118,6 @@ export function EvaluateEksternBase<
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: eksternProps[0],
 				enable: {
@@ -125,7 +125,7 @@ export function EvaluateEksternBase<
 				},
 				outputLayerId: 'pgm',
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				toBeQueued: true,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({

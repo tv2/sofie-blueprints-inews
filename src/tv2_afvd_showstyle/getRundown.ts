@@ -99,7 +99,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			sourceLayerId: SourceLayer.PgmCam,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: preview,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
 			content: {
@@ -175,7 +175,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			sourceLayerId: SourceLayer.PgmDelayed,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
 			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
 			content: {
@@ -249,7 +249,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			sourceLayerId: SourceLayer.PgmLive,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
 			metaData: GetEksternMetaData(
 				config.stickyLayers,
@@ -332,7 +332,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			sourceLayerId: SourceLayer.AuxStudioScreen,
 			outputLayerId: 'aux',
 			expectedDuration: 0,
-			infiniteMode: PieceLifespan.Infinite,
+			lifespan: PieceLifespan.OutOnRundownEnd,
 			metaData: GetEksternMetaData(
 				config.stickyLayers,
 				config.studio.StudioMics,
@@ -404,7 +404,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				sourceLayerId: SourceLayer.AuxStudioScreen,
 				outputLayerId: 'aux',
 				expectedDuration: 0,
-				infiniteMode: PieceLifespan.Infinite,
+				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -430,7 +430,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				sourceLayerId: SourceLayer.VizFullIn1,
 				outputLayerId: 'aux',
 				expectedDuration: 0,
-				infiniteMode: PieceLifespan.Infinite,
+				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -459,7 +459,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
 		expectedDuration: 1000,
-		infiniteMode: PieceLifespan.Normal,
+		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -487,7 +487,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
 		expectedDuration: 1000,
-		infiniteMode: PieceLifespan.Normal,
+		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -517,7 +517,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 		outputLayerId: 'sec',
 		expectedDuration: 2000,
-		infiniteMode: PieceLifespan.Normal,
+		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSEClearAllElements>({
@@ -543,7 +543,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		_rank: 500,
 		sourceLayerId: SourceLayer.PgmDSK,
 		outputLayerId: 'sec',
-		infiniteMode: PieceLifespan.Infinite,
+		lifespan: PieceLifespan.OutOnRundownEnd,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -570,7 +570,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		_rank: 600,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
-		infiniteMode: PieceLifespan.Infinite,
+		lifespan: PieceLifespan.OutOnRundownEnd,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
@@ -598,7 +598,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		_rank: 650,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
-		infiniteMode: PieceLifespan.Infinite,
+		lifespan: PieceLifespan.OutOnRundownEnd,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
@@ -626,7 +626,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		_rank: 700,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
-		infiniteMode: PieceLifespan.Normal,
+		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 1000,
 		content: {
@@ -654,7 +654,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			name: 'DVE Design SC',
 			outputLayerId: 'sec',
 			sourceLayerId: SourceLayer.PgmDesign,
-			infiniteMode: PieceLifespan.Infinite,
+			lifespan: PieceLifespan.OutOnRundownEnd,
 			content: literal<GraphicsContent>({
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
@@ -695,7 +695,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmAudioBed,
 		outputLayerId: 'musik',
 		expectedDuration: 1000,
-		infiniteMode: PieceLifespan.Normal,
+		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({

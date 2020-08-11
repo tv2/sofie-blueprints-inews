@@ -313,18 +313,17 @@ function executeActionSelectServerClip<
 					p =>
 						p.piece.sourceLayerId ===
 							(userData.vo ? settings.SelectedAdlibs!.SourceLayer.Server : settings.SelectedAdlibs!.SourceLayer.VO) &&
-						p.piece.infiniteMode === PieceLifespan.OutOnNextSegment
+						p.piece.lifespan === PieceLifespan.OutOnSegmentEnd
 				)
 		: undefined
 
 	const activeServerPiece = literal<IBlueprintPiece>({
-		_id: '',
 		externalId,
 		name: file,
 		enable: { start: 0 },
 		outputLayerId: settings.OutputLayer.PGM,
 		sourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
 		}),
@@ -391,7 +390,6 @@ function executeActionSelectServerClip<
 
 	const serverDataStore = settings.SelectedAdlibs
 		? literal<IBlueprintPiece>({
-				_id: '',
 				externalId,
 				name: file,
 				enable: {
@@ -401,7 +399,7 @@ function executeActionSelectServerClip<
 				sourceLayerId: userData.vo
 					? settings.SelectedAdlibs.SourceLayer.VO
 					: settings.SelectedAdlibs.SourceLayer.Server,
-				infiniteMode: PieceLifespan.OutOnNextSegment,
+				lifespan: PieceLifespan.OutOnSegmentEnd,
 				metaData: {
 					userData,
 					mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
@@ -466,14 +464,13 @@ function executeActionSelectServerClip<
 
 	const blockingPiece = conflictingPiece
 		? literal<IBlueprintPiece>({
-				_id: '',
 				externalId,
 				name: conflictingPiece.piece.name,
 				enable: {
 					start: 0,
-					end: 1
+					duration: 1
 				},
-				infiniteMode: PieceLifespan.Normal,
+				lifespan: PieceLifespan.WithinPart,
 				sourceLayerId: conflictingPiece.piece.sourceLayerId,
 				outputLayerId: conflictingPiece.piece.outputLayerId,
 				content: {}
@@ -551,7 +548,6 @@ function executeActionSelectDVE<
 	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 
 	let dvePiece = literal<IBlueprintPiece>({
-		_id: '',
 		externalId,
 		name: `${parsedCue.template}`,
 		enable: {
@@ -560,7 +556,7 @@ function executeActionSelectDVE<
 		},
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.DVE,
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
 		content: {
 			...pieceContent.content
@@ -580,7 +576,6 @@ function executeActionSelectDVE<
 
 	const dveDataStore = settings.SelectedAdlibs
 		? literal<IBlueprintPiece>({
-				_id: '',
 				externalId,
 				name: userData.config.template,
 				enable: {
@@ -588,7 +583,7 @@ function executeActionSelectDVE<
 				},
 				outputLayerId: settings.SelectedAdlibs?.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
-				infiniteMode: PieceLifespan.OutOnNextSegment,
+				lifespan: PieceLifespan.WithinPart,
 				metaData: {
 					userData
 				},
@@ -748,12 +743,11 @@ function executeActionSelectDVELayout<
 		}
 
 		let newDVEPiece = literal<IBlueprintPiece>({
-			_id: '',
 			externalId,
 			enable: {
 				start: 0
 			},
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			name: userData.config.DVEName,
 			sourceLayerId: settings.SourceLayers.DVEAdLib,
 			outputLayerId: settings.OutputLayer.PGM,
@@ -832,13 +826,12 @@ function executeActionCutToCamera<
 	const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${userData.name}`)
 
 	const kamPiece = literal<IBlueprintPiece>({
-		_id: '',
 		externalId,
 		name: part.title,
 		enable: { start: 0 },
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.Cam,
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 		tags: [GetTagForKam(userData.name)],
 		content: {
@@ -943,7 +936,6 @@ function executeActionCutToRemote<
 	]
 
 	const remotePiece = literal<IBlueprintPiece>({
-		_id: '',
 		externalId,
 		name: `Live ${userData.name}`,
 		enable: {
@@ -951,7 +943,7 @@ function executeActionCutToRemote<
 		},
 		sourceLayerId: settings.SourceLayers.Live,
 		outputLayerId: settings.OutputLayer.PGM,
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
 		metaData: GetEksternMetaData(
 			config.stickyLayers,
@@ -1161,7 +1153,6 @@ function executeActionTakeWithTransition<
 				context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 				const cutTransitionPiece: IBlueprintPiece = {
-					_id: '',
 					enable: {
 						start: 0
 					},
@@ -1169,6 +1160,7 @@ function executeActionTakeWithTransition<
 					name: 'CUT',
 					sourceLayerId: settings.SourceLayers.Effekt,
 					outputLayerId: settings.OutputLayer.EFFEKT,
+					lifespan: PieceLifespan.WithinPart,
 					tags: [GetTagForTransition(userData.variant)]
 				}
 
@@ -1211,7 +1203,6 @@ function executeActionTakeWithTransition<
 			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 			const mixTransitionPiece: IBlueprintPiece = {
-				_id: '',
 				enable: {
 					start: 0,
 					duration: Math.max(TimeFromFrames(userData.variant.frames), 1000)
@@ -1220,7 +1211,7 @@ function executeActionTakeWithTransition<
 				name: `MIX ${userData.variant.frames}`,
 				sourceLayerId: settings.SourceLayers.Effekt,
 				outputLayerId: settings.OutputLayer.EFFEKT,
-				infiniteMode: PieceLifespan.Normal,
+				lifespan: PieceLifespan.WithinPart,
 				tags: [GetTagForTransition(userData.variant)]
 			}
 

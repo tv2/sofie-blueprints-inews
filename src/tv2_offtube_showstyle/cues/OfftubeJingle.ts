@@ -73,20 +73,19 @@ export function OfftubeEvaluateJingle(
 			adlibPreroll: props.prerollDuration,
 			expectedDuration: props.expectedDuration,
 			adlibDisableOutTransition: false,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR] // TODO: Maybe this should be different?
 		})
 	)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: `${part.externalId}-JINGLE`,
 			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 			enable: {
 				start: 0
 			},
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: 'jingle',
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			content: createJingleContent(config, file, jingle.LoadFirstFrame)

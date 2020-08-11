@@ -59,13 +59,12 @@ export function OfftubeCreatePartVO(
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [`adlib_server_${file}`]
 			}),

@@ -61,7 +61,6 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 		},
 		pieces: [
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: `${ingestSegment.externalId}-CONTINUITY`,
 				enable: {
 					start: 0
@@ -69,7 +68,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				name: 'CONTINUITY',
 				sourceLayerId: SourceLayer.PgmContinuity,
 				outputLayerId: 'pgm',
-				infiniteMode: PieceLifespan.OutOnNextSegment,
+				lifespan: PieceLifespan.OutOnSegmentEnd,
 				content: literal<CameraContent>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,

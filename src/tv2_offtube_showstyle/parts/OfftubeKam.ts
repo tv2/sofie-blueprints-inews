@@ -48,13 +48,12 @@ export function OfftubeCreatePartKam(
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partDefinition.externalId,
 				name: 'CS 3 (JINGLE)',
 				enable: { start: 0 },
 				outputLayerId: 'pgm',
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				content: {
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.DSK1F,
@@ -93,13 +92,12 @@ export function OfftubeCreatePartKam(
 
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partDefinition.externalId,
 				name: part.title,
 				enable: { start: 0 },
 				outputLayerId: 'pgm',
 				sourceLayerId: OfftubeSourceLayer.PgmCam,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 				content: {
 					studioLabel: '',

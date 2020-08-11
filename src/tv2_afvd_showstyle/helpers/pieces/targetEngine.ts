@@ -55,7 +55,6 @@ export function EvaluateTargetEngine(
 		} else {
 			pieces.push(
 				literal<IBlueprintPiece>({
-					_id: '',
 					externalId: partId,
 					enable: {
 						start: time
@@ -63,7 +62,7 @@ export function EvaluateTargetEngine(
 					name: parsedCue.content.INP1 || '',
 					outputLayerId: 'aux',
 					sourceLayerId: SourceLayer.VizFullIn1,
-					infiniteMode: PieceLifespan.Infinite,
+					lifespan: PieceLifespan.WithinPart,
 					content: literal<CameraContent>({
 						studioLabel: '',
 						switcherInput: sourceInfo.port,

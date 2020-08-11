@@ -13,7 +13,7 @@ import {
 	GetDefaultOut,
 	GetSisyfosTimelineObjForCamera,
 	GraphicLLayer,
-	InfiniteMode,
+	LifeSpan,
 	literal,
 	PartContext2,
 	SourceInfo
@@ -63,7 +63,6 @@ export function EvaluateMOSViz(
 		}
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: grafikName(config, parsedCue),
 				...(isTlf || isGrafikPart
@@ -76,7 +75,7 @@ export function EvaluateMOSViz(
 				outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 				sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 				adlibPreroll: config.studio.PilotPrerollDuration,
-				infiniteMode: GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart),
+				lifespan: GetLifespan(engine, parsedCue, isTlf, isGrafikPart),
 				content: GetMosObjContent(context, engine, config, parsedCue, partId, isOverlay, false, isTlf)
 			})
 		)
@@ -96,16 +95,16 @@ function makeMosAdlib(
 	overrideOverlay?: boolean
 ): IBlueprintAdLibPiece {
 	const duration = CreateTimingGrafik(config, parsedCue).duration || !isGrafikPart ? GetDefaultOut(config) : undefined
-	const infiniteMode = GetInfiniteMode(engine, parsedCue, isTlf, isGrafikPart)
+	const lifespan = GetLifespan(engine, parsedCue, isTlf, isGrafikPart)
 	return {
 		_rank: rank || 0,
 		externalId: partId,
 		name: grafikName(config, parsedCue),
 		expectedDuration:
-			!(parsedCue.end && parsedCue.end.infiniteMode) && infiniteMode === PieceLifespan.Normal && duration
+			!(parsedCue.end && parsedCue.end.infiniteMode) && lifespan === PieceLifespan.WithinPart && duration
 				? duration
 				: undefined,
-		infiniteMode,
+		lifespan,
 		sourceLayerId: GetSourceLayer(engine, isTlf, overrideOverlay || isOverlay),
 		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 		adlibPreroll: config.studio.PilotPrerollDuration,
@@ -140,19 +139,19 @@ function GetSourceLayer(engine: GraphicEngine, isTlf?: boolean, isOverlay?: bool
 		: SourceLayer.PgmPilot
 }
 
-function GetInfiniteMode(
+function GetLifespan(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionMOS,
 	isTlf?: boolean,
 	isGrafikPart?: boolean
 ): PieceLifespan {
 	return engine === 'WALL'
-		? PieceLifespan.Infinite
+		? PieceLifespan.OutOnRundownEnd
 		: isTlf || isGrafikPart
-		? PieceLifespan.OutOnNextPart
+		? PieceLifespan.WithinPart
 		: parsedCue.end && parsedCue.end.infiniteMode
-		? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
-		: PieceLifespan.Normal
+		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
+		: PieceLifespan.WithinPart
 }
 
 function GetMosObjContent(
