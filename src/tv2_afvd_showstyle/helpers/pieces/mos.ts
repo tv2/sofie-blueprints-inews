@@ -167,7 +167,7 @@ function GetMosObjContent(
 	adlibrank?: number
 ): GraphicsContent {
 	return literal<GraphicsContent>({
-		fileName: parsedCue.name,
+		fileName: 'PILOT_' + parsedCue.vcpid.toString(),
 		path: parsedCue.vcpid.toString(),
 		timelineObjects: [
 			literal<TSR.TimelineObjVIZMSEElementPilot>({

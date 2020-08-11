@@ -96,6 +96,7 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
+					ignoreMediaObjectStatus: true,
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
@@ -163,6 +164,7 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
+					ignoreMediaObjectStatus: true,
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
@@ -235,6 +237,7 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
+					ignoreMediaObjectStatus: true,
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
@@ -309,6 +312,7 @@ describe('grafik piece', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
+					ignoreMediaObjectStatus: true,
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',

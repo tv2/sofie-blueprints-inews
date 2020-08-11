@@ -106,6 +106,7 @@ describe('telefon', () => {
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
+					ignoreMediaObjectStatus: true,
 					timelineObjects: [
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',

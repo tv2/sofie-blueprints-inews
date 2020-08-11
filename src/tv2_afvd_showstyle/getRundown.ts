@@ -657,6 +657,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			content: literal<GraphicsContent>({
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
+				ignoreMediaObjectStatus: true,
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
