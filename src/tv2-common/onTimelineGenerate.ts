@@ -405,7 +405,7 @@ function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosChannel & TimelineOb
 }
 
 export function copyPreviousSisyfosLevels(
-	context: RundownContext,
+	_context: RundownContext,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousLevels: PartEndStateExt['stickySisyfosLevels'],
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
@@ -456,7 +456,7 @@ export function copyPreviousSisyfosLevels(
 						// 	`New level from ${piece._id} for ${id} of ${JSON.stringify(val)} (last was ${previousLevels[id]})`
 						// )
 						if (newPreviousLevels[id]) {
-							context.warning('duplicate level, going with the first!')
+							// context.warning('duplicate level, going with the first!')
 						} else {
 							if (val.followsPrevious && previousLevels[id] !== undefined) {
 								newPreviousLevels[id] = previousLevels[id]
