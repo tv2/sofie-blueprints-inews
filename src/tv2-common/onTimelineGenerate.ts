@@ -321,26 +321,25 @@ export function getEndStateForPart(
 
 	const previousPartEndState2 = previousPartEndState as Partial<PartEndStateExt> | undefined
 
-	const activePieces = _.filter(
-		resolvedPieces,
+	const activePieces = resolvedPieces.filter(
 		p =>
 			p.piece.enable &&
 			(p.piece.enable.start as number) <= time &&
 			(!p.piece.enable.end || (p.piece.enable.end as number) >= time)
 	)
 
-	_.each(activePieces, piece => {
+	for (const piece of activePieces) {
 		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
-	})
+	}
 
-	_.each(activePieces, piece => {
+	for (const piece of activePieces) {
 		if (piece.piece.metaData) {
 			const meta = (piece.piece.metaData as PieceMetaData).mediaPlayerSessions
 			if (meta && meta.length) {
 				endState.mediaPlayerSessions[piece.piece.sourceLayerId] = meta
 			}
 		}
-	})
+	}
 
 	return endState
 }
@@ -352,7 +351,7 @@ export function getEndStateForPart(
  */
 function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 	// DVE_box lookahead class
-	_.each(timeline, obj => {
+	for (const obj of timeline) {
 		const obj2 = obj as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
 		if (
 			obj2.isLookahead &&
@@ -367,7 +366,7 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 				obj2.enable = { while: origClass }
 			}
 		}
-	})
+	}
 }
 
 export function preservePieceSisfosLevel(
@@ -404,7 +403,7 @@ function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosChannel & TimelineOb
 }
 
 export function copyPreviousSisyfosLevels(
-	context: RundownContext,
+	_context: RundownContext,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousLevels: PartEndStateExt['stickySisyfosLevels'],
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
@@ -416,13 +415,12 @@ export function copyPreviousSisyfosLevels(
 
 	// Pieces should be ordered, we shall assume that
 	const groupedPieces = _.groupBy(resolvedPieces, p => p.piece.enable.start)
-	_.each(groupedPieces, pieces => {
+	const sisyfosObjectsByPiece = _.groupBy(sisyfosObjs, o => o.pieceInstanceId)
+	for (const k of Object.keys(groupedPieces)) {
+		const pieces = groupedPieces[k]
 		const pieceIds = _.pluck(pieces, '_id') // getPieceGroupId(p._id))
 		// Find all the objs that start here
-		const objs = sisyfosObjs.filter(o => {
-			const groupId = o.pieceInstanceId
-			return groupId && pieceIds.indexOf(groupId) !== -1
-		})
+		const objs = _.flatten(Object.values(_.pick(sisyfosObjectsByPiece, pieceIds)))
 		// Stop if no objects
 		if (objs.length === 0 || !pieces[0].piece.enable) {
 			return
@@ -434,7 +432,7 @@ export function copyPreviousSisyfosLevels(
 		// Start of part
 		if (time !== 0) {
 			// Calculate the previous 'state'
-			const activePieces = _.filter(resolvedPieces, p => {
+			const activePieces = resolvedPieces.filter(p => {
 				if (!p.piece.enable) {
 					return false
 				}
@@ -447,37 +445,37 @@ export function copyPreviousSisyfosLevels(
 			})
 
 			const newPreviousLevels: PartEndStateExt['stickySisyfosLevels'] = {}
-			_.each(activePieces, piece => {
+			for (const piece of activePieces) {
 				const metadata = piece.piece.metaData as PieceMetaData | undefined
 				if (metadata && metadata.stickySisyfosLevels) {
-					_.each(metadata.stickySisyfosLevels, (val, id) => {
+					for (const id of Object.keys(metadata.stickySisyfosLevels)) {
 						// context.warning(
 						// 	`New level from ${piece._id} for ${id} of ${JSON.stringify(val)} (last was ${previousLevels[id]})`
 						// )
 						if (newPreviousLevels[id]) {
-							context.warning('duplicate level, going with the first!')
+							// context.warning('duplicate level, going with the first!' + id)
 						} else {
-							if (val.followsPrevious && previousLevels[id] !== undefined) {
-								newPreviousLevels[id] = previousLevels[id]
-							} else {
-								newPreviousLevels[id] = val.value as 0 | 1 | 2 | undefined
-							}
+							const val = metadata.stickySisyfosLevels[id]
+							newPreviousLevels[id] =
+								val.followsPrevious && previousLevels[id] !== undefined
+									? previousLevels[id]
+									: (val.value as 0 | 1 | 2 | undefined)
 						}
-					})
+					}
 				}
-			})
+			}
 
 			// Apply newly calculated levels
 			previousLevels = newPreviousLevels
 		}
 
 		// Apply newly calculated levels
-		_.each(objs, sisyfosObj => {
+		for (const sisyfosObj of objs) {
 			const contentObj = sisyfosObj.content
 			const previousVal = previousLevels[sisyfosObj.layer + '']
 			if (contentObj && previousVal !== undefined && sisyfosObj.metaData && sisyfosObj.metaData.sisyfosPersistLevel) {
 				contentObj.isPgm = previousVal
 			}
-		})
-	})
+		}
+	}
 }
