@@ -59,6 +59,7 @@ import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
 import {
 	GetTagForDVE,
+	GetTagForDVENext,
 	GetTagForJingle,
 	GetTagForJingleNext,
 	GetTagForKam,
@@ -418,6 +419,7 @@ function executeActionSelectServerClip<
 					userData,
 					mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
 				},
+				tags: [GetTagForServerNext(file, userData.vo)],
 				content: {
 					timelineObjects:
 						lookaheadObj && mediaObj
@@ -604,6 +606,7 @@ function executeActionSelectDVE<
 				metaData: {
 					userData
 				},
+				tags: [GetTagForDVENext(parsedCue)],
 				content: {
 					...pieceContent.content,
 					timelineObjects: []
@@ -863,7 +866,8 @@ function executeActionSelectJingle<
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		outputLayerId: 'jingle',
 		sourceLayerId: settings.SourceLayers.Effekt,
-		content: pieceContent
+		content: pieceContent,
+		tags: [GetTagForJingle(userData.clip), GetTagForJingleNext(userData.clip), TallyTags.JINGLE_IS_LIVE]
 	})
 
 	const jingleDataStore = settings.SelectedAdlibs
@@ -884,7 +888,7 @@ function executeActionSelectJingle<
 					...pieceContent,
 					timelineObjects: []
 				},
-				tags: [GetTagForJingle(userData.clip), GetTagForJingleNext(userData.clip), TallyTags.JINGLE_IS_LIVE]
+				tags: [GetTagForJingleNext(userData.clip)]
 		  })
 		: undefined
 

@@ -23,7 +23,7 @@ import {
 	PartToParentClass,
 	TranslateEngine
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -334,7 +334,7 @@ export function CreateFullPiece(
 		outputLayerId: OfftubeOutputLayers.PGM,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		content: CreateFullContent(config, template),
-		tags: [GetTagForFull(template), GetTagForFullNext(template)]
+		tags: [GetTagForFull(template), GetTagForFullNext(template), TallyTags.FULL_IS_LIVE]
 	})
 }
 
