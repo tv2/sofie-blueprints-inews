@@ -63,11 +63,8 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
 	if (engine === 'FULL') {
-		const adLibPiece = CreateFullAdLib(
-			config,
-			partDefinition.externalId,
-			GetFullGrafikTemplateNameFromCue(config, parsedCue)
-		)
+		const grafikTemplateName = GetFullGrafikTemplateNameFromCue(config, parsedCue)
+		const adLibPiece = CreateFullAdLib(config, partDefinition.externalId, grafikTemplateName)
 
 		actions.push(
 			literal<IBlueprintActionManifest>({
@@ -82,7 +79,9 @@ export function OfftubeEvaluateGrafikCaspar(
 					sourceLayerId: OfftubeSourceLayer.PgmFull,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
-					tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER]
+					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
+					onAirTags: [GetTagForFull(grafikTemplateName)],
+					setNextTags: [GetTagForFullNext(grafikTemplateName)]
 				}
 			})
 		)
