@@ -24,7 +24,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, TallyTags } from 'tv2-constants'
+import { ControlClasses } from 'tv2-constants'
 import { PartContext2 } from '../partContext2'
 import { GetTagForLive } from '../pieces'
 
