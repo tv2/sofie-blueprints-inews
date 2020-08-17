@@ -59,14 +59,14 @@ export function onTimelineGenerate<
 	context: PartEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
-	_previousPartEndState: PartEndState | undefined,
+	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	parseConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
 	_casparLayerClipPending: string,
 	_atemLayerNext: string
 ): Promise<BlueprintResultTimeline> {
-	// const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
+	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	// const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
 
 	const config = parseConfig(context)
@@ -277,12 +277,12 @@ export function onTimelineGenerate<
 		}
 	})*/
 
-	// copyPreviousSisyfosLevels(
-	// 	context,
-	// 	timeline,
-	// 	previousPartEndState2 ? previousPartEndState2.stickySisyfosLevels : {},
-	// 	resolvedPieces
-	// )
+	copyPreviousSisyfosLevels(
+		context,
+		timeline,
+		previousPartEndState2 ? previousPartEndState2.stickySisyfosLevels : {},
+		resolvedPieces
+	)
 
 	const persistentState: TimelinePersistentStateExt = {
 		activeMediaPlayers: {},
