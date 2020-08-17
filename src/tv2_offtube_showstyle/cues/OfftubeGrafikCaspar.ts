@@ -333,7 +333,8 @@ export function CreateFullPiece(
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
 		infiniteMode: PieceLifespan.OutOnNextPart,
-		content: CreateFullContent(config, template)
+		content: CreateFullContent(config, template),
+		tags: [GetTagForFull(template), GetTagForFullNext(template)]
 	})
 }
 

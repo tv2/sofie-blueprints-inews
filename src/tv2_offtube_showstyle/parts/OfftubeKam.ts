@@ -18,12 +18,14 @@ import {
 	GetCameraMetaData,
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
+	GetTagForKam,
 	literal,
 	PartContext2,
 	PartDefinitionKam,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
@@ -55,6 +57,7 @@ export function OfftubeCreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				infiniteMode: PieceLifespan.OutOnNextPart,
+				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
 				content: {
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.DSK1F,
@@ -101,6 +104,7 @@ export function OfftubeCreatePartKam(
 				sourceLayerId: OfftubeSourceLayer.PgmCam,
 				infiniteMode: PieceLifespan.OutOnNextPart,
 				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+				tags: [GetTagForKam(sourceInfoCam.id)],
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,

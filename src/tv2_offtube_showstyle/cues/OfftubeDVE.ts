@@ -13,13 +13,14 @@ import {
 	DVEPieceMetaData,
 	GetDVETemplate,
 	GetTagForDVE,
+	GetTagForDVENext,
 	literal,
 	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -96,7 +97,8 @@ export function OfftubeEvaluateDVE(
 					mediaPlayerSessions: [partDefinition.segmentExternalId],
 					sources: parsedCue.sources,
 					config: rawTemplate
-				})
+				}),
+				tags: [GetTagForDVE(parsedCue), GetTagForDVENext(parsedCue), TallyTags.DVE_IS_LIVE]
 			})
 		)
 
