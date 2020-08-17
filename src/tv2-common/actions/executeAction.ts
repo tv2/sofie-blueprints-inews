@@ -885,6 +885,8 @@ function executeActionSelectJingle<
 		  })
 		: undefined
 
+	settings.postProcessPieceTimelineObjects(context, config, piece, false)
+
 	const part = literal<IBlueprintPart>({
 		externalId,
 		title: `JINGLE ${userData.clip}`,
@@ -1005,6 +1007,8 @@ function executeActionCutToCamera<
 		}
 	})
 
+	settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
+
 	if (userData.queue) {
 		context.queuePart(part, [
 			kamPiece,
@@ -1121,6 +1125,8 @@ function executeActionCutToRemote<
 			])
 		}
 	})
+
+	settings.postProcessPieceTimelineObjects(context, config, remotePiece, false)
 
 	context.queuePart(part, [
 		remotePiece,
