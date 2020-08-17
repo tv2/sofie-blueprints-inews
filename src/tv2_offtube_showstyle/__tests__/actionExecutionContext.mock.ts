@@ -236,7 +236,7 @@ export class MockContext implements ActionExecutionContext {
 
 		this.nextPart = instance
 		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance>(p => ({
-			_id: '',
+			_id: (Date.now() * Math.random()).toString(),
 			piece: {
 				...p,
 				partId: ''

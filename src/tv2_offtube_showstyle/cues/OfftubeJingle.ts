@@ -1,33 +1,35 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectJingle,
 	CreateJingleContentBase,
 	CueDefinitionJingle,
 	GetJinglePartProperties,
+	GetTagForJingle,
+	GetTagForJingleNext,
 	literal,
 	PartContext2,
 	PartDefinition
 } from 'tv2-common'
-import { AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
-import { OfftubeSourceLayer } from '../layers'
+import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	_actions: IBlueprintActionManifest[],
+	_adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
 	_adlib?: boolean,
-	rank?: number,
+	_rank?: number,
 	effekt?: boolean
 ) {
 	if (!config.showStyle.BreakerConfig) {
@@ -54,27 +56,23 @@ export function OfftubeEvaluateJingle(
 		return
 	}
 
-	const props = p as Pick<
-		IBlueprintPart,
-		'autoNext' | 'expectedDuration' | 'prerollDuration' | 'autoNextOverlap' | 'disableOutTransition'
-	>
-
-	adlibPieces.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: rank ?? 0,
-			externalId: `${part.externalId}-JINGLE-adlib`,
-			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
-			sourceLayerId: OfftubeSourceLayer.PgmJingle,
-			outputLayerId: 'jingle',
-			content: createJingleContent(config, file, jingle.LoadFirstFrame),
-			toBeQueued: true,
-			adlibAutoNext: props.autoNext,
-			adlibAutoNextOverlap: props.autoNextOverlap,
-			adlibPreroll: props.prerollDuration,
-			expectedDuration: props.expectedDuration,
-			adlibDisableOutTransition: false,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR] // TODO: Maybe this should be different?
+	actions.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.SELECT_JINGLE,
+			userData: literal<ActionSelectJingle>({
+				type: AdlibActionType.SELECT_JINGLE,
+				clip: parsedCue.clip
+			}),
+			userDataManifest: {},
+			display: {
+				label: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
+				sourceLayerId: OfftubeSourceLayer.PgmJingle,
+				outputLayerId: OfftubeOutputLayers.JINGLE,
+				content: { ...createJingleContentOfftube(config, file, jingle.LoadFirstFrame), timelineObjects: [] },
+				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
+				onAirTags: [GetTagForJingle(parsedCue.clip)],
+				setNextTags: [GetTagForJingleNext(parsedCue.clip)]
+			}
 		})
 	)
 
@@ -89,12 +87,16 @@ export function OfftubeEvaluateJingle(
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			outputLayerId: 'jingle',
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
-			content: createJingleContent(config, file, jingle.LoadFirstFrame)
+			content: createJingleContentOfftube(config, file, jingle.LoadFirstFrame)
 		})
 	)
 }
 
-function createJingleContent(config: OfftubeShowstyleBlueprintConfig, file: string, loadFirstFrame: boolean) {
+export function createJingleContentOfftube(
+	config: OfftubeShowstyleBlueprintConfig,
+	file: string,
+	loadFirstFrame: boolean
+) {
 	return CreateJingleContentBase(
 		config,
 		file,

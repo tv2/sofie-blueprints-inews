@@ -18,6 +18,7 @@ import { TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
+import { createJingleContentOfftube } from './cues/OfftubeJingle'
 import { parseConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
@@ -27,7 +28,8 @@ const SELECTED_ADLIB_LAYERS = [
 	OfftubeSourceLayer.SelectedAdLibDVE,
 	OfftubeSourceLayer.SelectedAdLibServer,
 	OfftubeSourceLayer.SelectedAdLibVoiceOver,
-	OfftubeSourceLayer.SelectedAdlibGraphicsFull
+	OfftubeSourceLayer.SelectedAdlibGraphicsFull,
+	OfftubeSourceLayer.SelectedAdlibJingle
 ]
 
 export function executeActionOfftube(
@@ -77,7 +79,8 @@ export function executeActionOfftube(
 					Server: OfftubeSourceLayer.SelectedAdLibServer,
 					VO: OfftubeSourceLayer.SelectedAdLibVoiceOver,
 					DVE: OfftubeSourceLayer.SelectedAdLibDVE,
-					GFXFull: OfftubeSourceLayer.SelectedAdlibGraphicsFull
+					GFXFull: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
+					Effekt: OfftubeSourceLayer.SelectedAdlibJingle
 				},
 				OutputLayer: { SelectedAdLib: OfftubeOutputLayers.SELECTED_ADLIB },
 				SELECTED_ADLIB_LAYERS
@@ -87,7 +90,8 @@ export function executeActionOfftube(
 				OfftubeSisyfosLLayer.SisyfosSourceServerA,
 				OfftubeSisyfosLLayer.SisyfosSourceServerB
 			],
-			executeActionSelectFull
+			executeActionSelectFull,
+			createJingleContent: createJingleContentOfftube
 		},
 		actionId,
 		userData

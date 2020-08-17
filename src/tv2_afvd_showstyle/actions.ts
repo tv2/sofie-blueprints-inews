@@ -12,6 +12,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/laye
 import { parseConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
+import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -58,7 +59,8 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				SisyfosLLAyer.SisyfosSourceServerA,
 				SisyfosLLAyer.SisyfosSourceServerB
 			],
-			executeActionClearGraphics
+			executeActionClearGraphics,
+			createJingleContent: createJingleContentAFVD
 		},
 		actionId,
 		userData

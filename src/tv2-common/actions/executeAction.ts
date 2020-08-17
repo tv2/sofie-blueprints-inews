@@ -12,7 +12,8 @@ import {
 	PieceMetaData,
 	ShowStyleContext,
 	SourceLayerType,
-	TSR
+	TSR,
+	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionClearGraphics,
@@ -54,6 +55,7 @@ import {
 import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { TimeFromFrames } from '../frameTime'
+import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
 import {
 	GetTagForDVE,
@@ -64,7 +66,7 @@ import {
 	GetTagForTransition
 } from '../pieces'
 import { assertUnreachable } from '../util'
-import { ActionTakeWithTransition } from './actionTypes'
+import { ActionCommentatorSelectJingle, ActionSelectJingle, ActionTakeWithTransition } from './actionTypes'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -125,6 +127,7 @@ export interface ActionExecutionSettings<
 			VO: string
 			DVE: string
 			GFXFull: string
+			Effekt: string
 		}
 		OutputLayer: {
 			SelectedAdLib: string
@@ -142,6 +145,7 @@ export interface ActionExecutionSettings<
 		actionId: string,
 		userData: ActionClearGraphics
 	) => void
+	createJingleContent?: (config: ShowStyleConfig, file: string, loadFirstFrame: boolean) => VTContent
 }
 
 export function executeAction<
@@ -172,6 +176,9 @@ export function executeAction<
 				settings.executeActionSelectFull(context, actionId, userData as ActionSelectFullGrafik)
 			}
 			break
+		case AdlibActionType.SELECT_JINGLE:
+			executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
+			break
 		case AdlibActionType.CLEAR_GRAPHICS:
 			if (settings.executeActionClearGraphics) {
 				settings.executeActionClearGraphics(context, actionId, userData as ActionClearGraphics)
@@ -194,6 +201,9 @@ export function executeAction<
 			break
 		case AdlibActionType.COMMENTATOR_SELECT_FULL:
 			executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
+			break
+		case AdlibActionType.COMMENTATOR_SELECT_JINGLE:
+			executeActionCommentatorSelectJingle(context, settings, actionId, userData as ActionCommentatorSelectJingle)
 			break
 		case AdlibActionType.TAKE_WITH_TRANSITION:
 			executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
@@ -803,6 +813,96 @@ function executeActionSelectDVELayout<
 	context.updatePieceInstance(nextDVE._id, dvePiece)
 }
 
+function executeActionSelectJingle<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	userData: ActionSelectJingle
+) {
+	if (!settings.createJingleContent) {
+		return
+	}
+
+	let file = ''
+
+	const config = settings.parseConfig(context)
+
+	if (!config.showStyle.BreakerConfig) {
+		context.warning(`Jingles have not been configured`)
+		return
+	}
+
+	const externalId = generateExternalId(context, actionId, [userData.clip])
+
+	const jingle = config.showStyle.BreakerConfig.find(brkr =>
+		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === userData.clip.toUpperCase() : false
+	)
+	if (!jingle) {
+		context.warning(`Jingle ${userData.clip} is not configured`)
+		return
+	} else {
+		file = jingle.ClipName.toString()
+	}
+
+	const props = GetJinglePartPropertiesFromTableValue(config, jingle)
+
+	const pieceContent = settings.createJingleContent(config, file, jingle.LoadFirstFrame)
+
+	const piece = literal<IBlueprintPiece>({
+		_id: '',
+		externalId: `${externalId}-JINGLE`,
+		name: userData.clip,
+		enable: {
+			start: 0
+		},
+		infiniteMode: PieceLifespan.OutOnNextPart,
+		outputLayerId: 'jingle',
+		sourceLayerId: settings.SourceLayers.Effekt,
+		content: pieceContent
+	})
+
+	const jingleDataStore = settings.SelectedAdlibs
+		? literal<IBlueprintPiece>({
+				_id: '',
+				externalId,
+				name: userData.clip,
+				enable: {
+					start: 0
+				},
+				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
+				sourceLayerId: settings.SelectedAdlibs.SourceLayer.Effekt,
+				infiniteMode: PieceLifespan.OutOnNextSegment,
+				metaData: {
+					userData
+				},
+				content: {
+					...pieceContent,
+					timelineObjects: []
+				}
+		  })
+		: undefined
+
+	const part = literal<IBlueprintPart>({
+		externalId,
+		title: `JINGLE ${userData.clip}`,
+		metaData: {},
+		...props
+	})
+
+	context.queuePart(part, [
+		piece,
+		...(jingleDataStore ? [jingleDataStore] : []),
+		...(settings.SelectedAdlibs
+			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
+					settings.SelectedAdlibs.SourceLayer.Effekt
+			  ])
+			: [])
+	])
+}
+
 function executeActionCutToCamera<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -1118,13 +1218,18 @@ function executeActionTakeWithTransition<
 			settings.SourceLayers.DVEAdLib,
 			settings.SourceLayers.Live,
 			settings.SourceLayers.Server,
-			settings.SourceLayers.VO
+			settings.SourceLayers.VO,
+			settings.SourceLayers.Effekt
 		].includes(p.piece.sourceLayerId)
 	)
 
 	context.takeAfterExecuteAction(userData.takeNow)
 
-	if (!primaryPiece || !primaryPiece.piece.content) {
+	if (
+		!primaryPiece ||
+		!primaryPiece.piece.content ||
+		primaryPiece.piece.sourceLayerId === settings.SourceLayers.Effekt
+	) {
 		return
 	}
 
@@ -1378,4 +1483,26 @@ function executeActionCommentatorSelectFull<
 	}
 
 	settings.executeActionSelectFull(context, AdlibActionType.SELECT_FULL_GRAFIK, data)
+}
+
+function executeActionCommentatorSelectJingle<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	_actionId: string,
+	_userData: ActionCommentatorSelectJingle
+) {
+	if (!settings.SelectedAdlibs || !settings.executeActionSelectFull) {
+		return
+	}
+
+	const data = findDataStore<ActionSelectJingle>(context, [settings.SelectedAdlibs.SourceLayer.Effekt])
+
+	if (!data) {
+		return
+	}
+
+	executeActionSelectJingle(context, settings, AdlibActionType.SELECT_JINGLE, data)
 }

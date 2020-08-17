@@ -49,3 +49,11 @@ export function GetTagForFull(graphic: string) {
 export function GetTagForFullNext(graphic: string) {
 	return `${GetTagForFull(graphic)}_NEXT`
 }
+
+export function GetTagForJingle(clip: string) {
+	return `${TallyTags.JINGLE}${clip.replace(/\W/g, '_')}`
+}
+
+export function GetTagForJingleNext(clip: string) {
+	return `${GetTagForJingle(clip)}_NEXT`
+}

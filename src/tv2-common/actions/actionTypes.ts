@@ -31,6 +31,11 @@ export interface ActionSelectDVELayout extends ActionBase {
 	config: DVEConfigInput
 }
 
+export interface ActionSelectJingle extends ActionBase {
+	type: AdlibActionType.SELECT_JINGLE
+	clip: string
+}
+
 export interface ActionCutToCamera extends ActionBase {
 	type: AdlibActionType.CUT_TO_CAMERA
 	queue: boolean
@@ -63,6 +68,10 @@ export interface ActionCommentatorSelectDVE extends ActionBase {
 
 export interface ActionCommentatorSelectFull extends ActionBase {
 	type: AdlibActionType.COMMENTATOR_SELECT_FULL
+}
+
+export interface ActionCommentatorSelectJingle extends ActionBase {
+	type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
 }
 
 export interface ActionClearGraphics extends ActionBase {
@@ -104,10 +113,12 @@ export type TV2AdlibAction =
 	| ActionSelectDVE
 	| ActionSelectDVELayout
 	| ActionSelectFullGrafik
+	| ActionSelectJingle
 	| ActionCutToCamera
 	| ActionCutToRemote
 	| ActionCommentatorSelectServer
 	| ActionCommentatorSelectDVE
 	| ActionCommentatorSelectFull
+	| ActionCommentatorSelectJingle
 	| ActionClearGraphics
 	| ActionTakeWithTransition

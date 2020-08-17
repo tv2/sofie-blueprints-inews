@@ -558,6 +558,25 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: true
+	},
+	{
+		_id: OfftubeSourceLayer.SelectedAdlibJingle,
+		_rank: 0,
+		name: 'Jingle',
+		abbreviation: 'Jingle',
+		type: SourceLayerType.TRANSITION,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: true,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: true
 	}
 ]
 

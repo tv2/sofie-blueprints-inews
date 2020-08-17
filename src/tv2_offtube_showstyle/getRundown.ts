@@ -15,6 +15,7 @@ import {
 import {
 	ActionCommentatorSelectDVE,
 	ActionCommentatorSelectFull,
+	ActionCommentatorSelectJingle,
 	ActionCommentatorSelectServer,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
@@ -179,23 +180,6 @@ function getGlobalAdLibPiecesOfftube(
 		})
 		return res
 	}
-
-	// TODO: Future
-	/*adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToJingle',
-			name: 'Set Jingle Next',
-			sourceLayerId: OfftubeSourceLayer.PgmSourceSelect,
-			outputLayerId: OfftubeOutputLayers.SEC,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			content: {
-				timelineObjects: [] // TODO
-			},
-			tags: [AdlibTags.OFFTUBE_SET_JINGLE_NEXT]
-		})
-	)*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
@@ -397,6 +381,26 @@ function getGlobalAdlibActionsOfftube(
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.COMMENTATOR_SELECT_JINGLE,
+			userData: literal<ActionCommentatorSelectJingle>({
+				type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: globalRank++,
+				label: 'JINGLE',
+				sourceLayerId: OfftubeSourceLayer.PgmJingle,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				content: {},
+				tags: [AdlibTags.OFFTUBE_SET_JINGLE_NEXT],
+				onAirTags: [TallyTags.JINGLE_IS_LIVE],
+				setNextTags: [TallyTags.JINGLE_IS_LIVE]
+			}
+		})
+	)
 
 	return res
 }

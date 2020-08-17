@@ -1,12 +1,11 @@
-import { IBlueprintPart } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPart, NotesContext } from 'tv-automation-sofie-blueprints-integration'
 import { CueType } from 'tv2-constants'
-import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
+import { TableConfigItemBreakers, TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { TimeFromFrames } from './frameTime'
 import { CueDefinitionJingle, PartDefinition } from './inewsConversion'
-import { PartContext2 } from './partContext2'
 
 export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase>(
-	_context: PartContext2,
+	_context: NotesContext,
 	config: TV2BlueprintConfigBase<StudioConfig>,
 	part: PartDefinition
 ):
@@ -27,18 +26,28 @@ export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase
 			})
 
 			if (realBreaker) {
-				return {
-					expectedDuration:
-						TimeFromFrames(Number(realBreaker.Duration)) -
-						TimeFromFrames(Number(realBreaker.EndAlpha)) -
-						TimeFromFrames(Number(realBreaker.StartAlpha)),
-					prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(realBreaker.StartAlpha)),
-					autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
-					disableOutTransition: false,
-					autoNext: realBreaker.Autonext === true
-				}
+				return GetJinglePartPropertiesFromTableValue(config, realBreaker)
 			}
 		}
 	}
 	return {}
+}
+
+export function GetJinglePartPropertiesFromTableValue<StudioConfig extends TV2StudioConfigBase>(
+	config: TV2BlueprintConfigBase<StudioConfig>,
+	realBreaker: TableConfigItemBreakers
+): Pick<
+	IBlueprintPart,
+	'autoNext' | 'expectedDuration' | 'prerollDuration' | 'autoNextOverlap' | 'disableOutTransition'
+> {
+	return {
+		expectedDuration:
+			TimeFromFrames(Number(realBreaker.Duration)) -
+			TimeFromFrames(Number(realBreaker.EndAlpha)) -
+			TimeFromFrames(Number(realBreaker.StartAlpha)),
+		prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(realBreaker.StartAlpha)),
+		autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
+		disableOutTransition: false,
+		autoNext: realBreaker.Autonext === true
+	}
 }

@@ -14,6 +14,7 @@ export enum SourceLayer {
 	SelectedAdLibServer = 'studio0_offtube_clip',
 	SelectedAdLibVoiceOver = 'studio0_offtube_voiceover',
 	SelectedAdlibGraphicsFull = 'studio0_offtube_graphicsFull',
+	SelectedAdlibJingle = 'studio0_offtube_jingle',
 
 	PgmContinuity = 'studio0_offtube_continuity',
 
