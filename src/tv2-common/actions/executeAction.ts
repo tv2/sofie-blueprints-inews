@@ -59,6 +59,8 @@ import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
 import {
 	GetTagForDVE,
+	GetTagForJingle,
+	GetTagForJingleNext,
 	GetTagForKam,
 	GetTagForLive,
 	GetTagForServer,
@@ -881,7 +883,8 @@ function executeActionSelectJingle<
 				content: {
 					...pieceContent,
 					timelineObjects: []
-				}
+				},
+				tags: [GetTagForJingle(userData.clip), GetTagForJingleNext(userData.clip), TallyTags.JINGLE_IS_LIVE]
 		  })
 		: undefined
 
