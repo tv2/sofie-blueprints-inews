@@ -286,6 +286,10 @@ function getExistingTransition<
 	}
 }
 
+function sanitizePieceId(piece: IBlueprintPiece): IBlueprintPiece {
+	return { ...piece, _id: '' }
+}
+
 export function getPiecesToPreserve(
 	context: ActionExecutionContext,
 	adlibLayers: string[],
@@ -296,6 +300,7 @@ export function getPiecesToPreserve(
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
 		.map<IBlueprintPiece>(p => p.piece)
 		.map(p => sanitizePieceStart(p))
+		.map(p => sanitizePieceId(p))
 }
 
 function generateExternalId(context: ActionExecutionContext, actionId: string, args: string[]): string {
