@@ -5,6 +5,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
+	IBlueprintPieceDB,
 	IBlueprintPieceGeneric,
 	IBlueprintPieceInstance,
 	NotesContext,
@@ -286,8 +287,8 @@ function getExistingTransition<
 	}
 }
 
-function sanitizePieceId(piece: IBlueprintPiece): IBlueprintPiece {
-	return { ...piece, _id: '' }
+function sanitizePieceId(piece: IBlueprintPieceDB): IBlueprintPiece {
+	return _.omit(piece, ['_id', 'partId', 'infiniteId', 'playoutDuration'])
 }
 
 export function getPiecesToPreserve(
@@ -300,7 +301,7 @@ export function getPiecesToPreserve(
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
 		.map<IBlueprintPiece>(p => p.piece)
 		.map(p => sanitizePieceStart(p))
-		.map(p => sanitizePieceId(p))
+		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
 }
 
 function generateExternalId(context: ActionExecutionContext, actionId: string, args: string[]): string {
