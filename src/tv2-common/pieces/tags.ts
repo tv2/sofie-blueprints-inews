@@ -18,16 +18,20 @@ export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
 	return tag
 }
 
+function sanitize(str: string) {
+	return str.replace(/\W/g, '_')
+}
+
 export function GetTagForKam(name: string) {
-	return `${TallyTags.KAM}_${name.replace(/\W/g, '_')}`
+	return `${TallyTags.KAM}_${sanitize(name)}`
 }
 
 export function GetTagForLive(name: string) {
-	return `${TallyTags.LIVE}_${name.replace(/\W/g, '_')}`
+	return `${TallyTags.LIVE}_${sanitize(name)}`
 }
 
 export function GetTagForServer(clip: string, vo: boolean) {
-	return `${TallyTags.CLIP}_${clip}${vo ? '_VO' : ''}`
+	return `${TallyTags.CLIP}_${sanitize(clip)}${vo ? '_VO' : ''}`
 }
 
 export function GetTagForServerNext(clip: string, vo: boolean) {
@@ -35,7 +39,7 @@ export function GetTagForServerNext(clip: string, vo: boolean) {
 }
 
 export function GetTagForDVE(cue: CueDefinitionDVE) {
-	return `${TallyTags.DVE}_${cue.template}_${JSON.stringify(cue.sources).replace(/\W/g, '_')}`
+	return `${TallyTags.DVE}_${sanitize(cue.template)}_${sanitize(JSON.stringify(cue.sources))}`
 }
 
 export function GetTagForDVENext(cue: CueDefinitionDVE) {
@@ -43,7 +47,7 @@ export function GetTagForDVENext(cue: CueDefinitionDVE) {
 }
 
 export function GetTagForFull(graphic: string) {
-	return `${TallyTags.FULL}_${graphic.replace(/\W/g, '_')}`
+	return `${TallyTags.FULL}_${sanitize(graphic)}`
 }
 
 export function GetTagForFullNext(graphic: string) {
@@ -51,7 +55,7 @@ export function GetTagForFullNext(graphic: string) {
 }
 
 export function GetTagForJingle(clip: string) {
-	return `${TallyTags.JINGLE}${clip.replace(/\W/g, '_')}`
+	return `${TallyTags.JINGLE}_${sanitize(clip)}`
 }
 
 export function GetTagForJingleNext(clip: string) {
