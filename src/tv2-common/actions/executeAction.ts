@@ -609,7 +609,15 @@ function executeActionSelectDVE<
 				tags: [GetTagForDVENext(parsedCue)],
 				content: {
 					...pieceContent.content,
-					timelineObjects: []
+					timelineObjects: pieceContent.content.timelineObjects
+						.filter(
+							tlObj =>
+								!(
+									tlObj.content.deviceType === TSR.DeviceType.ATEM &&
+									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
+								)
+						)
+						.map(obj => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
 				}
 		  })
 		: undefined

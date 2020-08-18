@@ -122,7 +122,7 @@ export function OfftubeEvaluateDVE(
 						timelineObjects: []
 					}),
 					onAirTags: [GetTagForDVE(parsedCue)],
-					setNextTags: [GetTagForDVE(parsedCue)]
+					setNextTags: [GetTagForDVENext(parsedCue)]
 				}
 			})
 		)
