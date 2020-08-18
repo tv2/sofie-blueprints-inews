@@ -21,10 +21,12 @@ import {
 	PartContext2,
 	PartDefinition,
 	PartToParentClass,
+	TimelineBlueprintExt,
 	TranslateEngine
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
@@ -424,6 +426,21 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 						onAir: false
 					}
 				}
+			}),
+			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+				id: '',
+				enable: { start: 0 },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMENext,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						previewInput: AtemSourceIndex.Blk
+					}
+				},
+				metaData: {},
+				classes: ['ab_on_preview']
 			})
 		]
 	}
