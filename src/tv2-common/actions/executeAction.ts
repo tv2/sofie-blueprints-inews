@@ -590,7 +590,11 @@ function executeActionSelectDVE<
 			sources: parsedCue.sources,
 			config: rawTemplate
 		}),
-		tags: [GetTagForDVE(parsedCue), TallyTags.DVE_IS_LIVE]
+		tags: [
+			GetTagForDVE(parsedCue.template, parsedCue.sources),
+			GetTagForDVENext(parsedCue.template, parsedCue.sources),
+			TallyTags.DVE_IS_LIVE
+		]
 	})
 
 	dvePiece = cutServerToBox(context, settings, dvePiece)
@@ -611,7 +615,7 @@ function executeActionSelectDVE<
 				metaData: {
 					userData
 				},
-				tags: [GetTagForDVENext(parsedCue)],
+				tags: [GetTagForDVENext(parsedCue.template, parsedCue.sources)],
 				content: {
 					...pieceContent.content,
 					timelineObjects: pieceContent.content.timelineObjects
@@ -821,7 +825,12 @@ function executeActionSelectDVELayout<
 		metaData: literal<PieceMetaData & DVEPieceMetaData>({
 			...meta,
 			config: userData.config
-		})
+		}),
+		tags: [
+			GetTagForDVE(userData.config.DVEName, sources),
+			GetTagForDVENext(userData.config.DVEName, sources),
+			TallyTags.DVE_IS_LIVE
+		]
 	}
 
 	dvePiece = cutServerToBox(context, settings, dvePiece)

@@ -38,12 +38,12 @@ export function GetTagForServerNext(clip: string, vo: boolean) {
 	return `${GetTagForServer(clip, vo)}_NEXT`
 }
 
-export function GetTagForDVE(cue: CueDefinitionDVE) {
-	return `${TallyTags.DVE}_${sanitize(cue.template)}_${sanitize(JSON.stringify(cue.sources))}`
+export function GetTagForDVE(template: string, sources: CueDefinitionDVE['sources']) {
+	return `${TallyTags.DVE}_${sanitize(template)}_${sanitize(JSON.stringify(sources))}`
 }
 
-export function GetTagForDVENext(cue: CueDefinitionDVE) {
-	return `${GetTagForDVE(cue)}_NEXT`
+export function GetTagForDVENext(template: string, sources: CueDefinitionDVE['sources']) {
+	return `${GetTagForDVE(template, sources)}_NEXT`
 }
 
 export function GetTagForFull(graphic: string) {

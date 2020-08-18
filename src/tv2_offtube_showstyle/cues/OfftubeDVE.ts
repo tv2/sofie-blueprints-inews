@@ -98,7 +98,11 @@ export function OfftubeEvaluateDVE(
 					sources: parsedCue.sources,
 					config: rawTemplate
 				}),
-				tags: [GetTagForDVE(parsedCue), GetTagForDVENext(parsedCue), TallyTags.DVE_IS_LIVE]
+				tags: [
+					GetTagForDVE(parsedCue.template, parsedCue.sources),
+					GetTagForDVENext(parsedCue.template, parsedCue.sources),
+					TallyTags.DVE_IS_LIVE
+				]
 			})
 		)
 
@@ -121,8 +125,8 @@ export function OfftubeEvaluateDVE(
 						...pieceContent.content,
 						timelineObjects: []
 					}),
-					onAirTags: [GetTagForDVE(parsedCue)],
-					setNextTags: [GetTagForDVENext(parsedCue)]
+					onAirTags: [GetTagForDVE(parsedCue.template, parsedCue.sources)],
+					setNextTags: [GetTagForDVENext(parsedCue.template, parsedCue.sources)]
 				}
 			})
 		)
