@@ -554,7 +554,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 						{
 							// left
 							enabled: true,
-							source: AtemSourceIndex.Bars,
+							source: config.studio.AtemSource.Loop,
 							size: 1000,
 							x: 0,
 							y: 0,
