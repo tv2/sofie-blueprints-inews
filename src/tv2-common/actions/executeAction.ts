@@ -443,8 +443,7 @@ function executeActionSelectServerClip<
 										content: {
 											deviceType: TSR.DeviceType.CASPARCG,
 											type: TSR.TimelineContentTypeCasparCg.MEDIA,
-											file: mediaObj.content.file,
-											noStarttime: true
+											file: mediaObj.content.file
 										},
 										keyframes: [
 											{
