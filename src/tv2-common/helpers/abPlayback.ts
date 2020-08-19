@@ -449,16 +449,18 @@ export function applyMediaPlayersAssignments<
 	_.each(unknownGroups, grp => {
 		const objIds = _.map(grp.objs, o => o.id)
 		const prev = previousAssignmentRev[grp.id]
-		if (prev) {
-			updateObjectsToMediaPlayer(context, config, prev.playerId, grp.objs, sourceLayers)
-			persistAssignment(grp.id, prev.playerId, false)
-			context.warning(
-				`Found unexpected session remaining on the timeline: "${grp.id}" belonging to ${objIds}. This may cause playback glitches`
-			)
-		} else {
-			context.warning(
-				`Found unexpected unknown session on the timeline: "${grp.id}" belonging to ${objIds}. This could result in black playback`
-			)
+		if (!objIds.every(id => !!id.match(/^previous_/))) {
+			if (prev) {
+				updateObjectsToMediaPlayer(context, config, prev.playerId, grp.objs, sourceLayers)
+				persistAssignment(grp.id, prev.playerId, false)
+				context.warning(
+					`Found unexpected session remaining on the timeline: "${grp.id}" belonging to ${objIds}. This may cause playback glitches`
+				)
+			} else {
+				context.warning(
+					`Found unexpected unknown session on the timeline: "${grp.id}" belonging to ${objIds}. This could result in black playback`
+				)
+			}
 		}
 	})
 
