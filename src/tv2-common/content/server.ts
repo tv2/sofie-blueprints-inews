@@ -59,7 +59,8 @@ export function MakeContentServer<
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
-					loop: offtubeOptions?.isOfftube ? false : adLib
+					loop: offtubeOptions?.isOfftube ? false : adLib,
+					noStarttime: true
 					// ...(offtubeOptions?.isOfftube ? { seek: 0 } : {})
 				},
 				metaData: {
