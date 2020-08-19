@@ -2,7 +2,6 @@ import {
 	IBlueprintResolvedPieceInstance,
 	NotesContext,
 	OnGenerateTimelineObj,
-	PartEventContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
@@ -32,7 +31,6 @@ export interface ABSourceLayers {
 }
 
 function reversePreviousAssignment(
-	_context: NotesContext,
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
 	timeline: OnGenerateTimelineObj[]
 ): SessionToPlayerMap {
@@ -84,8 +82,8 @@ function calculateSessionTimeRanges(_context: NotesContext, resolvedPieces: IBlu
 	const sessionRequests: { [sessionId: string]: SessionTime | undefined } = {}
 	_.each(piecesWantingMediaPlayers, p => {
 		const metadata = p.piece.metaData as PieceMetaData
-		const start = p.resolvedStart as number
-		const duration = p.resolvedDuration
+		const start = p.piece.enable.start as number
+		const duration = p.piece.playoutDuration
 		const end = duration !== undefined ? start + duration : undefined
 
 		// Track the range of each session
@@ -201,12 +199,11 @@ export function resolveMediaPlayerAssignments<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartEventContext,
+	context: NotesContext,
 	config: ShowStyleConfig,
-	persistentState: TimelinePersistentStateExt,
 	previousAssignmentRev: SessionToPlayerMap,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
-): { activeRequests: ActiveRequest[]; sessionIdsAboutToEnd: string[]; endedSessionIds: string[] } {
+) {
 	const debugLog = config.studio.ABPlaybackDebugLogging
 	const sessionRequests = calculateSessionTimeRanges(context, resolvedPieces)
 
@@ -214,12 +211,10 @@ export function resolveMediaPlayerAssignments<
 
 	// Convert requests into a sorted array
 	const activeRequests: ActiveRequest[] = []
-	const sessionIdsAboutToEnd: string[] = []
-	let endedSessionIds: string[] = []
 	_.each(sessionRequests, (r, sessionId) => {
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
-			const sessionHasEnded = r.end && r.end < context.getCurrentTime()
+			const sessionHasEnded = (r.end && r.end < Date.now()) || !!r.duration
 			if (!sessionHasEnded) {
 				activeRequests.push({
 					id: sessionId,
@@ -229,37 +224,9 @@ export function resolveMediaPlayerAssignments<
 					type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active,
 					optional: r.optional
 				})
-			} else {
-				if (!sessionIdsAboutToEnd.includes(sessionId)) {
-					// During a take onTimelineGenerate is run twice.
-					// First time, the session needs to stay alive to prevent black frames but after that it _must_ end.
-					if (r.end && !persistentState.sessionsAboutToEnd.includes(sessionId)) {
-						if (debugLog) {
-							context.warning(`Session about to end: ${sessionId}`)
-						}
-						sessionIdsAboutToEnd.push(sessionId)
-						// Session is still active for now
-						activeRequests.push({
-							id: sessionId,
-							start: r.start,
-							end: r.end,
-							player: prev ? prev.playerId.toString() : undefined, // Persist previous assignments
-							type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active,
-							optional: r.optional
-						})
-					} else {
-						if (debugLog) {
-							context.warning(`Session has ended: ${sessionId}`)
-						}
-						endedSessionIds.push(sessionId)
-					}
-				}
 			}
 		}
 	})
-	endedSessionIds = endedSessionIds.filter(
-		id => !sessionIdsAboutToEnd.includes(id) && !activeRequests.some(req => req.id === id)
-	)
 	_.sortBy(activeRequests, r => r.start)
 
 	// Go through and assign players
@@ -305,7 +272,7 @@ export function resolveMediaPlayerAssignments<
 		context.warning('result' + JSON.stringify(activeRequests))
 	}
 
-	return { activeRequests, sessionIdsAboutToEnd, endedSessionIds }
+	return activeRequests
 }
 
 function updateObjectsToMediaPlayer<
@@ -391,31 +358,22 @@ export function assignMediaPlayers<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartEventContext,
+	context: NotesContext,
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
-	persistentState: TimelinePersistentStateExt,
+	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
-): TimelinePersistentStateExt {
-	const previousAssignmentRev = reversePreviousAssignment(context, persistentState, timelineObjs)
-	const { activeRequests, sessionIdsAboutToEnd, endedSessionIds } = resolveMediaPlayerAssignments(
-		context,
-		config,
-		persistentState,
-		previousAssignmentRev,
-		resolvedPieces
-	)
+): TimelinePersistentStateExt['activeMediaPlayers'] {
+	const previousAssignmentRev = reversePreviousAssignment(previousAssignment, timelineObjs)
+	const activeRequests = resolveMediaPlayerAssignments(context, config, previousAssignmentRev, resolvedPieces)
 
 	return applyMediaPlayersAssignments(
 		context,
 		config,
 		timelineObjs,
-		persistentState,
 		previousAssignmentRev,
 		activeRequests,
-		sessionIdsAboutToEnd,
-		endedSessionIds,
 		sourceLayers
 	)
 }
@@ -426,13 +384,10 @@ export function applyMediaPlayersAssignments<
 	context: NotesContext,
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
-	persistentState: TimelinePersistentStateExt,
 	previousAssignmentRev: SessionToPlayerMap,
 	activeRequests: ActiveRequest[],
-	sessionIdsAboutToEnd: string[],
-	endedSessionIds: string[],
 	sourceLayers: ABSourceLayers
-): TimelinePersistentStateExt {
+): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const debugLog = config.studio.ABPlaybackDebugLogging
 	const newAssignments: TimelinePersistentStateExt['activeMediaPlayers'] = {}
 	const persistAssignment = (sessionId: string, playerId: number, lookahead: boolean) => {
@@ -441,10 +396,6 @@ export function applyMediaPlayersAssignments<
 			newAssignments[playerId] = ls = []
 		}
 		ls.push({ sessionId, playerId, lookahead })
-	}
-
-	if (debugLog) {
-		context.warning(`Active Requests\n${JSON.stringify(activeRequests, null, 4)}`)
 	}
 
 	// collect objects by their sessionId
@@ -498,18 +449,16 @@ export function applyMediaPlayersAssignments<
 	_.each(unknownGroups, grp => {
 		const objIds = _.map(grp.objs, o => o.id)
 		const prev = previousAssignmentRev[grp.id]
-		if (!endedSessionIds.includes(grp.id)) {
-			if (prev) {
-				updateObjectsToMediaPlayer(context, config, prev.playerId, grp.objs, sourceLayers)
-				persistAssignment(grp.id, prev.playerId, false)
-				context.warning(
-					`Found unexpected session remaining on the timeline: "${grp.id}" belonging to ${objIds}. This may cause playback glitches`
-				)
-			} else {
-				context.warning(
-					`Found unexpected unknown session on the timeline: "${grp.id}" belonging to ${objIds}. This could result in black playback`
-				)
-			}
+		if (prev) {
+			updateObjectsToMediaPlayer(context, config, prev.playerId, grp.objs, sourceLayers)
+			persistAssignment(grp.id, prev.playerId, false)
+			context.warning(
+				`Found unexpected session remaining on the timeline: "${grp.id}" belonging to ${objIds}. This may cause playback glitches`
+			)
+		} else {
+			context.warning(
+				`Found unexpected unknown session on the timeline: "${grp.id}" belonging to ${objIds}. This could result in black playback`
+			)
 		}
 	})
 
@@ -581,5 +530,5 @@ export function applyMediaPlayersAssignments<
 	if (debugLog) {
 		context.warning('new assignments:' + JSON.stringify(newAssignments))
 	}
-	return { ...persistentState, activeMediaPlayers: newAssignments, sessionsAboutToEnd: sessionIdsAboutToEnd }
+	return newAssignments
 }

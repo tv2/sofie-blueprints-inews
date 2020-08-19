@@ -27,7 +27,6 @@ export interface MediaPlayerClaim {
 
 export interface TimelinePersistentStateExt extends TimelinePersistentState {
 	activeMediaPlayers: { [player: string]: MediaPlayerClaim[] | undefined }
-	sessionsAboutToEnd: string[]
 	segmentSession: string
 }
 
@@ -285,18 +284,17 @@ export function onTimelineGenerate<
 		resolvedPieces
 	)
 
-	let persistentState: TimelinePersistentStateExt = {
+	const persistentState: TimelinePersistentStateExt = {
 		activeMediaPlayers: {},
-		segmentSession: context.part.segmentId,
-		sessionsAboutToEnd: []
+		segmentSession: context.part.segmentId
 	}
 	const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt | undefined
 
-	persistentState = assignMediaPlayers(
+	persistentState.activeMediaPlayers = assignMediaPlayers(
 		context,
 		config,
 		timeline,
-		previousPersistentState2 ? previousPersistentState2 : persistentState,
+		previousPersistentState2 ? previousPersistentState2.activeMediaPlayers : {},
 		resolvedPieces,
 		sourceLayers
 	)
