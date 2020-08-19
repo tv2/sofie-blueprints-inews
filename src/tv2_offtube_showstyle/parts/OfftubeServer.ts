@@ -14,7 +14,8 @@ import {
 	literal,
 	MakeContentServer,
 	PartContext2,
-	PartDefinition
+	PartDefinition,
+	SanitizeString
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import {
@@ -32,7 +33,7 @@ export function OfftubeCreatePartServer(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	_segmentExternalId: string
+	segmentExternalId: string
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition)
 
@@ -59,11 +60,11 @@ export function OfftubeCreatePartServer(
 			sourceLayerId: OfftubeSourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [`adlib_server_${file}`]
+				mediaPlayerSessions: [SanitizeString(segmentExternalId)]
 			}),
 			content: MakeContentServer(
 				file,
-				`adlib_server_${file}`,
+				SanitizeString(segmentExternalId),
 				partDefinition,
 				config,
 				{
@@ -87,7 +88,7 @@ export function OfftubeCreatePartServer(
 	// TODO: Reduce to bare minimum for action
 	const actionContent = MakeContentServer(
 		file,
-		`adlib_server_${file}`,
+		`${segmentExternalId}_adlib_server_${file}`,
 		partDefinition,
 		config,
 		{

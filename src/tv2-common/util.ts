@@ -28,3 +28,7 @@ export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
 export function isAdLibPiece(piece: IBlueprintPiece | IBlueprintAdLibPiece) {
 	return '_rank' in piece
 }
+
+export function SanitizeString(str: string) {
+	return str.replace(/\W/g, '_')
+}

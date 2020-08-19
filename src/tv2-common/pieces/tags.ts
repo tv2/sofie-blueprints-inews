@@ -1,4 +1,4 @@
-import { ActionTakeWithTransitionVariant, CueDefinitionDVE } from 'tv2-common'
+import { ActionTakeWithTransitionVariant, CueDefinitionDVE, SanitizeString } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 
 export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
@@ -18,20 +18,16 @@ export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
 	return tag
 }
 
-function sanitize(str: string) {
-	return str.replace(/\W/g, '_')
-}
-
 export function GetTagForKam(name: string) {
-	return `${TallyTags.KAM}_${sanitize(name)}`
+	return `${TallyTags.KAM}_${SanitizeString(name)}`
 }
 
 export function GetTagForLive(name: string) {
-	return `${TallyTags.LIVE}_${sanitize(name)}`
+	return `${TallyTags.LIVE}_${SanitizeString(name)}`
 }
 
 export function GetTagForServer(clip: string, vo: boolean) {
-	return `${TallyTags.CLIP}_${sanitize(clip)}${vo ? '_VO' : ''}`
+	return `${TallyTags.CLIP}_${SanitizeString(clip)}${vo ? '_VO' : ''}`
 }
 
 export function GetTagForServerNext(clip: string, vo: boolean) {
@@ -39,7 +35,7 @@ export function GetTagForServerNext(clip: string, vo: boolean) {
 }
 
 export function GetTagForDVE(template: string, sources: CueDefinitionDVE['sources']) {
-	return `${TallyTags.DVE}_${sanitize(template)}_${sanitize(JSON.stringify(sources))}`
+	return `${TallyTags.DVE}_${SanitizeString(template)}_${SanitizeString(JSON.stringify(sources))}`
 }
 
 export function GetTagForDVENext(template: string, sources: CueDefinitionDVE['sources']) {
@@ -47,7 +43,7 @@ export function GetTagForDVENext(template: string, sources: CueDefinitionDVE['so
 }
 
 export function GetTagForFull(graphic: string) {
-	return `${TallyTags.FULL}_${sanitize(graphic)}`
+	return `${TallyTags.FULL}_${SanitizeString(graphic)}`
 }
 
 export function GetTagForFullNext(graphic: string) {
@@ -55,7 +51,7 @@ export function GetTagForFullNext(graphic: string) {
 }
 
 export function GetTagForJingle(clip: string) {
-	return `${TallyTags.JINGLE}_${sanitize(clip)}`
+	return `${TallyTags.JINGLE}_${SanitizeString(clip)}`
 }
 
 export function GetTagForJingleNext(clip: string) {
