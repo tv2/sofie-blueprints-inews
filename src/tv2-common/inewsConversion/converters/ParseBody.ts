@@ -30,7 +30,7 @@ export interface PartDefinitionBase {
 	effekt?: number
 	cues: CueDefinition[]
 	script: string
-	fields: { [key: string]: string }
+	fields: { videoId?: string } & { [key: string]: string }
 	modified: number
 	transition?: PartTransition
 	storyName: string

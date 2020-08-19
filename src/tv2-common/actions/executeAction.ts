@@ -10,9 +10,9 @@ import {
 	IBlueprintPieceInstance,
 	NotesContext,
 	PieceLifespan,
-	PieceMetaData,
 	ShowStyleContext,
 	SourceLayerType,
+	SplitsContent,
 	TSR,
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
@@ -31,6 +31,7 @@ import {
 	CalculateTime,
 	CreatePartServerBase,
 	CueDefinition,
+	CueDefinitionDVE,
 	DVEOptions,
 	DVEPieceMetaData,
 	DVESources,
@@ -48,6 +49,7 @@ import {
 	MakeContentServer,
 	PartContext2,
 	PartDefinition,
+	PieceMetaData,
 	TimelineBlueprintExt,
 	TV2AdlibAction,
 	TV2BlueprintConfigBase,
@@ -563,12 +565,20 @@ function executeActionSelectDVE<
 		settings.DVEGeneratorOptions,
 		undefined,
 		false,
-		{ ...userData.part, segmentExternalId: externalId }
+		userData.videoId,
+		externalId
 	)
 
 	let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
 	start = start ? start : 0
 	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
+
+	const metaData = literal<PieceMetaData & DVEPieceMetaData>({
+		mediaPlayerSessions: [externalId],
+		sources: parsedCue.sources,
+		config: rawTemplate,
+		userData
+	})
 
 	let dvePiece = literal<IBlueprintPiece>({
 		_id: '',
@@ -586,11 +596,7 @@ function executeActionSelectDVE<
 			...pieceContent.content
 		},
 		adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-		metaData: literal<PieceMetaData & DVEPieceMetaData>({
-			mediaPlayerSessions: [externalId],
-			sources: parsedCue.sources,
-			config: rawTemplate
-		}),
+		metaData,
 		tags: [
 			GetTagForDVE(parsedCue.template, parsedCue.sources),
 			GetTagForDVENext(parsedCue.template, parsedCue.sources),
@@ -600,55 +606,19 @@ function executeActionSelectDVE<
 
 	dvePiece = cutServerToBox(context, settings, dvePiece)
 
-	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
-
-	const dveDataStore = settings.SelectedAdlibs
-		? literal<IBlueprintPiece>({
-				_id: '',
-				externalId,
-				name: userData.config.template,
-				enable: {
-					start: 0
-				},
-				outputLayerId: settings.SelectedAdlibs?.OutputLayer.SelectedAdLib,
-				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
-				infiniteMode: PieceLifespan.OutOnNextSegment,
-				metaData: {
-					userData
-				},
-				tags: [GetTagForDVENext(parsedCue.template, parsedCue.sources)],
-				content: {
-					...pieceContent.content,
-					timelineObjects: pieceContent.content.timelineObjects
-						.filter(
-							tlObj =>
-								!(
-									tlObj.content.deviceType === TSR.DeviceType.ATEM &&
-									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
-								)
-						)
-						.map(obj => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
-				}
-		  })
-		: undefined
-
-	const part = literal<IBlueprintPart>({
-		externalId,
-		title: `${parsedCue.template}`,
-		metaData: {},
-		expectedDuration: 0,
-		prerollDuration: config.studio.CasparPrerollDuration
-	})
-
-	context.queuePart(part, [
+	startNewDVELayout(
+		context,
+		config,
+		settings,
 		dvePiece,
-		...(dveDataStore ? [dveDataStore] : []),
-		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-					settings.SelectedAdlibs.SourceLayer.DVE
-			  ])
-			: [])
-	])
+		pieceContent.content,
+		metaData,
+		parsedCue.template,
+		parsedCue.sources,
+		externalId,
+		'next',
+		'queue'
+	)
 }
 
 function cutServerToBox<
@@ -780,6 +750,22 @@ function executeActionSelectDVELayout<
 			return
 		}
 
+		const newMetaData = literal<DVEPieceMetaData>({
+			sources,
+			config: userData.config,
+			userData: literal<ActionSelectDVE>({
+				type: AdlibActionType.SELECT_DVE,
+				config: literal<CueDefinitionDVE>({
+					type: CueType.DVE,
+					template: userData.config.DVEName,
+					sources,
+					labels: [],
+					iNewsCommand: `DVE=${userData.config.DVEName}`
+				}),
+				videoId: undefined
+			})
+		})
+
 		let newDVEPiece = literal<IBlueprintPiece>({
 			_id: '',
 			externalId,
@@ -790,43 +776,37 @@ function executeActionSelectDVELayout<
 			name: userData.config.DVEName,
 			sourceLayerId: settings.SourceLayers.DVEAdLib,
 			outputLayerId: settings.OutputLayer.PGM,
-			metaData: literal<DVEPieceMetaData>({
-				sources,
-				config: userData.config
-			}),
+			metaData: newMetaData,
 			content: content.content
 		})
 
 		newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
 
-		settings.postProcessPieceTimelineObjects(context, config, newDVEPiece, false)
-
-		context.queuePart(
-			literal<IBlueprintPart>({
-				externalId,
-				title: userData.config.DVEName,
-				prerollDuration: config.studio.CasparPrerollDuration
-			}),
-			[
-				newDVEPiece,
-				...(settings.SelectedAdlibs
-					? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-							settings.SelectedAdlibs.SourceLayer.DVE
-					  ])
-					: [])
-			]
+		return startNewDVELayout(
+			context,
+			config,
+			settings,
+			newDVEPiece,
+			content.content,
+			newMetaData,
+			userData.config.DVEName,
+			sources,
+			externalId,
+			'next',
+			'queue'
 		)
-		return
 	}
+
+	const newMetaData2 = literal<PieceMetaData & DVEPieceMetaData>({
+		...meta,
+		config: userData.config
+	})
 
 	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
 	let dvePiece: IBlueprintPiece = {
 		...nextDVE.piece,
-		content: pieceContent,
-		metaData: literal<PieceMetaData & DVEPieceMetaData>({
-			...meta,
-			config: userData.config
-		}),
+		content: pieceContent.content,
+		metaData: newMetaData2,
 		tags: [
 			GetTagForDVE(userData.config.DVEName, sources),
 			GetTagForDVENext(userData.config.DVEName, sources),
@@ -836,9 +816,100 @@ function executeActionSelectDVELayout<
 
 	dvePiece = cutServerToBox(context, settings, dvePiece)
 
+	startNewDVELayout(
+		context,
+		config,
+		settings,
+		dvePiece,
+		pieceContent.content,
+		newMetaData2,
+		userData.config.DVEName,
+		sources,
+		externalId,
+		'next',
+		{
+			activeDVE: nextDVE._id
+		}
+	)
+}
+
+function startNewDVELayout<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	config: ShowStyleConfig,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	dvePiece: IBlueprintPiece,
+	pieceContent: SplitsContent,
+	meta: PieceMetaData & DVEPieceMetaData,
+	templateName: string,
+	sources: CueDefinitionDVE['sources'],
+	externalId: string,
+	part: 'current' | 'next',
+	replacePieceInstancesOrQueue: { activeDVE?: string; dataStore?: string } | 'queue'
+) {
 	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
-	context.updatePieceInstance(nextDVE._id, dvePiece)
+	const dveDataStore = settings.SelectedAdlibs
+		? literal<IBlueprintPiece>({
+				_id: '',
+				externalId,
+				name: templateName,
+				enable: {
+					start: 0
+				},
+				outputLayerId: settings.SelectedAdlibs?.OutputLayer.SelectedAdLib,
+				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
+				infiniteMode: PieceLifespan.OutOnNextSegment,
+				metaData: meta,
+				tags: [GetTagForDVENext(templateName, sources)],
+				content: {
+					...pieceContent,
+					// Take this
+					timelineObjects: pieceContent.timelineObjects
+						.filter(
+							tlObj =>
+								!(
+									tlObj.content.deviceType === TSR.DeviceType.ATEM &&
+									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
+								)
+						)
+						.map(obj => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
+				}
+		  })
+		: undefined
+
+	if (replacePieceInstancesOrQueue === 'queue') {
+		const newPart = literal<IBlueprintPart>({
+			externalId,
+			title: templateName,
+			metaData: {},
+			expectedDuration: 0,
+			prerollDuration: config.studio.CasparPrerollDuration
+		})
+		context.queuePart(newPart, [
+			dvePiece,
+			...(dveDataStore ? [dveDataStore] : []),
+			...(settings.SelectedAdlibs
+				? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
+						settings.SelectedAdlibs.SourceLayer.DVE
+				  ])
+				: [])
+		])
+	} else {
+		if (replacePieceInstancesOrQueue.activeDVE) {
+			context.updatePieceInstance(replacePieceInstancesOrQueue.activeDVE, dvePiece)
+			context.updatePartInstance(part, { expectedDuration: 0 })
+			if (dveDataStore) {
+				if (replacePieceInstancesOrQueue.dataStore) {
+					context.updatePieceInstance(replacePieceInstancesOrQueue.dataStore, dveDataStore)
+				} else {
+					context.insertPiece(part, dveDataStore)
+				}
+			}
+		}
+	}
 }
 
 function executeActionSelectJingle<
@@ -1181,25 +1252,32 @@ function executeActionCutSourceToBox<
 	const currentDVE = currentPieces.find(
 		p =>
 			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE) ||
 			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
+	)
+	const currentDataStore = currentPieces.find(
+		p => settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE
 	)
 	const nextDVE = nextPieces.find(
 		p =>
 			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE) ||
 			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
+	)
+	const nextDataStore = nextPieces.find(
+		p => settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE
 	)
 
 	let modify: undefined | 'current' | 'next'
 	let modifiedPiece: IBlueprintPieceInstance | undefined
+	let modifiedDataStore: IBlueprintPieceInstance | undefined
 
 	if (currentDVE) {
 		modify = 'current'
 		modifiedPiece = currentDVE
+		modifiedDataStore = currentDataStore
 	} else if (nextDVE) {
 		modify = 'next'
 		modifiedPiece = nextDVE
+		modifiedDataStore = nextDataStore
 	}
 
 	const meta: DVEPieceMetaData | undefined = modifiedPiece?.piece.metaData as PieceMetaData & DVEPieceMetaData
@@ -1228,10 +1306,21 @@ function executeActionCutSourceToBox<
 
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
 	newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
-	settings.postProcessPieceTimelineObjects(context, config, newDVEPiece, false)
 
 	if (newPieceContent.valid) {
-		context.updatePieceInstance(modifiedPiece._id, newDVEPiece)
+		startNewDVELayout(
+			context,
+			config,
+			settings,
+			newDVEPiece,
+			newPieceContent.content,
+			meta,
+			meta.config.DVEName,
+			meta.sources,
+			newDVEPiece.externalId,
+			modify,
+			{ activeDVE: modifiedPiece._id, dataStore: modifiedDataStore?._id }
+		)
 	}
 }
 
@@ -1409,13 +1498,13 @@ function findDataStore<T extends TV2AdlibAction>(
 	context: ActionExecutionContext,
 	dataStoreLayers: string[]
 ): T | undefined {
-	const serverToPlay = findPieceToRecoverDataFrom(context, dataStoreLayers)
+	const dataStorePiece = findPieceToRecoverDataFrom(context, dataStoreLayers)
 
-	if (!serverToPlay) {
+	if (!dataStorePiece) {
 		return
 	}
 
-	const data = serverToPlay.piece.piece.metaData?.userData as T | undefined
+	const data = dataStorePiece.piece.piece.metaData?.userData as T | undefined
 
 	return data
 }

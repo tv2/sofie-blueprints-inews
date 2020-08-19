@@ -27,6 +27,7 @@ import {
 import { ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
+import { ActionSelectDVE } from '../actions'
 import { PartContext2 } from '../partContext2'
 
 export interface DVEConfigBox {
@@ -99,6 +100,7 @@ export interface DVEMetaData {
 export interface DVEPieceMetaData {
 	config: DVEConfigInput
 	sources: DVESources
+	userData: ActionSelectDVE
 }
 
 export interface DVEBoxInfo {
@@ -182,7 +184,8 @@ export function MakeContentDVEBase<
 		dveGeneratorOptions,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
-		partDefinition
+		partDefinition.fields.videoId,
+		partDefinition.segmentExternalId
 	)
 }
 
@@ -198,7 +201,8 @@ export function MakeContentDVE2<
 	dveGeneratorOptions: DVEOptions,
 	className?: string,
 	adlib?: boolean,
-	partDefinition?: PartDefinition
+	videoId?: string,
+	segmentExternalId?: string
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	let template: DVEConfig
 	try {
@@ -256,15 +260,15 @@ export function MakeContentDVE2<
 			} else if (prop?.match(/DEFAULT/)) {
 				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE`, sourceLayer }
 			} else if (prop) {
-				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+				if (videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
 					usedServer = true
 				} else {
 					boxMap[targetBox - 1] = { source: prop, sourceLayer }
 				}
 			} else {
-				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+				if (videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
 					usedServer = true
 				} else {
 					context.warning(`Missing mapping for ${targetBox}`)
@@ -404,7 +408,7 @@ export function MakeContentDVE2<
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const file: string | undefined = partDefinition ? partDefinition.fields.videoId : undefined
+				const file: string | undefined = videoId
 
 				server = true
 				setBoxSource(
@@ -430,11 +434,7 @@ export function MakeContentDVE2<
 							loop: true
 						},
 						metaData: {
-							mediaPlayerSession: server
-								? partDefinition
-									? partDefinition.segmentExternalId
-									: MEDIA_PLAYER_AUTO
-								: undefined
+							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
 						},
 						classes: file ? [] : [ControlClasses.DVEPlaceholder]
 					}),
@@ -449,11 +449,7 @@ export function MakeContentDVE2<
 							isPgm: 1
 						},
 						metaData: {
-							mediaPlayerSession: server
-								? partDefinition
-									? partDefinition.segmentExternalId
-									: MEDIA_PLAYER_AUTO
-								: undefined
+							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
 						},
 						classes: file ? [] : [ControlClasses.DVEPlaceholder]
 					})
@@ -531,11 +527,7 @@ export function MakeContentDVE2<
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: literal<DVEMetaData>({
-						mediaPlayerSession: server
-							? partDefinition
-								? partDefinition.segmentExternalId
-								: MEDIA_PLAYER_AUTO
-							: undefined
+						mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
 					})
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({

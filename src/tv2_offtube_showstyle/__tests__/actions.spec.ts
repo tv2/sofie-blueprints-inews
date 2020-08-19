@@ -169,18 +169,7 @@ const selectDVEActionMorbarn = literal<ActionSelectDVE>({
 		labels: ['Live'],
 		iNewsCommand: 'DVE=MORBARN'
 	},
-	part: literal<PartDefinitionUnknown>({
-		type: PartType.Unknown,
-		externalId: CURRENT_PART_EXTERNAL_ID,
-		variant: {},
-		rawType: '',
-		cues: [],
-		script: '',
-		fields: {},
-		modified: 0,
-		storyName: SEGMENT_ID,
-		segmentExternalId: SEGMENT_ID_EXTERNAL
-	})
+	videoId: undefined
 })
 
 const selectDVEActionBarnmor = literal<ActionSelectDVE>({
@@ -195,18 +184,7 @@ const selectDVEActionBarnmor = literal<ActionSelectDVE>({
 		labels: ['Live'],
 		iNewsCommand: 'DVE=BARNMOR'
 	},
-	part: literal<PartDefinitionUnknown>({
-		type: PartType.Unknown,
-		externalId: CURRENT_PART_EXTERNAL_ID,
-		variant: {},
-		rawType: '',
-		cues: [],
-		script: '',
-		fields: {},
-		modified: 0,
-		storyName: SEGMENT_ID,
-		segmentExternalId: SEGMENT_ID_EXTERNAL
-	})
+	videoId: undefined
 })
 
 const commentatorSelectDVE = literal<ActionCommentatorSelectDVE>({

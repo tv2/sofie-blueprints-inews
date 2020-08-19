@@ -6,6 +6,7 @@ import {
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectDVE,
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
@@ -16,6 +17,7 @@ import {
 	PartDefinition,
 	TemplateIsValid
 } from 'tv2-common'
+import { AdlibActionType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -71,7 +73,12 @@ export function EvaluateDVE(
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 					metaData: literal<DVEPieceMetaData>({
 						sources: parsedCue.sources,
-						config: rawTemplate
+						config: rawTemplate,
+						userData: literal<ActionSelectDVE>({
+							type: AdlibActionType.SELECT_DVE,
+							config: parsedCue,
+							videoId: partDefinition.fields.videoId
+						})
 					})
 				})
 			)
@@ -97,7 +104,12 @@ export function EvaluateDVE(
 					metaData: literal<PieceMetaData & DVEPieceMetaData>({
 						mediaPlayerSessions: [partDefinition.segmentExternalId],
 						sources: parsedCue.sources,
-						config: rawTemplate
+						config: rawTemplate,
+						userData: literal<ActionSelectDVE>({
+							type: AdlibActionType.SELECT_DVE,
+							config: parsedCue,
+							videoId: partDefinition.fields.videoId
+						})
 					})
 				})
 			)

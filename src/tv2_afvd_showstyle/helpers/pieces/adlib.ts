@@ -1,5 +1,6 @@
 import { IBlueprintActionManifest, IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectDVE,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
@@ -11,7 +12,7 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { CueType } from 'tv2-constants'
+import { AdlibActionType, CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
@@ -30,6 +31,10 @@ export function EvaluateAdLib(
 	if (parsedCue.variant.match(/server/i)) {
 		// Create server AdLib
 		const file = partDefinition.fields.videoId
+
+		if (!file) {
+			return
+		}
 
 		adLibPieces.push(
 			CreateAdlibServer(
@@ -109,7 +114,12 @@ export function EvaluateAdLib(
 				metaData: literal<PieceMetaData & DVEPieceMetaData>({
 					stickySisyfosLevels: sticky,
 					sources: cueDVE.sources,
-					config: rawTemplate
+					config: rawTemplate,
+					userData: literal<ActionSelectDVE>({
+						type: AdlibActionType.SELECT_DVE,
+						config: cueDVE,
+						videoId: partDefinition.fields.videoId
+					})
 				})
 			})
 		)

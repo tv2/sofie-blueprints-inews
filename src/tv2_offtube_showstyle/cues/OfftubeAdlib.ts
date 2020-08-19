@@ -41,6 +41,11 @@ export function OfftubeEvaluateAdLib(
 	if (parsedCue.variant.match(/server/i)) {
 		// Create server AdLib
 		const file = partDefinition.fields.videoId
+
+		if (!file) {
+			return
+		}
+
 		const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
 		const adlibServer = CreateAdlibServer(
@@ -138,7 +143,7 @@ export function OfftubeEvaluateAdLib(
 				userData: literal<ActionSelectDVE>({
 					type: AdlibActionType.SELECT_DVE,
 					config: cueDVE,
-					part: partDefinition
+					videoId: partDefinition.fields.videoId
 				}),
 				userDataManifest: {},
 				display: {

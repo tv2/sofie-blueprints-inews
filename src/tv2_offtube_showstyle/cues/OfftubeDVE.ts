@@ -96,7 +96,12 @@ export function OfftubeEvaluateDVE(
 				metaData: literal<PieceMetaData & DVEPieceMetaData>({
 					mediaPlayerSessions: [partDefinition.segmentExternalId],
 					sources: parsedCue.sources,
-					config: rawTemplate
+					config: rawTemplate,
+					userData: literal<ActionSelectDVE>({
+						type: AdlibActionType.SELECT_DVE,
+						config: parsedCue,
+						videoId: partDefinition.fields.videoId
+					})
 				}),
 				tags: [
 					GetTagForDVE(parsedCue.template, parsedCue.sources),
@@ -112,7 +117,7 @@ export function OfftubeEvaluateDVE(
 				userData: literal<ActionSelectDVE>({
 					type: AdlibActionType.SELECT_DVE,
 					config: parsedCue,
-					part: partDefinition
+					videoId: partDefinition.fields.videoId
 				}),
 				userDataManifest: {},
 				display: {
