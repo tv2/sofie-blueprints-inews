@@ -166,32 +166,25 @@ export function GetLayersForCamera(config: TV2StudioBlueprintConfigBase<TV2Studi
 	return cameraLayers
 }
 
-export function getStickyLayers(studioConfig: TV2StudioConfigBase) {
-	return [...studioConfig.StudioMics, ...getLiveAudioLayers(studioConfig)]
+export function getStickyLayers(studioConfig: TV2StudioConfigBase, liveAudioLayers: string[]) {
+	return [...studioConfig.StudioMics, ...liveAudioLayers]
 }
 
 export function getLiveAudioLayers(studioConfig: TV2StudioConfigBase): string[] {
-	const res: string[] = []
-
-	_.each(studioConfig.SourcesRM, src => {
+	const res = new Set<string>()
+	for (const src of studioConfig.SourcesRM) {
 		if (src.SisyfosLayers && src.KeepAudioInStudio) {
-			_.each(src.SisyfosLayers, layer => {
-				if (!res.includes(layer)) {
-					res.push(layer)
-				}
-			})
+			for (const layer of src.SisyfosLayers) {
+				res.add(layer)
+			}
 		}
-	})
-
-	_.each(studioConfig.SourcesSkype, src => {
+	}
+	for (const src of studioConfig.SourcesSkype) {
 		if (src.SisyfosLayers) {
-			_.each(src.SisyfosLayers, layer => {
-				if (!res.includes(layer)) {
-					res.push(layer)
-				}
-			})
+			for (const layer of src.SisyfosLayers) {
+				res.add(layer)
+			}
 		}
-	})
-
+	}
 	return Array.from(res)
 }

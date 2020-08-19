@@ -11,7 +11,6 @@ import {
 	CreateAdlibServer,
 	CreatePartServerBase,
 	GetSisyfosTimelineObjForCamera,
-	getStickyLayers,
 	GetTagForServer,
 	GetTagForServerNext,
 	literal,
@@ -112,7 +111,7 @@ export function OfftubeCreatePartVO(
 			Sisyfos: {
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 			},
-			STICKY_LAYERS: getStickyLayers(config.studio)
+			STICKY_LAYERS: config.stickyLayers
 		},
 		actualDuration,
 		{
