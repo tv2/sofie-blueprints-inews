@@ -1021,7 +1021,7 @@ function executeActionSelectJingle<
 
 	context.queuePart(part, [
 		piece,
-		...(jingleDataStore ? [jingleDataStore] : []),
+		...(jingleDataStore ? [] : []),
 		...(settings.SelectedAdlibs
 			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 					settings.SelectedAdlibs.SourceLayer.Effekt
