@@ -215,7 +215,8 @@ export function resolveMediaPlayerAssignments<
 	_.each(sessionRequests, (r, sessionId) => {
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
-			const sessionHasEnded = r.end && r.end + 2000 < context.getCurrentTime()
+			// const sessionHasEnded = r.end && r.end + 2000 < context.getCurrentTime()
+			const sessionHasEnded = false
 			if (!sessionHasEnded) {
 				activeRequests.push({
 					id: sessionId,
