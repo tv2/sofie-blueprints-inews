@@ -16,7 +16,8 @@ import {
 	literal,
 	MakeContentServer,
 	PartContext2,
-	PartDefinition
+	PartDefinition,
+	SanitizeString
 } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
@@ -64,7 +65,7 @@ export function CreatePartVO(
 
 	const serverContent = MakeContentServer(
 		file,
-		segmentExternalId,
+		SanitizeString(`segment_${segmentExternalId}_${file}`),
 		partDefinition,
 		config,
 		{
@@ -92,7 +93,7 @@ export function CreatePartVO(
 			sourceLayerId: SourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [segmentExternalId]
+				mediaPlayerSessions: [SanitizeString(`segment_${segmentExternalId}_${file}`)]
 			}),
 			content: serverContent,
 			adlibPreroll: config.studio.CasparPrerollDuration,

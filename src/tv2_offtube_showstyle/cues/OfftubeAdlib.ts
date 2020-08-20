@@ -14,6 +14,7 @@ import {
 	literal,
 	PartContext2,
 	PartDefinition,
+	SanitizeString,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
@@ -52,7 +53,7 @@ export function OfftubeEvaluateAdLib(
 			config,
 			rank,
 			partId,
-			`adlib_server_${file}`,
+			SanitizeString(`adlib_server_${file}`),
 			partDefinition,
 			file,
 			false,

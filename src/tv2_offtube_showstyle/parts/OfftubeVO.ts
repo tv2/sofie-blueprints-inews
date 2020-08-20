@@ -17,7 +17,8 @@ import {
 	literal,
 	MakeContentServer,
 	PartContext2,
-	PartDefinition
+	PartDefinition,
+	SanitizeString
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import {
@@ -35,7 +36,7 @@ export function OfftubeCreatePartVO(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	_segmentExternalId: string,
+	segmentExternalId: string,
 	totalWords: number,
 	totalTime: number
 ): BlueprintResultPart {
@@ -67,11 +68,11 @@ export function OfftubeCreatePartVO(
 			sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [`adlib_server_${file}`]
+				mediaPlayerSessions: [SanitizeString(`segment_${segmentExternalId}_${file}`)]
 			}),
 			content: MakeContentServer(
 				file,
-				`adlib_server_${file}`,
+				SanitizeString(`segment_${segmentExternalId}_${file}`),
 				partDefinition,
 				config,
 				{
@@ -96,7 +97,7 @@ export function OfftubeCreatePartVO(
 		config,
 		0,
 		partDefinition.externalId,
-		`adlib_server_${file}`,
+		SanitizeString(`adlib_server_${segmentExternalId}_${file}`),
 		partDefinition,
 		file,
 		true,

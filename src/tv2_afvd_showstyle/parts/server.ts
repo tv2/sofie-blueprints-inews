@@ -13,7 +13,8 @@ import {
 	MakeContentServer,
 	PartContext2,
 	PartDefinition,
-	PieceMetaData
+	PieceMetaData,
+	SanitizeString
 } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
@@ -57,11 +58,11 @@ export function CreatePartServer(
 			sourceLayerId: SourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [segmentExternalId]
+				mediaPlayerSessions: [SanitizeString(`segment_${segmentExternalId}_${file}`)]
 			}),
 			content: MakeContentServer(
 				file,
-				segmentExternalId,
+				SanitizeString(`segment_${segmentExternalId}_${file}`),
 				partDefinition,
 				config,
 				{

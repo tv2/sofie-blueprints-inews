@@ -64,7 +64,7 @@ export function OfftubeCreatePartServer(
 			}),
 			content: MakeContentServer(
 				file,
-				SanitizeString(segmentExternalId),
+				SanitizeString(`segment_${segmentExternalId}_${file}`),
 				partDefinition,
 				config,
 				{
@@ -88,7 +88,7 @@ export function OfftubeCreatePartServer(
 	// TODO: Reduce to bare minimum for action
 	const actionContent = MakeContentServer(
 		file,
-		`${segmentExternalId}_adlib_server_${file}`,
+		SanitizeString(`segment_${segmentExternalId}_${file}`),
 		partDefinition,
 		config,
 		{

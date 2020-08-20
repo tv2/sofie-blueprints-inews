@@ -10,6 +10,7 @@ import {
 	PartContext2,
 	PartDefinition,
 	PieceMetaData,
+	SanitizeString,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, CueType } from 'tv2-constants'
@@ -41,7 +42,7 @@ export function EvaluateAdLib(
 				config,
 				rank,
 				partId,
-				`adlib_server_${file}`,
+				SanitizeString(`adlib_server_${file}`),
 				partDefinition,
 				file,
 				false,
