@@ -58,6 +58,8 @@ export function OfftubeCreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
+
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',
@@ -68,7 +70,7 @@ export function OfftubeCreatePartVO(
 			sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [SanitizeString(`segment_${segmentExternalId}_${file}`)]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: MakeContentServer(
 				file,
@@ -97,7 +99,7 @@ export function OfftubeCreatePartVO(
 		config,
 		0,
 		partDefinition.externalId,
-		SanitizeString(`adlib_server_${segmentExternalId}_${file}`),
+		mediaPlayerSession,
 		partDefinition,
 		file,
 		true,

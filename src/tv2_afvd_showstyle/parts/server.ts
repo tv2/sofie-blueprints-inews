@@ -48,6 +48,8 @@ export function CreatePartServer(
 	}
 	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
 
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
+
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',
@@ -58,11 +60,11 @@ export function CreatePartServer(
 			sourceLayerId: SourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [SanitizeString(`segment_${segmentExternalId}_${file}`)]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: MakeContentServer(
 				file,
-				SanitizeString(`segment_${segmentExternalId}_${file}`),
+				mediaPlayerSession,
 				partDefinition,
 				config,
 				{

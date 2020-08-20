@@ -63,9 +63,11 @@ export function CreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
+
 	const serverContent = MakeContentServer(
 		file,
-		SanitizeString(`segment_${segmentExternalId}_${file}`),
+		mediaPlayerSession,
 		partDefinition,
 		config,
 		{
@@ -93,7 +95,7 @@ export function CreatePartVO(
 			sourceLayerId: SourceLayer.PgmVoiceOver,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [SanitizeString(`segment_${segmentExternalId}_${file}`)]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: serverContent,
 			adlibPreroll: config.studio.CasparPrerollDuration,

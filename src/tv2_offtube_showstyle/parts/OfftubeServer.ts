@@ -50,6 +50,8 @@ export function OfftubeCreatePartServer(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
+
 	pieces.push(
 		literal<IBlueprintPiece>({
 			_id: '',
@@ -60,11 +62,11 @@ export function OfftubeCreatePartServer(
 			sourceLayerId: OfftubeSourceLayer.PgmServer,
 			infiniteMode: PieceLifespan.OutOnNextPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [SanitizeString(segmentExternalId)]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: MakeContentServer(
 				file,
-				SanitizeString(`segment_${segmentExternalId}_${file}`),
+				mediaPlayerSession,
 				partDefinition,
 				config,
 				{
