@@ -888,6 +888,21 @@ function startNewDVELayout<
 			expectedDuration: 0,
 			prerollDuration: config.studio.CasparPrerollDuration
 		})
+
+		// If a DVE is not on air, but a layout is selected, stop the selected layout and replace with the new one.
+		const onAirPiece = context
+			.getPieceInstances('current')
+			.find(
+				p =>
+					p.piece.sourceLayerId === settings.SourceLayers.DVE ||
+					p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib
+			)
+		const dataPiece =
+			settings.SelectedAdlibs &&
+			context.getPieceInstances('current').find(p => p.piece.sourceLayerId === settings.SelectedAdlibs!.SourceLayer.DVE)
+		if (onAirPiece === undefined && dataPiece !== undefined) {
+			context.stopPieceInstances([dataPiece._id])
+		}
 		context.queuePart(newPart, [
 			dvePiece,
 			...(dveDataStore ? [dveDataStore] : []),
