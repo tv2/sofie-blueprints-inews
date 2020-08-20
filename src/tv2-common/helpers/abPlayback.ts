@@ -2,6 +2,7 @@ import {
 	IBlueprintResolvedPieceInstance,
 	NotesContext,
 	OnGenerateTimelineObj,
+	PartEventContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
@@ -82,8 +83,8 @@ function calculateSessionTimeRanges(_context: NotesContext, resolvedPieces: IBlu
 	const sessionRequests: { [sessionId: string]: SessionTime | undefined } = {}
 	_.each(piecesWantingMediaPlayers, p => {
 		const metadata = p.piece.metaData as PieceMetaData
-		const start = p.piece.enable.start as number
-		const duration = p.piece.playoutDuration
+		const start = p.resolvedStart as number
+		const duration = p.resolvedDuration
 		const end = duration !== undefined ? start + duration : undefined
 
 		// Track the range of each session
@@ -199,7 +200,7 @@ export function resolveMediaPlayerAssignments<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: PartEventContext,
 	config: ShowStyleConfig,
 	previousAssignmentRev: SessionToPlayerMap,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
@@ -214,7 +215,7 @@ export function resolveMediaPlayerAssignments<
 	_.each(sessionRequests, (r, sessionId) => {
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
-			const sessionHasEnded = (r.end && r.end < Date.now()) || !!r.duration
+			const sessionHasEnded = r.end && r.end + 2000 < context.getCurrentTime()
 			if (!sessionHasEnded) {
 				activeRequests.push({
 					id: sessionId,
@@ -358,7 +359,7 @@ export function assignMediaPlayers<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: PartEventContext,
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
