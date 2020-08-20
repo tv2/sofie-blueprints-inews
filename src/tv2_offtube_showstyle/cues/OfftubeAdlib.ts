@@ -11,6 +11,8 @@ import {
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
 	GetDVETemplate,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -84,6 +86,7 @@ export function OfftubeEvaluateAdLib(
 				actionId: AdlibActionType.SELECT_SERVER_CLIP,
 				userData: literal<ActionSelectServerClip>({
 					type: AdlibActionType.SELECT_SERVER_CLIP,
+					storyName: partDefinition.storyName,
 					file,
 					partDefinition,
 					duration,
@@ -95,7 +98,9 @@ export function OfftubeEvaluateAdLib(
 					sourceLayerId: OfftubeSourceLayer.PgmServer,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adlibServer.content, timelineObjects: [] },
-					tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER]
+					tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
+					onAirTags: [GetTagForServer(partDefinition.storyName, file, false)],
+					setNextTags: [GetTagForServerNext(partDefinition.storyName, file, false)]
 				}
 			})
 		)

@@ -81,7 +81,11 @@ export function CreatePartServer(
 				duration
 			),
 			adlibPreroll: config.studio.CasparPrerollDuration,
-			tags: [GetTagForServer(file, false), GetTagForServerNext(file, false), TallyTags.SERVER_IS_LIVE]
+			tags: [
+				GetTagForServer(partDefinition.storyName, file, false),
+				GetTagForServerNext(partDefinition.storyName, file, false),
+				TallyTags.SERVER_IS_LIVE
+			]
 		})
 	)
 

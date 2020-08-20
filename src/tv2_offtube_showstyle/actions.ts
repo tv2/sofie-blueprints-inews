@@ -112,7 +112,7 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		transitionKeepaliveDuration: config.studio.FullKeepAliveDuration
 	})
 
-	const fullPiece = CreateFullPiece(config, externalId, template)
+	const fullPiece = CreateFullPiece(config, externalId, template, userData.storyName)
 
 	postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
@@ -133,7 +133,7 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 			...CreateFullContent(config, template),
 			timelineObjects: []
 		},
-		tags: [GetTagForFullNext(template)]
+		tags: [GetTagForFullNext(userData.storyName, template)]
 	})
 
 	context.queuePart(part, [

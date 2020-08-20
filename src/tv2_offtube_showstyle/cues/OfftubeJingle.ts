@@ -61,7 +61,8 @@ export function OfftubeEvaluateJingle(
 			actionId: AdlibActionType.SELECT_JINGLE,
 			userData: literal<ActionSelectJingle>({
 				type: AdlibActionType.SELECT_JINGLE,
-				clip: parsedCue.clip
+				clip: parsedCue.clip,
+				storyName: part.storyName
 			}),
 			userDataManifest: {},
 			display: {
@@ -70,8 +71,8 @@ export function OfftubeEvaluateJingle(
 				outputLayerId: OfftubeOutputLayers.JINGLE,
 				content: { ...createJingleContentOfftube(config, file, jingle.LoadFirstFrame), timelineObjects: [] },
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
-				onAirTags: [GetTagForJingle(parsedCue.clip)],
-				setNextTags: [GetTagForJingleNext(parsedCue.clip)]
+				onAirTags: [GetTagForJingle(part.storyName, parsedCue.clip)],
+				setNextTags: [GetTagForJingleNext(part.storyName, parsedCue.clip)]
 			}
 		})
 	)

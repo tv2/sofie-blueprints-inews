@@ -132,7 +132,8 @@ const selectServerClipAction = literal<ActionSelectServerClip>({
 		modified: 0,
 		storyName: SEGMENT_ID,
 		segmentExternalId: SEGMENT_ID_EXTERNAL
-	})
+	}),
+	storyName: 'TEST STORY 1'
 })
 
 const selectVOClipAction = literal<ActionSelectServerClip>({
@@ -154,7 +155,8 @@ const selectVOClipAction = literal<ActionSelectServerClip>({
 		modified: 0,
 		storyName: SEGMENT_ID,
 		segmentExternalId: SEGMENT_ID_EXTERNAL
-	})
+	}),
+	storyName: 'TEST STORY 2'
 })
 
 const selectDVEActionMorbarn = literal<ActionSelectDVE>({
@@ -205,7 +207,8 @@ const selectLiveAction = literal<ActionCutToRemote>({
 
 const selectFullGrafikAction = literal<ActionSelectFullGrafik>({
 	type: AdlibActionType.SELECT_FULL_GRAFIK,
-	template: 'scoreboard'
+	template: 'scoreboard',
+	storyName: 'TEST STORY 3'
 })
 
 const setMIX20AsTransition = literal<ActionTakeWithTransition>({

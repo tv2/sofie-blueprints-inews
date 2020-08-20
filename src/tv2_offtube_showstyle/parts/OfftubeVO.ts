@@ -91,7 +91,11 @@ export function OfftubeCreatePartVO(
 				actualDuration
 			),
 			adlibPreroll: config.studio.CasparPrerollDuration,
-			tags: [GetTagForServer(file, true), GetTagForServerNext(file, true), TallyTags.SERVER_IS_LIVE]
+			tags: [
+				GetTagForServer(partDefinition.storyName, file, true),
+				GetTagForServerNext(partDefinition.storyName, file, true),
+				TallyTags.SERVER_IS_LIVE
+			]
 		})
 	)
 
@@ -134,7 +138,8 @@ export function OfftubeCreatePartVO(
 				file,
 				partDefinition,
 				duration,
-				vo: true
+				vo: true,
+				storyName: partDefinition.storyName
 			}),
 			userDataManifest: {},
 			display: {
@@ -143,8 +148,8 @@ export function OfftubeCreatePartVO(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...adlibServer.content, timelineObjects: [] },
 				tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-				onAirTags: [GetTagForServer(file, true)],
-				setNextTags: [GetTagForServerNext(file, true)]
+				onAirTags: [GetTagForServer(partDefinition.storyName, file, true)],
+				setNextTags: [GetTagForServerNext(partDefinition.storyName, file, true)]
 			}
 		})
 	)
