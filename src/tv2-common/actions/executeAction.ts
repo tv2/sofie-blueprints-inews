@@ -573,8 +573,17 @@ function executeActionSelectDVE<
 	start = start ? start : 0
 	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 
+	const hasServer = () => {
+		return (
+			parsedCue.sources.INP1?.match(/SERVER/i) ||
+			parsedCue.sources.INP2?.match(/SERVER/i) ||
+			parsedCue.sources.INP3?.match(/SERVER/i) ||
+			parsedCue.sources.INP4?.match(/SERVER/i)
+		)
+	}
+
 	const metaData = literal<PieceMetaData & DVEPieceMetaData>({
-		mediaPlayerSessions: [externalId],
+		mediaPlayerSessions: hasServer() ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
 		userData
