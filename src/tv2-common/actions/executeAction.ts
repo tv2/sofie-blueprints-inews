@@ -989,7 +989,7 @@ function executeActionSelectJingle<
 				},
 				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.Effekt,
-				infiniteMode: PieceLifespan.OutOnNextSegment,
+				infiniteMode: PieceLifespan.OutOnNextPart,
 				metaData: {
 					userData
 				},
