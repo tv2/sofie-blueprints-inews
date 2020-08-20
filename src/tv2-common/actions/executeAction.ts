@@ -307,7 +307,7 @@ export function getPiecesToPreserve(
 }
 
 function generateExternalId(context: ActionExecutionContext, actionId: string, args: string[]): string {
-	return `adlib_action_${actionId}_${context.getHashId(args.join('_'))}`
+	return `adlib_action_${actionId}_${context.getHashId(args.join('_'), true)}`
 }
 
 function executeActionSelectServerClip<
