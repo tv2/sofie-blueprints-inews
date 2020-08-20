@@ -61,7 +61,7 @@ export function onTimelineGenerate<
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
-	parseConfig: (context: PartEventContext) => ShowStyleConfig,
+	getConfig: (context: PartEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
 	_casparLayerClipPending: string,
 	_atemLayerNext: string
@@ -69,7 +69,7 @@ export function onTimelineGenerate<
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	// const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
 
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	// Find server in pgm
 	/*const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)

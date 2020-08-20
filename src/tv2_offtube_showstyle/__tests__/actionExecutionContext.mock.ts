@@ -2,6 +2,7 @@ import {
 	ActionExecutionContext,
 	BlueprintMappings,
 	ConfigItemValue,
+	IBlueprintConfig,
 	IBlueprintMutatablePart,
 	IBlueprintPart,
 	IBlueprintPartInstance,
@@ -12,9 +13,9 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { DefaultBreakerConfig } from '../../tv2_afvd_showstyle/__tests__/breakerConfigDefault'
-import { OfftubeStudioConfig } from '../../tv2_offtube_studio/helpers/config'
+import { OfftubeStudioConfig, parseConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowStyleConfig } from '../helpers/config'
+import { OfftubeShowStyleConfig, parseConfig as parseShowStyleConfig } from '../helpers/config'
 
 const mockStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
@@ -122,13 +123,13 @@ export class MockContext implements ActionExecutionContext {
 	public getShowStyleConfig(): Readonly<{
 		[key: string]: ConfigItemValue
 	}> {
-		return JSON.parse(JSON.stringify(mockShowStyleConfig))
+		return JSON.parse(JSON.stringify(parseShowStyleConfig((mockShowStyleConfig as any) as IBlueprintConfig)))
 	}
 	/** Returns a map of the studio configs */
 	public getStudioConfig(): Readonly<{
 		[key: string]: ConfigItemValue
 	}> {
-		return JSON.parse(JSON.stringify(mockStudioConfig))
+		return JSON.parse(JSON.stringify(parseConfig((mockStudioConfig as any) as IBlueprintConfig)))
 	}
 	/** Un-hash, is return the string that created the hash */
 	public unhashId(hash: string) {

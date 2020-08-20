@@ -5,7 +5,10 @@ import { SourceInfo } from 'tv2-common'
 import { StudioConfig } from './config'
 
 export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: string; val: string }> {
-	return studioConfig.ABMediaPlayers.map(player => ({ id: player.SourceName, val: player.AtemSource.toString() }))
+	return studioConfig.ABMediaPlayers.map(player => ({
+		id: player.SourceName,
+		val: player.AtemSource.toString()
+	}))
 }
 
 export function parseSources(studioConfig: StudioConfig): SourceInfo[] {

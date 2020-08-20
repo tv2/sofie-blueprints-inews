@@ -13,7 +13,7 @@ import {
 	OfftubeCasparLLayer,
 	OfftubeSisyfosLLayer
 } from '../tv2_offtube_studio/layers'
-import { parseConfig } from './helpers/config'
+import { getConfig } from './helpers/config'
 
 export function onTimelineGenerateOfftube(
 	context: PartEventContext,
@@ -61,7 +61,7 @@ export function onTimelineGenerateOfftube(
 		previousPersistentState,
 		previousPartEndState,
 		resolvedPieces,
-		parseConfig,
+		getConfig,
 		{
 			Caspar: {
 				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending,

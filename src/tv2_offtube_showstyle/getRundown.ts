@@ -42,7 +42,7 @@ import {
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
-import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
+import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -60,7 +60,7 @@ export function getShowStyleVariantId(
 }
 
 export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	let startTime: number = 0
 	let endTime: number = 0

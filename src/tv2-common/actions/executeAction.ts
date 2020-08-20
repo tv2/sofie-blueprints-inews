@@ -76,7 +76,7 @@ export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	parseConfig: (context: ShowStyleContext) => ShowStyleConfig
+	getConfig: (context: ShowStyleContext) => ShowStyleConfig
 	postProcessPieceTimelineObjects: (
 		context: NotesContext,
 		config: ShowStyleConfig,
@@ -321,7 +321,7 @@ function executeActionSelectServerClip<
 	const file = userData.file
 	const partDefinition = userData.partDefinition
 	const duration = userData.duration
-	const config = settings.parseConfig(context)
+	const config = settings.getConfig(context)
 
 	const externalId = generateExternalId(context, actionId, [file])
 
@@ -539,7 +539,7 @@ function executeActionSelectDVE<
 ) {
 	const externalId = generateExternalId(context, actionId, [userData.config.template])
 
-	const config = settings.parseConfig(context)
+	const config = settings.getConfig(context)
 
 	const parsedCue = userData.config
 
@@ -748,7 +748,7 @@ function executeActionSelectDVELayout<
 	actionId: string,
 	userData: ActionSelectDVELayout
 ) {
-	const config = settings.parseConfig(context)
+	const config = settings.getConfig(context)
 
 	if (!settings.SourceLayers.DVEAdLib) {
 		return
@@ -856,7 +856,7 @@ function executeActionSelectJingle<
 
 	let file = ''
 
-	const config = settings.parseConfig(context)
+	const config = settings.getConfig(context)
 
 	if (!config.showStyle.BreakerConfig) {
 		context.warning(`Jingles have not been configured`)
@@ -944,7 +944,7 @@ function executeActionCutToCamera<
 	actionId: string,
 	userData: ActionCutToCamera
 ) {
-	const config = settings.parseConfig(context)
+	const config = settings.getConfig(context)
 
 	const externalId = generateExternalId(context, actionId, [userData.name])
 
@@ -1060,7 +1060,7 @@ function executeActionCutToRemote<
 	actionId: string,
 	userData: ActionCutToRemote
 ) {
-	const config = settings.parseConfig(context)
+	const config = settings.getConfig(context)
 
 	const externalId = generateExternalId(context, actionId, [userData.name])
 
@@ -1173,7 +1173,7 @@ function executeActionCutSourceToBox<
 	_actionId: string,
 	userData: ActionCutSourceToBox
 ) {
-	const config = settings.parseConfig(context)
+	const config = settings.getConfig(context)
 
 	const currentPieces = context.getPieceInstances('current')
 	const nextPieces = context.getPieceInstances('next')
@@ -1323,7 +1323,7 @@ function executeActionTakeWithTransition<
 
 			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
-			const config = settings.parseConfig(context)
+			const config = settings.getConfig(context)
 			const pieces: IBlueprintPiece[] = []
 			const partProps = CreateEffektForPartInner(context, config, pieces, userData.variant.effekt, externalId, {
 				sourceLayer: settings.SourceLayers.Effekt,
