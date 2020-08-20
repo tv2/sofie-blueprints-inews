@@ -26,12 +26,12 @@ export function GetTagForLive(name: string) {
 	return `${TallyTags.LIVE}_${SanitizeString(name)}`
 }
 
-export function GetTagForServer(storyName: string, clip: string, vo: boolean) {
-	return `${storyName}_${TallyTags.CLIP}_${SanitizeString(clip)}${vo ? '_VO' : ''}`
+export function GetTagForServer(segmentExternalId: string, clip: string, vo: boolean) {
+	return `${segmentExternalId}_${TallyTags.CLIP}_${SanitizeString(clip)}${vo ? '_VO' : ''}`
 }
 
-export function GetTagForServerNext(storyName: string, clip: string, vo: boolean) {
-	return `${GetTagForServer(storyName, clip, vo)}_NEXT`
+export function GetTagForServerNext(segmentExternalId: string, clip: string, vo: boolean) {
+	return `${GetTagForServer(segmentExternalId, clip, vo)}_NEXT`
 }
 
 export function GetTagForDVE(template: string, sources: CueDefinitionDVE['sources']) {
@@ -42,18 +42,18 @@ export function GetTagForDVENext(template: string, sources: CueDefinitionDVE['so
 	return `${GetTagForDVE(template, sources)}_NEXT`
 }
 
-export function GetTagForFull(storyName: string, graphic: string) {
-	return `${storyName}_${TallyTags.FULL}_${SanitizeString(graphic)}`
+export function GetTagForFull(segmentExternalId: string, graphic: string) {
+	return `${segmentExternalId}_${TallyTags.FULL}_${SanitizeString(graphic)}`
 }
 
-export function GetTagForFullNext(storyName: string, graphic: string) {
-	return `${GetTagForFull(storyName, graphic)}_NEXT`
+export function GetTagForFullNext(segmentExternalId: string, graphic: string) {
+	return `${GetTagForFull(segmentExternalId, graphic)}_NEXT`
 }
 
-export function GetTagForJingle(storyName: string, clip: string) {
-	return `${storyName}_${TallyTags.JINGLE}_${SanitizeString(clip)}`
+export function GetTagForJingle(segmentExternalId: string, clip: string) {
+	return `${segmentExternalId}_${TallyTags.JINGLE}_${SanitizeString(clip)}`
 }
 
-export function GetTagForJingleNext(storyName: string, clip: string) {
-	return `${GetTagForJingle(storyName, clip)}_NEXT`
+export function GetTagForJingleNext(segmentExternalId: string, clip: string) {
+	return `${GetTagForJingle(segmentExternalId, clip)}_NEXT`
 }

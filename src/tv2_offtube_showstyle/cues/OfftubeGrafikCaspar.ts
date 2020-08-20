@@ -66,7 +66,12 @@ export function OfftubeEvaluateGrafikCaspar(
 
 	if (engine === 'FULL') {
 		const grafikTemplateName = GetFullGrafikTemplateNameFromCue(config, parsedCue)
-		const adLibPiece = CreateFullAdLib(config, partDefinition.externalId, grafikTemplateName, partDefinition.storyName)
+		const adLibPiece = CreateFullAdLib(
+			config,
+			partDefinition.externalId,
+			grafikTemplateName,
+			partDefinition.segmentExternalId
+		)
 
 		actions.push(
 			literal<IBlueprintActionManifest>({
@@ -74,7 +79,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				userData: literal<ActionSelectFullGrafik>({
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
 					template: parsedCue.template,
-					storyName: partDefinition.storyName
+					segmentExternalId: partDefinition.segmentExternalId
 				}),
 				userDataManifest: {},
 				display: {
@@ -83,8 +88,8 @@ export function OfftubeEvaluateGrafikCaspar(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					onAirTags: [GetTagForFull(partDefinition.storyName, grafikTemplateName)],
-					setNextTags: [GetTagForFullNext(partDefinition.storyName, grafikTemplateName)]
+					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, grafikTemplateName)],
+					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, grafikTemplateName)]
 				}
 			})
 		)
@@ -93,7 +98,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			config,
 			partDefinition.externalId,
 			GetFullGrafikTemplateNameFromCue(config, parsedCue),
-			partDefinition.storyName
+			partDefinition.segmentExternalId
 		)
 		pieces.push(piece)
 	} else {
@@ -326,7 +331,7 @@ export function CreateFullPiece(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
 	template: string,
-	storyName: string
+	segmentExternalId: string
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
 		_id: '',
@@ -339,7 +344,11 @@ export function CreateFullPiece(
 		outputLayerId: OfftubeOutputLayers.PGM,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		content: CreateFullContent(config, template),
-		tags: [GetTagForFull(storyName, template), GetTagForFullNext(storyName, template), TallyTags.FULL_IS_LIVE]
+		tags: [
+			GetTagForFull(segmentExternalId, template),
+			GetTagForFullNext(segmentExternalId, template),
+			TallyTags.FULL_IS_LIVE
+		]
 	})
 }
 
@@ -347,7 +356,7 @@ function CreateFullAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
 	template: string,
-	storyName: string
+	segmentExternalId: string
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
@@ -360,8 +369,8 @@ function CreateFullAdLib(
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
 		infiniteMode: PieceLifespan.OutOnNextPart,
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
-		onAirTags: [GetTagForFull(storyName, template)],
-		setNextTags: [GetTagForFullNext(storyName, template)],
+		onAirTags: [GetTagForFull(segmentExternalId, template)],
+		setNextTags: [GetTagForFullNext(segmentExternalId, template)],
 		content: CreateFullContent(config, template)
 	})
 }

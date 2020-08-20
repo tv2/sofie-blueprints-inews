@@ -86,7 +86,7 @@ export function OfftubeEvaluateAdLib(
 				actionId: AdlibActionType.SELECT_SERVER_CLIP,
 				userData: literal<ActionSelectServerClip>({
 					type: AdlibActionType.SELECT_SERVER_CLIP,
-					storyName: partDefinition.storyName,
+					segmentExternalId: partDefinition.segmentExternalId,
 					file,
 					partDefinition,
 					duration,
@@ -99,8 +99,8 @@ export function OfftubeEvaluateAdLib(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adlibServer.content, timelineObjects: [] },
 					tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					onAirTags: [GetTagForServer(partDefinition.storyName, file, false)],
-					setNextTags: [GetTagForServerNext(partDefinition.storyName, file, false)]
+					onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
+					setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
 				}
 			})
 		)

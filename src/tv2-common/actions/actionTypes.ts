@@ -9,7 +9,7 @@ interface ActionBase {
 
 export interface ActionSelectServerClip extends ActionBase {
 	type: AdlibActionType.SELECT_SERVER_CLIP
-	storyName: string
+	segmentExternalId: string
 	file: string
 	partDefinition: PartDefinition
 	duration: number
@@ -18,7 +18,7 @@ export interface ActionSelectServerClip extends ActionBase {
 
 export interface ActionSelectFullGrafik extends ActionBase {
 	type: AdlibActionType.SELECT_FULL_GRAFIK
-	storyName: string
+	segmentExternalId: string
 	template: string
 }
 
@@ -35,7 +35,7 @@ export interface ActionSelectDVELayout extends ActionBase {
 
 export interface ActionSelectJingle extends ActionBase {
 	type: AdlibActionType.SELECT_JINGLE
-	storyName: string
+	segmentExternalId: string
 	clip: string
 }
 

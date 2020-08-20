@@ -54,8 +54,8 @@ export function CreateAdlibServer<
 			offtubeOptions
 		),
 		adlibPreroll: config.studio.CasparPrerollDuration,
-		tags: [GetTagForServer(partDefinition.storyName, file, vo), TallyTags.SERVER_IS_LIVE],
-		onAirTags: [GetTagForServer(partDefinition.storyName, file, vo)],
-		setNextTags: [GetTagForServerNext(partDefinition.storyName, file, vo)]
+		tags: [GetTagForServer(partDefinition.segmentExternalId, file, vo), TallyTags.SERVER_IS_LIVE],
+		onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, vo)],
+		setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, vo)]
 	})
 }

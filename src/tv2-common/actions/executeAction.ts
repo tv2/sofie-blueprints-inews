@@ -372,8 +372,8 @@ function executeActionSelectServerClip<
 		),
 		adlibPreroll: config.studio.CasparPrerollDuration,
 		tags: [
-			GetTagForServer(userData.storyName, file, userData.vo),
-			GetTagForServerNext(userData.storyName, file, userData.vo),
+			GetTagForServer(userData.segmentExternalId, file, userData.vo),
+			GetTagForServerNext(userData.segmentExternalId, file, userData.vo),
 			TallyTags.SERVER_IS_LIVE
 		]
 	})
@@ -431,7 +431,7 @@ function executeActionSelectServerClip<
 					userData,
 					mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
 				},
-				tags: [GetTagForServerNext(userData.storyName, file, userData.vo)],
+				tags: [GetTagForServerNext(userData.segmentExternalId, file, userData.vo)],
 				content: {
 					timelineObjects:
 						lookaheadObj && mediaObj
@@ -990,8 +990,8 @@ function executeActionSelectJingle<
 		sourceLayerId: settings.SourceLayers.Effekt,
 		content: pieceContent,
 		tags: [
-			GetTagForJingle(userData.storyName, userData.clip),
-			GetTagForJingleNext(userData.storyName, userData.clip),
+			GetTagForJingle(userData.segmentExternalId, userData.clip),
+			GetTagForJingleNext(userData.segmentExternalId, userData.clip),
 			TallyTags.JINGLE_IS_LIVE
 		]
 	})
@@ -1014,7 +1014,7 @@ function executeActionSelectJingle<
 					...pieceContent,
 					timelineObjects: []
 				},
-				tags: [GetTagForJingleNext(userData.storyName, userData.clip)]
+				tags: [GetTagForJingleNext(userData.segmentExternalId, userData.clip)]
 		  })
 		: undefined
 

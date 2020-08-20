@@ -100,8 +100,8 @@ export function CreatePartVO(
 			content: serverContent,
 			adlibPreroll: config.studio.CasparPrerollDuration,
 			tags: [
-				GetTagForServer(partDefinition.storyName, file, true),
-				GetTagForServerNext(partDefinition.storyName, file, true),
+				GetTagForServer(partDefinition.segmentExternalId, file, true),
+				GetTagForServerNext(partDefinition.segmentExternalId, file, true),
 				TallyTags.SERVER_IS_LIVE
 			]
 		})
