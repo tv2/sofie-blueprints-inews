@@ -87,6 +87,21 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 									transition: TSR.AtemTransitionStyle.CUT
 								}
 							}
+						}),
+						literal<TSR.TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: OfftubeAtemLLayer.AtemMENext,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									previewInput: config.studio.AtemSource.Default
+								}
+							}
 						})
 					])
 				})
