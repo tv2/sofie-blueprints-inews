@@ -32,7 +32,6 @@ describe('addScript', () => {
 			})
 		]
 		AddScript(part, result, 1000, SourceLayer.PgmScript)
-		console.log(JSON.stringify(result))
 		expect(result[result.length - 1]).toStrictEqual(
 			literal<IBlueprintPiece>({
 				externalId: part.externalId,
