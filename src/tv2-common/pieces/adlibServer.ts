@@ -38,7 +38,7 @@ export function CreateAdlibServer<
 		name: offtubeOptions?.isOfftube ? partDefinition.storyName : `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? sourceLayers.PgmVoiceOver : sourceLayers.PgmServer,
 		outputLayerId: offtubeOptions?.isOfftube ? 'selectedAdlib' : 'pgm',
-		infiniteMode: offtubeOptions?.isOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
+		lifespan: offtubeOptions?.isOfftube ? PieceLifespan.OutOnSegmentEnd : PieceLifespan.WithinPart,
 		toBeQueued: !offtubeOptions?.isOfftube,
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: [mediaPlayerSession]

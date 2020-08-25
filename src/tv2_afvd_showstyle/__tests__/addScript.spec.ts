@@ -21,29 +21,28 @@ describe('addScript', () => {
 		})
 		const result: IBlueprintPiece[] = [
 			literal<IBlueprintPiece>({
-				_id: '',
 				enable: {
 					start: 0
 				},
 				externalId: '',
 				name: 'Kam 2',
+				lifespan: PieceLifespan.WithinPart,
 				sourceLayerId: SourceLayer.PgmCam,
 				outputLayerId: 'pgm'
 			})
 		]
 		AddScript(part, result, 1000, SourceLayer.PgmScript)
-		expect(result).toContainEqual(
+		console.log(JSON.stringify(result))
+		expect(result[result.length - 1]).toStrictEqual(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: part.externalId,
 				name: 'Hallo, I wnat to tell you.....',
 				enable: {
-					start: 0,
-					duration: 1000
+					start: 0
 				},
 				outputLayerId: 'manus',
 				sourceLayerId: SourceLayer.PgmScript,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				content: literal<ScriptContent>({
 					firstWords: 'Hallo, I wnat to tell you.....',
 					lastWords: 'you...... HEREEEELLLLOOOK YES',

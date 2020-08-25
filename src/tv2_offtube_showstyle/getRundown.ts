@@ -112,7 +112,7 @@ function getGlobalAdLibPiecesOfftube(
 			sourceLayerId: OfftubeSourceLayer.PgmCam,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: preview,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
 			onAirTags: [GetTagForKam(info.id)],

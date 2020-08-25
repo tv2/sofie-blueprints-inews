@@ -19,7 +19,7 @@ export function GetDefaultOut<
 export function CreateTiming(
 	cue: CueDefinition,
 	defaultOut: number
-): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> | Pick<IBlueprintAdLibPiece, 'infiniteMode' | 'expectedDuration'> {
+): Pick<IBlueprintPiece, 'enable' | 'lifespan'> | Pick<IBlueprintAdLibPiece, 'lifespan' | 'expectedDuration'> {
 	if (cue.adlib) {
 		return CreateTimingAdLib(cue)
 	} else {
@@ -30,12 +30,12 @@ export function CreateTiming(
 export function CreateTimingEnable(
 	cue: CueDefinition,
 	defaultOut: number
-): Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> {
-	const result: Pick<IBlueprintPiece, 'enable' | 'infiniteMode'> = {
+): Pick<IBlueprintPiece, 'enable' | 'lifespan'> {
+	const result: Pick<IBlueprintPiece, 'enable' | 'lifespan'> = {
 		enable: {
 			start: 0
 		},
-		infiniteMode: PieceLifespan.Normal
+		lifespan: PieceLifespan.WithinPart
 	}
 
 	if (cue.start) {
@@ -46,7 +46,7 @@ export function CreateTimingEnable(
 
 	if (cue.end) {
 		if (cue.end.infiniteMode) {
-			result.infiniteMode = InfiniteMode(cue.end.infiniteMode, PieceLifespan.Normal)
+			result.lifespan = LifeSpan(cue.end.infiniteMode, PieceLifespan.WithinPart)
 		} else {
 			const end = CalculateTime(cue.end)
 			;(result.enable as any).duration = end
@@ -62,17 +62,15 @@ export function CreateTimingEnable(
 	return result
 }
 
-export function CreateTimingAdLib(
-	cue: CueDefinitionBase
-): Pick<IBlueprintAdLibPiece, 'infiniteMode' | 'expectedDuration'> {
-	const result: Pick<IBlueprintAdLibPiece, 'infiniteMode' | 'expectedDuration'> = {
-		infiniteMode: PieceLifespan.OutOnNextPart,
+export function CreateTimingAdLib(cue: CueDefinitionBase): Pick<IBlueprintAdLibPiece, 'lifespan' | 'expectedDuration'> {
+	const result: Pick<IBlueprintAdLibPiece, 'lifespan' | 'expectedDuration'> = {
+		lifespan: PieceLifespan.WithinPart,
 		expectedDuration: 0
 	}
 
 	if (cue.end) {
 		if (cue.end.infiniteMode) {
-			result.infiniteMode = InfiniteMode(cue.end.infiniteMode, PieceLifespan.OutOnNextPart)
+			result.lifespan = LifeSpan(cue.end.infiniteMode, PieceLifespan.WithinPart)
 		} else {
 			result.expectedDuration = CalculateTime(cue.end)
 		}
@@ -81,14 +79,14 @@ export function CreateTimingAdLib(
 	return result
 }
 
-export function InfiniteMode(mode: 'B' | 'S' | 'O', defaultLifespan: PieceLifespan): PieceLifespan {
+export function LifeSpan(mode: 'B' | 'S' | 'O', defaultLifespan: PieceLifespan): PieceLifespan {
 	switch (mode) {
 		case 'B':
-			return PieceLifespan.OutOnNextPart
+			return PieceLifespan.WithinPart
 		case 'S':
-			return PieceLifespan.OutOnNextSegment
+			return PieceLifespan.OutOnSegmentEnd
 		case 'O':
-			return PieceLifespan.Infinite
+			return PieceLifespan.OutOnRundownEnd
 	}
 
 	return defaultLifespan

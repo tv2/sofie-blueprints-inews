@@ -11,7 +11,6 @@ import {
 	CreateAdlibServer,
 	CreatePartServerBase,
 	GetSisyfosTimelineObjForCamera,
-	getStickyLayers,
 	GetTagForServer,
 	GetTagForServerNext,
 	literal,
@@ -62,13 +61,12 @@ export function OfftubeCreatePartVO(
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [mediaPlayerSession]
 			}),
@@ -119,7 +117,7 @@ export function OfftubeCreatePartVO(
 			Sisyfos: {
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 			},
-			STICKY_LAYERS: getStickyLayers(config.studio)
+			STICKY_LAYERS: config.stickyLayers
 		},
 		actualDuration,
 		{

@@ -17,16 +17,14 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 		const stripLength = Math.min(PREVIEW_CHARACTERS, script.length)
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: part.externalId,
 				name: script.slice(0, stripLength),
 				enable: {
-					start: 0,
-					duration
+					start: 0
 				},
 				outputLayerId: 'manus',
 				sourceLayerId,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				content: literal<ScriptContent>({
 					firstWords: script.slice(0, stripLength),
 					lastWords: script

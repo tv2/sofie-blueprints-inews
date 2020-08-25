@@ -87,13 +87,12 @@ export function CreatePartVO(
 	serverContent.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmVoiceOver,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [mediaPlayerSession]
 			}),

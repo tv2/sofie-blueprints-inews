@@ -93,7 +93,7 @@ export function applyToConfig(
 	sourceName: string,
 	overrides: { [key: string]: ConfigItemValue }
 ) {
-	_.each(manifest, (val: ConfigManifestEntry) => {
+	for (const val of manifest) {
 		let newVal = val.defaultVal
 
 		const overrideVal = overrides[val.id] as ConfigItemValue | undefined
@@ -139,7 +139,7 @@ export function applyToConfig(
 		}
 
 		objectPath.set(config, val.id, newVal)
-	})
+	}
 }
 
 export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
@@ -153,10 +153,10 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	}
 
 	// Load values injected by core, not via manifest
-	_.each(CORE_INJECTED_KEYS, (id: string) => {
+	for (const id of CORE_INJECTED_KEYS) {
 		// Use the key as the value. Good enough for now
 		objectPath.set(config.studio, id, id)
-	})
+	}
 
 	// Load the config
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', {})
@@ -165,7 +165,7 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
 	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
 
 	return config
 }
@@ -193,7 +193,7 @@ export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
 	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
 
 	return config
 }

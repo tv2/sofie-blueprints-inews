@@ -37,11 +37,11 @@ function reversePreviousAssignment(
 ): SessionToPlayerMap {
 	const previousAssignmentRev: { [sessionId: string]: MediaPlayerClaim | undefined } = {}
 	for (const key of _.keys(previousAssignment)) {
-		_.each(previousAssignment[key] || [], v2 => {
+		for (const v2 of previousAssignment[key] || []) {
 			if (timeline.some(obj => obj.metaData && obj.metaData.mediaPlayerSession === v2.sessionId)) {
 				previousAssignmentRev[v2.sessionId] = v2
 			}
-		})
+		}
 	}
 	return previousAssignmentRev
 }
@@ -212,7 +212,8 @@ export function resolveMediaPlayerAssignments<
 
 	// Convert requests into a sorted array
 	const activeRequests: ActiveRequest[] = []
-	_.each(sessionRequests, (r, sessionId) => {
+	for (const sessionId of Object.keys(sessionRequests)) {
+		const r = sessionRequests[sessionId]
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
 			// const sessionHasEnded = r.end && r.end + 2000 < context.getCurrentTime()
@@ -228,20 +229,21 @@ export function resolveMediaPlayerAssignments<
 				})
 			}
 		}
-	})
+	}
 	_.sortBy(activeRequests, r => r.start)
 
 	// Go through and assign players
 	if (debugLog) {
 		context.warning('all reqs' + JSON.stringify(activeRequests, undefined, 4))
 	}
-	_.each(activeRequests, req => {
+
+	for (const req of activeRequests) {
 		if (req.player !== undefined) {
 			// Keep existing assignment
 			if (debugLog) {
 				context.warning('Retained mp' + req.player + ' for ' + req.id)
 			}
-			return
+			continue
 		}
 
 		const otherActive = _.filter(activeRequests, r => doesRequestOverlap(req, r))
@@ -256,20 +258,20 @@ export function resolveMediaPlayerAssignments<
 		if (nextPlayerId === undefined) {
 			context.warning('All the mediaplayers are in use (' + req.id + ')!')
 		} else {
-			_.each(otherActive, o => {
+			for (const o of otherActive) {
 				if (o.player === nextPlayerId) {
 					if (debugLog) {
 						context.warning('Stole mp from ' + o.id)
 					}
 					o.player = undefined
 				}
-			})
+			}
 			req.player = nextPlayerId
 			if (debugLog) {
 				context.warning('Assigned mp' + req.player + ' to ' + req.id + '_' + JSON.stringify(req))
 			}
 		}
-	})
+	}
 	if (debugLog) {
 		context.warning('result' + JSON.stringify(activeRequests))
 	}
@@ -287,7 +289,7 @@ function updateObjectsToMediaPlayer<
 	objs: OnGenerateTimelineObj[],
 	sourceLayers: ABSourceLayers
 ) {
-	_.each(objs, obj => {
+	for (const obj of objs) {
 		// Mutate each object to the correct player
 		if (obj.content.deviceType === TSR.DeviceType.CASPARCG) {
 			if (obj.layer === sourceLayers.Caspar.ClipPending) {
@@ -353,7 +355,7 @@ function updateObjectsToMediaPlayer<
 		} else if (obj.content.deviceType !== TSR.DeviceType.ABSTRACT) {
 			context.warning(`Trying to move object of unknown type (${obj.content.deviceType}) for media player assignment`)
 		}
-	})
+	}
 }
 
 export function assignMediaPlayers<
@@ -415,7 +417,8 @@ export function applyMediaPlayersAssignments<
 
 	// Apply the known assignments
 	const remainingGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []
-	_.each(groupedObjs, (group, groupId) => {
+	for (const groupId of Object.keys(groupedObjs)) {
+		const group = groupedObjs[groupId]
 		const request = _.find(activeRequests, req => req.id === groupId)
 		if (request) {
 			if (request.player) {
@@ -426,14 +429,14 @@ export function applyMediaPlayersAssignments<
 		} else {
 			remainingGroups.push({ id: groupId, objs: group })
 		}
-	})
+	}
 
 	// Find the groups needing more work
 	// Not matching a request means this is either a rogue object in a mislabeled piece, or lookahead for a future part.
 	const unknownGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []
 	const lookaheadGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []
 
-	_.each(remainingGroups, grp => {
+	for (const grp of remainingGroups) {
 		// If this is lookahead for a future part (no end set on the object)
 		const isFuturePartLookahead = _.some(
 			grp.objs,
@@ -445,10 +448,10 @@ export function applyMediaPlayersAssignments<
 		} else {
 			unknownGroups.push(grp)
 		}
-	})
+	}
 
 	// These are the groups that shouldn't exist, so are likely a bug. There isnt a lot we can do beyond warn about the potential bug
-	_.each(unknownGroups, grp => {
+	for (const grp of unknownGroups) {
 		const objIds = _.map(grp.objs, o => o.id)
 		const prev = previousAssignmentRev[grp.id]
 		if (prev) {
@@ -462,7 +465,7 @@ export function applyMediaPlayersAssignments<
 				`Found unexpected unknown session on the timeline: "${grp.id}" belonging to ${objIds}. This could result in black playback`
 			)
 		}
-	})
+	}
 
 	interface MediaPlayerUsageEnd {
 		playerId: number
@@ -489,7 +492,7 @@ export function applyMediaPlayersAssignments<
 	mediaPlayerUsageEnd = _.sortBy(mediaPlayerUsageEnd, u => u.end).reverse()
 
 	// Finish up with allocating lookahead based on what is left. If there is no space left that is not a problem until playback is closer
-	_.each(lookaheadGroups, grp => {
+	for (const grp of lookaheadGroups) {
 		if (debugLog) {
 			context.warning(`Attempting assignment for future lookahead ${grp.id}`)
 		}
@@ -527,7 +530,7 @@ export function applyMediaPlayersAssignments<
 
 			updateObjectsToMediaPlayer(context, config, nextPlayer.playerId, grp.objs, sourceLayers)
 		}
-	})
+	}
 
 	if (debugLog) {
 		context.warning('new assignments:' + JSON.stringify(newAssignments))

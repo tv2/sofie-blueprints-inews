@@ -54,7 +54,7 @@ export function EvaluateVIZBase<
 					name: fileName,
 					outputLayerId: 'sec',
 					sourceLayerId: sourceLayers.SourceLayerDVEBackground,
-					infiniteMode: PieceLifespan.Infinite,
+					lifespan: PieceLifespan.OutOnRundownEnd,
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
@@ -78,7 +78,6 @@ export function EvaluateVIZBase<
 		} else {
 			pieces.push(
 				literal<IBlueprintPiece>({
-					_id: '',
 					externalId: partId,
 					name: fileName,
 					enable: {
@@ -86,7 +85,7 @@ export function EvaluateVIZBase<
 					},
 					outputLayerId: 'sec',
 					sourceLayerId: sourceLayers.SourceLayerDVEBackground,
-					infiniteMode: PieceLifespan.Infinite,
+					lifespan: PieceLifespan.OutOnRundownEnd,
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
@@ -127,7 +126,6 @@ export function EvaluateVIZBase<
 				}
 				pieces.push(
 					literal<IBlueprintPiece>({
-						_id: '',
 						externalId: partId,
 						enable: {
 							start
@@ -135,7 +133,7 @@ export function EvaluateVIZBase<
 						name: parsedCue.content.INP1 || '',
 						outputLayerId: 'aux',
 						sourceLayerId: sourceLayers.SourceLayerVizFullIn1,
-						infiniteMode: PieceLifespan.Infinite,
+						lifespan: PieceLifespan.OutOnRundownEnd,
 						content: literal<CameraContent>({
 							studioLabel: '',
 							switcherInput: sourceInfo.port,
@@ -179,7 +177,7 @@ export function EvaluateVIZBase<
 							name: path,
 							outputLayerId: 'sec',
 							sourceLayerId: sourceLayers.SourceLayerDesign,
-							infiniteMode: PieceLifespan.Infinite,
+							lifespan: PieceLifespan.OutOnRundownEnd,
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,
@@ -203,7 +201,6 @@ export function EvaluateVIZBase<
 				} else {
 					pieces.push(
 						literal<IBlueprintPiece>({
-							_id: '',
 							externalId: partId,
 							name: path,
 							enable: {
@@ -211,7 +208,7 @@ export function EvaluateVIZBase<
 							},
 							outputLayerId: 'sec',
 							sourceLayerId: sourceLayers.SourceLayerDesign,
-							infiniteMode: PieceLifespan.Infinite,
+							lifespan: PieceLifespan.OutOnRundownEnd,
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,

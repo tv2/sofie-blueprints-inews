@@ -86,7 +86,6 @@ function executeActionClearGraphics(
 	context.insertPiece(
 		'current',
 		literal<IBlueprintPiece>({
-			_id: '',
 			enable: {
 				start: 0,
 				duration: 2000
@@ -95,7 +94,7 @@ function executeActionClearGraphics(
 			name: 'GFX Clear',
 			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 			outputLayerId: 'sec',
-			infiniteMode: PieceLifespan.Normal,
+			lifespan: PieceLifespan.WithinPart,
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjVIZMSEClearAllElements>({

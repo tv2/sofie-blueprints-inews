@@ -193,16 +193,14 @@ export class MockContext implements ActionExecutionContext {
 		const pieceInstance: IBlueprintPieceInstance = {
 			_id: '',
 			piece: {
-				...piece,
-				partId: ''
+				_id: '',
+				...piece
 			}
 		}
 		if (part === 'current') {
-			pieceInstance.piece.partId = this.currentPart.part._id
 			this.currentPieceInstances.push(pieceInstance)
 		} else {
 			if (this.nextPart && this.nextPieceInstances) {
-				pieceInstance.piece.partId = this.nextPart.part._id
 				this.nextPieceInstances.push(pieceInstance)
 			}
 		}
@@ -217,8 +215,7 @@ export class MockContext implements ActionExecutionContext {
 			_id: '',
 			piece: {
 				_id: '',
-				...(piece as IBlueprintPiece),
-				partId: ''
+				...(piece as IBlueprintPiece)
 			}
 		}
 	}
@@ -238,8 +235,8 @@ export class MockContext implements ActionExecutionContext {
 		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance>(p => ({
 			_id: (Date.now() * Math.random()).toString(),
 			piece: {
-				...p,
-				partId: ''
+				_id: '',
+				...p
 			}
 		}))
 

@@ -83,7 +83,7 @@ export function applyToConfig(
 	sourceName: string,
 	overrides: { [key: string]: ConfigItemValue }
 ) {
-	_.each(manifest, (val: ConfigManifestEntry) => {
+	for (const val of manifest) {
 		let newVal = val.defaultVal
 
 		const overrideVal = overrides[val.id] as ConfigItemValue | undefined
@@ -129,7 +129,7 @@ export function applyToConfig(
 		}
 
 		objectPath.set(config, val.id, newVal)
-	})
+	}
 }
 
 export function defaultStudioConfig(context: NotesContext): OfftubeStudioBlueprintConfig {
@@ -143,10 +143,10 @@ export function defaultStudioConfig(context: NotesContext): OfftubeStudioBluepri
 	}
 
 	// Load values injected by core, not via manifest
-	_.each(CORE_INJECTED_KEYS, (id: string) => {
+	for (const id of CORE_INJECTED_KEYS) {
 		// Use the key as the value. Good enough for now
 		objectPath.set(config.studio, id, id)
-	})
+	}
 
 	// Load the config
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', {})
@@ -155,7 +155,7 @@ export function defaultStudioConfig(context: NotesContext): OfftubeStudioBluepri
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
 	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
 
 	return config
 }
@@ -172,9 +172,9 @@ export function parseStudioConfig(context: ShowStyleContext): OfftubeStudioBluep
 
 	// Load values injected by core, not via manifest
 	const studioConfig = context.getStudioConfig()
-	_.each(CORE_INJECTED_KEYS, (id: string) => {
+	for (const id of CORE_INJECTED_KEYS) {
 		objectPath.set(config.studio, id, studioConfig[id])
-	})
+	}
 
 	// Load the config
 	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', studioConfig)
@@ -183,7 +183,7 @@ export function parseStudioConfig(context: ShowStyleContext): OfftubeStudioBluep
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)
 	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio)
+	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
 
 	return config
 }

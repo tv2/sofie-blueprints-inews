@@ -99,13 +99,12 @@ export function CreateEffektForPartInner<
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId,
 			name: `EFFEKT ${effekt}`,
 			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
 			outputLayerId: 'jingle',
 			sourceLayerId: layers.sourceLayer,
-			infiniteMode: PieceLifespan.Normal,
+			lifespan: PieceLifespan.WithinPart,
 			isTransition: true,
 			content: literal<VTContent>({
 				studioLabel: '',

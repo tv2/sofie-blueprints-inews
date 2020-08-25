@@ -38,12 +38,11 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 		enable: {
 			start: 0
 		},
-		partId: CURRENT_PART_ID,
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
 		outputLayerId: 'pgm',
-		infiniteMode: PieceLifespan.OutOnNextPart
+		lifespan: PieceLifespan.WithinPart
 	})
 }
 
@@ -91,12 +90,11 @@ const kamPieceInstance_Cut: IBlueprintPieceInstance = {
 		enable: {
 			start: 0
 		},
-		partId: NEXT_PART_ID,
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
 		outputLayerId: 'pgm',
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
@@ -127,12 +125,11 @@ const kamPieceInstance_Mix: IBlueprintPieceInstance = {
 		enable: {
 			start: 0
 		},
-		partId: NEXT_PART_ID,
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
 		outputLayerId: 'pgm',
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
@@ -168,12 +165,11 @@ const kamPieceInstance_Effekt: IBlueprintPieceInstance = {
 		enable: {
 			start: 0
 		},
-		partId: NEXT_PART_ID,
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
 		outputLayerId: 'pgm',
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
@@ -205,12 +201,11 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 			start: 0,
 			duration: MOCK_EFFEKT_1.Duration
 		},
-		partId: NEXT_PART_ID,
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EFFEKT 1',
 		sourceLayerId: SourceLayer.PgmJingle,
 		outputLayerId: 'jingle',
-		infiniteMode: PieceLifespan.Normal,
+		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: []
 		}

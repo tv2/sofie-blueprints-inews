@@ -79,13 +79,12 @@ export function OfftubeEvaluateJingle(
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: `${part.externalId}-JINGLE`,
 			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 			enable: {
 				start: 0
 			},
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: 'jingle',
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			content: createJingleContentOfftube(config, file, jingle.LoadFirstFrame)

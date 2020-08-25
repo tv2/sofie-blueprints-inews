@@ -117,7 +117,6 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 	postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
 	const fullDataStore = literal<IBlueprintPiece>({
-		_id: '',
 		externalId,
 		name: template,
 		enable: {
@@ -125,7 +124,7 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		},
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
 		sourceLayerId: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
-		infiniteMode: PieceLifespan.OutOnNextSegment,
+		lifespan: PieceLifespan.WithinPart,
 		metaData: {
 			userData
 		},

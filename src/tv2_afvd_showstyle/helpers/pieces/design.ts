@@ -36,7 +36,7 @@ export function EvaluateDesign(
 				name: parsedCue.design,
 				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,
-				infiniteMode: PieceLifespan.Infinite,
+				lifespan: PieceLifespan.WithinPart,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
@@ -60,7 +60,6 @@ export function EvaluateDesign(
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: parsedCue.design,
 				enable: {
@@ -68,7 +67,7 @@ export function EvaluateDesign(
 				},
 				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,
-				infiniteMode: PieceLifespan.Infinite,
+				lifespan: PieceLifespan.WithinPart,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,

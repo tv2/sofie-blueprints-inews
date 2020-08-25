@@ -77,7 +77,6 @@ export function OfftubeEvaluateDVE(
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partDefinition.externalId,
 				name: `${parsedCue.template}`,
 				enable: {
@@ -86,7 +85,7 @@ export function OfftubeEvaluateDVE(
 				},
 				outputLayerId: 'pgm',
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				toBeQueued: true,
 				content: {
 					...pieceContent.content,

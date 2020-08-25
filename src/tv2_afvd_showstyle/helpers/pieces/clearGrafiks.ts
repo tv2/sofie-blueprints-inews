@@ -33,7 +33,6 @@ export function EvaluateClearGrafiks(
 		SourceLayer.PgmGraphicsTLF
 	].forEach(sourceLayerId => {
 		pieces.push({
-			_id: '',
 			externalId: partId,
 			name: `CLEAR ${sourceLayerId}`,
 			enable: {
@@ -42,20 +41,19 @@ export function EvaluateClearGrafiks(
 			},
 			outputLayerId: 'sec',
 			sourceLayerId,
-			infiniteMode: PieceLifespan.Normal,
+			lifespan: PieceLifespan.WithinPart,
 			virtual: true
 		})
 	})
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partId,
 			name: 'CLEAR',
 			...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
 			outputLayerId: 'sec',
 			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-			infiniteMode: PieceLifespan.Normal,
+			lifespan: PieceLifespan.WithinPart,
 			content: {
 				timelineObjects: [
 					literal<TSR.TimelineObjVIZMSEClearAllElements>({

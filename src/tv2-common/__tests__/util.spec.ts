@@ -1,3 +1,4 @@
+import { PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
 import { assertUnreachable, isAdLibPiece } from '../util'
 
 describe('util', () => {
@@ -8,17 +9,18 @@ describe('util', () => {
 				externalId: '-',
 				name: 'test adlib',
 				sourceLayerId: 'Cam',
-				outputLayerId: 'pgm'
+				outputLayerId: 'pgm',
+				lifespan: PieceLifespan.WithinPart
 			})
 		).toBeTruthy()
 
 		expect(
 			isAdLibPiece({
-				_id: '-',
 				externalId: '-',
 				name: 'test non-adlib',
 				sourceLayerId: 'Cam',
 				outputLayerId: 'pgm',
+				lifespan: PieceLifespan.WithinPart,
 				enable: {
 					start: 0
 				}
