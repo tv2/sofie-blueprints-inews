@@ -3,7 +3,6 @@ import * as _ from 'underscore'
 
 import {
 	BlueprintMappings,
-	BlueprintRuntimeArguments,
 	ConfigItemValue,
 	IBlueprintRundownDB,
 	ICommonContext,
@@ -162,16 +161,10 @@ export class SegmentContext extends ShowStyleContext implements ISegmentContext 
 	public rundownId: string
 	public rundown: IBlueprintRundownDB
 
-	public runtimeArguments: { [key: string]: BlueprintRuntimeArguments } = {}
-
 	constructor(rundown: IBlueprintRundownDB, mappings: BlueprintMappings, contextName?: string) {
 		super(contextName || rundown.name, mappings, rundown._id)
 
 		this.rundownId = rundown._id
 		this.rundown = rundown
-	}
-
-	public getRuntimeArguments(externalId: string): BlueprintRuntimeArguments | undefined {
-		return this.runtimeArguments[externalId]
 	}
 }

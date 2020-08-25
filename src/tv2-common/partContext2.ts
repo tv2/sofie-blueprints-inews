@@ -14,11 +14,6 @@ export class PartContext2 implements SegmentContext {
 		this.rundown = baseContext.rundown
 	}
 
-	/** PartContext */
-	public getRuntimeArguments() {
-		return this.baseContext.getRuntimeArguments(this.externalId) || {}
-	}
-
 	/** IShowStyleConfigContext */
 	public getShowStyleConfig() {
 		return this.baseContext.getShowStyleConfig()

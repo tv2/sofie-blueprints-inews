@@ -3,11 +3,7 @@ import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
-import {
-	getOutputLayerDefaultsMigrationSteps,
-	getRuntimeArgumentsDefaultsMigrationSteps,
-	getSourceLayerDefaultsMigrationSteps
-} from './util'
+import { getOutputLayerDefaultsMigrationSteps, getSourceLayerDefaultsMigrationSteps } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
@@ -23,7 +19,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getCreateVariantMigrationSteps(),
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	...getRuntimeArgumentsDefaultsMigrationSteps(VERSION),
 	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
 	...remapTableColumnValues(VERSION, 'GFXTemplates', 'VizDestination', remapVizDOvl)
