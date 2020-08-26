@@ -117,6 +117,7 @@ export interface ActionExecutionSettings<
 		Sisyfos: {
 			ClipPending: string
 			Effekt: string
+			StudioMics: string
 		}
 		Atem: {
 			MEProgram: string
@@ -409,7 +410,9 @@ function executeActionSelectServerClip<
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		if (userData.vo) {
-			activeServerPiece.content.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
+			activeServerPiece.content.timelineObjects.push(
+				GetSisyfosTimelineObjForCamera(context, config, 'server', settings.LLayer.Sisyfos.StudioMics)
+			)
 		}
 	}
 
@@ -1056,7 +1059,12 @@ function executeActionCutToCamera<
 	}
 	const atemInput = sourceInfoCam.port
 
-	const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${userData.name}`)
+	const camSisyfos = GetSisyfosTimelineObjForCamera(
+		context,
+		config,
+		`Kamera ${userData.name}`,
+		settings.LLayer.Sisyfos.StudioMics
+	)
 
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
@@ -1090,9 +1098,9 @@ function executeActionCutToCamera<
 							})
 					  ]
 					: []),
-				...camSisyfos,
+				camSisyfos,
 				...config.stickyLayers
-					.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+					.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
 					.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
 						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 							id: '',
@@ -1167,7 +1175,7 @@ function executeActionCutToRemote<
 
 	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
 		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`, GetLayersForEkstern),
-		...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+		GetSisyfosTimelineObjForCamera(context, config, 'telefon', settings.LLayer.Sisyfos.StudioMics)
 	]
 
 	const remotePiece = literal<IBlueprintPiece>({
@@ -1318,12 +1326,12 @@ function executeActionCutSourceToBox<
 
 	const newPieceContent = MakeContentDVE2(context, config, meta.config, {}, meta.sources, settings.DVEGeneratorOptions)
 	if (userData.vo) {
-		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs')
+		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs', settings.LLayer.Sisyfos.StudioMics)
 		// Replace any existing instances of studio mics with VO values
 		newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
-			obj => !studioMics.some(o => o.layer === obj.layer)
+			obj => studioMics.layer !== obj.layer
 		)
-		newPieceContent.content.timelineObjects.push(...studioMics)
+		newPieceContent.content.timelineObjects.push(studioMics)
 	}
 
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
