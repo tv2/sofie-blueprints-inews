@@ -25,5 +25,5 @@ export function parseConfig(config: IBlueprintConfig): any {
 }
 
 export function getConfig(context: ShowStyleContext): BlueprintConfig {
-	return ({ ...context.getStudioConfig(), ...context.getShowStyleConfig() } as any) as BlueprintConfig
+	return ({ ...(context.getStudioConfig() as any), ...(context.getShowStyleConfig() as any) } as any) as BlueprintConfig
 }

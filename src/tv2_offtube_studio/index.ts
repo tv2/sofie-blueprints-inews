@@ -19,7 +19,7 @@ const manifest: StudioBlueprintManifest = {
 
 	minimumCoreVersion: '1.10.0',
 
-	parseConfig,
+	preprocessConfig: parseConfig,
 
 	studioConfigManifest,
 	studioMigrations,

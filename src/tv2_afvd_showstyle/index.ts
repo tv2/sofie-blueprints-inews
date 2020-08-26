@@ -23,7 +23,7 @@ const manifest: ShowStyleBlueprintManifest = {
 
 	minimumCoreVersion: '1.10.0',
 
-	parseConfig,
+	preprocessConfig: parseConfig,
 
 	getShowStyleVariantId,
 	getRundown,

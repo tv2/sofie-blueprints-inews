@@ -49,5 +49,8 @@ export function parseConfig(config: IBlueprintConfig): any {
 }
 
 export function getConfig(context: ShowStyleContext): OfftubeShowstyleBlueprintConfig {
-	return ({ ...context.getStudioConfig(), ...context.getShowStyleConfig() } as any) as OfftubeShowstyleBlueprintConfig
+	return ({
+		...(context.getStudioConfig() as any),
+		...(context.getShowStyleConfig() as any)
+	} as any) as OfftubeShowstyleBlueprintConfig
 }
