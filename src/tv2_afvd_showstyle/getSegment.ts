@@ -12,7 +12,7 @@ import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { StudioConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
-import { BlueprintConfig as ShowStyleConfig, parseConfig } from './helpers/config'
+import { BlueprintConfig as ShowStyleConfig, getConfig } from './helpers/config'
 import { SourceLayer } from './layers'
 import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'
@@ -24,10 +24,10 @@ import { CreatePartUnknown } from './parts/unknown'
 import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	const result: BlueprintResultSegment = getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {
-		parseConfig,
+		getConfig,
 		TransformCuesIntoShowstyle,
 		CreatePartContinuity,
 		CreatePartUnknown,

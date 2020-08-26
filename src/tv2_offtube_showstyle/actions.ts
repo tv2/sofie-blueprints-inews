@@ -17,7 +17,7 @@ import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '..
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
-import { parseConfig } from './helpers/config'
+import { getConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -38,7 +38,7 @@ export function executeActionOfftube(
 	executeAction(
 		context,
 		{
-			parseConfig,
+			getConfig,
 			postProcessPieceTimelineObjects,
 			EvaluateCues: OfftubeEvaluateCues,
 			DVEGeneratorOptions: OFFTUBE_DVE_GENERATOR_OPTIONS,
@@ -97,7 +97,7 @@ export function executeActionOfftube(
 }
 
 function executeActionSelectFull(context: ActionExecutionContext, _actionId: string, userData: ActionSelectFullGrafik) {
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	const template = GetFullGrafikTemplateName(config, userData.template)
 

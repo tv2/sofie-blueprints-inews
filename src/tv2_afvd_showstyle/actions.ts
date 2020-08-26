@@ -9,7 +9,7 @@ import { ActionClearGraphics, executeAction, GraphicLLayer, literal } from 'tv2-
 import { TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
-import { parseConfig } from './helpers/config'
+import { getConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
 import { createJingleContentAFVD } from './helpers/pieces/jingle'
@@ -20,7 +20,7 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 	executeAction(
 		context,
 		{
-			parseConfig,
+			getConfig,
 			postProcessPieceTimelineObjects,
 			EvaluateCues,
 			DVEGeneratorOptions: AFVD_DVE_GENERATOR_OPTIONS,

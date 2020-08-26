@@ -11,7 +11,7 @@ import {
 import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
+import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
 import { OfftubeCreatePartGrafik } from './parts/OfftubeGrafik'
@@ -22,10 +22,10 @@ import { OfftubeCreatePartVO } from './parts/OfftubeVO'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
-		parseConfig,
+		getConfig,
 		TransformCuesIntoShowstyle,
 		CreatePartContinuity,
 		CreatePartUnknown,

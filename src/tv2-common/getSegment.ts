@@ -35,7 +35,7 @@ export interface GetSegmentShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	parseConfig: (context: ShowStyleContext) => ShowStyleConfig
+	getConfig: (context: ShowStyleContext) => ShowStyleConfig
 	TransformCuesIntoShowstyle: (
 		config: TV2ShowstyleBlueprintConfigBase,
 		partDefinition: PartDefinition
@@ -128,7 +128,7 @@ export function getSegmentBase<
 				? ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
 				: undefined
 	})
-	const config = showStyleOptions.parseConfig(context)
+	const config = showStyleOptions.getConfig(context)
 
 	if (ingestSegment.payload.iNewsStory.meta.float === 'float') {
 		segment.isHidden = true

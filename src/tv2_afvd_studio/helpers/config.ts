@@ -1,14 +1,5 @@
-import * as objectPath from 'object-path'
+import { IBlueprintConfig } from 'tv-automation-sofie-blueprints-integration'
 import {
-	ConfigItemValue,
-	ConfigManifestEntry,
-	ConfigManifestEntryType,
-	NotesContext,
-	ShowStyleContext,
-	TableConfigItemValue
-} from 'tv-automation-sofie-blueprints-integration'
-import {
-	assertUnreachable,
 	getLiveAudioLayers,
 	getStickyLayers,
 	MediaPlayerConfig,
@@ -19,7 +10,6 @@ import {
 } from 'tv2-common'
 import * as _ from 'underscore'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
-import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { parseMediaPlayers, parseSources } from './sources'
 
 export interface BlueprintConfig {
@@ -86,62 +76,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	ATEMDelay: number
 }
 
-export function applyToConfig(
-	context: NotesContext,
-	config: any,
-	manifest: ConfigManifestEntry[],
-	sourceName: string,
-	overrides: { [key: string]: ConfigItemValue }
-) {
-	for (const val of manifest) {
-		let newVal = val.defaultVal
-
-		const overrideVal = overrides[val.id] as ConfigItemValue | undefined
-		if (overrideVal !== undefined) {
-			switch (val.type) {
-				case ConfigManifestEntryType.BOOLEAN:
-					newVal = overrideVal as boolean
-					break
-				case ConfigManifestEntryType.NUMBER:
-					newVal = overrideVal as number
-					break
-				case ConfigManifestEntryType.STRING:
-					newVal = overrideVal as string
-					break
-				case ConfigManifestEntryType.ENUM:
-					newVal = overrideVal as string
-					break
-				case ConfigManifestEntryType.JSON:
-					newVal = overrideVal as string
-					break
-				case ConfigManifestEntryType.TABLE:
-					newVal = overrideVal as TableConfigItemValue
-					break
-				case ConfigManifestEntryType.SELECT:
-					newVal = overrideVal
-					break
-				case ConfigManifestEntryType.LAYER_MAPPINGS:
-					newVal = overrideVal
-					break
-				case ConfigManifestEntryType.SOURCE_LAYERS:
-					newVal = overrideVal
-					break
-				case ConfigManifestEntryType.MULTILINE_STRING:
-					newVal = overrideVal
-					break
-				default:
-					assertUnreachable(val)
-					context.warning('Unknown config field type: ' + val)
-					break
-			}
-		} else if (val.required) {
-			context.warning(`Required config not defined in ${sourceName}: "${val.name}"`)
-		}
-
-		objectPath.set(config, val.id, newVal)
-	}
-}
-
+/*
 export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 	const config: BlueprintConfig = {
 		studio: {} as any,
@@ -169,26 +104,17 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 
 	return config
 }
+*/
 
-export function parseStudioConfig(context: ShowStyleContext): BlueprintConfig {
+export function parseConfig(rawConfig: IBlueprintConfig): any {
 	const config: BlueprintConfig = {
-		studio: {} as any,
+		studio: rawConfig as any,
 		showStyle: {} as any,
 		sources: [],
 		mediaPlayers: [],
 		liveAudio: [],
 		stickyLayers: []
 	}
-
-	// Load values injected by core, not via manifest
-	const studioConfig = context.getStudioConfig()
-	_.each(CORE_INJECTED_KEYS, (id: string) => {
-		objectPath.set(config.studio, id, studioConfig[id])
-	})
-
-	// Load the config
-	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', studioConfig)
-	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', context.getShowStyleConfig())
 
 	config.sources = parseSources(config.studio)
 	config.mediaPlayers = parseMediaPlayers(config.studio)

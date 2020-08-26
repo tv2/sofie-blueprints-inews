@@ -35,6 +35,9 @@ describe('Rundown exceptions', () => {
 		})
 
 		const showStyleContext = new ShowStyleContext('mockRo', mappingsDefaults)
+		// can I do this?:
+		showStyleContext.studioConfig = roSpec.studioConfig as any
+		showStyleContext.showStyleConfig = roSpec.showStyleConfig as any
 		const blueprintRundown = Blueprints.getRundown(showStyleContext, roData)
 		const rundown = literal<IBlueprintRundownDB>({
 			...blueprintRundown.rundown,
@@ -47,7 +50,6 @@ describe('Rundown exceptions', () => {
 				const mockContext = new SegmentContext(rundown, mappingsDefaults)
 				mockContext.studioConfig = roSpec.studioConfig as any
 				mockContext.showStyleConfig = roSpec.showStyleConfig as any
-
 				const res = Blueprints.getSegment(mockContext, segment)
 				if (segment.payload.iNewsStory.fields.pageNumber && segment.payload.iNewsStory.fields.pageNumber.trim()) {
 					expect(res.segment.identifier).toEqual(segment.payload.iNewsStory.fields.pageNumber.trim())

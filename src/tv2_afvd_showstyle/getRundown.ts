@@ -35,7 +35,7 @@ import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { BlueprintConfig, parseConfig } from './helpers/config'
+import { BlueprintConfig, getConfig } from './helpers/config'
 import { boxLayers } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -54,7 +54,7 @@ export function getShowStyleVariantId(
 }
 
 export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	let startTime: number = 0
 	let endTime: number = 0
