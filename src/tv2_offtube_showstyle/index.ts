@@ -4,9 +4,10 @@ import { showStyleMigrations } from './migrations'
 
 import { getEndStateForPart } from 'tv2-common'
 import { onTimelineGenerateOfftube } from '../tv2_offtube_showstyle/onTimelineGenerate'
-import { executeAction } from './actions'
+import { executeActionOfftube } from './actions'
 import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
+import { parseConfig } from './helpers/config'
 import onAsRunEvent from './onAsRunEvent'
 
 declare const VERSION: string // Injected by webpack
@@ -20,7 +21,9 @@ const manifest: ShowStyleBlueprintManifest = {
 	integrationVersion: VERSION_INTEGRATION,
 	TSRVersion: VERSION_TSR,
 
-	minimumCoreVersion: '1.9.0',
+	minimumCoreVersion: '1.10.0',
+
+	preprocessConfig: parseConfig,
 
 	getShowStyleVariantId,
 	getRundown,
@@ -29,7 +32,7 @@ const manifest: ShowStyleBlueprintManifest = {
 	onAsRunEvent,
 	onTimelineGenerate: onTimelineGenerateOfftube,
 	getEndStateForPart,
-	executeAction,
+	executeAction: executeActionOfftube,
 
 	showStyleConfigManifest,
 	showStyleMigrations

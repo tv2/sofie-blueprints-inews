@@ -6,15 +6,18 @@ import {
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectDVE,
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
 	PartContext2,
 	PartDefinition,
 	TemplateIsValid
 } from 'tv2-common'
+import { AdlibActionType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -41,7 +44,7 @@ export function EvaluateDVE(
 		return
 	}
 
-	if (!TemplateIsValid(JSON.parse(rawTemplate.DVEJSON as string))) {
+	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 		context.warning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
@@ -64,10 +67,19 @@ export function EvaluateDVE(
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
-					infiniteMode: PieceLifespan.OutOnNextPart,
+					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
+					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+					metaData: literal<DVEPieceMetaData>({
+						sources: parsedCue.sources,
+						config: rawTemplate,
+						userData: literal<ActionSelectDVE>({
+							type: AdlibActionType.SELECT_DVE,
+							config: parsedCue,
+							videoId: partDefinition.fields.videoId
+						})
+					})
 				})
 			)
 		} else {
@@ -76,7 +88,6 @@ export function EvaluateDVE(
 			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 			pieces.push(
 				literal<IBlueprintPiece>({
-					_id: '',
 					externalId: partDefinition.externalId,
 					name: `DVE: ${parsedCue.template}`,
 					enable: {
@@ -85,12 +96,19 @@ export function EvaluateDVE(
 					},
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
-					infiniteMode: PieceLifespan.OutOnNextPart,
+					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
 					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: literal<PieceMetaData>({
-						mediaPlayerSessions: [partDefinition.segmentExternalId]
+					metaData: literal<PieceMetaData & DVEPieceMetaData>({
+						mediaPlayerSessions: [partDefinition.segmentExternalId],
+						sources: parsedCue.sources,
+						config: rawTemplate,
+						userData: literal<ActionSelectDVE>({
+							type: AdlibActionType.SELECT_DVE,
+							config: parsedCue,
+							videoId: partDefinition.fields.videoId
+						})
 					})
 				})
 			)

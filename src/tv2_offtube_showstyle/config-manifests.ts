@@ -10,6 +10,14 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		required: true
 	},
 	{
+		id: 'TakeWithMixDuration',
+		name: 'Take With Mix Duration',
+		description: 'Default mix duration when taking with a mix (frames)',
+		type: ConfigManifestEntryType.NUMBER,
+		defaultVal: 12,
+		required: true
+	},
+	{
 		id: 'DVEStyles',
 		name: 'DVE Layouts',
 		description: '',
@@ -50,9 +58,9 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'DVEJSON',
 				name: 'DVE config',
 				description: 'DVE config pulled from ATEM',
-				type: ConfigManifestEntryType.STRING,
+				type: ConfigManifestEntryType.JSON,
 				required: true,
-				defaultVal: '',
+				defaultVal: '{}',
 				rank: 2
 			},
 			{
@@ -68,9 +76,9 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'DVEGraphicsTemplateJSON',
 				name: 'CasparCG template config',
 				description: 'Position (and style) data for the boxes in the CasparCG template',
-				type: ConfigManifestEntryType.STRING,
+				type: ConfigManifestEntryType.JSON,
 				required: true,
-				defaultVal: '',
+				defaultVal: '{}',
 				rank: 4
 			},
 			{
@@ -432,6 +440,25 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: 1000,
 				rank: 3
+			}
+		]
+	},
+	{
+		id: 'TakeEffekts',
+		name: 'Take Effekts',
+		description: 'Effekts avalable for take shortcuts',
+		type: ConfigManifestEntryType.TABLE,
+		required: true,
+		defaultVal: [],
+		columns: [
+			{
+				id: 'Effekt',
+				name: 'Effekt',
+				description: 'Name of Effekt (e.g. 1)',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 0
 			}
 		]
 	}

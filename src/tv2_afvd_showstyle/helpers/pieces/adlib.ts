@@ -1,16 +1,23 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece } from 'tv-automation-sofie-blueprints-integration'
 import {
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	PieceLifespan
+} from 'tv-automation-sofie-blueprints-integration'
+import {
+	ActionSelectDVE,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
 	PartContext2,
 	PartDefinition,
 	PieceMetaData,
+	SanitizeString,
 	TemplateIsValid
 } from 'tv2-common'
-import { CueType } from 'tv2-constants'
+import { AdlibActionType, CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
@@ -30,12 +37,16 @@ export function EvaluateAdLib(
 		// Create server AdLib
 		const file = partDefinition.fields.videoId
 
+		if (!file) {
+			return
+		}
+
 		adLibPieces.push(
 			CreateAdlibServer(
 				config,
 				rank,
 				partId,
-				`adlib_server_${file}`,
+				SanitizeString(`adlib_server_${file}`),
 				partDefinition,
 				file,
 				false,
@@ -68,7 +79,7 @@ export function EvaluateAdLib(
 			return
 		}
 
-		if (!TemplateIsValid(JSON.parse(rawTemplate.DVEJSON as string))) {
+		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 			context.warning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
@@ -105,8 +116,16 @@ export function EvaluateAdLib(
 				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid,
-				metaData: literal<PieceMetaData>({
-					stickySisyfosLevels: sticky
+				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					stickySisyfosLevels: sticky,
+					sources: cueDVE.sources,
+					config: rawTemplate,
+					userData: literal<ActionSelectDVE>({
+						type: AdlibActionType.SELECT_DVE,
+						config: cueDVE,
+						videoId: partDefinition.fields.videoId
+					})
 				})
 			})
 		)

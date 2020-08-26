@@ -10,7 +10,7 @@ import {
 
 import { literal } from 'tv2-common'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { parseConfig } from '../helpers/config'
+import { getConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import OutputlayerDefaults from '../migrations/outputlayer-defaults'
 
@@ -24,7 +24,7 @@ export function checkAllLayers(
 	const missingLayers: Array<string | number> = []
 	const wrongDeviceLayers: Array<string | number> = []
 
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	const allSourceLayers: string[] = _.values(SourceLayer)
 	const allOutputLayers = _.map(OutputlayerDefaults, m => m._id)

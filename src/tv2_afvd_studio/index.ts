@@ -3,6 +3,7 @@ import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
 import { getBaseline } from './getBaseline'
 import { getShowStyleId } from './getShowStyleId'
+import { parseConfig } from './helpers/config'
 import { studioMigrations } from './migrations'
 
 declare const VERSION: string // Injected by webpack
@@ -16,7 +17,9 @@ const manifest: StudioBlueprintManifest = {
 	integrationVersion: VERSION_INTEGRATION,
 	TSRVersion: VERSION_TSR,
 
-	minimumCoreVersion: '1.9.0',
+	minimumCoreVersion: '1.10.0',
+
+	preprocessConfig: parseConfig,
 
 	studioConfigManifest,
 	studioMigrations,

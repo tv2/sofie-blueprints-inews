@@ -28,6 +28,7 @@ import {
 import { ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
+import { ActionSelectDVE } from '../actions'
 import { PartContext2 } from '../partContext2'
 
 export interface DVEConfigBox {
@@ -96,6 +97,12 @@ export interface DVELayers {
 
 export interface DVEMetaData {
 	mediaPlayerSession?: string
+}
+
+export interface DVEPieceMetaData {
+	config: DVEConfigInput
+	sources: DVESources
+	userData: ActionSelectDVE
 }
 
 export interface DVEBoxInfo {
@@ -173,7 +180,8 @@ export function MakeContentDVEBase<
 		dveGeneratorOptions,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
-		partDefinition
+		partDefinition.fields.videoId,
+		partDefinition.segmentExternalId
 	)
 }
 
@@ -189,9 +197,24 @@ export function MakeContentDVE2<
 	dveGeneratorOptions: DVEOptions,
 	className?: string,
 	adlib?: boolean,
-	partDefinition?: PartDefinition
+	videoId?: string,
+	segmentExternalId?: string
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
-	const template: DVEConfig = JSON.parse(dveConfig.DVEJSON as string) as DVEConfig
+	let template: DVEConfig
+	try {
+		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
+	} catch (e) {
+		context.warning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
+		return {
+			valid: false,
+			content: {
+				boxSourceConfiguration: [],
+				timelineObjects: [],
+				dveConfiguration: []
+			},
+			stickyLayers: []
+		}
+	}
 
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
@@ -230,16 +253,18 @@ export function MakeContentDVE2<
 				const match = prop.match(/EVS ?(.*)/i) as RegExpExecArray
 
 				boxMap[targetBox - 1] = { source: `EVS ${match[1]}`, sourceLayer }
+			} else if (prop?.match(/DEFAULT/)) {
+				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE`, sourceLayer }
 			} else if (prop) {
-				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+				if (videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
 					usedServer = true
 				} else {
 					boxMap[targetBox - 1] = { source: prop, sourceLayer }
 				}
 			} else {
-				if (partDefinition && partDefinition.fields.videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${partDefinition.fields.videoId}`, sourceLayer }
+				if (videoId && !usedServer) {
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
 					usedServer = true
 				} else {
 					context.warning(`Missing mapping for ${targetBox}`)
@@ -294,14 +319,25 @@ export function MakeContentDVE2<
 			const props = mappingFrom.source.split(' ')
 			const sourceType = props[0]
 			const sourceInput = props[1]
-			if (!sourceType || !sourceInput) {
+			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/SERVER/)) {
 				context.warning(`Invalid DVE source: ${mappingFrom.source}`)
 				return
 			}
 			const audioEnable: TSR.Timeline.TimelineEnable = {
 				while: `1`
 			}
-			if (sourceType.match(/KAM/i)) {
+			if (sourceType.match(/DEFAULT/)) {
+				setBoxSource(
+					num,
+					{
+						type: SourceLayerType.UNKNOWN,
+						id: 'DEFAULT',
+						port: config.studio.AtemSource.Default
+					},
+					mappingFrom.source,
+					mappingFrom.source
+				)
+			} else if (sourceType.match(/KAM/i)) {
 				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
 				if (sourceInfoCam === undefined) {
 					context.warning(`Invalid source: ${mappingFrom.source}`)
@@ -374,7 +410,7 @@ export function MakeContentDVE2<
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const file: string | undefined = partDefinition ? partDefinition.fields.videoId : undefined
+				const file: string | undefined = videoId
 
 				server = true
 				setBoxSource(
@@ -400,11 +436,7 @@ export function MakeContentDVE2<
 							loop: true
 						},
 						metaData: {
-							mediaPlayerSession: server
-								? partDefinition
-									? partDefinition.segmentExternalId
-									: MEDIA_PLAYER_AUTO
-								: undefined
+							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
 						},
 						classes: file ? [] : [ControlClasses.DVEPlaceholder]
 					}),
@@ -419,11 +451,7 @@ export function MakeContentDVE2<
 							isPgm: 1
 						},
 						metaData: {
-							mediaPlayerSession: server
-								? partDefinition
-									? partDefinition.segmentExternalId
-									: MEDIA_PLAYER_AUTO
-								: undefined
+							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
 						},
 						classes: file ? [] : [ControlClasses.DVEPlaceholder]
 					})
@@ -437,9 +465,15 @@ export function MakeContentDVE2<
 	})
 
 	const graphicsTemplateName = dveConfig.DVEGraphicsTemplate ? dveConfig.DVEGraphicsTemplate.toString() : ''
-	const graphicsTemplateStyle = dveConfig.DVEGraphicsTemplateJSON
-		? JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
-		: ''
+	let graphicsTemplateStyle: any = ''
+	try {
+		if (dveConfig.DVEGraphicsTemplateJSON) {
+			graphicsTemplateStyle = JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
+		}
+	} catch {
+		context.warning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
+	}
+
 	const keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : ''
 	const frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : ''
 
@@ -495,11 +529,7 @@ export function MakeContentDVE2<
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: literal<DVEMetaData>({
-						mediaPlayerSession: server
-							? partDefinition
-								? partDefinition.segmentExternalId
-								: MEDIA_PLAYER_AUTO
-							: undefined
+						mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
 					})
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({

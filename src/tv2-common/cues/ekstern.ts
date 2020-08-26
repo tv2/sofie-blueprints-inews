@@ -26,6 +26,7 @@ import {
 } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import { PartContext2 } from '../partContext2'
+import { GetTagForLive } from '../pieces'
 
 interface EksternLayers {
 	SourceLayer: {
@@ -68,12 +69,12 @@ export function EvaluateEksternBase<
 		context.warning(`Could not find live source for ${parsedCue.source}`)
 		return
 	}
-	const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
-	if (sourceInfoCam === undefined) {
+	const sourceInfoEkstern = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
+	if (sourceInfoEkstern === undefined) {
 		context.warning(`Could not find ATEM input for source ${parsedCue.source}`)
 		return
 	}
-	const atemInput = sourceInfoCam.port
+	const atemInput = sourceInfoEkstern.port
 
 	const layers = GetLayersForEkstern(context, config.sources, parsedCue.source)
 
@@ -86,6 +87,7 @@ export function EvaluateEksternBase<
 				outputLayerId: 'pgm',
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				toBeQueued: true,
+				lifespan: PieceLifespan.WithinPart,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				content: literal<RemoteContent>({
 					studioLabel: '',
@@ -120,7 +122,6 @@ export function EvaluateEksternBase<
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: eksternProps[0],
 				enable: {
@@ -128,9 +129,10 @@ export function EvaluateEksternBase<
 				},
 				outputLayerId: 'pgm',
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				toBeQueued: true,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
+				tags: [GetTagForLive(sourceInfoEkstern.id)],
 				content: literal<RemoteContent>({
 					studioLabel: '',
 					switcherInput: atemInput,

@@ -3,7 +3,6 @@ import { GraphicLLayer, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import {
 	getOutputLayerDefaultsMigrationSteps,
-	getRuntimeArgumentsDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
 	remapTableColumnValues
 } from './util'
@@ -55,6 +54,5 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getCreateVariantMigrationSteps(),
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	...getRuntimeArgumentsDefaultsMigrationSteps(VERSION),
 	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', remapVizLLayer)
 ])

@@ -9,12 +9,15 @@ import {
 	ActionSelectServerClip,
 	AddScript,
 	CreatePartServerBase,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
 	PartContext2,
-	PartDefinition
+	PartDefinition,
+	SanitizeString
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -24,12 +27,13 @@ import {
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
+import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartServer(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	_segmentExternalId: string
+	segmentExternalId: string
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition)
 
@@ -44,27 +48,24 @@ export function OfftubeCreatePartServer(
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 
-	part = {
-		...part
-		// TODO: Effekt
-		// ...CreateEffektForpart(context, config, partDefinition, pieces)
-	}
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: OfftubeSourceLayer.PgmServer,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [`adlib_server_${file}`]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: MakeContentServer(
 				file,
-				`adlib_server_${file}`,
+				mediaPlayerSession,
 				partDefinition,
 				config,
 				{
@@ -80,14 +81,19 @@ export function OfftubeCreatePartServer(
 				},
 				duration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [
+				GetTagForServer(partDefinition.segmentExternalId, file, false),
+				GetTagForServerNext(partDefinition.segmentExternalId, file, false),
+				TallyTags.SERVER_IS_LIVE
+			]
 		})
 	)
 
 	// TODO: Reduce to bare minimum for action
 	const actionContent = MakeContentServer(
 		file,
-		`adlib_server_${file}`,
+		SanitizeString(`segment_${segmentExternalId}_${file}`),
 		partDefinition,
 		config,
 		{
@@ -118,7 +124,8 @@ export function OfftubeCreatePartServer(
 				file,
 				partDefinition,
 				duration,
-				vo: false
+				vo: false,
+				segmentExternalId: partDefinition.segmentExternalId
 			}),
 			userDataManifest: {},
 			display: {
@@ -126,7 +133,9 @@ export function OfftubeCreatePartServer(
 				sourceLayerId: OfftubeSourceLayer.PgmServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...actionContent, timelineObjects: [] }, // TODO: No timeline
-				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR]
+				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
+				onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
+				setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
 			}
 		})
 	)

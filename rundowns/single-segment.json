@@ -1,0 +1,53 @@
+{
+    "externalId": "NYHEDERNE-TEST.SOFIE.SINGLE-SEGMENT",
+    "name": "NYHEDERNE-TEST.SOFIE.SINGLE-SEGMENT",
+    "type": "inews",
+    "payload": {
+        "externalId": "NYHEDERNE-TEST.SOFIE.SINGLE-SEGMENT",
+        "name": "NYHEDERNE-TEST.SOFIE.SINGLE-SEGMENT",
+        "gatewayVersion": "v0.2"
+    },
+    "segments": [
+        {
+            "externalId": "6759822A",
+            "name": "Kams",
+            "rank": 100,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.SINGLE-SEGMENT",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "10",
+                        "title": "Kams",
+                        "var2": "INDSL",
+                        "tapeTime": "180",
+                        "audioTime": "0",
+                        "totalTime": "180",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "bede",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "00000000:00000000:00000001",
+                    "body": "\r\n<p></p>\r\n<p><pi>KAM 1</pi></p>\r\n<p><pi>KAM 2</pi></p>\r\n",
+                    "fileId": "00000000:00000000:00000001",
+                    "identifier": "6759822A"
+                },
+                "modified": "1582890240",
+                "externalId": "6759822A",
+                "rank": 100,
+                "name": "Kams",
+                "float": false
+            },
+            "parts": []
+        }
+    ]
+}

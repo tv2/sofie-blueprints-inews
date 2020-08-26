@@ -52,14 +52,13 @@ export function EvaluateLYD(
 				name: parsedCue.variant,
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
-				infiniteMode: stop ? PieceLifespan.Normal : PieceLifespan.Infinite,
+				lifespan: stop ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
 				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
 			})
 		)
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: part.externalId,
 				name: parsedCue.variant,
 				...(stop
@@ -67,7 +66,7 @@ export function EvaluateLYD(
 					: CreateTimingEnable(parsedCue, GetDefaultOut(config))),
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
-				infiniteMode: stop ? PieceLifespan.Normal : PieceLifespan.Infinite,
+				lifespan: stop ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
 				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
 			})
 		)

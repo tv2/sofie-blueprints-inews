@@ -1,7 +1,8 @@
 import { IBlueprintAdLibPiece, PieceLifespan, PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartDefinition, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
-import { AdlibTags } from 'tv2-constants'
+import { GetTagForServer, literal, PartDefinition, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
+import { AdlibTags, TallyTags } from 'tv2-constants'
 import { MakeContentServer, MakeContentServerSourceLayers } from '../content/server'
+import { GetTagForServerNext } from './tags'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
@@ -37,7 +38,7 @@ export function CreateAdlibServer<
 		name: offtubeOptions?.isOfftube ? partDefinition.storyName : `${partDefinition.storyName} Server: ${file}`,
 		sourceLayerId: vo ? sourceLayers.PgmVoiceOver : sourceLayers.PgmServer,
 		outputLayerId: offtubeOptions?.isOfftube ? 'selectedAdlib' : 'pgm',
-		infiniteMode: offtubeOptions?.isOfftube ? PieceLifespan.OutOnNextSegment : PieceLifespan.OutOnNextPart,
+		lifespan: offtubeOptions?.isOfftube ? PieceLifespan.OutOnSegmentEnd : PieceLifespan.WithinPart,
 		toBeQueued: !offtubeOptions?.isOfftube,
 		metaData: literal<PieceMetaData>({
 			mediaPlayerSessions: [mediaPlayerSession]
@@ -52,6 +53,9 @@ export function CreateAdlibServer<
 			true,
 			offtubeOptions
 		),
-		adlibPreroll: config.studio.CasparPrerollDuration
+		adlibPreroll: config.studio.CasparPrerollDuration,
+		tags: [GetTagForServer(partDefinition.segmentExternalId, file, vo), TallyTags.SERVER_IS_LIVE],
+		onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, vo)],
+		setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, vo)]
 	})
 }

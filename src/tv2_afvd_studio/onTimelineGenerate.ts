@@ -8,7 +8,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { onTimelineGenerate } from 'tv2-common'
 import * as _ from 'underscore'
-import { parseConfig } from '../tv2_afvd_showstyle/helpers/config'
+import { getConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from './layers'
 
 export function onTimelineGenerateAFVD(
@@ -24,7 +24,7 @@ export function onTimelineGenerateAFVD(
 		previousPersistentState,
 		previousPartEndState,
 		resolvedPieces,
-		parseConfig,
+		getConfig,
 		{
 			Caspar: {
 				ClipPending: CasparLLayer.CasparPlayerClipPending,

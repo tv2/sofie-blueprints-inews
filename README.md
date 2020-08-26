@@ -50,3 +50,12 @@ These can be run with
 yarn unit # run once
 yarn test # watch for changes
 ```
+
+## Ingest mockdata: 
+Ingest mock data into Sofie:
+In ./rundowns/upload.sh rename "studio0" to _id of studio (look in mongoDb under collection studios)
+Run: 
+```
+./upload.sh on-air.json
+```
+to ingest the on-air.json rundown in Sofie

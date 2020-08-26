@@ -2,6 +2,8 @@ import {
 	ActionExecutionContext,
 	BlueprintMappings,
 	ConfigItemValue,
+	IBlueprintConfig,
+	IBlueprintMutatablePart,
 	IBlueprintPart,
 	IBlueprintPartInstance,
 	IBlueprintPiece,
@@ -10,9 +12,10 @@ import {
 	OmitId
 } from 'tv-automation-sofie-blueprints-integration'
 import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
-import { OfftubeStudioConfig } from '../../tv2_offtube_studio/helpers/config'
+import { DefaultBreakerConfig } from '../../tv2_afvd_showstyle/__tests__/breakerConfigDefault'
+import { OfftubeStudioConfig, parseConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowStyleConfig } from '../helpers/config'
+import { OfftubeShowStyleConfig, parseConfig as parseShowStyleConfig } from '../helpers/config'
 
 const mockStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
@@ -92,15 +95,19 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	],
 	GFXTemplates: [],
 	WipesConfig: [],
-	BreakerConfig: [],
+	BreakerConfig: DefaultBreakerConfig(),
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
-	CasparCGLoadingClip: ''
+	CasparCGLoadingClip: '',
+	TakeWithMixDuration: 12,
+	TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }]
 }
 
 export class MockContext implements ActionExecutionContext {
 	public warnings: string[] = []
 	public errors: string[] = []
+
+	public takeAfterExecute: boolean = false
 
 	/** Get the mappings for the studio */
 	public getStudioMappings: () => Readonly<BlueprintMappings>
@@ -116,13 +123,13 @@ export class MockContext implements ActionExecutionContext {
 	public getShowStyleConfig(): Readonly<{
 		[key: string]: ConfigItemValue
 	}> {
-		return JSON.parse(JSON.stringify(mockShowStyleConfig))
+		return JSON.parse(JSON.stringify(parseShowStyleConfig((mockShowStyleConfig as any) as IBlueprintConfig)))
 	}
 	/** Returns a map of the studio configs */
 	public getStudioConfig(): Readonly<{
 		[key: string]: ConfigItemValue
 	}> {
-		return JSON.parse(JSON.stringify(mockStudioConfig))
+		return JSON.parse(JSON.stringify(parseConfig((mockStudioConfig as any) as IBlueprintConfig)))
 	}
 	/** Un-hash, is return the string that created the hash */
 	public unhashId(hash: string) {
@@ -184,23 +191,23 @@ export class MockContext implements ActionExecutionContext {
 	/** Creative actions */
 	/** Insert a piece. Returns id of new PieceInstance. Any timelineObjects will have their ids changed, so are not safe to reference from another piece */
 	public insertPiece(part: 'current' | 'next', piece: IBlueprintPiece): IBlueprintPieceInstance {
-		let partId: string = ''
-		if (part === 'current') {
-			partId = this.currentPart.part._id
-		} else {
-			if (this.nextPart) {
-				partId = this.nextPart.part._id
-			}
-		}
-		return {
+		const pieceInstance: IBlueprintPieceInstance = {
 			_id: '',
 			piece: {
-				...piece,
-				partId: partId || ''
+				_id: '',
+				...piece
 			}
 		}
+		if (part === 'current') {
+			this.currentPieceInstances.push(pieceInstance)
+		} else {
+			if (this.nextPart && this.nextPieceInstances) {
+				this.nextPieceInstances.push(pieceInstance)
+			}
+		}
+		return pieceInstance
 	}
-	/** Update a piecesInstances */
+	/** Update a pieceInstance */
 	public updatePieceInstance(
 		_pieceInstanceId: string,
 		piece: Partial<OmitId<IBlueprintPiece>>
@@ -209,8 +216,7 @@ export class MockContext implements ActionExecutionContext {
 			_id: '',
 			piece: {
 				_id: '',
-				...(piece as IBlueprintPiece),
-				partId: ''
+				...(piece as IBlueprintPiece)
 			}
 		}
 	}
@@ -228,14 +234,22 @@ export class MockContext implements ActionExecutionContext {
 
 		this.nextPart = instance
 		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance>(p => ({
-			_id: '',
+			_id: (Date.now() * Math.random()).toString(),
 			piece: {
-				...p,
-				partId: ''
+				_id: '',
+				...p
 			}
 		}))
 
 		return instance
+	}
+	/** Update a partInstance */
+	public updatePartInstance(part: 'current' | 'next', props: Partial<IBlueprintMutatablePart>): void {
+		if (part === 'current') {
+			this.currentPart.part = { ...this.currentPart.part, ...props }
+		} else if (this.nextPart) {
+			this.nextPart.part = { ...this.nextPart.part, ...props }
+		}
 	}
 	/** Destructive actions */
 	/** Stop any piecesInstances on the specified sourceLayers. Returns ids of piecesInstances that were affected */
@@ -245,5 +259,19 @@ export class MockContext implements ActionExecutionContext {
 	/** Stop piecesInstances by id. Returns ids of piecesInstances that were removed */
 	public stopPieceInstances(_pieceInstanceIds: string[], _timeOffset?: number): string[] {
 		return []
+	}
+	/** Remove piecesInstances by id. Returns ids of piecesInstances that were removed */
+	public removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): void {
+		if (part === 'current') {
+			this.currentPieceInstances = this.currentPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+		} else if (this.nextPieceInstances) {
+			this.nextPieceInstances = this.nextPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+		}
+	}
+	/** Set flag to perform take after executing the current action. Returns state of the flag after each call. */
+	public takeAfterExecuteAction(take: boolean): boolean {
+		this.takeAfterExecute = take
+
+		return take
 	}
 }

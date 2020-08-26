@@ -2,9 +2,10 @@ import * as _ from 'underscore'
 
 import {
 	BlueprintResultSegment,
+	ExtendedIngestRundown,
 	IBlueprintPieceGeneric,
 	IBlueprintRundownDB,
-	IngestRundown,
+	PieceLifespan,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
 import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
@@ -33,7 +34,7 @@ const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: Co
 
 describe.skip('Rundown exceptions', () => {
 	for (const roSpec of rundowns) {
-		const roData = require(roSpec.ro) as IngestRundown
+		const roData = require(roSpec.ro) as ExtendedIngestRundown
 		test('Valid file: ' + roSpec.ro, () => {
 			expect(roData).toBeTruthy()
 			expect(roData.externalId).toBeTruthy()
@@ -95,7 +96,6 @@ describe('regressions-migrations', () => {
 					},
 					pieces: [
 						{
-							_id: '',
 							externalId: '',
 							enable: {
 								start: 0
@@ -103,6 +103,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({
@@ -146,6 +147,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({
@@ -186,7 +188,7 @@ describe('regressions-migrations', () => {
 			]
 		}
 
-		const ref = {
+		const ref: BlueprintResultSegment = {
 			segment: {
 				name: 'Regresstions Migrations Test 1'
 			},
@@ -198,7 +200,6 @@ describe('regressions-migrations', () => {
 					},
 					pieces: [
 						{
-							_id: '',
 							externalId: '',
 							enable: {
 								start: 0
@@ -206,6 +207,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({
@@ -249,6 +251,7 @@ describe('regressions-migrations', () => {
 							name: '',
 							sourceLayerId: '',
 							outputLayerId: '',
+							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
 									literal<TimelineObjectCoreExt>({

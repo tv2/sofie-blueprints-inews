@@ -11,13 +11,15 @@ import {
 	CreateAdlibServer,
 	CreatePartServerBase,
 	GetSisyfosTimelineObjForCamera,
-	getStickyLayers,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
 	PartContext2,
-	PartDefinition
+	PartDefinition,
+	SanitizeString
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import {
 	OfftubeAbstractLLayer,
 	OfftubeAtemLLayer,
@@ -27,12 +29,13 @@ import {
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
+import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartVO(
 	context: PartContext2,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	_segmentExternalId: string,
+	segmentExternalId: string,
 	totalWords: number,
 	totalTime: number
 ): BlueprintResultPart {
@@ -42,7 +45,7 @@ export function OfftubeCreatePartVO(
 		return basePartProps.part
 	}
 
-	const part = basePartProps.part.part
+	let part = basePartProps.part.part
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
 	const actions: IBlueprintActionManifest[] = []
@@ -52,24 +55,24 @@ export function OfftubeCreatePartVO(
 	const actualDuration = (sanitisedScript.length / totalWords) * (totalTime * 1000 - duration) + duration
 	// const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 
-	// TODO: EFFEKT
-	// part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [`adlib_server_${file}`]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: MakeContentServer(
 				file,
-				`adlib_server_${file}`,
+				SanitizeString(`segment_${segmentExternalId}_${file}`),
 				partDefinition,
 				config,
 				{
@@ -85,7 +88,12 @@ export function OfftubeCreatePartVO(
 				},
 				actualDuration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [
+				GetTagForServer(partDefinition.segmentExternalId, file, true),
+				GetTagForServerNext(partDefinition.segmentExternalId, file, true),
+				TallyTags.SERVER_IS_LIVE
+			]
 		})
 	)
 
@@ -93,7 +101,7 @@ export function OfftubeCreatePartVO(
 		config,
 		0,
 		partDefinition.externalId,
-		`adlib_server_${file}`,
+		mediaPlayerSession,
 		partDefinition,
 		file,
 		true,
@@ -109,7 +117,7 @@ export function OfftubeCreatePartVO(
 			Sisyfos: {
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 			},
-			STICKY_LAYERS: getStickyLayers(config.studio)
+			STICKY_LAYERS: config.stickyLayers
 		},
 		actualDuration,
 		{
@@ -130,7 +138,8 @@ export function OfftubeCreatePartVO(
 				file,
 				partDefinition,
 				duration,
-				vo: true
+				vo: true,
+				segmentExternalId: partDefinition.segmentExternalId
 			}),
 			userDataManifest: {},
 			display: {
@@ -138,7 +147,9 @@ export function OfftubeCreatePartVO(
 				sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...adlibServer.content, timelineObjects: [] },
-				tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER]
+				tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
+				onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, true)],
+				setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, true)]
 			}
 		})
 	)

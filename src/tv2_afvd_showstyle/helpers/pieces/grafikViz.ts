@@ -14,7 +14,7 @@ import {
 	GetDefaultOut,
 	GetFullGrafikTemplateNameFromCue,
 	GraphicLLayer,
-	InfiniteMode,
+	LifeSpan,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -88,7 +88,7 @@ export function EvaluateGrafikViz(
 				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
-				infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+				lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
@@ -118,7 +118,6 @@ export function EvaluateGrafikViz(
 			: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue))
 
 		const piece = literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partId,
 			name: grafikName(config, parsedCue),
 			...(isTlfPrimary || engine === 'WALL'
@@ -130,7 +129,7 @@ export function EvaluateGrafikViz(
 				  }),
 			outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
 			sourceLayerId: sourceLayer,
-			infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+			lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 			content: literal<GraphicsContent>({
 				fileName: parsedCue.template,
 				path: parsedCue.template,
@@ -155,16 +154,15 @@ export function EvaluateGrafikViz(
 
 		if (
 			sourceLayer === SourceLayer.PgmGraphicsIdentPersistent &&
-			(piece.infiniteMode === PieceLifespan.OutOnNextSegment || piece.infiniteMode === PieceLifespan.Infinite)
+			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd)
 		) {
 			// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
 			// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
 			pieces.push(
 				literal<IBlueprintPiece>({
 					...piece,
-					_id: '',
 					sourceLayerId: SourceLayer.PgmGraphicsIdent,
-					infiniteMode: PieceLifespan.OutOnNextPart,
+					lifespan: PieceLifespan.WithinPart,
 					content: undefined
 				})
 			)
@@ -206,13 +204,13 @@ export function GetInfiniteModeForGrafik(
 	isIdent?: boolean
 ): PieceLifespan {
 	return engine === 'WALL'
-		? PieceLifespan.Infinite
+		? PieceLifespan.OutOnRundownEnd
 		: isTlf
-		? PieceLifespan.OutOnNextPart
+		? PieceLifespan.WithinPart
 		: isIdent
-		? PieceLifespan.OutOnNextSegment
+		? PieceLifespan.OutOnSegmentEnd
 		: parsedCue.end && parsedCue.end.infiniteMode
-		? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
 		: FindInfiniteModeFromConfig(config, parsedCue)
 }
 
@@ -224,23 +222,23 @@ export function FindInfiniteModeFromConfig(config: BlueprintConfig, parsedCue: C
 		)
 
 		if (!conf) {
-			return PieceLifespan.Normal
+			return PieceLifespan.WithinPart
 		}
 
 		if (!conf.OutType || !conf.OutType.toString().length) {
-			return PieceLifespan.Normal
+			return PieceLifespan.WithinPart
 		}
 
 		const type = conf.OutType.toString().toUpperCase()
 
 		if (type !== 'B' && type !== 'S' && type !== 'O') {
-			return PieceLifespan.Normal
+			return PieceLifespan.WithinPart
 		}
 
-		return InfiniteMode(type, PieceLifespan.Normal)
+		return LifeSpan(type, PieceLifespan.WithinPart)
 	}
 
-	return PieceLifespan.Normal
+	return PieceLifespan.WithinPart
 }
 
 export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string) {

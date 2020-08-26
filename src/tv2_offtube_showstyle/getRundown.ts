@@ -14,23 +14,24 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionCommentatorSelectDVE,
-	// GetCameraMetaData,
 	ActionCommentatorSelectFull,
-	// GetLayersForCamera,
+	ActionCommentatorSelectJingle,
 	ActionCommentatorSelectServer,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionSelectDVELayout,
 	GetCameraMetaData,
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
+	GetTagForKam,
+	GetTagForLive,
 	GraphicLLayer,
 	literal,
-	MakeContentDVE2,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, Enablers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, Enablers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -40,8 +41,8 @@ import {
 } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { boxLayers, OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
-import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
+import { boxLayers } from './content/OfftubeDVEContent'
+import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -59,7 +60,7 @@ export function getShowStyleVariantId(
 }
 
 export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	let startTime: number = 0
 	let endTime: number = 0
@@ -101,25 +102,6 @@ function getGlobalAdLibPiecesOfftube(
 
 	let globalRank = 1000
 
-	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		// const boxSources = ['', '', '', '']
-		const content = MakeContentDVE2(context, config, dveConfig, {}, undefined, OFFTUBE_DVE_GENERATOR_OPTIONS)
-		if (content.valid) {
-			adlibItems.push({
-				externalId: `dve-${dveConfig.DVEName}`,
-				name: (dveConfig.DVEName || 'DVE') + '',
-				_rank: 200 + i,
-				sourceLayerId: OfftubeSourceLayer.SelectedAdLibDVE,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				expectedDuration: 0,
-				infiniteMode: PieceLifespan.OutOnNextPart,
-				toBeQueued: true,
-				content: content.content,
-				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0
-			})
-		}
-	})
-
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const camSisyfos = GetSisyfosTimelineObjForCamera(
@@ -135,9 +117,11 @@ function getGlobalAdLibPiecesOfftube(
 			sourceLayerId: OfftubeSourceLayer.PgmCam,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: preview,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
+			onAirTags: [GetTagForKam(info.id)],
+			setNextTags: [GetTagForKam(info.id)],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
@@ -209,23 +193,6 @@ function getGlobalAdLibPiecesOfftube(
 		return res
 	}
 
-	// TODO: Future
-	/*adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
-			_rank: globalRank++,
-			externalId: 'setNextToJingle',
-			name: 'Set Jingle Next',
-			sourceLayerId: OfftubeSourceLayer.PgmSourceSelect,
-			outputLayerId: OfftubeOutputLayers.SEC,
-			infiniteMode: PieceLifespan.OutOnNextPart,
-			toBeQueued: true,
-			content: {
-				timelineObjects: [] // TODO
-			},
-			tags: [AdlibTags.OFFTUBE_SET_JINGLE_NEXT]
-		})
-	)*/
-
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
@@ -261,7 +228,9 @@ function getGlobalAdlibActionsOfftube(
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
-					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : []
+					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
+					onAirTags: [GetTagForKam(name)],
+					setNextTags: [GetTagForKam(name)]
 				}
 			})
 		)
@@ -283,7 +252,9 @@ function getGlobalAdlibActionsOfftube(
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
-					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT]
+					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
+					onAirTags: [GetTagForLive(name)],
+					setNextTags: [GetTagForLive(name)]
 				}
 			})
 		)
@@ -328,7 +299,9 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: OfftubeSourceLayer.PgmServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
-				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT]
+				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT],
+				onAirTags: [TallyTags.SERVER_IS_LIVE],
+				setNextTags: [TallyTags.SERVER_IS_LIVE]
 			}
 		})
 	)
@@ -346,7 +319,9 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
-				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT]
+				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT],
+				onAirTags: [TallyTags.DVE_IS_LIVE],
+				setNextTags: [TallyTags.DVE_IS_LIVE]
 			}
 		})
 	)
@@ -364,17 +339,32 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: OfftubeSourceLayer.PgmFull,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
-				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT]
+				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT],
+				onAirTags: [TallyTags.FULL_IS_LIVE],
+				setNextTags: [TallyTags.FULL_IS_LIVE]
 			}
 		})
 	)
 
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
-			makeKameraAction(o.id, false, globalRank++)
-		})*/
+	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
+		// const boxSources = ['', '', '', '']
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
+				userData: literal<ActionSelectDVELayout>({
+					type: AdlibActionType.SELECT_DVE_LAYOUT,
+					config: dveConfig
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: 200 + i,
+					label: dveConfig.DVEName,
+					sourceLayerId: OfftubeSourceLayer.PgmDVE,
+					outputLayerId: 'pgm'
+				}
+			})
+		)
+	})
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
@@ -403,6 +393,26 @@ function getGlobalAdlibActionsOfftube(
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.COMMENTATOR_SELECT_JINGLE,
+			userData: literal<ActionCommentatorSelectJingle>({
+				type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: globalRank++,
+				label: 'JINGLE',
+				sourceLayerId: OfftubeSourceLayer.PgmJingle,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				content: {},
+				tags: [AdlibTags.OFFTUBE_SET_JINGLE_NEXT],
+				onAirTags: [TallyTags.JINGLE_IS_LIVE],
+				setNextTags: [TallyTags.JINGLE_IS_LIVE]
+			}
+		})
+	)
 
 	return res
 }
@@ -556,7 +566,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 						{
 							// left
 							enabled: true,
-							source: AtemSourceIndex.Bars,
+							source: config.studio.AtemSource.SplitBackground,
 							size: 1000,
 							x: 0,
 							y: 0,

@@ -13,16 +13,20 @@ import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
 	GetFullGrafikTemplateNameFromCue,
+	GetTagForFull,
+	GetTagForFullNext,
 	GraphicLLayer,
-	InfiniteMode,
+	LifeSpan,
 	literal,
 	PartContext2,
 	PartDefinition,
 	PartToParentClass,
+	TimelineBlueprintExt,
 	TranslateEngine
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
@@ -61,10 +65,12 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
 
 	if (engine === 'FULL') {
+		const grafikTemplateName = GetFullGrafikTemplateNameFromCue(config, parsedCue)
 		const adLibPiece = CreateFullAdLib(
 			config,
 			partDefinition.externalId,
-			GetFullGrafikTemplateNameFromCue(config, parsedCue)
+			grafikTemplateName,
+			partDefinition.segmentExternalId
 		)
 
 		actions.push(
@@ -72,7 +78,8 @@ export function OfftubeEvaluateGrafikCaspar(
 				actionId: AdlibActionType.SELECT_FULL_GRAFIK,
 				userData: literal<ActionSelectFullGrafik>({
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
-					template: parsedCue.template
+					template: parsedCue.template,
+					segmentExternalId: partDefinition.segmentExternalId
 				}),
 				userDataManifest: {},
 				display: {
@@ -80,7 +87,9 @@ export function OfftubeEvaluateGrafikCaspar(
 					sourceLayerId: OfftubeSourceLayer.PgmFull,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
-					tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER]
+					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
+					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, grafikTemplateName)],
+					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, grafikTemplateName)]
 				}
 			})
 		)
@@ -88,7 +97,8 @@ export function OfftubeEvaluateGrafikCaspar(
 		const piece = CreateFullPiece(
 			config,
 			partDefinition.externalId,
-			GetFullGrafikTemplateNameFromCue(config, parsedCue)
+			GetFullGrafikTemplateNameFromCue(config, parsedCue),
+			partDefinition.segmentExternalId
 		)
 		pieces.push(piece)
 	} else {
@@ -101,7 +111,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				name: `${grafikName(config, parsedCue)}`,
 				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
-				infiniteMode: PieceLifespan.Normal,
+				lifespan: PieceLifespan.WithinPart,
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
 				content: {
@@ -117,7 +127,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					name: `${grafikName(config, parsedCue)}`,
 					sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 					outputLayerId: OfftubeOutputLayers.OVERLAY,
-					infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+					lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 					...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
 						? {}
@@ -129,7 +139,6 @@ export function OfftubeEvaluateGrafikCaspar(
 			)
 		} else {
 			const piece = literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partDefinition.externalId,
 				name: `${grafikName(config, parsedCue)}`,
 				...(isTlfPrimary || engine === 'WALL'
@@ -141,7 +150,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					  }),
 				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
-				infiniteMode: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+				lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
 				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
@@ -320,10 +329,10 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 export function CreateFullPiece(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
-	template: string
+	template: string,
+	segmentExternalId: string
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
-		_id: '',
 		enable: {
 			start: 0 // TODO: Time
 		},
@@ -331,15 +340,21 @@ export function CreateFullPiece(
 		name: `${template}`,
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
-		infiniteMode: PieceLifespan.OutOnNextPart,
-		content: CreateFullContent(config, template)
+		lifespan: PieceLifespan.WithinPart,
+		content: CreateFullContent(config, template),
+		tags: [
+			GetTagForFull(segmentExternalId, template),
+			GetTagForFullNext(segmentExternalId, template),
+			TallyTags.FULL_IS_LIVE
+		]
 	})
 }
 
 function CreateFullAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
-	template: string
+	template: string,
+	segmentExternalId: string
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
@@ -350,8 +365,10 @@ function CreateFullAdLib(
 		toBeQueued: true,
 		adlibPreroll: config.studio.CasparPrerollDuration,
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
-		infiniteMode: PieceLifespan.OutOnNextPart,
+		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
+		onAirTags: [GetTagForFull(segmentExternalId, template)],
+		setNextTags: [GetTagForFullNext(segmentExternalId, template)],
 		content: CreateFullContent(config, template)
 	})
 }
@@ -420,6 +437,21 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 						onAir: false
 					}
 				}
+			}),
+			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+				id: '',
+				enable: { start: 0 },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMENext,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						previewInput: AtemSourceIndex.Blk
+					}
+				},
+				metaData: {},
+				classes: ['ab_on_preview']
 			})
 		]
 	}
@@ -452,7 +484,7 @@ function GetEnableForGrafikOfftube(
 
 	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
 
-	if (!timing.infiniteMode) {
+	if (!timing.lifespan) {
 		return timing.enable
 	}
 
@@ -469,13 +501,13 @@ export function GetInfiniteModeForGrafik(
 	isIdent?: boolean
 ): PieceLifespan {
 	return engine === 'WALL'
-		? PieceLifespan.Infinite
+		? PieceLifespan.OutOnRundownEnd
 		: isTlf
-		? PieceLifespan.OutOnNextPart
+		? PieceLifespan.WithinPart
 		: isIdent
-		? PieceLifespan.OutOnNextSegment
+		? PieceLifespan.OutOnSegmentEnd
 		: parsedCue.end && parsedCue.end.infiniteMode
-		? InfiniteMode(parsedCue.end.infiniteMode, PieceLifespan.Normal)
+		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
 		: FindInfiniteModeFromConfig(config, parsedCue)
 }
 
@@ -490,23 +522,23 @@ export function FindInfiniteModeFromConfig(
 		)
 
 		if (!conf) {
-			return PieceLifespan.Normal
+			return PieceLifespan.WithinPart
 		}
 
 		if (!conf.OutType || !conf.OutType.toString().length) {
-			return PieceLifespan.Normal
+			return PieceLifespan.WithinPart
 		}
 
 		const type = conf.OutType.toString().toUpperCase()
 
 		if (type !== 'B' && type !== 'S' && type !== 'O') {
-			return PieceLifespan.Normal
+			return PieceLifespan.WithinPart
 		}
 
-		return InfiniteMode(type, PieceLifespan.Normal)
+		return LifeSpan(type, PieceLifespan.WithinPart)
 	}
 
-	return PieceLifespan.Normal
+	return PieceLifespan.WithinPart
 }
 
 function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string) {

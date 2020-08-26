@@ -11,7 +11,7 @@ import {
 import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig, parseConfig } from './helpers/config'
+import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
 import { OfftubeCreatePartGrafik } from './parts/OfftubeGrafik'
@@ -22,10 +22,10 @@ import { OfftubeCreatePartVO } from './parts/OfftubeVO'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
-	const config = parseConfig(context)
+	const config = getConfig(context)
 
 	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
-		parseConfig,
+		getConfig,
 		TransformCuesIntoShowstyle,
 		CreatePartContinuity,
 		CreatePartUnknown,
@@ -59,7 +59,6 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 		},
 		pieces: [
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: `${ingestSegment.externalId}-CONTINUITY`,
 				enable: {
 					start: 0
@@ -67,7 +66,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				name: 'CONTINUITY',
 				sourceLayerId: OfftubeSourceLayer.PgmContinuity,
 				outputLayerId: 'pgm',
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				content: literal<CameraContent>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
@@ -85,6 +84,21 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 								me: {
 									input: config.studio.AtemSource.Continuity,
 									transition: TSR.AtemTransitionStyle.CUT
+								}
+							}
+						}),
+						literal<TSR.TimelineObjAtemME>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: OfftubeAtemLLayer.AtemMENext,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.ME,
+								me: {
+									previewInput: config.studio.AtemSource.Default
 								}
 							}
 						})

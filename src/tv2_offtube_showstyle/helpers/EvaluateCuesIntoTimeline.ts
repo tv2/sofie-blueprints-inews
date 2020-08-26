@@ -29,7 +29,5 @@ export function EvaluateCuesIntoTimeline(
 		}
 	}
 
-	console.log(JSON.stringify(timeline))
-
 	return timeline
 }

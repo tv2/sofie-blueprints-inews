@@ -10,14 +10,17 @@ import {
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
+	DVEPieceMetaData,
 	GetDVETemplate,
+	GetTagForDVE,
+	GetTagForDVENext,
 	literal,
 	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -43,7 +46,7 @@ export function OfftubeEvaluateDVE(
 		return
 	}
 
-	if (!TemplateIsValid(JSON.parse(rawTemplate.DVEJSON as string))) {
+	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 		context.warning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
@@ -74,7 +77,6 @@ export function OfftubeEvaluateDVE(
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partDefinition.externalId,
 				name: `${parsedCue.template}`,
 				enable: {
@@ -83,16 +85,28 @@ export function OfftubeEvaluateDVE(
 				},
 				outputLayerId: 'pgm',
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				toBeQueued: true,
 				content: {
 					...pieceContent.content,
 					timelineObjects: [...pieceContent.content.timelineObjects]
 				},
 				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-				metaData: literal<PieceMetaData>({
-					mediaPlayerSessions: [partDefinition.segmentExternalId]
-				})
+				metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					mediaPlayerSessions: [partDefinition.segmentExternalId],
+					sources: parsedCue.sources,
+					config: rawTemplate,
+					userData: literal<ActionSelectDVE>({
+						type: AdlibActionType.SELECT_DVE,
+						config: parsedCue,
+						videoId: partDefinition.fields.videoId
+					})
+				}),
+				tags: [
+					GetTagForDVE(parsedCue.template, parsedCue.sources),
+					GetTagForDVENext(parsedCue.template, parsedCue.sources),
+					TallyTags.DVE_IS_LIVE
+				]
 			})
 		)
 
@@ -102,7 +116,7 @@ export function OfftubeEvaluateDVE(
 				userData: literal<ActionSelectDVE>({
 					type: AdlibActionType.SELECT_DVE,
 					config: parsedCue,
-					part: partDefinition
+					videoId: partDefinition.fields.videoId
 				}),
 				userDataManifest: {},
 				display: {
@@ -114,7 +128,9 @@ export function OfftubeEvaluateDVE(
 					content: literal<SplitsContent>({
 						...pieceContent.content,
 						timelineObjects: []
-					})
+					}),
+					onAirTags: [GetTagForDVE(parsedCue.template, parsedCue.sources)],
+					setNextTags: [GetTagForDVENext(parsedCue.template, parsedCue.sources)]
 				}
 			})
 		)

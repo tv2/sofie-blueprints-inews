@@ -1,6 +1,10 @@
 import * as _ from 'underscore'
 
-import { IBlueprintPieceGeneric, IBlueprintRundownDB, IngestRundown } from 'tv-automation-sofie-blueprints-integration'
+import {
+	ExtendedIngestRundown,
+	IBlueprintPieceGeneric,
+	IBlueprintRundownDB
+} from 'tv-automation-sofie-blueprints-integration'
 import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
 // import { ConfigMap } from './configs'
 import { checkAllLayers } from './layers-check'
@@ -23,7 +27,7 @@ const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: Co
 
 describe('Rundown exceptions', () => {
 	for (const roSpec of rundowns) {
-		const roData = require(roSpec.ro) as IngestRundown
+		const roData = require(roSpec.ro) as ExtendedIngestRundown
 		test('Valid file: ' + roSpec.ro, () => {
 			expect(roData).toBeTruthy()
 			expect(roData.externalId).toBeTruthy()
@@ -31,6 +35,9 @@ describe('Rundown exceptions', () => {
 		})
 
 		const showStyleContext = new ShowStyleContext('mockRo', mappingsDefaults)
+		// can I do this?:
+		showStyleContext.studioConfig = roSpec.studioConfig as any
+		showStyleContext.showStyleConfig = roSpec.showStyleConfig as any
 		const blueprintRundown = Blueprints.getRundown(showStyleContext, roData)
 		const rundown = literal<IBlueprintRundownDB>({
 			...blueprintRundown.rundown,
@@ -43,7 +50,6 @@ describe('Rundown exceptions', () => {
 				const mockContext = new SegmentContext(rundown, mappingsDefaults)
 				mockContext.studioConfig = roSpec.studioConfig as any
 				mockContext.showStyleConfig = roSpec.showStyleConfig as any
-
 				const res = Blueprints.getSegment(mockContext, segment)
 				if (segment.payload.iNewsStory.fields.pageNumber && segment.payload.iNewsStory.fields.pageNumber.trim()) {
 					expect(res.segment.identifier).toEqual(segment.payload.iNewsStory.fields.pageNumber.trim())

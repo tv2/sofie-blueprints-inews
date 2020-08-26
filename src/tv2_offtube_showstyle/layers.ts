@@ -4,7 +4,7 @@ export enum SourceLayer {
 	// Pgm
 	PgmSourceSelect = 'studio0_offtube_pgm_source_select',
 	PgmDVEBackground = 'studio0_offtube_dve_back',
-	PgmJingle = 'studio0_offtube_jingle',
+	PgmJingle = 'studio0_jingle',
 	// TODO: This should be a shared sourcelayer, needs migration for pilot graphics.
 	PgmFull = 'studio0_full',
 
@@ -14,6 +14,7 @@ export enum SourceLayer {
 	SelectedAdLibServer = 'studio0_offtube_clip',
 	SelectedAdLibVoiceOver = 'studio0_offtube_voiceover',
 	SelectedAdlibGraphicsFull = 'studio0_offtube_graphicsFull',
+	SelectedAdlibJingle = 'studio0_offtube_jingle',
 
 	PgmContinuity = 'studio0_offtube_continuity',
 

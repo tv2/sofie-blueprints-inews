@@ -74,12 +74,36 @@ export enum ControlClasses {
 export enum AdlibActionType {
 	SELECT_SERVER_CLIP = 'select_server_clip',
 	SELECT_DVE = 'select_dve',
+	SELECT_DVE_LAYOUT = 'select_dve_layout',
 	SELECT_FULL_GRAFIK = 'select_full_grafik',
+	SELECT_JINGLE = 'select_jingle',
 	CUT_TO_CAMERA = 'cut_to_camera',
 	CUT_TO_REMOTE = 'cut_to_remote',
 	CUT_SOURCE_TO_BOX = 'cut_source_to_box',
 	COMMENTATOR_SELECT_SERVER = 'commentator_select_server',
 	COMMENTATOR_SELECT_DVE = 'commentator_select_dve',
 	COMMENTATOR_SELECT_FULL = 'commentator_select_full',
-	CLEAR_GRAPHICS = 'clear_graphics'
+	COMMENTATOR_SELECT_JINGLE = 'commentator_select_jingle',
+	CLEAR_GRAPHICS = 'clear_graphics',
+	TAKE_WITH_TRANSITION = 'take_with_transition'
+}
+
+export enum TallyTags {
+	// Actions
+	GFX_CLEAR = 'GFX_CLEAR',
+	TAKE_WITH_TRANSITION = 'TAKE_WITH_TRANSITION',
+
+	// A particular source is live
+	KAM = 'KAM',
+	LIVE = 'EKSTERN',
+	CLIP = 'CLIP',
+	DVE = 'DVE',
+	FULL = 'FULL',
+	JINGLE = 'JINGLE',
+
+	// ANY of source type is live
+	SERVER_IS_LIVE = 'SERVER_IS_LIVE',
+	DVE_IS_LIVE = 'DVE_IS_LIVE',
+	FULL_IS_LIVE = 'FULL_IS_LIVE',
+	JINGLE_IS_LIVE = 'JINGLE_IS_LIVE'
 }

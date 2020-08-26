@@ -93,7 +93,6 @@ describe('telefon', () => {
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: 'TLF 1',
 				enable: {
@@ -101,7 +100,7 @@ describe('telefon', () => {
 				},
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				adlibPreroll: 2000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',

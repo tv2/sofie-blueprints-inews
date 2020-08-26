@@ -64,13 +64,12 @@ export function CreatePartEVS(
 
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmLive,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 		})
 	)

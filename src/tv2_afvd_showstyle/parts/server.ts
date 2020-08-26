@@ -7,12 +7,16 @@ import {
 import {
 	AddScript,
 	CreatePartServerBase,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
 	PartContext2,
 	PartDefinition,
-	PieceMetaData
+	PieceMetaData,
+	SanitizeString
 } from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -44,21 +48,22 @@ export function CreatePartServer(
 	}
 	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
 
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
+
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmServer,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [segmentExternalId]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: MakeContentServer(
 				file,
-				segmentExternalId,
+				mediaPlayerSession,
 				partDefinition,
 				config,
 				{
@@ -74,7 +79,12 @@ export function CreatePartServer(
 				},
 				duration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [
+				GetTagForServer(partDefinition.storyName, file, false),
+				GetTagForServerNext(partDefinition.storyName, file, false),
+				TallyTags.SERVER_IS_LIVE
+			]
 		})
 	)
 

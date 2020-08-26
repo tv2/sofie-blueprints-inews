@@ -5,13 +5,16 @@ import { SourceInfo } from 'tv2-common'
 import { StudioConfig } from './config'
 
 export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: string; val: string }> {
-	return studioConfig.ABMediaPlayers.map(player => ({ id: player.SourceName, val: player.AtemSource.toString() }))
+	return studioConfig.ABMediaPlayers.map(player => ({
+		id: player.SourceName,
+		val: player.AtemSource.toString()
+	}))
 }
 
 export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 	const res: SourceInfo[] = []
 
-	_.each(studioConfig.SourcesRM, rm => {
+	for (const rm of studioConfig.SourcesRM) {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: rm.SourceName,
@@ -19,9 +22,9 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 			sisyfosLayers: rm.SisyfosLayers,
 			useStudioMics: rm.StudioMics
 		})
-	})
+	}
 
-	_.each(studioConfig.SourcesCam, kam => {
+	for (const kam of studioConfig.SourcesCam) {
 		res.push({
 			type: SourceLayerType.CAMERA,
 			id: kam.SourceName,
@@ -29,9 +32,9 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 			sisyfosLayers: kam.SisyfosLayers,
 			useStudioMics: kam.StudioMics
 		})
-	})
+	}
 
-	_.each(studioConfig.SourcesSkype, sk => {
+	for (const sk of studioConfig.SourcesSkype) {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: `S${sk.SourceName}`,
@@ -39,9 +42,9 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 			sisyfosLayers: sk.SisyfosLayers,
 			useStudioMics: sk.StudioMics
 		})
-	})
+	}
 
-	_.each(studioConfig.SourcesDelayedPlayback, dp => {
+	for (const dp of studioConfig.SourcesDelayedPlayback) {
 		res.push({
 			type: SourceLayerType.REMOTE,
 			id: `DP${dp.SourceName}`,
@@ -49,7 +52,7 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 			sisyfosLayers: dp.SisyfosLayers,
 			useStudioMics: dp.StudioMics
 		})
-	})
+	}
 
 	return res
 }

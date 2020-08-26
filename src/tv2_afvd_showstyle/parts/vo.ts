@@ -11,11 +11,15 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	GetSisyfosTimelineObjForCamera,
+	GetTagForServer,
+	GetTagForServerNext,
 	literal,
 	MakeContentServer,
 	PartContext2,
-	PartDefinition
+	PartDefinition,
+	SanitizeString
 } from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -59,9 +63,11 @@ export function CreatePartVO(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
+	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
+
 	const serverContent = MakeContentServer(
 		file,
-		segmentExternalId,
+		mediaPlayerSession,
 		partDefinition,
 		config,
 		{
@@ -83,18 +89,22 @@ export function CreatePartVO(
 	)
 	pieces.push(
 		literal<IBlueprintPiece>({
-			_id: '',
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
 			sourceLayerId: SourceLayer.PgmVoiceOver,
-			infiniteMode: PieceLifespan.OutOnNextPart,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [segmentExternalId]
+				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: serverContent,
-			adlibPreroll: config.studio.CasparPrerollDuration
+			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: [
+				GetTagForServer(partDefinition.segmentExternalId, file, true),
+				GetTagForServerNext(partDefinition.segmentExternalId, file, true),
+				TallyTags.SERVER_IS_LIVE
+			]
 		})
 	)
 

@@ -83,14 +83,13 @@ describe('grafik piece', () => {
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: 'bund - Odense - Copenhagen',
 				enable: {
 					start: 0,
 					duration: 4000
 				},
-				infiniteMode: PieceLifespan.Normal,
+				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({
@@ -156,7 +155,7 @@ describe('grafik piece', () => {
 				_rank: 0,
 				externalId: partId,
 				name: 'bund - Odense - Copenhagen',
-				infiniteMode: PieceLifespan.Normal,
+				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				expectedDuration: 4000,
@@ -222,14 +221,13 @@ describe('grafik piece', () => {
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: 'bund - Odense - Copenhagen',
 				enable: {
 					start: 10000,
 					duration: 4000
 				},
-				infiniteMode: PieceLifespan.Normal,
+				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({
@@ -297,13 +295,12 @@ describe('grafik piece', () => {
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: partId,
 				name: 'bund - Odense - Copenhagen',
 				enable: {
 					start: 10000
 				},
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({

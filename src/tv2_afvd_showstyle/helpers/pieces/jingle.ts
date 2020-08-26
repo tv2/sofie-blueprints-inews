@@ -66,7 +66,8 @@ export function EvaluateJingle(
 				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: 'jingle',
-				content: createJingleContent(config, file, jingle.LoadFirstFrame),
+				lifespan: PieceLifespan.WithinPart,
+				content: createJingleContentAFVD(config, file, jingle.LoadFirstFrame),
 				toBeQueued: true,
 				adlibAutoNext: props.autoNext,
 				adlibAutoNextOverlap: props.autoNextOverlap,
@@ -78,22 +79,21 @@ export function EvaluateJingle(
 	} else {
 		pieces.push(
 			literal<IBlueprintPiece>({
-				_id: '',
 				externalId: `${part.externalId}-JINGLE`,
 				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				enable: {
 					start: 0
 				},
-				infiniteMode: PieceLifespan.OutOnNextPart,
+				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'jingle',
 				sourceLayerId: SourceLayer.PgmJingle,
-				content: createJingleContent(config, file, jingle.LoadFirstFrame)
+				content: createJingleContentAFVD(config, file, jingle.LoadFirstFrame)
 			})
 		)
 	}
 }
 
-function createJingleContent(config: BlueprintConfig, file: string, loadFirstFrame: boolean) {
+export function createJingleContentAFVD(config: BlueprintConfig, file: string, loadFirstFrame: boolean) {
 	const content = CreateJingleContentBase(
 		config,
 		file,

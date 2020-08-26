@@ -15,12 +15,12 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 1000,
 					duration: 4000
 				},
-				infiniteMode: PieceLifespan.Normal
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -35,12 +35,12 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 40,
 					duration: 4000
 				},
-				infiniteMode: PieceLifespan.Normal
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -56,12 +56,12 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 1040,
 					duration: 4000
 				},
-				infiniteMode: PieceLifespan.Normal
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -76,12 +76,12 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 0,
 					duration: 1000
 				},
-				infiniteMode: PieceLifespan.Normal
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -96,12 +96,12 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 0,
 					duration: 40
 				},
-				infiniteMode: PieceLifespan.Normal
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -117,12 +117,12 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 0,
 					duration: 1040
 				},
-				infiniteMode: PieceLifespan.Normal
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -137,11 +137,11 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 0
 				},
-				infiniteMode: PieceLifespan.OutOnNextPart
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -156,11 +156,11 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 0
 				},
-				infiniteMode: PieceLifespan.OutOnNextSegment
+				lifespan: PieceLifespan.OutOnSegmentEnd
 			})
 		)
 	})
@@ -175,11 +175,11 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 0
 				},
-				infiniteMode: PieceLifespan.Infinite
+				lifespan: PieceLifespan.OutOnRundownEnd
 			})
 		)
 	})
@@ -197,12 +197,12 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 40,
 					duration: 960
 				},
-				infiniteMode: PieceLifespan.Normal
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
@@ -220,11 +220,11 @@ describe('CreateTiming', () => {
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
-			literal<Pick<IBlueprintPiece, 'enable' | 'infiniteMode'>>({
+			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
 					start: 40
 				},
-				infiniteMode: PieceLifespan.OutOnNextPart
+				lifespan: PieceLifespan.WithinPart
 			})
 		)
 	})
