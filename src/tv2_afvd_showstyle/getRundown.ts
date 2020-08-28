@@ -22,18 +22,14 @@ import {
 	GetEksternMetaData,
 	GetLayersForCamera,
 	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
 	GetTagForTransition,
 	GraphicLLayer,
 	literal,
-	SourceInfo,
-	TimelineBlueprintExt
+	SourceInfo
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
-import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
-import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
+import { AtemLLayer, CasparLLayer, CasparPlayerClipLoadingLoop } from '../tv2_afvd_studio/layers'
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, getConfig } from './helpers/config'
 import { boxLayers } from './helpers/content/dve'
@@ -91,7 +87,6 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
 		res.push({
 			externalId: 'cam',
 			name: `Kamera ${info.id}`,
@@ -118,47 +113,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 							}
 						},
 						classes: ['adlib_deparent']
-					}),
-					...camSisyfos,
-					...config.stickyLayers
-						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
-					// Force server to be muted (for adlibbing over DVE)
-					...[
-						SisyfosLLAyer.SisyfosSourceClipPending,
-						SisyfosLLAyer.SisyfosSourceServerA,
-						SisyfosLLAyer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
 					})
 				])
 			}
@@ -166,7 +120,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		return res
 	}
 
-	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
+	function makeEVSAdLibs(info: SourceInfo, rank: number, _vo: boolean): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'delayed',
@@ -194,41 +148,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 							}
 						},
 						classes: ['adlib_deparent']
-					}),
-					...(info.sisyfosLayers || []).map(l => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: { while: '1' },
-							priority: 1,
-							layer: l,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: vo ? 2 : 1
-							}
-						})
-					}),
-					...config.stickyLayers
-						.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
-					...GetSisyfosTimelineObjForCamera(context, config, 'evs')
+					})
 				])
 			}
 		})
@@ -238,10 +158,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
-			...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
-		]
 		res.push({
 			externalId: 'live',
 			name: `Ekstern ${info.id}`,
@@ -272,48 +188,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 							}
 						},
 						classes: ['adlib_deparent']
-					}),
-					...eksternSisyfos,
-					...config.stickyLayers
-						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => config.liveAudio.indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
-					// Force server to be muted (for adlibbing over DVE)
-					...[
-						SisyfosLLAyer.SisyfosSourceClipPending,
-						SisyfosLLAyer.SisyfosSourceServerA,
-						SisyfosLLAyer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
 					})
 				])
 			}
@@ -630,19 +504,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
-				literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: { start: 0 },
-					priority: 2,
-					layer: SisyfosLLAyer.SisyfosResync,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						resync: true
-					}
-				})
-			])
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([])
 		}
 	})
 
@@ -697,22 +559,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
-			timelineObjects: [
-				literal<TSR.TimelineObjEmpty>({
-					id: '',
-					enable: {
-						start: 0,
-						duration: 1000
-					},
-					priority: 50,
-					layer: SisyfosLLAyer.SisyfosSourceAudiobed,
-					content: {
-						deviceType: TSR.DeviceType.ABSTRACT,
-						type: 'empty'
-					},
-					classes: []
-				})
-			]
+			timelineObjects: []
 		}
 	})
 
@@ -1266,25 +1113,6 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 				type: TSR.TimelineContentTypeCasparCg.ROUTE,
 				mappedLayer: CasparLLayer.CasparCGDVELoop
 			}
-		}),
-
-		// create sisyfos channels from the config
-		...Object.keys(sisyfosChannels).map(key => {
-			const llayer = key as SisyfosLLAyer
-			const channel = sisyfosChannels[llayer] as SisyfosChannel
-			return literal<TSR.TimelineObjSisyfosChannel>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: llayer,
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: channel.isPgm,
-					visible: !channel.hideInStudioA,
-					label: channel.label
-				}
-			})
 		}),
 
 		literal<TSR.TimelineObjCCGMedia>({

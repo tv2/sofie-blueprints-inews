@@ -2,8 +2,7 @@ import { BlueprintMapping, BlueprintMappings, IStudioContext, TSR } from 'tv-aut
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
-import { AtemLLayer, SisyfosLLAyer } from './layers'
-import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
+import { AtemLLayer } from './layers'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -32,8 +31,6 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 		(_id, v) => v.device === TSR.DeviceType.ATEM && (v as any).mappingType === TSR.MappingAtemType.MixEffect
 	)
 
-	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
-
 	return [
 		...convertMappings(atemMeMappings, id =>
 			literal<TSR.TimelineObjAtemME>({
@@ -51,37 +48,6 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				}
 			})
 		),
-		...convertMappings(sisyfosMappings, id => {
-			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer] as SisyfosChannel | undefined
-			if (sisyfosChannel) {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: id,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: sisyfosChannel.isPgm,
-						label: sisyfosChannel.label,
-						visible: !sisyfosChannel.hideInStudioA
-					}
-				})
-			} else {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: id,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: 0,
-						label: ''
-					}
-				})
-			}
-		}),
 
 		// have ATEM output default still image
 		literal<TSR.TimelineObjAtemAUX>({

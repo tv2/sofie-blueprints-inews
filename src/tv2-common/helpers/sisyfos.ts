@@ -1,7 +1,7 @@
 import * as _ from 'underscore'
 
-import { NotesContext, SourceLayerType, Timeline, TSR } from 'tv-automation-sofie-blueprints-integration'
-import { FindSourceInfoStrict, SourceInfo, TV2StudioBlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
+import { NotesContext, Timeline, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { SourceInfo, TV2StudioBlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 import { PieceMetaData } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -59,132 +59,39 @@ export function GetCameraMetaData(
 }
 
 export function GetSisyfosTimelineObjForEkstern(
-	context: NotesContext,
-	sources: SourceInfo[],
-	sourceType: string,
-	getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
-	enable?: Timeline.TimelineEnable
+	_context: NotesContext,
+	_sources: SourceInfo[],
+	_sourceType: string,
+	_getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
+	_enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
-	if (!enable) {
-		enable = { start: 0 }
-	}
-
-	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
-	const layers = getLayersForEkstern(context, sources, sourceType)
-
-	if (!layers || !layers.length) {
-		context.warning(`Could not set audio levels for ${sourceType}`)
-		return audioTimeline
-	}
-
-	layers.forEach(layer => {
-		audioTimeline.push(
-			literal<TSR.TimelineObjSisyfosChannel>({
-				id: '',
-				enable: enable!,
-				priority: 1,
-				layer,
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: 1
-				}
-			})
-		)
-	})
-	return audioTimeline
+	return []
 }
 
-export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
-	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
-	const eksternLayers: string[] = []
-	if (eksternProps) {
-		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
-		if (sourceInfo && sourceInfo.sisyfosLayers) {
-			eksternLayers.push(...sourceInfo.sisyfosLayers)
-		}
-	}
-	return eksternLayers
+export function GetLayersForEkstern(_context: NotesContext, _sources: SourceInfo[], _sourceType: string) {
+	return []
 }
 
 export function GetSisyfosTimelineObjForCamera(
-	context: NotesContext,
-	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
-	sourceType: string,
-	enable?: Timeline.TimelineEnable
+	_context: NotesContext,
+	_config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
+	_sourceType: string,
+	_enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
-	if (!enable) {
-		enable = { start: 0 }
-	}
-
-	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
-	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
-	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
-	const nonCam = !!sourceType.match(/server|telefon|full|evs/i)
-	if ((useMic && camName) || nonCam) {
-		const camLayers: string[] = []
-		if (useMic && camName) {
-			const sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, sourceType)
-			if (sourceInfo) {
-				if (sourceInfo.sisyfosLayers) {
-					camLayers.push(...sourceInfo.sisyfosLayers)
-				}
-				if (sourceInfo.useStudioMics) {
-					camLayers.push(...config.studio.StudioMics)
-				}
-			}
-		} else if (nonCam) {
-			camLayers.push(...config.studio.StudioMics)
-		}
-		audioTimeline.push(
-			...camLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: enable ? enable : { start: 0 },
-					priority: 1,
-					layer,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: 1
-					}
-				})
-			})
-		)
-	}
-	return audioTimeline
+	return []
 }
 
-export function GetLayersForCamera(config: TV2StudioBlueprintConfigBase<TV2StudioConfigBase>, sourceInfo: SourceInfo) {
-	const cameraLayers: string[] = []
-	if (sourceInfo.sisyfosLayers) {
-		cameraLayers.push(...sourceInfo.sisyfosLayers)
-	}
-	if (sourceInfo.useStudioMics) {
-		cameraLayers.push(...config.studio.StudioMics)
-	}
-	return cameraLayers
+export function GetLayersForCamera(
+	_config: TV2StudioBlueprintConfigBase<TV2StudioConfigBase>,
+	_sourceInfo: SourceInfo
+) {
+	return []
 }
 
-export function getStickyLayers(studioConfig: TV2StudioConfigBase, liveAudioLayers: string[]) {
-	return [...studioConfig.StudioMics, ...liveAudioLayers]
+export function getStickyLayers(_studioConfig: TV2StudioConfigBase, _liveAudioLayers: string[]) {
+	return []
 }
 
-export function getLiveAudioLayers(studioConfig: TV2StudioConfigBase): string[] {
-	const res = new Set<string>()
-	for (const src of studioConfig.SourcesRM) {
-		if (src.SisyfosLayers && src.KeepAudioInStudio) {
-			for (const layer of src.SisyfosLayers) {
-				res.add(layer)
-			}
-		}
-	}
-	for (const src of studioConfig.SourcesSkype) {
-		if (src.SisyfosLayers) {
-			for (const layer of src.SisyfosLayers) {
-				res.add(layer)
-			}
-		}
-	}
-	return Array.from(res)
+export function getLiveAudioLayers(_studioConfig: TV2StudioConfigBase): string[] {
+	return []
 }
