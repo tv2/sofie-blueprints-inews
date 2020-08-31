@@ -118,6 +118,7 @@ export interface ActionExecutionSettings<
 			ClipPending: string
 			Effekt: string
 			StudioMics: string
+			PersistedLevels: string
 		}
 		Atem: {
 			MEProgram: string
@@ -1099,26 +1100,30 @@ function executeActionCutToCamera<
 					  ]
 					: []),
 				camSisyfos,
-				...config.stickyLayers
-					.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
-					.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-					}),
+				literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+					id: '',
+					enable: {
+						start: 0
+					},
+					priority: 1,
+					layer: settings.LLayer.Sisyfos.PersistedLevels,
+					content: {
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+						channels: config.stickyLayers
+							.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
+							.map(layer => {
+								return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+									mappedLayer: layer,
+									isPgm: 0
+								})
+							})
+					},
+					metaData: {
+						sisyfosPersistLevel: true
+					}
+				}),
+
 				// Force server to be muted (for adlibbing over DVE)
 				...settings.ServerAudioLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
 					return literal<TSR.TimelineObjSisyfosChannel>({

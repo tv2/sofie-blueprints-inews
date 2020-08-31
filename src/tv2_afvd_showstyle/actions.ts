@@ -45,7 +45,8 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				Sisyfos: {
 					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
 					Effekt: SisyfosLLAyer.SisyfosSourceJingle,
-					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
+					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics,
+					PersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
 				},
 				Atem: {
 					MEProgram: AtemLLayer.AtemMEProgram,

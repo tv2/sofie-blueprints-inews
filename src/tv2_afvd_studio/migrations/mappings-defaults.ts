@@ -263,6 +263,12 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNELS
 	}),
+	sisyfos_persisted_levels: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNELS
+	}),
 	sisyfos_source_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',

@@ -142,7 +142,7 @@ function makeContentEVS(
 								start: 0
 							},
 							priority: 1,
-							layer: SisyfosLLAyer.SisyfosGroupLive,
+							layer: SisyfosLLAyer.SisyfosPersistedLevels,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
 								type: TSR.TimelineContentTypeSisyfos.CHANNELS,

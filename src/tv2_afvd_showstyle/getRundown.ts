@@ -125,26 +125,29 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						classes: ['adlib_deparent']
 					}),
 					camSisyfos,
-					...config.stickyLayers
-						.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
+					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: SisyfosLLAyer.SisyfosPersistedLevels,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							channels: config.stickyLayers
+								.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
+								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+									return {
+										mappedLayer: layer,
+										isPgm: 0
+									}
+								})
+						},
+						metaData: {
+							sisyfosPersistLevel: true
+						}
+					}),
 					// Force server to be muted (for adlibbing over DVE)
 					...[
 						SisyfosLLAyer.SisyfosSourceClipPending,
@@ -213,26 +216,29 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 							}
 						})
 					}),
-					...config.stickyLayers
-						.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
+					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: SisyfosLLAyer.SisyfosPersistedLevels,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							channels: config.stickyLayers
+								.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
+								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+									return {
+										mappedLayer: layer,
+										isPgm: 0
+									}
+								})
+						},
+						metaData: {
+							sisyfosPersistLevel: true
+						}
+					}),
 					GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
 				])
 			}
@@ -279,27 +285,30 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						classes: ['adlib_deparent']
 					}),
 					...eksternSisyfos,
-					...config.stickyLayers
-						.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => config.liveAudio.indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
+					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: SisyfosLLAyer.SisyfosPersistedLevels,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							channels: config.stickyLayers
+								.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
+								.filter(layer => config.liveAudio.indexOf(layer) === -1)
+								.map(layer => {
+									return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+										mappedLayer: layer,
+										isPgm: 0
+									})
+								})
+						},
+						metaData: {
+							sisyfosPersistLevel: true
+						}
+					}),
 					// Force server to be muted (for adlibbing over DVE)
 					...[
 						SisyfosLLAyer.SisyfosSourceClipPending,

@@ -62,7 +62,8 @@ export function executeActionOfftube(
 				Sisyfos: {
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
 					Effekt: OfftubeSisyfosLLayer.SisyfosSourceJingle,
-					StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+					StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
+					PersistedLevels: OfftubeSisyfosLLayer.SisyfosPersistedLevels
 				},
 				Atem: {
 					MEProgram: OfftubeAtemLLayer.AtemMEProgram,

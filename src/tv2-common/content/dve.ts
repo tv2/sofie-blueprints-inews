@@ -89,6 +89,7 @@ export interface DVELayers {
 	SisyfosLLayer: {
 		ClipPending: string
 		StudioMics: string
+		PersistedLevels: string
 	}
 	CasparLLayer: {
 		ClipPending: string
@@ -479,25 +480,28 @@ export function MakeContentDVE2<
 
 	if (adlib) {
 		dveTimeline.push(
-			...config.stickyLayers
-				.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
-				.filter(layer => config.liveAudio.indexOf(layer) === -1)
-				.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: getDVEEnable(),
-						priority: 1,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					})
-				})
+			literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+				id: '',
+				enable: getDVEEnable(),
+				priority: 1,
+				layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.PersistedLevels,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					channels: config.stickyLayers
+						.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
+						.filter(layer => config.liveAudio.indexOf(layer) === -1)
+						.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+							return {
+								mappedLayer: layer,
+								isPgm: 0
+							}
+						})
+				},
+				metaData: {
+					sisyfosPersistLevel: true
+				}
+			})
 		)
 	}
 

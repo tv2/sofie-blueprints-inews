@@ -37,7 +37,8 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		},
 		SisyfosLLayer: {
 			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-			StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
+			StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics,
+			PersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
 		},
 		CasparLLayer: {
 			ClipPending: CasparLLayer.CasparPlayerClipPending
