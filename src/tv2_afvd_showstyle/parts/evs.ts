@@ -146,6 +146,7 @@ function makeContentEVS(
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
 								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+								overridePriority: 1,
 								channels: config.liveAudio.map(layer => {
 									return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
 										mappedLayer: layer,

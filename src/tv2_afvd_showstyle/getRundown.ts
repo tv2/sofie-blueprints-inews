@@ -135,6 +135,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						content: {
 							deviceType: TSR.DeviceType.SISYFOS,
 							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							overridePriority: 1,
 							channels: config.stickyLayers
 								.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
 								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
@@ -226,6 +227,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						content: {
 							deviceType: TSR.DeviceType.SISYFOS,
 							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							overridePriority: 1,
 							channels: config.stickyLayers
 								.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
 								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
@@ -295,6 +297,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 						content: {
 							deviceType: TSR.DeviceType.SISYFOS,
 							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							overridePriority: 1,
 							channels: config.stickyLayers
 								.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
 								.filter(layer => config.liveAudio.indexOf(layer) === -1)

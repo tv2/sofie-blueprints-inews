@@ -488,6 +488,7 @@ export function MakeContentDVE2<
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					overridePriority: 1,
 					channels: config.stickyLayers
 						.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
 						.filter(layer => config.liveAudio.indexOf(layer) === -1)

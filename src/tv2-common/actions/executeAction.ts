@@ -1110,6 +1110,7 @@ function executeActionCutToCamera<
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+						overridePriority: 1,
 						channels: config.stickyLayers
 							.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
 							.map(layer => {
