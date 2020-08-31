@@ -17,7 +17,7 @@ const manifest: StudioBlueprintManifest = {
 	integrationVersion: VERSION_INTEGRATION,
 	TSRVersion: VERSION_TSR,
 
-	minimumCoreVersion: '1.10.0',
+	minimumCoreVersion: '1.12.0',
 
 	preprocessConfig: parseConfig,
 
