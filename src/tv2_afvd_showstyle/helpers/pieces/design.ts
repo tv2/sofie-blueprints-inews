@@ -40,6 +40,7 @@ export function EvaluateDesign(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
+					ignoreMediaObjectStatus: true,
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
@@ -71,6 +72,7 @@ export function EvaluateDesign(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
+					ignoreMediaObjectStatus: true,
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',

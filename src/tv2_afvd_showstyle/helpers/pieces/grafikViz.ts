@@ -92,6 +92,7 @@ export function EvaluateGrafikViz(
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
+					ignoreMediaObjectStatus: true,
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
@@ -133,6 +134,7 @@ export function EvaluateGrafikViz(
 			content: literal<GraphicsContent>({
 				fileName: parsedCue.template,
 				path: parsedCue.template,
+				ignoreMediaObjectStatus: true,
 				timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',

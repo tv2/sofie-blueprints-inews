@@ -58,6 +58,7 @@ export function EvaluateVIZBase<
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
+						ignoreMediaObjectStatus: true,
 						timelineObjects: _.compact<TSR.TSRTimelineObj>([
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
@@ -89,6 +90,7 @@ export function EvaluateVIZBase<
 					content: literal<GraphicsContent>({
 						fileName,
 						path,
+						ignoreMediaObjectStatus: true,
 						timelineObjects: _.compact<TSR.TSRTimelineObj>([
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
@@ -181,6 +183,7 @@ export function EvaluateVIZBase<
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,
+								ignoreMediaObjectStatus: true,
 								timelineObjects: _.compact<TSR.TSRTimelineObj>([
 									literal<TSR.TimelineObjVIZMSEElementInternal>({
 										id: '',
@@ -212,6 +215,7 @@ export function EvaluateVIZBase<
 							content: literal<GraphicsContent>({
 								fileName: path,
 								path,
+								ignoreMediaObjectStatus: true,
 								timelineObjects: _.compact<TSR.TSRTimelineObj>([
 									literal<TSR.TimelineObjVIZMSEElementInternal>({
 										id: '',
