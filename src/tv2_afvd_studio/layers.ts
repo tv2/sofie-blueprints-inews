@@ -61,6 +61,7 @@ export enum CasparLLayer {
 }
 
 export enum SisyfosLLAyer {
+	SisyfosConfig = 'sisyfos_config',
 	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
 	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',

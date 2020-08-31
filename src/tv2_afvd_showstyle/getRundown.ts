@@ -1285,23 +1285,26 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			}
 		}),
 
-		// create sisyfos channels from the config
-		...Object.keys(sisyfosChannels).map(key => {
-			const llayer = key as SisyfosLLAyer
-			const channel = sisyfosChannels[llayer] as SisyfosChannel
-			return literal<TSR.TimelineObjSisyfosChannel>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: llayer,
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: channel.isPgm,
-					visible: !channel.hideInStudioA,
-					label: channel.label
-				}
-			})
+		literal<TSR.TimelineObjSisyfosChannels>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: SisyfosLLAyer.SisyfosConfig,
+			content: {
+				deviceType: TSR.DeviceType.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+				overridePriority: -1,
+				channels: Object.keys(sisyfosChannels).map(key => {
+					const llayer = key as SisyfosLLAyer
+					const channel = sisyfosChannels[llayer] as SisyfosChannel
+					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+						mappedLayer: llayer,
+						isPgm: channel.isPgm,
+						visible: !channel.hideInStudioA,
+						label: channel.label
+					})
+				})
+			}
 		}),
 
 		literal<TSR.TimelineObjCCGMedia>({
