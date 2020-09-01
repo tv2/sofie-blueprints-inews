@@ -79,7 +79,7 @@ export function CreateTimingAdLib(cue: CueDefinitionBase): Pick<IBlueprintAdLibP
 	return result
 }
 
-export function LifeSpan(mode: 'B' | 'S' | 'O', defaultLifespan: PieceLifespan): PieceLifespan {
+export function LifeSpan(mode: 'B' | 'S' | 'O' | undefined, defaultLifespan: PieceLifespan): PieceLifespan {
 	switch (mode) {
 		case 'B':
 			return PieceLifespan.WithinPart
