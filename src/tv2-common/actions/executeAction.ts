@@ -735,7 +735,9 @@ function executeActionSelectDVELayout<
 
 	const sources: DVESources = {
 		INP1: 'DEFAULT',
-		INP2: 'DEFAULT'
+		INP2: 'DEFAULT',
+		INP3: 'DEFAULT',
+		INP4: 'DEFAULT'
 	}
 
 	const externalId = generateExternalId(context, actionId, [userData.config.DVEName])
