@@ -54,5 +54,5 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getCreateVariantMigrationSteps(),
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	...remapTableColumnValues(VERSION, 'GFXTemplates', 'LayerMapping', remapVizLLayer)
+	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer)
 ])

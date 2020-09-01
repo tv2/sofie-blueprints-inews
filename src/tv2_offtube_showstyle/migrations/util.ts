@@ -130,3 +130,34 @@ export function remapTableColumnValues(
 		})
 	]
 }
+
+export function remapShortcuts(
+	versionStr: string,
+	sourceLayerId: string,
+	previousValue: string,
+	newValue: string
+): MigrationStepShowStyle[] {
+	return [
+		literal<MigrationStepShowStyle>({
+			id: `remapShoprtcuts.${sourceLayerId}`,
+			version: versionStr,
+			canBeRunAutomatically: true,
+			validate: (context: MigrationContextShowStyle) => {
+				const sourceLayer = context.getSourceLayer(sourceLayerId)
+
+				if (!sourceLayer) {
+					return `Sourcelayer ${sourceLayerId} does not exists`
+				}
+
+				return sourceLayer.activateKeyboardHotkeys === previousValue
+			},
+			migrate: (context: MigrationContextShowStyle) => {
+				const sourceLayer = context.getSourceLayer(sourceLayerId) as ISourceLayer
+
+				sourceLayer.activateKeyboardHotkeys = newValue
+
+				context.updateSourceLayer(sourceLayerId, sourceLayer)
+			}
+		})
+	]
+}
