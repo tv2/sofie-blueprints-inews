@@ -1316,7 +1316,20 @@ function executeActionCutSourceToBox<
 
 	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.name
 
-	const newPieceContent = MakeContentDVE2(context, config, meta.config, {}, meta.sources, settings.DVEGeneratorOptions)
+	const graphicsTemplateContent: { [key: string]: string } = {}
+
+	meta.userData.config.labels.forEach((label, i) => {
+		graphicsTemplateContent[`locator${i + 1}`] = label
+	})
+
+	const newPieceContent = MakeContentDVE2(
+		context,
+		config,
+		meta.config,
+		graphicsTemplateContent,
+		meta.sources,
+		settings.DVEGeneratorOptions
+	)
 	if (userData.vo) {
 		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs')
 		// Replace any existing instances of studio mics with VO values
