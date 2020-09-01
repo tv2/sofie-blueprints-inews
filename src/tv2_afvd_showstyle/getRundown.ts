@@ -244,7 +244,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		]
 		res.push({
 			externalId: 'live',
-			name: `Ekstern ${info.id}`,
+			name: `LIVE ${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLive,
 			outputLayerId: 'pgm',
