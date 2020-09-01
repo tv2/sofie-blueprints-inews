@@ -34,5 +34,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		SourceLayer.PgmDVEBox2,
 		'ctrl+f1,ctrl+f2,ctrl+f3,ctrl+shift+alt+f4,ctrl+f5,ctrl+1,ctrl+2,ctrl+3,ctrl+4,ctrl+5,ctrl+6,ctrl+7,ctrl+8,ctrl+9,ctrl+0,ctrl+e,ctrl+d',
 		'ctrl+f1,ctrl+f2,ctrl+f3,ctrl+shift+alt+f4,ctrl+f5,ctrl+1,ctrl+2,ctrl+3,ctrl+4,ctrl+5,ctrl+6,ctrl+7,ctrl+8,ctrl+9,ctrl+0,ctrl+e,ctrl+d,ctrl+i,ctrl+shift+alt+i,ctrl+alt+shift+g'
-	)
+	),
+	...remapShortcuts('1.3.0', SourceLayer.PgmDVEAdlib, 'm,comma,.,n,c,b,v', 'm,comma,nbPeriod,n,c,b,v')
 ])

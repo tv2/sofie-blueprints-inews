@@ -1,9 +1,11 @@
 import { MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integration'
 import { GraphicLLayer, literal } from 'tv2-common'
 import * as _ from 'underscore'
+import { OfftubeSourceLayer } from '../layers'
 import {
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
+	remapShortcuts,
 	remapTableColumnValues
 } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
@@ -54,5 +56,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getCreateVariantMigrationSteps(),
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer)
+	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
+	...remapShortcuts('1.3.0', OfftubeSourceLayer.PgmDVE, 'm,comma,.,n,c,b,v', 'm,comma,nbPeriod,n,c,b,v')
 ])
