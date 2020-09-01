@@ -210,7 +210,7 @@ export function GetInfiniteModeForGrafik(
 		: isTlf
 		? PieceLifespan.WithinPart
 		: isIdent
-		? LifeSpan(parsedCue.end?.infiniteMode, PieceLifespan.WithinPart)
+		? PieceLifespan.OutOnSegmentEnd
 		: parsedCue.end && parsedCue.end.infiniteMode
 		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
 		: FindInfiniteModeFromConfig(config, parsedCue)
