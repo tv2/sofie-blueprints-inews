@@ -111,16 +111,17 @@ export function GetSisyfosTimelineObjForCamera(
 	context: NotesContext,
 	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
 	sourceType: string,
+	channelLayer: string,
 	enable?: Timeline.TimelineEnable
-): TSR.TimelineObjSisyfosAny[] {
+): TSR.TimelineObjSisyfosChannels {
 	if (!enable) {
 		enable = { start: 0 }
 	}
 
-	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
 	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
 	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
 	const nonCam = !!sourceType.match(/server|telefon|full|evs/i)
+	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
 	if ((useMic && camName) || nonCam) {
 		const camLayers: string[] = []
 		if (useMic && camName) {
@@ -136,23 +137,25 @@ export function GetSisyfosTimelineObjForCamera(
 		} else if (nonCam) {
 			camLayers.push(...config.studio.StudioMics)
 		}
-		audioTimeline.push(
-			...camLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: enable ? enable : { start: 0 },
-					priority: 1,
-					layer,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: 1
-					}
-				})
+		camLayers.forEach(layer => {
+			mappedChannels.push({
+				mappedLayer: layer,
+				isPgm: 1
 			})
-		)
+		})
 	}
-	return audioTimeline
+
+	return literal<TSR.TimelineObjSisyfosChannels>({
+		id: '',
+		enable: enable ? enable : { start: 0 },
+		priority: mappedChannels.length ? 1 : 0,
+		layer: channelLayer,
+		content: {
+			deviceType: TSR.DeviceType.SISYFOS,
+			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+			channels: mappedChannels
+		}
+	})
 }
 
 export function GetLayersForCamera(config: TV2StudioBlueprintConfigBase<TV2StudioConfigBase>, sourceInfo: SourceInfo) {

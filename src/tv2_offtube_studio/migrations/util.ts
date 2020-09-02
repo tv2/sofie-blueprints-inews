@@ -157,6 +157,27 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 	return res
 }
 
+export function GetMappingDefaultMigrationStepForLayer(versionStr: string, layer: string): MigrationStepStudio {
+	return literal<MigrationStepStudio>({
+		id: `mappings.defaults.manualEnsure${layer}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			// Optional mappings based on studio settings can be dropped here
+
+			if (!context.getMapping(layer)) {
+				return `Mapping "${layer}" doesn't exist in style`
+			}
+			return false
+		},
+		migrate: (context: MigrationContextStudio) => {
+			if (!context.getMapping(layer)) {
+				context.insertMapping(layer, MappingsDefaults[layer])
+			}
+		}
+	})
+}
+
 export function GetSisyfosLayersForTableMigrationOfftube(configName: string, val: string): string[] {
 	switch (configName) {
 		case 'SourcesCam':

@@ -9,8 +9,11 @@ export function RealLLayers() {
 		_.values(AtemLLayer)
 			// @ts-ignore
 			.concat(_.values(CasparLLayer))
+			// @ts-ignore
 			.concat(_.values(SisyfosLLAyer))
+			// @ts-ignore
 			.concat(_.values(GraphicLLayer))
+			// @ts-ignore
 			.concat(_.values(VirtualAbstractLLayer))
 	)
 }
@@ -58,6 +61,9 @@ export enum CasparLLayer {
 }
 
 export enum SisyfosLLAyer {
+	SisyfosConfig = 'sisyfos_config',
+	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
+	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
 	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',

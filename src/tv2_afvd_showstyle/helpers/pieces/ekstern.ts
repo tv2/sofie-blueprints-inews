@@ -5,7 +5,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, GetDefaultOut, PartContext2, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
@@ -34,6 +34,9 @@ export function EvaluateEkstern(
 			},
 			ATEM: {
 				MEProgram: AtemLLayer.AtemMEProgram
+			},
+			Sisyfos: {
+				StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
 			}
 		},
 		GetDefaultOut,

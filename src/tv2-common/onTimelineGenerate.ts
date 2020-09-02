@@ -11,6 +11,8 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
+import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
@@ -333,6 +335,8 @@ export function getEndStateForPart(
 		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
 	}
 
+	_context.warning(`END STATE: ${JSON.stringify(endState.stickySisyfosLevels)}`)
+
 	for (const piece of activePieces) {
 		if (piece.piece.metaData) {
 			const meta = (piece.piece.metaData as PieceMetaData).mediaPlayerSessions
@@ -395,13 +399,38 @@ export function preservePieceSisfosLevel(
 	}
 }
 
-function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosChannel & TimelineObjectCoreExt>) {
+// function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosChannel & TimelineObjectCoreExt>) {
+// 	return (
+// 		obj.content &&
+// 		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
+// 		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNEL
+// 	)
+// }
+
+function isSisyfosPersistObject(obj: TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt) {
 	return (
-		obj.content &&
+		(obj.layer === OfftubeSisyfosLLayer.SisyfosPersistedLevels || obj.layer === SisyfosLLAyer.SisyfosPersistedLevels) &&
 		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
-		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNEL
+		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNELS &&
+		obj.metaData?.sisyfosPersistLevel &&
+		!obj.id.match(/previous/i) &&
+		!obj.id.match(/future/)
 	)
 }
+
+// function isSisyfosChannels(obj: TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt) {
+// 	return (
+// 		obj.content &&
+// 		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
+// 		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNELS
+// 	)
+// }
+
+// function isSisyfosObject(obj: (TSR.TimelineObjSisyfosChannels | TSR.TimelineObjSisyfosChannel) & TimelineBlueprintExt) {
+// 	return (
+// 		isSisyfosSource(obj as TSR.TimelineObjSisyfosChannel) || isSisyfosChannels(obj as TSR.TimelineObjSisyfosChannels)
+// 	)
+// }
 
 export function copyPreviousSisyfosLevels(
 	_context: RundownContext,
@@ -409,37 +438,62 @@ export function copyPreviousSisyfosLevels(
 	previousLevels: PartEndStateExt['stickySisyfosLevels'],
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
-	// This needs to look at previous pieces within the part, to make it work for adlibs
-	const sisyfosObjs = (timelineObjs as Array<
-		TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt & OnGenerateTimelineObj
-	>).filter(isSisyfosSource)
+	const objectsLookingToPersistLevels: Array<TSR.TimelineObjSisyfosChannels &
+		TimelineBlueprintExt &
+		OnGenerateTimelineObj> = (timelineObjs as Array<
+		TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt & OnGenerateTimelineObj
+	>).filter(isSisyfosPersistObject)
 
+	// const layersToPersist = new Set<string>()
+	// objectsLookingToPersistLevels.forEach(o => o.content.channels.forEach(c => layersToPersist.add(c.mappedLayer)))
+
+	// const objectsWithLevelsOnLayersToPersist = (timelineObjs as Array<
+	// 	(TSR.TimelineObjSisyfosChannel | TSR.TimelineObjSisyfosChannels) & TimelineBlueprintExt & OnGenerateTimelineObj
+	// >)
+	// 	.filter(
+	// 		obj =>
+	// 			obj.priority &&
+	// 			obj.priority > 0 &&
+	// 			obj.layer !== OfftubeSisyfosLLayer.SisyfosConfig &&
+	// 			obj.layer !== OfftubeSisyfosLLayer.SisyfosPersistedLevels &&
+	// 			obj.layer !== SisyfosLLAyer.SisyfosPersistedLevels
+	// 	)
+	// 	.filter(obj => {
+	// 		if (isSisyfosSource(obj as TSR.TimelineObjSisyfosChannel)) {
+	// 			return layersToPersist.has(obj.layer.toString())
+	// 		} else if (isSisyfosChannels(obj as TSR.TimelineObjSisyfosChannels)) {
+	// 			return (obj as TSR.TimelineObjSisyfosChannels).content.channels.some(l => layersToPersist.has(l.mappedLayer))
+	// 		}
+
+	// 		return false
+	// 	})
+
+	// _context.warning(`LEVELS: ${JSON.stringify(objectsWithLevelsOnLayersToPersist)}`)
+
+	// This needs to look at previous pieces within the part, to make it work for adlibs
 	// Pieces should be ordered, we shall assume that
-	const groupedPieces = _.groupBy(resolvedPieces, p => p.piece.enable.start)
-	const sisyfosObjectsByPiece = _.groupBy(sisyfosObjs, o => o.pieceInstanceId)
+	const groupedPieces = _.groupBy(resolvedPieces, p => p.resolvedStart)
+	const sisyfosObjectsByPiece = _.groupBy(objectsLookingToPersistLevels, o => o.pieceInstanceId)
+
 	for (const k of Object.keys(groupedPieces)) {
 		const pieces = groupedPieces[k]
 		const pieceIds = _.pluck(pieces, '_id') // getPieceGroupId(p._id))
 		// Find all the objs that start here
 		const objs = _.flatten(Object.values(_.pick(sisyfosObjectsByPiece, pieceIds)))
 		// Stop if no objects
-		if (objs.length === 0 || !pieces[0].piece.enable) {
-			return
+		if (objs.length === 0) {
+			continue
 		}
 
 		// Find the active pieces before this time
-		const time = pieces[0].piece.enable.start as number
+		const time = pieces[0].resolvedStart
 
 		// Start of part
 		if (time !== 0) {
 			// Calculate the previous 'state'
 			const activePieces = resolvedPieces.filter(p => {
-				if (!p.piece.enable) {
-					return false
-				}
-
-				const start = p.piece.enable.start as number // Core should be always setting this to a number
-				const duration = p.piece.playoutDuration
+				const start = p.resolvedStart // Core should be always setting this to a number
+				const duration = p.resolvedDuration
 
 				// Piece must start before target, and end at or after target starts
 				return start < time && (duration === undefined || start + duration >= time)
@@ -470,13 +524,21 @@ export function copyPreviousSisyfosLevels(
 			previousLevels = newPreviousLevels
 		}
 
+		const allChannels = []
 		// Apply newly calculated levels
 		for (const sisyfosObj of objs) {
 			const contentObj = sisyfosObj.content
-			const previousVal = previousLevels[sisyfosObj.layer + '']
-			if (contentObj && previousVal !== undefined && sisyfosObj.metaData && sisyfosObj.metaData.sisyfosPersistLevel) {
-				contentObj.isPgm = previousVal
+			for (const channel of contentObj.channels) {
+				const previousVal = previousLevels[channel.mappedLayer]
+				if (previousVal !== undefined) {
+					channel.isPgm = previousVal
+					allChannels.push(channel)
+				}
 			}
+		}
+		// Apply all persisted levels to all objects in case there's more than one object
+		for (const sisyfosObj of objs) {
+			sisyfosObj.content.channels = allChannels
 		}
 	}
 }

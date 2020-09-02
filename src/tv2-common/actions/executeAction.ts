@@ -117,6 +117,8 @@ export interface ActionExecutionSettings<
 		Sisyfos: {
 			ClipPending: string
 			Effekt: string
+			StudioMics: string
+			PersistedLevels: string
 		}
 		Atem: {
 			MEProgram: string
@@ -409,7 +411,9 @@ function executeActionSelectServerClip<
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		if (userData.vo) {
-			activeServerPiece.content.timelineObjects.push(...GetSisyfosTimelineObjForCamera(context, config, 'server'))
+			activeServerPiece.content.timelineObjects.push(
+				GetSisyfosTimelineObjForCamera(context, config, 'server', settings.LLayer.Sisyfos.StudioMics)
+			)
 		}
 	}
 
@@ -1058,7 +1062,12 @@ function executeActionCutToCamera<
 	}
 	const atemInput = sourceInfoCam.port
 
-	const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${userData.name}`)
+	const camSisyfos = GetSisyfosTimelineObjForCamera(
+		context,
+		config,
+		`Kamera ${userData.name}`,
+		settings.LLayer.Sisyfos.StudioMics
+	)
 
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
@@ -1092,27 +1101,32 @@ function executeActionCutToCamera<
 							})
 					  ]
 					: []),
-				...camSisyfos,
-				...config.stickyLayers
-					.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-					.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-					}),
+				camSisyfos,
+				literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+					id: '',
+					enable: {
+						start: 0
+					},
+					priority: 1,
+					layer: settings.LLayer.Sisyfos.PersistedLevels,
+					content: {
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+						overridePriority: 1,
+						channels: config.stickyLayers
+							.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
+							.map(layer => {
+								return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+									mappedLayer: layer,
+									isPgm: 0
+								})
+							})
+					},
+					metaData: {
+						sisyfosPersistLevel: true
+					}
+				}),
+
 				// Force server to be muted (for adlibbing over DVE)
 				...settings.ServerAudioLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
 					return literal<TSR.TimelineObjSisyfosChannel>({
@@ -1169,7 +1183,7 @@ function executeActionCutToRemote<
 
 	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
 		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`, GetLayersForEkstern),
-		...GetSisyfosTimelineObjForCamera(context, config, 'telefon')
+		GetSisyfosTimelineObjForCamera(context, config, 'telefon', settings.LLayer.Sisyfos.StudioMics)
 	]
 
 	const remotePiece = literal<IBlueprintPiece>({
@@ -1333,12 +1347,12 @@ function executeActionCutSourceToBox<
 		settings.DVEGeneratorOptions
 	)
 	if (userData.vo) {
-		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs')
+		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs', settings.LLayer.Sisyfos.StudioMics)
 		// Replace any existing instances of studio mics with VO values
 		newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
-			obj => !studioMics.some(o => o.layer === obj.layer)
+			obj => studioMics.layer !== obj.layer
 		)
-		newPieceContent.content.timelineObjects.push(...studioMics)
+		newPieceContent.content.timelineObjects.push(studioMics)
 	}
 
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }

@@ -21,9 +21,6 @@ function filterMappings(
 
 	return result
 }
-function convertMappings<T>(input: BlueprintMappings, func: (k: string, v: BlueprintMapping) => T): T[] {
-	return _.map(_.keys(input), k => func(k, input[k]))
-}
 
 export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 	const mappings = context.getStudioMappings()
@@ -31,36 +28,41 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
-	return [
-		...convertMappings(sisyfosMappings, id => {
+	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
+	for (const id in sisyfosMappings) {
+		if (sisyfosMappings[id]) {
 			const sisyfosChannel = sisyfosChannels[id as OfftubeSisyfosLLayer] as SisyfosChannel | undefined
 			if (sisyfosChannel) {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: id,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: sisyfosChannel.isPgm,
-						label: sisyfosChannel.label,
-						visible: true
-					}
+				mappedChannels.push({
+					mappedLayer: id,
+					isPgm: sisyfosChannel.isPgm,
+					label: sisyfosChannel.label,
+					visible: true
 				})
 			} else {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: id,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: 0,
-						label: ''
-					}
+				mappedChannels.push({
+					mappedLayer: id,
+					isPgm: 0,
+					label: '',
+					visible: false
 				})
+			}
+		}
+	}
+
+	return [
+		literal<TSR.TimelineObjSisyfosChannels>({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			priority: 1,
+			layer: OfftubeSisyfosLLayer.SisyfosConfig,
+			content: {
+				deviceType: TSR.DeviceType.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+				channels: mappedChannels,
+				overridePriority: 1
 			}
 		}),
 

@@ -104,7 +104,12 @@ function getGlobalAdLibPiecesOfftube(
 
 	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(context, config, `Kamera ${info.id}`)
+		const camSisyfos = GetSisyfosTimelineObjForCamera(
+			context,
+			config,
+			`Kamera ${info.id}`,
+			OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+		)
 		res.push({
 			externalId: 'cam',
 			name: `Kamera ${info.id}`,
@@ -134,46 +139,54 @@ function getGlobalAdLibPiecesOfftube(
 						},
 						classes: ['adlib_deparent']
 					}),
-					...camSisyfos,
-					...config.stickyLayers
-						.filter(layer => camSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
-						}),
+					camSisyfos,
+					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: OfftubeSisyfosLLayer.SisyfosPersistedLevels,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							overridePriority: 1,
+							channels: config.stickyLayers
+								.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
+								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+									return {
+										mappedLayer: layer,
+										isPgm: 0
+									}
+								})
+						},
+						metaData: {
+							sisyfosPersistLevel: true
+						}
+					}),
 					// Force server to be muted (for adlibbing over DVE)
-					...[
-						OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-						OfftubeSisyfosLLayer.SisyfosSourceServerA,
-						OfftubeSisyfosLLayer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
+					literal<TSR.TimelineObjSisyfosChannels>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 2,
+						layer: OfftubeSisyfosLLayer.SisyfosGroupServer,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							channels: [
+								OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+								OfftubeSisyfosLLayer.SisyfosSourceServerA,
+								OfftubeSisyfosLLayer.SisyfosSourceServerB
+							].map(layer => {
+								return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+									mappedLayer: layer,
+									isPgm: 0
+								})
+							}),
+							overridePriority: 2
+						}
 					})
 				])
 			}
@@ -670,22 +683,25 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 		}),
 
 		// create sisyfos channels from the config
-		...Object.keys(sisyfosChannels).map(key => {
-			const llayer = key as OfftubeSisyfosLLayer
-			const channel = sisyfosChannels[llayer] as SisyfosChannel
-			return literal<TSR.TimelineObjSisyfosChannel>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: llayer,
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: channel.isPgm,
-					visible: true,
-					label: channel.label
-				}
-			})
+		literal<TSR.TimelineObjSisyfosChannels>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: OfftubeSisyfosLLayer.SisyfosConfig,
+			content: {
+				deviceType: TSR.DeviceType.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+				channels: Object.keys(sisyfosChannels).map(key => {
+					const llayer = key as OfftubeSisyfosLLayer
+					const channel = sisyfosChannels[llayer] as SisyfosChannel
+					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+						mappedLayer: llayer,
+						isPgm: channel.isPgm,
+						visible: true,
+						label: channel.label
+					})
+				})
+			}
 		}),
 
 		// Route ME 2 PGM to ME 1 PGM
