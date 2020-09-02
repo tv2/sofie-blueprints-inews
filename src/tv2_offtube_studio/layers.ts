@@ -7,8 +7,11 @@ export function RealLLayers() {
 		_.values(OfftubeAbstractLLayer)
 			// @ts-ignore
 			.concat(_.values(OfftubeSisyfosLLayer))
+			// @ts-ignore
 			.concat(_.values(OfftubeAtemLLayer))
+			// @ts-ignore
 			.concat(_.values(OfftubeCasparLLayer))
+			// @ts-ignore
 			.concat(_.values(GraphicLLayer))
 	)
 }
@@ -21,6 +24,10 @@ export enum OfftubeAbstractLLayer {
 }
 
 export enum OfftubeSisyfosLLayer {
+	SisyfosConfig = 'sisyfos_config',
+	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
+	SisyfosGroupServer = 'sisyfos_group_server',
+	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
 	SisyfosSourceHost_1_ST_A = 'sisyfos_source_Host_1_st_a',

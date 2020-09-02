@@ -16,6 +16,7 @@ import {
 	DVEParentClass,
 	DVESources,
 	FindSourceInfoStrict,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinition,
 	SourceInfo,
@@ -87,6 +88,8 @@ export interface DVELayers {
 	}
 	SisyfosLLayer: {
 		ClipPending: string
+		StudioMics: string
+		PersistedLevels: string
 	}
 	CasparLLayer: {
 		ClipPending: string
@@ -108,12 +111,6 @@ export interface DVEBoxInfo {
 }
 
 export interface DVETimelineObjectGenerators {
-	GetSisyfosTimelineObjForCamera: (
-		context: NotesContext,
-		config: { sources: SourceInfo[] },
-		str: string,
-		enable?: TSR.Timeline.TimelineEnable
-	) => TSR.TSRTimelineObj[]
 	GetSisyfosTimelineObjForEkstern: (
 		context: NotesContext,
 		sources: SourceInfo[],
@@ -351,10 +348,11 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoCam, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(
+					GetSisyfosTimelineObjForCamera(
 						context,
 						config,
 						mappingFrom.source,
+						dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics,
 						audioEnable
 					)
 				)
@@ -391,7 +389,7 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'evs')
+					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
 				)
 			} else if (sourceType.match(/ENGINE/i)) {
 				if (sourceInput.match(/full/i)) {
@@ -402,7 +400,12 @@ export function MakeContentDVE2<
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source, mappingFrom.source)
 					dveTimeline.push(
-						...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForCamera(context, config, 'full')
+						GetSisyfosTimelineObjForCamera(
+							context,
+							config,
+							'full',
+							dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics
+						)
 					)
 				} else {
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
@@ -477,25 +480,29 @@ export function MakeContentDVE2<
 
 	if (adlib) {
 		dveTimeline.push(
-			...config.stickyLayers
-				.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
-				.filter(layer => config.liveAudio.indexOf(layer) === -1)
-				.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: getDVEEnable(),
-						priority: 1,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					})
-				})
+			literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+				id: '',
+				enable: getDVEEnable(),
+				priority: 1,
+				layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.PersistedLevels,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					overridePriority: 1,
+					channels: config.stickyLayers
+						.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
+						.filter(layer => config.liveAudio.indexOf(layer) === -1)
+						.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+							return {
+								mappedLayer: layer,
+								isPgm: 0
+							}
+						})
+				},
+				metaData: {
+					sisyfosPersistLevel: true
+				}
+			})
 		)
 	}
 

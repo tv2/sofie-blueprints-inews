@@ -24,7 +24,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { AtemLLayer, SisyfosEVSSource } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -134,25 +134,29 @@ function makeContentEVS(
 				}
 			}),
 			...(partDefinition.variant.isVO
-				? [...GetSisyfosTimelineObjForCamera(context, config, 'evs')]
+				? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)]
 				: [
-						...config.liveAudio.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-							return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer,
-								content: {
-									deviceType: TSR.DeviceType.SISYFOS,
-									type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-									isPgm: 0
-								},
-								metaData: {
-									sisyfosPersistLevel: true
-								}
-							})
+						literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: SisyfosLLAyer.SisyfosPersistedLevels,
+							content: {
+								deviceType: TSR.DeviceType.SISYFOS,
+								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+								overridePriority: 1,
+								channels: config.liveAudio.map(layer => {
+									return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+										mappedLayer: layer,
+										isPgm: 0
+									})
+								})
+							},
+							metaData: {
+								sisyfosPersistLevel: true
+							}
 						})
 				  ])
 		])

@@ -135,82 +135,42 @@ describe('telefon', () => {
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosChannel>({
+						literal<TSR.TimelineObjSisyfosChannels>({
 							id: '',
 							enable: {
 								start: 0
 							},
 							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+							layer: SisyfosLLAyer.SisyfosGroupStudioMics,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 1
-							}
-						}),
-						literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 1
-							}
-						}),
-						literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 1
-							}
-						}),
-						literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 1
-							}
-						}),
-						literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 1
-							}
-						}),
-						literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 1
+								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+								channels: [
+									{
+										mappedLayer: SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+										isPgm: 1
+									},
+									{
+										mappedLayer: SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+										isPgm: 1
+									},
+									{
+										mappedLayer: SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+										isPgm: 1
+									},
+									{
+										mappedLayer: SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+										isPgm: 1
+									},
+									{
+										mappedLayer: SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+										isPgm: 1
+									},
+									{
+										mappedLayer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
+										isPgm: 1
+									}
+								]
 							}
 						})
 					]

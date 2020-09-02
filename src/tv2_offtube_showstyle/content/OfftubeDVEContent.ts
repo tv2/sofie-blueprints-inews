@@ -4,7 +4,6 @@ import {
 	DVEConfigInput,
 	DVEOptions,
 	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
 	PartContext2,
@@ -41,14 +40,15 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 			CGDVETemplate: OfftubeCasparLLayer.CasparCGDVETemplate
 		},
 		SisyfosLLayer: {
-			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+			StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
+			PersistedLevels: OfftubeSisyfosLLayer.SisyfosPersistedLevels
 		},
 		CasparLLayer: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		}
 	},
 	dveTimelineGenerators: {
-		GetSisyfosTimelineObjForCamera,
 		GetSisyfosTimelineObjForEkstern,
 		GetLayersForEkstern
 	},

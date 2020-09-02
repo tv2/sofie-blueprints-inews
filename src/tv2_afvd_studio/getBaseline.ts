@@ -32,7 +32,31 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 		(_id, v) => v.device === TSR.DeviceType.ATEM && (v as any).mappingType === TSR.MappingAtemType.MixEffect
 	)
 
-	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
+	const sisyfosMappings = filterMappings(
+		mappings,
+		(_id, v) => v.device === TSR.DeviceType.SISYFOS && (v as any).mappingType !== TSR.MappingSisyfosType.CHANNELS
+	)
+	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
+	for (const id in sisyfosMappings) {
+		if (sisyfosMappings[id]) {
+			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer] as SisyfosChannel | undefined
+			if (sisyfosChannel) {
+				mappedChannels.push({
+					mappedLayer: id,
+					isPgm: sisyfosChannel.isPgm,
+					label: sisyfosChannel.label,
+					visible: true
+				})
+			} else {
+				mappedChannels.push({
+					mappedLayer: id,
+					isPgm: 0,
+					label: '',
+					visible: false
+				})
+			}
+		}
+	}
 
 	return [
 		...convertMappings(atemMeMappings, id =>
@@ -51,35 +75,18 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				}
 			})
 		),
-		...convertMappings(sisyfosMappings, id => {
-			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer] as SisyfosChannel | undefined
-			if (sisyfosChannel) {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: id,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: sisyfosChannel.isPgm,
-						label: sisyfosChannel.label,
-						visible: !sisyfosChannel.hideInStudioA
-					}
-				})
-			} else {
-				return literal<TSR.TimelineObjSisyfosChannel>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: id,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-						isPgm: 0,
-						label: ''
-					}
-				})
+		literal<TSR.TimelineObjSisyfosChannels>({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			priority: 0,
+			layer: SisyfosLLAyer.SisyfosConfig,
+			content: {
+				deviceType: TSR.DeviceType.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+				channels: mappedChannels,
+				overridePriority: 0
 			}
 		}),
 

@@ -5,7 +5,6 @@ import {
 	DVEOptions,
 	DVESources,
 	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
 	PartContext2,
@@ -37,14 +36,15 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 			CGDVETemplate: CasparLLayer.CasparCGDVETemplate
 		},
 		SisyfosLLayer: {
-			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
+			StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics,
+			PersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
 		},
 		CasparLLayer: {
 			ClipPending: CasparLLayer.CasparPlayerClipPending
 		}
 	},
 	dveTimelineGenerators: {
-		GetSisyfosTimelineObjForCamera,
 		GetSisyfosTimelineObjForEkstern,
 		GetLayersForEkstern
 	},
