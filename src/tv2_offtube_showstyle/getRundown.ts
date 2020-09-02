@@ -700,7 +700,8 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 						visible: true,
 						label: channel.label
 					})
-				})
+				}),
+				overridePriority: 0
 			}
 		}),
 
