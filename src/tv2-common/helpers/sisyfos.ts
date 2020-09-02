@@ -153,7 +153,8 @@ export function GetSisyfosTimelineObjForCamera(
 		content: {
 			deviceType: TSR.DeviceType.SISYFOS,
 			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-			channels: mappedChannels
+			channels: mappedChannels,
+			overridePriority: 2
 		}
 	})
 }
