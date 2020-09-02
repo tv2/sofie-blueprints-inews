@@ -1294,7 +1294,6 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			content: {
 				deviceType: TSR.DeviceType.SISYFOS,
 				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-				overridePriority: -1,
 				channels: Object.keys(sisyfosChannels).map(key => {
 					const llayer = key as SisyfosLLAyer
 					const channel = sisyfosChannels[llayer] as SisyfosChannel

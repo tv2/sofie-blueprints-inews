@@ -80,13 +80,12 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 			enable: {
 				while: '1'
 			},
-			priority: 1,
+			priority: 0,
 			layer: SisyfosLLAyer.SisyfosConfig,
 			content: {
 				deviceType: TSR.DeviceType.SISYFOS,
 				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-				channels: mappedChannels,
-				overridePriority: -1
+				channels: mappedChannels
 			}
 		}),
 
