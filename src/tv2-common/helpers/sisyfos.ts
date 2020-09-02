@@ -148,13 +148,13 @@ export function GetSisyfosTimelineObjForCamera(
 	return literal<TSR.TimelineObjSisyfosChannels>({
 		id: '',
 		enable: enable ? enable : { start: 0 },
-		priority: mappedChannels.length ? 1 : 0,
+		priority: mappedChannels.length ? 2 : 0,
 		layer: channelLayer,
 		content: {
 			deviceType: TSR.DeviceType.SISYFOS,
 			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
 			channels: mappedChannels,
-			overridePriority: 1
+			overridePriority: 2
 		}
 	})
 }

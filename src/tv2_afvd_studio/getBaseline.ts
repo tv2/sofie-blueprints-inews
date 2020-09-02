@@ -85,7 +85,8 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 			content: {
 				deviceType: TSR.DeviceType.SISYFOS,
 				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-				channels: mappedChannels
+				channels: mappedChannels,
+				overridePriority: 0
 			}
 		}),
 

@@ -1303,7 +1303,8 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 						visible: !channel.hideInStudioA,
 						label: channel.label
 					})
-				})
+				}),
+				overridePriority: 0
 			}
 		}),
 
