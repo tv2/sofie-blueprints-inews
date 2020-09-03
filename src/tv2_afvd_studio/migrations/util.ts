@@ -4,7 +4,8 @@ import {
 	MigrationContextStudio,
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
-	MigrationStepStudio
+	MigrationStepStudio,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
@@ -174,6 +175,53 @@ export function GetMappingDefaultMigrationStepForLayer(versionStr: string, layer
 			if (!context.getMapping(layer)) {
 				context.insertMapping(layer, MappingsDefaults[layer])
 			}
+		}
+	})
+}
+
+/**
+ * Required due to the change in how sisyfos mappings are stored.
+ * 	Prior versions did not have the `mappingType` property as there was only one type of mapping.
+ * 	This migration makes sure that the `mappingType` property is set to thr required type (usually CHANNEL).
+ * 	[INFO]: Added for `v1.3.0` - should not be needed after this version unless mapping types change again.
+ * @param versionStr Migration Version
+ * @param layer Layer to migrate.
+ * @param mappingType Mapping type to add.
+ */
+export function EnsureSisyfosMappingHasType(
+	versionStr: string,
+	layer: string,
+	mappingType: TSR.MappingSisyfosType.CHANNEL
+): MigrationStepStudio {
+	return literal<MigrationStepStudio>({
+		id: `mutatesisyfosmappings.${layer}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const mapping = context.getMapping(layer) as TSR.MappingSisyfos | undefined
+
+			// If the mapping does not exist this is valid, it will be created by defaults with the correct value.
+			if (!mapping) {
+				return false
+			}
+
+			if (mapping.mappingType === mappingType) {
+				return false
+			}
+
+			return true
+		},
+		migrate: (context: MigrationContextStudio) => {
+			const mapping = context.getMapping(layer) as TSR.MappingSisyfos | undefined
+
+			// Shouldn't happen but check anyway
+			if (!mapping) {
+				return
+			}
+
+			mapping.mappingType = mappingType
+
+			context.updateMapping(layer, mapping)
 		}
 	})
 }

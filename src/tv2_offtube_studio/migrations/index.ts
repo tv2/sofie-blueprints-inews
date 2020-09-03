@@ -1,10 +1,12 @@
 import {
 	MigrationContextStudio,
 	MigrationStepStudio,
-	TableConfigItemValue
+	TableConfigItemValue,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
+import { EnsureSisyfosMappingHasType } from '../../tv2_afvd_studio/migrations/util'
 import {
 	manifestOfftubeSourcesABMediaPlayers,
 	manifestOfftubeSourcesCam,
@@ -217,9 +219,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	),
 
 	...deviceMigrations,
-	// Fill in any mappings that did not exist before
-	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getMappingsDefaultsMigrationSteps('0.1.0'),
 	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationOfftube, true),
 	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationOfftube, false),
 	MoveSourcesToTable('0.1.0', 'ABMediaPlayers', false, GetSisyfosLayersForTableMigrationOfftube, false),
@@ -232,6 +231,21 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_stereo'),
 	ensureMappingDeleted('0.2.0', 'sisyfos_source_world_feed_surround'),
 	MoveClipSourcePath('0.2.0', 'Offtube_Q2'),
+	...[
+		'sisyfos_source_jingle',
+		'sisyfos_source_Host_1_st_a',
+		'sisyfos_source_Host_2_st_a',
+		'sisyfos_source_Host_3_st_a',
+		'sisyfos_source_live_1_stereo',
+		'sisyfos_source_live_1_surround',
+		'sisyfos_source_live_2_stereo',
+		'sisyfos_source_live_3',
+		'sisyfos_source_server_a',
+		'sisyfos_source_server_b'
+	].map(layer => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosConfig),
-	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
+	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosGroupStudioMics),
+	// Fill in any mappings that did not exist before
+	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
+	...getMappingsDefaultsMigrationSteps(VERSION)
 ])

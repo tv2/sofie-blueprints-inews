@@ -1,4 +1,4 @@
-import { MigrationStepStudio } from 'tv-automation-sofie-blueprints-integration'
+import { MigrationStepStudio, TSR } from 'tv-automation-sofie-blueprints-integration'
 import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
 import {
@@ -12,6 +12,7 @@ import {
 import { SisyfosLLAyer } from '../layers'
 import { deviceMigrations } from './devices'
 import {
+	EnsureSisyfosMappingHasType,
 	ensureStudioConfig,
 	GetMappingDefaultMigrationStepForLayer,
 	getMappingsDefaultsMigrationSteps,
@@ -88,9 +89,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	),
 
 	...deviceMigrations,
-	// Fill in any mappings that did not exist before
-	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getMappingsDefaultsMigrationSteps(VERSION),
 	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationAFVD, true),
 	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationAFVD, false),
 	MoveSourcesToTable('0.1.0', 'SourcesDelayedPlayback', true, GetSisyfosLayersForTableMigrationAFVD, true),
@@ -111,5 +109,40 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	].map(layer => renameMapping('0.2.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
 	AddKeepAudio('0.2.0', 'SourcesRM'),
 	MoveClipSourcePath('0.2.0', 'AFVD'),
-	GetMappingDefaultMigrationStepForLayer('1.3.0', SisyfosLLAyer.SisyfosGroupStudioMics)
+	...[
+		'sisyfos_source_jingle',
+		'sisyfos_source_audiobed',
+		'sisyfos_source_tlf_hybrid',
+		'sisyfos_source_Host_1_st_a',
+		'sisyfos_source_Host_2_st_a',
+		'sisyfos_source_Guest_1_st_a',
+		'sisyfos_source_Guest_2_st_a',
+		'sisyfos_source_Guest_3_st_a',
+		'sisyfos_source_Guest_4_st_a',
+		'sisyfos_source_Host_1_st_b',
+		'sisyfos_source_Host_2_st_b',
+		'sisyfos_source_Guest_1_st_b',
+		'sisyfos_source_Guest_2_st_b',
+		'sisyfos_source_Guest_3_st_b',
+		'sisyfos_source_Guest_4_st_b',
+		'sisyfos_source_live_1',
+		'sisyfos_source_live_2',
+		'sisyfos_source_live_3',
+		'sisyfos_source_live_4',
+		'sisyfos_source_live_5',
+		'sisyfos_source_live_6',
+		'sisyfos_source_live_7',
+		'sisyfos_source_live_8',
+		'sisyfos_source_live_9',
+		'sisyfos_source_live_10',
+		'sisyfos_source_server_a',
+		'sisyfos_source_server_b',
+		'sisyfos_source_evs_1',
+		'sisyfos_source_evs_2',
+		'sisyfos_resync'
+	].map(layer => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
+	GetMappingDefaultMigrationStepForLayer('1.3.0', SisyfosLLAyer.SisyfosGroupStudioMics),
+	// Fill in any mappings that did not exist before
+	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
+	...getMappingsDefaultsMigrationSteps(VERSION)
 ])
