@@ -90,6 +90,7 @@ export function executeActionOfftube(
 				OfftubeSisyfosLLayer.SisyfosSourceServerA,
 				OfftubeSisyfosLLayer.SisyfosSourceServerB
 			],
+			StoppableGraphicsLayers: [], // TODO: Needs thought for offtubes
 			executeActionSelectFull,
 			createJingleContent: createJingleContentOfftube
 		},
