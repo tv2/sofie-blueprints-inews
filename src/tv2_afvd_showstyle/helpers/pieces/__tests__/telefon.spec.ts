@@ -140,7 +140,7 @@ describe('telefon', () => {
 							enable: {
 								start: 0
 							},
-							priority: 1,
+							priority: 2,
 							layer: SisyfosLLAyer.SisyfosGroupStudioMics,
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
@@ -170,7 +170,8 @@ describe('telefon', () => {
 										mappedLayer: SisyfosLLAyer.SisyfosSourceGuest_4_ST_A,
 										isPgm: 1
 									}
-								]
+								],
+								overridePriority: 2
 							}
 						})
 					]
