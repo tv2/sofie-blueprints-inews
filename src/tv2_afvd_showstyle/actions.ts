@@ -89,8 +89,8 @@ function executeActionClearGraphics(
 		'current',
 		literal<IBlueprintPiece>({
 			enable: {
-				start: 0,
-				duration: 2000
+				start: 'now',
+				duration: 3000
 			},
 			externalId: 'clearAllGFX',
 			name: 'GFX Clear',
