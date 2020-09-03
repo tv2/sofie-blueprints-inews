@@ -143,6 +143,7 @@ export interface ActionExecutionSettings<
 		SELECTED_ADLIB_LAYERS: string[]
 	}
 	ServerAudioLayers: string[]
+	StoppableGraphicsLayers: string[]
 	executeActionSelectFull?: (
 		context: ActionExecutionContext,
 		actionId: string,
@@ -1060,7 +1061,6 @@ function executeActionCutToCamera<
 	if (sourceInfoCam === undefined) {
 		return
 	}
-	const atemInput = sourceInfoCam.port
 
 	const camSisyfos = GetSisyfosTimelineObjForCamera(
 		context,
@@ -1072,35 +1072,29 @@ function executeActionCutToCamera<
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
 		name: part.title,
-		enable: { start: 0 },
+		enable: { start: userData.queue ? 0 : 'now' },
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
 		tags: [GetTagForKam(userData.name)],
 		content: {
-			studioLabel: '',
-			switcherInput: atemInput,
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
-				...(settings.LLayer.Atem.MEClean
-					? [
-							literal<TSR.TimelineObjAtemME>({
-								id: '',
-								enable: { while: '1' },
-								priority: 1,
-								layer: settings.LLayer.Atem.MEClean,
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.ME,
-									me: {
-										input: atemInput,
-										transition: TSR.AtemTransitionStyle.CUT
-									}
-								},
-								classes: ['adlib_deparent']
-							})
-					  ]
-					: []),
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: settings.LLayer.Atem.MEClean ?? settings.LLayer.Atem.MEProgram,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: sourceInfoCam.port,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					},
+					classes: ['adlib_deparent']
+				}),
 				camSisyfos,
 				literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
 					id: '',
@@ -1115,18 +1109,17 @@ function executeActionCutToCamera<
 						overridePriority: 1,
 						channels: config.stickyLayers
 							.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
-							.map(layer => {
-								return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+							.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+								return {
 									mappedLayer: layer,
 									isPgm: 0
-								})
+								}
 							})
 					},
 					metaData: {
 						sisyfosPersistLevel: true
 					}
 				}),
-
 				// Force server to be muted (for adlibbing over DVE)
 				...settings.ServerAudioLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
 					return literal<TSR.TimelineObjSisyfosChannel>({
@@ -1157,6 +1150,14 @@ function executeActionCutToCamera<
 				: [])
 		])
 	} else {
+		context.stopPiecesOnLayers([settings.SourceLayers.Cam])
+		context.removePieceInstances(
+			'current',
+			context
+				.getPieceInstances('current')
+				.filter(p => settings.StoppableGraphicsLayers.includes(p.piece.sourceLayerId))
+				.map(p => p._id)
+		)
 		context.insertPiece('current', kamPiece)
 	}
 }

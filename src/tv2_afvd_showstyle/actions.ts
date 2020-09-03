@@ -16,6 +16,18 @@ import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
+const STOPPABLE_GRAPHICS_LAYERS = [
+	SourceLayer.PgmGraphicsIdent,
+	SourceLayer.PgmGraphicsIdentPersistent,
+	SourceLayer.PgmGraphicsTop,
+	SourceLayer.PgmGraphicsLower,
+	SourceLayer.PgmGraphicsHeadline,
+	SourceLayer.PgmGraphicsTema,
+	SourceLayer.PgmGraphicsOverlay,
+	SourceLayer.PgmPilotOverlay,
+	SourceLayer.PgmGraphicsTLF
+]
+
 export function executeActionAFVD(context: ActionExecutionContext, actionId: string, userData: ActionUserData): void {
 	executeAction(
 		context,
@@ -61,6 +73,7 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				SisyfosLLAyer.SisyfosSourceServerA,
 				SisyfosLLAyer.SisyfosSourceServerB
 			],
+			StoppableGraphicsLayers: STOPPABLE_GRAPHICS_LAYERS,
 			executeActionClearGraphics,
 			createJingleContent: createJingleContentAFVD
 		},
@@ -74,17 +87,7 @@ function executeActionClearGraphics(
 	_actionId: string,
 	_userData: ActionClearGraphics
 ) {
-	context.stopPiecesOnLayers([
-		SourceLayer.PgmGraphicsIdent,
-		SourceLayer.PgmGraphicsIdentPersistent,
-		SourceLayer.PgmGraphicsTop,
-		SourceLayer.PgmGraphicsLower,
-		SourceLayer.PgmGraphicsHeadline,
-		SourceLayer.PgmGraphicsTema,
-		SourceLayer.PgmGraphicsOverlay,
-		SourceLayer.PgmPilotOverlay,
-		SourceLayer.PgmGraphicsTLF
-	])
+	context.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
 	context.insertPiece(
 		'current',
 		literal<IBlueprintPiece>({
