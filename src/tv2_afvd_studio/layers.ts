@@ -105,7 +105,3 @@ export function CasparPlayerClip(i: number | string) {
 export function CasparPlayerClipLoadingLoop(i: number | string) {
 	return `casparcg_player_clip_${i}_loading_loop`
 }
-
-export function SisyfosEVSSource(i: number | string) {
-	return `sisyfos_source_evs_${i}`
-}

@@ -16,11 +16,12 @@ import {
 	LifeSpan,
 	literal,
 	PartContext2,
+	SisyfosEVSSource,
 	SourceInfo
 } from 'tv2-common'
 import { GraphicEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { CreateTimingGrafik, grafikName } from './grafikViz'
 

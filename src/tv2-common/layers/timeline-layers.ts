@@ -15,3 +15,7 @@ export enum GraphicLLayer {
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall' // <= viz_layer_wall
 }
+
+export function SisyfosEVSSource(i: number | string) {
+	return `sisyfos_source_evs_${i}`
+}

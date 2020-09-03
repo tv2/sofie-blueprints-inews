@@ -1,4 +1,5 @@
-import { SisyfosEVSSource, SisyfosLLAyer } from './layers'
+import { SisyfosEVSSource } from 'tv2-common'
+import { SisyfosLLAyer } from './layers'
 
 export interface SisyfosChannel {
 	isPgm: 0 | 1 | 2

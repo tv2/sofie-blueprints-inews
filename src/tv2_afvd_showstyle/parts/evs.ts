@@ -15,6 +15,7 @@ import {
 	EVSParentClass,
 	FindSourceInfoStrict,
 	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEVS,
 	literal,
 	PartContext2,
 	PartDefinitionEVS,
@@ -24,7 +25,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { AtemLLayer, SisyfosEVSSource, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -120,19 +121,7 @@ function makeContentEVS(
 				},
 				classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
 			}),
-			literal<TSR.TimelineObjSisyfosChannel>({
-				id: '',
-				enable: {
-					start: 0
-				},
-				priority: 1,
-				layer: SisyfosEVSSource(sourceInfoDelayedPlayback.id.replace(/^DP/i, '')),
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: partDefinition.variant.isVO ? 2 : 1
-				}
-			}),
+			GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, partDefinition.variant.isVO),
 			...(partDefinition.variant.isVO
 				? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)]
 				: [

@@ -1,7 +1,13 @@
 import * as _ from 'underscore'
 
 import { NotesContext, SourceLayerType, Timeline, TSR } from 'tv-automation-sofie-blueprints-integration'
-import { FindSourceInfoStrict, SourceInfo, TV2StudioBlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
+import {
+	FindSourceInfoStrict,
+	SisyfosEVSSource,
+	SourceInfo,
+	TV2StudioBlueprintConfigBase,
+	TV2StudioConfigBase
+} from 'tv2-common'
 import { PieceMetaData } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -191,4 +197,20 @@ export function getLiveAudioLayers(studioConfig: TV2StudioConfigBase): string[] 
 		}
 	}
 	return Array.from(res)
+}
+
+export function GetSisyfosTimelineObjForEVS(sourceInfo: SourceInfo, vo: boolean) {
+	return literal<TSR.TimelineObjSisyfosChannel>({
+		id: '',
+		enable: {
+			start: 0
+		},
+		priority: 1,
+		layer: SisyfosEVSSource(sourceInfo.id.replace(/^DP/i, '')),
+		content: {
+			deviceType: TSR.DeviceType.SISYFOS,
+			type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+			isPgm: vo ? 2 : 1
+		}
+	})
 }

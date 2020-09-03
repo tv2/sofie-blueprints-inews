@@ -17,6 +17,7 @@ import {
 	DVESources,
 	FindSourceInfoStrict,
 	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForEVS,
 	literal,
 	PartDefinition,
 	SourceInfo,
@@ -389,6 +390,7 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
+					GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!sourceType.match(/VO/i)),
 					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
 				)
 			} else if (sourceType.match(/ENGINE/i)) {
