@@ -225,7 +225,7 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `Kamera ${name}`,
+					label: `KAM ${name}`,
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
