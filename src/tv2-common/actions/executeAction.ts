@@ -1062,6 +1062,12 @@ function executeActionCutToCamera<
 		return
 	}
 
+	const serverInCurrentPart = context
+		.getPieceInstances('current')
+		.some(
+			p => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
+		)
+
 	const camSisyfos = GetSisyfosTimelineObjForCamera(
 		context,
 		config,
@@ -1072,7 +1078,7 @@ function executeActionCutToCamera<
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
 		name: part.title,
-		enable: { start: userData.queue ? 0 : 'now' },
+		enable: { start: userData.queue || serverInCurrentPart ? 0 : 'now' },
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
@@ -1084,7 +1090,10 @@ function executeActionCutToCamera<
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
-					layer: settings.LLayer.Atem.MEClean ?? settings.LLayer.Atem.MEProgram,
+					layer:
+						settings.SelectedAdlibs && settings.LLayer.Atem.MEClean // Offtube
+							? settings.LLayer.Atem.MEClean
+							: settings.LLayer.Atem.MEProgram,
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
@@ -1142,22 +1151,19 @@ function executeActionCutToCamera<
 
 	settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 
-	if (userData.queue) {
+	if (userData.queue || serverInCurrentPart) {
+		settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 		context.queuePart(part, [
 			kamPiece,
 			...(settings.SelectedAdlibs
 				? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
 				: [])
 		])
+		if (serverInCurrentPart) {
+			context.takeAfterExecuteAction(true)
+		}
 	} else {
 		context.stopPiecesOnLayers([settings.SourceLayers.Cam])
-		context.removePieceInstances(
-			'current',
-			context
-				.getPieceInstances('current')
-				.filter(p => settings.StoppableGraphicsLayers.includes(p.piece.sourceLayerId))
-				.map(p => p._id)
-		)
 		context.insertPiece('current', kamPiece)
 	}
 }
