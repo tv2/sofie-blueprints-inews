@@ -131,10 +131,9 @@ export function remapTableColumnValues(
 	]
 }
 
-export function remapShortcuts(
+export function enforceShortcuts(
 	versionStr: string,
 	sourceLayerId: string,
-	previousValue: string,
 	newValue: string
 ): MigrationStepShowStyle[] {
 	return [
@@ -149,7 +148,7 @@ export function remapShortcuts(
 					return `Sourcelayer ${sourceLayerId} does not exists`
 				}
 
-				return sourceLayer.activateKeyboardHotkeys === previousValue
+				return sourceLayer.activateKeyboardHotkeys !== newValue
 			},
 			migrate: (context: MigrationContextShowStyle) => {
 				const sourceLayer = context.getSourceLayer(sourceLayerId) as ISourceLayer
