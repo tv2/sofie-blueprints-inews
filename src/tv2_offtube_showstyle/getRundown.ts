@@ -112,7 +112,7 @@ function getGlobalAdLibPiecesOfftube(
 		)
 		res.push({
 			externalId: 'cam',
-			name: `Kamera ${info.id}`,
+			name: `KAM ${info.id}`,
 			_rank: rank,
 			sourceLayerId: OfftubeSourceLayer.PgmCam,
 			outputLayerId: 'pgm',
