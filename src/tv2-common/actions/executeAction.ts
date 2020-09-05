@@ -536,6 +536,15 @@ function executeActionSelectServerClip<
 	])
 }
 
+function dveContainsServer(sources: DVESources) {
+	return (
+		sources.INP1?.match(/SERVER/i) ||
+		sources.INP2?.match(/SERVER/i) ||
+		sources.INP3?.match(/SERVER/i) ||
+		sources.INP4?.match(/SERVER/i)
+	)
+}
+
 function executeActionSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -579,17 +588,8 @@ function executeActionSelectDVE<
 	start = start ? start : 0
 	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 
-	const hasServer = () => {
-		return (
-			parsedCue.sources.INP1?.match(/SERVER/i) ||
-			parsedCue.sources.INP2?.match(/SERVER/i) ||
-			parsedCue.sources.INP3?.match(/SERVER/i) ||
-			parsedCue.sources.INP4?.match(/SERVER/i)
-		)
-	}
-
 	const metaData = literal<PieceMetaData & DVEPieceMetaData>({
-		mediaPlayerSessions: hasServer() ? [externalId] : [],
+		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
 		userData
@@ -1337,7 +1337,11 @@ function executeActionCutSourceToBox<
 		return
 	}
 
+	const containsServerBefore = dveContainsServer(meta.sources)
+
 	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.name
+
+	const containsServerAfter = dveContainsServer(meta.sources)
 
 	const graphicsTemplateContent: { [key: string]: string } = {}
 
@@ -1362,8 +1366,24 @@ function executeActionCutSourceToBox<
 		newPieceContent.content.timelineObjects.push(studioMics)
 	}
 
+	if (containsServerBefore && containsServerAfter) {
+		const oldObjs = (modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).filter(
+			(obj: TSR.TSRTimelineObj) =>
+				obj.layer === settings.LLayer.Caspar.ClipPending || obj.layer === settings.LLayer.Sisyfos.ClipPending
+		)
+
+		if (oldObjs && oldObjs.length) {
+			newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
+				obj => obj.layer !== settings.LLayer.Caspar.ClipPending && obj.layer !== settings.LLayer.Sisyfos.ClipPending
+			)
+			newPieceContent.content.timelineObjects.push(...oldObjs)
+		}
+	}
+
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
-	newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
+	if (!(containsServerBefore && containsServerAfter)) {
+		newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
+	}
 
 	if (newPieceContent.valid) {
 		startNewDVELayout(
