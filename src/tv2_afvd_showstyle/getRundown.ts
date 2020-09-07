@@ -187,6 +187,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			toBeQueued: true,
 			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
 			content: {
+				ignoreMediaObjectStatus: true,
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
 						id: '',

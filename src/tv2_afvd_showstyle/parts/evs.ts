@@ -100,6 +100,7 @@ function makeContentEVS(
 	return {
 		studioLabel: '',
 		switcherInput: atemInput,
+		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjAtemME>({
 				id: ``,
