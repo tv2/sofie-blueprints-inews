@@ -47,7 +47,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...enforceShortcuts('1.3.0', SourceLayer.PgmVoiceOver, ''),
 	...enforceShortcuts('1.3.0', SourceLayer.PgmPilot, ''),
 	...enforceShortcuts('1.3.0', SourceLayer.PgmGraphicsTLF, 'i'),
-	...enforceShortcuts('1.3.0', SourceLayer.PgmDelayed, 'e,r,u,i'),
+	...enforceShortcuts('1.3.0', SourceLayer.PgmDelayed, 'r,e,i,u'),
 	...enforceShortcuts('1.3.0', SourceLayer.PgmContinuity, ''),
 	...enforceShortcuts('1.3.0', SourceLayer.PgmGraphicsIdent, ''),
 	...enforceShortcuts('1.3.0', SourceLayer.PgmGraphicsIdentPersistent, ''),
