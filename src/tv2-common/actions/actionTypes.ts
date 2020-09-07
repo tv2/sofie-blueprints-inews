@@ -79,6 +79,8 @@ export interface ActionCommentatorSelectJingle extends ActionBase {
 
 export interface ActionClearGraphics extends ActionBase {
 	type: AdlibActionType.CLEAR_GRAPHICS
+	sendCommands?: boolean
+	label: string
 }
 
 export interface ActionTakeWithTransitionVariantBase {

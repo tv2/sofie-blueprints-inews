@@ -526,32 +526,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		}
 	})
 
-	adlibItems.push({
-		externalId: 'sendAltud',
-		name: 'GFX Altud',
-		_rank: 400,
-		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-		outputLayerId: 'sec',
-		expectedDuration: 2000,
-		lifespan: PieceLifespan.WithinPart,
-		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
-				literal<TSR.TimelineObjVIZMSEClearAllElements>({
-					id: '',
-					enable: {
-						start: 1000,
-						duration: 1000
-					},
-					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerAdLibs,
-					content: {
-						deviceType: TSR.DeviceType.VIZMSE,
-						type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
-					}
-				})
-			])
-		}
-	})
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
 		externalId: 'dskoff',
@@ -885,12 +859,33 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		literal<IBlueprintActionManifest>({
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
 			userData: literal<ActionClearGraphics>({
-				type: AdlibActionType.CLEAR_GRAPHICS
+				type: AdlibActionType.CLEAR_GRAPHICS,
+				sendCommands: true,
+				label: 'GFX Clear'
 			}),
 			userDataManifest: {},
 			display: {
 				_rank: 300,
 				label: `GFX Clear`,
+				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+				outputLayerId: 'sec',
+				content: {},
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				onAirTags: [TallyTags.GFX_CLEAR],
+				setNextTags: [TallyTags.GFX_CLEAR]
+			}
+		}),
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			userData: literal<ActionClearGraphics>({
+				type: AdlibActionType.CLEAR_GRAPHICS,
+				sendCommands: false,
+				label: 'GFX Altud'
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 400,
+				label: `GFX Altud`,
 				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 				outputLayerId: 'sec',
 				content: {},

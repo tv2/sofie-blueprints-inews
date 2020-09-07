@@ -82,11 +82,7 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 	)
 }
 
-function executeActionClearGraphics(
-	context: ActionExecutionContext,
-	_actionId: string,
-	_userData: ActionClearGraphics
-) {
+function executeActionClearGraphics(context: ActionExecutionContext, _actionId: string, userData: ActionClearGraphics) {
 	context.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
 	context.insertPiece(
 		'current',
@@ -96,7 +92,7 @@ function executeActionClearGraphics(
 				duration: 3000
 			},
 			externalId: 'clearAllGFX',
-			name: 'GFX Clear',
+			name: userData.label,
 			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 			outputLayerId: 'sec',
 			lifespan: PieceLifespan.WithinPart,
@@ -112,7 +108,7 @@ function executeActionClearGraphics(
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-							channelsToSendCommands: ['OVL1', 'FULL1', 'WALL1']
+							channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined
 						}
 					})
 				])
