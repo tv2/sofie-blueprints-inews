@@ -52,7 +52,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getCreateVariantMigrationSteps(),
+	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer)
+	...getOutputLayerDefaultsMigrationSteps(VERSION)
 ])
