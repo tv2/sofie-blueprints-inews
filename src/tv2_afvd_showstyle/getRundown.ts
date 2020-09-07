@@ -890,8 +890,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				outputLayerId: 'sec',
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-				onAirTags: [TallyTags.GFX_CLEAR],
-				setNextTags: [TallyTags.GFX_CLEAR]
+				onAirTags: [TallyTags.GFX_ALTUD],
+				setNextTags: [TallyTags.GFX_ALTUD]
 			}
 		})
 	)

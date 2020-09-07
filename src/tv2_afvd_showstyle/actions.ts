@@ -113,7 +113,7 @@ function executeActionClearGraphics(context: ActionExecutionContext, _actionId: 
 					})
 				])
 			},
-			tags: [TallyTags.GFX_CLEAR]
+			tags: userData.sendCommands ? [TallyTags.GFX_CLEAR] : [TallyTags.GFX_ALTUD]
 		})
 	)
 }

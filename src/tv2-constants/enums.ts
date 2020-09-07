@@ -91,6 +91,7 @@ export enum AdlibActionType {
 export enum TallyTags {
 	// Actions
 	GFX_CLEAR = 'GFX_CLEAR',
+	GFX_ALTUD = 'GFX_ALTUD',
 	TAKE_WITH_TRANSITION = 'TAKE_WITH_TRANSITION',
 
 	// A particular source is live
