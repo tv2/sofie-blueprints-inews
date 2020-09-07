@@ -110,7 +110,7 @@ function makeMosAdlib(
 		outputLayerId: GetOutputLayer(engine, !!overrideOverlay, isOverlay, !!isTlf, !!isGrafikPart),
 		adlibPreroll: config.studio.PilotPrerollDuration,
 		content: GetMosObjContent(context, engine, config, parsedCue, `${partId}-adlib`, isOverlay, true, isTlf, rank),
-		toBeQueued: true
+		toBeQueued: !isOverlay
 	}
 }
 
