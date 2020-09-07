@@ -10,7 +10,6 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinitionMOS,
-	GetDefaultOut,
 	GetSisyfosTimelineObjForCamera,
 	GraphicLLayer,
 	LifeSpan,
@@ -95,7 +94,7 @@ function makeMosAdlib(
 	isGrafikPart?: boolean,
 	overrideOverlay?: boolean
 ): IBlueprintAdLibPiece {
-	const duration = CreateTimingGrafik(config, parsedCue).duration || !isGrafikPart ? GetDefaultOut(config) : undefined
+	const duration = CreateTimingGrafik(config, parsedCue, false).duration
 	const lifespan = GetLifespan(engine, parsedCue, isTlf, isGrafikPart)
 	return {
 		_rank: rank || 0,

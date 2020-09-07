@@ -316,13 +316,14 @@ export function grafikName(config: BlueprintConfig, parsedCue: CueDefinitionGraf
 
 export function CreateTimingGrafik(
 	config: BlueprintConfig,
-	cue: CueDefinitionGrafik | CueDefinitionMOS
+	cue: CueDefinitionGrafik | CueDefinitionMOS,
+	defaultTime: boolean = true
 ): { start: number; duration?: number } {
 	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
-	const duration = GetGrafikDuration(config, cue)
+	const duration = GetGrafikDuration(config, cue, defaultTime)
 	const end = cue.end
 		? cue.end.infiniteMode
 			? undefined
@@ -337,7 +338,8 @@ export function CreateTimingGrafik(
 
 export function GetGrafikDuration(
 	config: BlueprintConfig,
-	cue: CueDefinitionGrafik | CueDefinitionMOS
+	cue: CueDefinitionGrafik | CueDefinitionMOS,
+	defaultTime: boolean
 ): number | undefined {
 	if (config.showStyle.GFXTemplates) {
 		if (cue.type === CueType.Grafik) {
@@ -361,5 +363,5 @@ export function GetGrafikDuration(
 		}
 	}
 
-	return GetDefaultOut(config)
+	return defaultTime ? GetDefaultOut(config) : undefined
 }
