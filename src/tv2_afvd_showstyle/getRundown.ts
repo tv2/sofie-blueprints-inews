@@ -560,7 +560,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		_rank: 600,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
-		lifespan: PieceLifespan.OutOnRundownEnd,
+		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
@@ -588,7 +588,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		_rank: 650,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: 'sec',
-		lifespan: PieceLifespan.OutOnRundownEnd,
+		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
