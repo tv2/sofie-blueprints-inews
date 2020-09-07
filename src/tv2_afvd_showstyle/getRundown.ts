@@ -749,7 +749,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 					userData: literal<ActionCutSourceToBox>({
 						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS${info.id.replace(/dp/i, '')}`,
+						name: `EVS${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''}`,
 						port: info.port,
 						sourceType: info.type,
 						box,

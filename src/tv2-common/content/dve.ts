@@ -251,10 +251,10 @@ export function MakeContentDVE2<
 				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}`, sourceLayer }
 			} else if (prop?.match(/full/i)) {
 				boxMap[targetBox - 1] = { source: `ENGINE FULL`, sourceLayer }
-			} else if (prop?.match(/EVS ?.*/i)) {
-				const match = prop.match(/EVS ?(.*)/i) as RegExpExecArray
+			} else if (prop?.match(/EVS ?(?:\d+)? ?.*/i)) {
+				const match = prop.match(/EVS ?(\d+)? ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `EVS ${match[1]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `EVS${match[1]} ${match[2]}`, sourceLayer }
 			} else if (prop?.match(/DEFAULT/)) {
 				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE`, sourceLayer }
 			} else if (prop) {
@@ -390,7 +390,7 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source, mappingFrom.source)
 				dveTimeline.push(
-					GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!sourceType.match(/VO/i)),
+					GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!mappingFrom.source.match(/VO/i)),
 					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
 				)
 			} else if (sourceType.match(/ENGINE/i)) {

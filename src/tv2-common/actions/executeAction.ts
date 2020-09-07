@@ -1339,7 +1339,10 @@ function executeActionCutSourceToBox<
 
 	const containsServerBefore = dveContainsServer(meta.sources)
 
-	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.name
+	// ADD 'VO' to VO sources
+	const name = `${userData.name}${userData.vo && !userData.name.match(/VO/i) ? 'VO' : ''}`
+
+	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = name
 
 	const containsServerAfter = dveContainsServer(meta.sources)
 
