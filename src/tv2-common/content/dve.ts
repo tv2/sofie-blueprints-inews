@@ -321,7 +321,7 @@ export function MakeContentDVE2<
 			const props = mappingFrom.source.split(' ')
 			const sourceType = props[0]
 			const sourceInput = props[1]
-			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/SERVER/)) {
+			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/EVS/i) && !mappingFrom.source.match(/SERVER/)) {
 				context.warning(`Invalid DVE source: ${mappingFrom.source}`)
 				return
 			}
