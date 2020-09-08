@@ -221,6 +221,13 @@ export default literal<BlueprintMappings>({
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
+	atem_mp_1: literal<TSR.MappingAtem & BlueprintMapping>({
+		device: TSR.DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingAtemType.MediaPlayer,
+		index: 0
+	}),
 	casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',

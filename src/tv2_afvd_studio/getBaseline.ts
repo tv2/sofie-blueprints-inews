@@ -130,6 +130,25 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 					transition: TSR.AtemTransitionStyle.CUT
 				}
 			}
+		}),
+		literal<TSR.TimelineObjAtemMediaPlayer>({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: AtemLLayer.AtemMP1,
+			content: {
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.MEDIAPLAYER,
+				mediaPlayer: {
+					sourceType: TSR.MediaSourceType.Clip,
+					clipIndex: 0,
+					stillIndex: 0,
+					playing: true,
+					loop: true,
+					atBeginning: false,
+					clipFrame: 0
+				}
+			}
 		})
 	]
 }
