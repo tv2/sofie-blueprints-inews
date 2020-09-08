@@ -16,10 +16,11 @@ import {
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
-	ActionCutToCamera,
 	ActionSelectDVELayout,
 	ActionTakeWithTransition,
+	GetCameraMetaData,
 	GetEksternMetaData,
+	GetLayersForCamera,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
@@ -88,7 +89,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 }
 
 function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
-	/*function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
+	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const camSisyfos = GetSisyfosTimelineObjForCamera(
 			context,
@@ -172,7 +173,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			}
 		})
 		return res
-	}*/
+	}
 
 	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
@@ -381,7 +382,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 
 	let globalRank = 1000
 
-	/*config.sources
+	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
@@ -393,7 +394,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
-		})*/
+		})
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
@@ -797,7 +798,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 	}
 
-	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
+	/*function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.CUT_TO_CAMERA,
@@ -816,9 +817,9 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				}
 			})
 		)
-	}
+	}*/
 
-	config.sources
+	/*config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
@@ -830,7 +831,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			makeCutCameraActions(o, true, globalRank++)
-		})
+		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
