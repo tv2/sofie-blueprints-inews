@@ -1186,8 +1186,8 @@ function executeActionCutToCamera<
 				'doCustomCommand',
 				[
 					// settings.SelectedAdlibs && settings.LLayer.Atem.MEClean ?
-					'changeProgramInput',
 					[
+						'changeProgramInput',
 						sourceInfoCam.port, // input,
 						0 // me
 					]
