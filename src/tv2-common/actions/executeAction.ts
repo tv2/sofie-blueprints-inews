@@ -1183,8 +1183,10 @@ function executeActionCutToCamera<
 				[
 					// settings.SelectedAdlibs && settings.LLayer.Atem.MEClean ?
 					'changeProgramInput',
-					sourceInfoCam.port, // input,
-					0 // me
+					[
+						sourceInfoCam.port, // input,
+						0 // me
+					]
 				]
 			)
 		}
