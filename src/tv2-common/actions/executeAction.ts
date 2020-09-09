@@ -1166,25 +1166,28 @@ function executeActionCutToCamera<
 		context.stopPiecesOnLayers([settings.SourceLayers.Cam])
 		context.insertPiece('current', kamPiece)
 	}
-	// @ts-ignore hack
-	if (context.hackCallPeripheralDeviceFunction) {
-		// Hack: Cut to the camera right away
+
+	if (serverInCurrentPart || !userData.queue) {
 		// @ts-ignore hack
-		context.hackCallPeripheralDeviceFunction(
-			{
-				// selector that selects the playout-gateway/Atem:
-				category: 'playout',
-				type: 'playout',
-				subType: 2 // DeviceType.ATEM
-			},
-			'doCustomCommand',
-			[
-				// settings.SelectedAdlibs && settings.LLayer.Atem.MEClean ?
-				'changeProgramInput',
-				sourceInfoCam.port, // input,
-				0 // me
-			]
-		)
+		if (context.hackCallPeripheralDeviceFunction) {
+			// Hack: Cut to the camera right away
+			// @ts-ignore hack
+			context.hackCallPeripheralDeviceFunction(
+				{
+					// selector that selects the playout-gateway/Atem:
+					category: 'playout',
+					type: 'playout',
+					subType: 2 // DeviceType.ATEM
+				},
+				'doCustomCommand',
+				[
+					// settings.SelectedAdlibs && settings.LLayer.Atem.MEClean ?
+					'changeProgramInput',
+					sourceInfoCam.port, // input,
+					0 // me
+				]
+			)
+		}
 	}
 }
 
