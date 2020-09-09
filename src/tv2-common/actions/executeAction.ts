@@ -1062,11 +1062,13 @@ function executeActionCutToCamera<
 		return
 	}
 
-	const serverInCurrentPart = context
-		.getPieceInstances('current')
-		.some(
-			p => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
-		)
+	const currentPieceInstances = context.getPieceInstances('current')
+
+	const serverInCurrentPart = currentPieceInstances.some(
+		p => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
+	)
+
+	const currentKam = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Cam)
 
 	const camSisyfos = GetSisyfosTimelineObjForCamera(
 		context,
@@ -1162,6 +1164,8 @@ function executeActionCutToCamera<
 		if (serverInCurrentPart) {
 			context.takeAfterExecuteAction(true)
 		}
+	} else if (currentKam) {
+		context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
 		context.stopPiecesOnLayers([settings.SourceLayers.Cam])
 		context.insertPiece('current', kamPiece)
