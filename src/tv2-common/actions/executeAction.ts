@@ -1080,7 +1080,7 @@ function executeActionCutToCamera<
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
 		name: part.title,
-		enable: { start: userData.queue || serverInCurrentPart ? 0 : 'now' },
+		enable: { start: userData.queue || serverInCurrentPart || currentKam ? 0 : 'now' },
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
