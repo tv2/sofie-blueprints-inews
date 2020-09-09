@@ -1175,13 +1175,13 @@ function executeActionCutToCamera<
 				// selector that selects the playout-gateway/Atem:
 				category: 'playout',
 				type: 'playout',
-				subType: 2, // DeviceType.ATEM
+				subType: 2 // DeviceType.ATEM
 			},
 			'doCustomCommand',
 			[
 				// settings.SelectedAdlibs && settings.LLayer.Atem.MEClean ?
 				'changeProgramInput',
-				sourceInfoCam.port, // input, 
+				sourceInfoCam.port, // input,
 				0 // me
 			]
 		)
