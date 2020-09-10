@@ -20,7 +20,7 @@ import {
 } from 'tv2-common'
 import { GraphicEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { CreateTimingGrafik, GetEnableForGrafik, grafikName } from './grafikViz'
 
@@ -165,14 +165,29 @@ function GetMosObjContent(
 	tlf?: boolean,
 	adlibrank?: number
 ): GraphicsContent {
+	const clearId = isOverlay ? `pilot_overlay_${parsedCue.vcpid}_clear_full_delay` : undefined
 	return literal<GraphicsContent>({
 		fileName: 'PILOT_' + parsedCue.vcpid.toString(),
 		path: parsedCue.vcpid.toString(),
 		timelineObjects: [
+			...(clearId
+				? [
+						literal<TSR.TimelineObjAbstractAny>({
+							id: clearId,
+							enable: GetEnableForGrafik(engine, parsedCue, false),
+							layer: VirtualAbstractLLayer.PilotOverlayClearDelay,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							}
+						})
+				  ]
+				: []),
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
-				enable: isOverlay
-					? GetEnableForGrafik(engine, parsedCue, false)
+				enable: clearId
+					? {
+							start: `#${clearId}.start + 1000` // Move 1000 to setting if this works
+					  }
 					: {
 							start: 0
 					  },

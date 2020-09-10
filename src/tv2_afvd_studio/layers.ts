@@ -21,7 +21,9 @@ export function VirtualLLayers() {
 	return _.values(VirtualAbstractLLayer)
 }
 
-export enum VirtualAbstractLLayer {}
+export enum VirtualAbstractLLayer {
+	PilotOverlayClearDelay = 'pilot_overlay_clear_delay'
+}
 
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',

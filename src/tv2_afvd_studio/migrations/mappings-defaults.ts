@@ -557,6 +557,11 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
+	}),
+	pilot_overlay_clear_delay: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 })
 
