@@ -22,7 +22,7 @@ import { GraphicEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
-import { CreateTimingGrafik, grafikName } from './grafikViz'
+import { CreateTimingGrafik, GetEnableForGrafik, grafikName } from './grafikViz'
 
 export function EvaluateMOSViz(
 	config: BlueprintConfig,
@@ -171,9 +171,11 @@ function GetMosObjContent(
 		timelineObjects: [
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
-				enable: {
-					start: 0
-				},
+				enable: isOverlay
+					? GetEnableForGrafik(engine, parsedCue, false)
+					: {
+							start: 0
+					  },
 				priority: 1,
 				layer:
 					engine === 'WALL'
