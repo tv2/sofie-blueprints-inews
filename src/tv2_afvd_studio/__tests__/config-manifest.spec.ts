@@ -43,6 +43,7 @@ const blankStudioConfig: StudioConfig = {
 	PilotKeepaliveDuration: 0,
 	PilotCutToMediaPlayer: 0,
 	PilotOutTransitionDuration: 0,
+	PreventOverlayWithFull: true,
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
 	JingleBasePath: 'jingler',

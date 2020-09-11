@@ -97,7 +97,7 @@ export function EvaluateGrafikViz(
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
-							enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
+							enable: GetEnableForGrafik(config, engine, parsedCue, isIdentGrafik, partDefinition),
 							priority: 1,
 							layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 							content: {
@@ -137,7 +137,7 @@ export function EvaluateGrafikViz(
 				timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
-						enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
+						enable: GetEnableForGrafik(config, engine, parsedCue, isIdentGrafik, partDefinition),
 						priority: 1,
 						layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 						content: {
@@ -172,6 +172,7 @@ export function EvaluateGrafikViz(
 }
 
 export function GetEnableForGrafik(
+	config: BlueprintConfig,
 	engine: GraphicEngine,
 	cue: CueDefinition,
 	isIdentGrafik: boolean,
@@ -192,8 +193,14 @@ export function GetEnableForGrafik(
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
-	return {
-		while: '!.full'
+	if (config.studio.PreventOverlayWithFull) {
+		return {
+			while: '!.full'
+		}
+	} else {
+		return {
+			start: 0
+		}
 	}
 }
 

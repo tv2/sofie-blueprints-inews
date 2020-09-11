@@ -769,6 +769,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 500
 	},
 	{
+		id: 'PreventOverlayWithFull',
+		name: 'Prevent Overlay with Full',
+		description: 'Stop overlay elements from showing when a Full graphic is on-air',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: true
+	},
+	{
 		id: 'ATEMDelay',
 		name: 'ATEM Delay',
 		description: 'Frames of latency in ATEM',

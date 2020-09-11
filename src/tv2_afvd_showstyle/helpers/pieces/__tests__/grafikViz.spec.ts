@@ -168,6 +168,77 @@ describe('grafik piece', () => {
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
+								while: '!.full'
+							},
+							priority: 1,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'bund',
+								templateData: ['Odense', 'Copenhagen'],
+								channelName: 'OVL1'
+							}
+						})
+					])
+				})
+			})
+		])
+	})
+
+	test('adlib kg bund (overlay+full allowed)', () => {
+		const cue: CueDefinitionGrafik = {
+			type: CueType.Grafik,
+			template: 'bund',
+			cue: 'kg',
+			textFields: ['Odense', 'Copenhagen'],
+			adlib: true,
+			iNewsCommand: 'kg'
+		}
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+		EvaluateGrafikViz(
+			{
+				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
+				studio: literal<StudioConfig>({
+					...((defaultStudioConfig as unknown) as StudioConfig),
+					PreventOverlayWithFull: false
+				}),
+				sources: [],
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
+			},
+			partContext,
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			'OVL',
+			cue.adlib ? cue.adlib : false,
+			dummyPart,
+			false
+		)
+		expect(adLibPieces).toEqual([
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: partId,
+				name: 'bund - Odense - Copenhagen',
+				lifespan: PieceLifespan.WithinPart,
+				outputLayerId: 'overlay',
+				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				expectedDuration: 4000,
+				content: literal<GraphicsContent>({
+					fileName: 'bund',
+					path: 'bund',
+					ignoreMediaObjectStatus: true,
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
 								start: 0
 							},
 							priority: 1,

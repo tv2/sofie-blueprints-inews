@@ -73,6 +73,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	PilotKeepaliveDuration: number
 	PilotCutToMediaPlayer: number
 	PilotOutTransitionDuration: number
+	PreventOverlayWithFull: boolean
 	ATEMDelay: number
 }
 

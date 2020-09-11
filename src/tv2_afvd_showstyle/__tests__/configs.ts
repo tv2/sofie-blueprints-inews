@@ -93,6 +93,7 @@ export const defaultStudioConfig: ConfigMap = {
 	PilotPrerollDuration: 2000,
 	PilotKeepaliveDuration: 700,
 	PilotCutToMediaPlayer: 1500,
+	PreventOverlayWithFull: true,
 	PilotOutTransitionDuration: 280,
 	ATEMDelay: 1,
 	MaximumKamDisplayDuration: 10000,
