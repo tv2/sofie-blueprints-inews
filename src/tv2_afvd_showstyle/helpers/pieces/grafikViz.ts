@@ -8,6 +8,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CalculateTime,
+	CueDefinition,
 	CueDefinitionDesign,
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
@@ -172,9 +173,9 @@ export function EvaluateGrafikViz(
 	}
 }
 
-function GetEnableForGrafik(
+export function GetEnableForGrafik(
 	engine: GraphicEngine,
-	cue: CueDefinitionGrafik,
+	cue: CueDefinition,
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
 ): { while: string } | { start: number } {
