@@ -190,8 +190,12 @@ function GetMosObjContent(
 					continueStep: parsedCue.continueCount,
 					noAutoPreloading: false,
 					channelName: engine === 'WALL' ? 'WALL1' : isOverlay ? 'OVL1' : 'FULL1',
-					...(isOverlay || engine === 'WALL'
+					...(engine === 'WALL'
 						? {}
+						: isOverlay
+						? {
+								delayTakeAfterOutTransition: true
+						  }
 						: {
 								outTransition: {
 									type: TSR.VIZMSETransitionType.DELAY,
