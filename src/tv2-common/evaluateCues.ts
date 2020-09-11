@@ -445,7 +445,8 @@ export function EvaluateCuesBase<
 									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
 									channelName: o.content.channelName,
-									rundownId: context.rundownId
+									rundownId: context.rundownId,
+									playlistId: ''
 								}
 							})
 						}
@@ -457,7 +458,8 @@ export function EvaluateCuesBase<
 								content: {
 									templateName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
 									channelName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName,
-									rundownId: context.rundownId
+									rundownId: context.rundownId,
+									playlistId: ''
 								}
 							})
 						}
@@ -468,7 +470,8 @@ export function EvaluateCuesBase<
 								templateName: 'altud',
 								channelName: 'OVL1',
 								templateData: [],
-								rundownId: context.rundownId
+								rundownId: context.rundownId,
+								playlistId: ''
 							}
 						})
 					}
