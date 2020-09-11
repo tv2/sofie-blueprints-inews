@@ -97,9 +97,7 @@ export function EvaluateGrafikViz(
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
-							enable: {
-								start: 0
-							},
+							enable: GetEnableForGrafik(engine, parsedCue, isIdentGrafik, partDefinition),
 							priority: 1,
 							layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 							content: {
