@@ -197,6 +197,7 @@ function GetMosObjContent(
 								delayTakeAfterOutTransition: true
 						  }
 						: {
+								delayTakeAfterOutTransition: true,
 								outTransition: {
 									type: TSR.VIZMSETransitionType.DELAY,
 									delay: config.studio.PilotOutTransitionDuration
