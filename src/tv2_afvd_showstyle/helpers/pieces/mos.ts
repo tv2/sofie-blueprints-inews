@@ -192,10 +192,6 @@ function GetMosObjContent(
 					channelName: engine === 'WALL' ? 'WALL1' : isOverlay ? 'OVL1' : 'FULL1',
 					...(engine === 'WALL'
 						? {}
-						: isOverlay
-						? {
-								delayTakeAfterOutTransition: true
-						  }
 						: {
 								delayTakeAfterOutTransition: true,
 								outTransition: {
