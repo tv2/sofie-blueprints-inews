@@ -2,7 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	SplitsContent,
-	TimelineObjectCoreExt
+	TimelineObjectCoreExt,
+	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectDVE,
@@ -183,7 +184,7 @@ export function makeofftubeDVEIDsUniqueForFlow(timeline: TimelineObjectCoreExt[]
 	const newId = `${startId}_flow`
 
 	return timeline.map(tlObj => {
-		const enable = _.clone(tlObj.enable)
+		const enable = _.clone(tlObj.enable) as TSR.Timeline.TimelineEnable
 
 		if (enable.start && typeof enable.start === 'string') {
 			enable.start = enable.start.replace(startId, newId)

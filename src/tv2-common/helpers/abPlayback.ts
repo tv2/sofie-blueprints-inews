@@ -441,7 +441,9 @@ export function applyMediaPlayersAssignments<
 		const isFuturePartLookahead = _.some(
 			grp.objs,
 			o =>
-				!!o.isLookahead /*|| (o as any).wasLookahead*/ && o.enable.duration === undefined && o.enable.end === undefined
+				!!o.isLookahead /*|| (o as any).wasLookahead*/ &&
+				(o.enable as TSR.Timeline.TimelineEnable).duration === undefined &&
+				(o.enable as TSR.Timeline.TimelineEnable).end === undefined
 		)
 		if (isFuturePartLookahead) {
 			lookaheadGroups.push(grp)
