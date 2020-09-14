@@ -1329,7 +1329,8 @@ function executeActionCutSourceToBox<
 		modifiedDataStore = nextDataStore
 	}
 
-	const meta: DVEPieceMetaData | undefined = modifiedPiece?.piece.metaData as PieceMetaData & DVEPieceMetaData
+	const meta: (DVEPieceMetaData & PieceMetaData) | undefined = modifiedPiece?.piece.metaData as PieceMetaData &
+		DVEPieceMetaData
 
 	if (
 		!modifiedPiece ||
@@ -1356,13 +1357,19 @@ function executeActionCutSourceToBox<
 		graphicsTemplateContent[`locator${i + 1}`] = label
 	})
 
+	const mediaPlayerSession = containsServerBefore && meta.mediaPlayerSessions ? meta.mediaPlayerSessions[0] : undefined
+
 	const newPieceContent = MakeContentDVE2(
 		context,
 		config,
 		meta.config,
 		graphicsTemplateContent,
 		meta.sources,
-		settings.DVEGeneratorOptions
+		settings.DVEGeneratorOptions,
+		undefined,
+		undefined,
+		undefined,
+		mediaPlayerSession
 	)
 	if (userData.vo) {
 		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs', settings.LLayer.Sisyfos.StudioMics)
