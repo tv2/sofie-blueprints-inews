@@ -1154,7 +1154,6 @@ function executeActionCutToCamera<
 	settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 
 	if (userData.queue || serverInCurrentPart) {
-		settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 		context.queuePart(part, [
 			kamPiece,
 			...(settings.SelectedAdlibs
