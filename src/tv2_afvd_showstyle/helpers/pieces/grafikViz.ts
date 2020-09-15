@@ -153,7 +153,10 @@ export function EvaluateGrafikViz(
 		})
 		pieces.push(piece)
 
-		if (sourceLayer === SourceLayer.PgmGraphicsIdentPersistent) {
+		if (
+			sourceLayer === SourceLayer.PgmGraphicsIdentPersistent &&
+			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd)
+		) {
 			// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
 			// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
 			pieces.push(
