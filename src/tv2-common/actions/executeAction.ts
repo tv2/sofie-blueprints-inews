@@ -1064,10 +1064,6 @@ function executeActionCutToCamera<
 
 	const currentPieceInstances = context.getPieceInstances('current')
 
-	const serverInCurrentPart = currentPieceInstances.some(
-		p => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
-	)
-
 	const currentKam = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Cam)
 
 	const camSisyfos = GetSisyfosTimelineObjForCamera(
@@ -1080,7 +1076,7 @@ function executeActionCutToCamera<
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
 		name: part.title,
-		enable: { start: userData.queue || serverInCurrentPart || currentKam ? 0 : 'now' },
+		enable: { start: 0 },
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
@@ -1153,30 +1149,20 @@ function executeActionCutToCamera<
 
 	settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 
-	if (userData.queue || serverInCurrentPart) {
-		settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
+	if (currentKam) {
+		context.updatePieceInstance(currentKam._id, kamPiece)
+	} else {
 		context.queuePart(part, [
 			kamPiece,
 			...(settings.SelectedAdlibs
 				? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
 				: [])
 		])
-		if (serverInCurrentPart) {
+
+		// queue = insert but don't take
+		if (!userData.queue) {
 			context.takeAfterExecuteAction(true)
 		}
-	} else if (currentKam) {
-		context.updatePieceInstance(currentKam._id, kamPiece)
-	} else {
-		context.stopPiecesOnLayers([
-			settings.SourceLayers.Cam,
-			settings.SourceLayers.DVE,
-			...(settings.SourceLayers.DVEAdLib ? [settings.SourceLayers.DVEAdLib] : []),
-			settings.SourceLayers.Effekt,
-			settings.SourceLayers.Live,
-			settings.SourceLayers.Server,
-			settings.SourceLayers.VO
-		])
-		context.insertPiece('current', kamPiece)
 	}
 }
 
