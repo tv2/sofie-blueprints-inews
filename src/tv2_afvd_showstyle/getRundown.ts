@@ -872,8 +872,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				outputLayerId: 'sec',
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-				onAirTags: [TallyTags.GFX_CLEAR],
-				setNextTags: [TallyTags.GFX_CLEAR]
+				currentPieceTags: [TallyTags.GFX_CLEAR],
+				nextPieceTags: [TallyTags.GFX_CLEAR]
 			}
 		}),
 		literal<IBlueprintActionManifest>({
@@ -891,8 +891,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				outputLayerId: 'sec',
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-				onAirTags: [TallyTags.GFX_ALTUD],
-				setNextTags: [TallyTags.GFX_ALTUD]
+				currentPieceTags: [TallyTags.GFX_ALTUD],
+				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
 		})
 	)
@@ -918,8 +918,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: 'pgm',
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-				onAirTags: [tagMix],
-				setNextTags: [tagMix]
+				currentPieceTags: [tagMix],
+				nextPieceTags: [tagMix]
 			}
 		})
 	)
@@ -946,8 +946,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					sourceLayerId: SourceLayer.PgmJingle,
 					outputLayerId: 'pgm',
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-					onAirTags: [tag],
-					setNextTags: [tag]
+					currentPieceTags: [tag],
+					nextPieceTags: [tag]
 				}
 			})
 		)

@@ -88,8 +88,8 @@ export function OfftubeEvaluateGrafikCaspar(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, grafikTemplateName)],
-					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, grafikTemplateName)]
+					currentPieceTags: [GetTagForFull(partDefinition.segmentExternalId, grafikTemplateName)],
+					nextPieceTags: [GetTagForFullNext(partDefinition.segmentExternalId, grafikTemplateName)]
 				}
 			})
 		)
@@ -367,8 +367,8 @@ function CreateFullAdLib(
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
-		onAirTags: [GetTagForFull(segmentExternalId, template)],
-		setNextTags: [GetTagForFullNext(segmentExternalId, template)],
+		currentPieceTags: [GetTagForFull(segmentExternalId, template)],
+		nextPieceTags: [GetTagForFullNext(segmentExternalId, template)],
 		content: CreateFullContent(config, template)
 	})
 }

@@ -55,7 +55,7 @@ export function CreateAdlibServer<
 		),
 		adlibPreroll: config.studio.CasparPrerollDuration,
 		tags: [GetTagForServer(partDefinition.segmentExternalId, file, vo), TallyTags.SERVER_IS_LIVE],
-		onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, vo)],
-		setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, vo)]
+		currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, vo)],
+		nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, vo)]
 	})
 }

@@ -120,8 +120,8 @@ function getGlobalAdLibPiecesOfftube(
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: preview,
 			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
-			onAirTags: [GetTagForKam(info.id)],
-			setNextTags: [GetTagForKam(info.id)],
+			currentPieceTags: [GetTagForKam(info.id)],
+			nextPieceTags: [GetTagForKam(info.id)],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
@@ -230,8 +230,8 @@ function getGlobalAdlibActionsOfftube(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
 					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
-					onAirTags: [GetTagForKam(name)],
-					setNextTags: [GetTagForKam(name)]
+					currentPieceTags: [GetTagForKam(name)],
+					nextPieceTags: [GetTagForKam(name)]
 				}
 			})
 		)
@@ -254,8 +254,8 @@ function getGlobalAdlibActionsOfftube(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
 					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
-					onAirTags: [GetTagForLive(name)],
-					setNextTags: [GetTagForLive(name)]
+					currentPieceTags: [GetTagForLive(name)],
+					nextPieceTags: [GetTagForLive(name)]
 				}
 			})
 		)
@@ -301,8 +301,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT],
-				onAirTags: [TallyTags.SERVER_IS_LIVE],
-				setNextTags: [TallyTags.SERVER_IS_LIVE]
+				currentPieceTags: [TallyTags.SERVER_IS_LIVE],
+				nextPieceTags: [TallyTags.SERVER_IS_LIVE]
 			}
 		})
 	)
@@ -321,8 +321,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT],
-				onAirTags: [TallyTags.DVE_IS_LIVE],
-				setNextTags: [TallyTags.DVE_IS_LIVE]
+				currentPieceTags: [TallyTags.DVE_IS_LIVE],
+				nextPieceTags: [TallyTags.DVE_IS_LIVE]
 			}
 		})
 	)
@@ -341,8 +341,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT],
-				onAirTags: [TallyTags.FULL_IS_LIVE],
-				setNextTags: [TallyTags.FULL_IS_LIVE]
+				currentPieceTags: [TallyTags.FULL_IS_LIVE],
+				nextPieceTags: [TallyTags.FULL_IS_LIVE]
 			}
 		})
 	)
@@ -409,8 +409,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_JINGLE_NEXT],
-				onAirTags: [TallyTags.JINGLE_IS_LIVE],
-				setNextTags: [TallyTags.JINGLE_IS_LIVE]
+				currentPieceTags: [TallyTags.JINGLE_IS_LIVE],
+				nextPieceTags: [TallyTags.JINGLE_IS_LIVE]
 			}
 		})
 	)

@@ -100,8 +100,8 @@ export function OfftubeEvaluateAdLib(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adlibServer.content, timelineObjects: [] },
 					tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
-					setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
+					currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
+					nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
 				}
 			})
 		)

@@ -148,8 +148,8 @@ export function OfftubeCreatePartVO(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...adlibServer.content, timelineObjects: [] },
 				tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-				onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, true)],
-				setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, true)]
+				currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, true)],
+				nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, true)]
 			}
 		})
 	)
