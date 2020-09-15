@@ -1149,7 +1149,7 @@ function executeActionCutToCamera<
 
 	settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 
-	if (currentKam) {
+	if (currentKam && !userData.queue) {
 		context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
 		context.queuePart(part, [
