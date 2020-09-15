@@ -1167,7 +1167,15 @@ function executeActionCutToCamera<
 	} else if (currentKam) {
 		context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
-		context.stopPiecesOnLayers([settings.SourceLayers.Cam])
+		context.stopPiecesOnLayers([
+			settings.SourceLayers.Cam,
+			settings.SourceLayers.DVE,
+			...(settings.SourceLayers.DVEAdLib ? [settings.SourceLayers.DVEAdLib] : []),
+			settings.SourceLayers.Effekt,
+			settings.SourceLayers.Live,
+			settings.SourceLayers.Server,
+			settings.SourceLayers.VO
+		])
 		context.insertPiece('current', kamPiece)
 	}
 }
