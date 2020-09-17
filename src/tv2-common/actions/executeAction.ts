@@ -1080,7 +1080,7 @@ function executeActionCutToCamera<
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
 		name: part.title,
-		enable: { start: userData.queue || serverInCurrentPart || currentKam ? 0 : 'now' },
+		enable: { start: userData.queue || serverInCurrentPart ? 0 : 'now' },
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
@@ -1166,8 +1166,13 @@ function executeActionCutToCamera<
 	} else if (currentKam) {
 		context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
+		const currentExternalId = context.getPartInstance('current')?.part.externalId
+
+		if (currentExternalId) {
+			kamPiece.externalId = currentExternalId
+		}
+
 		context.stopPiecesOnLayers([
-			settings.SourceLayers.Cam,
 			settings.SourceLayers.DVE,
 			...(settings.SourceLayers.DVEAdLib ? [settings.SourceLayers.DVEAdLib] : []),
 			settings.SourceLayers.Effekt,
