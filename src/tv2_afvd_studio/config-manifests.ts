@@ -705,6 +705,30 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: AtemSourceIndex.Col2
 	},
 	{
+		id: 'AtemSettings.MP1Baseline.Clip',
+		name: 'ATEM MP1 baseline clip number',
+		description: 'Number of the clip to play on MP1 (counting from 1)',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1
+	},
+	{
+		id: 'AtemSettings.MP1Baseline.Loop',
+		name: 'ATEM MP1 baseline clip loop',
+		description: 'If the clip on MP1 should loop',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: true
+	},
+	{
+		id: 'AtemSettings.MP1Baseline.Playing',
+		name: 'ATEM MP1 baseline clip playing',
+		description: 'If the clip on MP1 should play',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: true
+	},
+	{
 		id: 'AudioBedSettings.fadeIn',
 		name: 'Bed Fade In',
 		description: 'Default fade in duration for audio beds',

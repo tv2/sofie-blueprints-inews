@@ -2,6 +2,7 @@ import { BlueprintMapping, BlueprintMappings, IStudioContext, TSR } from 'tv-aut
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
+import { getStudioConfig } from './helpers/config'
 import { AtemLLayer, SisyfosLLAyer } from './layers'
 import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
 
@@ -25,6 +26,7 @@ function convertMappings<T>(input: BlueprintMappings, func: (k: string, v: Bluep
 }
 
 export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
+	const config = getStudioConfig(context)
 	const mappings = context.getStudioMappings()
 
 	const atemMeMappings = filterMappings(
@@ -141,10 +143,10 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				type: TSR.TimelineContentTypeAtem.MEDIAPLAYER,
 				mediaPlayer: {
 					sourceType: TSR.MediaSourceType.Clip,
-					clipIndex: 0,
+					clipIndex: config.studio.AtemSettings.MP1Baseline.Clip - 1, // counting from 1 in the config
 					stillIndex: 0,
-					playing: true,
-					loop: true,
+					playing: config.studio.AtemSettings.MP1Baseline.Playing,
+					loop: config.studio.AtemSettings.MP1Baseline.Loop,
 					atBeginning: false,
 					clipFrame: 0
 				}
