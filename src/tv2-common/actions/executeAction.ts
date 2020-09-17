@@ -1052,7 +1052,7 @@ function executeActionCutToCamera<
 
 	const part = literal<IBlueprintPart>({
 		externalId,
-		title: `Kamera ${userData.name}`,
+		title: `KAM ${userData.name}`,
 		metaData: {},
 		expectedDuration: 0
 	})
@@ -1073,7 +1073,7 @@ function executeActionCutToCamera<
 	const camSisyfos = GetSisyfosTimelineObjForCamera(
 		context,
 		config,
-		`Kamera ${userData.name}`,
+		`KAM ${userData.name}`,
 		settings.LLayer.Sisyfos.StudioMics
 	)
 
