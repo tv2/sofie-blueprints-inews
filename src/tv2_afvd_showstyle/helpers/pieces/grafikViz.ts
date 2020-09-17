@@ -124,7 +124,7 @@ export function EvaluateGrafikViz(
 				? { enable: { start: 0 } }
 				: {
 						enable: {
-							...CreateTimingGrafik(config, parsedCue)
+							...CreateTimingGrafik(config, parsedCue, false)
 						}
 				  }),
 			outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
