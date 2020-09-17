@@ -31,7 +31,12 @@ const blankStudioConfig: StudioConfig = {
 		CCGClip: 0,
 		CCGGain: 0,
 		VizClip: 0,
-		VizGain: 0
+		VizGain: 0,
+		MP1Baseline: {
+			Clip: 1,
+			Loop: false,
+			Playing: true
+		}
 	},
 	AudioBedSettings: {
 		fadeIn: 0,
