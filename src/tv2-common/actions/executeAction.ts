@@ -1164,6 +1164,7 @@ function executeActionCutToCamera<
 			context.takeAfterExecuteAction(true)
 		}
 	} else if (currentKam) {
+		kamPiece.externalId = currentKam.piece.externalId
 		context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
 		const currentExternalId = context.getPartInstance('current')?.part.externalId
