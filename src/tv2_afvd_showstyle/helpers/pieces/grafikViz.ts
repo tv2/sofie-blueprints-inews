@@ -67,7 +67,10 @@ export function EvaluateGrafikViz(
 		}
 	}
 
-	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
+	// Whether this graphic "sticks" to the source it was first assigned to.
+	// e.g. if this is attached to Live 1, when Live 1 is recalled later in a segment,
+	//  this graphic should be shown again.
+	const isStickyIdent = !!parsedCue.template.match(/direkte/i)
 
 	const mappedTemplate = GetFullGrafikTemplateNameFromCue(config, parsedCue)
 
@@ -84,12 +87,12 @@ export function EvaluateGrafikViz(
 				name: grafikName(config, parsedCue),
 				sourceLayerId: isTlfPrimary
 					? SourceLayer.PgmGraphicsTLF
-					: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
+					: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue), isStickyIdent),
 				outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
 				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
-				lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+				lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isStickyIdent),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.template,
 					path: parsedCue.template,
@@ -97,7 +100,7 @@ export function EvaluateGrafikViz(
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
-							enable: GetEnableForGrafik(config, engine, parsedCue, isIdentGrafik, partDefinition),
+							enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
 							priority: 1,
 							layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 							content: {
@@ -115,7 +118,7 @@ export function EvaluateGrafikViz(
 	} else {
 		const sourceLayer = isTlfPrimary
 			? SourceLayer.PgmGraphicsTLF
-			: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue))
+			: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue), isStickyIdent)
 
 		const piece = literal<IBlueprintPiece>({
 			externalId: partId,
@@ -124,12 +127,12 @@ export function EvaluateGrafikViz(
 				? { enable: { start: 0 } }
 				: {
 						enable: {
-							...CreateTimingGrafik(config, parsedCue)
+							...CreateTimingGrafik(config, parsedCue, !isStickyIdent)
 						}
 				  }),
 			outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
 			sourceLayerId: sourceLayer,
-			lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+			lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isStickyIdent),
 			content: literal<GraphicsContent>({
 				fileName: parsedCue.template,
 				path: parsedCue.template,
@@ -137,7 +140,7 @@ export function EvaluateGrafikViz(
 				timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
-						enable: GetEnableForGrafik(config, engine, parsedCue, isIdentGrafik, partDefinition),
+						enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
 						priority: 1,
 						layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
 						content: {
@@ -155,13 +158,15 @@ export function EvaluateGrafikViz(
 
 		if (
 			sourceLayer === SourceLayer.PgmGraphicsIdentPersistent &&
-			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd)
+			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
+			isStickyIdent
 		) {
 			// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
 			// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
 			pieces.push(
 				literal<IBlueprintPiece>({
 					...piece,
+					enable: { ...CreateTimingGrafik(config, parsedCue, true) }, // Allow default out for visual representation
 					sourceLayerId: SourceLayer.PgmGraphicsIdent,
 					lifespan: PieceLifespan.WithinPart,
 					content: undefined
@@ -175,7 +180,7 @@ export function GetEnableForGrafik(
 	config: BlueprintConfig,
 	engine: GraphicEngine,
 	cue: CueDefinition,
-	isIdentGrafik: boolean,
+	isStickyIdent: boolean,
 	partDefinition?: PartDefinition
 ): { while: string } | { start: number } {
 	if (engine === 'WALL') {
@@ -183,7 +188,7 @@ export function GetEnableForGrafik(
 			while: '1'
 		}
 	}
-	if (isIdentGrafik) {
+	if (isStickyIdent) {
 		return {
 			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
 		}
@@ -209,13 +214,13 @@ export function GetInfiniteModeForGrafik(
 	config: BlueprintConfig,
 	parsedCue: CueDefinitionGrafik,
 	isTlf?: boolean,
-	isIdent?: boolean
+	isStickyIdent?: boolean
 ): PieceLifespan {
 	return engine === 'WALL'
 		? PieceLifespan.OutOnRundownEnd
 		: isTlf
 		? PieceLifespan.WithinPart
-		: isIdent
+		: isStickyIdent
 		? PieceLifespan.OutOnSegmentEnd
 		: parsedCue.end && parsedCue.end.infiniteMode
 		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
@@ -249,7 +254,7 @@ export function FindInfiniteModeFromConfig(config: BlueprintConfig, parsedCue: C
 	return PieceLifespan.WithinPart
 }
 
-export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string) {
+export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string, isStickyIdent: boolean) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
@@ -264,7 +269,11 @@ export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string) {
 		case SourceLayer.PgmGraphicsHeadline:
 			return SourceLayer.PgmGraphicsHeadline
 		case SourceLayer.PgmGraphicsIdent:
-			return SourceLayer.PgmGraphicsIdentPersistent
+			if (isStickyIdent) {
+				return SourceLayer.PgmGraphicsIdentPersistent
+			}
+
+			return SourceLayer.PgmGraphicsIdent
 		case SourceLayer.PgmGraphicsLower:
 			return SourceLayer.PgmGraphicsLower
 		case SourceLayer.PgmGraphicsOverlay:

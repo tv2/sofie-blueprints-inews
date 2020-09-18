@@ -402,4 +402,157 @@ describe('grafik piece', () => {
 			})
 		])
 	})
+
+	test('kg direkte', () => {
+		const cue = literal<CueDefinitionGrafik>({
+			type: CueType.Grafik,
+			start: {
+				seconds: 0
+			},
+			template: 'direkte',
+			cue: 'kg',
+			textFields: ['KØBENHAVN'],
+			iNewsCommand: '#kg'
+		})
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+		EvaluateGrafikViz(
+			{
+				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
+				studio: (defaultStudioConfig as unknown) as StudioConfig,
+				sources: [],
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
+			},
+			partContext,
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			'OVL',
+			cue.adlib ? cue.adlib : false,
+			dummyPart,
+			false
+		)
+		expect(pieces).toEqual([
+			literal<IBlueprintPiece>({
+				externalId: partId,
+				name: 'direkte - KØBENHAVN',
+				enable: {
+					start: 0
+				},
+				lifespan: PieceLifespan.OutOnSegmentEnd,
+				outputLayerId: 'overlay',
+				sourceLayerId: SourceLayer.PgmGraphicsIdentPersistent,
+				content: literal<GraphicsContent>({
+					fileName: 'direkte',
+					path: 'direkte',
+					ignoreMediaObjectStatus: true,
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
+								while: `.show_ident_graphic & !.full`
+							},
+							priority: 1,
+							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'direkte',
+								templateData: ['KØBENHAVN'],
+								channelName: 'OVL1'
+							}
+						})
+					])
+				})
+			}),
+			literal<IBlueprintPiece>({
+				externalId: partId,
+				name: 'direkte - KØBENHAVN',
+				enable: {
+					start: 0
+				},
+				lifespan: PieceLifespan.WithinPart,
+				outputLayerId: 'overlay',
+				sourceLayerId: SourceLayer.PgmGraphicsIdent
+			})
+		])
+	})
+
+	test('kg arkiv', () => {
+		const cue = literal<CueDefinitionGrafik>({
+			type: CueType.Grafik,
+			start: {
+				seconds: 0
+			},
+			template: 'arkiv',
+			cue: 'kg',
+			textFields: ['unnamed org'],
+			iNewsCommand: '#kg'
+		})
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+		EvaluateGrafikViz(
+			{
+				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
+				studio: (defaultStudioConfig as unknown) as StudioConfig,
+				sources: [],
+				mediaPlayers: [],
+				stickyLayers: [],
+				liveAudio: []
+			},
+			partContext,
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			'OVL',
+			cue.adlib ? cue.adlib : false,
+			dummyPart,
+			false
+		)
+		expect(pieces).toEqual([
+			literal<IBlueprintPiece>({
+				externalId: partId,
+				name: 'arkiv - unnamed org',
+				enable: {
+					start: 0,
+					duration: 4000
+				},
+				lifespan: PieceLifespan.WithinPart,
+				outputLayerId: 'overlay',
+				sourceLayerId: SourceLayer.PgmGraphicsIdent,
+				content: literal<GraphicsContent>({
+					fileName: 'arkiv',
+					path: 'arkiv',
+					ignoreMediaObjectStatus: true,
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
+								while: `!.full`
+							},
+							priority: 1,
+							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'arkiv',
+								templateData: ['unnamed org'],
+								channelName: 'OVL1'
+							}
+						})
+					])
+				})
+			})
+		])
+	})
 })
