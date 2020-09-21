@@ -92,92 +92,6 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 }
 
 function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
-	/*function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(
-			context,
-			config,
-			`Kamera ${info.id}`,
-			SisyfosLLAyer.SisyfosGroupStudioMics
-		)
-		res.push({
-			externalId: 'cam',
-			name: `KAM ${info.id}`,
-			_rank: rank,
-			sourceLayerId: SourceLayer.PgmCam,
-			outputLayerId: 'pgm',
-			expectedDuration: 0,
-			lifespan: PieceLifespan.WithinPart,
-			toBeQueued: preview,
-			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
-			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
-						enable: { while: '1' },
-						priority: 1,
-						layer: AtemLLayer.AtemMEProgram,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: info.port,
-								transition: TSR.AtemTransitionStyle.CUT
-							}
-						},
-						classes: ['adlib_deparent']
-					}),
-					camSisyfos,
-					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: SisyfosLLAyer.SisyfosPersistedLevels,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							overridePriority: 1,
-							channels: config.stickyLayers
-								.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
-								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-									return {
-										mappedLayer: layer,
-										isPgm: 0
-									}
-								})
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					}),
-					// Force server to be muted (for adlibbing over DVE)
-					...[
-						SisyfosLLAyer.SisyfosSourceClipPending,
-						SisyfosLLAyer.SisyfosSourceServerA,
-						SisyfosLLAyer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
-					})
-				])
-			}
-		})
-		return res
-	}*/
-
 	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
@@ -384,20 +298,6 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
 	let globalRank = 1000
-
-	/*config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdLibs(o, globalRank++, true))
-		})*/
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
