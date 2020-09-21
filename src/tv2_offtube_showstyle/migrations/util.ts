@@ -10,20 +10,30 @@ import * as _ from 'underscore'
 import OutputlayerDefaults from './outputlayer-defaults'
 import SourcelayerDefaults from './sourcelayer-defaults'
 
-export function getSourceLayerDefaultsMigrationSteps(versionStr: string): MigrationStepShowStyle[] {
+export function getSourceLayerDefaultsMigrationSteps(versionStr: string, force?: boolean): MigrationStepShowStyle[] {
 	return _.compact(
 		_.map(SourcelayerDefaults, (defaultVal: ISourceLayer): MigrationStepShowStyle | null => {
 			return literal<MigrationStepShowStyle>({
-				id: `sourcelayer.defaults.${defaultVal._id}`,
+				id: `sourcelayer.defaults${force ? '.forced' : ''}.${defaultVal._id}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextShowStyle) => {
-					if (!context.getSourceLayer(defaultVal._id)) {
+					const existing = context.getSourceLayer(defaultVal._id)
+					if (!existing) {
 						return `SourceLayer "${defaultVal._id}" doesn't exist on ShowBaseStyle`
 					}
+
+					if (force) {
+						return !_.isEqual(existing, defaultVal)
+					}
+
 					return false
 				},
 				migrate: (context: MigrationContextShowStyle) => {
+					if (context.getSourceLayer(defaultVal._id) && force) {
+						context.removeSourceLayer(defaultVal._id)
+					}
+
 					if (!context.getSourceLayer(defaultVal._id)) {
 						context.insertSourceLayer(defaultVal._id, defaultVal)
 					}
