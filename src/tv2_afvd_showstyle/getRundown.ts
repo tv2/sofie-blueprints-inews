@@ -801,16 +801,6 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 	)
 
-	const userDataMix = literal<ActionTakeWithTransition>({
-		type: AdlibActionType.TAKE_WITH_TRANSITION,
-		variant: {
-			type: 'mix',
-			frames: config.showStyle.TakeWithMixDuration
-		},
-		takeNow: true
-	})
-	const tagMix = GetTagForTransition(userDataMix.variant)
-
 	if (config.showStyle.DefaultTransition && config.showStyle.DefaultTransition.length) {
 		let variant: ActionTakeWithTransitionVariant = literal<ActionTakeWithTransitionVariantCut>({
 			type: 'cut'
@@ -856,6 +846,16 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			})
 		)
 	}
+
+	const userDataMix = literal<ActionTakeWithTransition>({
+		type: AdlibActionType.TAKE_WITH_TRANSITION,
+		variant: {
+			type: 'mix',
+			frames: config.showStyle.TakeWithMixDuration
+		},
+		takeNow: true
+	})
+	const tagMix = GetTagForTransition(userDataMix.variant)
 
 	res.push(
 		literal<IBlueprintActionManifest>({
