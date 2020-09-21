@@ -7,7 +7,6 @@ import {
 	IngestRundown,
 	IStudioConfigContext,
 	NotesContext,
-	PieceLifespan,
 	ShowStyleContext,
 	SourceLayerType,
 	TSR
@@ -21,15 +20,16 @@ import {
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionSelectDVELayout,
-	GetCameraMetaData,
-	GetLayersForCamera,
-	GetSisyfosTimelineObjForCamera,
-	GetTagForKam,
+	ActionTakeWithTransition,
+	ActionTakeWithTransitionVariant,
+	ActionTakeWithTransitionVariantCut,
+	ActionTakeWithTransitionVariantEffekt,
+	ActionTakeWithTransitionVariantMix,
 	GetTagForLive,
+	GetTagForTransition,
 	GraphicLLayer,
 	literal,
-	SourceInfo,
-	TimelineBlueprintExt
+	SourceInfo
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, Enablers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -100,107 +100,6 @@ function getGlobalAdLibPiecesOfftube(
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
-	let globalRank = 1000
-
-	function makeCameraAdLibs(info: SourceInfo, rank: number, preview: boolean = false): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		const camSisyfos = GetSisyfosTimelineObjForCamera(
-			context,
-			config,
-			`Kamera ${info.id}`,
-			OfftubeSisyfosLLayer.SisyfosGroupStudioMics
-		)
-		res.push({
-			externalId: 'cam',
-			name: `KAM ${info.id}`,
-			_rank: rank,
-			sourceLayerId: OfftubeSourceLayer.PgmCam,
-			outputLayerId: 'pgm',
-			expectedDuration: 0,
-			lifespan: PieceLifespan.WithinPart,
-			toBeQueued: preview,
-			metaData: GetCameraMetaData(config, GetLayersForCamera(config, info)),
-			onAirTags: [GetTagForKam(info.id)],
-			setNextTags: [GetTagForKam(info.id)],
-			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
-						enable: { while: '1' },
-						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEProgram,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: info.port,
-								transition: TSR.AtemTransitionStyle.CUT
-							}
-						},
-						classes: ['adlib_deparent']
-					}),
-					camSisyfos,
-					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: OfftubeSisyfosLLayer.SisyfosPersistedLevels,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							overridePriority: 1,
-							channels: config.stickyLayers
-								.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
-								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-									return {
-										mappedLayer: layer,
-										isPgm: 0
-									}
-								})
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					}),
-					// Force server to be muted (for adlibbing over DVE)
-					literal<TSR.TimelineObjSisyfosChannels>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 2,
-						layer: OfftubeSisyfosLLayer.SisyfosGroupServer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							channels: [
-								OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-								OfftubeSisyfosLLayer.SisyfosSourceServerA,
-								OfftubeSisyfosLLayer.SisyfosSourceServerB
-							].map(layer => {
-								return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
-									mappedLayer: layer,
-									isPgm: 0
-								})
-							}),
-							overridePriority: 2
-						}
-					})
-				])
-			}
-		})
-		return res
-	}
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
-		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
-			adlibItems.push(...makeCameraAdLibs(o, globalRank++))
-		})
-
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
 }
@@ -213,25 +112,22 @@ function getGlobalAdlibActionsOfftube(
 
 	let globalRank = 2000
 
-	function makeKameraAction(name: string, queue: boolean, rank: number) {
+	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.CUT_TO_CAMERA,
 				userData: literal<ActionCutToCamera>({
 					type: AdlibActionType.CUT_TO_CAMERA,
 					queue,
-					name
+					name: info.id
 				}),
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `KAM ${name}`,
+					label: `KAM ${info.id}`,
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
-					outputLayerId: OfftubeOutputLayers.PGM,
-					content: {},
-					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
-					onAirTags: [GetTagForKam(name)],
-					setNextTags: [GetTagForKam(name)]
+					outputLayerId: 'pgm',
+					content: {}
 				}
 			})
 		)
@@ -279,6 +175,60 @@ function getGlobalAdlibActionsOfftube(
 						label: `Cut ${type} ${info.id} to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
+						content: {},
+						tags: []
+					}
+				})
+			)
+		})
+	}
+
+	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
+		Object.values(boxLayers).forEach((layer, box) => {
+			res.push(
+				literal<IBlueprintActionManifest>({
+					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+					userData: literal<ActionCutSourceToBox>({
+						type: AdlibActionType.CUT_SOURCE_TO_BOX,
+						name: `EVS${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''}`,
+						port: info.port,
+						sourceType: info.type,
+						box,
+						vo
+					}),
+					userDataManifest: {},
+					display: {
+						_rank: rank + 0.1 * box,
+						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''} to box ${box + 1}`,
+						sourceLayerId: layer,
+						outputLayerId: 'sec',
+						content: {},
+						tags: []
+					}
+				})
+			)
+		})
+	}
+
+	function makeServerAdlibBoxesActions(rank: number) {
+		Object.values(boxLayers).forEach((layer, box) => {
+			res.push(
+				literal<IBlueprintActionManifest>({
+					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+					userData: literal<ActionCutSourceToBox>({
+						type: AdlibActionType.CUT_SOURCE_TO_BOX,
+						name: `SERVER`,
+						port: -1,
+						sourceType: SourceLayerType.VT,
+						box,
+						server: true
+					}),
+					userDataManifest: {},
+					display: {
+						_rank: rank + 0.1 * box,
+						label: `Server to box ${box + 1}`,
+						sourceLayerId: layer,
+						outputLayerId: 'sec',
 						content: {},
 						tags: []
 					}
@@ -347,6 +297,108 @@ function getGlobalAdlibActionsOfftube(
 		})
 	)
 
+	if (config.showStyle.DefaultTransition && config.showStyle.DefaultTransition.length) {
+		let variant: ActionTakeWithTransitionVariant = literal<ActionTakeWithTransitionVariantCut>({
+			type: 'cut'
+		})
+
+		const defaultTransition = config.showStyle.DefaultTransition
+
+		if (defaultTransition.match(/effekt ?(\d+)/i)) {
+			const props = defaultTransition.match(/effekt ?(\d+)/i)
+			variant = literal<ActionTakeWithTransitionVariantEffekt>({
+				type: 'effekt',
+				effekt: Number(props![1])
+			})
+		} else if (defaultTransition.match(/mix ?(\d+)/i)) {
+			const props = defaultTransition.match(/mix ?(\d+)/i)
+			variant = literal<ActionTakeWithTransitionVariantMix>({
+				type: 'mix',
+				frames: Number(props![1])
+			})
+		}
+
+		const userData = literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant,
+			takeNow: true
+		})
+		const tag = GetTagForTransition(userData.variant)
+
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: 800,
+					label: config.showStyle.DefaultTransition,
+					sourceLayerId: OfftubeSourceLayer.PgmJingle,
+					outputLayerId: 'pgm',
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					onAirTags: [tag],
+					setNextTags: [tag]
+				}
+			})
+		)
+	}
+
+	const userDataMix = literal<ActionTakeWithTransition>({
+		type: AdlibActionType.TAKE_WITH_TRANSITION,
+		variant: {
+			type: 'mix',
+			frames: config.showStyle.TakeWithMixDuration
+		},
+		takeNow: true
+	})
+	const tagMix = GetTagForTransition(userDataMix.variant)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+			userData: userDataMix,
+			userDataManifest: {},
+			display: {
+				_rank: 801,
+				label: 'MIX',
+				sourceLayerId: OfftubeSourceLayer.PgmJingle,
+				outputLayerId: 'pgm',
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				onAirTags: [tagMix],
+				setNextTags: [tagMix]
+			}
+		})
+	)
+
+	config.showStyle.TakeEffekts.forEach((effekt, i) => {
+		const userData = literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: {
+				type: 'effekt',
+				effekt: Number(effekt.Effekt)
+			},
+			takeNow: true
+		})
+		const tag = GetTagForTransition(userData.variant)
+
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: 810 + 0.01 * i,
+					label: `EFFEKT ${effekt.Effekt}`,
+					sourceLayerId: OfftubeSourceLayer.PgmJingle,
+					outputLayerId: 'pgm',
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					onAirTags: [tag],
+					setNextTags: [tag]
+				}
+			})
+		)
+	})
+
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
 		res.push(
@@ -369,9 +421,16 @@ function getGlobalAdlibActionsOfftube(
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.CAMERA)
+		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
+		.forEach(o => {
+			makeCutCameraActions(o, false, globalRank++)
+		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			makeKameraAction(o.id, true, globalRank++)
+			makeCutCameraActions(o, true, globalRank++)
 		})
 
 	config.sources
@@ -394,6 +453,16 @@ function getGlobalAdlibActionsOfftube(
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
+
+	config.sources
+		.filter(u => u.type === SourceLayerType.REMOTE && !!u.id.match(`DP`))
+		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
+		.forEach(o => {
+			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)
+			makeAdlibBoxesActionsDirectPlayback(o, true, globalRank++)
+		})
+
+	makeServerAdlibBoxesActions(globalRank++)
 
 	res.push(
 		literal<IBlueprintActionManifest>({
