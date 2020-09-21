@@ -426,7 +426,7 @@ const PGM: ISourceLayer[] = [
 		clearKeyboardHotkey: '',
 		assignHotkeysToGlobalAdlibs: false,
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+		activateStickyKeyboardHotkey: 'alt+shift+f1,alt+shift+1,alt+shift+2,alt+shift+3',
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,
