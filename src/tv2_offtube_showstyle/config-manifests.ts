@@ -18,6 +18,14 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		required: true
 	},
 	{
+		id: 'DefaultTransition',
+		name: 'Defualt Transition',
+		description: 'Transition to place on default transition shortcut',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'CUT'
+	},
+	{
 		id: 'DVEStyles',
 		name: 'DVE Layouts',
 		description: '',

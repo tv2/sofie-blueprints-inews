@@ -41,7 +41,8 @@ describe('TransformCuesIntoShowstyle', () => {
 		DefaultTemplateDuration: 3000,
 		LYDConfig: [],
 		TakeWithMixDuration: 12,
-		TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }]
+		TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }],
+		DefaultTransition: 'CUT'
 	}
 
 	test('Merge VCP', () => {

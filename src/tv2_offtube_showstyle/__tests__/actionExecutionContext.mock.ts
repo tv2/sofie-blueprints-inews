@@ -100,7 +100,8 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	LYDConfig: [],
 	CasparCGLoadingClip: '',
 	TakeWithMixDuration: 12,
-	TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }]
+	TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }],
+	DefaultTransition: 'CUT'
 }
 
 export class MockContext implements ActionExecutionContext {

@@ -11,7 +11,8 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	LYDConfig: [],
 	CasparCGLoadingClip: '',
 	TakeWithMixDuration: 12,
-	TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }]
+	TakeEffekts: [{ Effekt: '1' }, { Effekt: '2' }],
+	DefaultTransition: 'CUT'
 }
 
 describe('Config Manifest', () => {

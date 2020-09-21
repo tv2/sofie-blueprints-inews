@@ -87,6 +87,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	// DefaultTransitions: TableConfigItemDefaultTransitions[]
 	TakeWithMixDuration: number
 	TakeEffekts: TableConfigItemTakeEffekts[]
+	DefaultTransition: string
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

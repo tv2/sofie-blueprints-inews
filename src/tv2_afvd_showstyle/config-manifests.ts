@@ -471,5 +471,13 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 0
 			}
 		]
+	},
+	{
+		id: 'DefaultTransition',
+		name: 'Defualt Transition',
+		description: 'Transition to place on default transition shortcut',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'CUT'
 	}
 ]

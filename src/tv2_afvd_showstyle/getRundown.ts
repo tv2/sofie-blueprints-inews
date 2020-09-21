@@ -19,6 +19,10 @@ import {
 	ActionCutToCamera,
 	ActionSelectDVELayout,
 	ActionTakeWithTransition,
+	ActionTakeWithTransitionVariant,
+	ActionTakeWithTransitionVariantCut,
+	ActionTakeWithTransitionVariantEffekt,
+	ActionTakeWithTransitionVariantMix,
 	GetEksternMetaData,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
@@ -907,13 +911,59 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 	})
 	const tagMix = GetTagForTransition(userDataMix.variant)
 
+	if (config.showStyle.DefaultTransition && config.showStyle.DefaultTransition.length) {
+		let variant: ActionTakeWithTransitionVariant = literal<ActionTakeWithTransitionVariantCut>({
+			type: 'cut'
+		})
+
+		const defaultTransition = config.showStyle.DefaultTransition
+
+		if (defaultTransition.match(/effekt ?(\d+)/i)) {
+			const props = defaultTransition.match(/effekt ?(\d+)/i)
+			variant = literal<ActionTakeWithTransitionVariantEffekt>({
+				type: 'effekt',
+				effekt: Number(props![1])
+			})
+		} else if (defaultTransition.match(/mix ?(\d+)/i)) {
+			const props = defaultTransition.match(/mix ?(\d+)/i)
+			variant = literal<ActionTakeWithTransitionVariantMix>({
+				type: 'mix',
+				frames: Number(props![1])
+			})
+		}
+
+		const userData = literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant,
+			takeNow: true
+		})
+		const tag = GetTagForTransition(userData.variant)
+
+		res.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: 800,
+					label: config.showStyle.DefaultTransition,
+					sourceLayerId: SourceLayer.PgmJingle,
+					outputLayerId: 'pgm',
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					onAirTags: [tag],
+					setNextTags: [tag]
+				}
+			})
+		)
+	}
+
 	res.push(
 		literal<IBlueprintActionManifest>({
 			actionId: AdlibActionType.TAKE_WITH_TRANSITION,
 			userData: userDataMix,
 			userDataManifest: {},
 			display: {
-				_rank: 800,
+				_rank: 801,
 				label: 'MIX',
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: 'pgm',
