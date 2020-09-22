@@ -200,6 +200,6 @@ export const defaultShowStyleConfig: ConfigMap = {
 		}
 	],
 	TakeWithMixDuration: 12,
-	TakeEffekts: [{ effekt: '1' }, { effekt: '2' }],
+	AdLibBreakers: [{ Breaker: '1' }, { Breaker: '2' }],
 	DefaultTransition: 'CUT'
 }

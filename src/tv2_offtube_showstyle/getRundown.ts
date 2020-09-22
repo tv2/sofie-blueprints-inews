@@ -22,8 +22,8 @@ import {
 	ActionSelectDVELayout,
 	ActionTakeWithTransition,
 	ActionTakeWithTransitionVariant,
+	ActionTakeWithTransitionVariantBreaker,
 	ActionTakeWithTransitionVariantCut,
-	ActionTakeWithTransitionVariantEffekt,
 	ActionTakeWithTransitionVariantMix,
 	GetTagForLive,
 	GetTagForTransition,
@@ -304,17 +304,18 @@ function getGlobalAdlibActionsOfftube(
 
 		const defaultTransition = config.showStyle.DefaultTransition
 
-		if (defaultTransition.match(/effekt ?(\d+)/i)) {
-			const props = defaultTransition.match(/effekt ?(\d+)/i)
-			variant = literal<ActionTakeWithTransitionVariantEffekt>({
-				type: 'effekt',
-				effekt: Number(props![1])
-			})
-		} else if (defaultTransition.match(/mix ?(\d+)/i)) {
+		if (defaultTransition.match(/mix ?(\d+)/i)) {
 			const props = defaultTransition.match(/mix ?(\d+)/i)
 			variant = literal<ActionTakeWithTransitionVariantMix>({
 				type: 'mix',
 				frames: Number(props![1])
+			})
+		} else if (defaultTransition.match(/cut/i)) {
+			// Variant already setup
+		} else {
+			variant = literal<ActionTakeWithTransitionVariantBreaker>({
+				type: 'breaker',
+				breaker: defaultTransition
 			})
 		}
 
@@ -332,7 +333,9 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: 800,
-					label: config.showStyle.DefaultTransition,
+					label: !!config.showStyle.DefaultTransition.match(/^\d+$/)
+						? `EFFEKT ${config.showStyle.DefaultTransition}`
+						: config.showStyle.DefaultTransition,
 					sourceLayerId: OfftubeSourceLayer.PgmJingle,
 					outputLayerId: 'pgm',
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
@@ -370,33 +373,35 @@ function getGlobalAdlibActionsOfftube(
 		})
 	)
 
-	config.showStyle.TakeEffekts.forEach((effekt, i) => {
-		const userData = literal<ActionTakeWithTransition>({
-			type: AdlibActionType.TAKE_WITH_TRANSITION,
-			variant: {
-				type: 'effekt',
-				effekt: Number(effekt.Effekt)
-			},
-			takeNow: true
-		})
-		const tag = GetTagForTransition(userData.variant)
-
-		res.push(
-			literal<IBlueprintActionManifest>({
-				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-				userData,
-				userDataManifest: {},
-				display: {
-					_rank: 810 + 0.01 * i,
-					label: `EFFEKT ${effekt.Effekt}`,
-					sourceLayerId: OfftubeSourceLayer.PgmJingle,
-					outputLayerId: 'pgm',
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-					onAirTags: [tag],
-					setNextTags: [tag]
-				}
+	config.showStyle.AdLibBreakers.forEach((breaker, i) => {
+		if (breaker.Breaker && breaker.Breaker.length) {
+			const userData = literal<ActionTakeWithTransition>({
+				type: AdlibActionType.TAKE_WITH_TRANSITION,
+				variant: {
+					type: 'breaker',
+					breaker: breaker.Breaker.toString()
+				},
+				takeNow: true
 			})
-		)
+			const tag = GetTagForTransition(userData.variant)
+
+			res.push(
+				literal<IBlueprintActionManifest>({
+					actionId: AdlibActionType.TAKE_WITH_TRANSITION,
+					userData,
+					userDataManifest: {},
+					display: {
+						_rank: 810 + 0.01 * i,
+						label: !!breaker.Breaker.match(/^\d+$/) ? `EFFEKT ${breaker.Breaker}` : breaker.Breaker,
+						sourceLayerId: OfftubeSourceLayer.PgmJingle,
+						outputLayerId: 'pgm',
+						tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+						onAirTags: [tag],
+						setNextTags: [tag]
+					}
+				})
+			)
+		}
 	})
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {

@@ -37,8 +37,8 @@ export interface TableConfigItemDefaultTransitions {
 	DefaultTransition?: string
 }
 
-export interface TableConfigItemTakeEffekts {
-	Effekt: string
+export interface TableConfigItemAdLibBreakers {
+	Breaker: string
 }
 
 export interface TV2StudioConfigBase {
@@ -86,7 +86,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	GFXTemplates: TableConfigItemGFXTemplates[]
 	// DefaultTransitions: TableConfigItemDefaultTransitions[]
 	TakeWithMixDuration: number
-	TakeEffekts: TableConfigItemTakeEffekts[]
+	AdLibBreakers: TableConfigItemAdLibBreakers[]
 	DefaultTransition: string
 }
 

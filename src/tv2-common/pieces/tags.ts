@@ -5,8 +5,8 @@ export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
 	let tag = `${TallyTags.TAKE_WITH_TRANSITION}_${variant.type.toUpperCase()}`
 
 	switch (variant.type) {
-		case 'effekt':
-			tag += variant.effekt
+		case 'breaker':
+			tag += variant.breaker
 			break
 		case 'mix':
 			tag += variant.frames

@@ -452,17 +452,17 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		]
 	},
 	{
-		id: 'TakeEffekts',
-		name: 'Take Effekts',
-		description: 'Effekts avalable for take shortcuts',
+		id: 'AdLibBreakers',
+		name: 'AdLib Breakers',
+		description: 'Breakers available as take shortcuts in static buttons',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
 		defaultVal: [],
 		columns: [
 			{
-				id: 'Effekt',
-				name: 'Effekt',
-				description: 'Name of Effekt (e.g. 1)',
+				id: 'Breaker',
+				name: 'Breaker',
+				description: 'Name of Breaker',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',

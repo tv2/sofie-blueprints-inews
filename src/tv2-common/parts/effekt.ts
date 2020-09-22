@@ -45,9 +45,10 @@ export function CreateEffektForPartBase<
 		context,
 		config,
 		pieces,
-		effekt,
+		effekt.toString(),
 		`${partDefinition.externalId}-EFFEKT-${effekt}`,
-		layers
+		layers,
+		`EFFEKT ${effekt}`
 	)
 
 	return ret ?? {}
@@ -60,14 +61,15 @@ export function CreateEffektForPartInner<
 	context: NotesContext,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPiece[],
-	effekt: number,
+	effekt: string,
 	externalId: string,
 	layers: {
 		sourceLayer: string
 		atemLayer: string
 		casparLayer: string
 		sisyfosLayer: string
-	}
+	},
+	label: string
 ):
 	| Pick<
 			IBlueprintPart,
@@ -83,7 +85,7 @@ export function CreateEffektForPartInner<
 		conf =>
 			conf.BreakerName.toString()
 				.trim()
-				.toUpperCase() === effekt.toString().toUpperCase()
+				.toUpperCase() === effekt.toUpperCase()
 	)
 	if (!effektConfig) {
 		context.warning(`Could not find effekt ${effekt}`)
@@ -100,7 +102,7 @@ export function CreateEffektForPartInner<
 	pieces.push(
 		literal<IBlueprintPiece>({
 			externalId,
-			name: `EFFEKT ${effekt}`,
+			name: label,
 			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
 			outputLayerId: 'jingle',
 			sourceLayerId: layers.sourceLayer,

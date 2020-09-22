@@ -282,8 +282,8 @@ function getExistingTransition<
 		return literal<ActionTakeWithTransition>({
 			type: AdlibActionType.TAKE_WITH_TRANSITION,
 			variant: {
-				type: 'effekt',
-				effekt: Number(transitionProps[1])
+				type: 'breaker',
+				breaker: transitionProps[1].toString()
 			},
 			takeNow: false
 		})
@@ -1497,7 +1497,8 @@ function executeActionTakeWithTransition<
 
 				const cutTransitionPiece: IBlueprintPiece = {
 					enable: {
-						start: 0
+						start: 0,
+						duration: 1000
 					},
 					externalId,
 					name: 'CUT',
@@ -1510,7 +1511,7 @@ function executeActionTakeWithTransition<
 				context.insertPiece('next', cutTransitionPiece)
 			}
 			break
-		case 'effekt': {
+		case 'breaker': {
 			tlObj.content.me.transition = TSR.AtemTransitionStyle.CUT
 
 			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
@@ -1519,12 +1520,20 @@ function executeActionTakeWithTransition<
 
 			const config = settings.getConfig(context)
 			const pieces: IBlueprintPiece[] = []
-			const partProps = CreateEffektForPartInner(context, config, pieces, userData.variant.effekt, externalId, {
-				sourceLayer: settings.SourceLayers.Effekt,
-				atemLayer: settings.LLayer.Atem.Effekt,
-				casparLayer: settings.LLayer.Caspar.Effekt,
-				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
-			})
+			const partProps = CreateEffektForPartInner(
+				context,
+				config,
+				pieces,
+				userData.variant.breaker,
+				externalId,
+				{
+					sourceLayer: settings.SourceLayers.Effekt,
+					atemLayer: settings.LLayer.Atem.Effekt,
+					casparLayer: settings.LLayer.Caspar.Effekt,
+					sisyfosLayer: settings.LLayer.Sisyfos.Effekt
+				},
+				!!userData.variant.breaker.match(/^\d+$/) ? `EFFEKT ${userData.variant.breaker}` : userData.variant.breaker
+			)
 
 			if (partProps) {
 				context.updatePartInstance('next', partProps)

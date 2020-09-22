@@ -435,8 +435,8 @@ describe('Take with EFFEKT', () => {
 			literal<ActionTakeWithTransition>({
 				type: AdlibActionType.TAKE_WITH_TRANSITION,
 				variant: {
-					type: 'effekt',
-					effekt: 1
+					type: 'breaker',
+					breaker: '1'
 				},
 				takeNow: true
 			})
@@ -459,8 +459,8 @@ describe('Take with EFFEKT', () => {
 			literal<ActionTakeWithTransition>({
 				type: AdlibActionType.TAKE_WITH_TRANSITION,
 				variant: {
-					type: 'effekt',
-					effekt: 1
+					type: 'breaker',
+					breaker: '1'
 				},
 				takeNow: true
 			})
