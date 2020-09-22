@@ -56,8 +56,7 @@ export function CreateJingleContentBase<
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.MEDIA,
 								file
-							},
-							classes: ['DEBUG_CLASS']
+							}
 						})
 				  ]
 				: []),
