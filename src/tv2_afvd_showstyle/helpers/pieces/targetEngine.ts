@@ -41,49 +41,51 @@ export function EvaluateTargetEngine(
 		context.warning(`Could not find engine to target for: ${parsedCue.data.engine}`)
 		return
 	}
-	if (!parsedCue.content.INP1 && !parsedCue.content.INP) {
-		// context.warning(`No input provided by ${parsedCue.rawType} for engine aux`)
-	} else {
-		const source = parsedCue.content.INP1 ? parsedCue.content.INP1 : parsedCue.content.INP
-		let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)
-		if (!sourceInfo) {
-			sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, source)
-		}
-
-		if (!sourceInfo) {
-			context.warning(`Could not find source ${parsedCue.content.INP1}`)
+	if (parsedCue.content.INP1 !== undefined || parsedCue.content.INP !== undefined) {
+		const source = parsedCue.content.INP1 !== undefined ? parsedCue.content.INP1 : parsedCue.content.INP
+		if (!source.length) {
+			context.warning(`No input provided for viz engine aux`)
 		} else {
-			pieces.push(
-				literal<IBlueprintPiece>({
-					externalId: partId,
-					enable: {
-						start: time
-					},
-					name: parsedCue.content.INP1 || '',
-					outputLayerId: 'aux',
-					sourceLayerId: SourceLayer.VizFullIn1,
-					lifespan: PieceLifespan.WithinPart,
-					content: literal<CameraContent>({
-						studioLabel: '',
-						switcherInput: sourceInfo.port,
-						timelineObjects: _.compact<TSR.TSRTimelineObj>([
-							literal<TSR.TimelineObjAtemAUX>({
-								id: '',
-								enable: { start: 0 },
-								priority: 100,
-								layer: AtemLLayer.AtemAuxVizOvlIn1,
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.AUX,
-									aux: {
-										input: sourceInfo.port
+			let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)
+			if (!sourceInfo) {
+				sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, source)
+			}
+
+			if (!sourceInfo) {
+				context.warning(`Could not find source ${parsedCue.content.INP1}`)
+			} else {
+				pieces.push(
+					literal<IBlueprintPiece>({
+						externalId: partId,
+						enable: {
+							start: time
+						},
+						name: parsedCue.content.INP1 || '',
+						outputLayerId: 'aux',
+						sourceLayerId: SourceLayer.VizFullIn1,
+						lifespan: PieceLifespan.WithinPart,
+						content: literal<CameraContent>({
+							studioLabel: '',
+							switcherInput: sourceInfo.port,
+							timelineObjects: _.compact<TSR.TSRTimelineObj>([
+								literal<TSR.TimelineObjAtemAUX>({
+									id: '',
+									enable: { start: 0 },
+									priority: 100,
+									layer: AtemLLayer.AtemAuxVizOvlIn1,
+									content: {
+										deviceType: TSR.DeviceType.ATEM,
+										type: TSR.TimelineContentTypeAtem.AUX,
+										aux: {
+											input: sourceInfo.port
+										}
 									}
-								}
-							})
-						])
+								})
+							])
+						})
 					})
-				})
-			)
+				)
+			}
 		}
 	}
 
