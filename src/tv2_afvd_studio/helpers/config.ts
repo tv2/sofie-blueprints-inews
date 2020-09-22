@@ -1,4 +1,4 @@
-import { IBlueprintConfig } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintConfig, IStudioContext } from 'tv-automation-sofie-blueprints-integration'
 import {
 	getLiveAudioLayers,
 	getStickyLayers,
@@ -57,6 +57,12 @@ export interface StudioConfig extends TV2StudioConfigBase {
 		VizGain: number
 		CCGClip: number
 		CCGGain: number
+
+		MP1Baseline: {
+			Clip: number
+			Loop: boolean
+			Playing: boolean
+		}
 	}
 
 	AudioBedSettings: {
@@ -123,4 +129,8 @@ export function parseConfig(rawConfig: IBlueprintConfig): any {
 	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
 
 	return config
+}
+
+export function getStudioConfig(context: IStudioContext): BlueprintConfig {
+	return context.getStudioConfig() as BlueprintConfig
 }
