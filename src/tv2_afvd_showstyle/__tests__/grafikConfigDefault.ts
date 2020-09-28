@@ -15,7 +15,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			IsDesign: false
 		},
 		{
-			VizTemplate: 'ident_news',
+			VizTemplate: 'ident_blank',
 			SourceLayer: 'studio0_graphicsIdent',
 			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
@@ -495,7 +495,7 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			IsDesign: false
 		},
 		{
-			VizTemplate: 'ident_news',
+			VizTemplate: 'ident_blank',
 			SourceLayer: 'studio0_graphicsIdent',
 			LayerMapping: 'graphic_overlay_ident',
 			INewsCode: '#kg',
