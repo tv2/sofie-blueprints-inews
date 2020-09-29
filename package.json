@@ -1,7 +1,7 @@
 {
-  "name": "sofie-blueprints-spreadsheet",
+  "name": "tv2-sofie-blueprints-inews",
   "version": "1.3.1",
-  "repository": "https://github.com/SuperFlyTV/sofie-blueprints-spreadsheet",
+  "repository": "https://github.com/olzzon/tv2-sofie-blueprints-inews",
   "license": "MIT",
   "private": true,
   "scripts": {
