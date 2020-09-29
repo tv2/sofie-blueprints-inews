@@ -20,13 +20,8 @@ import {
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionSelectDVELayout,
-	ActionTakeWithTransition,
-	ActionTakeWithTransitionVariant,
-	ActionTakeWithTransitionVariantBreaker,
-	ActionTakeWithTransitionVariantCut,
-	ActionTakeWithTransitionVariantMix,
 	GetTagForLive,
-	GetTagForTransition,
+	GetTransitionAdLibActions,
 	GraphicLLayer,
 	literal,
 	SourceInfo
@@ -297,112 +292,20 @@ function getGlobalAdlibActionsOfftube(
 		})
 	)
 
-	if (config.showStyle.DefaultTransition && config.showStyle.DefaultTransition.length) {
-		let variant: ActionTakeWithTransitionVariant = literal<ActionTakeWithTransitionVariantCut>({
-			type: 'cut'
-		})
-
-		const defaultTransition = config.showStyle.DefaultTransition
-
-		if (defaultTransition.match(/mix ?(\d+)/i)) {
-			const props = defaultTransition.match(/mix ?(\d+)/i)
-			variant = literal<ActionTakeWithTransitionVariantMix>({
-				type: 'mix',
-				frames: Number(props![1])
-			})
-		} else if (defaultTransition.match(/cut/i)) {
-			// Variant already setup
-		} else {
-			variant = literal<ActionTakeWithTransitionVariantBreaker>({
-				type: 'breaker',
-				breaker: defaultTransition
-			})
-		}
-
-		const userData = literal<ActionTakeWithTransition>({
-			type: AdlibActionType.TAKE_WITH_TRANSITION,
-			variant,
-			takeNow: true
-		})
-		const tag = GetTagForTransition(userData.variant)
-
-		res.push(
-			literal<IBlueprintActionManifest>({
-				actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-				userData,
-				userDataManifest: {},
-				display: {
-					_rank: 800,
-					label: !!config.showStyle.DefaultTransition.match(/^\d+$/)
-						? `EFFEKT ${config.showStyle.DefaultTransition}`
-						: config.showStyle.DefaultTransition,
-					sourceLayerId: OfftubeSourceLayer.PgmJingle,
-					outputLayerId: 'pgm',
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-					onAirTags: [tag],
-					setNextTags: [tag]
-				}
-			})
-		)
-	}
-
-	const userDataMix = literal<ActionTakeWithTransition>({
-		type: AdlibActionType.TAKE_WITH_TRANSITION,
-		variant: {
-			type: 'mix',
-			frames: config.showStyle.TakeWithMixDuration
-		},
-		takeNow: true
-	})
-	const tagMix = GetTagForTransition(userDataMix.variant)
-
 	res.push(
-		literal<IBlueprintActionManifest>({
-			actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-			userData: userDataMix,
-			userDataManifest: {},
-			display: {
-				_rank: 801,
-				label: 'MIX',
-				sourceLayerId: OfftubeSourceLayer.PgmJingle,
-				outputLayerId: 'pgm',
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-				onAirTags: [tagMix],
-				setNextTags: [tagMix]
-			}
-		})
-	)
-
-	config.showStyle.AdLibBreakers.forEach((breaker, i) => {
-		if (breaker.Breaker && breaker.Breaker.length) {
-			const userData = literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: {
-					type: 'breaker',
-					breaker: breaker.Breaker.toString()
+		...GetTransitionAdLibActions(
+			config,
+			{
+				SourceLayer: {
+					Jingle: OfftubeSourceLayer.PgmJingle
 				},
-				takeNow: true
-			})
-			const tag = GetTagForTransition(userData.variant)
-
-			res.push(
-				literal<IBlueprintActionManifest>({
-					actionId: AdlibActionType.TAKE_WITH_TRANSITION,
-					userData,
-					userDataManifest: {},
-					display: {
-						_rank: 810 + 0.01 * i,
-						label: !!breaker.Breaker.match(/^\d+$/) ? `EFFEKT ${breaker.Breaker}` : breaker.Breaker,
-						sourceLayerId: OfftubeSourceLayer.PgmJingle,
-						outputLayerId: 'pgm',
-						tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-						onAirTags: [tag],
-						setNextTags: [tag]
-					}
-				})
-			)
-		}
-	})
+				OutputLayer: {
+					PGM: OfftubeOutputLayers.PGM
+				}
+			},
+			800
+		)
+	)
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']

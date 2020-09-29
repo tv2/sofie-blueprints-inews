@@ -1,6 +1,13 @@
 import { MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integration'
-import { GraphicLLayer, literal } from 'tv2-common'
+import {
+	GraphicLLayer,
+	literal,
+	SetShortcutListTransitionStep,
+	SetShowstyleTransitionMigrationStep,
+	UpsertValuesIntoTransitionTable
+} from 'tv2-common'
 import * as _ from 'underscore'
+import { OfftubeSourceLayer } from '../layers'
 import {
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
@@ -54,6 +61,17 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getCreateVariantMigrationSteps(),
 	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	...getSourceLayerDefaultsMigrationSteps('1.3.0', true),
+
+	/**
+	 * 1.3.1
+	 * - Shortcuts for Jingle layer (transition buttons)
+	 * - Set default transition
+	 * - Populate transition table
+	 */
+	...SetShortcutListTransitionStep('1.3.1', OfftubeSourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
+	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
+	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
+
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
 ])

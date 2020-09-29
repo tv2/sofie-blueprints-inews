@@ -40,9 +40,8 @@ describe('TransformCuesIntoShowstyle', () => {
 		BreakerConfig: [],
 		DefaultTemplateDuration: 3000,
 		LYDConfig: [],
-		TakeWithMixDuration: 12,
-		AdLibBreakers: [{ Breaker: '1' }, { Breaker: '2' }],
-		DefaultTransition: 'CUT'
+		Transitions: [{ Transition: '1' }, { Transition: '2' }],
+		ShowstyleTransition: 'CUT'
 	}
 
 	test('Merge VCP', () => {

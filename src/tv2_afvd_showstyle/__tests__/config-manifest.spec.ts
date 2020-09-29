@@ -11,9 +11,8 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
 	CasparCGLoadingClip: '',
-	TakeWithMixDuration: 12,
-	AdLibBreakers: [{ Breaker: '1' }, { Breaker: '2' }],
-	DefaultTransition: 'CUT'
+	Transitions: [{ Transition: '1' }, { Transition: '2' }],
+	ShowstyleTransition: 'CUT'
 }
 
 describe('Config Manifest', () => {

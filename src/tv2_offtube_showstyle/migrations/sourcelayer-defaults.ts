@@ -188,7 +188,7 @@ const JINGLE: ISourceLayer[] = [
 		exclusiveGroup: 'me2',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'NumpadDivide',
+		activateKeyboardHotkeys: 'NumpadDivide,NumpadSubtract,NumpadAdd',
 		clearKeyboardHotkey: ',',
 		assignHotkeysToGlobalAdlibs: false,
 		isSticky: false,

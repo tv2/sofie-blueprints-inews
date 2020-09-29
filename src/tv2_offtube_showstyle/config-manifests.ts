@@ -10,22 +10,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		required: true
 	},
 	{
-		id: 'TakeWithMixDuration',
-		name: 'Take With Mix Duration',
-		description: 'Default mix duration when taking with a mix (frames)',
-		type: ConfigManifestEntryType.NUMBER,
-		defaultVal: 12,
-		required: true
-	},
-	{
-		id: 'DefaultTransition',
-		name: 'Defualt Transition',
-		description: 'Transition to place on default transition shortcut',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'CUT'
-	},
-	{
 		id: 'DVEStyles',
 		name: 'DVE Layouts',
 		description: '',
@@ -452,17 +436,26 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		]
 	},
 	{
-		id: 'AdLibBreakers',
-		name: 'AdLib Breakers',
-		description: 'Breakers available as take shortcuts in static buttons',
+		id: 'ShowstyleTransition',
+		name: 'Showstyle Transition',
+		description: 'Transition to place on default transition shortcut (first transition shortcut)',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: '/ NBA WIPE'
+	},
+	{
+		id: 'Transitions',
+		name: 'Transitions',
+		description:
+			'Transitions available as take shortcuts in static buttons (assigned to shortcuts in the order they appear in this list)',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
 		defaultVal: [],
 		columns: [
 			{
-				id: 'Breaker',
-				name: 'Breaker',
-				description: 'Name of Breaker',
+				id: 'Transition',
+				name: 'Transition',
+				description: 'Name of Transition',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
