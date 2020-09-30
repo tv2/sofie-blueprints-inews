@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { ActionTakeWithTransition, literal } from 'tv2-common'
+import { ActionCutToCamera, ActionTakeWithTransition, literal } from 'tv2-common'
 import { AdlibActionType } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { MockContext } from '../../tv2_offtube_showstyle/__tests__/actionExecutionContext.mock'
@@ -472,5 +472,161 @@ describe('Take with EFFEKT', () => {
 		const transitionPiece = getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
 		expectTakeAfterExecute(context)
+	})
+})
+
+describe('Camera shortcuts on server', () => {
+	it('It cuts directly to a camera on a server', () => {
+		const context = makeMockContext('cut')
+
+		context.currentPieceInstances = [
+			literal<IBlueprintPieceInstance>({
+				_id: 'serverPieceInstance',
+				piece: literal<IBlueprintPieceDB>({
+					_id: 'Server Current',
+					enable: {
+						start: 0
+					},
+					externalId: CURRENT_PART_EXTERNAL_ID,
+					name: 'SERVER',
+					sourceLayerId: SourceLayer.PgmServer,
+					outputLayerId: 'pgm',
+					lifespan: PieceLifespan.WithinPart
+				})
+			})
+		]
+
+		context.nextPart = undefined
+		context.nextPieceInstances = []
+
+		executeActionAFVD(
+			context,
+			AdlibActionType.CUT_TO_CAMERA,
+			literal<ActionCutToCamera>({
+				type: AdlibActionType.CUT_TO_CAMERA,
+				queue: false,
+				name: '1'
+			})
+		)
+
+		const camPiece = getCameraPiece(context, 'next')
+		expect(camPiece.piece.name).toEqual('KAM 1')
+		expect(context.takeAfterExecute).toEqual(true)
+	})
+
+	it('It queues a camera without taking it', () => {
+		const context = makeMockContext('cut')
+
+		context.currentPieceInstances = [
+			literal<IBlueprintPieceInstance>({
+				_id: 'serverPieceInstance',
+				piece: literal<IBlueprintPieceDB>({
+					_id: 'Server Current',
+					enable: {
+						start: 0
+					},
+					externalId: CURRENT_PART_EXTERNAL_ID,
+					name: 'SERVER',
+					sourceLayerId: SourceLayer.PgmServer,
+					outputLayerId: 'pgm',
+					lifespan: PieceLifespan.WithinPart
+				})
+			})
+		]
+
+		context.nextPart = undefined
+		context.nextPieceInstances = []
+
+		executeActionAFVD(
+			context,
+			AdlibActionType.CUT_TO_CAMERA,
+			literal<ActionCutToCamera>({
+				type: AdlibActionType.CUT_TO_CAMERA,
+				queue: true,
+				name: '1'
+			})
+		)
+
+		const camPiece = getCameraPiece(context, 'next')
+		expect(camPiece.piece.name).toEqual('KAM 1')
+		expect(context.takeAfterExecute).toEqual(false)
+	})
+})
+
+describe('Camera shortcuts on VO', () => {
+	it('It cuts directly to a camera on a VO', () => {
+		const context = makeMockContext('cut')
+
+		context.currentPieceInstances = [
+			literal<IBlueprintPieceInstance>({
+				_id: 'voPieceInstance',
+				piece: literal<IBlueprintPieceDB>({
+					_id: 'VO Current',
+					enable: {
+						start: 0
+					},
+					externalId: CURRENT_PART_EXTERNAL_ID,
+					name: 'VO',
+					sourceLayerId: SourceLayer.PgmVoiceOver,
+					outputLayerId: 'pgm',
+					lifespan: PieceLifespan.WithinPart
+				})
+			})
+		]
+
+		context.nextPart = undefined
+		context.nextPieceInstances = []
+
+		executeActionAFVD(
+			context,
+			AdlibActionType.CUT_TO_CAMERA,
+			literal<ActionCutToCamera>({
+				type: AdlibActionType.CUT_TO_CAMERA,
+				queue: false,
+				name: '1'
+			})
+		)
+
+		const camPiece = getCameraPiece(context, 'next')
+		expect(camPiece.piece.name).toEqual('KAM 1')
+		expect(context.takeAfterExecute).toEqual(true)
+	})
+
+	it('It queues a camera without taking it', () => {
+		const context = makeMockContext('cut')
+
+		context.currentPieceInstances = [
+			literal<IBlueprintPieceInstance>({
+				_id: 'voPieceInstance',
+				piece: literal<IBlueprintPieceDB>({
+					_id: 'VO Current',
+					enable: {
+						start: 0
+					},
+					externalId: CURRENT_PART_EXTERNAL_ID,
+					name: 'VO',
+					sourceLayerId: SourceLayer.PgmVoiceOver,
+					outputLayerId: 'pgm',
+					lifespan: PieceLifespan.WithinPart
+				})
+			})
+		]
+
+		context.nextPart = undefined
+		context.nextPieceInstances = []
+
+		executeActionAFVD(
+			context,
+			AdlibActionType.CUT_TO_CAMERA,
+			literal<ActionCutToCamera>({
+				type: AdlibActionType.CUT_TO_CAMERA,
+				queue: true,
+				name: '1'
+			})
+		)
+
+		const camPiece = getCameraPiece(context, 'next')
+		expect(camPiece.piece.name).toEqual('KAM 1')
+		expect(context.takeAfterExecute).toEqual(false)
 	})
 })
