@@ -1160,7 +1160,7 @@ function executeActionCutToCamera<
 				? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
 				: [])
 		])
-		if (serverInCurrentPart) {
+		if (serverInCurrentPart && !userData.queue) {
 			context.takeAfterExecuteAction(true)
 		}
 	} else if (currentKam) {
