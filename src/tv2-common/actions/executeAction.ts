@@ -104,6 +104,7 @@ export interface ActionExecutionSettings<
 		Cam: string
 		Live: string
 		Effekt: string
+		EVS?: string
 	}
 	OutputLayer: {
 		PGM: string
@@ -1080,7 +1081,7 @@ function executeActionCutToCamera<
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
 		name: part.title,
-		enable: { start: userData.queue || serverInCurrentPart ? 0 : 'now' },
+		enable: { start: 0 },
 		outputLayerId: 'pgm',
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
@@ -1165,6 +1166,7 @@ function executeActionCutToCamera<
 		}
 	} else if (currentKam) {
 		kamPiece.externalId = currentKam.piece.externalId
+		kamPiece.enable = currentKam.piece.enable
 		context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
 		const currentExternalId = context.getPartInstance('current')?.part.externalId
@@ -1179,8 +1181,10 @@ function executeActionCutToCamera<
 			settings.SourceLayers.Effekt,
 			settings.SourceLayers.Live,
 			settings.SourceLayers.Server,
-			settings.SourceLayers.VO
+			settings.SourceLayers.VO,
+			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
 		])
+		kamPiece.enable = { start: 'now' }
 		context.insertPiece('current', kamPiece)
 	}
 }
