@@ -104,6 +104,7 @@ export interface ActionExecutionSettings<
 		Cam: string
 		Live: string
 		Effekt: string
+		EVS?: string
 	}
 	OutputLayer: {
 		PGM: string
@@ -1179,7 +1180,8 @@ function executeActionCutToCamera<
 			settings.SourceLayers.Effekt,
 			settings.SourceLayers.Live,
 			settings.SourceLayers.Server,
-			settings.SourceLayers.VO
+			settings.SourceLayers.VO,
+			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
 		])
 		context.insertPiece('current', kamPiece)
 	}
