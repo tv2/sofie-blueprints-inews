@@ -20,6 +20,7 @@ import {
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionSelectDVELayout,
+	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	GraphicLLayer,
@@ -122,7 +123,10 @@ function getGlobalAdlibActionsOfftube(
 					label: `KAM ${info.id}`,
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: 'pgm',
-					content: {}
+					content: {},
+					tags: [AdlibTags.OFFTUBE_SET_CAM_NEXT],
+					onAirTags: [GetTagForKam(info.id)],
+					setNextTags: [GetTagForKam(info.id)]
 				}
 			})
 		)
