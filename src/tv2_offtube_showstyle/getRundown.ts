@@ -124,7 +124,7 @@ function getGlobalAdlibActionsOfftube(
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: 'pgm',
 					content: {},
-					tags: [AdlibTags.OFFTUBE_SET_CAM_NEXT],
+					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
 					onAirTags: [GetTagForKam(info.id)],
 					setNextTags: [GetTagForKam(info.id)]
 				}
