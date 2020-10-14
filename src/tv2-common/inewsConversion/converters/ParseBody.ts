@@ -138,7 +138,11 @@ export function ParseBody(
 		;((definition as unknown) as PartDefinitionIntro).type = PartType.INTRO
 		cues.forEach(cue => {
 			if (cue !== null) {
-				definition.cues.push(ParseCue(cue))
+				const parsedCue = ParseCue(cue)
+
+				if (parsedCue !== undefined) {
+					definition.cues.push(parsedCue)
+				}
 			}
 		})
 		definition.rawType = 'INTRO'
@@ -356,7 +360,11 @@ function getCuesInLine(line: string, cues: UnparsedCue[]): CueDefinition[] {
 		if (value) {
 			const realCue = cues[Number(value[1])]
 			if (realCue) {
-				definitions.push(ParseCue(realCue))
+				const parsedCue = ParseCue(realCue)
+
+				if (parsedCue !== undefined) {
+					definitions.push(parsedCue)
+				}
 			}
 		}
 	})

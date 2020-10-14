@@ -139,7 +139,7 @@ export type CueDefinition =
 	| CueDefinitionTargetEngine
 	| CueDefinitionClearGrafiks
 
-export function ParseCue(cue: UnparsedCue): CueDefinition {
+export function ParseCue(cue: UnparsedCue): CueDefinition | undefined {
 	if (!cue) {
 		return {
 			type: CueType.Unknown,
@@ -203,10 +203,8 @@ export function ParseCue(cue: UnparsedCue): CueDefinition {
 	} else if (cue[0].match(/^JINGLE\d+=/i)) {
 		return parseJingle(cue)
 	}
-	return {
-		type: CueType.Unknown,
-		iNewsCommand: ''
-	}
+
+	return undefined
 }
 
 function parsekg(cue: string[]): CueDefinitionGrafik {
