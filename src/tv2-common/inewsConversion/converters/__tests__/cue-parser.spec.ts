@@ -44,14 +44,26 @@ describe('Cue parser', () => {
 		)
 	})
 
-	test('Cue of spaces', () => {
-		const result = ParseCue(['   '])
-		expect(result).toEqual(
-			literal<CueDefinitionUnknown>({
-				type: CueType.Unknown,
-				iNewsCommand: ''
-			})
-		)
+	test('Cues Sofie should ignore', () => {
+		expect(ParseCue(['    '])).toBe(undefined)
+		expect(ParseCue(['Some text for the producer'])).toBe(undefined)
+		expect(
+			ParseCue([
+				'Some text for the producer',
+				'',
+				'across multiple lines',
+				'',
+				'with blank lines',
+				'with GRAFIK= in the text'
+			])
+		).toBe(undefined)
+		expect(ParseCue(['Instructions on how to use GRAFIK=FULL'])).toBe(undefined)
+		expect(ParseCue(['Some text with GRAFIK='])).toBe(undefined)
+		expect(ParseCue(['GGRAFIK='])).toBe(undefined)
+		expect(ParseCue(['GRAFIC='])).toBe(undefined)
+		expect(ParseCue(['Some text with kg #kg KG', 'and some more text', 'and time', ';0.01'])).toBe(undefined)
+		expect(ParseCue(['Something that looks like time ;0.01'])).toBe(undefined)
+		expect(ParseCue(['Something that looks like floated time ;x.xx'])).toBe(undefined)
 	})
 
 	test('Time with symbolic out', () => {
