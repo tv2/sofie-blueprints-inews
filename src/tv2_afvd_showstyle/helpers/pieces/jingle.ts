@@ -100,8 +100,7 @@ export function createJingleContentAFVD(config: BlueprintConfig, file: string, l
 		loadFirstFrame,
 		{
 			Caspar: {
-				PlayerJingle: CasparLLayer.CasparPlayerJingle,
-				PlayerJingleLookahead: CasparLLayer.CasparPlayerJingle
+				PlayerJingle: CasparLLayer.CasparPlayerJingle
 			},
 			ATEM: {
 				DSKJingle: AtemLLayer.AtemDSKEffect,

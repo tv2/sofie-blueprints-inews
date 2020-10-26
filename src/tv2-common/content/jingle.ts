@@ -6,7 +6,7 @@ import { literal } from '../util'
 export interface JingleLayers {
 	Caspar: {
 		PlayerJingle: string
-		PlayerJingleLookahead: string
+		PlayerJingleLookahead?: string
 	}
 	ATEM: {
 		DSKJingle: string
@@ -45,7 +45,7 @@ export function CreateJingleContentBase<
 				}
 			}),
 
-			...(loadFirstFrame
+			...(loadFirstFrame && layers.Caspar.PlayerJingleLookahead
 				? [
 						literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 							id: '',
