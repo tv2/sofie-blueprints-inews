@@ -29,7 +29,7 @@ export function CreateTiming(
 
 export function CreateTimingEnable(
 	cue: CueDefinition,
-	defaultOut: number
+	defaultOut?: number
 ): Pick<IBlueprintPiece, 'enable' | 'lifespan'> {
 	const result: Pick<IBlueprintPiece, 'enable' | 'lifespan'> = {
 		enable: {
@@ -55,7 +55,7 @@ export function CreateTimingEnable(
 					: end
 				: undefined
 		}
-	} else {
+	} else if (defaultOut !== undefined) {
 		result.enable.duration = defaultOut
 	}
 

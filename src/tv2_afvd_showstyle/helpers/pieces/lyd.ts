@@ -7,15 +7,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import {
-	CalculateTime,
-	CreateTimingEnable,
-	CueDefinitionLYD,
-	GetDefaultOut,
-	literal,
-	PartContext2,
-	PartDefinition
-} from 'tv2-common'
+import { CalculateTime, CreateTimingEnable, CueDefinitionLYD, literal, PartContext2, PartDefinition } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -53,6 +45,7 @@ export function EvaluateLYD(
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
 				lifespan: stop ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
+				expectedDuration: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
 				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
 			})
 		)
@@ -61,12 +54,10 @@ export function EvaluateLYD(
 			literal<IBlueprintPiece>({
 				externalId: part.externalId,
 				name: parsedCue.variant,
-				...(stop
-					? { enable: { start: CreateTimingEnable(parsedCue, GetDefaultOut(config)).enable.start } }
-					: CreateTimingEnable(parsedCue, GetDefaultOut(config))),
+				...(stop ? { enable: { start: CreateTimingEnable(parsedCue).enable.start } } : CreateTimingEnable(parsedCue)),
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
-				lifespan: stop ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
+				lifespan: stop || parsedCue.end ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
 				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
 			})
 		)
@@ -111,8 +102,7 @@ export function LydContent(
 			literal<TSR.TimelineObjCCGMedia>({
 				id,
 				enable: {
-					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-					...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
+					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 				},
 				priority: 1,
 				layer: CasparLLayer.CasparCGLYD,
