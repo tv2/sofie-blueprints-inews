@@ -9,7 +9,6 @@ export enum MediaPlayerClaimType {
 }
 
 export enum CueType {
-	Unknown,
 	Grafik,
 	MOS,
 	Ekstern,

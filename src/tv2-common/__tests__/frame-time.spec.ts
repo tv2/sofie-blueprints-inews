@@ -1,17 +1,18 @@
 import { IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
 import { CueType } from 'tv2-constants'
 import { CreateTiming } from '../cueTiming'
-import { CueDefinitionUnknown } from '../inewsConversion/converters/ParseCue'
+import { CueDefinitionEkstern } from '../inewsConversion/converters/ParseCue'
 import { literal } from '../util'
 
 describe('CreateTiming', () => {
 	test('Start only (seconds)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			start: {
 				seconds: 1
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -26,12 +27,13 @@ describe('CreateTiming', () => {
 	})
 
 	test('Start only (frames)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			start: {
 				frames: 1
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -46,13 +48,14 @@ describe('CreateTiming', () => {
 	})
 
 	test('Start only (seconds and frames)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			start: {
 				seconds: 1,
 				frames: 1
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -67,12 +70,13 @@ describe('CreateTiming', () => {
 	})
 
 	test('End only (seconds)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			end: {
 				seconds: 1
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -87,12 +91,13 @@ describe('CreateTiming', () => {
 	})
 
 	test('End only (frames)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			end: {
 				frames: 1
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -107,13 +112,14 @@ describe('CreateTiming', () => {
 	})
 
 	test('End only (seconds and frames)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			end: {
 				seconds: 1,
 				frames: 1
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -128,12 +134,13 @@ describe('CreateTiming', () => {
 	})
 
 	test('End only (B)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			end: {
 				infiniteMode: 'B'
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -147,12 +154,13 @@ describe('CreateTiming', () => {
 	})
 
 	test('End only (S)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			end: {
 				infiniteMode: 'S'
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -166,12 +174,13 @@ describe('CreateTiming', () => {
 	})
 
 	test('End only (O)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			end: {
 				infiniteMode: 'O'
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -185,15 +194,16 @@ describe('CreateTiming', () => {
 	})
 
 	test('Start and end (timing)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			start: {
 				frames: 1
 			},
 			end: {
 				seconds: 1
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -208,15 +218,16 @@ describe('CreateTiming', () => {
 	})
 
 	test('Start and end (infinite)', () => {
-		const time: CueDefinitionUnknown = {
-			type: CueType.Unknown,
+		const time: CueDefinitionEkstern = {
+			type: CueType.Ekstern,
 			start: {
 				frames: 1
 			},
 			end: {
 				infiniteMode: 'B'
 			},
-			iNewsCommand: ''
+			iNewsCommand: '',
+			source: ''
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(

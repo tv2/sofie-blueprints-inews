@@ -15,7 +15,7 @@ global.VERSION = 'test'
 global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
-import { literal } from 'tv2-common'
+import { INewsStory, literal } from 'tv2-common'
 import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import Blueprints from '../index'
@@ -50,9 +50,12 @@ describe('Rundown exceptions', () => {
 				const mockContext = new SegmentContext(rundown, mappingsDefaults)
 				mockContext.studioConfig = roSpec.studioConfig as any
 				mockContext.showStyleConfig = roSpec.showStyleConfig as any
+
+				const iNewsStory: INewsStory | undefined = segment.payload?.iNewsStory
+
 				const res = Blueprints.getSegment(mockContext, segment)
-				if (segment.payload.iNewsStory.fields.pageNumber && segment.payload.iNewsStory.fields.pageNumber.trim()) {
-					expect(res.segment.identifier).toEqual(segment.payload.iNewsStory.fields.pageNumber.trim())
+				if (iNewsStory && iNewsStory.fields.pageNumber && iNewsStory.fields.pageNumber.trim()) {
+					expect(res.segment.identifier).toEqual(iNewsStory.fields.pageNumber.trim())
 				}
 
 				expect(res.segment.name).toEqual(segment.name)

@@ -22,6 +22,7 @@ import { CueType, PartType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2ShowstyleBlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
+	INewsStory,
 	PartDefinitionDVE,
 	PartDefinitionEkstern,
 	PartDefinitionGrafik,
@@ -120,17 +121,18 @@ export function getSegmentBase<
 	ingestSegment: IngestSegment,
 	showStyleOptions: GetSegmentShowstyleOptions<StudioConfig, ShowStyleConfig>
 ): BlueprintResultSegment {
+	const iNewsStory: INewsStory | undefined = ingestSegment.payload?.iNewsStory
 	const segment = literal<IBlueprintSegment>({
 		name: ingestSegment.name,
 		metaData: {},
 		identifier:
-			ingestSegment.payload.iNewsStory.fields.pageNumber && ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
-				? ingestSegment.payload.iNewsStory.fields.pageNumber.trim()
+			iNewsStory && iNewsStory.fields.pageNumber && iNewsStory.fields.pageNumber.trim()
+				? iNewsStory.fields.pageNumber.trim()
 				: undefined
 	})
 	const config = showStyleOptions.getConfig(context)
 
-	if (ingestSegment.payload.iNewsStory.meta.float === 'float') {
+	if (!iNewsStory || iNewsStory.meta.float === 'float' || !iNewsStory.body) {
 		segment.isHidden = true
 		return {
 			segment,
@@ -144,10 +146,10 @@ export function getSegmentBase<
 	const parsedParts = ParseBody(
 		ingestSegment.externalId,
 		ingestSegment.name,
-		ingestSegment.payload.iNewsStory.body,
-		ingestSegment.payload.iNewsStory.cues,
-		ingestSegment.payload.iNewsStory.fields,
-		ingestSegment.payload.iNewsStory.fields.modifyDate
+		iNewsStory.body,
+		iNewsStory.cues,
+		iNewsStory.fields,
+		Number(iNewsStory.fields.modifyDate) || Date.now()
 	)
 	const totalWords = parsedParts.reduce((prev, cur) => {
 		if (cur.type === PartType.Server) {
@@ -217,7 +219,7 @@ export function getSegmentBase<
 							part,
 							ingestSegment.externalId,
 							totalWords,
-							Number(ingestSegment.payload.iNewsStory.fields.totalTime)
+							Number(iNewsStory.fields.totalTime) || 0
 						)
 					)
 				}
@@ -283,9 +285,9 @@ export function getSegmentBase<
 
 	blueprintParts.forEach(part => {
 		part.part.displayDurationGroup = ingestSegment.externalId
-		if (!part.part.expectedDuration && Number(ingestSegment.payload.iNewsStory.fields.totalTime) > 0) {
+		if (!part.part.expectedDuration && Number(iNewsStory.fields.totalTime) > 0) {
 			part.part.expectedDuration =
-				(Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
+				(Number(iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
 				(blueprintParts.length - serverParts)
 
 			if (part.part.expectedDuration! < 0) {
@@ -298,7 +300,7 @@ export function getSegmentBase<
 		}
 	})
 
-	let extraTime = Number(ingestSegment.payload.iNewsStory.fields.totalTime) * 1000
+	let extraTime = Number(iNewsStory.fields.totalTime) * 1000
 
 	blueprintParts.forEach(part => {
 		if (part.part.expectedDuration === undefined || part.part.expectedDuration < 0) {
@@ -349,7 +351,7 @@ export function getSegmentBase<
 
 	if (
 		blueprintParts.filter(part => part.part.invalid === true).length === blueprintParts.length &&
-		ingestSegment.payload.iNewsStory.cues.length === 0
+		iNewsStory.cues.length === 0
 	) {
 		segment.isHidden = true
 	}

@@ -7,7 +7,6 @@ import {
 	CueDefinitionLYD,
 	CueDefinitionMOS,
 	CueDefinitionTargetEngine,
-	CueDefinitionUnknown,
 	isTime,
 	ParseCue,
 	parseTime
@@ -16,32 +15,17 @@ import {
 describe('Cue parser', () => {
 	test('Null Cue', () => {
 		const result = ParseCue(null)
-		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Unknown,
-				iNewsCommand: ''
-			})
-		)
+		expect(result).toEqual(undefined)
 	})
 
 	test('Empty Cue', () => {
 		const result = ParseCue([])
-		expect(result).toEqual(
-			literal<CueDefinitionUnknown>({
-				type: CueType.Unknown,
-				iNewsCommand: ''
-			})
-		)
+		expect(result).toEqual(undefined)
 	})
 
 	test('Empty String', () => {
 		const result = ParseCue([''])
-		expect(result).toEqual(
-			literal<CueDefinitionUnknown>({
-				type: CueType.Unknown,
-				iNewsCommand: ''
-			})
-		)
+		expect(result).toEqual(undefined)
 	})
 
 	test('Cues Sofie should ignore', () => {

@@ -17,10 +17,6 @@ export interface CueDefinitionBase {
 	iNewsCommand: string
 }
 
-export interface CueDefinitionUnknown extends CueDefinitionBase {
-	type: CueType.Unknown
-}
-
 export interface CueDefinitionGrafik extends CueDefinitionBase {
 	type: CueType.Grafik
 	template: string
@@ -123,7 +119,6 @@ export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 }
 
 export type CueDefinition =
-	| CueDefinitionUnknown
 	| CueDefinitionGrafik
 	| CueDefinitionMOS
 	| CueDefinitionEkstern
@@ -141,10 +136,7 @@ export type CueDefinition =
 
 export function ParseCue(cue: UnparsedCue): CueDefinition | undefined {
 	if (!cue) {
-		return {
-			type: CueType.Unknown,
-			iNewsCommand: ''
-		}
+		return undefined
 	}
 
 	cue = cue.filter(c => c !== '')
@@ -152,10 +144,7 @@ export function ParseCue(cue: UnparsedCue): CueDefinition | undefined {
 	cue = cue.map(c => c.trim().replace(/\s+/g, ' '))
 
 	if (cue.length === 0) {
-		return {
-			type: CueType.Unknown,
-			iNewsCommand: ''
-		}
+		return undefined
 	}
 
 	if (cue[0].match(/^[#* ]?kg[= ]ovl-all-out$/i) || cue[0].match(/^[#* ]?kg[= ]altud$/i)) {

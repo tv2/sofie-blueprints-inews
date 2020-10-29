@@ -24,16 +24,10 @@ import {
 	CueDefinitionMOS,
 	CueDefinitionTargetEngine,
 	CueDefinitionTelefon,
-	CueDefinitionUnknown,
 	UnparsedCue
 } from '../ParseCue'
 
 const fields = {}
-
-const cueUnknown: CueDefinitionUnknown = {
-	type: CueType.Unknown,
-	iNewsCommand: ''
-}
 
 const unparsedUnknown: UnparsedCue = ['Some invalid cue']
 
@@ -147,7 +141,7 @@ describe('Body parser', () => {
 			literal<PartDefinition[]>([
 				literal<PartDefinitionTeknik>({
 					type: PartType.Teknik,
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
 					variant: {},
 					externalId: '',
@@ -195,7 +189,7 @@ describe('Body parser', () => {
 			literal<PartDefinition[]>([
 				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
-					cues: [cueUnknown, cueGrafik1],
+					cues: [cueGrafik1],
 					script: 'Thid id thr trext for the next DVE\n',
 					variant: {},
 					externalId: '',
@@ -289,7 +283,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM AR',
-					cues: [cueUnknown, cueJingle3],
+					cues: [cueJingle3],
 					script: 'Lots more script\n',
 					variant: {
 						name: 'AR'
@@ -348,18 +342,6 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'test-segment', body4, cues4, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
-					rawType: '',
-					cues: [cueUnknown],
-					script: '',
-					variant: {},
-					externalId: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment',
-					segmentExternalId: '00000000001'
-				}),
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'CAMERA 1',
@@ -388,7 +370,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 1',
-					cues: [cueUnknown],
+					cues: [],
 					script: '',
 					variant: {
 						name: '1'
@@ -437,7 +419,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 1',
-					cues: [cueUnknown],
+					cues: [],
 					script: '',
 					variant: {
 						name: '1'
@@ -459,18 +441,6 @@ describe('Body parser', () => {
 		const result = ParseBody('00000000001', 'test-segment', body7, cues7, fields, 0)
 		expect(stripExternalId(result)).toEqual(
 			literal<PartDefinition[]>([
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
-					rawType: '',
-					cues: [cueUnknown],
-					script: '',
-					variant: {},
-					externalId: '',
-					fields,
-					modified: 0,
-					storyName: 'test-segment',
-					segmentExternalId: '00000000001'
-				}),
 				literal<PartDefinitionServer>({
 					type: PartType.Server,
 					rawType: 'ATTACK',
@@ -513,7 +483,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: 'Some script\n',
 					variant: {
 						name: '2'
@@ -550,7 +520,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: 'Some script.\nSome more script with "a quote"\nYet more script, this time it\'s a question?\n',
 					variant: {
 						name: '2'
@@ -588,7 +558,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 2',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: 'Question?\n',
 					variant: {
 						name: '2'
@@ -625,7 +595,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 1',
-					cues: [cueUnknown],
+					cues: [],
 					script: 'Some script.\n',
 					variant: {
 						name: '1'
@@ -662,7 +632,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 1',
-					cues: [cueUnknown],
+					cues: [],
 					script: 'Some script.\n',
 					variant: {
 						name: '1'
@@ -699,7 +669,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					type: PartType.Kam,
 					rawType: 'KAM 3',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2],
+					cues: [cueGrafik1, cueGrafik2],
 					script: "Here is our correspondant.\nWhat's going on over there?\n.\n",
 					variant: {
 						name: '3'
@@ -719,22 +689,7 @@ describe('Body parser', () => {
 			'\r\n<p><a idref="0"></a></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n<p></p>\r\n'
 		const cues13 = [unparsedUnknown]
 		const result = ParseBody('00000000001', 'test-segment', body13, cues13, fields, 0)
-		expect(stripExternalId(result)).toEqual(
-			literal<PartDefinition[]>([
-				literal<PartDefinitionUnknown>({
-					type: PartType.Unknown,
-					rawType: '',
-					cues: [cueUnknown],
-					script: '',
-					variant: {},
-					externalId: '',
-					fields: {},
-					modified: 0,
-					storyName: 'test-segment',
-					segmentExternalId: '00000000001'
-				})
-			])
-		)
+		expect(stripExternalId(result)).toEqual(literal<PartDefinition[]>([]))
 	})
 
 	test('test14', () => {
@@ -754,7 +709,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionUnknown>({
 					type: PartType.Unknown,
 					rawType: '',
-					cues: [cueUnknown, cueGrafik1, cueGrafik2, cueGrafik3],
+					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: "What's going on over there?\n",
 					variant: {},
 					externalId: '',
@@ -801,7 +756,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionIntro>({
 					type: PartType.INTRO,
 					rawType: 'INTRO',
-					cues: [cueUnknown, cueGrafik1],
+					cues: [cueGrafik1],
 					script: '',
 					variant: {},
 					externalId: '',
@@ -837,7 +792,7 @@ describe('Body parser', () => {
 					variant: {
 						name: '2'
 					},
-					cues: [cueUnknown, cueGrafik1],
+					cues: [cueGrafik1],
 					fields,
 					modified: 0,
 					storyName: 'test-segment',
@@ -1609,10 +1564,6 @@ describe('Body parser', () => {
 						content: {},
 						iNewsCommand: 'SS'
 					}),
-					literal<CueDefinitionUnknown>({
-						type: CueType.Unknown,
-						iNewsCommand: ''
-					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
 						template: 'bund',
@@ -1859,10 +1810,6 @@ describe('Body parser', () => {
 						content: {},
 						iNewsCommand: 'SS'
 					}),
-					literal<CueDefinitionUnknown>({
-						type: CueType.Unknown,
-						iNewsCommand: ''
-					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
 						template: 'bund',
@@ -1914,10 +1861,6 @@ describe('Body parser', () => {
 						rawType: 'SS=SC-LOOP',
 						content: {},
 						iNewsCommand: 'SS'
-					}),
-					literal<CueDefinitionUnknown>({
-						type: CueType.Unknown,
-						iNewsCommand: ''
 					}),
 					literal<CueDefinitionGrafik>({
 						type: CueType.Grafik,
