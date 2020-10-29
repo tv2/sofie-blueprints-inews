@@ -39,7 +39,7 @@
 		<script>
 		const layoutFilename = 'off-tubes-shelf.json'
 		const streamId = "stream3"
-		const urlBase = "http://"+window.location.hostname+":5255"
+		const urlBase = "https://"+window.location.hostname+"/feed"
 		const imgSrc = urlBase + "/stream/" + streamId
 		let images = []
 
@@ -144,7 +144,7 @@
 				return response.json()
 			})
 			.then((data) => {
-				const panels = data.filters.filter((x) => x.type === 'multiview')
+				const panels = data.filters.filter((x) => x.type === 'adlib_region')
 				setupStream(document.getElementById("stream-container"), panels)
 			})
 			.catch((error) => {
