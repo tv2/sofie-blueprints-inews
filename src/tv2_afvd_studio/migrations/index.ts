@@ -9,7 +9,7 @@ import {
 	manifestAFVDSourcesSkype,
 	manifestAFVDStudioMics
 } from '../config-manifests'
-import { SisyfosLLAyer } from '../layers'
+import { CasparLLayer, SisyfosLLAyer } from '../layers'
 import { deviceMigrations } from './devices'
 import {
 	EnsureSisyfosMappingHasType,
@@ -142,6 +142,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 		'sisyfos_resync'
 	].map(layer => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', SisyfosLLAyer.SisyfosGroupStudioMics),
+	GetMappingDefaultMigrationStepForLayer('1.3.2', CasparLLayer.CasparCGLYD, true),
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

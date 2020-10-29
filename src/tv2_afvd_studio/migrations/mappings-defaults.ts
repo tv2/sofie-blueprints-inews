@@ -66,7 +66,7 @@ export default literal<BlueprintMappings>({
 	casparcg_audio_lyd: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar02',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.NONE,
 		channel: 1,
 		layer: 101
 	}),
