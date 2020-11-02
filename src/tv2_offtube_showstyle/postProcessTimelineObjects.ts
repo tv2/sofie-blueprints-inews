@@ -57,7 +57,7 @@ export function postProcessPieceTimelineObjects(
 				if (
 					(!isAdlib || piece.toBeQueued) &&
 					'me' in tlObj.content &&
-					(tlObj.content.me.input !== undefined ||
+					(tlObj.content.me.input !== -1 ||
 						tlObj.metaData?.mediaPlayerSession !== undefined ||
 						tlObj.metaData.mediaPlayerSessionToAssign !== undefined) &&
 					!tlObj.classes?.includes(ControlClasses.NOLookahead)
@@ -94,7 +94,7 @@ export function postProcessPieceTimelineObjects(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									previewInput:
-										tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
+										tlObj.content.me.input !== -1 ? tlObj.content.me.input : config.studio.AtemSource.Default
 								}
 							},
 							metaData: {

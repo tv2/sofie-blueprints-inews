@@ -77,7 +77,7 @@ export function MakeContentServer<
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
-						input: undefined,
+						input: -1,
 						transition: partDefinition.transition
 							? TransitionFromString(partDefinition.transition.style)
 							: TSR.AtemTransitionStyle.CUT,
