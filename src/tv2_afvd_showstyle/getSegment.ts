@@ -68,7 +68,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				name: 'CONTINUITY',
 				sourceLayerId: SourceLayer.PgmContinuity,
 				outputLayerId: 'pgm',
-				lifespan: PieceLifespan.OutOnSegmentEnd,
+				lifespan: PieceLifespan.WithinPart,
 				content: literal<CameraContent>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
