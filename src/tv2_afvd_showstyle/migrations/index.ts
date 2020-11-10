@@ -1,7 +1,7 @@
 import { MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integration'
 import {
 	literal,
-	SetShortcutListTransitionStep,
+	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
@@ -33,9 +33,19 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	...SetShortcutListTransitionStep('1.3.1', SourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
+	...SetShortcutListMigrationStep('1.3.1', SourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
+
+	/**
+	 * 1.3.3
+	 * - Shortcuts for DVE Box 1
+	 */
+	...SetShortcutListMigrationStep(
+		'1.3.3',
+		SourceLayer.PgmDVEBox1,
+		'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0,shift+e,shift+d,shift+i,shift+u,shift+t'
+	),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

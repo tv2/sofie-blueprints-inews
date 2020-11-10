@@ -5,7 +5,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 
-export function SetShortcutListTransitionStep(
+export function SetShortcutListMigrationStep(
 	versionStr: string,
 	sourceLayerId: string,
 	newValue: string

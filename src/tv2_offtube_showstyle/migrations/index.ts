@@ -2,7 +2,7 @@ import { MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integrati
 import {
 	GraphicLLayer,
 	literal,
-	SetShortcutListTransitionStep,
+	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
@@ -68,9 +68,15 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	...SetShortcutListTransitionStep('1.3.1', OfftubeSourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
+	...SetShortcutListMigrationStep('1.3.1', OfftubeSourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
+
+	/**
+	 * 1.3.3
+	 * - Shortcuts for DVE Box 1
+	 */
+	...SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
