@@ -384,7 +384,7 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'shift+f1,shift+1,shift+2,shift+3,ctrl+alt+shift+h',
+		activateKeyboardHotkeys: 'shift+f1,shift+1,shift+2,shift+3,shift+t',
 		clearKeyboardHotkey: '',
 		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,
