@@ -20,7 +20,7 @@ import {
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import * as _ from 'underscore'
-import { TV2BlueprintConfigBase, TV2ShowstyleBlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
+import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
 	INewsStory,
 	PartDefinitionDVE,
@@ -29,7 +29,8 @@ import {
 	PartDefinitionServer,
 	PartDefinitionTeknik,
 	PartDefinitionTelefon,
-	PartDefinitionVO
+	PartDefinitionVO,
+	TransformCuesIntoShowstyle
 } from './inewsConversion'
 
 export interface GetSegmentShowstyleOptions<
@@ -37,10 +38,6 @@ export interface GetSegmentShowstyleOptions<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
 	getConfig: (context: ShowStyleContext) => ShowStyleConfig
-	TransformCuesIntoShowstyle: (
-		config: TV2ShowstyleBlueprintConfigBase,
-		partDefinition: PartDefinition
-	) => PartDefinition
 	CreatePartContinuity: (config: ShowStyleConfig, ingestSegment: IngestSegment) => BlueprintResultPart
 	CreatePartUnknown: (
 		context: PartContext2,
@@ -151,6 +148,7 @@ export function getSegmentBase<
 		iNewsStory.fields,
 		Number(iNewsStory.fields.modifyDate) || Date.now()
 	)
+
 	const totalWords = parsedParts.reduce((prev, cur) => {
 		if (cur.type === PartType.Server) {
 			return prev
@@ -171,7 +169,7 @@ export function getSegmentBase<
 	let serverTime = 0
 	for (const par of parsedParts) {
 		// Apply showstyle-specific transformations of cues.
-		const part = showStyleOptions.TransformCuesIntoShowstyle(config.showStyle, par)
+		const part = TransformCuesIntoShowstyle(config, par)
 		const partContext = new PartContext2(context, part.externalId)
 
 		// Make orphaned secondary cues into adlibs

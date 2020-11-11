@@ -1,12 +1,12 @@
 import { CueType, PartType } from 'tv2-constants'
-import { ShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import { BlueprintConfig, ShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
 import { literal } from '../../../util'
 import { TransformCuesIntoShowstyle } from '../../TransformCuesIntoShowstyle'
 import { PartDefinitionKam } from '../ParseBody'
 import { CueDefinitionGrafik, CueDefinitionMOS, CueDefinitionTargetEngine } from '../ParseCue'
 
 describe('TransformCuesIntoShowstyle', () => {
-	const config: ShowStyleConfig = {
+	const showStyleConfig: ShowStyleConfig = {
 		MakeAdlibsForFulls: false,
 		CasparCGLoadingClip: '',
 		DVEStyles: [],
@@ -42,6 +42,15 @@ describe('TransformCuesIntoShowstyle', () => {
 		LYDConfig: [],
 		Transitions: [{ Transition: '1' }, { Transition: '2' }],
 		ShowstyleTransition: 'CUT'
+	}
+
+	const config: BlueprintConfig = {
+		showStyle: showStyleConfig,
+		studio: {} as any,
+		sources: {} as any,
+		mediaPlayers: {} as any,
+		liveAudio: [],
+		stickyLayers: []
 	}
 
 	test('Merge VCP', () => {
