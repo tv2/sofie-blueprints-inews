@@ -89,8 +89,10 @@ export function EvaluateTargetEngine(
 		}
 	}
 
-	if (parsedCue.data.grafik) {
-		if (parsedCue.data.grafik.type === CueType.Grafik) {
+	const grafik = parsedCue.data.grafik ?? parsedCue.grafik
+
+	if (grafik) {
+		if (grafik.type === CueType.Grafik) {
 			EvaluateGrafikViz(
 				config,
 				context,
@@ -98,7 +100,7 @@ export function EvaluateTargetEngine(
 				adlibPieces,
 				actions,
 				partId,
-				parsedCue.data.grafik,
+				grafik,
 				TranslateEngine(parsedCue.data.engine),
 				adlib
 			)
@@ -110,7 +112,7 @@ export function EvaluateTargetEngine(
 				adlibPieces,
 				actions,
 				partId,
-				parsedCue.data.grafik,
+				grafik,
 				TranslateEngine(parsedCue.data.engine),
 				adlib,
 				false,
