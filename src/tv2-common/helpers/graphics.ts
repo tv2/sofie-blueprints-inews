@@ -1,17 +1,14 @@
-import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { GraphicEngine } from 'tv2-constants'
+import { TV2BlueprintConfig } from '../blueprintConfig'
+import { LifeSpan } from '../cueTiming'
 import { CueDefinitionGrafik } from '../inewsConversion'
 
-export function GetFullGrafikTemplateNameFromCue(
-	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
-	cue: CueDefinitionGrafik
-): string {
+export function GetFullGrafikTemplateNameFromCue(config: TV2BlueprintConfig, cue: CueDefinitionGrafik): string {
 	return GetFullGrafikTemplateName(config, cue.template)
 }
 
-export function GetFullGrafikTemplateName(
-	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
-	iNewsTempalateName: string
-): string {
+export function GetFullGrafikTemplateName(config: TV2BlueprintConfig, iNewsTempalateName: string): string {
 	if (config.showStyle.GFXTemplates) {
 		const template = config.showStyle.GFXTemplates.find(templ =>
 			templ.INewsName ? templ.INewsName.toString().toUpperCase() === iNewsTempalateName.toUpperCase() : false
@@ -23,4 +20,49 @@ export function GetFullGrafikTemplateName(
 
 	// This means unconfigured templates will still be supported, with default out.
 	return iNewsTempalateName
+}
+
+export function GetInfiniteModeForGrafik(
+	engine: GraphicEngine,
+	config: TV2BlueprintConfig,
+	parsedCue: CueDefinitionGrafik,
+	isTlf?: boolean,
+	isStickyIdent?: boolean
+): PieceLifespan {
+	return engine === 'WALL'
+		? PieceLifespan.OutOnRundownEnd
+		: isTlf
+		? PieceLifespan.WithinPart
+		: isStickyIdent
+		? PieceLifespan.OutOnSegmentEnd
+		: parsedCue.end && parsedCue.end.infiniteMode
+		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
+		: FindInfiniteModeFromConfig(config, parsedCue)
+}
+
+export function FindInfiniteModeFromConfig(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrafik): PieceLifespan {
+	if (config.showStyle.GFXTemplates) {
+		const template = GetFullGrafikTemplateNameFromCue(config, parsedCue)
+		const conf = config.showStyle.GFXTemplates.find(cnf =>
+			cnf.VizTemplate ? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() : false
+		)
+
+		if (!conf) {
+			return PieceLifespan.WithinPart
+		}
+
+		if (!conf.OutType || !conf.OutType.toString().length) {
+			return PieceLifespan.WithinPart
+		}
+
+		const type = conf.OutType.toString().toUpperCase()
+
+		if (type !== 'B' && type !== 'S' && type !== 'O') {
+			return PieceLifespan.WithinPart
+		}
+
+		return LifeSpan(type, PieceLifespan.WithinPart)
+	}
+
+	return PieceLifespan.WithinPart
 }

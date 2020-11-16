@@ -13,10 +13,10 @@ import {
 	CueDefinitionGrafik,
 	CueDefinitionMOS,
 	GetFullGrafikTemplateNameFromCue,
+	GetInfiniteModeForGrafik,
 	GetTagForFull,
 	GetTagForFullNext,
 	GraphicLLayer,
-	LifeSpan,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -491,54 +491,6 @@ function GetEnableForGrafikOfftube(
 	return {
 		while: '!.full'
 	}
-}
-
-export function GetInfiniteModeForGrafik(
-	engine: GraphicEngine,
-	config: OfftubeShowstyleBlueprintConfig,
-	parsedCue: CueDefinitionGrafik,
-	isTlf?: boolean,
-	isIdent?: boolean
-): PieceLifespan {
-	return engine === 'WALL'
-		? PieceLifespan.OutOnRundownEnd
-		: isTlf
-		? PieceLifespan.WithinPart
-		: isIdent
-		? PieceLifespan.OutOnSegmentEnd
-		: parsedCue.end && parsedCue.end.infiniteMode
-		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
-		: FindInfiniteModeFromConfig(config, parsedCue)
-}
-
-export function FindInfiniteModeFromConfig(
-	config: OfftubeShowstyleBlueprintConfig,
-	parsedCue: CueDefinitionGrafik
-): PieceLifespan {
-	if (config.showStyle.GFXTemplates) {
-		const template = GetFullGrafikTemplateNameFromCue(config, parsedCue)
-		const conf = config.showStyle.GFXTemplates.find(cnf =>
-			cnf.VizTemplate ? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() : false
-		)
-
-		if (!conf) {
-			return PieceLifespan.WithinPart
-		}
-
-		if (!conf.OutType || !conf.OutType.toString().length) {
-			return PieceLifespan.WithinPart
-		}
-
-		const type = conf.OutType.toString().toUpperCase()
-
-		if (type !== 'B' && type !== 'S' && type !== 'O') {
-			return PieceLifespan.WithinPart
-		}
-
-		return LifeSpan(type, PieceLifespan.WithinPart)
-	}
-
-	return PieceLifespan.WithinPart
 }
 
 function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string) {

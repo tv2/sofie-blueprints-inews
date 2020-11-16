@@ -85,3 +85,5 @@ export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
 }
+
+export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>
