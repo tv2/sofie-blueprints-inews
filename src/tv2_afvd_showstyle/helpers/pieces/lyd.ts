@@ -96,11 +96,10 @@ export function LydContent(
 		})
 	}
 
-	const id = `${file.trim().replace(/ /gi, '_')}`
 	return literal<BaseContent>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia>({
-				id,
+				id: '',
 				enable: {
 					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
 				},
