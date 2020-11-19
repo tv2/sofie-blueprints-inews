@@ -5,14 +5,19 @@ export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmen
 	const foundMap: { [key: string]: number } = {}
 
 	partDefinitions.forEach((part, i) => {
-		partDefinitions[i] = { ...part, externalId: getExternalId(segmentExternalId, part, foundMap), segmentExternalId }
+		partDefinitions[i] = { ...part, externalId: getExternalId(segmentExternalId, part, foundMap, i), segmentExternalId }
 	})
 
 	return partDefinitions
 }
 
-function getExternalId(segmentId: string, partDefinition: PartDefinition, foundMap: { [key: string]: number }): string {
-	let id = `${segmentId}-${partDefinition.type.toString()}`
+function getExternalId(
+	segmentId: string,
+	partDefinition: PartDefinition,
+	foundMap: { [key: string]: number },
+	index: number
+): string {
+	let id = `${segmentId}-PART${index}-${partDefinition.type.toString()}`
 
 	switch (partDefinition.type) {
 		case PartType.EVS:
