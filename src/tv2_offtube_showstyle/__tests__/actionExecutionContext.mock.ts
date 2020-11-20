@@ -103,7 +103,7 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	ShowstyleTransition: 'CUT'
 }
 
-export class MockContext implements ActionExecutionContext {
+export class MockActionContext implements ActionExecutionContext {
 	public warnings: string[] = []
 	public errors: string[] = []
 

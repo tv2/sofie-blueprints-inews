@@ -589,4 +589,294 @@ describe('TransformCuesIntoShowstyle', () => {
 			})
 		)
 	})
+
+	test('Does not merge GRAFIK=FULL with MOSART=L', () => {
+		const targetWallCue: CueDefinitionTargetEngine = {
+			type: CueType.TargetEngine,
+			data: {
+				engine: 'FULL'
+			},
+			rawType: `GRAFIK=FULL`,
+			content: {},
+			iNewsCommand: 'GRAFIK'
+		}
+		const mosCue: CueDefinitionMOS = {
+			type: CueType.MOS,
+			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|B',
+			vcpid: 2520177,
+			continueCount: -1,
+			start: {
+				seconds: 0
+			},
+			end: {
+				seconds: 10
+			},
+			iNewsCommand: 'VCP'
+		}
+		const partDefinition: PartDefinitionKam = {
+			type: PartType.Kam,
+			variant: {
+				name: '1'
+			},
+			externalId: '',
+			cues: [targetWallCue, mosCue],
+			rawType: 'Kam 1',
+			script: '',
+			fields: {},
+			modified: 0,
+			storyName: '',
+			segmentExternalId: ''
+		}
+
+		const res = TransformCuesIntoShowstyle(config, partDefinition)
+
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [targetWallCue, mosCue],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
+	})
+
+	test('Does not merge GRAFIK=FULL with MOSART=W', () => {
+		const targetWallCue: CueDefinitionTargetEngine = {
+			type: CueType.TargetEngine,
+			data: {
+				engine: 'FULL'
+			},
+			rawType: `GRAFIK=FULL`,
+			content: {},
+			iNewsCommand: 'GRAFIK'
+		}
+		const mosCue: CueDefinitionMOS = {
+			type: CueType.MOS,
+			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=W|00:00|B',
+			vcpid: 2520177,
+			continueCount: -1,
+			start: {
+				seconds: 0
+			},
+			end: {
+				seconds: 10
+			},
+			iNewsCommand: 'VCP'
+		}
+		const partDefinition: PartDefinitionKam = {
+			type: PartType.Kam,
+			variant: {
+				name: '1'
+			},
+			externalId: '',
+			cues: [targetWallCue, mosCue],
+			rawType: 'Kam 1',
+			script: '',
+			fields: {},
+			modified: 0,
+			storyName: '',
+			segmentExternalId: ''
+		}
+
+		const res = TransformCuesIntoShowstyle(config, partDefinition)
+
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [targetWallCue, mosCue],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
+	})
+
+	test('Does not merge GRAFIK=FULL with MOSART=F', () => {
+		const targetWallCue: CueDefinitionTargetEngine = {
+			type: CueType.TargetEngine,
+			data: {
+				engine: 'FULL'
+			},
+			rawType: `GRAFIK=FULL`,
+			content: {},
+			iNewsCommand: 'GRAFIK'
+		}
+		const mosCue: CueDefinitionMOS = {
+			type: CueType.MOS,
+			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=F|00:00|B',
+			vcpid: 2520177,
+			continueCount: -1,
+			start: {
+				seconds: 0
+			},
+			end: {
+				seconds: 10
+			},
+			iNewsCommand: 'VCP'
+		}
+		const partDefinition: PartDefinitionKam = {
+			type: PartType.Kam,
+			variant: {
+				name: '1'
+			},
+			externalId: '',
+			cues: [targetWallCue, mosCue],
+			rawType: 'Kam 1',
+			script: '',
+			fields: {},
+			modified: 0,
+			storyName: '',
+			segmentExternalId: ''
+		}
+
+		const res = TransformCuesIntoShowstyle(config, partDefinition)
+
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [targetWallCue, mosCue],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
+	})
+
+	test('Does not merge GRAFIK=OVL with MOSART=L', () => {
+		const targetWallCue: CueDefinitionTargetEngine = {
+			type: CueType.TargetEngine,
+			data: {
+				engine: 'OVL'
+			},
+			rawType: `GRAFIK=OVL`,
+			content: {},
+			iNewsCommand: 'GRAFIK'
+		}
+		const mosCue: CueDefinitionMOS = {
+			type: CueType.MOS,
+			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|B',
+			vcpid: 2520177,
+			continueCount: -1,
+			start: {
+				seconds: 0
+			},
+			end: {
+				seconds: 10
+			},
+			iNewsCommand: 'VCP'
+		}
+		const partDefinition: PartDefinitionKam = {
+			type: PartType.Kam,
+			variant: {
+				name: '1'
+			},
+			externalId: '',
+			cues: [targetWallCue, mosCue],
+			rawType: 'Kam 1',
+			script: '',
+			fields: {},
+			modified: 0,
+			storyName: '',
+			segmentExternalId: ''
+		}
+
+		const res = TransformCuesIntoShowstyle(config, partDefinition)
+
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [targetWallCue, mosCue],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
+	})
+
+	test('Does not merge GRAFIK=WALL with MOSART=L', () => {
+		const targetWallCue: CueDefinitionTargetEngine = {
+			type: CueType.TargetEngine,
+			data: {
+				engine: 'WALL'
+			},
+			rawType: `GRAFIK=WALL`,
+			content: {},
+			iNewsCommand: 'GRAFIK'
+		}
+		const mosCue: CueDefinitionMOS = {
+			type: CueType.MOS,
+			name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|B',
+			vcpid: 2520177,
+			continueCount: -1,
+			start: {
+				seconds: 0
+			},
+			end: {
+				seconds: 10
+			},
+			iNewsCommand: 'VCP'
+		}
+		const partDefinition: PartDefinitionKam = {
+			type: PartType.Kam,
+			variant: {
+				name: '1'
+			},
+			externalId: '',
+			cues: [targetWallCue, mosCue],
+			rawType: 'Kam 1',
+			script: '',
+			fields: {},
+			modified: 0,
+			storyName: '',
+			segmentExternalId: ''
+		}
+
+		const res = TransformCuesIntoShowstyle(config, partDefinition)
+
+		expect(res).toEqual(
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [targetWallCue, mosCue],
+				rawType: 'Kam 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: '',
+				segmentExternalId: ''
+			})
+		)
+	})
 })

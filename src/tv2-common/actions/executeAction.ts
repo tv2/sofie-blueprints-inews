@@ -407,7 +407,7 @@ function executeActionSelectServerClip<
 		partDefinition,
 		{
 			excludeAdlibs: true,
-			selectedCueTypes: [CueType.Grafik]
+			selectedCueTypes: [CueType.Graphic]
 		}
 	)
 

@@ -13,9 +13,7 @@ export function GetNextPartCue(partdefinition: PartDefinition, currentCue: numbe
 			cue =>
 				cue.type === CueType.DVE ||
 				cue.type === CueType.Ekstern ||
-				(cue.type === CueType.TargetEngine &&
-					cue.data.engine.match(/full/i) &&
-					partdefinition.type !== PartType.Grafik) ||
+				(cue.type === CueType.Graphic && cue.target === 'FULL' && partdefinition.type !== PartType.Grafik) ||
 				cue.type === CueType.Telefon
 		)
 	if (index === -1) {

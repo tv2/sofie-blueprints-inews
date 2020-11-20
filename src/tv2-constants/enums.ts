@@ -9,8 +9,6 @@ export enum MediaPlayerClaimType {
 }
 
 export enum CueType {
-	Grafik,
-	MOS,
 	Ekstern,
 	DVE,
 	Telefon,
@@ -19,10 +17,14 @@ export enum CueType {
 	AdLib,
 	LYD,
 	Jingle,
-	Design,
 	Profile,
-	TargetEngine,
-	ClearGrafiks
+	ClearGrafiks,
+	UNPAIRED_TARGET,
+	UNPAIRED_PILOT,
+	BackgroundLoop,
+	GraphicDesign,
+	Graphic,
+	Routing
 }
 
 export const enum PartType {

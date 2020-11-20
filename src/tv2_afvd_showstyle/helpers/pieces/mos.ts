@@ -20,7 +20,7 @@ import {
 } from 'tv2-common'
 import { GraphicEngine } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { CreateTimingGrafik, GetEnableForGrafik, grafikName } from './grafikViz'
 
@@ -162,7 +162,7 @@ function GetMosObjContent(
 	partId: string,
 	isOverlay: boolean,
 	adlib?: boolean,
-	tlf?: boolean,
+	_tlf?: boolean,
 	adlibrank?: number
 ): GraphicsContent {
 	return literal<GraphicsContent>({
@@ -200,7 +200,7 @@ function GetMosObjContent(
 								}
 						  })
 				},
-				...(isOverlay || tlf || engine === 'WALL' ? {} : { classes: ['full'] })
+				...(isOverlay || engine === 'WALL' ? {} : { classes: ['full'] })
 			}),
 			...(isOverlay || engine === 'WALL'
 				? []
@@ -243,36 +243,13 @@ function GetMosObjContent(
 							classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 						}),
 						GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
-						...MuteSisyfosChannels(partId, config.sources, !!adlib, adlibrank ?? 0, parsedCue.vcpid)
+						...muteSisyfosChannels(partId, config.sources, !!adlib, adlibrank ?? 0, parsedCue.vcpid)
 				  ])
 		]
 	})
 }
 
-export function CleanUpDVEBackground(config: BlueprintConfig): TSR.TimelineObjCCGMedia[] {
-	return [CasparLLayer.CasparCGDVEFrame, CasparLLayer.CasparCGDVEKey, CasparLLayer.CasparCGDVETemplate].map<
-		TSR.TimelineObjCCGMedia
-	>(layer => {
-		return {
-			id: '',
-			enable: {
-				start: config.studio.PilotCutToMediaPlayer
-			},
-			priority: 2,
-			layer,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				}
-			}
-		}
-	})
-}
-
-function MuteSisyfosChannels(
+function muteSisyfosChannels(
 	partId: string,
 	sources: SourceInfo[],
 	adlib: boolean,

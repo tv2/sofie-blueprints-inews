@@ -5,20 +5,14 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
-	assertUnreachable,
 	CueDefinition,
 	CueDefinitionAdLib,
 	CueDefinitionClearGrafiks,
-	CueDefinitionDesign,
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
-	CueDefinitionGrafik,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
-	CueDefinitionMOS,
-	CueDefinitionTargetEngine,
 	CueDefinitionTelefon,
-	CueDefinitionVIZ,
 	IBlueprintAdLibPieceEPI,
 	IBlueprintPieceEPI,
 	PartContext2,
@@ -26,13 +20,13 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { CueType, GraphicEngine } from 'tv2-constants'
+import { CueType } from 'tv2-constants'
 
 export interface EvaluateCuesShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	EvaluateCueGrafik?: (
+	/*EvaluateCueGrafik?: (
 		config: ShowStyleConfig,
 		context: PartContext2,
 		pieces: IBlueprintPiece[],
@@ -60,7 +54,7 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number,
 		isGrafikPart?: boolean,
 		overrideOverlay?: boolean
-	) => void
+	) => void*/
 	EvaluateCueEkstern?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
@@ -106,7 +100,7 @@ export interface EvaluateCuesShowstyleOptions<
 		adlib?: boolean,
 		rank?: number
 	) => void
-	EvaluateCueVIZ?: (
+	/*EvaluateCueVIZ?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
@@ -116,7 +110,7 @@ export interface EvaluateCuesShowstyleOptions<
 		parsedCue: CueDefinitionVIZ,
 		adlib?: boolean,
 		rank?: number
-	) => void
+	) => void*/
 	EvaluateCueJingle?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
@@ -140,7 +134,7 @@ export interface EvaluateCuesShowstyleOptions<
 		adlib?: boolean,
 		rank?: number
 	) => void
-	EvaluateCueDesign?: (
+	/*EvaluateCueDesign?: (
 		config: ShowStyleConfig,
 		context: PartContext2,
 		pieces: IBlueprintPiece[],
@@ -161,7 +155,7 @@ export interface EvaluateCuesShowstyleOptions<
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTargetEngine,
 		adlib: boolean
-	) => void
+	) => void*/
 	EvaluateCueClearGrafiks?: (
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
@@ -213,7 +207,7 @@ export function EvaluateCuesBase<
 			const shouldAdlib = /* config.showStyle.IsOfftube || */ options.adlib ? true : cue.adlib ? true : false
 
 			switch (cue.type) {
-				case CueType.Grafik:
+				/*case CueType.Grafik:
 					if (showStyleOptions.EvaluateCueGrafik) {
 						showStyleOptions.EvaluateCueGrafik(
 							config,
@@ -248,7 +242,7 @@ export function EvaluateCuesBase<
 							options.isGrafikPart
 						)
 					}
-					break
+					break*/
 				case CueType.Ekstern:
 					if (showStyleOptions.EvaluateCueEkstern) {
 						showStyleOptions.EvaluateCueEkstern(
@@ -324,7 +318,7 @@ export function EvaluateCuesBase<
 						)
 					}
 					break
-				case CueType.VIZ:
+				/*case CueType.VIZ:
 					if (showStyleOptions.EvaluateCueVIZ) {
 						showStyleOptions.EvaluateCueVIZ(
 							context,
@@ -338,7 +332,7 @@ export function EvaluateCuesBase<
 							adLibRank
 						)
 					}
-					break
+					break*/
 				case CueType.Jingle:
 					if (showStyleOptions.EvaluateCueJingle) {
 						showStyleOptions.EvaluateCueJingle(
@@ -369,7 +363,7 @@ export function EvaluateCuesBase<
 						)
 					}
 					break
-				case CueType.Design:
+				/*case CueType.Design:
 					if (showStyleOptions.EvaluateCueDesign) {
 						showStyleOptions.EvaluateCueDesign(
 							config,
@@ -383,8 +377,8 @@ export function EvaluateCuesBase<
 							adLibRank
 						)
 					}
-					break
-				case CueType.TargetEngine:
+					break*/
+				/*case CueType.TargetEngine:
 					if (showStyleOptions.EvaluateCueTargetEngine) {
 						showStyleOptions.EvaluateCueTargetEngine(
 							context,
@@ -398,7 +392,7 @@ export function EvaluateCuesBase<
 							shouldAdlib
 						)
 					}
-					break
+					break*/
 				case CueType.ClearGrafiks:
 					if (showStyleOptions.EvaluateCueClearGrafiks) {
 						showStyleOptions.EvaluateCueClearGrafiks(
@@ -417,7 +411,7 @@ export function EvaluateCuesBase<
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
 						// TODO: Mic -> For the future
 						// context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
-						assertUnreachable(cue)
+						// assertUnreachable(cue)
 					}
 					break
 			}

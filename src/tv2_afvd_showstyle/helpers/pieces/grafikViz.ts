@@ -79,16 +79,20 @@ export function EvaluateGrafikViz(
 		return
 	}
 
+	const sourceLayerId = isTlfPrimary
+			? SourceLayer.PgmGraphicsTLF
+			: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue), isStickyIdent)
+
+	const outputLayerId = engine === 'WALL' ? 'sec' : 'overlay'
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
 				name: grafikName(config, parsedCue),
-				sourceLayerId: isTlfPrimary
-					? SourceLayer.PgmGraphicsTLF
-					: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue), isStickyIdent),
-				outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
+				sourceLayerId,
+				outputLayerId,
 				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
@@ -116,10 +120,6 @@ export function EvaluateGrafikViz(
 			})
 		)
 	} else {
-		const sourceLayer = isTlfPrimary
-			? SourceLayer.PgmGraphicsTLF
-			: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue), isStickyIdent)
-
 		const piece = literal<IBlueprintPiece>({
 			externalId: partId,
 			name: grafikName(config, parsedCue),
@@ -130,8 +130,8 @@ export function EvaluateGrafikViz(
 							...CreateTimingGrafik(config, parsedCue, !isStickyIdent)
 						}
 				  }),
-			outputLayerId: engine === 'WALL' ? 'sec' : 'overlay',
-			sourceLayerId: sourceLayer,
+			outputLayerId,
+			sourceLayerId,
 			lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isStickyIdent),
 			content: literal<GraphicsContent>({
 				fileName: parsedCue.template,
@@ -148,7 +148,7 @@ export function EvaluateGrafikViz(
 							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 							templateName: mappedTemplate,
 							templateData: parsedCue.textFields,
-							channelName: !!engine.match(/WALL/i) ? 'WALL1' : 'OVL1'
+							channelName: !!engine.match(/WALL/i) ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
 						}
 					})
 				])
@@ -157,7 +157,7 @@ export function EvaluateGrafikViz(
 		pieces.push(piece)
 
 		if (
-			sourceLayer === SourceLayer.PgmGraphicsIdentPersistent &&
+			sourceLayerId === SourceLayer.PgmGraphicsIdentPersistent &&
 			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
 			isStickyIdent
 		) {

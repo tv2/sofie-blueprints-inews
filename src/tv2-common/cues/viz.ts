@@ -1,4 +1,4 @@
-import {
+/*import {
 	CameraContent,
 	GraphicsContent,
 	IBlueprintAdLibPiece,
@@ -7,14 +7,7 @@ import {
 	SourceLayerType,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import {
-	CalculateTime,
-	CueDefinitionVIZ,
-	FindSourceInfoStrict,
-	literal,
-	TV2BlueprintConfigBase,
-	TV2StudioConfigBase
-} from 'tv2-common'
+import { CalculateTime, FindSourceInfoStrict, literal, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { PartContext2 } from '../partContext2'
 
@@ -239,4 +232,4 @@ export function EvaluateVIZBase<
 			}
 		}
 	}
-}
+}*/

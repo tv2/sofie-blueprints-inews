@@ -2,10 +2,14 @@ import { PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
 import { GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { LifeSpan } from '../cueTiming'
-import { CueDefinitionGrafik } from '../inewsConversion'
+import { CueDefinitionGraphic } from '../inewsConversion'
 
-export function GetFullGrafikTemplateNameFromCue(config: TV2BlueprintConfig, cue: CueDefinitionGrafik): string {
-	return GetFullGrafikTemplateName(config, cue.template)
+export function GetFullGrafikTemplateNameFromCue(config: TV2BlueprintConfig, cue: CueDefinitionGraphic): string {
+	if (cue.graphic.type === 'pilot') {
+		return cue.graphic.name
+	} else {
+		return GetFullGrafikTemplateName(config, cue.graphic.template)
+	}
 }
 
 export function GetFullGrafikTemplateName(config: TV2BlueprintConfig, iNewsTempalateName: string): string {
@@ -25,7 +29,7 @@ export function GetFullGrafikTemplateName(config: TV2BlueprintConfig, iNewsTempa
 export function GetInfiniteModeForGrafik(
 	engine: GraphicEngine,
 	config: TV2BlueprintConfig,
-	parsedCue: CueDefinitionGrafik,
+	parsedCue: CueDefinitionGraphic,
 	isTlf?: boolean,
 	isStickyIdent?: boolean
 ): PieceLifespan {
@@ -40,7 +44,7 @@ export function GetInfiniteModeForGrafik(
 		: FindInfiniteModeFromConfig(config, parsedCue)
 }
 
-export function FindInfiniteModeFromConfig(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrafik): PieceLifespan {
+export function FindInfiniteModeFromConfig(config: TV2BlueprintConfig, parsedCue: CueDefinitionGraphic): PieceLifespan {
 	if (config.showStyle.GFXTemplates) {
 		const template = GetFullGrafikTemplateNameFromCue(config, parsedCue)
 		const conf = config.showStyle.GFXTemplates.find(cnf =>

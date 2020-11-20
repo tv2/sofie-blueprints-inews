@@ -29,8 +29,7 @@ import {
 	PartDefinitionServer,
 	PartDefinitionTeknik,
 	PartDefinitionTelefon,
-	PartDefinitionVO,
-	TransformCuesIntoShowstyle
+	PartDefinitionVO
 } from './inewsConversion'
 
 export interface GetSegmentShowstyleOptions<
@@ -167,9 +166,9 @@ export function getSegmentBase<
 	let serverParts = 0
 	let jingleTime = 0
 	let serverTime = 0
-	for (const par of parsedParts) {
+	for (const part of parsedParts) {
 		// Apply showstyle-specific transformations of cues.
-		const part = TransformCuesIntoShowstyle(config, par)
+		// const part = TransformCuesIntoShowstyle(config, par) // TODO
 		const partContext = new PartContext2(context, part.externalId)
 
 		// Make orphaned secondary cues into adlibs

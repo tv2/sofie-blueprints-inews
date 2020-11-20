@@ -891,6 +891,18 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			IsDesign: true
 		},
 		{
+			VizTemplate: 'DESIGN_FODBOLD',
+			SourceLayer: 'studio0_design',
+			LayerMapping: 'graphic_design',
+			INewsCode: 'KG=',
+			INewsName: 'DESIGN_FODBOLD',
+			VizDestination: 'viz-d-ovl',
+			OutType: '',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: true
+		},
+		{
 			VizTemplate: 'OUT_TEMA_H',
 			SourceLayer: '',
 			LayerMapping: '',

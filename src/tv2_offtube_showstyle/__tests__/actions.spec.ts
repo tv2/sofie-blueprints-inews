@@ -22,7 +22,7 @@ import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { executeActionOfftube } from '../actions'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
-import { MockContext } from './actionExecutionContext.mock'
+import { MockActionContext } from './actionExecutionContext.mock'
 
 const SEGMENT_ID = 'MOCK_ACTION_SEGMENT'
 const SEGMENT_ID_EXTERNAL = `${SEGMENT_ID}_EXTERNAL`
@@ -222,7 +222,7 @@ interface ActivePiecesForSource {
 	dataStore: IBlueprintPieceInstance | undefined
 }
 
-function getServerPieces(context: MockContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getServerPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer),
 		dataStore: context
@@ -231,7 +231,7 @@ function getServerPieces(context: MockContext, part: 'current' | 'next'): Active
 	}
 }
 
-function getVOPieces(context: MockContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getVOPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver),
 		dataStore: context
@@ -240,14 +240,14 @@ function getVOPieces(context: MockContext, part: 'current' | 'next'): ActivePiec
 	}
 }
 
-function getDVEPieces(context: MockContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getDVEPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE),
 		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE)
 	}
 }
 
-function getFullGrafikPieces(context: MockContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getFullGrafikPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmFull),
 		dataStore: context
@@ -256,11 +256,11 @@ function getFullGrafikPieces(context: MockContext, part: 'current' | 'next'): Ac
 	}
 }
 
-function getCameraPiece(context: MockContext, part: 'current' | 'next'): IBlueprintPieceInstance | undefined {
+function getCameraPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance | undefined {
 	return context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmCam)
 }
 
-function getRemotePiece(context: MockContext, part: 'current' | 'next'): IBlueprintPieceInstance | undefined {
+function getRemotePiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance | undefined {
 	return context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmLive)
 }
 
@@ -287,22 +287,22 @@ function validateRemotePiece(piece: IBlueprintPieceInstance | undefined) {
 	expect(piece).toBeTruthy()
 }
 
-function validateNoWarningsOrErrors(context: MockContext) {
+function validateNoWarningsOrErrors(context: MockActionContext) {
 	expect(context.warnings).toEqual([])
 	expect(context.errors).toEqual([])
 }
 
-function validateNextPartExistsWithDuration(context: MockContext, duration: number) {
+function validateNextPartExistsWithDuration(context: MockActionContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.expectedDuration).toEqual(duration)
 }
 
-function validateNextPartExistsWithPreRoll(context: MockContext, duration: number) {
+function validateNextPartExistsWithPreRoll(context: MockActionContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.prerollDuration).toEqual(duration)
 }
 
-function validateNextPartExistsWithTransitionKeepAlive(context: MockContext, duration: number) {
+function validateNextPartExistsWithTransitionKeepAlive(context: MockActionContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.transitionKeepaliveDuration).toEqual(duration)
 }
@@ -334,7 +334,7 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 
 describe('Select Server Action', () => {
 	it('Inserts a new part when no next part is present', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -349,7 +349,7 @@ describe('Select Server Action', () => {
 	})
 
 	it('Leaves current part unaffected when a clip is currently playing', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [
 			playingServerPieceInstance,
 			selectedServerPieceInstance
 		])
@@ -371,7 +371,7 @@ describe('Select Server Action', () => {
 
 describe('Combination Actions', () => {
 	it('Server -> DVE', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -393,7 +393,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> Full', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -416,7 +416,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> VO', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -439,7 +439,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> DVE', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -461,7 +461,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> CAM', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -482,7 +482,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> LIVE', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -503,7 +503,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> Server', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -524,7 +524,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> Full', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -546,7 +546,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> VO', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -567,7 +567,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> CAM', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -587,7 +587,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> LIVE', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -607,7 +607,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server (01234A) -> DVE (morbarn) -> VO (VOVOA) -> DVE (barnmor) -> CAM (1) -> LIVE (2) -> SERVER (01234A) -> Commentator Select DVE', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		// SERVER (A)
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
@@ -724,7 +724,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> LIVE (2)', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -754,7 +754,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> SERVER', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -785,7 +785,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> VO', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -816,7 +816,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> DVE', () => {
-		const context = new MockContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
