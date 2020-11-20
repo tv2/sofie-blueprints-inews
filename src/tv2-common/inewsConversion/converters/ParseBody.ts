@@ -456,6 +456,9 @@ function makeDefinitionPrimaryCue(
 		case CueType.Graphic:
 			definition.type = partType
 			break
+		case CueType.UNPAIRED_TARGET:
+			definition.type = partType
+			break
 		default:
 			// For log purposes + to catch future issues.
 			console.log(

@@ -5,6 +5,7 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	assertUnreachable,
 	CueDefinition,
 	CueDefinitionAdLib,
 	CueDefinitionClearGrafiks,
@@ -26,7 +27,11 @@ export interface EvaluateCuesShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	/*EvaluateCueGrafik?: (
+	EvaluateCueGraphic?: () => void
+	EvaluateCueBackgroundLoop?: () => void
+	EvaluateCueGraphicDesign?: () => void
+	EvaluateCueRouting?: () => void
+	EvaluateCueGrafik?: (
 		config: ShowStyleConfig,
 		context: PartContext2,
 		pieces: IBlueprintPiece[],
@@ -54,7 +59,7 @@ export interface EvaluateCuesShowstyleOptions<
 		rank?: number,
 		isGrafikPart?: boolean,
 		overrideOverlay?: boolean
-	) => void*/
+	) => void
 	EvaluateCueEkstern?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
@@ -100,7 +105,7 @@ export interface EvaluateCuesShowstyleOptions<
 		adlib?: boolean,
 		rank?: number
 	) => void
-	/*EvaluateCueVIZ?: (
+	EvaluateCueVIZ?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
@@ -110,7 +115,7 @@ export interface EvaluateCuesShowstyleOptions<
 		parsedCue: CueDefinitionVIZ,
 		adlib?: boolean,
 		rank?: number
-	) => void*/
+	) => void
 	EvaluateCueJingle?: (
 		context: PartContext2,
 		config: ShowStyleConfig,
@@ -134,7 +139,7 @@ export interface EvaluateCuesShowstyleOptions<
 		adlib?: boolean,
 		rank?: number
 	) => void
-	/*EvaluateCueDesign?: (
+	EvaluateCueDesign?: (
 		config: ShowStyleConfig,
 		context: PartContext2,
 		pieces: IBlueprintPiece[],
@@ -155,7 +160,7 @@ export interface EvaluateCuesShowstyleOptions<
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTargetEngine,
 		adlib: boolean
-	) => void*/
+	) => void
 	EvaluateCueClearGrafiks?: (
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
@@ -411,7 +416,7 @@ export function EvaluateCuesBase<
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
 						// TODO: Mic -> For the future
 						// context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
-						// assertUnreachable(cue)
+						assertUnreachable(cue)
 					}
 					break
 			}

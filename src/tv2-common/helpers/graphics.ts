@@ -2,7 +2,7 @@ import { PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
 import { GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { LifeSpan } from '../cueTiming'
-import { CueDefinitionGraphic } from '../inewsConversion'
+import { CueDefinitionGraphic, GraphicInternal, GraphicInternalOrPilot } from '../inewsConversion'
 
 export function GetFullGrafikTemplateNameFromCue(config: TV2BlueprintConfig, cue: CueDefinitionGraphic): string {
 	if (cue.graphic.type === 'pilot') {
@@ -29,13 +29,12 @@ export function GetFullGrafikTemplateName(config: TV2BlueprintConfig, iNewsTempa
 export function GetInfiniteModeForGrafik(
 	engine: GraphicEngine,
 	config: TV2BlueprintConfig,
-	parsedCue: CueDefinitionGraphic,
-	isTlf?: boolean,
+	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	isStickyIdent?: boolean
 ): PieceLifespan {
 	return engine === 'WALL'
 		? PieceLifespan.OutOnRundownEnd
-		: isTlf
+		: engine === 'TLF'
 		? PieceLifespan.WithinPart
 		: isStickyIdent
 		? PieceLifespan.OutOnSegmentEnd

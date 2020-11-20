@@ -1,6 +1,6 @@
 import { TV2BlueprintConfig } from 'src/tv2-common/blueprintConfig'
 import { literal } from 'src/tv2-common/util'
-import { CueType, PartType } from 'tv2-constants'
+import { CueType, GraphicEngine, PartType } from 'tv2-constants'
 import { PartDefinition } from './ParseBody'
 
 export type UnparsedCue = string[] | null
@@ -41,7 +41,7 @@ export interface CueDefinitionDVE extends CueDefinitionBase {
 export interface CueDefinitionTelefon extends CueDefinitionBase {
 	type: CueType.Telefon
 	source: string
-	vizObj?: CueDefinitionGraphic
+	vizObj?: CueDefinitionGraphic<GraphicInternalOrPilot>
 }
 
 export interface CueDefinitionMic extends CueDefinitionBase {
@@ -80,7 +80,7 @@ export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 // If unpaired when evaluated, throw warning. If target === 'FULL' create invalid part.
 export interface CueDefinitionUnpairedTarget extends CueDefinitionBase {
 	type: CueType.UNPAIRED_TARGET
-	target: 'OVL' | 'WALL' | 'FULL' | 'TLF'
+	target: GraphicEngine
 	routing?: CueDefinitionRouting
 }
 
@@ -117,17 +117,19 @@ export interface GraphicPilot {
 	continueCount: number
 }
 
-export interface CueDefinitionGraphic extends CueDefinitionBase {
+export type GraphicInternalOrPilot = GraphicInternal | GraphicPilot
+
+export interface CueDefinitionGraphic<T extends GraphicInternalOrPilot> extends CueDefinitionBase {
 	type: CueType.Graphic
-	target: 'OVL' | 'WALL' | 'FULL' | 'TLF'
+	target: GraphicEngine
 	routing?: CueDefinitionRouting
-	graphic: GraphicInternal | GraphicPilot
+	graphic: T
 	engineNumber?: number // #cg4 -> 4
 }
 
 export interface CueDefinitionRouting extends CueDefinitionBase {
 	type: CueType.Routing
-	target: 'OVL' | 'WALL' | 'FULL' | 'TLF'
+	target: GraphicEngine
 	INP?: string
 	INP1?: string
 }
@@ -146,8 +148,20 @@ export type CueDefinition =
 	| CueDefinitionUnpairedPilot
 	| CueDefinitionBackgroundLoop
 	| CueDefinitionGraphicDesign
-	| CueDefinitionGraphic
+	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
+
+export function GraphicIsInternal(
+	o: CueDefinitionGraphic<GraphicInternalOrPilot>
+): o is CueDefinitionGraphic<GraphicInternal> {
+	return o.graphic.type === 'internal'
+}
+
+export function GraphicIsPilot(
+	o: CueDefinitionGraphic<GraphicInternalOrPilot>
+): o is CueDefinitionGraphic<GraphicPilot> {
+	return o.graphic.type === 'pilot'
+}
 
 export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefinition | undefined {
 	if (!cue) {
@@ -214,8 +228,8 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 function parsekg(
 	cue: string[],
 	config: TV2BlueprintConfig
-): CueDefinitionGraphic | CueDefinitionGraphicDesign | CueDefinitionUnpairedTarget {
-	let kgCue: CueDefinitionGraphic = {
+): CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign | CueDefinitionUnpairedTarget {
+	let kgCue: CueDefinitionGraphic<GraphicInternalOrPilot> = {
 		type: CueType.Graphic,
 		target: 'OVL',
 		graphic: {
@@ -314,7 +328,7 @@ function parsekg(
 	return kgCue
 }
 
-function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGraphic {
+function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGraphic<GraphicInternalOrPilot> {
 	const pilotCue: CueDefinitionUnpairedPilot = {
 		type: CueType.UNPAIRED_PILOT,
 		name: '',
@@ -578,7 +592,7 @@ function parseJingle(cue: string[]) {
 function parseTargetEngine(
 	cue: string[],
 	config: TV2BlueprintConfig
-): CueDefinitionUnpairedTarget | CueDefinitionGraphic | CueDefinitionGraphicDesign {
+): CueDefinitionUnpairedTarget | CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign {
 	let engineCue: CueDefinitionUnpairedTarget = {
 		type: CueType.UNPAIRED_TARGET,
 		target: 'FULL',
@@ -648,7 +662,7 @@ function parseTargetEngine(
 			})
 		}
 
-		return literal<CueDefinitionGraphic>({
+		return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
 			type: CueType.Graphic,
 			target: engineCue.target,
 			graphic: {
@@ -842,10 +856,10 @@ export function AddParentClass(partDefinition: PartDefinition) {
 
 export function UnpairedPilotToGraphic(
 	pilotCue: CueDefinitionUnpairedPilot,
-	target: 'OVL' | 'WALL' | 'FULL' | 'TLF',
+	target: GraphicEngine,
 	targetCue?: CueDefinitionUnpairedTarget | CueDefinitionTelefon
-): CueDefinitionGraphic {
-	return literal<CueDefinitionGraphic>({
+): CueDefinitionGraphic<GraphicInternalOrPilot> {
+	return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
 		type: CueType.Graphic,
 		target,
 		routing: targetCue?.type === CueType.UNPAIRED_TARGET ? targetCue.routing : undefined,

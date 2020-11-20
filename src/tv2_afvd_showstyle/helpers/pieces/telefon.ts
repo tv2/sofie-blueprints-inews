@@ -5,7 +5,6 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { CueDefinitionTelefon, GetSisyfosTimelineObjForCamera, literal, PartContext2, PartDefinition } from 'tv2-common'
-import { CueType } from 'tv2-constants'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { EvaluateGrafikViz } from './grafikViz'
@@ -24,7 +23,7 @@ export function EvaluateTelefon(
 	rank?: number
 ) {
 	if (parsedCue.vizObj) {
-		if (parsedCue.vizObj.type === CueType.Grafik) {
+		if (parsedCue.vizObj.graphic.type === 'internal') {
 			EvaluateGrafikViz(
 				config,
 				context,
