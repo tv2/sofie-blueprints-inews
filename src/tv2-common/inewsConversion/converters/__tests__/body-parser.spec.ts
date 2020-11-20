@@ -1607,9 +1607,15 @@ describe('Body parser', () => {
 				variant: {},
 				rawType: 'SERVER',
 				cues: [
-					literal<CueDefinitionUnpairedTarget>({
-						type: CueType.UNPAIRED_TARGET,
+					literal<CueDefinitionGraphic>({
+						type: CueType.Graphic,
 						target: 'WALL',
+						graphic: {
+							type: 'internal',
+							template: 'SC_LOOP_ON',
+							textFields: [],
+							cue: 'sc-loop'
+						},
 						start: {
 							seconds: 0,
 							frames: 1
@@ -1853,9 +1859,15 @@ describe('Body parser', () => {
 				variant: {},
 				rawType: 'SERVER',
 				cues: [
-					literal<CueDefinitionUnpairedTarget>({
-						type: CueType.UNPAIRED_TARGET,
+					literal<CueDefinitionGraphic>({
+						type: CueType.Graphic,
 						target: 'WALL',
+						graphic: {
+							type: 'internal',
+							template: 'SC_LOOP_ON',
+							textFields: [],
+							cue: 'sc-loop'
+						},
 						start: {
 							seconds: 0,
 							frames: 1
@@ -1887,7 +1899,7 @@ describe('Body parser', () => {
 		])
 	})
 
-	test.skip('test 31', () => {
+	test('test 31', () => {
 		const body31 =
 			'\r\n<p></p>\r\n<p><a idref="0"></a><cc>--TEMA kort nyt--></cc><a idref="1"></a><cc><---</cc>\r\n<p><cc>Some comment</cc></p>\r\n<p><a idref="2"></a></p>\r\n<p><pi>SLUTORD: bare mega fedt</pi></p>\r\n<p><cc>Some more comment</cc></p>\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="3"></a><a idref="4"></a></p>\r\n<p>Some script</p>\r\n<p><pi>***SERVER***</pi></p>'
 		const cues31 = [
@@ -1910,9 +1922,9 @@ describe('Body parser', () => {
 						target: 'WALL',
 						graphic: {
 							type: 'internal',
-							template: 'SC-LOOP',
+							template: 'SC_LOOP_ON',
 							textFields: [],
-							cue: 'SC-LOOP'
+							cue: 'sc-loop' // Pulled from config
 						},
 						start: {
 							seconds: 0,
@@ -2021,7 +2033,7 @@ describe('Body parser', () => {
 		])
 	})
 
-	test.skip('test 33', () => {
+	test('test 33', () => {
 		const body33 =
 			'\r\n<p></p>\r\r<p><a idref="0"></a><cc>BREAKER</cc></p>\r\n<p></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n'
 		const cues33 = [
@@ -2053,9 +2065,9 @@ describe('Body parser', () => {
 						target: 'WALL',
 						graphic: {
 							type: 'internal',
-							template: 'SC-LOOP',
+							template: 'SC_LOOP_ON',
 							textFields: [],
-							cue: 'SC-LOOP'
+							cue: 'sc-loop'
 						},
 						start: {
 							seconds: 0,
@@ -2065,7 +2077,7 @@ describe('Body parser', () => {
 					}),
 					literal<CueDefinitionGraphic>({
 						type: CueType.Graphic,
-						target: 'FULL',
+						target: 'OVL',
 						graphic: {
 							type: 'pilot',
 							name: 'TEMA_SPORT_KORTNYT/Mosart=L|00:02|O',
@@ -2186,6 +2198,9 @@ describe('Body parser', () => {
 							name: 'PROFILE/MEST BRUGTE STARTERE I NBA/08-12-2019',
 							vcpid: 2577769,
 							continueCount: 2
+						},
+						start: {
+							seconds: 0
 						},
 						iNewsCommand: 'GRAFIK'
 					})

@@ -471,6 +471,18 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			IsDesign: false
 		},
 		{
+			VizTemplate: 'SC_LOOP_ON',
+			SourceLayer: 'studio0_wall_graphics',
+			LayerMapping: 'graphic_wall',
+			INewsCode: 'SS',
+			INewsName: 'sc-loop',
+			VizDestination: 'WALL1',
+			OutType: 'O',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: false
+		},
+		{
 			VizTemplate: 'VCP',
 			SourceLayer: 'studio0_pilot',
 			LayerMapping: 'graphic_pilot',
