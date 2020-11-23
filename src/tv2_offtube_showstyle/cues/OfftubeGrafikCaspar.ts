@@ -10,12 +10,16 @@ import {
 	ActionSelectFullGrafik,
 	CalculateTime,
 	CreateTimingEnable,
-	CueDefinitionGrafik,
-	CueDefinitionMOS,
-	GetFullGrafikTemplateNameFromCue,
-	GetInfiniteModeForGrafik,
+	CueDefinitionGraphic,
+	GetFullGraphicTemplateNameFromCue,
+	GetInfiniteModeForGraphic,
 	GetTagForFull,
 	GetTagForFullNext,
+	GraphicDisplayName,
+	GraphicInternal,
+	GraphicInternalOrPilot,
+	GraphicIsInternal,
+	GraphicIsPilot,
 	GraphicLLayer,
 	literal,
 	PartContext2,
@@ -24,7 +28,7 @@ import {
 	TimelineBlueprintExt,
 	TranslateEngine
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, CueType, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -36,36 +40,36 @@ export function OfftubeEvaluateGrafikCaspar(
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	_partid: string,
-	parsedCue: CueDefinitionGrafik,
-	_engine: GraphicEngine,
+	_partId: string,
+	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	_adlib: boolean,
 	partDefinition: PartDefinition,
-	isTlfPrimary?: boolean,
 	rank?: number
 ) {
-	let engine = _engine
-	if (config.showStyle.GFXTemplates) {
-		const templ = config.showStyle.GFXTemplates.find(
-			t =>
-				t.INewsName.toUpperCase() === parsedCue.template.toUpperCase() &&
-				t.INewsCode.toString()
-					.replace(/=/gi, '')
-					.toUpperCase() === parsedCue.iNewsCommand.toUpperCase()
-		)
-		if (templ) {
-			if (templ.IsDesign) {
-				return
-			}
+	let engine = parsedCue.target
+	if (GraphicIsInternal(parsedCue)) {
+		if (config.showStyle.GFXTemplates) {
+			const templ = config.showStyle.GFXTemplates.find(
+				t =>
+					t.INewsName.toUpperCase() === parsedCue.graphic.template.toUpperCase() &&
+					t.INewsCode.toString()
+						.replace(/=/gi, '')
+						.toUpperCase() === parsedCue.iNewsCommand.toUpperCase()
+			)
+			if (templ) {
+				if (templ.IsDesign) {
+					return
+				}
 
-			engine = TranslateEngine(templ.VizDestination)
+				engine = TranslateEngine(templ.VizDestination)
+			}
 		}
 	}
 
-	const isIdentGrafik = !!parsedCue.template.match(/direkte/i)
+	const isIdentGrafik = GraphicIsInternal(parsedCue) && !!parsedCue.graphic.template.match(/direkte/i)
 
-	if (engine === 'FULL') {
-		const grafikTemplateName = GetFullGrafikTemplateNameFromCue(config, parsedCue)
+	if (GraphicIsPilot(parsedCue)) {
+		const grafikTemplateName = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 		const adLibPiece = CreateFullAdLib(
 			config,
 			partDefinition.externalId,
@@ -78,12 +82,12 @@ export function OfftubeEvaluateGrafikCaspar(
 				actionId: AdlibActionType.SELECT_FULL_GRAFIK,
 				userData: literal<ActionSelectFullGrafik>({
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
-					template: parsedCue.template,
+					template: parsedCue.graphic.vcpid.toString(),
 					segmentExternalId: partDefinition.segmentExternalId
 				}),
 				userDataManifest: {},
 				display: {
-					label: GetFullGrafikTemplateNameFromCue(config, parsedCue),
+					label: GetFullGraphicTemplateNameFromCue(config, parsedCue),
 					sourceLayerId: OfftubeSourceLayer.PgmFull,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
@@ -97,19 +101,19 @@ export function OfftubeEvaluateGrafikCaspar(
 		const piece = CreateFullPiece(
 			config,
 			partDefinition.externalId,
-			GetFullGrafikTemplateNameFromCue(config, parsedCue),
+			GetFullGraphicTemplateNameFromCue(config, parsedCue),
 			partDefinition.segmentExternalId
 		)
 		pieces.push(piece)
-	} else {
+	} else if (GraphicIsInternal(parsedCue)) {
 		// TODO: Wall
 
 		if (parsedCue.adlib) {
 			const adLibPiece = literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partDefinition.externalId,
-				name: `${grafikName(config, parsedCue)}`,
-				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
+				name: `${GraphicDisplayName(config, parsedCue)}`,
+				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				lifespan: PieceLifespan.WithinPart,
 				expectedDuration: 5000,
@@ -124,12 +128,12 @@ export function OfftubeEvaluateGrafikCaspar(
 				literal<IBlueprintAdLibPiece>({
 					_rank: rank || 0,
 					externalId: partDefinition.externalId,
-					name: `${grafikName(config, parsedCue)}`,
-					sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
+					name: `${GraphicDisplayName(config, parsedCue)}`,
+					sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 					outputLayerId: OfftubeOutputLayers.OVERLAY,
-					lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
+					lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-					...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
+					...(engine === 'TLF' || (parsedCue.end && parsedCue.end.infiniteMode)
 						? {}
 						: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 					content: {
@@ -140,18 +144,18 @@ export function OfftubeEvaluateGrafikCaspar(
 		} else {
 			const piece = literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,
-				name: `${grafikName(config, parsedCue)}`,
-				...(isTlfPrimary || engine === 'WALL'
+				name: `${GraphicDisplayName(config, parsedCue)}`,
+				...(engine === 'TLF' || engine === 'WALL'
 					? { enable: { start: 0 } }
 					: {
 							enable: {
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
+				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
-				lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isIdentGrafik),
-				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
+				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
+				...(engine === 'TLF' || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 				content: {
@@ -166,7 +170,7 @@ export function OfftubeEvaluateGrafikCaspar(
 export function GetCasparOverlayTimeline(
 	config: OfftubeShowstyleBlueprintConfig,
 	engine: GraphicEngine,
-	parsedCue: CueDefinitionGrafik,
+	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
 	partDefinition: PartDefinition,
 	commentator?: boolean
@@ -177,19 +181,19 @@ export function GetCasparOverlayTimeline(
 			enable: commentator
 				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition)
 				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
-			layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
+			layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 				// tslint:disable-next-line: prettier
-				templateType: "html",
+				templateType: 'html',
 				// tslint:disable-next-line: prettier
-				name: "sport-overlay/index",
+				name: 'sport-overlay/index',
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						// tslint:disable-next-line: prettier
-						display: "program",
-						slots: createContentForGraphicTemplate(GetFullGrafikTemplateNameFromCue(config, parsedCue), parsedCue)
+						display: 'program',
+						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue)
 					})
 				)}</templateData>`,
 				useStopCommand: false
@@ -198,7 +202,10 @@ export function GetCasparOverlayTimeline(
 	]
 }
 
-export function createContentForGraphicTemplate(graphicName: string, parsedCue: CueDefinitionGrafik): Partial<Slots> {
+export function createContentForGraphicTemplate(
+	graphicName: string,
+	parsedCue: CueDefinitionGraphic<GraphicInternal>
+): Partial<Slots> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
 		case 'arkiv':
@@ -207,7 +214,7 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					display: 'program',
 					payload: {
 						type: GraphicName.ARKIV,
-						text: parsedCue.textFields[0]
+						text: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -217,7 +224,7 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					display: 'program',
 					payload: {
 						type: GraphicName.BILLEDERFRA_LOGO,
-						logo: parsedCue.textFields[0]
+						logo: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -228,8 +235,8 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					display: 'program',
 					payload: {
 						type: GraphicName.BUND,
-						trompet: parsedCue.textFields[1], // TODO: Should be text:
-						name: parsedCue.textFields[0]
+						trompet: parsedCue.graphic.textFields[1], // TODO: Should be text:
+						name: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -239,7 +246,7 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					display: 'program',
 					payload: {
 						type: GraphicName.DIREKTE,
-						location: parsedCue.textFields[0]
+						location: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -249,8 +256,8 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					display: 'program',
 					payload: {
 						type: GraphicName.HEADLINE,
-						trompet: parsedCue.textFields[1],
-						text: parsedCue.textFields[0]
+						trompet: parsedCue.graphic.textFields[1],
+						text: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -261,7 +268,7 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					payload: {
 						type: GraphicName.IDENT,
 						variant: 'ident_nyhederne',
-						text: parsedCue.textFields[0]
+						text: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -272,7 +279,7 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					payload: {
 						type: GraphicName.IDENT,
 						variant: 'ident_news',
-						text: parsedCue.textFields[0]
+						text: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -283,7 +290,7 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					payload: {
 						type: GraphicName.IDENT,
 						variant: 'ident_tv2sport',
-						text: parsedCue.textFields[0]
+						text: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -294,7 +301,7 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					payload: {
 						type: GraphicName.IDENT,
 						variant: 'ident_blank',
-						text: parsedCue.textFields[0]
+						text: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
@@ -304,8 +311,8 @@ export function createContentForGraphicTemplate(graphicName: string, parsedCue: 
 					display: 'program',
 					payload: literal<Topt>({
 						type: GraphicName.TOPT,
-						name: parsedCue.textFields[0],
-						title: parsedCue.textFields[1]
+						name: parsedCue.graphic.textFields[0],
+						title: parsedCue.graphic.textFields[1]
 					})
 				}
 			}
@@ -463,7 +470,7 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 function GetEnableForGrafikOfftube(
 	config: OfftubeShowstyleBlueprintConfig,
 	engine: GraphicEngine,
-	cue: CueDefinitionGrafik,
+	cue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
 ): TSR.TSRTimelineObj['enable'] {
@@ -554,38 +561,25 @@ export function GetTimelineLayerForGrafik(config: OfftubeShowstyleBlueprintConfi
 	}
 }
 
-function grafikName(
-	config: OfftubeShowstyleBlueprintConfig,
-	parsedCue: CueDefinitionGrafik | CueDefinitionMOS
-): string {
-	if (parsedCue.type === CueType.Grafik) {
-		return `${
-			parsedCue.template
-				? `${GetFullGrafikTemplateNameFromCue(config, parsedCue)}${parsedCue.textFields.length ? ' - ' : ''}`
-				: ''
-		}${parsedCue.textFields.filter(txt => !txt.match(/^;.\.../i)).join('\n - ')}`.replace(/,/gi, '')
-	} else {
-		return `${parsedCue.name ? parsedCue.name : ''}`
-	}
-}
-
 export function GetGrafikDuration(
 	config: OfftubeShowstyleBlueprintConfig,
-	cue: CueDefinitionGrafik | CueDefinitionMOS
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): number | undefined {
 	if (config.showStyle.GFXTemplates) {
-		if (cue.type === CueType.Grafik) {
+		if (GraphicIsInternal(cue)) {
 			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
+				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.graphic.template.toUpperCase() : false
 			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
 					return undefined
 				}
 			}
-		} else {
+		} else if (GraphicIsPilot(cue)) {
 			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.vcpid.toString().toUpperCase() : false
+				templ.INewsName
+					? templ.INewsName.toString().toUpperCase() === cue.graphic.vcpid.toString().toUpperCase()
+					: false
 			)
 			if (template) {
 				if (template.OutType && !template.OutType.toString().match(/default/i)) {
@@ -601,7 +595,7 @@ export function GetGrafikDuration(
 // TODO: This is copied from gallery D
 export function CreateTimingGrafik(
 	config: OfftubeShowstyleBlueprintConfig,
-	cue: CueDefinitionGrafik | CueDefinitionMOS
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): { start: number; duration?: number } {
 	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
 	const start = cue.start ? CalculateTime(cue.start) : 0

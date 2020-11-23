@@ -22,6 +22,7 @@ import { CueType, PartType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
+	CueDefinitionUnpairedTarget,
 	INewsStory,
 	PartDefinitionDVE,
 	PartDefinitionEkstern,
@@ -31,6 +32,7 @@ import {
 	PartDefinitionTelefon,
 	PartDefinitionVO
 } from './inewsConversion'
+import { CreatePartInvalid } from './parts'
 
 export interface GetSegmentShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
@@ -140,6 +142,7 @@ export function getSegmentBase<
 
 	let blueprintParts: BlueprintResultPart[] = []
 	const parsedParts = ParseBody(
+		config,
 		ingestSegment.externalId,
 		ingestSegment.name,
 		iNewsStory.body,
@@ -178,6 +181,15 @@ export function getSegmentBase<
 			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
 			blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords, true))
+			continue
+		}
+
+		const unpairedTargets = part.cues.filter(c => c.type === CueType.UNPAIRED_TARGET) as CueDefinitionUnpairedTarget[]
+		if (unpairedTargets.length) {
+			blueprintParts.push(CreatePartInvalid(part))
+			unpairedTargets.forEach(cue => {
+				context.warning(`No graphic found for ${cue.target}`)
+			})
 			continue
 		}
 

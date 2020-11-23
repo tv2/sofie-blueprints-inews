@@ -151,13 +151,13 @@ export type PartdefinitionTypes =
 const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+(?:VOV?)?|VOV?|VOSB)+\b/gi
 
 export function ParseBody(
+	config: TV2BlueprintConfig,
 	segmentId: string,
 	segmentName: string,
 	body: string,
 	cues: UnparsedCue[],
 	fields: any,
-	modified: number,
-	config: TV2BlueprintConfig
+	modified: number
 ): PartDefinition[] {
 	const definitions: PartDefinition[] = []
 	let definition: PartDefinition = initDefinition(fields, modified, segmentName)

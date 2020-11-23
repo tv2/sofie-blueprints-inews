@@ -7,6 +7,7 @@ import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartContext2, Par
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
+import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { OfftubeShowstyleBlueprintConfig } from './config'
 
@@ -22,11 +23,11 @@ export function OfftubeEvaluateCues(
 ) {
 	EvaluateCuesBase(
 		{
-			// EvaluateCueVIZ: OfftubeEvaluateVIZ,
 			EvaluateCueDVE: OfftubeEvaluateDVE,
 			EvaluateCueJingle: OfftubeEvaluateJingle,
 			EvaluateCueAdLib: OfftubeEvaluateAdLib,
-			EvaluateCueEkstern: OfftubeEvaluateEkstern
+			EvaluateCueEkstern: OfftubeEvaluateEkstern,
+			EvaluateCueGraphic: OfftubeEvaluateGrafikCaspar
 		},
 		context,
 		config,

@@ -11,10 +11,14 @@ import {
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
+import { EvaluateCueDesign } from './design'
 import { EvaluateDVE } from './dve'
 import { EvaluateEkstern } from './ekstern'
+import { EvaluateCueGraphic } from './graphic'
+import { EvaluateCueBackgroundLoop } from './graphicBackgroundLoop'
 import { EvaluateJingle } from './jingle'
 import { EvaluateLYD } from './lyd'
+import { EvaluateCueRouting } from './routing'
 import { EvaluateTelefon } from './telefon'
 
 export function EvaluateCues(
@@ -32,15 +36,14 @@ export function EvaluateCues(
 			EvaluateCueAdLib: EvaluateAdLib,
 			EvaluateCueClearGrafiks: EvaluateClearGrafiks,
 			EvaluateCueDVE: EvaluateDVE,
-			// EvaluateCueDesign: EvaluateDesign,
 			EvaluateCueEkstern: EvaluateEkstern,
-			// EvaluateCueGrafik: EvaluateGrafikViz,
 			EvaluateCueJingle: EvaluateJingle,
 			EvaluateCueLYD: EvaluateLYD,
-			// EvaluateCueMOS: EvaluateMOSViz,
-			// EvaluateCueTargetEngine: EvaluateTargetEngine,
-			EvaluateCueTelefon: EvaluateTelefon
-			// EvaluateCueVIZ: EvaluateVIZ
+			EvaluateCueTelefon: EvaluateTelefon,
+			EvaluateCueGraphic: EvaluateCueGraphic,
+			EvaluateCueBackgroundLoop: EvaluateCueBackgroundLoop,
+			EvaluateCueGraphicDesign: EvaluateCueDesign,
+			EvaluateCueRouting: EvaluateCueRouting
 		},
 		context,
 		config,

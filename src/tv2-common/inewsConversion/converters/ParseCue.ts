@@ -669,7 +669,7 @@ function parseTargetEngine(
 				type: 'internal',
 				template: graphicConfig.VizTemplate,
 				textFields: [],
-				cue: graphicConfig.INewsName
+				cue: iNewsName
 			},
 			iNewsCommand: graphicConfig.INewsCode,
 			start: engineCue.start,

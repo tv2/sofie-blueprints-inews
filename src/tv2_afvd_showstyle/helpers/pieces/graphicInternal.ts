@@ -1,3 +1,4 @@
+import { SourceLayer } from '../../layers'
 import {
 	GraphicsContent,
 	IBlueprintActionManifest,
@@ -7,52 +8,49 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
-	CalculateTime,
-	CueDefinition,
 	CueDefinitionGraphic,
 	GetDefaultOut,
-	GetFullGrafikTemplateNameFromCue,
-	GetInfiniteModeForGrafik,
-	GraphicLLayer,
+	GetFullGraphicTemplateNameFromCue,
+	GetInfiniteModeForGraphic,
+	GraphicDisplayName,
+	GraphicInternal,
 	literal,
 	PartContext2,
-	PartDefinition,
-	PartToParentClass
+	PartDefinition
 } from 'tv2-common'
-import { ControlClasses, CueType, GraphicEngine } from 'tv2-constants'
-import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
+import { CreateTimingGrafik, GetEnableForGrafik, GetSourceLayerForGrafik, GetTimelineLayerForGrafik } from './graphic'
 
-export function EvaluateCueGraphic(
+export function EvaluateCueGraphicInternal(
 	config: BlueprintConfig,
 	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
 	partId: string,
-	parsedCue: CueDefinitionGraphic,
-	engine: GraphicEngine,
+	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	adlib: boolean,
 	partDefinition?: PartDefinition,
-	isTlfPrimary?: boolean,
 	rank?: number
 ) {
-	if (parsedCue.graphic.type === 'pilot') return
 	// Whether this graphic "sticks" to the source it was first assigned to.
 	// e.g. if this is attached to Live 1, when Live 1 is recalled later in a segment,
 	//  this graphic should be shown again.
 	const isStickyIdent = !!parsedCue.graphic.template.match(/direkte/i)
 
-	const mappedTemplate = GetFullGrafikTemplateNameFromCue(config, parsedCue)
+	const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
 	if (!mappedTemplate || !mappedTemplate.length) {
-		context.warning(`No valid template found for ${parsedCue.template}`)
+		context.warning(`No valid template found for ${parsedCue.graphic.template}`)
 		return
 	}
 
-	const sourceLayerId = isTlfPrimary
-		? SourceLayer.PgmGraphicsTLF
-		: GetSourceLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue), isStickyIdent)
+	const engine = parsedCue.target
+
+	const sourceLayerId =
+		engine === 'TLF'
+			? SourceLayer.PgmGraphicsTLF
+			: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue), isStickyIdent)
 
 	const outputLayerId = engine === 'WALL' ? 'sec' : 'overlay'
 
@@ -61,29 +59,29 @@ export function EvaluateCueGraphic(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
-				name: grafikName(config, parsedCue),
+				name: GraphicDisplayName(config, parsedCue),
 				sourceLayerId,
 				outputLayerId,
-				...(isTlfPrimary || (parsedCue.end && parsedCue.end.infiniteMode)
+				...(engine === 'TLF' || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
-				lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isStickyIdent),
+				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
 				content: literal<GraphicsContent>({
-					fileName: parsedCue.template,
-					path: parsedCue.template,
+					fileName: parsedCue.graphic.template,
+					path: parsedCue.graphic.template,
 					ignoreMediaObjectStatus: true,
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
 							priority: 1,
-							layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
+							layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: mappedTemplate,
-								templateData: parsedCue.textFields,
-								channelName: engine.match(/WALL/i) ? 'WALL1' : 'OVL1'
+								templateData: parsedCue.graphic.textFields,
+								channelName: engine === 'WALL' ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
 							}
 						})
 					])
@@ -93,8 +91,8 @@ export function EvaluateCueGraphic(
 	} else {
 		const piece = literal<IBlueprintPiece>({
 			externalId: partId,
-			name: grafikName(config, parsedCue),
-			...(isTlfPrimary || engine === 'WALL'
+			name: GraphicDisplayName(config, parsedCue),
+			...(engine === 'TLF' || engine === 'WALL'
 				? { enable: { start: 0 } }
 				: {
 						enable: {
@@ -103,23 +101,23 @@ export function EvaluateCueGraphic(
 				  }),
 			outputLayerId,
 			sourceLayerId,
-			lifespan: GetInfiniteModeForGrafik(engine, config, parsedCue, isTlfPrimary, isStickyIdent),
+			lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
 			content: literal<GraphicsContent>({
-				fileName: parsedCue.template,
-				path: parsedCue.template,
+				fileName: parsedCue.graphic.template,
+				path: parsedCue.graphic.template,
 				ignoreMediaObjectStatus: true,
 				timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
 						enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
 						priority: 1,
-						layer: GetTimelineLayerForGrafik(config, GetFullGrafikTemplateNameFromCue(config, parsedCue)),
+						layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 							templateName: mappedTemplate,
-							templateData: parsedCue.textFields,
-							channelName: !!engine.match(/WALL/i) ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
+							templateData: parsedCue.graphic.textFields,
+							channelName: engine === 'WALL' ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
 						}
 					})
 				])
@@ -145,164 +143,4 @@ export function EvaluateCueGraphic(
 			)
 		}
 	}
-}
-
-export function GetEnableForGrafik(
-	config: BlueprintConfig,
-	engine: GraphicEngine,
-	cue: CueDefinition,
-	isStickyIdent: boolean,
-	partDefinition?: PartDefinition
-): { while: string } | { start: number } {
-	if (engine === 'WALL') {
-		return {
-			while: '1'
-		}
-	}
-	if (isStickyIdent) {
-		return {
-			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
-		}
-	}
-
-	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B' && partDefinition) {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
-	}
-
-	if (config.studio.PreventOverlayWithFull) {
-		return {
-			while: '!.full'
-		}
-	} else {
-		return {
-			start: 0
-		}
-	}
-}
-
-export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string, isStickyIdent: boolean) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
-
-	if (!conf) {
-		return SourceLayer.PgmGraphicsOverlay
-	}
-
-	switch (conf.SourceLayer) {
-		// TODO: When adding more sourcelayers
-		// This is here to guard against bad user input
-		case SourceLayer.PgmGraphicsHeadline:
-			return SourceLayer.PgmGraphicsHeadline
-		case SourceLayer.PgmGraphicsIdent:
-			if (isStickyIdent) {
-				return SourceLayer.PgmGraphicsIdentPersistent
-			}
-
-			return SourceLayer.PgmGraphicsIdent
-		case SourceLayer.PgmGraphicsLower:
-			return SourceLayer.PgmGraphicsLower
-		case SourceLayer.PgmGraphicsOverlay:
-			return SourceLayer.PgmGraphicsOverlay
-		case SourceLayer.PgmGraphicsTLF:
-			return SourceLayer.PgmGraphicsTLF
-		case SourceLayer.PgmGraphicsTema:
-			return SourceLayer.PgmGraphicsTema
-		case SourceLayer.PgmGraphicsTop:
-			return SourceLayer.PgmGraphicsTop
-		case SourceLayer.WallGraphics:
-			return SourceLayer.WallGraphics
-		default:
-			return SourceLayer.PgmGraphicsOverlay
-	}
-}
-
-export function GetTimelineLayerForGrafik(config: BlueprintConfig, name: string) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
-
-	if (!conf) {
-		return GraphicLLayer.GraphicLLayerDesign
-	}
-
-	switch (conf.LayerMapping) {
-		// TODO: When adding more output layers
-		case GraphicLLayer.GraphicLLayerOverlayIdent:
-			return GraphicLLayer.GraphicLLayerOverlayIdent
-		case GraphicLLayer.GraphicLLayerOverlayTopt:
-			return GraphicLLayer.GraphicLLayerOverlayTopt
-		case GraphicLLayer.GraphicLLayerOverlayLower:
-			return GraphicLLayer.GraphicLLayerOverlayLower
-		case GraphicLLayer.GraphicLLayerOverlayHeadline:
-			return GraphicLLayer.GraphicLLayerOverlayHeadline
-		case GraphicLLayer.GraphicLLayerOverlayTema:
-			return GraphicLLayer.GraphicLLayerOverlayTema
-		case GraphicLLayer.GraphicLLayerWall:
-			return GraphicLLayer.GraphicLLayerWall
-		default:
-			return GraphicLLayer.GraphicLLayerOverlay
-	}
-}
-
-export function grafikName(config: BlueprintConfig, parsedCue: CueDefinitionGrafik | CueDefinitionMOS): string {
-	if (parsedCue.type === CueType.Grafik) {
-		return `${
-			parsedCue.template ? `${GetFullGrafikTemplateNameFromCue(config, parsedCue)}` : ''
-		}${parsedCue.textFields.filter(txt => !txt.match(/^;.\.../i)).map(txt => ` - ${txt}`)}`.replace(/,/gi, '')
-	} else {
-		return `${parsedCue.name ? parsedCue.name : ''}`
-	}
-}
-
-export function CreateTimingGrafik(
-	config: BlueprintConfig,
-	cue: CueDefinitionGrafik | CueDefinitionMOS,
-	defaultTime: boolean = true
-): { start: number; duration?: number } {
-	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
-	const start = cue.start ? CalculateTime(cue.start) : 0
-	start !== undefined ? (ret.start = start) : (ret.start = 0)
-
-	const duration = GetGrafikDuration(config, cue, defaultTime)
-	const end = cue.end
-		? cue.end.infiniteMode
-			? undefined
-			: CalculateTime(cue.end)
-		: duration
-		? ret.start + duration
-		: undefined
-	ret.duration = end ? end - ret.start : undefined
-
-	return ret
-}
-
-export function GetGrafikDuration(
-	config: BlueprintConfig,
-	cue: CueDefinitionGrafik | CueDefinitionMOS,
-	defaultTime: boolean
-): number | undefined {
-	if (config.showStyle.GFXTemplates) {
-		if (cue.type === CueType.Grafik) {
-			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.template.toUpperCase() : false
-			)
-			if (template) {
-				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return undefined
-				}
-			}
-		} else {
-			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.vcpid.toString().toUpperCase() : false
-			)
-			if (template) {
-				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return undefined
-				}
-			}
-		}
-	}
-
-	return defaultTime ? GetDefaultOut(config) : undefined
 }
