@@ -956,7 +956,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionTelefon>({
 				type: CueType.Telefon,
 				source: 'TLF 2',
-				vizObj: literal<CueDefinitionGraphic<GraphicInternal>>({
+				graphic: literal<CueDefinitionGraphic<GraphicInternal>>({
 					type: CueType.Graphic,
 					target: 'OVL',
 
@@ -991,7 +991,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionTelefon>({
 				type: CueType.Telefon,
 				source: 'TLF 2',
-				vizObj: literal<CueDefinitionGraphic<GraphicPilot>>({
+				graphic: literal<CueDefinitionGraphic<GraphicPilot>>({
 					type: CueType.Graphic,
 					target: 'TLF',
 

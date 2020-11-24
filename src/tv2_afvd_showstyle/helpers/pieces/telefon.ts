@@ -28,7 +28,7 @@ export function EvaluateTelefon(
 	adlib?: boolean,
 	rank?: number
 ) {
-	if (parsedCue.vizObj) {
+	if (parsedCue.graphic) {
 		EvaluateCueGraphic(
 			config,
 			context,
@@ -36,7 +36,7 @@ export function EvaluateTelefon(
 			adlibPieces,
 			actions,
 			partId,
-			parsedCue.vizObj,
+			parsedCue.graphic,
 			!!adlib,
 			partDefinition,
 			rank
@@ -45,7 +45,7 @@ export function EvaluateTelefon(
 		if ((!adlib && pieces.length) || (adlib && adlibPieces.length)) {
 			if (adlib) {
 				// TODO: This find feels redundant
-				const graphicPieceIndex = adlibPieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.vizObj!))
+				const graphicPieceIndex = adlibPieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.graphic!))
 				const graphicPiece = adlibPieces[graphicPieceIndex]
 				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
 					graphicPiece.content.timelineObjects.push(
@@ -70,7 +70,7 @@ export function EvaluateTelefon(
 					adlibPieces[graphicPieceIndex] = graphicPiece
 				}
 			} else {
-				const graphicPieceIndex = pieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.vizObj!))
+				const graphicPieceIndex = pieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.graphic!))
 				const graphicPiece = pieces[graphicPieceIndex]
 				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
 					graphicPiece.content.timelineObjects.push(

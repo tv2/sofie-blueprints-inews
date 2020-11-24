@@ -41,7 +41,7 @@ export interface CueDefinitionDVE extends CueDefinitionBase {
 export interface CueDefinitionTelefon extends CueDefinitionBase {
 	type: CueType.Telefon
 	source: string
-	vizObj?: CueDefinitionGraphic<GraphicInternalOrPilot>
+	graphic?: CueDefinitionGraphic<GraphicInternalOrPilot>
 }
 
 export interface CueDefinitionMic extends CueDefinitionBase {
@@ -442,15 +442,15 @@ function parseTelefon(cue: string[], config: TV2BlueprintConfig): CueDefinitionT
 		if (cue[1].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
 			const graphic = parsekg(cue.slice(1, cue.length), config)
 			if (graphic.type === CueType.Graphic) {
-				telefonCue.vizObj = graphic
+				telefonCue.graphic = graphic
 			}
 		} else {
 			const pilot = parsePilot(cue.slice(1, cue.length))
 			if (pilot.type === CueType.Graphic) {
 				pilot.target = 'TLF'
-				telefonCue.vizObj = pilot
+				telefonCue.graphic = pilot
 			} else {
-				telefonCue.vizObj = UnpairedPilotToGraphic(pilot, 'TLF')
+				telefonCue.graphic = UnpairedPilotToGraphic(pilot, 'TLF')
 			}
 		}
 	}

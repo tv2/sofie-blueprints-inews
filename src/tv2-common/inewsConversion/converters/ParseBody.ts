@@ -316,7 +316,7 @@ export function ParseBody(
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	const index = partDefinition.cues.findIndex(
-		cue => (cue.type === CueType.UNPAIRED_TARGET && cue.mergeable) || (cue.type === CueType.Telefon && !cue.vizObj)
+		cue => (cue.type === CueType.UNPAIRED_TARGET && cue.mergeable) || (cue.type === CueType.Telefon && !cue.graphic)
 	)
 
 	if (index === -1) {
@@ -345,7 +345,7 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 		if (targetCue.type === CueType.UNPAIRED_TARGET) {
 			partDefinition.cues[index] = UnpairedPilotToGraphic(mosCue, targetCue.target, targetCue)
 		} else if (targetCue.type === CueType.Telefon) {
-			targetCue.vizObj = UnpairedPilotToGraphic(mosCue, 'TLF', targetCue)
+			targetCue.graphic = UnpairedPilotToGraphic(mosCue, 'TLF', targetCue)
 			partDefinition.cues[index] = targetCue
 		}
 		partDefinition.cues.splice(index + 1, 1)

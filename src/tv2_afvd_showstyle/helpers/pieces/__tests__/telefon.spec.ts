@@ -59,7 +59,7 @@ describe('telefon', () => {
 		const cue: CueDefinitionTelefon = {
 			type: CueType.Telefon,
 			source: 'TLF 1',
-			vizObj: literal<CueDefinitionGraphic<GraphicInternal>>({
+			graphic: literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'TLF',
 				graphic: {

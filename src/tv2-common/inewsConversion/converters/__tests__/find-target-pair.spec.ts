@@ -119,7 +119,7 @@ describe('Find target pair', () => {
 					type: CueType.Telefon,
 					source: 'TLF 2',
 					iNewsCommand: 'TELEFON',
-					vizObj: literal<CueDefinitionGraphic<GraphicPilot>>({
+					graphic: literal<CueDefinitionGraphic<GraphicPilot>>({
 						type: CueType.Graphic,
 						target: 'TLF',
 						graphic: {

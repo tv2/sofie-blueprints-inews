@@ -1245,7 +1245,7 @@ describe('Body parser', () => {
 							type: CueType.Telefon,
 							source: 'TLF 2',
 							iNewsCommand: 'TELEFON',
-							vizObj: literal<CueDefinitionGraphic<GraphicInternal>>({
+							graphic: literal<CueDefinitionGraphic<GraphicInternal>>({
 								type: CueType.Graphic,
 								target: 'OVL',
 								graphic: {
@@ -1343,7 +1343,7 @@ describe('Body parser', () => {
 						literal<CueDefinitionTelefon>({
 							type: CueType.Telefon,
 							source: 'TLF 2',
-							vizObj: literal<CueDefinitionGraphic<GraphicInternal>>({
+							graphic: literal<CueDefinitionGraphic<GraphicInternal>>({
 								type: CueType.Graphic,
 								target: 'OVL',
 								graphic: {

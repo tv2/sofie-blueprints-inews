@@ -71,9 +71,9 @@ describe('Graphics', () => {
 		const result = CreatePartGrafik(partContext, config, partDefintion, 0)
 
 		expect(context.getNotes().map(msg => msg.message)).toEqual([`No graphic found after GRAFIK cue`])
-		expect(result.pieces.length).toBe(0)
-		expect(result.adLibPieces.length).toBe(0)
-		expect(result.actions?.length).toBe(0)
+		expect(result.pieces).toHaveLength(0)
+		expect(result.adLibPieces).toHaveLength(0)
+		expect(result.actions).toHaveLength(0)
 		expect(result.part.invalid).toBe(true)
 	})
 
@@ -143,7 +143,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(1)
+		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
 		expect(piece.outputLayerId).toBe('pgm') // TODO: Enum
@@ -152,7 +152,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline.length).toBe(19)
+		expect(timeline).toHaveLength(19)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -209,7 +209,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(1)
+		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
 		expect(piece.outputLayerId).toBe('overlay') // TODO: Enum
@@ -218,7 +218,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline.length).toBe(1)
+		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -268,7 +268,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(1)
+		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
 		expect(piece.outputLayerId).toBe('sec') // TODO: Enum
@@ -277,7 +277,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline.length).toBe(1)
+		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -324,7 +324,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(1)
+		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
 		expect(piece.outputLayerId).toBe('pgm') // TODO: Enum
@@ -333,7 +333,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline.length).toBe(19)
+		expect(timeline).toHaveLength(19)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -390,7 +390,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(2)
+		expect(result.pieces).toHaveLength(2)
 		const auxPiece = result.pieces.find(p => p.outputLayerId === 'aux')! // TODO: AUX
 		expect(auxPiece.enable).toEqual({ start: 0 })
 		expect(auxPiece.sourceLayerId).toBe(SourceLayer.VizFullIn1)
@@ -431,7 +431,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartUnknown(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(1)
+		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.outputLayerId).toBe('sec')
@@ -468,7 +468,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartUnknown(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(1)
+		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.name).toBe('DESIGN_SC')
@@ -521,7 +521,7 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartUnknown(partContext, config, partDefinition, 0)
-		expect(result.pieces.length).toBe(1)
+		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.enable).toEqual({ start: 5000, duration: 4000 })
