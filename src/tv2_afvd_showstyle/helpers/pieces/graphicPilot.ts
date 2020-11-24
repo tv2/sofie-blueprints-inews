@@ -60,7 +60,7 @@ export function EvaluateCueGraphicPilot(
 			literal<IBlueprintPiece>({
 				externalId: partId,
 				name: GraphicDisplayName(config, parsedCue),
-				...(engine === 'TLF' || engine === 'WALL'
+				...(engine === 'TLF' || engine === 'WALL' || engine === 'FULL'
 					? { enable: { start: 0 } }
 					: {
 							enable: {
@@ -159,7 +159,7 @@ function GetMosObjContent(
 					continueStep: parsedCue.graphic.continueCount,
 					noAutoPreloading: false,
 					channelName: engine === 'WALL' ? 'WALL1' : engine === 'OVL' ? 'OVL1' : 'FULL1', // TODO: TranslateEngine
-					...(engine === 'WALL'
+					...(engine === 'WALL' || !config.studio.PreventOverlayWithFull
 						? {}
 						: {
 								delayTakeAfterOutTransition: true,

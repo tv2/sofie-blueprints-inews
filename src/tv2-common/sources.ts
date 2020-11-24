@@ -4,14 +4,15 @@ import { NotesContext, SourceLayerType } from 'tv-automation-sofie-blueprints-in
 import { literal } from 'tv2-common'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
 
+// TODO: BEGONE!
 export function parseMapStr(
 	context: NotesContext | undefined,
 	str: string,
-	canBeStrings: boolean
-): Array<{ id: string; val: any }> {
+	_canBeStrings: boolean
+): Array<{ id: string; val: number }> {
 	str = str.trim()
 
-	const res: Array<{ id: string; val: number | string }> = []
+	const res: Array<{ id: string; val: number }> = []
 
 	const inputs = str.split(',')
 	inputs.forEach(i => {
@@ -25,11 +26,8 @@ export function parseMapStr(
 				const ind = p[0]
 				const val = parseInt(p[1], 10)
 
-				if (!canBeStrings && !isNaN(val)) {
+				if (!isNaN(val)) {
 					res.push({ id: ind, val: parseInt(p[1], 10) })
-					return
-				} else if (canBeStrings && p[1] !== undefined) {
-					res.push({ id: ind, val: p[1] })
 					return
 				}
 			}

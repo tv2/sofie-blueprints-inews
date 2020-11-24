@@ -54,12 +54,14 @@ export function EvaluateCueGraphicInternal(
 
 	const outputLayerId = engine === 'WALL' ? 'sec' : 'overlay'
 
+	const name = GraphicDisplayName(config, parsedCue)
+
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
-				name: GraphicDisplayName(config, parsedCue),
+				name,
 				sourceLayerId,
 				outputLayerId,
 				...(engine === 'TLF' || (parsedCue.end && parsedCue.end.infiniteMode)
@@ -91,7 +93,7 @@ export function EvaluateCueGraphicInternal(
 	} else {
 		const piece = literal<IBlueprintPiece>({
 			externalId: partId,
-			name: GraphicDisplayName(config, parsedCue),
+			name,
 			...(engine === 'TLF' || engine === 'WALL'
 				? { enable: { start: 0 } }
 				: {

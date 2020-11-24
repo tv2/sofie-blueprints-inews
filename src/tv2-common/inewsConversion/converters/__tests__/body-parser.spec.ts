@@ -27,6 +27,7 @@ import {
 	CueDefinitionGraphic,
 	CueDefinitionJingle,
 	CueDefinitionTelefon,
+	CueDefinitionUnpairedPilot,
 	CueDefinitionUnpairedTarget,
 	GraphicInternal,
 	GraphicPilot,
@@ -1616,7 +1617,7 @@ describe('Body parser', () => {
 							type: 'internal',
 							template: 'SC_LOOP_ON',
 							textFields: [],
-							cue: 'sc-loop'
+							cue: 'SC-LOOP'
 						},
 						start: {
 							seconds: 0,
@@ -1868,7 +1869,7 @@ describe('Body parser', () => {
 							type: 'internal',
 							template: 'SC_LOOP_ON',
 							textFields: [],
-							cue: 'sc-loop'
+							cue: 'SC-LOOP'
 						},
 						start: {
 							seconds: 0,
@@ -1926,7 +1927,7 @@ describe('Body parser', () => {
 							type: 'internal',
 							template: 'SC_LOOP_ON',
 							textFields: [],
-							cue: 'sc-loop' // Pulled from config
+							cue: 'SC-LOOP'
 						},
 						start: {
 							seconds: 0,
@@ -2069,7 +2070,7 @@ describe('Body parser', () => {
 							type: 'internal',
 							template: 'SC_LOOP_ON',
 							textFields: [],
-							cue: 'sc-loop'
+							cue: 'SC-LOOP'
 						},
 						start: {
 							seconds: 0,
@@ -2623,6 +2624,529 @@ describe('Body parser', () => {
 			})
 		])
 	})
+
+	/** Merging Cues From Config */
+
+	test('Merge VCP', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['SS=SC-STILLS'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'WALL',
+						graphic: {
+							type: 'pilot',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+							vcpid: 2520177,
+							continueCount: -1
+						},
+						iNewsCommand: 'SS',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Preserve internal', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['SS=sc-loop'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionGraphic<GraphicInternal>>({
+						type: CueType.Graphic,
+						target: 'WALL',
+						graphic: {
+							type: 'internal',
+							template: 'SC_LOOP_ON',
+							cue: 'sc-loop',
+							textFields: []
+						},
+						iNewsCommand: 'SS'
+					}),
+					literal<CueDefinitionUnpairedPilot>({
+						type: CueType.UNPAIRED_PILOT,
+						name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+						vcpid: 2520177,
+						continueCount: -1,
+						iNewsCommand: 'VCP',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				rawType: 'KAM 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Preserves unconfigured target wall', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['SS=NEW_WALL_GRAPHIC'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionUnpairedTarget>({
+						type: CueType.UNPAIRED_TARGET,
+						target: 'WALL',
+						iNewsCommand: 'SS'
+					}),
+					literal<CueDefinitionUnpairedPilot>({
+						type: CueType.UNPAIRED_PILOT,
+						name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+						vcpid: 2520177,
+						continueCount: -1,
+						iNewsCommand: 'VCP',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				rawType: 'KAM 1',
+				script: '',
+				fields: {},
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Merge GRAFIK=FULL', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['GRAFIK=FULL'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionUnknown>({
+				type: PartType.Unknown,
+				externalId: '',
+				variant: {},
+				cues: [
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'FULL',
+						graphic: {
+							type: 'pilot',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+							vcpid: 2520177,
+							continueCount: -1
+						},
+						iNewsCommand: 'GRAFIK',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				rawType: '',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Merge GRAFIK=OVL', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['GRAFIK=OVL'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'OVL',
+						graphic: {
+							type: 'pilot',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+							vcpid: 2520177,
+							continueCount: -1
+						},
+						iNewsCommand: 'GRAFIK',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Handles VCP for #kg (other cues)', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['#kg MERGE'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'OVL',
+						graphic: {
+							type: 'pilot',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+							vcpid: 2520177,
+							continueCount: -1
+						},
+						iNewsCommand: '#kg',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Does not merge GRAFIK=FULL with MOSART=L', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['GRAFIK=FULL'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|O',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|O'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionUnknown>({
+				type: PartType.Unknown,
+				variant: {},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionUnpairedTarget>({
+						type: CueType.UNPAIRED_TARGET,
+						target: 'FULL',
+						iNewsCommand: 'GRAFIK',
+						mergeable: true
+					}),
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'OVL',
+						graphic: {
+							type: 'pilot',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|O',
+							vcpid: 2520177,
+							continueCount: -1
+						},
+						iNewsCommand: 'VCP',
+						start: {
+							seconds: 0
+						},
+						end: {
+							infiniteMode: 'O'
+						}
+					})
+				],
+				rawType: '',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Does not merge GRAFIK=FULL with MOSART=W', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['GRAFIK=FULL'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=W|00:00|O',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=W|00:00|O'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionUnknown>({
+				type: PartType.Unknown,
+				variant: {},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionUnpairedTarget>({
+						type: CueType.UNPAIRED_TARGET,
+						target: 'FULL',
+						iNewsCommand: 'GRAFIK',
+						mergeable: true
+					}),
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'WALL',
+						graphic: {
+							type: 'pilot',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=W|00:00|O',
+							vcpid: 2520177,
+							continueCount: -1
+						},
+						iNewsCommand: 'VCP',
+						start: {
+							seconds: 0
+						},
+						end: {
+							infiniteMode: 'O'
+						}
+					})
+				],
+				rawType: '',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Does not merge GRAFIK=FULL with MOSART=F', () => {
+		const body = '\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['GRAFIK=FULL'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=F|00:00|O',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=F|00:00|O'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionUnknown>({
+				type: PartType.Unknown,
+				variant: {},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionUnpairedTarget>({
+						type: CueType.UNPAIRED_TARGET,
+						target: 'FULL',
+						iNewsCommand: 'GRAFIK',
+						mergeable: true
+					})
+				],
+				rawType: '',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionUnknown>({
+				type: PartType.Unknown,
+				variant: {},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'FULL',
+						graphic: {
+							type: 'pilot',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=F|00:00|O',
+							vcpid: 2520177,
+							continueCount: -1
+						},
+						iNewsCommand: 'VCP',
+						start: {
+							seconds: 0
+						},
+						end: {
+							infiniteMode: 'O'
+						}
+					})
+				],
+				rawType: '',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	/** END Merging Cues From Config */
 })
 
 export function stripExternalId(definitions: PartDefinition[]) {

@@ -4,11 +4,17 @@ import {
 	IBlueprintPiece,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionTelefon, GetSisyfosTimelineObjForCamera, literal, PartContext2, PartDefinition } from 'tv2-common'
+import {
+	CueDefinitionTelefon,
+	GetSisyfosTimelineObjForCamera,
+	GraphicDisplayName,
+	literal,
+	PartContext2,
+	PartDefinition
+} from 'tv2-common'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
-import { EvaluateGrafikViz } from './grafikViz'
-import { EvaluateMOSViz } from './mos'
+import { EvaluateCueGraphic } from './graphic'
 
 export function EvaluateTelefon(
 	config: BlueprintConfig,
@@ -23,43 +29,26 @@ export function EvaluateTelefon(
 	rank?: number
 ) {
 	if (parsedCue.vizObj) {
-		if (parsedCue.vizObj.graphic.type === 'internal') {
-			EvaluateGrafikViz(
-				config,
-				context,
-				pieces,
-				adlibPieces,
-				actions,
-				partId,
-				parsedCue.vizObj,
-				'OVL',
-				adlib ? adlib : parsedCue.adlib ? parsedCue.adlib : false,
-				partDefinition,
-				true,
-				rank
-			)
-		} else {
-			EvaluateMOSViz(
-				config,
-				context,
-				pieces,
-				adlibPieces,
-				actions,
-				partId,
-				parsedCue.vizObj,
-				'OVL', // TODO: Change to full if using a separate engine
-				adlib ? adlib : parsedCue.adlib ? parsedCue.adlib : false,
-				true,
-				rank
-			)
-		}
+		EvaluateCueGraphic(
+			config,
+			context,
+			pieces,
+			adlibPieces,
+			actions,
+			partId,
+			parsedCue.vizObj,
+			!!adlib,
+			partDefinition,
+			rank
+		)
 
 		if ((!adlib && pieces.length) || (adlib && adlibPieces.length)) {
 			if (adlib) {
-				const index = adlibPieces.length - 1
-				const adlibPiece = adlibPieces[index]
-				if (adlibPiece.content && adlibPiece.content.timelineObjects) {
-					adlibPiece.content.timelineObjects.push(
+				// TODO: This find feels redundant
+				const graphicPieceIndex = adlibPieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.vizObj!))
+				const graphicPiece = adlibPieces[graphicPieceIndex]
+				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
+					graphicPiece.content.timelineObjects.push(
 						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
@@ -76,15 +65,15 @@ export function EvaluateTelefon(
 
 						GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 					)
-					adlibPiece.name = `${parsedCue.source}`
-					adlibPiece.adlibPreroll = config.studio.PilotPrerollDuration
-					adlibPieces[index] = adlibPiece
+					graphicPiece.name = `${parsedCue.source}`
+					graphicPiece.adlibPreroll = config.studio.PilotPrerollDuration
+					adlibPieces[graphicPieceIndex] = graphicPiece
 				}
 			} else {
-				const index = pieces.length - 1
-				const piece = pieces[index]
-				if (piece.content && piece.content.timelineObjects) {
-					piece.content.timelineObjects.push(
+				const graphicPieceIndex = pieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.vizObj!))
+				const graphicPiece = pieces[graphicPieceIndex]
+				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
+					graphicPiece.content.timelineObjects.push(
 						literal<TSR.TimelineObjSisyfosChannel>({
 							id: '',
 							enable: {
@@ -101,9 +90,9 @@ export function EvaluateTelefon(
 
 						GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 					)
-					piece.name = `${parsedCue.source}`
-					piece.adlibPreroll = config.studio.PilotPrerollDuration
-					pieces[index] = piece
+					graphicPiece.name = `${parsedCue.source}`
+					graphicPiece.adlibPreroll = config.studio.PilotPrerollDuration
+					pieces[graphicPieceIndex] = graphicPiece
 				}
 			}
 		}

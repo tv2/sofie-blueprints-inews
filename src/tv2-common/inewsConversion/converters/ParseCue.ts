@@ -82,6 +82,7 @@ export interface CueDefinitionUnpairedTarget extends CueDefinitionBase {
 	type: CueType.UNPAIRED_TARGET
 	target: GraphicEngine
 	routing?: CueDefinitionRouting
+	mergeable?: boolean
 }
 
 export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
@@ -321,7 +322,8 @@ function parsekg(
 				: graphicConfig.VizDestination.match(/WALL/i)
 				? 'WALL'
 				: 'OVL',
-			iNewsCommand: graphicConfig.INewsCode
+			iNewsCommand: graphicConfig.INewsCode,
+			mergeable: true
 		})
 	}
 
@@ -354,7 +356,7 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 	if (realCue.length === 4) {
 		const vcpid = realCue[1].match(/^VCPID=(\d+)$/i)
 		const continueCount = realCue[2].match(/^ContinueCount=(-?\d+)$/i)
-		const timing = realCue[0].match(/L\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/i)
+		const timing = realCue[0].match(/[L|F|W]\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/i)
 
 		if (vcpid && continueCount) {
 			pilotCue.name = realCue[0]
@@ -650,33 +652,37 @@ function parseTargetEngine(
 			tmpl.INewsCode.toUpperCase() === code?.toUpperCase() && tmpl.INewsName.toUpperCase() === iNewsName.toUpperCase()
 	)
 
-	if (graphicConfig && !graphicConfig.VizTemplate.toUpperCase().match(/^VCP$/i)) {
-		if (graphicConfig.IsDesign) {
-			return literal<CueDefinitionGraphicDesign>({
-				type: CueType.GraphicDesign,
-				design: graphicConfig.VizTemplate,
-				iNewsCommand: code,
+	if (graphicConfig) {
+		if (!!graphicConfig.VizTemplate.toUpperCase().match(/^VCP$/i)) {
+			engineCue.mergeable = true
+		} else {
+			if (graphicConfig.IsDesign) {
+				return literal<CueDefinitionGraphicDesign>({
+					type: CueType.GraphicDesign,
+					design: graphicConfig.VizTemplate,
+					iNewsCommand: code,
+					start: engineCue.start,
+					end: engineCue.end,
+					adlib: engineCue.adlib
+				})
+			}
+
+			return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
+				type: CueType.Graphic,
+				target: engineCue.target,
+				graphic: {
+					type: 'internal',
+					template: graphicConfig.VizTemplate,
+					textFields: [],
+					cue: iNewsName
+				},
+				iNewsCommand: graphicConfig.INewsCode,
 				start: engineCue.start,
 				end: engineCue.end,
-				adlib: engineCue.adlib
+				adlib: engineCue.adlib,
+				routing: engineCue.routing
 			})
 		}
-
-		return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
-			type: CueType.Graphic,
-			target: engineCue.target,
-			graphic: {
-				type: 'internal',
-				template: graphicConfig.VizTemplate,
-				textFields: [],
-				cue: iNewsName
-			},
-			iNewsCommand: graphicConfig.INewsCode,
-			start: engineCue.start,
-			end: engineCue.end,
-			adlib: engineCue.adlib,
-			routing: engineCue.routing
-		})
 	}
 
 	return engineCue

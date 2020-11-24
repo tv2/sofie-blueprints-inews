@@ -1,4 +1,4 @@
-/*import {
+import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
@@ -7,8 +7,9 @@
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
-	CueDefinitionGrafik,
+	CueDefinitionGraphic,
 	CueDefinitionTelefon,
+	GraphicInternal,
 	GraphicLLayer,
 	literal,
 	PartContext2,
@@ -58,11 +59,15 @@ describe('telefon', () => {
 		const cue: CueDefinitionTelefon = {
 			type: CueType.Telefon,
 			source: 'TLF 1',
-			vizObj: literal<CueDefinitionGrafik>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['Odense', 'Copenhagen'],
+			vizObj: literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'TLF',
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['Odense', 'Copenhagen']
+				},
 				iNewsCommand: 'kg'
 			}),
 			start: {
@@ -179,6 +184,6 @@ describe('telefon', () => {
 			})
 		])
 	})
-})*/
+})
 
 // TODO: INVALID TEST

@@ -1,15 +1,7 @@
 import { TV2BlueprintConfig } from 'src/tv2-common/blueprintConfig'
 import { CueType, PartType } from 'tv2-constants'
 import { PostProcessDefinitions } from '../../../tv2_afvd_showstyle/helpers/postProcessDefinitions'
-import {
-	CueDefinition,
-	CueDefinitionTelefon,
-	CueDefinitionUnpairedPilot,
-	CueDefinitionUnpairedTarget,
-	ParseCue,
-	UnpairedPilotToGraphic,
-	UnparsedCue
-} from './ParseCue'
+import { CueDefinition, CueDefinitionUnpairedPilot, ParseCue, UnpairedPilotToGraphic, UnparsedCue } from './ParseCue'
 
 interface INewsFields {
 	title: string
@@ -324,7 +316,7 @@ export function ParseBody(
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	const index = partDefinition.cues.findIndex(
-		cue => cue.type === CueType.UNPAIRED_TARGET || (cue.type === CueType.Telefon && !cue.vizObj)
+		cue => (cue.type === CueType.UNPAIRED_TARGET && cue.mergeable) || (cue.type === CueType.Telefon && !cue.vizObj)
 	)
 
 	if (index === -1) {
@@ -332,23 +324,34 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 		return false
 	}
 
-	if (index + 1 < partDefinition.cues.length) {
-		if (partDefinition.cues[index + 1].type === CueType.UNPAIRED_PILOT) {
-			const mosCue = partDefinition.cues[index + 1] as CueDefinitionUnpairedPilot
-			if (partDefinition.cues[index].type === CueType.UNPAIRED_TARGET) {
-				const targetCue = partDefinition.cues[index] as CueDefinitionUnpairedTarget
-				partDefinition.cues[index] = UnpairedPilotToGraphic(mosCue, targetCue.target, targetCue)
-			} else {
-				const targetCue = partDefinition.cues[index] as CueDefinitionTelefon
-				partDefinition.cues[index] = UnpairedPilotToGraphic(mosCue, 'TLF', targetCue)
-			}
-			partDefinition.cues.splice(index + 1, 1)
-			return true
-		} else {
-			// Target with no grafik
-			return false
+	const targetCue = partDefinition.cues[index]
+
+	if (!targetCue) {
+		return false
+	}
+
+	if (index + 1 >= partDefinition.cues.length) {
+		return false
+	}
+
+	const nextCue = partDefinition.cues[index + 1]
+
+	if (!nextCue) {
+		return false
+	}
+
+	if (nextCue.type === CueType.UNPAIRED_PILOT) {
+		const mosCue = nextCue as CueDefinitionUnpairedPilot
+		if (targetCue.type === CueType.UNPAIRED_TARGET) {
+			partDefinition.cues[index] = UnpairedPilotToGraphic(mosCue, targetCue.target, targetCue)
+		} else if (targetCue.type === CueType.Telefon) {
+			targetCue.vizObj = UnpairedPilotToGraphic(mosCue, 'TLF', targetCue)
+			partDefinition.cues[index] = targetCue
 		}
+		partDefinition.cues.splice(index + 1, 1)
+		return true
 	} else {
+		// Target with no grafik
 		return false
 	}
 }

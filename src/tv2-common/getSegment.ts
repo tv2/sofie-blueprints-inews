@@ -188,7 +188,7 @@ export function getSegmentBase<
 		if (unpairedTargets.length) {
 			blueprintParts.push(CreatePartInvalid(part))
 			unpairedTargets.forEach(cue => {
-				context.warning(`No graphic found for ${cue.target}`)
+				context.warning(`No graphic found after ${cue.iNewsCommand} cue`)
 			})
 			continue
 		}

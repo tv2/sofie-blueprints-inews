@@ -17,6 +17,8 @@ import {
 	CueDefinitionTelefon,
 	CueDefinitionUnpairedPilot,
 	CueDefinitionUnpairedTarget,
+	GraphicInternal,
+	GraphicPilot,
 	isTime,
 	ParseCue,
 	parseTime
@@ -135,7 +137,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';0.02']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -157,7 +159,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -177,7 +179,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-O']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -200,7 +202,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-S']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -223,7 +225,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-B']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -246,7 +248,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-0.30']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -269,7 +271,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -289,7 +291,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund', 'TEXT MORETEXT', 'some@email.fakeTLD', ';0.02']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -311,7 +313,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -331,7 +333,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['', 'kg bund', '', 'TEXT MORETEXT', '', 'some@email.fakeTLD', '']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -351,7 +353,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund 2']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -371,7 +373,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['*kg bund 2']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -391,7 +393,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['#kg bund 2']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -411,7 +413,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['#kg ident_nyhederne ', 'Ident Nyhederne', ';0.01']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -461,7 +463,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'Comma, sepearated, text', ';0.27-0.31']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -486,7 +488,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['#kg direkte KØBENHAVN', ';0.00']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -508,7 +510,7 @@ describe('Cue parser', () => {
 		const cueGrafik = ['#kg BillederFra_logo KØBENHAVN', ';0.01']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -530,7 +532,7 @@ describe('Cue parser', () => {
 		const cueDigi = ['DIGI=VO', 'Dette er en VO tekst', 'Dette er linje 2', ';0.00']
 		const result = ParseCue(cueDigi, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -674,7 +676,7 @@ describe('Cue parser', () => {
 		]
 		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -704,7 +706,7 @@ describe('Cue parser', () => {
 		]
 		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -734,7 +736,7 @@ describe('Cue parser', () => {
 		]
 		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -795,7 +797,8 @@ describe('Cue parser', () => {
 					INP: '',
 					iNewsCommand: ''
 				},
-				iNewsCommand: 'GRAFIK'
+				iNewsCommand: 'GRAFIK',
+				mergeable: true
 			})
 		)
 	})
@@ -871,7 +874,7 @@ describe('Cue parser', () => {
 		]
 		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'OVL',
 
@@ -953,7 +956,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionTelefon>({
 				type: CueType.Telefon,
 				source: 'TLF 2',
-				vizObj: literal<CueDefinitionGraphic>({
+				vizObj: literal<CueDefinitionGraphic<GraphicInternal>>({
 					type: CueType.Graphic,
 					target: 'OVL',
 
@@ -988,7 +991,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionTelefon>({
 				type: CueType.Telefon,
 				source: 'TLF 2',
-				vizObj: literal<CueDefinitionGraphic>({
+				vizObj: literal<CueDefinitionGraphic<GraphicPilot>>({
 					type: CueType.Graphic,
 					target: 'TLF',
 
@@ -1197,7 +1200,8 @@ describe('Cue parser', () => {
 					seconds: 0,
 					frames: 1
 				},
-				iNewsCommand: 'SS'
+				iNewsCommand: 'SS',
+				mergeable: true
 			})
 		)
 	})
@@ -1213,7 +1217,8 @@ describe('Cue parser', () => {
 					seconds: 0,
 					frames: 1
 				},
-				iNewsCommand: 'SS'
+				iNewsCommand: 'SS',
+				mergeable: true
 			})
 		)
 	})
@@ -1229,7 +1234,8 @@ describe('Cue parser', () => {
 					seconds: 0,
 					frames: 1
 				},
-				iNewsCommand: 'ss'
+				iNewsCommand: 'ss',
+				mergeable: true
 			})
 		)
 	})
@@ -1238,7 +1244,7 @@ describe('Cue parser', () => {
 		const cueSS = ['SS=sc_loop_clean', ';0.00.01']
 		const result = ParseCue(cueSS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'WALL',
 				graphic: {

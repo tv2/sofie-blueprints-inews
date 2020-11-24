@@ -2,13 +2,13 @@ import * as _ from 'underscore'
 
 import {
 	BlueprintResultSegment,
-	ExtendedIngestRundown,
-	IBlueprintPieceGeneric,
-	IBlueprintRundownDB,
+	// ExtendedIngestRundown,
+	// IBlueprintPieceGeneric,
+	// IBlueprintRundownDB,
 	PieceLifespan,
 	TimelineObjectCoreExt
 } from 'tv-automation-sofie-blueprints-integration'
-import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
+// import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
 // import { ConfigMap } from './configs'
 
 // @ts-ignore
@@ -17,7 +17,9 @@ global.VERSION = 'test'
 global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
-import { INewsStory, literal } from 'tv2-common'
+import { remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
+import { literal } from 'tv2-common'
+/*import { INewsStory, literal } from 'tv2-common'
 import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
@@ -30,9 +32,9 @@ const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: Co
 		studioConfig: JSON.parse(JSON.stringify(defaultStudioConfig)),
 		showStyleConfig: defaultShowStyleConfig
 	}
-]
+]*/
 
-describe.skip('Rundown exceptions', () => {
+/*describe.skip('Rundown exceptions', () => {
 	for (const roSpec of rundowns) {
 		const roData = require(roSpec.ro) as ExtendedIngestRundown
 		test('Valid file: ' + roSpec.ro, () => {
@@ -82,7 +84,7 @@ describe.skip('Rundown exceptions', () => {
 			})
 		}
 	}
-})
+})*/
 
 describe('regressions-migrations', () => {
 	it('Migrates VizLLayer to GraphicLLayer', () => {

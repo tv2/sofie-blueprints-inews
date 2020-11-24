@@ -361,10 +361,10 @@ export function EvaluateCuesBase(
 					}
 					break
 				case CueType.UNPAIRED_TARGET:
-					context.warning(`No graphic found for ${cue.target}`)
+					context.warning(`No graphic found after ${cue.iNewsCommand} cue`)
 					break
 				case CueType.UNPAIRED_PILOT:
-					context.warning(`Could not find target engine for graphic ${cue.vcpid}`)
+					context.warning(`Graphic found without target engine`)
 					break
 				default:
 					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic) {

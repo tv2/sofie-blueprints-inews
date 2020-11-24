@@ -21,12 +21,13 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 	return []
 }
 
+// TODO: Broken
 function prepareConfig(
 	conf: string,
 	configName: string,
 	studioMics: boolean,
 	keepAudioInStudio?: boolean
-): Array<{ SourceName: string; AtemSource: string; SisyfosLayers: string[]; StudioMics: boolean }> {
+): Array<{ SourceName: string; AtemSource: number; SisyfosLayers: string[]; StudioMics: boolean }> {
 	return parseMapStr(undefined, conf, true).map(c => {
 		return {
 			SourceName: c.id,

@@ -6,7 +6,9 @@ import {
 	CueDefinitionGraphicDesign,
 	CueDefinitionUnpairedPilot,
 	CueDefinitionUnpairedTarget,
+	GraphicInternal,
 	GraphicLLayer,
+	GraphicPilot,
 	literal,
 	PartContext2,
 	PartDefinition
@@ -49,8 +51,7 @@ describe('Graphics', () => {
 			literal<CueDefinitionUnpairedTarget>({
 				type: CueType.UNPAIRED_TARGET,
 				target: 'FULL',
-				routing: {},
-				iNewsCommand: 'GRAFIK=FULL'
+				iNewsCommand: 'GRAFIK'
 			})
 		]
 
@@ -69,7 +70,7 @@ describe('Graphics', () => {
 
 		const result = CreatePartGrafik(partContext, config, partDefintion, 0)
 
-		expect(context.getNotes()).toEqual([`No graphic found after GRAFIK cue`])
+		expect(context.getNotes().map(msg => msg.message)).toEqual([`No graphic found after GRAFIK cue`])
 		expect(result.pieces.length).toBe(0)
 		expect(result.adLibPieces.length).toBe(0)
 		expect(result.actions?.length).toBe(0)
@@ -106,7 +107,7 @@ describe('Graphics', () => {
 
 		CreatePartGrafik(partContext, config, partDefinition, 0)
 
-		expect(context.getNotes()).toEqual([`Graphic found without target engine`])
+		expect(context.getNotes().map(msg => msg.message)).toEqual([`Graphic found without target engine`])
 	})
 
 	it('Creates FULL graphic correctly', () => {
@@ -115,10 +116,9 @@ describe('Graphics', () => {
 		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'FULL',
-				routing: {},
 				graphic: {
 					type: 'pilot',
 					name: '',
@@ -152,7 +152,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline.length).toBe(17)
+		expect(timeline.length).toBe(19)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -176,10 +176,9 @@ describe('Graphics', () => {
 		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'OVL',
-				routing: {},
 				graphic: {
 					type: 'pilot',
 					name: '',
@@ -214,7 +213,7 @@ describe('Graphics', () => {
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
 		expect(piece.outputLayerId).toBe('overlay') // TODO: Enum
-		expect(piece.enable).toEqual({ start: 2 })
+		expect(piece.enable).toEqual({ start: 2000 })
 		expect(piece.adlibPreroll).toBe(config.studio.PilotPrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		const content = piece.content!
@@ -224,13 +223,16 @@ describe('Graphics', () => {
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
-		expect(vizObj.enable).toEqual({ while: '1' })
+		expect(vizObj.enable).toEqual({ while: '!.full' })
 		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerPilotOverlay)
 		expect(vizObj.content.channelName).toBe('OVL1') // TODO: OVL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
-		expect(vizObj.content.delayTakeAfterOutTransition).toBe(undefined)
-		expect(vizObj.content.outTransition).toEqual(undefined)
+		expect(vizObj.content.delayTakeAfterOutTransition).toBe(true)
+		expect(vizObj.content.outTransition).toEqual({
+			delay: config.studio.PilotOutTransitionDuration,
+			type: TSR.VIZMSETransitionType.DELAY
+		})
 	})
 
 	it('Creates WALL graphic correctly', () => {
@@ -239,10 +241,9 @@ describe('Graphics', () => {
 		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'WALL',
-				routing: {},
 				graphic: {
 					type: 'pilot',
 					name: '',
@@ -296,10 +297,9 @@ describe('Graphics', () => {
 		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'TLF',
-				routing: {},
 				graphic: {
 					type: 'pilot',
 					name: '',
@@ -333,7 +333,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline.length).toBe(17)
+		expect(timeline.length).toBe(19)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -357,11 +357,14 @@ describe('Graphics', () => {
 		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicPilot>>({
 				type: CueType.Graphic,
 				target: 'TLF',
 				routing: {
-					INP1: 'LIVE 1'
+					type: CueType.Routing,
+					target: 'TLF',
+					INP1: 'LIVE 1',
+					iNewsCommand: ''
 				},
 				graphic: {
 					type: 'pilot',
@@ -470,7 +473,8 @@ describe('Graphics', () => {
 		expect(piece).toBeTruthy()
 		expect(piece.name).toBe('DESIGN_SC')
 		expect(piece.outputLayerId).toBe('sec')
-		expect(piece.sourceLayerId).toBe(PieceLifespan.OutOnRundownEnd)
+		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
 			obj =>
 				obj.content.deviceType === TSR.DeviceType.CASPARCG && obj.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
@@ -487,10 +491,9 @@ describe('Graphics', () => {
 		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
-			literal<CueDefinitionGraphic>({
+			literal<CueDefinitionGraphic<GraphicInternal>>({
 				type: CueType.Graphic,
 				target: 'OVL',
-				routing: {},
 				graphic: {
 					type: 'internal',
 					template: 'bund',
@@ -521,9 +524,9 @@ describe('Graphics', () => {
 		expect(result.pieces.length).toBe(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
-		expect(piece.enable).toEqual({ start: 5000 })
+		expect(piece.enable).toEqual({ start: 5000, duration: 4000 })
 		expect(piece.outputLayerId).toBe('overlay')
-		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsOverlay)
+		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsLower)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
 			obj =>
@@ -533,7 +536,7 @@ describe('Graphics', () => {
 		expect(tlObj).toBeTruthy()
 		expect(tlObj?.layer).toBe(GraphicLLayer.GraphicLLayerOverlayLower)
 		expect(tlObj?.content.templateName).toBe('bund')
-		expect(tlObj?.content.templateData).toBe(['Some Person', 'Some Info'])
+		expect(tlObj?.content.templateData).toStrictEqual(['Some Person', 'Some Info'])
 		expect(tlObj?.content.channelName).toBe('OVL1')
 	})
 })

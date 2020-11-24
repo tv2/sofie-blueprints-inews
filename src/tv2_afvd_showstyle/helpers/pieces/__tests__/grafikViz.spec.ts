@@ -3,18 +3,26 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	IBlueprintRundownDB,
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionGrafik, GraphicLLayer, literal, PartContext2, PartDefinitionKam } from 'tv2-common'
+import {
+	CueDefinitionGraphic,
+	GraphicInternal,
+	GraphicLLayer,
+	literal,
+	PartContext2,
+	PartDefinitionKam
+} from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
-import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
-import { ShowStyleConfig } from '../../config'
-import { EvaluateGrafikViz } from '../grafikViz'
+import { getConfig } from '../../config'
+import { EvaluateCueGraphic } from '../graphic'
+import { BlueprintConfig } from 'src/tv2_afvd_studio/helpers/config'
 
 const mockContext = new SegmentContext(
 	{
@@ -29,6 +37,24 @@ mockContext.studioConfig = defaultStudioConfig as any
 mockContext.showStyleConfig = defaultShowStyleConfig as any
 
 const partContext = new PartContext2(mockContext, '00001')
+
+const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
+
+function makeMockContext() {
+	const rundown = literal<IBlueprintRundownDB>({
+		externalId: RUNDOWN_EXTERNAL_ID,
+		name: RUNDOWN_EXTERNAL_ID,
+		_id: '',
+		showStyleVariantId: ''
+	})
+	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	mockContext.studioConfig = defaultStudioConfig as any
+	mockContext.showStyleConfig = defaultShowStyleConfig as any
+
+	return mockContext
+}
+
+const config = getConfig(makeMockContext())
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
@@ -47,11 +73,15 @@ const dummyPart = literal<PartDefinitionKam>({
 
 describe('grafik piece', () => {
 	test('kg bund', () => {
-		const cue: CueDefinitionGrafik = {
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: ['Odense', 'Copenhagen'],
+		const cue: CueDefinitionGraphic<GraphicInternal> = {
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['Odense', 'Copenhagen']
+			},
 			start: {
 				seconds: 0
 			},
@@ -61,25 +91,17 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateGrafikViz(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
-				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: []
-			},
+		EvaluateCueGraphic(
+			config,
 			partContext,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			false
+			0
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -119,11 +141,15 @@ describe('grafik piece', () => {
 	})
 
 	test('adlib kg bund', () => {
-		const cue: CueDefinitionGrafik = {
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: ['Odense', 'Copenhagen'],
+		const cue: CueDefinitionGraphic<GraphicInternal> = {
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['Odense', 'Copenhagen']
+			},
 			adlib: true,
 			iNewsCommand: 'kg'
 		}
@@ -131,25 +157,17 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateGrafikViz(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
-				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: []
-			},
+		EvaluateCueGraphic(
+			config,
 			partContext,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			false
+			0
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -187,11 +205,15 @@ describe('grafik piece', () => {
 	})
 
 	test('adlib kg bund (overlay+full allowed)', () => {
-		const cue: CueDefinitionGrafik = {
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: ['Odense', 'Copenhagen'],
+		const cue: CueDefinitionGraphic<GraphicInternal> = {
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['Odense', 'Copenhagen']
+			},
 			adlib: true,
 			iNewsCommand: 'kg'
 		}
@@ -199,28 +221,19 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateGrafikViz(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: literal<StudioConfig>({
-					...((defaultStudioConfig as unknown) as StudioConfig),
-					PreventOverlayWithFull: false
-				}),
-				sources: [],
-				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: []
-			},
+		const newConfig = JSON.parse(JSON.stringify(config)) as BlueprintConfig
+		newConfig.studio.PreventOverlayWithFull = false
+		EvaluateCueGraphic(
+			newConfig,
 			partContext,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			false
+			0
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -258,11 +271,15 @@ describe('grafik piece', () => {
 	})
 
 	test('kg bund length', () => {
-		const cue: CueDefinitionGrafik = {
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: ['Odense', 'Copenhagen'],
+		const cue: CueDefinitionGraphic<GraphicInternal> = {
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['Odense', 'Copenhagen']
+			},
 			start: {
 				seconds: 10
 			},
@@ -272,25 +289,17 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateGrafikViz(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
-				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: []
-			},
+		EvaluateCueGraphic(
+			config,
 			partContext,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			false
+			0
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -330,11 +339,15 @@ describe('grafik piece', () => {
 	})
 
 	test('kg bund infinite', () => {
-		const cue: CueDefinitionGrafik = {
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: ['Odense', 'Copenhagen'],
+		const cue: CueDefinitionGraphic<GraphicInternal> = {
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: ['Odense', 'Copenhagen']
+			},
 			start: {
 				seconds: 10
 			},
@@ -347,25 +360,17 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateGrafikViz(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
-				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: []
-			},
+		EvaluateCueGraphic(
+			config,
 			partContext,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			false
+			0
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -404,39 +409,35 @@ describe('grafik piece', () => {
 	})
 
 	test('kg direkte', () => {
-		const cue = literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
+		const cue = literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'direkte',
+				cue: 'kg',
+				textFields: ['KØBENHAVN']
+			},
 			start: {
 				seconds: 0
 			},
-			template: 'direkte',
-			cue: 'kg',
-			textFields: ['KØBENHAVN'],
 			iNewsCommand: '#kg'
 		})
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateGrafikViz(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
-				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: []
-			},
+		EvaluateCueGraphic(
+			config,
 			partContext,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			false
+			0
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -485,39 +486,35 @@ describe('grafik piece', () => {
 	})
 
 	test('kg arkiv', () => {
-		const cue = literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
+		const cue = literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'arkiv',
+				cue: 'kg',
+				textFields: ['unnamed org']
+			},
 			start: {
 				seconds: 0
 			},
-			template: 'arkiv',
-			cue: 'kg',
-			textFields: ['unnamed org'],
 			iNewsCommand: '#kg'
 		})
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateGrafikViz(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
-				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: []
-			},
+		EvaluateCueGraphic(
+			config,
 			partContext,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			'OVL',
 			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			false
+			0
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
