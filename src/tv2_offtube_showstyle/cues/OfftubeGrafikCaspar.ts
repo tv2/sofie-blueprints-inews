@@ -410,7 +410,7 @@ export function CreateFullContent(
 ): GraphicsContent {
 	return {
 		fileName: parsedCue.graphic.vcpid.toString(),
-		path: `${config.studio.NetworkBasePath}\\${parsedCue.graphic.vcpid.toString()}.png`, // full path on the source network storage, TODO: File extension
+		path: `${config.studio.GraphicBasePath}\\${parsedCue.graphic.vcpid.toString()}.png`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.GraphicFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate>({

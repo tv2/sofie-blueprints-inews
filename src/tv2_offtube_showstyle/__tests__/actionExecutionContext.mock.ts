@@ -65,6 +65,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	CasparPrerollDuration: 280,
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
+	GraphicBasePath: '/',
 	JingleBasePath: 'jingler',
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,

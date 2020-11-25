@@ -39,6 +39,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	CasparPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
+	GraphicBasePath: '/',
 	JingleBasePath: 'jingler',
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
