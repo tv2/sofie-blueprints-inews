@@ -21,6 +21,7 @@ import {
 	GraphicIsInternal,
 	GraphicIsPilot,
 	GraphicLLayer,
+	GraphicPilot,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -67,13 +68,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = GraphicIsInternal(parsedCue) && !!parsedCue.graphic.template.match(/direkte/i)
 
 	if (GraphicIsPilot(parsedCue)) {
-		const grafikTemplateName = GetFullGraphicTemplateNameFromCue(config, parsedCue)
-		const adLibPiece = CreateFullAdLib(
-			config,
-			partDefinition.externalId,
-			grafikTemplateName,
-			partDefinition.segmentExternalId
-		)
+		const adLibPiece = CreateFullAdLib(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
 
 		actions.push(
 			literal<IBlueprintActionManifest>({
@@ -90,18 +85,13 @@ export function OfftubeEvaluateGrafikCaspar(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, grafikTemplateName)],
-					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, grafikTemplateName)]
+					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, parsedCue.graphic.vcpid.toString())],
+					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, parsedCue.graphic.vcpid.toString())]
 				}
 			})
 		)
 
-		const piece = CreateFullPiece(
-			config,
-			partDefinition.externalId,
-			GetFullGraphicTemplateNameFromCue(config, parsedCue),
-			partDefinition.segmentExternalId
-		)
+		const piece = CreateFullPiece(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
 		pieces.push(piece)
 	} else if (GraphicIsInternal(parsedCue)) {
 		// TODO: Wall
@@ -370,7 +360,7 @@ export function createContentForGraphicTemplate(
 export function CreateFullPiece(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
-	template: string,
+	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	segmentExternalId: string
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
@@ -378,14 +368,14 @@ export function CreateFullPiece(
 			start: 0 // TODO: Time
 		},
 		externalId,
-		name: `${template}`,
+		name: `${parsedCue.graphic.name}`,
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
-		content: CreateFullContent(config, template),
+		content: CreateFullContent(config, parsedCue),
 		tags: [
-			GetTagForFull(segmentExternalId, template),
-			GetTagForFullNext(segmentExternalId, template),
+			GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid.toString()),
+			GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid.toString()),
 			TallyTags.FULL_IS_LIVE
 		]
 	})
@@ -394,13 +384,13 @@ export function CreateFullPiece(
 function CreateFullAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
-	template: string,
+	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	segmentExternalId: string
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
 		externalId,
-		name: `${template}`,
+		name: `${parsedCue.graphic.name}`,
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
 		toBeQueued: true,
@@ -408,16 +398,19 @@ function CreateFullAdLib(
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
-		onAirTags: [GetTagForFull(segmentExternalId, template)],
-		setNextTags: [GetTagForFullNext(segmentExternalId, template)],
-		content: CreateFullContent(config, template)
+		onAirTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid.toString())],
+		setNextTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid.toString())],
+		content: CreateFullContent(config, parsedCue)
 	})
 }
 
-export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, template: string): GraphicsContent {
+export function CreateFullContent(
+	config: OfftubeShowstyleBlueprintConfig,
+	parsedCue: CueDefinitionGraphic<GraphicPilot>
+): GraphicsContent {
 	return {
-		fileName: template,
-		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
+		fileName: parsedCue.graphic.vcpid.toString(),
+		path: `${config.studio.NetworkBasePath}\\${parsedCue.graphic.vcpid.toString()}.png`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.GraphicFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate>({
@@ -440,7 +433,10 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 							display: 'program',
 							slots: {
 								'250_full': {
-									payload: { type: 'Still', url: `http://${config.studio.FullGraphicURL}/${template}.PNG` }
+									payload: {
+										type: 'Still',
+										url: `http://${config.studio.FullGraphicURL}/${parsedCue.graphic.vcpid.toString()}.PNG`
+									}
 								}
 							}
 						})
