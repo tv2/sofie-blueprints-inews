@@ -439,7 +439,9 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 							// tslint:disable-next-line: prettier
 							display: 'program',
 							slots: {
-								'250_full': { payload: { type: 'Still', url: `http://${config.studio.FullGraphicURL}/FILENAME.PNG` } }
+								'250_full': {
+									payload: { type: 'Still', url: `http://${config.studio.FullGraphicURL}/${template}.PNG` }
+								}
 							}
 						})
 					)}</templateData>`,
