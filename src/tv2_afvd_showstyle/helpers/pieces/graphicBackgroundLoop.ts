@@ -1,5 +1,3 @@
-import { SourceLayer } from '../../layers'
-import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
 import {
 	GraphicsContent,
 	IBlueprintActionManifest,
@@ -8,8 +6,10 @@ import {
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CasparLLayer } from 'src/tv2_afvd_studio/layers'
+import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
 import _ = require('underscore')
+import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
+import { SourceLayer } from '../../layers'
 
 export function EvaluateCueBackgroundLoop(
 	pieces: IBlueprintPiece[],

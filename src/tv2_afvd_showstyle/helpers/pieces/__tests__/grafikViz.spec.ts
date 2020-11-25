@@ -17,26 +17,12 @@ import {
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
+import { BlueprintConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
 import { getConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
-import { BlueprintConfig } from 'src/tv2_afvd_studio/helpers/config'
-
-const mockContext = new SegmentContext(
-	{
-		_id: '',
-		externalId: '',
-		name: '',
-		showStyleVariantId: ''
-	},
-	mappingsDefaults
-)
-mockContext.studioConfig = defaultStudioConfig as any
-mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-const partContext = new PartContext2(mockContext, '00001')
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 
@@ -91,6 +77,7 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateCueGraphic(
 			config,
 			partContext,
@@ -157,6 +144,7 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateCueGraphic(
 			config,
 			partContext,
@@ -223,6 +211,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 		const newConfig = JSON.parse(JSON.stringify(config)) as BlueprintConfig
 		newConfig.studio.PreventOverlayWithFull = false
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateCueGraphic(
 			newConfig,
 			partContext,
@@ -289,6 +278,7 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateCueGraphic(
 			config,
 			partContext,
@@ -360,6 +350,7 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateCueGraphic(
 			config,
 			partContext,
@@ -427,6 +418,7 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateCueGraphic(
 			config,
 			partContext,
@@ -504,6 +496,7 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateCueGraphic(
 			config,
 			partContext,

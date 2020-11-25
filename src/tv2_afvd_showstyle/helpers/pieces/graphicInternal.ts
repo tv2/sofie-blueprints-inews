@@ -1,4 +1,3 @@
-import { SourceLayer } from '../../layers'
 import {
 	GraphicsContent,
 	IBlueprintActionManifest,
@@ -18,6 +17,7 @@ import {
 	PartContext2,
 	PartDefinition
 } from 'tv2-common'
+import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
 import { CreateTimingGrafik, GetEnableForGrafik, GetSourceLayerForGrafik, GetTimelineLayerForGrafik } from './graphic'
 

@@ -1,9 +1,9 @@
-import { getConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { SegmentContext } from '../../../../__mocks__/context'
 import { IBlueprintRundownDB } from 'tv-automation-sofie-blueprints-integration'
 import { CueType, PartType } from 'tv2-constants'
+import { SegmentContext } from '../../../../__mocks__/context'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import { getConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { literal } from '../../../util'
 import {
 	ParseBody,

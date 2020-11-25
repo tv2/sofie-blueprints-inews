@@ -8,6 +8,7 @@ import {
 	AddScript,
 	CueDefinition,
 	GetJinglePartProperties,
+	GraphicIsPilot,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -50,9 +51,7 @@ export function CreatePartCueOnly(
 	}
 
 	if (
-		partDefinition.cues.filter(
-			c => c.type === CueType.MOS || c.type === CueType.Telefon || c.type === CueType.TargetEngine
-		).length &&
+		partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length &&
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		part.prerollDuration = config.studio.PilotPrerollDuration

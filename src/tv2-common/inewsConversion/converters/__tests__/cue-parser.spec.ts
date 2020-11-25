@@ -1,6 +1,9 @@
-import { SegmentContext } from '../../../../__mocks__/context'
 import { IBlueprintRundownDB } from 'tv-automation-sofie-blueprints-integration'
 import { CueType } from 'tv2-constants'
+import { SegmentContext } from '../../../../__mocks__/context'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import { getConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { literal } from '../../../util'
 import {
 	CueDefinitionAdLib,
@@ -15,6 +18,7 @@ import {
 	CueDefinitionMic,
 	CueDefinitionProfile,
 	CueDefinitionTelefon,
+	CueDefinitionUnknown,
 	CueDefinitionUnpairedPilot,
 	CueDefinitionUnpairedTarget,
 	GraphicInternal,
@@ -23,9 +27,6 @@ import {
 	ParseCue,
 	parseTime
 } from '../ParseCue'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 
@@ -62,21 +63,71 @@ describe('Cue parser', () => {
 	})
 
 	test('Cues Sofie should ignore', () => {
-		expect(ParseCue(['    '], config)).toBe(undefined)
-		expect(ParseCue(['Some text for the producer'], config)).toBe(undefined)
+		expect(ParseCue(['    '], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Some text for the producer'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
 		expect(
 			ParseCue(
 				['Some text for the producer', '', 'across multiple lines', '', 'with blank lines', 'with GRAFIK= in the text'],
 				config
 			)
-		).toBe(undefined)
-		expect(ParseCue(['Instructions on how to use GRAFIK=FULL'], config)).toBe(undefined)
-		expect(ParseCue(['Some text with GRAFIK='], config)).toBe(undefined)
-		expect(ParseCue(['GGRAFIK='], config)).toBe(undefined)
-		expect(ParseCue(['GRAFIC='], config)).toBe(undefined)
-		expect(ParseCue(['Some text with kg #kg KG', 'and some more text', 'and time', ';0.01'], config)).toBe(undefined)
-		expect(ParseCue(['Something that looks like time ;0.01'], config)).toBe(undefined)
-		expect(ParseCue(['Something that looks like floated time ;x.xx'], config)).toBe(undefined)
+		).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Instructions on how to use GRAFIK=FULL'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Some text with GRAFIK='], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['GGRAFIK='], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['GRAFIC='], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Some text with kg #kg KG', 'and some more text', 'and time', ';0.01'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Something that looks like time ;0.01'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Something that looks like floated time ;x.xx'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
 	})
 
 	test('Time with symbolic out', () => {

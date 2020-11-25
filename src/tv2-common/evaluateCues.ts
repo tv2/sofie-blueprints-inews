@@ -26,7 +26,8 @@ import {
 	CueDefinitionGraphic,
 	CueDefinitionGraphicDesign,
 	CueDefinitionRouting,
-	GraphicInternalOrPilot
+	GraphicInternalOrPilot,
+	GraphicIsPilot
 } from './inewsConversion'
 
 export interface EvaluateCuesShowstyleOptions {
@@ -187,6 +188,15 @@ export function EvaluateCuesBase(
 			switch (cue.type) {
 				case CueType.Graphic:
 					if (showStyleOptions.EvaluateCueGraphic) {
+						if (
+							config.studio.PreventOverlayWithFull &&
+							GraphicIsPilot(cue) &&
+							cue.target === 'OVL' &&
+							cues.some(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL')
+						) {
+							context.warning(`Cannot create overlay graphic with FULL`)
+							break
+						}
 						showStyleOptions.EvaluateCueGraphic(
 							config,
 							context,
@@ -367,7 +377,7 @@ export function EvaluateCuesBase(
 					context.warning(`Graphic found without target engine`)
 					break
 				default:
-					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic) {
+					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
 						// TODO: Mic -> For the future
 						// context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)

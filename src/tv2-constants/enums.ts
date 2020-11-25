@@ -9,6 +9,7 @@ export enum MediaPlayerClaimType {
 }
 
 export enum CueType {
+	UNKNOWN,
 	Ekstern,
 	DVE,
 	Telefon,

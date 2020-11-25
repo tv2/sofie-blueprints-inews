@@ -1,4 +1,4 @@
-import { TV2BlueprintConfig } from 'src/tv2-common/blueprintConfig'
+import { TV2BlueprintConfig } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { PostProcessDefinitions } from '../../../tv2_afvd_showstyle/helpers/postProcessDefinitions'
 import { CueDefinition, CueDefinitionUnpairedPilot, ParseCue, UnpairedPilotToGraphic, UnparsedCue } from './ParseCue'
@@ -161,7 +161,7 @@ export function ParseBody(
 			if (cue !== null) {
 				const parsedCue = ParseCue(cue, config)
 
-				if (parsedCue !== undefined) {
+				if (parsedCue !== undefined && parsedCue.type !== CueType.UNKNOWN) {
 					definition.cues.push(parsedCue)
 				}
 			}
@@ -309,6 +309,9 @@ export function ParseBody(
 				// NO-OP
 			}
 		}
+
+		// Discard UNKNOWN cues, we won't do anything with them
+		partDefinition.cues = partDefinition.cues.filter(c => c.type !== CueType.UNKNOWN)
 	})
 
 	return PostProcessDefinitions(definitions, segmentId)
@@ -427,7 +430,7 @@ function isPrimaryCue(cue: CueDefinition) {
 
 function shouldPushDefinition(definition: PartDefinition) {
 	return (
-		(definition.cues.length ||
+		(definition.cues.filter(c => c.type !== CueType.UNKNOWN).length ||
 			(definition.script.length && definition.cues.length) ||
 			definition.type !== PartType.Unknown) &&
 		!(definition.type === PartType.Grafik && definition.cues.length === 0)

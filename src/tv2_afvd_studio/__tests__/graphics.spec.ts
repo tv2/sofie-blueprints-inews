@@ -1,4 +1,4 @@
-import { SegmentContext } from '../../__mocks__/context'
+import { IBlueprintRundownDB, PieceLifespan, TSR } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinition,
 	CueDefinitionBackgroundLoop,
@@ -13,15 +13,15 @@ import {
 	PartContext2,
 	PartDefinition
 } from 'tv2-common'
-import { IBlueprintRundownDB, PieceLifespan, TSR } from 'tv-automation-sofie-blueprints-integration'
-import mappingsDefaults from '../migrations/mappings-defaults'
 import { CueType, PartType } from 'tv2-constants'
+import { SegmentContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
-import { CreatePartGrafik } from '../../tv2_afvd_showstyle/parts/grafik'
 import { getConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer } from '../layers'
+import { CreatePartGrafik } from '../../tv2_afvd_showstyle/parts/grafik'
 import { CreatePartUnknown } from '../../tv2_afvd_showstyle/parts/unknown'
+import { AtemLLayer, CasparLLayer } from '../layers'
+import mappingsDefaults from '../migrations/mappings-defaults'
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 const SEGMENT_EXTERNAL_ID = '00000000'
@@ -531,7 +531,7 @@ describe('Graphics', () => {
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
 			obj =>
 				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
-				obj.content.type == TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL
+				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined
 		expect(tlObj).toBeTruthy()
 		expect(tlObj?.layer).toBe(GraphicLLayer.GraphicLLayerOverlayLower)

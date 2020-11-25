@@ -40,10 +40,10 @@ export function EvaluateCues(
 			EvaluateCueJingle: EvaluateJingle,
 			EvaluateCueLYD: EvaluateLYD,
 			EvaluateCueTelefon: EvaluateTelefon,
-			EvaluateCueGraphic: EvaluateCueGraphic,
-			EvaluateCueBackgroundLoop: EvaluateCueBackgroundLoop,
+			EvaluateCueGraphic,
+			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
-			EvaluateCueRouting: EvaluateCueRouting
+			EvaluateCueRouting
 		},
 		context,
 		config,

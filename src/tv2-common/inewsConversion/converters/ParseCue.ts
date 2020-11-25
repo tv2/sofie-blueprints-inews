@@ -1,5 +1,4 @@
-import { TV2BlueprintConfig } from 'src/tv2-common/blueprintConfig'
-import { literal } from 'src/tv2-common/util'
+import { literal, TV2BlueprintConfig } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
 import { PartDefinition } from './ParseBody'
 
@@ -17,6 +16,10 @@ export interface CueDefinitionBase {
 	end?: CueTime
 	adlib?: boolean
 	iNewsCommand: string
+}
+
+export interface CueDefinitionUnknown extends CueDefinitionBase {
+	type: CueType.UNKNOWN
 }
 
 export interface CueDefinitionEkstern extends CueDefinitionBase {
@@ -136,6 +139,7 @@ export interface CueDefinitionRouting extends CueDefinitionBase {
 }
 
 export type CueDefinition =
+	| CueDefinitionUnknown
 	| CueDefinitionEkstern
 	| CueDefinitionDVE
 	| CueDefinitionTelefon
@@ -223,7 +227,10 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parseJingle(cue)
 	}
 
-	return undefined
+	return literal<CueDefinitionUnknown>({
+		type: CueType.UNKNOWN,
+		iNewsCommand: ''
+	})
 }
 
 function parsekg(

@@ -1,10 +1,15 @@
-import { BlueprintMappings, ConfigItemValue, IBlueprintConfig, ShowStyleContext } from 'tv-automation-sofie-blueprints-integration'
-import { parseConfig, StudioConfig } from '../helpers/config'
-import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
-import { SisyfosLLAyer } from '../layers'
+import {
+	BlueprintMappings,
+	ConfigItemValue,
+	IBlueprintConfig,
+	ShowStyleContext
+} from 'tv-automation-sofie-blueprints-integration'
 import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import { SegmentContext } from '../../__mocks__/context'
 import { DefaultBreakerConfig } from '../../tv2_afvd_showstyle/__tests__/breakerConfigDefault'
-import { SegmentContext } from 'src/__mocks__/context'
+import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { parseConfig, StudioConfig } from '../helpers/config'
+import { SisyfosLLAyer } from '../layers'
 
 const mockStudioConfig: StudioConfig = {
 	SofieHostURL: '',
@@ -20,53 +25,53 @@ const mockStudioConfig: StudioConfig = {
 	],
 	SourcesRM: [],
 	SourcesSkype: [],
-    ABMediaPlayers: [],
-    SourcesDelayedPlayback: [],
+	ABMediaPlayers: [],
+	SourcesDelayedPlayback: [],
 	StudioMics: [
-        SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
-        SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
-        SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
-        SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
-        SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
-        SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
+		SisyfosLLAyer.SisyfosSourceHost_1_ST_A,
+		SisyfosLLAyer.SisyfosSourceHost_2_ST_A,
+		SisyfosLLAyer.SisyfosSourceGuest_1_ST_A,
+		SisyfosLLAyer.SisyfosSourceGuest_2_ST_A,
+		SisyfosLLAyer.SisyfosSourceGuest_3_ST_A,
+		SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
 	],
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
 		DSK1F: 0,
-        DSK1K: 0,
-        ServerC: 0,
+		DSK1K: 0,
+		ServerC: 0,
 		SplitArtF: 0,
 		SplitArtK: 0,
 		Default: 0,
 		Continuity: 0,
 		JingleFill: 0,
-        JingleKey: 0,
-        FullFrameGrafikBackground: 0,
-        MixMinusDefault: 0
+		JingleKey: 0,
+		FullFrameGrafikBackground: 0,
+		MixMinusDefault: 0
 	},
 	AtemSettings: {
 		CCGClip: 0,
-        CCGGain: 0,
-        VizClip: 0,
-        VizGain: 0,
-        MP1Baseline: {
-            Clip: 0,
-            Loop: false,
-            Playing: false
-        }
+		CCGGain: 0,
+		VizClip: 0,
+		VizGain: 0,
+		MP1Baseline: {
+			Clip: 0,
+			Loop: false,
+			Playing: false
+		}
 	},
 	AudioBedSettings: {
 		fadeIn: 0,
 		fadeOut: 0,
 		volume: 0
-    },
-    PilotCutToMediaPlayer: 0,
-    PilotKeepaliveDuration: 0,
-    PilotOutTransitionDuration: 0,
-    PilotPrerollDuration: 0,
-    PreventOverlayWithFull: true,
-    ATEMDelay: 0,
+	},
+	PilotCutToMediaPlayer: 0,
+	PilotKeepaliveDuration: 0,
+	PilotOutTransitionDuration: 0,
+	PilotPrerollDuration: 0,
+	PreventOverlayWithFull: true,
+	ATEMDelay: 0,
 	CasparPrerollDuration: 280,
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
@@ -96,8 +101,8 @@ const mockShowStyleConfig: ShowStyleConfig = {
 			DVEGraphicsTemplateJSON: '',
 			DVEInputs: ''
 		})
-    ],
-    MakeAdlibsForFulls: true,
+	],
+	MakeAdlibsForFulls: true,
 	GFXTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: DefaultBreakerConfig(),
@@ -108,6 +113,7 @@ const mockShowStyleConfig: ShowStyleConfig = {
 	ShowstyleTransition: 'CUT'
 }
 
+/* tslint:disable:max-classes-per-file */
 export class MockShowStyleContext implements ShowStyleContext {
 	public warnings: string[] = []
 	public errors: string[] = []
@@ -117,9 +123,7 @@ export class MockShowStyleContext implements ShowStyleContext {
 	/** Get the mappings for the studio */
 	public getStudioMappings: () => Readonly<BlueprintMappings>
 
-	constructor(
-		public segmentId: string
-	) {}
+	constructor(public segmentId: string) {}
 	/** Returns a map of the ShowStyle configs */
 	public getShowStyleConfig(): Readonly<{
 		[key: string]: ConfigItemValue
@@ -160,6 +164,4 @@ export class MockShowStyleContext implements ShowStyleContext {
 	}
 }
 
-export class MockSegmentContext extends SegmentContext {
-    
-}
+export class MockSegmentContext extends SegmentContext {}

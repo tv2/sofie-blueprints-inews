@@ -1,4 +1,3 @@
-import { SourceLayer } from '../../layers'
 import {
 	GraphicsContent,
 	IBlueprintActionManifest,
@@ -23,9 +22,10 @@ import {
 	SourceInfo
 } from 'tv2-common'
 import { GraphicEngine } from 'tv2-constants'
+import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
 import { CreateTimingGrafik, GetEnableForGrafik } from './graphic'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
 export function EvaluateCueGraphicPilot(
 	config: BlueprintConfig,

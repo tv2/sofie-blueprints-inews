@@ -14,20 +14,6 @@ import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-de
 import { getConfig, ShowStyleConfig } from '../../config'
 import { EvaluateLYD } from '../lyd'
 
-const mockContext = new SegmentContext(
-	{
-		_id: '',
-		externalId: '',
-		name: '',
-		showStyleVariantId: ''
-	},
-	mappingsDefaults
-)
-mockContext.studioConfig = defaultStudioConfig as any
-mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-const partContext = new PartContext2(mockContext, '00001')
-
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 
 function makeMockContext() {
@@ -66,6 +52,7 @@ describe('lyd', () => {
 			modified: 0,
 			segmentExternalId: ''
 		})
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateLYD(
 			partContext,
 			{
@@ -111,6 +98,7 @@ describe('lyd', () => {
 			modified: 0,
 			segmentExternalId: ''
 		})
+		const partContext = new PartContext2(makeMockContext(), '00001')
 		EvaluateLYD(
 			partContext,
 			{
