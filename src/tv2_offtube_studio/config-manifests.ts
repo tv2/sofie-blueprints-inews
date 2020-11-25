@@ -304,6 +304,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: ''
 	},
 	{
+		id: 'GraphicBasePath',
+		name: 'Graphic Network base path',
+		description: '',
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: ''
+	},
+	{
 		id: 'JingleBasePath',
 		name: 'Jingle base path',
 		description: 'The base path for jingle clips',
