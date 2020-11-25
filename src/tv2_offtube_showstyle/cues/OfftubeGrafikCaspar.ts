@@ -205,115 +205,151 @@ export function GetCasparOverlayTimeline(
 export function createContentForGraphicTemplate(
 	graphicName: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
-): Partial<Slots> {
+): Partial<any> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
+		// arkiv
+		// ident
+		// direkte
+		// ident_nyhederne
+		// ident_news
+		// ident_tv2sport
+		// billederfra_txt
+		// billederfra_logo
+		// tlfdirekte
+		// topt
+		// tlftopt
+		// tlftoptlive
+		// bund
+		// vo
+		// trompet
+		// komm
+		// kommentator
+
 		case 'arkiv':
+		case 'ident':
+		case 'direkte':
+		case 'ident_nyhederne':
+		case 'ident_news':
+		case 'ident_tv2sport':
+		case 'billederfra_txt':
 			return {
-				[graphicName]: {
+				'650_ident': {
 					display: 'program',
 					payload: {
-						type: GraphicName.ARKIV,
-						text: parsedCue.graphic.textFields[0]
+						type: 'Ident',
+						text1: parsedCue.graphic.textFields[0],
+						text2: parsedCue.graphic.textFields[1]
 					}
 				}
 			}
 		case 'billederfra_logo':
 			return {
-				[graphicName]: {
+				'650_ident': {
 					display: 'program',
 					payload: {
-						type: GraphicName.BILLEDERFRA_LOGO,
+						type: 'BillederFra',
 						logo: parsedCue.graphic.textFields[0]
 					}
 				}
 			}
-		case 'bund':
-		case 'lowerThird':
+		case 'tlfdirekte':
 			return {
-				lowerThird: {
+				'650_ident': {
 					display: 'program',
 					payload: {
-						type: GraphicName.BUND,
-						trompet: parsedCue.graphic.textFields[1], // TODO: Should be text:
-						name: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'direkte':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.DIREKTE,
-						location: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'headline':
-			return {
-				lowerThird: {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						trompet: parsedCue.graphic.textFields[1],
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_nyhederne':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						variant: 'ident_nyhederne',
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_news':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						variant: 'ident_news',
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_tv2sport':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						variant: 'ident_tv2sport',
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_blank':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						variant: 'ident_blank',
-						text: parsedCue.graphic.textFields[0]
+						type: 'Ident',
+						text1: parsedCue.graphic.textFields[0],
+						text2: parsedCue.graphic.textFields[1]
 					}
 				}
 			}
 		case 'topt':
 			return {
-				[graphicName]: {
+				'660_topt': {
 					display: 'program',
-					payload: literal<Topt>({
-						type: GraphicName.TOPT,
+					payload: {
+						type: 'Topt',
 						name: parsedCue.graphic.textFields[0],
 						title: parsedCue.graphic.textFields[1]
-					})
+					}
+				}
+			}
+		case 'tlftopt':
+			return {
+				'660_topt': {
+					display: 'program',
+					payload: {
+						type: 'Topt',
+						name: parsedCue.graphic.textFields[0],
+						title: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'tlftoptlive':
+			return {
+				'660_topt': {
+					display: 'program',
+					payload: {
+						type: 'Topt',
+						name: parsedCue.graphic.textFields[0],
+						title: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'bund':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: 'Bund',
+						name: parsedCue.graphic.textFields[0],
+						title: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'vo':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: 'Headline',
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'trompet':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: 'Headline',
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'komm':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: 'Headline',
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'kommentator':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: 'Headline',
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
 				}
 			}
 		default:
