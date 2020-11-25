@@ -441,7 +441,10 @@ export function CreateFullContent(
 							}
 						})
 					)}</templateData>`,
-					useStopCommand: false
+					useStopCommand: false,
+					mixer: {
+						opacity: 100
+					}
 				}
 			})
 		]
