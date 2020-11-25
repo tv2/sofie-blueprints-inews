@@ -43,7 +43,8 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
-	FullKeepAliveDuration: 0
+	FullKeepAliveDuration: 0,
+	FullGraphicURL: ''
 }
 
 function getObjectKeys(obj: any): string[] {

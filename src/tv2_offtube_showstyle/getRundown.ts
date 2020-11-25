@@ -26,7 +26,7 @@ import {
 	literal,
 	SourceInfo
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, Enablers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
