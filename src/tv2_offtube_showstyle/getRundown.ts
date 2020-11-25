@@ -661,21 +661,6 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			}
 		}),
 
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparGraphicsFull,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				}
-			}
-		}),
-
 		// create sisyfos channels from the config
 		literal<TSR.TimelineObjSisyfosChannels>({
 			id: '',
