@@ -1,21 +1,7 @@
-import {
-	ActionExecutionContext,
-	ActionUserData,
-	IBlueprintPart,
-	IBlueprintPiece,
-	PieceLifespan
-} from 'tv-automation-sofie-blueprints-integration'
-import {
-	ActionSelectFullGrafik,
-	executeAction,
-	GetFullGrafikTemplateName,
-	getPiecesToPreserve,
-	GetTagForFullNext,
-	literal
-} from 'tv2-common'
+import { ActionExecutionContext, ActionUserData } from 'tv-automation-sofie-blueprints-integration'
+import { ActionSelectFullGrafik, executeAction } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
-import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
 import { getConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
@@ -99,8 +85,12 @@ export function executeActionOfftube(
 	)
 }
 
-function executeActionSelectFull(context: ActionExecutionContext, _actionId: string, userData: ActionSelectFullGrafik) {
-	const config = getConfig(context)
+function executeActionSelectFull(
+	_context: ActionExecutionContext,
+	_actionId: string,
+	_userData: ActionSelectFullGrafik
+) {
+	/*const config = getConfig(context)
 
 	const template = GetFullGrafikTemplateName(config, userData.template)
 
@@ -142,5 +132,5 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		fullPiece,
 		fullDataStore,
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdlibGraphicsFull])
-	])
+	])*/
 }
