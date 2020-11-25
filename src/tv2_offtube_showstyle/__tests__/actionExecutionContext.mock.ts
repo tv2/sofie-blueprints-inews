@@ -69,7 +69,8 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
-	FullKeepAliveDuration: 1000
+	FullKeepAliveDuration: 1000,
+	FullGraphicURL: ''
 }
 
 const mockShowStyleConfig: OfftubeShowStyleConfig = {
