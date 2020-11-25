@@ -418,7 +418,7 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 	return {
 		fileName: template,
 		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
-		mediaFlowIds: [config.studio.MediaFlowId],
+		mediaFlowIds: [config.studio.GraphicFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate>({
 				id: '',

@@ -6,6 +6,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
 	MediaFlowId: '',
+	GraphicFlowId: '',
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesSkype: [],

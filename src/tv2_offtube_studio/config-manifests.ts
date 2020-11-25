@@ -279,6 +279,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 'flow0'
 	},
 	{
+		id: 'GraphicFlowId',
+		name: 'Graphic Flow Id',
+		description: '',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'flow1'
+	},
+	{
 		id: 'ClipFileExtension',
 		name: 'Clip files extension',
 		description: 'Default file extension to clips to fetch from Omneon and play at CasparCG',

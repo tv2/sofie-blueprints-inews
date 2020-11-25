@@ -21,6 +21,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
 	MediaFlowId: '',
+	GraphicFlowId: '',
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],

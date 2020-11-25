@@ -26,6 +26,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 	// Intended overrides
 	MediaFlowId: string
+	GraphicFlowId: string
 	ClipFileExtension: string
 	NetworkBasePath: string // @ todo: hacky way of passing info, should be implied by media manager or something
 	JingleBasePath: string
