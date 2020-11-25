@@ -64,6 +64,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	CasparPrerollDuration: number
 	FullKeepAliveDuration: number
 	IdleSource: number
+	FullGraphicURL: string
 }
 
 /*

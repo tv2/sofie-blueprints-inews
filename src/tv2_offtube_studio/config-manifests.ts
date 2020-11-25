@@ -491,5 +491,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 1000
+	},
+	{
+		id: 'FullGraphicURL',
+		name: 'Full Graphic URL',
+		description: 'URL to serve full graphics from',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'localhost'
 	}
 ]

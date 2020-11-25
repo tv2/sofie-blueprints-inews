@@ -386,7 +386,7 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.MediaFlowId],
 		timelineObjects: [
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TimelineObjCCGTemplate>({
 				id: '',
 				enable: {
 					while: '1'
@@ -395,70 +395,22 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 				layer: OfftubeCasparLLayer.CasparGraphicsFull,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					playing: true,
-					file: `${template}`,
-					loop: true,
-					mixer: {
-						opacity: 100
-					}
-				}
-			}),
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
-				enable: {
-					start: config.studio.CasparPrerollDuration
-				},
-				priority: 100,
-				layer: OfftubeAtemLLayer.AtemMEClean,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.AtemSource.GFXFull,
-						transition: TSR.AtemTransitionStyle.WIPE,
-						transitionSettings: {
-							wipe: {
-								// TODO: Expose to settings
-								rate: 25, // 1s
-								pattern: 1, // Vertical wipe
-								borderSoftness: 7000,
-								reverseDirection: true
+					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+					// tslint:disable-next-line: prettier
+					templateType: 'html',
+					// tslint:disable-next-line: prettier
+					name: 'sport-overlay/index',
+					data: `<templateData>${encodeURI(
+						JSON.stringify({
+							// tslint:disable-next-line: prettier
+							display: 'program',
+							slots: {
+								'250_full': { payload: { type: 'Still', url: `http://${config.studio.FullGraphicURL}/FILENAME.PNG` } }
 							}
-						}
-					}
-				},
-				classes: [ControlClasses.NOLookahead]
-			}),
-			literal<TSR.TimelineObjAtemDSK>({
-				id: '',
-				enable: {
-					start: config.studio.CasparPrerollDuration
-				},
-				priority: 100,
-				layer: OfftubeAtemLLayer.AtemDSKGraphics,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.DSK,
-					dsk: {
-						onAir: false
-					}
+						})
+					)}</templateData>`,
+					useStopCommand: false
 				}
-			}),
-			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-				id: '',
-				enable: { start: 0 },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemMENext,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						previewInput: AtemSourceIndex.Blk
-					}
-				},
-				metaData: {},
-				classes: ['ab_on_preview']
 			})
 		]
 	}

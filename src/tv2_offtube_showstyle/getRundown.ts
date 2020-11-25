@@ -407,13 +407,13 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 				// tslint:disable-next-line: prettier
-				templateType: "html",
+				templateType: 'html',
 				// tslint:disable-next-line: prettier
-				name: "sport-overlay/index",
+				name: 'sport-overlay/index',
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						// tslint:disable-next-line: prettier
-						display: "program",
+						display: 'program',
 						slots: {}
 					})
 				)}</templateData>`,
@@ -491,7 +491,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 		// keyers
 		literal<TSR.TimelineObjAtemDSK>({
 			id: '',
-			enable: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
+			enable: { while: '1' },
 			priority: 0,
 			layer: OfftubeAtemLLayer.AtemDSKGraphics,
 			content: {
