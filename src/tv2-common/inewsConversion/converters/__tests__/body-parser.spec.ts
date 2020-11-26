@@ -584,7 +584,6 @@ describe('Body parser', () => {
 		)
 	})
 
-	// TODO: If any users complain of missing bullet points after cameras, here's your culprit.
 	test('test10', () => {
 		const body10 =
 			'\r\n<p><pi>KAM 2</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"><a idref="2"></a></a></p>\r\n<p><cc>Efter "BYNAVN=" og efter "#kg direkte"</cc></p>\r\n<p></p>\r\n<p><a idref="3"> <cc>Kilde til optagelse på select-feed.</cc></a></p>\r\n<p></p>\r\n<p>Question?</p>\r\n<p></p>\r\n<p><pi>Question, but in PI tags?</pi></p>\r\n<p></p>\r\n<p><pi>USA og Danmark?</pi></p>\r\n<p></p>\r\n<p><pi>***LIVE*** </pi></p>\r\n<p><cc>Comment</cc></p>\r\n<p><a idref="4"></a></p>\r\n<p><pi>This line should be ignored</pi></p>\r\n<p></p>\r\n<p><pi>Also this one?</pi></p>\r\n<p></p>\r\n<p><cc>More comments</cc></p>\r\n<p><cc>Even more?</cc></p>\r\n<p><cc></cc></p>\r\n'
