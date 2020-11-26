@@ -14,8 +14,6 @@ import {
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionTelefon,
-	IBlueprintAdLibPieceEPI,
-	IBlueprintPieceEPI,
 	PartContext2,
 	PartDefinition
 } from 'tv2-common'
@@ -172,8 +170,8 @@ export function EvaluateCuesBase(
 	showStyleOptions: EvaluateCuesShowstyleOptions,
 	context: PartContext2,
 	config: TV2BlueprintConfig,
-	pieces: IBlueprintPieceEPI[],
-	adLibPieces: IBlueprintAdLibPieceEPI[],
+	pieces: IBlueprintPiece[],
+	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,

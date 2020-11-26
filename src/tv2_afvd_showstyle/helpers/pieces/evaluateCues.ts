@@ -1,13 +1,9 @@
-import { IBlueprintActionManifest } from 'tv-automation-sofie-blueprints-integration'
 import {
-	CueDefinition,
-	EvaluateCuesBase,
-	EvaluateCuesOptions,
-	IBlueprintAdLibPieceEPI,
-	IBlueprintPieceEPI,
-	PartContext2,
-	PartDefinition
-} from 'tv2-common'
+	IBlueprintActionManifest,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece
+} from 'tv-automation-sofie-blueprints-integration'
+import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartContext2, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
@@ -24,8 +20,8 @@ import { EvaluateTelefon } from './telefon'
 export function EvaluateCues(
 	context: PartContext2,
 	config: BlueprintConfig,
-	pieces: IBlueprintPieceEPI[],
-	adLibPieces: IBlueprintAdLibPieceEPI[],
+	pieces: IBlueprintPiece[],
+	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
