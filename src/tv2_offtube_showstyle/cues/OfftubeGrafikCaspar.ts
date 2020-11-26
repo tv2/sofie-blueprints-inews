@@ -193,23 +193,6 @@ export function createContentForGraphicTemplate(
 ): Partial<any> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
-		// arkiv
-		// ident
-		// direkte
-		// ident_nyhederne
-		// ident_news
-		// ident_tv2sport
-		// billederfra_txt
-		// billederfra_logo
-		// tlfdirekte
-		// topt
-		// tlftopt
-		// tlftoptlive
-		// bund
-		// vo
-		// trompet
-		// komm
-		// kommentator
 
 		case 'arkiv':
 		case 'ident':
