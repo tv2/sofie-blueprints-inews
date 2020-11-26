@@ -42,12 +42,12 @@ export function GetTagForDVENext(template: string, sources: CueDefinitionDVE['so
 	return `${GetTagForDVE(template, sources)}_NEXT`
 }
 
-export function GetTagForFull(segmentExternalId: string, graphic: string) {
-	return `${segmentExternalId}_${TallyTags.FULL}_${SanitizeString(graphic)}`
+export function GetTagForFull(segmentExternalId: string, vcpid: number) {
+	return `${segmentExternalId}_${TallyTags.FULL}_${SanitizeString(vcpid.toString())}`
 }
 
-export function GetTagForFullNext(segmentExternalId: string, graphic: string) {
-	return `${GetTagForFull(segmentExternalId, graphic)}_NEXT`
+export function GetTagForFullNext(segmentExternalId: string, vcpid: number) {
+	return `${GetTagForFull(segmentExternalId, vcpid)}_NEXT`
 }
 
 export function GetTagForJingle(segmentExternalId: string, clip: string) {

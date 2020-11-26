@@ -19,7 +19,8 @@ export interface ActionSelectServerClip extends ActionBase {
 export interface ActionSelectFullGrafik extends ActionBase {
 	type: AdlibActionType.SELECT_FULL_GRAFIK
 	segmentExternalId: string
-	template: string
+	name: string
+	vcpid: number
 }
 
 export interface ActionSelectDVE extends ActionBase {

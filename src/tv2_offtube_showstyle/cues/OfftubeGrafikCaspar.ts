@@ -75,8 +75,9 @@ export function OfftubeEvaluateGrafikCaspar(
 				actionId: AdlibActionType.SELECT_FULL_GRAFIK,
 				userData: literal<ActionSelectFullGrafik>({
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
-					template: parsedCue.graphic.vcpid.toString(),
-					segmentExternalId: partDefinition.segmentExternalId
+					segmentExternalId: partDefinition.segmentExternalId,
+					name: parsedCue.graphic.name,
+					vcpid: parsedCue.graphic.vcpid
 				}),
 				userDataManifest: {},
 				display: {
@@ -85,8 +86,8 @@ export function OfftubeEvaluateGrafikCaspar(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, parsedCue.graphic.vcpid.toString())],
-					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, parsedCue.graphic.vcpid.toString())]
+					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, parsedCue.graphic.vcpid)],
+					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, parsedCue.graphic.vcpid)]
 				}
 			})
 		)
@@ -354,8 +355,8 @@ export function CreateFullPiece(
 		lifespan: PieceLifespan.WithinPart,
 		content: CreateFullContent(config, parsedCue),
 		tags: [
-			GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid.toString()),
-			GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid.toString()),
+			GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid),
+			GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid),
 			TallyTags.FULL_IS_LIVE
 		]
 	})
@@ -378,8 +379,8 @@ function CreateFullAdLib(
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
-		onAirTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid.toString())],
-		setNextTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid.toString())],
+		onAirTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid)],
+		setNextTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)],
 		content: CreateFullContent(config, parsedCue)
 	})
 }
