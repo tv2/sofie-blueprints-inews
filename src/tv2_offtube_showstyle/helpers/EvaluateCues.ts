@@ -28,6 +28,7 @@ export function OfftubeEvaluateCues(
 			EvaluateCueAdLib: OfftubeEvaluateAdLib,
 			EvaluateCueEkstern: OfftubeEvaluateEkstern,
 			EvaluateCueGraphic: OfftubeEvaluateGrafikCaspar
+			// Design: Not currently supported
 		},
 		context,
 		config,

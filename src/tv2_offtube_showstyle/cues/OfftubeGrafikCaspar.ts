@@ -25,8 +25,7 @@ import {
 	literal,
 	PartContext2,
 	PartDefinition,
-	PartToParentClass,
-	TranslateEngine
+	PartToParentClass
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
@@ -45,25 +44,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	partDefinition: PartDefinition,
 	rank?: number
 ) {
-	let engine = parsedCue.target
-	if (GraphicIsInternal(parsedCue)) {
-		if (config.showStyle.GFXTemplates) {
-			const templ = config.showStyle.GFXTemplates.find(
-				t =>
-					t.INewsName.toUpperCase() === parsedCue.graphic.template.toUpperCase() &&
-					t.INewsCode.toString()
-						.replace(/=/gi, '')
-						.toUpperCase() === parsedCue.iNewsCommand.toUpperCase()
-			)
-			if (templ) {
-				if (templ.IsDesign) {
-					return
-				}
-
-				engine = TranslateEngine(templ.VizDestination)
-			}
-		}
-	}
+	const engine = parsedCue.target
 
 	const isIdentGrafik = GraphicIsInternal(parsedCue) && !!parsedCue.graphic.template.match(/direkte/i)
 
