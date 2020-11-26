@@ -12,6 +12,7 @@ import {
 	GraphicIsInternal,
 	GraphicIsPilot,
 	GraphicLLayer,
+	IsTargetingWall,
 	PartContext2,
 	PartDefinition,
 	PartToParentClass
@@ -64,7 +65,7 @@ export function GetEnableForGrafik(
 	isStickyIdent: boolean,
 	partDefinition?: PartDefinition
 ): { while: string } | { start: number } {
-	if (engine === 'WALL') {
+	if (IsTargetingWall(engine)) {
 		return {
 			while: '1'
 		}

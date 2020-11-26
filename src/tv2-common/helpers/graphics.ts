@@ -51,9 +51,9 @@ export function GetInfiniteModeForGraphic(
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	isStickyIdent?: boolean
 ): PieceLifespan {
-	return engine === 'WALL'
+	return IsTargetingWall(engine)
 		? PieceLifespan.OutOnRundownEnd
-		: engine === 'TLF'
+		: IsTargetingTLF(engine)
 		? PieceLifespan.WithinPart
 		: isStickyIdent
 		? PieceLifespan.OutOnSegmentEnd
@@ -90,4 +90,20 @@ export function FindInfiniteModeFromConfig(
 	}
 
 	return PieceLifespan.WithinPart
+}
+
+export function IsTargetingFull(engine: GraphicEngine) {
+	return engine === 'FULL' || IsTargetingTLF(engine)
+}
+
+export function IsTargetingOVL(engine: GraphicEngine) {
+	return engine === 'OVL'
+}
+
+export function IsTargetingWall(engine: GraphicEngine) {
+	return engine === 'WALL'
+}
+
+export function IsTargetingTLF(engine: GraphicEngine) {
+	return engine === 'TLF'
 }

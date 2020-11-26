@@ -13,6 +13,8 @@ import {
 	GetInfiniteModeForGraphic,
 	GraphicDisplayName,
 	GraphicInternal,
+	IsTargetingTLF,
+	IsTargetingWall,
 	literal,
 	PartContext2,
 	PartDefinition
@@ -47,12 +49,11 @@ export function EvaluateCueGraphicInternal(
 
 	const engine = parsedCue.target
 
-	const sourceLayerId =
-		engine === 'TLF'
-			? SourceLayer.PgmGraphicsTLF
-			: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue), isStickyIdent)
+	const sourceLayerId = IsTargetingTLF(engine)
+		? SourceLayer.PgmGraphicsTLF
+		: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue), isStickyIdent)
 
-	const outputLayerId = engine === 'WALL' ? 'sec' : 'overlay'
+	const outputLayerId = IsTargetingWall(engine) ? 'sec' : 'overlay'
 
 	const name = GraphicDisplayName(config, parsedCue)
 
@@ -64,7 +65,7 @@ export function EvaluateCueGraphicInternal(
 				name,
 				sourceLayerId,
 				outputLayerId,
-				...(engine === 'TLF' || (parsedCue.end && parsedCue.end.infiniteMode)
+				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
@@ -94,7 +95,7 @@ export function EvaluateCueGraphicInternal(
 		const piece = literal<IBlueprintPiece>({
 			externalId: partId,
 			name,
-			...(engine === 'TLF' || engine === 'WALL'
+			...(IsTargetingTLF(engine) || IsTargetingWall(engine)
 				? { enable: { start: 0 } }
 				: {
 						enable: {

@@ -22,6 +22,8 @@ import {
 	GraphicIsPilot,
 	GraphicLLayer,
 	GraphicPilot,
+	IsTargetingTLF,
+	IsTargetingWall,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -103,7 +105,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					outputLayerId: OfftubeOutputLayers.OVERLAY,
 					lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-					...(engine === 'TLF' || (parsedCue.end && parsedCue.end.infiniteMode)
+					...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
 						? {}
 						: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 					content: {
@@ -115,7 +117,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			const piece = literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,
 				name: `${GraphicDisplayName(config, parsedCue)}`,
-				...(engine === 'TLF' || engine === 'WALL'
+				...(IsTargetingTLF(engine) || IsTargetingWall(engine)
 					? { enable: { start: 0 } }
 					: {
 							enable: {
@@ -125,7 +127,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
-				...(engine === 'TLF' || (parsedCue.end && parsedCue.end.infiniteMode)
+				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
 				content: {
@@ -420,7 +422,7 @@ function GetEnableForGrafikOfftube(
 	isIdentGrafik: boolean,
 	partDefinition?: PartDefinition
 ): TSR.TSRTimelineObj['enable'] {
-	if (engine === 'WALL') {
+	if (IsTargetingWall(engine)) {
 		return {
 			while: '1'
 		}

@@ -16,6 +16,10 @@ import {
 	GraphicDisplayName,
 	GraphicLLayer,
 	GraphicPilot,
+	IsTargetingFull,
+	IsTargetingOVL,
+	IsTargetingTLF,
+	IsTargetingWall,
 	literal,
 	PartContext2,
 	SisyfosEVSSource,
@@ -53,14 +57,14 @@ export function EvaluateCueGraphicPilot(
 	if (adlib) {
 		adlibPieces.push(makeMosAdlib(context, partId, config, parsedCue, engine, rank))
 	} else {
-		if (config.showStyle.MakeAdlibsForFulls && !adlib && (engine === 'FULL' || engine === 'TLF')) {
+		if (config.showStyle.MakeAdlibsForFulls && !adlib && IsTargetingFull(engine)) {
 			adlibPieces.push(makeMosAdlib(context, partId, config, parsedCue, engine, rank))
 		}
 		pieces.push(
 			literal<IBlueprintPiece>({
 				externalId: partId,
 				name: GraphicDisplayName(config, parsedCue),
-				...(engine === 'TLF' || engine === 'WALL' || engine === 'FULL'
+				...(IsTargetingFull(engine) || IsTargetingWall(engine)
 					? { enable: { start: 0 } }
 					: {
 							enable: {
@@ -100,26 +104,26 @@ function makeMosAdlib(
 		outputLayerId: GetOutputLayer(engine),
 		adlibPreroll: config.studio.PilotPrerollDuration,
 		content: GetMosObjContent(context, engine, config, parsedCue, `${partId}-adlib`, true, rank),
-		toBeQueued: engine === 'FULL' || engine === 'WALL'
+		toBeQueued: IsTargetingFull(engine) || IsTargetingWall(engine)
 	}
 }
 
 function GetSourceLayer(engine: GraphicEngine): SourceLayer {
-	return engine === 'WALL'
+	return IsTargetingWall(engine)
 		? SourceLayer.WallGraphics
-		: engine === 'TLF'
+		: IsTargetingTLF(engine)
 		? SourceLayer.PgmGraphicsTLF
-		: engine === 'OVL'
+		: IsTargetingOVL(engine)
 		? SourceLayer.PgmPilotOverlay
 		: SourceLayer.PgmPilot
 }
 
 function GetOutputLayer(engine: GraphicEngine) {
-	return engine === 'WALL'
+	return IsTargetingWall(engine)
 		? 'sec'
-		: engine === 'OVL'
+		: IsTargetingOVL(engine)
 		? 'overlay'
-		: engine === 'FULL' || engine === 'TLF'
+		: IsTargetingFull(engine)
 		? 'pgm'
 		: 'overlay'
 }
@@ -139,19 +143,17 @@ function GetMosObjContent(
 		timelineObjects: [
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
-				enable:
-					engine === 'OVL'
-						? GetEnableForGrafik(config, engine, parsedCue, false)
-						: {
-								start: 0
-						  },
+				enable: IsTargetingOVL(engine)
+					? GetEnableForGrafik(config, engine, parsedCue, false)
+					: {
+							start: 0
+					  },
 				priority: 1,
-				layer:
-					engine === 'WALL'
-						? GraphicLLayer.GraphicLLayerWall
-						: engine === 'OVL'
-						? GraphicLLayer.GraphicLLayerPilotOverlay
-						: GraphicLLayer.GraphicLLayerPilot,
+				layer: IsTargetingWall(engine)
+					? GraphicLLayer.GraphicLLayerWall
+					: IsTargetingOVL(engine)
+					? GraphicLLayer.GraphicLLayerPilotOverlay
+					: GraphicLLayer.GraphicLLayerPilot,
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT,
@@ -159,7 +161,7 @@ function GetMosObjContent(
 					continueStep: parsedCue.graphic.continueCount,
 					noAutoPreloading: false,
 					channelName: engine === 'WALL' ? 'WALL1' : engine === 'OVL' ? 'OVL1' : 'FULL1', // TODO: TranslateEngine
-					...(engine === 'WALL' || !config.studio.PreventOverlayWithFull
+					...(IsTargetingWall(engine) || !config.studio.PreventOverlayWithFull
 						? {}
 						: {
 								delayTakeAfterOutTransition: true,
@@ -169,11 +171,10 @@ function GetMosObjContent(
 								}
 						  })
 				},
-				...(engine === 'OVL' || engine === 'WALL' ? {} : { classes: ['full'] }) // TODO: !IsTargetingFull
+				...(IsTargetingFull(engine) ? { classes: ['full'] } : {})
 			}),
-			...(engine === 'OVL' || engine === 'WALL' // TODO: !IsTargetingFull
-				? []
-				: [
+			...(IsTargetingFull(engine)
+				? [
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
@@ -213,7 +214,8 @@ function GetMosObjContent(
 						}),
 						GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
 						...muteSisyfosChannels(partId, config.sources, !!adlib, adlibrank ?? 0, parsedCue.graphic.vcpid)
-				  ])
+				  ]
+				: [])
 		]
 	})
 }
