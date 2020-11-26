@@ -190,7 +190,7 @@ export function GetCasparOverlayTimeline(
 export function createContentForGraphicTemplate(
 	graphicName: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
-): Partial<any> {
+): Partial<Slots> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
 
@@ -205,7 +205,7 @@ export function createContentForGraphicTemplate(
 				'650_ident': {
 					display: 'program',
 					payload: {
-						type: 'Ident',
+						type: GraphicName.IDENT,
 						text1: parsedCue.graphic.textFields[0],
 						text2: parsedCue.graphic.textFields[1]
 					}
@@ -216,7 +216,7 @@ export function createContentForGraphicTemplate(
 				'650_ident': {
 					display: 'program',
 					payload: {
-						type: 'BillederFra',
+						type: GraphicName.BILLEDERFRA_LOGO,
 						logo: parsedCue.graphic.textFields[0]
 					}
 				}
@@ -226,7 +226,7 @@ export function createContentForGraphicTemplate(
 				'650_ident': {
 					display: 'program',
 					payload: {
-						type: 'Ident',
+						type: GraphicName.IDENT,
 						text1: parsedCue.graphic.textFields[0],
 						text2: parsedCue.graphic.textFields[1]
 					}
@@ -237,7 +237,7 @@ export function createContentForGraphicTemplate(
 				'660_topt': {
 					display: 'program',
 					payload: {
-						type: 'Topt',
+						type: GraphicName.TOPT,
 						name: parsedCue.graphic.textFields[0],
 						title: parsedCue.graphic.textFields[1]
 					}
@@ -248,7 +248,7 @@ export function createContentForGraphicTemplate(
 				'660_topt': {
 					display: 'program',
 					payload: {
-						type: 'Topt',
+						type: GraphicName.TOPT,
 						name: parsedCue.graphic.textFields[0],
 						title: parsedCue.graphic.textFields[1]
 					}
@@ -259,7 +259,7 @@ export function createContentForGraphicTemplate(
 				'660_topt': {
 					display: 'program',
 					payload: {
-						type: 'Topt',
+						type: GraphicName.TOPT,
 						name: parsedCue.graphic.textFields[0],
 						title: parsedCue.graphic.textFields[1]
 					}
@@ -270,7 +270,7 @@ export function createContentForGraphicTemplate(
 				'450_lowerThird': {
 					display: 'program',
 					payload: {
-						type: 'Bund',
+						type: GraphicName.BUND,
 						name: parsedCue.graphic.textFields[0],
 						title: parsedCue.graphic.textFields[1]
 					}
@@ -281,7 +281,7 @@ export function createContentForGraphicTemplate(
 				'450_lowerThird': {
 					display: 'program',
 					payload: {
-						type: 'Headline',
+						type: GraphicName.HEADLINE,
 						headline: parsedCue.graphic.textFields[0],
 						text1: parsedCue.graphic.textFields[1]
 					}
@@ -292,7 +292,7 @@ export function createContentForGraphicTemplate(
 				'450_lowerThird': {
 					display: 'program',
 					payload: {
-						type: 'Headline',
+						type: GraphicName.HEADLINE,
 						headline: parsedCue.graphic.textFields[0],
 						text1: parsedCue.graphic.textFields[1]
 					}
@@ -303,7 +303,7 @@ export function createContentForGraphicTemplate(
 				'450_lowerThird': {
 					display: 'program',
 					payload: {
-						type: 'Headline',
+						type: GraphicName.HEADLINE,
 						headline: parsedCue.graphic.textFields[0],
 						text1: parsedCue.graphic.textFields[1]
 					}
@@ -314,7 +314,7 @@ export function createContentForGraphicTemplate(
 				'450_lowerThird': {
 					display: 'program',
 					payload: {
-						type: 'Headline',
+						type: GraphicName.HEADLINE,
 						headline: parsedCue.graphic.textFields[0],
 						text1: parsedCue.graphic.textFields[1]
 					}
