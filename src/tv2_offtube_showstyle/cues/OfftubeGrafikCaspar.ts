@@ -173,13 +173,10 @@ export function GetCasparOverlayTimeline(
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				// tslint:disable-next-line: prettier
 				templateType: 'html',
-				// tslint:disable-next-line: prettier
 				name: 'sport-overlay/index',
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
-						// tslint:disable-next-line: prettier
 						display: 'program',
 						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue)
 					})
@@ -423,13 +420,10 @@ export function CreateFullContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-					// tslint:disable-next-line: prettier
 					templateType: 'html',
-					// tslint:disable-next-line: prettier
 					name: 'sport-overlay/index',
 					data: `<templateData>${encodeURI(
 						JSON.stringify({
-							// tslint:disable-next-line: prettier
 							display: 'program',
 							slots: {
 								'250_full': {
