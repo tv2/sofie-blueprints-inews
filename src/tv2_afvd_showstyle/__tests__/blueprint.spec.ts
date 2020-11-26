@@ -154,7 +154,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.actions).toHaveLength(0)
 	})
 
-	it("Doesn't merge MOSART=L with overlay graphic", () => {
+	it("Doesn't merge MOSART=L with GRAFIK=FULL", () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -355,5 +355,188 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.pieces).toHaveLength(0)
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(0)
+	})
+
+	it('Creates invalid part for GRAFIK=FULL with Pilot and bund in between', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				['GRAFIK=FULL'],
+				['#kg bund some person', ';0.00'],
+				[
+					'#cg4 pilotdata',
+					'News/Citast/ARFG/LIVE/stoppoints_3',
+					'VCPID=2547768',
+					'ContinueCount=8',
+					'News/Citat/ARFG/LIVE/stoppoints_3'
+				]
+			],
+			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(2)
+
+		const kamPart = result.parts[0]
+		expect(kamPart).toBeTruthy()
+		expect(kamPart.pieces).toHaveLength(2)
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.adLibPieces).toHaveLength(0)
+		expect(kamPart.actions).toHaveLength(0)
+
+		const fullPart = result.parts[1]
+		expect(fullPart).toBeTruthy()
+		expect(fullPart.part.invalid).toBe(true)
+		expect(fullPart.pieces).toHaveLength(0)
+		expect(fullPart.adLibPieces).toHaveLength(1)
+		expect(fullPart.actions).toHaveLength(0)
+	})
+
+	it('Creates invalid part and show warning when GRAFIK=FULL and Pilot in different parts', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				['GRAFIK=FULL'],
+				[
+					'#cg4 pilotdata',
+					'News/Citast/ARFG/LIVE/stoppoints_3',
+					'VCPID=2547768',
+					'ContinueCount=8',
+					'News/Citat/ARFG/LIVE/stoppoints_3'
+				]
+			],
+			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<pi>Kam 2</pi>\r\n<p><a idref="1"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(3)
+
+		const kamPart1 = result.parts[0]
+		expect(kamPart1).toBeTruthy()
+		expect(kamPart1.pieces).toHaveLength(2)
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart1.adLibPieces).toHaveLength(0)
+		expect(kamPart1.actions).toHaveLength(0)
+
+		const fullPart = result.parts[1]
+		expect(fullPart).toBeTruthy()
+		expect(fullPart.part.invalid).toBe(true)
+		expect(fullPart.pieces).toHaveLength(0)
+		expect(fullPart.adLibPieces).toHaveLength(0)
+		expect(fullPart.actions).toHaveLength(0)
+
+		const kamPart2 = result.parts[2]
+		expect(kamPart2).toBeTruthy()
+		expect(kamPart2.pieces).toHaveLength(1)
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam])
+		expect(kamPart2.adLibPieces).toHaveLength(0)
+		expect(kamPart2.actions).toHaveLength(0)
+	})
+
+	it('Creates overlay graphic for MOSART=L', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				[
+					']] S3.0 M 0 [[',
+					'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+					'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|O',
+					'VCPID=2520177',
+					'ContinueCount=-1',
+					'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|O'
+				]
+			],
+			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const kamPart = result.parts[0]
+		expect(kamPart).toBeTruthy()
+		expect(kamPart.pieces).toHaveLength(3)
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
+			SourceLayer.PgmCam,
+			SourceLayer.PgmPilotOverlay,
+			SourceLayer.PgmScript
+		])
+		expect(kamPart.adLibPieces).toHaveLength(0)
+		expect(kamPart.actions).toHaveLength(0)
+	})
+
+	it('Creates wall graphic for MOSART=W', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				[
+					']] S3.0 M 0 [[',
+					'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+					'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=W|00:00|O',
+					'VCPID=2520177',
+					'ContinueCount=-1',
+					'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=W|00:00|O'
+				]
+			],
+			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const kamPart = result.parts[0]
+		expect(kamPart).toBeTruthy()
+		expect(kamPart.pieces).toHaveLength(3)
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
+			SourceLayer.PgmCam,
+			SourceLayer.WallGraphics,
+			SourceLayer.PgmScript
+		])
+		expect(kamPart.adLibPieces).toHaveLength(0)
+		expect(kamPart.actions).toHaveLength(0)
+	})
+
+	it('Creates full graphic for MOSART=F', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				[
+					']] S3.0 M 0 [[',
+					'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+					'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=F|00:00|O',
+					'VCPID=2520177',
+					'ContinueCount=-1',
+					'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=F|00:00|O'
+				]
+			],
+			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(2)
+		expectAllPartsToBeValid(result)
+
+		const kamPart = result.parts[0]
+		expect(kamPart).toBeTruthy()
+		expect(kamPart.pieces).toHaveLength(2)
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.adLibPieces).toHaveLength(0)
+		expect(kamPart.actions).toHaveLength(0)
+
+		const fullPart = result.parts[1]
+		expect(fullPart).toBeTruthy()
+		expect(fullPart.pieces).toHaveLength(1)
+		expect(fullPart.adLibPieces).toHaveLength(1)
+		const fullAdlib = fullPart.adLibPieces[0]
+		expect(fullAdlib).toBeTruthy()
+		expect(fullAdlib.sourceLayerId).toBe(SourceLayer.PgmPilot)
+		expect(fullPart.actions).toHaveLength(0)
+		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmPilot])
 	})
 })
