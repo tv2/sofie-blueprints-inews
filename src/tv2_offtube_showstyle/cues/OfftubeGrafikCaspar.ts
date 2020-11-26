@@ -21,16 +21,15 @@ import {
 	GraphicIsInternal,
 	GraphicIsPilot,
 	GraphicLLayer,
+	GraphicPilot,
 	literal,
 	PartContext2,
 	PartDefinition,
 	PartToParentClass,
-	TimelineBlueprintExt,
 	TranslateEngine
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
-import { AtemSourceIndex } from '../../types/atem'
+import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
@@ -69,13 +68,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = GraphicIsInternal(parsedCue) && !!parsedCue.graphic.template.match(/direkte/i)
 
 	if (GraphicIsPilot(parsedCue)) {
-		const grafikTemplateName = GetFullGraphicTemplateNameFromCue(config, parsedCue)
-		const adLibPiece = CreateFullAdLib(
-			config,
-			partDefinition.externalId,
-			grafikTemplateName,
-			partDefinition.segmentExternalId
-		)
+		const adLibPiece = CreateFullAdLib(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
 
 		actions.push(
 			literal<IBlueprintActionManifest>({
@@ -92,18 +85,13 @@ export function OfftubeEvaluateGrafikCaspar(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: { ...adLibPiece.content, timelineObjects: [] },
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, grafikTemplateName)],
-					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, grafikTemplateName)]
+					onAirTags: [GetTagForFull(partDefinition.segmentExternalId, parsedCue.graphic.vcpid.toString())],
+					setNextTags: [GetTagForFullNext(partDefinition.segmentExternalId, parsedCue.graphic.vcpid.toString())]
 				}
 			})
 		)
 
-		const piece = CreateFullPiece(
-			config,
-			partDefinition.externalId,
-			GetFullGraphicTemplateNameFromCue(config, parsedCue),
-			partDefinition.segmentExternalId
-		)
+		const piece = CreateFullPiece(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
 		pieces.push(piece)
 	} else if (GraphicIsInternal(parsedCue)) {
 		// TODO: Wall
@@ -185,13 +173,10 @@ export function GetCasparOverlayTimeline(
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				// tslint:disable-next-line: prettier
 				templateType: 'html',
-				// tslint:disable-next-line: prettier
 				name: 'sport-overlay/index',
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
-						// tslint:disable-next-line: prettier
 						display: 'program',
 						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue)
 					})
@@ -208,19 +193,27 @@ export function createContentForGraphicTemplate(
 ): Partial<Slots> {
 	switch (graphicName.toLowerCase()) {
 		// TODO: When creating new templates in the future
+
 		case 'arkiv':
+		case 'ident':
+		case 'direkte':
+		case 'ident_nyhederne':
+		case 'ident_news':
+		case 'ident_tv2sport':
+		case 'billederfra_txt':
 			return {
-				[graphicName]: {
+				'650_ident': {
 					display: 'program',
 					payload: {
-						type: GraphicName.ARKIV,
-						text: parsedCue.graphic.textFields[0]
+						type: GraphicName.IDENT,
+						text1: parsedCue.graphic.textFields[0],
+						text2: parsedCue.graphic.textFields[1]
 					}
 				}
 			}
 		case 'billederfra_logo':
 			return {
-				[graphicName]: {
+				'650_ident': {
 					display: 'program',
 					payload: {
 						type: GraphicName.BILLEDERFRA_LOGO,
@@ -228,92 +221,103 @@ export function createContentForGraphicTemplate(
 					}
 				}
 			}
-		case 'bund':
-		case 'lowerThird':
+		case 'tlfdirekte':
 			return {
-				lowerThird: {
-					display: 'program',
-					payload: {
-						type: GraphicName.BUND,
-						trompet: parsedCue.graphic.textFields[1], // TODO: Should be text:
-						name: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'direkte':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.DIREKTE,
-						location: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'headline':
-			return {
-				lowerThird: {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						trompet: parsedCue.graphic.textFields[1],
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_nyhederne':
-			return {
-				[graphicName]: {
+				'650_ident': {
 					display: 'program',
 					payload: {
 						type: GraphicName.IDENT,
-						variant: 'ident_nyhederne',
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_news':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						variant: 'ident_news',
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_tv2sport':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						variant: 'ident_tv2sport',
-						text: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'ident_blank':
-			return {
-				[graphicName]: {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						variant: 'ident_blank',
-						text: parsedCue.graphic.textFields[0]
+						text1: parsedCue.graphic.textFields[0],
+						text2: parsedCue.graphic.textFields[1]
 					}
 				}
 			}
 		case 'topt':
 			return {
-				[graphicName]: {
+				'660_topt': {
 					display: 'program',
-					payload: literal<Topt>({
+					payload: {
 						type: GraphicName.TOPT,
 						name: parsedCue.graphic.textFields[0],
 						title: parsedCue.graphic.textFields[1]
-					})
+					}
+				}
+			}
+		case 'tlftopt':
+			return {
+				'660_topt': {
+					display: 'program',
+					payload: {
+						type: GraphicName.TOPT,
+						name: parsedCue.graphic.textFields[0],
+						title: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'tlftoptlive':
+			return {
+				'660_topt': {
+					display: 'program',
+					payload: {
+						type: GraphicName.TOPT,
+						name: parsedCue.graphic.textFields[0],
+						title: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'bund':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: GraphicName.BUND,
+						name: parsedCue.graphic.textFields[0],
+						title: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'vo':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: GraphicName.HEADLINE,
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'trompet':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: GraphicName.HEADLINE,
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'komm':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: GraphicName.HEADLINE,
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
+				}
+			}
+		case 'kommentator':
+			return {
+				'450_lowerThird': {
+					display: 'program',
+					payload: {
+						type: GraphicName.HEADLINE,
+						headline: parsedCue.graphic.textFields[0],
+						text1: parsedCue.graphic.textFields[1]
+					}
 				}
 			}
 		default:
@@ -336,7 +340,7 @@ export function createContentForGraphicTemplate(
 export function CreateFullPiece(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
-	template: string,
+	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	segmentExternalId: string
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
@@ -344,14 +348,14 @@ export function CreateFullPiece(
 			start: 0 // TODO: Time
 		},
 		externalId,
-		name: `${template}`,
+		name: `${parsedCue.graphic.name}`,
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
-		content: CreateFullContent(config, template),
+		content: CreateFullContent(config, parsedCue),
 		tags: [
-			GetTagForFull(segmentExternalId, template),
-			GetTagForFullNext(segmentExternalId, template),
+			GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid.toString()),
+			GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid.toString()),
 			TallyTags.FULL_IS_LIVE
 		]
 	})
@@ -360,13 +364,13 @@ export function CreateFullPiece(
 function CreateFullAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
-	template: string,
+	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	segmentExternalId: string
 ): IBlueprintAdLibPiece {
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
 		externalId,
-		name: `${template}`,
+		name: `${parsedCue.graphic.name}`,
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
 		toBeQueued: true,
@@ -374,19 +378,22 @@ function CreateFullAdLib(
 		adlibTransitionKeepAlive: config.studio.FullKeepAliveDuration ? Number(config.studio.FullKeepAliveDuration) : 60000,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
-		onAirTags: [GetTagForFull(segmentExternalId, template)],
-		setNextTags: [GetTagForFullNext(segmentExternalId, template)],
-		content: CreateFullContent(config, template)
+		onAirTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid.toString())],
+		setNextTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid.toString())],
+		content: CreateFullContent(config, parsedCue)
 	})
 }
 
-export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, template: string): GraphicsContent {
+export function CreateFullContent(
+	config: OfftubeShowstyleBlueprintConfig,
+	parsedCue: CueDefinitionGraphic<GraphicPilot>
+): GraphicsContent {
 	return {
-		fileName: template,
-		path: `${config.studio.NetworkBasePath}\\${template}.png`, // full path on the source network storage, TODO: File extension
-		mediaFlowIds: [config.studio.MediaFlowId],
+		fileName: parsedCue.graphic.vcpid.toString(),
+		path: `${config.studio.GraphicBasePath}\\${parsedCue.graphic.vcpid.toString()}.png`, // full path on the source network storage, TODO: File extension
+		mediaFlowIds: [config.studio.GraphicFlowId],
 		timelineObjects: [
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TimelineObjCCGTemplate>({
 				id: '',
 				enable: {
 					while: '1'
@@ -395,70 +402,27 @@ export function CreateFullContent(config: OfftubeShowstyleBlueprintConfig, templ
 				layer: OfftubeCasparLLayer.CasparGraphicsFull,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					playing: true,
-					file: `${template}`,
-					loop: true,
+					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+					templateType: 'html',
+					name: 'sport-overlay/index',
+					data: `<templateData>${encodeURI(
+						JSON.stringify({
+							display: 'program',
+							slots: {
+								'250_full': {
+									payload: {
+										type: 'Still',
+										url: `http://${config.studio.FullGraphicURL}/${parsedCue.graphic.vcpid.toString()}.png`
+									}
+								}
+							}
+						})
+					)}</templateData>`,
+					useStopCommand: false,
 					mixer: {
 						opacity: 100
 					}
 				}
-			}),
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
-				enable: {
-					start: config.studio.CasparPrerollDuration
-				},
-				priority: 100,
-				layer: OfftubeAtemLLayer.AtemMEClean,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.AtemSource.GFXFull,
-						transition: TSR.AtemTransitionStyle.WIPE,
-						transitionSettings: {
-							wipe: {
-								// TODO: Expose to settings
-								rate: 25, // 1s
-								pattern: 1, // Vertical wipe
-								borderSoftness: 7000,
-								reverseDirection: true
-							}
-						}
-					}
-				},
-				classes: [ControlClasses.NOLookahead]
-			}),
-			literal<TSR.TimelineObjAtemDSK>({
-				id: '',
-				enable: {
-					start: config.studio.CasparPrerollDuration
-				},
-				priority: 100,
-				layer: OfftubeAtemLLayer.AtemDSKGraphics,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.DSK,
-					dsk: {
-						onAir: false
-					}
-				}
-			}),
-			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-				id: '',
-				enable: { start: 0 },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemMENext,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						previewInput: AtemSourceIndex.Blk
-					}
-				},
-				metaData: {},
-				classes: ['ab_on_preview']
 			})
 		]
 	}

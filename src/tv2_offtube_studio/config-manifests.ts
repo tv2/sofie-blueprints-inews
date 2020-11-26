@@ -279,6 +279,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 'flow0'
 	},
 	{
+		id: 'GraphicFlowId',
+		name: 'Graphic Flow Id',
+		description: '',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'flow1'
+	},
+	{
 		id: 'ClipFileExtension',
 		name: 'Clip files extension',
 		description: 'Default file extension to clips to fetch from Omneon and play at CasparCG',
@@ -291,6 +299,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'Network base path',
 		description:
 			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: ''
+	},
+	{
+		id: 'GraphicBasePath',
+		name: 'Graphic Network base path',
+		description: '',
 		type: ConfigManifestEntryType.STRING,
 		required: true,
 		defaultVal: ''
@@ -491,5 +507,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 1000
+	},
+	{
+		id: 'FullGraphicURL',
+		name: 'Full Graphic URL',
+		description: 'URL to serve full graphics from',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'localhost'
 	}
 ]

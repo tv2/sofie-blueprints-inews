@@ -6,6 +6,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
 	MediaFlowId: '',
+	GraphicFlowId: '',
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesSkype: [],
@@ -38,12 +39,14 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	CasparPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
+	GraphicBasePath: '/',
 	JingleBasePath: 'jingler',
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
-	FullKeepAliveDuration: 0
+	FullKeepAliveDuration: 0,
+	FullGraphicURL: ''
 }
 
 function getObjectKeys(obj: any): string[] {
