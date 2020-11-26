@@ -394,7 +394,7 @@ export function CreateFullContent(
 								'250_full': {
 									payload: {
 										type: 'Still',
-										url: `http://${config.studio.FullGraphicURL}/${parsedCue.graphic.vcpid.toString()}.png`
+										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.vcpid.toString()}.png`
 									}
 								}
 							}
