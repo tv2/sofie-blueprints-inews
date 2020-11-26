@@ -8,7 +8,7 @@ import {
 	SegmentContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { getSegmentBase, literal, TransformCuesIntoShowstyle } from 'tv2-common'
+import { getSegmentBase, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { StudioConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
@@ -28,7 +28,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 
 	const result: BlueprintResultSegment = getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {
 		getConfig,
-		TransformCuesIntoShowstyle,
 		CreatePartContinuity,
 		CreatePartUnknown,
 		CreatePartIntro,

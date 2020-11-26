@@ -1,4 +1,5 @@
-import { CueType, PartType } from 'tv2-constants'
+import { literal, TV2BlueprintConfig } from 'tv2-common'
+import { CueType, GraphicEngine, PartType } from 'tv2-constants'
 import { PartDefinition } from './ParseBody'
 
 export type UnparsedCue = string[] | null
@@ -17,20 +18,8 @@ export interface CueDefinitionBase {
 	iNewsCommand: string
 }
 
-export interface CueDefinitionGrafik extends CueDefinitionBase {
-	type: CueType.Grafik
-	template: string
-	cue: string
-	textFields: string[]
-}
-
-export interface CueDefinitionMOS extends CueDefinitionBase {
-	type: CueType.MOS
-	name: string
-	vcpid: number
-	continueCount: number
-	engine?: string
-	isActuallyWall?: boolean
+export interface CueDefinitionUnknown extends CueDefinitionBase {
+	type: CueType.UNKNOWN
 }
 
 export interface CueDefinitionEkstern extends CueDefinitionBase {
@@ -55,16 +44,7 @@ export interface CueDefinitionDVE extends CueDefinitionBase {
 export interface CueDefinitionTelefon extends CueDefinitionBase {
 	type: CueType.Telefon
 	source: string
-	vizObj?: CueDefinitionGrafik | CueDefinitionMOS
-}
-
-export interface CueDefinitionVIZ extends CueDefinitionBase {
-	type: CueType.VIZ
-	rawType: string
-	content: {
-		[key: string]: string
-	}
-	design: string
+	graphic?: CueDefinitionGraphic<GraphicInternalOrPilot>
 }
 
 export interface CueDefinitionMic extends CueDefinitionBase {
@@ -91,50 +71,104 @@ export interface CueDefinitionJingle extends CueDefinitionBase {
 	clip: string
 }
 
-export interface CueDefinitionDesign extends CueDefinitionBase {
-	type: CueType.Design
-	design: string
-}
-
 export interface CueDefinitionProfile extends CueDefinitionBase {
 	type: CueType.Profile
 	profile: string
-}
-
-export interface CueDefinitionTargetEngine extends CueDefinitionBase {
-	type: CueType.TargetEngine
-	rawType: string
-	data: {
-		engine: string
-		grafik?: CueDefinitionMOS | CueDefinitionGrafik
-	}
-	content: {
-		[key: string]: string
-	}
-	grafik?: CueDefinitionMOS | CueDefinitionGrafik
 }
 
 export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 	type: CueType.ClearGrafiks
 }
 
+// If unpaired when evaluated, throw warning. If target === 'FULL' create invalid part.
+export interface CueDefinitionUnpairedTarget extends CueDefinitionBase {
+	type: CueType.UNPAIRED_TARGET
+	target: GraphicEngine
+	routing?: CueDefinitionRouting
+	mergeable?: boolean
+}
+
+export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
+	type: CueType.UNPAIRED_PILOT
+	name: string
+	vcpid: number
+	continueCount: number
+	engineNumber?: number
+}
+
+export interface CueDefinitionBackgroundLoop extends CueDefinitionBase {
+	type: CueType.BackgroundLoop
+	target: 'FULL' | 'DVE'
+	backgroundLoop: string
+}
+
+export interface CueDefinitionGraphicDesign extends CueDefinitionBase {
+	type: CueType.GraphicDesign
+	design: string
+}
+
+export interface GraphicInternal {
+	type: 'internal'
+	template: string
+	cue: string
+	textFields: string[]
+}
+
+export interface GraphicPilot {
+	type: 'pilot'
+	name: string
+	vcpid: number
+	continueCount: number
+}
+
+export type GraphicInternalOrPilot = GraphicInternal | GraphicPilot
+
+export interface CueDefinitionGraphic<T extends GraphicInternalOrPilot> extends CueDefinitionBase {
+	type: CueType.Graphic
+	target: GraphicEngine
+	routing?: CueDefinitionRouting
+	graphic: T
+	engineNumber?: number // #cg4 -> 4
+}
+
+export interface CueDefinitionRouting extends CueDefinitionBase {
+	type: CueType.Routing
+	target: GraphicEngine
+	INP?: string
+	INP1?: string
+}
+
 export type CueDefinition =
-	| CueDefinitionGrafik
-	| CueDefinitionMOS
+	| CueDefinitionUnknown
 	| CueDefinitionEkstern
 	| CueDefinitionDVE
 	| CueDefinitionTelefon
-	| CueDefinitionVIZ
 	| CueDefinitionMic
 	| CueDefinitionAdLib
 	| CueDefinitionLYD
 	| CueDefinitionJingle
-	| CueDefinitionDesign
 	| CueDefinitionProfile
-	| CueDefinitionTargetEngine
 	| CueDefinitionClearGrafiks
+	| CueDefinitionUnpairedTarget
+	| CueDefinitionUnpairedPilot
+	| CueDefinitionBackgroundLoop
+	| CueDefinitionGraphicDesign
+	| CueDefinitionGraphic<GraphicInternalOrPilot>
+	| CueDefinitionRouting
 
-export function ParseCue(cue: UnparsedCue): CueDefinition | undefined {
+export function GraphicIsInternal(
+	o: CueDefinitionGraphic<GraphicInternalOrPilot>
+): o is CueDefinitionGraphic<GraphicInternal> {
+	return o.graphic.type === 'internal'
+}
+
+export function GraphicIsPilot(
+	o: CueDefinitionGraphic<GraphicInternalOrPilot>
+): o is CueDefinitionGraphic<GraphicPilot> {
+	return o.graphic.type === 'pilot'
+}
+
+export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefinition | undefined {
 	if (!cue) {
 		return undefined
 	}
@@ -152,12 +186,12 @@ export function ParseCue(cue: UnparsedCue): CueDefinition | undefined {
 		return parseAllOut(cue)
 	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
 		// kg (Grafik)
-		return parsekg(cue)
+		return parsekg(cue, config)
 	} else if (cue[0].match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i)) {
 		// MOS
-		return parseMOS(cue)
+		return parsePilot(cue)
 	} else if (cue[0].match(/[#|*]?cg\d+[ -]pilotdata/i)) {
-		return parseMOS(cue)
+		return parsePilot(cue)
 	} else if (cue[0].match(/^EKSTERN=/i)) {
 		// EKSTERN
 		const eksternSource = cue[0].match(/^EKSTERN=(.+)$/i)
@@ -173,12 +207,12 @@ export function ParseCue(cue: UnparsedCue): CueDefinition | undefined {
 		return parseDVE(cue)
 	} else if (cue[0].match(/^TELEFON=/i)) {
 		// Telefon
-		return parseTelefon(cue)
+		return parseTelefon(cue, config)
 	} else if (cue[0].match(/^(?:SS|GRAFIK)=(?:.*)(?:$| )/i)) {
 		// Target engine
-		return parseTargetEngine(cue)
+		return parseTargetEngine(cue, config)
 	} else if (cue[0].match(/^(?:SS|GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
-		return parseTargetEngine(cue)
+		return parseTargetEngine(cue, config)
 	} else if (cue[0].match(/^VIZ=/i)) {
 		return parseVIZCues(cue)
 	} else if (cue[0].match(/^STUDIE=MIC ON OFF$/i)) {
@@ -193,33 +227,55 @@ export function ParseCue(cue: UnparsedCue): CueDefinition | undefined {
 		return parseJingle(cue)
 	}
 
-	return undefined
+	return literal<CueDefinitionUnknown>({
+		type: CueType.UNKNOWN,
+		iNewsCommand: ''
+	})
 }
 
-function parsekg(cue: string[]): CueDefinitionGrafik {
-	let kgCue: CueDefinitionGrafik = {
-		type: CueType.Grafik,
-		template: '',
-		cue: '',
-		textFields: [],
+function parsekg(
+	cue: string[],
+	config: TV2BlueprintConfig
+): CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign | CueDefinitionUnpairedTarget {
+	let kgCue: CueDefinitionGraphic<GraphicInternalOrPilot> = {
+		type: CueType.Graphic,
+		target: 'OVL',
+		graphic: {
+			type: 'internal',
+			template: '',
+			textFields: [],
+			cue: ''
+		},
 		iNewsCommand: ''
+	}
+
+	const graphic: GraphicInternal = {
+		type: 'internal',
+		template: '',
+		textFields: [],
+		cue: ''
 	}
 
 	const command = cue[0].match(/^([*|#]?kg|digi)/i)
 	kgCue.iNewsCommand = command ? command[1] : 'kg'
 
+	const code = cue[0]
+		.match(/^[*|#]?kg[ | =]/i)
+		?.toString()
+		.trim()
+
 	const firstLineValues = cue[0].match(/^[*|#]?kg[ |=]([\w|\d]+)( (.+))*$/i)
 	if (firstLineValues) {
-		kgCue.cue = cue[0].match(/kg/) ? 'kg' : 'KG' // THIS ONE SHOULD NOT BE INSENSITIVE
-		kgCue.template = firstLineValues[1]
+		graphic.cue = cue[0].match(/kg/) ? 'kg' : 'KG' // THIS ONE SHOULD NOT BE INSENSITIVE
+		graphic.template = firstLineValues[1]
 		if (firstLineValues[3]) {
-			kgCue.textFields.push(firstLineValues[3])
+			graphic.textFields.push(firstLineValues[3])
 		}
 	} else if (cue[0].match(/^DIGI=/i)) {
-		kgCue.cue = 'DIGI'
+		graphic.cue = 'DIGI'
 		const templateType = cue[0].match(/^DIGI=(.+)$/i)
 		if (templateType) {
-			kgCue.template = templateType[1]
+			graphic.template = templateType[1]
 		}
 	}
 
@@ -237,19 +293,53 @@ function parsekg(cue: string[]): CueDefinitionGrafik {
 	}
 
 	for (let i = 1; i < textFields; i++) {
-		kgCue.textFields.push(cue[i])
+		graphic.textFields.push(cue[i])
 	}
 
 	if (!kgCue.start) {
 		kgCue.adlib = true
 	}
 
+	kgCue.graphic = graphic
+
+	const graphicConfig = code
+		? config.showStyle.GFXTemplates.find(
+				tmpl =>
+					tmpl.INewsCode.toUpperCase() === code.toUpperCase() &&
+					tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase()
+		  )
+		: undefined
+
+	if (graphicConfig && graphicConfig.IsDesign) {
+		return literal<CueDefinitionGraphicDesign>({
+			type: CueType.GraphicDesign,
+			design: graphicConfig.VizTemplate,
+			iNewsCommand: kgCue.iNewsCommand,
+			start: kgCue.start,
+			end: kgCue.end,
+			adlib: kgCue.adlib
+		})
+	} else if (graphicConfig && !!graphicConfig.VizTemplate.match(/^VCP$/i)) {
+		return literal<CueDefinitionUnpairedTarget>({
+			type: CueType.UNPAIRED_TARGET,
+			target: graphicConfig.VizDestination.match(/OVL/i)
+				? 'OVL'
+				: graphicConfig.VizDestination.match(/FULL/i)
+				? 'FULL'
+				: graphicConfig.VizDestination.match(/WALL/i)
+				? 'WALL'
+				: 'OVL',
+			iNewsCommand: graphicConfig.INewsCode,
+			mergeable: true
+		})
+	}
+
 	return kgCue
 }
 
-function parseMOS(cue: string[]): CueDefinitionMOS {
-	const mosCue: CueDefinitionMOS = {
-		type: CueType.MOS,
+function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGraphic<GraphicInternalOrPilot> {
+	const pilotCue: CueDefinitionUnpairedPilot = {
+		type: CueType.UNPAIRED_PILOT,
 		name: '',
 		vcpid: -1,
 		continueCount: -1,
@@ -266,44 +356,48 @@ function parseMOS(cue: string[]): CueDefinitionMOS {
 		} else if (!!line.match(/[#|*]?cg\d+[ -]pilotdata/i)) {
 			const engine = line.match(/[#|*]?cg(\d+)[ -]pilotdata/i)
 			if (engine && engine[1]) {
-				mosCue.engine = engine[1]
+				pilotCue.engineNumber = Number(engine[1])
 			}
 		}
 	})
 	if (realCue.length === 4) {
 		const vcpid = realCue[1].match(/^VCPID=(\d+)$/i)
 		const continueCount = realCue[2].match(/^ContinueCount=(-?\d+)$/i)
-		const timing = realCue[0].match(/L\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/i)
+		const timing = realCue[0].match(/[L|F|W]\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/i)
 
 		if (vcpid && continueCount) {
-			mosCue.name = realCue[0]
-			mosCue.vcpid = Number(vcpid[1])
-			mosCue.continueCount = Number(continueCount[1])
-
-			if (!!mosCue.name.match(/^ST4_WALL/i)) {
-				mosCue.isActuallyWall = true
-			}
+			pilotCue.name = realCue[0]
+			pilotCue.vcpid = Number(vcpid[1])
+			pilotCue.continueCount = Number(continueCount[1])
 
 			if (timing) {
 				if (timing[1] === 'M') {
-					mosCue.adlib = true
+					pilotCue.adlib = true
 				} else if (isMosTime(timing[1])) {
-					mosCue.start = parseTime(timing[1]).start
+					pilotCue.start = parseTime(timing[1]).start
 				}
 
 				if (timing[2].match(/[SBO]/i)) {
-					mosCue.end = {
+					pilotCue.end = {
 						infiniteMode: timing[2] as keyof { B: any; S: any; O: any }
 					}
 				} else if (isMosTime(timing[2])) {
-					mosCue.end = parseTime(timing[2]).start
+					pilotCue.end = parseTime(timing[2]).start
 				}
 			} else {
-				mosCue.start = { seconds: 0 }
+				pilotCue.start = { seconds: 0 }
 			}
 		}
 	}
-	return mosCue
+
+	const targeting = pilotCue.name.match(/MOSART=(L|F|W)/i)
+
+	if (targeting && targeting[1]) {
+		const target = targeting[1].toUpperCase()
+		return UnpairedPilotToGraphic(pilotCue, target === 'L' ? 'OVL' : target === 'W' ? 'WALL' : 'FULL')
+	}
+
+	return pilotCue
 }
 
 function parseDVE(cue: string[]): CueDefinitionDVE {
@@ -339,7 +433,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 	return dvecue
 }
 
-function parseTelefon(cue: string[]): CueDefinitionTelefon {
+function parseTelefon(cue: string[], config: TV2BlueprintConfig): CueDefinitionTelefon {
 	const telefonCue: CueDefinitionTelefon = {
 		type: CueType.Telefon,
 		source: '',
@@ -353,41 +447,49 @@ function parseTelefon(cue: string[]): CueDefinitionTelefon {
 	if (cue.length > 1) {
 		// tslint:disable-next-line:prefer-conditional-expression
 		if (cue[1].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
-			telefonCue.vizObj = parsekg(cue.slice(1, cue.length))
+			const graphic = parsekg(cue.slice(1, cue.length), config)
+			if (graphic.type === CueType.Graphic) {
+				telefonCue.graphic = graphic
+			}
 		} else {
-			telefonCue.vizObj = parseMOS(cue.slice(1, cue.length))
+			const pilot = parsePilot(cue.slice(1, cue.length))
+			if (pilot.type === CueType.Graphic) {
+				pilot.target = 'TLF'
+				telefonCue.graphic = pilot
+			} else {
+				telefonCue.graphic = UnpairedPilotToGraphic(pilot, 'TLF')
+			}
 		}
 	}
 
 	return telefonCue
 }
 
-function parseVIZCues(cue: string[]): CueDefinitionVIZ {
-	let vizCues: CueDefinitionVIZ = {
-		type: CueType.VIZ,
-		rawType: cue[0],
-		content: {},
-		design: '',
-		iNewsCommand: ''
+function parseVIZCues(cue: string[]): CueDefinitionBackgroundLoop | undefined {
+	if (cue[0].match(/grafik-design/i)) {
+		// Not currently supported
+		return undefined
 	}
 
-	const command = cue[0].match(/^(VIZ|GRAFIK)/i)
-	vizCues.iNewsCommand = command ? command[1] : 'VIZ'
-	const design = cue[0].match(/^(?:VIZ|GRAFIK)=(.*)$/i)
-	if (design) {
-		vizCues.design = design[1]
+	let backgroundLoopCue: CueDefinitionBackgroundLoop = {
+		type: CueType.BackgroundLoop,
+		target: cue[0].match(/dve/) ? 'DVE' : 'FULL',
+		backgroundLoop: '',
+		iNewsCommand: 'VIZ'
 	}
 
 	for (let i = 1; i < cue.length; i++) {
 		if (isTime(cue[i])) {
-			vizCues = { ...vizCues, ...parseTime(cue[i]) }
+			backgroundLoopCue = { ...backgroundLoopCue, ...parseTime(cue[i]) }
 		} else {
 			const c = cue[i].split('=')
-			vizCues.content[c[0].toString().toUpperCase()] = c[1]
+			if ((c[0].match(/GRAFIK/i) || c[0].match(/triopage/i)) && c[1]) {
+				backgroundLoopCue.backgroundLoop = c[1]
+			}
 		}
 	}
 
-	return vizCues
+	return backgroundLoopCue
 }
 
 function parseMic(cue: string[]): CueDefinitionMic {
@@ -496,14 +598,13 @@ function parseJingle(cue: string[]) {
 	return jingleCue
 }
 
-function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
-	let engineCue: CueDefinitionTargetEngine = {
-		type: CueType.TargetEngine,
-		rawType: cue[0],
-		content: {},
-		data: {
-			engine: ''
-		},
+function parseTargetEngine(
+	cue: string[],
+	config: TV2BlueprintConfig
+): CueDefinitionUnpairedTarget | CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign {
+	let engineCue: CueDefinitionUnpairedTarget = {
+		type: CueType.UNPAIRED_TARGET,
+		target: 'FULL',
 		iNewsCommand: ''
 	}
 
@@ -511,8 +612,26 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 	engineCue.iNewsCommand = command ? command[1] : 'SS'
 	const engine = cue[0].match(/^(?:VIZ|GRAFIK|SS)=(.*)$/i)
 
+	const code = cue[0].match(/VIZ/i) ? 'VIZ' : cue[0].match(/GRAFIK/i) ? 'GRAFIK' : cue[0].match(/SS/i) ? 'SS' : 'GRAFIK'
+
+	let iNewsName = ''
 	if (engine) {
-		engineCue.data.engine = engine[1]
+		iNewsName = engine[1]
+		engineCue.target = engine[1].match(/OVL/i)
+			? 'OVL'
+			: engine[1].match(/WALL/i)
+			? 'WALL'
+			: engine[1].match(/TLF/i)
+			? 'TLF'
+			: cue[0].match(/^SS=/i)
+			? 'WALL'
+			: 'FULL'
+	}
+
+	const routing: CueDefinitionRouting = {
+		type: CueType.Routing,
+		target: engineCue.target,
+		iNewsCommand: ''
 	}
 
 	for (let i = 1; i < cue.length; i++) {
@@ -520,7 +639,56 @@ function parseTargetEngine(cue: string[]): CueDefinitionTargetEngine {
 			engineCue = { ...engineCue, ...parseTime(cue[i]) }
 		} else {
 			const c = cue[i].split('=')
-			engineCue.content[c[0].toString().toUpperCase()] = c[1]
+			const input = c[0].toString().toUpperCase()
+			if (input === 'INP') {
+				routing.INP = c[1]
+			}
+
+			if (input === 'INP1') {
+				routing.INP1 = c[1]
+			}
+		}
+	}
+
+	if (routing.INP1 !== undefined || routing.INP !== undefined) {
+		engineCue.routing = routing
+	}
+
+	const graphicConfig = config.showStyle.GFXTemplates.find(
+		tmpl =>
+			tmpl.INewsCode.toUpperCase() === code?.toUpperCase() && tmpl.INewsName.toUpperCase() === iNewsName.toUpperCase()
+	)
+
+	if (graphicConfig) {
+		if (!!graphicConfig.VizTemplate.toUpperCase().match(/^VCP$/i)) {
+			engineCue.mergeable = true
+		} else {
+			if (graphicConfig.IsDesign) {
+				return literal<CueDefinitionGraphicDesign>({
+					type: CueType.GraphicDesign,
+					design: graphicConfig.VizTemplate,
+					iNewsCommand: code,
+					start: engineCue.start,
+					end: engineCue.end,
+					adlib: engineCue.adlib
+				})
+			}
+
+			return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
+				type: CueType.Graphic,
+				target: engineCue.target,
+				graphic: {
+					type: 'internal',
+					template: graphicConfig.VizTemplate,
+					textFields: [],
+					cue: iNewsName
+				},
+				iNewsCommand: graphicConfig.INewsCode,
+				start: engineCue.start,
+				end: engineCue.end,
+				adlib: engineCue.adlib,
+				routing: engineCue.routing
+			})
 		}
 	}
 
@@ -695,10 +863,29 @@ export function UnknownPartParentClass(studio: string, partDefinition: PartDefin
 
 export function AddParentClass(partDefinition: PartDefinition) {
 	return !!partDefinition.cues.filter(
-		cue =>
-			(cue.type === CueType.Grafik || cue.type === CueType.MOS) &&
-			cue.end &&
-			cue.end.infiniteMode &&
-			cue.end.infiniteMode === 'B'
+		cue => cue.type === CueType.Graphic && cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B'
 	).length
+}
+
+export function UnpairedPilotToGraphic(
+	pilotCue: CueDefinitionUnpairedPilot,
+	target: GraphicEngine,
+	targetCue?: CueDefinitionUnpairedTarget | CueDefinitionTelefon
+): CueDefinitionGraphic<GraphicInternalOrPilot> {
+	return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
+		type: CueType.Graphic,
+		target,
+		routing: targetCue?.type === CueType.UNPAIRED_TARGET ? targetCue.routing : undefined,
+		iNewsCommand: targetCue?.iNewsCommand ?? pilotCue.iNewsCommand,
+		graphic: {
+			type: 'pilot',
+			name: pilotCue.name,
+			vcpid: pilotCue.vcpid,
+			continueCount: pilotCue.continueCount
+		},
+		start: targetCue?.start ?? pilotCue.start,
+		end: targetCue?.end ?? pilotCue.end,
+		engineNumber: pilotCue.engineNumber,
+		adlib: targetCue?.adlib ?? pilotCue.adlib
+	})
 }

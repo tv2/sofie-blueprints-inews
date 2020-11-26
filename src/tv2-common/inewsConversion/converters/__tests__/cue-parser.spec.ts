@@ -1,53 +1,133 @@
+import { IBlueprintRundownDB } from 'tv-automation-sofie-blueprints-integration'
 import { CueType } from 'tv2-constants'
+import { SegmentContext } from '../../../../__mocks__/context'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import { getConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { literal } from '../../../util'
 import {
-	CueDefinition,
+	CueDefinitionAdLib,
+	CueDefinitionBackgroundLoop,
 	CueDefinitionClearGrafiks,
+	CueDefinitionDVE,
+	CueDefinitionEkstern,
+	CueDefinitionGraphic,
+	CueDefinitionGraphicDesign,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
-	CueDefinitionMOS,
-	CueDefinitionTargetEngine,
+	CueDefinitionMic,
+	CueDefinitionProfile,
+	CueDefinitionTelefon,
+	CueDefinitionUnknown,
+	CueDefinitionUnpairedPilot,
+	CueDefinitionUnpairedTarget,
+	GraphicInternal,
+	GraphicPilot,
 	isTime,
 	ParseCue,
 	parseTime
 } from '../ParseCue'
 
+const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
+
+function makeMockContext() {
+	const rundown = literal<IBlueprintRundownDB>({
+		externalId: RUNDOWN_EXTERNAL_ID,
+		name: RUNDOWN_EXTERNAL_ID,
+		_id: '',
+		showStyleVariantId: ''
+	})
+	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	mockContext.studioConfig = defaultStudioConfig as any
+	mockContext.showStyleConfig = defaultShowStyleConfig as any
+
+	return mockContext
+}
+
+const config = getConfig(makeMockContext())
+
 describe('Cue parser', () => {
 	test('Null Cue', () => {
-		const result = ParseCue(null)
+		const result = ParseCue(null, config)
 		expect(result).toEqual(undefined)
 	})
 
 	test('Empty Cue', () => {
-		const result = ParseCue([])
+		const result = ParseCue([], config)
 		expect(result).toEqual(undefined)
 	})
 
 	test('Empty String', () => {
-		const result = ParseCue([''])
+		const result = ParseCue([''], config)
 		expect(result).toEqual(undefined)
 	})
 
 	test('Cues Sofie should ignore', () => {
-		expect(ParseCue(['    '])).toBe(undefined)
-		expect(ParseCue(['Some text for the producer'])).toBe(undefined)
+		expect(ParseCue(['    '], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Some text for the producer'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
 		expect(
-			ParseCue([
-				'Some text for the producer',
-				'',
-				'across multiple lines',
-				'',
-				'with blank lines',
-				'with GRAFIK= in the text'
-			])
-		).toBe(undefined)
-		expect(ParseCue(['Instructions on how to use GRAFIK=FULL'])).toBe(undefined)
-		expect(ParseCue(['Some text with GRAFIK='])).toBe(undefined)
-		expect(ParseCue(['GGRAFIK='])).toBe(undefined)
-		expect(ParseCue(['GRAFIC='])).toBe(undefined)
-		expect(ParseCue(['Some text with kg #kg KG', 'and some more text', 'and time', ';0.01'])).toBe(undefined)
-		expect(ParseCue(['Something that looks like time ;0.01'])).toBe(undefined)
-		expect(ParseCue(['Something that looks like floated time ;x.xx'])).toBe(undefined)
+			ParseCue(
+				['Some text for the producer', '', 'across multiple lines', '', 'with blank lines', 'with GRAFIK= in the text'],
+				config
+			)
+		).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Instructions on how to use GRAFIK=FULL'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Some text with GRAFIK='], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['GGRAFIK='], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['GRAFIC='], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Some text with kg #kg KG', 'and some more text', 'and time', ';0.01'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Something that looks like time ;0.01'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
+		expect(ParseCue(['Something that looks like floated time ;x.xx'], config)).toEqual(
+			literal<CueDefinitionUnknown>({
+				type: CueType.UNKNOWN,
+				iNewsCommand: ''
+			})
+		)
 	})
 
 	test('Time with symbolic out', () => {
@@ -106,13 +186,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - Inline first text field', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';0.02']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				start: {
 					seconds: 2
 				},
@@ -123,13 +208,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - AdLib ;x.xx', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg'
 			})
@@ -138,13 +228,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - AdLib ;x.xx-O', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-O']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg',
 				end: {
@@ -156,13 +251,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - AdLib ;x.xx-S', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-S']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg',
 				end: {
@@ -174,13 +274,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - AdLib ;x.xx-B', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-B']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg',
 				end: {
@@ -192,13 +297,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - AdLib ;x.xx-0.30', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx-0.30']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg',
 				end: {
@@ -210,13 +320,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - Inline first text field, blank time', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg'
 			})
@@ -225,13 +340,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - Multiline text fields', () => {
 		const cueGrafik = ['kg bund', 'TEXT MORETEXT', 'some@email.fakeTLD', ';0.02']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				start: {
 					seconds: 2
 				},
@@ -242,13 +362,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - No time', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg'
 			})
@@ -257,13 +382,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - Blank Lines', () => {
 		const cueGrafik = ['', 'kg bund', '', 'TEXT MORETEXT', '', 'some@email.fakeTLD', '']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+				},
 				adlib: true,
 				iNewsCommand: 'kg'
 			})
@@ -272,13 +402,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - Single line', () => {
 		const cueGrafik = ['kg bund 2']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['2'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['2']
+				},
 				adlib: true,
 				iNewsCommand: 'kg'
 			})
@@ -287,13 +422,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - star', () => {
 		const cueGrafik = ['*kg bund 2']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['2'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['2']
+				},
 				adlib: true,
 				iNewsCommand: '*kg'
 			})
@@ -302,13 +442,18 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - Hash', () => {
 		const cueGrafik = ['#kg bund 2']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['2'],
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['2']
+				},
 				adlib: true,
 				iNewsCommand: '#kg'
 			})
@@ -317,16 +462,21 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - ident_nyhederne with space', () => {
 		const cueGrafik = ['#kg ident_nyhederne ', 'Ident Nyhederne', ';0.01']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
-				template: 'ident_nyhederne',
-				cue: 'kg',
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'ident_nyhederne',
+					cue: 'kg',
+					textFields: ['Ident Nyhederne']
+				},
 				start: {
 					seconds: 1
 				},
-				textFields: ['Ident Nyhederne'],
 				iNewsCommand: '#kg'
 			})
 		)
@@ -334,7 +484,7 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - All out', () => {
 		const cueGrafik = ['kg ovl-all-out', 'CLEAR OVERLAY', ';0.00']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -348,7 +498,7 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - altud', () => {
 		const cueGrafik = ['kg altud', 'CLEAR OVERLAY', ';0.00']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -362,19 +512,24 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - Start and end time', () => {
 		const cueGrafik = ['kg bund TEXT MORETEXT', 'Comma, sepearated, text', ';0.27-0.31']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'bund',
+					cue: 'kg',
+					textFields: ['TEXT MORETEXT', 'Comma, sepearated, text']
+				},
 				start: {
 					seconds: 27
 				},
 				end: {
 					seconds: 31
 				},
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['TEXT MORETEXT', 'Comma, sepearated, text'],
 				iNewsCommand: 'kg'
 			})
 		)
@@ -382,16 +537,21 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - direkte', () => {
 		const cueGrafik = ['#kg direkte KØBENHAVN', ';0.00']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'direkte',
+					cue: 'kg',
+					textFields: ['KØBENHAVN']
+				},
 				start: {
 					seconds: 0
 				},
-				template: 'direkte',
-				cue: 'kg',
-				textFields: ['KØBENHAVN'],
 				iNewsCommand: '#kg'
 			})
 		)
@@ -399,16 +559,21 @@ describe('Cue parser', () => {
 
 	test('Grafik (kg) - BillederFra_logo', () => {
 		const cueGrafik = ['#kg BillederFra_logo KØBENHAVN', ';0.01']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'BillederFra_logo',
+					cue: 'kg',
+					textFields: ['KØBENHAVN']
+				},
 				start: {
 					seconds: 1
 				},
-				template: 'BillederFra_logo',
-				cue: 'kg',
-				textFields: ['KØBENHAVN'],
 				iNewsCommand: '#kg'
 			})
 		)
@@ -416,16 +581,22 @@ describe('Cue parser', () => {
 
 	test('DIGI', () => {
 		const cueDigi = ['DIGI=VO', 'Dette er en VO tekst', 'Dette er linje 2', ';0.00']
-		const result = ParseCue(cueDigi)
+		const result = ParseCue(cueDigi, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'VO',
+					cue: 'DIGI',
+					textFields: ['Dette er en VO tekst', 'Dette er linje 2']
+				},
 				start: {
 					seconds: 0
 				},
-				template: 'VO',
-				cue: 'DIGI',
-				textFields: ['Dette er en VO tekst', 'Dette er linje 2'],
+
 				iNewsCommand: 'DIGI'
 			})
 		)
@@ -433,17 +604,16 @@ describe('Cue parser', () => {
 
 	test('KG=DESIGN_FODBOLD', () => {
 		const cueGrafik = ['KG=DESIGN_FODBOLD', ';0.00.01']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.Grafik,
+			literal<CueDefinitionGraphicDesign>({
+				type: CueType.GraphicDesign,
+				design: 'DESIGN_FODBOLD',
 				start: {
 					frames: 1,
 					seconds: 0
 				},
-				template: 'DESIGN_FODBOLD',
-				cue: 'KG',
-				textFields: [],
+
 				iNewsCommand: 'KG'
 			})
 		)
@@ -459,10 +629,10 @@ describe('Cue parser', () => {
 			'ContinueCount=3',
 			'TELEFON/KORT//LIVE_KABUL'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.MOS,
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
 				continueCount: 3,
@@ -483,10 +653,10 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'Senderplan/23-10-2019'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.MOS,
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
 				name: 'Senderplan/23-10-2019',
 				vcpid: 2565134,
 				continueCount: -1,
@@ -507,10 +677,10 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'Senderplan/23-10-2019'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.MOS,
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
 				name: 'Senderplan/23-10-2019',
 				vcpid: 2565134,
 				continueCount: -1,
@@ -530,11 +700,11 @@ describe('Cue parser', () => {
 			'ContinueCount=1',
 			'Senderplan/23-10-2019'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.MOS,
-				engine: '4',
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
+				engineNumber: 4,
 				name: 'Senderplan/23-10-2019',
 				vcpid: 2552305,
 				continueCount: 1,
@@ -555,13 +725,18 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionMOS>({
-				type: CueType.MOS,
-				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
-				vcpid: 2520177,
-				continueCount: -1,
+			literal<CueDefinitionGraphic<GraphicPilot>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'pilot',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
+					vcpid: 2520177,
+					continueCount: -1
+				},
 				adlib: true,
 				end: {
 					infiniteMode: 'O'
@@ -580,13 +755,18 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionMOS>({
-				type: CueType.MOS,
-				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30',
-				vcpid: 2520177,
-				continueCount: -1,
+			literal<CueDefinitionGraphic<GraphicPilot>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'pilot',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30',
+					vcpid: 2520177,
+					continueCount: -1
+				},
 				adlib: true,
 				end: {
 					seconds: 30
@@ -605,13 +785,18 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionMOS>({
-				type: CueType.MOS,
-				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O',
-				vcpid: 2520177,
-				continueCount: -1,
+			literal<CueDefinitionGraphic<GraphicPilot>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'pilot',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O',
+					vcpid: 2520177,
+					continueCount: -1
+				},
 				start: {
 					seconds: 2
 				},
@@ -623,6 +808,8 @@ describe('Cue parser', () => {
 		)
 	})
 
+	// TODO: ADD tests for MOSART=F, MOSART=W
+
 	test('#cg4 pilotdata', () => {
 		const cueMOS = [
 			'#cg4 pilotdata',
@@ -631,17 +818,17 @@ describe('Cue parser', () => {
 			'ContinueCount=3',
 			'TELEFON/KORT//LIVE_KABUL'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.MOS,
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
 				continueCount: 3,
 				start: {
 					seconds: 0
 				},
-				engine: '4',
+				engineNumber: 4,
 				iNewsCommand: 'VCP'
 			})
 		)
@@ -649,34 +836,31 @@ describe('Cue parser', () => {
 
 	test('GRAFIK=FULL', () => {
 		const cueGrafik = ['GRAFIK=FULL', 'INP1=', 'INP=']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.TargetEngine,
-				rawType: 'GRAFIK=FULL',
-				data: {
-					engine: 'FULL'
-				},
-				content: {
+			literal<CueDefinitionUnpairedTarget>({
+				type: CueType.UNPAIRED_TARGET,
+				target: 'FULL',
+				routing: {
+					type: CueType.Routing,
+					target: 'FULL',
 					INP1: '',
-					INP: ''
+					INP: '',
+					iNewsCommand: ''
 				},
-				iNewsCommand: 'GRAFIK'
+				iNewsCommand: 'GRAFIK',
+				mergeable: true
 			})
 		)
 	})
 
 	test('GRAFIK=takeover', () => {
 		const cueGrafik = ['GRAFIK=takeover']
-		const result = ParseCue(cueGrafik)
+		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.TargetEngine,
-				rawType: 'GRAFIK=takeover',
-				data: {
-					engine: 'takeover'
-				},
-				content: {},
+			literal<CueDefinitionUnpairedTarget>({
+				type: CueType.UNPAIRED_TARGET,
+				target: 'FULL',
 				iNewsCommand: 'GRAFIK'
 			})
 		)
@@ -690,17 +874,17 @@ describe('Cue parser', () => {
 			'ContinueCount=3',
 			'TELEFON/KORT//LIVE_KABUL'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.MOS,
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
 				continueCount: 3,
 				start: {
 					seconds: 0
 				},
-				engine: '12',
+				engineNumber: 12,
 				iNewsCommand: 'VCP'
 			})
 		)
@@ -714,17 +898,17 @@ describe('Cue parser', () => {
 			'ContinueCount=3',
 			'TELEFON/KORT//LIVE_KABUL'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.MOS,
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
 				name: 'TELEFON/KORT//LIVE_KABUL',
 				vcpid: 2552305,
 				continueCount: 3,
 				start: {
 					seconds: 0
 				},
-				engine: '4',
+				engineNumber: 4,
 				iNewsCommand: 'VCP'
 			})
 		)
@@ -739,13 +923,18 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:1O'
 		]
-		const result = ParseCue(cueMOS)
+		const result = ParseCue(cueMOS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionMOS>({
-				type: CueType.MOS,
-				name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:10',
-				vcpid: 2520177,
-				continueCount: -1,
+			literal<CueDefinitionGraphic<GraphicPilot>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'pilot',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:10',
+					vcpid: 2520177,
+					continueCount: -1
+				},
 				start: {
 					seconds: 0
 				},
@@ -759,9 +948,9 @@ describe('Cue parser', () => {
 
 	test('EKSTERN', () => {
 		const cueEkstern = ['EKSTERN=LIVE 1']
-		const result = ParseCue(cueEkstern)
+		const result = ParseCue(cueEkstern, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionEkstern>({
 				type: CueType.Ekstern,
 				source: 'LIVE 1',
 				iNewsCommand: 'EKSTERN'
@@ -771,9 +960,9 @@ describe('Cue parser', () => {
 
 	test('DVE', () => {
 		const cueDVE = ['DVE=sommerfugl', 'INP1=KAM 1', 'INP2=LIVE 1', 'BYNAVN=Odense\\København']
-		const result = ParseCue(cueDVE)
+		const result = ParseCue(cueDVE, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
 				template: 'sommerfugl',
 				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
@@ -785,9 +974,9 @@ describe('Cue parser', () => {
 
 	test('DVE', () => {
 		const cueDVE = ['DVE=sommerfugl', 'INP1=KAM 1', 'INP2=LIVE 1', 'BYNAVN=Odense/København']
-		const result = ParseCue(cueDVE)
+		const result = ParseCue(cueDVE, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
 				template: 'sommerfugl',
 				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
@@ -799,9 +988,9 @@ describe('Cue parser', () => {
 
 	test('DVE', () => {
 		const cueDVE = ['DVE=sommerfugl', 'inp1=KAM 1', 'INP2=LIVE 1', 'BYNAVN=Odense/København']
-		const result = ParseCue(cueDVE)
+		const result = ParseCue(cueDVE, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
 				template: 'sommerfugl',
 				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
@@ -813,21 +1002,26 @@ describe('Cue parser', () => {
 
 	test('TELEFON with Grafik', () => {
 		const cueTelefon = ['TELEFON=TLF 2', 'kg bund', 'TEXT MORETEXT', 'some@email.fakeTLD', ';0.02']
-		const result = ParseCue(cueTelefon)
+		const result = ParseCue(cueTelefon, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionTelefon>({
 				type: CueType.Telefon,
 				source: 'TLF 2',
-				vizObj: {
-					type: CueType.Grafik,
+				graphic: literal<CueDefinitionGraphic<GraphicInternal>>({
+					type: CueType.Graphic,
+					target: 'OVL',
+
+					graphic: {
+						type: 'internal',
+						template: 'bund',
+						cue: 'kg',
+						textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
+					},
 					start: {
 						seconds: 2
 					},
-					template: 'bund',
-					cue: 'kg',
-					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD'],
 					iNewsCommand: 'kg'
-				},
+				}),
 				iNewsCommand: 'TELEFON'
 			})
 		)
@@ -843,22 +1037,27 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O'
 		]
-		const result = ParseCue(cueTelefon)
+		const result = ParseCue(cueTelefon, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionTelefon>({
 				type: CueType.Telefon,
 				source: 'TLF 2',
-				vizObj: {
-					type: CueType.MOS,
-					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
-					vcpid: 2520177,
-					continueCount: -1,
+				graphic: literal<CueDefinitionGraphic<GraphicPilot>>({
+					type: CueType.Graphic,
+					target: 'TLF',
+
+					graphic: {
+						type: 'pilot',
+						name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
+						vcpid: 2520177,
+						continueCount: -1
+					},
 					adlib: true,
 					end: {
 						infiniteMode: 'O'
 					},
 					iNewsCommand: 'VCP'
-				},
+				}),
 				iNewsCommand: 'TELEFON'
 			})
 		)
@@ -866,9 +1065,9 @@ describe('Cue parser', () => {
 
 	test('TELEFON without Grafik', () => {
 		const cueTelefon = ['TELEFON=TLF 2']
-		const result = ParseCue(cueTelefon)
+		const result = ParseCue(cueTelefon, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionTelefon>({
 				type: CueType.Telefon,
 				source: 'TLF 2',
 				iNewsCommand: 'TELEFON'
@@ -877,36 +1076,20 @@ describe('Cue parser', () => {
 	})
 
 	test('VIZ Cue', () => {
+		// Currently unused
 		const cueViz = ['VIZ=grafik-design', 'triopage=DESIGN_SC', ';0.00.04']
-		const result = ParseCue(cueViz)
-		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.VIZ,
-				rawType: 'VIZ=grafik-design',
-				design: 'grafik-design',
-				content: {
-					TRIOPAGE: 'DESIGN_SC'
-				},
-				start: {
-					frames: 4,
-					seconds: 0
-				},
-				iNewsCommand: 'VIZ'
-			})
-		)
+		const result = ParseCue(cueViz, config)
+		expect(result).toEqual(undefined)
 	})
 
 	test('VIZ Cue', () => {
 		const cueViz = ['VIZ=full-triopage', 'triopage=DESIGN_SC', ';0.00.04']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.VIZ,
-				rawType: 'VIZ=full-triopage',
-				design: 'full-triopage',
-				content: {
-					TRIOPAGE: 'DESIGN_SC'
-				},
+			literal<CueDefinitionBackgroundLoop>({
+				type: CueType.BackgroundLoop,
+				target: 'FULL',
+				backgroundLoop: 'DESIGN_SC',
 				start: {
 					frames: 4,
 					seconds: 0
@@ -918,15 +1101,12 @@ describe('Cue parser', () => {
 
 	test('VIZ Cue', () => {
 		const cueViz = ['VIZ=dve-triopage', 'triopage=DESIGN_SC', ';0.00.04']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.VIZ,
-				rawType: 'VIZ=dve-triopage',
-				design: 'dve-triopage',
-				content: {
-					TRIOPAGE: 'DESIGN_SC'
-				},
+			literal<CueDefinitionBackgroundLoop>({
+				type: CueType.BackgroundLoop,
+				target: 'DVE',
+				backgroundLoop: 'DESIGN_SC',
 				start: {
 					frames: 4,
 					seconds: 0
@@ -938,15 +1118,12 @@ describe('Cue parser', () => {
 
 	test('VIZ Cue', () => {
 		const cueViz = ['VIZ=dve-triopage', 'GRAFIK=DESIGN_SC', ';0.00.04']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.VIZ,
-				rawType: 'VIZ=dve-triopage',
-				design: 'dve-triopage',
-				content: {
-					GRAFIK: 'DESIGN_SC'
-				},
+			literal<CueDefinitionBackgroundLoop>({
+				type: CueType.BackgroundLoop,
+				target: 'DVE',
+				backgroundLoop: 'DESIGN_SC',
 				start: {
 					frames: 4,
 					seconds: 0
@@ -958,38 +1135,14 @@ describe('Cue parser', () => {
 
 	test('VIZ Cue', () => {
 		const cueViz = ['VIZ=dve-triopage', 'grafik=DESIGN_SC', ';0.00.04']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
-				type: CueType.VIZ,
-				rawType: 'VIZ=dve-triopage',
-				design: 'dve-triopage',
-				content: {
-					GRAFIK: 'DESIGN_SC'
-				},
+			literal<CueDefinitionBackgroundLoop>({
+				type: CueType.BackgroundLoop,
+				target: 'DVE',
+				backgroundLoop: 'DESIGN_SC',
 				start: {
 					frames: 4,
-					seconds: 0
-				},
-				iNewsCommand: 'VIZ'
-			})
-		)
-	})
-
-	test('VIZ Cue', () => {
-		const cueViz = ['VIZ=full', 'INP1=EVS 1', ';0.00']
-		const result = ParseCue(cueViz)
-		expect(result).toEqual(
-			literal<CueDefinitionTargetEngine>({
-				type: CueType.TargetEngine,
-				data: {
-					engine: 'full'
-				},
-				rawType: 'VIZ=full',
-				content: {
-					INP1: 'EVS 1'
-				},
-				start: {
 					seconds: 0
 				},
 				iNewsCommand: 'VIZ'
@@ -1010,9 +1163,9 @@ describe('Cue parser', () => {
 			'ST4gst=',
 			';0.00'
 		]
-		const result = ParseCue(cueMic)
+		const result = ParseCue(cueMic, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionMic>({
 				type: CueType.Mic,
 				start: {
 					seconds: 0
@@ -1034,9 +1187,9 @@ describe('Cue parser', () => {
 
 	test('AdLib', () => {
 		const cueAdLib = ['ADLIBPIX=MORBARN', 'INP1=LIVE 1', 'INP2=KAM 1', 'BYNAVN=']
-		const result = ParseCue(cueAdLib)
+		const result = ParseCue(cueAdLib, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionAdLib>({
 				type: CueType.AdLib,
 				variant: 'MORBARN',
 				inputs: { INP1: 'LIVE 1', INP2: 'KAM 1' },
@@ -1047,9 +1200,9 @@ describe('Cue parser', () => {
 
 	test('AdLib Server', () => {
 		const cueAdLib = ['ADLIBPIX=server']
-		const result = ParseCue(cueAdLib)
+		const result = ParseCue(cueAdLib, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionAdLib>({
 				type: CueType.AdLib,
 				variant: 'server',
 				inputs: {},
@@ -1060,9 +1213,9 @@ describe('Cue parser', () => {
 
 	test('AdLib Server', () => {
 		const cueAdLib = ['ADLIBPX=server']
-		const result = ParseCue(cueAdLib)
+		const result = ParseCue(cueAdLib, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionAdLib>({
 				type: CueType.AdLib,
 				variant: 'server',
 				inputs: {},
@@ -1073,9 +1226,9 @@ describe('Cue parser', () => {
 
 	test('Kommando', () => {
 		const cueKommando = ['KOMMANDO=GRAPHICSPROFILE', 'TV2 SPORT 2016', ';0.00']
-		const result = ParseCue(cueKommando)
+		const result = ParseCue(cueKommando, config)
 		expect(result).toEqual(
-			literal<CueDefinition>({
+			literal<CueDefinitionProfile>({
 				type: CueType.Profile,
 				start: {
 					seconds: 0
@@ -1089,67 +1242,80 @@ describe('Cue parser', () => {
 	test('SS=', () => {
 		// TODO: Screen type
 		const cueSS = ['SS=3-SPORTSDIGI', ';0.00.01']
-		const result = ParseCue(cueSS)
+		const result = ParseCue(cueSS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionTargetEngine>({
-				type: CueType.TargetEngine,
-				data: {
-					engine: '3-SPORTSDIGI'
-				},
+			literal<CueDefinitionUnpairedTarget>({
+				type: CueType.UNPAIRED_TARGET,
+				target: 'WALL',
 				start: {
 					seconds: 0,
 					frames: 1
 				},
-				rawType: `SS=3-SPORTSDIGI`,
-				content: {},
-				iNewsCommand: 'SS'
+				iNewsCommand: 'SS',
+				mergeable: true
 			})
 		)
 	})
 
 	test('SS=SC-STILLS', () => {
 		const cueSS = ['SS=SC-STILLS', ';0.00.01']
-		const result = ParseCue(cueSS)
+		const result = ParseCue(cueSS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionTargetEngine>({
-				type: CueType.TargetEngine,
-				data: {
-					engine: 'SC-STILLS'
-				},
+			literal<CueDefinitionUnpairedTarget>({
+				type: CueType.UNPAIRED_TARGET,
+				target: 'WALL',
 				start: {
 					seconds: 0,
 					frames: 1
 				},
-				rawType: `SS=SC-STILLS`,
-				content: {},
-				iNewsCommand: 'SS'
+				iNewsCommand: 'SS',
+				mergeable: true
 			})
 		)
 	})
 
 	test('ss=sc-stills', () => {
 		const cueSS = ['ss=sc-stills', ';0.00.01']
-		const result = ParseCue(cueSS)
+		const result = ParseCue(cueSS, config)
 		expect(result).toEqual(
-			literal<CueDefinitionTargetEngine>({
-				type: CueType.TargetEngine,
-				data: {
-					engine: 'sc-stills'
+			literal<CueDefinitionUnpairedTarget>({
+				type: CueType.UNPAIRED_TARGET,
+				target: 'WALL',
+				start: {
+					seconds: 0,
+					frames: 1
+				},
+				iNewsCommand: 'ss',
+				mergeable: true
+			})
+		)
+	})
+
+	test('SS=sc_loop_clean', () => {
+		const cueSS = ['SS=sc_loop_clean', ';0.00.01']
+		const result = ParseCue(cueSS, config)
+		expect(result).toEqual(
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'WALL',
+				graphic: {
+					type: 'internal',
+					template: 'SN_S4_LOOP_CLEAN',
+					textFields: [],
+					cue: 'sc_loop_clean'
 				},
 				start: {
 					seconds: 0,
 					frames: 1
 				},
-				rawType: `ss=sc-stills`,
-				content: {},
-				iNewsCommand: 'ss'
+				iNewsCommand: 'SS'
 			})
 		)
 	})
 
 	test('LYD', () => {
 		const cueLYD = ['LYD=SPORT_BED', ';0.35']
-		const result = ParseCue(cueLYD)
+		const result = ParseCue(cueLYD, config)
 		expect(result).toEqual(
 			literal<CueDefinitionLYD>({
 				type: CueType.LYD,
@@ -1164,7 +1330,7 @@ describe('Cue parser', () => {
 
 	test('LYD Adlib', () => {
 		const cueLYD = ['LYD=SPORT_BED', ';x.xx']
-		const result = ParseCue(cueLYD)
+		const result = ParseCue(cueLYD, config)
 		expect(result).toEqual(
 			literal<CueDefinitionLYD>({
 				type: CueType.LYD,
@@ -1177,7 +1343,7 @@ describe('Cue parser', () => {
 
 	test('JINGLE', () => {
 		const cueJingle = ['JINGLE2=SN_intro_19']
-		const result = ParseCue(cueJingle)
+		const result = ParseCue(cueJingle, config)
 		expect(result).toEqual(
 			literal<CueDefinitionJingle>({
 				type: CueType.Jingle,
@@ -1196,14 +1362,13 @@ describe('Cue parser', () => {
 			'ContinueCount=-1',
 			'ST4_WALL/_20-11-2019_10:57:48'
 		]
-		const result = ParseCue(wallCue)
+		const result = ParseCue(wallCue, config)
 		expect(result).toEqual(
-			literal<CueDefinitionMOS>({
-				type: CueType.MOS,
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
 				name: 'ST4_WALL/_20-11-2019_10:57:48',
 				vcpid: 2572853,
 				continueCount: -1,
-				isActuallyWall: true,
 				start: {
 					seconds: 0
 				},
@@ -1216,7 +1381,7 @@ describe('Cue parser', () => {
 	/** These tests are also used to catch case sensitivity / cue start symbols */
 	test('All out', () => {
 		const cueViz = ['KG=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1231,7 +1396,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['KG ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1246,7 +1411,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['kg=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1261,7 +1426,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['kg ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1276,7 +1441,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['#KG=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1291,7 +1456,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['#KG ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1306,7 +1471,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['#kg=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1321,7 +1486,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['#kg ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1336,7 +1501,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['kg altud', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1351,7 +1516,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['kg=altud', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1366,7 +1531,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['kg   	altud', ';0.00.01']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1381,7 +1546,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['kg altud', ';0.0x']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,
@@ -1393,7 +1558,7 @@ describe('Cue parser', () => {
 
 	test('All out', () => {
 		const cueViz = ['kg altud', ';x.xx']
-		const result = ParseCue(cueViz)
+		const result = ParseCue(cueViz, config)
 		expect(result).toEqual(
 			literal<CueDefinitionClearGrafiks>({
 				type: CueType.ClearGrafiks,

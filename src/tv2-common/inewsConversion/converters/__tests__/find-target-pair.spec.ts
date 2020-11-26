@@ -1,10 +1,16 @@
 import { CueType, PartType } from 'tv2-constants'
 import { literal } from '../../../util'
 import { FindTargetPair, PartDefinitionUnknown } from '../ParseBody'
-import { CueDefinitionMOS, CueDefinitionTargetEngine, CueDefinitionTelefon } from '../ParseCue'
+import {
+	CueDefinitionGraphic,
+	CueDefinitionTelefon,
+	CueDefinitionUnpairedPilot,
+	CueDefinitionUnpairedTarget,
+	GraphicPilot
+} from '../ParseCue'
 
 describe('Find target pair', () => {
-	test('TargetEngine + MOS', () => {
+	test('TargetEngine + Pilot', () => {
 		const part = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
 			variant: {},
@@ -15,27 +21,21 @@ describe('Find target pair', () => {
 			modified: 0,
 			segmentExternalId: '',
 			cues: [
-				literal<CueDefinitionTargetEngine>({
-					type: CueType.TargetEngine,
-					rawType: 'GRAFIK=FULL',
-					data: {
-						engine: 'FULL'
-					},
-					content: {
-						INP1: '',
-						INP: ''
-					},
-					iNewsCommand: 'GRAFIK'
+				literal<CueDefinitionUnpairedTarget>({
+					type: CueType.UNPAIRED_TARGET,
+					target: 'FULL',
+					iNewsCommand: 'GRAFIK',
+					mergeable: true
 				}),
-				literal<CueDefinitionMOS>({
-					type: CueType.MOS,
+				literal<CueDefinitionUnpairedPilot>({
+					type: CueType.UNPAIRED_PILOT,
 					name: 'TELEFON/KORT//LIVE_KABUL',
 					vcpid: 2552305,
 					continueCount: 3,
 					start: {
 						seconds: 0
 					},
-					engine: '4',
+					engineNumber: 4,
 					iNewsCommand: 'VCP'
 				})
 			],
@@ -51,27 +51,19 @@ describe('Find target pair', () => {
 			modified: 0,
 			segmentExternalId: '',
 			cues: [
-				literal<CueDefinitionTargetEngine>({
-					type: CueType.TargetEngine,
-					rawType: 'GRAFIK=FULL',
-					data: {
-						engine: 'FULL'
-					},
-					content: {
-						INP1: '',
-						INP: ''
-					},
-					grafik: literal<CueDefinitionMOS>({
-						type: CueType.MOS,
+				literal<CueDefinitionGraphic<GraphicPilot>>({
+					type: CueType.Graphic,
+					target: 'FULL',
+					graphic: {
+						type: 'pilot',
 						name: 'TELEFON/KORT//LIVE_KABUL',
 						vcpid: 2552305,
-						continueCount: 3,
-						start: {
-							seconds: 0
-						},
-						engine: '4',
-						iNewsCommand: 'VCP'
-					}),
+						continueCount: 3
+					},
+					engineNumber: 4,
+					start: {
+						seconds: 0
+					},
 					iNewsCommand: 'GRAFIK'
 				})
 			],
@@ -83,7 +75,7 @@ describe('Find target pair', () => {
 		expect(part).toEqual(expectedResult)
 	})
 
-	test('TLF + MOS', () => {
+	test('TLF + Pilot', () => {
 		const part = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
 			variant: {},
@@ -99,15 +91,15 @@ describe('Find target pair', () => {
 					source: 'TLF 2',
 					iNewsCommand: 'TELEFON'
 				}),
-				literal<CueDefinitionMOS>({
-					type: CueType.MOS,
+				literal<CueDefinitionUnpairedPilot>({
+					type: CueType.UNPAIRED_PILOT,
 					name: 'TELEFON/KORT//LIVE_KABUL',
 					vcpid: 2552305,
 					continueCount: 3,
 					start: {
 						seconds: 0
 					},
-					engine: '4',
+					engineNumber: 4,
 					iNewsCommand: 'VCP'
 				})
 			],
@@ -127,16 +119,20 @@ describe('Find target pair', () => {
 					type: CueType.Telefon,
 					source: 'TLF 2',
 					iNewsCommand: 'TELEFON',
-					vizObj: literal<CueDefinitionMOS>({
-						type: CueType.MOS,
-						name: 'TELEFON/KORT//LIVE_KABUL',
-						vcpid: 2552305,
-						continueCount: 3,
+					graphic: literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'TLF',
+						graphic: {
+							type: 'pilot',
+							name: 'TELEFON/KORT//LIVE_KABUL',
+							vcpid: 2552305,
+							continueCount: 3
+						},
 						start: {
 							seconds: 0
 						},
-						engine: '4',
-						iNewsCommand: 'VCP'
+						engineNumber: 4,
+						iNewsCommand: 'TELEFON'
 					})
 				})
 			],

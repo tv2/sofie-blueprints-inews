@@ -61,6 +61,7 @@ export interface TV2StudioConfigBase {
 	SourcesRM: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
 	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
+	PreventOverlayWithFull?: boolean
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
@@ -85,3 +86,5 @@ export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
 }
+
+export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>

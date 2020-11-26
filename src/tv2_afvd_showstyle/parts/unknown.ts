@@ -4,7 +4,15 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, GetJinglePartProperties, literal, PartContext2, PartDefinition, PartTime } from 'tv2-common'
+import {
+	AddScript,
+	GetJinglePartProperties,
+	GraphicIsPilot,
+	literal,
+	PartContext2,
+	PartDefinition,
+	PartTime
+} from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -41,9 +49,7 @@ export function CreatePartUnknown(
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (
-		partDefinition.cues.filter(
-			cue => cue.type === CueType.MOS || cue.type === CueType.Telefon || cue.type === CueType.TargetEngine
-		).length &&
+		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		part.prerollDuration = config.studio.PilotPrerollDuration

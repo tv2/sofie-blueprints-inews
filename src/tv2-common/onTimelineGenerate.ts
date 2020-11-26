@@ -69,215 +69,8 @@ export function onTimelineGenerate<
 	_atemLayerNext: string
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
-	// const replacedSessions: { [from: string]: string } = {} // TODO: Replace with map
 
 	const config = getConfig(context)
-
-	// Find server in pgm
-	/*const activeServerObj = timeline.find(o => o.layer.toString() === casparLayerClipPending && !o.isLookahead)
-	const activeMediaPlayerSession = (activeServerObj?.metaData as TimelineBlueprintExt['metaData'])?.mediaPlayerSession
-
-	const lookaheadServerObjIndex = timeline.findIndex(
-		o =>
-			o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerAbstractLookahead &&
-			o.isLookahead &&
-			o.metaData?.mediaPlayerSessionToAssign !== undefined &&
-			o.priority &&
-			o.priority > 0 &&
-			!!o.id.match(/future/)
-	)
-	const lookaheadServerObj = lookaheadServerObjIndex > -1 ? timeline[lookaheadServerObjIndex] : undefined
-	const lookaheadMediaPlayerSession = (lookaheadServerObj?.metaData as TimelineBlueprintExt['metaData'])
-		?.mediaPlayerSessionToAssign
-	const lookaheadServerEnableIndex = timeline.findIndex(
-		o =>
-			o.layer.toString() === atemLayerNext &&
-			o.isLookahead &&
-			o.classes?.includes(Enablers.OFFTUBE_ENABLE_SERVER_LOOKAHEAD) &&
-			o.priority &&
-			o.priority > 0 &&
-			!!o.id.match(/future/) &&
-			!resolvedPieces.some(piece => o.id.includes(piece._id))
-	)
-
-	if (lookaheadServerEnableIndex > -1 && lookaheadMediaPlayerSession && lookaheadServerObj) {
-		timeline[lookaheadServerEnableIndex].metaData = {
-			...lookaheadServerObj.metaData,
-			mediaPlayerSession: lookaheadMediaPlayerSession
-		}
-		timeline.splice(lookaheadServerObjIndex, 1)
-	} else {
-		if (lookaheadServerObjIndex > -1 && lookaheadServerObj) {
-			timeline.splice(lookaheadServerObjIndex, 1)
-		}
-
-		timeline = timeline.filter(
-			o =>
-				!(
-					o.layer === atemLayerNext &&
-					o.metaData &&
-					o.metaData.context &&
-					// (o.metaData.context.match(/serverProgramEnabler/) || o.metaData.context.match(/dveProgramEnabler/)) &&
-					resolvedPieces.some(piece => o.id.includes(piece._id))
-				)
-		)
-	}
-
-	;[
-		OfftubeAtemLLayer.AtemSSrcDefault,
-		OfftubeCasparLLayer.CasparCGDVEFrame,
-		OfftubeCasparLLayer.CasparCGDVEKey,
-		OfftubeCasparLLayer.CasparCGDVETemplate
-	].forEach(layer => {
-		const dveSetAsNextIncurrentPartIndex = timeline.findIndex(
-			o =>
-				o.layer.toString() === OfftubeAbstractLLayer.OfftubeAbstractLLayerPgmEnabler &&
-				o.classes?.includes('offtube_enable_dve') && // TODO: This has gone away now
-				!o.isLookahead &&
-				resolvedPieces.some(piece => piece._id === o.pieceInstanceId) &&
-				!o.id.match(/previous/)
-		)
-		const dveLayoutInCurrentPartIndex = timeline.findIndex(
-			o =>
-				o.layer.toString() === layer &&
-				!o.isLookahead &&
-				!o.id.match(/previous/) &&
-				!o.id.match(/future/) &&
-				o.classes?.includes(ControlClasses.NOLookahead)
-		)
-		const dveLayoutInFuturePartIndex = timeline.findIndex(
-			o =>
-				o.layer.toString() === layer &&
-				o.isLookahead &&
-				!o.id.match(/previous/) &&
-				!!o.id.match(/future/) &&
-				o.classes?.includes(ControlClasses.NOLookahead)
-		)
-
-		if (dveLayoutInFuturePartIndex > -1 && dveSetAsNextIncurrentPartIndex === -1 && dveLayoutInCurrentPartIndex > -1) {
-			const current = timeline[dveLayoutInCurrentPartIndex]
-			timeline = timeline.filter(
-				o =>
-					!(
-						o.layer.toString() === layer &&
-						!o.id.match(/previous/) &&
-						!o.id.match(/future/) &&
-						o.classes?.includes(ControlClasses.NOLookahead) &&
-						o.pieceInstanceId &&
-						current.pieceInstanceId &&
-						!!o.pieceInstanceId.match(current.pieceInstanceId)
-					)
-			)
-		}
-	})
-
-	let extraObjs: OnGenerateTimelineObj[] = []
-
-	_.each(timeline, obj => {
-		if (obj.metaData && obj.metaData.mediaPlayerSessionToAssign) {
-			if (!obj.isLookahead) {
-				obj.metaData = {
-					...obj.metaData,
-					mediaPlayerSession: obj.metaData.mediaPlayerSessionToAssign
-				}
-			}
-
-			if (obj.layer === atemLayerNext || obj.layer === OfftubeAtemLLayer.AtemMEClean) {
-				// tslint:disable-next-line: no-object-literal-type-assertion
-				extraObjs.push({
-					...obj,
-					_id: `${(obj as any)._id}_server_aux`,
-					id: `${obj.id}_server_aux`,
-					layer: OfftubeAtemLLayer.AtemAuxServerLookahead,
-					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.AUX,
-						aux: {}
-					},
-					metaData: {
-						...obj.metaData,
-						originalLayer: obj.layer
-					}
-				} as OnGenerateTimelineObj)
-			}
-		}
-	})
-
-	// Get rid of anything in PGM if there's a lookahead available
-	if (extraObjs.some(o => o.metaData && o.metaData.originalLayer === atemLayerNext)) {
-		extraObjs = extraObjs.filter(o => o.metaData && o.metaData.originalLayer === atemLayerNext)
-	}
-
-	timeline = [...timeline, ...extraObjs]
-
-	// Find any placeholders to replace
-	const objsToReplace = timeline.filter(
-		o => o.classes?.includes(ControlClasses.DVEPlaceholder) && !o.id.match(/^previous/i)
-	)
-
-	// Replace contents of placeholder objects
-	// TOD: Replace this with an adlib action
-	objsToReplace.forEach(objToReplace => {
-		const index = timeline.indexOf(objToReplace)
-		if (objToReplace && activeServerObj) {
-			objToReplace.content = activeServerObj.content
-			let replaceMeta = objToReplace.metaData as TimelineBlueprintExt['metaData'] | undefined
-
-			if (activeMediaPlayerSession && replaceMeta && replaceMeta.mediaPlayerSession) {
-				replacedSessions[replaceMeta.mediaPlayerSession] = activeMediaPlayerSession
-				replaceMeta = {
-					...replaceMeta,
-					mediaPlayerSession: activeMediaPlayerSession
-				}
-			}
-
-			objToReplace.metaData = replaceMeta
-		}
-
-		timeline[index] = objToReplace
-	})
-
-	// Replace all sessions that have been overwritten
-	_.each(timeline, o => {
-		const meta = o.metaData as TimelineBlueprintExt['metaData'] | undefined
-		if (meta && meta.mediaPlayerSession) {
-			if (Object.keys(replacedSessions).includes(meta.mediaPlayerSession)) {
-				meta.mediaPlayerSession = replacedSessions[meta.mediaPlayerSession]
-				o.metaData = meta
-			}
-		}
-	})
-
-	// Do the same for pieces
-	_.each(resolvedPieces, piece => {
-		if (piece.piece.metaData) {
-			const meta = piece.piece.metaData as PieceMetaData
-			if (meta.mediaPlayerSessions) {
-				piece.piece.metaData.mediaPlayerSessions = meta.mediaPlayerSessions.map(session => {
-					if (Object.keys(replacedSessions).includes(session)) {
-						return replacedSessions[session]
-					}
-
-					return session
-				})
-			}
-		} else if (lookaheadMediaPlayerSession && piece.piece.content && piece.piece.content.timelineObjects) {
-			const objToCopyMediaPlayerSessionToIndex = (piece.piece.content
-				.timelineObjects as TimelineBlueprintExt[]).findIndex(obj =>
-				obj.classes?.includes(ControlClasses.CopyMediaPlayerSession)
-			)
-
-			if (objToCopyMediaPlayerSessionToIndex > -1) {
-				piece.piece.content.metadata = {
-					mediaPlayerSessions: [lookaheadMediaPlayerSession]
-				}
-				;(piece.piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData = {
-					...(piece.piece.content.timelineObjects[objToCopyMediaPlayerSessionToIndex] as TimelineBlueprintExt).metaData,
-					mediaPlayerSession: lookaheadMediaPlayerSession
-				}
-			}
-		}
-	})*/
 
 	copyPreviousSisyfosLevels(
 		context,
@@ -362,8 +155,6 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 			obj2.isLookahead &&
 			obj2.content.deviceType === TSR.DeviceType.ATEM &&
 			obj2.content.type === TSR.TimelineContentTypeAtem.SSRC
-			// obj2.enable &&
-			// (obj2.enable.while === '1' || obj2.enable.while === 1)
 		) {
 			const origClass = obj2.metaData ? obj2.metaData.dveAdlibEnabler : undefined
 			if (origClass) {
@@ -399,14 +190,6 @@ export function preservePieceSisfosLevel(
 	}
 }
 
-// function isSisyfosSource(obj: Partial<TSR.TimelineObjSisyfosChannel & TimelineObjectCoreExt>) {
-// 	return (
-// 		obj.content &&
-// 		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
-// 		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNEL
-// 	)
-// }
-
 function isSisyfosPersistObject(obj: TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt) {
 	return (
 		(obj.layer === OfftubeSisyfosLLayer.SisyfosPersistedLevels || obj.layer === SisyfosLLAyer.SisyfosPersistedLevels) &&
@@ -417,20 +200,6 @@ function isSisyfosPersistObject(obj: TSR.TimelineObjSisyfosChannels & TimelineBl
 		!obj.id.match(/future/)
 	)
 }
-
-// function isSisyfosChannels(obj: TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt) {
-// 	return (
-// 		obj.content &&
-// 		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
-// 		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNELS
-// 	)
-// }
-
-// function isSisyfosObject(obj: (TSR.TimelineObjSisyfosChannels | TSR.TimelineObjSisyfosChannel) & TimelineBlueprintExt) {
-// 	return (
-// 		isSisyfosSource(obj as TSR.TimelineObjSisyfosChannel) || isSisyfosChannels(obj as TSR.TimelineObjSisyfosChannels)
-// 	)
-// }
 
 export function copyPreviousSisyfosLevels(
 	_context: RundownContext,
@@ -443,32 +212,6 @@ export function copyPreviousSisyfosLevels(
 		OnGenerateTimelineObj> = (timelineObjs as Array<
 		TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt & OnGenerateTimelineObj
 	>).filter(isSisyfosPersistObject)
-
-	// const layersToPersist = new Set<string>()
-	// objectsLookingToPersistLevels.forEach(o => o.content.channels.forEach(c => layersToPersist.add(c.mappedLayer)))
-
-	// const objectsWithLevelsOnLayersToPersist = (timelineObjs as Array<
-	// 	(TSR.TimelineObjSisyfosChannel | TSR.TimelineObjSisyfosChannels) & TimelineBlueprintExt & OnGenerateTimelineObj
-	// >)
-	// 	.filter(
-	// 		obj =>
-	// 			obj.priority &&
-	// 			obj.priority > 0 &&
-	// 			obj.layer !== OfftubeSisyfosLLayer.SisyfosConfig &&
-	// 			obj.layer !== OfftubeSisyfosLLayer.SisyfosPersistedLevels &&
-	// 			obj.layer !== SisyfosLLAyer.SisyfosPersistedLevels
-	// 	)
-	// 	.filter(obj => {
-	// 		if (isSisyfosSource(obj as TSR.TimelineObjSisyfosChannel)) {
-	// 			return layersToPersist.has(obj.layer.toString())
-	// 		} else if (isSisyfosChannels(obj as TSR.TimelineObjSisyfosChannels)) {
-	// 			return (obj as TSR.TimelineObjSisyfosChannels).content.channels.some(l => layersToPersist.has(l.mappedLayer))
-	// 		}
-
-	// 		return false
-	// 	})
-
-	// _context.warning(`LEVELS: ${JSON.stringify(objectsWithLevelsOnLayersToPersist)}`)
 
 	// This needs to look at previous pieces within the part, to make it work for adlibs
 	// Pieces should be ordered, we shall assume that

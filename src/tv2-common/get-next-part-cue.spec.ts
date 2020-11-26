@@ -1,13 +1,13 @@
 import {
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
-	CueDefinitionGrafik,
 	CueDefinitionLYD,
 	CueDefinitionTelefon,
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
+import { CueDefinitionGraphic, GraphicInternal } from './inewsConversion'
 import { GetNextPartCue } from './nextPartCue'
 
 const partDefinitionTest1: PartDefinitionKam = {
@@ -21,11 +21,15 @@ const partDefinitionTest1: PartDefinitionKam = {
 	script: '',
 	modified: 0,
 	cues: [
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
 		// Ekstern 1 - (index 1)
@@ -34,18 +38,26 @@ const partDefinitionTest1: PartDefinitionKam = {
 			source: '1',
 			iNewsCommand: 'EKSTERN'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'topt',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'topt',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'topt',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'topt',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
 		// Ekstern 2 - (index 4)
@@ -54,18 +66,26 @@ const partDefinitionTest1: PartDefinitionKam = {
 			source: '2',
 			iNewsCommand: 'EKSTERN'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
 		literal<CueDefinitionLYD>({
@@ -84,18 +104,26 @@ const partDefinitionTest1: PartDefinitionKam = {
 			labels: [],
 			iNewsCommand: 'DVE'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'topt',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'topt',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
 		// TLF 1 - (index 11)
@@ -142,25 +170,37 @@ const partDefinitionTest2: PartDefinitionKam = {
 			source: '1',
 			iNewsCommand: 'EKSTERN'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'direkte',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'direkte',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'bund',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'bund',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		}),
 		// DVE 2 - (index 5)
@@ -180,11 +220,15 @@ const partDefinitionTest2: PartDefinitionKam = {
 			source: '1',
 			iNewsCommand: 'EKSTERN'
 		}),
-		literal<CueDefinitionGrafik>({
-			type: CueType.Grafik,
-			template: 'direkte',
-			cue: 'kg',
-			textFields: [],
+		literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'direkte',
+				cue: 'kg',
+				textFields: []
+			},
 			iNewsCommand: 'kg'
 		})
 	],

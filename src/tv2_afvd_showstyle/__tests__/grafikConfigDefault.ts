@@ -471,6 +471,18 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			IsDesign: false
 		},
 		{
+			VizTemplate: 'SC_LOOP_ON',
+			SourceLayer: 'studio0_wall_graphics',
+			LayerMapping: 'graphic_wall',
+			INewsCode: 'SS',
+			INewsName: 'sc-loop',
+			VizDestination: 'WALL1',
+			OutType: 'O',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: false
+		},
+		{
 			VizTemplate: 'VCP',
 			SourceLayer: 'studio0_pilot',
 			LayerMapping: 'graphic_pilot',
@@ -891,6 +903,18 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			IsDesign: true
 		},
 		{
+			VizTemplate: 'DESIGN_FODBOLD',
+			SourceLayer: 'studio0_design',
+			LayerMapping: 'graphic_design',
+			INewsCode: 'KG=',
+			INewsName: 'DESIGN_FODBOLD',
+			VizDestination: 'viz-d-ovl',
+			OutType: '',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: true
+		},
+		{
 			VizTemplate: 'OUT_TEMA_H',
 			SourceLayer: '',
 			LayerMapping: '',
@@ -939,6 +963,18 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			IsDesign: false
 		},
 		{
+			VizTemplate: 'VCP',
+			SourceLayer: 'studio0_wall_graphics',
+			LayerMapping: 'graphic_wall',
+			INewsCode: 'SS',
+			INewsName: '3-SPORTSDIGI',
+			VizDestination: 'WALL1',
+			OutType: 'O',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: false
+		},
+		{
 			VizTemplate: 'SN_S4_LOOP_CLEAN',
 			SourceLayer: 'studio0_wall_graphics',
 			LayerMapping: 'graphic_wall',
@@ -957,6 +993,54 @@ export function DefaultGrafikConfig(): ShowStyleConfig['GFXTemplates'] {
 			INewsCode: 'GRAFIK',
 			INewsName: 'FULL',
 			VizDestination: 'FULL1',
+			OutType: '',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: false
+		},
+		{
+			VizTemplate: 'VCP',
+			SourceLayer: 'studio0_pilot',
+			LayerMapping: 'graphic_pilot',
+			INewsCode: 'GRAFIK',
+			INewsName: 'WALL',
+			VizDestination: 'WALL1',
+			OutType: '',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: false
+		},
+		{
+			VizTemplate: 'VCP',
+			SourceLayer: 'studio0_pilot',
+			LayerMapping: 'graphic_pilot',
+			INewsCode: 'GRAFIK',
+			INewsName: 'OVL',
+			VizDestination: 'OVL1',
+			OutType: '',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: false
+		},
+		{
+			VizTemplate: 'VCP',
+			SourceLayer: 'studio0_pilot',
+			LayerMapping: 'graphic_pilot',
+			INewsCode: '#kg',
+			INewsName: 'MERGE',
+			VizDestination: 'OVL1',
+			OutType: '',
+			Argument1: '',
+			Argument2: '',
+			IsDesign: false
+		},
+		{
+			VizTemplate: 'VCP',
+			SourceLayer: 'studio0_pilot',
+			LayerMapping: 'graphic_pilot',
+			INewsCode: 'VIZ',
+			INewsName: 'MERGE',
+			VizDestination: 'OVL1',
 			OutType: '',
 			Argument1: '',
 			Argument2: '',

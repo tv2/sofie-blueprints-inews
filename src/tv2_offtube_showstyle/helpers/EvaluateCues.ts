@@ -9,8 +9,6 @@ import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
 import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
-import { OfftubeEvaluateTargetEngine } from '../cues/OfftubeTargetEngine'
-import { OfftubeEvaluateVIZ } from '../cues/OfftubeViz'
 import { OfftubeShowstyleBlueprintConfig } from './config'
 
 export function OfftubeEvaluateCues(
@@ -25,13 +23,12 @@ export function OfftubeEvaluateCues(
 ) {
 	EvaluateCuesBase(
 		{
-			EvaluateCueVIZ: OfftubeEvaluateVIZ,
 			EvaluateCueDVE: OfftubeEvaluateDVE,
-			EvaluateCueTargetEngine: OfftubeEvaluateTargetEngine,
-			EvaluateCueGrafik: OfftubeEvaluateGrafikCaspar,
 			EvaluateCueJingle: OfftubeEvaluateJingle,
 			EvaluateCueAdLib: OfftubeEvaluateAdLib,
-			EvaluateCueEkstern: OfftubeEvaluateEkstern
+			EvaluateCueEkstern: OfftubeEvaluateEkstern,
+			EvaluateCueGraphic: OfftubeEvaluateGrafikCaspar
+			// Design: Not currently supported
 		},
 		context,
 		config,

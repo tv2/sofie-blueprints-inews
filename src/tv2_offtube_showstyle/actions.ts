@@ -7,12 +7,15 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectFullGrafik,
+	CueDefinitionGraphic,
 	executeAction,
 	GetFullGrafikTemplateName,
 	getPiecesToPreserve,
 	GetTagForFullNext,
+	GraphicPilot,
 	literal
 } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
@@ -102,7 +105,7 @@ export function executeActionOfftube(
 function executeActionSelectFull(context: ActionExecutionContext, _actionId: string, userData: ActionSelectFullGrafik) {
 	const config = getConfig(context)
 
-	const template = GetFullGrafikTemplateName(config, userData.template)
+	const template = GetFullGrafikTemplateName(config, userData.name)
 
 	const externalId = `adlib-action_${context.getHashId(`cut_to_kam_${template}`)}`
 
@@ -115,7 +118,19 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		transitionKeepaliveDuration: config.studio.FullKeepAliveDuration
 	})
 
-	const fullPiece = CreateFullPiece(config, externalId, template, userData.segmentExternalId)
+	const cue = literal<CueDefinitionGraphic<GraphicPilot>>({
+		type: CueType.Graphic,
+		target: 'FULL',
+		graphic: {
+			type: 'pilot',
+			name: userData.name,
+			vcpid: userData.vcpid,
+			continueCount: -1
+		},
+		iNewsCommand: ''
+	})
+
+	const fullPiece = CreateFullPiece(config, externalId, cue, userData.segmentExternalId)
 
 	postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
@@ -132,10 +147,10 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 			userData
 		},
 		content: {
-			...CreateFullContent(config, template),
+			...CreateFullContent(config, cue),
 			timelineObjects: []
 		},
-		tags: [GetTagForFullNext(userData.segmentExternalId, template)]
+		tags: [GetTagForFullNext(userData.segmentExternalId, userData.vcpid)]
 	})
 
 	context.queuePart(part, [

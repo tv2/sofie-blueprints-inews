@@ -26,7 +26,7 @@ import {
 	literal,
 	SourceInfo
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, Enablers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -406,14 +406,31 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				// tslint:disable-next-line: prettier
-				templateType: "html",
-				// tslint:disable-next-line: prettier
-				name: "sport-overlay/index",
+				templateType: 'html',
+				name: 'sport-overlay/index',
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
-						// tslint:disable-next-line: prettier
-						display: "program",
+						display: 'program',
+						slots: {}
+					})
+				)}</templateData>`,
+				useStopCommand: false
+			}
+		}),
+		literal<TSR.TimelineObjCCGTemplate>({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			layer: OfftubeCasparLLayer.CasparGraphicsFull,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: 'sport-overlay/index',
+				data: `<templateData>${encodeURI(
+					JSON.stringify({
+						display: 'program',
 						slots: {}
 					})
 				)}</templateData>`,
@@ -491,7 +508,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 		// keyers
 		literal<TSR.TimelineObjAtemDSK>({
 			id: '',
-			enable: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
+			enable: { while: '1' },
 			priority: 0,
 			layer: OfftubeAtemLLayer.AtemDSKGraphics,
 			content: {
@@ -640,21 +657,6 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 						type: TSR.Transition.CUT,
 						duration: CONSTANTS.DefaultClipFadeOut
 					}
-				}
-			}
-		}),
-
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparGraphicsFull,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
 				}
 			}
 		}),

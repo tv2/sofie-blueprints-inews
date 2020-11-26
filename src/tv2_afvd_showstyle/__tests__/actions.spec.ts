@@ -9,7 +9,7 @@ import {
 import { ActionCutToCamera, ActionTakeWithTransition, literal } from 'tv2-common'
 import { AdlibActionType } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { MockContext } from '../../tv2_offtube_showstyle/__tests__/actionExecutionContext.mock'
+import { MockActionContext } from '../../tv2_offtube_showstyle/__tests__/actionExecutionContext.mock'
 import { executeActionAFVD } from '../actions'
 import { SourceLayer } from '../layers'
 import { MOCK_EFFEKT_1 } from './breakerConfigDefault'
@@ -212,14 +212,14 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 	})
 }
 
-function getCameraPiece(context: MockContext, part: 'current' | 'next'): IBlueprintPieceInstance {
+function getCameraPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
 	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmCam)
 	expect(piece).toBeTruthy()
 
 	return piece!
 }
 
-function getTransitionPiece(context: MockContext, part: 'current' | 'next'): IBlueprintPieceInstance {
+function getTransitionPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
 	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmJingle)
 	expect(piece).toBeTruthy()
 
@@ -251,14 +251,14 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 	expect(atemObj.content.me.transitionSettings?.mix).toStrictEqual({ rate: frames })
 }
 
-function expectTakeAfterExecute(context: MockContext) {
+function expectTakeAfterExecute(context: MockActionContext) {
 	expect(context.takeAfterExecute).toBe(true)
 }
 
-function makeMockContext(defaultTransition: 'cut' | 'mix' | 'effekt'): MockContext {
+function makeMockContext(defaultTransition: 'cut' | 'mix' | 'effekt'): MockActionContext {
 	switch (defaultTransition) {
 		case 'cut':
-			return new MockContext(
+			return new MockActionContext(
 				SEGMENT_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
 				[JSON.parse(JSON.stringify(kamPieceInstance))],
@@ -266,7 +266,7 @@ function makeMockContext(defaultTransition: 'cut' | 'mix' | 'effekt'): MockConte
 				[JSON.parse(JSON.stringify(kamPieceInstance_Cut))]
 			)
 		case 'mix':
-			return new MockContext(
+			return new MockActionContext(
 				SEGMENT_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
 				[JSON.parse(JSON.stringify(kamPieceInstance))],
@@ -275,7 +275,7 @@ function makeMockContext(defaultTransition: 'cut' | 'mix' | 'effekt'): MockConte
 			)
 			break
 		case 'effekt':
-			return new MockContext(
+			return new MockActionContext(
 				SEGMENT_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
 				[JSON.parse(JSON.stringify(kamPieceInstance))],

@@ -2,12 +2,12 @@ import { CueDefinition, CueDefinitionBase, SkipCue } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 
 const cue1: CueDefinitionBase = {
-	type: CueType.Grafik,
+	type: CueType.Graphic,
 	iNewsCommand: ''
 }
 
 const cue2: CueDefinitionBase = {
-	type: CueType.Grafik,
+	type: CueType.Graphic,
 	iNewsCommand: '',
 	adlib: true
 }
@@ -32,10 +32,10 @@ describe('skipCue', () => {
 	})
 
 	it('Skips cues not in the selected type', () => {
-		expect(SkipCue(cue1 as CueDefinition, [CueType.Grafik])).toBe(false)
-		expect(SkipCue(cue2 as CueDefinition, [CueType.Grafik])).toBe(false)
-		expect(SkipCue(cue3 as CueDefinition, [CueType.Grafik])).toBe(true)
-		expect(SkipCue(cue4 as CueDefinition, [CueType.Grafik])).toBe(true)
+		expect(SkipCue(cue1 as CueDefinition, [CueType.Graphic])).toBe(false)
+		expect(SkipCue(cue2 as CueDefinition, [CueType.Graphic])).toBe(false)
+		expect(SkipCue(cue3 as CueDefinition, [CueType.Graphic])).toBe(true)
+		expect(SkipCue(cue4 as CueDefinition, [CueType.Graphic])).toBe(true)
 	})
 
 	it('Skips adlib cues', () => {

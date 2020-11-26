@@ -1,13 +1,7 @@
+import { TV2BlueprintConfig } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { PostProcessDefinitions } from '../../../tv2_afvd_showstyle/helpers/postProcessDefinitions'
-import {
-	CueDefinition,
-	CueDefinitionMOS,
-	CueDefinitionTargetEngine,
-	CueDefinitionTelefon,
-	ParseCue,
-	UnparsedCue
-} from './ParseCue'
+import { CueDefinition, CueDefinitionUnpairedPilot, ParseCue, UnpairedPilotToGraphic, UnparsedCue } from './ParseCue'
 
 interface INewsFields {
 	title: string
@@ -149,6 +143,7 @@ export type PartdefinitionTypes =
 const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+(?:VOV?)?|VOV?|VOSB)+\b/gi
 
 export function ParseBody(
+	config: TV2BlueprintConfig,
 	segmentId: string,
 	segmentName: string,
 	body: string,
@@ -164,9 +159,9 @@ export function ParseBody(
 		;((definition as unknown) as PartDefinitionIntro).type = PartType.INTRO
 		cues.forEach(cue => {
 			if (cue !== null) {
-				const parsedCue = ParseCue(cue)
+				const parsedCue = ParseCue(cue, config)
 
-				if (parsedCue !== undefined) {
+				if (parsedCue !== undefined && parsedCue.type !== CueType.UNKNOWN) {
 					definition.cues.push(parsedCue)
 				}
 			}
@@ -215,10 +210,13 @@ export function ParseBody(
 					if (inlineCues[pos].match(ACCEPTED_RED_TEXT)) {
 						redTextFound = true
 					} else {
-						const parsedCues = getCuesInLine(inlineCues[pos], cues)
+						const parsedCues = getCuesInLine(inlineCues[pos], cues, config)
 						parsedCues.forEach(cue => {
 							// Create standalone parts for primary cues.
-							if (isPrimaryCue(cue)) {
+							if (
+								isPrimaryCue(cue) &&
+								!(cue.type === CueType.UNPAIRED_TARGET && cue.target === 'FULL' && !!typeStr.match(/GRAFIK/i))
+							) {
 								if (shouldPushDefinition(definition)) {
 									definitions.push(definition)
 									definition = initDefinition(fields, modified, segmentName)
@@ -269,7 +267,7 @@ export function ParseBody(
 
 		// Add any remaining cues in the line.
 		if (cueInLine(line)) {
-			const parsedCues = getCuesInLine(line, cues)
+			const parsedCues = getCuesInLine(line, cues, config)
 
 			parsedCues.forEach(cue => {
 				if (isPrimaryCue(cue)) {
@@ -311,6 +309,9 @@ export function ParseBody(
 				// NO-OP
 			}
 		}
+
+		// Discard UNKNOWN cues, we won't do anything with them
+		partDefinition.cues = partDefinition.cues.filter(c => c.type !== CueType.UNKNOWN)
 	})
 
 	return PostProcessDefinitions(definitions, segmentId)
@@ -318,9 +319,7 @@ export function ParseBody(
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	const index = partDefinition.cues.findIndex(
-		cue =>
-			(cue.type === CueType.TargetEngine && !cue.grafik && !!cue.data.engine.match(/FULL|WALL|OVL/i)) ||
-			(cue.type === CueType.Telefon && !cue.vizObj)
+		cue => (cue.type === CueType.UNPAIRED_TARGET && cue.mergeable) || (cue.type === CueType.Telefon && !cue.graphic)
 	)
 
 	if (index === -1) {
@@ -328,25 +327,34 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 		return false
 	}
 
-	if (index + 1 < partDefinition.cues.length) {
-		if (partDefinition.cues[index + 1].type === CueType.MOS) {
-			const mosCue = partDefinition.cues[index + 1] as CueDefinitionMOS
-			if (partDefinition.cues[index].type === CueType.TargetEngine) {
-				const targetCue = partDefinition.cues[index] as CueDefinitionTargetEngine
-				targetCue.grafik = mosCue
-				partDefinition.cues[index] = targetCue
-			} else {
-				const targetCue = partDefinition.cues[index] as CueDefinitionTelefon
-				targetCue.vizObj = mosCue
-				partDefinition.cues[index] = targetCue
-			}
-			partDefinition.cues.splice(index + 1, 1)
-			return true
-		} else {
-			// Target with no grafik
-			return false
+	const targetCue = partDefinition.cues[index]
+
+	if (!targetCue) {
+		return false
+	}
+
+	if (index + 1 >= partDefinition.cues.length) {
+		return false
+	}
+
+	const nextCue = partDefinition.cues[index + 1]
+
+	if (!nextCue) {
+		return false
+	}
+
+	if (nextCue.type === CueType.UNPAIRED_PILOT) {
+		const mosCue = nextCue as CueDefinitionUnpairedPilot
+		if (targetCue.type === CueType.UNPAIRED_TARGET) {
+			partDefinition.cues[index] = UnpairedPilotToGraphic(mosCue, targetCue.target, targetCue)
+		} else if (targetCue.type === CueType.Telefon) {
+			targetCue.graphic = UnpairedPilotToGraphic(mosCue, 'TLF', targetCue)
+			partDefinition.cues[index] = targetCue
 		}
+		partDefinition.cues.splice(index + 1, 1)
+		return true
 	} else {
+		// Target with no grafik
 		return false
 	}
 }
@@ -373,7 +381,7 @@ function cueInLine(line: string) {
 }
 
 /** Returns all the cues in a given line as parsed cues. */
-function getCuesInLine(line: string, cues: UnparsedCue[]): CueDefinition[] {
+function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2BlueprintConfig): CueDefinition[] {
 	if (!cueInLine(line)) {
 		return []
 	}
@@ -386,7 +394,7 @@ function getCuesInLine(line: string, cues: UnparsedCue[]): CueDefinition[] {
 		if (value) {
 			const realCue = cues[Number(value[1])]
 			if (realCue) {
-				const parsedCue = ParseCue(realCue)
+				const parsedCue = ParseCue(realCue, config)
 
 				if (parsedCue !== undefined) {
 					definitions.push(parsedCue)
@@ -416,13 +424,13 @@ function isPrimaryCue(cue: CueDefinition) {
 		cue.type === CueType.Telefon ||
 		cue.type === CueType.Ekstern ||
 		cue.type === CueType.DVE ||
-		(cue.type === CueType.TargetEngine && cue.data.engine.toUpperCase() === 'FULL')
+		((cue.type === CueType.Graphic || cue.type === CueType.UNPAIRED_TARGET) && cue.target === 'FULL')
 	)
 }
 
 function shouldPushDefinition(definition: PartDefinition) {
 	return (
-		(definition.cues.length ||
+		(definition.cues.filter(c => c.type !== CueType.UNKNOWN).length ||
 			(definition.script.length && definition.cues.length) ||
 			definition.type !== PartType.Unknown) &&
 		!(definition.type === PartType.Grafik && definition.cues.length === 0)
@@ -451,7 +459,10 @@ function makeDefinitionPrimaryCue(
 		case CueType.Telefon:
 			definition.type = PartType.Telefon
 			break
-		case CueType.TargetEngine:
+		case CueType.Graphic:
+			definition.type = partType
+			break
+		case CueType.UNPAIRED_TARGET:
 			definition.type = partType
 			break
 		default:

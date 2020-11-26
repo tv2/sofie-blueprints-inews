@@ -20,8 +20,9 @@ import {
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import * as _ from 'underscore'
-import { TV2BlueprintConfigBase, TV2ShowstyleBlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
+import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
+	CueDefinitionUnpairedTarget,
 	INewsStory,
 	PartDefinitionDVE,
 	PartDefinitionEkstern,
@@ -31,16 +32,13 @@ import {
 	PartDefinitionTelefon,
 	PartDefinitionVO
 } from './inewsConversion'
+import { CreatePartInvalid } from './parts'
 
 export interface GetSegmentShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
 	getConfig: (context: ShowStyleContext) => ShowStyleConfig
-	TransformCuesIntoShowstyle: (
-		config: TV2ShowstyleBlueprintConfigBase,
-		partDefinition: PartDefinition
-	) => PartDefinition
 	CreatePartContinuity: (config: ShowStyleConfig, ingestSegment: IngestSegment) => BlueprintResultPart
 	CreatePartUnknown: (
 		context: PartContext2,
@@ -144,6 +142,7 @@ export function getSegmentBase<
 
 	let blueprintParts: BlueprintResultPart[] = []
 	const parsedParts = ParseBody(
+		config,
 		ingestSegment.externalId,
 		ingestSegment.name,
 		iNewsStory.body,
@@ -151,6 +150,7 @@ export function getSegmentBase<
 		iNewsStory.fields,
 		Number(iNewsStory.fields.modifyDate) || Date.now()
 	)
+
 	const totalWords = parsedParts.reduce((prev, cur) => {
 		if (cur.type === PartType.Server) {
 			return prev
@@ -169,9 +169,9 @@ export function getSegmentBase<
 	let serverParts = 0
 	let jingleTime = 0
 	let serverTime = 0
-	for (const par of parsedParts) {
+	for (const part of parsedParts) {
 		// Apply showstyle-specific transformations of cues.
-		const part = showStyleOptions.TransformCuesIntoShowstyle(config.showStyle, par)
+		// const part = TransformCuesIntoShowstyle(config, par) // TODO
 		const partContext = new PartContext2(context, part.externalId)
 
 		// Make orphaned secondary cues into adlibs
@@ -181,6 +181,15 @@ export function getSegmentBase<
 			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
 			blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords, true))
+			continue
+		}
+
+		const unpairedTargets = part.cues.filter(c => c.type === CueType.UNPAIRED_TARGET) as CueDefinitionUnpairedTarget[]
+		if (unpairedTargets.length) {
+			blueprintParts.push(CreatePartInvalid(part))
+			unpairedTargets.forEach(cue => {
+				context.warning(`No graphic found after ${cue.iNewsCommand} cue`)
+			})
 			continue
 		}
 

@@ -21,6 +21,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
 	MediaFlowId: '',
+	GraphicFlowId: '',
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],
@@ -64,12 +65,14 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	CasparPrerollDuration: 280,
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
+	GraphicBasePath: '/',
 	JingleBasePath: 'jingler',
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
-	FullKeepAliveDuration: 1000
+	FullKeepAliveDuration: 1000,
+	FullGraphicURL: ''
 }
 
 const mockShowStyleConfig: OfftubeShowStyleConfig = {
@@ -103,7 +106,7 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	ShowstyleTransition: 'CUT'
 }
 
-export class MockContext implements ActionExecutionContext {
+export class MockActionContext implements ActionExecutionContext {
 	public warnings: string[] = []
 	public errors: string[] = []
 

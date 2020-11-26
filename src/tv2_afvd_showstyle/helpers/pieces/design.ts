@@ -6,19 +6,19 @@ import {
 	PieceLifespan,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CueDefinitionDesign, GraphicLLayer, literal, PartContext2 } from 'tv2-common'
+import { CalculateTime, CueDefinitionGraphicDesign, GraphicLLayer, literal, PartContext2 } from 'tv2-common'
 import * as _ from 'underscore'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 
-export function EvaluateDesign(
+export function EvaluateCueDesign(
 	_config: BlueprintConfig,
 	context: PartContext2,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
 	partId: string,
-	parsedCue: CueDefinitionDesign,
+	parsedCue: CueDefinitionGraphicDesign,
 	adlib?: boolean,
 	rank?: number
 ) {

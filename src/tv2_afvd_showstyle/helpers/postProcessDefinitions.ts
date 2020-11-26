@@ -76,21 +76,18 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 						// Changing the jingle clip will result in a new part
 						id += `-${firstCue.clip}`
 						break
-					case CueType.TargetEngine:
+					case CueType.Graphic:
 						// Pair the engine will the graphic, common to see 'FULL' targeted multiple times in one story
 						const end =
-							firstCue.grafik?.type === CueType.Grafik
-								? firstCue.grafik.template
-								: firstCue.grafik?.type === CueType.MOS
-								? firstCue.grafik.vcpid
+							firstCue.graphic.type === 'internal'
+								? firstCue.graphic.template
+								: firstCue.graphic.type === 'pilot'
+								? firstCue.graphic.vcpid
 								: ''
-						id += `-${firstCue.data.engine}-${end}`
+						id += `-${firstCue.target}-${end}`
 						break
 					case CueType.Telefon:
 						id += `-${firstCue.source}`
-						break
-					case CueType.MOS:
-						id += `-${firstCue.vcpid}`
 						break
 				}
 			} else {
