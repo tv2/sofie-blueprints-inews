@@ -68,7 +68,7 @@ export function postProcessPieceTimelineObjects(
 				if (
 					(!isAdlib || piece.toBeQueued) &&
 					'me' in tlObj.content &&
-					(tlObj.content.me.input !== undefined || tlObj.metaData?.mediaPlayerSession !== undefined)
+					(tlObj.content.me.input !== -1 || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					// Create a lookahead-lookahead object for this me-program
 					const lookaheadObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
@@ -81,7 +81,10 @@ export function postProcessPieceTimelineObjects(
 							deviceType: TSR.DeviceType.ATEM,
 							type: TSR.TimelineContentTypeAtem.AUX,
 							aux: {
-								input: tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
+								input:
+									tlObj.content.me.input !== -1
+										? tlObj.content.me.input ?? config.studio.AtemSource.Default
+										: config.studio.AtemSource.Default
 							}
 						},
 						metaData: {
@@ -115,7 +118,7 @@ export function postProcessPieceTimelineObjects(
 
 					mixMinusSource = kamSources.length === 1 ? Number(kamSources[0].switcherInput) : null
 				}
-				if (mixMinusSource !== null) {
+				if (mixMinusSource !== null && mixMinusSource !== -1) {
 					const mixMinusObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 						..._.omit(tlObj, 'content'),
 						...literal<Partial<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>>({
@@ -126,7 +129,10 @@ export function postProcessPieceTimelineObjects(
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.AUX,
 								aux: {
-									input: mixMinusSource !== undefined ? mixMinusSource : config.studio.AtemSource.MixMinusDefault
+									input:
+										mixMinusSource !== undefined && mixMinusSource !== -1
+											? mixMinusSource
+											: config.studio.AtemSource.MixMinusDefault
 								}
 							},
 							metaData: {

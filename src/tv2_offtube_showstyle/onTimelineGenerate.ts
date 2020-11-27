@@ -3,7 +3,7 @@ import {
 	IBlueprintResolvedPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
-	PartEventContext,
+	TimelineEventContext,
 	TimelinePersistentState
 } from 'tv-automation-sofie-blueprints-integration'
 import { onTimelineGenerate } from 'tv2-common'
@@ -16,7 +16,7 @@ import {
 import { getConfig } from './helpers/config'
 
 export function onTimelineGenerateOfftube(
-	context: PartEventContext,
+	context: TimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,

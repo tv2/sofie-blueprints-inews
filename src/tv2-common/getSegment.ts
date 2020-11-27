@@ -368,7 +368,7 @@ export function getSegmentBase<
 	blueprintParts = blueprintParts.map(part => {
 		const actualPart = part.part
 		actualPart.metaData = literal<PartMetaData>({
-			...actualPart.metaData,
+			...(actualPart.metaData as any),
 			segmentExternalId: ingestSegment.externalId
 		})
 

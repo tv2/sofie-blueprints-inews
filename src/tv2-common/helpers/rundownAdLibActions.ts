@@ -95,8 +95,8 @@ function makeTransitionAction(
 			sourceLayerId: settings.SourceLayer.Jingle,
 			outputLayerId: settings.OutputLayer.PGM,
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-			onAirTags: [tag],
-			setNextTags: [tag]
+			currentPieceTags: [tag],
+			nextPieceTags: [tag]
 		}
 	})
 }

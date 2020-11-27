@@ -717,7 +717,7 @@ function cutServerToBox<
 				dvePiece.metaData = {}
 			}
 
-			dvePiece.metaData.mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
+			;(dvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 		}
 	}
 
@@ -1621,7 +1621,7 @@ function findDataStore<T extends TV2AdlibAction>(
 		return
 	}
 
-	const data = dataStorePiece.piece.piece.metaData?.userData as T | undefined
+	const data = (dataStorePiece.piece.piece.metaData as any)?.userData as T | undefined
 
 	return data
 }
@@ -1639,7 +1639,7 @@ function findMediaPlayerSessions(
 		}
 	}
 
-	const sessions = mediaPlayerSessionPiece.piece.piece.metaData?.mediaPlayerSessions
+	const sessions = (mediaPlayerSessionPiece.piece.piece.metaData as any)?.mediaPlayerSessions
 
 	return {
 		// Assume there will be only one session

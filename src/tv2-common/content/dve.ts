@@ -105,6 +105,7 @@ export interface DVEPieceMetaData {
 	config: DVEConfigInput
 	sources: DVESources
 	userData: ActionSelectDVE
+	mediaPlayerSessions?: string[] // TODO: Should probably move to a ServerPieceMetaData
 }
 
 export interface DVEBoxInfo {

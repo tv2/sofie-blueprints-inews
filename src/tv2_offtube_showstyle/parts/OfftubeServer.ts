@@ -134,8 +134,8 @@ export function OfftubeCreatePartServer(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: { ...actionContent, timelineObjects: [] }, // TODO: No timeline
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
-				onAirTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
-				setNextTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
+				currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
+				nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
 			}
 		})
 	)
