@@ -1,3 +1,4 @@
+import { AtemSourceIndex } from '../../types/atem'
 import {
 	GraphicsContent,
 	IBlueprintActionManifest,
@@ -27,10 +28,11 @@ import {
 	literal,
 	PartContext2,
 	PartDefinition,
-	PartToParentClass
+	PartToParentClass,
+	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
-import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
@@ -407,6 +409,47 @@ export function CreateFullContent(
 						opacity: 100
 					}
 				}
+			}),
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: {
+					start: config.studio.CasparPrerollDuration
+				},
+				priority: 100,
+				layer: OfftubeAtemLLayer.AtemMEClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.AtemSource.GFXFull,
+						transition: TSR.AtemTransitionStyle.WIPE,
+						transitionSettings: {
+							wipe: {
+								// TODO: Expose to settings
+								rate: 25, // 1s
+								pattern: 1, // Vertical wipe
+								borderSoftness: 7000,
+								reverseDirection: true
+							}
+						}
+					}
+				},
+				classes: [ControlClasses.NOLookahead]
+			}),
+			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+				id: '',
+				enable: { start: 0 },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMENext,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						previewInput: AtemSourceIndex.Blk
+					}
+				},
+				metaData: {},
+				classes: ['ab_on_preview']
 			})
 		]
 	}
