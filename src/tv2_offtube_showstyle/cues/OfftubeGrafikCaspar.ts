@@ -1,4 +1,3 @@
-import { AtemSourceIndex } from '../../types/atem'
 import {
 	GraphicsContent,
 	IBlueprintActionManifest,
@@ -33,6 +32,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
