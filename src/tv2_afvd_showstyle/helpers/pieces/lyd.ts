@@ -110,6 +110,7 @@ function LydContent(
 					file,
 					channelLayout: 'bed',
 					loop: true,
+					noStarttime: true,
 					mixer: {
 						volume: Number(config.studio.AudioBedSettings.volume) / 100
 					}
