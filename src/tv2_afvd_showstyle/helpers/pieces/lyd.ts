@@ -7,7 +7,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CreateTimingEnable, CueDefinitionLYD, literal, PartContext2, PartDefinition } from 'tv2-common'
+import { CreateTimingEnable, CueDefinitionLYD, literal, PartContext2, PartDefinition } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
