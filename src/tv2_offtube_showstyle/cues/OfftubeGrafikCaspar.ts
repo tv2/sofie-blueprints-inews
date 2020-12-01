@@ -172,153 +172,151 @@ export function GetCasparOverlayTimeline(
 }
 
 export function createContentForGraphicTemplate(
-	graphicName: string,
+	graphicCue: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 ): Partial<Slots> {
-	switch (graphicName.toLowerCase()) {
-		// TODO: When creating new templates in the future
+	graphicCue = graphicCue.toLocaleLowerCase().trim()
+	const slot = graphicsTable.graphicCue && graphicsTable.graphicCue.slot
+	const graphic = graphicsTable??.graphicCue.??graphic
 
-		case 'arkiv':
-		case 'ident':
-		case 'direkte':
-		case 'ident_nyhederne':
-		case 'ident_news':
-		case 'ident_tv2sport':
-		case 'billederfra_txt':
-			return {
-				'650_ident': {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						text1: parsedCue.graphic.textFields[0],
-						text2: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'billederfra_logo':
-			return {
-				'650_ident': {
-					display: 'program',
-					payload: {
-						type: GraphicName.BILLEDERFRA_LOGO,
-						logo: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'tlfdirekte':
-			return {
-				'650_ident': {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						text1: parsedCue.graphic.textFields[0],
-						text2: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'topt':
-			return {
-				'660_topt': {
-					display: 'program',
-					payload: {
-						type: GraphicName.TOPT,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'tlftopt':
-			return {
-				'660_topt': {
-					display: 'program',
-					payload: {
-						type: GraphicName.TOPT,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'tlftoptlive':
-			return {
-				'660_topt': {
-					display: 'program',
-					payload: {
-						type: GraphicName.TOPT,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'bund':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.BUND,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'vo':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'trompet':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'komm':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'kommentator':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		default:
-			// Unknown template
-			// Loactors are skipped right now
-			/**
-			 * TODO: Maybe we could return the following, to allow for custom templates?
-			 * {
-			 * 		[graphicName]: {
-			 * 			payload: {
-			 * 				text: parsedCue.textFields
-			 * 			}
-			 * 		}
-			 * }
-			 */
-			return {}
-	}
+	// 	// TODO: When creating new templates in the future
+
+	// 	let type: string
+
+	// 	case 'arkiv':
+	// 	case 'ident':
+	// 	case 'direkte':
+	// 	case 'ident_nyhederne':
+	// 	case 'ident_news':
+	// 	case 'ident_tv2sport':
+	// 	case 'billederfra_txt':
+	// 	case 'tlfdirekte':
+	// 		type = GraphicName.IDENT
+	// 		break
+	// 		return {
+	// 			'650_ident': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.IDENT,
+	// 					text1: parsedCue.graphic.textFields[0],
+	// 					text2: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'billederfra_logo':
+	// 		return {
+	// 			'650_ident': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.BILLEDERFRA_LOGO,
+	// 					logo: parsedCue.graphic.textFields[0],
+	// 					text1: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'topt':
+	// 		return {
+	// 			'660_topt': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.TOPT,
+	// 					name: parsedCue.graphic.textFields[0],
+	// 					title: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'tlftopt':
+	// 		return {
+	// 			'660_topt': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.TOPT,
+	// 					name: parsedCue.graphic.textFields[0],
+	// 					title: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'tlftoptlive':
+	// 		return {
+	// 			'660_topt': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.TOPT,
+	// 					name: parsedCue.graphic.textFields[0],
+	// 					title: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'bund':
+	// 		return {
+	// 			'450_lowerThird': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.BUND,
+	// 					name: parsedCue.graphic.textFields[0],
+	// 					title: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'vo':
+	// 		return {
+	// 			'450_lowerThird': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.HEADLINE,
+	// 					headline: parsedCue.graphic.textFields[0],
+	// 					text1: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'trompet':
+	// 		return {
+	// 			'450_lowerThird': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.HEADLINE,
+	// 					headline: parsedCue.graphic.textFields[0],
+	// 					text1: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'komm':
+	// 		return {
+	// 			'450_lowerThird': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.HEADLINE,
+	// 					headline: parsedCue.graphic.textFields[0],
+	// 					text1: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	case 'kommentator':
+	// 		return {
+	// 			'450_lowerThird': {
+	// 				display: 'program',
+	// 				payload: {
+	// 					type: GraphicName.HEADLINE,
+	// 					headline: parsedCue.graphic.textFields[0],
+	// 					text1: parsedCue.graphic.textFields[1]
+	// 				}
+	// 			}
+	// 		}
+	// 	default:
+	// 		// Unknown template
+	// 		// Loactors are skipped right now
+	// 		/**
+	// 		 * TODO: Maybe we could return the following, to allow for custom templates?
+	// 		 * {
+	// 		 * 		[graphicName]: {
+	// 		 * 			payload: {
+	// 		 * 				text: parsedCue.textFields
+	// 		 * 			}
+	// 		 * 		}
+	// 		 * }
+	// 		 */
+	// 		return {}
+	// }
 }
 
 export function CreateFullPiece(
@@ -395,7 +393,7 @@ export function CreateFullContent(
 							slots: {
 								'250_full': {
 									payload: {
-										type: 'Still',
+										type: 'Full',
 										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.vcpid.toString()}.png`
 									}
 								}
