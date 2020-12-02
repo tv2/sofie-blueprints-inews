@@ -7,7 +7,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CreateTimingEnable, CueDefinitionLYD, literal, PartContext2, PartDefinition } from 'tv2-common'
+import { CreateTimingEnable, CueDefinitionLYD, literal, PartContext2, PartDefinition } from 'tv2-common'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -46,7 +46,7 @@ export function EvaluateLYD(
 				sourceLayerId: SourceLayer.PgmAudioBed,
 				lifespan: stop ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
 				expectedDuration: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
+				content: LydContent(config, file, stop, fadeIn, fadeOut)
 			})
 		)
 	} else {
@@ -58,7 +58,7 @@ export function EvaluateLYD(
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
 				lifespan: stop || parsedCue.end ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
-				content: LydContent(config, file, parsedCue, stop, fadeIn, fadeOut)
+				content: LydContent(config, file, stop, fadeIn, fadeOut)
 			})
 		)
 	}
@@ -68,10 +68,9 @@ export function GetLYDSourceLayer(_name: string): SourceLayer {
 	return SourceLayer.PgmAudioBed
 }
 
-export function LydContent(
+function LydContent(
 	config: BlueprintConfig,
 	file: string,
-	parsedCue: CueDefinitionLYD,
 	stop?: boolean,
 	_fadeIn?: number,
 	_fadeOut?: number
@@ -101,7 +100,7 @@ export function LydContent(
 			literal<TSR.TimelineObjCCGMedia>({
 				id: '',
 				enable: {
-					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0
+					start: 0
 				},
 				priority: 1,
 				layer: CasparLLayer.CasparCGLYD,
@@ -119,8 +118,7 @@ export function LydContent(
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
 				enable: {
-					start: parsedCue.start ? CalculateTime(parsedCue.start) : 0,
-					...(parsedCue.end ? { end: CalculateTime(parsedCue.end) } : {})
+					start: 0
 				},
 				priority: 1,
 				layer: SisyfosLLAyer.SisyfosSourceAudiobed,

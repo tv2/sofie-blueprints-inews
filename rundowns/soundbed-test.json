@@ -1,0 +1,231 @@
+{
+    "externalId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+    "name": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+    "type": "inews",
+    "payload": {
+        "externalId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+        "name": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+        "gatewayVersion": "v0.2"
+    },
+    "segments": [
+        {
+            "externalId": "00000000",
+            "name": "KLAR ON AIR LATINOBOLD",
+            "rank": 1000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "01",
+                        "title": "KLAR ON AIR LATINOBOLD",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "0",
+                        "modifyBy": "sofie",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "typecode": "spx",
+                        "programtitle": " "
+                    },
+                    "meta": {
+                        "rate": "165"
+                    },
+                    "cues": [
+                        [
+                            "KOMMANDO=GRAPHICSPROFILE",
+                            "TV2 SPORT 2016",
+                            ";0.00"
+                        ],
+                        [
+                            "STUDIOSETUP=afvikling C",
+                            ";0.00"
+                        ],
+                        [
+                            "VIZ=dve-triopage",
+                            "GRAFIK=BG_LOADER_FODBOLD_20",
+                            ";0.00"
+                        ],
+                        [
+                            "VIZ=full-triopage",
+                            "GRAFIK=BG_LOADER_FODBOLD_20",
+                            ";0.00.01"
+                        ],
+                        [
+                            "STUDIE=ST2p",
+                            ";0.01"
+                        ],
+                        [
+                            "STUDIE=ST4s",
+                            ";0.02"
+                        ],
+                        [
+                            "kg altud",
+                            ";0.00"
+                        ],
+                        [
+                            "KG=DESIGN_FODBOLD_20",
+                            ";0.00.01"
+                        ],
+                        [
+                            "STUDIE=MIC ON OFF",
+                            "vrt1=OFF",
+                            "vrt2=OFF",
+                            "gst1=OFF",
+                            "gst2=OFF",
+                            "gst3=OFF",
+                            "gst4=OFF",
+                            "kom1=OFF",
+                            "kom2=OFF",
+                            "ST4vrt=ON",
+                            "ST4gst=",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "00000000:00000000:00000000",
+                    "body": "\r\n<p><pi>KAM CS 3</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><cc>---load background on DVE------></cc><a idref=\"2\"><cc><------</cc></a></p>\r\n<p><cc>---load background on FULL------></cc><a idref=\"3\"><cc><------</cc></a></p>\r\n<p><cc>---VALG AF STUDIE PRIMÆR--></cc><a idref=\"4\"><cc><--(ST4p, ST2p)</cc></a></p>\r\n<p><cc>--VALG AF STUDIE SEKUNDÆR--></cc><a idref=\"5\"><cc><---(ST4s, ST2s)</cc><tab></tab></a></p>\r\n<p><tab></tab></p>\r\n<p><cc>----all out overlay--></cc><a idref=\"6\"><cc><---</cc></a></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"7\"><cc><------</cc></a></p>\r\n<p></p>\r\n<p><cc>-----slukker mikrofoner--></cc><a idref=\"8\"><cc><-----</cc><tab><tab><tab></tab></tab></tab></a></p>\r\n<p></p>\r\n",
+                    "fileId": "00000000:00000000:00000000",
+                    "identifier": "00000000"
+                },
+                "modified": "0",
+                "externalId": "00000000",
+                "rank": 1000,
+                "name": "KLAR ON AIR LATINOBOLD",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000001",
+            "name": "KAM With Soundbed",
+            "rank": 2000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "02",
+                        "title": "KAM With Soundbed",
+                        "tapeTime": "11",
+                        "audioTime": "0",
+                        "totalTime": "11",
+                        "modifyDate": "0",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "LYD=SN_soundbed_intro",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "00000001:00000001:00000001",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId": "00000001:00000001:00000001",
+                    "identifier": "00000001"
+                },
+                "modified": "0",
+                "externalId": "00000001",
+                "rank": 2000,
+                "name": "KAM With Soundbed",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000002",
+            "name": "INTRO SERIE A",
+            "rank": 3000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "03",
+                        "title": "INTRO SERIE A",
+                        "tapeTime": "11",
+                        "audioTime": "0",
+                        "totalTime": "11",
+                        "modifyDate": "0",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "JINGLE2=INTRO_SERIE_A"
+                        ],
+                        [
+                            "LYD=SN_intro",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "00000002:00000002:00000002",
+                    "body": "\r\n<p></p>\r\n<p><cc>INTRO TIL SERIE A</cc></p>\r\n<p></p>\r\n<p><a idref=\"0\"></a><a idref=\"1\"></a></p>\r\n<p></p>\r\n<p></p>\r\n",
+                    "fileId": "00000002:00000002:00000002",
+                    "identifier": "00000002"
+                },
+                "modified": "0",
+                "externalId": "00000002",
+                "rank": 3000,
+                "name": "INTRO SERIE A",
+                "float": false
+            },
+            "parts": []
+        },
+        {
+            "externalId": "00000003",
+            "name": "KAM",
+            "rank": 4000,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "04",
+                        "title": "KAM",
+                        "tapeTime": "11",
+                        "audioTime": "0",
+                        "totalTime": "11",
+                        "modifyDate": "0",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [],
+                    "id": "00000003:00000003:00000003",
+                    "body": "\r\n<p><pi>KAM 1</pi></p>\r\n",
+                    "fileId": "00000003:00000003:00000003",
+                    "identifier": "00000003"
+                },
+                "modified": "0",
+                "externalId": "00000003",
+                "rank": 4000,
+                "name": "KAM",
+                "float": false
+            },
+            "parts": []
+        }
+    ]
+}
