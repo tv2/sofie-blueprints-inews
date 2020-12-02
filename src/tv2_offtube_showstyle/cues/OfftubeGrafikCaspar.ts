@@ -178,13 +178,12 @@ export function createContentForGraphicTemplate(
 ): Partial<Slots> {
 	graphicCue = graphicCue.toLocaleLowerCase().trim()
 	const slot = graphicsTable?.graphicCue?.slot
-	const graphic = graphicsTable?.graphicCue?.graphic
 
 	return {
 		[slot]: {
 			display: 'program',
 			payload: {
-				type: graphic,
+				type: graphicCue,
 				...parsedCue.graphic.textFields
 			}
 		}
@@ -265,7 +264,7 @@ export function CreateFullContent(
 							slots: {
 								'250_full': {
 									payload: {
-										type: 'Full',
+										type: 'still',
 										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.vcpid.toString()}.png`
 									}
 								}
