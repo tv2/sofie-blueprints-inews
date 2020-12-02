@@ -32,6 +32,7 @@ import {
 import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { graphicsTable, Slots } from '../helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(

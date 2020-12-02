@@ -3,14 +3,14 @@
  * This will go to the graphics package and become a dependency of the blueprints.
  */
 
- type HTMLGraphic = {
-	 [index: string]: {
-		 slot: string
-		 graphic: string
-	 }
- }
+interface HTMLGraphic {
+	[index: string]: {
+		slot: string
+		graphic: string
+	}
+}
 
-const graphicsTable: HTMLGraphic= {
+export const graphicsTable: HTMLGraphic = {
 	arkiv: {
 		slot: '650_ident',
 		graphic: 'Ident'
@@ -85,18 +85,18 @@ const graphicsTable: HTMLGraphic= {
 	}
 }
 
-interface Slots {
+export interface Slots {
 	[index: string]: Graphic<GraphicBase>
 }
 
 interface Graphic<T extends GraphicBase> {
 	display?: 'program' | 'preview' | 'hidden'
 	/** Set payload to null to reset values / clear */
-	,payload?: T | null
+	payload?: T | null
 	style?: object
 }
 
 interface GraphicBase {
 	[index: number]: string
 	type: string
-}	
+}
