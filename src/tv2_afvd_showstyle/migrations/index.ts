@@ -10,9 +10,9 @@ import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrat
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { SourceLayer } from '../layers'
 import {
+	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
-	getSourceLayerDefaultsMigrationSteps,
-	forceSourceLayerToDefaults
+	getSourceLayerDefaultsMigrationSteps
 } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
 
