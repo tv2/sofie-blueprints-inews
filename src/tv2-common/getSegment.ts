@@ -10,6 +10,7 @@ import {
 import {
 	assertUnreachable,
 	GetNextPartCue,
+	IsTargetingFull,
 	literal,
 	ParseBody,
 	PartContext2,
@@ -184,7 +185,9 @@ export function getSegmentBase<
 			continue
 		}
 
-		const unpairedTargets = part.cues.filter(c => c.type === CueType.UNPAIRED_TARGET) as CueDefinitionUnpairedTarget[]
+		const unpairedTargets = part.cues.filter(
+			c => c.type === CueType.UNPAIRED_TARGET && IsTargetingFull(c.target)
+		) as CueDefinitionUnpairedTarget[]
 		if (unpairedTargets.length) {
 			blueprintParts.push(CreatePartInvalid(part))
 			unpairedTargets.forEach(cue => {

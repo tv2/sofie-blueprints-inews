@@ -3145,6 +3145,85 @@ describe('Body parser', () => {
 		])
 	})
 
+	test('Inline wall cue', () => {
+		const body =
+			'"\r\n<p><pi>KAM 1</pi><a idref="0"></a></p>\r\n<p><a idref="3"></a></p>\r\n<p><pi>***VO***</pi></p>\r\n<p><a idref="2"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['SS=SC-STILLS', ';0.00.01'],
+			null,
+			['SS=SC-LOOP', ';0.00.01'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 3 YNYAB 0 [[ pilotdata',
+				'SP-H/Fakta/EM HÅNDBOLD',
+				'VCPID=2663626',
+				'ContinueCount=-1',
+				'SP-H/Fakta/EM HÅNDBOLD'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionGraphic<GraphicPilot>>({
+						type: CueType.Graphic,
+						target: 'WALL',
+						graphic: {
+							type: 'pilot',
+							name: 'SP-H/Fakta/EM HÅNDBOLD',
+							vcpid: 2663626,
+							continueCount: -1
+						},
+						iNewsCommand: 'SS',
+						start: {
+							seconds: 0,
+							frames: 1
+						}
+					})
+				],
+				rawType: 'KAM 1',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionVO>({
+				type: PartType.VO,
+				variant: {},
+				externalId: '',
+				cues: [
+					literal<CueDefinitionGraphic<GraphicInternal>>({
+						type: CueType.Graphic,
+						target: 'WALL',
+						graphic: {
+							type: 'internal',
+							template: 'SC_LOOP_ON',
+							textFields: [],
+							cue: 'SC-LOOP'
+						},
+						iNewsCommand: 'SS',
+						start: {
+							seconds: 0,
+							frames: 1
+						}
+					})
+				],
+				rawType: 'VO',
+				script: '',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
 	/** END Merging Cues From Config */
 })
 
