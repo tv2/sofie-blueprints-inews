@@ -142,7 +142,7 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		},
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
 		sourceLayerId: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
-		lifespan: PieceLifespan.WithinPart,
+		lifespan: PieceLifespan.OutOnSegmentEnd,
 		metaData: {
 			userData
 		},
