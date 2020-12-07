@@ -574,10 +574,102 @@ describe('AFVD Blueprint', () => {
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.WallGraphics])
+	})
+
+	it('Shows warning for missing wall graphic', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				['SS=SC-STILLS', ';0.00.01'],
+				['SS=SC-LOOP', ';0.00.01']
+			],
+			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, ['No graphic found after SS cue'])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(2)
+		expectAllPartsToBeValid(result)
+
+		const kamPart1 = result.parts[0]
+		expect(kamPart1).toBeTruthy()
+		expect(kamPart1.pieces).toHaveLength(2)
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+
+		const kamPart2 = result.parts[1]
+		expect(kamPart2).toBeTruthy()
+		expect(kamPart2.pieces).toHaveLength(2)
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+	})
+
+	it('Shows warning for missing wall graphic with MOSART=L', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				['SS=SC-STILLS', ';0.00.01'],
+				[
+					'#cg4 pilotdata',
+					'OpStilling/FC BARCELONA/NOV29-1314/MOSART=L|00:00|00:10',
+					'VCPID=2663383',
+					'ContinueCount=-1',
+					'OpStilling/FC BARCELONA/NOV29-1314/MOSART=L|00:00|00:10'
+				],
+				['SS=SC-LOOP', ';0.00.01']
+			],
+			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, ['No graphic found after SS cue'])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(2)
+		expectAllPartsToBeValid(result)
+
+		const kamPart1 = result.parts[0]
+		expect(kamPart1).toBeTruthy()
+		expect(kamPart1.pieces).toHaveLength(3)
 		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
 			SourceLayer.PgmCam,
-			SourceLayer.WallGraphics,
+			SourceLayer.PgmPilotOverlay,
 			SourceLayer.PgmScript
 		])
+
+		const kamPart2 = result.parts[1]
+		expect(kamPart2).toBeTruthy()
+		expect(kamPart2.pieces).toHaveLength(2)
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.WallGraphics])
+	})
+
+	it('Shows warning for graphic in wrong place', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				['SS=SC-STILLS', ';0.00.01'],
+				[
+					'#cg4 pilotdata',
+					'OpStilling/FC BARCELONA/NOV29-1314',
+					'VCPID=2663383',
+					'ContinueCount=-1',
+					'OpStilling/FC BARCELONA/NOV29-1314'
+				],
+				['SS=SC-LOOP', ';0.00.01']
+			],
+			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, ['No graphic found after SS cue', 'Graphic found without target engine'])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(2)
+		expectAllPartsToBeValid(result)
+
+		const kamPart1 = result.parts[0]
+		expect(kamPart1).toBeTruthy()
+		expect(kamPart1.pieces).toHaveLength(2)
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+
+		const kamPart2 = result.parts[1]
+		expect(kamPart2).toBeTruthy()
+		expect(kamPart2.pieces).toHaveLength(2)
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.WallGraphics])
 	})
 })
