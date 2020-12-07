@@ -9,7 +9,11 @@ import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { SourceLayer } from '../layers'
-import { getOutputLayerDefaultsMigrationSteps, getSourceLayerDefaultsMigrationSteps } from './util'
+import {
+	forceSourceLayerToDefaults,
+	getOutputLayerDefaultsMigrationSteps,
+	getSourceLayerDefaultsMigrationSteps
+} from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
@@ -46,6 +50,9 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		SourceLayer.PgmDVEBox1,
 		'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0,shift+e,shift+d,shift+i,shift+u,shift+t'
 	),
+
+	// 1.3.7 - Unhide wall layer
+	forceSourceLayerToDefaults('1.3.7', SourceLayer.WallGraphics),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
