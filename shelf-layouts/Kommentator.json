@@ -11,18 +11,19 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "url": "http://10.201.76.13:8005/multiview",
+      "url": "https://multiview.sofsrv04-od.tv2.local/",
       "width": -1,
       "height": -1,
       "x": 0,
-      "y": 0
+      "y": 0,
+      "scale": 0
     },
     {
       "_id": "pyRvtqdtAbFE2gekk",
       "type": "filter",
       "name": "DVE",
       "currentSegment": false,
-      "displayStyle": "offtube_list",
+      "displayStyle": "list",
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
@@ -36,18 +37,20 @@
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "sourceLayerIds": [
-        "studio0_offtube_dve"
+        "studio0_offtube_dve",
+        "studio0_dve"
       ],
       "tags": [
         "kommentator"
-      ]
+      ],
+      "showThumbnailsInList": true
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
       "type": "filter",
       "name": "JINGLER / 100% SERVER",
       "currentSegment": false,
-      "displayStyle": "offtube_list",
+      "displayStyle": "list",
       "rank": 1,
       "rundownBaseline": false,
       "default": false,
@@ -65,19 +68,22 @@
       "overflowHorizontally": false,
       "sourceLayerIds": [
         "studio0_offtube_clip",
-        "studio0_offtube_jingle"
+        "studio0_offtube_jingle",
+        "studio0_clip",
+        "studio0_jingle"
       ],
       "tags": [
         "offtube_adlib_100pc_server",
         "kommentator"
-      ]
+      ],
+      "showThumbnailsInList": true
     },
     {
       "_id": "zHX89zpASjzyn7GTz",
       "type": "filter",
       "name": "ADLIB / VO SERVER",
       "currentSegment": false,
-      "displayStyle": "offtube_list",
+      "displayStyle": "list",
       "rank": 0,
       "rundownBaseline": true,
       "default": false,
@@ -93,7 +99,9 @@
       ],
       "sourceLayerIds": [
         "studio0_offtube_voiceover",
-        "studio0_offtube_clip"
+        "studio0_offtube_clip",
+        "studio0_clip",
+        "studio0_voiceover"
       ]
     },
     {
@@ -101,7 +109,7 @@
       "type": "filter",
       "name": "KG ELEMENTER",
       "currentSegment": false,
-      "displayStyle": "offtube_list",
+      "displayStyle": "list",
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
@@ -124,7 +132,7 @@
       "type": "filter",
       "name": "GFX FULL",
       "currentSegment": false,
-      "displayStyle": "offtube_list",
+      "displayStyle": "list",
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
@@ -132,11 +140,13 @@
       "width": 11,
       "height": 7,
       "sourceLayerIds": [
-        "studio0_offtube_graphicsFull"
+        "studio0_offtube_graphicsFull",
+        "studio0_full"
       ],
       "tags": [
         "kommentator"
-      ]
+      ],
+      "showThumbnailsInList": true
     },
     {
       "_id": "LiFso7gPYn2SPwHwg",
@@ -151,8 +161,8 @@
       "y": 0,
       "width": 22,
       "height": 7,
-      "url": "http://10.209.81.14:1176?minimonitor=1",
-      "scale": 0.75
+      "url": "https://sisyfos.sofsrv04-od.tv2.local?minimonitor=1",
+      "scale": 0.85
     },
     {
       "_id": "6GDpdq547HjjZL9YK",
@@ -169,7 +179,10 @@
       "height": -11,
       "windowNumber": 1,
       "role": "take",
-      "scale": 1
+      "scale": 1,
+      "thumbnailSourceLayerIds": [
+        "studio0_full"
+      ]
     },
     {
       "_id": "gho9Kigti38sQYqq3",
@@ -208,7 +221,7 @@
     {
       "_id": "PDKiKYeYB7zcAq6Lp",
       "type": "adlib_region",
-      "name": "Worldfeed 5.1",
+      "name": "LIVE 1 (WF 1)  st/5.1",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -222,12 +235,12 @@
       "tags": [
         "offtube_set_remote_next"
       ],
-      "adlibRank": 2
+      "adlibRank": 0
     },
     {
       "_id": "AMrCRTvefKDS6qogp",
       "type": "adlib_region",
-      "name": "LIVE 1",
+      "name": "LIVE 2 (WF 2)  stereo",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -241,12 +254,12 @@
         "offtube_set_remote_next"
       ],
       "role": "queue",
-      "adlibRank": 0
+      "adlibRank": 1
     },
     {
       "_id": "HLzpg7NdLk6tdYZfT",
       "type": "adlib_region",
-      "name": "Worldfeed stereo",
+      "name": "LIVE 3 (REP)",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -260,7 +273,7 @@
         "offtube_set_remote_next"
       ],
       "role": "queue",
-      "adlibRank": 1
+      "adlibRank": 2
     },
     {
       "_id": "mRPYndcCsfZJL9zYH",
@@ -341,35 +354,19 @@
         "offtube_set_dve_next"
       ],
       "role": "queue"
-    },
-    {
-      "_id": "ef3tJJbDJF2sZi3w4",
-      "type": "part_countdown",
-      "name": "Part Countdown",
-      "currentSegment": false,
-      "displayStyle": "list",
-      "rank": 0,
-      "rundownBaseline": false,
-      "default": false,
-      "x": 26,
-      "y": 25,
-      "sourceLayerIds": [
-        "studio0_offtube_clip",
-        "studio0_offtube_voiceover"
-      ]
     }
   ],
   "type": "dashboard_layout",
   "actionButtons": [
     {
       "_id": "PTJBfPjrxPMwY4cqW",
-      "label": "KLAR ON AIR",
+      "label": "Activate",
       "type": "klar_on_air",
       "x": -1,
       "y": 0,
       "width": 14,
       "height": 1.3,
-      "labelToggled": "DEACTIVATE"
+      "labelToggled": "Deactivate"
     }
   ],
   "exposeAsStandalone": true,
