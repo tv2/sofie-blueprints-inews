@@ -62,6 +62,7 @@ export type SourceInfoType =
 	| SourceLayerType.VT
 	| SourceLayerType.GRAPHICS
 	| SourceLayerType.UNKNOWN
+	| SourceLayerType.LOCAL
 export interface SourceInfo {
 	type: SourceInfoType
 	id: string
@@ -85,18 +86,25 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 			const remoteName = id
 				.replace(/VO/i, '')
 				.replace(/\s/g, '')
-				.match(/^(?:LIVE|SKYPE|EVS) ?(.+).*$/i)
+				.match(/^(?:LIVE|SKYPE) ?(.+).*$/i)
 			if (!remoteName) {
 				return undefined
 			}
 			if (id.match(/^LIVE/i)) {
 				return _.find(sources, s => s.type === type && s.id === remoteName[1])
-			} else if (id.match(/^EVS/i)) {
-				return _.find(sources, s => s.type === SourceLayerType.REMOTE && s.id === `DP${remoteName[1]}`)
 			} else {
 				// Skype
 				return _.find(sources, s => s.type === type && s.id === `S${remoteName[1]}`)
 			}
+		case SourceLayerType.LOCAL:
+			const dpName = id
+				.replace(/VO/i, '')
+				.replace(/\s/g, '')
+				.match(/^(?:EVS) ?(.+).*$/i)
+			if (!dpName) {
+				return undefined
+			}
+			return _.find(sources, s => s.type === SourceLayerType.LOCAL && s.id === `DP${dpName[1]}`)
 		default:
 			return undefined
 	}

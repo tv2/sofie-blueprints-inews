@@ -295,21 +295,21 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	let globalRank = 1000
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAuxStudioAdLibs(o, globalRank++))
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !!u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.LOCAL)
 		.forEach(o => {
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, false))
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
@@ -739,14 +739,14 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !!u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.LOCAL)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)

@@ -46,7 +46,7 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 
 	for (const dp of studioConfig.SourcesDelayedPlayback) {
 		res.push({
-			type: SourceLayerType.REMOTE,
+			type: SourceLayerType.LOCAL,
 			id: `DP${dp.SourceName}`,
 			port: dp.AtemSource,
 			sisyfosLayers: dp.SisyfosLayers,
