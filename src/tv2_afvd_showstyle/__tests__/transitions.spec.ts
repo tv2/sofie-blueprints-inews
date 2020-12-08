@@ -196,7 +196,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		testNotes(context)
 
-		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
@@ -212,7 +212,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		testNotes(context)
 
-		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
@@ -229,7 +229,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		testNotes(context)
 
-		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
@@ -246,7 +246,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		testNotes(context)
 
-		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
@@ -262,7 +262,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		testNotes(context)
 
-		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
@@ -279,7 +279,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		testNotes(context)
 
-		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
+		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
