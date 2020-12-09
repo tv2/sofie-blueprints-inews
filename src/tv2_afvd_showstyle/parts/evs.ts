@@ -55,7 +55,7 @@ export function CreatePartEVS(
 	const sourceInfoDelayedPlayback = FindSourceInfoStrict(
 		context,
 		config.sources,
-		SourceLayerType.REMOTE,
+		SourceLayerType.LOCAL,
 		partDefinition.rawType.replace(/ ?VO/i, '')
 	)
 	if (sourceInfoDelayedPlayback === undefined) {
@@ -69,7 +69,7 @@ export function CreatePartEVS(
 			name: part.title,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmLive,
+			sourceLayerId: SourceLayer.PgmLocal,
 			lifespan: PieceLifespan.WithinPart,
 			content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 		})

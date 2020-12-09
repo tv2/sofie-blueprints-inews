@@ -8,7 +8,7 @@
       "type": "filter",
       "name": "ADLIB BUTTONS",
       "currentSegment": false,
-      "displayStyle": "list",
+      "displayStyle": "buttons",
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
@@ -18,7 +18,7 @@
       "height": 6,
       "overflowHorizontally": true,
       "showAsTimeline": true,
-      "assignHotKeys": true,
+      "assignHotKeys": false,
       "buttonWidthScale": 1.5,
       "sourceLayerIds": [
         "studio0_clip",
@@ -32,7 +32,9 @@
         "studio0_adlib_viz_cmd",
         "studio0_graphicsLower",
         "studio0_overlay",
-        "studio0_pilotOverlay"
+        "studio0_pilotOverlay",
+        "studio0_aux_viz_full1",
+        "studio0_pilot"
       ],
       "hide": false,
       "includeClearInRundownBaseline": true,
@@ -41,7 +43,7 @@
     },
     {
       "_id": "s4KkTnsERPNcrkqeD",
-      "type": "external_frame",
+      "type": "keyboard_preview",
       "name": "Shortcuts",
       "currentSegment": false,
       "displayStyle": "list",
@@ -49,17 +51,18 @@
       "rundownBaseline": false,
       "default": false,
       "url": "http://10.201.76.12:8005/keyboardmap",
-      "x": 0,
-      "y": 7,
-      "width": -12,
-      "height": -1
+      "x": 1,
+      "y": 9,
+      "width": 77,
+      "height": -1,
+      "scale": 0.79
     },
     {
       "_id": "pyRvtqdtAbFE2gekk",
       "type": "filter",
       "name": "STATIC BUTTONS",
       "currentSegment": false,
-      "displayStyle": "list",
+      "displayStyle": "buttons",
       "rank": 0,
       "rundownBaseline": "only",
       "default": false,
@@ -73,7 +76,8 @@
       "sourceLayerIds": [
         "studio0_dsk_cmd",
         "studio0_sisyfos_adlibs",
-        "studio0_adlib_viz_cmd"
+        "studio0_adlib_viz_cmd",
+        "studio0_jingle"
       ],
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5
@@ -96,5 +100,9 @@
       "hide": true
     }
   ],
-  "type": "dashboard_layout"
+  "type": "dashboard_layout",
+  "exposeAsShelf": false,
+  "showBuckets": false,
+  "openByDefualt": true,
+  "startingHeight": 50
 }

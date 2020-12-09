@@ -353,21 +353,21 @@ function getGlobalAdlibActionsOfftube(
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			makeRemoteAction(o.id, o.port, globalRank++)
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE && !!u.id.match(`DP`))
+		.filter(u => u.type === SourceLayerType.LOCAL)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)
