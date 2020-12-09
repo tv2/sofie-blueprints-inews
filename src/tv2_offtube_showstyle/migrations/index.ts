@@ -11,7 +11,8 @@ import { OfftubeSourceLayer } from '../layers'
 import {
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
-	remapTableColumnValues
+	remapTableColumnValues,
+	forceSourceLayerToDefaults
 } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
 
@@ -77,6 +78,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Shortcuts for DVE Box 1
 	 */
 	...SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
+
+	/**
+	 * 1.3.8
+	 * - Remove Clear Shortcut from FULL graphic layer
+	 */
+	forceSourceLayerToDefaults('1.3.8', OfftubeSourceLayer.PgmFull),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
