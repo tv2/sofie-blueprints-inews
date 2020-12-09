@@ -876,7 +876,7 @@ function startNewDVELayout<
 				},
 				outputLayerId: settings.SelectedAdlibs?.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
-				lifespan: PieceLifespan.WithinPart,
+				lifespan: PieceLifespan.OutOnSegmentEnd,
 				metaData: meta,
 				tags: [GetTagForDVENext(templateName, sources)],
 				content: {
