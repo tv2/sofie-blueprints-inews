@@ -9,10 +9,10 @@ import {
 import * as _ from 'underscore'
 import { OfftubeSourceLayer } from '../layers'
 import {
+	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
-	remapTableColumnValues,
-	forceSourceLayerToDefaults
+	remapTableColumnValues
 } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
 
