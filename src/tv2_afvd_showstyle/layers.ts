@@ -8,6 +8,7 @@ export enum AFVDSourceLayer {
 	PgmDVEAdlib = 'studio0_dve_adlib',
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',
+	PgmLocal = 'studio0_local',
 	/** "Full" */
 	PgmPilot = 'studio0_pilot',
 	/** Viz-specific */

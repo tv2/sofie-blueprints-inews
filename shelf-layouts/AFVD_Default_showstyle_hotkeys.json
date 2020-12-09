@@ -1,0 +1,749 @@
+[
+    {
+        "_id": "cSmqZTRL3aGAhjk2Q",
+        "key": "F10",
+        "label": "LAST DVE",
+        "sourceLayerType": 6,
+        "platformKey": "F10",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "T7NcpBs76XHd5hwg9",
+        "key": "CTRL+ALT+SHIFT+B",
+        "label": "LAST LIVE",
+        "sourceLayerType": 3,
+        "platformKey": "F11"
+    },
+    {
+        "_id": "PqhxjkwuaxPR2xLL2",
+        "key": "½",
+        "label": "Activate rundown",
+        "platformKey": "½"
+    },
+    {
+        "_id": "m4NP5y4XybwdN2oqB",
+        "key": "q",
+        "label": "overlay ALT UD",
+        "sourceLayerType": 10,
+        "platformKey": "q",
+        "buttonColor": "#f0d718"
+    },
+    {
+        "_id": "agPkaQMbK2FKZpPcv",
+        "key": "E",
+        "label": "EVS 1 VO",
+        "sourceLayerType": 15,
+        "platformKey": "E"
+    },
+    {
+        "_id": "Kz8QpoLd3iEWtspyb",
+        "key": "R",
+        "label": "EVS 1 100%",
+        "sourceLayerType": 15,
+        "platformKey": "R"
+    },
+    {
+        "_id": "7oCTKdx4Qn7hoKxFT",
+        "key": "U",
+        "label": "EVS 2 VO",
+        "sourceLayerType": 15,
+        "platformKey": "U"
+    },
+    {
+        "_id": "YSXBpa44zMLAGdrSx",
+        "key": "I",
+        "label": "EVS 2 100%",
+        "sourceLayerType": 15,
+        "platformKey": "I"
+    },
+    {
+        "_id": "qSptFwTukCezFNK8D",
+        "key": "C",
+        "label": "3 SPLIT",
+        "sourceLayerType": 6,
+        "platformKey": "C",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "WDKs8LoswaZ2GE5QA",
+        "key": "V",
+        "label": "2BM",
+        "sourceLayerType": 6,
+        "platformKey": "V",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "ka9c8ndMGQvW3g6tA",
+        "key": "B",
+        "label": "3BM",
+        "sourceLayerType": 6,
+        "platformKey": "B",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "GHGet9bZw3xvg3RCm",
+        "key": "N",
+        "label": "BM Ipad",
+        "sourceLayerType": 6,
+        "platformKey": "N",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "XvBD4GWGM8u686A7A",
+        "key": "M",
+        "label": "SOM",
+        "sourceLayerType": 6,
+        "platformKey": "M",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "4v79TRTAghkqHhs4j",
+        "key": "Comma",
+        "label": "MB",
+        "sourceLayerType": 6,
+        "platformKey": "Comma",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "vcGwvHJ5jvmASKhNE",
+        "key": "Period",
+        "label": "BM",
+        "sourceLayerType": 6,
+        "platformKey": "Period",
+        "buttonColor": "#8e44ad"
+    },
+    {
+        "_id": "gzN4rBopAsrN9Hubh",
+        "key": "SHIFT+e",
+        "label": "EVS 1 100% inp 1",
+        "sourceLayerType": 15,
+        "platformKey": "SHIFT+e"
+    },
+    {
+        "_id": "cjzA9Wi7ReFeGQHRk",
+        "key": "SHIFT+D",
+        "label": "EVS 1 VO inp 1",
+        "sourceLayerType": 15,
+        "platformKey": "SHIFT+D"
+    },
+    {
+        "_id": "CRmsnZEboXfLtiRQw",
+        "key": "SHIFT+A",
+        "label": "Design Style SC",
+        "sourceLayerType": 5,
+        "platformKey": "SHIFT+A"
+    },
+    {
+        "_id": "fjKYsfPbsxf3A6mzn",
+        "key": "minus",
+        "label": "STOP soundpl.",
+        "sourceLayerType": 7,
+        "platformKey": "",
+        "buttonColor": "#000000"
+    },
+    {
+        "_id": "zXCnABCGodoiBjecn",
+        "key": "SHIFT+U",
+        "label": "EVS 2 VO inp 1",
+        "sourceLayerType": 15,
+        "platformKey": "SHIFT+U"
+    },
+    {
+        "_id": "5xmjuHQidyXfgJcHb",
+        "key": "SHIFT+I",
+        "label": "EVS 2 100% inp 1",
+        "sourceLayerType": 15,
+        "platformKey": "SHIFT+I"
+    },
+    {
+        "_id": "vDF35PGiHBvWpeTxv",
+        "key": "SHIFT+F1",
+        "label": "KAM 1 inp 1",
+        "sourceLayerType": 1,
+        "platformKey": "SHIFT+F1"
+    },
+    {
+        "_id": "8MgfgjiW2NJLye2zr",
+        "key": "SHIFT+F2",
+        "label": "KAM 2 inp 1",
+        "sourceLayerType": 1,
+        "platformKey": "SHIFT+F2"
+    },
+    {
+        "_id": "5RGpzWrTCfxhSpdvi",
+        "key": "SHIFT+F3",
+        "label": "KAM 3 inp 1",
+        "sourceLayerType": 1,
+        "platformKey": "SHIFT+F3"
+    },
+    {
+        "_id": "JTsP9ecyp5JB9A6fv",
+        "key": "SHIFT+F4",
+        "label": "KAM 4 inp 1",
+        "sourceLayerType": 1,
+        "platformKey": "SHIFT+F4"
+    },
+    {
+        "_id": "727iMuZT9GW3f4ntq",
+        "key": "SHIFT+F5",
+        "label": "KAM 5 inp 1",
+        "sourceLayerType": 1,
+        "platformKey": "SHIFT+F5"
+    },
+    {
+        "_id": "QtCCqL72TBM7xdLHz",
+        "key": "1",
+        "label": "LIVE 1",
+        "sourceLayerType": 3,
+        "platformKey": "1"
+    },
+    {
+        "_id": "ueAETv5ft9tajfhqh",
+        "key": "2",
+        "label": "LIVE 2",
+        "sourceLayerType": 3,
+        "platformKey": "2"
+    },
+    {
+        "_id": "BfKri3WYzsPxKqS6W",
+        "key": "3",
+        "label": "LIVE 3",
+        "sourceLayerType": 3,
+        "platformKey": "3"
+    },
+    {
+        "_id": "wchdH45x5s5d63Fbn",
+        "key": "4",
+        "label": "LIVE 4",
+        "sourceLayerType": 3,
+        "platformKey": "4"
+    },
+    {
+        "_id": "vGgtKnHKarjZ2CRzS",
+        "key": "5",
+        "label": "LIVE 5",
+        "sourceLayerType": 3,
+        "platformKey": "5"
+    },
+    {
+        "_id": "HZJrdBw62xmtqjZ28",
+        "key": "6",
+        "label": "LIVE 6",
+        "sourceLayerType": 3,
+        "platformKey": "6"
+    },
+    {
+        "_id": "92coHbGA4f3zQtydB",
+        "key": "7",
+        "label": "LIVE 7",
+        "sourceLayerType": 3,
+        "platformKey": "7"
+    },
+    {
+        "_id": "QYciiXsSNrNRz4iha",
+        "key": "8",
+        "label": "LIVE 8",
+        "sourceLayerType": 3,
+        "platformKey": "8"
+    },
+    {
+        "_id": "cBSYYFNNRDoeewhv6",
+        "key": "9",
+        "label": "LIVE 9",
+        "sourceLayerType": 3,
+        "platformKey": "9"
+    },
+    {
+        "_id": "tGb867Yk3yYKqRaon",
+        "key": "0",
+        "label": "LIVE 10",
+        "sourceLayerType": 3,
+        "platformKey": "0"
+    },
+    {
+        "_id": "Rk585scZjcNdG4oxM",
+        "key": "SHIFT+1",
+        "label": "LIVE 1 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "SHIFT+1"
+    },
+    {
+        "_id": "kpdoQuBaQSG9WgnJ3",
+        "key": "SHIFT+2",
+        "label": "LIVE 2 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "SHIFT+2"
+    },
+    {
+        "_id": "LyZ5oTez6FoYNJ4Ek",
+        "key": "shift+3",
+        "label": "LIVE 3 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+3"
+    },
+    {
+        "_id": "ixxRGQk8y3fk6LnbH",
+        "key": "shift+4",
+        "label": "LIVE 4 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+4"
+    },
+    {
+        "_id": "qZ4AhPGiqB9xhdqyg",
+        "key": "shift+5",
+        "label": "LIVE 5 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+5"
+    },
+    {
+        "_id": "Q4ePKSSKLYMN4fuyi",
+        "key": "shift+6",
+        "label": "LIVE 6 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+6"
+    },
+    {
+        "_id": "ck263XymZdg6q6vL4",
+        "key": "shift+7",
+        "label": "LIVE 7 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+7"
+    },
+    {
+        "_id": "HfjjdjeASpcy7YFsd",
+        "key": "shift+8",
+        "label": "LIVE 8 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+8"
+    },
+    {
+        "_id": "C6oNik83Q6PfWNdGS",
+        "key": "shift+9",
+        "label": "LIVE 9 inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+9"
+    },
+    {
+        "_id": "JnMrbNg86KNSaQQYW",
+        "key": "shift+0",
+        "label": "LIVE 10  inp 1",
+        "sourceLayerType": 3,
+        "platformKey": "shift+0"
+    },
+    {
+        "_id": "Cq886fvBRfgAgKgbf",
+        "key": "ctrl+1",
+        "label": "LIVE 1 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+1"
+    },
+    {
+        "_id": "c5TxgSSoA4tHYZ3xt",
+        "key": "ctrl+2",
+        "label": "LIVE 2 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+2"
+    },
+    {
+        "_id": "KgZpj2Q3gjGLS9CYa",
+        "key": "ctrl+3",
+        "label": "LIVE 3 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+3"
+    },
+    {
+        "_id": "ymsGD9SH8HR4TmCGS",
+        "key": "ctrl+4",
+        "label": "LIVE 4  inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+4"
+    },
+    {
+        "_id": "rexi6Jm2nz8NqBw4q",
+        "key": "ctrl+5",
+        "label": "LIVE 5 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+5"
+    },
+    {
+        "_id": "ncMKuPussDv8uZ7xP",
+        "key": "ctrl+6",
+        "label": "LIVE 6 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+6"
+    },
+    {
+        "_id": "5npcfZbFRiuyeSgzR",
+        "key": "ctrl+7",
+        "label": "LIVE 7 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+7"
+    },
+    {
+        "_id": "AbsJ8SG3JTptoF8Gi",
+        "key": "ctrl+8",
+        "label": "LIVE 8 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+8"
+    },
+    {
+        "_id": "o4qEp4K8BQMAfixHH",
+        "key": "ctrl+9",
+        "label": "LIVE 9 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+9"
+    },
+    {
+        "_id": "KjPdj5SjYXGsPw8rQ",
+        "key": "ctrl+0",
+        "label": "LIVE 10 inp 2",
+        "sourceLayerType": 3,
+        "platformKey": "ctrl+0"
+    },
+    {
+        "_id": "sRMm2pfzf34smfJnP",
+        "key": "ctrl+F1",
+        "label": "KAM 1 inp 2",
+        "sourceLayerType": 1,
+        "platformKey": "ctrl+F1"
+    },
+    {
+        "_id": "6GoMYhKBNfoaK5bge",
+        "key": "ctrl+F2",
+        "label": "KAM 2 inp 2",
+        "sourceLayerType": 1,
+        "platformKey": "ctrl+F2"
+    },
+    {
+        "_id": "yjC3jG3acfhaYoN8K",
+        "key": "ctrl+F3",
+        "label": "KAM 3 inp 2",
+        "sourceLayerType": 1,
+        "platformKey": "ctrl+F3"
+    },
+    {
+        "_id": "Cq38yoxmCC46PMtFa",
+        "key": "CTRL+ALT+SHIFT+a",
+        "label": "KAM 4 inp 2",
+        "sourceLayerType": 1,
+        "platformKey": "ctrl+F4"
+    },
+    {
+        "_id": "5MvykpZQF3BYwmrog",
+        "key": "ctrl+F5",
+        "label": "KAM 5 inp 2",
+        "sourceLayerType": 1,
+        "platformKey": "ctrl+F5"
+    },
+    {
+        "_id": "opYdaazhqGttzaCrH",
+        "key": "SHIFT+Up",
+        "label": "hist. op SKIP",
+        "platformKey": "SHIFT+Up"
+    },
+    {
+        "_id": "hP7rCFHn4xnxSdTuh",
+        "key": "shift+Down",
+        "label": "hist. ned SKIP",
+        "platformKey": "shift+Down"
+    },
+    {
+        "_id": "XEMmQzHzQYxuTs6Rq",
+        "key": "shift+Left",
+        "label": "hist. venstre SKIP",
+        "platformKey": "shift+Left"
+    },
+    {
+        "_id": "XkxQtfHJW5doFm4Ls",
+        "key": "shift+Right",
+        "label": "hist. højre SKIP",
+        "platformKey": "shift+Right"
+    },
+    {
+        "_id": "NrXsuiqWjEmQekzDJ",
+        "key": "shift+PageUp",
+        "label": "UI max",
+        "platformKey": "shift+PageUp"
+    },
+    {
+        "_id": "tAkXWiWcAMT6eE4x4",
+        "key": "shift+PageDown",
+        "label": "UI min.",
+        "platformKey": "shift+PageDown"
+    },
+    {
+        "_id": "ijGET895J29vnxM3z",
+        "key": "shift+home",
+        "label": "gå til aktiv linje",
+        "platformKey": "shift+home"
+    },
+    {
+        "_id": "F6r8WQDbwmGJgJbNt",
+        "key": "shift+esc",
+        "label": "Reload runddown",
+        "platformKey": "shift+esc"
+    },
+    {
+        "_id": "uZkicAejPFX5Rd3Sf",
+        "key": "ctrl+½",
+        "label": "øve rundown",
+        "platformKey": "ctrl+½"
+    },
+    {
+        "_id": "sCzTBw8MCcSxrXNqD",
+        "key": "ctrl+e",
+        "label": "EVS 1 100% inp 2",
+        "sourceLayerType": 15,
+        "platformKey": "ctrl+e"
+    },
+    {
+        "_id": "Ew6cNpWbBEbr99h9K",
+        "key": "ctrl+d",
+        "label": "EVS 1 VO inp 2",
+        "sourceLayerType": 15,
+        "platformKey": "ctrl+d"
+    },
+    {
+        "_id": "p4jf6mpGY3CfNJhiJ",
+        "key": "Ctrl+Alt+Shift+i",
+        "label": "EVS 2 VO inp 2",
+        "sourceLayerType": 15,
+        "platformKey": "ctrl+u"
+    },
+    {
+        "_id": "6BdRrR258vtZr35jv",
+        "key": "ctrl+i",
+        "label": "EVS 2 100% inp 2",
+        "sourceLayerType": 15,
+        "platformKey": "ctrl+i"
+    },
+    {
+        "_id": "rphiEaRPCrQphceAZ",
+        "key": "ctrl+home",
+        "label": "REW tidslinje",
+        "platformKey": "ctrl+home"
+    },
+    {
+        "_id": "J6FXnzRMmcCDgBRfr",
+        "key": "CTRL+ALT+SHIFT+E",
+        "label": "mics OP",
+        "platformKey": "ctrl+PageUp"
+    },
+    {
+        "_id": "r9EKMrdHgqYkEJFab",
+        "key": "CTRL+ALT+SHIFT+D",
+        "label": "mics NED",
+        "platformKey": "ctrl+PageDown"
+    },
+    {
+        "_id": "g4hYQrMLmTPEDeBM8",
+        "key": "shift+ctrl+F1",
+        "label": "KAM 1 PVW",
+        "platformKey": "alt+F1"
+    },
+    {
+        "_id": "BudKiSFYejJG2vkn8",
+        "key": "shift+ctrl+F2",
+        "label": "KAM 2 PVW",
+        "platformKey": "alt+F2"
+    },
+    {
+        "_id": "CJDtwg47q4xRJL8jx",
+        "key": "shift+ctrl+F3",
+        "label": "KAM 3 PVW",
+        "platformKey": "alt+F3"
+    },
+    {
+        "_id": "2oD2wWAmpZ6iYTaKN",
+        "key": "shift+ctrl+F4",
+        "label": "KAM 4 PVW",
+        "platformKey": "alt+F4"
+    },
+    {
+        "_id": "Y6qvworukv9SSa9EZ",
+        "key": "shift+ctrl+F5",
+        "label": "KAM 5 PVW",
+        "platformKey": "alt+F5"
+    },
+    {
+        "_id": "mYbbYN2Pxa6tWBgZT",
+        "key": "shift+ctrl+1",
+        "label": "LIVE 1 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+1"
+    },
+    {
+        "_id": "qhhLZqmjKpJC8p38b",
+        "key": "shift+ctrl+2",
+        "label": "LIVE 2 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+2"
+    },
+    {
+        "_id": "EiHR8zMx4EggdeZga",
+        "key": "shift+ctrl+3",
+        "label": "LIVE 3 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+3"
+    },
+    {
+        "_id": "fwgtvjTCG7r3J8jdK",
+        "key": "shift+ctrl+4",
+        "label": "LIVE 4 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+4"
+    },
+    {
+        "_id": "gASZE2fbPgxf3gQ4N",
+        "key": "shift+ctrl+5",
+        "label": "LIVE 5 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+5"
+    },
+    {
+        "_id": "oqTL4vAFjXA3wgeNh",
+        "key": "shift+ctrl+6",
+        "label": "LIVE 6 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+6"
+    },
+    {
+        "_id": "i62arJzmsTM53tkEs",
+        "key": "shift+ctrl+7",
+        "label": "LIVE 7 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+7"
+    },
+    {
+        "_id": "m8FSDSjFYAg5rDe8X",
+        "key": "shift+ctrl+8",
+        "label": "LIVE 8 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+8"
+    },
+    {
+        "_id": "pftNRrb8A7Lpzf4mt",
+        "key": "shift+ctrl+9",
+        "label": "LIVE 9 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+9"
+    },
+    {
+        "_id": "SMxQdBrS7AyTrZ848",
+        "key": "shift+ctrl+0",
+        "label": "LIVE 10 til SS",
+        "sourceLayerType": 3,
+        "platformKey": "shift+ctrl+0"
+    },
+    {
+        "_id": "R2i2648kXwPaJpGb4",
+        "key": "shift+ctrl+e",
+        "label": "EVS 1 til SS",
+        "platformKey": "shift+ctrl+e"
+    },
+    {
+        "_id": "6Lyc63BnGt5k8LXus",
+        "key": "shift+ctrl+a",
+        "label": "ovl: ident OUT",
+        "platformKey": "alt+a"
+    },
+    {
+        "_id": "MPXWBqbvPEkrCd8T6",
+        "key": "shift+ctrl+s",
+        "label": "ovl: top OUT",
+        "platformKey": "alt+s"
+    },
+    {
+        "_id": "wfuRgyHoWwcjt8Ynf",
+        "key": "shift+ctrl+d",
+        "label": "ovl:lower OUT",
+        "platformKey": "alt+d"
+    },
+    {
+        "_id": "7yqfNnDyYrpz5M6w3",
+        "key": "shift+ctrl+F",
+        "label": "ovl:headline OUT",
+        "platformKey": "alt+f"
+    },
+    {
+        "_id": "MybeWsTjwGBPeGSzc",
+        "key": "shift+ctrl+G",
+        "label": "ovl: tema OUT",
+        "platformKey": "alt+g"
+    },
+    {
+        "_id": "JYasg3xpTHyWrDmoD",
+        "key": "ctrl+shift+½",
+        "label": "deaktivate rundown",
+        "platformKey": "ctrl+shift+½"
+    },
+    {
+        "_id": "zfr6hP3ozv4nomNRC",
+        "key": "CTRL+ALT+SHIFT+F",
+        "label": "EVS 1 til OVL inp1",
+        "platformKey": "ALT+E"
+    },
+    {
+        "_id": "BDi5mebWYmX5dp8YQ",
+        "key": "SHIFT+CTRL+F1",
+        "label": "KAM 1 PVW",
+        "sourceLayerType": 1,
+        "platformKey": "ALT+C"
+    },
+    {
+        "_id": "ib97QNprpzXL6wXXF",
+        "key": "SHIFT+CTRL+F2",
+        "label": "KAM 2 PVW",
+        "sourceLayerType": 1,
+        "platformKey": "ALT+V"
+    },
+    {
+        "_id": "gzH322h2MunPYKaEF",
+        "key": "SHIFT+CTRL+F3",
+        "label": "KAM 3 PVW",
+        "sourceLayerType": 1,
+        "platformKey": "ALT+B"
+    },
+    {
+        "_id": "RmYfuXscM2hc5ZsXb",
+        "key": "SHIFT+CTRL+F4",
+        "label": "KAM 4 PVW",
+        "sourceLayerType": 1,
+        "platformKey": "ALT+N"
+    },
+    {
+        "_id": "QFu7Bpn9cdAcibQ8o",
+        "key": "SHIFT+CTRL+F5",
+        "label": "KAM 5 PVW",
+        "sourceLayerType": 1,
+        "platformKey": "ALT+M"
+    },
+    {
+        "_id": "kS3YARWkhv3nLfRsJ",
+        "key": "CTRL+ALT+SHIFT+G",
+        "label": "serv til inp 2",
+        "sourceLayerType": 2,
+        "platformKey": "ctrl+T"
+    },
+    {
+        "_id": "n8nZWWRcHSkrG7GqM",
+        "key": "SHIFT+ctrl+alt+c",
+        "label": "KAM 5",
+        "sourceLayerType": 1,
+        "platformKey": "F5"
+    },
+    {
+        "_id": "QS6pXQ2CARySFJKkh",
+        "key": "shift+t",
+        "label": "serv til inp 1",
+        "sourceLayerType": 2,
+        "platformKey": "shift+t"
+    },
+    {
+        "_id": "6gREn5sKmuyE8dN8h",
+        "key": "ctrl+r",
+        "label": "Reload Browser",
+        "platformKey": "ctrl+r",
+        "buttonColor": "#95a5a6"
+    }
+]

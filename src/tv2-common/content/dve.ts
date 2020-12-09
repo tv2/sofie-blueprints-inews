@@ -379,7 +379,7 @@ export function MakeContentDVE2<
 				const sourceInfoDelayedPlayback = FindSourceInfoStrict(
 					context,
 					config.sources,
-					SourceLayerType.REMOTE,
+					SourceLayerType.LOCAL,
 					mappingFrom.source
 				)
 				if (sourceInfoDelayedPlayback === undefined) {

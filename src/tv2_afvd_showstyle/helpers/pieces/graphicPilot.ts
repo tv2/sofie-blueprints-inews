@@ -243,7 +243,7 @@ function muteSisyfosChannels(
 		SisyfosLLAyer.SisyfosSourceTLF,
 		...[
 			...(sources
-				.filter(s => s.type === SourceLayerType.REMOTE && s.id.match(/^DP/i))
+				.filter(s => s.type === SourceLayerType.LOCAL)
 				.map(s => SisyfosEVSSource(s.id.replace(/^DP/i, '') as SisyfosLLAyer)) as SisyfosLLAyer[])
 		]
 	].map<TSR.TimelineObjSisyfosChannel>(layer => {
