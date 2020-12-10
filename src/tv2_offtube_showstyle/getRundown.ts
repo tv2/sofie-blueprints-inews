@@ -312,7 +312,6 @@ function getGlobalAdlibActionsOfftube(
 	)
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		// const boxSources = ['', '', '', '']
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
@@ -324,7 +323,7 @@ function getGlobalAdlibActionsOfftube(
 				display: {
 					_rank: 200 + i,
 					label: dveConfig.DVEName,
-					sourceLayerId: OfftubeSourceLayer.PgmDVE,
+					sourceLayerId: OfftubeSourceLayer.PgmDVEAdlib,
 					outputLayerId: 'pgm'
 				}
 			})
