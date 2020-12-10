@@ -760,7 +760,7 @@ function executeActionSelectDVELayout<
 
 	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
 
-	if (!nextPart || !nextDVE || !meta) {
+	if (!nextPart || !nextDVE || !meta || nextPart.segmentId !== context.getPartInstance('current')?.segmentId) {
 		const content = MakeContentDVE2(context, config, userData.config, {}, sources, settings.DVEGeneratorOptions)
 
 		if (!content.valid) {
