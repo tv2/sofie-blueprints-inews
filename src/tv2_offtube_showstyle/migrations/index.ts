@@ -84,6 +84,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Remove Clear Shortcut from FULL graphic layer
 	 */
 	forceSourceLayerToDefaults('1.3.8', OfftubeSourceLayer.PgmFull),
+	forceSourceLayerToDefaults('1.3.8', OfftubeSourceLayer.PgmDVE),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
