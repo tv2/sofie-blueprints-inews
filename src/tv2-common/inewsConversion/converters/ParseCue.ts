@@ -175,7 +175,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 
 	cue = cue.filter(c => c !== '')
 	// Replace multiple spaces / tabs with a single space
-	cue = cue.map(c => c.trim().replace(/\s+/g, ' '))
+	cue = cue.map(c => c?.trim().replace(/\s+/g, ' '))
 
 	if (cue.length === 0) {
 		return undefined
@@ -262,7 +262,7 @@ function parsekg(
 	const code = cue[0]
 		.match(/^[*|#]?kg[ | =]/i)
 		?.toString()
-		.trim()
+		?.trim()
 
 	const firstLineValues = cue[0].match(/^[*|#]?kg[ |=]([\w|\d]+)( (.+))*$/i)
 	if (firstLineValues) {
