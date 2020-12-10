@@ -824,7 +824,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				display: {
 					_rank: 200 + i,
 					label: dveConfig.DVEName,
-					sourceLayerId: SourceLayer.PgmDVEAdlib,
+					sourceLayerId: SourceLayer.PgmDVEAdLib,
 					outputLayerId: 'pgm'
 				}
 			})

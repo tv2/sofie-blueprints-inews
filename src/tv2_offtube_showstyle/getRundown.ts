@@ -323,7 +323,7 @@ function getGlobalAdlibActionsOfftube(
 				display: {
 					_rank: 200 + i,
 					label: dveConfig.DVEName,
-					sourceLayerId: OfftubeSourceLayer.PgmDVEAdlib,
+					sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
 					outputLayerId: 'pgm'
 				}
 			})

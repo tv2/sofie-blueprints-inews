@@ -40,7 +40,7 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				Server: SourceLayer.PgmServer,
 				VO: SourceLayer.PgmVoiceOver,
 				DVE: SourceLayer.PgmDVE,
-				DVEAdLib: SourceLayer.PgmDVEAdlib,
+				DVEAdLib: SourceLayer.PgmDVEAdLib,
 				Cam: SourceLayer.PgmCam,
 				Live: SourceLayer.PgmLive,
 				Effekt: SourceLayer.PgmJingle,

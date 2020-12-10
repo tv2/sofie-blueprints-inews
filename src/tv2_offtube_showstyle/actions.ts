@@ -49,7 +49,7 @@ export function executeActionOfftube(
 				Server: OfftubeSourceLayer.PgmServer,
 				VO: OfftubeSourceLayer.PgmVoiceOver,
 				DVE: OfftubeSourceLayer.PgmDVE,
-				DVEAdLib: OfftubeSourceLayer.PgmDVEAdlib,
+				DVEAdLib: OfftubeSourceLayer.PgmDVEAdLib,
 				Cam: OfftubeSourceLayer.PgmCam,
 				Live: OfftubeSourceLayer.PgmLive,
 				Effekt: OfftubeSourceLayer.PgmJingle
