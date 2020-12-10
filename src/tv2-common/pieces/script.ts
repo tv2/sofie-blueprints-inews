@@ -31,7 +31,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 						.replace(/\n/gi, ' ')
 						.trim()
 						.slice(script.length - stripLength)
-						.trim(),
+						?.trim(),
 					fullScript: script,
 					sourceDuration: duration,
 					lastModified: part.modified * 1000

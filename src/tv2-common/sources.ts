@@ -10,7 +10,11 @@ export function parseMapStr(
 	str: string,
 	_canBeStrings: boolean
 ): Array<{ id: string; val: number }> {
-	str = str.trim()
+	str = str?.trim()
+
+	if (!str) {
+		return []
+	}
 
 	const res: Array<{ id: string; val: number }> = []
 
