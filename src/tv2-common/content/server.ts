@@ -84,14 +84,9 @@ export function MakeContentServer<
 						transitionSettings: TransitionSettings(partDefinition)
 					}
 				},
-				metaData:
-					offtubeOptions?.isOfftube && adLib
-						? {
-								mediaPlayerSessionToAssign: mediaPlayerSessionId
-						  }
-						: {
-								mediaPlayerSession: mediaPlayerSessionId
-						  },
+				metaData: {
+					mediaPlayerSession: mediaPlayerSessionId
+				},
 				classes: [
 					...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
 					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : []),

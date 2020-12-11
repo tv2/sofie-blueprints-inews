@@ -36,8 +36,6 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 		context?: string
 		sisyfosPersistLevel?: boolean
 		mediaPlayerSession?: string
-		/** Use for when onTimelineGenerate should assign based on some conditions */
-		mediaPlayerSessionToAssign?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 	}
 }
