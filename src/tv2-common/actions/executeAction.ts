@@ -1364,20 +1364,6 @@ function executeActionCutSourceToBox<
 		newPieceContent.content.timelineObjects.push(studioMics)
 	}
 
-	if (containsServerBefore && containsServerAfter) {
-		const oldObjs = (modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).filter(
-			(obj: TSR.TSRTimelineObj) =>
-				obj.layer === settings.LLayer.Caspar.ClipPending || obj.layer === settings.LLayer.Sisyfos.ClipPending
-		)
-
-		if (oldObjs && oldObjs.length) {
-			newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
-				obj => obj.layer !== settings.LLayer.Caspar.ClipPending && obj.layer !== settings.LLayer.Sisyfos.ClipPending
-			)
-			newPieceContent.content.timelineObjects.push(...oldObjs)
-		}
-	}
-
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
 	if (!(containsServerBefore && containsServerAfter)) {
 		newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
