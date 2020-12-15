@@ -642,7 +642,8 @@ function cutServerToBox<
 			const currentPieces = context.getPieceInstances('current')
 			const currentServer = currentPieces.find(
 				p =>
-					p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
+					p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.Server ||
+					p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.VO
 			)
 
 			if (!currentServer || !currentServer.piece.content?.timelineObjects) {
@@ -686,16 +687,6 @@ function cutServerToBox<
 			}
 
 			dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
-			;(dvePiece.content.timelineObjects as TSR.TSRTimelineObj[]).push(
-				{
-					...existingCasparObj,
-					id: ''
-				},
-				{
-					...existingSisyfosObj,
-					id: ''
-				}
-			)
 
 			if (!dvePiece.metaData) {
 				dvePiece.metaData = {}
