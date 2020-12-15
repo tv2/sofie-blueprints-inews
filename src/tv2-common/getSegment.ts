@@ -1,7 +1,6 @@
 import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
-	IBlueprintPart,
 	IBlueprintSegment,
 	IngestSegment,
 	SegmentContext,
