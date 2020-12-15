@@ -12,6 +12,7 @@ import {
 import { ControlClasses } from 'tv2-constants'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
+import { SanitizeString } from '../util'
 
 // TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
@@ -41,7 +42,8 @@ export function MakeContentServer<
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
-	// const filePath = `${SanitizePath(config.studio.ClipBasePath)}/${file}`
+	const startId = `${SanitizeString(mediaPlayerSessionId)}_${SanitizeString(file)}_start`
+
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file, // playing casparcg
@@ -52,7 +54,7 @@ export function MakeContentServer<
 		postrollDuration: config.studio.ServerPostrollDuration,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-				id: '',
+				id: startId,
 				enable: {
 					while: `.${ControlClasses.ServerOnAir}`
 				},
@@ -72,7 +74,7 @@ export function MakeContentServer<
 			}),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(config.studio.CasparPrerollDuration),
+				enable: getServerAdlibEnable(startId, config.studio.CasparPrerollDuration),
 				priority: 1,
 				layer: sourceLayers.ATEM.MEPGM,
 				content: {
@@ -97,7 +99,7 @@ export function MakeContentServer<
 
 			literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(0),
+				enable: getServerAdlibEnable(startId, 0),
 				priority: 1,
 				layer: sourceLayers.Sisyfos.ClipPending,
 				content: {
@@ -116,7 +118,7 @@ export function MakeContentServer<
 				? sourceLayers.STICKY_LAYERS.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
 						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 							id: '',
-							enable: getServerAdlibEnable(0),
+							enable: getServerAdlibEnable(startId, 0),
 							priority: 1,
 							layer,
 							content: {
@@ -157,8 +159,8 @@ export function MakeContentServer<
 	})
 }
 
-function getServerAdlibEnable(startTime: number): TSR.TSRTimelineObjBase['enable'] {
+function getServerAdlibEnable(startId: string, startTime: number): TSR.TSRTimelineObjBase['enable'] {
 	return {
-		start: startTime
+		start: `#${startId} + ${startTime}`
 	}
 }
