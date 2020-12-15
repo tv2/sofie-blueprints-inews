@@ -140,6 +140,7 @@ export function getSegmentBase<
 		segment.isHidden = false
 	}
 
+	const totalTimeMs = Number(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
 	const parsedParts = ParseBody(
 		config,
@@ -293,11 +294,11 @@ export function getSegmentBase<
 	}
 
 	blueprintParts.forEach(part => {
-		part.part.displayDurationGroup = ingestSegment.externalId
-		if (!part.part.expectedDuration && Number(iNewsStory.fields.totalTime) > 0) {
+		// part.part.displayDurationGroup = ingestSegment.externalId
+
+		if (!part.part.expectedDuration && totalTimeMs > 0) {
 			part.part.expectedDuration =
-				(Number(iNewsStory.fields.totalTime) * 1000 - allocatedTime - serverTime || 0) /
-				(blueprintParts.length - serverParts)
+				(totalTimeMs - allocatedTime - serverTime || 0) / (blueprintParts.length - serverParts)
 
 			if (part.part.expectedDuration! < 0) {
 				part.part.expectedDuration = 0
@@ -309,7 +310,7 @@ export function getSegmentBase<
 		}
 	})
 
-	let extraTime = Number(iNewsStory.fields.totalTime) * 1000
+	let extraTime = totalTimeMs
 
 	blueprintParts.forEach(part => {
 		if (part.part.expectedDuration === undefined || part.part.expectedDuration < 0) {
@@ -336,26 +337,13 @@ export function getSegmentBase<
 	}
 
 	if (
-		extraTime > 0 &&
+		totalTimeMs > 0 &&
 		// Filter out Jingle-only parts
-		(blueprintParts.length !== 1 ||
+		(blueprintParts.length > 1 ||
 			(blueprintParts[blueprintParts.length - 1] &&
 				!blueprintParts[blueprintParts.length - 1].pieces.some(piece => piece.sourceLayerId === 'studio0_jingle')))
 	) {
-		const gapPart = literal<BlueprintResultPart>({
-			part: literal<IBlueprintPart>({
-				externalId: `${ingestSegment.externalId}-GAP`,
-				title: `Adlib Gap`,
-				metaData: {},
-				gap: true,
-				invalid: true,
-				expectedDuration: extraTime,
-				displayDurationGroup: ingestSegment.externalId
-			}),
-			pieces: [],
-			adLibPieces: []
-		})
-		blueprintParts.push(gapPart)
+		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
 
 	if (
