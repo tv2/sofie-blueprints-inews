@@ -33,7 +33,7 @@ export function MakeContentServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	_duration: number,
+	duration: number,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
@@ -58,7 +58,8 @@ export function MakeContentServer(
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
-					seek: 0
+					seek: 0,
+					length: duration
 				},
 				metaData: {
 					mediaPlayerSession: mediaPlayerSessionId
