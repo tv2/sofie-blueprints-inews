@@ -129,6 +129,9 @@ export interface ActionExecutionSettings<
 			SSrcDefault: string
 			Effekt: string
 		}
+		Abstract: {
+			ServerEnable: string
+		}
 	}
 	SelectedAdlibs?: {
 		SourceLayer: {
@@ -343,6 +346,28 @@ function executeActionSelectServerClip<
 				)
 		: undefined
 
+	const content = MakeContentServer(
+		file,
+		sessionToContinue ?? externalId,
+		partDefinition,
+		config,
+		{
+			Caspar: {
+				ClipPending: settings.LLayer.Caspar.ClipPending
+			},
+			Sisyfos: {
+				ClipPending: settings.LLayer.Sisyfos.ClipPending
+			},
+			ATEM: {
+				MEPGM:
+					settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
+						? settings.LLayer.Atem.MEClean
+						: settings.LLayer.Atem.MEProgram
+			}
+		},
+		duration
+	)
+
 	const activeServerPiece = literal<IBlueprintPiece>({
 		externalId,
 		name: file,
@@ -350,31 +375,21 @@ function executeActionSelectServerClip<
 		outputLayerId: settings.OutputLayer.PGM,
 		sourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
 		lifespan: PieceLifespan.WithinPart,
-		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
-		}),
-		content: MakeContentServer(
-			file,
-			sessionToContinue ?? externalId,
-			partDefinition,
-			config,
-			{
-				Caspar: {
-					ClipPending: settings.LLayer.Caspar.ClipPending
-				},
-				Sisyfos: {
-					ClipPending: settings.LLayer.Sisyfos.ClipPending
-				},
-				ATEM: {
-					MEPGM:
-						settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
-							? settings.LLayer.Atem.MEClean
-							: settings.LLayer.Atem.MEProgram,
-					ServerLookaheadAUX: settings.LLayer.Atem.ServerLookaheadAUX
-				}
-			},
-			duration
-		),
+		content: {
+			timelineObjects: [
+				literal<TSR.TimelineObjAbstractAny>({
+					id: '',
+					enable: {
+						start: 0
+					},
+					layer: settings.LLayer.Abstract.ServerEnable,
+					content: {
+						deviceType: TSR.DeviceType.ABSTRACT
+					},
+					classes: [ControlClasses.ServerOnAir]
+				})
+			]
+		},
 		adlibPreroll: config.studio.CasparPrerollDuration,
 		tags: [
 			GetTagForServer(userData.segmentExternalId, file, userData.vo),
@@ -382,20 +397,6 @@ function executeActionSelectServerClip<
 			TallyTags.SERVER_IS_LIVE
 		]
 	})
-
-	settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
-
-	const lookaheadObj = (activeServerPiece.content?.timelineObjects as Array<
-		TSR.TSRTimelineObj & TimelineBlueprintExt
-	>).find(t => t.layer === settings.LLayer.Atem.Next)
-	const mediaObj = (activeServerPiece.content?.timelineObjects as Array<
-		TSR.TSRTimelineObj & TimelineBlueprintExt
-	>).find(
-		t =>
-			t.layer === settings.LLayer.Caspar.ClipPending &&
-			t.content.deviceType === TSR.DeviceType.CASPARCG &&
-			t.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
-	) as (TSR.TimelineObjCCGMedia & TimelineBlueprintExt) | undefined
 
 	const grafikPieces: IBlueprintPiece[] = []
 
@@ -438,44 +439,44 @@ function executeActionSelectServerClip<
 					mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
 				},
 				tags: [GetTagForServerNext(userData.segmentExternalId, file, userData.vo)],
-				content: {
-					timelineObjects:
-						lookaheadObj && mediaObj
-							? [
-									literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-										id: '',
-										enable: {
-											while: '1'
-										},
-										priority: 1,
-										layer: settings.LLayer.Caspar.ClipPending,
-										metaData: mediaObj.metaData,
-										content: {
-											deviceType: TSR.DeviceType.CASPARCG,
-											type: TSR.TimelineContentTypeCasparCg.MEDIA,
-											file: mediaObj.content.file,
-											noStarttime: true
-										},
-										keyframes: [
-											{
-												id: '',
-												enable: {
-													while: `!.${ControlClasses.ServerOnAir}`
-												},
-												content: {
-													deviceType: TSR.DeviceType.CASPARCG,
-													type: TSR.TimelineContentTypeCasparCg.MEDIA,
-													playing: false,
-													seek: 0
-												}
-											}
-										]
-									})
-							  ]
-							: []
-				}
+				content
 		  })
 		: undefined
+
+	if (serverDataStore) {
+		settings.postProcessPieceTimelineObjects(context, config, serverDataStore, false)
+
+		const lookaheadObj = (serverDataStore.content?.timelineObjects as Array<
+			TSR.TSRTimelineObj & TimelineBlueprintExt
+		>).find(t => t.layer === settings.LLayer.Atem.Next)
+		const mediaObj = (serverDataStore.content?.timelineObjects as Array<
+			TSR.TSRTimelineObj & TimelineBlueprintExt
+		>).find(
+			t =>
+				t.layer === settings.LLayer.Caspar.ClipPending &&
+				t.content.deviceType === TSR.DeviceType.CASPARCG &&
+				t.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
+		) as (TSR.TimelineObjCCGMedia & TimelineBlueprintExt) | undefined
+
+		if (lookaheadObj && mediaObj && settings.LLayer.Atem.ServerLookaheadAUX) {
+			serverDataStore.content?.timelineObjects.push(
+				literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+					id: '',
+					enable: lookaheadObj.enable,
+					priority: 0,
+					layer: settings.LLayer.Atem.ServerLookaheadAUX,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.AUX,
+						aux: {
+							input: -1
+						}
+					},
+					metaData: lookaheadObj.metaData
+				})
+			)
+		}
+	}
 
 	const blockingPiece = conflictingPiece
 		? literal<IBlueprintPiece>({

@@ -67,6 +67,9 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 					Next: AtemLLayer.AtemAuxLookahead,
 					SSrcDefault: AtemLLayer.AtemSSrcDefault,
 					Effekt: AtemLLayer.AtemDSKEffect
+				},
+				Abstract: {
+					ServerEnable: '' // TODO
 				}
 			},
 			ServerAudioLayers: [

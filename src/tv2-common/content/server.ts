@@ -54,7 +54,7 @@ export function MakeContentServer<
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
 				enable: {
-					while: '1'
+					while: `.${ControlClasses.ServerOnAir}`
 				},
 				priority: 1,
 				layer: sourceLayers.Caspar.ClipPending,
@@ -63,8 +63,7 @@ export function MakeContentServer<
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
 					loop: offtubeOptions?.isOfftube ? false : adLib,
-					noStarttime: true
-					// ...(offtubeOptions?.isOfftube ? { seek: 0 } : {})
+					seek: 0
 				},
 				metaData: {
 					mediaPlayerSession: mediaPlayerSessionId
@@ -92,8 +91,7 @@ export function MakeContentServer<
 				},
 				classes: [
 					...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
-					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : []),
-					ControlClasses.ServerOnAir
+					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
 				]
 			}),
 
