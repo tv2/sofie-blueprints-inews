@@ -14,7 +14,9 @@ import {
 	PartContext2,
 	PartDefinition,
 	PieceMetaData,
-	SanitizeString
+	SanitizeString,
+	CutToServer,
+	EnableServer
 } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
@@ -50,6 +52,44 @@ export function CreatePartServer(
 
 	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
 
+	const content = MakeContentServer(
+		file,
+		mediaPlayerSession,
+		partDefinition,
+		config,
+		{
+			Caspar: {
+				ClipPending: CasparLLayer.CasparPlayerClipPending
+			},
+			Sisyfos: {
+				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+			},
+			ATEM: {
+				MEPGM: AtemLLayer.AtemMEProgram
+			},
+			OutputLayerId: 'pgm',
+			SourceLayerId: SourceLayer.PgmServer
+		},
+		duration
+	)
+
+	content.timelineObjects.push(
+		CutToServer(mediaPlayerSession, partDefinition, config, {
+			Caspar: {
+				ClipPending: CasparLLayer.CasparPlayerClipPending
+			},
+			Sisyfos: {
+				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+			},
+			ATEM: {
+				MEPGM: AtemLLayer.AtemMEProgram
+			},
+			OutputLayerId: 'pgm',
+			SourceLayerId: SourceLayer.PgmServer
+		}),
+		EnableServer('') // TODO: Layer
+	)
+
 	pieces.push(
 		literal<IBlueprintPiece>({
 			externalId: partDefinition.externalId,
@@ -75,7 +115,9 @@ export function CreatePartServer(
 					},
 					ATEM: {
 						MEPGM: AtemLLayer.AtemMEProgram
-					}
+					},
+					OutputLayerId: 'pgm',
+					SourceLayerId: SourceLayer.PgmServer
 				},
 				duration
 			),

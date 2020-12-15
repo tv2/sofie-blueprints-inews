@@ -18,12 +18,7 @@ import {
 	SanitizeString
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -78,7 +73,9 @@ export function OfftubeCreatePartServer(
 					ATEM: {
 						MEPGM: OfftubeAtemLLayer.AtemMEClean,
 						ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
-					}
+					},
+					OutputLayerId: OfftubeOutputLayers.PGM,
+					SourceLayerId: OfftubeSourceLayer.PgmServer
 				},
 				duration
 			),
@@ -107,14 +104,15 @@ export function OfftubeCreatePartServer(
 			},
 			Sisyfos: {
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-			}
+			},
+			OutputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
+			SourceLayerId: OfftubeSourceLayer.PgmServer
 		},
 		duration,
 		true,
 		{
 			isOfftube: true,
-			tagAsAdlib: true,
-			serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
+			tagAsAdlib: true
 		}
 	)
 

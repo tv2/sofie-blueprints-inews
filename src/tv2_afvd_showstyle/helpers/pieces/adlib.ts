@@ -27,7 +27,7 @@ export function EvaluateAdLib(
 	context: PartContext2,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
-	_actions: IBlueprintActionManifest[],
+	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -41,16 +41,17 @@ export function EvaluateAdLib(
 			return
 		}
 
-		adLibPieces.push(
+		actions.push(
 			CreateAdlibServer(
 				config,
 				rank,
-				partId,
 				SanitizeString(`adlib_server_${file}`),
 				partDefinition,
 				file,
 				false,
 				{
+					PgmServer: SourceLayer.PgmServer,
+					PgmVoiceOver: SourceLayer.PgmVoiceOver,
 					Caspar: {
 						ClipPending: CasparLLayer.CasparPlayerClipPending
 					},
@@ -61,8 +62,8 @@ export function EvaluateAdLib(
 						MEPGM: AtemLLayer.AtemMEProgram
 					},
 					STICKY_LAYERS: config.stickyLayers,
-					PgmServer: SourceLayer.PgmServer,
-					PgmVoiceOver: SourceLayer.PgmVoiceOver
+					OutputLayerId: 'pgm',
+					SourceLayerId: SourceLayer.PgmServer
 				},
 				0 // TODO: duration
 			)

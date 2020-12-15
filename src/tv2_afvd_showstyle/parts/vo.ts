@@ -17,7 +17,9 @@ import {
 	MakeContentServer,
 	PartContext2,
 	PartDefinition,
-	SanitizeString
+	SanitizeString,
+	CutToServer,
+	EnableServer
 } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
@@ -25,6 +27,7 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
+import { OfftubeAbstractLLayer } from 'src/tv2_offtube_studio/layers'
 
 export function CreatePartVO(
 	context: PartContext2,
@@ -79,13 +82,29 @@ export function CreatePartVO(
 			},
 			ATEM: {
 				MEPGM: AtemLLayer.AtemMEProgram
-			}
+			},
+			OutputLayerId: 'pgm',
+			SourceLayerId: SourceLayer.PgmVoiceOver
 		},
 		duration,
 		false
 	)
 	serverContent.timelineObjects.push(
-		GetSisyfosTimelineObjForCamera(context, config, 'server', SisyfosLLAyer.SisyfosGroupStudioMics)
+		GetSisyfosTimelineObjForCamera(context, config, 'server', SisyfosLLAyer.SisyfosGroupStudioMics),
+		CutToServer(mediaPlayerSession, partDefinition, config, {
+			Caspar: {
+				ClipPending: CasparLLayer.CasparPlayerClipPending
+			},
+			Sisyfos: {
+				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+			},
+			ATEM: {
+				MEPGM: AtemLLayer.AtemMEProgram
+			},
+			OutputLayerId: 'pgm',
+			SourceLayerId: SourceLayer.PgmVoiceOver
+		}),
+		EnableServer(OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable)
 	)
 	pieces.push(
 		literal<IBlueprintPiece>({

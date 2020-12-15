@@ -73,7 +73,7 @@ import {
 } from '../pieces'
 import { assertUnreachable } from '../util'
 import { ActionCommentatorSelectJingle, ActionSelectJingle, ActionTakeWithTransition } from './actionTypes'
-import { CutToServer } from '../content'
+import { CutToServer, EnableServer } from '../content'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -364,7 +364,9 @@ function executeActionSelectServerClip<
 					settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
 						? settings.LLayer.Atem.MEClean
 						: settings.LLayer.Atem.MEProgram
-			}
+			},
+			OutputLayerId: settings.OutputLayer.PGM,
+			SourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server
 		},
 		duration
 	)
@@ -378,37 +380,23 @@ function executeActionSelectServerClip<
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				CutToServer(
-					sessionToContinue ?? externalId,
-					partDefinition,
-					config,
-					{
-						Caspar: {
-							ClipPending: settings.LLayer.Caspar.ClipPending
-						},
-						Sisyfos: {
-							ClipPending: settings.LLayer.Sisyfos.ClipPending
-						},
-						ATEM: {
-							MEPGM:
-								settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
-									? settings.LLayer.Atem.MEClean
-									: settings.LLayer.Atem.MEProgram
-						}
+				CutToServer(sessionToContinue ?? externalId, partDefinition, config, {
+					Caspar: {
+						ClipPending: settings.LLayer.Caspar.ClipPending
 					},
-					duration
-				),
-				literal<TSR.TimelineObjAbstractAny>({
-					id: '',
-					enable: {
-						start: 0
+					Sisyfos: {
+						ClipPending: settings.LLayer.Sisyfos.ClipPending
 					},
-					layer: settings.LLayer.Abstract.ServerEnable,
-					content: {
-						deviceType: TSR.DeviceType.ABSTRACT
+					ATEM: {
+						MEPGM:
+							settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
+								? settings.LLayer.Atem.MEClean
+								: settings.LLayer.Atem.MEProgram
 					},
-					classes: [ControlClasses.ServerOnAir]
-				})
+					OutputLayerId: settings.OutputLayer.PGM,
+					SourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server
+				}),
+				EnableServer(settings.LLayer.Abstract.ServerEnable)
 			]
 		},
 		adlibPreroll: config.studio.CasparPrerollDuration,
@@ -441,6 +429,8 @@ function executeActionSelectServerClip<
 				GetSisyfosTimelineObjForCamera(context, config, 'server', settings.LLayer.Sisyfos.StudioMics)
 			)
 		}
+
+		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
 	}
 
 	const serverDataStore = settings.SelectedAdlibs
@@ -465,8 +455,6 @@ function executeActionSelectServerClip<
 		: undefined
 
 	if (serverDataStore) {
-		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
-
 		const lookaheadObj = (activeServerPiece.content?.timelineObjects as Array<
 			TSR.TSRTimelineObj & TimelineBlueprintExt
 		>).find(t => t.layer === settings.LLayer.Atem.Next)

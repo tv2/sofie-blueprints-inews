@@ -6,11 +6,9 @@ import {
 	PieceMetaData
 } from 'tv-automation-sofie-blueprints-integration'
 import {
-	ActionSelectServerClip,
 	AddScript,
 	CreateAdlibServer,
 	CreatePartServerBase,
-	GetSisyfosTimelineObjForCamera,
 	GetTagForServer,
 	GetTagForServerNext,
 	literal,
@@ -19,13 +17,8 @@ import {
 	PartDefinition,
 	SanitizeString
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../../tv2_offtube_studio/layers'
+import { TallyTags } from 'tv2-constants'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -85,7 +78,9 @@ export function OfftubeCreatePartVO(
 					ATEM: {
 						MEPGM: OfftubeAtemLLayer.AtemMEClean,
 						ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
-					}
+					},
+					OutputLayerId: OfftubeOutputLayers.PGM,
+					SourceLayerId: OfftubeSourceLayer.PgmVoiceOver
 				},
 				actualDuration
 			),
@@ -98,62 +93,36 @@ export function OfftubeCreatePartVO(
 		})
 	)
 
-	const adlibServer = CreateAdlibServer(
-		config,
-		0,
-		partDefinition.externalId,
-		mediaPlayerSession,
-		partDefinition,
-		file,
-		true,
-		{
-			PgmServer: OfftubeSourceLayer.PgmServer,
-			PgmVoiceOver: OfftubeSourceLayer.PgmVoiceOver,
-			Caspar: {
-				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-			},
-			ATEM: {
-				MEPGM: OfftubeAtemLLayer.AtemMEClean,
-				ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
-			},
-			Sisyfos: {
-				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-			},
-			STICKY_LAYERS: config.stickyLayers
-		},
-		actualDuration,
-		{
-			isOfftube: true,
-			tagAsAdlib: true,
-			serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
-		}
-	)
-	adlibServer.content?.timelineObjects.push(
-		GetSisyfosTimelineObjForCamera(context, config, 'server', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
-	)
-
 	actions.push(
-		literal<IBlueprintActionManifest>({
-			actionId: AdlibActionType.SELECT_SERVER_CLIP,
-			userData: literal<ActionSelectServerClip>({
-				type: AdlibActionType.SELECT_SERVER_CLIP,
-				file,
-				partDefinition,
-				duration,
-				vo: true,
-				segmentExternalId: partDefinition.segmentExternalId
-			}),
-			userDataManifest: {},
-			display: {
-				label: `${partDefinition.storyName}`,
-				sourceLayerId: OfftubeSourceLayer.PgmVoiceOver,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				content: { ...adlibServer.content, timelineObjects: [] },
-				tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-				currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, true)],
-				nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, true)]
+		CreateAdlibServer(
+			config,
+			0,
+			mediaPlayerSession,
+			partDefinition,
+			file,
+			true,
+			{
+				PgmServer: OfftubeSourceLayer.PgmServer,
+				PgmVoiceOver: OfftubeSourceLayer.PgmVoiceOver,
+				Caspar: {
+					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+				},
+				ATEM: {
+					MEPGM: OfftubeAtemLLayer.AtemMEClean
+				},
+				Sisyfos: {
+					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+				},
+				STICKY_LAYERS: config.stickyLayers,
+				OutputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
+				SourceLayerId: OfftubeSourceLayer.PgmVoiceOver
+			},
+			actualDuration,
+			{
+				isOfftube: true,
+				tagAsAdlib: true
 			}
-		})
+		)
 	)
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})

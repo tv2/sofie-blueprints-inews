@@ -7,13 +7,10 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectDVE,
-	ActionSelectServerClip,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
 	GetDVETemplate,
-	GetTagForServer,
-	GetTagForServerNext,
 	literal,
 	PartContext2,
 	PartDefinition,
@@ -22,12 +19,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
 import _ = require('underscore')
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -37,7 +29,7 @@ export function OfftubeEvaluateAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	partId: string,
+	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
 	rank: number
@@ -52,59 +44,36 @@ export function OfftubeEvaluateAdLib(
 
 		const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
 
-		const adlibServer = CreateAdlibServer(
-			config,
-			rank,
-			partId,
-			SanitizeString(`adlib_server_${file}`),
-			partDefinition,
-			file,
-			false,
-			{
-				Caspar: {
-					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-				},
-				Sisyfos: {
-					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-				},
-				ATEM: {
-					MEPGM: OfftubeAtemLLayer.AtemMEClean,
-					ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
-				},
-				STICKY_LAYERS: config.stickyLayers,
-				PgmServer: OfftubeSourceLayer.SelectedAdLibServer,
-				PgmVoiceOver: OfftubeSourceLayer.SelectedAdLibVoiceOver
-			},
-			duration,
-			{
-				isOfftube: true,
-				tagAsAdlib: true,
-				serverEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
-			}
-		)
-
 		actions.push(
-			literal<IBlueprintActionManifest>({
-				actionId: AdlibActionType.SELECT_SERVER_CLIP,
-				userData: literal<ActionSelectServerClip>({
-					type: AdlibActionType.SELECT_SERVER_CLIP,
-					segmentExternalId: partDefinition.segmentExternalId,
-					file,
-					partDefinition,
-					duration,
-					vo: false
-				}),
-				userDataManifest: {},
-				display: {
-					label: `${partDefinition.storyName}`,
-					sourceLayerId: OfftubeSourceLayer.PgmServer,
-					outputLayerId: OfftubeOutputLayers.PGM,
-					content: { ...adlibServer.content, timelineObjects: [] },
-					tags: [AdlibTags.OFFTUBE_ADLIB_SERVER, AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
-					nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
+			CreateAdlibServer(
+				config,
+				rank,
+				SanitizeString(`adlib_server_${file}`),
+				partDefinition,
+				file,
+				false,
+				{
+					PgmServer: OfftubeSourceLayer.PgmServer,
+					PgmVoiceOver: OfftubeSourceLayer.PgmVoiceOver,
+					Caspar: {
+						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+					},
+					Sisyfos: {
+						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+					},
+					ATEM: {
+						MEPGM: OfftubeAtemLLayer.AtemMEProgram
+					},
+					STICKY_LAYERS: config.stickyLayers,
+					OutputLayerId: OfftubeOutputLayers.PGM,
+					SourceLayerId: OfftubeSourceLayer.PgmServer
+				},
+				duration,
+				{
+					isOfftube: true,
+					tagAsAdlib: true
 				}
-			})
+			)
 		)
 	} else {
 		// DVE
