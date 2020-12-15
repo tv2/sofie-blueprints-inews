@@ -414,8 +414,6 @@ export function MakeContentDVE2<
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const file: string | undefined = videoId
-
 				server = true
 				setBoxSource(
 					num,
@@ -426,39 +424,6 @@ export function MakeContentDVE2<
 					},
 					mappingFrom.source,
 					mappingFrom.source
-				)
-				dveTimeline.push(
-					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-						id: '',
-						enable: getDVEEnable(undefined, true),
-						priority: 1,
-						layer: dveGeneratorOptions.dveLayers.CasparLLayer.ClipPending,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: adlib ? 'continue' : file ? file : 'continue', // If adlib, or if no file, continue existing file // TODO: Adlib with clip specified?
-							loop: true
-						},
-						metaData: {
-							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
-						},
-						classes: file ? [] : [ControlClasses.DVEPlaceholder]
-					}),
-					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: getDVEEnable(undefined, true),
-						priority: 1,
-						layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.ClipPending,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 1
-						},
-						metaData: {
-							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
-						},
-						classes: file ? [] : [ControlClasses.DVEPlaceholder]
-					})
 				)
 				return
 			} else {
