@@ -5,13 +5,12 @@ import {
 	PartDefinition,
 	ServerParentClass,
 	TransitionFromString,
-	TransitionSettings,
-	TV2BlueprintConfigBase,
-	TV2StudioConfigBase
+	TransitionSettings
 } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
+import { TV2BlueprintConfig } from '../blueprintConfig'
 
 // TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
@@ -28,20 +27,16 @@ export interface MakeContentServerSourceLayers {
 	STICKY_LAYERS?: string[]
 }
 
-export function MakeContentServer<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
+export function MakeContentServer(
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
-	config: ShowStyleConfig,
+	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	_duration: number,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): VTContent {
-	// const filePath = `${SanitizePath(config.studio.ClipBasePath)}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file, // playing casparcg
@@ -70,34 +65,12 @@ export function MakeContentServer<
 				},
 				classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
 			}),
-			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-				id: '',
-				enable: getServerAdlibEnable(config.studio.CasparPrerollDuration),
-				priority: 1,
-				layer: sourceLayers.ATEM.MEPGM,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: -1,
-						transition: partDefinition.transition
-							? TransitionFromString(partDefinition.transition.style)
-							: TSR.AtemTransitionStyle.CUT,
-						transitionSettings: TransitionSettings(partDefinition)
-					}
-				},
-				metaData: {
-					mediaPlayerSession: mediaPlayerSessionId
-				},
-				classes: [
-					...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
-					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
-				]
-			}),
 
 			literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 				id: '',
-				enable: getServerAdlibEnable(0),
+				enable: {
+					while: `.${ControlClasses.ServerOnAir}`
+				},
 				priority: 1,
 				layer: sourceLayers.Sisyfos.ClipPending,
 				content: {
@@ -116,7 +89,9 @@ export function MakeContentServer<
 				? sourceLayers.STICKY_LAYERS.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
 						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 							id: '',
-							enable: getServerAdlibEnable(0),
+							enable: {
+								while: `.${ControlClasses.ServerOnAir}`
+							},
 							priority: 1,
 							layer,
 							content: {
@@ -157,8 +132,39 @@ export function MakeContentServer<
 	})
 }
 
-function getServerAdlibEnable(startTime: number): TSR.TSRTimelineObjBase['enable'] {
-	return {
-		start: startTime
-	}
+export function CutToServer(
+	mediaPlayerSessionId: string,
+	partDefinition: PartDefinition,
+	config: TV2BlueprintConfig,
+	sourceLayers: MakeContentServerSourceLayers,
+	_duration: number,
+	adLib?: boolean,
+	offtubeOptions?: AdlibServerOfftubeOptions
+) {
+	return literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+		id: '',
+		enable: {
+			start: config.studio.CasparPrerollDuration
+		},
+		priority: 1,
+		layer: sourceLayers.ATEM.MEPGM,
+		content: {
+			deviceType: TSR.DeviceType.ATEM,
+			type: TSR.TimelineContentTypeAtem.ME,
+			me: {
+				input: -1,
+				transition: partDefinition.transition
+					? TransitionFromString(partDefinition.transition.style)
+					: TSR.AtemTransitionStyle.CUT,
+				transitionSettings: TransitionSettings(partDefinition)
+			}
+		},
+		metaData: {
+			mediaPlayerSession: mediaPlayerSessionId
+		},
+		classes: [
+			...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
+			...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
+		]
+	})
 }

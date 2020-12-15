@@ -73,6 +73,7 @@ import {
 } from '../pieces'
 import { assertUnreachable } from '../util'
 import { ActionCommentatorSelectJingle, ActionSelectJingle, ActionTakeWithTransition } from './actionTypes'
+import { CutToServer } from '../content'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -377,6 +378,26 @@ function executeActionSelectServerClip<
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
+				CutToServer(
+					sessionToContinue ?? externalId,
+					partDefinition,
+					config,
+					{
+						Caspar: {
+							ClipPending: settings.LLayer.Caspar.ClipPending
+						},
+						Sisyfos: {
+							ClipPending: settings.LLayer.Sisyfos.ClipPending
+						},
+						ATEM: {
+							MEPGM:
+								settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
+									? settings.LLayer.Atem.MEClean
+									: settings.LLayer.Atem.MEProgram
+						}
+					},
+					duration
+				),
 				literal<TSR.TimelineObjAbstractAny>({
 					id: '',
 					enable: {
