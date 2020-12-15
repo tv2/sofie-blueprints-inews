@@ -444,12 +444,12 @@ function executeActionSelectServerClip<
 		: undefined
 
 	if (serverDataStore) {
-		settings.postProcessPieceTimelineObjects(context, config, serverDataStore, false)
+		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
 
-		const lookaheadObj = (serverDataStore.content?.timelineObjects as Array<
+		const lookaheadObj = (activeServerPiece.content?.timelineObjects as Array<
 			TSR.TSRTimelineObj & TimelineBlueprintExt
 		>).find(t => t.layer === settings.LLayer.Atem.Next)
-		const mediaObj = (serverDataStore.content?.timelineObjects as Array<
+		const mediaObj = (activeServerPiece.content?.timelineObjects as Array<
 			TSR.TSRTimelineObj & TimelineBlueprintExt
 		>).find(
 			t =>
