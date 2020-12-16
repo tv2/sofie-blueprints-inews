@@ -77,21 +77,16 @@ export function MakeContentServer<
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
-						input: undefined,
+						input: -1,
 						transition: partDefinition.transition
 							? TransitionFromString(partDefinition.transition.style)
 							: TSR.AtemTransitionStyle.CUT,
 						transitionSettings: TransitionSettings(partDefinition)
 					}
 				},
-				metaData:
-					offtubeOptions?.isOfftube && adLib
-						? {
-								mediaPlayerSessionToAssign: mediaPlayerSessionId
-						  }
-						: {
-								mediaPlayerSession: mediaPlayerSessionId
-						  },
+				metaData: {
+					mediaPlayerSession: mediaPlayerSessionId
+				},
 				classes: [
 					...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
 					...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : []),

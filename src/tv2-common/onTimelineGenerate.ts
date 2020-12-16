@@ -3,9 +3,8 @@ import {
 	IBlueprintResolvedPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
-	PartEventContext,
-	PieceMetaData as PieceMetaDataBase,
 	RundownContext,
+	TimelineEventContext,
 	TimelineObjectCoreExt,
 	TimelinePersistentState,
 	TSR
@@ -16,7 +15,7 @@ import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REM
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
-export interface PartEndStateExt extends PartEndState {
+export interface PartEndStateExt {
 	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
 	mediaPlayerSessions: { [layer: string]: string[] }
 }
@@ -27,9 +26,8 @@ export interface MediaPlayerClaim {
 	lookahead: boolean
 }
 
-export interface TimelinePersistentStateExt extends TimelinePersistentState {
+export interface TimelinePersistentStateExt {
 	activeMediaPlayers: { [player: string]: MediaPlayerClaim[] | undefined }
-	segmentSession: string
 }
 
 export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
@@ -38,13 +36,11 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 		context?: string
 		sisyfosPersistLevel?: boolean
 		mediaPlayerSession?: string
-		/** Use for when onTimelineGenerate should assign based on some conditions */
-		mediaPlayerSessionToAssign?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 	}
 }
 
-export interface PieceMetaData extends PieceMetaDataBase {
+export interface PieceMetaData {
 	stickySisyfosLevels?: { [key: string]: { value: number; followsPrevious: boolean } }
 	mediaPlayerSessions?: string[]
 	mediaPlayerOptional?: boolean
@@ -58,12 +54,12 @@ export function onTimelineGenerate<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartEventContext,
+	context: TimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
-	getConfig: (context: PartEventContext) => ShowStyleConfig,
+	getConfig: (context: TimelineEventContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
 	_casparLayerClipPending: string,
 	_atemLayerNext: string
@@ -80,8 +76,7 @@ export function onTimelineGenerate<
 	)
 
 	const persistentState: TimelinePersistentStateExt = {
-		activeMediaPlayers: {},
-		segmentSession: context.part.segmentId
+		activeMediaPlayers: {}
 	}
 	const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt | undefined
 
@@ -183,8 +178,8 @@ export function preservePieceSisfosLevel(
 					previousPartEndState &&
 					previousPartEndState.stickySisyfosLevels &&
 					previousPartEndState.stickySisyfosLevels[key]
-						? previousPartEndState.stickySisfosLevels[key]
-						: values.value
+						? previousPartEndState.stickySisyfosLevels[key]
+						: (values.value as 0 | 1 | 2 | undefined)
 			}
 		}
 	}

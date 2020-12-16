@@ -264,7 +264,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: SourceLayer.PgmDVEAdlib,
+		_id: SourceLayer.PgmDVEAdLib,
 		_rank: 0,
 		name: 'DVE',
 		abbreviation: 'D',

@@ -717,7 +717,7 @@ function cutServerToBox<
 				dvePiece.metaData = {}
 			}
 
-			dvePiece.metaData.mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
+			;(dvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 		}
 	}
 
@@ -760,7 +760,7 @@ function executeActionSelectDVELayout<
 
 	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
 
-	if (!nextPart || !nextDVE || !meta) {
+	if (!nextPart || !nextDVE || !meta || nextPart.segmentId !== context.getPartInstance('current')?.segmentId) {
 		const content = MakeContentDVE2(context, config, userData.config, {}, sources, settings.DVEGeneratorOptions)
 
 		if (!content.valid) {
@@ -876,7 +876,7 @@ function startNewDVELayout<
 				},
 				outputLayerId: settings.SelectedAdlibs?.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
-				lifespan: PieceLifespan.WithinPart,
+				lifespan: PieceLifespan.OutOnSegmentEnd,
 				metaData: meta,
 				tags: [GetTagForDVENext(templateName, sources)],
 				content: {
@@ -1621,7 +1621,7 @@ function findDataStore<T extends TV2AdlibAction>(
 		return
 	}
 
-	const data = dataStorePiece.piece.piece.metaData?.userData as T | undefined
+	const data = (dataStorePiece.piece.piece.metaData as any)?.userData as T | undefined
 
 	return data
 }
@@ -1639,7 +1639,7 @@ function findMediaPlayerSessions(
 		}
 	}
 
-	const sessions = mediaPlayerSessionPiece.piece.piece.metaData?.mediaPlayerSessions
+	const sessions = (mediaPlayerSessionPiece.piece.piece.metaData as any)?.mediaPlayerSessions
 
 	return {
 		// Assume there will be only one session

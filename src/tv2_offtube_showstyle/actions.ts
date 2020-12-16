@@ -49,6 +49,7 @@ export function executeActionOfftube(
 				Server: OfftubeSourceLayer.PgmServer,
 				VO: OfftubeSourceLayer.PgmVoiceOver,
 				DVE: OfftubeSourceLayer.PgmDVE,
+				DVEAdLib: OfftubeSourceLayer.PgmDVEAdLib,
 				Cam: OfftubeSourceLayer.PgmCam,
 				Live: OfftubeSourceLayer.PgmLive,
 				Effekt: OfftubeSourceLayer.PgmJingle
@@ -142,7 +143,7 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		},
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
 		sourceLayerId: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
-		lifespan: PieceLifespan.WithinPart,
+		lifespan: PieceLifespan.OutOnSegmentEnd,
 		metaData: {
 			userData
 		},

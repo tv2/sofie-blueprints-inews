@@ -57,9 +57,7 @@ export function postProcessPieceTimelineObjects(
 				if (
 					(!isAdlib || piece.toBeQueued) &&
 					'me' in tlObj.content &&
-					(tlObj.content.me.input !== undefined ||
-						tlObj.metaData?.mediaPlayerSession !== undefined ||
-						tlObj.metaData.mediaPlayerSessionToAssign !== undefined) &&
+					(tlObj.content.me.input !== -1 || tlObj.metaData?.mediaPlayerSession !== undefined) &&
 					!tlObj.classes?.includes(ControlClasses.NOLookahead)
 				) {
 					if (tlObj.classes?.includes(ControlClasses.AbstractLookahead)) {
@@ -75,8 +73,7 @@ export function postProcessPieceTimelineObjects(
 							},
 							metaData: {
 								context: `Lookahead-lookahead for ${tlObj.id}`,
-								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession,
-								mediaPlayerSessionToAssign: tlObj.metaData.mediaPlayerSessionToAssign
+								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession
 							},
 							classes: ['ab_on_preview']
 						})
@@ -94,13 +91,12 @@ export function postProcessPieceTimelineObjects(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									previewInput:
-										tlObj.content.me.input !== undefined ? tlObj.content.me.input : config.studio.AtemSource.Default
+										tlObj.content.me.input !== -1 ? tlObj.content.me.input : config.studio.AtemSource.Default
 								}
 							},
 							metaData: {
 								context: `Lookahead-lookahead for ${tlObj.id}`,
-								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession,
-								mediaPlayerSessionToAssign: tlObj.metaData.mediaPlayerSessionToAssign
+								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession
 							},
 							classes: ['ab_on_preview']
 						})

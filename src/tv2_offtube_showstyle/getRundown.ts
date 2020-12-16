@@ -20,6 +20,7 @@ import {
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionSelectDVELayout,
+	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	GraphicLLayer,
@@ -122,7 +123,10 @@ function getGlobalAdlibActionsOfftube(
 					label: `KAM ${info.id}`,
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: 'pgm',
-					content: {}
+					content: {},
+					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
+					currentPieceTags: [GetTagForKam(info.id)],
+					nextPieceTags: [GetTagForKam(info.id)]
 				}
 			})
 		)
@@ -145,8 +149,8 @@ function getGlobalAdlibActionsOfftube(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
 					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
-					onAirTags: [GetTagForLive(name)],
-					setNextTags: [GetTagForLive(name)]
+					currentPieceTags: [GetTagForLive(name)],
+					nextPieceTags: [GetTagForLive(name)]
 				}
 			})
 		)
@@ -246,8 +250,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_SERVER_NEXT],
-				onAirTags: [TallyTags.SERVER_IS_LIVE],
-				setNextTags: [TallyTags.SERVER_IS_LIVE]
+				currentPieceTags: [TallyTags.SERVER_IS_LIVE],
+				nextPieceTags: [TallyTags.SERVER_IS_LIVE]
 			}
 		})
 	)
@@ -266,8 +270,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_DVE_NEXT],
-				onAirTags: [TallyTags.DVE_IS_LIVE],
-				setNextTags: [TallyTags.DVE_IS_LIVE]
+				currentPieceTags: [TallyTags.DVE_IS_LIVE],
+				nextPieceTags: [TallyTags.DVE_IS_LIVE]
 			}
 		})
 	)
@@ -286,8 +290,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT],
-				onAirTags: [TallyTags.FULL_IS_LIVE],
-				setNextTags: [TallyTags.FULL_IS_LIVE]
+				currentPieceTags: [TallyTags.FULL_IS_LIVE],
+				nextPieceTags: [TallyTags.FULL_IS_LIVE]
 			}
 		})
 	)
@@ -308,7 +312,6 @@ function getGlobalAdlibActionsOfftube(
 	)
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		// const boxSources = ['', '', '', '']
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
@@ -320,7 +323,7 @@ function getGlobalAdlibActionsOfftube(
 				display: {
 					_rank: 200 + i,
 					label: dveConfig.DVEName,
-					sourceLayerId: OfftubeSourceLayer.PgmDVE,
+					sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
 					outputLayerId: 'pgm'
 				}
 			})
@@ -386,8 +389,8 @@ function getGlobalAdlibActionsOfftube(
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_JINGLE_NEXT],
-				onAirTags: [TallyTags.JINGLE_IS_LIVE],
-				setNextTags: [TallyTags.JINGLE_IS_LIVE]
+				currentPieceTags: [TallyTags.JINGLE_IS_LIVE],
+				nextPieceTags: [TallyTags.JINGLE_IS_LIVE]
 			}
 		})
 	)

@@ -2,7 +2,7 @@ import {
 	IBlueprintResolvedPieceInstance,
 	NotesContext,
 	OnGenerateTimelineObj,
-	PartEventContext,
+	TimelineEventContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
@@ -38,7 +38,7 @@ function reversePreviousAssignment(
 	const previousAssignmentRev: { [sessionId: string]: MediaPlayerClaim | undefined } = {}
 	for (const key of _.keys(previousAssignment)) {
 		for (const v2 of previousAssignment[key] || []) {
-			if (timeline.some(obj => obj.metaData && obj.metaData.mediaPlayerSession === v2.sessionId)) {
+			if (timeline.some(obj => obj.metaData && (obj.metaData as any).mediaPlayerSession === v2.sessionId)) {
 				previousAssignmentRev[v2.sessionId] = v2
 			}
 		}
@@ -94,7 +94,7 @@ function calculateSessionTimeRanges(_context: NotesContext, resolvedPieces: IBlu
 			// Perhaps the id given should be prefixed with the piece(instance) id? And sharing sessions can be figured out when it becomes needed
 
 			if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-				sessionId = `${p.piece.infiniteId || p._id}`
+				sessionId = `${p.piece.continuesRefId || p._id}`
 			}
 			// Note: multiple generated sessionIds for a single piece will not work as there will not be enough info to assign objects to different players
 			const val = sessionRequests[sessionId] || undefined
@@ -200,7 +200,7 @@ export function resolveMediaPlayerAssignments<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartEventContext,
+	context: TimelineEventContext,
 	config: ShowStyleConfig,
 	previousAssignmentRev: SessionToPlayerMap,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
@@ -362,7 +362,7 @@ export function assignMediaPlayers<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartEventContext,
+	context: TimelineEventContext,
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],

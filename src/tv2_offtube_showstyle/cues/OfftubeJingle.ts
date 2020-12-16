@@ -71,8 +71,8 @@ export function OfftubeEvaluateJingle(
 				outputLayerId: OfftubeOutputLayers.JINGLE,
 				content: { ...createJingleContentOfftube(config, file, jingle.LoadFirstFrame), timelineObjects: [] },
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
-				onAirTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-				setNextTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
+				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
+				nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
 			}
 		})
 	)

@@ -129,8 +129,8 @@ export function OfftubeEvaluateDVE(
 						...pieceContent.content,
 						timelineObjects: []
 					}),
-					onAirTags: [GetTagForDVE(parsedCue.template, parsedCue.sources)],
-					setNextTags: [GetTagForDVENext(parsedCue.template, parsedCue.sources)]
+					currentPieceTags: [GetTagForDVE(parsedCue.template, parsedCue.sources)],
+					nextPieceTags: [GetTagForDVENext(parsedCue.template, parsedCue.sources)]
 				}
 			})
 		)
