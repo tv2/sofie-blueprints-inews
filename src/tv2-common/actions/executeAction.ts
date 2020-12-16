@@ -751,12 +751,7 @@ function executeActionSelectDVELayout<
 	const nextPart = context.getPartInstance('next')
 
 	const nextInstances = context.getPieceInstances('next')
-	const nextDVE = nextInstances.find(
-		p =>
-			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE) ||
-			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
-	)
+	const nextDVE = nextInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
 
 	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
 
@@ -907,14 +902,11 @@ function startNewDVELayout<
 		// If a DVE is not on air, but a layout is selected, stop the selected layout and replace with the new one.
 		const onAirPiece = context
 			.getPieceInstances('current')
-			.find(
-				p =>
-					p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-					p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib
-			)
+			.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
 		const dataPiece =
 			settings.SelectedAdlibs &&
 			context.getPieceInstances('current').find(p => p.piece.sourceLayerId === settings.SelectedAdlibs!.SourceLayer.DVE)
+
 		if (onAirPiece === undefined && dataPiece !== undefined) {
 			context.stopPieceInstances([dataPiece._id])
 		}
