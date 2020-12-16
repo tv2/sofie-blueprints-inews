@@ -122,7 +122,7 @@ export function getSegmentBase<
 ): BlueprintResultSegment {
 	const iNewsStory: INewsStory | undefined = ingestSegment.payload?.iNewsStory
 	const segment = literal<IBlueprintSegment>({
-		name: ingestSegment.name,
+		name: ingestSegment.name || '',
 		metaData: {},
 		identifier:
 			iNewsStory && iNewsStory.fields.pageNumber && iNewsStory.fields.pageNumber.trim()
@@ -159,7 +159,7 @@ export function getSegmentBase<
 		return prev + cur.script.replace(/\n/g, '').replace(/\r/g, '').length
 	}, 0)
 
-	if (segment.name.trim().match(/^CONTINUITY$/i)) {
+	if (segment.name && segment.name.trim().match(/^CONTINUITY$/i)) {
 		blueprintParts.push(showStyleOptions.CreatePartContinuity(config, ingestSegment))
 		return {
 			segment,

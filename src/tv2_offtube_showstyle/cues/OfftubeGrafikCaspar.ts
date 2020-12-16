@@ -34,6 +34,7 @@ import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, Ta
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { graphicsTable, Slots } from '../helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
@@ -174,152 +175,20 @@ export function GetCasparOverlayTimeline(
 }
 
 export function createContentForGraphicTemplate(
-	graphicName: string,
+	graphicCue: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 ): Partial<Slots> {
-	switch (graphicName.toLowerCase()) {
-		// TODO: When creating new templates in the future
+	graphicCue = graphicCue.toLocaleLowerCase().trim()
+	const slot = graphicsTable?.graphicCue?.slot
 
-		case 'arkiv':
-		case 'ident':
-		case 'direkte':
-		case 'ident_nyhederne':
-		case 'ident_news':
-		case 'ident_tv2sport':
-		case 'billederfra_txt':
-			return {
-				'650_ident': {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						text1: parsedCue.graphic.textFields[0],
-						text2: parsedCue.graphic.textFields[1]
-					}
-				}
+	return {
+		[slot]: {
+			display: 'program',
+			payload: {
+				type: graphicCue,
+				...parsedCue.graphic.textFields
 			}
-		case 'billederfra_logo':
-			return {
-				'650_ident': {
-					display: 'program',
-					payload: {
-						type: GraphicName.BILLEDERFRA_LOGO,
-						logo: parsedCue.graphic.textFields[0]
-					}
-				}
-			}
-		case 'tlfdirekte':
-			return {
-				'650_ident': {
-					display: 'program',
-					payload: {
-						type: GraphicName.IDENT,
-						text1: parsedCue.graphic.textFields[0],
-						text2: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'topt':
-			return {
-				'660_topt': {
-					display: 'program',
-					payload: {
-						type: GraphicName.TOPT,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'tlftopt':
-			return {
-				'660_topt': {
-					display: 'program',
-					payload: {
-						type: GraphicName.TOPT,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'tlftoptlive':
-			return {
-				'660_topt': {
-					display: 'program',
-					payload: {
-						type: GraphicName.TOPT,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'bund':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.BUND,
-						name: parsedCue.graphic.textFields[0],
-						title: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'vo':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'trompet':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'komm':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		case 'kommentator':
-			return {
-				'450_lowerThird': {
-					display: 'program',
-					payload: {
-						type: GraphicName.HEADLINE,
-						headline: parsedCue.graphic.textFields[0],
-						text1: parsedCue.graphic.textFields[1]
-					}
-				}
-			}
-		default:
-			// Unknown template
-			// Loactors are skipped right now
-			/**
-			 * TODO: Maybe we could return the following, to allow for custom templates?
-			 * {
-			 * 		[graphicName]: {
-			 * 			payload: {
-			 * 				text: parsedCue.textFields
-			 * 			}
-			 * 		}
-			 * }
-			 */
-			return {}
+		}
 	}
 }
 
@@ -397,7 +266,7 @@ export function CreateFullContent(
 							slots: {
 								'250_full': {
 									payload: {
-										type: 'Still',
+										type: 'still',
 										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.vcpid.toString()}.png`
 									}
 								}

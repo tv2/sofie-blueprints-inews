@@ -23,6 +23,7 @@ export function EvaluateCueBackgroundLoop(
 	const fileName = parsedCue.backgroundLoop
 	const path = `dve/${fileName}`
 	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+	const priority = parsedCue.target === 'DVE' ? 2 : 1
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -40,7 +41,7 @@ export function EvaluateCueBackgroundLoop(
 						literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { start: 0 },
-							priority: 100,
+							priority,
 							layer: CasparLLayer.CasparCGDVELoop,
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
@@ -72,7 +73,7 @@ export function EvaluateCueBackgroundLoop(
 						literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { start: 0 },
-							priority: 100,
+							priority,
 							layer: CasparLLayer.CasparCGDVELoop,
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,

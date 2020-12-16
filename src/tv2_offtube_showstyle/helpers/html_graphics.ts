@@ -3,77 +3,81 @@
  * This will go to the graphics package and become a dependency of the blueprints.
  */
 
-interface Slots {
-	'650_ident': Graphic<Ident | BillederFraLogo>
-	'660_topt': Graphic<Topt>
-	'450_lowerThird': Graphic<Bund | Headline>
-}
-
-interface Graphic<T extends GraphicType> {
-	display?: 'program' | 'preview' | 'hidden'
-	/** Set payload to null to reset values / clear */
-	payload?: T | null
-	style?: {
-		// tweaks/overrides
-		x?: number
-		y?: number
+interface HTMLGraphic {
+	[index: string]: {
+		slot: string
 	}
 }
 
-const enum GraphicName {
-	BILLEDERFRA_LOGO = 'BillederFra',
-	BUND = 'Bund',
-	HEADLINE = 'Headline',
-	IDENT = 'Ident',
-	TOPT = 'Topt'
+export const graphicsTable: HTMLGraphic = {
+	arkiv: {
+		slot: '650_ident'
+	},
+	ident: {
+		slot: '650_ident'
+	},
+	direkte: {
+		slot: '650_ident'
+	},
+	ident_nyhederne: {
+		slot: '650_ident'
+	},
+	ident_news: {
+		slot: '650_ident'
+	},
+	ident_tv2sport: {
+		slot: '650_ident'
+	},
+	billederfra_txt: {
+		slot: '650_ident'
+	},
+	tlfdirekte: {
+		slot: '650_ident'
+	},
+	billederfra_logo: {
+		slot: '650_ident'
+	},
+	topt: {
+		slot: '660_topt'
+	},
+	tlftopt: {
+		slot: '660_topt'
+	},
+	tlftoptlive: {
+		slot: '660_topt'
+	},
+	bund: {
+		slot: '450_lowerThird'
+	},
+	vo: {
+		slot: '450_lowerThird'
+	},
+	trompet: {
+		slot: '450_lowerThird'
+	},
+	komm: {
+		slot: '450_lowerThird'
+	},
+	kommentator: {
+		slot: '450_lowerThird'
+	},
+	full: {
+		slot: '250_full'
+	}
+}
+
+export interface Slots {
+	[index: string]: Graphic<GraphicBase>
+}
+
+interface Graphic<T extends GraphicBase> {
+	display?: 'program' | 'preview' | 'hidden'
+	/** Set payload to null to reset values / clear */
+	payload?: T | null
+	style?: object
 }
 
 interface GraphicBase {
-	type: GraphicName
+	[index: number]: string
+	type: string
 }
-
-interface Bund extends GraphicBase {
-	type: GraphicName.BUND
-	name: string
-	title: string
-}
-
-interface BillederFraLogo extends GraphicBase {
-	type: GraphicName.BILLEDERFRA_LOGO
-	logo: string // 6eren, 9, DK4, DR, Eurosport, Eurosport 2, Kanal5, TV3, TV3Plus, TV3sport1, TV3 sport 2, Viaplay, ViaSatGolf
-}
-interface Headline extends GraphicBase {
-	type: GraphicName.HEADLINE
-	headline: string
-	text1: string
-}
-
-interface Ident extends GraphicBase {
-	type: GraphicName.IDENT
-	text1: string
-	text2: string
-}
-
-interface Topt extends GraphicBase {
-	type: GraphicName.TOPT
-	name: string
-	title: string
-}
-
-type GraphicType = Bund | BillederFraLogo | Headline | Ident | Topt
-
-interface RendererStateBase {
-	display: 'program' | 'preview' | 'hidden' | 'editor'
-	rendererStyle?: {}
-}
-
-interface RendererStateFull extends RendererStateBase {
-	slots: Slots
-}
-
-interface RendererStatePartial extends RendererStateBase {
-	partialUpdate: true
-	slots: Partial<Slots>
-}
-
-type RendererState = RendererStatePartial | RendererStateFull
