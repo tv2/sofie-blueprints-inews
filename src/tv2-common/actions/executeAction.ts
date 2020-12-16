@@ -305,6 +305,7 @@ export function getPiecesToPreserve(
 	return context
 		.getPieceInstances('next')
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
+		.filter(p => !(p as any).infinite) // TODO: Typings do not line up with core
 		.map<IBlueprintPiece>(p => p.piece)
 		.map(p => sanitizePieceStart(p))
 		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
