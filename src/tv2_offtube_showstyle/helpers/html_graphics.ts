@@ -4,9 +4,11 @@
  */
 
 interface HTMLGraphic {
-	[index: string]: {
-		slot: string
-	}
+	[index: string]:
+		| {
+				slot: string
+		  }
+		| undefined
 }
 
 export const graphicsTable: HTMLGraphic = {

@@ -179,7 +179,11 @@ export function createContentForGraphicTemplate(
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 ): Partial<Slots> {
 	graphicCue = graphicCue.toLowerCase().trim()
-	const slot = graphicsTable?.graphicCue?.slot
+	const slot = graphicsTable[graphicCue]?.slot
+
+	if (!slot) {
+		return {}
+	}
 
 	return {
 		[slot]: {
