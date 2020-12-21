@@ -39,9 +39,9 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
+import { tmpLayerToSlot } from './helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
-import { tmp_layer_to_slot } from './helpers/html_graphics'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,
@@ -424,7 +424,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 						JSON.stringify({
 							display: 'program',
 							slots: {
-								[tmp_layer_to_slot[layer]]: {
+								[tmpLayerToSlot[layer]]: {
 									payload: {},
 									display: 'hidden'
 								}

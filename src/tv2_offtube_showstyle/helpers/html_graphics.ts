@@ -13,7 +13,7 @@ interface HTMLGraphic {
 		| undefined
 }
 
-export const tmp_layer_to_slot: { [slot: string]: string } = {
+export const tmpLayerToSlot: { [slot: string]: string } = {
 	[GraphicLLayer.GraphicLLayerOverlay]: '',
 	[GraphicLLayer.GraphicLLayerOverlayHeadline]: '660_topt',
 	[GraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
