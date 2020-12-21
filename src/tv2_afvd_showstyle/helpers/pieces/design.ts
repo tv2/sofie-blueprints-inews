@@ -36,7 +36,7 @@ export function EvaluateCueDesign(
 				name: parsedCue.design,
 				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,
-				lifespan: PieceLifespan.WithinPart,
+				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
@@ -68,7 +68,7 @@ export function EvaluateCueDesign(
 				},
 				outputLayerId: 'sec',
 				sourceLayerId: SourceLayer.PgmDesign,
-				lifespan: PieceLifespan.WithinPart,
+				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,

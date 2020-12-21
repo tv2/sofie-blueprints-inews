@@ -35,7 +35,7 @@ export function OfftubeEvaluateGraphicDesign(
 				name: parsedCue.design,
 				outputLayerId: 'sec',
 				sourceLayerId: OfftubeSourceLayer.PgmDesign,
-				lifespan: PieceLifespan.WithinPart,
+				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
@@ -54,7 +54,7 @@ export function OfftubeEvaluateGraphicDesign(
 				},
 				outputLayerId: 'sec',
 				sourceLayerId: OfftubeSourceLayer.PgmDesign,
-				lifespan: PieceLifespan.WithinPart,
+				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
