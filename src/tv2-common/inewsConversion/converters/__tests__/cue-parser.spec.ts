@@ -431,7 +431,7 @@ describe('Cue parser', () => {
 				graphic: {
 					type: 'internal',
 					template: 'bund',
-					cue: 'kg',
+					cue: '*kg',
 					textFields: ['2']
 				},
 				adlib: true,
@@ -451,7 +451,7 @@ describe('Cue parser', () => {
 				graphic: {
 					type: 'internal',
 					template: 'bund',
-					cue: 'kg',
+					cue: '#kg',
 					textFields: ['2']
 				},
 				adlib: true,
@@ -471,7 +471,7 @@ describe('Cue parser', () => {
 				graphic: {
 					type: 'internal',
 					template: 'ident_nyhederne',
-					cue: 'kg',
+					cue: '#kg',
 					textFields: ['Ident Nyhederne']
 				},
 				start: {
@@ -546,7 +546,7 @@ describe('Cue parser', () => {
 				graphic: {
 					type: 'internal',
 					template: 'direkte',
-					cue: 'kg',
+					cue: '#kg',
 					textFields: ['KØBENHAVN']
 				},
 				start: {
@@ -568,7 +568,7 @@ describe('Cue parser', () => {
 				graphic: {
 					type: 'internal',
 					template: 'BillederFra_logo',
-					cue: 'kg',
+					cue: '#kg',
 					textFields: ['KØBENHAVN']
 				},
 				start: {
