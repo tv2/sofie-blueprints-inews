@@ -15,7 +15,7 @@ interface HTMLGraphic {
 
 export const tmpLayerToSlot: { [slot: string]: string } = {
 	[GraphicLLayer.GraphicLLayerOverlay]: '',
-	[GraphicLLayer.GraphicLLayerOverlayHeadline]: '660_topt',
+	[GraphicLLayer.GraphicLLayerOverlayHeadline]: '450_lowerThird',
 	[GraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
 	[GraphicLLayer.GraphicLLayerOverlayLower]: '450_lowerThird',
 	[GraphicLLayer.GraphicLLayerOverlayTema]: '',
