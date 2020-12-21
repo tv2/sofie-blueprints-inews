@@ -68,38 +68,7 @@ export function OfftubeEvaluateGraphicDesign(
 
 function designTimeline(parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {
 	return [
-		...[
-			GraphicLLayer.GraphicLLayerOverlay,
-			GraphicLLayer.GraphicLLayerOverlayHeadline,
-			GraphicLLayer.GraphicLLayerOverlayIdent,
-			GraphicLLayer.GraphicLLayerOverlayLower,
-			GraphicLLayer.GraphicLLayerOverlayTema,
-			GraphicLLayer.GraphicLLayerOverlayTopt
-		].map(layer => {
-			return literal<TSR.TimelineObjCCGTemplate>({
-				id: '',
-				enable: {
-					start: 0
-				},
-				priority: 1,
-				layer,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-					templateType: 'html',
-					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(
-						JSON.stringify({
-							display: 'program',
-							design: parsedCue.design,
-							partialUpdate: true
-						})
-					)}</templateData>`,
-					useStopCommand: false
-				}
-			})
-		})
-		/*literal<TSR.TimelineObjCCGTemplate>({
+		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
 			enable: {
 				start: 0
@@ -120,6 +89,6 @@ function designTimeline(parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineO
 				)}</templateData>`,
 				useStopCommand: false
 			}
-		})*/ // TODO: This is the correct object to use once we solve the multi-renderer problem.
+		})
 	]
 }

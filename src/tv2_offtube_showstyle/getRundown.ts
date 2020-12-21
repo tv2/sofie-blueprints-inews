@@ -430,13 +430,34 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 									display: 'hidden'
 								}
 							},
-							design: '',
 							partialUpdate: true
 						})
 					)}</templateData>`,
 					useStopCommand: false
 				}
 			})
+		}),
+		literal<TSR.TimelineObjCCGTemplate>({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			priority: 0,
+			layer: GraphicLLayer.GraphicLLayerDesign,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: 'sport-overlay/index',
+				data: `<templateData>${encodeURI(
+					JSON.stringify({
+						display: 'program',
+						design: '',
+						partialUpdate: true
+					})
+				)}</templateData>`,
+				useStopCommand: false
+			}
 		}),
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',

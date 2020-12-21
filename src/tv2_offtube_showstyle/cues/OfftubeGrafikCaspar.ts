@@ -156,7 +156,7 @@ export function GetCasparOverlayTimeline(
 			enable: commentator
 				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition)
 				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
-			priority: 2,
+			priority: 1,
 			layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
