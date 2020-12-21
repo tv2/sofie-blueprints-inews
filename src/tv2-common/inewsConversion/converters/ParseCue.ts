@@ -305,7 +305,7 @@ function parsekg(
 	const graphicConfig = code
 		? config.showStyle.GFXTemplates.find(
 				tmpl =>
-					tmpl.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/KG=?/gi, '#KG').toUpperCase() &&
+					tmpl.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
 					tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase()
 		  )
 		: undefined
