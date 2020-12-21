@@ -496,7 +496,27 @@ const MANUS: ISourceLayer[] = [
 ]
 
 // SEC group
-const SEC: ISourceLayer[] = []
+const SEC: ISourceLayer[] = [
+	{
+		_id: OfftubeSourceLayer.PgmDesign,
+		_rank: 30,
+		name: 'GFX Design',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: 'shift+a',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: true,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
+	}
+]
 
 // SELECTED_ADLIB group
 const SELECTED_ADLIB: ISourceLayer[] = [

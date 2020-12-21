@@ -14,6 +14,8 @@ export enum SharedSourceLayers {
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
 	PgmGraphicsTema = 'studio0_graphicsTema',
 	PgmGraphicsTLF = 'studio0_graphicsTelefon',
+	PgmDesign = 'studio0_design',
+
 	/** General, 'fallback', overlay layer */
 	PgmGraphicsOverlay = 'studio0_overlay',
 	WallGraphics = 'studio0_wall_graphics',
