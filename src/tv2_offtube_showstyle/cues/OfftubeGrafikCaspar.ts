@@ -166,7 +166,8 @@ export function GetCasparOverlayTimeline(
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						display: 'program',
-						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue)
+						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue),
+						partialUpdate: true
 					})
 				)}</templateData>`,
 				useStopCommand: false
