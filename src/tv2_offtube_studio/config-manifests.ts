@@ -515,5 +515,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: 'localhost'
+	},
+	{
+		id: 'ServerPostrollDuration',
+		name: 'Server Postroll Duration',
+		description: 'ms of postroll at the end of Server and VO clips',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 0
 	}
 ]
