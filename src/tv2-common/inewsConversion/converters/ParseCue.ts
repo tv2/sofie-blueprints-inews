@@ -266,7 +266,7 @@ function parsekg(
 
 	const firstLineValues = cue[0].match(/^[*|#]?kg[ |=]([\w|\d]+)( (.+))*$/i)
 	if (firstLineValues) {
-		graphic.cue = cue[0].match(/kg/) ? 'kg' : 'KG' // THIS ONE SHOULD NOT BE INSENSITIVE
+		graphic.cue = code || ''
 		graphic.template = firstLineValues[1]
 		if (firstLineValues[3]) {
 			graphic.textFields.push(firstLineValues[3])
@@ -305,7 +305,7 @@ function parsekg(
 	const graphicConfig = code
 		? config.showStyle.GFXTemplates.find(
 				tmpl =>
-					tmpl.INewsCode.toUpperCase() === code.toUpperCase() &&
+					tmpl.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/KG=?/gi, '#KG').toUpperCase() &&
 					tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase()
 		  )
 		: undefined
