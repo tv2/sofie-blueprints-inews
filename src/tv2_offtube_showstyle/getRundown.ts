@@ -414,6 +414,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				enable: {
 					while: '1'
 				},
+				priority: 0,
 				layer,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
@@ -429,6 +430,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 									display: 'hidden'
 								}
 							},
+							design: '',
 							partialUpdate: true
 						})
 					)}</templateData>`,
@@ -441,6 +443,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			enable: {
 				while: '1'
 			},
+			priority: 0,
 			layer: OfftubeCasparLLayer.CasparGraphicsFull,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
