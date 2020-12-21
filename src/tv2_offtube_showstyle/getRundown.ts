@@ -400,25 +400,34 @@ function getGlobalAdlibActionsOfftube(
 
 function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			layer: GraphicLLayer.GraphicLLayerOverlayLower,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: 'sport-overlay/index',
-				data: `<templateData>${encodeURI(
-					JSON.stringify({
-						display: 'program',
-						slots: {}
-					})
-				)}</templateData>`,
-				useStopCommand: false
-			}
+		...[
+			GraphicLLayer.GraphicLLayerOverlay,
+			GraphicLLayer.GraphicLLayerOverlayHeadline,
+			GraphicLLayer.GraphicLLayerOverlayIdent,
+			GraphicLLayer.GraphicLLayerOverlayLower,
+			GraphicLLayer.GraphicLLayerOverlayTema,
+			GraphicLLayer.GraphicLLayerOverlayTopt
+		].map(layer => {
+			return literal<TSR.TimelineObjCCGTemplate>({
+				id: '',
+				enable: {
+					while: '1'
+				},
+				layer,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+					templateType: 'html',
+					name: 'sport-overlay/index',
+					data: `<templateData>${encodeURI(
+						JSON.stringify({
+							display: 'program',
+							slots: {}
+						})
+					)}</templateData>`,
+					useStopCommand: false
+				}
+			})
 		}),
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
