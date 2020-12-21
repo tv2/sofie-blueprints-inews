@@ -41,6 +41,7 @@ import { boxLayers } from './content/OfftubeDVEContent'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
+import { tmpLayerToSlot } from './helpers/html_graphics'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,
@@ -422,7 +423,12 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 					data: `<templateData>${encodeURI(
 						JSON.stringify({
 							display: 'program',
-							slots: {},
+							slots: {
+								[tmpLayerToSlot[layer]]: {
+									payload: {},
+									display: 'hidden'
+								}
+							},
 							partialUpdate: true
 						})
 					)}</templateData>`,
@@ -445,7 +451,22 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						display: 'program',
-						slots: {},
+						slots: {
+							...[
+								GraphicLLayer.GraphicLLayerOverlayHeadline,
+								GraphicLLayer.GraphicLLayerOverlayIdent,
+								GraphicLLayer.GraphicLLayerOverlayLower,
+								GraphicLLayer.GraphicLLayerOverlayTema,
+								GraphicLLayer.GraphicLLayerOverlayTopt
+							].map(layer => {
+								return {
+									[tmpLayerToSlot[layer]]: {
+										payload: {},
+										display: 'hidden'
+									}
+								}
+							})
+						},
 						partialUpdate: true
 					})
 				)}</templateData>`,
