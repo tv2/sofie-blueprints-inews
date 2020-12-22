@@ -39,9 +39,9 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
+import { tmpLayerToSlot } from './helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
-import { tmpLayerToSlot } from './helpers/html_graphics'
 
 export function getShowStyleVariantId(
 	_context: IStudioConfigContext,

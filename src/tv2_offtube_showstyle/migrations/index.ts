@@ -9,6 +9,7 @@ import {
 import * as _ from 'underscore'
 import { OfftubeSourceLayer } from '../layers'
 import {
+	forceSettingToDefaults,
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
@@ -91,6 +92,9 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Create Design layer
 	 */
 	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmDesign),
+
+	// 1.3.9 - Update graphics
+	forceSettingToDefaults('1.3.9', 'GFXTemplates'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
