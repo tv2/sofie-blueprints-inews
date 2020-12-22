@@ -479,7 +479,7 @@ export const DEFAULT_GRAPHICS = [
 		VizTemplate: 'billederfra_txt',
 		VizDestination: 'OVL1',
 		OutType: '',
-		IsDesign: true,
+		IsDesign: false,
 		SourceLayer: 'studio0_graphicsIdent',
 		LayerMapping: 'graphic_overlay_ident'
 	}
