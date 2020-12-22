@@ -433,5 +433,12 @@ export default literal<BlueprintMappings>({
 		previewWhenNotOnAir: false,
 		channel: 3,
 		layer: 111
+	}),
+	// Full loop and DVE loop are the same channel in Q2.
+	// No mapping to caspar to avoid conflicts.
+	graphic_full_loop: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 })
