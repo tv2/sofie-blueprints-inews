@@ -700,4 +700,34 @@ describe('AFVD Blueprint', () => {
 			SourceLayer.PgmScript
 		])
 	})
+
+	it('Creates Live1', () => {
+		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE1', ';0.00']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const livePart1 = result.parts[0]
+		expect(livePart1).toBeTruthy()
+		expect(livePart1.pieces).toHaveLength(1)
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmLive])
+	})
+
+	it('Creates Live 1', () => {
+		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1', ';0.00']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const livePart1 = result.parts[0]
+		expect(livePart1).toBeTruthy()
+		expect(livePart1.pieces).toHaveLength(1)
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmLive])
+	})
 })
