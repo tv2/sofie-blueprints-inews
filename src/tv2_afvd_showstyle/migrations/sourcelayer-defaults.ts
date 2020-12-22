@@ -581,7 +581,7 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: SourceLayer.PgmDVEBackground,
+		_id: SourceLayer.PgmFullBackground,
 		_rank: 41,
 		name: 'Full Background',
 		abbreviation: '',

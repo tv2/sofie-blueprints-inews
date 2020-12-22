@@ -18,7 +18,7 @@ export enum AFVDSourceLayer {
 	VizFullIn1 = 'studio0_aux_viz_full1',
 	AuxStudioScreen = 'studio0_aux_studio_screen',
 	PgmDVEBackground = 'studio0_dve_back',
-	PgmFullBackground = 'studio0_dve_back',
+	PgmFullBackground = 'studio0_full_back',
 	PgmDesign = 'studio0_design',
 	PgmAdlibVizCmd = 'studio0_adlib_viz_cmd', // shortcuts
 	PgmDSK = 'studio0_dsk_cmd', // shortcuts
