@@ -7,6 +7,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
+import { showStyleConfigManifest } from '../config-manifests'
 import OutputlayerDefaults from './outputlayer-defaults'
 import SourcelayerDefaults from './sourcelayer-defaults'
 
@@ -41,6 +42,43 @@ export function getSourceLayerDefaultsMigrationSteps(versionStr: string, force?:
 			})
 		})
 	)
+}
+
+export function forceSettingToDefaults(versionStr: string, setting: string): MigrationStepShowStyle {
+	return literal<MigrationStepShowStyle>({
+		id: `sourcelayer.defaults.${setting}.forced`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const existing = context.getBaseConfig(setting)
+			if (!existing) {
+				return `Setting "${setting}" doesn't exist on ShowBaseStyle`
+			}
+
+			const defaultVal = showStyleConfigManifest.find(l => l.id === setting)
+
+			if (!defaultVal) {
+				return false
+			}
+
+			return !_.isEqual(existing, defaultVal.defaultVal)
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			if (context.getBaseConfig(setting)) {
+				context.removeBaseConfig(setting)
+			}
+
+			const defaultVal = showStyleConfigManifest.find(l => l.id === setting)
+
+			if (!defaultVal) {
+				return
+			}
+
+			if (!context.getBaseConfig(setting)) {
+				context.setBaseConfig(setting, defaultVal.defaultVal)
+			}
+		}
+	})
 }
 
 export function getOutputLayerDefaultsMigrationSteps(versionStr: string): MigrationStepShowStyle[] {

@@ -9,6 +9,7 @@ import {
 import * as _ from 'underscore'
 import { OfftubeSourceLayer } from '../layers'
 import {
+	forceSettingToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
 	remapTableColumnValues
@@ -77,6 +78,9 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Shortcuts for DVE Box 1
 	 */
 	...SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
+
+	// 1.3.9 - Update graphics
+	forceSettingToDefaults('1.3.9', 'GFXTemplates'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
