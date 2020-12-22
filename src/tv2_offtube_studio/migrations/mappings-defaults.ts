@@ -301,7 +301,8 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		channel: 4,
-		layer: 120
+		layer: 120,
+		previewWhenNotOnAir: true
 	}),
 	casparcg_dve_key: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
