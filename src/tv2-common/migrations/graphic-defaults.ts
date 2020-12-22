@@ -33,17 +33,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'WTd3T8mHax7cDrorc',
-		INewsCode: '#kg',
-		INewsName: 'billederfra_txt',
-		VizTemplate: 'billederfra_txt',
-		VizDestination: 'OVL1',
-		OutType: '',
-		IsDesign: false,
-		SourceLayer: 'studio0_graphicsIdent',
-		LayerMapping: 'graphic_overlay_ident'
-	},
-	{
 		_id: 'WxM8ES6kH22csjZ3W',
 		INewsCode: '#kg',
 		INewsName: 'billederfra_logo',
