@@ -601,6 +601,25 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
+		_id: SourceLayer.PgmFullBackground,
+		_rank: 41,
+		name: 'Full Background',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
+	{
 		_id: SourceLayer.PgmSisyfosAdlibs,
 		_rank: 50,
 		name: 'Sisyfos Adlibs',
