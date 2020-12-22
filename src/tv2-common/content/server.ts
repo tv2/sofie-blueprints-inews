@@ -13,12 +13,14 @@ import { ControlClasses } from 'tv2-constants'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
+// TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
 	Caspar: {
 		ClipPending: string
 	}
 	ATEM: {
 		MEPGM: string
+		ServerLookaheadAUX?: string
 	}
 	Sisyfos: {
 		ClipPending: string
@@ -129,6 +131,29 @@ export function MakeContentServer<
 							}
 						})
 				  })
+				: []),
+
+			...(sourceLayers.ATEM.ServerLookaheadAUX
+				? [
+						literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							priority: 0,
+							layer: sourceLayers.ATEM.ServerLookaheadAUX,
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.AUX,
+								aux: {
+									input: -1
+								}
+							},
+							metaData: {
+								mediaPlayerSession: mediaPlayerSessionId
+							}
+						})
+				  ]
 				: [])
 		])
 	})

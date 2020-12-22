@@ -68,7 +68,8 @@ export function OfftubeEvaluateAdLib(
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 				},
 				ATEM: {
-					MEPGM: OfftubeAtemLLayer.AtemMEClean
+					MEPGM: OfftubeAtemLLayer.AtemMEClean,
+					ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
 				},
 				STICKY_LAYERS: config.stickyLayers,
 				PgmServer: OfftubeSourceLayer.SelectedAdLibServer,

@@ -369,7 +369,8 @@ function executeActionSelectServerClip<
 					MEPGM:
 						settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
 							? settings.LLayer.Atem.MEClean
-							: settings.LLayer.Atem.MEProgram
+							: settings.LLayer.Atem.MEProgram,
+					ServerLookaheadAUX: settings.LLayer.Atem.ServerLookaheadAUX
 				}
 			},
 			duration
@@ -469,26 +470,7 @@ function executeActionSelectServerClip<
 												}
 											}
 										]
-									}),
-									// Lookahead AUX
-									...(settings.LLayer.Atem.ServerLookaheadAUX
-										? [
-												literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-													id: '',
-													enable: lookaheadObj.enable,
-													priority: 0,
-													layer: settings.LLayer.Atem.ServerLookaheadAUX,
-													content: {
-														deviceType: TSR.DeviceType.ATEM,
-														type: TSR.TimelineContentTypeAtem.AUX,
-														aux: {
-															input: -1
-														}
-													},
-													metaData: lookaheadObj.metaData
-												})
-										  ]
-										: [])
+									})
 							  ]
 							: []
 				}

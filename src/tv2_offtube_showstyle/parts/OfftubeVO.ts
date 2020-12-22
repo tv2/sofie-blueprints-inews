@@ -83,7 +83,8 @@ export function OfftubeCreatePartVO(
 						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 					},
 					ATEM: {
-						MEPGM: OfftubeAtemLLayer.AtemMEClean
+						MEPGM: OfftubeAtemLLayer.AtemMEClean,
+						ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
 					}
 				},
 				actualDuration
@@ -112,7 +113,8 @@ export function OfftubeCreatePartVO(
 				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 			},
 			ATEM: {
-				MEPGM: OfftubeAtemLLayer.AtemMEClean
+				MEPGM: OfftubeAtemLLayer.AtemMEClean,
+				ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
 			},
 			Sisyfos: {
 				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
