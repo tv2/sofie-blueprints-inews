@@ -18,6 +18,7 @@ import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { PartDefinition } from '../inewsConversion'
 import { literal, SanitizeString } from '../util'
 import { CreatePartInvalid } from './invalid'
+import { GetVTContentProperties } from '../content'
 
 export interface ServerPartProps {
 	vo: boolean
@@ -121,6 +122,7 @@ export function CreatePartServerBase<
 			sourceLayerId: layers.SourceLayer.PgmServer,
 			lifespan: PieceLifespan.WithinPart,
 			content: {
+				...GetVTContentProperties(config, file),
 				timelineObjects: CutToServer(
 					mediaPlayerSession,
 					partDefinition,

@@ -29,7 +29,17 @@ export interface VTFields {
 	duration: number
 }
 
-type VTProps = Pick<VTContent, 'studioLabel' | 'fileName' | 'path' | 'mediaFlowIds' | 'firstWords' | 'lastWords'>
+type VTProps = Pick<
+	VTContent,
+	| 'studioLabel'
+	| 'fileName'
+	| 'path'
+	| 'mediaFlowIds'
+	| 'firstWords'
+	| 'lastWords'
+	| 'postRollDuration'
+	| 'ignoreMediaObjectStatus'
+>
 
 export function GetVTContentProperties(config: TV2BlueprintConfig, file: string): VTProps {
 	return literal<VTProps>({
@@ -38,7 +48,8 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string)
 		path: `${config.studio.NetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
-		lastWords: ''
+		lastWords: '',
+		postRollDuration: config.studio.ServerPostrollDuration
 	})
 }
 
@@ -56,6 +67,7 @@ export function MakeContentServer(
 ): VTContent {
 	return literal<VTContent>({
 		...GetVTContentProperties(config, file),
+		ignoreMediaObjectStatus: true,
 		timelineObjects: GetServerTimeline(
 			context,
 			file,
