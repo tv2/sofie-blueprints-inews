@@ -1,6 +1,6 @@
 import { IBlueprintActionManifest } from 'tv-automation-sofie-blueprints-integration'
 import { PartDefinition, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
-import { MakeContentServerSourceLayers, MakeActionServer } from '../content/server'
+import { MakeActionServer, MakeContentServerSourceLayers } from '../content/server'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */

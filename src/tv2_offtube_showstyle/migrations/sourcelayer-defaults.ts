@@ -535,12 +535,12 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
 	{
-		_id: OfftubeSourceLayer.SelectedAdLibServer,
+		_id: OfftubeSourceLayer.SelectedServer,
 		_rank: 0,
 		name: 'Server',
 		abbreviation: 'S',
@@ -554,12 +554,12 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
 	{
-		_id: OfftubeSourceLayer.SelectedAdLibVoiceOver,
+		_id: OfftubeSourceLayer.SelectedVoiceOver,
 		_rank: 0,
 		name: 'Voice Over',
 		abbreviation: 'VO',
@@ -573,7 +573,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
@@ -592,7 +592,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
@@ -611,7 +611,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	}

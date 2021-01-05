@@ -104,7 +104,7 @@ const selectedServerPieceInstance: IBlueprintPieceInstance = {
 		},
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'Selected Server',
-		sourceLayerId: OfftubeSourceLayer.SelectedAdLibServer,
+		sourceLayerId: OfftubeSourceLayer.SelectedServer,
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
 		lifespan: PieceLifespan.OutOnSegmentEnd
 	})
@@ -226,18 +226,14 @@ interface ActivePiecesForSource {
 function getServerPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer),
-		dataStore: context
-			.getPieceInstances(part)
-			.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibServer)
+		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedServer)
 	}
 }
 
 function getVOPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver),
-		dataStore: context
-			.getPieceInstances(part)
-			.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibVoiceOver)
+		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedVoiceOver)
 	}
 }
 

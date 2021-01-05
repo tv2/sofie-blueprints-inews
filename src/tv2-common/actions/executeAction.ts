@@ -57,6 +57,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
+import { CutToServer, EnableServer } from '../content'
 import { TimeFromFrames } from '../frameTime'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
@@ -73,7 +74,6 @@ import {
 } from '../pieces'
 import { assertUnreachable } from '../util'
 import { ActionCommentatorSelectJingle, ActionSelectJingle, ActionTakeWithTransition } from './actionTypes'
-import { CutToServer, EnableServer } from '../content'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -396,7 +396,7 @@ function executeActionSelectServerClip<
 					OutputLayerId: settings.OutputLayer.PGM,
 					SourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server
 				}),
-				EnableServer(settings.LLayer.Abstract.ServerEnable)
+				EnableServer(settings.LLayer.Abstract.ServerEnable, sessionToContinue ?? externalId)
 			]
 		},
 		adlibPreroll: config.studio.CasparPrerollDuration,

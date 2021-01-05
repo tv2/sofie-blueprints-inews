@@ -21,7 +21,9 @@ export function VirtualLLayers() {
 	return _.values(VirtualAbstractLLayer)
 }
 
-export enum VirtualAbstractLLayer {}
+export enum VirtualAbstractLLayer {
+	AbstractLLayerServerEnable = 'abstract_server_enable'
+}
 
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',

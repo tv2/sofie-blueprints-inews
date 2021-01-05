@@ -26,6 +26,10 @@ export enum SharedSourceLayers {
 	PgmDVEBox3 = 'studio0_dve_box3',
 	PgmDVEBox4 = 'studio0_dve_box4',
 
+	// Selected Sources
+	SelectedServer = 'studio0_selected_clip',
+	SelectedVoiceOver = 'studio0_selected_voiceover',
+
 	// Other / sec / manus
 	PgmScript = 'studio0_script'
 }

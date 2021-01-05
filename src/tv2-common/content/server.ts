@@ -1,23 +1,23 @@
 import {
+	IBlueprintActionManifest,
 	TimelineObjectCoreExt,
 	TSR,
-	VTContent,
-	IBlueprintActionManifest
+	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionSelectServerClip,
 	AddParentClass,
 	literal,
 	PartDefinition,
+	SanitizeString,
 	ServerParentClass,
 	TransitionFromString,
-	TransitionSettings,
-	SanitizeString,
-	ActionSelectServerClip
+	TransitionSettings
 } from 'tv2-common'
-import { ControlClasses, AdlibActionType, AdlibTags } from 'tv2-constants'
-import { TimelineBlueprintExt } from '../onTimelineGenerate'
-import { AdlibServerOfftubeOptions, GetTagForServerNext, GetTagForServer } from '../pieces'
+import { AdlibActionType, AdlibTags, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
+import { TimelineBlueprintExt } from '../onTimelineGenerate'
+import { AdlibServerOfftubeOptions, GetTagForServer, GetTagForServerNext } from '../pieces'
 
 // TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
@@ -125,11 +125,12 @@ export function GetServerTimeline(
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ) {
+	const serverEnableClass = `.${GetEnableClassForServer(mediaPlayerSessionId)}`
 	return literal<TimelineObjectCoreExt[]>([
 		literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 			id: '',
 			enable: {
-				while: `.${ControlClasses.ServerOnAir}`
+				while: 1
 			},
 			priority: 1,
 			layer: sourceLayers.Caspar.ClipPending,
@@ -139,8 +140,21 @@ export function GetServerTimeline(
 				file,
 				loop: offtubeOptions?.isOfftube ? false : adLib,
 				seek: 0,
-				length: duration
+				length: duration,
+				playing: false
 			},
+			keyframes: [
+				{
+					id: '',
+					enable: {
+						while: serverEnableClass
+					},
+					content: {
+						seek: 0,
+						playing: true
+					}
+				}
+			],
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
 			},
@@ -150,7 +164,7 @@ export function GetServerTimeline(
 		literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 			id: '',
 			enable: {
-				while: `.${ControlClasses.ServerOnAir}`
+				while: serverEnableClass
 			},
 			priority: 1,
 			layer: sourceLayers.Sisyfos.ClipPending,
@@ -171,7 +185,7 @@ export function GetServerTimeline(
 					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							while: `.${ControlClasses.ServerOnAir}`
+							while: serverEnableClass
 						},
 						priority: 1,
 						layer,
@@ -249,7 +263,7 @@ export function CutToServer(
 	})
 }
 
-export function EnableServer(layer: string) {
+export function EnableServer(layer: string, mediaPlayerSessionId: string) {
 	return literal<TSR.TimelineObjAbstractAny>({
 		id: '',
 		enable: {
@@ -259,6 +273,6 @@ export function EnableServer(layer: string) {
 		content: {
 			deviceType: TSR.DeviceType.ABSTRACT
 		},
-		classes: [ControlClasses.ServerOnAir]
+		classes: [GetEnableClassForServer(mediaPlayerSessionId)]
 	})
 }

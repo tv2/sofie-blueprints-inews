@@ -10,7 +10,7 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
-import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { SisyfosLLAyer, VirtualAbstractLLayer } from '../tv2_afvd_studio/layers'
 import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
@@ -90,6 +90,74 @@ export function onTimelineGenerate<
 	)
 
 	dveBoxLookaheadUseOriginalEnable(timeline)
+
+	// TODO: Make generic
+	const objsEnablingServers = timeline.filter(
+		obj =>
+			obj.layer === VirtualAbstractLLayer.AbstractLLayerServerEnable &&
+			resolvedPieces.some(p => p._id === obj.pieceInstanceId && !p.resolvedDuration)
+	)
+	const activeClasses = objsEnablingServers.reduce((prev, curr) => {
+		if (curr.classes) {
+			prev.push(...curr.classes)
+		}
+		return prev
+	}, [] as string[])
+
+	const pgmServers = timeline.filter(obj => {
+		if (_.isArray(obj.enable)) {
+			return false
+		}
+		const layer = obj.layer.toString()
+		const enableCondition = obj.enable.while?.toString()
+
+		if (!enableCondition) {
+			return false
+		}
+
+		return (
+			[sourceLayers.Caspar.ClipPending, sourceLayers.Caspar.PlayerClip(1), sourceLayers.Caspar.PlayerClip(2)].includes(
+				layer
+			) &&
+			!obj.isLookahead &&
+			resolvedPieces.some(p => p._id === obj.pieceInstanceId && !p.resolvedDuration) &&
+			activeClasses.some(cls => enableCondition.includes(cls))
+		)
+	})
+
+	const onAirSessions = pgmServers.reduce((prev, curr) => {
+		const mediaPlayerSession = (curr as TimelineBlueprintExt).metaData?.mediaPlayerSession
+
+		if (mediaPlayerSession) {
+			prev.push(mediaPlayerSession)
+		}
+
+		return prev
+	}, [] as string[])
+
+	// Filter out lookaheads for servers that are currently in PGM.
+	// Does not filter out AUX lookaheads.
+	timeline = timeline.filter(obj => {
+		if (_.isArray(obj.enable)) {
+			return true
+		}
+
+		const layer = obj.layer.toString()
+
+		const mediaPlayerSession = (obj as TimelineBlueprintExt).metaData?.mediaPlayerSession
+
+		if (!mediaPlayerSession) {
+			return true
+		}
+
+		return !(
+			[sourceLayers.Caspar.ClipPending, sourceLayers.Caspar.PlayerClip(1), sourceLayers.Caspar.PlayerClip(2)]
+				.map(l => `${l}_lookahead`)
+				.includes(layer) &&
+			obj.isLookahead &&
+			onAirSessions.includes(mediaPlayerSession)
+		)
+	})
 
 	return Promise.resolve({
 		timeline,

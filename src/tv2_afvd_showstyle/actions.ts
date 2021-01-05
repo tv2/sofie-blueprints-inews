@@ -8,7 +8,7 @@ import {
 import { ActionClearGraphics, executeAction, GraphicLLayer, literal } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 import _ = require('underscore')
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
@@ -69,7 +69,7 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 					Effekt: AtemLLayer.AtemDSKEffect
 				},
 				Abstract: {
-					ServerEnable: '' // TODO
+					ServerEnable: VirtualAbstractLLayer.AbstractLLayerServerEnable
 				}
 			},
 			ServerAudioLayers: [

@@ -73,6 +73,10 @@ export enum ControlClasses {
 	AbstractLookahead = 'abstract_lookahead'
 }
 
+export function GetEnableClassForServer(mediaPlayerSessionId: string) {
+	return `${ControlClasses.ServerOnAir}_${mediaPlayerSessionId}`
+}
+
 export enum AdlibActionType {
 	SELECT_SERVER_CLIP = 'select_server_clip',
 	SELECT_DVE = 'select_dve',

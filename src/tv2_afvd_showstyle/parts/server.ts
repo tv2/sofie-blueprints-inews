@@ -7,6 +7,8 @@ import {
 import {
 	AddScript,
 	CreatePartServerBase,
+	CutToServer,
+	EnableServer,
 	GetTagForServer,
 	GetTagForServerNext,
 	literal,
@@ -14,12 +16,10 @@ import {
 	PartContext2,
 	PartDefinition,
 	PieceMetaData,
-	SanitizeString,
-	CutToServer,
-	EnableServer
+	SanitizeString
 } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -52,52 +52,14 @@ export function CreatePartServer(
 
 	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
 
-	const content = MakeContentServer(
-		file,
-		mediaPlayerSession,
-		partDefinition,
-		config,
-		{
-			Caspar: {
-				ClipPending: CasparLLayer.CasparPlayerClipPending
-			},
-			Sisyfos: {
-				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
-			},
-			ATEM: {
-				MEPGM: AtemLLayer.AtemMEProgram
-			},
-			OutputLayerId: 'pgm',
-			SourceLayerId: SourceLayer.PgmServer
-		},
-		duration
-	)
-
-	content.timelineObjects.push(
-		CutToServer(mediaPlayerSession, partDefinition, config, {
-			Caspar: {
-				ClipPending: CasparLLayer.CasparPlayerClipPending
-			},
-			Sisyfos: {
-				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
-			},
-			ATEM: {
-				MEPGM: AtemLLayer.AtemMEProgram
-			},
-			OutputLayerId: 'pgm',
-			SourceLayerId: SourceLayer.PgmServer
-		}),
-		EnableServer('') // TODO: Layer
-	)
-
 	pieces.push(
 		literal<IBlueprintPiece>({
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
-			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmServer,
-			lifespan: PieceLifespan.WithinPart,
+			outputLayerId: 'sec',
+			sourceLayerId: SourceLayer.SelectedServer,
+			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: literal<PieceMetaData>({
 				mediaPlayerSessions: [mediaPlayerSession]
 			}),
@@ -121,7 +83,36 @@ export function CreatePartServer(
 				},
 				duration
 			),
-			adlibPreroll: config.studio.CasparPrerollDuration,
+			tags: []
+		})
+	)
+
+	pieces.push(
+		literal<IBlueprintPiece>({
+			externalId: partDefinition.externalId,
+			name: file,
+			enable: { start: 0 },
+			outputLayerId: 'pgm',
+			sourceLayerId: SourceLayer.PgmServer,
+			lifespan: PieceLifespan.WithinPart,
+			content: {
+				timelineObjects: [
+					CutToServer(mediaPlayerSession, partDefinition, config, {
+						Caspar: {
+							ClipPending: CasparLLayer.CasparPlayerClipPending
+						},
+						Sisyfos: {
+							ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+						},
+						ATEM: {
+							MEPGM: AtemLLayer.AtemMEProgram
+						},
+						OutputLayerId: 'pgm',
+						SourceLayerId: SourceLayer.PgmServer
+					}),
+					EnableServer(VirtualAbstractLLayer.AbstractLLayerServerEnable, mediaPlayerSession)
+				]
+			},
 			tags: [
 				GetTagForServer(partDefinition.storyName, file, false),
 				GetTagForServerNext(partDefinition.storyName, file, false),
