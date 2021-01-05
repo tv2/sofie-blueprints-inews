@@ -57,7 +57,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
-import { CutToServer, EnableServer } from '../content'
+import { CutToServer, GetVTContentProperties } from '../content'
 import { TimeFromFrames } from '../frameTime'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
@@ -124,11 +124,12 @@ export interface ActionExecutionSettings<
 		}
 		Atem: {
 			MEProgram: string
-			MEClean?: string
+			MEClean: string
 			Next: string
 			ServerLookaheadAUX?: string
 			SSrcDefault: string
 			Effekt: string
+			cutOnclean: boolean
 		}
 		Abstract: {
 			ServerEnable: string
@@ -373,17 +374,15 @@ function executeActionSelectServerClip<
 		sourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
-			timelineObjects: [
-				CutToServer(
-					sessionToContinue ?? externalId,
-					partDefinition,
-					config,
-					settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
-						? settings.LLayer.Atem.MEClean
-						: settings.LLayer.Atem.MEProgram
-				),
-				EnableServer(settings.LLayer.Abstract.ServerEnable, sessionToContinue ?? externalId)
-			]
+			...GetVTContentProperties(config, file),
+			timelineObjects: CutToServer(
+				sessionToContinue ?? externalId,
+				partDefinition,
+				config,
+				settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
+				settings.LLayer.Abstract.ServerEnable,
+				settings.LLayer.Atem.ServerLookaheadAUX
+			)
 		},
 		adlibPreroll: config.studio.CasparPrerollDuration,
 		tags: [
@@ -488,12 +487,11 @@ function executeActionSelectServerClip<
 		  })
 		: undefined
 
-	// TODO: Extract timing + script info from part
 	let part = CreatePartServerBase(
 		context,
 		config,
 		partDefinition,
-		{ vo: userData.vo, totalWords: 0, totalTime: 0 },
+		{ vo: userData.vo, totalWords: 0, totalTime: 0, tapeTime: userData.duration / 1000 },
 		{
 			SourceLayer: {
 				PgmServer: settings.SourceLayers.Server,
@@ -503,7 +501,8 @@ function executeActionSelectServerClip<
 				ServerEnable: settings.LLayer.Abstract.ServerEnable
 			},
 			AtemLLayer: {
-				MEPgm: settings.LLayer.Atem.MEClean ?? settings.LLayer.Atem.MEProgram
+				MEPgm: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
+				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
 			},
 			Caspar: {
 				ClipPending: settings.LLayer.Caspar.ClipPending
@@ -901,9 +900,11 @@ function startNewDVELayout<
 			dvePiece,
 			...(dveDataStore ? [dveDataStore] : []),
 			...(settings.SelectedAdlibs
-				? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-						settings.SelectedAdlibs.SourceLayer.DVE
-				  ])
+				? getPiecesToPreserve(
+						context,
+						settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
+						settings.SelectedAdlibs.SourceLayer.DVE ? [settings.SelectedAdlibs.SourceLayer.DVE] : []
+				  )
 				: [])
 		])
 	} else {
@@ -976,7 +977,7 @@ function executeActionSelectJingle<
 		]
 	})
 
-	const jingleDataStore = settings.SelectedAdlibs
+	const jingleDataStore = settings.SelectedAdlibs.SourceLayer.Effekt
 		? literal<IBlueprintPiece>({
 				externalId,
 				name: userData.clip,
@@ -1010,9 +1011,11 @@ function executeActionSelectJingle<
 		piece,
 		...(jingleDataStore ? [] : []),
 		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-					settings.SelectedAdlibs.SourceLayer.Effekt
-			  ])
+			? getPiecesToPreserve(
+					context,
+					settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
+					settings.SelectedAdlibs.SourceLayer.Effekt ? [settings.SelectedAdlibs.SourceLayer.Effekt] : []
+			  )
 			: [])
 	])
 }
@@ -1072,10 +1075,7 @@ function executeActionCutToCamera<
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
-					layer:
-						settings.SelectedAdlibs && settings.LLayer.Atem.MEClean // Offtube
-							? settings.LLayer.Atem.MEClean
-							: settings.LLayer.Atem.MEProgram,
+					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
@@ -1211,25 +1211,21 @@ function executeActionCutToRemote<
 		tags: [GetTagForLive(userData.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
-				...(settings.LLayer.Atem.MEClean
-					? [
-							literal<TSR.TimelineObjAtemME>({
-								id: '',
-								enable: { while: '1' },
-								priority: 1,
-								layer: settings.LLayer.Atem.MEClean,
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.ME,
-									me: {
-										input: userData.port,
-										transition: TSR.AtemTransitionStyle.CUT
-									}
-								},
-								classes: ['adlib_deparent']
-							})
-					  ]
-					: []),
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: userData.port,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					},
+					classes: ['adlib_deparent']
+				}),
 				...eksternSisyfos,
 				...config.stickyLayers
 					.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
@@ -1434,8 +1430,10 @@ function executeActionTakeWithTransition<
 
 	const tlObjIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
 		obj =>
-			// SelectedAdlibs is being used here to identify offtubes. Needs work.
-			obj.layer === (settings.SelectedAdlibs ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
+			obj.layer ===
+				(settings.LLayer.Atem.cutOnclean
+					? settings.LLayer.Atem.MEClean ?? settings.LLayer.Atem.MEProgram
+					: settings.LLayer.Atem.MEProgram) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	)
@@ -1657,7 +1655,7 @@ function executeActionCommentatorSelectDVE<
 	_actionId: string,
 	_userData: ActionCommentatorSelectDVE
 ) {
-	if (!settings.SelectedAdlibs) {
+	if (!settings.SelectedAdlibs.SourceLayer.DVE) {
 		return
 	}
 
@@ -1679,7 +1677,7 @@ function executeActionCommentatorSelectFull<
 	_actionId: string,
 	_userData: ActionCommentatorSelectFull
 ) {
-	if (!settings.SelectedAdlibs || !settings.executeActionSelectFull) {
+	if (!settings.SelectedAdlibs.SourceLayer.GFXFull || !settings.executeActionSelectFull) {
 		return
 	}
 
@@ -1701,7 +1699,7 @@ function executeActionCommentatorSelectJingle<
 	_actionId: string,
 	_userData: ActionCommentatorSelectJingle
 ) {
-	if (!settings.SelectedAdlibs || !settings.executeActionSelectFull) {
+	if (!settings.SelectedAdlibs.SourceLayer.Effekt || !settings.executeActionSelectFull) {
 		return
 	}
 

@@ -161,6 +161,7 @@ export function getSegmentBase<
 	let jingleTime = 0
 	let serverTime = 0
 	const totalTime = Number(iNewsStory.fields.totalTime) || 0
+	const tapeTime = Number(iNewsStory.fields.tapeTime) || 0
 	for (const part of parsedParts) {
 		// Make orphaned secondary cues into adlibs
 		if (
@@ -197,7 +198,7 @@ export function getSegmentBase<
 			case PartType.Server:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						showStyleOptions.CreatePartServer(context, config, part, { vo: false, totalTime, totalWords })
+						showStyleOptions.CreatePartServer(context, config, part, { vo: false, totalTime, totalWords, tapeTime })
 					)
 				}
 				break
@@ -214,7 +215,7 @@ export function getSegmentBase<
 			case PartType.VO:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						showStyleOptions.CreatePartServer(context, config, part, { vo: true, totalTime, totalWords })
+						showStyleOptions.CreatePartServer(context, config, part, { vo: true, totalTime, totalWords, tapeTime })
 					)
 				}
 				break

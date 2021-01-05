@@ -255,6 +255,11 @@ function expectTakeAfterExecute(context: MockActionContext) {
 	expect(context.takeAfterExecute).toBe(true)
 }
 
+function expectNoWarningsOrErrors(context: MockActionContext) {
+	expect(context.warnings).toEqual([])
+	expect(context.errors).toEqual([])
+}
+
 function makeMockContext(defaultTransition: 'cut' | 'mix' | 'effekt'): MockActionContext {
 	switch (defaultTransition) {
 		case 'cut':
@@ -302,8 +307,10 @@ describe('Take with CUT', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
+
 		const transitionPiece = getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
@@ -324,8 +331,10 @@ describe('Take with CUT', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
+
 		const transitionPiece = getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
@@ -346,8 +355,10 @@ describe('Take with CUT', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
+
 		const transitionPiece = getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
@@ -371,8 +382,10 @@ describe('Take with MIX', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
+
 		const transitionPiece = getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
@@ -394,8 +407,10 @@ describe('Take with MIX', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
+
 		const transitionPiece = getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
@@ -417,8 +432,10 @@ describe('Take with MIX', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
+
 		const transitionPiece = getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
@@ -442,6 +459,7 @@ describe('Take with EFFEKT', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
@@ -466,6 +484,7 @@ describe('Take with EFFEKT', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
@@ -509,6 +528,7 @@ describe('Camera shortcuts on server', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(true)
@@ -547,6 +567,7 @@ describe('Camera shortcuts on server', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(false)
@@ -587,6 +608,7 @@ describe('Camera shortcuts on VO', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(true)
@@ -625,6 +647,7 @@ describe('Camera shortcuts on VO', () => {
 			})
 		)
 
+		expectNoWarningsOrErrors(context)
 		const camPiece = getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(false)

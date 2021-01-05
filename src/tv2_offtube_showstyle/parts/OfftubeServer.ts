@@ -30,7 +30,8 @@ export function OfftubeCreatePartServer(
 			ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 		},
 		AtemLLayer: {
-			MEPgm: OfftubeAtemLLayer.AtemMEClean
+			MEPgm: OfftubeAtemLLayer.AtemMEClean,
+			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 		},
 		Caspar: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
@@ -74,7 +75,8 @@ export function OfftubeCreatePartServer(
 					StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
 				},
 				AtemLLayer: {
-					MEPgm: OfftubeAtemLLayer.AtemMEClean
+					MEPgm: OfftubeAtemLLayer.AtemMEClean,
+					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 				},
 				AbstractLLayer: {
 					ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable

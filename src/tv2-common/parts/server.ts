@@ -8,7 +8,6 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CutToServer,
-	EnableServer,
 	GetTagForServer,
 	GetTagForServerNext,
 	MakeContentServer,
@@ -24,6 +23,7 @@ export interface ServerPartProps {
 	vo: boolean
 	totalWords: number
 	totalTime: number
+	tapeTime: number
 }
 
 export type ServerPartLayers = {
@@ -36,6 +36,7 @@ export type ServerPartLayers = {
 	}
 	AtemLLayer: {
 		MEPgm: string
+		ServerLookaheadAux?: string
 	}
 } & MakeContentServerSourceLayers
 
@@ -60,11 +61,12 @@ export function CreatePartServerBase<
 	}
 
 	const file = partDefinition.fields.videoId
-	const duration = Number(partDefinition.fields.tapeTime) * 1000 || 0
+	const duration = props.tapeTime * 1000 || 0
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
-	const actualDuration = props.vo
-		? (sanitisedScript.length / props.totalWords) * (props.totalTime * 1000 - duration) + duration
-		: duration
+	const actualDuration =
+		props.vo && props.totalWords > 0
+			? (sanitisedScript.length / props.totalWords) * (props.totalTime * 1000 - duration) + duration
+			: duration
 
 	const basePart = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
@@ -119,10 +121,14 @@ export function CreatePartServerBase<
 			sourceLayerId: layers.SourceLayer.PgmServer,
 			lifespan: PieceLifespan.WithinPart,
 			content: {
-				timelineObjects: [
-					CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm),
-					EnableServer(layers.AbstractLLayer.ServerEnable, mediaPlayerSession)
-				]
+				timelineObjects: CutToServer(
+					mediaPlayerSession,
+					partDefinition,
+					config,
+					layers.AtemLLayer.MEPgm,
+					layers.AbstractLLayer.ServerEnable,
+					layers.AtemLLayer.ServerLookaheadAux
+				)
 			},
 			tags: [
 				GetTagForServer(partDefinition.storyName, file, false),

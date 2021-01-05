@@ -18,10 +18,6 @@ export interface MakeContentServerSourceLayers {
 	Caspar: {
 		ClipPending: string
 	}
-	ATEM: {
-		MEPGM: string
-		ServerLookaheadAUX?: string
-	}
 	Sisyfos: {
 		ClipPending: string
 		StudioMicsGroup: string
@@ -162,30 +158,6 @@ export function GetServerTimeline(
 		}),
 		...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)] : [])
 	])
-			...(sourceLayers.ATEM.ServerLookaheadAUX
-				? [
-						literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								while: '1'
-							},
-							priority: 0,
-							layer: sourceLayers.ATEM.ServerLookaheadAUX,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.AUX,
-								aux: {
-									input: -1
-								}
-							},
-							metaData: {
-								mediaPlayerSession: mediaPlayerSessionId
-							}
-						})
-				  ]
-				: [])
-		])
-	})
 }
 
 export function CutToServer(
@@ -193,38 +165,65 @@ export function CutToServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	atemLLayerMEPGM: string,
+	abstractLLayerEnableServer: string,
+	atemLLayerServerLookaheadAux?: string,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ) {
-	return literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-		id: '',
-		enable: {
-			start: config.studio.CasparPrerollDuration
-		},
-		priority: 1,
-		layer: atemLLayerMEPGM,
-		content: {
-			deviceType: TSR.DeviceType.ATEM,
-			type: TSR.TimelineContentTypeAtem.ME,
-			me: {
-				input: -1,
-				transition: partDefinition.transition
-					? TransitionFromString(partDefinition.transition.style)
-					: TSR.AtemTransitionStyle.CUT,
-				transitionSettings: TransitionSettings(partDefinition)
-			}
-		},
-		metaData: {
-			mediaPlayerSession: mediaPlayerSessionId
-		},
-		classes: [
-			...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
-			...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
-		]
-	})
+	return [
+		EnableServer(abstractLLayerEnableServer, mediaPlayerSessionId),
+		literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+			id: '',
+			enable: {
+				start: config.studio.CasparPrerollDuration
+			},
+			priority: 1,
+			layer: atemLLayerMEPGM,
+			content: {
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
+				me: {
+					input: -1,
+					transition: partDefinition.transition
+						? TransitionFromString(partDefinition.transition.style)
+						: TSR.AtemTransitionStyle.CUT,
+					transitionSettings: TransitionSettings(partDefinition)
+				}
+			},
+			metaData: {
+				mediaPlayerSession: mediaPlayerSessionId
+			},
+			classes: [
+				...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
+				...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
+			]
+		}),
+		...(atemLLayerServerLookaheadAux
+			? [
+					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							while: '1'
+						},
+						priority: 0,
+						layer: atemLLayerServerLookaheadAux,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
+							aux: {
+								input: -1
+							}
+						},
+						metaData: {
+							mediaPlayerSession: mediaPlayerSessionId
+						}
+					})
+			  ]
+			: [])
+	]
 }
 
-export function EnableServer(layer: string, mediaPlayerSessionId: string) {
+function EnableServer(layer: string, mediaPlayerSessionId: string) {
 	return literal<TSR.TimelineObjAbstractAny>({
 		id: '',
 		enable: {

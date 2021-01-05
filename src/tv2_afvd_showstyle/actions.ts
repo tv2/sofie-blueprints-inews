@@ -66,11 +66,22 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 					MEClean: AtemLLayer.AtemMEClean,
 					Next: AtemLLayer.AtemAuxLookahead,
 					SSrcDefault: AtemLLayer.AtemSSrcDefault,
-					Effekt: AtemLLayer.AtemDSKEffect
+					Effekt: AtemLLayer.AtemDSKEffect,
+					cutOnclean: false
 				},
 				Abstract: {
 					ServerEnable: VirtualAbstractLLayer.AbstractLLayerServerEnable
 				}
+			},
+			SelectedAdlibs: {
+				SourceLayer: {
+					Server: SourceLayer.SelectedServer,
+					VO: SourceLayer.SelectedVoiceOver
+				},
+				OutputLayer: {
+					SelectedAdLib: 'sec'
+				},
+				SELECTED_ADLIB_LAYERS: [SourceLayer.SelectedServer, SourceLayer.SelectedVoiceOver]
 			},
 			ServerAudioLayers: [
 				SisyfosLLAyer.SisyfosSourceClipPending,
