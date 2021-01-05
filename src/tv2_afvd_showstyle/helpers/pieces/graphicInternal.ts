@@ -4,6 +4,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -16,7 +17,6 @@ import {
 	IsTargetingTLF,
 	IsTargetingWall,
 	literal,
-	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { SourceLayer } from '../../layers'
@@ -25,7 +25,7 @@ import { CreateTimingGrafik, GetEnableForGrafik, GetSourceLayerForGrafik, GetTim
 
 export function EvaluateCueGraphicInternal(
 	config: BlueprintConfig,
-	context: PartContext2,
+	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],

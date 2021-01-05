@@ -1,36 +1,45 @@
 import {
 	BlueprintResultPart,
 	IBlueprintActionManifest,
-	IBlueprintPiece,
-	PieceLifespan,
-	PieceMetaData
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
+import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import {
-	ActionSelectServerClip,
-	AddScript,
-	CreatePartServerBase,
-	GetTagForServer,
-	GetTagForServerNext,
-	literal,
-	MakeContentServer,
-	PartContext2,
-	PartDefinition,
-	SanitizeString
-} from 'tv2-common'
-import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+	OfftubeAbstractLLayer,
+	OfftubeAtemLLayer,
+	OfftubeCasparLLayer,
+	OfftubeSisyfosLLayer
+} from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
-import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
+import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartServer(
-	context: PartContext2,
+	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	segmentExternalId: string
+	props: ServerPartProps
 ): BlueprintResultPart {
-	const basePartProps = CreatePartServerBase(context, config, partDefinition)
+	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
+		SourceLayer: {
+			PgmServer: props.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: props.vo ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
+		},
+		AbstractLLayer: {
+			ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
+		},
+		AtemLLayer: {
+			MEPgm: OfftubeAtemLLayer.AtemMEClean
+		},
+		Caspar: {
+			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+		},
+		Sisyfos: {
+			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+			StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+		}
+	})
 
 	if (basePartProps.invalid) {
 		return basePartProps.part
@@ -45,99 +54,35 @@ export function OfftubeCreatePartServer(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const mediaPlayerSession = SanitizeString(`segment_${segmentExternalId}_${file}`)
-
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: partDefinition.externalId,
-			name: file,
-			enable: { start: 0 },
-			outputLayerId: 'pgm',
-			sourceLayerId: OfftubeSourceLayer.PgmServer,
-			lifespan: PieceLifespan.WithinPart,
-			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [mediaPlayerSession]
-			}),
-			content: MakeContentServer(
-				file,
-				mediaPlayerSession,
-				partDefinition,
-				config,
-				{
-					Caspar: {
-						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-					},
-					Sisyfos: {
-						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-					},
-					ATEM: {
-						MEPGM: OfftubeAtemLLayer.AtemMEClean,
-						ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
-					},
-					OutputLayerId: OfftubeOutputLayers.PGM,
-					SourceLayerId: OfftubeSourceLayer.PgmServer
-				},
-				duration
-			),
-			adlibPreroll: config.studio.CasparPrerollDuration,
-			tags: [
-				GetTagForServer(partDefinition.segmentExternalId, file, false),
-				GetTagForServerNext(partDefinition.segmentExternalId, file, false),
-				TallyTags.SERVER_IS_LIVE
-			]
-		})
-	)
-
-	// TODO: Reduce to bare minimum for action
-	const actionContent = MakeContentServer(
-		file,
-		SanitizeString(`segment_${segmentExternalId}_${file}`),
-		partDefinition,
-		config,
-		{
-			Caspar: {
-				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-			},
-			ATEM: {
-				MEPGM: OfftubeAtemLLayer.AtemMEClean,
-				ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead
-			},
-			Sisyfos: {
-				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-			},
-			OutputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
-			SourceLayerId: OfftubeSourceLayer.PgmServer
-		},
-		duration,
-		true,
-		{
-			isOfftube: true,
-			tagAsAdlib: true
-		}
-	)
-
 	actions.push(
-		literal<IBlueprintActionManifest>({
-			actionId: AdlibActionType.SELECT_SERVER_CLIP,
-			userData: literal<ActionSelectServerClip>({
-				type: AdlibActionType.SELECT_SERVER_CLIP,
-				file,
-				partDefinition,
-				duration,
-				vo: false,
-				segmentExternalId: partDefinition.segmentExternalId
-			}),
-			userDataManifest: {},
-			display: {
-				label: `${partDefinition.storyName}`,
-				sourceLayerId: OfftubeSourceLayer.PgmServer,
-				outputLayerId: OfftubeOutputLayers.PGM,
-				content: { ...actionContent, timelineObjects: [] }, // TODO: No timeline
-				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
-				currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, false)],
-				nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
-			}
-		})
+		CreateAdlibServer(
+			config,
+			0,
+			partDefinition,
+			file,
+			false,
+			{
+				SourceLayer: {
+					PgmServer: OfftubeSourceLayer.PgmServer,
+					SelectedServer: OfftubeSourceLayer.SelectedServer
+				},
+				Caspar: {
+					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+				},
+				Sisyfos: {
+					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+					StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+				},
+				AtemLLayer: {
+					MEPgm: OfftubeAtemLLayer.AtemMEClean
+				},
+				AbstractLLayer: {
+					ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
+				}
+			},
+			0,
+			false
+		)
 	)
 
 	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})

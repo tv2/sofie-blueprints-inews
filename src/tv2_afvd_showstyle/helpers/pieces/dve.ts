@@ -3,7 +3,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
-	PieceMetaData
+	PieceMetaData,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectDVE,
@@ -13,7 +14,6 @@ import {
 	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
-	PartContext2,
 	PartDefinition,
 	TemplateIsValid
 } from 'tv2-common'
@@ -24,7 +24,7 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateDVE(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

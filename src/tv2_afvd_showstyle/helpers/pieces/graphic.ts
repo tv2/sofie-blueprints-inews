@@ -1,7 +1,8 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPiece
+	IBlueprintPiece,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CalculateTime,
@@ -13,7 +14,6 @@ import {
 	GraphicIsPilot,
 	GraphicLLayer,
 	IsTargetingWall,
-	PartContext2,
 	PartDefinition,
 	PartToParentClass
 } from 'tv2-common'
@@ -26,7 +26,7 @@ import { EvaluateCueRouting } from './routing'
 
 export function EvaluateCueGraphic(
 	config: BlueprintConfig,
-	context: PartContext2,
+	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],

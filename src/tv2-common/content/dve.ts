@@ -3,6 +3,7 @@ import {
 	GraphicsContent,
 	NotesContext,
 	RemoteContent,
+	SegmentContext,
 	SourceLayerType,
 	SplitsContent,
 	SplitsContentBoxProperties,
@@ -30,7 +31,6 @@ import { ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
-import { PartContext2 } from '../partContext2'
 
 export interface DVEConfigBox {
 	enabled: boolean
@@ -143,7 +143,7 @@ export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext2,
+	context: SegmentContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,

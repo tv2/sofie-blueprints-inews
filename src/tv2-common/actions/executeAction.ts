@@ -10,6 +10,7 @@ import {
 	IBlueprintPieceInstance,
 	NotesContext,
 	PieceLifespan,
+	SegmentContext,
 	ShowStyleContext,
 	SourceLayerType,
 	SplitsContent,
@@ -47,7 +48,6 @@ import {
 	literal,
 	MakeContentDVE2,
 	MakeContentServer,
-	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TimelineBlueprintExt,
@@ -87,7 +87,7 @@ export interface ActionExecutionSettings<
 		isAdlib: boolean
 	) => void
 	EvaluateCues: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
@@ -134,13 +134,13 @@ export interface ActionExecutionSettings<
 			ServerEnable: string
 		}
 	}
-	SelectedAdlibs?: {
+	SelectedAdlibs: {
 		SourceLayer: {
 			Server: string
 			VO: string
-			DVE: string
-			GFXFull: string
-			Effekt: string
+			DVE?: string
+			GFXFull?: string
+			Effekt?: string
 		}
 		OutputLayer: {
 			SelectedAdLib: string
@@ -348,6 +348,7 @@ function executeActionSelectServerClip<
 		: undefined
 
 	const content = MakeContentServer(
+		context,
 		file,
 		sessionToContinue ?? externalId,
 		partDefinition,
@@ -357,16 +358,9 @@ function executeActionSelectServerClip<
 				ClipPending: settings.LLayer.Caspar.ClipPending
 			},
 			Sisyfos: {
-				ClipPending: settings.LLayer.Sisyfos.ClipPending
-			},
-			ATEM: {
-				MEPGM:
-					settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
-						? settings.LLayer.Atem.MEClean
-						: settings.LLayer.Atem.MEProgram
-			},
-			OutputLayerId: settings.OutputLayer.PGM,
-			SourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server
+				ClipPending: settings.LLayer.Sisyfos.ClipPending,
+				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
+			}
 		},
 		duration
 	)
@@ -380,22 +374,14 @@ function executeActionSelectServerClip<
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				CutToServer(sessionToContinue ?? externalId, partDefinition, config, {
-					Caspar: {
-						ClipPending: settings.LLayer.Caspar.ClipPending
-					},
-					Sisyfos: {
-						ClipPending: settings.LLayer.Sisyfos.ClipPending
-					},
-					ATEM: {
-						MEPGM:
-							settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
-								? settings.LLayer.Atem.MEClean
-								: settings.LLayer.Atem.MEProgram
-					},
-					OutputLayerId: settings.OutputLayer.PGM,
-					SourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server
-				}),
+				CutToServer(
+					sessionToContinue ?? externalId,
+					partDefinition,
+					config,
+					settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
+						? settings.LLayer.Atem.MEClean
+						: settings.LLayer.Atem.MEProgram
+				),
 				EnableServer(settings.LLayer.Abstract.ServerEnable, sessionToContinue ?? externalId)
 			]
 		},
@@ -410,7 +396,7 @@ function executeActionSelectServerClip<
 	const grafikPieces: IBlueprintPiece[] = []
 
 	settings.EvaluateCues(
-		(context as unknown) as PartContext2,
+		(context as unknown) as SegmentContext,
 		config,
 		grafikPieces,
 		[],
@@ -502,7 +488,32 @@ function executeActionSelectServerClip<
 		  })
 		: undefined
 
-	let part = CreatePartServerBase(context, config, partDefinition).part.part
+	// TODO: Extract timing + script info from part
+	let part = CreatePartServerBase(
+		context,
+		config,
+		partDefinition,
+		{ vo: userData.vo, totalWords: 0, totalTime: 0 },
+		{
+			SourceLayer: {
+				PgmServer: settings.SourceLayers.Server,
+				SelectedServer: settings.SelectedAdlibs.SourceLayer.Server || 'TODO'
+			},
+			AbstractLLayer: {
+				ServerEnable: settings.LLayer.Abstract.ServerEnable
+			},
+			AtemLLayer: {
+				MEPgm: settings.LLayer.Atem.MEClean ?? settings.LLayer.Atem.MEProgram
+			},
+			Caspar: {
+				ClipPending: settings.LLayer.Caspar.ClipPending
+			},
+			Sisyfos: {
+				ClipPending: settings.LLayer.Sisyfos.ClipPending,
+				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
+			}
+		}
+	).part.part
 
 	const effektPieces: IBlueprintPiece[] = []
 	part = {
@@ -838,14 +849,14 @@ function startNewDVELayout<
 ) {
 	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
-	const dveDataStore = settings.SelectedAdlibs
+	const dveDataStore = settings.SelectedAdlibs.SourceLayer.DVE
 		? literal<IBlueprintPiece>({
 				externalId,
 				name: templateName,
 				enable: {
 					start: 0
 				},
-				outputLayerId: settings.SelectedAdlibs?.OutputLayer.SelectedAdLib,
+				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
 				lifespan: PieceLifespan.OutOnSegmentEnd,
 				metaData: meta,

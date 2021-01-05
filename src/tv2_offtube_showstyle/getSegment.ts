@@ -18,7 +18,6 @@ import { OfftubeCreatePartGrafik } from './parts/OfftubeGrafik'
 import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
-import { OfftubeCreatePartVO } from './parts/OfftubeVO'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
@@ -30,7 +29,6 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartUnknown,
 		CreatePartKam: OfftubeCreatePartKam,
 		CreatePartServer: OfftubeCreatePartServer,
-		CreatePartVO: OfftubeCreatePartVO,
 		CreatePartDVE: OfftubeCreatePartDVE,
 		CreatePartGrafik: OfftubeCreatePartGrafik,
 		CreatePartEVS: CreatePartUnknown,

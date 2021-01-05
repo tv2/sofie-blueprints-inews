@@ -4,6 +4,7 @@ import {
 	IBlueprintPart,
 	IBlueprintSegment,
 	IngestSegment,
+	NotesContext,
 	SegmentContext,
 	ShowStyleContext
 } from 'tv-automation-sofie-blueprints-integration'
@@ -13,7 +14,6 @@ import {
 	IsTargetingFull,
 	literal,
 	ParseBody,
-	PartContext2,
 	PartDefinition,
 	PartDefinitionEVS,
 	PartDefinitionKam,
@@ -28,12 +28,10 @@ import {
 	PartDefinitionDVE,
 	PartDefinitionEkstern,
 	PartDefinitionGrafik,
-	PartDefinitionServer,
 	PartDefinitionTeknik,
-	PartDefinitionTelefon,
-	PartDefinitionVO
+	PartDefinitionTelefon
 } from './inewsConversion'
-import { CreatePartInvalid } from './parts'
+import { CreatePartInvalid, ServerPartProps } from './parts'
 
 export interface GetSegmentShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
@@ -42,70 +40,62 @@ export interface GetSegmentShowstyleOptions<
 	getConfig: (context: ShowStyleContext) => ShowStyleConfig
 	CreatePartContinuity: (config: ShowStyleConfig, ingestSegment: IngestSegment) => BlueprintResultPart
 	CreatePartUnknown: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number,
 		asAdlibs?: boolean
 	) => BlueprintResultPart
 	CreatePartIntro?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartKam?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionKam,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartServer?: (
-		context: PartContext2,
+		context: NotesContext,
 		config: ShowStyleConfig,
-		partDefinition: PartDefinitionServer,
-		mediaPlayerSession: string
+		partDefinition: PartDefinition,
+		props: ServerPartProps
 	) => BlueprintResultPart
 	CreatePartTeknik?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTeknik,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartGrafik?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionGrafik,
 		totalWords: number
 	) => BlueprintResultPart
-	CreatePartVO?: (
-		context: PartContext2,
-		config: ShowStyleConfig,
-		partDefinition: PartDefinitionVO,
-		mediaPlayerSession: string,
-		totalWords: number,
-		totalTime: number
-	) => BlueprintResultPart
 	CreatePartEkstern?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEkstern,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartTelefon?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTelefon,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartDVE?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionDVE,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartEVS?: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEVS,
 		totalWords: number
@@ -170,18 +160,15 @@ export function getSegmentBase<
 	let serverParts = 0
 	let jingleTime = 0
 	let serverTime = 0
+	const totalTime = Number(iNewsStory.fields.totalTime) || 0
 	for (const part of parsedParts) {
-		// Apply showstyle-specific transformations of cues.
-		// const part = TransformCuesIntoShowstyle(config, par) // TODO
-		const partContext = new PartContext2(context, part.externalId)
-
 		// Make orphaned secondary cues into adlibs
 		if (
 			GetNextPartCue(part, -1) === -1 &&
 			part.type === PartType.Unknown &&
 			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
-			blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords, true))
+			blueprintParts.push(showStyleOptions.CreatePartUnknown(context, config, part, totalWords, true))
 			continue
 		}
 
@@ -199,66 +186,61 @@ export function getSegmentBase<
 		switch (part.type) {
 			case PartType.INTRO:
 				if (showStyleOptions.CreatePartIntro) {
-					blueprintParts.push(showStyleOptions.CreatePartIntro(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartIntro(context, config, part, totalWords))
 				}
 				break
 			case PartType.Kam:
 				if (showStyleOptions.CreatePartKam) {
-					blueprintParts.push(showStyleOptions.CreatePartKam(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartKam(context, config, part, totalWords))
 				}
 				break
 			case PartType.Server:
 				if (showStyleOptions.CreatePartServer) {
-					blueprintParts.push(showStyleOptions.CreatePartServer(partContext, config, part, ingestSegment.externalId))
+					blueprintParts.push(
+						showStyleOptions.CreatePartServer(context, config, part, { vo: false, totalTime, totalWords })
+					)
 				}
 				break
 			case PartType.Teknik:
 				if (showStyleOptions.CreatePartTeknik) {
-					blueprintParts.push(showStyleOptions.CreatePartTeknik(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartTeknik(context, config, part, totalWords))
 				}
 				break
 			case PartType.Grafik:
 				if (showStyleOptions.CreatePartGrafik) {
-					blueprintParts.push(showStyleOptions.CreatePartGrafik(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartGrafik(context, config, part, totalWords))
 				}
 				break
 			case PartType.VO:
-				if (showStyleOptions.CreatePartVO) {
+				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						showStyleOptions.CreatePartVO(
-							partContext,
-							config,
-							part,
-							ingestSegment.externalId,
-							totalWords,
-							Number(iNewsStory.fields.totalTime) || 0
-						)
+						showStyleOptions.CreatePartServer(context, config, part, { vo: true, totalTime, totalWords })
 					)
 				}
 				break
 			case PartType.DVE:
 				if (showStyleOptions.CreatePartDVE) {
-					blueprintParts.push(showStyleOptions.CreatePartDVE(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartDVE(context, config, part, totalWords))
 				}
 				break
 			case PartType.Ekstern:
 				if (showStyleOptions.CreatePartEkstern) {
-					blueprintParts.push(showStyleOptions.CreatePartEkstern(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartEkstern(context, config, part, totalWords))
 				}
 				break
 			case PartType.Telefon:
 				if (showStyleOptions.CreatePartTelefon) {
-					blueprintParts.push(showStyleOptions.CreatePartTelefon(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartTelefon(context, config, part, totalWords))
 				}
 				break
 			case PartType.Unknown:
 				if (part.cues.length) {
-					blueprintParts.push(showStyleOptions.CreatePartUnknown(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartUnknown(context, config, part, totalWords))
 				}
 				break
 			case PartType.EVS:
 				if (showStyleOptions.CreatePartEVS) {
-					blueprintParts.push(showStyleOptions.CreatePartEVS(partContext, config, part, totalWords))
+					blueprintParts.push(showStyleOptions.CreatePartEVS(context, config, part, totalWords))
 				}
 				break
 			default:

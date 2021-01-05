@@ -5,7 +5,7 @@ import {
 	IBlueprintRundownDB,
 	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
-import { CueDefinitionLYD, literal, ParseCue, PartContext2, PartDefinitionKam } from 'tv2-common'
+import { CueDefinitionLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
 import { PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
@@ -52,9 +52,9 @@ describe('lyd', () => {
 			modified: 0,
 			segmentExternalId: ''
 		})
-		const partContext = new PartContext2(makeMockContext(), '00001')
+
 		EvaluateLYD(
-			partContext,
+			makeMockContext(),
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
@@ -98,9 +98,9 @@ describe('lyd', () => {
 			modified: 0,
 			segmentExternalId: ''
 		})
-		const partContext = new PartContext2(makeMockContext(), '00001')
+
 		EvaluateLYD(
-			partContext,
+			makeMockContext(),
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,

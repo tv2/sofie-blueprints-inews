@@ -1,7 +1,8 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	PieceLifespan
+	PieceLifespan,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectDVE,
@@ -11,20 +12,18 @@ import {
 	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
-	PartContext2,
 	PartDefinition,
 	PieceMetaData,
-	SanitizeString,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateAdLib(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -45,27 +44,30 @@ export function EvaluateAdLib(
 			CreateAdlibServer(
 				config,
 				rank,
-				SanitizeString(`adlib_server_${file}`),
 				partDefinition,
 				file,
 				false,
 				{
-					PgmServer: SourceLayer.PgmServer,
-					PgmVoiceOver: SourceLayer.PgmVoiceOver,
+					SourceLayer: {
+						PgmServer: SourceLayer.PgmServer,
+						SelectedServer: SourceLayer.SelectedServer
+					},
 					Caspar: {
 						ClipPending: CasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
+						StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
 					},
-					ATEM: {
-						MEPGM: AtemLLayer.AtemMEProgram
+					AtemLLayer: {
+						MEPgm: AtemLLayer.AtemMEProgram
 					},
-					STICKY_LAYERS: config.stickyLayers,
-					OutputLayerId: 'pgm',
-					SourceLayerId: SourceLayer.PgmServer
+					AbstractLLayer: {
+						ServerEnable: VirtualAbstractLLayer.AbstractLLayerServerEnable
+					}
 				},
-				0 // TODO: duration
+				0, // TODO: duration
+				true
 			)
 		)
 	} else {

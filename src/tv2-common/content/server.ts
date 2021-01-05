@@ -1,23 +1,17 @@
+import { NotesContext, TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
 import {
-	IBlueprintActionManifest,
-	TimelineObjectCoreExt,
-	TSR,
-	VTContent
-} from 'tv-automation-sofie-blueprints-integration'
-import {
-	ActionSelectServerClip,
 	AddParentClass,
+	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinition,
-	SanitizeString,
 	ServerParentClass,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
+import { ControlClasses, GetEnableClassForServer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
-import { AdlibServerOfftubeOptions, GetTagForServer, GetTagForServerNext } from '../pieces'
+import { AdlibServerOfftubeOptions } from '../pieces'
 
 // TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
@@ -30,61 +24,30 @@ export interface MakeContentServerSourceLayers {
 	}
 	Sisyfos: {
 		ClipPending: string
+		StudioMicsGroup: string
 	}
-	STICKY_LAYERS?: string[]
-	OutputLayerId: string
-	SourceLayerId: string
 }
 
-export function MakeActionServer(
-	rank: number,
-	file: string,
-	mediaPlayerSession: string,
-	partDefinition: PartDefinition,
-	config: TV2BlueprintConfig,
-	sourceLayers: MakeContentServerSourceLayers,
-	vo: boolean,
-	duration: number,
-	adLib?: boolean,
-	offtubeOptions?: AdlibServerOfftubeOptions
-) {
-	// TODO: Reduce to bare minimum for action
-	const actionContent = MakeContentServer(
-		file,
-		SanitizeString(`segment_${mediaPlayerSession}_${file}`),
-		partDefinition,
-		config,
-		sourceLayers,
-		duration,
-		adLib,
-		offtubeOptions
-	)
+export interface VTFields {
+	file: string
+	duration: number
+}
 
-	return literal<IBlueprintActionManifest>({
-		actionId: AdlibActionType.SELECT_SERVER_CLIP,
-		userData: literal<ActionSelectServerClip>({
-			type: AdlibActionType.SELECT_SERVER_CLIP,
-			file,
-			partDefinition,
-			duration,
-			vo,
-			segmentExternalId: partDefinition.segmentExternalId
-		}),
-		userDataManifest: {},
-		display: {
-			_rank: rank,
-			label: `${partDefinition.storyName}`,
-			sourceLayerId: sourceLayers.SourceLayerId,
-			outputLayerId: sourceLayers.OutputLayerId,
-			content: { ...actionContent, timelineObjects: [] }, // TODO: No timeline
-			tags: [adLib ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
-			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!vo)],
-			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)]
-		}
+type VTProps = Pick<VTContent, 'studioLabel' | 'fileName' | 'path' | 'mediaFlowIds' | 'firstWords' | 'lastWords'>
+
+export function GetVTContentProperties(config: TV2BlueprintConfig, file: string): VTProps {
+	return literal<VTProps>({
+		studioLabel: '',
+		fileName: file,
+		path: `${config.studio.NetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		mediaFlowIds: [config.studio.MediaFlowId],
+		firstWords: '',
+		lastWords: ''
 	})
 }
 
 export function MakeContentServer(
+	context: NotesContext,
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
@@ -92,17 +55,13 @@ export function MakeContentServer(
 	sourceLayers: MakeContentServerSourceLayers,
 	duration: number,
 	adLib?: boolean,
-	offtubeOptions?: AdlibServerOfftubeOptions
+	offtubeOptions?: AdlibServerOfftubeOptions,
+	vo?: boolean
 ): VTContent {
 	return literal<VTContent>({
-		studioLabel: '',
-		fileName: file, // playing casparcg
-		path: `${config.studio.NetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
-		mediaFlowIds: [config.studio.MediaFlowId],
-		firstWords: '',
-		lastWords: '',
-		postrollDuration: config.studio.ServerPostrollDuration,
+		...GetVTContentProperties(config, file),
 		timelineObjects: GetServerTimeline(
+			context,
 			file,
 			mediaPlayerSessionId,
 			partDefinition,
@@ -110,20 +69,23 @@ export function MakeContentServer(
 			sourceLayers,
 			duration,
 			adLib,
-			offtubeOptions
+			offtubeOptions,
+			vo
 		)
 	})
 }
 
 export function GetServerTimeline(
+	context: NotesContext,
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
-	_config: TV2BlueprintConfig,
+	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	duration: number,
 	adLib?: boolean,
-	offtubeOptions?: AdlibServerOfftubeOptions
+	offtubeOptions?: AdlibServerOfftubeOptions,
+	vo?: boolean
 ) {
 	const serverEnableClass = `.${GetEnableClassForServer(mediaPlayerSessionId)}`
 	return literal<TimelineObjectCoreExt[]>([
@@ -180,26 +142,25 @@ export function GetServerTimeline(
 			classes: []
 		}),
 
-		...(sourceLayers.STICKY_LAYERS
-			? sourceLayers.STICKY_LAYERS.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							while: serverEnableClass
-						},
-						priority: 1,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					})
-			  })
-			: [])
+		...config.stickyLayers.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
+			return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+				id: '',
+				enable: {
+					while: serverEnableClass
+				},
+				priority: 1,
+				layer,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+					isPgm: 0
+				},
+				metaData: {
+					sisyfosPersistLevel: true
+				}
+			})
+		}),
+		...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)] : [])
 	])
 			...(sourceLayers.ATEM.ServerLookaheadAUX
 				? [
@@ -231,7 +192,7 @@ export function CutToServer(
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
-	sourceLayers: MakeContentServerSourceLayers,
+	atemLLayerMEPGM: string,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ) {
@@ -241,7 +202,7 @@ export function CutToServer(
 			start: config.studio.CasparPrerollDuration
 		},
 		priority: 1,
-		layer: sourceLayers.ATEM.MEPGM,
+		layer: atemLLayerMEPGM,
 		content: {
 			deviceType: TSR.DeviceType.ATEM,
 			type: TSR.TimelineContentTypeAtem.ME,

@@ -3,6 +3,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	SplitsContent
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -15,7 +16,6 @@ import {
 	GetTagForDVE,
 	GetTagForDVENext,
 	literal,
-	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TemplateIsValid
@@ -26,7 +26,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateDVE(
-	context: PartContext2,
+	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],

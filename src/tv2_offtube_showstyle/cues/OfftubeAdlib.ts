@@ -1,6 +1,7 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	SegmentContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
@@ -12,20 +13,23 @@ import {
 	CueDefinitionDVE,
 	GetDVETemplate,
 	literal,
-	PartContext2,
 	PartDefinition,
-	SanitizeString,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
 import _ = require('underscore')
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import {
+	OfftubeAbstractLLayer,
+	OfftubeAtemLLayer,
+	OfftubeCasparLLayer,
+	OfftubeSisyfosLLayer
+} from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateAdLib(
-	context: PartContext2,
+	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -48,31 +52,30 @@ export function OfftubeEvaluateAdLib(
 			CreateAdlibServer(
 				config,
 				rank,
-				SanitizeString(`adlib_server_${file}`),
 				partDefinition,
 				file,
 				false,
 				{
-					PgmServer: OfftubeSourceLayer.PgmServer,
-					PgmVoiceOver: OfftubeSourceLayer.PgmVoiceOver,
+					SourceLayer: {
+						PgmServer: OfftubeSourceLayer.PgmServer,
+						SelectedServer: OfftubeSourceLayer.SelectedServer
+					},
 					Caspar: {
 						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
+						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+						StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
 					},
-					ATEM: {
-						MEPGM: OfftubeAtemLLayer.AtemMEProgram
+					AtemLLayer: {
+						MEPgm: OfftubeAtemLLayer.AtemMEClean
 					},
-					STICKY_LAYERS: config.stickyLayers,
-					OutputLayerId: OfftubeOutputLayers.PGM,
-					SourceLayerId: OfftubeSourceLayer.PgmServer
+					AbstractLLayer: {
+						ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
+					}
 				},
 				duration,
-				{
-					isOfftube: true,
-					tagAsAdlib: true
-				}
+				true
 			)
 		)
 	} else {

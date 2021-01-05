@@ -1,16 +1,21 @@
 import { IBlueprintActionManifest } from 'tv-automation-sofie-blueprints-integration'
-import { PartDefinition, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
-import { MakeActionServer, MakeContentServerSourceLayers } from '../content/server'
+import {
+	ActionSelectServerClip,
+	GetTagForServer,
+	GetTagForServerNext,
+	GetVTContentProperties,
+	literal,
+	PartDefinition,
+	ServerPartLayers,
+	TV2BlueprintConfigBase,
+	TV2StudioConfigBase
+} from 'tv2-common'
+import { AdlibActionType, AdlibTags } from 'tv2-constants'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
 	isOfftube: true
 	tagAsAdlib: boolean
-}
-
-export interface CreateAdlibServerSourceLayers extends MakeContentServerSourceLayers {
-	PgmServer: string
-	PgmVoiceOver: string
 }
 
 export function CreateAdlibServer<
@@ -19,24 +24,33 @@ export function CreateAdlibServer<
 >(
 	config: ShowStyleConfig,
 	rank: number,
-	mediaPlayerSession: string,
 	partDefinition: PartDefinition,
 	file: string,
 	vo: boolean,
-	sourceLayers: CreateAdlibServerSourceLayers,
+	sourceLayers: ServerPartLayers,
 	duration: number,
-	offtubeOptions?: AdlibServerOfftubeOptions
+	tagAsAdlib: boolean
 ): IBlueprintActionManifest {
-	return MakeActionServer(
-		rank,
-		file,
-		mediaPlayerSession,
-		partDefinition,
-		config,
-		sourceLayers,
-		vo,
-		duration,
-		true,
-		offtubeOptions
-	)
+	return literal<IBlueprintActionManifest>({
+		actionId: AdlibActionType.SELECT_SERVER_CLIP,
+		userData: literal<ActionSelectServerClip>({
+			type: AdlibActionType.SELECT_SERVER_CLIP,
+			file,
+			partDefinition,
+			duration,
+			vo,
+			segmentExternalId: partDefinition.segmentExternalId
+		}),
+		userDataManifest: {},
+		display: {
+			_rank: rank,
+			label: `${partDefinition.storyName}`,
+			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
+			outputLayerId: 'pgm', // TODO: Enum
+			content: GetVTContentProperties(config, file),
+			tags: [tagAsAdlib ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
+			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!vo)],
+			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)]
+		}
+	})
 }
