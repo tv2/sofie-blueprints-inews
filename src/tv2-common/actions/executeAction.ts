@@ -305,7 +305,7 @@ export function getPiecesToPreserve(
 	return context
 		.getPieceInstances('next')
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
-		.filter(p => !(p as any).infinite) // TODO: Typings do not line up with core
+		.filter(p => !(p as any).infinite?.fromPreviousPart && !(p as any).infinite?.fromPreviousPlayhead) // TODO: Typings do not line up with core
 		.map<IBlueprintPiece>(p => p.piece)
 		.map(p => sanitizePieceStart(p))
 		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
@@ -518,6 +518,9 @@ function executeActionSelectServerClip<
 			: []),
 		...effektPieces
 	])
+	if (settings.SelectedAdlibs) {
+		context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Server, settings.SelectedAdlibs.SourceLayer.VO])
+	}
 }
 
 function dveContainsServer(sources: DVESources) {
@@ -902,6 +905,9 @@ function startNewDVELayout<
 				  ])
 				: [])
 		])
+		if (settings.SelectedAdlibs) {
+			context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.DVE])
+		}
 	} else {
 		if (replacePieceInstancesOrQueue.activeDVE) {
 			context.updatePieceInstance(replacePieceInstancesOrQueue.activeDVE, dvePiece)
@@ -1011,6 +1017,10 @@ function executeActionSelectJingle<
 			  ])
 			: [])
 	])
+
+	if (settings.SelectedAdlibs) {
+		context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Effekt])
+	}
 }
 
 function executeActionCutToCamera<

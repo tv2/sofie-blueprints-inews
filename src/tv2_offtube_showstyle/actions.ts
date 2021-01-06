@@ -159,4 +159,6 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		fullDataStore,
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdlibGraphicsFull])
 	])
+
+	context.stopPiecesOnLayers([OfftubeSourceLayer.SelectedAdlibGraphicsFull])
 }
