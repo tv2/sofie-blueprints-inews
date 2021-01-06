@@ -3,28 +3,34 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	NotesContext,
-	PieceLifespan,
-	PieceMetaData
+	PieceLifespan
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CutToServer,
 	GetTagForServer,
 	GetTagForServerNext,
 	MakeContentServer,
-	MakeContentServerSourceLayers
+	MakeContentServerSourceLayers,
+	PieceMetaData
 } from 'tv2-common'
-import { TallyTags } from 'tv2-constants'
+import { AdlibActionType, TallyTags } from 'tv2-constants'
+import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { GetVTContentProperties } from '../content'
 import { PartDefinition } from '../inewsConversion'
 import { literal, SanitizeString } from '../util'
 import { CreatePartInvalid } from './invalid'
-import { GetVTContentProperties } from '../content'
+
+interface PieceMetaDataServer {
+	userData: ActionSelectServerClip
+}
 
 export interface ServerPartProps {
 	vo: boolean
 	totalWords: number
 	totalTime: number
 	tapeTime: number
+	session?: string
 }
 
 export type ServerPartLayers = {
@@ -79,7 +85,7 @@ export function CreatePartServerBase<
 
 	const pieces: IBlueprintPiece[] = []
 
-	const mediaPlayerSession = SanitizeString(`segment_${partDefinition.segmentExternalId}_${file}`)
+	const mediaPlayerSession = SanitizeString(`segment_${props.session ?? partDefinition.segmentExternalId}_${file}`)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -89,8 +95,15 @@ export function CreatePartServerBase<
 			outputLayerId: 'sec',
 			sourceLayerId: layers.SourceLayer.SelectedServer,
 			lifespan: PieceLifespan.OutOnSegmentEnd,
-			metaData: literal<PieceMetaData>({
-				mediaPlayerSessions: [mediaPlayerSession]
+			metaData: literal<PieceMetaData & PieceMetaDataServer>({
+				mediaPlayerSessions: [mediaPlayerSession],
+				userData: literal<ActionSelectServerClip>({
+					type: AdlibActionType.SELECT_SERVER_CLIP,
+					file,
+					partDefinition,
+					duration: actualDuration,
+					vo: props.vo
+				})
 			}),
 			content: MakeContentServer(
 				context,
@@ -105,6 +118,9 @@ export function CreatePartServerBase<
 					Sisyfos: {
 						ClipPending: layers.Sisyfos.ClipPending,
 						StudioMicsGroup: layers.Sisyfos.StudioMicsGroup
+					},
+					ATEM: {
+						ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
 					}
 				},
 				duration
@@ -121,6 +137,9 @@ export function CreatePartServerBase<
 			outputLayerId: 'pgm',
 			sourceLayerId: layers.SourceLayer.PgmServer,
 			lifespan: PieceLifespan.WithinPart,
+			metaData: literal<PieceMetaData>({
+				mediaPlayerSessions: [mediaPlayerSession]
+			}),
 			content: {
 				...GetVTContentProperties(config, file),
 				timelineObjects: CutToServer(
@@ -128,8 +147,7 @@ export function CreatePartServerBase<
 					partDefinition,
 					config,
 					layers.AtemLLayer.MEPgm,
-					layers.AbstractLLayer.ServerEnable,
-					layers.AtemLLayer.ServerLookaheadAux
+					layers.AbstractLLayer.ServerEnable
 				)
 			},
 			tags: [

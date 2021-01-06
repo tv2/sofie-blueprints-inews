@@ -22,6 +22,9 @@ export interface MakeContentServerSourceLayers {
 		ClipPending: string
 		StudioMicsGroup: string
 	}
+	ATEM: {
+		ServerLookaheadAux?: string
+	}
 }
 
 export interface VTFields {
@@ -164,7 +167,29 @@ function GetServerTimeline(
 				}
 			})
 		}),
-		...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)] : [])
+		...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)] : []),
+		...(sourceLayers.ATEM.ServerLookaheadAux
+			? [
+					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+						id: '',
+						enable: {
+							while: '1'
+						},
+						priority: 0,
+						layer: sourceLayers.ATEM.ServerLookaheadAux,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
+							aux: {
+								input: -1
+							}
+						},
+						metaData: {
+							mediaPlayerSession: mediaPlayerSessionId
+						}
+					})
+			  ]
+			: [])
 	])
 }
 
@@ -174,7 +199,6 @@ export function CutToServer(
 	config: TV2BlueprintConfig,
 	atemLLayerMEPGM: string,
 	abstractLLayerEnableServer: string,
-	atemLLayerServerLookaheadAux?: string,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ) {
@@ -205,29 +229,7 @@ export function CutToServer(
 				...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
 				...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
 			]
-		}),
-		...(atemLLayerServerLookaheadAux
-			? [
-					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							while: '1'
-						},
-						priority: 0,
-						layer: atemLLayerServerLookaheadAux,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.AUX,
-							aux: {
-								input: -1
-							}
-						},
-						metaData: {
-							mediaPlayerSession: mediaPlayerSessionId
-						}
-					})
-			  ]
-			: [])
+		})
 	]
 }
 

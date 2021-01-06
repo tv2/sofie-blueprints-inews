@@ -47,7 +47,6 @@ import {
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	MakeContentDVE2,
-	MakeContentServer,
 	PartDefinition,
 	PieceMetaData,
 	TimelineBlueprintExt,
@@ -57,7 +56,6 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
-import { CutToServer, GetVTContentProperties } from '../content'
 import { TimeFromFrames } from '../frameTime'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
@@ -68,8 +66,6 @@ import {
 	GetTagForJingleNext,
 	GetTagForKam,
 	GetTagForLive,
-	GetTagForServer,
-	GetTagForServerNext,
 	GetTagForTransition
 } from '../pieces'
 import { assertUnreachable } from '../util'
@@ -332,7 +328,6 @@ function executeActionSelectServerClip<
 ) {
 	const file = userData.file
 	const partDefinition = userData.partDefinition
-	const duration = userData.duration
 	const config = settings.getConfig(context)
 
 	const externalId = generateExternalId(context, actionId, [file])
@@ -342,55 +337,53 @@ function executeActionSelectServerClip<
 				.getPieceInstances('current')
 				.find(
 					p =>
-						p.piece.sourceLayerId ===
-							(userData.vo ? settings.SelectedAdlibs!.SourceLayer.Server : settings.SelectedAdlibs!.SourceLayer.VO) &&
+						(p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO ||
+							p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.Server) &&
 						p.piece.lifespan === PieceLifespan.OutOnSegmentEnd
 				)
 		: undefined
 
-	const content = MakeContentServer(
+	const basePart = CreatePartServerBase(
 		context,
-		file,
-		sessionToContinue ?? externalId,
-		partDefinition,
 		config,
+		partDefinition,
+		{ vo: userData.vo, totalWords: 0, totalTime: 0, tapeTime: userData.duration / 1000, session: sessionToContinue },
 		{
+			SourceLayer: {
+				PgmServer: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
+				SelectedServer: userData.vo
+					? settings.SelectedAdlibs.SourceLayer.VO
+					: settings.SelectedAdlibs.SourceLayer.Server
+			},
+			AbstractLLayer: {
+				ServerEnable: settings.LLayer.Abstract.ServerEnable
+			},
+			AtemLLayer: {
+				MEPgm: settings.LLayer.Atem.MEClean,
+				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
+			},
 			Caspar: {
 				ClipPending: settings.LLayer.Caspar.ClipPending
 			},
 			Sisyfos: {
 				ClipPending: settings.LLayer.Sisyfos.ClipPending,
 				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
+			},
+			ATEM: {
+				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
 			}
-		},
-		duration
+		}
 	)
 
-	const activeServerPiece = literal<IBlueprintPiece>({
-		externalId,
-		name: file,
-		enable: { start: 0 },
-		outputLayerId: settings.OutputLayer.PGM,
-		sourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
-		lifespan: PieceLifespan.WithinPart,
-		content: {
-			...GetVTContentProperties(config, file),
-			timelineObjects: CutToServer(
-				sessionToContinue ?? externalId,
-				partDefinition,
-				config,
-				settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
-				settings.LLayer.Abstract.ServerEnable,
-				settings.LLayer.Atem.ServerLookaheadAUX
-			)
-		},
-		adlibPreroll: config.studio.CasparPrerollDuration,
-		tags: [
-			GetTagForServer(userData.segmentExternalId, file, userData.vo),
-			GetTagForServerNext(userData.segmentExternalId, file, userData.vo),
-			TallyTags.SERVER_IS_LIVE
-		]
-	})
+	const activeServerPiece = basePart.part.pieces.find(
+		p => p.sourceLayerId === settings.SourceLayers.Server || p.sourceLayerId === settings.SourceLayers.VO
+	)
+
+	const serverDataStore = basePart.part.pieces.find(
+		p =>
+			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.Server ||
+			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO
+	)
 
 	const grafikPieces: IBlueprintPiece[] = []
 
@@ -408,68 +401,13 @@ function executeActionSelectServerClip<
 		}
 	)
 
-	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
-		if (userData.vo) {
-			activeServerPiece.content.timelineObjects.push(
-				GetSisyfosTimelineObjForCamera(context, config, 'server', settings.LLayer.Sisyfos.StudioMics)
-			)
-		}
-
-		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
+	if (basePart.invalid || !activeServerPiece || !serverDataStore) {
+		context.warning(`Could not start server clip`)
+		return
 	}
 
-	const serverDataStore = settings.SelectedAdlibs
-		? literal<IBlueprintPiece>({
-				externalId,
-				name: file,
-				enable: {
-					start: 0
-				},
-				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
-				sourceLayerId: userData.vo
-					? settings.SelectedAdlibs.SourceLayer.VO
-					: settings.SelectedAdlibs.SourceLayer.Server,
-				lifespan: PieceLifespan.OutOnSegmentEnd,
-				metaData: {
-					userData,
-					mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
-				},
-				tags: [GetTagForServerNext(userData.segmentExternalId, file, userData.vo)],
-				content
-		  })
-		: undefined
-
-	if (serverDataStore) {
-		const lookaheadObj = (activeServerPiece.content?.timelineObjects as Array<
-			TSR.TSRTimelineObj & TimelineBlueprintExt
-		>).find(t => t.layer === settings.LLayer.Atem.Next)
-		const mediaObj = (activeServerPiece.content?.timelineObjects as Array<
-			TSR.TSRTimelineObj & TimelineBlueprintExt
-		>).find(
-			t =>
-				t.layer === settings.LLayer.Caspar.ClipPending &&
-				t.content.deviceType === TSR.DeviceType.CASPARCG &&
-				t.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
-		) as (TSR.TimelineObjCCGMedia & TimelineBlueprintExt) | undefined
-
-		if (lookaheadObj && mediaObj && settings.LLayer.Atem.ServerLookaheadAUX) {
-			serverDataStore.content?.timelineObjects.push(
-				literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-					id: '',
-					enable: lookaheadObj.enable,
-					priority: 0,
-					layer: settings.LLayer.Atem.ServerLookaheadAUX,
-					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.AUX,
-						aux: {
-							input: -1
-						}
-					},
-					metaData: lookaheadObj.metaData
-				})
-			)
-		}
+	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
+		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
 	}
 
 	const blockingPiece = conflictingPiece
@@ -487,32 +425,7 @@ function executeActionSelectServerClip<
 		  })
 		: undefined
 
-	let part = CreatePartServerBase(
-		context,
-		config,
-		partDefinition,
-		{ vo: userData.vo, totalWords: 0, totalTime: 0, tapeTime: userData.duration / 1000 },
-		{
-			SourceLayer: {
-				PgmServer: settings.SourceLayers.Server,
-				SelectedServer: settings.SelectedAdlibs.SourceLayer.Server || 'TODO'
-			},
-			AbstractLLayer: {
-				ServerEnable: settings.LLayer.Abstract.ServerEnable
-			},
-			AtemLLayer: {
-				MEPgm: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
-				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
-			},
-			Caspar: {
-				ClipPending: settings.LLayer.Caspar.ClipPending
-			},
-			Sisyfos: {
-				ClipPending: settings.LLayer.Sisyfos.ClipPending,
-				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
-			}
-		}
-	).part.part
+	let part = basePart.part.part
 
 	const effektPieces: IBlueprintPiece[] = []
 	part = {
@@ -527,7 +440,7 @@ function executeActionSelectServerClip<
 
 	context.queuePart(part, [
 		activeServerPiece,
-		...(serverDataStore ? [serverDataStore] : []),
+		serverDataStore,
 		...(blockingPiece ? [blockingPiece] : []),
 		...grafikPieces,
 		...(settings.SelectedAdlibs
@@ -566,7 +479,7 @@ function executeActionSelectDVE<
 
 	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.error(`DVE layout not recognised`)
+		context.warning(`DVE layout not recognised`)
 		return
 	}
 
@@ -687,7 +600,7 @@ function cutServerToBox<
 			!existingCasparObj.metaData ||
 			!existingCasparObj.metaData.mediaPlayerSession
 		) {
-			context.error(`Failed to start DVE with server`)
+			context.warning(`Failed to start DVE with server`)
 			return dvePiece
 		}
 
@@ -1620,10 +1533,6 @@ function executeActionCommentatorSelectServer<
 	_actionId: string,
 	_userData: ActionCommentatorSelectServer
 ) {
-	if (!settings.SelectedAdlibs) {
-		return
-	}
-
 	const data = findDataStore<ActionSelectServerClip>(context, [
 		settings.SelectedAdlibs.SourceLayer.Server,
 		settings.SelectedAdlibs.SourceLayer.VO

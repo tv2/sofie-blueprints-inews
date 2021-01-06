@@ -33,7 +33,8 @@ export function CreatePartServer(
 		Sisyfos: {
 			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
 			StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
-		}
+		},
+		ATEM: {}
 	})
 
 	if (basePartProps.invalid) {

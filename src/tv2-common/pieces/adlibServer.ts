@@ -38,8 +38,7 @@ export function CreateAdlibServer<
 			file,
 			partDefinition,
 			duration,
-			vo,
-			segmentExternalId: partDefinition.segmentExternalId
+			vo
 		}),
 		userDataManifest: {},
 		display: {

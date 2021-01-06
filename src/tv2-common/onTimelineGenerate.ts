@@ -11,7 +11,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { SisyfosLLAyer, VirtualAbstractLLayer } from '../tv2_afvd_studio/layers'
-import { OfftubeSisyfosLLayer, OfftubeAbstractLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
+import { OfftubeAbstractLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 

@@ -129,8 +129,7 @@ const selectServerClipAction = literal<ActionSelectServerClip>({
 		modified: 0,
 		storyName: SEGMENT_ID,
 		segmentExternalId: SEGMENT_ID_EXTERNAL
-	}),
-	segmentExternalId: 'TEST STORY 1'
+	})
 })
 
 const selectVOClipAction = literal<ActionSelectServerClip>({
@@ -152,8 +151,7 @@ const selectVOClipAction = literal<ActionSelectServerClip>({
 		modified: 0,
 		storyName: SEGMENT_ID,
 		segmentExternalId: SEGMENT_ID_EXTERNAL
-	}),
-	segmentExternalId: 'TEST STORY 2'
+	})
 })
 
 const selectDVEActionMorbarn = literal<ActionSelectDVE>({

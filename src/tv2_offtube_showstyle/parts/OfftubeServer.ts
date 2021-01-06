@@ -39,6 +39,9 @@ export function OfftubeCreatePartServer(
 		Sisyfos: {
 			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
 			StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+		},
+		ATEM: {
+			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 		}
 	})
 
@@ -80,6 +83,9 @@ export function OfftubeCreatePartServer(
 				},
 				AbstractLLayer: {
 					ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
+				},
+				ATEM: {
+					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 				}
 			},
 			0,

@@ -9,7 +9,6 @@ interface ActionBase {
 
 export interface ActionSelectServerClip extends ActionBase {
 	type: AdlibActionType.SELECT_SERVER_CLIP
-	segmentExternalId: string
 	file: string
 	partDefinition: PartDefinition
 	duration: number

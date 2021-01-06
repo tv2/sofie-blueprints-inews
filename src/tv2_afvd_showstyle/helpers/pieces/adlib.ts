@@ -64,7 +64,8 @@ export function EvaluateAdLib(
 					},
 					AbstractLLayer: {
 						ServerEnable: VirtualAbstractLLayer.AbstractLLayerServerEnable
-					}
+					},
+					ATEM: {}
 				},
 				0, // TODO: duration
 				true

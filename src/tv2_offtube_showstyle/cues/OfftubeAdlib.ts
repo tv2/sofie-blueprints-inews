@@ -72,6 +72,9 @@ export function OfftubeEvaluateAdLib(
 					},
 					AbstractLLayer: {
 						ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
+					},
+					ATEM: {
+						ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 					}
 				},
 				duration,
