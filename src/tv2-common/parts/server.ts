@@ -125,7 +125,7 @@ export function CreatePartServerBase<
 				},
 				duration
 			),
-			tags: []
+			tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
 		})
 	)
 
@@ -150,11 +150,7 @@ export function CreatePartServerBase<
 					layers.AbstractLLayer.ServerEnable
 				)
 			},
-			tags: [
-				GetTagForServer(partDefinition.storyName, file, false),
-				GetTagForServerNext(partDefinition.storyName, file, false),
-				TallyTags.SERVER_IS_LIVE
-			]
+			tags: [GetTagForServer(partDefinition.segmentExternalId, file, false), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 
