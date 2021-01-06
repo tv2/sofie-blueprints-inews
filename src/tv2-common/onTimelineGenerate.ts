@@ -11,7 +11,7 @@ import {
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
 import { SisyfosLLAyer, VirtualAbstractLLayer } from '../tv2_afvd_studio/layers'
-import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
+import { OfftubeSisyfosLLayer, OfftubeAbstractLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
@@ -91,12 +91,30 @@ export function onTimelineGenerate<
 
 	dveBoxLookaheadUseOriginalEnable(timeline)
 
+	timeline = processServerLookaheads(context, timeline, resolvedPieces, sourceLayers)
+
+	return Promise.resolve({
+		timeline,
+		persistentState
+	})
+}
+
+function processServerLookaheads(
+	context: TimelineEventContext,
+	timeline: OnGenerateTimelineObj[],
+	resolvedPieces: IBlueprintResolvedPieceInstance[],
+	sourceLayers: ABSourceLayers
+): OnGenerateTimelineObj[] {
 	// TODO: Make generic
 	const objsEnablingServers = timeline.filter(
 		obj =>
-			obj.layer === VirtualAbstractLLayer.AbstractLLayerServerEnable &&
-			resolvedPieces.some(p => p._id === obj.pieceInstanceId && !p.resolvedDuration)
+			(obj.layer === VirtualAbstractLLayer.AbstractLLayerServerEnable ||
+				obj.layer === OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable) &&
+			resolvedPieces.some(
+				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
+			)
 	)
+
 	const activeClasses = objsEnablingServers.reduce((prev, curr) => {
 		if (curr.classes) {
 			prev.push(...curr.classes)
@@ -120,7 +138,9 @@ export function onTimelineGenerate<
 				layer
 			) &&
 			!obj.isLookahead &&
-			resolvedPieces.some(p => p._id === obj.pieceInstanceId && !p.resolvedDuration) &&
+			resolvedPieces.some(
+				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
+			) &&
 			activeClasses.some(cls => enableCondition.includes(cls))
 		)
 	})
@@ -136,8 +156,8 @@ export function onTimelineGenerate<
 	}, [] as string[])
 
 	// Filter out lookaheads for servers that are currently in PGM.
-	// Does not filter out AUX lookaheads.
-	timeline = timeline.filter(obj => {
+	// Does not filter out AUX lookaheads. Should it?
+	return timeline.filter(obj => {
 		if (_.isArray(obj.enable)) {
 			return true
 		}
@@ -157,11 +177,6 @@ export function onTimelineGenerate<
 			obj.isLookahead &&
 			onAirSessions.includes(mediaPlayerSession)
 		)
-	})
-
-	return Promise.resolve({
-		timeline,
-		persistentState
 	})
 }
 

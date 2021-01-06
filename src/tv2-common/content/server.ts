@@ -83,7 +83,7 @@ export function MakeContentServer(
 	})
 }
 
-export function GetServerTimeline(
+function GetServerTimeline(
 	context: NotesContext,
 	file: string,
 	mediaPlayerSessionId: string,
@@ -96,40 +96,36 @@ export function GetServerTimeline(
 	vo?: boolean
 ) {
 	const serverEnableClass = `.${GetEnableClassForServer(mediaPlayerSessionId)}`
+
+	const mediaObj = literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+		id: '',
+		enable: {
+			while: serverEnableClass
+		},
+		priority: 1,
+		layer: sourceLayers.Caspar.ClipPending,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.MEDIA,
+			file,
+			loop: offtubeOptions?.isOfftube ? false : adLib,
+			seek: 0,
+			length: duration,
+			playing: true
+		},
+		metaData: {
+			mediaPlayerSession: mediaPlayerSessionId
+		},
+		classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
+	})
+
+	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
+	mediaOffObj.enable = { while: `!${serverEnableClass}` }
+	mediaOffObj.content.playing = false
+
 	return literal<TimelineObjectCoreExt[]>([
-		literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-			id: '',
-			enable: {
-				while: 1
-			},
-			priority: 1,
-			layer: sourceLayers.Caspar.ClipPending,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file,
-				loop: offtubeOptions?.isOfftube ? false : adLib,
-				seek: 0,
-				length: duration,
-				playing: false
-			},
-			keyframes: [
-				{
-					id: '',
-					enable: {
-						while: serverEnableClass
-					},
-					content: {
-						seek: 0,
-						playing: true
-					}
-				}
-			],
-			metaData: {
-				mediaPlayerSession: mediaPlayerSessionId
-			},
-			classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
-		}),
+		mediaObj,
+		mediaOffObj,
 
 		literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 			id: '',
