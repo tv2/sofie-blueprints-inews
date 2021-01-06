@@ -330,6 +330,12 @@ function executeActionSelectServerClip<
 
 	const externalId = generateExternalId(context, actionId, [file])
 
+	const currentPiece = settings.SelectedAdlibs
+		? context
+				.getPieceInstances('current')
+				.find(p => p.piece.sourceLayerId === (userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server))
+		: undefined
+
 	const conflictingPiece = settings.SelectedAdlibs
 		? context
 				.getPieceInstances('current')
@@ -446,8 +452,8 @@ function executeActionSelectServerClip<
 			: []),
 		...effektPieces
 	])
-	if (settings.SelectedAdlibs) {
-		context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Server, settings.SelectedAdlibs.SourceLayer.VO])
+	if (settings.SelectedAdlibs && !currentPiece) {
+		context.stopPiecesOnLayers([userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server])
 	}
 }
 
