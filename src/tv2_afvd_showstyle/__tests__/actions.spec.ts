@@ -337,6 +337,36 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 	})
 }
 
+const serverPieceInstance = literal<IBlueprintPieceInstance>({
+	_id: 'serverPieceInstance',
+	piece: literal<IBlueprintPieceDB>({
+		_id: 'Server Current',
+		enable: {
+			start: 0
+		},
+		externalId: CURRENT_PART_EXTERNAL_ID,
+		name: 'SERVER',
+		sourceLayerId: SourceLayer.PgmServer,
+		outputLayerId: 'pgm',
+		lifespan: PieceLifespan.WithinPart
+	})
+})
+
+const voPieceInstance = literal<IBlueprintPieceInstance>({
+	_id: 'voPieceInstance',
+	piece: literal<IBlueprintPieceDB>({
+		_id: 'VO Current',
+		enable: {
+			start: 0
+		},
+		externalId: CURRENT_PART_EXTERNAL_ID,
+		name: 'VO',
+		sourceLayerId: SourceLayer.PgmVoiceOver,
+		outputLayerId: 'pgm',
+		lifespan: PieceLifespan.WithinPart
+	})
+})
+
 function getCameraPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
 	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmCam)
 	expect(piece).toBeTruthy()
@@ -392,42 +422,82 @@ function expectNoWarningsOrErrors(context: MockActionContext) {
 	expect(context.errors).toEqual([])
 }
 
-function makeMockContext(
-	defaultTransition: 'cut' | 'mix' | 'effekt',
-	currentPiece: 'cam' | 'evs',
-	nextPiece: 'cam' | 'evs'
-): MockActionContext {
+function makeMockCurrentPart() {
+	return JSON.parse(JSON.stringify(currentPartMock))
+}
+
+function makeMockCurrentPieces(currentPiece: 'cam' | 'evs' | 'server' | 'vo') {
+	switch (currentPiece) {
+		case 'cam':
+			return [JSON.parse(JSON.stringify(kamPieceInstance))]
+		case 'evs':
+			return [JSON.parse(JSON.stringify(evsPieceInstance))]
+		case 'server':
+			return [JSON.parse(JSON.stringify(serverPieceInstance))]
+		case 'vo':
+			return [JSON.parse(JSON.stringify(voPieceInstance))]
+	}
+}
+
+function makeMockNextPart(defaultTransition: 'cut' | 'mix' | 'effekt') {
 	switch (defaultTransition) {
 		case 'cut':
-			return new MockActionContext(
-				SEGMENT_ID,
-				JSON.parse(JSON.stringify(currentPartMock)),
-				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance_Cut))],
-				JSON.parse(JSON.stringify(nextPartMock_Cut)),
-				[JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Cut : evsPieceInstance_Cut))]
-			)
+			return JSON.parse(JSON.stringify(nextPartMock_Cut))
 		case 'mix':
-			return new MockActionContext(
-				SEGMENT_ID,
-				JSON.parse(JSON.stringify(currentPartMock)),
-				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance))],
-				JSON.parse(JSON.stringify(nextPartMock_Mix)),
-				[JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Mix : evsPieceInstance_Mix))]
-			)
-			break
+			return JSON.parse(JSON.stringify(nextPartMock_Mix))
 		case 'effekt':
-			return new MockActionContext(
-				SEGMENT_ID,
-				JSON.parse(JSON.stringify(currentPartMock)),
-				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance_Mix))],
-				JSON.parse(JSON.stringify(nextPartMock_Effekt)),
-				[
-					JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Effekt : evsPieceInstance_Effekt)),
-					JSON.stringify(JSON.stringify(effektPieceInstance_1))
-				]
-			)
-			break
+			return JSON.parse(JSON.stringify(nextPartMock_Effekt))
 	}
+}
+
+function makeMockNextPieces(defaultTransition: 'cut' | 'mix' | 'effekt', nextPiece: 'cam' | 'evs' | 'none') {
+	if (nextPiece === 'none') {
+		return []
+	}
+
+	switch (defaultTransition) {
+		case 'cut':
+			switch (nextPiece) {
+				case 'cam':
+					return [JSON.parse(JSON.stringify(kamPieceInstance_Cut))]
+				case 'evs':
+					return [JSON.parse(JSON.stringify(evsPieceInstance_Cut))]
+			}
+		case 'effekt':
+			switch (nextPiece) {
+				case 'cam':
+					return [
+						JSON.parse(JSON.stringify(kamPieceInstance_Effekt)),
+						JSON.parse(JSON.stringify(effektPieceInstance_1))
+					]
+				case 'evs':
+					return [
+						JSON.parse(JSON.stringify(evsPieceInstance_Effekt)),
+						JSON.parse(JSON.stringify(effektPieceInstance_1))
+					]
+			}
+		case 'mix':
+			switch (nextPiece) {
+				case 'cam':
+					return [JSON.parse(JSON.stringify(kamPieceInstance_Mix))]
+				case 'evs':
+					return [JSON.parse(JSON.stringify(evsPieceInstance_Mix))]
+			}
+	}
+}
+
+function makeMockContext(
+	defaultTransition: 'cut' | 'mix' | 'effekt',
+	currentPiece: 'cam' | 'evs' | 'server' | 'vo',
+	nextPiece: 'cam' | 'evs' | 'none'
+): MockActionContext {
+	return new MockActionContext(
+		SEGMENT_ID,
+		makeMockCurrentPart(),
+		makeMockCurrentPieces(currentPiece),
+		makeMockNextPart(defaultTransition),
+		makeMockNextPieces(defaultTransition, nextPiece)
+	)
 }
 
 describe('Take with CUT', () => {
@@ -671,27 +741,7 @@ describe('Take with EFFEKT', () => {
 
 describe('Camera shortcuts on server', () => {
 	it('It cuts directly to a camera on a server', () => {
-		const context = makeMockContext('cut', 'cam', 'cam')
-
-		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
-				_id: 'serverPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
-					_id: 'Server Current',
-					enable: {
-						start: 0
-					},
-					externalId: CURRENT_PART_EXTERNAL_ID,
-					name: 'SERVER',
-					sourceLayerId: SourceLayer.PgmServer,
-					outputLayerId: 'pgm',
-					lifespan: PieceLifespan.WithinPart
-				})
-			})
-		]
-
-		context.nextPart = undefined
-		context.nextPieceInstances = []
+		const context = makeMockContext('cut', 'server', 'none')
 
 		executeActionAFVD(
 			context,
@@ -709,27 +759,7 @@ describe('Camera shortcuts on server', () => {
 	})
 
 	it('It queues a camera without taking it', () => {
-		const context = makeMockContext('cut', 'cam', 'cam')
-
-		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
-				_id: 'serverPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
-					_id: 'Server Current',
-					enable: {
-						start: 0
-					},
-					externalId: CURRENT_PART_EXTERNAL_ID,
-					name: 'SERVER',
-					sourceLayerId: SourceLayer.PgmServer,
-					outputLayerId: 'pgm',
-					lifespan: PieceLifespan.WithinPart
-				})
-			})
-		]
-
-		context.nextPart = undefined
-		context.nextPieceInstances = []
+		const context = makeMockContext('cut', 'server', 'none')
 
 		executeActionAFVD(
 			context,
@@ -749,27 +779,7 @@ describe('Camera shortcuts on server', () => {
 
 describe('Camera shortcuts on VO', () => {
 	it('It cuts directly to a camera on a VO', () => {
-		const context = makeMockContext('cut', 'cam', 'cam')
-
-		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
-				_id: 'voPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
-					_id: 'VO Current',
-					enable: {
-						start: 0
-					},
-					externalId: CURRENT_PART_EXTERNAL_ID,
-					name: 'VO',
-					sourceLayerId: SourceLayer.PgmVoiceOver,
-					outputLayerId: 'pgm',
-					lifespan: PieceLifespan.WithinPart
-				})
-			})
-		]
-
-		context.nextPart = undefined
-		context.nextPieceInstances = []
+		const context = makeMockContext('cut', 'vo', 'none')
 
 		executeActionAFVD(
 			context,
@@ -787,27 +797,7 @@ describe('Camera shortcuts on VO', () => {
 	})
 
 	it('It queues a camera without taking it', () => {
-		const context = makeMockContext('cut', 'cam', 'cam')
-
-		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
-				_id: 'voPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
-					_id: 'VO Current',
-					enable: {
-						start: 0
-					},
-					externalId: CURRENT_PART_EXTERNAL_ID,
-					name: 'VO',
-					sourceLayerId: SourceLayer.PgmVoiceOver,
-					outputLayerId: 'pgm',
-					lifespan: PieceLifespan.WithinPart
-				})
-			})
-		]
-
-		context.nextPart = undefined
-		context.nextPieceInstances = []
+		const context = makeMockContext('cut', 'vo', 'none')
 
 		executeActionAFVD(
 			context,
