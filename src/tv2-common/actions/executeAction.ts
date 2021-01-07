@@ -1453,18 +1453,13 @@ function executeActionTakeWithTransition<
 			settings.SourceLayers.Live,
 			settings.SourceLayers.Server,
 			settings.SourceLayers.VO,
-			settings.SourceLayers.Effekt,
 			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
 		].includes(p.piece.sourceLayerId)
 	)
 
 	context.takeAfterExecuteAction(userData.takeNow)
 
-	if (
-		!primaryPiece ||
-		!primaryPiece.piece.content ||
-		primaryPiece.piece.sourceLayerId === settings.SourceLayers.Effekt
-	) {
+	if (!primaryPiece || !primaryPiece.piece.content) {
 		return
 	}
 
