@@ -46,6 +46,21 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 	})
 }
 
+const evsPieceInstance: IBlueprintPieceInstance = {
+	_id: 'evsPieceInstance',
+	piece: literal<IBlueprintPieceDB>({
+		_id: 'EVS 1 Current',
+		enable: {
+			start: 0
+		},
+		externalId: CURRENT_PART_EXTERNAL_ID,
+		name: 'EVS 1',
+		sourceLayerId: SourceLayer.PgmDelayed,
+		outputLayerId: 'pgm',
+		lifespan: PieceLifespan.WithinPart
+	})
+}
+
 // tslint:disable-next-line: variable-name
 const nextPartMock_Cut: IBlueprintPartInstance = {
 	_id: NEXT_PART_ID,
@@ -212,8 +227,125 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 	})
 }
 
+// tslint:disable-next-line: variable-name
+const evsPieceInstance_Cut: IBlueprintPieceInstance = {
+	_id: 'evsPieceInstance_Cut',
+	piece: literal<IBlueprintPieceDB>({
+		_id: 'EVS 1 Next Cut',
+		enable: {
+			start: 0
+		},
+		externalId: NEXT_PART_EXTERNAL_ID,
+		name: 'EVS 1',
+		sourceLayerId: SourceLayer.PgmDelayed,
+		outputLayerId: 'pgm',
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: [
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					layer: AtemLLayer.AtemMEProgram,
+					enable: {
+						start: 0
+					},
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: 1,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					}
+				})
+			]
+		}
+	})
+}
+
+// tslint:disable-next-line: variable-name
+const evsPieceInstance_Mix: IBlueprintPieceInstance = {
+	_id: 'evsPieceInstance_Mix',
+	piece: literal<IBlueprintPieceDB>({
+		_id: 'EVS 1 Next Cut',
+		enable: {
+			start: 0
+		},
+		externalId: NEXT_PART_EXTERNAL_ID,
+		name: 'EVS 1',
+		sourceLayerId: SourceLayer.PgmDelayed,
+		outputLayerId: 'pgm',
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: [
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					layer: AtemLLayer.AtemMEProgram,
+					enable: {
+						start: 0
+					},
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: 1,
+							transition: TSR.AtemTransitionStyle.MIX,
+							transitionSettings: {
+								mix: {
+									rate: 12
+								}
+							}
+						}
+					}
+				})
+			]
+		}
+	})
+}
+
+// tslint:disable-next-line: variable-name
+const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
+	_id: 'evsPieceInstance_Effekt',
+	piece: literal<IBlueprintPieceDB>({
+		_id: 'EVS 1 Next Cut',
+		enable: {
+			start: 0
+		},
+		externalId: NEXT_PART_EXTERNAL_ID,
+		name: 'EVS 1',
+		sourceLayerId: SourceLayer.PgmDelayed,
+		outputLayerId: 'pgm',
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: [
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					layer: AtemLLayer.AtemMEProgram,
+					enable: {
+						start: 0
+					},
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: 1,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					}
+				})
+			]
+		}
+	})
+}
+
 function getCameraPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
 	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmCam)
+	expect(piece).toBeTruthy()
+
+	return piece!
+}
+
+function getEVSPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
+	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmDelayed)
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -260,32 +392,39 @@ function expectNoWarningsOrErrors(context: MockActionContext) {
 	expect(context.errors).toEqual([])
 }
 
-function makeMockContext(defaultTransition: 'cut' | 'mix' | 'effekt'): MockActionContext {
+function makeMockContext(
+	defaultTransition: 'cut' | 'mix' | 'effekt',
+	currentPiece: 'cam' | 'evs',
+	nextPiece: 'cam' | 'evs'
+): MockActionContext {
 	switch (defaultTransition) {
 		case 'cut':
 			return new MockActionContext(
 				SEGMENT_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
-				[JSON.parse(JSON.stringify(kamPieceInstance))],
+				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance_Cut))],
 				JSON.parse(JSON.stringify(nextPartMock_Cut)),
-				[JSON.parse(JSON.stringify(kamPieceInstance_Cut))]
+				[JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Cut : evsPieceInstance_Cut))]
 			)
 		case 'mix':
 			return new MockActionContext(
 				SEGMENT_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
-				[JSON.parse(JSON.stringify(kamPieceInstance))],
+				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance))],
 				JSON.parse(JSON.stringify(nextPartMock_Mix)),
-				[JSON.parse(JSON.stringify(kamPieceInstance_Mix))]
+				[JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Mix : evsPieceInstance_Mix))]
 			)
 			break
 		case 'effekt':
 			return new MockActionContext(
 				SEGMENT_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
-				[JSON.parse(JSON.stringify(kamPieceInstance))],
+				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance_Mix))],
 				JSON.parse(JSON.stringify(nextPartMock_Effekt)),
-				[JSON.parse(JSON.stringify(kamPieceInstance_Effekt)), JSON.stringify(JSON.stringify(effektPieceInstance_1))]
+				[
+					JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Effekt : evsPieceInstance_Effekt)),
+					JSON.stringify(JSON.stringify(effektPieceInstance_1))
+				]
 			)
 			break
 	}
@@ -293,7 +432,7 @@ function makeMockContext(defaultTransition: 'cut' | 'mix' | 'effekt'): MockActio
 
 describe('Take with CUT', () => {
 	it('Sets the take flag', () => {
-		const context = makeMockContext('cut')
+		const context = makeMockContext('cut', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -317,7 +456,7 @@ describe('Take with CUT', () => {
 	})
 
 	it('Changes MIX on part to CUT', () => {
-		const context = makeMockContext('mix')
+		const context = makeMockContext('mix', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -341,7 +480,7 @@ describe('Take with CUT', () => {
 	})
 
 	it('Removes EFFEKT from Next', () => {
-		const context = makeMockContext('mix')
+		const context = makeMockContext('mix', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -367,7 +506,7 @@ describe('Take with CUT', () => {
 
 describe('Take with MIX', () => {
 	it('Adds MIX to part with CUT as default', () => {
-		const context = makeMockContext('cut')
+		const context = makeMockContext('cut', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -392,7 +531,7 @@ describe('Take with MIX', () => {
 	})
 
 	it('Changes MIX on part with MIX as default', () => {
-		const context = makeMockContext('mix')
+		const context = makeMockContext('mix', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -417,7 +556,7 @@ describe('Take with MIX', () => {
 	})
 
 	it('Removes EFFEKT from Next', () => {
-		const context = makeMockContext('mix')
+		const context = makeMockContext('mix', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -444,7 +583,7 @@ describe('Take with MIX', () => {
 
 describe('Take with EFFEKT', () => {
 	it('Adds EFFEKT to part with CUT as default', () => {
-		const context = makeMockContext('cut')
+		const context = makeMockContext('cut', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -469,7 +608,7 @@ describe('Take with EFFEKT', () => {
 	})
 
 	it('Removes MIX from Next', () => {
-		const context = makeMockContext('mix')
+		const context = makeMockContext('mix', 'cam', 'cam')
 
 		executeActionAFVD(
 			context,
@@ -492,11 +631,61 @@ describe('Take with EFFEKT', () => {
 		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
 		expectTakeAfterExecute(context)
 	})
+
+	it('Adds EFFEKT to KAM when on EVS', () => {
+		const context = makeMockContext('cut', 'evs', 'cam')
+
+		executeActionAFVD(
+			context,
+			AdlibActionType.TAKE_WITH_TRANSITION,
+			literal<ActionTakeWithTransition>({
+				type: AdlibActionType.TAKE_WITH_TRANSITION,
+				variant: {
+					type: 'breaker',
+					breaker: '1'
+				},
+				takeNow: true
+			})
+		)
+
+		expectNoWarningsOrErrors(context)
+		const camPiece = getCameraPiece(context, 'next')
+		expectATEMToCut(camPiece)
+
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
+		expectTakeAfterExecute(context)
+	})
+
+	it('Adds EFFEKT to EVS when on KAM', () => {
+		const context = makeMockContext('cut', 'cam', 'evs')
+
+		executeActionAFVD(
+			context,
+			AdlibActionType.TAKE_WITH_TRANSITION,
+			literal<ActionTakeWithTransition>({
+				type: AdlibActionType.TAKE_WITH_TRANSITION,
+				variant: {
+					type: 'breaker',
+					breaker: '1'
+				},
+				takeNow: true
+			})
+		)
+
+		expectNoWarningsOrErrors(context)
+		const camPiece = getEVSPiece(context, 'next')
+		expectATEMToCut(camPiece)
+
+		const transitionPiece = getTransitionPiece(context, 'next')
+		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
+		expectTakeAfterExecute(context)
+	})
 })
 
 describe('Camera shortcuts on server', () => {
 	it('It cuts directly to a camera on a server', () => {
-		const context = makeMockContext('cut')
+		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
 			literal<IBlueprintPieceInstance>({
@@ -535,7 +724,7 @@ describe('Camera shortcuts on server', () => {
 	})
 
 	it('It queues a camera without taking it', () => {
-		const context = makeMockContext('cut')
+		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
 			literal<IBlueprintPieceInstance>({
@@ -576,7 +765,7 @@ describe('Camera shortcuts on server', () => {
 
 describe('Camera shortcuts on VO', () => {
 	it('It cuts directly to a camera on a VO', () => {
-		const context = makeMockContext('cut')
+		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
 			literal<IBlueprintPieceInstance>({
@@ -615,7 +804,7 @@ describe('Camera shortcuts on VO', () => {
 	})
 
 	it('It queues a camera without taking it', () => {
-		const context = makeMockContext('cut')
+		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
 			literal<IBlueprintPieceInstance>({
