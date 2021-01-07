@@ -69,7 +69,7 @@ export function CreatePartEVS(
 			name: part.title,
 			enable: { start: 0 },
 			outputLayerId: 'pgm',
-			sourceLayerId: SourceLayer.PgmLocal,
+			sourceLayerId: SourceLayer.PgmDelayed,
 			lifespan: PieceLifespan.WithinPart,
 			content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 		})

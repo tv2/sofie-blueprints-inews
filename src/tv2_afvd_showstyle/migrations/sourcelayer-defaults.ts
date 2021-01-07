@@ -224,26 +224,6 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: SourceLayer.PgmLocal,
-		_rank: 0,
-		name: 'Delayed Playback',
-		abbreviation: 'DP',
-		type: SourceLayerType.LOCAL,
-		exclusiveGroup: 'me1',
-		isRemoteInput: true,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: true,
-		stickyOriginalOnly: true,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: true
-	},
-	{
 		_id: SourceLayer.PgmDVE,
 		_rank: 0,
 		name: 'DVE',
