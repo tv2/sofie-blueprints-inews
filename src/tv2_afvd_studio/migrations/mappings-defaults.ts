@@ -557,6 +557,11 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		lookahead: LookaheadMode.NONE
+	}),
+	graphic_full_loop: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		lookahead: LookaheadMode.NONE
 	})
 })
 

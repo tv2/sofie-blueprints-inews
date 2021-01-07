@@ -102,7 +102,7 @@ export function GetSisyfosTimelineObjForEkstern(
 }
 
 export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
-	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ([^\s]+)(?: (.+))?$/i)
+	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE) ?([^\s]+)(?: (.+))?$/i)
 	const eksternLayers: string[] = []
 	if (eksternProps) {
 		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)

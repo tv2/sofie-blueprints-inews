@@ -672,4 +672,62 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart2.pieces).toHaveLength(2)
 		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.WallGraphics])
 	})
+
+	it('Changes design and background loops', () => {
+		const ingestSegment = makeIngestSegment(
+			[
+				['KG=DESIGN_FODBOLD_20', ';0.00.01'],
+				['VIZ=dve-triopage', 'GRAFIK=BG_LOADER_FODBOLD_20', ';0.00'],
+				['VIZ=full-triopage', 'GRAFIK=BG_LOADER_FODBOLD_20', ';0.00.01']
+			],
+			`\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n<p>Some script</p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const kamPart1 = result.parts[0]
+		expect(kamPart1).toBeTruthy()
+		expect(kamPart1.pieces).toHaveLength(5)
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
+			SourceLayer.PgmCam,
+			SourceLayer.PgmDesign,
+			SourceLayer.PgmDVEBackground,
+			SourceLayer.PgmFullBackground,
+			SourceLayer.PgmScript
+		])
+	})
+
+	it('Creates Live1', () => {
+		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE1', ';0.00']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const livePart1 = result.parts[0]
+		expect(livePart1).toBeTruthy()
+		expect(livePart1.pieces).toHaveLength(1)
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmLive])
+	})
+
+	it('Creates Live 1', () => {
+		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1', ';0.00']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const livePart1 = result.parts[0]
+		expect(livePart1).toBeTruthy()
+		expect(livePart1.pieces).toHaveLength(1)
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmLive])
+	})
 })

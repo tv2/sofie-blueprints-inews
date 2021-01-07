@@ -436,7 +436,7 @@ describe('Graphics', () => {
 		expect(piece).toBeTruthy()
 		expect(piece.outputLayerId).toBe('sec')
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDesign)
-		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		expect(piece.enable).toEqual({ start: 0 })
 	})
 
