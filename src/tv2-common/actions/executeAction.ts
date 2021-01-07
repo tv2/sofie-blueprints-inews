@@ -1327,7 +1327,8 @@ function executeActionTakeWithTransition<
 			settings.SourceLayers.Live,
 			settings.SourceLayers.Server,
 			settings.SourceLayers.VO,
-			settings.SourceLayers.Effekt
+			settings.SourceLayers.Effekt,
+			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
 		].includes(p.piece.sourceLayerId)
 	)
 
