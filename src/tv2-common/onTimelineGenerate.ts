@@ -123,8 +123,6 @@ export function getEndStateForPart(
 		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
 	}
 
-	_context.warning(`END STATE: ${JSON.stringify(endState.stickySisyfosLevels)}`)
-
 	for (const piece of activePieces) {
 		if (piece.piece.metaData) {
 			const meta = (piece.piece.metaData as PieceMetaData).mediaPlayerSessions
