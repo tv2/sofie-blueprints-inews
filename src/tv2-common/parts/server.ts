@@ -94,7 +94,7 @@ export function CreatePartServerBase<
 			enable: { start: 0 },
 			outputLayerId: 'sec',
 			sourceLayerId: layers.SourceLayer.SelectedServer,
-			lifespan: PieceLifespan.OutOnSegmentEnd,
+			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData & PieceMetaDataServer>({
 				mediaPlayerSessions: [mediaPlayerSession],
 				userData: literal<ActionSelectServerClip>({
