@@ -93,7 +93,7 @@ function GetServerTimeline(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	duration: number,
+	_duration: number,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions,
 	vo?: boolean
@@ -113,7 +113,7 @@ function GetServerTimeline(
 			file,
 			loop: offtubeOptions?.isOfftube ? false : adLib,
 			seek: 0,
-			length: duration,
+			// length: duration,
 			playing: true
 		},
 		metaData: {
