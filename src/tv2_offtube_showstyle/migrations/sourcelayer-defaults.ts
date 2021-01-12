@@ -185,7 +185,7 @@ const JINGLE: ISourceLayer[] = [
 		name: 'Jingle',
 		abbreviation: '',
 		type: SourceLayerType.TRANSITION,
-		exclusiveGroup: 'me2',
+		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys: 'NumpadDivide,NumpadSubtract,NumpadAdd',

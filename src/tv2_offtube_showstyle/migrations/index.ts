@@ -92,8 +92,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Create Design layer
 	 */
 	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmDesign),
-
-	// 1.3.9 - Update graphics
+	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmJingle),
 	forceSettingToDefaults('1.3.9', 'GFXTemplates'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
