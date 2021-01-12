@@ -11,7 +11,7 @@ import {
 } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export const boxLayers: DVESources = {
@@ -41,6 +41,9 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		},
 		CasparLLayer: {
 			ClipPending: CasparLLayer.CasparPlayerClipPending
+		},
+		Abstract: {
+			ServerEnable: VirtualAbstractLLayer.AbstractLLayerServerEnable
 		}
 	},
 	dveTimelineGenerators: {

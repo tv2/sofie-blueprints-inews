@@ -31,6 +31,7 @@ import { ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
+import { EnableServer } from './server'
 
 export interface DVEConfigBox {
 	enabled: boolean
@@ -94,6 +95,9 @@ export interface DVELayers {
 	}
 	CasparLLayer: {
 		ClipPending: string
+	}
+	Abstract: {
+		ServerEnable: string
 	}
 }
 
@@ -598,7 +602,9 @@ export function MakeContentDVE2<
 							})
 					  ]
 					: []),
-
+				...(server && segmentExternalId
+					? [EnableServer(dveGeneratorOptions.dveLayers.Abstract.ServerEnable, segmentExternalId)]
+					: []),
 				...dveTimeline
 			])
 		}),

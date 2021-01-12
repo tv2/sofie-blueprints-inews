@@ -233,7 +233,7 @@ export function CutToServer(
 	]
 }
 
-function EnableServer(layer: string, mediaPlayerSessionId: string) {
+export function EnableServer(layer: string, mediaPlayerSessionId: string) {
 	return literal<TSR.TimelineObjAbstractAny>({
 		id: '',
 		enable: {
