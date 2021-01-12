@@ -205,7 +205,7 @@ export function MakeContentDVE2<
 	className?: string,
 	adlib?: boolean,
 	videoId?: string,
-	segmentExternalId?: string
+	mediaPlayerSessionId?: string
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	let template: DVEConfig
 	try {
@@ -506,7 +506,7 @@ export function MakeContentDVE2<
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: literal<DVEMetaData>({
-						mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
+						mediaPlayerSession: server ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
 					})
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({
@@ -602,8 +602,8 @@ export function MakeContentDVE2<
 							})
 					  ]
 					: []),
-				...(server && segmentExternalId
-					? [EnableServer(dveGeneratorOptions.dveLayers.Abstract.ServerEnable, segmentExternalId)]
+				...(server && mediaPlayerSessionId
+					? [EnableServer(dveGeneratorOptions.dveLayers.Abstract.ServerEnable, mediaPlayerSessionId)]
 					: []),
 				...dveTimeline
 			])

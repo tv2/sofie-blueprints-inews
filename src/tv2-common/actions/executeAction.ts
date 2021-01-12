@@ -56,6 +56,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
+import { EnableServer } from '../content'
 import { TimeFromFrames } from '../frameTime'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
@@ -612,6 +613,7 @@ function cutServerToBox<
 		}
 
 		dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
+		dvePiece.content.timelineObjects.push(EnableServer(settings.LLayer.Abstract.ServerEnable, existingCasparObj.metaData.mediaPlayerSession))
 
 		if (!dvePiece.metaData) {
 			dvePiece.metaData = {}
