@@ -64,11 +64,11 @@ export function OfftubeCreatePartServer(
 			0,
 			partDefinition,
 			file,
-			false,
+			props.vo,
 			{
 				SourceLayer: {
-					PgmServer: OfftubeSourceLayer.PgmServer,
-					SelectedServer: OfftubeSourceLayer.SelectedServer
+					PgmServer: props.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
+					SelectedServer: props.vo ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
 				},
 				Caspar: {
 					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
