@@ -4,7 +4,7 @@ import {
 	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import { AddScript, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -20,9 +20,6 @@ export function CreatePartServer(
 		SourceLayer: {
 			PgmServer: props.vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: props.vo ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
-		},
-		AbstractLLayer: {
-			ServerEnable: VirtualAbstractLLayer.AbstractLLayerServerEnable
 		},
 		AtemLLayer: {
 			MEPgm: AtemLLayer.AtemMEProgram

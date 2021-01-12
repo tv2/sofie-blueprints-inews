@@ -4,12 +4,7 @@ import {
 	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -25,9 +20,6 @@ export function OfftubeCreatePartServer(
 		SourceLayer: {
 			PgmServer: props.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: props.vo ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
-		},
-		AbstractLLayer: {
-			ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 		},
 		AtemLLayer: {
 			MEPgm: OfftubeAtemLLayer.AtemMEClean,
@@ -80,9 +72,6 @@ export function OfftubeCreatePartServer(
 				AtemLLayer: {
 					MEPgm: OfftubeAtemLLayer.AtemMEClean,
 					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-				},
-				AbstractLLayer: {
-					ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 				},
 				ATEM: {
 					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead

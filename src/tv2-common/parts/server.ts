@@ -38,9 +38,6 @@ export type ServerPartLayers = {
 		PgmServer: string
 		SelectedServer: string
 	}
-	AbstractLLayer: {
-		ServerEnable: string
-	}
 	AtemLLayer: {
 		MEPgm: string
 		ServerLookaheadAux?: string
@@ -142,13 +139,7 @@ export function CreatePartServerBase<
 			}),
 			content: {
 				...GetVTContentProperties(config, file),
-				timelineObjects: CutToServer(
-					mediaPlayerSession,
-					partDefinition,
-					config,
-					layers.AtemLLayer.MEPgm,
-					layers.AbstractLLayer.ServerEnable
-				)
+				timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 			},
 			tags: [GetTagForServer(partDefinition.segmentExternalId, file, false), TallyTags.SERVER_IS_LIVE]
 		})

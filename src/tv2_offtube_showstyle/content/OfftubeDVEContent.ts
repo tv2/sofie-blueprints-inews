@@ -8,12 +8,7 @@ import {
 	MakeContentDVEBase,
 	PartDefinition
 } from 'tv2-common'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -50,9 +45,6 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		},
 		CasparLLayer: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-		},
-		Abstract: {
-			ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 		}
 	},
 	dveTimelineGenerators: {

@@ -18,7 +18,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer, VirtualAbstractLLayer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
@@ -61,9 +61,6 @@ export function EvaluateAdLib(
 					},
 					AtemLLayer: {
 						MEPgm: AtemLLayer.AtemMEProgram
-					},
-					AbstractLLayer: {
-						ServerEnable: VirtualAbstractLLayer.AbstractLLayerServerEnable
 					},
 					ATEM: {}
 				},

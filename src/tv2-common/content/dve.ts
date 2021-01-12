@@ -96,9 +96,6 @@ export interface DVELayers {
 	CasparLLayer: {
 		ClipPending: string
 	}
-	Abstract: {
-		ServerEnable: string
-	}
 }
 
 export interface DVEMetaData {
@@ -602,9 +599,7 @@ export function MakeContentDVE2<
 							})
 					  ]
 					: []),
-				...(server && mediaPlayerSessionId
-					? [EnableServer(dveGeneratorOptions.dveLayers.Abstract.ServerEnable, mediaPlayerSessionId)]
-					: []),
+				...(server && mediaPlayerSessionId ? [EnableServer(mediaPlayerSessionId)] : []),
 				...dveTimeline
 			])
 		}),

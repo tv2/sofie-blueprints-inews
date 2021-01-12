@@ -10,10 +10,11 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import * as _ from 'underscore'
-import { SisyfosLLAyer, VirtualAbstractLLayer } from '../tv2_afvd_studio/layers'
-import { OfftubeAbstractLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
+import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
+import { AbstractLLayer } from './layers'
 
 export interface PartEndStateExt {
 	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
@@ -108,8 +109,7 @@ function processServerLookaheads(
 	// TODO: Make generic
 	const objsEnablingServers = timeline.filter(
 		obj =>
-			(obj.layer === VirtualAbstractLLayer.AbstractLLayerServerEnable ||
-				obj.layer === OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable) &&
+			obj.layer === AbstractLLayer.ServerEnablePending &&
 			resolvedPieces.some(
 				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
 			)

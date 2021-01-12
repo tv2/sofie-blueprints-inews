@@ -1,8 +1,8 @@
-import { GraphicLLayer } from 'tv2-common'
+import { AbstractLLayer, GraphicLLayer } from 'tv2-common'
 import * as _ from 'underscore'
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
-export function RealLLayers() {
+export function RealLLayers(): string[] {
 	return (
 		_.values(OfftubeAbstractLLayer)
 			// @ts-ignore
@@ -12,14 +12,14 @@ export function RealLLayers() {
 			// @ts-ignore
 			.concat(_.values(OfftubeCasparLLayer))
 			// @ts-ignore
+			.concat(_.values(AbstractLLayer))
+			// @ts-ignore
 			.concat(_.values(GraphicLLayer))
 	)
 }
 
 export enum OfftubeAbstractLLayer {
 	/** Contains the classes to enable infinites */
-	OfftubeAbstractLLayerPgmEnabler = 'offtube_abstract_pgm_enabler',
-	OfftubeAbstractLLayerServerEnable = 'offtube_abstract_server_enable',
 	OfftubeAbstractLLayerAbstractLookahead = 'offtube_abstract_layer_abstract_lookahead'
 }
 

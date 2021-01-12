@@ -128,9 +128,6 @@ export interface ActionExecutionSettings<
 			Effekt: string
 			cutOnclean: boolean
 		}
-		Abstract: {
-			ServerEnable: string
-		}
 	}
 	SelectedAdlibs: {
 		SourceLayer: {
@@ -355,9 +352,6 @@ function executeActionSelectServerClip<
 				SelectedServer: userData.vo
 					? settings.SelectedAdlibs.SourceLayer.VO
 					: settings.SelectedAdlibs.SourceLayer.Server
-			},
-			AbstractLLayer: {
-				ServerEnable: settings.LLayer.Abstract.ServerEnable
 			},
 			AtemLLayer: {
 				MEPgm: settings.LLayer.Atem.MEClean,
@@ -613,7 +607,7 @@ function cutServerToBox<
 		}
 
 		dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
-		dvePiece.content.timelineObjects.push(EnableServer(settings.LLayer.Abstract.ServerEnable, existingCasparObj.metaData.mediaPlayerSession))
+		dvePiece.content.timelineObjects.push(EnableServer(existingCasparObj.metaData.mediaPlayerSession))
 
 		if (!dvePiece.metaData) {
 			dvePiece.metaData = {}

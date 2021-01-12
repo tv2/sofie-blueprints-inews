@@ -18,12 +18,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
 import _ = require('underscore')
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -69,9 +64,6 @@ export function OfftubeEvaluateAdLib(
 					},
 					AtemLLayer: {
 						MEPgm: OfftubeAtemLLayer.AtemMEClean
-					},
-					AbstractLLayer: {
-						ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 					},
 					ATEM: {
 						ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead

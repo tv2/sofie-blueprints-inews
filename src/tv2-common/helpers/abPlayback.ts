@@ -8,6 +8,7 @@ import {
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { AbstractLLayer, AbstractLLayerServerEnable } from '../layers'
 import {
 	MediaPlayerClaim,
 	PieceMetaData,
@@ -351,7 +352,11 @@ function updateObjectsToMediaPlayer<
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)
 			}
-		} else if (obj.content.deviceType !== TSR.DeviceType.ABSTRACT) {
+		} else if (obj.content.deviceType === TSR.DeviceType.ABSTRACT) {
+			if (obj.layer === AbstractLLayer.ServerEnablePending) {
+				obj.layer = AbstractLLayerServerEnable(playerId)
+			}
+		} else {
 			context.warning(`Trying to move object of unknown type (${obj.content.deviceType}) for media player assignment`)
 		}
 	}

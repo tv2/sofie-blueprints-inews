@@ -16,12 +16,7 @@ import {
 	literal
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
@@ -82,9 +77,6 @@ export function executeActionOfftube(
 					SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
 					Effekt: OfftubeAtemLLayer.AtemDSKGraphics,
 					cutOnclean: true
-				},
-				Abstract: {
-					ServerEnable: OfftubeAbstractLLayer.OfftubeAbstractLLayerServerEnable
 				}
 			},
 			SelectedAdlibs: {

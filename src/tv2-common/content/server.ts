@@ -10,6 +10,7 @@ import {
 } from 'tv2-common'
 import { ControlClasses, GetEnableClassForServer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
+import { AbstractLLayer } from '../layers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 
@@ -198,12 +199,11 @@ export function CutToServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	atemLLayerMEPGM: string,
-	abstractLLayerEnableServer: string,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ) {
 	return [
-		EnableServer(abstractLLayerEnableServer, mediaPlayerSessionId),
+		EnableServer(mediaPlayerSessionId),
 		literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 			id: '',
 			enable: {
@@ -233,15 +233,18 @@ export function CutToServer(
 	]
 }
 
-export function EnableServer(layer: string, mediaPlayerSessionId: string) {
-	return literal<TSR.TimelineObjAbstractAny>({
+export function EnableServer(mediaPlayerSessionId: string) {
+	return literal<TSR.TimelineObjAbstractAny & TimelineBlueprintExt>({
 		id: '',
 		enable: {
 			start: 0
 		},
-		layer,
+		layer: AbstractLLayer.ServerEnablePending,
 		content: {
 			deviceType: TSR.DeviceType.ABSTRACT
+		},
+		metaData: {
+			mediaPlayerSession: mediaPlayerSessionId
 		},
 		classes: [GetEnableClassForServer(mediaPlayerSessionId)]
 	})
