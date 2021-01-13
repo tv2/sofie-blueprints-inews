@@ -336,22 +336,17 @@ function executeActionSelectServerClip<
 				.find(p => p.piece.sourceLayerId === (userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server))
 		: undefined
 
-	const conflictingPiece = settings.SelectedAdlibs
-		? context
-				.getPieceInstances('current')
-				.find(
-					p =>
-						(p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO ||
-							p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.Server) &&
-						p.piece.lifespan === PieceLifespan.OutOnSegmentEnd
-				)
-		: undefined
-
 	const basePart = CreatePartServerBase(
 		context,
 		config,
 		partDefinition,
-		{ vo: userData.vo, totalWords: 0, totalTime: 0, tapeTime: userData.duration / 1000, session: sessionToContinue },
+		{
+			vo: userData.vo,
+			totalWords: 0,
+			totalTime: 0,
+			tapeTime: userData.duration / 1000,
+			session: sessionToContinue ?? externalId
+		},
 		{
 			SourceLayer: {
 				PgmServer: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
@@ -411,21 +406,6 @@ function executeActionSelectServerClip<
 		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
 	}
 
-	const blockingPiece = conflictingPiece
-		? literal<IBlueprintPiece>({
-				externalId,
-				name: conflictingPiece.piece.name,
-				enable: {
-					start: 0,
-					duration: 1
-				},
-				lifespan: PieceLifespan.WithinPart,
-				sourceLayerId: conflictingPiece.piece.sourceLayerId,
-				outputLayerId: conflictingPiece.piece.outputLayerId,
-				content: {}
-		  })
-		: undefined
-
 	let part = basePart.part.part
 
 	const effektPieces: IBlueprintPiece[] = []
@@ -442,13 +422,13 @@ function executeActionSelectServerClip<
 	context.queuePart(part, [
 		activeServerPiece,
 		serverDataStore,
-		...(blockingPiece ? [blockingPiece] : []),
 		...grafikPieces,
 		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-					settings.SelectedAdlibs.SourceLayer.Server,
-					settings.SelectedAdlibs.SourceLayer.VO
-			  ])
+			? getPiecesToPreserve(
+					context,
+					settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
+					userData.vo ? [settings.SelectedAdlibs.SourceLayer.Server] : [settings.SelectedAdlibs.SourceLayer.VO]
+			  )
 			: []),
 		...effektPieces
 	])
@@ -825,7 +805,7 @@ function startNewDVELayout<
 				  )
 				: [])
 		])
-		if (settings.SelectedAdlibs) {
+		if (settings.SelectedAdlibs.SourceLayer.DVE) {
 			context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.DVE])
 		}
 	} else {
@@ -940,7 +920,7 @@ function executeActionSelectJingle<
 			: [])
 	])
 
-	if (settings.SelectedAdlibs) {
+	if (settings.SelectedAdlibs.SourceLayer.Effekt) {
 		context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Effekt])
 	}
 }
