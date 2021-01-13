@@ -106,7 +106,6 @@ function processServerLookaheads(
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
 ): OnGenerateTimelineObj[] {
-	// TODO: Make generic
 	const objsEnablingServers = timeline.filter(
 		obj =>
 			obj.layer === AbstractLLayer.ServerEnablePending &&
@@ -168,6 +167,10 @@ function processServerLookaheads(
 
 		if (!mediaPlayerSession) {
 			return true
+		}
+
+		if (obj.layer === AbstractLLayer.ServerEnablePending && obj.isLookahead) {
+			return false
 		}
 
 		return !(
