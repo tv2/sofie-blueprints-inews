@@ -185,7 +185,7 @@ const JINGLE: ISourceLayer[] = [
 		name: 'Jingle',
 		abbreviation: '',
 		type: SourceLayerType.TRANSITION,
-		exclusiveGroup: 'me2',
+		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys: 'NumpadDivide,NumpadSubtract,NumpadAdd',
@@ -496,7 +496,27 @@ const MANUS: ISourceLayer[] = [
 ]
 
 // SEC group
-const SEC: ISourceLayer[] = []
+const SEC: ISourceLayer[] = [
+	{
+		_id: OfftubeSourceLayer.PgmDesign,
+		_rank: 30,
+		name: 'GFX Design',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: 'shift+a',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: true,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
+	}
+]
 
 // SELECTED_ADLIB group
 const SELECTED_ADLIB: ISourceLayer[] = [
@@ -515,12 +535,12 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
 	{
-		_id: OfftubeSourceLayer.SelectedAdLibServer,
+		_id: OfftubeSourceLayer.SelectedServer,
 		_rank: 0,
 		name: 'Server',
 		abbreviation: 'S',
@@ -534,12 +554,12 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
 	{
-		_id: OfftubeSourceLayer.SelectedAdLibVoiceOver,
+		_id: OfftubeSourceLayer.SelectedVoiceOver,
 		_rank: 0,
 		name: 'Voice Over',
 		abbreviation: 'VO',
@@ -553,7 +573,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
@@ -572,7 +592,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	},
@@ -591,7 +611,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: true,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: true
 	}

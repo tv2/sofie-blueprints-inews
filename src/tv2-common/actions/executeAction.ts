@@ -10,6 +10,7 @@ import {
 	IBlueprintPieceInstance,
 	NotesContext,
 	PieceLifespan,
+	SegmentContext,
 	ShowStyleContext,
 	SourceLayerType,
 	SplitsContent,
@@ -46,8 +47,6 @@ import {
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	MakeContentDVE2,
-	MakeContentServer,
-	PartContext2,
 	PartDefinition,
 	PieceMetaData,
 	TimelineBlueprintExt,
@@ -57,6 +56,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
+import { EnableServer } from '../content'
 import { TimeFromFrames } from '../frameTime'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
@@ -67,8 +67,6 @@ import {
 	GetTagForJingleNext,
 	GetTagForKam,
 	GetTagForLive,
-	GetTagForServer,
-	GetTagForServerNext,
 	GetTagForTransition
 } from '../pieces'
 import { assertUnreachable } from '../util'
@@ -86,7 +84,7 @@ export interface ActionExecutionSettings<
 		isAdlib: boolean
 	) => void
 	EvaluateCues: (
-		context: PartContext2,
+		context: SegmentContext,
 		config: ShowStyleConfig,
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
@@ -123,20 +121,21 @@ export interface ActionExecutionSettings<
 		}
 		Atem: {
 			MEProgram: string
-			MEClean?: string
+			MEClean: string
 			Next: string
 			ServerLookaheadAUX?: string
 			SSrcDefault: string
 			Effekt: string
+			cutOnclean: boolean
 		}
 	}
-	SelectedAdlibs?: {
+	SelectedAdlibs: {
 		SourceLayer: {
 			Server: string
 			VO: string
-			DVE: string
-			GFXFull: string
-			Effekt: string
+			DVE?: string
+			GFXFull?: string
+			Effekt?: string
 		}
 		OutputLayer: {
 			SelectedAdLib: string
@@ -305,6 +304,7 @@ export function getPiecesToPreserve(
 	return context
 		.getPieceInstances('next')
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
+		.filter(p => !(p as any).infinite?.fromPreviousPart && !(p as any).infinite?.fromPreviousPlayhead) // TODO: Typings do not line up with core
 		.map<IBlueprintPiece>(p => p.piece)
 		.map(p => sanitizePieceStart(p))
 		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
@@ -326,79 +326,65 @@ function executeActionSelectServerClip<
 ) {
 	const file = userData.file
 	const partDefinition = userData.partDefinition
-	const duration = userData.duration
 	const config = settings.getConfig(context)
 
 	const externalId = generateExternalId(context, actionId, [file])
 
-	const conflictingPiece = settings.SelectedAdlibs
+	const currentPiece = settings.SelectedAdlibs
 		? context
 				.getPieceInstances('current')
-				.find(
-					p =>
-						p.piece.sourceLayerId ===
-							(userData.vo ? settings.SelectedAdlibs!.SourceLayer.Server : settings.SelectedAdlibs!.SourceLayer.VO) &&
-						p.piece.lifespan === PieceLifespan.OutOnSegmentEnd
-				)
+				.find(p => p.piece.sourceLayerId === (userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server))
 		: undefined
 
-	const activeServerPiece = literal<IBlueprintPiece>({
-		externalId,
-		name: file,
-		enable: { start: 0 },
-		outputLayerId: settings.OutputLayer.PGM,
-		sourceLayerId: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
-		lifespan: PieceLifespan.WithinPart,
-		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
-		}),
-		content: MakeContentServer(
-			file,
-			sessionToContinue ?? externalId,
-			partDefinition,
-			config,
-			{
-				Caspar: {
-					ClipPending: settings.LLayer.Caspar.ClipPending
-				},
-				Sisyfos: {
-					ClipPending: settings.LLayer.Sisyfos.ClipPending
-				},
-				ATEM: {
-					MEPGM:
-						settings.SelectedAdlibs && settings.LLayer.Atem.MEClean
-							? settings.LLayer.Atem.MEClean
-							: settings.LLayer.Atem.MEProgram
-				}
+	const basePart = CreatePartServerBase(
+		context,
+		config,
+		partDefinition,
+		{
+			vo: userData.vo,
+			totalWords: 0,
+			totalTime: 0,
+			tapeTime: userData.duration / 1000,
+			session: sessionToContinue ?? externalId
+		},
+		{
+			SourceLayer: {
+				PgmServer: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
+				SelectedServer: userData.vo
+					? settings.SelectedAdlibs.SourceLayer.VO
+					: settings.SelectedAdlibs.SourceLayer.Server
 			},
-			duration
-		),
-		adlibPreroll: config.studio.CasparPrerollDuration,
-		tags: [
-			GetTagForServer(userData.segmentExternalId, file, userData.vo),
-			GetTagForServerNext(userData.segmentExternalId, file, userData.vo),
-			TallyTags.SERVER_IS_LIVE
-		]
-	})
+			AtemLLayer: {
+				MEPgm: settings.LLayer.Atem.MEClean,
+				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
+			},
+			Caspar: {
+				ClipPending: settings.LLayer.Caspar.ClipPending
+			},
+			Sisyfos: {
+				ClipPending: settings.LLayer.Sisyfos.ClipPending,
+				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
+			},
+			ATEM: {
+				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
+			}
+		}
+	)
 
-	settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
+	const activeServerPiece = basePart.part.pieces.find(
+		p => p.sourceLayerId === settings.SourceLayers.Server || p.sourceLayerId === settings.SourceLayers.VO
+	)
 
-	const lookaheadObj = (activeServerPiece.content?.timelineObjects as Array<
-		TSR.TSRTimelineObj & TimelineBlueprintExt
-	>).find(t => t.layer === settings.LLayer.Atem.Next)
-	const mediaObj = (activeServerPiece.content?.timelineObjects as Array<
-		TSR.TSRTimelineObj & TimelineBlueprintExt
-	>).find(
-		t =>
-			t.layer === settings.LLayer.Caspar.ClipPending &&
-			t.content.deviceType === TSR.DeviceType.CASPARCG &&
-			t.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
-	) as (TSR.TimelineObjCCGMedia & TimelineBlueprintExt) | undefined
+	const serverDataStore = basePart.part.pieces.find(
+		p =>
+			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.Server ||
+			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO
+	)
 
 	const grafikPieces: IBlueprintPiece[] = []
 
 	settings.EvaluateCues(
-		(context as unknown) as PartContext2,
+		(context as unknown) as SegmentContext,
 		config,
 		grafikPieces,
 		[],
@@ -411,105 +397,16 @@ function executeActionSelectServerClip<
 		}
 	)
 
-	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
-		if (userData.vo) {
-			activeServerPiece.content.timelineObjects.push(
-				GetSisyfosTimelineObjForCamera(context, config, 'server', settings.LLayer.Sisyfos.StudioMics)
-			)
-		}
+	if (basePart.invalid || !activeServerPiece || !serverDataStore) {
+		context.warning(`Could not start server clip`)
+		return
 	}
 
-	const serverDataStore = settings.SelectedAdlibs
-		? literal<IBlueprintPiece>({
-				externalId,
-				name: file,
-				enable: {
-					start: 0
-				},
-				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
-				sourceLayerId: userData.vo
-					? settings.SelectedAdlibs.SourceLayer.VO
-					: settings.SelectedAdlibs.SourceLayer.Server,
-				lifespan: PieceLifespan.OutOnSegmentEnd,
-				metaData: {
-					userData,
-					mediaPlayerSessions: sessionToContinue ? [sessionToContinue] : [externalId]
-				},
-				tags: [GetTagForServerNext(userData.segmentExternalId, file, userData.vo)],
-				content: {
-					timelineObjects:
-						lookaheadObj && mediaObj
-							? [
-									literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-										id: '',
-										enable: {
-											while: '1'
-										},
-										priority: 1,
-										layer: settings.LLayer.Caspar.ClipPending,
-										metaData: mediaObj.metaData,
-										content: {
-											deviceType: TSR.DeviceType.CASPARCG,
-											type: TSR.TimelineContentTypeCasparCg.MEDIA,
-											file: mediaObj.content.file,
-											noStarttime: true
-										},
-										keyframes: [
-											{
-												id: '',
-												enable: {
-													while: `!.${ControlClasses.ServerOnAir}`
-												},
-												content: {
-													deviceType: TSR.DeviceType.CASPARCG,
-													type: TSR.TimelineContentTypeCasparCg.MEDIA,
-													playing: false,
-													seek: 0
-												}
-											}
-										]
-									}),
-									// Lookahead AUX
-									...(settings.LLayer.Atem.ServerLookaheadAUX
-										? [
-												literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-													id: '',
-													enable: lookaheadObj.enable,
-													priority: 0,
-													layer: settings.LLayer.Atem.ServerLookaheadAUX,
-													content: {
-														deviceType: TSR.DeviceType.ATEM,
-														type: TSR.TimelineContentTypeAtem.AUX,
-														aux: {
-															input: -1
-														}
-													},
-													metaData: lookaheadObj.metaData
-												})
-										  ]
-										: [])
-							  ]
-							: []
-				}
-		  })
-		: undefined
+	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
+		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
+	}
 
-	const blockingPiece = conflictingPiece
-		? literal<IBlueprintPiece>({
-				externalId,
-				name: conflictingPiece.piece.name,
-				enable: {
-					start: 0,
-					duration: 1
-				},
-				lifespan: PieceLifespan.WithinPart,
-				sourceLayerId: conflictingPiece.piece.sourceLayerId,
-				outputLayerId: conflictingPiece.piece.outputLayerId,
-				content: {}
-		  })
-		: undefined
-
-	let part = CreatePartServerBase(context, config, partDefinition).part.part
+	let part = basePart.part.part
 
 	const effektPieces: IBlueprintPiece[] = []
 	part = {
@@ -524,17 +421,20 @@ function executeActionSelectServerClip<
 
 	context.queuePart(part, [
 		activeServerPiece,
-		...(serverDataStore ? [serverDataStore] : []),
-		...(blockingPiece ? [blockingPiece] : []),
+		serverDataStore,
 		...grafikPieces,
 		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-					settings.SelectedAdlibs.SourceLayer.Server,
-					settings.SelectedAdlibs.SourceLayer.VO
-			  ])
+			? getPiecesToPreserve(
+					context,
+					settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
+					userData.vo ? [settings.SelectedAdlibs.SourceLayer.Server] : [settings.SelectedAdlibs.SourceLayer.VO]
+			  )
 			: []),
 		...effektPieces
 	])
+	if (settings.SelectedAdlibs && !currentPiece) {
+		context.stopPiecesOnLayers([userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server])
+	}
 }
 
 function dveContainsServer(sources: DVESources) {
@@ -563,7 +463,7 @@ function executeActionSelectDVE<
 
 	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.error(`DVE layout not recognised`)
+		context.warning(`DVE layout not recognised`)
 		return
 	}
 
@@ -646,79 +546,63 @@ function cutServerToBox<
 ): IBlueprintPiece {
 	// Check if DVE should continue server + copy server properties
 	if (dvePiece.content?.timelineObjects) {
-		const placeHolders = (dvePiece.content.timelineObjects as Array<
+		dvePiece.content.timelineObjects = (dvePiece.content.timelineObjects as Array<
 			TSR.TSRTimelineObj & TimelineBlueprintExt
-		>).filter(obj => obj.classes?.includes(ControlClasses.DVEPlaceholder))
+		>).filter(obj => !obj.classes?.includes(ControlClasses.DVEPlaceholder))
 
-		if (placeHolders.length) {
-			dvePiece.content.timelineObjects = (dvePiece.content.timelineObjects as Array<
-				TSR.TSRTimelineObj & TimelineBlueprintExt
-			>).filter(obj => !obj.classes?.includes(ControlClasses.DVEPlaceholder))
+		const currentPieces = context.getPieceInstances('current')
+		const currentServer = currentPieces.find(
+			p =>
+				p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.Server ||
+				p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.VO
+		)
 
-			const currentPieces = context.getPieceInstances('current')
-			const currentServer = currentPieces.find(
-				p =>
-					p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
-			)
-
-			if (!currentServer || !currentServer.piece.content?.timelineObjects) {
-				context.warning(`No server is playing, cannot start DVE`)
-				return dvePiece
-			}
-
-			// Find existing CasparCG object
-			const existingCasparObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-				obj => obj.layer === settings.LLayer.Caspar.ClipPending
-			) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
-			// Find existing sisyfos object
-			const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-				obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
-			) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
-			// Find SSRC object in DVE piece
-			const ssrcObjIndex = dvePiece.content?.timelineObjects
-				? (dvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
-						obj => obj.layer === settings.LLayer.Atem.SSrcDefault
-				  )
-				: -1
-
-			if (
-				!existingCasparObj ||
-				!existingSisyfosObj ||
-				ssrcObjIndex === -1 ||
-				!existingCasparObj.metaData ||
-				!existingCasparObj.metaData.mediaPlayerSession
-			) {
-				context.error(`Failed to start DVE with server`)
-				return dvePiece
-			}
-
-			const ssrcObj = (dvePiece.content.timelineObjects as Array<TSR.TSRTimelineObj & TimelineBlueprintExt>)[
-				ssrcObjIndex
-			]
-
-			ssrcObj.metaData = {
-				...ssrcObj.metaData,
-				mediaPlayerSession: existingCasparObj.metaData.mediaPlayerSession
-			}
-
-			dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
-			;(dvePiece.content.timelineObjects as TSR.TSRTimelineObj[]).push(
-				{
-					...existingCasparObj,
-					id: ''
-				},
-				{
-					...existingSisyfosObj,
-					id: ''
-				}
-			)
-
-			if (!dvePiece.metaData) {
-				dvePiece.metaData = {}
-			}
-
-			;(dvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
+		if (!currentServer || !currentServer.piece.content?.timelineObjects) {
+			context.warning(`No server is playing, cannot start DVE`)
+			return dvePiece
 		}
+
+		// Find existing CasparCG object
+		const existingCasparObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+			obj => obj.layer === settings.LLayer.Caspar.ClipPending
+		) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
+		// Find existing sisyfos object
+		const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+			obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
+		) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
+		// Find SSRC object in DVE piece
+		const ssrcObjIndex = dvePiece.content?.timelineObjects
+			? (dvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+					obj => obj.layer === settings.LLayer.Atem.SSrcDefault
+			  )
+			: -1
+
+		if (
+			!existingCasparObj ||
+			!existingSisyfosObj ||
+			ssrcObjIndex === -1 ||
+			!existingCasparObj.metaData ||
+			!existingCasparObj.metaData.mediaPlayerSession
+		) {
+			context.warning(`Failed to start DVE with server`)
+			return dvePiece
+		}
+
+		const ssrcObj = (dvePiece.content.timelineObjects as Array<TSR.TSRTimelineObj & TimelineBlueprintExt>)[ssrcObjIndex]
+
+		ssrcObj.metaData = {
+			...ssrcObj.metaData,
+			mediaPlayerSession: existingCasparObj.metaData.mediaPlayerSession
+		}
+
+		dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
+		dvePiece.content.timelineObjects.push(EnableServer(existingCasparObj.metaData.mediaPlayerSession))
+
+		if (!dvePiece.metaData) {
+			dvePiece.metaData = {}
+		}
+
+		;(dvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 	}
 
 	return dvePiece
@@ -751,12 +635,7 @@ function executeActionSelectDVELayout<
 	const nextPart = context.getPartInstance('next')
 
 	const nextInstances = context.getPieceInstances('next')
-	const nextDVE = nextInstances.find(
-		p =>
-			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-			(settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE) ||
-			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
-	)
+	const nextDVE = nextInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
 
 	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
 
@@ -867,14 +746,14 @@ function startNewDVELayout<
 ) {
 	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
-	const dveDataStore = settings.SelectedAdlibs
+	const dveDataStore = settings.SelectedAdlibs.SourceLayer.DVE
 		? literal<IBlueprintPiece>({
 				externalId,
 				name: templateName,
 				enable: {
 					start: 0
 				},
-				outputLayerId: settings.SelectedAdlibs?.OutputLayer.SelectedAdLib,
+				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
 				lifespan: PieceLifespan.OutOnSegmentEnd,
 				metaData: meta,
@@ -907,14 +786,11 @@ function startNewDVELayout<
 		// If a DVE is not on air, but a layout is selected, stop the selected layout and replace with the new one.
 		const onAirPiece = context
 			.getPieceInstances('current')
-			.find(
-				p =>
-					p.piece.sourceLayerId === settings.SourceLayers.DVE ||
-					p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib
-			)
+			.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
 		const dataPiece =
 			settings.SelectedAdlibs &&
 			context.getPieceInstances('current').find(p => p.piece.sourceLayerId === settings.SelectedAdlibs!.SourceLayer.DVE)
+
 		if (onAirPiece === undefined && dataPiece !== undefined) {
 			context.stopPieceInstances([dataPiece._id])
 		}
@@ -922,11 +798,16 @@ function startNewDVELayout<
 			dvePiece,
 			...(dveDataStore ? [dveDataStore] : []),
 			...(settings.SelectedAdlibs
-				? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-						settings.SelectedAdlibs.SourceLayer.DVE
-				  ])
+				? getPiecesToPreserve(
+						context,
+						settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
+						settings.SelectedAdlibs.SourceLayer.DVE ? [settings.SelectedAdlibs.SourceLayer.DVE] : []
+				  )
 				: [])
 		])
+		if (settings.SelectedAdlibs.SourceLayer.DVE) {
+			context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.DVE])
+		}
 	} else {
 		if (replacePieceInstancesOrQueue.activeDVE) {
 			context.updatePieceInstance(replacePieceInstancesOrQueue.activeDVE, dvePiece)
@@ -997,7 +878,7 @@ function executeActionSelectJingle<
 		]
 	})
 
-	const jingleDataStore = settings.SelectedAdlibs
+	const jingleDataStore = settings.SelectedAdlibs.SourceLayer.Effekt
 		? literal<IBlueprintPiece>({
 				externalId,
 				name: userData.clip,
@@ -1031,11 +912,17 @@ function executeActionSelectJingle<
 		piece,
 		...(jingleDataStore ? [] : []),
 		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
-					settings.SelectedAdlibs.SourceLayer.Effekt
-			  ])
+			? getPiecesToPreserve(
+					context,
+					settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
+					settings.SelectedAdlibs.SourceLayer.Effekt ? [settings.SelectedAdlibs.SourceLayer.Effekt] : []
+			  )
 			: [])
 	])
+
+	if (settings.SelectedAdlibs.SourceLayer.Effekt) {
+		context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Effekt])
+	}
 }
 
 function executeActionCutToCamera<
@@ -1093,10 +980,7 @@ function executeActionCutToCamera<
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
-					layer:
-						settings.SelectedAdlibs && settings.LLayer.Atem.MEClean // Offtube
-							? settings.LLayer.Atem.MEClean
-							: settings.LLayer.Atem.MEProgram,
+					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
@@ -1232,25 +1116,21 @@ function executeActionCutToRemote<
 		tags: [GetTagForLive(userData.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
-				...(settings.LLayer.Atem.MEClean
-					? [
-							literal<TSR.TimelineObjAtemME>({
-								id: '',
-								enable: { while: '1' },
-								priority: 1,
-								layer: settings.LLayer.Atem.MEClean,
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.ME,
-									me: {
-										input: userData.port,
-										transition: TSR.AtemTransitionStyle.CUT
-									}
-								},
-								classes: ['adlib_deparent']
-							})
-					  ]
-					: []),
+				literal<TSR.TimelineObjAtemME>({
+					id: '',
+					enable: { while: '1' },
+					priority: 1,
+					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							input: userData.port,
+							transition: TSR.AtemTransitionStyle.CUT
+						}
+					},
+					classes: ['adlib_deparent']
+				}),
 				...eksternSisyfos,
 				...config.stickyLayers
 					.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
@@ -1397,20 +1277,6 @@ function executeActionCutSourceToBox<
 		newPieceContent.content.timelineObjects.push(studioMics)
 	}
 
-	if (containsServerBefore && containsServerAfter) {
-		const oldObjs = (modifiedPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).filter(
-			(obj: TSR.TSRTimelineObj) =>
-				obj.layer === settings.LLayer.Caspar.ClipPending || obj.layer === settings.LLayer.Sisyfos.ClipPending
-		)
-
-		if (oldObjs && oldObjs.length) {
-			newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
-				obj => obj.layer !== settings.LLayer.Caspar.ClipPending && obj.layer !== settings.LLayer.Sisyfos.ClipPending
-			)
-			newPieceContent.content.timelineObjects.push(...oldObjs)
-		}
-	}
-
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
 	if (!(containsServerBefore && containsServerAfter)) {
 		newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
@@ -1453,7 +1319,8 @@ function executeActionTakeWithTransition<
 			settings.SourceLayers.Live,
 			settings.SourceLayers.Server,
 			settings.SourceLayers.VO,
-			settings.SourceLayers.Effekt
+			settings.SourceLayers.Effekt,
+			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
 		].includes(p.piece.sourceLayerId)
 	)
 
@@ -1469,8 +1336,10 @@ function executeActionTakeWithTransition<
 
 	const tlObjIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
 		obj =>
-			// SelectedAdlibs is being used here to identify offtubes. Needs work.
-			obj.layer === (settings.SelectedAdlibs ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
+			obj.layer ===
+				(settings.LLayer.Atem.cutOnclean
+					? settings.LLayer.Atem.MEClean ?? settings.LLayer.Atem.MEProgram
+					: settings.LLayer.Atem.MEProgram) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	)
@@ -1657,10 +1526,6 @@ function executeActionCommentatorSelectServer<
 	_actionId: string,
 	_userData: ActionCommentatorSelectServer
 ) {
-	if (!settings.SelectedAdlibs) {
-		return
-	}
-
 	const data = findDataStore<ActionSelectServerClip>(context, [
 		settings.SelectedAdlibs.SourceLayer.Server,
 		settings.SelectedAdlibs.SourceLayer.VO
@@ -1692,7 +1557,7 @@ function executeActionCommentatorSelectDVE<
 	_actionId: string,
 	_userData: ActionCommentatorSelectDVE
 ) {
-	if (!settings.SelectedAdlibs) {
+	if (!settings.SelectedAdlibs.SourceLayer.DVE) {
 		return
 	}
 
@@ -1714,7 +1579,7 @@ function executeActionCommentatorSelectFull<
 	_actionId: string,
 	_userData: ActionCommentatorSelectFull
 ) {
-	if (!settings.SelectedAdlibs || !settings.executeActionSelectFull) {
+	if (!settings.SelectedAdlibs.SourceLayer.GFXFull || !settings.executeActionSelectFull) {
 		return
 	}
 
@@ -1736,7 +1601,7 @@ function executeActionCommentatorSelectJingle<
 	_actionId: string,
 	_userData: ActionCommentatorSelectJingle
 ) {
-	if (!settings.SelectedAdlibs || !settings.executeActionSelectFull) {
+	if (!settings.SelectedAdlibs.SourceLayer.Effekt || !settings.executeActionSelectFull) {
 		return
 	}
 

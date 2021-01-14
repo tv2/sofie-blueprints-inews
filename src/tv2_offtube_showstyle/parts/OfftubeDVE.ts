@@ -3,16 +3,17 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece
+	IBlueprintPiece,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, literal, PartContext2, PartDefinitionDVE, PartTime } from 'tv2-common'
+import { AddScript, literal, PartDefinitionDVE, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartDVE(
-	context: PartContext2,
+	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionDVE,
 	totalWords: number

@@ -4,6 +4,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -25,7 +26,6 @@ import {
 	IsTargetingTLF,
 	IsTargetingWall,
 	literal,
-	PartContext2,
 	PartDefinition,
 	PartToParentClass,
 	TimelineBlueprintExt
@@ -39,7 +39,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	_context: PartContext2,
+	_context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -156,6 +156,7 @@ export function GetCasparOverlayTimeline(
 			enable: commentator
 				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition)
 				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
+			priority: 1,
 			layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
@@ -165,7 +166,8 @@ export function GetCasparOverlayTimeline(
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						display: 'program',
-						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue)
+						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue),
+						partialUpdate: true
 					})
 				)}</templateData>`,
 				useStopCommand: false
@@ -178,8 +180,12 @@ export function createContentForGraphicTemplate(
 	graphicCue: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 ): Partial<Slots> {
-	graphicCue = graphicCue.toLocaleLowerCase().trim()
-	const slot = graphicsTable?.graphicCue?.slot
+	graphicCue = graphicCue.toLowerCase().trim()
+	const slot = graphicsTable[graphicCue]?.slot
+
+	if (!slot) {
+		return {}
+	}
 
 	return {
 		[slot]: {

@@ -8,12 +8,11 @@ import {
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, GraphicLLayer, literal } from 'tv2-common'
-import * as _ from 'underscore'
-import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
+import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeSourceLayer } from '../layers'
 
-export function EvaluateCueDesign(
-	_config: BlueprintConfig,
+export function OfftubeEvaluateGraphicDesign(
+	_config: OfftubeShowstyleBlueprintConfig,
 	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -36,26 +35,13 @@ export function EvaluateCueDesign(
 				externalId: partId,
 				name: parsedCue.design,
 				outputLayerId: 'sec',
-				sourceLayerId: SourceLayer.PgmDesign,
+				sourceLayerId: OfftubeSourceLayer.PgmDesign,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
-							id: '',
-							enable: { start: 0 },
-							priority: 100,
-							layer: GraphicLLayer.GraphicLLayerDesign,
-							content: {
-								deviceType: TSR.DeviceType.VIZMSE,
-								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: parsedCue.design,
-								templateData: []
-							}
-						})
-					])
+					timelineObjects: designTimeline(parsedCue)
 				})
 			})
 		)
@@ -68,28 +54,42 @@ export function EvaluateCueDesign(
 					start
 				},
 				outputLayerId: 'sec',
-				sourceLayerId: SourceLayer.PgmDesign,
+				sourceLayerId: OfftubeSourceLayer.PgmDesign,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
-							id: '',
-							enable: { start: 0 },
-							priority: 100,
-							layer: GraphicLLayer.GraphicLLayerDesign,
-							content: {
-								deviceType: TSR.DeviceType.VIZMSE,
-								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: parsedCue.design,
-								templateData: []
-							}
-						})
-					])
+					timelineObjects: designTimeline(parsedCue)
 				})
 			})
 		)
 	}
+}
+
+function designTimeline(parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {
+	return [
+		literal<TSR.TimelineObjCCGTemplate>({
+			id: '',
+			enable: {
+				start: 0
+			},
+			priority: 1,
+			layer: GraphicLLayer.GraphicLLayerDesign,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: 'sport-overlay/index',
+				data: `<templateData>${encodeURI(
+					JSON.stringify({
+						display: 'program',
+						design: parsedCue.design,
+						partialUpdate: true
+					})
+				)}</templateData>`,
+				useStopCommand: false
+			}
+		})
+	]
 }

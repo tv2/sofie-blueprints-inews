@@ -104,7 +104,7 @@ export function CreateEffektForPartInner<
 			externalId,
 			name: label,
 			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
-			outputLayerId: 'jingle',
+			outputLayerId: 'jingle', // TODO: Enum
 			sourceLayerId: layers.sourceLayer,
 			lifespan: PieceLifespan.WithinPart,
 			isTransition: true,

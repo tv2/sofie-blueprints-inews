@@ -14,6 +14,8 @@ export enum SharedSourceLayers {
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
 	PgmGraphicsTema = 'studio0_graphicsTema',
 	PgmGraphicsTLF = 'studio0_graphicsTelefon',
+	PgmDesign = 'studio0_design',
+
 	/** General, 'fallback', overlay layer */
 	PgmGraphicsOverlay = 'studio0_overlay',
 	WallGraphics = 'studio0_wall_graphics',
@@ -23,6 +25,10 @@ export enum SharedSourceLayers {
 	PgmDVEBox2 = 'studio0_dve_box2',
 	PgmDVEBox3 = 'studio0_dve_box3',
 	PgmDVEBox4 = 'studio0_dve_box4',
+
+	// Selected Sources
+	SelectedServer = 'studio0_selected_clip',
+	SelectedVoiceOver = 'studio0_selected_voiceover',
 
 	// Other / sec / manus
 	PgmScript = 'studio0_script'

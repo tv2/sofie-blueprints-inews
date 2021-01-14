@@ -11,8 +11,6 @@ export enum SourceLayer {
 	// TODO: These will be removed by adlib actions
 	// Adlib selection
 	SelectedAdLibDVE = 'studio0_offtube_dve',
-	SelectedAdLibServer = 'studio0_offtube_clip',
-	SelectedAdLibVoiceOver = 'studio0_offtube_voiceover',
 	SelectedAdlibGraphicsFull = 'studio0_offtube_graphicsFull',
 	SelectedAdlibJingle = 'studio0_offtube_jingle',
 

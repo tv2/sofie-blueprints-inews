@@ -39,6 +39,7 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
+import { tmpLayerToSlot } from './helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -400,12 +401,48 @@ function getGlobalAdlibActionsOfftube(
 
 function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
+		...[
+			GraphicLLayer.GraphicLLayerOverlayHeadline,
+			GraphicLLayer.GraphicLLayerOverlayIdent,
+			GraphicLLayer.GraphicLLayerOverlayLower,
+			GraphicLLayer.GraphicLLayerOverlayTema,
+			GraphicLLayer.GraphicLLayerOverlayTopt
+		].map(layer => {
+			return literal<TSR.TimelineObjCCGTemplate>({
+				id: '',
+				enable: {
+					while: '1'
+				},
+				priority: 0,
+				layer,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+					templateType: 'html',
+					name: 'sport-overlay/index',
+					data: `<templateData>${encodeURI(
+						JSON.stringify({
+							display: 'program',
+							slots: {
+								[tmpLayerToSlot[layer]]: {
+									payload: {},
+									display: 'hidden'
+								}
+							},
+							partialUpdate: true
+						})
+					)}</templateData>`,
+					useStopCommand: false
+				}
+			})
+		}),
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
 			enable: {
 				while: '1'
 			},
-			layer: GraphicLLayer.GraphicLLayerOverlayLower,
+			priority: 0,
+			layer: GraphicLLayer.GraphicLLayerOverlay,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -414,7 +451,23 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						display: 'program',
-						slots: {}
+						slots: {
+							...[
+								GraphicLLayer.GraphicLLayerOverlayHeadline,
+								GraphicLLayer.GraphicLLayerOverlayIdent,
+								GraphicLLayer.GraphicLLayerOverlayLower,
+								GraphicLLayer.GraphicLLayerOverlayTema,
+								GraphicLLayer.GraphicLLayerOverlayTopt
+							].map(layer => {
+								return {
+									[tmpLayerToSlot[layer]]: {
+										payload: {},
+										display: 'hidden'
+									}
+								}
+							})
+						},
+						partialUpdate: true
 					})
 				)}</templateData>`,
 				useStopCommand: false
@@ -425,6 +478,29 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			enable: {
 				while: '1'
 			},
+			priority: 0,
+			layer: GraphicLLayer.GraphicLLayerDesign,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: 'sport-overlay/index',
+				data: `<templateData>${encodeURI(
+					JSON.stringify({
+						display: 'program',
+						design: '',
+						partialUpdate: true
+					})
+				)}</templateData>`,
+				useStopCommand: false
+			}
+		}),
+		literal<TSR.TimelineObjCCGTemplate>({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			priority: 0,
 			layer: OfftubeCasparLLayer.CasparGraphicsFull,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,

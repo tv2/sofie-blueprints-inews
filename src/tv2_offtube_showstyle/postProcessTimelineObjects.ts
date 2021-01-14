@@ -8,7 +8,7 @@ import {
 	TimelineObjHoldMode,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { literal, PartContext2, TimelineBlueprintExt } from 'tv2-common'
+import { literal, TimelineBlueprintExt } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
@@ -20,9 +20,8 @@ export function postProcessPartTimelineObjects(
 	parts: BlueprintResultPart[]
 ) {
 	_.each(parts, part => {
-		const ctx = new PartContext2(context, part.part.externalId)
-		_.each(part.pieces, p => postProcessPieceTimelineObjects(ctx, config, p, false))
-		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(ctx, config, p, true))
+		_.each(part.pieces, p => postProcessPieceTimelineObjects(context, config, p, false))
+		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(context, config, p, true))
 	})
 }
 

@@ -2,7 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan
+	PieceLifespan,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectJingle,
@@ -12,7 +13,6 @@ import {
 	GetTagForJingle,
 	GetTagForJingleNext,
 	literal,
-	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags } from 'tv2-constants'
@@ -21,7 +21,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
-	context: PartContext2,
+	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],

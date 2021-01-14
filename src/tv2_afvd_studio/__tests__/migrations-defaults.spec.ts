@@ -1,3 +1,4 @@
+import { AbstractLLayerServerEnable } from 'tv2-common'
 import * as _ from 'underscore'
 
 import { RealLLayers } from '../layers'
@@ -30,7 +31,9 @@ describe('Migration Defaults', () => {
 				'casparcg_player_clip_1',
 				'casparcg_player_clip_2',
 				'casparcg_player_clip_1_loading_loop',
-				'casparcg_player_clip_2_loading_loop'
+				'casparcg_player_clip_2_loading_loop',
+				AbstractLLayerServerEnable(1),
+				AbstractLLayerServerEnable(2)
 			])
 			.sort()
 

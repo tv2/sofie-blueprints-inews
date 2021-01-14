@@ -10,7 +10,6 @@ import {
 	GraphicLLayer,
 	GraphicPilot,
 	literal,
-	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
@@ -25,7 +24,6 @@ import mappingsDefaults from '../migrations/mappings-defaults'
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 const SEGMENT_EXTERNAL_ID = '00000000'
-const PART_EXTERNAL_ID = '00000000'
 
 function makeMockContext() {
 	const rundown = literal<IBlueprintRundownDB>({
@@ -45,7 +43,6 @@ describe('Graphics', () => {
 	it('Throws warning for unpaired target and creates invalid part', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionUnpairedTarget>({
@@ -68,7 +65,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(partContext, config, partDefintion, 0)
+		const result = CreatePartGrafik(context, config, partDefintion, 0)
 
 		expect(context.getNotes().map(msg => msg.message)).toEqual([`No graphic found after GRAFIK cue`])
 		expect(result.pieces).toHaveLength(0)
@@ -80,7 +77,6 @@ describe('Graphics', () => {
 	it('Throws warning for unpaired pilot', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionUnpairedPilot>({
@@ -105,7 +101,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		CreatePartGrafik(partContext, config, partDefinition, 0)
+		CreatePartGrafik(context, config, partDefinition, 0)
 
 		expect(context.getNotes().map(msg => msg.message)).toEqual([`Graphic found without target engine`])
 	})
@@ -113,7 +109,6 @@ describe('Graphics', () => {
 	it('Creates FULL graphic correctly', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -142,7 +137,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
+		const result = CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
@@ -173,7 +168,6 @@ describe('Graphics', () => {
 	it('Creates OVL pilot graphic correctly', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -208,7 +202,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
+		const result = CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
@@ -238,7 +232,6 @@ describe('Graphics', () => {
 	it('Creates WALL graphic correctly', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -267,7 +260,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
+		const result = CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
@@ -294,7 +287,6 @@ describe('Graphics', () => {
 	it('Creates TLF graphic correctly', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -323,7 +315,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
+		const result = CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
@@ -354,7 +346,6 @@ describe('Graphics', () => {
 	it('Routes source to engine', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -389,7 +380,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(partContext, config, partDefinition, 0)
+		const result = CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(2)
 		const auxPiece = result.pieces.find(p => p.outputLayerId === 'aux')! // TODO: AUX
 		expect(auxPiece.enable).toEqual({ start: 0 })
@@ -407,7 +398,6 @@ describe('Graphics', () => {
 	it('Creates design element', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphicDesign>({
@@ -430,20 +420,19 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(partContext, config, partDefinition, 0)
+		const result = CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.outputLayerId).toBe('sec')
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDesign)
-		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		expect(piece.enable).toEqual({ start: 0 })
 	})
 
 	it('Creates background loop', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionBackgroundLoop>({
@@ -467,7 +456,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(partContext, config, partDefinition, 0)
+		const result = CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -488,7 +477,6 @@ describe('Graphics', () => {
 	it('Creates overlay internal graphic', () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
-		const partContext = new PartContext2(context, PART_EXTERNAL_ID)
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -520,7 +508,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(partContext, config, partDefinition, 0)
+		const result = CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()

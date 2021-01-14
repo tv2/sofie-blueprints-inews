@@ -62,6 +62,7 @@ export interface TV2StudioConfigBase {
 	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
 	PreventOverlayWithFull?: boolean
+	ServerPostrollDuration: number
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {

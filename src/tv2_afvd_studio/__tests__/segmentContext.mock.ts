@@ -78,7 +78,8 @@ const mockStudioConfig: StudioConfig = {
 	JingleBasePath: 'jingler',
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
-	DefaultPartDuration: 0
+	DefaultPartDuration: 0,
+	ServerPostrollDuration: 3000
 }
 
 const mockShowStyleConfig: ShowStyleConfig = {

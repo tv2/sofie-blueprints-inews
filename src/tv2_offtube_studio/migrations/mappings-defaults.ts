@@ -8,12 +8,17 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	offtube_abstract_pgm_enabler: literal<TSR.MappingAbstract & BlueprintMapping>({
+	server_enable_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	offtube_abstract_server_enable: literal<TSR.MappingAbstract & BlueprintMapping>({
+	server_enable_1: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
+	}),
+	server_enable_2: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
@@ -301,7 +306,8 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		channel: 4,
-		layer: 120
+		layer: 120,
+		previewWhenNotOnAir: true
 	}),
 	casparcg_dve_key: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
@@ -433,5 +439,12 @@ export default literal<BlueprintMappings>({
 		previewWhenNotOnAir: false,
 		channel: 3,
 		layer: 111
+	}),
+	// Full loop and DVE loop are the same channel in Q2.
+	// No mapping to caspar to avoid conflicts.
+	graphic_full_loop: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 })

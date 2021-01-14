@@ -1,4 +1,4 @@
-import { SplitsContent } from 'tv-automation-sofie-blueprints-integration'
+import { SegmentContext, SplitsContent } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CueDefinitionDVE,
 	DVEConfigInput,
@@ -7,7 +7,6 @@ import {
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
-	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import * as _ from 'underscore'
@@ -64,7 +63,7 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 }
 
 export function MakeContentDVE(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,

@@ -1,10 +1,10 @@
-import { GraphicLLayer } from 'tv2-common'
+import { AbstractLLayer, GraphicLLayer } from 'tv2-common'
 import * as _ from 'underscore'
 
 export type LLayer = VirtualAbstractLLayer | AtemLLayer | CasparLLayer | SisyfosLLAyer
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
-export function RealLLayers() {
+export function RealLLayers(): string[] {
 	return (
 		_.values(AtemLLayer)
 			// @ts-ignore
@@ -12,13 +12,12 @@ export function RealLLayers() {
 			// @ts-ignore
 			.concat(_.values(SisyfosLLAyer))
 			// @ts-ignore
+			.concat(_.values(AbstractLLayer))
+			// @ts-ignore
 			.concat(_.values(GraphicLLayer))
 			// @ts-ignore
 			.concat(_.values(VirtualAbstractLLayer))
 	)
-}
-export function VirtualLLayers() {
-	return _.values(VirtualAbstractLLayer)
 }
 
 export enum VirtualAbstractLLayer {}

@@ -3,10 +3,25 @@
  * This will go to the graphics package and become a dependency of the blueprints.
  */
 
+import { GraphicLLayer } from 'tv2-common'
+
 interface HTMLGraphic {
-	[index: string]: {
-		slot: string
-	}
+	[index: string]:
+		| {
+				slot: string
+		  }
+		| undefined
+}
+
+export const tmpLayerToSlot: { [slot: string]: string } = {
+	[GraphicLLayer.GraphicLLayerOverlay]: '',
+	[GraphicLLayer.GraphicLLayerOverlayHeadline]: '450_lowerThird',
+	[GraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
+	[GraphicLLayer.GraphicLLayerOverlayLower]: '450_lowerThird',
+	[GraphicLLayer.GraphicLLayerOverlayTema]: '',
+	[GraphicLLayer.GraphicLLayerOverlayTopt]: '660_topt',
+	[GraphicLLayer.GraphicLLayerPilot]: '250_full',
+	[GraphicLLayer.GraphicLLayerPilotOverlay]: '250_full'
 }
 
 export const graphicsTable: HTMLGraphic = {

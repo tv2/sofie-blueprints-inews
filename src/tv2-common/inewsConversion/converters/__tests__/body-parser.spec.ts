@@ -1630,7 +1630,7 @@ describe('Body parser', () => {
 						graphic: {
 							type: 'internal',
 							template: 'bund',
-							cue: 'kg',
+							cue: '#kg',
 							textFields: ['TEXT MORETEXT', 'Triatlet']
 						},
 						start: {
@@ -1882,7 +1882,7 @@ describe('Body parser', () => {
 						graphic: {
 							type: 'internal',
 							template: 'bund',
-							cue: 'kg',
+							cue: '#kg',
 							textFields: ['TEXT MORETEXT', 'Triatlet']
 						},
 						start: {
@@ -1940,7 +1940,7 @@ describe('Body parser', () => {
 						graphic: {
 							type: 'internal',
 							template: 'bund',
-							cue: 'kg',
+							cue: '#kg',
 							textFields: ['TEXT MORETEXT', 'Triatlet']
 						},
 						start: {

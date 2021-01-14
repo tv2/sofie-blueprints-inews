@@ -12,10 +12,19 @@ export enum GraphicLLayer {
 	GraphicLLayerPilot = 'graphic_pilot', // <= viz_layer_pilot
 	GraphicLLayerPilotOverlay = 'graphic_pilot_overlay', // <= viz_layer_pilot_overlay
 	GraphicLLayerDesign = 'graphic_design', // <= viz_layer_design
+	GraphicLLayerFullLoop = 'graphic_full_loop',
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall' // <= viz_layer_wall
 }
 
+export enum AbstractLLayer {
+	ServerEnablePending = 'server_enable_pending'
+}
+
 export function SisyfosEVSSource(i: number | string) {
 	return `sisyfos_source_evs_${i}`
+}
+
+export function AbstractLLayerServerEnable(i: number) {
+	return `server_enable_${i}`
 }

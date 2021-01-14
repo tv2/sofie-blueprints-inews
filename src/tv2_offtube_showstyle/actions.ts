@@ -27,8 +27,8 @@ import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 const SELECTED_ADLIB_LAYERS = [
 	OfftubeSourceLayer.SelectedAdLibDVE,
-	OfftubeSourceLayer.SelectedAdLibServer,
-	OfftubeSourceLayer.SelectedAdLibVoiceOver,
+	OfftubeSourceLayer.SelectedServer,
+	OfftubeSourceLayer.SelectedVoiceOver,
 	OfftubeSourceLayer.SelectedAdlibGraphicsFull,
 	OfftubeSourceLayer.SelectedAdlibJingle
 ]
@@ -75,13 +75,14 @@ export function executeActionOfftube(
 					Next: OfftubeAtemLLayer.AtemMENext,
 					ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead,
 					SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
-					Effekt: OfftubeAtemLLayer.AtemDSKGraphics
+					Effekt: OfftubeAtemLLayer.AtemDSKGraphics,
+					cutOnclean: true
 				}
 			},
 			SelectedAdlibs: {
 				SourceLayer: {
-					Server: OfftubeSourceLayer.SelectedAdLibServer,
-					VO: OfftubeSourceLayer.SelectedAdLibVoiceOver,
+					Server: OfftubeSourceLayer.SelectedServer,
+					VO: OfftubeSourceLayer.SelectedVoiceOver,
 					DVE: OfftubeSourceLayer.SelectedAdLibDVE,
 					GFXFull: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
 					Effekt: OfftubeSourceLayer.SelectedAdlibJingle
@@ -159,4 +160,6 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		fullDataStore,
 		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdlibGraphicsFull])
 	])
+
+	context.stopPiecesOnLayers([OfftubeSourceLayer.SelectedAdlibGraphicsFull])
 }

@@ -55,7 +55,8 @@ const blankStudioConfig: StudioConfig = {
 	ClipBasePath: 'clips',
 	ATEMDelay: 1,
 	MaximumPartDuration: 0,
-	DefaultPartDuration: 0
+	DefaultPartDuration: 0,
+	ServerPostrollDuration: 5000
 }
 
 function getObjectKeys(obj: any): string[] {

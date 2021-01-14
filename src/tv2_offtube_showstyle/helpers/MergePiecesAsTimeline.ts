@@ -2,10 +2,11 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	SegmentContext,
 	TimelineObjectCoreExt,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { PartContext2, PartDefinition } from 'tv2-common'
+import { PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from './config'
 import { OfftubeEvaluateCues } from './EvaluateCues'
@@ -19,7 +20,7 @@ import { OfftubeEvaluateCues } from './EvaluateCues'
  * @param selectedCueTypes Filter to only extract cues of a certain type.
  */
 export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLibPiece>(
-	context: PartContext2,
+	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	parentPiece: T,

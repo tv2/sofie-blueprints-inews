@@ -3,6 +3,7 @@ import {
 	GraphicsContent,
 	NotesContext,
 	RemoteContent,
+	SegmentContext,
 	SourceLayerType,
 	SplitsContent,
 	SplitsContentBoxProperties,
@@ -30,7 +31,7 @@ import { ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
-import { PartContext2 } from '../partContext2'
+import { EnableServer } from './server'
 
 export interface DVEConfigBox {
 	enabled: boolean
@@ -143,7 +144,7 @@ export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext2,
+	context: SegmentContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
@@ -201,7 +202,7 @@ export function MakeContentDVE2<
 	className?: string,
 	adlib?: boolean,
 	videoId?: string,
-	segmentExternalId?: string
+	mediaPlayerSessionId?: string
 ): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
 	let template: DVEConfig
 	try {
@@ -414,8 +415,6 @@ export function MakeContentDVE2<
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
-				const file: string | undefined = videoId
-
 				server = true
 				setBoxSource(
 					num,
@@ -426,39 +425,6 @@ export function MakeContentDVE2<
 					},
 					mappingFrom.source,
 					mappingFrom.source
-				)
-				dveTimeline.push(
-					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-						id: '',
-						enable: getDVEEnable(undefined, true),
-						priority: 1,
-						layer: dveGeneratorOptions.dveLayers.CasparLLayer.ClipPending,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: adlib ? 'continue' : file ? file : 'continue', // If adlib, or if no file, continue existing file // TODO: Adlib with clip specified?
-							loop: true
-						},
-						metaData: {
-							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
-						},
-						classes: file ? [] : [ControlClasses.DVEPlaceholder]
-					}),
-					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: getDVEEnable(undefined, true),
-						priority: 1,
-						layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.ClipPending,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 1
-						},
-						metaData: {
-							mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
-						},
-						classes: file ? [] : [ControlClasses.DVEPlaceholder]
-					})
 				)
 				return
 			} else {
@@ -537,7 +503,7 @@ export function MakeContentDVE2<
 					},
 					classes: className ? [...classes, className] : classes,
 					metaData: literal<DVEMetaData>({
-						mediaPlayerSession: server ? (segmentExternalId ? segmentExternalId : MEDIA_PLAYER_AUTO) : undefined
+						mediaPlayerSession: server ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
 					})
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({
@@ -633,7 +599,7 @@ export function MakeContentDVE2<
 							})
 					  ]
 					: []),
-
+				...(server && mediaPlayerSessionId ? [EnableServer(mediaPlayerSessionId)] : []),
 				...dveTimeline
 			])
 		}),
