@@ -4,6 +4,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
@@ -20,7 +21,6 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetTagForKam,
 	literal,
-	PartContext2,
 	PartDefinitionKam,
 	TransitionFromString,
 	TransitionSettings
@@ -33,7 +33,7 @@ import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartKam(
-	context: PartContext2,
+	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number

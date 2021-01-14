@@ -2,7 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece
+	IBlueprintPiece,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	AddScript,
@@ -10,7 +11,6 @@ import {
 	GetJinglePartProperties,
 	GraphicIsPilot,
 	literal,
-	PartContext2,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -20,7 +20,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartCueOnly(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	id: string,

@@ -4,6 +4,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
@@ -19,7 +20,6 @@ import {
 	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	literal,
-	PartContext2,
 	PartDefinitionKam,
 	TransitionFromString,
 	TransitionSettings
@@ -31,7 +31,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartKam(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number

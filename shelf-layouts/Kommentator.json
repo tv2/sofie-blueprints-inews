@@ -67,7 +67,7 @@
       "showAsTimeline": false,
       "overflowHorizontally": false,
       "sourceLayerIds": [
-        "studio0_offtube_clip",
+        "studio0_selected_clip",
         "studio0_offtube_jingle",
         "studio0_clip",
         "studio0_jingle"
@@ -98,8 +98,8 @@
         "kommentator"
       ],
       "sourceLayerIds": [
-        "studio0_offtube_voiceover",
-        "studio0_offtube_clip",
+        "studio0_selected_voiceover",
+        "studio0_selected_clip",
         "studio0_clip",
         "studio0_voiceover"
       ]

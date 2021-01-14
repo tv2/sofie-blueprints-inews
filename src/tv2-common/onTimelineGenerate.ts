@@ -14,6 +14,7 @@ import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
+import { AbstractLLayer } from './layers'
 
 export interface PartEndStateExt {
 	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
@@ -91,9 +92,94 @@ export function onTimelineGenerate<
 
 	dveBoxLookaheadUseOriginalEnable(timeline)
 
+	timeline = processServerLookaheads(context, timeline, resolvedPieces, sourceLayers)
+
 	return Promise.resolve({
 		timeline,
 		persistentState
+	})
+}
+
+function processServerLookaheads(
+	context: TimelineEventContext,
+	timeline: OnGenerateTimelineObj[],
+	resolvedPieces: IBlueprintResolvedPieceInstance[],
+	sourceLayers: ABSourceLayers
+): OnGenerateTimelineObj[] {
+	const objsEnablingServers = timeline.filter(
+		obj =>
+			obj.layer === AbstractLLayer.ServerEnablePending &&
+			resolvedPieces.some(
+				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
+			)
+	)
+
+	const activeClasses = objsEnablingServers.reduce((prev, curr) => {
+		if (curr.classes) {
+			prev.push(...curr.classes)
+		}
+		return prev
+	}, [] as string[])
+
+	const pgmServers = timeline.filter(obj => {
+		if (_.isArray(obj.enable)) {
+			return false
+		}
+		const layer = obj.layer.toString()
+		const enableCondition = obj.enable.while?.toString()
+
+		if (!enableCondition) {
+			return false
+		}
+
+		return (
+			[sourceLayers.Caspar.ClipPending, sourceLayers.Caspar.PlayerClip(1), sourceLayers.Caspar.PlayerClip(2)].includes(
+				layer
+			) &&
+			!obj.isLookahead &&
+			resolvedPieces.some(
+				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
+			) &&
+			activeClasses.some(cls => enableCondition.includes(cls))
+		)
+	})
+
+	const onAirSessions = pgmServers.reduce((prev, curr) => {
+		const mediaPlayerSession = (curr as TimelineBlueprintExt).metaData?.mediaPlayerSession
+
+		if (mediaPlayerSession) {
+			prev.push(mediaPlayerSession)
+		}
+
+		return prev
+	}, [] as string[])
+
+	// Filter out lookaheads for servers that are currently in PGM.
+	// Does not filter out AUX lookaheads. Should it?
+	return timeline.filter(obj => {
+		if (_.isArray(obj.enable)) {
+			return true
+		}
+
+		const layer = obj.layer.toString()
+
+		const mediaPlayerSession = (obj as TimelineBlueprintExt).metaData?.mediaPlayerSession
+
+		if (!mediaPlayerSession) {
+			return true
+		}
+
+		if (obj.layer === AbstractLLayer.ServerEnablePending && obj.isLookahead) {
+			return false
+		}
+
+		return !(
+			[sourceLayers.Caspar.ClipPending, sourceLayers.Caspar.PlayerClip(1), sourceLayers.Caspar.PlayerClip(2)]
+				.map(l => `${l}_lookahead`)
+				.includes(layer) &&
+			obj.isLookahead &&
+			onAirSessions.includes(mediaPlayerSession)
+		)
 	})
 }
 
@@ -122,8 +208,6 @@ export function getEndStateForPart(
 	for (const piece of activePieces) {
 		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
 	}
-
-	_context.warning(`END STATE: ${JSON.stringify(endState.stickySisyfosLevels)}`)
 
 	for (const piece of activePieces) {
 		if (piece.piece.metaData) {

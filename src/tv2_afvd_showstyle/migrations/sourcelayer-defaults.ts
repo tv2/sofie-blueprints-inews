@@ -702,4 +702,55 @@ const AUX: ISourceLayer[] = [
 	}
 ]
 
-export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...MUSIK, ...MANUS, ...SEC, ...AUX])
+// SELECTED_ADLIB group
+const SELECTED_ADLIB: ISourceLayer[] = [
+	{
+		_id: SourceLayer.SelectedServer,
+		_rank: 0,
+		name: 'Selected Server',
+		abbreviation: 'S',
+		type: SourceLayerType.VT,
+		exclusiveGroup: 'server',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: true,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: true
+	},
+	{
+		_id: SourceLayer.SelectedVoiceOver,
+		_rank: 0,
+		name: 'Selected Voice Over',
+		abbreviation: 'VO',
+		type: SourceLayerType.LIVE_SPEAK,
+		exclusiveGroup: 'server',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: true,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: true
+	}
+]
+
+export default literal<ISourceLayer[]>([
+	...OVERLAY,
+	...JINGLE,
+	...PGM,
+	...MUSIK,
+	...MANUS,
+	...SEC,
+	...SELECTED_ADLIB,
+	...AUX
+])

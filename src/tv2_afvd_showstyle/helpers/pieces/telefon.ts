@@ -2,6 +2,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	SegmentContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -9,7 +10,6 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GraphicDisplayName,
 	literal,
-	PartContext2,
 	PartDefinition
 } from 'tv2-common'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
@@ -18,7 +18,7 @@ import { EvaluateCueGraphic } from './graphic'
 
 export function EvaluateTelefon(
 	config: BlueprintConfig,
-	context: PartContext2,
+	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],

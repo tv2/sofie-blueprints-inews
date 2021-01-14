@@ -12,7 +12,6 @@ import {
 	GraphicInternal,
 	GraphicLLayer,
 	literal,
-	PartContext2,
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
@@ -36,8 +35,6 @@ const mockContext = new SegmentContext(
 )
 mockContext.studioConfig = defaultStudioConfig as any
 mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-const partContext = new PartContext2(mockContext, '00001')
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
@@ -88,7 +85,7 @@ describe('telefon', () => {
 				stickyLayers: [],
 				liveAudio: []
 			},
-			partContext,
+			mockContext,
 			pieces,
 			adLibPieces,
 			actions,

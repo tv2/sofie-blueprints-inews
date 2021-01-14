@@ -1,19 +1,21 @@
-import { IBlueprintAdLibPiece, PieceLifespan, PieceMetaData } from 'tv-automation-sofie-blueprints-integration'
-import { GetTagForServer, literal, PartDefinition, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
-import { AdlibTags, TallyTags } from 'tv2-constants'
-import { MakeContentServer, MakeContentServerSourceLayers } from '../content/server'
-import { GetTagForServerNext } from './tags'
+import { IBlueprintActionManifest } from 'tv-automation-sofie-blueprints-integration'
+import {
+	ActionSelectServerClip,
+	GetTagForServer,
+	GetTagForServerNext,
+	GetVTContentProperties,
+	literal,
+	PartDefinition,
+	ServerPartLayers,
+	TV2BlueprintConfigBase,
+	TV2StudioConfigBase
+} from 'tv2-common'
+import { AdlibActionType, AdlibTags } from 'tv2-constants'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
 	isOfftube: true
 	tagAsAdlib: boolean
-	serverEnable: string
-}
-
-export interface CreateAdlibServerSourceLayers extends MakeContentServerSourceLayers {
-	PgmServer: string
-	PgmVoiceOver: string
 }
 
 export function CreateAdlibServer<
@@ -22,40 +24,32 @@ export function CreateAdlibServer<
 >(
 	config: ShowStyleConfig,
 	rank: number,
-	externalId: string,
-	mediaPlayerSession: string,
 	partDefinition: PartDefinition,
 	file: string,
 	vo: boolean,
-	sourceLayers: CreateAdlibServerSourceLayers,
+	sourceLayers: ServerPartLayers,
 	duration: number,
-	offtubeOptions?: AdlibServerOfftubeOptions
-): IBlueprintAdLibPiece {
-	return literal<IBlueprintAdLibPiece>({
-		_rank: rank,
-		externalId,
-		...(offtubeOptions?.isOfftube ? { tags: offtubeOptions.tagAsAdlib ? [AdlibTags.OFFTUBE_ADLIB_SERVER] : [] } : {}),
-		name: offtubeOptions?.isOfftube ? partDefinition.storyName : `${partDefinition.storyName} Server: ${file}`,
-		sourceLayerId: vo ? sourceLayers.PgmVoiceOver : sourceLayers.PgmServer,
-		outputLayerId: offtubeOptions?.isOfftube ? 'selectedAdlib' : 'pgm',
-		lifespan: offtubeOptions?.isOfftube ? PieceLifespan.OutOnSegmentEnd : PieceLifespan.WithinPart,
-		toBeQueued: !offtubeOptions?.isOfftube,
-		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: [mediaPlayerSession]
-		}),
-		content: MakeContentServer(
+	tagAsAdlib: boolean
+): IBlueprintActionManifest {
+	return literal<IBlueprintActionManifest>({
+		actionId: AdlibActionType.SELECT_SERVER_CLIP,
+		userData: literal<ActionSelectServerClip>({
+			type: AdlibActionType.SELECT_SERVER_CLIP,
 			file,
-			mediaPlayerSession,
 			partDefinition,
-			config,
-			sourceLayers,
 			duration,
-			true,
-			offtubeOptions
-		),
-		adlibPreroll: config.studio.CasparPrerollDuration,
-		tags: [GetTagForServer(partDefinition.segmentExternalId, file, vo), TallyTags.SERVER_IS_LIVE],
-		currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, vo)],
-		nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, vo)]
+			vo
+		}),
+		userDataManifest: {},
+		display: {
+			_rank: rank,
+			label: `${partDefinition.storyName}`,
+			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
+			outputLayerId: 'pgm', // TODO: Enum
+			content: GetVTContentProperties(config, file),
+			tags: [tagAsAdlib ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
+			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!vo)],
+			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)]
+		}
 	})
 }

@@ -4,10 +4,11 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	SourceLayerType,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
-import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal, PartContext2 } from 'tv2-common'
+import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal } from 'tv2-common'
 import _ = require('underscore')
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
@@ -15,7 +16,7 @@ import { BlueprintConfig } from '../config'
 
 export function EvaluateCueRouting(
 	config: BlueprintConfig,
-	context: PartContext2,
+	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],

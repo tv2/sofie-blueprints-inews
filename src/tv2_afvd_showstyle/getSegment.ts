@@ -21,7 +21,6 @@ import { CreatePartKam } from './parts/kam'
 import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
-import { CreatePartVO } from './parts/vo'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const config = getConfig(context)
@@ -38,8 +37,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartEkstern: CreatePartUnknown,
 		CreatePartTeknik,
 		CreatePartDVE: CreatePartUnknown,
-		CreatePartTelefon: CreatePartUnknown,
-		CreatePartVO
+		CreatePartTelefon: CreatePartUnknown
 	})
 
 	const blueprintParts = result.parts

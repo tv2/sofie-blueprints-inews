@@ -5,6 +5,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
@@ -17,7 +18,6 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEVS,
 	literal,
-	PartContext2,
 	PartDefinitionEVS,
 	PartTime,
 	SourceInfo,
@@ -32,7 +32,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartEVS(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionEVS,
 	totalWords: number
@@ -91,7 +91,7 @@ export function CreatePartEVS(
 }
 
 function makeContentEVS(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	atemInput: number,
 	partDefinition: PartDefinitionEVS,

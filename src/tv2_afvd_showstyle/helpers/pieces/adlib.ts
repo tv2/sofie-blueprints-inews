@@ -1,7 +1,8 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	PieceLifespan
+	PieceLifespan,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	ActionSelectDVE,
@@ -11,10 +12,8 @@ import {
 	DVEPieceMetaData,
 	GetDVETemplate,
 	literal,
-	PartContext2,
 	PartDefinition,
 	PieceMetaData,
-	SanitizeString,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, CueType } from 'tv2-constants'
@@ -24,10 +23,10 @@ import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateAdLib(
-	context: PartContext2,
+	context: SegmentContext,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
-	_actions: IBlueprintActionManifest[],
+	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -41,30 +40,32 @@ export function EvaluateAdLib(
 			return
 		}
 
-		adLibPieces.push(
+		actions.push(
 			CreateAdlibServer(
 				config,
 				rank,
-				partId,
-				SanitizeString(`adlib_server_${file}`),
 				partDefinition,
 				file,
 				false,
 				{
+					SourceLayer: {
+						PgmServer: SourceLayer.PgmServer,
+						SelectedServer: SourceLayer.SelectedServer
+					},
 					Caspar: {
 						ClipPending: CasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
+						StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
 					},
-					ATEM: {
-						MEPGM: AtemLLayer.AtemMEProgram
+					AtemLLayer: {
+						MEPgm: AtemLLayer.AtemMEProgram
 					},
-					STICKY_LAYERS: config.stickyLayers,
-					PgmServer: SourceLayer.PgmServer,
-					PgmVoiceOver: SourceLayer.PgmVoiceOver
+					ATEM: {}
 				},
-				0 // TODO: duration
+				0, // TODO: duration
+				true
 			)
 		)
 	} else {

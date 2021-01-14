@@ -4,6 +4,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
+	SegmentContext,
 	TSR
 } from 'tv-automation-sofie-blueprints-integration'
 import {
@@ -25,7 +26,6 @@ import {
 	IsTargetingTLF,
 	IsTargetingWall,
 	literal,
-	PartContext2,
 	PartDefinition,
 	PartToParentClass,
 	TimelineBlueprintExt
@@ -39,7 +39,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	_context: PartContext2,
+	_context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],

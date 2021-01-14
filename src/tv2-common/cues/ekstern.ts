@@ -3,6 +3,7 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	RemoteContent,
+	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
@@ -25,7 +26,6 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
-import { PartContext2 } from '../partContext2'
 import { GetTagForLive } from '../pieces'
 
 interface EksternLayers {
@@ -44,7 +44,7 @@ export function EvaluateEksternBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: PartContext2,
+	context: SegmentContext,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
