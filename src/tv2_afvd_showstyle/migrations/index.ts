@@ -10,7 +10,6 @@ import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrat
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { SourceLayer } from '../layers'
 import {
-	forceSettingToDefaults,
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps
@@ -57,9 +56,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 
 	// 1.3.8 - Change delayed layer type to local
 	forceSourceLayerToDefaults('1.3.8', SourceLayer.PgmDelayed),
-
-	// 1.3.9 - Update graphics
-	forceSettingToDefaults('1.3.9', 'GFXTemplates'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
