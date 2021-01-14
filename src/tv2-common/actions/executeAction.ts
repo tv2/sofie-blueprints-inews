@@ -424,11 +424,10 @@ function executeActionSelectServerClip<
 		serverDataStore,
 		...grafikPieces,
 		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(
-					context,
-					settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
-					userData.vo ? [settings.SelectedAdlibs.SourceLayer.VO] : [settings.SelectedAdlibs.SourceLayer.Server]
-			  )
+			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
+					settings.SelectedAdlibs.SourceLayer.VO,
+					settings.SelectedAdlibs.SourceLayer.Server
+			  ])
 			: []),
 		...effektPieces
 	])
