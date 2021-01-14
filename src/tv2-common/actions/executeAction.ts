@@ -427,7 +427,7 @@ function executeActionSelectServerClip<
 			? getPiecesToPreserve(
 					context,
 					settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
-					userData.vo ? [settings.SelectedAdlibs.SourceLayer.Server] : [settings.SelectedAdlibs.SourceLayer.VO]
+					userData.vo ? [settings.SelectedAdlibs.SourceLayer.VO] : [settings.SelectedAdlibs.SourceLayer.Server]
 			  )
 			: []),
 		...effektPieces
