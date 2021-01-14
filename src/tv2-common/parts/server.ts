@@ -122,7 +122,7 @@ export function CreatePartServerBase<
 				},
 				duration
 			),
-			tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, false)]
+			tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.vo)]
 		})
 	)
 
@@ -141,7 +141,7 @@ export function CreatePartServerBase<
 				...GetVTContentProperties(config, file),
 				timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 			},
-			tags: [GetTagForServer(partDefinition.segmentExternalId, file, false), TallyTags.SERVER_IS_LIVE]
+			tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.vo), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 

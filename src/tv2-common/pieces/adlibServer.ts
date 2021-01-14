@@ -47,7 +47,10 @@ export function CreateAdlibServer<
 			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
 			outputLayerId: 'pgm', // TODO: Enum
 			content: GetVTContentProperties(config, file),
-			tags: [tagAsAdlib ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
+			tags: [
+				tagAsAdlib || vo ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,
+				AdlibTags.ADLIB_KOMMENTATOR
+			],
 			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!vo)],
 			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)]
 		}
