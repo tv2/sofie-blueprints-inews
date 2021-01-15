@@ -54,7 +54,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, ControlClasses, CueType, TallyTags } from 'tv2-constants'
+import { AdlibActionType, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import { TimeFromFrames } from '../frameTime'
@@ -544,11 +544,18 @@ function cutServerToBox<
 	dvePiece: IBlueprintPiece
 ): IBlueprintPiece {
 	// Check if DVE should continue server + copy server properties
-	if (dvePiece.content?.timelineObjects) {
-		dvePiece.content.timelineObjects = (dvePiece.content.timelineObjects as Array<
-			TSR.TSRTimelineObj & TimelineBlueprintExt
-		>).filter(obj => !obj.classes?.includes(ControlClasses.DVEPlaceholder))
 
+	if (!dvePiece.metaData) {
+		return dvePiece
+	}
+
+	const meta = dvePiece.metaData as DVEPieceMetaData
+
+	if (!dveContainsServer(meta.sources)) {
+		return dvePiece
+	}
+
+	if (dvePiece.content?.timelineObjects) {
 		const currentPieces = context.getPieceInstances('current')
 		const currentServer = currentPieces.find(
 			p =>
