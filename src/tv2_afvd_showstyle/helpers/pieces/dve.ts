@@ -13,6 +13,7 @@ import {
 	CueDefinitionDVE,
 	DVEPieceMetaData,
 	GetDVETemplate,
+	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
 	TemplateIsValid
@@ -67,6 +68,7 @@ export function EvaluateDVE(
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
+					uniquenessId: getUniquenessIdDVE(parsedCue),
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,

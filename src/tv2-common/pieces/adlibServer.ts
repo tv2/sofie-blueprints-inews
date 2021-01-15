@@ -49,7 +49,8 @@ export function CreateAdlibServer<
 			content: GetVTContentProperties(config, file),
 			tags: [tagAsAdlib ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
 			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!vo)],
-			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)]
+			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)],
+			uniquenessId: `${vo ? 'vo' : 'server'}_${partDefinition.storyName}_${file}`
 		}
 	})
 }

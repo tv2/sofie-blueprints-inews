@@ -63,6 +63,7 @@ export function EvaluateCueGraphicInternal(
 				_rank: rank || 0,
 				externalId: partId,
 				name,
+				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
 				sourceLayerId,
 				outputLayerId,
 				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
