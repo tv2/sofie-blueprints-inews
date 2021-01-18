@@ -285,31 +285,25 @@ export function CreateFullContent(
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TimelineObjAtemDSK>({
 				id: '',
 				enable: {
-					start: config.studio.CasparPrerollDuration
+					start: Number(config.studio.CasparPrerollDuration)
 				},
-				priority: 100,
-				layer: OfftubeAtemLLayer.AtemMEClean,
+				priority: 1,
+				layer: OfftubeAtemLLayer.AtemDSKGraphics,
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.AtemSource.GFXFull,
-						transition: TSR.AtemTransitionStyle.WIPE,
-						transitionSettings: {
-							wipe: {
-								// TODO: Expose to settings
-								rate: 25, // 1s
-								pattern: 1, // Vertical wipe
-								borderSoftness: 7000,
-								reverseDirection: true
-							}
+					type: TSR.TimelineContentTypeAtem.DSK,
+					dsk: {
+						onAir: true,
+						sources: {
+							fillSource: config.studio.AtemSource.JingleFill,
+							cutSource: config.studio.AtemSource.JingleKey
 						}
 					}
 				},
-				classes: [ControlClasses.NOLookahead]
+				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
