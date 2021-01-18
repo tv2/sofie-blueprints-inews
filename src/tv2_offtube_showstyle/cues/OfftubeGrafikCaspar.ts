@@ -302,7 +302,12 @@ export function CreateFullContent(
 							cutSource: config.studio.AtemSource.JingleKey
 						},
 						properties: {
-							preMultiply: true
+							preMultiply: true,
+							clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
+							gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
+							mask: {
+								enabled: false
+							}
 						}
 					},
 				},
