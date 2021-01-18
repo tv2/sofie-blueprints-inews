@@ -41,7 +41,7 @@ type VTProps = Pick<
 	| 'mediaFlowIds'
 	| 'firstWords'
 	| 'lastWords'
-	| 'postRollDuration'
+	| 'postrollDuration'
 	| 'ignoreMediaObjectStatus'
 >
 
@@ -53,7 +53,7 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string)
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
-		postRollDuration: config.studio.ServerPostrollDuration
+		postrollDuration: config.studio.ServerPostrollDuration
 	})
 }
 
