@@ -2082,7 +2082,7 @@ describe('Body parser', () => {
 						target: 'OVL',
 						graphic: {
 							type: 'pilot',
-							name: 'TEMA_SPORT_KORTNYT/Mosart=L|00:02|O',
+							name: 'TEMA_SPORT_KORTNYT',
 							vcpid: 2319983,
 							continueCount: 1
 						},
@@ -2146,7 +2146,7 @@ describe('Body parser', () => {
 						target: 'OVL',
 						graphic: {
 							type: 'pilot',
-							name: 'HojreVideo/12-12-2019/MOSART=L|00:00|O',
+							name: 'HojreVideo/12-12-2019',
 							vcpid: 2578989,
 							continueCount: -1
 						},
@@ -2973,7 +2973,7 @@ describe('Body parser', () => {
 						target: 'OVL',
 						graphic: {
 							type: 'pilot',
-							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=L|00:00|O',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 							vcpid: 2520177,
 							continueCount: -1
 						},
@@ -3041,7 +3041,7 @@ describe('Body parser', () => {
 						target: 'WALL',
 						graphic: {
 							type: 'pilot',
-							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=W|00:00|O',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 							vcpid: 2520177,
 							continueCount: -1
 						},
@@ -3122,7 +3122,7 @@ describe('Body parser', () => {
 						target: 'FULL',
 						graphic: {
 							type: 'pilot',
-							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/MOSART=F|00:00|O',
+							name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 							vcpid: 2520177,
 							continueCount: -1
 						},

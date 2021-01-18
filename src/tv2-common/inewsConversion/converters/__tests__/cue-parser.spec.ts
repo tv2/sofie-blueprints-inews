@@ -733,7 +733,7 @@ describe('Cue parser', () => {
 
 				graphic: {
 					type: 'pilot',
-					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 					vcpid: 2520177,
 					continueCount: -1
 				},
@@ -763,7 +763,7 @@ describe('Cue parser', () => {
 
 				graphic: {
 					type: 'pilot',
-					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|00:30',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 					vcpid: 2520177,
 					continueCount: -1
 				},
@@ -793,7 +793,7 @@ describe('Cue parser', () => {
 
 				graphic: {
 					type: 'pilot',
-					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:02|O',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 					vcpid: 2520177,
 					continueCount: -1
 				},
@@ -931,7 +931,7 @@ describe('Cue parser', () => {
 
 				graphic: {
 					type: 'pilot',
-					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|00:00|00:10',
+					name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 					vcpid: 2520177,
 					continueCount: -1
 				},
@@ -1048,7 +1048,7 @@ describe('Cue parser', () => {
 
 					graphic: {
 						type: 'pilot',
-						name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42/Mosart=L|M|O',
+						name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 						vcpid: 2520177,
 						continueCount: -1
 					},

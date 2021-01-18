@@ -337,6 +337,8 @@ function parsekg(
 	return kgCue
 }
 
+const MOS_TIMING = /\/MOSART=[L|F|W]\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/i
+
 function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGraphic<GraphicInternalOrPilot> {
 	const pilotCue: CueDefinitionUnpairedPilot = {
 		type: CueType.UNPAIRED_PILOT,
@@ -363,10 +365,10 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 	if (realCue.length === 4) {
 		const vcpid = realCue[1].match(/^VCPID=(\d+)$/i)
 		const continueCount = realCue[2].match(/^ContinueCount=(-?\d+)$/i)
-		const timing = realCue[0].match(/[L|F|W]\|(M|\d{1,2}(?:\:\d{1,2}){0,2})\|([SBO]|\d{1,2}(?:\:\d{1,2}){0,2})$/i)
+		const timing = realCue[0].match(MOS_TIMING)
 
 		if (vcpid && continueCount) {
-			pilotCue.name = realCue[0]
+			pilotCue.name = realCue[0].replace(MOS_TIMING, '')
 			pilotCue.vcpid = Number(vcpid[1])
 			pilotCue.continueCount = Number(continueCount[1])
 
@@ -390,8 +392,7 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 		}
 	}
 
-	const targeting = pilotCue.name.match(/MOSART=(L|F|W)/i)
-
+	const targeting = realCue[0].match(/MOSART=(L|F|W)/i)
 	if (targeting && targeting[1]) {
 		const target = targeting[1].toUpperCase()
 		return UnpairedPilotToGraphic(pilotCue, target === 'L' ? 'OVL' : target === 'W' ? 'WALL' : 'FULL')
