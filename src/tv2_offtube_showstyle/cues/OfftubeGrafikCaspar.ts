@@ -313,6 +313,17 @@ export function CreateFullContent(
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
+			literal<TSR.TimelineObjCCGRoute>({
+				id: '',
+				enable: { start: 0 },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+				}
+			}),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 				id: '',
 				enable: { start: 0 },

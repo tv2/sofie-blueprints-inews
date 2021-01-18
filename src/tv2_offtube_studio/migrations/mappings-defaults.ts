@@ -300,6 +300,14 @@ export default literal<BlueprintMappings>({
 		layer: 109,
 		previewWhenNotOnAir: true
 	}),
+	casparcg_graphics_full_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
+		device: TSR.DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.NONE,
+		channel: 3,
+		layer: 108,
+		previewWhenNotOnAir: false // False, so it doesn't show under jingle when full is next
+	}),
 	casparcg_cg_dve_template: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
