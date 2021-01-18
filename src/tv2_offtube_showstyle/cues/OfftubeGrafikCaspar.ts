@@ -231,7 +231,7 @@ function CreateFullAdLib(
 	return literal<IBlueprintAdLibPiece>({
 		_rank: 0,
 		externalId,
-		name: `${parsedCue.graphic.name}`,
+		name: `${parsedCue.graphic.name.replace(/_/g, ' ')}`,
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
 		toBeQueued: true,
