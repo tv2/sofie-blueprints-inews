@@ -300,8 +300,11 @@ export function CreateFullContent(
 						sources: {
 							fillSource: config.studio.AtemSource.JingleFill,
 							cutSource: config.studio.AtemSource.JingleKey
+						},
+						properties: {
+							preMultiply: true
 						}
-					}
+					},
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
