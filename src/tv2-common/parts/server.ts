@@ -1,9 +1,10 @@
 import {
+	ActionExecutionContext,
 	BlueprintResultPart,
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
-	PieceLifespan
+	PieceLifespan,
+	SegmentContext
 } from 'tv-automation-sofie-blueprints-integration'
 import {
 	CutToServer,
@@ -48,7 +49,7 @@ export function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: SegmentContext | ActionExecutionContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps,
@@ -65,7 +66,13 @@ export function CreatePartServerBase<
 	}
 
 	const file = partDefinition.fields.videoId
-	const duration = props.tapeTime * 1000 || 0
+	const mediaObjectDuration = context.hackGetMediaObjectDuration(file)
+	const duration =
+		(mediaObjectDuration !== undefined &&
+			((props.vo && props.totalWords <= 0) || !props.vo) &&
+			mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration) ||
+		props.tapeTime * 1000 ||
+		0
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 	const actualDuration =
 		props.vo && props.totalWords > 0
@@ -77,7 +84,8 @@ export function CreatePartServerBase<
 		title: file,
 		metaData: {},
 		expectedDuration: actualDuration || 1000,
-		prerollDuration: config.studio.CasparPrerollDuration
+		prerollDuration: config.studio.CasparPrerollDuration,
+		hackListenToMediaObjectUpdates: [{ mediaId: file.toUpperCase() }]
 	})
 
 	const pieces: IBlueprintPiece[] = []
