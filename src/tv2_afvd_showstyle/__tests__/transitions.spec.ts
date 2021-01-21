@@ -182,6 +182,9 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmCam)
 		const atemCutObj = getATEMMEObj(piece)
 
+		checkPartExistsWithProperties(segment, {
+			transitionKeepaliveDuration: 440
+		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(11)
 	})
@@ -232,6 +235,9 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
 		const atemCutObj = getATEMMEObj(piece)
 
+		checkPartExistsWithProperties(segment, {
+			transitionKeepaliveDuration: 600
+		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(15)
 	})
@@ -282,6 +288,9 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLive)
 		const atemCutObj = getATEMMEObj(piece)
 
+		checkPartExistsWithProperties(segment, {
+			transitionKeepaliveDuration: 1000
+		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(25)
 	})
@@ -333,7 +342,10 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmServer)
 		const atemCutObj = getATEMMEObj(piece)
 
-		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		checkPartExistsWithProperties(segment, {
+			prerollDuration: defaultStudioConfig.CasparPrerollDuration as number,
+			transitionKeepaliveDuration: 800
+		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
 	})
@@ -385,7 +397,10 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmVoiceOver)
 		const atemCutObj = getATEMMEObj(piece)
 
-		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
+		checkPartExistsWithProperties(segment, {
+			prerollDuration: defaultStudioConfig.CasparPrerollDuration as number,
+			transitionKeepaliveDuration: 800
+		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
 	})
