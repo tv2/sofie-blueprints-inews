@@ -57,6 +57,9 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	// 1.3.8 - Change delayed layer type to local
 	forceSourceLayerToDefaults('1.3.8', SourceLayer.PgmDelayed),
 
+	// 1.3.10 - Change local layer name to EVS
+	forceSourceLayerToDefaults('1.3.10', SourceLayer.PgmLocal),
+
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),

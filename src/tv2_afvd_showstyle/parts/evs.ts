@@ -41,7 +41,7 @@ export function CreatePartEVS(
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: partDefinition.rawType,
+		title: `EVS ${partDefinition.variant.evs} ${partDefinition.variant.isVO ? ' VO' : ''}`,
 		metaData: {},
 		expectedDuration: partTime > 0 ? partTime : 0
 	})

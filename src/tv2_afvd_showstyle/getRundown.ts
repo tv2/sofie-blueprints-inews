@@ -91,7 +91,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'delayed',
-			name: `Delayed Playback`,
+			name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmDelayed,
 			outputLayerId: 'pgm',
@@ -315,7 +315,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
 			adlibItems.push({
 				externalId: 'delayedaux',
-				name: `Delayed Playback in studio aux`,
+				name: `EVS in studio aux`,
 				_rank: globalRank++,
 				sourceLayerId: SourceLayer.AuxStudioScreen,
 				outputLayerId: 'aux',
@@ -341,7 +341,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			})
 			adlibItems.push({
 				externalId: 'delayedaux',
-				name: `Delayed Playback in viz aux`,
+				name: `EVS in viz aux`,
 				_rank: globalRank++,
 				sourceLayerId: SourceLayer.VizFullIn1,
 				outputLayerId: 'aux',
@@ -649,7 +649,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 					userData: literal<ActionCutSourceToBox>({
 						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''}`,
+						name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
 						port: info.port,
 						sourceType: info.type,
 						box,
@@ -658,7 +658,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''} to box ${box + 1}`,
+						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: 'sec',
 						content: {},
