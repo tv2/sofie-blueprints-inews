@@ -1,4 +1,5 @@
 import {
+	IBlueprintPart,
 	IBlueprintPartDB,
 	IBlueprintPartInstance,
 	IBlueprintPieceDB,
@@ -430,6 +431,23 @@ function makeMockContext(
 	}
 }
 
+function checkPartExistsWithProperties(
+	context: MockActionContext,
+	part: 'current' | 'next',
+	props: Partial<IBlueprintPart>
+) {
+	const partInstance = context.getPartInstance(part)!
+	expect(partInstance).toBeTruthy()
+
+	for (const k in props) {
+		if (k in partInstance.part) {
+			expect({ [k]: partInstance.part[k as keyof IBlueprintPart] }).toEqual({ [k]: props[k as keyof IBlueprintPart] })
+		} else {
+			fail(`Key "${k}" not found in part`)
+		}
+	}
+}
+
 describe('Take with CUT', () => {
 	it('Sets the take flag', () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
@@ -522,6 +540,9 @@ describe('Take with MIX', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
+		checkPartExistsWithProperties(context, 'next', {
+			transitionKeepaliveDuration: 800
+		})
 		const camPiece = getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
 

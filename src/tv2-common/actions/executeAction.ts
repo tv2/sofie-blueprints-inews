@@ -57,9 +57,8 @@ import {
 import { AdlibActionType, CueType, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
-import { TimeFromFrames } from '../frameTime'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
-import { CreateEffektForPartBase, CreateEffektForPartInner } from '../parts'
+import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
 import {
 	GetTagForDVE,
 	GetTagForDVENext,
@@ -1388,6 +1387,11 @@ function executeActionTakeWithTransition<
 				}
 
 				context.insertPiece('next', cutTransitionPiece)
+				context.updatePartInstance('next', {
+					transitionKeepaliveDuration: undefined,
+					transitionDuration: undefined,
+					transitionPrerollDuration: undefined
+				})
 			}
 			break
 		case 'breaker': {
@@ -1433,20 +1437,16 @@ function executeActionTakeWithTransition<
 
 			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
-			const mixTransitionPiece: IBlueprintPiece = {
-				enable: {
-					start: 0,
-					duration: Math.max(TimeFromFrames(userData.variant.frames), 1000)
-				},
-				externalId,
-				name: `MIX ${userData.variant.frames}`,
-				sourceLayerId: settings.SourceLayers.Effekt,
-				outputLayerId: settings.OutputLayer.EFFEKT,
-				lifespan: PieceLifespan.WithinPart,
-				tags: [GetTagForTransition(userData.variant)]
-			}
+			const pieces: IBlueprintPiece[] = []
+			const partProps = CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
+				sourceLayer: settings.SourceLayers.Effekt,
+				atemLayer: settings.LLayer.Atem.Effekt,
+				casparLayer: settings.LLayer.Caspar.Effekt,
+				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
+			})
 
-			context.insertPiece('next', mixTransitionPiece)
+			context.updatePartInstance('next', partProps)
+			pieces.forEach(p => context.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
 
 			break
 		}

@@ -8,6 +8,8 @@ import {
 	VTContent
 } from 'tv-automation-sofie-blueprints-integration'
 import {
+	ActionTakeWithTransitionVariantMix,
+	GetTagForTransition,
 	literal,
 	PartDefinition,
 	TimeFromFrames,
@@ -15,13 +17,11 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
+import { TV2BlueprintConfig } from '../blueprintConfig'
 
-export function CreateEffektForPartBase<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
+export function CreateEffektForPartBase(
 	context: NotesContext,
-	config: ShowStyleConfig,
+	config: TV2BlueprintConfig,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[],
 	layers: {
@@ -35,23 +35,32 @@ export function CreateEffektForPartBase<
 			IBlueprintPart,
 			'transitionDuration' | 'transitionKeepaliveDuration' | 'transitionPrerollDuration' | 'autoNext'
 	  >
+	| Pick<IBlueprintPart, 'transitionDuration' | 'transitionKeepaliveDuration'>
 	| {} {
 	const effekt = partDefinition.effekt
-	if (effekt === undefined) {
+	const transition = partDefinition.transition
+
+	if (effekt !== undefined) {
+		const ret = CreateEffektForPartInner(
+			context,
+			config,
+			pieces,
+			effekt.toString(),
+			partDefinition.externalId,
+			layers,
+			`EFFEKT ${effekt}`
+		)
+
+		return ret ?? {}
+	} else if (transition !== undefined && transition.duration !== undefined) {
+		if (transition.style.match(/mix/i)) {
+			return CreateMixForPartInner(pieces, partDefinition.externalId, transition.duration, layers) ?? {}
+		} else {
+			return {}
+		}
+	} else {
 		return {}
 	}
-
-	const ret = CreateEffektForPartInner(
-		context,
-		config,
-		pieces,
-		effekt.toString(),
-		`${partDefinition.externalId}-EFFEKT-${effekt}`,
-		layers,
-		`EFFEKT ${effekt}`
-	)
-
-	return ret ?? {}
 }
 
 export function CreateEffektForPartInner<
@@ -182,5 +191,46 @@ export function CreateEffektForPartInner<
 			TimeFromFrames(Number(effektConfig.EndAlpha)) +
 			config.studio.CasparPrerollDuration,
 		autoNext: false
+	}
+}
+
+export function CreateMixForPartInner(
+	pieces: IBlueprintPiece[],
+	externalId: string,
+	durationInFrames: number,
+	layers: {
+		sourceLayer: string
+		atemLayer: string
+		casparLayer: string
+		sisyfosLayer: string
+	}
+): Pick<IBlueprintPart, 'transitionDuration' | 'transitionKeepaliveDuration'> {
+	pieces.push(
+		literal<IBlueprintPiece>({
+			enable: {
+				start: 0,
+				duration: Math.max(TimeFromFrames(durationInFrames), 1000)
+			},
+			externalId,
+			name: `MIX ${durationInFrames}`,
+			sourceLayerId: layers.sourceLayer,
+			outputLayerId: 'jingle',
+			lifespan: PieceLifespan.WithinPart,
+			tags: [
+				GetTagForTransition(
+					literal<ActionTakeWithTransitionVariantMix>({
+						type: 'mix',
+						frames: durationInFrames
+					})
+				)
+			]
+		})
+	)
+
+	const transitionDuration = TimeFromFrames(durationInFrames)
+
+	return {
+		transitionKeepaliveDuration: transitionDuration,
+		transitionDuration
 	}
 }

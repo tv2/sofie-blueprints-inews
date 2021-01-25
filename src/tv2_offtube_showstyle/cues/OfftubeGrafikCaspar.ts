@@ -309,7 +309,7 @@ export function CreateFullContent(
 								enabled: false
 							}
 						}
-					},
+					}
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
