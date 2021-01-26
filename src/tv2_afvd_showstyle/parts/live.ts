@@ -5,7 +5,8 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece
 } from 'tv-automation-sofie-blueprints-integration'
-import { AddScript, literal, PartContext2, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, CueDefinitionEkstern, literal, PartContext2, PartDefinition, PartTime } from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -34,7 +35,10 @@ export function CreatePartLive(
 	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
-	if (pieces.length === 0) {
+	const liveCue = partDefinition.cues.find(c => c.type === CueType.Ekstern) as CueDefinitionEkstern
+	const livePiece = pieces.find(p => p.sourceLayerId === SourceLayer.PgmLive)
+
+	if (pieces.length === 0 || !liveCue || !livePiece) {
 		part.invalid = true
 	}
 
