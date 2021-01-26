@@ -702,7 +702,7 @@ describe('AFVD Blueprint', () => {
 	})
 
 	it('Creates Live1', () => {
-		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE1', ';0.00']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
 		const context = makeMockContext()
 		const result = getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
@@ -717,7 +717,7 @@ describe('AFVD Blueprint', () => {
 	})
 
 	it('Creates Live 1', () => {
-		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1', ';0.00']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
 		const context = makeMockContext()
 		const result = getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
@@ -729,5 +729,18 @@ describe('AFVD Blueprint', () => {
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(1)
 		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmLive])
+	})
+
+	it('Creates invalid part for EKSTERN=LIVE', () => {
+		const ingestSegment = makeIngestSegment(
+			[['EKSTERN=LIVE'], ['#kg direkte ODDER', ';0.00']],
+			`\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, ['No source entered for EKSTERN'])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expect(result.parts[0].part.invalid).toBe(true)
 	})
 })

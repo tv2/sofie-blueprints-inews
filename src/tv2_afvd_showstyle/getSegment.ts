@@ -18,6 +18,7 @@ import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'
 import { CreatePartIntro } from './parts/intro'
 import { CreatePartKam } from './parts/kam'
+import { CreatePartLive } from './parts/live'
 import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
@@ -34,7 +35,7 @@ export function getSegment(context: SegmentContext, ingestSegment: IngestSegment
 		CreatePartServer,
 		CreatePartEVS,
 		CreatePartGrafik,
-		CreatePartEkstern: CreatePartUnknown,
+		CreatePartEkstern: CreatePartLive,
 		CreatePartTeknik,
 		CreatePartDVE: CreatePartUnknown,
 		CreatePartTelefon: CreatePartUnknown
