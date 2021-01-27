@@ -1,4 +1,4 @@
-import { MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integration'
+import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
 	GraphicLLayer,
 	literal,

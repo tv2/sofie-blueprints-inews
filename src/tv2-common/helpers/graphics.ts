@@ -1,4 +1,4 @@
-import { PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { PieceLifespan } from '@sofie-automation/blueprints-integration'
 import { GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { LifeSpan } from '../cueTiming'

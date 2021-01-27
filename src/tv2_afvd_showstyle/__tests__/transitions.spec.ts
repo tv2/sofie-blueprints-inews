@@ -6,7 +6,7 @@ import {
 	IBlueprintRundownDB,
 	IngestSegment,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
 import * as _ from 'underscore'
 import { SegmentContext } from '../../__mocks__/context'

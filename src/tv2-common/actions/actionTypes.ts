@@ -1,4 +1,4 @@
-import { SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
+import { SourceLayerType } from '@sofie-automation/blueprints-integration'
 import { AdlibActionType } from 'tv2-constants'
 import { DVEConfigInput } from '../helpers'
 import { CueDefinitionDVE, PartDefinition } from '../inewsConversion'

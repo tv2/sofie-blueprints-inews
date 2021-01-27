@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as util from 'util'
 import * as _ from 'underscore'
-import { BlueprintManifestSet } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintManifestSet } from '@sofie-automation/blueprints-integration'
 const { BlueprintBundles } = require('./blueprint-map')
 
 const readFile = util.promisify(fs.readFile)

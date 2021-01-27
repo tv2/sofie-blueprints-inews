@@ -7,7 +7,7 @@ import {
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { literal, TimelineBlueprintExt } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')

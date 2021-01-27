@@ -1,4 +1,4 @@
-import { MigrationStepStudio, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { MigrationStepStudio, TSR } from '@sofie-automation/blueprints-integration'
 import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
 import {

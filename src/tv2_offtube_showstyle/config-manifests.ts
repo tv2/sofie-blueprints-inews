@@ -1,4 +1,4 @@
-import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from '@sofie-automation/blueprints-integration'
 import { DEFAULT_GRAPHICS } from 'tv2-common'
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [

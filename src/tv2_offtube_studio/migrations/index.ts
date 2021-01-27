@@ -3,7 +3,7 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable } from 'tv2-common'
 import * as _ from 'underscore'
 import { EnsureSisyfosMappingHasType } from '../../tv2_afvd_studio/migrations/util'

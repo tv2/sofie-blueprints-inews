@@ -1,4 +1,4 @@
-import { NotesContext, TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
+import { NotesContext, TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
 	GetSisyfosTimelineObjForCamera,

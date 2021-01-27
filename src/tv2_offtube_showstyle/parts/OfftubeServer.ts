@@ -1,8 +1,4 @@
-import {
-	BlueprintResultPart,
-	IBlueprintActionManifest,
-	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintResultPart, IBlueprintActionManifest, SegmentContext } from '@sofie-automation/blueprints-integration'
 import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'

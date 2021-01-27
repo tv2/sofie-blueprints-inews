@@ -1,4 +1,4 @@
-import { BlueprintManifestType, SystemBlueprintManifest } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintManifestType, SystemBlueprintManifest } from '@sofie-automation/blueprints-integration'
 import * as _ from 'underscore'
 
 declare const VERSION: string // Injected by webpack

@@ -9,7 +9,7 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	AddScript,
 	CreatePartInvalid,

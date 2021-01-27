@@ -1,4 +1,4 @@
-import { BlueprintManifestType, StudioBlueprintManifest } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintManifestType, StudioBlueprintManifest } from '@sofie-automation/blueprints-integration'
 import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
 import { getBaseline } from './getBaseline'

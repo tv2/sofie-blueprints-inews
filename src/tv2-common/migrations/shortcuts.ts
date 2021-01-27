@@ -2,7 +2,7 @@ import {
 	ISourceLayer,
 	MigrationContextShowStyle,
 	MigrationStepShowStyle
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 
 export function SetShortcutListMigrationStep(

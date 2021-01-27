@@ -1,4 +1,4 @@
-import { SegmentContext } from 'tv-automation-sofie-blueprints-integration'
+import { SegmentContext } from '@sofie-automation/blueprints-integration'
 
 /**
  * Gets the name of the studio this context belongs to.

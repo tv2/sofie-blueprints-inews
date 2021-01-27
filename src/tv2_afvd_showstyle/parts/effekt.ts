@@ -1,4 +1,4 @@
-import { IBlueprintPiece, SegmentContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPiece, SegmentContext } from '@sofie-automation/blueprints-integration'
 import { CreateEffektForPartBase, PartDefinition } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'

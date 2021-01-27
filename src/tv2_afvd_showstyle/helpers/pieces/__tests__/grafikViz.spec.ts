@@ -6,7 +6,7 @@ import {
 	IBlueprintRundownDB,
 	PieceLifespan,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CueDefinitionGraphic, GraphicInternal, GraphicLLayer, literal, PartDefinitionKam } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'

@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	NotesContext,
 	PieceLifespan
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	CutToServer,
 	GetTagForServer,

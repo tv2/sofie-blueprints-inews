@@ -1,4 +1,4 @@
-import { TSR } from 'tv-automation-sofie-blueprints-integration'
+import { TSR } from '@sofie-automation/blueprints-integration'
 
 export function TransitionFromString(str: string): TSR.AtemTransitionStyle {
 	if (str.match(/MIX/i)) {

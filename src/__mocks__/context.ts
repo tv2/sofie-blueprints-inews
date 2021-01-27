@@ -9,7 +9,7 @@ import {
 	NotesContext as INotesContext,
 	SegmentContext as ISegmentContext,
 	ShowStyleContext as IShowStyleContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { NoteType } from 'tv2-constants'
 import { parseConfig as parseShowStyleConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { parseConfig } from '../tv2_afvd_studio/helpers/config'

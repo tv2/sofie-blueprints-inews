@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	SegmentContext,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionTelefon,
 	GetSisyfosTimelineObjForCamera,

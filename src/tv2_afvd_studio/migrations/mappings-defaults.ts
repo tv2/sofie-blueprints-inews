@@ -1,4 +1,4 @@
-import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig, StudioConfig } from '../helpers/config'

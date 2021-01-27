@@ -3,7 +3,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	CalculateTime,
 	CueDefinition,

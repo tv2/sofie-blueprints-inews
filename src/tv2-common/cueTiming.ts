@@ -1,6 +1,6 @@
 import { CueDefinition, CueDefinitionBase, CueTime } from './inewsConversion/converters/ParseCue'
 
-import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@sofie-automation/blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 const FRAME_TIME = 1000 / 25 // TODO: This should be pulled from config.
