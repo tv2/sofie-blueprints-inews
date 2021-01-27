@@ -190,7 +190,7 @@ function getGlobalAdlibActionsOfftube(
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 					userData: literal<ActionCutSourceToBox>({
 						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''}`,
+						name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
 						port: info.port,
 						sourceType: info.type,
 						box,
@@ -199,7 +199,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? 'VO' : ''} to box ${box + 1}`,
+						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: 'sec',
 						content: {},

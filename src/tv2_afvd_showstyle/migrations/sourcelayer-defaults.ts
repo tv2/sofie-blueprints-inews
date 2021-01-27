@@ -226,8 +226,8 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmLocal,
 		_rank: 0,
-		name: 'Delayed Playback',
-		abbreviation: 'DP',
+		name: 'EVS',
+		abbreviation: 'EVS',
 		type: SourceLayerType.LOCAL,
 		exclusiveGroup: 'me1',
 		isRemoteInput: true,
