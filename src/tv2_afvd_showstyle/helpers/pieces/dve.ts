@@ -3,7 +3,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
-	PieceMetaData,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
 import {
@@ -15,6 +14,7 @@ import {
 	GetDVETemplate,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType } from 'tv2-constants'

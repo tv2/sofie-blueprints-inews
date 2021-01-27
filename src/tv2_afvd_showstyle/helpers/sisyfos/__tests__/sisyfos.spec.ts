@@ -1,5 +1,4 @@
-import { PieceMetaData } from '@sofie-automation/blueprints-integration'
-import { GetStickyForPiece, literal } from 'tv2-common'
+import { GetStickyForPiece, literal, PieceMetaData } from 'tv2-common'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
 
 export const STUDIO_MICS = [

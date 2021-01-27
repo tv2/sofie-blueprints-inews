@@ -248,12 +248,16 @@ export class MockActionContext implements ActionExecutionContext {
 		return instance
 	}
 	/** Update a partInstance */
-	public updatePartInstance(part: 'current' | 'next', props: Partial<IBlueprintMutatablePart>): void {
+	public updatePartInstance(part: 'current' | 'next', props: Partial<IBlueprintMutatablePart>): IBlueprintPartInstance {
 		if (part === 'current') {
 			this.currentPart.part = { ...this.currentPart.part, ...props }
+			return this.currentPart
 		} else if (this.nextPart) {
 			this.nextPart.part = { ...this.nextPart.part, ...props }
+			return this.nextPart
 		}
+
+		throw new Error(`MOCK ACTION EXECTUION CONTEXT: Could not update part instance: ${part}`)
 	}
 	/** Destructive actions */
 	/** Stop any piecesInstances on the specified sourceLayers. Returns ids of piecesInstances that were affected */
@@ -265,12 +269,14 @@ export class MockActionContext implements ActionExecutionContext {
 		return []
 	}
 	/** Remove piecesInstances by id. Returns ids of piecesInstances that were removed */
-	public removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): void {
+	public removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): string[] {
 		if (part === 'current') {
 			this.currentPieceInstances = this.currentPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
 		} else if (this.nextPieceInstances) {
 			this.nextPieceInstances = this.nextPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
 		}
+
+		return pieceInstanceIds
 	}
 	/** Set flag to perform take after executing the current action. Returns state of the flag after each call. */
 	public takeAfterExecuteAction(take: boolean): boolean {

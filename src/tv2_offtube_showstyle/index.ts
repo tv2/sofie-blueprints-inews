@@ -21,8 +21,6 @@ const manifest: ShowStyleBlueprintManifest = {
 	integrationVersion: VERSION_INTEGRATION,
 	TSRVersion: VERSION_TSR,
 
-	minimumCoreVersion: '1.13.0',
-
 	preprocessConfig: parseConfig,
 
 	getShowStyleVariantId,

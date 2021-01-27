@@ -66,13 +66,17 @@ function maxUndefined(a: number | undefined, b: number | undefined): number | un
 	return Math.max(a, b)
 }
 
+function validateSessionName(pieceInstanceId: string, sessionName: string): string {
+	return sessionName === MEDIA_PLAYER_AUTO ? pieceInstanceId : sessionName
+}
+
 interface SessionTime {
 	start: number
 	end: number | undefined
 	optional: boolean
 	duration: number | undefined
 }
-function calculateSessionTimeRanges(_context: NotesContext, resolvedPieces: IBlueprintResolvedPieceInstance[]) {
+function calculateSessionTimeRanges(context: TimelineEventContext, resolvedPieces: IBlueprintResolvedPieceInstance[]) {
 	const piecesWantingMediaPlayers = _.filter(resolvedPieces, p => {
 		if (!p.piece.metaData) {
 			return false
@@ -89,14 +93,9 @@ function calculateSessionTimeRanges(_context: NotesContext, resolvedPieces: IBlu
 		const end = duration !== undefined ? start + duration : undefined
 
 		// Track the range of each session
-		_.each(metadata.mediaPlayerSessions || [], sessionId => {
-			// TODO - will fixed ids ever be wanted? Is it reasonable to want to have the same session across multiple pieces?
-			// Infinites are the exception here, but anything else?
-			// Perhaps the id given should be prefixed with the piece(instance) id? And sharing sessions can be figured out when it becomes needed
+		_.each(metadata?.mediaPlayerSessions || [], sessionName => {
+			const sessionId = context.getPieceABSessionId(p, validateSessionName(p._id, sessionName))
 
-			if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-				sessionId = `${p.piece.continuesRefId || p._id}`
-			}
 			// Note: multiple generated sessionIds for a single piece will not work as there will not be enough info to assign objects to different players
 			const val = sessionRequests[sessionId] || undefined
 			if (val) {
@@ -389,7 +388,7 @@ export function applyMediaPlayersAssignments<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: TimelineEventContext,
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignmentRev: SessionToPlayerMap,
@@ -410,14 +409,19 @@ export function applyMediaPlayersAssignments<
 	const labelledObjs = (timelineObjs as Array<TimelineBlueprintExt & OnGenerateTimelineObj>).filter(
 		o => o.metaData && o.metaData.mediaPlayerSession
 	)
-	const groupedObjs = _.groupBy(labelledObjs, o => {
-		const sessionId = (o.metaData || {}).mediaPlayerSession
-		if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-			return o.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
-		} else {
-			return sessionId
-		}
-	})
+	const groupedObjs = _.groupBy(
+		labelledObjs,
+		o =>
+			(o.metaData?.mediaPlayerSession && o.pieceInstanceId
+				? context.getTimelineObjectAbSessionId(
+						o,
+						validateSessionName(
+							o.pieceInstanceId,
+							validateSessionName(o.pieceInstanceId, o.metaData.mediaPlayerSession)
+						)
+				  )
+				: undefined) ?? 'undefined'
+	)
 
 	// Apply the known assignments
 	const remainingGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []

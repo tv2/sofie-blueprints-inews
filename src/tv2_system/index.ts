@@ -10,9 +10,7 @@ const manifest: SystemBlueprintManifest = {
 
 	blueprintVersion: VERSION,
 	integrationVersion: VERSION_INTEGRATION,
-	TSRVersion: VERSION_TSR,
-
-	minimumCoreVersion: '1.13.0'
+	TSRVersion: VERSION_TSR
 }
 
 export default manifest
