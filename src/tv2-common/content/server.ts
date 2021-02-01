@@ -174,7 +174,7 @@ function GetServerTimeline(
 					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							while: '1'
+							start: 0
 						},
 						priority: 0,
 						layer: sourceLayers.ATEM.ServerLookaheadAux,

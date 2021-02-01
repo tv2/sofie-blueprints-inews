@@ -82,7 +82,7 @@ export default literal<BlueprintMappings>({
 	atem_aux_server_lookahead: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 2 // 2 = out 3
 	}),
