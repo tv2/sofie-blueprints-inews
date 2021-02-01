@@ -168,7 +168,6 @@ export function getSegmentBase<
 
 	let serverParts = 0
 	let jingleTime = 0
-	let serverTime = 0
 	for (const part of parsedParts) {
 		// Apply showstyle-specific transformations of cues.
 		// const part = TransformCuesIntoShowstyle(config, par) // TODO
@@ -268,7 +267,6 @@ export function getSegmentBase<
 			(part.type === PartType.VO && (Number(part.fields.tapeTime) > 0 || part.script.length))
 		) {
 			if (blueprintParts[blueprintParts.length - 1]) {
-				serverTime += Number(blueprintParts[blueprintParts.length - 1].part.expectedDuration)
 				serverParts++
 			}
 		}
@@ -296,8 +294,7 @@ export function getSegmentBase<
 		// part.part.displayDurationGroup = ingestSegment.externalId
 
 		if (!part.part.expectedDuration && totalTimeMs > 0) {
-			part.part.expectedDuration =
-				(totalTimeMs - allocatedTime - serverTime || 0) / (blueprintParts.length - serverParts)
+			part.part.expectedDuration = (totalTimeMs - allocatedTime || 0) / (blueprintParts.length - serverParts)
 
 			if (part.part.expectedDuration! < 0) {
 				part.part.expectedDuration = 0
