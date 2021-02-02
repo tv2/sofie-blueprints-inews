@@ -109,10 +109,6 @@ export interface DVEPieceMetaData {
 	mediaPlayerSessions?: string[] // TODO: Should probably move to a ServerPieceMetaData
 }
 
-export interface DVEBoxInfo {
-	rawType: string
-}
-
 export interface DVETimelineObjectGenerators {
 	GetSisyfosTimelineObjForEkstern: (
 		context: NotesContext,
@@ -284,28 +280,34 @@ export function MakeContentDVE2<
 	const boxes = _.map(template.boxes, box => ({ ...box, source: config.studio.AtemSource.Default }))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) &
-		SplitsContentBoxProperties &
-		DVEBoxInfo> = []
+		SplitsContentBoxProperties> = []
 
-	const setBoxSource = (num: number, sourceInfo: SourceInfo, rawType: string, mappingFrom: string) => {
+	const setBoxSource = (num: number, sourceInfo: SourceInfo, label: string) => {
 		if (boxes[num]) {
 			boxes[num].source = Number(sourceInfo.port)
 
 			boxSources.push({
 				// TODO - draw box geometry
-				...boxSource(sourceInfo, mappingFrom),
+				...boxSource(sourceInfo, label),
 				...literal<CameraContent | RemoteContent>({
 					studioLabel: '',
 					switcherInput: Number(sourceInfo.port),
 					timelineObjects: []
-				}),
-				rawType: rawType
-					.replace(/kam /i, 'Kamera ')
-					.replace('kamera', 'Kamera')
-					.replace(/cam /i, 'Kamera ')
-					.replace('camera', 'Kamera')
+				})
 			})
 		}
+	}
+
+	const setBoxToBlack = (num: number) => {
+		setBoxSource(
+			num,
+			literal<SourceInfo>({
+				type: SourceLayerType.UNKNOWN,
+				id: 'black',
+				port: AtemSourceIndex.Blk
+			}),
+			'Black'
+		)
 	}
 
 	let valid = true
@@ -325,6 +327,7 @@ export function MakeContentDVE2<
 			const sourceInput = props[1]
 			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/EVS/i) && !mappingFrom.source.match(/SERVER/)) {
 				context.warning(`Invalid DVE source: ${mappingFrom.source}`)
+				setBoxToBlack(num)
 				return
 			}
 			const audioEnable: TSR.Timeline.TimelineEnable = {
@@ -338,18 +341,18 @@ export function MakeContentDVE2<
 						id: 'DEFAULT',
 						port: config.studio.AtemSource.Default
 					},
-					mappingFrom.source,
 					mappingFrom.source
 				)
 			} else if (sourceType.match(/KAM/i)) {
 				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
 				if (sourceInfoCam === undefined) {
 					context.warning(`Invalid source: ${mappingFrom.source}`)
+					setBoxToBlack(num)
 					valid = false
 					return
 				}
 
-				setBoxSource(num, sourceInfoCam, mappingFrom.source, mappingFrom.source)
+				setBoxSource(num, sourceInfoCam, mappingFrom.source)
 				dveTimeline.push(
 					GetSisyfosTimelineObjForCamera(
 						context,
@@ -363,11 +366,12 @@ export function MakeContentDVE2<
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
 					context.warning(`Invalid source: ${mappingFrom.source}`)
+					setBoxToBlack(num)
 					valid = false
 					return
 				}
 
-				setBoxSource(num, sourceInfoLive, mappingFrom.source, mappingFrom.source)
+				setBoxSource(num, sourceInfoLive, mappingFrom.source)
 				dveTimeline.push(
 					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForEkstern(
 						context,
@@ -386,11 +390,12 @@ export function MakeContentDVE2<
 				)
 				if (sourceInfoDelayedPlayback === undefined) {
 					context.warning(`Invalid source: ${mappingFrom.source}`)
+					setBoxToBlack(num)
 					valid = false
 					return
 				}
 
-				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source, mappingFrom.source)
+				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
 				dveTimeline.push(
 					GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!mappingFrom.source.match(/VO/i)),
 					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
@@ -402,7 +407,7 @@ export function MakeContentDVE2<
 						id: 'full',
 						port: config.studio.AtemSource.DSK1F
 					}
-					setBoxSource(num, sourceInfoFull, mappingFrom.source, mappingFrom.source)
+					setBoxSource(num, sourceInfoFull, mappingFrom.source)
 					dveTimeline.push(
 						GetSisyfosTimelineObjForCamera(
 							context,
@@ -413,6 +418,7 @@ export function MakeContentDVE2<
 					)
 				} else {
 					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
+					setBoxToBlack(num)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
 				server = true
@@ -423,12 +429,12 @@ export function MakeContentDVE2<
 						id: 'SERVER',
 						port: -1
 					},
-					mappingFrom.source,
 					mappingFrom.source
 				)
 				return
 			} else {
 				context.warning(`Unknown source type for DVE: ${mappingFrom.source}`)
+				setBoxToBlack(num)
 				valid = false
 			}
 		}
