@@ -169,4 +169,8 @@ export class SegmentContext extends ShowStyleContext implements ISegmentContext 
 		this.rundownId = rundown._id
 		this.rundown = rundown
 	}
+
+	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
+		return undefined
+	}
 }

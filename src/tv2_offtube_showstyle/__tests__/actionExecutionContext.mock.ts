@@ -284,4 +284,8 @@ export class MockActionContext implements ActionExecutionContext {
 
 		return take
 	}
+
+	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
+		return undefined
+	}
 }
