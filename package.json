@@ -62,7 +62,7 @@
     "handlebars": "^4.3.0",
     "md5": "^2.2.1",
     "object-path": "^0.11.4",
-    "@sofie-automation/blueprints-integration": "https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210127_4",
+    "@sofie-automation/blueprints-integration": "https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210202_1",
     "underscore": "^1.9.1"
   }
 }
