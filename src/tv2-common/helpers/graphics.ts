@@ -68,8 +68,12 @@ export function FindInfiniteModeFromConfig(
 ): PieceLifespan {
 	if (config.showStyle.GFXTemplates) {
 		const template = GetFullGraphicTemplateNameFromCue(config, parsedCue)
+		const iNewsName = GraphicIsInternal(parsedCue) ? parsedCue.graphic.template : undefined
 		const conf = config.showStyle.GFXTemplates.find(cnf =>
-			cnf.VizTemplate ? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() : false
+			cnf.VizTemplate
+				? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() &&
+				  (iNewsName ? cnf.INewsName.toUpperCase() === iNewsName.toUpperCase() : true)
+				: false
 		)
 
 		if (!conf) {
