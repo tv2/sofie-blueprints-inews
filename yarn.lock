@@ -287,9 +287,9 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@sofie-automation/blueprints-integration@https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210202_1":
+"@sofie-automation/blueprints-integration@https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210202_2":
   version "1.16.1"
-  resolved "https://github.com/olzzon/tv-automation-server-core.git#55c565e5aabed0762518bb36c5ab3b4d302c2230"
+  resolved "https://github.com/olzzon/tv-automation-server-core.git#4aa55f2acee092823d57171207b6a5c97e2e59b6"
   dependencies:
     moment "2.29.1"
     timeline-state-resolver-types "git+https://github.com/olzzon/tv-automation-state-timeline-resolver#dist_types20210127_1"

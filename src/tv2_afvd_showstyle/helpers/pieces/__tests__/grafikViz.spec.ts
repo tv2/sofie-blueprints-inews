@@ -158,6 +158,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				uniquenessId: 'gfx_bund - Odense - Copenhagen_studio0_graphicsLower_overlay',
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -225,6 +226,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				uniquenessId: 'gfx_bund - Odense - Copenhagen_studio0_graphicsLower_overlay',
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',

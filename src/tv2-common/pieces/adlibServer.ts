@@ -52,7 +52,8 @@ export function CreateAdlibServer<
 				AdlibTags.ADLIB_KOMMENTATOR
 			],
 			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!vo)],
-			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)]
+			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)],
+			uniquenessId: `${vo ? 'vo' : 'server'}_${partDefinition.storyName}_${file}`
 		}
 	})
 }

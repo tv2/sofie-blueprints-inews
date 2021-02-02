@@ -12,6 +12,7 @@ import {
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
 	GetDVETemplate,
+	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
 	TemplateIsValid
@@ -124,6 +125,7 @@ export function OfftubeEvaluateAdLib(
 				display: {
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
+					uniquenessId: getUniquenessIdDVE(cueDVE),
 					label: `${partDefinition.storyName}`,
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
 					content: literal<SplitsContent>({
