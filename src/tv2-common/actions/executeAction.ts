@@ -1,6 +1,7 @@
 import {
 	ActionExecutionContext,
 	ActionUserData,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -16,7 +17,7 @@ import {
 	SplitsContent,
 	TSR,
 	VTContent
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -88,6 +89,7 @@ export interface ActionExecutionSettings<
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
+		mediaSubscriptions: HackPartMediaObjectSubscription[],
 		cues: CueDefinition[],
 		partDefinition: PartDefinition,
 		options: EvaluateCuesOptions
@@ -300,10 +302,21 @@ export function getPiecesToPreserve(
 	adlibLayers: string[],
 	ingoreLayers: string[]
 ): IBlueprintPiece[] {
+	const currentPartSegmentId = context.getPartInstance('current')?.segmentId
+	const nextPartSegmentId = context.getPartInstance('next')?.segmentId
+
+	if (!currentPartSegmentId || !nextPartSegmentId) {
+		return []
+	}
+
+	if (currentPartSegmentId !== nextPartSegmentId) {
+		return []
+	}
+
 	return context
 		.getPieceInstances('next')
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
-		.filter(p => !(p as any).infinite?.fromPreviousPart && !(p as any).infinite?.fromPreviousPlayhead) // TODO: Typings do not line up with core
+		.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
 		.map<IBlueprintPiece>(p => p.piece)
 		.map(p => sanitizePieceStart(p))
 		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
@@ -386,6 +399,7 @@ function executeActionSelectServerClip<
 		(context as unknown) as SegmentContext,
 		config,
 		grafikPieces,
+		[],
 		[],
 		[],
 		partDefinition.cues,

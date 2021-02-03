@@ -1,4 +1,4 @@
-import { IBlueprintConfig, IStudioContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintConfig, IStudioContext } from '@sofie-automation/blueprints-integration'
 import {
 	getLiveAudioLayers,
 	getStickyLayers,

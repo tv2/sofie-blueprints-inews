@@ -7,7 +7,7 @@ import {
 	PieceLifespan,
 	SegmentContext,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { getSegmentBase, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { StudioConfig } from '../tv2_afvd_studio/helpers/config'

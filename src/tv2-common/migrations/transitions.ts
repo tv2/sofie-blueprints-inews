@@ -1,4 +1,4 @@
-import { MigrationContextShowStyle, MigrationStepShowStyle } from 'tv-automation-sofie-blueprints-integration'
+import { MigrationContextShowStyle, MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import { TableConfigItemAdLibTransitions } from '../blueprintConfig'
 

@@ -2,7 +2,7 @@ import {
 	MigrationContextStudio,
 	MigrationStepStudio,
 	TableConfigItemValue
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { parseMapStr, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import * as _ from 'underscore'
 import { literal } from '../util'

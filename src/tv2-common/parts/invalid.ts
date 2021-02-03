@@ -1,4 +1,4 @@
-import { BlueprintResultPart, IBlueprintPart } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintResultPart, IBlueprintPart } from '@sofie-automation/blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
 
 export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?: string): BlueprintResultPart {

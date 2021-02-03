@@ -1,10 +1,11 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { AddScript, GetJinglePartProperties, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -31,10 +32,21 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {
-		adlib: asAdlibs
-	})
+	OfftubeEvaluateCues(
+		context,
+		config,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{
+			adlib: asAdlibs
+		}
+	)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
@@ -42,6 +54,8 @@ export function CreatePartUnknown(
 	}
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
+
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -3,7 +3,7 @@ import {
 	ISourceLayer,
 	MigrationContextShowStyle,
 	MigrationStepShowStyle
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'

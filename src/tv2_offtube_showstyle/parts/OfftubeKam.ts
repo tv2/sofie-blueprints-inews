@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -8,7 +9,7 @@ import {
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
 	AddScript,
@@ -46,6 +47,7 @@ export function OfftubeCreatePartKam(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
@@ -142,9 +144,21 @@ export function OfftubeCreatePartKam(
 		)
 	}
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
+	OfftubeEvaluateCues(
+		context,
+		config,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{}
+	)
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
+
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

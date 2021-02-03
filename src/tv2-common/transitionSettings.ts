@@ -1,4 +1,4 @@
-import { TSR } from 'tv-automation-sofie-blueprints-integration'
+import { TSR } from '@sofie-automation/blueprints-integration'
 import { PartDefinition } from 'tv2-common'
 
 export function TransitionSettings(part: PartDefinition): TSR.AtemTransitionSettings {

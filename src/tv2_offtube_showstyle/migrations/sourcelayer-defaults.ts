@@ -1,4 +1,4 @@
-import { ISourceLayer, SourceLayerType } from 'tv-automation-sofie-blueprints-integration'
+import { ISourceLayer, SourceLayerType } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import { OfftubeSourceLayer } from '../layers'
 

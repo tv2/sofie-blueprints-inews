@@ -1,4 +1,4 @@
-import { ConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
+import { ConfigItemValue } from '@sofie-automation/blueprints-integration'
 import { parseMapStr } from 'tv2-common'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'

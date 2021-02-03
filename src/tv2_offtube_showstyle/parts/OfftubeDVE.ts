@@ -1,11 +1,12 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { AddScript, literal, PartDefinitionDVE, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -29,9 +30,20 @@ export function OfftubeCreatePartDVE(
 	const pieces: IBlueprintPiece[] = []
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {
-		adlib: true
-	})
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	OfftubeEvaluateCues(
+		context,
+		config,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{
+			adlib: true
+		}
+	)
 
 	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
 		part.prerollDuration = config.studio.CasparPrerollDuration
@@ -42,6 +54,8 @@ export function OfftubeCreatePartDVE(
 	}
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
+
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	return {
 		part,

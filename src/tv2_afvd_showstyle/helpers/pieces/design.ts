@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	SegmentContext,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, GraphicLLayer, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'

@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, ScriptContent } from '@sofie-automation/blueprints-integration'
 import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
 import { PartType } from 'tv2-constants'
 import { SourceLayer } from '../layers'

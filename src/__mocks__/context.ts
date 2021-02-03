@@ -9,7 +9,7 @@ import {
 	NotesContext as INotesContext,
 	SegmentContext as ISegmentContext,
 	ShowStyleContext as IShowStyleContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { NoteType } from 'tv2-constants'
 import { parseConfig as parseShowStyleConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { parseConfig } from '../tv2_afvd_studio/helpers/config'
@@ -168,5 +168,9 @@ export class SegmentContext extends ShowStyleContext implements ISegmentContext 
 
 		this.rundownId = rundown._id
 		this.rundown = rundown
+	}
+
+	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
+		return undefined
 	}
 }

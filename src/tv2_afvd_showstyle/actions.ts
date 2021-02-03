@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { ActionClearGraphics, executeAction, GraphicLLayer, literal } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 import _ = require('underscore')

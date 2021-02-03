@@ -1,17 +1,19 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	SegmentContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
 	GetDVETemplate,
+	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
 	TemplateIsValid
@@ -28,6 +30,7 @@ export function OfftubeEvaluateAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -73,6 +76,8 @@ export function OfftubeEvaluateAdLib(
 				true
 			)
 		)
+
+		mediaSubscriptions.push({ mediaId: file.toUpperCase() })
 	} else {
 		// DVE
 		if (!parsedCue.variant) {
@@ -124,6 +129,7 @@ export function OfftubeEvaluateAdLib(
 				display: {
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
+					uniquenessId: getUniquenessIdDVE(cueDVE),
 					label: `${partDefinition.storyName}`,
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
 					content: literal<SplitsContent>({

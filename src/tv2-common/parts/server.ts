@@ -1,10 +1,11 @@
 import {
+	ActionExecutionContext,
 	BlueprintResultPart,
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
-	PieceLifespan
-} from 'tv-automation-sofie-blueprints-integration'
+	PieceLifespan,
+	SegmentContext
+} from '@sofie-automation/blueprints-integration'
 import {
 	CutToServer,
 	GetTagForServer,
@@ -48,7 +49,7 @@ export function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: SegmentContext | ActionExecutionContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps,
@@ -65,7 +66,13 @@ export function CreatePartServerBase<
 	}
 
 	const file = partDefinition.fields.videoId
-	const duration = props.tapeTime * 1000 || 0
+	const mediaObjectDuration = context.hackGetMediaObjectDuration(file)
+	const sourceDuration =
+		mediaObjectDuration !== undefined ? mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration : undefined
+	const duration =
+		(mediaObjectDuration !== undefined && ((props.vo && props.totalWords <= 0) || !props.vo) && sourceDuration) ||
+		props.tapeTime * 1000 ||
+		0
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 	const actualDuration =
 		props.vo && props.totalWords > 0
@@ -77,7 +84,8 @@ export function CreatePartServerBase<
 		title: file,
 		metaData: {},
 		expectedDuration: actualDuration || 1000,
-		prerollDuration: config.studio.CasparPrerollDuration
+		prerollDuration: config.studio.CasparPrerollDuration,
+		hackListenToMediaObjectUpdates: [{ mediaId: file.toUpperCase() }]
 	})
 
 	const pieces: IBlueprintPiece[] = []
@@ -120,7 +128,7 @@ export function CreatePartServerBase<
 						ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
 					}
 				},
-				duration
+				sourceDuration
 			),
 			tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.vo)]
 		})
@@ -138,7 +146,7 @@ export function CreatePartServerBase<
 				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: {
-				...GetVTContentProperties(config, file),
+				...GetVTContentProperties(config, file, sourceDuration),
 				timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 			},
 			tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.vo), TallyTags.SERVER_IS_LIVE]

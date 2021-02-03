@@ -5,7 +5,7 @@ import {
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
 	MigrationStepStudio
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeSisyfosLLayer } from '../layers'
@@ -157,7 +157,11 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 	return res
 }
 
-export function GetMappingDefaultMigrationStepForLayer(versionStr: string, layer: string): MigrationStepStudio {
+export function GetMappingDefaultMigrationStepForLayer(
+	versionStr: string,
+	layer: string,
+	force?: boolean
+): MigrationStepStudio {
 	return literal<MigrationStepStudio>({
 		id: `mappings.defaults.manualEnsure${layer}`,
 		version: versionStr,
@@ -165,12 +169,22 @@ export function GetMappingDefaultMigrationStepForLayer(versionStr: string, layer
 		validate: (context: MigrationContextStudio) => {
 			// Optional mappings based on studio settings can be dropped here
 
-			if (!context.getMapping(layer)) {
+			const existing = context.getMapping(layer)
+			if (!existing) {
 				return `Mapping "${layer}" doesn't exist in style`
 			}
+
+			if (force) {
+				return !_.isEqual(existing, MappingsDefaults[layer])
+			}
+
 			return false
 		},
 		migrate: (context: MigrationContextStudio) => {
+			if (context.getMapping(layer) && force) {
+				context.removeMapping(layer)
+			}
+
 			if (!context.getMapping(layer)) {
 				context.insertMapping(layer, MappingsDefaults[layer])
 			}

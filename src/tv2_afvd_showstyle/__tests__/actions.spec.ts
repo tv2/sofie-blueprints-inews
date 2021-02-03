@@ -6,7 +6,7 @@ import {
 	IBlueprintPieceInstance,
 	PieceLifespan,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { ActionCutToCamera, ActionTakeWithTransition, literal } from 'tv2-common'
 import { AdlibActionType } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'

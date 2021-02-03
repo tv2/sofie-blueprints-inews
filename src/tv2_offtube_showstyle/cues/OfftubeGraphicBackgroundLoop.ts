@@ -5,7 +5,7 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
 import _ = require('underscore')
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'

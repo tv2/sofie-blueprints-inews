@@ -2,7 +2,7 @@ import {
 	AsRunEventContext,
 	EventContext,
 	IBlueprintExternalMessageQueueObj
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import * as _ from 'underscore'
 
 /**

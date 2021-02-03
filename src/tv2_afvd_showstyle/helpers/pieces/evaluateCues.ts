@@ -1,9 +1,10 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
@@ -24,6 +25,7 @@ export function EvaluateCues(
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -47,6 +49,7 @@ export function EvaluateCues(
 		pieces,
 		adLibPieces,
 		actions,
+		mediaSubscriptions,
 		cues,
 		partDefinition,
 		options

@@ -1,4 +1,4 @@
-import { BlueprintManifestType, StudioBlueprintManifest } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintManifestType, StudioBlueprintManifest } from '@sofie-automation/blueprints-integration'
 import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
 import { getBaseline } from './getBaseline'
@@ -16,8 +16,6 @@ const manifest: StudioBlueprintManifest = {
 	blueprintVersion: VERSION,
 	integrationVersion: VERSION_INTEGRATION,
 	TSRVersion: VERSION_TSR,
-
-	minimumCoreVersion: '1.13.0',
 
 	preprocessConfig: parseConfig,
 

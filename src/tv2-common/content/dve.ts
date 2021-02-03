@@ -9,7 +9,7 @@ import {
 	SplitsContentBoxProperties,
 	TSR,
 	VTContent
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	createEmptyObject,
 	CueDefinitionDVE,
@@ -639,4 +639,12 @@ function getDVEEnable(offsetFromStart?: number, media?: boolean): TSR.TSRTimelin
 		return { start: offsetFromStart ?? 0 }
 	}
 	return media ? { while: '1' } : { start: offsetFromStart ?? 0 }
+}
+
+export function getUniquenessIdDVE(parsedCue: CueDefinitionDVE) {
+	return `dve_${parsedCue.template}_${parsedCue.labels.join('')}_${
+		parsedCue.sources
+			? `${parsedCue.sources.INP1}${parsedCue.sources.INP2}${parsedCue.sources.INP3}${parsedCue.sources.INP4}`
+			: ''
+	}`
 }

@@ -3,9 +3,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
-	PieceMetaData,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectDVE,
 	AddParentClass,
@@ -13,8 +12,10 @@ import {
 	CueDefinitionDVE,
 	DVEPieceMetaData,
 	GetDVETemplate,
+	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType } from 'tv2-constants'
@@ -67,6 +68,7 @@ export function EvaluateDVE(
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
 					outputLayerId: 'pgm',
 					sourceLayerId: SourceLayer.PgmDVE,
+					uniquenessId: getUniquenessIdDVE(parsedCue),
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,

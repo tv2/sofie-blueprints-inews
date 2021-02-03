@@ -1,4 +1,4 @@
-import { IOutputLayer } from 'tv-automation-sofie-blueprints-integration'
+import { IOutputLayer } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 
 export default literal<IOutputLayer[]>([

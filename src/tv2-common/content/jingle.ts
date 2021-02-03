@@ -1,4 +1,4 @@
-import { TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'

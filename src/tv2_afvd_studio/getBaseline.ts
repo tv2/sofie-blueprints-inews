@@ -1,4 +1,4 @@
-import { BlueprintMapping, BlueprintMappings, IStudioContext, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, IStudioContext, TSR } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'

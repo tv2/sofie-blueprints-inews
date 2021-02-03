@@ -1,4 +1,4 @@
-import { NotesContext, TimelineObjectCoreExt, TSR, VTContent } from 'tv-automation-sofie-blueprints-integration'
+import { NotesContext, TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
 	GetSisyfosTimelineObjForCamera,
@@ -41,11 +41,11 @@ type VTProps = Pick<
 	| 'mediaFlowIds'
 	| 'firstWords'
 	| 'lastWords'
-	| 'postRollDuration'
 	| 'ignoreMediaObjectStatus'
+	| 'sourceDuration'
 >
 
-export function GetVTContentProperties(config: TV2BlueprintConfig, file: string): VTProps {
+export function GetVTContentProperties(config: TV2BlueprintConfig, file: string, sourceDuration?: number): VTProps {
 	return literal<VTProps>({
 		studioLabel: '',
 		fileName: file,
@@ -53,7 +53,7 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string)
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
-		postRollDuration: config.studio.ServerPostrollDuration
+		sourceDuration
 	})
 }
 
@@ -64,13 +64,13 @@ export function MakeContentServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	duration: number,
+	sourceDuration?: number,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions,
 	vo?: boolean
 ): VTContent {
 	return literal<VTContent>({
-		...GetVTContentProperties(config, file),
+		...GetVTContentProperties(config, file, sourceDuration),
 		ignoreMediaObjectStatus: true,
 		timelineObjects: GetServerTimeline(
 			context,
@@ -79,7 +79,6 @@ export function MakeContentServer(
 			partDefinition,
 			config,
 			sourceLayers,
-			duration,
 			adLib,
 			offtubeOptions,
 			vo
@@ -94,7 +93,6 @@ function GetServerTimeline(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	_duration: number,
 	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions,
 	vo?: boolean

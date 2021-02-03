@@ -1,4 +1,4 @@
-import { BlueprintResultSegment, IBlueprintRundownDB, IngestSegment } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintResultSegment, IBlueprintRundownDB, IngestSegment } from '@sofie-automation/blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
 import { SegmentContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'

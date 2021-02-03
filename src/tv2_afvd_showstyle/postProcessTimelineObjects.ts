@@ -9,7 +9,7 @@ import {
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { literal, TimelineBlueprintExt } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../tv2_afvd_studio/helpers/config'

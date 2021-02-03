@@ -8,7 +8,7 @@ import {
 	SegmentContext,
 	SourceLayerType,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	FindInfiniteModeFromConfig,
@@ -91,17 +91,21 @@ function makeMosAdlib(
 ): IBlueprintAdLibPiece {
 	const duration = CreateTimingGrafik(config, parsedCue, false).duration
 	const lifespan = FindInfiniteModeFromConfig(config, parsedCue)
+	const name = GraphicDisplayName(config, parsedCue)
+	const sourceLayerId = GetSourceLayer(engine)
+	const outputLayerId = GetOutputLayer(engine)
 	return {
 		_rank: rank || 0,
 		externalId: partId,
-		name: GraphicDisplayName(config, parsedCue),
+		name,
 		expectedDuration:
 			!(parsedCue.end && parsedCue.end.infiniteMode) && lifespan === PieceLifespan.WithinPart && duration
 				? duration
 				: undefined,
 		lifespan,
-		sourceLayerId: GetSourceLayer(engine),
-		outputLayerId: GetOutputLayer(engine),
+		uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
+		sourceLayerId,
+		outputLayerId,
 		adlibPreroll: config.studio.PilotPrerollDuration,
 		content: GetMosObjContent(context, engine, config, parsedCue, `${partId}-adlib`, true, rank),
 		toBeQueued: IsTargetingFull(engine) || IsTargetingWall(engine)

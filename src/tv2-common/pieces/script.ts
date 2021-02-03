@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan, ScriptContent } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, ScriptContent } from '@sofie-automation/blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
 
 const PREVIEW_CHARACTERS = 30

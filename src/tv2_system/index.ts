@@ -1,4 +1,4 @@
-import { BlueprintManifestType, SystemBlueprintManifest } from 'tv-automation-sofie-blueprints-integration'
+import { BlueprintManifestType, SystemBlueprintManifest } from '@sofie-automation/blueprints-integration'
 import * as _ from 'underscore'
 
 declare const VERSION: string // Injected by webpack
@@ -10,9 +10,7 @@ const manifest: SystemBlueprintManifest = {
 
 	blueprintVersion: VERSION,
 	integrationVersion: VERSION_INTEGRATION,
-	TSRVersion: VERSION_TSR,
-
-	minimumCoreVersion: '1.13.0'
+	TSRVersion: VERSION_TSR
 }
 
 export default manifest

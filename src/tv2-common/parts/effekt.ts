@@ -6,7 +6,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	ActionTakeWithTransitionVariantMix,
 	GetTagForTransition,

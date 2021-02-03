@@ -1,8 +1,9 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { AddScript, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
@@ -43,6 +44,7 @@ export function CreatePartServer(
 	const adLibPieces = basePartProps.part.adLibPieces
 	const duration = basePartProps.duration
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = {
 		...part,
@@ -50,7 +52,19 @@ export function CreatePartServer(
 	}
 	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
 
-	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
+	EvaluateCues(
+		context,
+		config,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{}
+	)
+
+	part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -12,7 +12,7 @@ import {
 	ShowStyleContext,
 	SourceLayerType,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -1210,19 +1210,16 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 					volume: {
 						_value: 0,
 						inTransition: {
-							type: TSR.Transition.MIX,
 							easing: TSR.Ease.LINEAR,
 							direction: TSR.Direction.LEFT,
 							duration: config.studio.AudioBedSettings.fadeIn
 						},
 						changeTransition: {
-							type: TSR.Transition.MIX,
 							easing: TSR.Ease.LINEAR,
 							direction: TSR.Direction.LEFT,
 							duration: config.studio.AudioBedSettings.fadeOut
 						},
 						outTransition: {
-							type: TSR.Transition.MIX,
 							easing: TSR.Ease.LINEAR,
 							direction: TSR.Direction.LEFT,
 							duration: config.studio.AudioBedSettings.fadeOut

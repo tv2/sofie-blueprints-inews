@@ -1,9 +1,10 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	PieceLifespan,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
@@ -11,6 +12,7 @@ import {
 	CueDefinitionDVE,
 	DVEPieceMetaData,
 	GetDVETemplate,
+	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
 	PieceMetaData,
@@ -27,6 +29,7 @@ export function EvaluateAdLib(
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -39,6 +42,11 @@ export function EvaluateAdLib(
 		if (!file) {
 			return
 		}
+
+		const sourceDuration = Math.max(
+			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+			0
+		)
 
 		actions.push(
 			CreateAdlibServer(
@@ -64,10 +72,12 @@ export function EvaluateAdLib(
 					},
 					ATEM: {}
 				},
-				0, // TODO: duration
+				sourceDuration,
 				true
 			)
 		)
+
+		mediaSubscriptions.push({ mediaId: file.toUpperCase() })
 	} else {
 		// DVE
 		if (!parsedCue.variant) {
@@ -114,6 +124,7 @@ export function EvaluateAdLib(
 				name: `DVE: ${parsedCue.variant}`,
 				sourceLayerId: SourceLayer.PgmDVE,
 				outputLayerId: 'pgm',
+				uniquenessId: getUniquenessIdDVE(cueDVE),
 				toBeQueued: true,
 				content: content.content,
 				invalid: !content.valid,

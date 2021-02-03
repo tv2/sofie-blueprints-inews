@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintActionManifest } from '@sofie-automation/blueprints-integration'
 import {
 	ActionTakeWithTransition,
 	ActionTakeWithTransitionVariant,

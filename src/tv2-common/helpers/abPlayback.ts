@@ -4,7 +4,7 @@ import {
 	OnGenerateTimelineObj,
 	TimelineEventContext,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
@@ -382,7 +382,8 @@ export function assignMediaPlayers<
 		timelineObjs,
 		previousAssignmentRev,
 		activeRequests,
-		sourceLayers
+		sourceLayers,
+		resolvedPieces
 	)
 }
 export function applyMediaPlayersAssignments<
@@ -394,7 +395,8 @@ export function applyMediaPlayersAssignments<
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignmentRev: SessionToPlayerMap,
 	activeRequests: ActiveRequest[],
-	sourceLayers: ABSourceLayers
+	sourceLayers: ABSourceLayers,
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const debugLog = config.studio.ABPlaybackDebugLogging
 	const newAssignments: TimelinePersistentStateExt['activeMediaPlayers'] = {}
@@ -413,7 +415,8 @@ export function applyMediaPlayersAssignments<
 	const groupedObjs = _.groupBy(labelledObjs, o => {
 		const sessionId = (o.metaData || {}).mediaPlayerSession
 		if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-			return o.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
+			const piece = resolvedPieces.find(p => p._id === o.pieceInstanceId)
+			return piece?.infinite?.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
 		} else {
 			return sessionId
 		}

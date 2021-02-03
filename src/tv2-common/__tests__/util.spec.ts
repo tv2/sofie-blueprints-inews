@@ -1,4 +1,4 @@
-import { PieceLifespan } from 'tv-automation-sofie-blueprints-integration'
+import { PieceLifespan } from '@sofie-automation/blueprints-integration'
 import { assertUnreachable, isAdLibPiece } from '../util'
 
 describe('util', () => {

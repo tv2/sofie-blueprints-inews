@@ -6,7 +6,7 @@ import {
 	ShowStyleContext,
 	TimelineObjectCoreExt,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 
 import { literal } from 'tv2-common'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'

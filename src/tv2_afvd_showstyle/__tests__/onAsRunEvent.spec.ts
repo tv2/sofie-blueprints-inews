@@ -1,4 +1,4 @@
-import { IBlueprintAsRunLogEventContent, LookaheadMode, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAsRunLogEventContent, LookaheadMode, TSR } from '@sofie-automation/blueprints-integration'
 import onAsRunEvent from '../onAsRunEvent'
 
 describe('onAsRunevent', () => {

@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, TSR } from '@sofie-automation/blueprints-integration'
 
 export function literal<T>(o: T) {
 	return o

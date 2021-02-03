@@ -1,11 +1,12 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	SegmentContext,
 	TimelineObjectCoreExt,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { PartDefinition } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from './config'
@@ -28,6 +29,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 ): T {
 	const piecesForTimeline: Array<IBlueprintPiece | IBlueprintAdLibPiece> = []
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	if (parentPiece.content && parentPiece.content.timelineObjects) {
 		OfftubeEvaluateCues(
@@ -36,6 +38,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 			piecesForTimeline as IBlueprintPiece[],
 			piecesForTimeline as IBlueprintAdLibPiece[],
 			actions,
+			mediaSubscriptions,
 			partDefinition.cues,
 			partDefinition,
 			{

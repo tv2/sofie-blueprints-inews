@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintRundownDB } from '@sofie-automation/blueprints-integration'
 import { CueType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'

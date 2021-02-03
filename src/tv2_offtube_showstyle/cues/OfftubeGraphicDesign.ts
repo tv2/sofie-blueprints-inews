@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	SegmentContext,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, GraphicLLayer, literal } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'

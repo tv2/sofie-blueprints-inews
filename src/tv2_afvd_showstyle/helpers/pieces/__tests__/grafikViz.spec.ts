@@ -6,7 +6,7 @@ import {
 	IBlueprintRundownDB,
 	PieceLifespan,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CueDefinitionGraphic, GraphicInternal, GraphicLLayer, literal, PartDefinitionKam } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
@@ -158,6 +158,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				uniquenessId: 'gfx_bund - Odense - Copenhagen_studio0_graphicsLower_overlay',
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -225,6 +226,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				uniquenessId: 'gfx_bund - Odense - Copenhagen_studio0_graphicsLower_overlay',
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',

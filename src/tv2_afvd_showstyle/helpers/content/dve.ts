@@ -1,4 +1,4 @@
-import { SegmentContext, SplitsContent } from 'tv-automation-sofie-blueprints-integration'
+import { SegmentContext, SplitsContent } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionDVE,
 	DVEConfigInput,

@@ -1,4 +1,4 @@
-import { IBlueprintConfig, ShowStyleContext, TableConfigItemValue } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintConfig, ShowStyleContext, TableConfigItemValue } from '@sofie-automation/blueprints-integration'
 import { TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'

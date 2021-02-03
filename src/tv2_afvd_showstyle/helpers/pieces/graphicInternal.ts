@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	SegmentContext,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GetDefaultOut,
@@ -63,6 +63,7 @@ export function EvaluateCueGraphicInternal(
 				_rank: rank || 0,
 				externalId: partId,
 				name,
+				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
 				sourceLayerId,
 				outputLayerId,
 				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)

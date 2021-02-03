@@ -4,7 +4,7 @@ import {
 	ExtendedIngestRundown,
 	IBlueprintPieceGeneric,
 	IBlueprintRundownDB
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
 // import { ConfigMap } from './configs'
 import { checkAllLayers } from './layers-check'

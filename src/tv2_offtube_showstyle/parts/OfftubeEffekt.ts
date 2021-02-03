@@ -1,4 +1,4 @@
-import { IBlueprintPiece, NotesContext } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintPiece, NotesContext } from '@sofie-automation/blueprints-integration'
 import { CreateEffektForPartBase, PartDefinition } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'

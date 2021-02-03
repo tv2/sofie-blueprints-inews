@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PieceLifespan, TSR } from 'tv-automation-sofie-blueprints-integration'
+import { IBlueprintRundownDB, PieceLifespan, TSR } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinition,
 	CueDefinitionBackgroundLoop,

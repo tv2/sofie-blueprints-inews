@@ -7,7 +7,7 @@ import {
 	SegmentContext,
 	SourceLayerType,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal } from 'tv2-common'
 import _ = require('underscore')
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'

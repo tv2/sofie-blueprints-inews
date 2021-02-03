@@ -10,7 +10,7 @@ import {
 	ShowStyleContext,
 	SourceLayerType,
 	TSR
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import {
 	ActionCommentatorSelectDVE,
 	ActionCommentatorSelectFull,

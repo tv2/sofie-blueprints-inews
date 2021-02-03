@@ -3,7 +3,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	SegmentContext
-} from 'tv-automation-sofie-blueprints-integration'
+} from '@sofie-automation/blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, GetDefaultOut, PartDefinition } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
