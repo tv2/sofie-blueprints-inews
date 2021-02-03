@@ -67,10 +67,10 @@ export function CreatePartServerBase<
 
 	const file = partDefinition.fields.videoId
 	const mediaObjectDuration = context.hackGetMediaObjectDuration(file)
+	const sourceDuration =
+		mediaObjectDuration !== undefined ? mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration : undefined
 	const duration =
-		(mediaObjectDuration !== undefined &&
-			((props.vo && props.totalWords <= 0) || !props.vo) &&
-			mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration) ||
+		(mediaObjectDuration !== undefined && ((props.vo && props.totalWords <= 0) || !props.vo) && sourceDuration) ||
 		props.tapeTime * 1000 ||
 		0
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
@@ -128,7 +128,7 @@ export function CreatePartServerBase<
 						ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
 					}
 				},
-				duration
+				sourceDuration
 			),
 			tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.vo)]
 		})
@@ -146,7 +146,7 @@ export function CreatePartServerBase<
 				mediaPlayerSessions: [mediaPlayerSession]
 			}),
 			content: {
-				...GetVTContentProperties(config, file),
+				...GetVTContentProperties(config, file, sourceDuration),
 				timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 			},
 			tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.vo), TallyTags.SERVER_IS_LIVE]

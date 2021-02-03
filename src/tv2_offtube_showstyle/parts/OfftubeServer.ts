@@ -1,4 +1,9 @@
-import { BlueprintResultPart, IBlueprintActionManifest, SegmentContext } from '@sofie-automation/blueprints-integration'
+import {
+	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
+	IBlueprintActionManifest,
+	SegmentContext
+} from '@sofie-automation/blueprints-integration'
 import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -41,6 +46,7 @@ export function OfftubeCreatePartServer(
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 
@@ -78,9 +84,21 @@ export function OfftubeCreatePartServer(
 		)
 	)
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {})
+	OfftubeEvaluateCues(
+		context,
+		config,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{}
+	)
 
 	AddScript(partDefinition, pieces, duration, OfftubeSourceLayer.PgmScript)
+
+	part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
 
 	if (pieces.length === 0) {
 		part.invalid = true

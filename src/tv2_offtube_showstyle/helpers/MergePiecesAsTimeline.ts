@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -28,6 +29,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 ): T {
 	const piecesForTimeline: Array<IBlueprintPiece | IBlueprintAdLibPiece> = []
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	if (parentPiece.content && parentPiece.content.timelineObjects) {
 		OfftubeEvaluateCues(
@@ -36,6 +38,7 @@ export function MergePiecesAsTimeline<T extends IBlueprintPiece | IBlueprintAdLi
 			piecesForTimeline as IBlueprintPiece[],
 			piecesForTimeline as IBlueprintAdLibPiece[],
 			actions,
+			mediaSubscriptions,
 			partDefinition.cues,
 			partDefinition,
 			{

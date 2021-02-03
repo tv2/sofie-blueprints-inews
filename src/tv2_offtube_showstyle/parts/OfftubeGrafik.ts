@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -30,14 +31,26 @@ export function OfftubeCreatePartGrafik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	OfftubeEvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, {
-		adlib: asAdlibs
-	})
+	OfftubeEvaluateCues(
+		context,
+		config,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{
+			adlib: asAdlibs
+		}
+	)
 	part.prerollDuration = config.studio.CasparPrerollDuration
 	part.transitionKeepaliveDuration = config.studio.FullKeepAliveDuration
 		? Number(config.studio.FullKeepAliveDuration)
 		: 60000
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
