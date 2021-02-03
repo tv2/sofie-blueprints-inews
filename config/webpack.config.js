@@ -27,8 +27,8 @@ module.exports = env => {
 	// versionTSRTypes = versionTSRTypes.replace(/[^\d.]/g, '') || '0.0.0'
 	// versionIntegration = versionIntegration.replace(/[^\d.]/g, '') || '0.0.0'
 
-	versionTSRTypes = '0.0.0'
-	versionIntegration = '0.0.0'
+	versionTSRTypes = '1.3.0'
+	versionIntegration = '1.16.1'
 
 	const entrypoints = env.bundle ? GetEntrypointsForBundle(env.bundle) : BlueprintEntrypoints
 
