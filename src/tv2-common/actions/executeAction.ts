@@ -300,10 +300,21 @@ export function getPiecesToPreserve(
 	adlibLayers: string[],
 	ingoreLayers: string[]
 ): IBlueprintPiece[] {
+	const currentPartSegmentId = context.getPartInstance('current')?.segmentId
+	const nextPartSegmentId = context.getPartInstance('next')?.segmentId
+
+	if (!currentPartSegmentId || !nextPartSegmentId) {
+		return []
+	}
+
+	if (currentPartSegmentId !== nextPartSegmentId) {
+		return []
+	}
+
 	return context
 		.getPieceInstances('next')
 		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
-		.filter(p => !(p as any).infinite?.fromPreviousPart && !(p as any).infinite?.fromPreviousPlayhead) // TODO: Typings do not line up with core
+		.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
 		.map<IBlueprintPiece>(p => p.piece)
 		.map(p => sanitizePieceStart(p))
 		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
