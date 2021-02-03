@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -32,10 +33,13 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	EvaluateCues(context, config, pieces, adLibPieces, actions, partDefinition.cues, partDefinition, { adlib: asAdlibs })
+	EvaluateCues(context, config, pieces, adLibPieces, actions, mediaSubscriptions, partDefinition.cues, partDefinition, {
+		adlib: asAdlibs
+	})
 	if (!asAdlibs) {
 		AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	}
@@ -56,6 +60,8 @@ export function CreatePartUnknown(
 	if (pieces.length === 0) {
 		part.invalid = true
 	}
+
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	return {
 		part,

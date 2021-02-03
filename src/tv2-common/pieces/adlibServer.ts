@@ -46,7 +46,7 @@ export function CreateAdlibServer<
 			label: `${partDefinition.storyName}`,
 			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
 			outputLayerId: 'pgm', // TODO: Enum
-			content: GetVTContentProperties(config, file),
+			content: GetVTContentProperties(config, file, duration),
 			tags: [
 				tagAsAdlib || vo ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,
 				AdlibTags.ADLIB_KOMMENTATOR

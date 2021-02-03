@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	PieceLifespan,
@@ -28,6 +29,7 @@ export function EvaluateAdLib(
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -40,6 +42,11 @@ export function EvaluateAdLib(
 		if (!file) {
 			return
 		}
+
+		const sourceDuration = Math.max(
+			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+			0
+		)
 
 		actions.push(
 			CreateAdlibServer(
@@ -65,10 +72,12 @@ export function EvaluateAdLib(
 					},
 					ATEM: {}
 				},
-				0, // TODO: duration
+				sourceDuration,
 				true
 			)
 		)
+
+		mediaSubscriptions.push({ mediaId: file.toUpperCase() })
 	} else {
 		// DVE
 		if (!parsedCue.variant) {

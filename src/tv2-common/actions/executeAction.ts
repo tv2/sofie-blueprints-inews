@@ -1,6 +1,7 @@
 import {
 	ActionExecutionContext,
 	ActionUserData,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -88,6 +89,7 @@ export interface ActionExecutionSettings<
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
+		mediaSubscriptions: HackPartMediaObjectSubscription[],
 		cues: CueDefinition[],
 		partDefinition: PartDefinition,
 		options: EvaluateCuesOptions
@@ -386,6 +388,7 @@ function executeActionSelectServerClip<
 		(context as unknown) as SegmentContext,
 		config,
 		grafikPieces,
+		[],
 		[],
 		[],
 		partDefinition.cues,
