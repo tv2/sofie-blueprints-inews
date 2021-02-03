@@ -18,7 +18,7 @@
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "unit": "jest",
     "test": "yarn lint --fix && yarn unit",
-    "validate:dependencies": "yarn audit && yarn license-validate",
+    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
     "license-validate": "node-license-validator -p -d --allow-licenses MIT MIT/X11 BSD BSD-3-Clause ISC Apache Unlicense"
   },
   "husky": {
@@ -56,7 +56,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@sofie-automation/blueprints-integration": "https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210202_2",
+    "@sofie-automation/blueprints-integration": "https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210203_1",
     "underscore": "^1.12.0"
   }
 }
