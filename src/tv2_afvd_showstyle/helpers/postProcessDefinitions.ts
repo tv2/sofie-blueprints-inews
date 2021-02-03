@@ -103,8 +103,6 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 	id = padId(id.trim().replace(/ /g, '-'), foundMap)
 
 	return id
-
-	// return md5(`${id}`)
 }
 
 function padId(id: string, foundMap: { [key: string]: number }) {
