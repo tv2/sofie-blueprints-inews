@@ -53,7 +53,7 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string,
 		mediaFlowIds: [config.studio.MediaFlowId],
 		firstWords: '',
 		lastWords: '',
-		sourceDuration
+		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined
 	})
 }
 
