@@ -525,7 +525,15 @@ export function MakeContentDVE2<
 							artFillSource: config.studio.AtemSource.SplitArtF,
 							artCutSource: config.studio.AtemSource.SplitArtK,
 							artOption: 1,
-							artPreMultiplied: true
+							...(!config.studio.AtemSettings.artPreMultiplied
+								? {
+										artPreMultiplied: false,
+										borderEnabled: false,
+										artInvertKey: false,
+										artClip: config.studio.AtemSettings.artClip,
+										artGain: config.studio.AtemSettings.artGain
+								  }
+								: { artPreMultiplied: true })
 						}
 					}
 				}),

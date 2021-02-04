@@ -51,6 +51,13 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	AtemSettings: {
 		CCGClip: number
 		CCGGain: number
+
+		/** SSRC Art */
+		artPreMultiplied: boolean
+		borderEnabled: boolean
+		artInvertKey: boolean
+		artClip: number
+		artGain: number
 	}
 
 	AudioBedSettings: {

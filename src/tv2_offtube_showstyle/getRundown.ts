@@ -721,7 +721,15 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 					artFillSource: config.studio.AtemSource.SplitArtF,
 					artCutSource: config.studio.AtemSource.SplitArtK,
 					artOption: 1, // foreground
-					artPreMultiplied: true
+					...(!config.studio.AtemSettings.artPreMultiplied
+						? {
+								artPreMultiplied: false,
+								borderEnabled: false,
+								artInvertKey: false,
+								artClip: config.studio.AtemSettings.artClip,
+								artGain: config.studio.AtemSettings.artGain
+						  }
+						: { artPreMultiplied: true })
 				}
 			}
 		}),

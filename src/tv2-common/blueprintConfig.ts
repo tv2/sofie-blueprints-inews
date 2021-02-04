@@ -56,6 +56,13 @@ export interface TV2StudioConfigBase {
 	AtemSettings: {
 		CCGClip: number
 		CCGGain: number
+
+		/** SSRC Art */
+		artPreMultiplied: boolean
+		borderEnabled: boolean
+		artInvertKey: boolean
+		artClip: number
+		artGain: number
 	}
 	StudioMics: string[]
 	SourcesRM: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]

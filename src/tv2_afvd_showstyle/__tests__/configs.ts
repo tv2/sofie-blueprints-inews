@@ -84,7 +84,12 @@ export const defaultStudioConfig: ConfigMap = {
 		VizClip: 50,
 		VizGain: 12.5,
 		CCGClip: 50,
-		CCGGain: 12.5
+		CCGGain: 12.5,
+		artPreMultiplied: false,
+		borderEnabled: false,
+		artInvertKey: false,
+		artClip: 0,
+		artGain: 0
 	},
 	AudioBedSettings: {
 		fadeIn: 1000,
