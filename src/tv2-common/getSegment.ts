@@ -337,7 +337,7 @@ export function getSegmentBase<
 
 	blueprintParts.forEach(part => {
 		if (part.part.expectedDuration! < config.studio.DefaultPartDuration) {
-			part.part.displayDuration = config.studio.DefaultPartDuration
+			part.part.expectedDuration = config.studio.DefaultPartDuration
 		}
 	})
 
