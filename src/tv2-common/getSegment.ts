@@ -335,6 +335,12 @@ export function getSegmentBase<
 		segment.isHidden = true
 	}
 
+	blueprintParts.forEach(part => {
+		if (part.part.expectedDuration! < config.studio.DefaultPartDuration) {
+			part.part.displayDuration = config.studio.DefaultPartDuration
+		}
+	})
+
 	blueprintParts = blueprintParts.map(part => {
 		const actualPart = part.part
 		actualPart.metaData = literal<PartMetaData>({
