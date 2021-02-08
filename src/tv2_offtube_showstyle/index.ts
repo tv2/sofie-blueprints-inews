@@ -9,6 +9,7 @@ import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import { parseConfig } from './helpers/config'
 import onAsRunEvent from './onAsRunEvent'
+import { syncIngestUpdateToPartInstance } from './syncIngestUpdateToPartInstances'
 
 declare const VERSION: string // Injected by webpack
 declare const VERSION_TSR: string // Injected by webpack
@@ -31,6 +32,7 @@ const manifest: ShowStyleBlueprintManifest = {
 	onTimelineGenerate: onTimelineGenerateOfftube,
 	getEndStateForPart,
 	executeAction: executeActionOfftube,
+	syncIngestUpdateToPartInstance,
 
 	showStyleConfigManifest,
 	showStyleMigrations
