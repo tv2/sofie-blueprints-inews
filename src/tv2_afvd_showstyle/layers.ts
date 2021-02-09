@@ -12,7 +12,6 @@ export enum AFVDSourceLayer {
 	PgmPilot = 'studio0_pilot',
 	/** Viz-specific */
 	PgmPilotOverlay = 'studio0_pilotOverlay',
-	PgmDelayed = 'studio0_local',
 	PgmContinuity = 'studio0_continuity',
 
 	VizFullIn1 = 'studio0_aux_viz_full1',

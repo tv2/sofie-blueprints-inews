@@ -56,7 +56,7 @@ const evsPieceInstance: IBlueprintPieceInstance = {
 		},
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
-		sourceLayerId: SourceLayer.PgmDelayed,
+		sourceLayerId: SourceLayer.PgmLocal,
 		outputLayerId: 'pgm',
 		lifespan: PieceLifespan.WithinPart
 	})
@@ -238,7 +238,7 @@ const evsPieceInstance_Cut: IBlueprintPieceInstance = {
 		},
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
-		sourceLayerId: SourceLayer.PgmDelayed,
+		sourceLayerId: SourceLayer.PgmLocal,
 		outputLayerId: 'pgm',
 		lifespan: PieceLifespan.WithinPart,
 		content: {
@@ -273,7 +273,7 @@ const evsPieceInstance_Mix: IBlueprintPieceInstance = {
 		},
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
-		sourceLayerId: SourceLayer.PgmDelayed,
+		sourceLayerId: SourceLayer.PgmLocal,
 		outputLayerId: 'pgm',
 		lifespan: PieceLifespan.WithinPart,
 		content: {
@@ -313,7 +313,7 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 		},
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
-		sourceLayerId: SourceLayer.PgmDelayed,
+		sourceLayerId: SourceLayer.PgmLocal,
 		outputLayerId: 'pgm',
 		lifespan: PieceLifespan.WithinPart,
 		content: {
@@ -346,7 +346,7 @@ function getCameraPiece(context: MockActionContext, part: 'current' | 'next'): I
 }
 
 function getEVSPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
-	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmDelayed)
+	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmLocal)
 	expect(piece).toBeTruthy()
 
 	return piece!

@@ -55,7 +55,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	forceSourceLayerToDefaults('1.3.7', SourceLayer.WallGraphics),
 
 	// 1.3.8 - Change delayed layer type to local
-	forceSourceLayerToDefaults('1.3.8', SourceLayer.PgmDelayed),
+	forceSourceLayerToDefaults('1.3.8', SourceLayer.PgmLocal),
 
 	// 1.3.10 - Change local layer name to EVS
 	forceSourceLayerToDefaults('1.3.10', SourceLayer.PgmLocal),

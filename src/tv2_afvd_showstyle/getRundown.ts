@@ -93,7 +93,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			externalId: 'delayed',
 			name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
 			_rank: rank,
-			sourceLayerId: SourceLayer.PgmDelayed,
+			sourceLayerId: SourceLayer.PgmLocal,
 			outputLayerId: 'pgm',
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
