@@ -45,6 +45,7 @@ export interface PieceMetaData {
 	stickySisyfosLevels?: { [key: string]: { value: number; followsPrevious: boolean } }
 	mediaPlayerSessions?: string[]
 	mediaPlayerOptional?: boolean
+	modifiedByAction?: boolean
 }
 
 export interface PartMetaData {
