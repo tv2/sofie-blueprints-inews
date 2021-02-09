@@ -282,7 +282,7 @@ function parsekg(
 	let textFields = cue.length - 1
 	if (isTime(cue[cue.length - 1])) {
 		kgCue = { ...kgCue, ...parseTime(cue[cue.length - 1]) }
-	} else if (!cue[cue.length - 1].match(/;x.xx/i)) {
+	} else if (!cue[cue.length - 1].match(/;[x|\d+].[x|\d+]x/i)) {
 		textFields += 1
 	} else {
 		kgCue.adlib = true
@@ -577,7 +577,7 @@ function parseLYD(cue: string[]) {
 	if (cue[1]) {
 		if (isTime(cue[1])) {
 			lydCue = { ...lydCue, ...parseTime(cue[1]) }
-		} else if (cue[1].match(/;x.xx/i)) {
+		} else if (cue[1].match(/;[x|\d+].[x|\d+]x/i)) {
 			lydCue.adlib = true
 		}
 	}

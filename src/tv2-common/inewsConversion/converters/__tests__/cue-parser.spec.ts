@@ -1568,5 +1568,18 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('All out', () => {
+		const cueViz = ['LYD=SN_intro', ';0.0x']
+		const result = ParseCue(cueViz, config)
+		expect(result).toEqual(
+			literal<CueDefinitionLYD>({
+				type: CueType.LYD,
+				adlib: true,
+				variant: 'SN_intro',
+				iNewsCommand: 'LYD'
+			})
+		)
+	})
+
 	/** End of all-out cues */
 })
