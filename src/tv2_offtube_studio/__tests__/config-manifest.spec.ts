@@ -47,7 +47,10 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	IdleSource: 0,
 	FullKeepAliveDuration: 0,
 	FullGraphicURL: '',
-	ServerPostrollDuration: 5000
+	ServerPostrollDuration: 5000,
+	FullTransitionSettings: {
+		wipeRate: 20
+	}
 }
 
 function getObjectKeys(obj: any): string[] {

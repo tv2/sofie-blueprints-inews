@@ -316,7 +316,7 @@ export function CreateFullContent(
 			literal<TSR.TimelineObjAtemME>({
 				id: '',
 				enable: {
-					start: 280 // config
+					start: Number(config.studio.CasparPrerollDuration)
 				},
 				priority: 1,
 				layer: OfftubeAtemLLayer.AtemMEClean,
@@ -328,7 +328,7 @@ export function CreateFullContent(
 						transition: TSR.AtemTransitionStyle.WIPE,
 						transitionSettings: {
 							wipe: {
-								rate: 40,
+								rate: config.studio.FullTransitionSettings.wipeRate,
 								pattern: 1,
 								reverseDirection: true
 							}

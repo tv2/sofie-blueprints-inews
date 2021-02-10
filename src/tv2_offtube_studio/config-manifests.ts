@@ -523,5 +523,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 0
+	},
+	{
+		id: 'FullTransitionSettings.wipeRate',
+		name: 'Full graphic background loop wipe duration',
+		description: 'Frames (max 250) over which to wipe background loop behind Full',
+		type: ConfigManifestEntryType.NUMBER,
+		required: true,
+		defaultVal: 20
 	}
 ]
