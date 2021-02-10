@@ -529,7 +529,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'Full graphic background loop wipe duration',
 		description: 'Frames (max 250) over which to wipe background loop behind Full',
 		type: ConfigManifestEntryType.NUMBER,
-		required: true,
+		required: false,
 		defaultVal: 20
 	}
 ]
