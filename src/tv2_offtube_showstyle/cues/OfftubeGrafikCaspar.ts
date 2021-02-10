@@ -325,7 +325,12 @@ export function CreateFullContent(
 					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
 						input: config.studio.AtemSource.SplitBackground,
-						transition: TSR.AtemTransitionStyle.CUT
+						transition: TSR.AtemTransitionStyle.WIPE,
+						transitionSettings: {
+							wipe: {
+								rate: 1000
+							}
+						}
 					}
 				}
 			}),
