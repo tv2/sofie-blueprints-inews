@@ -61,6 +61,11 @@ export function OfftubeCreatePartServer(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
+	const sourceDuration = Math.max(
+		(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+		0
+	)
+
 	actions.push(
 		CreateAdlibServer(
 			config,
@@ -88,7 +93,7 @@ export function OfftubeCreatePartServer(
 					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 				}
 			},
-			0,
+			sourceDuration,
 			false
 		)
 	)
