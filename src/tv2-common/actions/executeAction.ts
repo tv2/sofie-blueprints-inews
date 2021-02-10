@@ -357,7 +357,8 @@ function executeActionSelectServerClip<
 			totalWords: 0,
 			totalTime: 0,
 			tapeTime: userData.duration / 1000,
-			session: sessionToContinue ?? externalId
+			session: sessionToContinue ?? externalId,
+			adLib: userData.adLib
 		},
 		{
 			SourceLayer: {
@@ -380,6 +381,9 @@ function executeActionSelectServerClip<
 			ATEM: {
 				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
 			}
+		},
+		{
+			isOfftube: settings.LLayer.Atem.cutOnclean
 		}
 	)
 

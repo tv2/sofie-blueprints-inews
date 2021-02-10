@@ -197,7 +197,13 @@ export function getSegmentBase<
 			case PartType.Server:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						showStyleOptions.CreatePartServer(context, config, part, { vo: false, totalTime, totalWords, tapeTime })
+						showStyleOptions.CreatePartServer(context, config, part, {
+							vo: false,
+							totalTime,
+							totalWords,
+							tapeTime,
+							adLib: false
+						})
 					)
 				}
 				break
@@ -214,7 +220,13 @@ export function getSegmentBase<
 			case PartType.VO:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						showStyleOptions.CreatePartServer(context, config, part, { vo: true, totalTime, totalWords, tapeTime })
+						showStyleOptions.CreatePartServer(context, config, part, {
+							vo: true,
+							totalTime,
+							totalWords,
+							tapeTime,
+							adLib: false
+						})
 					)
 				}
 				break

@@ -64,10 +64,10 @@ export function MakeContentServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	sourceDuration?: number,
-	adLib?: boolean,
-	offtubeOptions?: AdlibServerOfftubeOptions,
-	vo?: boolean
+	adLib: boolean,
+	offtubeOptions: AdlibServerOfftubeOptions,
+	vo: boolean,
+	sourceDuration?: number
 ): VTContent {
 	return literal<VTContent>({
 		...GetVTContentProperties(config, file, sourceDuration),

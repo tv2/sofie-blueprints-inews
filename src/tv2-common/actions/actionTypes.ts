@@ -13,6 +13,7 @@ export interface ActionSelectServerClip extends ActionBase {
 	partDefinition: PartDefinition
 	duration: number
 	vo: boolean
+	adLib: boolean
 }
 
 export interface ActionSelectFullGrafik extends ActionBase {

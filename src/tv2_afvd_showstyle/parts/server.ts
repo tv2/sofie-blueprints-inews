@@ -17,23 +17,32 @@ export function CreatePartServer(
 	partDefinition: PartDefinition,
 	props: ServerPartProps
 ): BlueprintResultPart {
-	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
-		SourceLayer: {
-			PgmServer: props.vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
-			SelectedServer: props.vo ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
+	const basePartProps = CreatePartServerBase(
+		context,
+		config,
+		partDefinition,
+		props,
+		{
+			SourceLayer: {
+				PgmServer: props.vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
+				SelectedServer: props.vo ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
+			},
+			AtemLLayer: {
+				MEPgm: AtemLLayer.AtemMEProgram
+			},
+			Caspar: {
+				ClipPending: CasparLLayer.CasparPlayerClipPending
+			},
+			Sisyfos: {
+				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
+				StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
+			},
+			ATEM: {}
 		},
-		AtemLLayer: {
-			MEPgm: AtemLLayer.AtemMEProgram
-		},
-		Caspar: {
-			ClipPending: CasparLLayer.CasparPlayerClipPending
-		},
-		Sisyfos: {
-			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-			StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
-		},
-		ATEM: {}
-	})
+		{
+			isOfftube: false
+		}
+	)
 
 	if (basePartProps.invalid) {
 		return basePartProps.part

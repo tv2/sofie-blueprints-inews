@@ -14,8 +14,7 @@ import { AdlibActionType, AdlibTags } from 'tv2-constants'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
-	isOfftube: true
-	tagAsAdlib: boolean
+	isOfftube: boolean
 }
 
 export function CreateAdlibServer<
@@ -38,7 +37,8 @@ export function CreateAdlibServer<
 			file,
 			partDefinition,
 			duration,
-			vo
+			vo,
+			adLib: tagAsAdlib
 		}),
 		userDataManifest: {},
 		display: {
