@@ -530,7 +530,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'Frames (max 250) over which to wipe background loop behind Full',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 20
+		defaultVal: 10
 	},
 	{
 		id: 'FullTransitionSettings.borderSoftness',
