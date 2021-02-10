@@ -313,15 +313,20 @@ export function CreateFullContent(
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
-			literal<TSR.TimelineObjCCGRoute>({
+			literal<TSR.TimelineObjAtemME>({
 				id: '',
-				enable: { start: 0 },
+				enable: {
+					start: 280 // config
+				},
 				priority: 1,
-				layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
+				layer: OfftubeAtemLLayer.AtemMEClean,
 				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.ROUTE,
-					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.AtemSource.SplitBackground,
+						transition: TSR.AtemTransitionStyle.CUT
+					}
 				}
 			}),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
