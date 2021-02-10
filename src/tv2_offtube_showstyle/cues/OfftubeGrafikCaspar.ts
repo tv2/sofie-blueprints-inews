@@ -328,7 +328,7 @@ export function CreateFullContent(
 						transition: TSR.AtemTransitionStyle.WIPE,
 						transitionSettings: {
 							wipe: {
-								rate: 1000,
+								rate: 40,
 								pattern: 1,
 								reverseDirection: true
 							}
