@@ -531,5 +531,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 20
+	},
+	{
+		id: 'FullTransitionSettings.borderSoftness',
+		name: 'Full graphic wipe softness',
+		description: 'Border softness of full graphic background wipe',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 7500
 	}
 ]

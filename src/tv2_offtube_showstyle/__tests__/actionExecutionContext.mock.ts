@@ -75,7 +75,8 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	FullGraphicURL: '',
 	ServerPostrollDuration: 5000,
 	FullTransitionSettings: {
-		wipeRate: 20
+		wipeRate: 20,
+		borderSoftness: 7500
 	}
 }
 

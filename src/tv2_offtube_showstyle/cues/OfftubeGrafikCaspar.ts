@@ -330,7 +330,8 @@ export function CreateFullContent(
 							wipe: {
 								rate: config.studio.FullTransitionSettings.wipeRate,
 								pattern: 1,
-								reverseDirection: true
+								reverseDirection: true,
+								borderSoftness: config.studio.FullTransitionSettings.borderSoftness
 							}
 						}
 					}

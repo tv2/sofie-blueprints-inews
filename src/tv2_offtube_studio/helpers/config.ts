@@ -70,6 +70,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 	FullTransitionSettings: {
 		wipeRate: number
+		borderSoftness: number
 	}
 }
 
