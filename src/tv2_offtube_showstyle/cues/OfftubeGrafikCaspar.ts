@@ -316,7 +316,7 @@ export function CreateFullContent(
 			literal<TSR.TimelineObjCCGRoute>({
 				id: '',
 				enable: { start: 0 },
-				priority: 0,
+				priority: 1,
 				layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
