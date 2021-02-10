@@ -367,7 +367,7 @@ function executeActionSelectServerClip<
 					: settings.SelectedAdlibs.SourceLayer.Server
 			},
 			AtemLLayer: {
-				MEPgm: settings.LLayer.Atem.MEClean,
+				MEPgm: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
 				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
 			},
 			Caspar: {
@@ -1355,10 +1355,7 @@ function executeActionTakeWithTransition<
 
 	const tlObjIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
 		obj =>
-			obj.layer ===
-				(settings.LLayer.Atem.cutOnclean
-					? settings.LLayer.Atem.MEClean ?? settings.LLayer.Atem.MEProgram
-					: settings.LLayer.Atem.MEProgram) &&
+			obj.layer === (settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	)
