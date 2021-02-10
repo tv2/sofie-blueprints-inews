@@ -329,6 +329,7 @@ export function CreateFullContent(
 						transitionSettings: {
 							wipe: {
 								rate: 1000,
+								pattern: 1,
 								reverseDirection: true
 							}
 						}
