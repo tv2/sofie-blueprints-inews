@@ -28,6 +28,7 @@ import {
 	literal,
 	PartDefinition,
 	PartToParentClass,
+	TimeFromFrames,
 	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
@@ -282,6 +283,12 @@ export function CreateFullContent(
 					useStopCommand: false,
 					mixer: {
 						opacity: 100
+					},
+					transitions: {
+						outTransition: {
+							type: TSR.Transition.WIPE,
+							duration: Number(config.studio.FullTransitionSettings.wipeRate)
+						}
 					}
 				}
 			}),
@@ -316,7 +323,8 @@ export function CreateFullContent(
 			literal<TSR.TimelineObjAtemME>({
 				id: '',
 				enable: {
-					start: Number(config.studio.CasparPrerollDuration)
+					start: Number(config.studio.CasparPrerollDuration),
+					duration: Number(config.studio.FullTransitionSettings.wipeRate) + 40 // + 40, a frame for route to happen
 				},
 				priority: 1,
 				layer: OfftubeAtemLLayer.AtemMEClean,
@@ -328,12 +336,30 @@ export function CreateFullContent(
 						transition: TSR.AtemTransitionStyle.WIPE,
 						transitionSettings: {
 							wipe: {
-								rate: config.studio.FullTransitionSettings.wipeRate,
+								rate: Number(config.studio.FullTransitionSettings.wipeRate),
 								pattern: 1,
 								reverseDirection: true,
 								borderSoftness: config.studio.FullTransitionSettings.borderSoftness
 							}
 						}
+					}
+				}
+			}),
+			literal<TSR.TimelineObjCasparCGAny>({
+				id: '',
+				enable: {
+					start:
+						Number(config.studio.CasparPrerollDuration) +
+						TimeFromFrames(Number(config.studio.FullTransitionSettings.wipeRate))
+				},
+				priority: 1,
+				layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop,
+					mixer: {
+						keyer: true
 					}
 				}
 			}),
