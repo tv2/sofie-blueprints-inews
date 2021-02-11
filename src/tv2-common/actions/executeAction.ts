@@ -449,7 +449,9 @@ function executeActionSelectServerClip<
 		...effektPieces
 	])
 	if (settings.SelectedAdlibs && !currentPiece) {
-		context.stopPiecesOnLayers([userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server])
+		context.stopPiecesOnLayers([
+			userData.vo ? settings.SelectedAdlibs.SourceLayer.VO : settings.SelectedAdlibs.SourceLayer.Server
+		])
 	}
 }
 
