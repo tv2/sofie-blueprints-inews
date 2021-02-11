@@ -67,6 +67,11 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	FullKeepAliveDuration: number
 	IdleSource: number
 	FullGraphicURL: string
+
+	FullTransitionSettings: {
+		wipeRate: number
+		borderSoftness: number
+	}
 }
 
 /*
