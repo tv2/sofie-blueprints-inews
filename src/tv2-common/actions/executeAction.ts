@@ -155,7 +155,12 @@ export interface ActionExecutionSettings<
 		actionId: string,
 		userData: ActionClearGraphics
 	) => void
-	createJingleContent?: (config: ShowStyleConfig, file: string, loadFirstFrame: boolean) => VTContent
+	createJingleContent?: (
+		config: ShowStyleConfig,
+		file: string,
+		alphaAtStart: number,
+		loadFirstFrame: boolean
+	) => VTContent
 }
 
 export function executeAction<
@@ -884,7 +889,7 @@ function executeActionSelectJingle<
 
 	const props = GetJinglePartPropertiesFromTableValue(config, jingle)
 
-	const pieceContent = settings.createJingleContent(config, file, jingle.LoadFirstFrame)
+	const pieceContent = settings.createJingleContent(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
 
 	const piece = literal<IBlueprintPiece>({
 		externalId: `${externalId}-JINGLE`,
