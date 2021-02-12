@@ -314,7 +314,7 @@ export function CreateFullContent(
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
-			/*literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TimelineObjAtemME>({
 				id: '',
 				enable: {
 					start: Number(config.studio.CasparPrerollDuration)
@@ -337,7 +337,7 @@ export function CreateFullContent(
 						}
 					}
 				}
-			}),*/
+			}),
 			literal<TSR.TimelineObjCasparCGAny>({
 				id: '',
 				enable: {
