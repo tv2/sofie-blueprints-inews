@@ -136,7 +136,8 @@ export function EvaluateAdLib(
 					userData: literal<ActionSelectDVE>({
 						type: AdlibActionType.SELECT_DVE,
 						config: cueDVE,
-						videoId: partDefinition.fields.videoId
+						videoId: partDefinition.fields.videoId,
+						segmentExternalId: partDefinition.segmentExternalId
 					})
 				})
 			})

@@ -168,7 +168,8 @@ const selectDVEActionMorbarn = literal<ActionSelectDVE>({
 		labels: ['Live'],
 		iNewsCommand: 'DVE=MORBARN'
 	},
-	videoId: undefined
+	videoId: undefined,
+	segmentExternalId: SEGMENT_ID_EXTERNAL
 })
 
 const selectDVEActionBarnmor = literal<ActionSelectDVE>({
@@ -183,7 +184,8 @@ const selectDVEActionBarnmor = literal<ActionSelectDVE>({
 		labels: ['Live'],
 		iNewsCommand: 'DVE=BARNMOR'
 	},
-	videoId: undefined
+	videoId: undefined,
+	segmentExternalId: SEGMENT_ID_EXTERNAL
 })
 
 const commentatorSelectDVE = literal<ActionCommentatorSelectDVE>({

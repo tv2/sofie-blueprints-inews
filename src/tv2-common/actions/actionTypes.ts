@@ -27,6 +27,7 @@ export interface ActionSelectDVE extends ActionBase {
 	type: AdlibActionType.SELECT_DVE
 	config: CueDefinitionDVE
 	videoId: string | undefined
+	segmentExternalId: string
 }
 
 export interface ActionSelectDVELayout extends ActionBase {

@@ -126,7 +126,8 @@ export function OfftubeEvaluateAdLib(
 				userData: literal<ActionSelectDVE>({
 					type: AdlibActionType.SELECT_DVE,
 					config: cueDVE,
-					videoId: partDefinition.fields.videoId
+					videoId: partDefinition.fields.videoId,
+					segmentExternalId: partDefinition.segmentExternalId
 				}),
 				userDataManifest: {},
 				display: {

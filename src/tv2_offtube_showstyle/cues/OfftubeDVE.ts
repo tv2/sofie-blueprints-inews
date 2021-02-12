@@ -99,12 +99,13 @@ export function OfftubeEvaluateDVE(
 					userData: literal<ActionSelectDVE>({
 						type: AdlibActionType.SELECT_DVE,
 						config: parsedCue,
-						videoId: partDefinition.fields.videoId
+						videoId: partDefinition.fields.videoId,
+						segmentExternalId: partDefinition.segmentExternalId
 					})
 				}),
 				tags: [
-					GetTagForDVE(parsedCue.template, parsedCue.sources),
-					GetTagForDVENext(parsedCue.template, parsedCue.sources),
+					GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources),
+					GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources),
 					TallyTags.DVE_IS_LIVE
 				]
 			})
@@ -116,7 +117,8 @@ export function OfftubeEvaluateDVE(
 				userData: literal<ActionSelectDVE>({
 					type: AdlibActionType.SELECT_DVE,
 					config: parsedCue,
-					videoId: partDefinition.fields.videoId
+					videoId: partDefinition.fields.videoId,
+					segmentExternalId: partDefinition.segmentExternalId
 				}),
 				userDataManifest: {},
 				display: {
@@ -129,8 +131,8 @@ export function OfftubeEvaluateDVE(
 						...pieceContent.content,
 						timelineObjects: []
 					}),
-					currentPieceTags: [GetTagForDVE(parsedCue.template, parsedCue.sources)],
-					nextPieceTags: [GetTagForDVENext(parsedCue.template, parsedCue.sources)]
+					currentPieceTags: [GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)],
+					nextPieceTags: [GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)]
 				}
 			})
 		)

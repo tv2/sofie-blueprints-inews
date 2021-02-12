@@ -34,12 +34,12 @@ export function GetTagForServerNext(segmentExternalId: string, clip: string, vo:
 	return `${GetTagForServer(segmentExternalId, clip, vo)}_NEXT`
 }
 
-export function GetTagForDVE(template: string, sources: CueDefinitionDVE['sources']) {
-	return `${TallyTags.DVE}_${SanitizeString(template)}_${SanitizeString(JSON.stringify(sources))}`
+export function GetTagForDVE(segmentExternalId: string, template: string, sources: CueDefinitionDVE['sources']) {
+	return `${segmentExternalId}_${TallyTags.DVE}_${SanitizeString(template)}_${SanitizeString(JSON.stringify(sources))}`
 }
 
-export function GetTagForDVENext(template: string, sources: CueDefinitionDVE['sources']) {
-	return `${GetTagForDVE(template, sources)}_NEXT`
+export function GetTagForDVENext(segmentExternalId: string, template: string, sources: CueDefinitionDVE['sources']) {
+	return `${GetTagForDVE(segmentExternalId, template, sources)}_NEXT`
 }
 
 export function GetTagForFull(segmentExternalId: string, vcpid: number) {

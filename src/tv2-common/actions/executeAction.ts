@@ -531,8 +531,8 @@ function executeActionSelectDVE<
 		adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
 		metaData,
 		tags: [
-			GetTagForDVE(parsedCue.template, parsedCue.sources),
-			GetTagForDVENext(parsedCue.template, parsedCue.sources),
+			GetTagForDVE(userData.segmentExternalId, parsedCue.template, parsedCue.sources),
+			GetTagForDVENext(userData.segmentExternalId, parsedCue.template, parsedCue.sources),
 			TallyTags.DVE_IS_LIVE
 		]
 	})
@@ -550,7 +550,8 @@ function executeActionSelectDVE<
 		parsedCue.sources,
 		externalId,
 		'next',
-		'queue'
+		'queue',
+		GetTagForDVENext(userData.segmentExternalId, parsedCue.template, parsedCue.sources)
 	)
 }
 
@@ -683,7 +684,8 @@ function executeActionSelectDVELayout<
 					labels: [],
 					iNewsCommand: `DVE=${userData.config.DVEName}`
 				}),
-				videoId: undefined
+				videoId: undefined,
+				segmentExternalId: ''
 			})
 		})
 
@@ -713,7 +715,8 @@ function executeActionSelectDVELayout<
 			sources,
 			externalId,
 			'next',
-			'queue'
+			'queue',
+			GetTagForDVENext('', userData.config.DVEName, sources)
 		)
 	}
 
@@ -728,8 +731,8 @@ function executeActionSelectDVELayout<
 		content: pieceContent.content,
 		metaData: newMetaData2,
 		tags: [
-			GetTagForDVE(userData.config.DVEName, sources),
-			GetTagForDVENext(userData.config.DVEName, sources),
+			GetTagForDVE('', userData.config.DVEName, sources),
+			GetTagForDVENext('', userData.config.DVEName, sources),
 			TallyTags.DVE_IS_LIVE
 		]
 	}
@@ -749,7 +752,8 @@ function executeActionSelectDVELayout<
 		'next',
 		{
 			activeDVE: nextDVE._id
-		}
+		},
+		GetTagForDVENext('', userData.config.DVEName, sources)
 	)
 }
 
@@ -764,10 +768,11 @@ function startNewDVELayout<
 	pieceContent: SplitsContent,
 	meta: PieceMetaData & DVEPieceMetaData,
 	templateName: string,
-	sources: CueDefinitionDVE['sources'],
+	_sources: CueDefinitionDVE['sources'],
 	externalId: string,
 	part: 'current' | 'next',
-	replacePieceInstancesOrQueue: { activeDVE?: string; dataStore?: string } | 'queue'
+	replacePieceInstancesOrQueue: { activeDVE?: string; dataStore?: string } | 'queue',
+	nextTag: string
 ) {
 	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
@@ -782,7 +787,7 @@ function startNewDVELayout<
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
 				lifespan: PieceLifespan.OutOnSegmentEnd,
 				metaData: meta,
-				tags: [GetTagForDVENext(templateName, sources)],
+				tags: [nextTag],
 				content: {
 					...pieceContent,
 					// Take this
@@ -1319,7 +1324,8 @@ function executeActionCutSourceToBox<
 			meta.sources,
 			newDVEPiece.externalId,
 			modify,
-			{ activeDVE: modifiedPiece._id, dataStore: modifiedDataStore?._id }
+			{ activeDVE: modifiedPiece._id, dataStore: modifiedDataStore?._id },
+			GetTagForDVENext('', meta.config.DVEName, meta.sources)
 		)
 	}
 }
