@@ -350,10 +350,7 @@ export function CreateFullContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.ROUTE,
-					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop,
-					mixer: {
-						keyer: true
-					}
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
 				}
 			}),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
