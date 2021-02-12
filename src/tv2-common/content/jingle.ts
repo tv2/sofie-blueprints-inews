@@ -24,6 +24,7 @@ export function CreateJingleContentBase<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(config: ShowStyleConfig, file: string, loadFirstFrame: boolean, layers: JingleLayers, preMultiplied: boolean) {
 	// const jinglePath = `${SanitizePath(layers.basePath)}/${file}`
+	const jinglePath = layers.basePath.length ? `${SanitizePath(layers.basePath)}/${file}` : file
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
@@ -41,7 +42,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file
+					file: jinglePath
 				}
 			}),
 
