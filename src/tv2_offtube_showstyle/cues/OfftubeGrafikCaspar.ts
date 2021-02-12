@@ -28,6 +28,7 @@ import {
 	literal,
 	PartDefinition,
 	PartToParentClass,
+	TimeFromFrames,
 	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
@@ -328,13 +329,28 @@ export function CreateFullContent(
 						transition: TSR.AtemTransitionStyle.WIPE,
 						transitionSettings: {
 							wipe: {
-								rate: config.studio.FullTransitionSettings.wipeRate,
+								rate: Number(config.studio.FullTransitionSettings.wipeRate),
 								pattern: 1,
 								reverseDirection: true,
 								borderSoftness: config.studio.FullTransitionSettings.borderSoftness
 							}
 						}
 					}
+				}
+			}),
+			literal<TSR.TimelineObjCasparCGAny>({
+				id: '',
+				enable: {
+					start:
+						Number(config.studio.CasparPrerollDuration) +
+						TimeFromFrames(Number(config.studio.FullTransitionSettings.wipeRate))
+				},
+				priority: 1,
+				layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
 				}
 			}),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
