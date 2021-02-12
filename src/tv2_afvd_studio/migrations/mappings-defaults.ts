@@ -247,7 +247,8 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.PRELOAD,
-		lookaheadDepth: 2
+		lookaheadDepth: 1,
+		lookaheadMaxSearchDistance: -1
 	}),
 	casparcg_player_clip_1: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,

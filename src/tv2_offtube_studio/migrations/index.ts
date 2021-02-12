@@ -246,6 +246,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosConfig),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosGroupStudioMics),
 	GetMappingDefaultMigrationStepForLayer('1.4.0', OfftubeCasparLLayer.CasparPlayerClipPending, true),
+	GetMappingDefaultMigrationStepForLayer('1.4.5', OfftubeCasparLLayer.CasparPlayerClipPending, true),
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)
