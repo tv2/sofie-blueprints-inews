@@ -283,12 +283,6 @@ export function CreateFullContent(
 					useStopCommand: false,
 					mixer: {
 						opacity: 100
-					},
-					transitions: {
-						outTransition: {
-							type: TSR.Transition.WIPE,
-							duration: Number(config.studio.FullTransitionSettings.wipeRate)
-						}
 					}
 				}
 			}),
@@ -323,8 +317,7 @@ export function CreateFullContent(
 			literal<TSR.TimelineObjAtemME>({
 				id: '',
 				enable: {
-					start: Number(config.studio.CasparPrerollDuration),
-					duration: Number(config.studio.FullTransitionSettings.wipeRate) + 40 // + 40, a frame for route to happen
+					start: Number(config.studio.CasparPrerollDuration)
 				},
 				priority: 1,
 				layer: OfftubeAtemLLayer.AtemMEClean,
