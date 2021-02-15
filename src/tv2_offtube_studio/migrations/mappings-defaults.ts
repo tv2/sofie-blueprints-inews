@@ -455,5 +455,10 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
+	}),
+	ident_marker: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 })

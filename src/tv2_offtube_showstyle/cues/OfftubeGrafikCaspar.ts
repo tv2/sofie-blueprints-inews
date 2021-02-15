@@ -8,6 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
+	AbstractLLayer,
 	ActionSelectFullGrafik,
 	CalculateTime,
 	CreateTimingEnable,
@@ -118,6 +119,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				})
 			)
 		} else {
+			const sourceLayerId = GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue))
 			const piece = literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,
 				name: `${GraphicDisplayName(config, parsedCue)}`,
@@ -128,7 +130,7 @@ export function OfftubeEvaluateGrafikCaspar(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+				sourceLayerId,
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
 				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
@@ -139,6 +141,37 @@ export function OfftubeEvaluateGrafikCaspar(
 				}
 			})
 			pieces.push(piece)
+
+			if (
+				sourceLayerId === OfftubeSourceLayer.PgmGraphicsIdentPersistent &&
+				(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
+				isIdentGrafik
+			) {
+				// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
+				// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
+				pieces.push(
+					literal<IBlueprintPiece>({
+						...piece,
+						enable: { ...CreateTimingGrafik(config, parsedCue, true) }, // Allow default out for visual representation
+						sourceLayerId: OfftubeSourceLayer.PgmGraphicsIdent,
+						lifespan: PieceLifespan.WithinPart,
+						content: {
+							timelineObjects: [
+								literal<TSR.TimelineObjAbstractAny>({
+									id: '',
+									enable: {
+										while: '1'
+									},
+									layer: AbstractLLayer.IdentMarker,
+									content: {
+										deviceType: TSR.DeviceType.ABSTRACT
+									}
+								})
+							]
+						}
+					})
+				)
+			}
 		}
 	}
 }
@@ -408,7 +441,7 @@ function GetEnableForGrafikOfftube(
 	}
 }
 
-function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string) {
+function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string, isStickyIdent?: boolean) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
@@ -423,6 +456,10 @@ function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: 
 		case OfftubeSourceLayer.PgmGraphicsHeadline:
 			return OfftubeSourceLayer.PgmGraphicsHeadline
 		case OfftubeSourceLayer.PgmGraphicsIdent:
+			if (isStickyIdent) {
+				return OfftubeSourceLayer.PgmGraphicsIdentPersistent
+			}
+
 			return OfftubeSourceLayer.PgmGraphicsIdent
 		case OfftubeSourceLayer.PgmGraphicsLower:
 			return OfftubeSourceLayer.PgmGraphicsLower
@@ -471,7 +508,8 @@ export function GetTimelineLayerForGrafik(config: OfftubeShowstyleBlueprintConfi
 
 export function GetGrafikDuration(
 	config: OfftubeShowstyleBlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
+	defaultTime: boolean
 ): number | undefined {
 	if (config.showStyle.GFXTemplates) {
 		if (GraphicIsInternal(cue)) {
@@ -497,19 +535,19 @@ export function GetGrafikDuration(
 		}
 	}
 
-	return GetDefaultOut(config)
+	return defaultTime ? GetDefaultOut(config) : undefined
 }
 
-// TODO: This is copied from gallery D
 export function CreateTimingGrafik(
 	config: OfftubeShowstyleBlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
+	defaultTime: boolean = true
 ): { start: number; duration?: number } {
 	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
-	const duration = GetGrafikDuration(config, cue)
+	const duration = GetGrafikDuration(config, cue, defaultTime)
 	const end = cue.end
 		? cue.end.infiniteMode
 			? undefined
