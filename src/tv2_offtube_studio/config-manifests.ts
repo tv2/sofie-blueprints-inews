@@ -539,5 +539,13 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 7500
+	},
+	{
+		id: 'FullTransitionSettings.loopOutTransitionDuration',
+		name: 'Full graphic background loop out transition duration',
+		description: 'Duration (ms) that the background loop behind a full takes to transition out',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 120
 	}
 ]

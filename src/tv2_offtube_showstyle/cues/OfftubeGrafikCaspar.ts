@@ -354,7 +354,7 @@ export function CreateFullContent(
 					transitions: {
 						outTransition: {
 							type: TSR.Transition.MIX,
-							duration: 5000 // test
+							duration: config.studio.FullTransitionSettings.loopOutTransitionDuration
 						}
 					}
 				}
