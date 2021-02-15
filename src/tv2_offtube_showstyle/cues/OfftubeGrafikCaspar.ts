@@ -282,11 +282,7 @@ export function CreateFullContent(
 					)}</templateData>`,
 					useStopCommand: false,
 					mixer: {
-						opacity: 100,
-						outTransition: {
-							duration: TimeFromFrames(2), // best guess for testing
-							easing: TSR.Ease.EASEOUTEXPO // Small amount to begin, then faster
-						}
+						opacity: 100
 					}
 				}
 			}),
