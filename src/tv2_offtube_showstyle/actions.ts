@@ -52,7 +52,8 @@ export function executeActionOfftube(
 				DVEAdLib: OfftubeSourceLayer.PgmDVEAdLib,
 				Cam: OfftubeSourceLayer.PgmCam,
 				Live: OfftubeSourceLayer.PgmLive,
-				Effekt: OfftubeSourceLayer.PgmJingle
+				Effekt: OfftubeSourceLayer.PgmJingle,
+				Continuity: OfftubeSourceLayer.PgmContinuity
 			},
 			OutputLayer: {
 				PGM: OfftubeOutputLayers.PGM,

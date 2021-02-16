@@ -44,7 +44,8 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				Cam: SourceLayer.PgmCam,
 				Live: SourceLayer.PgmLive,
 				Effekt: SourceLayer.PgmJingle,
-				EVS: SourceLayer.PgmLocal
+				EVS: SourceLayer.PgmLocal,
+				Continuity: SourceLayer.PgmContinuity
 			},
 			OutputLayer: {
 				PGM: 'pgm',

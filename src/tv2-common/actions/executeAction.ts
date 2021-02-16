@@ -103,6 +103,7 @@ export interface ActionExecutionSettings<
 		Cam: string
 		Live: string
 		Effekt: string
+		Continuity: string
 		EVS?: string
 	}
 	OutputLayer: {
@@ -1096,7 +1097,8 @@ function executeActionCutToCamera<
 			settings.SourceLayers.Live,
 			settings.SourceLayers.Server,
 			settings.SourceLayers.VO,
-			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
+			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
+			settings.SourceLayers.Continuity
 		])
 		kamPiece.enable = { start: 'now' }
 		context.insertPiece('current', kamPiece)
@@ -1351,6 +1353,7 @@ function executeActionTakeWithTransition<
 			settings.SourceLayers.Server,
 			settings.SourceLayers.VO,
 			settings.SourceLayers.Effekt,
+			settings.SourceLayers.Continuity,
 			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
 		].includes(p.piece.sourceLayerId)
 	)
