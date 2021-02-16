@@ -76,9 +76,8 @@ const mockStudioConfig: StudioConfig = {
 	ATEMDelay: 0,
 	CasparPrerollDuration: 280,
 	ClipFileExtension: 'mxf',
-	NetworkBasePath: '/',
-	JingleBasePath: 'jingler',
-	ClipBasePath: 'clips',
+	NetworkBasePathClip: '/',
+	NetworkBasePathJingle: '',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	ServerPostrollDuration: 3000

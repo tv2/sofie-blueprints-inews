@@ -5,7 +5,12 @@ import {
 	TableConfigItemValue,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { literal, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import {
+	literal,
+	MakeConfigWithMediaFlow,
+	TableConfigItemSourceMapping,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { SisyfosLLAyer } from './layers'
@@ -529,63 +534,8 @@ export const manifestAFVDStudioMics: ConfigManifestEntry = {
 }
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
-	{
-		id: 'NetworkBasePath',
-		name: 'Network base path',
-		description:
-			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: ''
-	},
-	{
-		id: 'ClipMediaFlowId',
-		name: 'Media Flow Id for clips',
-		description: '',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'flow0'
-	},
-	{
-		id: 'ClipBasePath',
-		name: 'Clip base path',
-		description: 'The base path for server clips',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: 'clips'
-	},
-	{
-		id: 'ClipFileExtension',
-		name: 'Clip files extension',
-		description: 'Default file extension to clips to fetch from Omneon and play at CasparCG',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: '.mxf'
-	},
-	{
-		id: 'JingleMediaFlowId',
-		name: 'Media Flow Id for jingles',
-		description: '',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'flow0'
-	},
-	{
-		id: 'JingleBasePath',
-		name: 'Jingle base path',
-		description: 'The base path for jingles',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: 'jingler'
-	},
-	{
-		id: 'JingleFileExtension',
-		name: 'Jingle files extension',
-		description: 'Default file extension to jingles to fetch from Omneon and play at CasparCG',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: '.mov'
-	},
+	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf'),
+	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov'),
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesDelayedPlayback,

@@ -6,6 +6,7 @@ export * from './addKeepAudio'
 export * from './shortcuts'
 export * from './transitions'
 export * from './graphic-defaults'
+export * from './manifestWithMediaFlow'
 
 export function RenameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
 	return literal<MigrationStepStudio>({

@@ -5,7 +5,12 @@ import {
 	TableConfigItemValue,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { literal, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import {
+	literal,
+	MakeConfigWithMediaFlow,
+	TableConfigItemSourceMapping,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { OfftubeSisyfosLLayer } from './layers'
@@ -270,87 +275,9 @@ export const manifestOfftubeStudioMics: ConfigManifestEntry = {
 }
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
-	{
-		id: 'NetworkBasePath',
-		name: 'Network base path',
-		description:
-			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: ''
-	},
-	{
-		id: 'ClipMediaFlowId',
-		name: 'Media Flow Id for clips',
-		description: '',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'flow0'
-	},
-	{
-		id: 'ClipBasePath',
-		name: 'Clip base path',
-		description: 'The base path for server clips',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: 'clips'
-	},
-	{
-		id: 'ClipFileExtension',
-		name: 'Clip files extension',
-		description: 'Default file extension to clips to fetch from Omneon and play at CasparCG',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: '.mxf'
-	},
-	{
-		id: 'JingleMediaFlowId',
-		name: 'Media Flow Id for jingles',
-		description: '',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'flow0'
-	},
-	{
-		id: 'JingleBasePath',
-		name: 'Jingle base path',
-		description: 'The base path for jingles',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: 'jingler'
-	},
-	{
-		id: 'JingleFileExtension',
-		name: 'Jingle files extension',
-		description: 'Default file extension to jingles to fetch from Omneon and play at CasparCG',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: '.mov'
-	},
-	{
-		id: 'GraphicFlowId',
-		name: 'Graphic Flow Id',
-		description: '',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'flow1'
-	},
-	{
-		id: 'GraphicBasePath',
-		name: 'Graphic base path',
-		description: 'The base path for graphics',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: ''
-	},
-	{
-		id: 'GraphicFileExtension',
-		name: 'Graphic files path',
-		description: 'Default file extension to graphics to fetch from Omneon and play at CasparCG',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: '.png'
-	},
+	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf'),
+	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov'),
+	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png'),
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
 	manifestOfftubeSourcesSkype,

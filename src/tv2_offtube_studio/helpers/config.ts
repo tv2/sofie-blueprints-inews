@@ -25,8 +25,8 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	// Must override
 
 	// Intended overrides
-	GraphicFlowId: string
-	GraphicBasePath: string
+	GraphicMediaFlowId: string
+	NetworkBasePathGraphic: string
 	GraphicFileExtension: string
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean

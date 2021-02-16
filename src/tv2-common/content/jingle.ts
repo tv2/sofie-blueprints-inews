@@ -29,11 +29,10 @@ export function CreateJingleContentBase<
 	layers: JingleLayers,
 	preMultiplied: boolean
 ) {
-	const jinglePath = `${config.studio.JingleBasePath}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
-		path: `${config.studio.NetworkBasePath}\\${config.studio.JingleBasePath}\\${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
+		path: `${config.studio.NetworkBasePathJingle}\\${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
 		firstWords: '',
 		lastWords: '',
@@ -49,7 +48,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: jinglePath
+					file
 				}
 			}),
 

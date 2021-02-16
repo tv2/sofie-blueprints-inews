@@ -21,9 +21,14 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
 	ClipMediaFlowId: '',
-	GraphicFlowId: '',
+	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',
 	JingleFileExtension: '',
+	ClipFileExtension: 'mxf',
+	NetworkBasePathClip: '/',
+	NetworkBasePathGraphic: '/',
+	NetworkBasePathJingle: '/',
+	GraphicFileExtension: '.png',
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],
@@ -65,12 +70,6 @@ const mockStudioConfig: OfftubeStudioConfig = {
 		volume: 0
 	},
 	CasparPrerollDuration: 280,
-	ClipFileExtension: 'mxf',
-	NetworkBasePath: '/',
-	GraphicBasePath: '/',
-	GraphicFileExtension: '.png',
-	JingleBasePath: 'jingler',
-	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,

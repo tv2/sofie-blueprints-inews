@@ -249,6 +249,10 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	GetMappingDefaultMigrationStepForLayer('1.4.5', OfftubeCasparLLayer.CasparPlayerClipPending, true),
 
 	RenameStudioConfig('1.4.6', 'Offtube', 'MediaFlowId', 'ClipMediaFlowId'),
+	RenameStudioConfig('1.4.6', 'Offtube', 'NetworkBasePath', 'NetworkBasePathClip'),
+	RenameStudioConfig('1.4.6', 'Offtube', 'JingleBasePath', 'NetworkBasePathJingle'),
+	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
+	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
