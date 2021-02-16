@@ -14,7 +14,9 @@ import { SisyfosLLAyer } from '../layers'
 const mockStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
-	MediaFlowId: '',
+	ClipMediaFlowId: '',
+	JingleMediaFlowId: '',
+	JingleFileExtension: '',
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],

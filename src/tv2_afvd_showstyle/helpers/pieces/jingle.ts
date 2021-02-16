@@ -114,8 +114,7 @@ export function createJingleContentAFVD(
 			},
 			Sisyfos: {
 				PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
-			},
-			basePath: config.studio.JingleBasePath
+			}
 		},
 		false
 	)

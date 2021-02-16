@@ -20,8 +20,10 @@ import { OfftubeShowStyleConfig, parseConfig as parseShowStyleConfig } from '../
 const mockStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
-	MediaFlowId: '',
+	ClipMediaFlowId: '',
 	GraphicFlowId: '',
+	JingleMediaFlowId: '',
+	JingleFileExtension: '',
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],
@@ -66,6 +68,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
 	GraphicBasePath: '/',
+	GraphicFileExtension: '.png',
 	JingleBasePath: 'jingler',
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,

@@ -117,8 +117,7 @@ export function createJingleContentOfftube(
 			},
 			Sisyfos: {
 				PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
-			},
-			basePath: config.studio.JingleBasePath
+			}
 		},
 		true
 	)

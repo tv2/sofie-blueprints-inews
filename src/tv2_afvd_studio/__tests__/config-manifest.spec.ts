@@ -5,7 +5,9 @@ import { StudioConfig } from '../helpers/config'
 const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
-	MediaFlowId: '',
+	ClipMediaFlowId: '',
+	JingleMediaFlowId: '',
+	JingleFileExtension: '',
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesSkype: [],

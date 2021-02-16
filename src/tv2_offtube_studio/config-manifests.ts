@@ -271,20 +271,29 @@ export const manifestOfftubeStudioMics: ConfigManifestEntry = {
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
-		id: 'MediaFlowId',
-		name: 'Media Flow Id',
+		id: 'NetworkBasePath',
+		name: 'Network base path',
+		description:
+			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: ''
+	},
+	{
+		id: 'ClipMediaFlowId',
+		name: 'Media Flow Id for clips',
 		description: '',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: 'flow0'
 	},
 	{
-		id: 'GraphicFlowId',
-		name: 'Graphic Flow Id',
-		description: '',
+		id: 'ClipBasePath',
+		name: 'Clip base path',
+		description: 'The base path for server clips',
 		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'flow1'
+		required: true,
+		defaultVal: 'clips'
 	},
 	{
 		id: 'ClipFileExtension',
@@ -295,37 +304,52 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: '.mxf'
 	},
 	{
-		id: 'NetworkBasePath',
-		name: 'Network base path',
-		description:
-			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: ''
-	},
-	{
-		id: 'GraphicBasePath',
-		name: 'Graphic Network base path',
+		id: 'JingleMediaFlowId',
+		name: 'Media Flow Id for jingles',
 		description: '',
 		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: ''
+		required: false,
+		defaultVal: 'flow0'
 	},
 	{
 		id: 'JingleBasePath',
 		name: 'Jingle base path',
-		description: 'The base path for jingle clips',
+		description: 'The base path for jingles',
 		type: ConfigManifestEntryType.STRING,
 		required: true,
 		defaultVal: 'jingler'
 	},
 	{
-		id: 'ClipBasePath',
-		name: 'Clip base path',
-		description: 'The base path for server clips',
+		id: 'JingleFileExtension',
+		name: 'Jingle files extension',
+		description: 'Default file extension to jingles to fetch from Omneon and play at CasparCG',
 		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: 'clips'
+		defaultVal: '.mov'
+	},
+	{
+		id: 'GraphicFlowId',
+		name: 'Graphic Flow Id',
+		description: '',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'flow1'
+	},
+	{
+		id: 'GraphicBasePath',
+		name: 'Graphic base path',
+		description: 'The base path for graphics',
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: ''
+	},
+	{
+		id: 'GraphicFileExtension',
+		name: 'Graphic files path',
+		description: 'Default file extension to graphics to fetch from Omneon and play at CasparCG',
+		type: ConfigManifestEntryType.STRING,
+		required: true,
+		defaultVal: '.png'
 	},
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,

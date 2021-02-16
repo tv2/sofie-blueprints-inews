@@ -49,8 +49,8 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string,
 	return literal<VTProps>({
 		studioLabel: '',
 		fileName: file,
-		path: `${config.studio.NetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
-		mediaFlowIds: [config.studio.MediaFlowId],
+		path: `${config.studio.NetworkBasePath}\\${config.studio.ClipBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		mediaFlowIds: [config.studio.ClipMediaFlowId],
 		firstWords: '',
 		lastWords: '',
 		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined

@@ -1,5 +1,4 @@
 import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
-import { SanitizePath } from 'tv2-common'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
@@ -17,7 +16,6 @@ export interface JingleLayers {
 	Sisyfos: {
 		PlayerJingle: string
 	}
-	basePath: string
 }
 
 export function CreateJingleContentBase<
@@ -31,11 +29,12 @@ export function CreateJingleContentBase<
 	layers: JingleLayers,
 	preMultiplied: boolean
 ) {
-	const jinglePath = layers.basePath.length ? `${SanitizePath(layers.basePath)}/${file}` : file
+	const jinglePath = `${config.studio.JingleBasePath}/${file}`
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName: file,
-		path: file,
+		path: `${config.studio.NetworkBasePath}\\${config.studio.JingleBasePath}\\${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
+		mediaFlowIds: [config.studio.JingleMediaFlowId],
 		firstWords: '',
 		lastWords: '',
 		previewFrame: alphaAtStart,

@@ -251,8 +251,8 @@ export function CreateFullContent(
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 ): GraphicsContent {
 	return {
-		fileName: parsedCue.graphic.name.toString(),
-		path: `${config.studio.GraphicBasePath}\\${parsedCue.graphic.name.toString()}.png`, // full path on the source network storage, TODO: File extension
+		fileName: parsedCue.graphic.name,
+		path: `${config.studio.NetworkBasePath}\\${config.studio.GraphicBasePath}\\${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`, // full path on the source network storage, TODO: File extension
 		mediaFlowIds: [config.studio.GraphicFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate>({
@@ -274,7 +274,7 @@ export function CreateFullContent(
 								'250_full': {
 									payload: {
 										type: 'still',
-										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.name.toString()}.png`
+										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
 									}
 								}
 							}

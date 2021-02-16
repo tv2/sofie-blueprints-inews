@@ -5,8 +5,10 @@ import { OfftubeStudioConfig } from '../helpers/config'
 const blankStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
-	MediaFlowId: '',
+	ClipMediaFlowId: '',
+	JingleMediaFlowId: '',
 	GraphicFlowId: '',
+	JingleFileExtension: '',
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesSkype: [],
@@ -40,6 +42,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	ClipFileExtension: 'mxf',
 	NetworkBasePath: '/',
 	GraphicBasePath: '/',
+	GraphicFileExtension: '.png',
 	JingleBasePath: 'jingler',
 	ClipBasePath: 'clips',
 	MaximumPartDuration: 0,
