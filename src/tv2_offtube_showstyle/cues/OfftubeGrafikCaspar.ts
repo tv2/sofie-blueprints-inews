@@ -350,7 +350,13 @@ export function CreateFullContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.ROUTE,
-					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop,
+					transitions: {
+						outTransition: {
+							type: TSR.Transition.MIX,
+							duration: config.studio.FullTransitionSettings.loopOutTransitionDuration
+						}
+					}
 				}
 			}),
 			literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
