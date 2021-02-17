@@ -31,7 +31,7 @@ export function CreateJingleContentBase<
 ) {
 	return literal<VTContent>({
 		studioLabel: '',
-		fileName: file,
+		fileName: `jingler/${file}`,
 		path: `${config.studio.NetworkBasePathJingle}\\${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
 		firstWords: '',
