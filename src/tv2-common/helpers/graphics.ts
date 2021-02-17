@@ -9,9 +9,9 @@ export function GraphicDisplayName(
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): string {
 	if (GraphicIsInternal(parsedCue)) {
-		return `${
-			parsedCue.graphic.template ? `${GetFullGraphicTemplateNameFromCue(config, parsedCue)}` : ''
-		}${parsedCue.graphic.textFields.filter(txt => !txt.match(/^;.\.../i)).map(txt => ` - ${txt}`)}`.replace(/,/gi, '')
+		return `${parsedCue.graphic.template ? `${GetFullGraphicTemplateNameFromCue(config, parsedCue)}` : ''}${
+			parsedCue.graphic.textFields.length ? ' - ' : ''
+		}${parsedCue.graphic.textFields.filter(txt => !txt.match(/^;.\.../i)).join('\n - ')}`
 	} else if (GraphicIsPilot(parsedCue)) {
 		return `${parsedCue.graphic.name ? parsedCue.graphic.name : ''}`
 	}
