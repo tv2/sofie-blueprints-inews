@@ -86,7 +86,7 @@ describe('grafik piece', () => {
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
 				externalId: partId,
-				name: 'bund - Odense - Copenhagen',
+				name: 'bund - Odense\n - Copenhagen',
 				enable: {
 					start: 0,
 					duration: 4000
@@ -154,11 +154,11 @@ describe('grafik piece', () => {
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
-				name: 'bund - Odense - Copenhagen',
+				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				uniquenessId: 'gfx_bund - Odense - Copenhagen_studio0_graphicsLower_overlay',
+				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay',
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -222,11 +222,11 @@ describe('grafik piece', () => {
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
-				name: 'bund - Odense - Copenhagen',
+				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				uniquenessId: 'gfx_bund - Odense - Copenhagen_studio0_graphicsLower_overlay',
+				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay',
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -289,7 +289,7 @@ describe('grafik piece', () => {
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
 				externalId: partId,
-				name: 'bund - Odense - Copenhagen',
+				name: 'bund - Odense\n - Copenhagen',
 				enable: {
 					start: 10000,
 					duration: 4000
@@ -361,7 +361,7 @@ describe('grafik piece', () => {
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
 				externalId: partId,
-				name: 'bund - Odense - Copenhagen',
+				name: 'bund - Odense\n - Copenhagen',
 				enable: {
 					start: 10000
 				},
