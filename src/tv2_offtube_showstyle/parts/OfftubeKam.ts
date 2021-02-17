@@ -8,7 +8,8 @@ import {
 	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
-	TSR
+	TSR,
+	VTContent
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
@@ -59,9 +60,13 @@ export function OfftubeCreatePartKam(
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
-				content: {
+				content: literal<VTContent>({
 					studioLabel: '',
-					switcherInput: config.studio.AtemSource.DSK1F,
+					ignoreMediaObjectStatus: true,
+					fileName: '',
+					path: '',
+					firstWords: '',
+					lastWords: '',
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: ``,
@@ -83,7 +88,7 @@ export function OfftubeCreatePartKam(
 							}
 						})
 					])
-				}
+				})
 			})
 		)
 	} else {

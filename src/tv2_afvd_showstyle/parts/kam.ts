@@ -8,7 +8,8 @@ import {
 	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
-	TSR
+	TSR,
+	VTContent
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
@@ -56,9 +57,13 @@ export function CreatePartKam(
 				outputLayerId: 'pgm',
 				sourceLayerId: SourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
-				content: {
+				content: literal<VTContent>({
 					studioLabel: '',
-					switcherInput: config.studio.AtemSource.JingleFill,
+					ignoreMediaObjectStatus: true,
+					fileName: '',
+					path: '',
+					firstWords: '',
+					lastWords: '',
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: ``,
@@ -80,7 +85,7 @@ export function CreatePartKam(
 							}
 						})
 					])
-				}
+				})
 			})
 		)
 		part.expectedDuration = Number(partDefinition.fields.totalTime) * 1000 || 0
