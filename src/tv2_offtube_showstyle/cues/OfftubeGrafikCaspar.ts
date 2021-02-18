@@ -431,14 +431,19 @@ function GetEnableForGrafikOfftube(
 			while: '1'
 		}
 	}
+
+	if (
+		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
+			GetInfiniteModeForGraphic(engine, config, cue, isIdentGrafik) === PieceLifespan.OutOnSegmentEnd) &&
+		partDefinition
+	) {
+		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
+	}
+
 	if (isIdentGrafik) {
 		return {
 			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
 		}
-	}
-
-	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B' && partDefinition) {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
 	const timing = CreateTimingEnable(cue, GetDefaultOut(config))

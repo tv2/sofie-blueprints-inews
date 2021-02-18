@@ -2,13 +2,14 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	PieceLifespan,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	CalculateTime,
-	CueDefinition,
 	CueDefinitionGraphic,
 	GetDefaultOut,
+	GetInfiniteModeForGraphic,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
@@ -61,7 +62,7 @@ export function EvaluateCueGraphic(
 export function GetEnableForGrafik(
 	config: BlueprintConfig,
 	engine: GraphicEngine,
-	cue: CueDefinition,
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	isStickyIdent: boolean,
 	partDefinition?: PartDefinition
 ): { while: string } | { start: number } {
@@ -70,14 +71,19 @@ export function GetEnableForGrafik(
 			while: '1'
 		}
 	}
+
+	if (
+		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
+			GetInfiniteModeForGraphic(engine, config, cue, isStickyIdent) === PieceLifespan.OutOnSegmentEnd) &&
+		partDefinition
+	) {
+		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
+	}
+
 	if (isStickyIdent) {
 		return {
 			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
 		}
-	}
-
-	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B' && partDefinition) {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
 	if (config.studio.PreventOverlayWithFull) {

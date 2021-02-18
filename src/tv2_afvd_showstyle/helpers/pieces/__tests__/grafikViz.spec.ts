@@ -451,7 +451,7 @@ describe('grafik piece', () => {
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
-								while: `.show_ident_graphic & !.full`
+								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
 							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
