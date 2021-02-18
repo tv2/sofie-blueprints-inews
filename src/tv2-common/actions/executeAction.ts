@@ -1696,7 +1696,8 @@ function executeActionRecallLastLive<
 		lifespan: PieceLifespan.WithinPart
 	})
 
-	if (lastIdent) {
+	// externalId should be replaced with something more concrete like partInstanceId
+	if (lastIdent && lastIdent.piece.externalId === lastLive.piece.externalId) {
 		pieces.push({
 			...lastIdent.piece,
 			externalId,
