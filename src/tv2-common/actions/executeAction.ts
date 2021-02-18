@@ -70,7 +70,12 @@ import {
 	GetTagForTransition
 } from '../pieces'
 import { assertUnreachable } from '../util'
-import { ActionCommentatorSelectJingle, ActionSelectJingle, ActionTakeWithTransition } from './actionTypes'
+import {
+	ActionCommentatorSelectJingle,
+	ActionRecallLastLive,
+	ActionSelectJingle,
+	ActionTakeWithTransition
+} from './actionTypes'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -105,6 +110,8 @@ export interface ActionExecutionSettings<
 		Effekt: string
 		Continuity: string
 		EVS?: string
+		/** Ident visual representation layer *not* the infinite layer */
+		Ident: string
 	}
 	OutputLayer: {
 		PGM: string
@@ -223,6 +230,9 @@ export function executeAction<
 			break
 		case AdlibActionType.TAKE_WITH_TRANSITION:
 			executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
+			break
+		case AdlibActionType.RECALL_LAST_LIVE:
+			executeActionRecallLastLive(context, settings, actionId, userData as ActionRecallLastLive)
 			break
 		default:
 			assertUnreachable(actionId)
@@ -1649,4 +1659,49 @@ function executeActionCommentatorSelectJingle<
 	}
 
 	executeActionSelectJingle(context, settings, AdlibActionType.SELECT_JINGLE, data)
+}
+
+function executeActionRecallLastLive<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	_userData: ActionRecallLastLive
+) {
+	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live)
+	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident)
+
+	if (!lastLive) {
+		return
+	}
+
+	const externalId = generateExternalId(context, actionId, [lastLive.piece.name])
+
+	const part = literal<IBlueprintPart>({
+		externalId,
+		title: lastLive.piece.name
+	})
+
+	const pieces: IBlueprintPiece[] = []
+	pieces.push({
+		...lastLive.piece,
+		externalId,
+		enable: {
+			start: 0
+		},
+		lifespan: PieceLifespan.WithinPart
+	})
+
+	if (lastIdent) {
+		pieces.push({
+			...lastIdent.piece,
+			externalId,
+			enable: { ...lastIdent.piece.enable, start: 0 },
+			lifespan: PieceLifespan.WithinPart
+		})
+	}
+
+	context.queuePart(part, pieces)
 }

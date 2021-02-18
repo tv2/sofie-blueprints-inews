@@ -60,6 +60,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	// 1.3.10 - Change local layer name to EVS
 	forceSourceLayerToDefaults('1.3.10', SourceLayer.PgmLocal),
 
+	/**
+	 * 1.4.6
+	 * - Live shortcuts (recall last live)
+	 */
+	forceSourceLayerToDefaults('1.4.6', SourceLayer.PgmLive),
+
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),

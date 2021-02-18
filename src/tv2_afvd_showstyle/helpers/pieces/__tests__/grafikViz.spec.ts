@@ -7,7 +7,14 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { CueDefinitionGraphic, GraphicInternal, GraphicLLayer, literal, PartDefinitionKam } from 'tv2-common'
+import {
+	AbstractLLayer,
+	CueDefinitionGraphic,
+	GraphicInternal,
+	GraphicLLayer,
+	literal,
+	PartDefinitionKam
+} from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { BlueprintConfig } from '../../../../tv2_afvd_studio/helpers/config'
@@ -467,7 +474,21 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
-				sourceLayerId: SourceLayer.PgmGraphicsIdent
+				sourceLayerId: SourceLayer.PgmGraphicsIdent,
+				content: {
+					timelineObjects: [
+						literal<TSR.TimelineObjAbstractAny>({
+							id: '',
+							enable: {
+								while: '1'
+							},
+							layer: AbstractLLayer.IdentMarker,
+							content: {
+								deviceType: TSR.DeviceType.ABSTRACT
+							}
+						})
+					]
+				}
 			})
 		])
 	})

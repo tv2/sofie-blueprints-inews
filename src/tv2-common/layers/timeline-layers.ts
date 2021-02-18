@@ -18,7 +18,9 @@ export enum GraphicLLayer {
 }
 
 export enum AbstractLLayer {
-	ServerEnablePending = 'server_enable_pending'
+	ServerEnablePending = 'server_enable_pending',
+	/* Exists to give the Ident UI marker a timeline object so that it gets the startedPlayback callback */
+	IdentMarker = 'ident_marker'
 }
 
 export function SisyfosEVSSource(i: number | string) {

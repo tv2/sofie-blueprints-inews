@@ -53,6 +53,7 @@ export function executeActionOfftube(
 				Cam: OfftubeSourceLayer.PgmCam,
 				Live: OfftubeSourceLayer.PgmLive,
 				Effekt: OfftubeSourceLayer.PgmJingle,
+				Ident: OfftubeSourceLayer.PgmGraphicsIdent,
 				Continuity: OfftubeSourceLayer.PgmContinuity
 			},
 			OutputLayer: {
