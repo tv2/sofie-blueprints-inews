@@ -19,6 +19,7 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionRecallLastLive,
 	ActionSelectDVELayout,
 	GetTagForKam,
 	GetTagForLive,
@@ -351,6 +352,22 @@ function getGlobalAdlibActionsOfftube(
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
 		})
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.RECALL_LAST_LIVE,
+			userData: literal<ActionRecallLastLive>({
+				type: AdlibActionType.RECALL_LAST_LIVE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 1,
+				label: 'Last Live',
+				sourceLayerId: OfftubeSourceLayer.PgmLive,
+				outputLayerId: 'pgm'
+			}
+		})
+	)
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE)

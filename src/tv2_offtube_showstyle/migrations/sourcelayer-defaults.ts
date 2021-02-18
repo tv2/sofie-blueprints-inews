@@ -246,7 +246,7 @@ const PGM: ISourceLayer[] = [
 		name: 'Live',
 		abbreviation: 'L',
 		type: SourceLayerType.REMOTE,
-		exclusiveGroup: 'me1',
+		exclusiveGroup: 'me2',
 		isRemoteInput: true,
 		isGuestInput: false,
 		activateKeyboardHotkeys: 'ctrl+shift+alt+b,1,2,3',
