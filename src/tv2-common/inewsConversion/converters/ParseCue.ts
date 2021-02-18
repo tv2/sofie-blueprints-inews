@@ -818,27 +818,27 @@ export function PartToParentClass(studio: string, partDefinition: PartDefinition
 }
 
 export function CameraParentClass(studio: string, cameraName: string) {
-	return `${studio.toLowerCase()}_parent_camera_${cameraName.toLowerCase()}`
+	return `${studio.toLowerCase()}_parent_camera_${cameraName.toLowerCase().replace(/\W/, '_')}`
 }
 
 export function EksternParentClass(studio: string, source: string) {
-	return `${studio.toLowerCase()}_parent_ekstern_${source.toLowerCase()}`
+	return `${studio.toLowerCase()}_parent_ekstern_${source.toLowerCase().replace(/\W/, '_')}`
 }
 
 export function ServerParentClass(studio: string, clip: string) {
-	return `${studio.toLowerCase()}_parent_server_${clip.toLowerCase()}`
+	return `${studio.toLowerCase()}_parent_server_${clip.toLowerCase().replace(/\W/, '_')}`
 }
 
 export function EVSParentClass(studio: string, evs: string) {
-	return `${studio.toLowerCase()}_parent_evs_${evs.toLowerCase()}`
+	return `${studio.toLowerCase()}_parent_evs_${evs.toLowerCase().replace(/\W/, '_')}`
 }
 
 export function DVEParentClass(studio: string, dve: string) {
-	return `${studio.toLowerCase()}_parent_dve_${dve.toLowerCase()}`
+	return `${studio.toLowerCase()}_parent_dve_${dve.toLowerCase().replace(/\W/, '_')}`
 }
 
 export function TLFParentClass(studio: string, source: string) {
-	return `${studio.toLowerCase()}_parent_tlf_${source.toLowerCase()}`
+	return `${studio.toLowerCase()}_parent_tlf_${source.toLowerCase().replace(/\W/, '_')}`
 }
 
 export function UnknownPartParentClass(studio: string, partDefinition: PartDefinition): string | undefined {

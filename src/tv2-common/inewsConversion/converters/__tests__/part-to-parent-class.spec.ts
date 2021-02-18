@@ -13,7 +13,7 @@ describe('PartToParentClass', () => {
 			cues: [
 				literal<CueDefinitionEkstern>({
 					type: CueType.Ekstern,
-					source: '1',
+					source: 'Live 1',
 					iNewsCommand: 'EKSTERN'
 				})
 			],
@@ -24,6 +24,6 @@ describe('PartToParentClass', () => {
 			segmentExternalId: ''
 		})
 		const result = PartToParentClass('studio0', partDefinition)
-		expect(result).toBe('studio0_parent_ekstern_1')
+		expect(result).toBe('studio0_parent_ekstern_live_1')
 	})
 })
