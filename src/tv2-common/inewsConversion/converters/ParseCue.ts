@@ -844,7 +844,7 @@ export function TLFParentClass(studio: string, source: string) {
 }
 
 export function UnknownPartParentClass(studio: string, partDefinition: PartDefinition): string | undefined {
-	const firstCue = partDefinition.cues[0]
+	const firstCue = partDefinition.cues.find(c => [CueType.DVE, CueType.Ekstern, CueType.Telefon].includes(c.type))
 
 	if (!firstCue) {
 		return
