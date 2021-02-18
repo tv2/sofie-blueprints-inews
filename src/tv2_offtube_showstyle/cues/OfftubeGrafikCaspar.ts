@@ -85,12 +85,18 @@ export function OfftubeEvaluateGrafikCaspar(
 	} else if (GraphicIsInternal(parsedCue)) {
 		// TODO: Wall
 
+		const sourceLayerId = GetSourceLayerForGrafik(
+			config,
+			GetFullGraphicTemplateNameFromCue(config, parsedCue),
+			isIdentGrafik
+		)
+
 		if (parsedCue.adlib) {
 			const adLibPiece = literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partDefinition.externalId,
 				name: `${GraphicDisplayName(config, parsedCue)}`,
-				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+				sourceLayerId,
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				lifespan: PieceLifespan.WithinPart,
 				expectedDuration: 5000,
@@ -106,7 +112,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					_rank: rank || 0,
 					externalId: partDefinition.externalId,
 					name: `${GraphicDisplayName(config, parsedCue)}`,
-					sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+					sourceLayerId,
 					outputLayerId: OfftubeOutputLayers.OVERLAY,
 					lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
@@ -119,7 +125,6 @@ export function OfftubeEvaluateGrafikCaspar(
 				})
 			)
 		} else {
-			const sourceLayerId = GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue))
 			const piece = literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,
 				name: `${GraphicDisplayName(config, parsedCue)}`,
