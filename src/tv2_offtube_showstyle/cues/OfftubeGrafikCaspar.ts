@@ -32,7 +32,7 @@ import {
 	TimeFromFrames,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, ControlClasses, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -186,15 +186,12 @@ export function GetCasparOverlayTimeline(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
-	partDefinition: PartDefinition,
-	commentator?: boolean
+	partDefinition: PartDefinition
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: commentator
-				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition)
-				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
+			enable: GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition),
 			priority: 1,
 			layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			content: {
