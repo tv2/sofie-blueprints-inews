@@ -812,10 +812,8 @@ export function PartToParentClass(studio: string, partDefinition: PartDefinition
 			}
 		case PartType.EVS:
 			return EVSParentClass(studio, partDefinition.variant.evs)
-		case PartType.Unknown:
-			return UnknownPartParentClass(studio, partDefinition)
 		default:
-			return
+			return UnknownPartParentClass(studio, partDefinition)
 	}
 }
 
