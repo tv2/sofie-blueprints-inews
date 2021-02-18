@@ -38,11 +38,12 @@ export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
 	CasparPrerollDuration: number
-	NetworkBasePath: string
-	JingleBasePath: string
-	ClipBasePath: string
+	NetworkBasePathClip: string
+	NetworkBasePathJingle: string
+	ClipMediaFlowId: string
 	ClipFileExtension: string
-	MediaFlowId: string
+	JingleMediaFlowId: string
+	JingleFileExtension: string
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		Default: number

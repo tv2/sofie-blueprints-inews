@@ -70,7 +70,8 @@ export const defaultStudioConfig: ConfigMap = {
 		Default: 2001,
 		Continuity: 2002
 	},
-	NetworkBasePath: '/media',
+	NetworkBasePathClip: '/media',
+	NetworkBasePathJingle: '',
 	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
 	MediaFlowId: 'testflow0',
@@ -97,9 +98,7 @@ export const defaultStudioConfig: ConfigMap = {
 	PreventOverlayWithFull: true,
 	PilotOutTransitionDuration: 280,
 	ATEMDelay: 1,
-	MaximumKamDisplayDuration: 10000,
-	JingleBasePath: 'jingler',
-	ClipBasePath: 'clips'
+	MaximumKamDisplayDuration: 10000
 }
 
 export const defaultShowStyleConfig: ConfigMap = {

@@ -14,7 +14,9 @@ import { SisyfosLLAyer } from '../layers'
 const mockStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
-	MediaFlowId: '',
+	ClipMediaFlowId: '',
+	JingleMediaFlowId: '',
+	JingleFileExtension: '',
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],
@@ -74,9 +76,8 @@ const mockStudioConfig: StudioConfig = {
 	ATEMDelay: 0,
 	CasparPrerollDuration: 280,
 	ClipFileExtension: 'mxf',
-	NetworkBasePath: '/',
-	JingleBasePath: 'jingler',
-	ClipBasePath: 'clips',
+	NetworkBasePathClip: '/',
+	NetworkBasePathJingle: '',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	ServerPostrollDuration: 3000

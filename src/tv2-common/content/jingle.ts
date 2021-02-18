@@ -16,20 +16,27 @@ export interface JingleLayers {
 	Sisyfos: {
 		PlayerJingle: string
 	}
-	basePath: string
 }
 
 export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(config: ShowStyleConfig, file: string, loadFirstFrame: boolean, layers: JingleLayers, preMultiplied: boolean) {
-	// const jinglePath = `${SanitizePath(layers.basePath)}/${file}`
+>(
+	config: ShowStyleConfig,
+	file: string,
+	alphaAtStart: number,
+	loadFirstFrame: boolean,
+	layers: JingleLayers,
+	preMultiplied: boolean
+) {
 	return literal<VTContent>({
 		studioLabel: '',
-		fileName: file,
-		path: file,
+		fileName: `jingler/${file}`,
+		path: `${config.studio.NetworkBasePathJingle}\\${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
+		mediaFlowIds: [config.studio.JingleMediaFlowId],
 		firstWords: '',
 		lastWords: '',
+		previewFrame: alphaAtStart,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
@@ -41,7 +48,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file
+					file: `jingler/${file}`
 				}
 			}),
 
@@ -55,7 +62,7 @@ export function CreateJingleContentBase<
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.MEDIA,
-								file
+								file: `jingler/${file}`
 							}
 						})
 				  ]
