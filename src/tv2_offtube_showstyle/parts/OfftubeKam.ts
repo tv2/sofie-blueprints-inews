@@ -152,6 +152,7 @@ export function OfftubeCreatePartKam(
 	OfftubeEvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

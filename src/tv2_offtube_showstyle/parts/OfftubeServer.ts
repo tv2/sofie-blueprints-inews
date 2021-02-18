@@ -101,6 +101,7 @@ export function OfftubeCreatePartServer(
 	OfftubeEvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

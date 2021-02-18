@@ -91,6 +91,7 @@ export interface ActionExecutionSettings<
 	EvaluateCues: (
 		context: SegmentContext,
 		config: ShowStyleConfig,
+		part: IBlueprintPart,
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -418,6 +419,7 @@ function executeActionSelectServerClip<
 	settings.EvaluateCues(
 		(context as unknown) as SegmentContext,
 		config,
+		basePart.part.part,
 		grafikPieces,
 		[],
 		[],

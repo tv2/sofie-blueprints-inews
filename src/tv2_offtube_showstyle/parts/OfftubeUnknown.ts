@@ -37,6 +37,7 @@ export function CreatePartUnknown(
 	OfftubeEvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

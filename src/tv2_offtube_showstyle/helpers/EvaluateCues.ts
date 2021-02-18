@@ -2,6 +2,7 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
@@ -18,6 +19,7 @@ import { OfftubeShowstyleBlueprintConfig } from './config'
 export function OfftubeEvaluateCues(
 	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
+	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -38,6 +40,7 @@ export function OfftubeEvaluateCues(
 		},
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

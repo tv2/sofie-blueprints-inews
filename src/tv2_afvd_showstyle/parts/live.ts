@@ -38,6 +38,7 @@ export function CreatePartLive(
 	EvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

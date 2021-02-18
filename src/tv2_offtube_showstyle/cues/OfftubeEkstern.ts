@@ -1,6 +1,7 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
@@ -12,6 +13,7 @@ import { OfftubeSourceLayer } from '../layers'
 export function OfftubeEvaluateEkstern(
 	context: SegmentContext,
 	config: OfftubeShowstyleBlueprintConfig,
+	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -24,6 +26,7 @@ export function OfftubeEvaluateEkstern(
 	EvaluateEksternBase(
 		context,
 		config,
+		part,
 		pieces,
 		[],
 		partId,

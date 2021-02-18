@@ -80,6 +80,7 @@ export function CreatePartEVS(
 	EvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

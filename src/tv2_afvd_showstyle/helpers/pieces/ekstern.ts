@@ -1,6 +1,7 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
@@ -12,6 +13,7 @@ import { SourceLayer } from '../../layers'
 export function EvaluateEkstern(
 	context: SegmentContext,
 	config: BlueprintConfig,
+	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -24,6 +26,7 @@ export function EvaluateEkstern(
 	EvaluateEksternBase(
 		context,
 		config,
+		part,
 		pieces,
 		adlibPieces,
 		partId,

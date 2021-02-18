@@ -44,12 +44,12 @@ export function CreatePartCueOnly(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {})
+	EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {})
 	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {
+		EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {
 			adlib: true
 		})
 	}

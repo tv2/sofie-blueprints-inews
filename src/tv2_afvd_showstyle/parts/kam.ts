@@ -149,6 +149,7 @@ export function CreatePartKam(
 	EvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

@@ -34,6 +34,7 @@ export function OfftubeCreatePartDVE(
 	OfftubeEvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

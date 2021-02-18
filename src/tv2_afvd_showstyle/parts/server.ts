@@ -64,6 +64,7 @@ export function CreatePartServer(
 	EvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

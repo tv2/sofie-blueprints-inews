@@ -2,6 +2,7 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	SegmentContext,
 	TSR
@@ -74,6 +75,7 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueEkstern?: (
 		context: SegmentContext,
 		config: TV2BlueprintConfig,
+		part: IBlueprintPart,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -172,6 +174,7 @@ export function EvaluateCuesBase(
 	showStyleOptions: EvaluateCuesShowstyleOptions,
 	context: SegmentContext,
 	config: TV2BlueprintConfig,
+	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -217,6 +220,7 @@ export function EvaluateCuesBase(
 						showStyleOptions.EvaluateCueEkstern(
 							context,
 							config,
+							part,
 							pieces,
 							adLibPieces,
 							actions,

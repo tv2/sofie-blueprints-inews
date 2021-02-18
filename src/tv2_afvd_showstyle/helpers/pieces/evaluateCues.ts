@@ -2,6 +2,7 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
@@ -22,6 +23,7 @@ import { EvaluateTelefon } from './telefon'
 export function EvaluateCues(
 	context: SegmentContext,
 	config: BlueprintConfig,
+	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -46,6 +48,7 @@ export function EvaluateCues(
 		},
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

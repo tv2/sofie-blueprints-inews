@@ -1,5 +1,6 @@
 import {
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	RemoteContent,
@@ -46,6 +47,7 @@ export function EvaluateEksternBase<
 >(
 	context: SegmentContext,
 	config: ShowStyleConfig,
+	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	partId: string,
@@ -62,16 +64,19 @@ export function EvaluateEksternBase<
 		.match(/^(?:LIVE|SKYPE) ?([^\s]+)(?: (.+))?$/i)
 	if (!eksternProps) {
 		context.warning(`No source entered for EKSTERN`)
+		part.invalid = true
 		return
 	}
 	const source = eksternProps[1]
 	if (!source) {
 		context.warning(`Could not find live source for ${parsedCue.source}`)
+		part.invalid = true
 		return
 	}
 	const sourceInfoEkstern = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
 	if (sourceInfoEkstern === undefined) {
 		context.warning(`Could not find ATEM input for source ${parsedCue.source}`)
+		part.invalid = true
 		return
 	}
 	const atemInput = sourceInfoEkstern.port
