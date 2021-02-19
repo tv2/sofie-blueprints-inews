@@ -40,7 +40,7 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
-import { tmpLayerToSlot } from './helpers/html_graphics'
+import { layerToHTMLGraphicSlot } from './helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -441,7 +441,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 						JSON.stringify({
 							display: 'program',
 							slots: {
-								[tmpLayerToSlot[layer]]: {
+								[layerToHTMLGraphicSlot[layer]]: {
 									payload: {},
 									display: 'hidden'
 								}
@@ -477,7 +477,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 								GraphicLLayer.GraphicLLayerOverlayTopt
 							].map(layer => {
 								return {
-									[tmpLayerToSlot[layer]]: {
+									[layerToHTMLGraphicSlot[layer]]: {
 										payload: {},
 										display: 'hidden'
 									}

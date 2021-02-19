@@ -36,7 +36,7 @@ import { AdlibActionType, AdlibTags, ControlClasses, GraphicEngine, TallyTags } 
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
-import { graphicsTable, Slots } from '../helpers/html_graphics'
+import { layerToHTMLGraphicSlot, Slots } from '../helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
@@ -202,7 +202,11 @@ export function GetCasparOverlayTimeline(
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						display: 'program',
-						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue),
+						slots: createContentForGraphicTemplate(
+							config,
+							GetFullGraphicTemplateNameFromCue(config, parsedCue),
+							parsedCue
+						),
 						partialUpdate: true
 					})
 				)}</templateData>`,
@@ -213,11 +217,19 @@ export function GetCasparOverlayTimeline(
 }
 
 export function createContentForGraphicTemplate(
-	graphicCue: string,
+	config: OfftubeShowstyleBlueprintConfig,
+	graphicTemplate: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 ): Partial<Slots> {
-	graphicCue = graphicCue.toLowerCase().trim()
-	const slot = graphicsTable[graphicCue]?.slot
+	const conf = config.showStyle.GFXTemplates.find(g => g.VizTemplate.toLowerCase() === graphicTemplate.toLowerCase())
+
+	if (!conf) {
+		return {}
+	}
+
+	const layer = conf.LayerMapping
+
+	const slot = layerToHTMLGraphicSlot[layer]
 
 	if (!slot) {
 		return {}
@@ -227,7 +239,7 @@ export function createContentForGraphicTemplate(
 		[slot]: {
 			display: 'program',
 			payload: {
-				type: graphicCue,
+				type: graphicTemplate,
 				...parsedCue.graphic.textFields
 			}
 		}
