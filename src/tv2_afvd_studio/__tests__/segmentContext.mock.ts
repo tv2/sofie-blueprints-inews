@@ -38,8 +38,7 @@ const mockStudioConfig: StudioConfig = {
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
-		DSK1F: 0,
-		DSK1K: 0,
+		DSK: [],
 		ServerC: 0,
 		SplitArtF: 0,
 		SplitArtK: 0,

@@ -15,8 +15,7 @@ const blankStudioConfig: StudioConfig = {
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
-		DSK1F: 0,
-		DSK1K: 0,
+		DSK: [],
 		ServerC: 0,
 		JingleFill: 0,
 		JingleKey: 0,

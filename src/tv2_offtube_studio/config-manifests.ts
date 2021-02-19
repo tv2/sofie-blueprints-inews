@@ -5,9 +5,15 @@ import {
 	TableConfigItemValue,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { literal, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import {
+	literal,
+	TableConfigItemDSK,
+	TableConfigItemSourceMapping,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
+import { defaultDSK } from './helpers/config'
 import { OfftubeSisyfosLLayer } from './layers'
 
 export const CORE_INJECTED_KEYS = ['SofieHostURL']
@@ -269,6 +275,53 @@ export const manifestOfftubeStudioMics: ConfigManifestEntry = {
 	defaultVal: DEFAULT_STUDIO_MICS_LAYERS
 }
 
+export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = {
+	id: 'AtemSource.DSK',
+	name: 'ATEM DSK',
+	description: 'ATEM Downstream Keyers Fill and Key',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: literal<Array<TableConfigItemDSK & TableConfigItemValue[0]>>([{ _id: '', ...defaultDSK }]),
+	columns: [
+		{
+			id: 'Number',
+			name: 'Number',
+			description: 'DSK number, starting from 1',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 1,
+			rank: 0
+		},
+		{
+			id: 'Fill',
+			name: 'ATEM Fill',
+			description: 'ATEM vision mixer value for DSK Fill',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 21,
+			rank: 1
+		},
+		{
+			id: 'Key',
+			name: 'ATEM Key',
+			description: 'ATEM vision mixer value for DSK Key',
+			type: ConfigManifestEntryType.NUMBER,
+			required: true,
+			defaultVal: 34,
+			rank: 2
+		},
+		{
+			id: 'Toggle',
+			name: 'AdLib Toggle',
+			description: 'Make AdLib that toggles the DSK',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: false,
+			rank: 3
+		}
+	]
+}
+
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'MediaFlowId',
@@ -332,6 +385,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestOfftubeSourcesSkype,
 	manifestOfftubeSourcesABMediaPlayers,
 	manifestOfftubeStudioMics,
+	manifestOfftubeDownstreamKeyers,
 	{
 		id: 'ABPlaybackDebugLogging',
 		name: 'Media players selection debug logging',
@@ -339,22 +393,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.BOOLEAN,
 		required: false,
 		defaultVal: false
-	},
-	{
-		id: 'AtemSource.DSK1F',
-		name: 'ATEM DSK1 Fill',
-		description: 'ATEM vision mixer input for DSK1 Fill',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 7
-	},
-	{
-		id: 'AtemSource.DSK1K',
-		name: 'ATEM DSK1 Key',
-		description: 'ATEM vision mixer input for DSK1 Key',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 8
 	},
 	{
 		id: 'AtemSource.JingleFill',

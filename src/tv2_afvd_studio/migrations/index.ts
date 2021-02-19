@@ -1,7 +1,15 @@
 import { MigrationStepStudio, TSR } from '@sofie-automation/blueprints-integration'
-import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable } from 'tv2-common'
+import {
+	AddKeepAudio,
+	literal,
+	MoveClipSourcePath,
+	MoveDSKToTable,
+	MoveSourcesToTable,
+	TableConfigItemDSK
+} from 'tv2-common'
 import * as _ from 'underscore'
 import {
+	manifestAFVDDownstreamKeyers,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesDelayedPlayback,
@@ -145,6 +153,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	GetMappingDefaultMigrationStepForLayer('1.3.2', CasparLLayer.CasparCGLYD, true),
 	GetMappingDefaultMigrationStepForLayer('1.4.0', CasparLLayer.CasparPlayerClipPending, true),
 	GetMappingDefaultMigrationStepForLayer('1.4.5', CasparLLayer.CasparPlayerClipPending, true),
+	MoveDSKToTable('1.4.6', (manifestAFVDDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK),
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

@@ -59,8 +59,7 @@ export const defaultStudioConfig: ConfigMap = {
 	],
 	AtemSource: {
 		MixMinusDefault: 2,
-		DSK1F: 21,
-		DSK1K: 34,
+		DSK: [],
 		ServerC: 28,
 		JingleFill: 6,
 		JingleKey: 31,
@@ -181,3 +180,5 @@ export const defaultShowStyleConfig: ConfigMap = {
 	AdLibBreakers: [{ Breaker: '1' }, { Breaker: '2' }],
 	DefaultTransition: 'CUT'
 }
+
+export const defaultDSKConfig = { 1: { Number: 1, Key: 0, Fill: 0, Toggle: true, DefaultOn: true } }

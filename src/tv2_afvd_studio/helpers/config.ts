@@ -1,9 +1,12 @@
 import { IBlueprintConfig, IStudioContext } from '@sofie-automation/blueprints-integration'
 import {
+	DSKConfig,
 	getLiveAudioLayers,
 	getStickyLayers,
 	MediaPlayerConfig,
+	parseDSK,
 	SourceInfo,
+	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos,
 	TV2StudioConfigBase
@@ -19,6 +22,7 @@ export interface BlueprintConfig {
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	liveAudio: string[]
 	stickyLayers: string[]
+	dsk: DSKConfig
 }
 
 export interface StudioConfig extends TV2StudioConfigBase {
@@ -38,14 +42,13 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	ABPlaybackDebugLogging: boolean
 	StudioMics: string[]
 	AtemSource: {
-		DSK1F: number
-		DSK1K: number
 		ServerC: number // Studio
 		JingleFill: number
 		JingleKey: number
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
 		FullFrameGrafikBackground: number
+		DSK: TableConfigItemDSK[]
 
 		Default: number
 		MixMinusDefault: number
@@ -113,20 +116,31 @@ export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
 }
 */
 
+export const defaultDSK: TableConfigItemDSK = {
+	Number: 1,
+	Fill: 21,
+	Key: 34,
+	Toggle: true,
+	DefaultOn: true
+}
+
 export function parseConfig(rawConfig: IBlueprintConfig): any {
+	const studioConfig = (rawConfig as unknown) as StudioConfig
+	const dsk = parseDSK(studioConfig, defaultDSK)
 	const config: BlueprintConfig = {
-		studio: rawConfig as any,
+		studio: studioConfig,
 		showStyle: {} as any,
 		sources: [],
 		mediaPlayers: [],
 		liveAudio: [],
-		stickyLayers: []
+		stickyLayers: [],
+		dsk
 	}
 
-	config.sources = parseSources(config.studio)
-	config.mediaPlayers = parseMediaPlayers(config.studio)
-	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
+	config.sources = parseSources(studioConfig)
+	config.mediaPlayers = parseMediaPlayers(studioConfig)
+	config.liveAudio = getLiveAudioLayers(studioConfig)
+	config.stickyLayers = getStickyLayers(studioConfig, config.liveAudio)
 
 	return config
 }

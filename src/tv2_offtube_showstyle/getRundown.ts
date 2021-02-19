@@ -596,8 +596,8 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				dsk: {
 					onAir: true,
 					sources: {
-						fillSource: config.studio.AtemSource.DSK1F,
-						cutSource: config.studio.AtemSource.DSK1K
+						fillSource: config.dsk[1].Fill,
+						cutSource: config.dsk[1].Key
 					},
 					properties: {
 						tie: false,

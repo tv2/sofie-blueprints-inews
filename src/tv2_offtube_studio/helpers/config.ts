@@ -1,9 +1,12 @@
 import { IBlueprintConfig } from '@sofie-automation/blueprints-integration'
 import {
+	DSKConfig,
 	getLiveAudioLayers,
 	getStickyLayers,
 	MediaPlayerConfig,
+	parseDSK,
 	SourceInfo,
+	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TV2StudioConfigBase
 } from 'tv2-common'
@@ -16,6 +19,7 @@ export interface OfftubeStudioBlueprintConfig {
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	liveAudio: string[]
 	stickyLayers: string[]
+	dsk: DSKConfig
 }
 
 export interface OfftubeStudioConfig extends TV2StudioConfigBase {
@@ -35,13 +39,12 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
-		DSK1F: number
-		DSK1K: number
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
 		SplitBackground: number
 		GFXFull: number
 		Loop: number
+		DSK: TableConfigItemDSK[]
 
 		Default: number
 		Continuity: number
@@ -75,6 +78,14 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	}
 }
 
+export const defaultDSK: TableConfigItemDSK = {
+	Number: 1,
+	Fill: 7,
+	Key: 8,
+	Toggle: true,
+	DefaultOn: true
+}
+
 /*
 export function defaultStudioConfig(context: NotesContext): OfftubeStudioBlueprintConfig {
 	const config: OfftubeStudioBlueprintConfig = {
@@ -106,18 +117,21 @@ export function defaultStudioConfig(context: NotesContext): OfftubeStudioBluepri
 */
 
 export function parseConfig(rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
+	const studioConfig = (rawConfig as unknown) as OfftubeStudioConfig
+	const dsk = parseDSK(studioConfig, defaultDSK)
 	const config: OfftubeStudioBlueprintConfig = {
 		studio: rawConfig as any,
 		// showStyle: {} as any,
 		sources: [],
 		mediaPlayers: [],
 		liveAudio: [],
-		stickyLayers: []
+		stickyLayers: [],
+		dsk
 	}
-	config.sources = parseSources(config.studio)
-	config.mediaPlayers = parseMediaPlayers(config.studio)
-	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
+	config.sources = parseSources(studioConfig)
+	config.mediaPlayers = parseMediaPlayers(studioConfig)
+	config.liveAudio = getLiveAudioLayers(studioConfig)
+	config.stickyLayers = getStickyLayers(studioConfig, config.liveAudio)
 
 	return config
 }
