@@ -2554,7 +2554,7 @@ describe('Body parser', () => {
 	test('Merge wall cues', () => {
 		const bodyTarget = '\r\n<p><a idref="0"><a idref="1"></a></p>\r\n<p></p>\r\n'
 		const cuesTarget = [
-			['SS=3-SPORTSDIGI', 'INP1=EVS 1', ';0.00.01'],
+			['SS=sc-stills', 'INP1=EVS 1', ';0.00.01'],
 			['#cg4 pilotdata', 'TELEFON/KORT//LIVE_KABUL', 'VCPID=2552305', 'ContinueCount=3', 'TELEFON/KORT//LIVE_KABU']
 		]
 		const result = ParseBody(config, '00000000001', 'test-segment', bodyTarget, cuesTarget, fields, 0)

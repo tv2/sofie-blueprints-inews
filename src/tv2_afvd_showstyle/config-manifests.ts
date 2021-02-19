@@ -121,7 +121,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are aslo required. VizTemplate is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNes i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: DEFAULT_GRAPHICS,
+		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })),
 		columns: [
 			{
 				id: 'INewsCode',

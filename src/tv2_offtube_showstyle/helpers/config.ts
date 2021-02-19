@@ -11,8 +11,6 @@ export interface TableConfigItemGFXTemplates {
 	INewsName: string
 	VizDestination: string
 	OutType: string
-	Argument1: string
-	Argument2: string
 	IsDesign: boolean
 }
 

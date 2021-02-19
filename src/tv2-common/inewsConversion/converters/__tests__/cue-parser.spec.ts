@@ -603,12 +603,12 @@ describe('Cue parser', () => {
 	})
 
 	test('KG=DESIGN_FODBOLD', () => {
-		const cueGrafik = ['KG=DESIGN_FODBOLD', ';0.00.01']
+		const cueGrafik = ['KG=DESIGN_FODBOLD_20', ';0.00.01']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
 			literal<CueDefinitionGraphicDesign>({
 				type: CueType.GraphicDesign,
-				design: 'DESIGN_FODBOLD',
+				design: 'DESIGN_FODBOLD_20',
 				start: {
 					frames: 1,
 					seconds: 0
@@ -1241,7 +1241,7 @@ describe('Cue parser', () => {
 
 	test('SS=', () => {
 		// TODO: Screen type
-		const cueSS = ['SS=3-SPORTSDIGI', ';0.00.01']
+		const cueSS = ['SS=sc-stills', ';0.00.01']
 		const result = ParseCue(cueSS, config)
 		expect(result).toEqual(
 			literal<CueDefinitionUnpairedTarget>({
