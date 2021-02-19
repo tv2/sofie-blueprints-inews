@@ -53,7 +53,7 @@ export default literal<BlueprintMappings>({
 	atem_me_next_jingle: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookahead: LookaheadMode.PRELOAD,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
@@ -238,7 +238,7 @@ export default literal<BlueprintMappings>({
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.PRELOAD,
 		lookaheadDepth: 1,
-		lookaheadMaxSearchDistance: -1
+		lookaheadMaxSearchDistance: 1
 	}),
 	casparcg_player_clip_1: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
@@ -281,32 +281,32 @@ export default literal<BlueprintMappings>({
 	casparcg_player_jingle: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
+		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
 		layer: 110
 	}),
 	casparcg_player_jingle_looakhead: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
 		layer: 110,
-		previewWhenNotOnAir: true
+		previewWhenNotOnAir: false
 	}),
 	casparcg_graphics_full: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
-		layer: 109,
-		previewWhenNotOnAir: true
+		layer: 108,
+		previewWhenNotOnAir: false
 	}),
 	casparcg_graphics_full_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.NONE,
 		channel: 3,
-		layer: 108,
+		layer: 100,
 		previewWhenNotOnAir: false // False, so it doesn't show under jingle when full is next
 	}),
 	casparcg_cg_dve_template: literal<TSR.MappingCasparCG & BlueprintMapping>({
