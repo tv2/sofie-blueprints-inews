@@ -1669,8 +1669,8 @@ function executeActionRecallLastLive<
 	actionId: string,
 	_userData: ActionRecallLastLive
 ) {
-	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live)
-	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident)
+	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live, { originalOnly: true })
+	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident, { originalOnly: true })
 
 	if (!lastLive) {
 		return
