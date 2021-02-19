@@ -38,7 +38,7 @@ export function CreateAdlibServer<
 			partDefinition,
 			duration,
 			vo,
-			adLib: tagAsAdlib
+			adLibPix: tagAsAdlib
 		}),
 		userDataManifest: {},
 		display: {

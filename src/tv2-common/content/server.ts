@@ -64,8 +64,7 @@ export function MakeContentServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	adLib: boolean,
-	offtubeOptions: AdlibServerOfftubeOptions,
+	adLibPix: boolean,
 	vo: boolean,
 	sourceDuration?: number
 ): VTContent {
@@ -79,8 +78,7 @@ export function MakeContentServer(
 			partDefinition,
 			config,
 			sourceLayers,
-			adLib,
-			offtubeOptions,
+			adLibPix,
 			vo
 		)
 	})
@@ -93,8 +91,7 @@ function GetServerTimeline(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	adLib?: boolean,
-	offtubeOptions?: AdlibServerOfftubeOptions,
+	adLibPix?: boolean,
 	vo?: boolean
 ) {
 	const serverEnableClass = `.${GetEnableClassForServer(mediaPlayerSessionId)}`
@@ -110,7 +107,7 @@ function GetServerTimeline(
 			deviceType: TSR.DeviceType.CASPARCG,
 			type: TSR.TimelineContentTypeCasparCg.MEDIA,
 			file,
-			loop: offtubeOptions?.isOfftube ? false : adLib,
+			loop: adLibPix,
 			seek: 0,
 			// length: duration,
 			playing: true
@@ -118,7 +115,7 @@ function GetServerTimeline(
 		metaData: {
 			mediaPlayerSession: mediaPlayerSessionId
 		},
-		classes: [...(AddParentClass(partDefinition) && !adLib ? [ServerParentClass('studio0', file)] : [])]
+		classes: [...(AddParentClass(partDefinition) && !adLibPix ? [ServerParentClass('studio0', file)] : [])]
 	})
 
 	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt

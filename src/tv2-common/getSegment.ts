@@ -202,7 +202,7 @@ export function getSegmentBase<
 							totalTime,
 							totalWords,
 							tapeTime,
-							adLib: false
+							adLibPix: false
 						})
 					)
 				}
@@ -225,7 +225,7 @@ export function getSegmentBase<
 							totalTime,
 							totalWords,
 							tapeTime,
-							adLib: false
+							adLibPix: false
 						})
 					)
 				}

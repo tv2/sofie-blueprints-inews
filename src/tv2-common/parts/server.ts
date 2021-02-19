@@ -19,7 +19,6 @@ import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { GetVTContentProperties } from '../content'
 import { PartDefinition } from '../inewsConversion'
-import { AdlibServerOfftubeOptions } from '../pieces'
 import { literal, SanitizeString } from '../util'
 import { CreatePartInvalid } from './invalid'
 
@@ -32,7 +31,7 @@ export interface ServerPartProps {
 	totalWords: number
 	totalTime: number
 	tapeTime: number
-	adLib: boolean
+	adLibPix: boolean
 	session?: string
 }
 
@@ -55,8 +54,7 @@ export function CreatePartServerBase<
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps,
-	layers: ServerPartLayers,
-	offtubeOptions: AdlibServerOfftubeOptions
+	layers: ServerPartLayers
 ): { part: BlueprintResultPart; file: string; duration: number; invalid?: true } {
 	if (partDefinition.fields === undefined) {
 		context.warning('Video ID not set!')
@@ -111,7 +109,7 @@ export function CreatePartServerBase<
 					partDefinition,
 					duration: actualDuration,
 					vo: props.vo,
-					adLib: props.adLib
+					adLibPix: props.adLibPix
 				})
 			}),
 			content: MakeContentServer(
@@ -132,8 +130,7 @@ export function CreatePartServerBase<
 						ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
 					}
 				},
-				props.adLib,
-				offtubeOptions,
+				props.adLibPix,
 				props.vo,
 				sourceDuration
 			),

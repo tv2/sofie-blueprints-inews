@@ -17,35 +17,26 @@ export function OfftubeCreatePartServer(
 	partDefinition: PartDefinition,
 	props: ServerPartProps
 ): BlueprintResultPart {
-	const basePartProps = CreatePartServerBase(
-		context,
-		config,
-		partDefinition,
-		props,
-		{
-			SourceLayer: {
-				PgmServer: props.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
-				SelectedServer: props.vo ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
-			},
-			AtemLLayer: {
-				MEPgm: OfftubeAtemLLayer.AtemMEClean,
-				ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-			},
-			Caspar: {
-				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-			},
-			Sisyfos: {
-				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-				StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
-			},
-			ATEM: {
-				ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-			}
+	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
+		SourceLayer: {
+			PgmServer: props.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: props.vo ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
 		},
-		{
-			isOfftube: false
+		AtemLLayer: {
+			MEPgm: OfftubeAtemLLayer.AtemMEClean,
+			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
+		},
+		Caspar: {
+			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
+		},
+		Sisyfos: {
+			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+			StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+		},
+		ATEM: {
+			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 		}
-	)
+	})
 
 	if (basePartProps.invalid) {
 		return basePartProps.part
