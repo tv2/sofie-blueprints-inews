@@ -295,7 +295,7 @@ export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = {
 		{
 			id: 'Fill',
 			name: 'ATEM Fill',
-			description: 'ATEM vision mixer value for DSK Fill',
+			description: 'ATEM vision mixer input for DSK Fill',
 			type: ConfigManifestEntryType.NUMBER,
 			required: true,
 			defaultVal: 21,
@@ -304,7 +304,7 @@ export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = {
 		{
 			id: 'Key',
 			name: 'ATEM Key',
-			description: 'ATEM vision mixer value for DSK Key',
+			description: 'ATEM vision mixer input for DSK Key',
 			type: ConfigManifestEntryType.NUMBER,
 			required: true,
 			defaultVal: 34,
