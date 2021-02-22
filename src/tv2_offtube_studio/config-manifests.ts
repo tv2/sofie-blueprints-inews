@@ -318,6 +318,15 @@ export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = {
 			required: true,
 			defaultVal: false,
 			rank: 3
+		},
+		{
+			id: 'DefaultOn',
+			name: 'On by default',
+			description: 'Enable the DSK in the baseline',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: false,
+			rank: 4
 		}
 	]
 }

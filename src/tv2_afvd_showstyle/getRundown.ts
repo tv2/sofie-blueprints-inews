@@ -25,6 +25,7 @@ import {
 	GetTransitionAdLibActions,
 	GraphicLLayer,
 	literal,
+	pgmDSKLayers,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
@@ -41,7 +42,7 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChann
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, getConfig } from './helpers/config'
 import { boxLayers } from './helpers/content/dve'
-import { afvdPgmDSKLayers, SourceLayer } from './layers'
+import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
@@ -434,13 +435,13 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	for (const dsk of Object.values(config.dsk)) {
-		if (dsk.Toggle && afvdPgmDSKLayers[dsk.Number] && atemLLayersDSK[dsk.Number]) {
+		if (dsk.Toggle && pgmDSKLayers[dsk.Number] && atemLLayersDSK[dsk.Number]) {
 			if (dsk.DefaultOn) {
 				adlibItems.push({
 					externalId: `dskoff${dsk.Number}`,
 					name: `DSK ${dsk.Number} OFF`,
 					_rank: 500 + dsk.Number,
-					sourceLayerId: afvdPgmDSKLayers[dsk.Number],
+					sourceLayerId: pgmDSKLayers[dsk.Number],
 					outputLayerId: 'sec',
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
@@ -467,7 +468,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					externalId: `dskon${dsk.Number}`,
 					name: `DSK ${dsk.Number} ON`,
 					_rank: 500 + dsk.Number,
-					sourceLayerId: afvdPgmDSKLayers[dsk.Number],
+					sourceLayerId: pgmDSKLayers[dsk.Number],
 					outputLayerId: 'sec',
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],

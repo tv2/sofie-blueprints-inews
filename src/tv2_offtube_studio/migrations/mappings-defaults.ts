@@ -65,6 +65,27 @@ export default literal<BlueprintMappings>({
 		mappingType: TSR.MappingAtemType.DownStreamKeyer,
 		index: 0 // 0 = DSK1
 	}),
+	atem_dsk_2: literal<TSR.MappingAtem & BlueprintMapping>({
+		device: TSR.DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingAtemType.DownStreamKeyer,
+		index: 1 // 1 = DSK2
+	}),
+	atem_dsk_3: literal<TSR.MappingAtem & BlueprintMapping>({
+		device: TSR.DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingAtemType.DownStreamKeyer,
+		index: 2 // 2 = DSK3
+	}),
+	atem_dsk_4: literal<TSR.MappingAtem & BlueprintMapping>({
+		device: TSR.DeviceType.ATEM,
+		deviceId: 'atem0',
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingAtemType.DownStreamKeyer,
+		index: 3 // 3 = DSK4
+	}),
 	atem_aux_clean: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',

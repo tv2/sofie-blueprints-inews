@@ -31,5 +31,18 @@ export enum SharedSourceLayers {
 	SelectedVoiceOver = 'studio0_selected_voiceover',
 
 	// Other / sec / manus
-	PgmScript = 'studio0_script'
+	PgmScript = 'studio0_script',
+
+	// DSK toggle
+	PgmDSK1 = 'studio0_dsk_cmd',
+	PgmDSK2 = 'studio0_dsk_2_cmd',
+	PgmDSK3 = 'studio0_dsk_3_cmd',
+	PgmDSK4 = 'studio0_dsk_4_cmd'
+}
+
+export const pgmDSKLayers: { [num: number]: string } = {
+	1: SharedSourceLayers.PgmDSK1,
+	2: SharedSourceLayers.PgmDSK2,
+	3: SharedSourceLayers.PgmDSK3,
+	4: SharedSourceLayers.PgmDSK4
 }
