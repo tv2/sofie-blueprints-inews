@@ -21,9 +21,9 @@ export enum AFVDSourceLayer {
 	PgmDesign = 'studio0_design',
 	PgmAdlibVizCmd = 'studio0_adlib_viz_cmd', // shortcuts
 	PgmDSK1 = 'studio0_dsk_cmd', // shortcuts
-	PgmDSK2 = 'studio0_dsk2_cmd', // shortcuts
-	PgmDSK3 = 'studio0_dsk3_cmd', // shortcuts
-	PgmDSK4 = 'studio0_dsk4_cmd', // shortcuts
+	PgmDSK2 = 'studio0_dsk_2_cmd', // shortcuts
+	PgmDSK3 = 'studio0_dsk_3_cmd', // shortcuts
+	PgmDSK4 = 'studio0_dsk_4_cmd', // shortcuts
 	PgmSisyfosAdlibs = 'studio0_sisyfos_adlibs', // shortcuts
 	PgmJingle = 'studio0_jingle',
 	PgmScript = 'studio0_script',
