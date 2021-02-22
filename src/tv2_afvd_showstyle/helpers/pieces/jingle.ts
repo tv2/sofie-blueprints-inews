@@ -67,7 +67,7 @@ export function EvaluateJingle(
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: 'jingle',
 				lifespan: PieceLifespan.WithinPart,
-				content: createJingleContentAFVD(config, file, jingle.LoadFirstFrame),
+				content: createJingleContentAFVD(config, file, jingle.StartAlpha, jingle.LoadFirstFrame),
 				toBeQueued: true,
 				adlibAutoNext: props.autoNext,
 				adlibAutoNextOverlap: props.autoNextOverlap,
@@ -87,16 +87,22 @@ export function EvaluateJingle(
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'jingle',
 				sourceLayerId: SourceLayer.PgmJingle,
-				content: createJingleContentAFVD(config, file, jingle.LoadFirstFrame)
+				content: createJingleContentAFVD(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
 			})
 		)
 	}
 }
 
-export function createJingleContentAFVD(config: BlueprintConfig, file: string, loadFirstFrame: boolean) {
+export function createJingleContentAFVD(
+	config: BlueprintConfig,
+	file: string,
+	alphaAtStart: number,
+	loadFirstFrame: boolean
+) {
 	const content = CreateJingleContentBase(
 		config,
 		file,
+		alphaAtStart,
 		loadFirstFrame,
 		{
 			Caspar: {
@@ -108,8 +114,7 @@ export function createJingleContentAFVD(config: BlueprintConfig, file: string, l
 			},
 			Sisyfos: {
 				PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
-			},
-			basePath: config.studio.JingleBasePath
+			}
 		},
 		false
 	)

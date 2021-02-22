@@ -75,6 +75,7 @@ export function CreatePartIntro(
 	EvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

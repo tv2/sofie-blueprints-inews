@@ -20,6 +20,7 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionRecallLastLive,
 	ActionSelectDVELayout,
 	GetTagForKam,
 	GetTagForLive,
@@ -42,7 +43,7 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
-import { tmpLayerToSlot } from './helpers/html_graphics'
+import { layerToHTMLGraphicSlot } from './helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -429,6 +430,22 @@ function getGlobalAdlibActionsOfftube(
 			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
 		})
 
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.RECALL_LAST_LIVE,
+			userData: literal<ActionRecallLastLive>({
+				type: AdlibActionType.RECALL_LAST_LIVE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 1,
+				label: 'Last Live',
+				sourceLayerId: OfftubeSourceLayer.PgmLive,
+				outputLayerId: 'pgm'
+			}
+		})
+	)
+
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x cameras to create live-adlibs from
@@ -501,7 +518,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 						JSON.stringify({
 							display: 'program',
 							slots: {
-								[tmpLayerToSlot[layer]]: {
+								[layerToHTMLGraphicSlot[layer]]: {
 									payload: {},
 									display: 'hidden'
 								}
@@ -537,7 +554,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 								GraphicLLayer.GraphicLLayerOverlayTopt
 							].map(layer => {
 								return {
-									[tmpLayerToSlot[layer]]: {
+									[layerToHTMLGraphicSlot[layer]]: {
 										payload: {},
 										display: 'hidden'
 									}

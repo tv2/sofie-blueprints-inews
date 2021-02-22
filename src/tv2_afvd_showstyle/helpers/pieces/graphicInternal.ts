@@ -8,6 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
+	AbstractLLayer,
 	CueDefinitionGraphic,
 	GetDefaultOut,
 	GetFullGraphicTemplateNameFromCue,
@@ -142,7 +143,20 @@ export function EvaluateCueGraphicInternal(
 					enable: { ...CreateTimingGrafik(config, parsedCue, true) }, // Allow default out for visual representation
 					sourceLayerId: SourceLayer.PgmGraphicsIdent,
 					lifespan: PieceLifespan.WithinPart,
-					content: undefined
+					content: {
+						timelineObjects: [
+							literal<TSR.TimelineObjAbstractAny>({
+								id: '',
+								enable: {
+									while: '1'
+								},
+								layer: AbstractLLayer.IdentMarker,
+								content: {
+									deviceType: TSR.DeviceType.ABSTRACT
+								}
+							})
+						]
+					}
 				})
 			)
 		}

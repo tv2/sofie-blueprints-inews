@@ -30,9 +30,20 @@ export function CreatePartGrafik(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	EvaluateCues(context, config, pieces, adLibPieces, actions, mediaSubscriptions, partDefinition.cues, partDefinition, {
-		isGrafikPart: true
-	})
+	EvaluateCues(
+		context,
+		config,
+		part,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{
+			isGrafikPart: true
+		}
+	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
 	part.prerollDuration = config.studio.PilotPrerollDuration

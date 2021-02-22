@@ -36,6 +36,7 @@ export function OfftubeCreatePartGrafik(
 	OfftubeEvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

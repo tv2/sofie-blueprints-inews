@@ -33,6 +33,7 @@ export function CreatePartTeknik(
 	EvaluateCues(
 		context,
 		config,
+		part,
 		pieces,
 		adLibPieces,
 		actions,

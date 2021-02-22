@@ -13,7 +13,7 @@ export interface ActionSelectServerClip extends ActionBase {
 	partDefinition: PartDefinition
 	duration: number
 	vo: boolean
-	adLib: boolean
+	adLibPix: boolean
 }
 
 export interface ActionSelectFullGrafik extends ActionBase {
@@ -115,6 +115,10 @@ export interface ActionTakeWithTransition extends ActionBase {
 	takeNow: boolean
 }
 
+export interface ActionRecallLastLive extends ActionBase {
+	type: AdlibActionType.RECALL_LAST_LIVE
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -129,3 +133,4 @@ export type TV2AdlibAction =
 	| ActionCommentatorSelectJingle
 	| ActionClearGraphics
 	| ActionTakeWithTransition
+	| ActionRecallLastLive

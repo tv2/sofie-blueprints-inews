@@ -5,15 +5,7 @@
 
 import { GraphicLLayer } from 'tv2-common'
 
-interface HTMLGraphic {
-	[index: string]:
-		| {
-				slot: string
-		  }
-		| undefined
-}
-
-export const tmpLayerToSlot: { [slot: string]: string } = {
+export const layerToHTMLGraphicSlot: { [slot: string]: string } = {
 	[GraphicLLayer.GraphicLLayerOverlay]: '',
 	[GraphicLLayer.GraphicLLayerOverlayHeadline]: '450_lowerThird',
 	[GraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
@@ -22,63 +14,6 @@ export const tmpLayerToSlot: { [slot: string]: string } = {
 	[GraphicLLayer.GraphicLLayerOverlayTopt]: '660_topt',
 	[GraphicLLayer.GraphicLLayerPilot]: '250_full',
 	[GraphicLLayer.GraphicLLayerPilotOverlay]: '250_full'
-}
-
-export const graphicsTable: HTMLGraphic = {
-	arkiv: {
-		slot: '650_ident'
-	},
-	ident: {
-		slot: '650_ident'
-	},
-	direkte: {
-		slot: '650_ident'
-	},
-	ident_nyhederne: {
-		slot: '650_ident'
-	},
-	ident_news: {
-		slot: '650_ident'
-	},
-	ident_tv2sport: {
-		slot: '650_ident'
-	},
-	billederfra_txt: {
-		slot: '650_ident'
-	},
-	tlfdirekte: {
-		slot: '650_ident'
-	},
-	billederfra_logo: {
-		slot: '650_ident'
-	},
-	topt: {
-		slot: '660_topt'
-	},
-	tlftopt: {
-		slot: '660_topt'
-	},
-	tlftoptlive: {
-		slot: '660_topt'
-	},
-	bund: {
-		slot: '450_lowerThird'
-	},
-	vo: {
-		slot: '450_lowerThird'
-	},
-	trompet: {
-		slot: '450_lowerThird'
-	},
-	komm: {
-		slot: '450_lowerThird'
-	},
-	kommentator: {
-		slot: '450_lowerThird'
-	},
-	full: {
-		slot: '250_full'
-	}
 }
 
 export interface Slots {

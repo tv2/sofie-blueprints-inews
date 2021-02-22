@@ -1,5 +1,6 @@
 import { ConfigItemValue } from '@sofie-automation/blueprints-integration'
-import { parseMapStr } from 'tv2-common'
+import { literal, parseMapStr } from 'tv2-common'
+import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -69,7 +70,8 @@ export const defaultStudioConfig: ConfigMap = {
 		Default: 2001,
 		Continuity: 2002
 	},
-	NetworkBasePath: '/media',
+	NetworkBasePathClip: '/media',
+	NetworkBasePathJingle: '',
 	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
 	MediaFlowId: 'testflow0',
@@ -96,9 +98,7 @@ export const defaultStudioConfig: ConfigMap = {
 	PreventOverlayWithFull: true,
 	PilotOutTransitionDuration: 280,
 	ATEMDelay: 1,
-	MaximumKamDisplayDuration: 10000,
-	JingleBasePath: 'jingler',
-	ClipBasePath: 'clips'
+	MaximumKamDisplayDuration: 10000
 }
 
 export const defaultShowStyleConfig: ConfigMap = {
@@ -143,7 +143,41 @@ export const defaultShowStyleConfig: ConfigMap = {
 	WipesConfig: [],
 	BreakerConfig: DefaultBreakerConfig(),
 	MakeAdlibsForFulls: true,
-	GFXTemplates: DefaultGrafikConfig(),
+	GFXTemplates: [
+		...DefaultGrafikConfig(),
+		...literal<ShowStyleConfig['GFXTemplates']>([
+			{
+				INewsCode: 'GRAFIK',
+				INewsName: 'wall',
+				VizTemplate: 'VCP',
+				VizDestination: 'WALL1',
+				OutType: 'O',
+				IsDesign: false,
+				SourceLayer: 'studio0_wall_graphics',
+				LayerMapping: 'graphic_wall'
+			},
+			{
+				INewsCode: 'GRAFIK',
+				INewsName: 'OVL',
+				VizTemplate: 'VCP',
+				VizDestination: 'OVL1',
+				OutType: 'O',
+				IsDesign: false,
+				SourceLayer: 'studio0_overlay',
+				LayerMapping: 'graphic_overlay'
+			},
+			{
+				INewsCode: '#kg',
+				INewsName: 'MERGE',
+				VizTemplate: 'VCP',
+				VizDestination: 'OVL1',
+				OutType: 'O',
+				IsDesign: false,
+				SourceLayer: 'studio0_overlay',
+				LayerMapping: 'graphic_overlay'
+			}
+		])
+	],
 	LYDConfig: [
 		{
 			_id: '',

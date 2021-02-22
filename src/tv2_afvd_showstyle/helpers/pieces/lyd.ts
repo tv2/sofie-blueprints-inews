@@ -30,7 +30,8 @@ export function EvaluateLYD(
 	const stop = !!parsedCue.variant.match(/^[^_]*STOP[^_]*$/i) // TODO: STOP 1 / STOP 2 etc.
 
 	if (!conf && !stop) {
-		context.warning(`LYD ${parsedCue.variant} not configured, using iNews name as file name`)
+		context.warning(`LYD ${parsedCue.variant} not configured`)
+		return
 	}
 
 	const file = conf ? conf.FileName.toString() : parsedCue.variant

@@ -7,6 +7,7 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import {
 	literal,
+	MakeConfigWithMediaFlow,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos
@@ -591,47 +592,8 @@ export const manifestAFVDDownstreamKeyers: ConfigManifestEntryTable = {
 }
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
-	{
-		id: 'MediaFlowId',
-		name: 'Media Flow Id',
-		description: '',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'flow0'
-	},
-	{
-		id: 'ClipFileExtension',
-		name: 'Clip files extension',
-		description: 'Default file extension to clips to fetch from Omneon and play at CasparCG',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: '.mxf'
-	},
-	{
-		id: 'NetworkBasePath',
-		name: 'Network base path',
-		description:
-			'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: ''
-	},
-	{
-		id: 'JingleBasePath',
-		name: 'Jingle base path',
-		description: 'The base path for jingle clips',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: 'jingler'
-	},
-	{
-		id: 'ClipBasePath',
-		name: 'Clip base path',
-		description: 'The base path for server clips',
-		type: ConfigManifestEntryType.STRING,
-		required: true,
-		defaultVal: 'clips'
-	},
+	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf'),
+	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov'),
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesDelayedPlayback,

@@ -17,6 +17,7 @@ import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
+	ActionRecallLastLive,
 	ActionSelectDVELayout,
 	GetEksternMetaData,
 	GetLayersForEkstern,
@@ -790,6 +791,22 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
 		})
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.RECALL_LAST_LIVE,
+			userData: literal<ActionRecallLastLive>({
+				type: AdlibActionType.RECALL_LAST_LIVE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 1,
+				label: 'Last Live',
+				sourceLayerId: SourceLayer.PgmLive,
+				outputLayerId: 'pgm'
+			}
+		})
+	)
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE)

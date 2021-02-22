@@ -37,9 +37,20 @@ export function CreatePartUnknown(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	EvaluateCues(context, config, pieces, adLibPieces, actions, mediaSubscriptions, partDefinition.cues, partDefinition, {
-		adlib: asAdlibs
-	})
+	EvaluateCues(
+		context,
+		config,
+		part,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		partDefinition.cues,
+		partDefinition,
+		{
+			adlib: asAdlibs
+		}
+	)
 	if (!asAdlibs) {
 		AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	}

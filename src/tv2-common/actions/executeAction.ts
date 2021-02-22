@@ -70,7 +70,12 @@ import {
 	GetTagForTransition
 } from '../pieces'
 import { assertUnreachable } from '../util'
-import { ActionCommentatorSelectJingle, ActionSelectJingle, ActionTakeWithTransition } from './actionTypes'
+import {
+	ActionCommentatorSelectJingle,
+	ActionRecallLastLive,
+	ActionSelectJingle,
+	ActionTakeWithTransition
+} from './actionTypes'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -86,6 +91,7 @@ export interface ActionExecutionSettings<
 	EvaluateCues: (
 		context: SegmentContext,
 		config: ShowStyleConfig,
+		part: IBlueprintPart,
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -105,6 +111,8 @@ export interface ActionExecutionSettings<
 		Effekt: string
 		Continuity: string
 		EVS?: string
+		/** Ident visual representation layer *not* the infinite layer */
+		Ident: string
 	}
 	OutputLayer: {
 		PGM: string
@@ -156,7 +164,12 @@ export interface ActionExecutionSettings<
 		actionId: string,
 		userData: ActionClearGraphics
 	) => void
-	createJingleContent?: (config: ShowStyleConfig, file: string, loadFirstFrame: boolean) => VTContent
+	createJingleContent?: (
+		config: ShowStyleConfig,
+		file: string,
+		alphaAtStart: number,
+		loadFirstFrame: boolean
+	) => VTContent
 }
 
 export function executeAction<
@@ -218,6 +231,9 @@ export function executeAction<
 			break
 		case AdlibActionType.TAKE_WITH_TRANSITION:
 			executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
+			break
+		case AdlibActionType.RECALL_LAST_LIVE:
+			executeActionRecallLastLive(context, settings, actionId, userData as ActionRecallLastLive)
 			break
 		default:
 			assertUnreachable(actionId)
@@ -359,7 +375,7 @@ function executeActionSelectServerClip<
 			totalTime: 0,
 			tapeTime: userData.duration / 1000,
 			session: sessionToContinue ?? externalId,
-			adLib: userData.adLib
+			adLibPix: userData.adLibPix
 		},
 		{
 			SourceLayer: {
@@ -382,9 +398,6 @@ function executeActionSelectServerClip<
 			ATEM: {
 				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
 			}
-		},
-		{
-			isOfftube: settings.LLayer.Atem.cutOnclean
 		}
 	)
 
@@ -403,6 +416,7 @@ function executeActionSelectServerClip<
 	settings.EvaluateCues(
 		(context as unknown) as SegmentContext,
 		config,
+		basePart.part.part,
 		grafikPieces,
 		[],
 		[],
@@ -890,7 +904,7 @@ function executeActionSelectJingle<
 
 	const props = GetJinglePartPropertiesFromTableValue(config, jingle)
 
-	const pieceContent = settings.createJingleContent(config, file, jingle.LoadFirstFrame)
+	const pieceContent = settings.createJingleContent(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
 
 	const piece = literal<IBlueprintPiece>({
 		externalId: `${externalId}-JINGLE`,
@@ -1644,4 +1658,50 @@ function executeActionCommentatorSelectJingle<
 	}
 
 	executeActionSelectJingle(context, settings, AdlibActionType.SELECT_JINGLE, data)
+}
+
+function executeActionRecallLastLive<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	_userData: ActionRecallLastLive
+) {
+	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live, { originalOnly: true })
+	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident, { originalOnly: true })
+
+	if (!lastLive) {
+		return
+	}
+
+	const externalId = generateExternalId(context, actionId, [lastLive.piece.name])
+
+	const part = literal<IBlueprintPart>({
+		externalId,
+		title: lastLive.piece.name
+	})
+
+	const pieces: IBlueprintPiece[] = []
+	pieces.push({
+		...lastLive.piece,
+		externalId,
+		enable: {
+			start: 0
+		},
+		lifespan: PieceLifespan.WithinPart
+	})
+
+	// externalId should be replaced with something more concrete like partInstanceId
+	if (lastIdent && lastIdent.piece.externalId === lastLive.piece.externalId) {
+		pieces.push({
+			...lastIdent.piece,
+			externalId,
+			enable: { ...lastIdent.piece.enable, start: 0 },
+			lifespan: PieceLifespan.WithinPart
+		})
+	}
+
+	context.queuePart(part, pieces)
 }

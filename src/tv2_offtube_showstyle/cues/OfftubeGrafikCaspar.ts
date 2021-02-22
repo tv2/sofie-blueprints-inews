@@ -8,6 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
+	AbstractLLayer,
 	ActionSelectFullGrafik,
 	CalculateTime,
 	CreateTimingEnable,
@@ -31,11 +32,11 @@ import {
 	TimeFromFrames,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, Enablers, GraphicEngine, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, ControlClasses, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
-import { graphicsTable, Slots } from '../helpers/html_graphics'
+import { layerToHTMLGraphicSlot, Slots } from '../helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
@@ -84,12 +85,18 @@ export function OfftubeEvaluateGrafikCaspar(
 	} else if (GraphicIsInternal(parsedCue)) {
 		// TODO: Wall
 
+		const sourceLayerId = GetSourceLayerForGrafik(
+			config,
+			GetFullGraphicTemplateNameFromCue(config, parsedCue),
+			isIdentGrafik
+		)
+
 		if (parsedCue.adlib) {
 			const adLibPiece = literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partDefinition.externalId,
 				name: `${GraphicDisplayName(config, parsedCue)}`,
-				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+				sourceLayerId,
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				lifespan: PieceLifespan.WithinPart,
 				expectedDuration: 5000,
@@ -105,7 +112,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					_rank: rank || 0,
 					externalId: partDefinition.externalId,
 					name: `${GraphicDisplayName(config, parsedCue)}`,
-					sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+					sourceLayerId,
 					outputLayerId: OfftubeOutputLayers.OVERLAY,
 					lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
@@ -128,7 +135,7 @@ export function OfftubeEvaluateGrafikCaspar(
 								...CreateTimingGrafik(config, parsedCue)
 							}
 					  }),
-				sourceLayerId: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+				sourceLayerId,
 				outputLayerId: OfftubeOutputLayers.OVERLAY,
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
 				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
@@ -139,6 +146,37 @@ export function OfftubeEvaluateGrafikCaspar(
 				}
 			})
 			pieces.push(piece)
+
+			if (
+				sourceLayerId === OfftubeSourceLayer.PgmGraphicsIdentPersistent &&
+				(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
+				isIdentGrafik
+			) {
+				// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
+				// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
+				pieces.push(
+					literal<IBlueprintPiece>({
+						...piece,
+						enable: { ...CreateTimingGrafik(config, parsedCue, true) }, // Allow default out for visual representation
+						sourceLayerId: OfftubeSourceLayer.PgmGraphicsIdent,
+						lifespan: PieceLifespan.WithinPart,
+						content: {
+							timelineObjects: [
+								literal<TSR.TimelineObjAbstractAny>({
+									id: '',
+									enable: {
+										while: '1'
+									},
+									layer: AbstractLLayer.IdentMarker,
+									content: {
+										deviceType: TSR.DeviceType.ABSTRACT
+									}
+								})
+							]
+						}
+					})
+				)
+			}
 		}
 	}
 }
@@ -148,15 +186,12 @@ export function GetCasparOverlayTimeline(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
-	partDefinition: PartDefinition,
-	commentator?: boolean
+	partDefinition: PartDefinition
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: commentator
-				? GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition)
-				: { while: `!.${Enablers.OFFTUBE_ENABLE_FULL}` },
+			enable: GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition),
 			priority: 1,
 			layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			content: {
@@ -167,7 +202,11 @@ export function GetCasparOverlayTimeline(
 				data: `<templateData>${encodeURI(
 					JSON.stringify({
 						display: 'program',
-						slots: createContentForGraphicTemplate(GetFullGraphicTemplateNameFromCue(config, parsedCue), parsedCue),
+						slots: createContentForGraphicTemplate(
+							config,
+							GetFullGraphicTemplateNameFromCue(config, parsedCue),
+							parsedCue
+						),
 						partialUpdate: true
 					})
 				)}</templateData>`,
@@ -178,11 +217,19 @@ export function GetCasparOverlayTimeline(
 }
 
 export function createContentForGraphicTemplate(
-	graphicCue: string,
+	config: OfftubeShowstyleBlueprintConfig,
+	graphicTemplate: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 ): Partial<Slots> {
-	graphicCue = graphicCue.toLowerCase().trim()
-	const slot = graphicsTable[graphicCue]?.slot
+	const conf = config.showStyle.GFXTemplates.find(g => g.VizTemplate.toLowerCase() === graphicTemplate.toLowerCase())
+
+	if (!conf) {
+		return {}
+	}
+
+	const layer = conf.LayerMapping
+
+	const slot = layerToHTMLGraphicSlot[layer]
 
 	if (!slot) {
 		return {}
@@ -192,7 +239,7 @@ export function createContentForGraphicTemplate(
 		[slot]: {
 			display: 'program',
 			payload: {
-				type: graphicCue,
+				type: graphicTemplate,
 				...parsedCue.graphic.textFields
 			}
 		}
@@ -251,9 +298,9 @@ export function CreateFullContent(
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 ): GraphicsContent {
 	return {
-		fileName: parsedCue.graphic.name.toString(),
-		path: `${config.studio.GraphicBasePath}\\${parsedCue.graphic.name.toString()}.png`, // full path on the source network storage, TODO: File extension
-		mediaFlowIds: [config.studio.GraphicFlowId],
+		fileName: parsedCue.graphic.name,
+		path: `${config.studio.NetworkBasePathGraphic}\\${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`, // full path on the source network storage, TODO: File extension
+		mediaFlowIds: [config.studio.GraphicMediaFlowId],
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate>({
 				id: '',
@@ -274,7 +321,7 @@ export function CreateFullContent(
 								'250_full': {
 									payload: {
 										type: 'still',
-										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.name.toString()}.png`
+										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
 									}
 								}
 							}
@@ -393,14 +440,19 @@ function GetEnableForGrafikOfftube(
 			while: '1'
 		}
 	}
+
+	if (
+		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
+			GetInfiniteModeForGraphic(engine, config, cue, isIdentGrafik) === PieceLifespan.OutOnSegmentEnd) &&
+		partDefinition
+	) {
+		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
+	}
+
 	if (isIdentGrafik) {
 		return {
 			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
 		}
-	}
-
-	if (cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B' && partDefinition) {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
 	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
@@ -414,7 +466,7 @@ function GetEnableForGrafikOfftube(
 	}
 }
 
-function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string) {
+function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string, isStickyIdent?: boolean) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
@@ -429,6 +481,10 @@ function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: 
 		case OfftubeSourceLayer.PgmGraphicsHeadline:
 			return OfftubeSourceLayer.PgmGraphicsHeadline
 		case OfftubeSourceLayer.PgmGraphicsIdent:
+			if (isStickyIdent) {
+				return OfftubeSourceLayer.PgmGraphicsIdentPersistent
+			}
+
 			return OfftubeSourceLayer.PgmGraphicsIdent
 		case OfftubeSourceLayer.PgmGraphicsLower:
 			return OfftubeSourceLayer.PgmGraphicsLower
@@ -477,7 +533,8 @@ export function GetTimelineLayerForGrafik(config: OfftubeShowstyleBlueprintConfi
 
 export function GetGrafikDuration(
 	config: OfftubeShowstyleBlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
+	defaultTime: boolean
 ): number | undefined {
 	if (config.showStyle.GFXTemplates) {
 		if (GraphicIsInternal(cue)) {
@@ -503,19 +560,19 @@ export function GetGrafikDuration(
 		}
 	}
 
-	return GetDefaultOut(config)
+	return defaultTime ? GetDefaultOut(config) : undefined
 }
 
-// TODO: This is copied from gallery D
 export function CreateTimingGrafik(
 	config: OfftubeShowstyleBlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
+	defaultTime: boolean = true
 ): { start: number; duration?: number } {
 	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
-	const duration = GetGrafikDuration(config, cue)
+	const duration = GetGrafikDuration(config, cue, defaultTime)
 	const end = cue.end
 		? cue.end.infiniteMode
 			? undefined

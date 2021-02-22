@@ -5,7 +5,9 @@ import { StudioConfig } from '../helpers/config'
 const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
-	MediaFlowId: '',
+	ClipMediaFlowId: '',
+	JingleMediaFlowId: '',
+	JingleFileExtension: '',
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesSkype: [],
@@ -49,9 +51,8 @@ const blankStudioConfig: StudioConfig = {
 	PilotOutTransitionDuration: 0,
 	PreventOverlayWithFull: true,
 	ClipFileExtension: 'mxf',
-	NetworkBasePath: '/',
-	JingleBasePath: 'jingler',
-	ClipBasePath: 'clips',
+	NetworkBasePathClip: '/',
+	NetworkBasePathJingle: '/',
 	ATEMDelay: 1,
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,

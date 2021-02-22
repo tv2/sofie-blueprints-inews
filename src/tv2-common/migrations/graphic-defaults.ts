@@ -1,6 +1,7 @@
-export const DEFAULT_GRAPHICS = [
+import { TV2ShowstyleBlueprintConfigBase } from '../blueprintConfig'
+
+export const DEFAULT_GRAPHICS: TV2ShowstyleBlueprintConfigBase['GFXTemplates'] = [
 	{
-		_id: 'JWq2tc7JPqrTaNgge',
 		INewsCode: '#kg',
 		INewsName: 'arkiv',
 		VizTemplate: 'arkiv',
@@ -11,7 +12,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'BWxCppKQz3q6b67Z4',
 		INewsCode: '#kg',
 		INewsName: 'ident_blank',
 		VizTemplate: 'ident',
@@ -22,7 +22,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: '5723tFYNafb9MzvzB',
 		INewsCode: '#kg',
 		INewsName: 'direkte',
 		VizTemplate: 'direkte',
@@ -33,7 +32,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'WxM8ES6kH22csjZ3W',
 		INewsCode: '#kg',
 		INewsName: 'billederfra_logo',
 		VizTemplate: 'billederfra_logo',
@@ -44,7 +42,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: '7NXe6tKiotLueo7bF',
 		INewsCode: '#kg',
 		INewsName: 'ident_nyhederne',
 		VizTemplate: 'ident_nyhederne',
@@ -55,7 +52,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'LAK5AxmHHX8ZqtASs',
 		INewsCode: '#kg',
 		INewsName: 'ident_news',
 		VizTemplate: 'ident_news',
@@ -66,7 +62,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'qJSFtEybfeDdC6SW6',
 		INewsCode: '#kg',
 		INewsName: 'ident_tv2sport',
 		VizTemplate: 'ident_tv2sport',
@@ -77,7 +72,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'FEDo9ywYGsr59ACFR',
 		INewsCode: '#kg',
 		INewsName: 'tlfdirekte',
 		VizTemplate: 'tlfdirekte',
@@ -88,7 +82,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'L9ippawJeBAQyctnZ',
 		INewsCode: '#kg',
 		INewsName: 'topt',
 		VizTemplate: 'topt',
@@ -99,7 +92,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_topt'
 	},
 	{
-		_id: 'dumx2LeJ3jpZ9adCq',
 		INewsCode: '#kg',
 		INewsName: 'tlftopt',
 		VizTemplate: 'tlftopt',
@@ -110,7 +102,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_topt'
 	},
 	{
-		_id: 'oSGTyqkvHwLHuvue4',
 		INewsCode: '#kg',
 		INewsName: 'tlftoptlive',
 		VizTemplate: 'tlftoptlive',
@@ -121,7 +112,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_topt'
 	},
 	{
-		_id: 'GQgCZRu7CScrgQqwM',
 		INewsCode: '#kg',
 		INewsName: 'bund',
 		VizTemplate: 'bund',
@@ -132,7 +122,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_lower'
 	},
 	{
-		_id: '2wsQGsK7KtzyqtMAm',
 		INewsCode: '#kg',
 		INewsName: 'vaerter',
 		VizTemplate: 'vaerter',
@@ -143,7 +132,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_lower'
 	},
 	{
-		_id: 'dyHaroFxb6XS9g2mY',
 		INewsCode: 'DIGI=',
 		INewsName: 'vo',
 		VizTemplate: 'vo',
@@ -154,7 +142,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_headline'
 	},
 	{
-		_id: 'dFhqxiDNRYtYMsKu8',
 		INewsCode: 'DIGI=',
 		INewsName: 'trompet',
 		VizTemplate: 'trompet',
@@ -165,7 +152,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_headline'
 	},
 	{
-		_id: 'Q2GPQtzF5f5ncrwus',
 		INewsCode: 'KG=',
 		INewsName: 'bundright',
 		VizTemplate: 'bund_right',
@@ -176,7 +162,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_tema'
 	},
 	{
-		_id: 'jBCynErkKJKbS8zjq',
 		INewsCode: 'KG=',
 		INewsName: 'TEMA_default',
 		VizTemplate: 'TEMA_Default',
@@ -187,7 +172,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_tema'
 	},
 	{
-		_id: 'LqHS3JX76bK9yLFST',
 		INewsCode: 'KG=',
 		INewsName: 'TEMA_UPDATE',
 		VizTemplate: 'TEMA_UPDATE',
@@ -198,7 +182,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_tema'
 	},
 	{
-		_id: 'EQB6r9FvuRDChsW3x',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_AFTERAAR_CYKEL',
 		VizTemplate: 'DESIGN_AFTERAAR_CYKEL',
@@ -209,7 +192,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'p7CrFa48C67KfHkCW',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_HANDBOLD',
 		VizTemplate: 'DESIGN_HANDBOLD',
@@ -220,7 +202,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'QWnBaKGm8p2KRzpiC',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_ISHOCKEY',
 		VizTemplate: 'DESIGN_ISHOCKEY',
@@ -231,7 +212,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'KL87EN8DH7jXwm9wd',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_KONTRA',
 		VizTemplate: 'DESIGN_KONTRA',
@@ -242,7 +222,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: '5ujwWuZYZbBBnoJny',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_NBA',
 		VizTemplate: 'DESIGN_NBA',
@@ -253,7 +232,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'qNQ4pBpNinDRm9feH',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_SPORTS_LAB',
 		VizTemplate: 'DESIGN_SPORTS_LAB',
@@ -264,7 +242,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'vGtywWoCHXsF5wBw9',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_WTA',
 		VizTemplate: 'DESIGN_WTA',
@@ -275,7 +252,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'MCL4jaP5NTesKJsAL',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_VUELTA',
 		VizTemplate: 'DESIGN_VUELTA',
@@ -286,7 +262,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'CF6hgcbRcxXuNdQnZ',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_VM',
 		VizTemplate: 'DESIGN_VM',
@@ -297,7 +272,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'm9ymx2Z9wBodDaeyg',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_WIMBLEDON',
 		VizTemplate: 'DESIGN_WIMBLEDON',
@@ -308,7 +282,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'ARceY2KjwMKJ5RMxj',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_TDF',
 		VizTemplate: 'DESIGN_TDF',
@@ -319,7 +292,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'P4qhwcDcKLLuZZpgM',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_ESPORT',
 		VizTemplate: 'DESIGN_ESPORT',
@@ -330,7 +302,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'XjTuv9G6hi9LyPyw6',
 		INewsCode: '#kg',
 		INewsName: 'altud',
 		VizTemplate: 'altud',
@@ -341,7 +312,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: ''
 	},
 	{
-		_id: 'PPXH2iTLb5HdRDG9Z',
 		INewsCode: '#kg',
 		INewsName: 'ovl-all-out',
 		VizTemplate: 'altud',
@@ -352,7 +322,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: ''
 	},
 	{
-		_id: 'QJB3rgocpkzZE2xwT',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_FODBOLD_20',
 		VizTemplate: 'DESIGN_FODBOLD_20',
@@ -363,7 +332,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'Jba6tmeLicDeBm3mA',
 		INewsCode: '#kg',
 		INewsName: 'temaud',
 		VizTemplate: 'OUT_TEMA_H',
@@ -374,7 +342,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: ''
 	},
 	{
-		_id: 'hWHoqk52ju5AJmuty',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_ATP',
 		VizTemplate: 'DESIGN_ATP',
@@ -385,7 +352,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'FjwSKoh2BazojAgn2',
 		INewsCode: 'KG',
 		INewsName: 'ovl-all-out',
 		VizTemplate: 'altud',
@@ -396,7 +362,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: ''
 	},
 	{
-		_id: '5sK4j9pZ27QCp8wFi',
 		INewsCode: '#kg',
 		INewsName: 'ident_play',
 		VizTemplate: 'ident_play',
@@ -407,7 +372,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_overlay_ident'
 	},
 	{
-		_id: 'WR2PtzcMTdXp3Mwwi',
 		INewsCode: 'SS',
 		INewsName: 'sc-stills',
 		VizTemplate: 'VCP',
@@ -418,7 +382,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_wall'
 	},
 	{
-		_id: 'PvExvx8NqY4jWHHLQ',
 		INewsCode: 'SS',
 		INewsName: 'sc-loop',
 		VizTemplate: 'SC_LOOP_ON',
@@ -429,7 +392,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_wall'
 	},
 	{
-		_id: '7mb36fjHho2PrXcmh',
 		INewsCode: 'SS',
 		INewsName: 'sc_loop_clean',
 		VizTemplate: 'SN_S4_LOOP_CLEAN',
@@ -440,7 +402,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_wall'
 	},
 	{
-		_id: '7shXt3LpqeaZafzT7',
 		INewsCode: 'GRAFIK',
 		INewsName: 'FULL',
 		VizTemplate: 'VCP',
@@ -451,7 +412,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: ''
 	},
 	{
-		_id: 'Nmt46Xij6Gj8nDWL5',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_X_GAMES',
 		VizTemplate: 'DESIGN_X_GAMES',
@@ -462,7 +422,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'zZcwo8Z8o2rd4Avxy',
 		INewsCode: '#kg',
 		INewsName: 'DESIGN_SC',
 		VizTemplate: 'DESIGN_SC',
@@ -473,7 +432,6 @@ export const DEFAULT_GRAPHICS = [
 		LayerMapping: 'graphic_design'
 	},
 	{
-		_id: 'sxXgzAmyEnikFcnQ8',
 		INewsCode: '#kg',
 		INewsName: 'ident_BILLEDER_FRA',
 		VizTemplate: 'billederfra_txt',

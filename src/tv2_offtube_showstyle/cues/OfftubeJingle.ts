@@ -69,7 +69,10 @@ export function OfftubeEvaluateJingle(
 				label: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				outputLayerId: OfftubeOutputLayers.JINGLE,
-				content: { ...createJingleContentOfftube(config, file, jingle.LoadFirstFrame), timelineObjects: [] },
+				content: {
+					...createJingleContentOfftube(config, file, jingle.StartAlpha, jingle.LoadFirstFrame),
+					timelineObjects: []
+				},
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
 				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
 				nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
@@ -87,7 +90,7 @@ export function OfftubeEvaluateJingle(
 			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: 'jingle',
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
-			content: createJingleContentOfftube(config, file, jingle.LoadFirstFrame)
+			content: createJingleContentOfftube(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
 		})
 	)
 }
@@ -95,11 +98,13 @@ export function OfftubeEvaluateJingle(
 export function createJingleContentOfftube(
 	config: OfftubeShowstyleBlueprintConfig,
 	file: string,
+	alphaAtStart: number,
 	loadFirstFrame: boolean
 ) {
 	return CreateJingleContentBase(
 		config,
 		file,
+		alphaAtStart,
 		loadFirstFrame,
 		{
 			Caspar: {
@@ -112,8 +117,7 @@ export function createJingleContentOfftube(
 			},
 			Sisyfos: {
 				PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
-			},
-			basePath: config.studio.JingleBasePath
+			}
 		},
 		true
 	)
