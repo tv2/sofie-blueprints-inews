@@ -31,12 +31,13 @@ export function CreateJingleContentBase<
 ) {
 	return literal<VTContent>({
 		studioLabel: '',
-		fileName: `jingler/${file}`,
+		fileName: file,
 		path: `${config.studio.NetworkBasePathJingle}\\${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
 		firstWords: '',
 		lastWords: '',
 		previewFrame: alphaAtStart,
+		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
@@ -48,7 +49,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: `jingler/${file}`
+					file: file
 				}
 			}),
 
@@ -62,7 +63,7 @@ export function CreateJingleContentBase<
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.MEDIA,
-								file: `jingler/${file}`
+								file
 							}
 						})
 				  ]
