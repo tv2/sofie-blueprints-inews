@@ -52,7 +52,7 @@ export interface DVEConfig {
 		[key: number]: DVEConfigBox
 	}
 	index: number
-	properties: {
+	properties?: {
 		artFillSource: number
 		artCutSource: number
 		artOption: number
@@ -61,20 +61,20 @@ export interface DVEConfig {
 		artGain: number
 		artInvertKey: boolean
 	}
-	border: {
-		borderEnabled: boolean
-		borderBevel: number
-		borderOuterWidth: number
-		borderInnerWidth: number
-		borderOuterSoftness: number
-		borderInnerSoftness: number
-		borderBevelSoftness: number
-		borderBevelPosition: number
-		borderHue: number
-		borderSaturation: number
-		borderLuma: number
-		borderLightSourceDirection: number
-		borderLightSourceAltitude: number
+	border?: {
+		borderEnabled?: boolean
+		borderBevel?: number
+		borderOuterWidth?: number
+		borderInnerWidth?: number
+		borderOuterSoftness?: number
+		borderInnerSoftness?: number
+		borderBevelSoftness?: number
+		borderBevelPosition?: number
+		borderHue?: number
+		borderSaturation?: number
+		borderLuma?: number
+		borderLightSourceDirection?: number
+		borderLightSourceAltitude?: number
 	}
 }
 
@@ -525,13 +525,13 @@ export function MakeContentDVE2<
 							artFillSource: config.studio.AtemSource.SplitArtF,
 							artCutSource: config.studio.AtemSource.SplitArtK,
 							artOption: 1,
-							...(!config.studio.AtemSettings.artPreMultiplied
+							...(template.properties && template.properties?.artPreMultiplied === false
 								? {
-										artPreMultiplied: false,
-										borderEnabled: false,
-										artInvertKey: false,
-										artClip: config.studio.AtemSettings.artClip,
-										artGain: config.studio.AtemSettings.artGain
+										artPreMultiplied: template.properties.artPreMultiplied,
+										borderEnabled: template.border?.borderEnabled ?? false,
+										artInvertKey: template.properties.artInvertKey,
+										artClip: template.properties.artClip,
+										artGain: template.properties.artGain
 								  }
 								: { artPreMultiplied: true })
 						}

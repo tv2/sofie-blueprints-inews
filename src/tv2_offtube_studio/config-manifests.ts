@@ -383,46 +383,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 12.5
 	},
 	{
-		id: 'AtemSettings.artPreMultiplied',
-		name: 'Premultiply SSRC Art',
-		description: 'Premultiply SSRC Art',
-		type: ConfigManifestEntryType.BOOLEAN,
-		required: true,
-		defaultVal: false
-	},
-	{
-		id: 'AtemSettings.borderEnabled',
-		name: 'Border Enabled',
-		description: 'Border Enabled',
-		type: ConfigManifestEntryType.BOOLEAN,
-		required: true,
-		defaultVal: false
-	},
-	{
-		id: 'AtemSettings.artInvertKey',
-		name: 'Invert Art Key',
-		description: 'Invert Art Key',
-		type: ConfigManifestEntryType.BOOLEAN,
-		required: true,
-		defaultVal: false
-	},
-	{
-		id: 'AtemSettings.artClip',
-		name: 'Art Clip',
-		description: 'Art Clip',
-		type: ConfigManifestEntryType.NUMBER,
-		required: true,
-		defaultVal: 500
-	},
-	{
-		id: 'AtemSettings.artGain',
-		name: 'Art Gain',
-		description: 'Art Gain',
-		type: ConfigManifestEntryType.NUMBER,
-		required: true,
-		defaultVal: 125
-	},
-	{
 		id: 'AtemSource.SplitArtF',
 		name: 'ATEM Split Screen Art Fill',
 		description: 'ATEM vision mixer input for Split Screen Art Fill',

@@ -30,12 +30,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	},
 	AtemSettings: {
 		CCGClip: 0,
-		CCGGain: 0,
-		artPreMultiplied: false,
-		borderEnabled: false,
-		artInvertKey: false,
-		artClip: 0,
-		artGain: 0
+		CCGGain: 0
 	},
 	AudioBedSettings: {
 		fadeIn: 0,

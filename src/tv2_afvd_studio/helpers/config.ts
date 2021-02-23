@@ -56,13 +56,6 @@ export interface StudioConfig extends TV2StudioConfigBase {
 		CCGClip: number
 		CCGGain: number
 
-		/** SSRC Art */
-		artPreMultiplied: boolean
-		borderEnabled: boolean
-		artInvertKey: boolean
-		artClip: number
-		artGain: number
-
 		MP1Baseline: {
 			Clip: number
 			Loop: boolean

@@ -56,11 +56,6 @@ const mockStudioConfig: StudioConfig = {
 		CCGGain: 0,
 		VizClip: 0,
 		VizGain: 0,
-		artPreMultiplied: false,
-		borderEnabled: false,
-		artInvertKey: false,
-		artClip: 0,
-		artGain: 0,
 		MP1Baseline: {
 			Clip: 0,
 			Loop: false,
