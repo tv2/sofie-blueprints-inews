@@ -48,8 +48,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
-		DSK1F: 0,
-		DSK1K: 0,
+		DSK: [],
 		SplitArtF: 0,
 		SplitArtK: 0,
 		Default: 0,

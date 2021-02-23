@@ -11,3 +11,12 @@ export type TableConfigItemSourceMappingWithSisyfos = {
 export type TableConfigItemSourceMappingWithSisyfosAndKeepAudio = {
 	KeepAudioInStudio: boolean
 } & TableConfigItemSourceMappingWithSisyfos
+
+export interface TableConfigItemDSK {
+	Number: number
+	Fill: number
+	Key: number
+	Toggle: boolean
+	DefaultOn: boolean
+	FullSource: boolean
+}

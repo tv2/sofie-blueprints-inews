@@ -1,5 +1,5 @@
 import { ConfigItemValue } from '@sofie-automation/blueprints-integration'
-import { literal, parseMapStr } from 'tv2-common'
+import { DSKConfig, literal, parseMapStr } from 'tv2-common'
 import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
@@ -60,8 +60,7 @@ export const defaultStudioConfig: ConfigMap = {
 	],
 	AtemSource: {
 		MixMinusDefault: 2,
-		DSK1F: 21,
-		DSK1K: 34,
+		DSK: [],
 		ServerC: 28,
 		JingleFill: 6,
 		JingleKey: 31,
@@ -214,4 +213,8 @@ export const defaultShowStyleConfig: ConfigMap = {
 	],
 	AdLibBreakers: [{ Breaker: '1' }, { Breaker: '2' }],
 	DefaultTransition: 'CUT'
+}
+
+export const defaultDSKConfig: DSKConfig = {
+	1: { Number: 1, Key: 0, Fill: 0, Toggle: true, DefaultOn: true, FullSource: true }
 }

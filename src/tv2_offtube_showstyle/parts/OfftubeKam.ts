@@ -62,6 +62,7 @@ export function OfftubeCreatePartKam(
 				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
 				content: literal<VTContent>({
 					studioLabel: '',
+					switcherInput: config.dsk[1].Fill,
 					ignoreMediaObjectStatus: true,
 					fileName: '',
 					path: '',
@@ -79,7 +80,7 @@ export function OfftubeCreatePartKam(
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
-									input: config.studio.AtemSource.DSK1F,
+									input: config.dsk[1].Fill,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
 										: TSR.AtemTransitionStyle.CUT,

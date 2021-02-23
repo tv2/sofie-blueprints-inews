@@ -1,7 +1,16 @@
 import { MigrationStepStudio, TSR } from '@sofie-automation/blueprints-integration'
-import { AddKeepAudio, literal, MoveClipSourcePath, MoveSourcesToTable, RenameStudioConfig } from 'tv2-common'
+import {
+	AddKeepAudio,
+	literal,
+	MoveClipSourcePath,
+	MoveDSKToTable,
+	MoveSourcesToTable,
+	RenameStudioConfig,
+	TableConfigItemDSK
+} from 'tv2-common'
 import * as _ from 'underscore'
 import {
+	manifestAFVDDownstreamKeyers,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesDelayedPlayback,
@@ -149,6 +158,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.4.6', 'AFVD', 'MediaFlowId', 'ClipMediaFlowId'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'NetworkBasePath', 'NetworkBasePathClip'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'JingleBasePath', 'NetworkBasePathJingle'),
+
+	MoveDSKToTable('1.4.6', (manifestAFVDDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

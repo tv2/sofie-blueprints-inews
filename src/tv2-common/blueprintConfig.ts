@@ -1,4 +1,5 @@
 import {
+	TableConfigItemDSK,
 	TableConfigItemSourceMappingWithSisyfos,
 	TableConfigItemSourceMappingWithSisyfosAndKeepAudio
 } from 'tv2-common'
@@ -6,6 +7,7 @@ import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
+export type DSKConfig = { 1: TableConfigItemDSK } & { [num: number]: TableConfigItemDSK }
 
 export interface TableConfigItemBreakers {
 	BreakerName: string
@@ -47,10 +49,9 @@ export interface TV2StudioConfigBase {
 		Default: number
 		SplitArtF: number
 		SplitArtK: number
-		DSK1F: number
-		DSK1K: number
 		JingleFill: number
 		JingleKey: number
+		DSK: TableConfigItemDSK[]
 	}
 	AtemSettings: {
 		CCGClip: number
@@ -70,6 +71,7 @@ export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConf
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	liveAudio: string[]
 	stickyLayers: string[]
+	dsk: DSKConfig
 }
 
 export interface TV2ShowstyleBlueprintConfigBase {

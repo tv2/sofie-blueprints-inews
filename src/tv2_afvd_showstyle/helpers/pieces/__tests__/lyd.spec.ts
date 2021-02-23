@@ -8,7 +8,11 @@ import {
 import { CueDefinitionLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
 import { NoteType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import {
+	defaultDSKConfig,
+	defaultShowStyleConfig,
+	defaultStudioConfig
+} from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getConfig, ShowStyleConfig } from '../../config'
@@ -61,7 +65,8 @@ describe('lyd', () => {
 				sources: [],
 				mediaPlayers: [],
 				stickyLayers: [],
-				liveAudio: []
+				liveAudio: [],
+				dsk: defaultDSKConfig
 			},
 			pieces,
 			adlibPieces,
@@ -107,7 +112,8 @@ describe('lyd', () => {
 				sources: [],
 				mediaPlayers: [],
 				stickyLayers: [],
-				liveAudio: []
+				liveAudio: [],
+				dsk: defaultDSKConfig
 			},
 			pieces,
 			adlibPieces,
@@ -156,7 +162,8 @@ describe('lyd', () => {
 				sources: [],
 				mediaPlayers: [],
 				stickyLayers: [],
-				liveAudio: []
+				liveAudio: [],
+				dsk: defaultDSKConfig
 			},
 			pieces,
 			adlibPieces,

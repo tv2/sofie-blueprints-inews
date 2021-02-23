@@ -11,6 +11,7 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
+	FindFullSourceDSK,
 	FindInfiniteModeFromConfig,
 	GetInfiniteModeForGraphic,
 	GetSisyfosTimelineObjForCamera,
@@ -141,6 +142,7 @@ function GetMosObjContent(
 	adlib?: boolean,
 	adlibrank?: number
 ): GraphicsContent {
+	const fullsDSK = FindFullSourceDSK(config)
 	return literal<GraphicsContent>({
 		fileName: 'PILOT_' + parsedCue.graphic.vcpid.toString(),
 		path: parsedCue.graphic.vcpid.toString(),
@@ -209,8 +211,8 @@ function GetMosObjContent(
 								dsk: {
 									onAir: true,
 									sources: {
-										fillSource: config.studio.AtemSource.DSK1F,
-										cutSource: config.studio.AtemSource.DSK1K
+										fillSource: fullsDSK.Fill,
+										cutSource: fullsDSK.Key
 									}
 								}
 							},
