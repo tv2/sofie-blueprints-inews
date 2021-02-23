@@ -123,6 +123,7 @@ export function CreateEffektForPartInner<
 				path: file,
 				firstWords: '',
 				lastWords: '',
+				ignoreMediaObjectStatus: true,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
@@ -216,6 +217,9 @@ export function CreateMixForPartInner(
 			sourceLayerId: layers.sourceLayer,
 			outputLayerId: 'jingle',
 			lifespan: PieceLifespan.WithinPart,
+			content: {
+				ignoreMediaObjectStatus: true
+			},
 			tags: [
 				GetTagForTransition(
 					literal<ActionTakeWithTransitionVariantMix>({
