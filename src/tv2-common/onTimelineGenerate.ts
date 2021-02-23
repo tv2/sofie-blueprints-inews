@@ -82,6 +82,8 @@ export function onTimelineGenerate<
 	}
 	const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt | undefined
 
+	timeline = processServerLookaheads(context, timeline, resolvedPieces, sourceLayers)
+
 	persistentState.activeMediaPlayers = assignMediaPlayers(
 		context,
 		config,
@@ -92,8 +94,6 @@ export function onTimelineGenerate<
 	)
 
 	dveBoxLookaheadUseOriginalEnable(timeline)
-
-	timeline = processServerLookaheads(context, timeline, resolvedPieces, sourceLayers)
 
 	return Promise.resolve({
 		timeline,
@@ -107,22 +107,8 @@ function processServerLookaheads(
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
 ): OnGenerateTimelineObj[] {
-	const objsEnablingServers = timeline.filter(
-		obj =>
-			obj.layer === AbstractLLayer.ServerEnablePending &&
-			resolvedPieces.some(
-				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
-			)
-	)
-
-	const activeClasses = objsEnablingServers.reduce((prev, curr) => {
-		if (curr.classes) {
-			prev.push(...curr.classes)
-		}
-		return prev
-	}, [] as string[])
-
-	const pgmServers = timeline.filter(obj => {
+	// Includes any non-active servers present in current part
+	const serversInCurrentPart = timeline.filter(obj => {
 		if (_.isArray(obj.enable)) {
 			return false
 		}
@@ -140,12 +126,11 @@ function processServerLookaheads(
 			!obj.isLookahead &&
 			resolvedPieces.some(
 				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
-			) &&
-			activeClasses.some(cls => enableCondition.includes(cls))
+			)
 		)
 	})
 
-	const onAirSessions = pgmServers.reduce((prev, curr) => {
+	const sessionsInCurrentPart = serversInCurrentPart.reduce((prev, curr) => {
 		const mediaPlayerSession = (curr as TimelineBlueprintExt).metaData?.mediaPlayerSession
 
 		if (mediaPlayerSession) {
@@ -179,7 +164,7 @@ function processServerLookaheads(
 				.map(l => `${l}_lookahead`)
 				.includes(layer) &&
 			obj.isLookahead &&
-			onAirSessions.includes(mediaPlayerSession)
+			sessionsInCurrentPart.includes(mediaPlayerSession)
 		)
 	})
 }

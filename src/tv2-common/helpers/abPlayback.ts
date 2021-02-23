@@ -217,17 +217,14 @@ export function resolveMediaPlayerAssignments<
 		const r = sessionRequests[sessionId]
 		if (r) {
 			const prev = previousAssignmentRev[sessionId]
-			const sessionHasEnded = r.end && r.end < context.getCurrentTime()
-			if (!sessionHasEnded) {
-				activeRequests.push({
-					id: sessionId,
-					start: r.start,
-					end: r.end,
-					player: prev ? prev.playerId.toString() : undefined, // Persist previous assignments
-					type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active,
-					optional: r.optional
-				})
-			}
+			activeRequests.push({
+				id: sessionId,
+				start: r.start,
+				end: r.end,
+				player: prev ? prev.playerId.toString() : undefined, // Persist previous assignments
+				type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active,
+				optional: r.optional
+			})
 		}
 	}
 	_.sortBy(activeRequests, r => r.start)
