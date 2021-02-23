@@ -18,4 +18,5 @@ export interface TableConfigItemDSK {
 	Key: number
 	Toggle: boolean
 	DefaultOn: boolean
+	FullSource: boolean
 }

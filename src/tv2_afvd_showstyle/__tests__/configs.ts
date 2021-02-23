@@ -1,5 +1,5 @@
 import { ConfigItemValue } from '@sofie-automation/blueprints-integration'
-import { literal, parseMapStr } from 'tv2-common'
+import { DSKConfig, literal, parseMapStr } from 'tv2-common'
 import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
@@ -215,4 +215,6 @@ export const defaultShowStyleConfig: ConfigMap = {
 	DefaultTransition: 'CUT'
 }
 
-export const defaultDSKConfig = { 1: { Number: 1, Key: 0, Fill: 0, Toggle: true, DefaultOn: true } }
+export const defaultDSKConfig: DSKConfig = {
+	1: { Number: 1, Key: 0, Fill: 0, Toggle: true, DefaultOn: true, FullSource: true }
+}

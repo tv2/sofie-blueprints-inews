@@ -112,7 +112,8 @@ export function MoveDSKToTable(versionStr: string, defaultVal: TableConfigItemDS
 						Fill: oldDSK1Fill === undefined ? defaultVal.Fill : oldDSK1Fill,
 						Key: oldDSK1Key === undefined ? defaultVal.Key : oldDSK1Key,
 						Toggle: defaultVal.Toggle,
-						DefaultOn: defaultVal.DefaultOn
+						DefaultOn: defaultVal.DefaultOn,
+						FullSource: defaultVal.FullSource
 					})
 				)
 				context.setConfig(configName, table)

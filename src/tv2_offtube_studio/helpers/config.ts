@@ -79,7 +79,8 @@ export const defaultDSK: TableConfigItemDSK = {
 	Fill: 7,
 	Key: 8,
 	Toggle: true,
-	DefaultOn: true
+	DefaultOn: true,
+	FullSource: true
 }
 
 /*

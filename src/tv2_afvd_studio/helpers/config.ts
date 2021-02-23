@@ -116,7 +116,8 @@ export const defaultDSK: TableConfigItemDSK = {
 	Fill: 21,
 	Key: 34,
 	Toggle: true,
-	DefaultOn: true
+	DefaultOn: true,
+	FullSource: true
 }
 
 export function parseConfig(rawConfig: IBlueprintConfig): any {
