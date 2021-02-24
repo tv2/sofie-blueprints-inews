@@ -20,7 +20,9 @@ export function RealLLayers(): string[] {
 	)
 }
 
-export enum VirtualAbstractLLayer {}
+export enum VirtualAbstractLLayer {
+	AudioBedBaseline = 'audio_bed_baseline'
+}
 
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',

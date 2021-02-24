@@ -8,7 +8,8 @@ import {
 	TimelineObjectCoreExt,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition } from 'tv2-common'
+import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
+import { ControlClasses } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -28,14 +29,15 @@ export function EvaluateLYD(
 		lyd.INewsName ? lyd.INewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
 	)
 	const stop = !!parsedCue.variant.match(/^[^_]*STOP[^_]*$/i) // TODO: STOP 1 / STOP 2 etc.
+	const fade = parsedCue.variant.match(/FADE ?(\d+)/i)
 
-	if (!conf && !stop) {
+	if (!conf && !stop && !fade) {
 		context.warning(`LYD ${parsedCue.variant} not configured`)
 		return
 	}
 
 	const file = conf ? conf.FileName.toString() : parsedCue.variant
-	const fadeIn = conf ? Number(conf.FadeIn) : undefined
+	const fadeIn = fade ? Number(fade[1]) : conf ? Number(conf.FadeIn) : undefined
 	const fadeOut = conf ? Number(conf.FadeOut) : undefined
 
 	if (adlib) {
@@ -74,8 +76,8 @@ function LydContent(
 	config: BlueprintConfig,
 	file: string,
 	stop?: boolean,
-	_fadeIn?: number,
-	_fadeOut?: number
+	fadeIn?: number,
+	fadeOut?: number
 ): BaseContent {
 	if (stop) {
 		return literal<BaseContent>({
@@ -115,8 +117,23 @@ function LydContent(
 					noStarttime: true,
 					mixer: {
 						volume: Number(config.studio.AudioBedSettings.volume) / 100
+					},
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.MIX,
+							easing: TSR.Ease.LINEAR,
+							direction: TSR.Direction.LEFT,
+							duration: TimeFromFrames(fadeIn ?? config.studio.AudioBedSettings.fadeIn ?? 0)
+						},
+						outTransition: {
+							type: TSR.Transition.MIX,
+							easing: TSR.Ease.LINEAR,
+							direction: TSR.Direction.LEFT,
+							duration: TimeFromFrames(fadeOut ?? config.studio.AudioBedSettings.fadeOut ?? 0)
+						}
 					}
-				}
+				},
+				classes: [ControlClasses.LYDOnAir]
 			}),
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
