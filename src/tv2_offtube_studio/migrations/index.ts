@@ -265,6 +265,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	MoveDSKToTable('1.4.6', (manifestOfftubeDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK),
 
+	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

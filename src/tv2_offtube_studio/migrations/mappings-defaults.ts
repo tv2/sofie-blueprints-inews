@@ -312,7 +312,7 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
 		layer: 110,
-		previewWhenNotOnAir: false
+		previewWhenNotOnAir: true
 	}),
 	casparcg_graphics_full: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
