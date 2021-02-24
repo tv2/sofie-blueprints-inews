@@ -25,7 +25,8 @@ export enum CueType {
 	BackgroundLoop,
 	GraphicDesign,
 	Graphic,
-	Routing
+	Routing,
+	PgmClean
 }
 
 export const enum PartType {

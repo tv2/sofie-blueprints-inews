@@ -83,10 +83,13 @@
                             "ST4vrt=ON", 
                             "ST4gst=", 
                             ";0.00"
+                        ],
+                        [
+                            "PGMCLEAN=LIVE 1"
                         ]
                     ],
                     "id" : "00000000:00000000:00000000",
-                    "body" : "\r\n<p><pi>KAM CS 3</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><cc>---load background on DVE------></cc><a idref=\"2\"><cc><------</cc></a></p>\r\n<p><cc>---load background on FULL------></cc><a idref=\"3\"><cc><------</cc></a></p>\r\n<p><cc>---VALG AF STUDIE PRIMÆR--></cc><a idref=\"4\"><cc><--(ST4p, ST2p)</cc></a></p>\r\n<p><cc>--VALG AF STUDIE SEKUNDÆR--></cc><a idref=\"5\"><cc><---(ST4s, ST2s)</cc><tab></tab></a></p>\r\n<p><tab></tab></p>\r\n<p><cc>----all out overlay--></cc><a idref=\"7\"><cc><---</cc></a></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"8\"><cc><------</cc></a></p>\r\n<p></p>\r\n<p><cc>-----slukker mikrofoner--></cc><a idref=\"9\"><cc><-----</cc><tab><tab><tab></tab></tab></tab></a></p>\r\n<p></p>\r\n",
+                    "body" : "\r\n<p><pi>KAM CS 3</pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><cc>---load background on DVE------></cc><a idref=\"2\"><cc><------</cc></a></p>\r\n<p><cc>---load background on FULL------></cc><a idref=\"3\"><cc><------</cc></a></p>\r\n<p><cc>---VALG AF STUDIE PRIMÆR--></cc><a idref=\"4\"><cc><--(ST4p, ST2p)</cc></a></p>\r\n<p><cc>--VALG AF STUDIE SEKUNDÆR--></cc><a idref=\"5\"><cc><---(ST4s, ST2s)</cc><tab></tab></a></p>\r\n<p><tab></tab></p>\r\n<p><cc>----all out overlay--></cc><a idref=\"7\"><cc><---</cc></a></p>\r\n<p><cc>---grafik design på overlay------></cc><a idref=\"8\"><cc><------</cc></a></p>\r\n<p></p>\r\n<p><cc>-----slukker mikrofoner--></cc><a idref=\"9\"><cc><-----</cc><tab><tab><tab></tab></tab></tab></a></p>\r\n<p></p>\r\n<p><a idref=\"10\"></a></p>\r\n",
                     "fileId" : "00000000:00000000:00000000",
                     "identifier" : "00000000"
                 },

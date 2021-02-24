@@ -138,6 +138,11 @@ export interface CueDefinitionRouting extends CueDefinitionBase {
 	INP1?: string
 }
 
+export interface CueDefinitionPgmClean extends CueDefinitionBase {
+	type: CueType.PgmClean
+	source: 'PGM' | 'LIVE 1'
+}
+
 export type CueDefinition =
 	| CueDefinitionUnknown
 	| CueDefinitionEkstern
@@ -155,6 +160,7 @@ export type CueDefinition =
 	| CueDefinitionGraphicDesign
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
+	| CueDefinitionPgmClean
 
 export function GraphicIsInternal(
 	o: CueDefinitionGraphic<GraphicInternalOrPilot>
@@ -225,6 +231,8 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parseLYD(cue)
 	} else if (cue[0].match(/^JINGLE\d+=/i)) {
 		return parseJingle(cue)
+	} else if (cue[0].match(/^PGMCLEAN=/i)) {
+		return parsePgmClean(cue)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -719,6 +727,19 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 	}
 
 	return clearCue
+}
+
+export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
+	const pgmCleanCue: CueDefinitionPgmClean = {
+		type: CueType.PgmClean,
+		source: 'PGM',
+		iNewsCommand: 'PGMCLEAN'
+	}
+	const pgmSource = cue[0].match(/^PGMCLEAN=(.+)$/i)
+	if (pgmSource && pgmSource[1]?.match(/live 1/i)) {
+		pgmCleanCue.source = 'LIVE 1'
+	}
+	return pgmCleanCue
 }
 
 export function isTime(line: string) {

@@ -17,7 +17,8 @@ export enum SourceLayer {
 	PgmContinuity = 'studio0_offtube_continuity',
 
 	// Aux
-	AuxStudioScreen = 'studio0_offtube_aux_studio_screen'
+	AuxStudioScreen = 'studio0_offtube_aux_studio_screen',
+	AuxPgmClean = 'studio0_offtube_aux_pgm_clean'
 }
 
 // tslint:disable-next-line: variable-name
