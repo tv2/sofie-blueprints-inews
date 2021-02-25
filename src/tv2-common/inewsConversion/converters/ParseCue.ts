@@ -140,7 +140,7 @@ export interface CueDefinitionRouting extends CueDefinitionBase {
 
 export interface CueDefinitionPgmClean extends CueDefinitionBase {
 	type: CueType.PgmClean
-	source: 'PGM' | 'LIVE 1'
+	source: 'PGM' | string
 }
 
 export type CueDefinition =
@@ -736,8 +736,8 @@ export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
 		iNewsCommand: 'PGMCLEAN'
 	}
 	const pgmSource = cue[0].match(/^PGMCLEAN=(.+)$/i)
-	if (pgmSource && pgmSource[1]?.match(/live 1/i)) {
-		pgmCleanCue.source = 'LIVE 1'
+	if (pgmSource && pgmSource[1]) {
+		pgmCleanCue.source = pgmSource[1].toString().toUpperCase()
 	}
 	return pgmCleanCue
 }
