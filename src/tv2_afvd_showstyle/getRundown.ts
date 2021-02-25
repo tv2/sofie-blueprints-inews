@@ -1139,7 +1139,7 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 				ssrcProps: {
 					artFillSource: config.studio.AtemSource.SplitArtF,
 					artCutSource: config.studio.AtemSource.SplitArtK,
-					artOption: 1, // foreground
+					artOption: 1,
 					artPreMultiplied: true
 				}
 			}
