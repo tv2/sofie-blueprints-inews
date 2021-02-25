@@ -1358,19 +1358,31 @@ function executeActionTakeWithTransition<
 	const externalId = generateExternalId(context, actionId, [userData.variant.type])
 
 	const nextPieces = context.getPieceInstances('next')
-	const primaryPiece = nextPieces.find(p =>
-		[
-			settings.SourceLayers.Cam,
-			settings.SourceLayers.DVE,
-			settings.SourceLayers.DVEAdLib,
-			settings.SourceLayers.Live,
-			settings.SourceLayers.Server,
-			settings.SourceLayers.VO,
-			settings.SourceLayers.Effekt,
-			settings.SourceLayers.Continuity,
-			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : [])
-		].includes(p.piece.sourceLayerId)
-	)
+	const piecesBySourceLayer: { [key: string]: IBlueprintPieceInstance[] } = {}
+	const sourceLayersByPriority = [
+		settings.SourceLayers.Cam,
+		settings.SourceLayers.DVE,
+		settings.SourceLayers.DVEAdLib,
+		settings.SourceLayers.Live,
+		settings.SourceLayers.Server,
+		settings.SourceLayers.VO,
+		...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
+		settings.SourceLayers.Effekt,
+		settings.SourceLayers.Continuity
+	]
+	nextPieces.forEach(piece => {
+		if (!piecesBySourceLayer[piece.piece.sourceLayerId]) {
+			piecesBySourceLayer[piece.piece.sourceLayerId] = []
+		}
+		piecesBySourceLayer[piece.piece.sourceLayerId].push(piece)
+	})
+	let primaryPiece: IBlueprintPieceInstance | undefined
+	for (const layer of sourceLayersByPriority) {
+		if (layer && piecesBySourceLayer[layer]) {
+			primaryPiece = piecesBySourceLayer[layer][0]
+			break
+		}
+	}
 
 	context.takeAfterExecuteAction(userData.takeNow)
 
