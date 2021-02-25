@@ -714,6 +714,25 @@ const AUX: ISourceLayer[] = [
 		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: false
+	},
+	{
+		_id: OfftubeSourceLayer.AuxPgmClean,
+		_rank: 21,
+		name: 'Pgm Clean',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: true,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
 	}
 ]
 

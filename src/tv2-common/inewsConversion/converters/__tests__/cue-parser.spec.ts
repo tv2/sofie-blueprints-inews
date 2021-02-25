@@ -16,6 +16,7 @@ import {
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionMic,
+	CueDefinitionPgmClean,
 	CueDefinitionProfile,
 	CueDefinitionTelefon,
 	CueDefinitionUnknown,
@@ -1349,6 +1350,18 @@ describe('Cue parser', () => {
 				type: CueType.Jingle,
 				clip: 'SN_intro_19',
 				iNewsCommand: 'JINGLE'
+			})
+		)
+	})
+
+	test('PGMCLEAN', () => {
+		const cueJingle = ['PGMCLEAN=Live 1']
+		const result = ParseCue(cueJingle, config)
+		expect(result).toEqual(
+			literal<CueDefinitionPgmClean>({
+				type: CueType.PgmClean,
+				source: 'LIVE 1',
+				iNewsCommand: 'PGMCLEAN'
 			})
 		)
 	})

@@ -304,3 +304,20 @@ CueDefinitionAdLib {
     bynavn: ''
 }
 ```
+
+## PgmClean
+
+Effect: Selects what to send to the Clean Pgm AUX on the ATEM.
+
+Example:
+
+```JS
+"PGMCLEAN=LIVE 1"
+```
+
+```JS
+CueDefinitionPgmClean {
+    type: CueType.PgmClean,
+    source: 'LIVE 1', // Possible values: LIVE 1, PGM
+}
+```

@@ -14,6 +14,7 @@ import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
 import { OfftubeEvaluateCueBackgroundLoop } from '../cues/OfftubeGraphicBackgroundLoop'
 import { OfftubeEvaluateGraphicDesign } from '../cues/OfftubeGraphicDesign'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
+import { OfftubeEvaluatePgmClean } from '../cues/OfftubePgmClean'
 import { OfftubeShowstyleBlueprintConfig } from './config'
 
 export function OfftubeEvaluateCues(
@@ -36,7 +37,8 @@ export function OfftubeEvaluateCues(
 			EvaluateCueEkstern: OfftubeEvaluateEkstern,
 			EvaluateCueGraphic: OfftubeEvaluateGrafikCaspar,
 			EvaluateCueBackgroundLoop: OfftubeEvaluateCueBackgroundLoop,
-			EvaluateCueGraphicDesign: OfftubeEvaluateGraphicDesign
+			EvaluateCueGraphicDesign: OfftubeEvaluateGraphicDesign,
+			EvaluateCuePgmClean: OfftubeEvaluatePgmClean
 		},
 		context,
 		config,
