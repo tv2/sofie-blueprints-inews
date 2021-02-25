@@ -328,6 +328,15 @@ export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = {
 			required: true,
 			defaultVal: false,
 			rank: 4
+		},
+		{
+			id: 'FullSource',
+			name: 'Full graphic source',
+			description: 'Use the DSK Fill as a source for Full graphics',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: false,
+			rank: 5
 		}
 	]
 }
