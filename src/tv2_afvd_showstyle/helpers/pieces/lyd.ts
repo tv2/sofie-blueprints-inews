@@ -36,9 +36,12 @@ export function EvaluateLYD(
 		return
 	}
 
-	const file = conf ? conf.FileName.toString() : parsedCue.variant
+	const file = fade ? 'empty' : conf ? conf.FileName.toString() : parsedCue.variant
 	const fadeIn = fade ? Number(fade[1]) : conf ? Number(conf.FadeIn) : undefined
 	const fadeOut = conf ? Number(conf.FadeOut) : undefined
+
+	const lydType = stop ? 'stop' : fade ? 'fade' : 'bed'
+	const lifespan = stop || fade || parsedCue.end ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownChange
 
 	if (adlib) {
 		adlibPieces.push(
@@ -48,9 +51,11 @@ export function EvaluateLYD(
 				name: parsedCue.variant,
 				outputLayerId: 'musik',
 				sourceLayerId: SourceLayer.PgmAudioBed,
-				lifespan: stop ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
-				expectedDuration: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-				content: LydContent(config, file, stop, fadeIn, fadeOut)
+				lifespan,
+				expectedDuration: fade
+					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
+					: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
+				content: LydContent(config, file, lydType, fadeIn, fadeOut)
 			})
 		)
 	} else {
@@ -58,11 +63,20 @@ export function EvaluateLYD(
 			literal<IBlueprintPiece>({
 				externalId: part.externalId,
 				name: parsedCue.variant,
-				...(stop ? { enable: { start: CreateTimingEnable(parsedCue).enable.start } } : CreateTimingEnable(parsedCue)),
+				...(stop
+					? { enable: { start: CreateTimingEnable(parsedCue).enable.start, duration: 1000 } }
+					: fade
+					? {
+							enable: {
+								start: CreateTimingEnable(parsedCue).enable.start,
+								duration: Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
+							}
+					  }
+					: CreateTimingEnable(parsedCue)),
 				outputLayerId: 'musik',
 				sourceLayerId: GetLYDSourceLayer(file),
-				lifespan: stop || parsedCue.end ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownEnd,
-				content: LydContent(config, file, stop, fadeIn, fadeOut)
+				lifespan,
+				content: LydContent(config, file, lydType, fadeIn, fadeOut)
 			})
 		)
 	}
@@ -75,11 +89,11 @@ export function GetLYDSourceLayer(_name: string): SourceLayer {
 function LydContent(
 	config: BlueprintConfig,
 	file: string,
-	stop?: boolean,
+	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,
 	fadeOut?: number
 ): BaseContent {
-	if (stop) {
+	if (lydType === 'stop') {
 		return literal<BaseContent>({
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
