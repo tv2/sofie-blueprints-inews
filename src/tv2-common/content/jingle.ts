@@ -49,7 +49,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: file
+					file
 				}
 			}),
 
