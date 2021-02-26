@@ -99,6 +99,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	forceSourceLayerToDefaults('1.4.6', OfftubeSourceLayer.PgmLive),
 
+	/**
+	 * 1.4.8
+	 * - DVE shortcuts (recall last DVE)
+	 */
+	forceSourceLayerToDefaults('1.4.8', OfftubeSourceLayer.PgmDVE),
+
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
 ])
