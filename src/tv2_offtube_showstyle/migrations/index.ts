@@ -104,6 +104,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	renameSourceLayer('1.5.0', 'Offtube', 'studio0_full', SharedSourceLayers.PgmPilot),
 	renameSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_continuity', SharedSourceLayers.PgmContinuity),
 	removeSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_pgm_source_select'),
+	forceSourceLayerToDefaults('1.5.1', OfftubeSourceLayer.PgmDVE),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
