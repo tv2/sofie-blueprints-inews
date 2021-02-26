@@ -20,6 +20,7 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
 	GetTagForKam,
@@ -388,6 +389,22 @@ function getGlobalAdlibActionsOfftube(
 			},
 			800
 		)
+	)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.RECALL_LAST_DVE,
+			userData: literal<ActionRecallLastDVE>({
+				type: AdlibActionType.RECALL_LAST_DVE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 1,
+				label: 'Last DVE',
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
+				outputLayerId: 'pgm'
+			}
+		})
 	)
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {

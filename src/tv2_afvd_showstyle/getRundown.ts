@@ -17,6 +17,7 @@ import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
+	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
 	GetEksternMetaData,
@@ -879,6 +880,22 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			},
 			800
 		)
+	)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.RECALL_LAST_DVE,
+			userData: literal<ActionRecallLastDVE>({
+				type: AdlibActionType.RECALL_LAST_DVE
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 1,
+				label: 'Last DVE',
+				sourceLayerId: SourceLayer.PgmDVE,
+				outputLayerId: 'pgm'
+			}
+		})
 	)
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {

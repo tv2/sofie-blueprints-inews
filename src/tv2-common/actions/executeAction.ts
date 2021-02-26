@@ -72,6 +72,7 @@ import {
 import { assertUnreachable } from '../util'
 import {
 	ActionCommentatorSelectJingle,
+	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectJingle,
 	ActionTakeWithTransition
@@ -234,6 +235,9 @@ export function executeAction<
 			break
 		case AdlibActionType.RECALL_LAST_LIVE:
 			executeActionRecallLastLive(context, settings, actionId, userData as ActionRecallLastLive)
+			break
+		case AdlibActionType.RECALL_LAST_DVE:
+			executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
 			break
 		default:
 			assertUnreachable(actionId)
@@ -1681,8 +1685,14 @@ function executeActionRecallLastLive<
 	actionId: string,
 	_userData: ActionRecallLastLive
 ) {
-	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live, { originalOnly: true })
-	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident, { originalOnly: true })
+	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live, {
+		originalOnly: true,
+		excludeCurrentPart: true
+	})
+	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident, {
+		originalOnly: true,
+		excludeCurrentPart: true
+	})
 
 	if (!lastLive) {
 		return
@@ -1716,4 +1726,36 @@ function executeActionRecallLastLive<
 	}
 
 	context.queuePart(part, pieces)
+}
+
+function executeActionRecallLastDVE<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	_userData: ActionRecallLastDVE
+) {
+	const lastDVE = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE, { excludeCurrentPart: true })
+
+	if (!lastDVE) {
+		return
+	}
+
+	const externalId = generateExternalId(context, actionId, [lastDVE.name])
+
+	const dveMeta = lastDVE.metaData as DVEPieceMetaData
+
+	executeActionSelectDVE(
+		context,
+		settings,
+		actionId,
+		literal<ActionSelectDVE>({
+			type: AdlibActionType.SELECT_DVE,
+			config: dveMeta.userData.config,
+			segmentExternalId: externalId,
+			videoId: dveMeta.userData.videoId
+		})
+	)
 }
