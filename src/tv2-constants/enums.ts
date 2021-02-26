@@ -92,7 +92,8 @@ export enum AdlibActionType {
 	COMMENTATOR_SELECT_JINGLE = 'commentator_select_jingle',
 	CLEAR_GRAPHICS = 'clear_graphics',
 	TAKE_WITH_TRANSITION = 'take_with_transition',
-	RECALL_LAST_LIVE = 'recall_last_live'
+	RECALL_LAST_LIVE = 'recall_last_live',
+	RECALL_LAST_DVE = 'recall_last_dve'
 }
 
 export enum TallyTags {
