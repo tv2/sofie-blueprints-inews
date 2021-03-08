@@ -15,6 +15,7 @@ import {
 	CueDefinitionGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
+	GetSourceLayerForGrafik,
 	GetTagForFull,
 	GetTagForFullNext,
 	GraphicDisplayName,
@@ -463,43 +464,6 @@ function GetEnableForGrafikOfftube(
 
 	return {
 		while: '!.full'
-	}
-}
-
-function GetSourceLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string, isStickyIdent?: boolean) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
-
-	if (!conf) {
-		return OfftubeSourceLayer.PgmGraphicsOverlay
-	}
-
-	switch (conf.SourceLayer) {
-		// TODO: When adding more sourcelayers
-		// This is here to guard against bad user input
-		case OfftubeSourceLayer.PgmGraphicsHeadline:
-			return OfftubeSourceLayer.PgmGraphicsHeadline
-		case OfftubeSourceLayer.PgmGraphicsIdent:
-			if (isStickyIdent) {
-				return OfftubeSourceLayer.PgmGraphicsIdentPersistent
-			}
-
-			return OfftubeSourceLayer.PgmGraphicsIdent
-		case OfftubeSourceLayer.PgmGraphicsLower:
-			return OfftubeSourceLayer.PgmGraphicsLower
-		case OfftubeSourceLayer.PgmGraphicsOverlay:
-			return OfftubeSourceLayer.PgmGraphicsOverlay
-		case OfftubeSourceLayer.PgmGraphicsTLF:
-			return OfftubeSourceLayer.PgmGraphicsTLF
-		case OfftubeSourceLayer.PgmGraphicsTema:
-			return OfftubeSourceLayer.PgmGraphicsTema
-		case OfftubeSourceLayer.PgmGraphicsTop:
-			return OfftubeSourceLayer.PgmGraphicsTop
-		case OfftubeSourceLayer.WallGraphics:
-			return OfftubeSourceLayer.WallGraphics
-		default:
-			return OfftubeSourceLayer.PgmGraphicsOverlay
 	}
 }
 

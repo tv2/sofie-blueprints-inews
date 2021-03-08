@@ -13,6 +13,7 @@ import {
 	GetDefaultOut,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
+	GetSourceLayerForGrafik,
 	GraphicDisplayName,
 	GraphicInternal,
 	IsTargetingTLF,
@@ -22,7 +23,7 @@ import {
 } from 'tv2-common'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
-import { CreateTimingGrafik, GetEnableForGrafik, GetSourceLayerForGrafik, GetTimelineLayerForGrafik } from './graphic'
+import { CreateTimingGrafik, GetEnableForGrafik, GetTimelineLayerForGrafik } from './graphic'
 
 export function EvaluateCueGraphicInternal(
 	config: BlueprintConfig,

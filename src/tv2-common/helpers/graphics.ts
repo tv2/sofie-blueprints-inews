@@ -3,6 +3,7 @@ import { GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { LifeSpan } from '../cueTiming'
 import { CueDefinitionGraphic, GraphicInternalOrPilot, GraphicIsInternal, GraphicIsPilot } from '../inewsConversion'
+import { SharedSourceLayers } from '../layers'
 
 export function GraphicDisplayName(
 	config: TV2BlueprintConfig,
@@ -110,4 +111,41 @@ export function IsTargetingWall(engine: GraphicEngine) {
 
 export function IsTargetingTLF(engine: GraphicEngine) {
 	return engine === 'TLF'
+}
+
+export function GetSourceLayerForGrafik(config: TV2BlueprintConfig, name: string, isStickyIdent?: boolean) {
+	const conf = config.showStyle.GFXTemplates
+		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
+		: undefined
+
+	if (!conf) {
+		return SharedSourceLayers.PgmGraphicsOverlay
+	}
+
+	switch (conf.SourceLayer) {
+		// TODO: When adding more sourcelayers
+		// This is here to guard against bad user input
+		case SharedSourceLayers.PgmGraphicsHeadline:
+			return SharedSourceLayers.PgmGraphicsHeadline
+		case SharedSourceLayers.PgmGraphicsIdent:
+			if (isStickyIdent) {
+				return SharedSourceLayers.PgmGraphicsIdentPersistent
+			}
+
+			return SharedSourceLayers.PgmGraphicsIdent
+		case SharedSourceLayers.PgmGraphicsLower:
+			return SharedSourceLayers.PgmGraphicsLower
+		case SharedSourceLayers.PgmGraphicsOverlay:
+			return SharedSourceLayers.PgmGraphicsOverlay
+		case SharedSourceLayers.PgmGraphicsTLF:
+			return SharedSourceLayers.PgmGraphicsTLF
+		case SharedSourceLayers.PgmGraphicsTema:
+			return SharedSourceLayers.PgmGraphicsTema
+		case SharedSourceLayers.PgmGraphicsTop:
+			return SharedSourceLayers.PgmGraphicsTop
+		case SharedSourceLayers.WallGraphics:
+			return SharedSourceLayers.WallGraphics
+		default:
+			return SharedSourceLayers.PgmGraphicsOverlay
+	}
 }

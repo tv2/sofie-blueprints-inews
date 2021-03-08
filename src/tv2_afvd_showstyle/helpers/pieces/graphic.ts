@@ -19,7 +19,6 @@ import {
 	PartToParentClass
 } from 'tv2-common'
 import { ControlClasses, GraphicEngine } from 'tv2-constants'
-import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
 import { EvaluateCueGraphicInternal } from './graphicInternal'
 import { EvaluateCueGraphicPilot } from './graphicPilot'
@@ -94,43 +93,6 @@ export function GetEnableForGrafik(
 		return {
 			start: 0
 		}
-	}
-}
-
-export function GetSourceLayerForGrafik(config: BlueprintConfig, name: string, isStickyIdent: boolean) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
-
-	if (!conf) {
-		return SourceLayer.PgmGraphicsOverlay
-	}
-
-	switch (conf.SourceLayer) {
-		// TODO: When adding more sourcelayers
-		// This is here to guard against bad user input
-		case SourceLayer.PgmGraphicsHeadline:
-			return SourceLayer.PgmGraphicsHeadline
-		case SourceLayer.PgmGraphicsIdent:
-			if (isStickyIdent) {
-				return SourceLayer.PgmGraphicsIdentPersistent
-			}
-
-			return SourceLayer.PgmGraphicsIdent
-		case SourceLayer.PgmGraphicsLower:
-			return SourceLayer.PgmGraphicsLower
-		case SourceLayer.PgmGraphicsOverlay:
-			return SourceLayer.PgmGraphicsOverlay
-		case SourceLayer.PgmGraphicsTLF:
-			return SourceLayer.PgmGraphicsTLF
-		case SourceLayer.PgmGraphicsTema:
-			return SourceLayer.PgmGraphicsTema
-		case SourceLayer.PgmGraphicsTop:
-			return SourceLayer.PgmGraphicsTop
-		case SourceLayer.WallGraphics:
-			return SourceLayer.WallGraphics
-		default:
-			return SourceLayer.PgmGraphicsOverlay
 	}
 }
 
