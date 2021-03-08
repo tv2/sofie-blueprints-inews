@@ -55,7 +55,6 @@ export function EvaluateEksternBase<
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
 	layersEkstern: EksternLayers,
-	_getDefaultOut: (config: ShowStyleConfig) => number,
 	adlib?: boolean,
 	rank?: number
 ) {

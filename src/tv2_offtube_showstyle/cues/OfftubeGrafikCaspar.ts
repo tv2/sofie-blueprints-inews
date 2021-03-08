@@ -13,6 +13,7 @@ import {
 	CalculateTime,
 	CreateTimingEnable,
 	CueDefinitionGraphic,
+	GetDefaultOut,
 	GetFullGraphicTemplateNameFromCue,
 	GetGraphicDuration,
 	GetInfiniteModeForGraphic,
@@ -488,12 +489,4 @@ export function CreateTimingGrafik(
 	ret.duration = end ? end - ret.start : undefined
 
 	return ret
-}
-
-function GetDefaultOut(config: OfftubeShowstyleBlueprintConfig): number {
-	if (config.showStyle.DefaultTemplateDuration !== undefined) {
-		return Number(config.showStyle.DefaultTemplateDuration) * 1000
-	}
-
-	return 4 * 1000
 }
