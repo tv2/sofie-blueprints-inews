@@ -505,8 +505,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'IdleSisyfosLayers',
-		name: 'Idle Sisysyfos Layers',
-		description: 'Sisysyfos Layers active (fader on PGM level) when studio is off-air',
+		name: 'Idle Sisyfos Layers',
+		description: 'Sisyfos Layers active (fader on PGM level) when studio is off-air',
 		type: ConfigManifestEntryType.LAYER_MAPPINGS,
 		filters: {
 			deviceTypes: [TSR.DeviceType.SISYFOS]
