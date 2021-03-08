@@ -14,6 +14,7 @@ import {
 	CueDefinitionGraphic,
 	FindFullSourceDSK,
 	FindInfiniteModeFromConfig,
+	GetEnableForGraphic,
 	GetInfiniteModeForGraphic,
 	GetSisyfosTimelineObjForCamera,
 	GraphicDisplayName,
@@ -31,7 +32,6 @@ import { GraphicEngine } from 'tv2-constants'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
-import { GetEnableForGrafik } from './graphic'
 
 export function EvaluateCueGraphicPilot(
 	config: BlueprintConfig,
@@ -151,7 +151,7 @@ function GetMosObjContent(
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
 				enable: IsTargetingOVL(engine)
-					? GetEnableForGrafik(config, engine, parsedCue, false)
+					? GetEnableForGraphic(config, engine, parsedCue, false)
 					: {
 							start: 0
 					  },

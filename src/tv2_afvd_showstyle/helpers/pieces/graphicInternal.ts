@@ -12,6 +12,7 @@ import {
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	GetDefaultOut,
+	GetEnableForGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
 	GetSourceLayerForGraphic,
@@ -25,7 +26,6 @@ import {
 } from 'tv2-common'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
-import { GetEnableForGrafik } from './graphic'
 
 export function EvaluateCueGraphicInternal(
 	config: BlueprintConfig,
@@ -81,7 +81,7 @@ export function EvaluateCueGraphicInternal(
 					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
-							enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
+							enable: GetEnableForGraphic(config, engine, parsedCue, isStickyIdent, partDefinition),
 							priority: 1,
 							layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 							content: {
@@ -117,7 +117,7 @@ export function EvaluateCueGraphicInternal(
 				timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
-						enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
+						enable: GetEnableForGraphic(config, engine, parsedCue, isStickyIdent, partDefinition),
 						priority: 1,
 						layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 						content: {

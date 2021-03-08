@@ -1,8 +1,15 @@
-import { PieceLifespan } from '@sofie-automation/blueprints-integration'
-import { GraphicEngine } from 'tv2-constants'
+import { PieceLifespan, TSR } from '@sofie-automation/blueprints-integration'
+import { ControlClasses, GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { CalculateTime, GetDefaultOut, LifeSpan } from '../cueTiming'
-import { CueDefinitionGraphic, GraphicInternalOrPilot, GraphicIsInternal, GraphicIsPilot } from '../inewsConversion'
+import { CalculateTime, CreateTimingEnable, GetDefaultOut, LifeSpan } from '../cueTiming'
+import {
+	CueDefinitionGraphic,
+	GraphicInternalOrPilot,
+	GraphicIsInternal,
+	GraphicIsPilot,
+	PartDefinition,
+	PartToParentClass
+} from '../inewsConversion'
 import { GraphicLLayer, SharedSourceLayers } from '../layers'
 
 export function GraphicDisplayName(
@@ -230,4 +237,48 @@ export function CreateTimingGraphic(
 	ret.duration = end ? end - ret.start : undefined
 
 	return ret
+}
+
+export function GetEnableForGraphic(
+	config: TV2BlueprintConfig,
+	engine: GraphicEngine,
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
+	isStickyIdent: boolean,
+	partDefinition?: PartDefinition
+): TSR.TSRTimelineObj['enable'] {
+	if (IsTargetingWall(engine)) {
+		return {
+			while: '1'
+		}
+	}
+
+	if (
+		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
+			GetInfiniteModeForGraphic(engine, config, cue, isStickyIdent) === PieceLifespan.OutOnSegmentEnd) &&
+		partDefinition
+	) {
+		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
+	}
+
+	if (isStickyIdent) {
+		return {
+			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
+		}
+	}
+
+	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
+
+	if (!timing.lifespan) {
+		return timing.enable
+	}
+
+	if (config.studio.PreventOverlayWithFull) {
+		return {
+			while: '!.full'
+		}
+	} else {
+		return {
+			start: 0
+		}
+	}
 }

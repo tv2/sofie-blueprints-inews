@@ -10,10 +10,10 @@ import {
 import {
 	AbstractLLayer,
 	ActionSelectFullGrafik,
-	CreateTimingEnable,
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	GetDefaultOut,
+	GetEnableForGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
 	GetSourceLayerForGraphic,
@@ -30,11 +30,10 @@ import {
 	IsTargetingWall,
 	literal,
 	PartDefinition,
-	PartToParentClass,
 	TimeFromFrames,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, ControlClasses, GraphicEngine, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, GraphicEngine, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -193,7 +192,7 @@ export function GetCasparOverlayTimeline(
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition),
+			enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGrafik, partDefinition),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			content: {
@@ -424,46 +423,5 @@ export function CreateFullContent(
 				classes: ['ab_on_preview']
 			})
 		]
-	}
-}
-
-// TODO: All of the below was copy-pasted and then adapted from AFVD blueprints, can they be made generic?
-
-// TODO: Is this valid for offtubes?
-function GetEnableForGrafikOfftube(
-	config: OfftubeShowstyleBlueprintConfig,
-	engine: GraphicEngine,
-	cue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGrafik: boolean,
-	partDefinition?: PartDefinition
-): TSR.TSRTimelineObj['enable'] {
-	if (IsTargetingWall(engine)) {
-		return {
-			while: '1'
-		}
-	}
-
-	if (
-		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
-			GetInfiniteModeForGraphic(engine, config, cue, isIdentGrafik) === PieceLifespan.OutOnSegmentEnd) &&
-		partDefinition
-	) {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
-	}
-
-	if (isIdentGrafik) {
-		return {
-			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
-		}
-	}
-
-	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
-
-	if (!timing.lifespan) {
-		return timing.enable
-	}
-
-	return {
-		while: '!.full'
 	}
 }

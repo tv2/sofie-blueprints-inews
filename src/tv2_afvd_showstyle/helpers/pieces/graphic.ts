@@ -2,20 +2,15 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
-	GetInfiniteModeForGraphic,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
-	IsTargetingWall,
-	PartDefinition,
-	PartToParentClass
+	PartDefinition
 } from 'tv2-common'
-import { ControlClasses, GraphicEngine } from 'tv2-constants'
 import { BlueprintConfig } from '../config'
 import { EvaluateCueGraphicInternal } from './graphicInternal'
 import { EvaluateCueGraphicPilot } from './graphicPilot'
@@ -52,43 +47,5 @@ export function EvaluateCueGraphic(
 		)
 	} else if (GraphicIsPilot(parsedCue)) {
 		EvaluateCueGraphicPilot(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, rank)
-	}
-}
-
-export function GetEnableForGrafik(
-	config: BlueprintConfig,
-	engine: GraphicEngine,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	isStickyIdent: boolean,
-	partDefinition?: PartDefinition
-): { while: string } | { start: number } {
-	if (IsTargetingWall(engine)) {
-		return {
-			while: '1'
-		}
-	}
-
-	if (
-		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
-			GetInfiniteModeForGraphic(engine, config, cue, isStickyIdent) === PieceLifespan.OutOnSegmentEnd) &&
-		partDefinition
-	) {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
-	}
-
-	if (isStickyIdent) {
-		return {
-			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
-		}
-	}
-
-	if (config.studio.PreventOverlayWithFull) {
-		return {
-			while: '!.full'
-		}
-	} else {
-		return {
-			start: 0
-		}
 	}
 }
