@@ -16,7 +16,7 @@
     "watch-sync-local": "yarn run watch --env.server=\"http://localhost:3000\"",
     "lint": "tslint --project tsconfig.json --config tslint.json",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
-    "unit": "jest",
+    "unit": "jest --maxWorkers=2",
     "test": "yarn lint --fix && yarn unit",
     "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
     "license-validate": "node-license-validator -p -d --allow-licenses MIT MIT/X11 BSD BSD-3-Clause ISC Apache Unlicense"
