@@ -62,19 +62,19 @@ export interface DVEConfig {
 		artInvertKey: boolean
 	}
 	border?: {
-		borderEnabled?: boolean
-		borderBevel?: number
-		borderOuterWidth?: number
-		borderInnerWidth?: number
-		borderOuterSoftness?: number
-		borderInnerSoftness?: number
-		borderBevelSoftness?: number
-		borderBevelPosition?: number
-		borderHue?: number
-		borderSaturation?: number
-		borderLuma?: number
-		borderLightSourceDirection?: number
-		borderLightSourceAltitude?: number
+		borderEnabled: boolean
+		borderBevel: number
+		borderOuterWidth: number
+		borderInnerWidth: number
+		borderOuterSoftness: number
+		borderInnerSoftness: number
+		borderBevelSoftness: number
+		borderBevelPosition: number
+		borderHue: number
+		borderSaturation: number
+		borderLuma: number
+		borderLightSourceDirection: number
+		borderLightSourceAltitude: number
 	}
 }
 
@@ -528,12 +528,16 @@ export function MakeContentDVE2<
 							...(template.properties && template.properties?.artPreMultiplied === false
 								? {
 										artPreMultiplied: false,
-										borderEnabled: template.border?.borderEnabled ?? false,
 										artInvertKey: template.properties.artInvertKey,
 										artClip: template.properties.artClip,
 										artGain: template.properties.artGain
 								  }
-								: { artPreMultiplied: true })
+								: { artPreMultiplied: true }),
+							...(template.border?.borderEnabled
+								? {
+										...template.border
+								  }
+								: { borderEnabled: false })
 						}
 					}
 				}),
