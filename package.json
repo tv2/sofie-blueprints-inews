@@ -19,7 +19,7 @@
     "unit": "jest --maxWorkers=2",
     "test": "yarn lint --fix && yarn unit",
     "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
-    "license-validate": "node-license-validator -p -d --allow-licenses MIT MIT/X11 BSD BSD-3-Clause ISC Apache Unlicense"
+    "license-validate": "node-license-validator -p -d --allow-licenses MIT MIT/X11 BSD BSD-3-Clause 0BSD ISC Apache Unlicense"
   },
   "husky": {
     "hooks": {
