@@ -13,7 +13,6 @@ import {
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
-	GraphicLLayer,
 	IsTargetingWall,
 	PartDefinition,
 	PartToParentClass
@@ -93,34 +92,6 @@ export function GetEnableForGrafik(
 		return {
 			start: 0
 		}
-	}
-}
-
-export function GetTimelineLayerForGrafik(config: BlueprintConfig, name: string) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
-
-	if (!conf) {
-		return GraphicLLayer.GraphicLLayerDesign
-	}
-
-	switch (conf.LayerMapping) {
-		// TODO: When adding more output layers
-		case GraphicLLayer.GraphicLLayerOverlayIdent:
-			return GraphicLLayer.GraphicLLayerOverlayIdent
-		case GraphicLLayer.GraphicLLayerOverlayTopt:
-			return GraphicLLayer.GraphicLLayerOverlayTopt
-		case GraphicLLayer.GraphicLLayerOverlayLower:
-			return GraphicLLayer.GraphicLLayerOverlayLower
-		case GraphicLLayer.GraphicLLayerOverlayHeadline:
-			return GraphicLLayer.GraphicLLayerOverlayHeadline
-		case GraphicLLayer.GraphicLLayerOverlayTema:
-			return GraphicLLayer.GraphicLLayerOverlayTema
-		case GraphicLLayer.GraphicLLayerWall:
-			return GraphicLLayer.GraphicLLayerWall
-		default:
-			return GraphicLLayer.GraphicLLayerOverlay
 	}
 }
 

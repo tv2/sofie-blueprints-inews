@@ -13,7 +13,8 @@ import {
 	GetDefaultOut,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
-	GetSourceLayerForGrafik,
+	GetSourceLayerForGraphic,
+	GetTimelineLayerForGraphic,
 	GraphicDisplayName,
 	GraphicInternal,
 	IsTargetingTLF,
@@ -23,7 +24,7 @@ import {
 } from 'tv2-common'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
-import { CreateTimingGrafik, GetEnableForGrafik, GetTimelineLayerForGrafik } from './graphic'
+import { CreateTimingGrafik, GetEnableForGrafik } from './graphic'
 
 export function EvaluateCueGraphicInternal(
 	config: BlueprintConfig,
@@ -53,7 +54,7 @@ export function EvaluateCueGraphicInternal(
 
 	const sourceLayerId = IsTargetingTLF(engine)
 		? SourceLayer.PgmGraphicsTLF
-		: GetSourceLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue), isStickyIdent)
+		: GetSourceLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue), isStickyIdent)
 
 	const outputLayerId = IsTargetingWall(engine) ? 'sec' : 'overlay'
 
@@ -81,7 +82,7 @@ export function EvaluateCueGraphicInternal(
 							id: '',
 							enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
 							priority: 1,
-							layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+							layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -117,7 +118,7 @@ export function EvaluateCueGraphicInternal(
 						id: '',
 						enable: GetEnableForGrafik(config, engine, parsedCue, isStickyIdent, partDefinition),
 						priority: 1,
-						layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+						layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

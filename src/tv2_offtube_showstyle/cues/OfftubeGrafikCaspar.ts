@@ -15,15 +15,15 @@ import {
 	CueDefinitionGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
-	GetSourceLayerForGrafik,
+	GetSourceLayerForGraphic,
 	GetTagForFull,
 	GetTagForFullNext,
+	GetTimelineLayerForGraphic,
 	GraphicDisplayName,
 	GraphicInternal,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
-	GraphicLLayer,
 	GraphicPilot,
 	IsTargetingTLF,
 	IsTargetingWall,
@@ -86,7 +86,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	} else if (GraphicIsInternal(parsedCue)) {
 		// TODO: Wall
 
-		const sourceLayerId = GetSourceLayerForGrafik(
+		const sourceLayerId = GetSourceLayerForGraphic(
 			config,
 			GetFullGraphicTemplateNameFromCue(config, parsedCue),
 			isIdentGrafik
@@ -194,7 +194,7 @@ export function GetCasparOverlayTimeline(
 			id: '',
 			enable: GetEnableForGrafikOfftube(config, engine, parsedCue, isIdentGrafik, partDefinition),
 			priority: 1,
-			layer: GetTimelineLayerForGrafik(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
+			layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -464,34 +464,6 @@ function GetEnableForGrafikOfftube(
 
 	return {
 		while: '!.full'
-	}
-}
-
-export function GetTimelineLayerForGrafik(config: OfftubeShowstyleBlueprintConfig, name: string) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
-
-	if (!conf) {
-		return GraphicLLayer.GraphicLLayerOverlay
-	}
-
-	switch (conf.LayerMapping) {
-		// TODO: When adding more output layers
-		case GraphicLLayer.GraphicLLayerOverlayIdent:
-			return GraphicLLayer.GraphicLLayerOverlayIdent
-		case GraphicLLayer.GraphicLLayerOverlayTopt:
-			return GraphicLLayer.GraphicLLayerOverlayTopt
-		case GraphicLLayer.GraphicLLayerOverlayLower:
-			return GraphicLLayer.GraphicLLayerOverlayLower
-		case GraphicLLayer.GraphicLLayerOverlayHeadline:
-			return GraphicLLayer.GraphicLLayerOverlayHeadline
-		case GraphicLLayer.GraphicLLayerOverlayTema:
-			return GraphicLLayer.GraphicLLayerOverlayTema
-		case GraphicLLayer.GraphicLLayerWall:
-			return GraphicLLayer.GraphicLLayerWall
-		default:
-			return GraphicLLayer.GraphicLLayerOverlay
 	}
 }
 

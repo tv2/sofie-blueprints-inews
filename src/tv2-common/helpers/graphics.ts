@@ -3,7 +3,7 @@ import { GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { LifeSpan } from '../cueTiming'
 import { CueDefinitionGraphic, GraphicInternalOrPilot, GraphicIsInternal, GraphicIsPilot } from '../inewsConversion'
-import { SharedSourceLayers } from '../layers'
+import { GraphicLLayer, SharedSourceLayers } from '../layers'
 
 export function GraphicDisplayName(
 	config: TV2BlueprintConfig,
@@ -113,7 +113,7 @@ export function IsTargetingTLF(engine: GraphicEngine) {
 	return engine === 'TLF'
 }
 
-export function GetSourceLayerForGrafik(config: TV2BlueprintConfig, name: string, isStickyIdent?: boolean) {
+export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: string, isStickyIdent?: boolean) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
@@ -147,5 +147,33 @@ export function GetSourceLayerForGrafik(config: TV2BlueprintConfig, name: string
 			return SharedSourceLayers.WallGraphics
 		default:
 			return SharedSourceLayers.PgmGraphicsOverlay
+	}
+}
+
+export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: string) {
+	const conf = config.showStyle.GFXTemplates
+		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
+		: undefined
+
+	if (!conf) {
+		return GraphicLLayer.GraphicLLayerOverlay
+	}
+
+	switch (conf.LayerMapping) {
+		// TODO: When adding more output layers
+		case GraphicLLayer.GraphicLLayerOverlayIdent:
+			return GraphicLLayer.GraphicLLayerOverlayIdent
+		case GraphicLLayer.GraphicLLayerOverlayTopt:
+			return GraphicLLayer.GraphicLLayerOverlayTopt
+		case GraphicLLayer.GraphicLLayerOverlayLower:
+			return GraphicLLayer.GraphicLLayerOverlayLower
+		case GraphicLLayer.GraphicLLayerOverlayHeadline:
+			return GraphicLLayer.GraphicLLayerOverlayHeadline
+		case GraphicLLayer.GraphicLLayerOverlayTema:
+			return GraphicLLayer.GraphicLLayerOverlayTema
+		case GraphicLLayer.GraphicLLayerWall:
+			return GraphicLLayer.GraphicLLayerWall
+		default:
+			return GraphicLLayer.GraphicLLayerOverlay
 	}
 }
