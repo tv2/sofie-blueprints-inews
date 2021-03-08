@@ -8,54 +8,39 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
-	AbstractLLayer,
 	ActionSelectFullGrafik,
-	CreateTimingGraphic,
+	CreateInternalGraphic,
 	CueDefinitionGraphic,
-	GetDefaultOut,
-	GetEnableForGraphic,
 	GetFullGraphicTemplateNameFromCue,
-	GetInfiniteModeForGraphic,
-	GetSourceLayerForGraphic,
 	GetTagForFull,
 	GetTagForFullNext,
-	GetTimelineLayerForGraphic,
-	GraphicDisplayName,
-	GraphicInternal,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
 	GraphicPilot,
-	IsTargetingTLF,
-	IsTargetingWall,
 	literal,
 	PartDefinition,
 	TimeFromFrames,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, GraphicEngine, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
-import { layerToHTMLGraphicSlot, Slots } from '../helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	_context: SegmentContext,
+	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	_partId: string,
+	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	_adlib: boolean,
+	adlib: boolean,
 	partDefinition: PartDefinition,
 	rank?: number
 ) {
-	const engine = parsedCue.target
-
-	const isIdentGrafik = GraphicIsInternal(parsedCue) && !!parsedCue.graphic.template.match(/direkte/i)
-
 	if (GraphicIsPilot(parsedCue)) {
 		const adLibPiece = CreateFullAdLib(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
 
@@ -84,166 +69,7 @@ export function OfftubeEvaluateGrafikCaspar(
 		const piece = CreateFullPiece(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
 		pieces.push(piece)
 	} else if (GraphicIsInternal(parsedCue)) {
-		// TODO: Wall
-
-		const sourceLayerId = GetSourceLayerForGraphic(
-			config,
-			GetFullGraphicTemplateNameFromCue(config, parsedCue),
-			isIdentGrafik
-		)
-
-		if (parsedCue.adlib) {
-			const adLibPiece = literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partDefinition.externalId,
-				name: `${GraphicDisplayName(config, parsedCue)}`,
-				sourceLayerId,
-				outputLayerId: OfftubeOutputLayers.OVERLAY,
-				lifespan: PieceLifespan.WithinPart,
-				expectedDuration: 5000,
-				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				content: {
-					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
-				}
-			})
-			adlibPieces.push(adLibPiece)
-
-			adlibPieces.push(
-				literal<IBlueprintAdLibPiece>({
-					_rank: rank || 0,
-					externalId: partDefinition.externalId,
-					name: `${GraphicDisplayName(config, parsedCue)}`,
-					sourceLayerId,
-					outputLayerId: OfftubeOutputLayers.OVERLAY,
-					lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
-					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-					...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
-						? {}
-						: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
-					content: {
-						timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
-					}
-				})
-			)
-		} else {
-			const piece = literal<IBlueprintPiece>({
-				externalId: partDefinition.externalId,
-				name: `${GraphicDisplayName(config, parsedCue)}`,
-				...(IsTargetingTLF(engine) || IsTargetingWall(engine)
-					? { enable: { start: 0 } }
-					: {
-							enable: {
-								...CreateTimingGraphic(config, parsedCue)
-							}
-					  }),
-				sourceLayerId,
-				outputLayerId: OfftubeOutputLayers.OVERLAY,
-				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
-				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
-					? {}
-					: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
-				content: {
-					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
-				}
-			})
-			pieces.push(piece)
-
-			if (
-				sourceLayerId === OfftubeSourceLayer.PgmGraphicsIdentPersistent &&
-				(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
-				isIdentGrafik
-			) {
-				// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
-				// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
-				pieces.push(
-					literal<IBlueprintPiece>({
-						...piece,
-						enable: { ...CreateTimingGraphic(config, parsedCue, true) }, // Allow default out for visual representation
-						sourceLayerId: OfftubeSourceLayer.PgmGraphicsIdent,
-						lifespan: PieceLifespan.WithinPart,
-						content: {
-							timelineObjects: [
-								literal<TSR.TimelineObjAbstractAny>({
-									id: '',
-									enable: {
-										while: '1'
-									},
-									layer: AbstractLLayer.IdentMarker,
-									content: {
-										deviceType: TSR.DeviceType.ABSTRACT
-									}
-								})
-							]
-						}
-					})
-				)
-			}
-		}
-	}
-}
-
-export function GetCasparOverlayTimeline(
-	config: OfftubeShowstyleBlueprintConfig,
-	engine: GraphicEngine,
-	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGrafik: boolean,
-	partDefinition: PartDefinition
-): TSR.TSRTimelineObj[] {
-	return [
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGrafik, partDefinition),
-			priority: 1,
-			layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: 'sport-overlay/index',
-				data: `<templateData>${encodeURI(
-					JSON.stringify({
-						display: 'program',
-						slots: createContentForGraphicTemplate(
-							config,
-							GetFullGraphicTemplateNameFromCue(config, parsedCue),
-							parsedCue
-						),
-						partialUpdate: true
-					})
-				)}</templateData>`,
-				useStopCommand: false
-			}
-		})
-	]
-}
-
-export function createContentForGraphicTemplate(
-	config: OfftubeShowstyleBlueprintConfig,
-	graphicTemplate: string,
-	parsedCue: CueDefinitionGraphic<GraphicInternal>
-): Partial<Slots> {
-	const conf = config.showStyle.GFXTemplates.find(g => g.VizTemplate.toLowerCase() === graphicTemplate.toLowerCase())
-
-	if (!conf) {
-		return {}
-	}
-
-	const layer = conf.LayerMapping
-
-	const slot = layerToHTMLGraphicSlot[layer]
-
-	if (!slot) {
-		return {}
-	}
-
-	return {
-		[slot]: {
-			display: 'program',
-			payload: {
-				type: graphicTemplate,
-				...parsedCue.graphic.textFields
-			}
-		}
+		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
 	}
 }
 

@@ -24,13 +24,12 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GetTransitionAdLibActions,
-	GraphicLLayer,
 	literal,
 	pgmDSKLayers,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	AtemLLayer,

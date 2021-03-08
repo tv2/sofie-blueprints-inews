@@ -18,7 +18,6 @@ import {
 	GetInfiniteModeForGraphic,
 	GetSisyfosTimelineObjForCamera,
 	GraphicDisplayName,
-	GraphicLLayer,
 	GraphicPilot,
 	IsTargetingFull,
 	IsTargetingOVL,
@@ -28,7 +27,7 @@ import {
 	SisyfosEVSSource,
 	SourceInfo
 } from 'tv2-common'
-import { GraphicEngine } from 'tv2-constants'
+import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'

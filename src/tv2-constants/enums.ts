@@ -114,3 +114,71 @@ export enum TallyTags {
 	FULL_IS_LIVE = 'FULL_IS_LIVE',
 	JINGLE_IS_LIVE = 'JINGLE_IS_LIVE'
 }
+
+export enum GraphicLLayer {
+	GraphicLLayerOverlay = 'graphic_overlay', // <= viz_layer_overlay
+	GraphicLLayerOverlayIdent = 'graphic_overlay_ident', // <= viz_layer_overlay_ident
+	GraphicLLayerOverlayTopt = 'graphic_overlay_topt', // <= viz_layer_overlay_topt
+	GraphicLLayerOverlayLower = 'graphic_overlay_lower', // <= viz_layer_overlay_lower
+	GraphicLLayerOverlayHeadline = 'graphic_overlay_headline', // <= viz_layer_overlay_headline
+	GraphicLLayerOverlayTema = 'graphic_overlay_tema', // <= viz_layer_overlay_tema
+	GraphicLLayerPilot = 'graphic_pilot', // <= viz_layer_pilot
+	GraphicLLayerPilotOverlay = 'graphic_pilot_overlay', // <= viz_layer_pilot_overlay
+	GraphicLLayerDesign = 'graphic_design', // <= viz_layer_design
+	GraphicLLayerFullLoop = 'graphic_full_loop',
+	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
+	GraphicLLayerWall = 'graphic_wall' // <= viz_layer_wall
+}
+
+export enum AbstractLLayer {
+	ServerEnablePending = 'server_enable_pending',
+	/* Exists to give the Ident UI marker a timeline object so that it gets the startedPlayback callback */
+	IdentMarker = 'ident_marker'
+}
+
+export enum SharedOutputLayers {
+	OVERLAY = 'overlay',
+	SEC = 'sec'
+}
+
+export enum SharedSourceLayers {
+	PgmCam = 'studio0_camera',
+	PgmLive = 'studio0_live',
+	PgmDVE = 'studio0_dve',
+	PgmDVEAdLib = 'studio0_dve_adlib',
+	PgmServer = 'studio0_clip',
+	PgmVoiceOver = 'studio0_voiceover',
+
+	// Graphics
+	PgmGraphicsIdent = 'studio0_graphicsIdent',
+	PgmGraphicsIdentPersistent = 'studio0_graphicsIdent_persistent',
+	PgmGraphicsTop = 'studio0_graphicsTop',
+	PgmGraphicsLower = 'studio0_graphicsLower',
+	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
+	PgmGraphicsTema = 'studio0_graphicsTema',
+	PgmGraphicsTLF = 'studio0_graphicsTelefon',
+	PgmDesign = 'studio0_design',
+
+	/** General, 'fallback', overlay layer */
+	PgmGraphicsOverlay = 'studio0_overlay',
+	WallGraphics = 'studio0_wall_graphics',
+
+	// Note: there is a regex in core to ignore some DVE layers. That will need updating if adding more
+	PgmDVEBox1 = 'studio0_dve_box1',
+	PgmDVEBox2 = 'studio0_dve_box2',
+	PgmDVEBox3 = 'studio0_dve_box3',
+	PgmDVEBox4 = 'studio0_dve_box4',
+
+	// Selected Sources
+	SelectedServer = 'studio0_selected_clip',
+	SelectedVoiceOver = 'studio0_selected_voiceover',
+
+	// Other / sec / manus
+	PgmScript = 'studio0_script',
+
+	// DSK toggle
+	PgmDSK1 = 'studio0_dsk_cmd',
+	PgmDSK2 = 'studio0_dsk_2_cmd',
+	PgmDSK3 = 'studio0_dsk_3_cmd',
+	PgmDSK4 = 'studio0_dsk_4_cmd'
+}

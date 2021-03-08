@@ -5,6 +5,7 @@ import {
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
 import {
+	CreateInternalGraphic,
 	CueDefinitionGraphic,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
@@ -12,7 +13,6 @@ import {
 	PartDefinition
 } from 'tv2-common'
 import { BlueprintConfig } from '../config'
-import { EvaluateCueGraphicInternal } from './graphicInternal'
 import { EvaluateCueGraphicPilot } from './graphicPilot'
 import { EvaluateCueRouting } from './routing'
 
@@ -33,18 +33,7 @@ export function EvaluateCueGraphic(
 	}
 
 	if (GraphicIsInternal(parsedCue)) {
-		EvaluateCueGraphicInternal(
-			config,
-			context,
-			pieces,
-			adlibPieces,
-			actions,
-			partId,
-			parsedCue,
-			adlib,
-			partDefinition,
-			rank
-		)
+		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
 	} else if (GraphicIsPilot(parsedCue)) {
 		EvaluateCueGraphicPilot(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, rank)
 	}

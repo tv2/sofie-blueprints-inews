@@ -1,2 +1,2 @@
-export * from './timeline-layers'
-export * from './sourcelayers'
+export * from './timelineLayers'
+export * from './sourceLayers'

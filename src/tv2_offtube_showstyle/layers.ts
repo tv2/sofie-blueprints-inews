@@ -1,4 +1,4 @@
-import { SharedSourceLayers } from 'tv2-common'
+import { SharedSourceLayers } from 'tv2-constants'
 
 export enum SourceLayer {
 	// Pgm

@@ -63,6 +63,7 @@ export interface TV2StudioConfigBase {
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
 	PreventOverlayWithFull?: boolean
 	ServerPostrollDuration: number
+	GraphicsType: 'HTML' | 'VIZ'
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {

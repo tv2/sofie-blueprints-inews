@@ -1,5 +1,4 @@
 import {
-	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -8,27 +7,28 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
-	AbstractLLayer,
-	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	GetDefaultOut,
-	GetEnableForGraphic,
+	GraphicInternal,
+	literal,
+	PartDefinition,
+	TV2BlueprintConfig
+} from 'tv2-common'
+import { AbstractLLayer, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import {
+	CreateTimingGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
 	GetSourceLayerForGraphic,
-	GetTimelineLayerForGraphic,
 	GraphicDisplayName,
-	GraphicInternal,
 	IsTargetingTLF,
-	IsTargetingWall,
-	literal,
-	PartDefinition
-} from 'tv2-common'
-import { SourceLayer } from '../../layers'
-import { BlueprintConfig } from '../config'
+	IsTargetingWall
+} from '..'
+import { GetInternalGraphicContentCaspar } from '../caspar'
+import { GetInternalGraphicContentVIZ } from '../viz'
 
-export function EvaluateCueGraphicInternal(
-	config: BlueprintConfig,
+export function CreateInternalGraphic(
+	config: TV2BlueprintConfig,
 	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -36,7 +36,7 @@ export function EvaluateCueGraphicInternal(
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	adlib: boolean,
-	partDefinition?: PartDefinition,
+	partDefinition: PartDefinition,
 	rank?: number
 ) {
 	// Whether this graphic "sticks" to the source it was first assigned to.
@@ -54,46 +54,47 @@ export function EvaluateCueGraphicInternal(
 	const engine = parsedCue.target
 
 	const sourceLayerId = IsTargetingTLF(engine)
-		? SourceLayer.PgmGraphicsTLF
-		: GetSourceLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue), isStickyIdent)
+		? SharedSourceLayers.PgmGraphicsTLF
+		: GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
 
-	const outputLayerId = IsTargetingWall(engine) ? 'sec' : 'overlay'
+	const outputLayerId = IsTargetingWall(engine) ? SharedOutputLayers.SEC : SharedOutputLayers.OVERLAY
 
 	const name = GraphicDisplayName(config, parsedCue)
 
+	const content =
+		config.studio.GraphicsType === 'HTML'
+			? GetInternalGraphicContentCaspar(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate)
+			: GetInternalGraphicContentVIZ(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate)
+
 	if (adlib) {
+		const adLibPiece = literal<IBlueprintAdLibPiece>({
+			_rank: rank || 0,
+			externalId: partId,
+			name: GraphicDisplayName(config, parsedCue),
+			uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}_commentator`,
+			sourceLayerId,
+			outputLayerId: SharedOutputLayers.OVERLAY,
+			lifespan: PieceLifespan.WithinPart,
+			expectedDuration: 5000,
+			tags: [AdlibTags.ADLIB_KOMMENTATOR],
+			content
+		})
+		adlibPieces.push(adLibPiece)
+
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
 				name,
-				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
+				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}_flow`,
 				sourceLayerId,
 				outputLayerId,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
 					: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
-				content: literal<GraphicsContent>({
-					fileName: parsedCue.graphic.template,
-					path: parsedCue.graphic.template,
-					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
-							id: '',
-							enable: GetEnableForGraphic(config, engine, parsedCue, isStickyIdent, partDefinition),
-							priority: 1,
-							layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
-							content: {
-								deviceType: TSR.DeviceType.VIZMSE,
-								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: mappedTemplate,
-								templateData: parsedCue.graphic.textFields,
-								channelName: engine === 'WALL' ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
-							}
-						})
-					])
-				})
+				content
 			})
 		)
 	} else {
@@ -110,31 +111,12 @@ export function EvaluateCueGraphicInternal(
 			outputLayerId,
 			sourceLayerId,
 			lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
-			content: literal<GraphicsContent>({
-				fileName: parsedCue.graphic.template,
-				path: parsedCue.graphic.template,
-				ignoreMediaObjectStatus: true,
-				timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
-					literal<TSR.TimelineObjVIZMSEElementInternal>({
-						id: '',
-						enable: GetEnableForGraphic(config, engine, parsedCue, isStickyIdent, partDefinition),
-						priority: 1,
-						layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
-						content: {
-							deviceType: TSR.DeviceType.VIZMSE,
-							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-							templateName: mappedTemplate,
-							templateData: parsedCue.graphic.textFields,
-							channelName: engine === 'WALL' ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
-						}
-					})
-				])
-			})
+			content
 		})
 		pieces.push(piece)
 
 		if (
-			sourceLayerId === SourceLayer.PgmGraphicsIdentPersistent &&
+			sourceLayerId === SharedSourceLayers.PgmGraphicsIdentPersistent &&
 			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
 			isStickyIdent
 		) {
@@ -144,7 +126,7 @@ export function EvaluateCueGraphicInternal(
 				literal<IBlueprintPiece>({
 					...piece,
 					enable: { ...CreateTimingGraphic(config, parsedCue, true) }, // Allow default out for visual representation
-					sourceLayerId: SourceLayer.PgmGraphicsIdent,
+					sourceLayerId: SharedSourceLayers.PgmGraphicsIdent,
 					lifespan: PieceLifespan.WithinPart,
 					content: {
 						timelineObjects: [

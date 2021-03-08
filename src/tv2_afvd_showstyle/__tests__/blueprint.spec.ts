@@ -389,7 +389,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart).toBeTruthy()
 		expect(fullPart.part.invalid).toBe(true)
 		expect(fullPart.pieces).toHaveLength(0)
-		expect(fullPart.adLibPieces).toHaveLength(1)
+		expect(fullPart.adLibPieces).toHaveLength(2)
 		expect(fullPart.actions).toHaveLength(0)
 	})
 

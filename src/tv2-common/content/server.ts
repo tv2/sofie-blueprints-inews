@@ -8,9 +8,8 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { ControlClasses, GetEnableClassForServer } from 'tv2-constants'
+import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { AbstractLLayer } from '../layers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
 

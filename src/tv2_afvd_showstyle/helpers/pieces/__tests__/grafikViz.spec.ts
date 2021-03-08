@@ -7,15 +7,8 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import {
-	AbstractLLayer,
-	CueDefinitionGraphic,
-	GraphicInternal,
-	GraphicLLayer,
-	literal,
-	PartDefinitionKam
-} from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
+import { CueDefinitionGraphic, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
+import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { BlueprintConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -165,8 +158,42 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay',
+				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
+				expectedDuration: 5000,
+				tags: [AdlibTags.ADLIB_KOMMENTATOR],
+				content: literal<GraphicsContent>({
+					fileName: 'bund',
+					path: 'bund',
+					ignoreMediaObjectStatus: true,
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
+								while: '!.full'
+							},
+							priority: 1,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'bund',
+								templateData: ['Odense', 'Copenhagen'],
+								channelName: 'OVL1'
+							}
+						})
+					])
+				})
+			}),
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: partId,
+				name: 'bund - Odense\n - Copenhagen',
+				lifespan: PieceLifespan.WithinPart,
+				outputLayerId: 'overlay',
+				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				expectedDuration: 4000,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -233,7 +260,41 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: 'overlay',
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay',
+				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
+				tags: [AdlibTags.ADLIB_KOMMENTATOR],
+				expectedDuration: 5000,
+				content: literal<GraphicsContent>({
+					fileName: 'bund',
+					path: 'bund',
+					ignoreMediaObjectStatus: true,
+					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'bund',
+								templateData: ['Odense', 'Copenhagen'],
+								channelName: 'OVL1'
+							}
+						})
+					])
+				})
+			}),
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: partId,
+				name: 'bund - Odense\n - Copenhagen',
+				lifespan: PieceLifespan.WithinPart,
+				outputLayerId: 'overlay',
+				sourceLayerId: SourceLayer.PgmGraphicsLower,
+				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				expectedDuration: 4000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',

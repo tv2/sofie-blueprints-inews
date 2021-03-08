@@ -7,12 +7,11 @@ import {
 	CueDefinitionUnpairedPilot,
 	CueDefinitionUnpairedTarget,
 	GraphicInternal,
-	GraphicLLayer,
 	GraphicPilot,
 	literal,
 	PartDefinition
 } from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
+import { CueType, GraphicLLayer, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { getConfig } from '../../tv2_afvd_showstyle/helpers/config'

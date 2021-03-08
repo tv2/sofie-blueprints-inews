@@ -7,7 +7,8 @@ import {
 	SegmentContext,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { CalculateTime, CueDefinitionGraphicDesign, GraphicLLayer, literal } from 'tv2-common'
+import { CalculateTime, CueDefinitionGraphicDesign, literal } from 'tv2-common'
+import { GraphicLLayer } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 

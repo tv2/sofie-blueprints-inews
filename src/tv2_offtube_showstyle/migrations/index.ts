@@ -1,11 +1,11 @@
 import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
-	GraphicLLayer,
 	literal,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
+import { GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { OfftubeSourceLayer } from '../layers'
 import {

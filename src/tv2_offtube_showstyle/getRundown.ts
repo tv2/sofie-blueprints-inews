@@ -25,12 +25,12 @@ import {
 	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
-	GraphicLLayer,
+	layerToHTMLGraphicSlot,
 	literal,
 	pgmDSKLayers,
 	SourceInfo
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	atemLLayersDSK,
@@ -43,7 +43,6 @@ import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosCh
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
-import { layerToHTMLGraphicSlot } from './helpers/html_graphics'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 

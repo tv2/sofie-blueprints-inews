@@ -5,8 +5,8 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { ActionClearGraphics, executeAction, GraphicLLayer, literal } from 'tv2-common'
-import { TallyTags } from 'tv2-constants'
+import { ActionClearGraphics, executeAction, literal } from 'tv2-common'
+import { GraphicLLayer, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'

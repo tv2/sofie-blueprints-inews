@@ -1,4 +1,4 @@
-import { AbstractLLayer, GraphicLLayer } from 'tv2-common'
+import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
