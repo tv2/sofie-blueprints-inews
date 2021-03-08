@@ -1,7 +1,7 @@
 import { PieceLifespan } from '@sofie-automation/blueprints-integration'
 import { GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { LifeSpan } from '../cueTiming'
+import { GetDefaultOut, LifeSpan } from '../cueTiming'
 import { CueDefinitionGraphic, GraphicInternalOrPilot, GraphicIsInternal, GraphicIsPilot } from '../inewsConversion'
 import { GraphicLLayer, SharedSourceLayers } from '../layers'
 
@@ -176,4 +176,36 @@ export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: str
 		default:
 			return GraphicLLayer.GraphicLLayerOverlay
 	}
+}
+
+export function GetGraphicDuration(
+	config: TV2BlueprintConfig,
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
+	defaultTime: boolean
+): number | undefined {
+	if (config.showStyle.GFXTemplates) {
+		if (GraphicIsInternal(cue)) {
+			const template = config.showStyle.GFXTemplates.find(templ =>
+				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.graphic.template.toUpperCase() : false
+			)
+			if (template) {
+				if (template.OutType && !template.OutType.toString().match(/default/i)) {
+					return undefined
+				}
+			}
+		} else if (GraphicIsPilot(cue)) {
+			const template = config.showStyle.GFXTemplates.find(templ =>
+				templ.INewsName
+					? templ.INewsName.toString().toUpperCase() === cue.graphic.vcpid.toString().toUpperCase()
+					: false
+			)
+			if (template) {
+				if (template.OutType && !template.OutType.toString().match(/default/i)) {
+					return undefined
+				}
+			}
+		}
+	}
+
+	return defaultTime ? GetDefaultOut(config) : undefined
 }

@@ -8,7 +8,7 @@ import {
 import {
 	CalculateTime,
 	CueDefinitionGraphic,
-	GetDefaultOut,
+	GetGraphicDuration,
 	GetInfiniteModeForGraphic,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
@@ -104,7 +104,7 @@ export function CreateTimingGrafik(
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
-	const duration = GetGrafikDuration(config, cue, defaultTime)
+	const duration = GetGraphicDuration(config, cue, defaultTime)
 	const end = cue.end
 		? cue.end.infiniteMode
 			? undefined
@@ -115,36 +115,4 @@ export function CreateTimingGrafik(
 	ret.duration = end ? end - ret.start : undefined
 
 	return ret
-}
-
-export function GetGrafikDuration(
-	config: BlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	defaultTime: boolean
-): number | undefined {
-	if (config.showStyle.GFXTemplates) {
-		if (GraphicIsInternal(cue)) {
-			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.graphic.template.toUpperCase() : false
-			)
-			if (template) {
-				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return undefined
-				}
-			}
-		} else if (GraphicIsPilot(cue)) {
-			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName
-					? templ.INewsName.toString().toUpperCase() === cue.graphic.vcpid.toString().toUpperCase()
-					: false
-			)
-			if (template) {
-				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return undefined
-				}
-			}
-		}
-	}
-
-	return defaultTime ? GetDefaultOut(config) : undefined
 }
