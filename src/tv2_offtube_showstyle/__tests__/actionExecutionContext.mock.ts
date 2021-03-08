@@ -294,4 +294,14 @@ export class MockActionContext implements ActionExecutionContext {
 	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
 		return undefined
 	}
+
+	public findLastScriptedPieceOnLayer(
+		_sourceLayerId: string,
+		_options?: {
+			excludeCurrentPart?: boolean
+			pieceMetaDataFilter?: any
+		}
+	): IBlueprintPiece | undefined {
+		return undefined
+	}
 }

@@ -21,6 +21,7 @@ import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
+import { AtemSourceIndex } from '../../../../types/atem'
 import { ShowStyleConfig } from '../../config'
 import { EvaluateTelefon } from '../telefon'
 
@@ -83,7 +84,17 @@ describe('telefon', () => {
 				sources: [],
 				mediaPlayers: [],
 				stickyLayers: [],
-				liveAudio: []
+				liveAudio: [],
+				dsk: {
+					1: {
+						Number: 1,
+						Fill: AtemSourceIndex.Col1,
+						Key: AtemSourceIndex.Blk,
+						Toggle: false,
+						DefaultOn: true,
+						FullSource: true
+					}
+				}
 			},
 			mockContext,
 			pieces,
