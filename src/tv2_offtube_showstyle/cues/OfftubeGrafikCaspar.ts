@@ -10,12 +10,11 @@ import {
 import {
 	AbstractLLayer,
 	ActionSelectFullGrafik,
-	CalculateTime,
 	CreateTimingEnable,
+	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	GetDefaultOut,
 	GetFullGraphicTemplateNameFromCue,
-	GetGraphicDuration,
 	GetInfiniteModeForGraphic,
 	GetSourceLayerForGraphic,
 	GetTagForFull,
@@ -121,7 +120,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 					...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
 						? {}
-						: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
+						: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
 					content: {
 						timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 					}
@@ -135,7 +134,7 @@ export function OfftubeEvaluateGrafikCaspar(
 					? { enable: { start: 0 } }
 					: {
 							enable: {
-								...CreateTimingGrafik(config, parsedCue)
+								...CreateTimingGraphic(config, parsedCue)
 							}
 					  }),
 				sourceLayerId,
@@ -143,7 +142,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isIdentGrafik),
 				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
-					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
+					: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
 				content: {
 					timelineObjects: GetCasparOverlayTimeline(config, engine, parsedCue, isIdentGrafik, partDefinition)
 				}
@@ -160,7 +159,7 @@ export function OfftubeEvaluateGrafikCaspar(
 				pieces.push(
 					literal<IBlueprintPiece>({
 						...piece,
-						enable: { ...CreateTimingGrafik(config, parsedCue, true) }, // Allow default out for visual representation
+						enable: { ...CreateTimingGraphic(config, parsedCue, true) }, // Allow default out for visual representation
 						sourceLayerId: OfftubeSourceLayer.PgmGraphicsIdent,
 						lifespan: PieceLifespan.WithinPart,
 						content: {
@@ -467,26 +466,4 @@ function GetEnableForGrafikOfftube(
 	return {
 		while: '!.full'
 	}
-}
-
-export function CreateTimingGrafik(
-	config: OfftubeShowstyleBlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	defaultTime: boolean = true
-): { start: number; duration?: number } {
-	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
-	const start = cue.start ? CalculateTime(cue.start) : 0
-	start !== undefined ? (ret.start = start) : (ret.start = 0)
-
-	const duration = GetGraphicDuration(config, cue, defaultTime)
-	const end = cue.end
-		? cue.end.infiniteMode
-			? undefined
-			: CalculateTime(cue.end)
-		: duration
-		? ret.start + duration
-		: undefined
-	ret.duration = end ? end - ret.start : undefined
-
-	return ret
 }

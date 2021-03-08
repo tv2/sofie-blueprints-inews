@@ -1,7 +1,7 @@
 import { PieceLifespan } from '@sofie-automation/blueprints-integration'
 import { GraphicEngine } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { GetDefaultOut, LifeSpan } from '../cueTiming'
+import { CalculateTime, GetDefaultOut, LifeSpan } from '../cueTiming'
 import { CueDefinitionGraphic, GraphicInternalOrPilot, GraphicIsInternal, GraphicIsPilot } from '../inewsConversion'
 import { GraphicLLayer, SharedSourceLayers } from '../layers'
 
@@ -208,4 +208,26 @@ export function GetGraphicDuration(
 	}
 
 	return defaultTime ? GetDefaultOut(config) : undefined
+}
+
+export function CreateTimingGraphic(
+	config: TV2BlueprintConfig,
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
+	defaultTime: boolean = true
+): { start: number; duration?: number } {
+	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
+	const start = cue.start ? CalculateTime(cue.start) : 0
+	start !== undefined ? (ret.start = start) : (ret.start = 0)
+
+	const duration = GetGraphicDuration(config, cue, defaultTime)
+	const end = cue.end
+		? cue.end.infiniteMode
+			? undefined
+			: CalculateTime(cue.end)
+		: duration
+		? ret.start + duration
+		: undefined
+	ret.duration = end ? end - ret.start : undefined
+
+	return ret
 }

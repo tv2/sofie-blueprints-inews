@@ -9,6 +9,7 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import {
 	AbstractLLayer,
+	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	GetDefaultOut,
 	GetFullGraphicTemplateNameFromCue,
@@ -24,7 +25,7 @@ import {
 } from 'tv2-common'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
-import { CreateTimingGrafik, GetEnableForGrafik } from './graphic'
+import { GetEnableForGrafik } from './graphic'
 
 export function EvaluateCueGraphicInternal(
 	config: BlueprintConfig,
@@ -71,7 +72,7 @@ export function EvaluateCueGraphicInternal(
 				outputLayerId,
 				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
 					? {}
-					: { expectedDuration: CreateTimingGrafik(config, parsedCue).duration || GetDefaultOut(config) }),
+					: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
 				content: literal<GraphicsContent>({
 					fileName: parsedCue.graphic.template,
@@ -103,7 +104,7 @@ export function EvaluateCueGraphicInternal(
 				? { enable: { start: 0 } }
 				: {
 						enable: {
-							...CreateTimingGrafik(config, parsedCue, !isStickyIdent)
+							...CreateTimingGraphic(config, parsedCue, !isStickyIdent)
 						}
 				  }),
 			outputLayerId,
@@ -142,7 +143,7 @@ export function EvaluateCueGraphicInternal(
 			pieces.push(
 				literal<IBlueprintPiece>({
 					...piece,
-					enable: { ...CreateTimingGrafik(config, parsedCue, true) }, // Allow default out for visual representation
+					enable: { ...CreateTimingGraphic(config, parsedCue, true) }, // Allow default out for visual representation
 					sourceLayerId: SourceLayer.PgmGraphicsIdent,
 					lifespan: PieceLifespan.WithinPart,
 					content: {

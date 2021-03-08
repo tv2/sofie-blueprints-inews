@@ -10,6 +10,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
+	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	FindFullSourceDSK,
 	FindInfiniteModeFromConfig,
@@ -30,7 +31,7 @@ import { GraphicEngine } from 'tv2-constants'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
-import { CreateTimingGrafik, GetEnableForGrafik } from './graphic'
+import { GetEnableForGrafik } from './graphic'
 
 export function EvaluateCueGraphicPilot(
 	config: BlueprintConfig,
@@ -69,7 +70,7 @@ export function EvaluateCueGraphicPilot(
 					? { enable: { start: 0 } }
 					: {
 							enable: {
-								...CreateTimingGrafik(config, parsedCue)
+								...CreateTimingGraphic(config, parsedCue)
 							}
 					  }),
 				outputLayerId: GetOutputLayer(engine),
@@ -90,7 +91,7 @@ function makeMosAdlib(
 	engine: GraphicEngine,
 	rank?: number
 ): IBlueprintAdLibPiece {
-	const duration = CreateTimingGrafik(config, parsedCue, false).duration
+	const duration = CreateTimingGraphic(config, parsedCue, false).duration
 	const lifespan = FindInfiniteModeFromConfig(config, parsedCue)
 	const name = GraphicDisplayName(config, parsedCue)
 	const sourceLayerId = GetSourceLayer(engine)
