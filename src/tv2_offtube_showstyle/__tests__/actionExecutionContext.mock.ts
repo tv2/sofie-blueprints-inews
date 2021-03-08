@@ -72,6 +72,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
+	IdleSisyfosLayers: [],
 	FullKeepAliveDuration: 1000,
 	FullGraphicURL: '',
 	ServerPostrollDuration: 5000,

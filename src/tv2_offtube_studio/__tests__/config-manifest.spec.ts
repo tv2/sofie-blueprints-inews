@@ -46,6 +46,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
+	IdleSisyfosLayers: [],
 	FullKeepAliveDuration: 0,
 	FullGraphicURL: '',
 	ServerPostrollDuration: 5000,
