@@ -27,7 +27,7 @@ import {
 	SisyfosEVSSource,
 	SourceInfo
 } from 'tv2-common'
-import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
+import { GraphicEngine, GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { BlueprintConfig } from '../config'
@@ -125,12 +125,12 @@ function GetSourceLayer(engine: GraphicEngine): SourceLayer {
 
 function GetOutputLayer(engine: GraphicEngine) {
 	return IsTargetingWall(engine)
-		? 'sec'
+		? SharedOutputLayers.SEC
 		: IsTargetingOVL(engine)
-		? 'overlay'
+		? SharedOutputLayers.OVERLAY
 		: IsTargetingFull(engine)
-		? 'pgm'
-		: 'overlay'
+		? SharedOutputLayers.PGM
+		: SharedOutputLayers.OVERLAY
 }
 
 function GetMosObjContent(

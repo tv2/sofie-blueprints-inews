@@ -17,6 +17,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 
 export function CreateEffektForPartBase(
@@ -113,7 +114,7 @@ export function CreateEffektForPartInner<
 			externalId,
 			name: label,
 			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
-			outputLayerId: 'jingle', // TODO: Enum
+			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: layers.sourceLayer,
 			lifespan: PieceLifespan.WithinPart,
 			isTransition: true,
@@ -215,7 +216,7 @@ export function CreateMixForPartInner(
 			externalId,
 			name: `MIX ${durationInFrames}`,
 			sourceLayerId: layers.sourceLayer,
-			outputLayerId: 'jingle',
+			outputLayerId: SharedOutputLayers.JINGLE,
 			lifespan: PieceLifespan.WithinPart,
 			content: {
 				ignoreMediaObjectStatus: true

@@ -7,7 +7,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
@@ -31,7 +31,7 @@ export function EvaluateCueBackgroundLoop(
 					_rank: rank || 0,
 					externalId: partId,
 					name: fileName,
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					content: literal<GraphicsContent>({
@@ -50,7 +50,7 @@ export function EvaluateCueBackgroundLoop(
 					enable: {
 						start
 					},
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmDVEBackground,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					content: literal<GraphicsContent>({
@@ -70,7 +70,7 @@ export function EvaluateCueBackgroundLoop(
 					_rank: rank || 0,
 					externalId: partId,
 					name: parsedCue.backgroundLoop,
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmFullBackground,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					content: literal<GraphicsContent>({
@@ -89,7 +89,7 @@ export function EvaluateCueBackgroundLoop(
 					enable: {
 						start
 					},
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmFullBackground,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					content: literal<GraphicsContent>({

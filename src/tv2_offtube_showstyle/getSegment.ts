@@ -9,6 +9,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { getSegmentBase, literal } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
@@ -62,7 +63,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				},
 				name: 'CONTINUITY',
 				sourceLayerId: OfftubeSourceLayer.PgmContinuity,
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<CameraContent>({
 					studioLabel: '',

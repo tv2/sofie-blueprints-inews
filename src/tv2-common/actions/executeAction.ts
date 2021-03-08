@@ -55,7 +55,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, CueType, TallyTags } from 'tv2-constants'
+import { AdlibActionType, CueType, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
@@ -113,10 +113,6 @@ export interface ActionExecutionSettings<
 		EVS?: string
 		/** Ident visual representation layer *not* the infinite layer */
 		Ident: string
-	}
-	OutputLayer: {
-		PGM: string
-		EFFEKT: string
 	}
 	LLayer: {
 		Caspar: {
@@ -536,7 +532,7 @@ function executeActionSelectDVE<
 			start,
 			...(end ? { duration: end - start } : {})
 		},
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: settings.SourceLayers.DVE,
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
@@ -712,7 +708,7 @@ function executeActionSelectDVELayout<
 			lifespan: PieceLifespan.WithinPart,
 			name: userData.config.DVEName,
 			sourceLayerId: settings.SourceLayers.DVEAdLib,
-			outputLayerId: settings.OutputLayer.PGM,
+			outputLayerId: SharedOutputLayers.PGM,
 			metaData: newMetaData,
 			content: content.content
 		})
@@ -913,7 +909,7 @@ function executeActionSelectJingle<
 			start: 0
 		},
 		lifespan: PieceLifespan.WithinPart,
-		outputLayerId: 'jingle',
+		outputLayerId: SharedOutputLayers.JINGLE,
 		sourceLayerId: settings.SourceLayers.Effekt,
 		content: pieceContent,
 		tags: [
@@ -1014,7 +1010,7 @@ function executeActionCutToCamera<
 		externalId,
 		name: part.title,
 		enable: { start: 0 },
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
@@ -1151,7 +1147,7 @@ function executeActionCutToRemote<
 			start: 0
 		},
 		sourceLayerId: settings.SourceLayers.Live,
-		outputLayerId: settings.OutputLayer.PGM,
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
 		metaData: GetEksternMetaData(
@@ -1433,7 +1429,7 @@ function executeActionTakeWithTransition<
 					externalId,
 					name: 'CUT',
 					sourceLayerId: settings.SourceLayers.Effekt,
-					outputLayerId: settings.OutputLayer.EFFEKT,
+					outputLayerId: SharedOutputLayers.JINGLE,
 					lifespan: PieceLifespan.WithinPart,
 					tags: [GetTagForTransition(userData.variant)]
 				}

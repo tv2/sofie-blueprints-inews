@@ -6,7 +6,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { ActionClearGraphics, executeAction, literal } from 'tv2-common'
-import { GraphicLLayer, TallyTags } from 'tv2-constants'
+import { GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'
@@ -47,10 +47,6 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				EVS: SourceLayer.PgmLocal,
 				Ident: SourceLayer.PgmGraphicsIdent,
 				Continuity: SourceLayer.PgmContinuity
-			},
-			OutputLayer: {
-				PGM: 'pgm',
-				EFFEKT: 'jingle'
 			},
 			LLayer: {
 				Caspar: {
@@ -108,7 +104,7 @@ function executeActionClearGraphics(context: ActionExecutionContext, _actionId: 
 			externalId: 'clearAllGFX',
 			name: userData.label,
 			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-			outputLayerId: 'sec',
+			outputLayerId: SharedOutputLayers.SEC,
 			lifespan: PieceLifespan.WithinPart,
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([

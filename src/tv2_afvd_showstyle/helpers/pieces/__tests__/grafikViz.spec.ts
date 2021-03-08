@@ -8,7 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinitionGraphic, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
-import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType } from 'tv2-constants'
+import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { BlueprintConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -92,7 +92,7 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -156,7 +156,7 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				expectedDuration: 5000,
@@ -189,7 +189,7 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				expectedDuration: 4000,
@@ -258,7 +258,7 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
@@ -291,7 +291,7 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
@@ -363,7 +363,7 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -434,7 +434,7 @@ describe('grafik piece', () => {
 					start: 10000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
@@ -502,7 +502,7 @@ describe('grafik piece', () => {
 					start: 0
 				},
 				lifespan: PieceLifespan.OutOnSegmentEnd,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdentPersistent,
 				content: literal<GraphicsContent>({
 					fileName: 'direkte',
@@ -534,7 +534,7 @@ describe('grafik piece', () => {
 					start: 0
 				},
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: {
 					timelineObjects: [
@@ -595,7 +595,7 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<GraphicsContent>({
 					fileName: 'arkiv',

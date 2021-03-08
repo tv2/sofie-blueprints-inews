@@ -9,6 +9,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { getSegmentBase, literal } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { StudioConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
@@ -65,7 +66,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				},
 				name: 'CONTINUITY',
 				sourceLayerId: SourceLayer.PgmContinuity,
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<CameraContent>({
 					studioLabel: '',

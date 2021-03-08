@@ -56,10 +56,6 @@ export function executeActionOfftube(
 				Ident: OfftubeSourceLayer.PgmGraphicsIdent,
 				Continuity: OfftubeSourceLayer.PgmContinuity
 			},
-			OutputLayer: {
-				PGM: OfftubeOutputLayers.PGM,
-				EFFEKT: OfftubeOutputLayers.JINGLE
-			},
 			LLayer: {
 				Caspar: {
 					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending,

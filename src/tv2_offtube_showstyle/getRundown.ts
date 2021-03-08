@@ -30,7 +30,7 @@ import {
 	pgmDSKLayers,
 	SourceInfo
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	atemLLayersDSK,
@@ -110,7 +110,7 @@ function getGlobalAdLibPiecesOfftube(
 					name: `DSK ${dsk.Number} OFF`,
 					_rank: 500 + dsk.Number,
 					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 					content: {
@@ -137,7 +137,7 @@ function getGlobalAdLibPiecesOfftube(
 					name: `DSK ${dsk.Number} ON`,
 					_rank: 500 + dsk.Number,
 					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 					content: {
@@ -200,7 +200,7 @@ function getGlobalAdlibActionsOfftube(
 					_rank: rank,
 					label: `KAM ${info.id}`,
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					content: {},
 					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
 					currentPieceTags: [GetTagForKam(info.id)],
@@ -278,7 +278,7 @@ function getGlobalAdlibActionsOfftube(
 						_rank: rank + 0.1 * box,
 						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`,
 						sourceLayerId: layer,
-						outputLayerId: 'sec',
+						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
 						tags: []
 					}
@@ -305,7 +305,7 @@ function getGlobalAdlibActionsOfftube(
 						_rank: rank + 0.1 * box,
 						label: `Server to box ${box + 1}`,
 						sourceLayerId: layer,
-						outputLayerId: 'sec',
+						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
 						tags: []
 					}
@@ -402,7 +402,7 @@ function getGlobalAdlibActionsOfftube(
 					_rank: 200 + i,
 					label: dveConfig.DVEName,
 					sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
-					outputLayerId: 'pgm'
+					outputLayerId: SharedOutputLayers.PGM
 				}
 			})
 		)
@@ -440,7 +440,7 @@ function getGlobalAdlibActionsOfftube(
 				_rank: 1,
 				label: 'Last Live',
 				sourceLayerId: OfftubeSourceLayer.PgmLive,
-				outputLayerId: 'pgm'
+				outputLayerId: SharedOutputLayers.PGM
 			}
 		})
 	)

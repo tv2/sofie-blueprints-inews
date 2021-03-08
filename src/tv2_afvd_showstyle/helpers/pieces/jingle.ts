@@ -13,6 +13,7 @@ import {
 	literal,
 	PartDefinition
 } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -65,7 +66,7 @@ export function EvaluateJingle(
 				externalId: `${part.externalId}-JINGLE-adlib`,
 				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 				sourceLayerId: SourceLayer.PgmJingle,
-				outputLayerId: 'jingle',
+				outputLayerId: SharedOutputLayers.JINGLE,
 				lifespan: PieceLifespan.WithinPart,
 				content: createJingleContentAFVD(config, file, jingle.StartAlpha, jingle.LoadFirstFrame),
 				toBeQueued: true,
@@ -85,7 +86,7 @@ export function EvaluateJingle(
 					start: 0
 				},
 				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: 'jingle',
+				outputLayerId: SharedOutputLayers.JINGLE,
 				sourceLayerId: SourceLayer.PgmJingle,
 				content: createJingleContentAFVD(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
 			})

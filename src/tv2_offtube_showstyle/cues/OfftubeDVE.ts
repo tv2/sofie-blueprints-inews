@@ -20,7 +20,7 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -83,7 +83,7 @@ export function OfftubeEvaluateDVE(
 					start,
 					...(end ? { duration: end - start } : {})
 				},
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				lifespan: PieceLifespan.WithinPart,
 				toBeQueued: true,

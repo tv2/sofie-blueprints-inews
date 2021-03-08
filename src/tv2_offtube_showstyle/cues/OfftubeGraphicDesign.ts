@@ -8,7 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, literal } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -35,7 +35,7 @@ export function OfftubeEvaluateGraphicDesign(
 				_rank: rank || 0,
 				externalId: partId,
 				name: parsedCue.design,
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDesign,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
@@ -54,7 +54,7 @@ export function OfftubeEvaluateGraphicDesign(
 				enable: {
 					start
 				},
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDesign,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({

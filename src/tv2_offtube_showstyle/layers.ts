@@ -1,4 +1,4 @@
-import { SharedSourceLayers } from 'tv2-constants'
+import { SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 
 export enum SourceLayer {
 	// Pgm
@@ -28,11 +28,14 @@ export const OfftubeSourceLayer = {
 }
 export type OfftubeSourceLayer = SourceLayer | SharedSourceLayers
 
-export enum OfftubeOutputLayers {
-	SEC = 'sec',
-	OVERLAY = 'overlay',
-	JINGLE = 'jingle',
-	SELECTED_ADLIB = 'selectedAdlib',
-	AUX = 'aux',
-	PGM = 'pgm'
+enum OutputLayers {
+	SELECTED_ADLIB = 'selectedAdlib'
 }
+
+// tslint:disable-next-line: variable-name
+export const OfftubeOutputLayers = {
+	...OutputLayers,
+	...SharedOutputLayers
+}
+
+export type OfftubeOutputLayers = OutputLayers | SharedOutputLayers

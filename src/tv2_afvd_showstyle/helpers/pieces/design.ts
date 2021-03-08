@@ -8,7 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, literal } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
@@ -36,7 +36,7 @@ export function EvaluateCueDesign(
 				_rank: rank || 0,
 				externalId: partId,
 				name: parsedCue.design,
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: SourceLayer.PgmDesign,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
@@ -68,7 +68,7 @@ export function EvaluateCueDesign(
 				enable: {
 					start
 				},
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: SourceLayer.PgmDesign,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({

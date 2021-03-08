@@ -138,7 +138,11 @@ export enum AbstractLLayer {
 
 export enum SharedOutputLayers {
 	OVERLAY = 'overlay',
-	SEC = 'sec'
+	SEC = 'sec',
+	PGM = 'pgm',
+	JINGLE = 'jingle',
+	MANUS = 'manus',
+	AUX = 'aux'
 }
 
 export enum SharedSourceLayers {
