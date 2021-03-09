@@ -130,6 +130,8 @@ export function CreateEffektForPartInner<
 				lastWords: '',
 				previewFrame: Number(effektConfig.StartAlpha),
 				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
+				ignoreBlackFrames: true,
+				ignoreFreezeFrame: true,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
