@@ -108,6 +108,8 @@ export function CreateEffektForPartInner<
 		return false
 	}
 
+	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : ''
+
 	pieces.push(
 		literal<IBlueprintPiece>({
 			externalId,
@@ -119,11 +121,15 @@ export function CreateEffektForPartInner<
 			isTransition: true,
 			content: literal<VTContent>({
 				studioLabel: '',
-				fileName: file,
-				path: file,
+				fileName,
+				path: `${config.studio.NetworkBasePathJingle}\\${
+					config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
+				}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
+				mediaFlowIds: [config.studio.JingleMediaFlowId],
 				firstWords: '',
 				lastWords: '',
-				ignoreMediaObjectStatus: true,
+				previewFrame: Number(effektConfig.StartAlpha),
+				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
@@ -135,7 +141,7 @@ export function CreateEffektForPartInner<
 						content: {
 							deviceType: TSR.DeviceType.CASPARCG,
 							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file
+							file: fileName
 						}
 					}),
 					literal<TSR.TimelineObjAtemDSK>({
@@ -217,9 +223,6 @@ export function CreateMixForPartInner(
 			sourceLayerId: layers.sourceLayer,
 			outputLayerId: 'jingle',
 			lifespan: PieceLifespan.WithinPart,
-			content: {
-				ignoreMediaObjectStatus: true
-			},
 			tags: [
 				GetTagForTransition(
 					literal<ActionTakeWithTransitionVariantMix>({

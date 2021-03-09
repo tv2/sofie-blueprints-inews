@@ -53,7 +53,8 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string,
 		mediaFlowIds: [config.studio.ClipMediaFlowId],
 		firstWords: '',
 		lastWords: '',
-		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined
+		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined,
+		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus
 	})
 }
 

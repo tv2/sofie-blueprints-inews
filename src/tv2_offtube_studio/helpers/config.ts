@@ -32,6 +32,8 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	GraphicMediaFlowId: string
 	NetworkBasePathGraphic: string
 	GraphicFileExtension: string
+	GraphicFolder?: string
+	GraphicIgnoreStatus: boolean
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {

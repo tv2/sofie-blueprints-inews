@@ -25,10 +25,16 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	JingleMediaFlowId: '',
 	JingleFileExtension: '',
 	ClipFileExtension: 'mxf',
+	GraphicFileExtension: '.png',
 	NetworkBasePathClip: '/',
 	NetworkBasePathGraphic: '/',
 	NetworkBasePathJingle: '/',
-	GraphicFileExtension: '.png',
+	ClipFolder: '',
+	GraphicFolder: '',
+	JingleFolder: '',
+	GraphicIgnoreStatus: false,
+	JingleIgnoreStatus: false,
+	ClipIgnoreStatus: false,
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],

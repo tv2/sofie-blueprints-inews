@@ -342,9 +342,9 @@ export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = {
 }
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
-	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf'),
-	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov'),
-	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png'),
+	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
+	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov', 'jingler', false),
+	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png', '', false),
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
 	manifestOfftubeSourcesSkype,
