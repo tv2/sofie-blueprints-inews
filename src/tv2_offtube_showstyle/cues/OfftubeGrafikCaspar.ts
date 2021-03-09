@@ -299,7 +299,7 @@ export function CreateFullContent(
 ): GraphicsContent {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
 	return literal<GraphicsContent>({
-		fileName: `${graphicFolder}/${parsedCue.graphic.name}`,
+		fileName: `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`,
 		path: `${config.studio.NetworkBasePathGraphic}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
 		ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
@@ -323,7 +323,9 @@ export function CreateFullContent(
 								'250_full': {
 									payload: {
 										type: 'still',
-										url: `${config.studio.FullGraphicURL}/${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
+										url: `${config.studio.FullGraphicURL}/${graphicFolder.replace('\\', '/')}${parsedCue.graphic.name}${
+											config.studio.GraphicFileExtension
+										}`
 									}
 								}
 							}
