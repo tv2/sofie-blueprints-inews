@@ -504,6 +504,18 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 1
 	},
 	{
+		id: 'IdleSisyfosLayers',
+		name: 'Idle Sisyfos Layers',
+		description: 'Sisyfos Layers active (fader on PGM level) when studio is off-air',
+		type: ConfigManifestEntryType.LAYER_MAPPINGS,
+		filters: {
+			deviceTypes: [TSR.DeviceType.SISYFOS]
+		},
+		multiple: true,
+		defaultVal: [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo, OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround],
+		required: false
+	},
+	{
 		id: 'FullKeepAliveDuration',
 		name: 'Full Keep Alive Duration',
 		description: 'How long to keep the old part alive when going to a full',
