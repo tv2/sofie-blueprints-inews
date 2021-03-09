@@ -303,6 +303,8 @@ export function CreateFullContent(
 		path: `${config.studio.NetworkBasePathGraphic}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
 		ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate>({
 				id: '',

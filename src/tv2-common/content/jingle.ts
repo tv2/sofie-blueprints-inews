@@ -41,6 +41,8 @@ export function CreateJingleContentBase<
 		lastWords: '',
 		previewFrame: alphaAtStart,
 		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
