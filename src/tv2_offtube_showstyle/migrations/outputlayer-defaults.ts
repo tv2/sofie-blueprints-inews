@@ -24,7 +24,7 @@ export default literal<IOutputLayer[]>([
 		isFlattened: true
 	},
 	{
-		_id: 'selectedAdlib',
+		_id: SharedOutputLayers.SELECTED_ADLIB,
 		name: 'ADLIB',
 		isPGM: false,
 		_rank: 30,

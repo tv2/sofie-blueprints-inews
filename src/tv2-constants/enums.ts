@@ -157,6 +157,8 @@ export enum SharedSourceLayers {
 	PgmDVEAdLib = 'studio0_dve_adlib',
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',
+	PgmContinuity = 'studio0_continuity',
+	PgmJingle = 'studio0_jingle',
 
 	// Graphics
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
@@ -185,7 +187,7 @@ export enum SharedSourceLayers {
 	// Selected Sources
 	SelectedServer = 'studio0_selected_clip',
 	SelectedVoiceOver = 'studio0_selected_voiceover',
-	SelectedAdlibGraphicsFull = 'studio0_offtube_graphicsFull',
+	SelectedAdlibGraphicsFull = 'studio0_selected_graphicsFull',
 
 	// Other / sec / manus
 	PgmScript = 'studio0_script',

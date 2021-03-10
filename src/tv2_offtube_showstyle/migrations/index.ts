@@ -1,11 +1,13 @@
 import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
 	literal,
+	removeSourceLayer,
+	renameSourceLayer,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { OfftubeSourceLayer } from '../layers'
 import {
@@ -83,7 +85,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.3.8
 	 * - Remove Clear Shortcut from FULL graphic layer
 	 */
-	forceSourceLayerToDefaults('1.3.8', OfftubeSourceLayer.PgmFull),
 	forceSourceLayerToDefaults('1.3.8', OfftubeSourceLayer.PgmDVE),
 
 	/**
@@ -98,6 +99,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Live shortcuts (recall last live)
 	 */
 	forceSourceLayerToDefaults('1.4.6', OfftubeSourceLayer.PgmLive),
+
+	renameSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_graphicsFull', SharedSourceLayers.SelectedAdlibGraphicsFull),
+	renameSourceLayer('1.5.0', 'Offtube', 'studio0_full', SharedSourceLayers.PgmPilot),
+	renameSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_continuity', SharedSourceLayers.PgmContinuity),
+	removeSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_pgm_source_select'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
