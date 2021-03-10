@@ -15,10 +15,18 @@ const mockStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
 	ClipMediaFlowId: '',
+	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',
 	JingleFileExtension: '',
+	ClipFileExtension: 'mxf',
+	GraphicFileExtension: '.png',
+	ClipNetworkBasePath: '/',
+	GraphicNetworkBasePath: '/',
+	JingleNetworkBasePath: '/',
 	ClipFolder: '',
+	GraphicFolder: '',
 	JingleFolder: '',
+	GraphicIgnoreStatus: false,
 	JingleIgnoreStatus: false,
 	ClipIgnoreStatus: false,
 	SourcesCam: [
@@ -78,12 +86,25 @@ const mockStudioConfig: StudioConfig = {
 	PreventOverlayWithFull: true,
 	ATEMDelay: 0,
 	CasparPrerollDuration: 280,
-	ClipFileExtension: 'mxf',
-	NetworkBasePathClip: '/',
-	NetworkBasePathJingle: '',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
-	ServerPostrollDuration: 3000
+	ServerPostrollDuration: 3000,
+	GraphicsType: 'HTML',
+	VizPilotGraphics: {
+		KeepAliveDuration: 1000,
+		PrerollDuration: 1000,
+		OutTransitionDuration: 1000,
+		CutToMediaPlayer: 1000
+	},
+	CasparGraphics: {
+		GraphicURL: '',
+		KeepAliveDuration: 1000,
+		TransitionSettings: {
+			wipeRate: 20,
+			borderSoftness: 7500,
+			loopOutTransitionDuration: 120
+		}
+	}
 }
 
 const mockShowStyleConfig: ShowStyleConfig = {

@@ -11,7 +11,6 @@ export enum SourceLayer {
 	// TODO: These will be removed by adlib actions
 	// Adlib selection
 	SelectedAdLibDVE = 'studio0_offtube_dve',
-	SelectedAdlibGraphicsFull = 'studio0_offtube_graphicsFull',
 	SelectedAdlibJingle = 'studio0_offtube_jingle',
 
 	PgmContinuity = 'studio0_offtube_continuity',
@@ -28,9 +27,7 @@ export const OfftubeSourceLayer = {
 }
 export type OfftubeSourceLayer = SourceLayer | SharedSourceLayers
 
-enum OutputLayers {
-	SELECTED_ADLIB = 'selectedAdlib'
-}
+enum OutputLayers {}
 
 // tslint:disable-next-line: variable-name
 export const OfftubeOutputLayers = {

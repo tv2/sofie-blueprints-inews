@@ -206,7 +206,6 @@ const selectLiveAction = literal<ActionCutToRemote>({
 
 const selectFullGrafikAction = literal<ActionSelectFullGrafik>({
 	type: AdlibActionType.SELECT_FULL_GRAFIK,
-	segmentExternalId: 'TEST STORY 3',
 	name: 'scoreboard',
 	vcpid: 1234567890
 })

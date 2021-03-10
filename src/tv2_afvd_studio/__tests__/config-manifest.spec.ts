@@ -6,10 +6,18 @@ const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
 	ClipMediaFlowId: '',
+	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',
 	JingleFileExtension: '',
-	JingleFolder: '',
+	ClipFileExtension: 'mxf',
+	GraphicFileExtension: '.png',
+	ClipNetworkBasePath: '/',
+	GraphicNetworkBasePath: '/',
+	JingleNetworkBasePath: '/',
 	ClipFolder: '',
+	GraphicFolder: '',
+	JingleFolder: '',
+	GraphicIgnoreStatus: false,
 	JingleIgnoreStatus: false,
 	ClipIgnoreStatus: false,
 	SourcesCam: [],
@@ -54,13 +62,26 @@ const blankStudioConfig: StudioConfig = {
 	PilotCutToMediaPlayer: 0,
 	PilotOutTransitionDuration: 0,
 	PreventOverlayWithFull: true,
-	ClipFileExtension: 'mxf',
-	NetworkBasePathClip: '/',
-	NetworkBasePathJingle: '/',
 	ATEMDelay: 1,
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
-	ServerPostrollDuration: 5000
+	ServerPostrollDuration: 5000,
+	GraphicsType: 'HTML',
+	VizPilotGraphics: {
+		KeepAliveDuration: 1000,
+		PrerollDuration: 1000,
+		OutTransitionDuration: 1000,
+		CutToMediaPlayer: 1000
+	},
+	CasparGraphics: {
+		GraphicURL: '',
+		KeepAliveDuration: 1000,
+		TransitionSettings: {
+			wipeRate: 20,
+			borderSoftness: 7500,
+			loopOutTransitionDuration: 120
+		}
+	}
 }
 
 function getObjectKeys(obj: any): string[] {

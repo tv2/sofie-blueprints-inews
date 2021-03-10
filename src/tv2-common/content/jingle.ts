@@ -33,7 +33,7 @@ export function CreateJingleContentBase<
 	return literal<VTContent>({
 		studioLabel: '',
 		fileName,
-		path: `${config.studio.NetworkBasePathJingle}\\${
+		path: `${config.studio.JingleNetworkBasePath}\\${
 			config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
 		}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],

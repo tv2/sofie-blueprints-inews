@@ -1,10 +1,21 @@
 export * from './slotMappings'
 
-import { IBlueprintPiece, TSR } from '@sofie-automation/blueprints-integration'
-import { CueDefinitionGraphic, GraphicInternal, literal, PartDefinition, TV2BlueprintConfig } from 'tv2-common'
-import { GraphicEngine } from 'tv2-constants'
+import { GraphicsContent, IBlueprintPiece, TSR } from '@sofie-automation/blueprints-integration'
+import {
+	CueDefinitionGraphic,
+	GraphicInternal,
+	GraphicPilot,
+	literal,
+	PartDefinition,
+	TV2BlueprintConfig
+} from 'tv2-common'
+import { GraphicEngine, GraphicLLayer, SharedATEMLLayer } from 'tv2-constants'
 import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
+
+export interface CasparPilotGeneratorSettings {
+	createPilotTimelineForStudio(config: TV2BlueprintConfig): TSR.TSRTimelineObj[]
+}
 
 export function GetInternalGraphicContentCaspar(
 	config: TV2BlueprintConfig,
@@ -17,6 +28,84 @@ export function GetInternalGraphicContentCaspar(
 	return {
 		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, isIdentGraphic, partDefinition, mappedTemplate)
 	}
+}
+
+export function GetPilotGraphicContentCaspar(
+	config: TV2BlueprintConfig,
+	parsedCue: CueDefinitionGraphic<GraphicPilot>,
+	settings: CasparPilotGeneratorSettings
+) {
+	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
+	return literal<GraphicsContent>({
+		fileName: `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`,
+		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
+		mediaFlowIds: [config.studio.GraphicMediaFlowId],
+		ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
+		timelineObjects: [
+			literal<TSR.TimelineObjCCGTemplate>({
+				id: '',
+				enable: {
+					while: '1'
+				},
+				priority: 100,
+				layer: GraphicLLayer.GraphicLLayerPilot,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+					templateType: 'html',
+					name: 'sport-overlay/index',
+					data: `<templateData>${encodeURI(
+						JSON.stringify({
+							display: 'program',
+							slots: {
+								'250_full': {
+									payload: {
+										type: 'still',
+										url: `${config.studio.CasparGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
+									}
+								}
+							}
+						})
+					)}</templateData>`,
+					useStopCommand: false,
+					mixer: {
+						opacity: 100
+					}
+				}
+			}),
+			literal<TSR.TimelineObjAtemDSK>({
+				id: '',
+				enable: {
+					start: Number(config.studio.CasparPrerollDuration)
+				},
+				priority: 1,
+				layer: SharedATEMLLayer.AtemDSKGraphics,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.DSK,
+					dsk: {
+						onAir: true,
+						sources: {
+							fillSource: config.studio.AtemSource.JingleFill,
+							cutSource: config.studio.AtemSource.JingleKey
+						},
+						properties: {
+							preMultiply: true,
+							clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
+							gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
+							mask: {
+								enabled: false
+							}
+						}
+					}
+				},
+				classes: ['MIX_MINUS_OVERRIDE_DSK']
+			}),
+			...settings.createPilotTimelineForStudio(config)
+		]
+	})
 }
 
 function CasparOverlayTimeline(

@@ -127,7 +127,7 @@ export enum GraphicLLayer {
 	GraphicLLayerDesign = 'graphic_design', // <= viz_layer_design
 	GraphicLLayerFullLoop = 'graphic_full_loop',
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
-	GraphicLLayerWall = 'graphic_wall' // <= viz_layer_wall
+	GraphicLLayerWall = 'graphic_wall' // <= viz_layer_wall,
 }
 
 export enum AbstractLLayer {
@@ -136,13 +136,18 @@ export enum AbstractLLayer {
 	IdentMarker = 'ident_marker'
 }
 
+export enum SharedATEMLLayer {
+	AtemDSKGraphics = 'atem_dsk_graphics'
+}
+
 export enum SharedOutputLayers {
 	OVERLAY = 'overlay',
 	SEC = 'sec',
 	PGM = 'pgm',
 	JINGLE = 'jingle',
 	MANUS = 'manus',
-	AUX = 'aux'
+	AUX = 'aux',
+	SELECTED_ADLIB = 'selectedAdlib'
 }
 
 export enum SharedSourceLayers {
@@ -161,6 +166,10 @@ export enum SharedSourceLayers {
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
 	PgmGraphicsTema = 'studio0_graphicsTema',
 	PgmGraphicsTLF = 'studio0_graphicsTelefon',
+	// "Full" / "Pilot" graphics
+	PgmPilot = 'studio0_pilot',
+	PgmPilotOverlay = 'studio0_pilotOverlay',
+	// "Design" templates
 	PgmDesign = 'studio0_design',
 
 	/** General, 'fallback', overlay layer */
@@ -176,6 +185,7 @@ export enum SharedSourceLayers {
 	// Selected Sources
 	SelectedServer = 'studio0_selected_clip',
 	SelectedVoiceOver = 'studio0_selected_voiceover',
+	SelectedAdlibGraphicsFull = 'studio0_offtube_graphicsFull',
 
 	// Other / sec / manus
 	PgmScript = 'studio0_script',

@@ -38,16 +38,27 @@ export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
 	CasparPrerollDuration: number
-	NetworkBasePathClip: string
-	NetworkBasePathJingle: string
+
+	/** MEDIA WORKFLOWS */
+	/* Clip */
+	ClipNetworkBasePath: string
 	ClipMediaFlowId: string
 	ClipFileExtension: string
 	ClipFolder?: string
 	ClipIgnoreStatus: boolean
+	/* Jingle */
+	JingleNetworkBasePath: string
 	JingleMediaFlowId: string
 	JingleFileExtension: string
 	JingleFolder?: string
 	JingleIgnoreStatus: boolean
+	/* Graphic */
+	GraphicFileExtension: string
+	GraphicMediaFlowId: string
+	GraphicNetworkBasePath: string
+	GraphicFolder?: string
+	GraphicIgnoreStatus: boolean
+
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		Default: number
@@ -68,6 +79,21 @@ export interface TV2StudioConfigBase {
 	PreventOverlayWithFull?: boolean
 	ServerPostrollDuration: number
 	GraphicsType: 'HTML' | 'VIZ'
+	CasparGraphics: {
+		GraphicURL: string
+		TransitionSettings: {
+			wipeRate: number
+			borderSoftness: number
+			loopOutTransitionDuration: number
+		}
+		KeepAliveDuration: number
+	}
+	VizPilotGraphics: {
+		KeepAliveDuration: number
+		PrerollDuration: number
+		OutTransitionDuration: number
+		CutToMediaPlayer: number
+	}
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
@@ -87,6 +113,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	GFXTemplates: TableConfigItemGFXTemplates[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
+	MakeAdlibsForFulls: boolean
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>
