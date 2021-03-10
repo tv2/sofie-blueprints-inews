@@ -58,9 +58,17 @@ export function CreatePilotGraphic(
 
 	const engine = parsedCue.target
 
-	actions.push(CreatePilotAdLibAction(config, context, partId, parsedCue, engine, settings, adlib, adlibRank))
-	pieces.push(CreateFullPiece(config, context, partId, parsedCue, engine, settings, adlib, adlibRank))
-	pieces.push(CreateFullDataStore(config, context, settings, parsedCue, engine, partId, adlib, adlibRank))
+	if (IsTargetingFull(engine)) {
+		actions.push(CreatePilotAdLibAction(config, context, partId, parsedCue, engine, settings, adlib, adlibRank))
+	}
+
+	if (!adlib) {
+		pieces.push(CreateFullPiece(config, context, partId, parsedCue, engine, settings, adlib, adlibRank))
+	}
+
+	if (IsTargetingFull(engine)) {
+		pieces.push(CreateFullDataStore(config, context, settings, parsedCue, engine, partId, adlib, adlibRank))
+	}
 }
 
 function CreatePilotAdLibAction(

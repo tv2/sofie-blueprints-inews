@@ -2,8 +2,6 @@ import { SharedSourceLayers } from 'tv2-constants'
 
 export enum AFVDSourceLayer {
 	// Pgm
-	PgmCam = 'studio0_camera',
-	PgmLive = 'studio0_live',
 	PgmDVE = 'studio0_dve',
 	PgmServer = 'studio0_clip',
 	PgmVoiceOver = 'studio0_voiceover',

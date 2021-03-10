@@ -46,9 +46,9 @@ export function CreatePartGrafik(
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
-	part.prerollDuration = config.studio.PilotPrerollDuration
-	part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
-		? Number(config.studio.PilotKeepaliveDuration)
+	part.prerollDuration = config.studio.VizPilotGraphics.PrerollDuration
+	part.transitionKeepaliveDuration = config.studio.VizPilotGraphics.KeepAliveDuration
+		? Number(config.studio.VizPilotGraphics.KeepAliveDuration)
 		: 60000
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
