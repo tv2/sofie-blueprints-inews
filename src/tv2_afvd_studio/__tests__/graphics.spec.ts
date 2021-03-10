@@ -137,12 +137,12 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(context, config, partDefinition, 0)
-		expect(result.pieces).toHaveLength(1)
+		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.PilotPrerollDuration)
+		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -159,7 +159,7 @@ describe('Graphics', () => {
 		expect(vizObj.content.delayTakeAfterOutTransition).toBe(true)
 		expect(vizObj.content.outTransition).toEqual({
 			type: TSR.VIZMSETransitionType.DELAY,
-			delay: config.studio.PilotOutTransitionDuration
+			delay: config.studio.VizPilotGraphics.OutTransitionDuration
 		})
 		expect(vizObj.classes).toEqual(['full'])
 	})
@@ -207,7 +207,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
-		expect(piece.adlibPreroll).toBe(config.studio.PilotPrerollDuration)
+		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -223,7 +223,7 @@ describe('Graphics', () => {
 		expect(vizObj.content.continueStep).toBe(-1)
 		expect(vizObj.content.delayTakeAfterOutTransition).toBe(true)
 		expect(vizObj.content.outTransition).toEqual({
-			delay: config.studio.PilotOutTransitionDuration,
+			delay: config.studio.VizPilotGraphics.OutTransitionDuration,
 			type: TSR.VIZMSETransitionType.DELAY
 		})
 	})
@@ -265,7 +265,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.PilotPrerollDuration)
+		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -315,12 +315,12 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(context, config, partDefinition, 0)
-		expect(result.pieces).toHaveLength(1)
+		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.PilotPrerollDuration)
+		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -337,7 +337,7 @@ describe('Graphics', () => {
 		expect(vizObj.content.delayTakeAfterOutTransition).toBe(true)
 		expect(vizObj.content.outTransition).toEqual({
 			type: TSR.VIZMSETransitionType.DELAY,
-			delay: config.studio.PilotOutTransitionDuration
+			delay: config.studio.VizPilotGraphics.OutTransitionDuration
 		})
 		expect(vizObj.classes).toEqual(['full'])
 	})
@@ -380,8 +380,8 @@ describe('Graphics', () => {
 		})
 
 		const result = CreatePartGrafik(context, config, partDefinition, 0)
-		expect(result.pieces).toHaveLength(2)
-		const auxPiece = result.pieces.find(p => p.outputLayerId === 'aux')! // TODO: AUX
+		expect(result.pieces).toHaveLength(3)
+		const auxPiece = result.pieces.find(p => p.outputLayerId === SharedOutputLayers.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
 		expect(auxPiece.sourceLayerId).toBe(SourceLayer.VizFullIn1)
 		expect(auxPiece.lifespan).toBe(PieceLifespan.WithinPart)
@@ -423,7 +423,7 @@ describe('Graphics', () => {
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
-		expect(piece.outputLayerId).toBe('sec')
+		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDesign)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		expect(piece.enable).toEqual({ start: 0 })
@@ -460,7 +460,7 @@ describe('Graphics', () => {
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.name).toBe('DESIGN_SC')
-		expect(piece.outputLayerId).toBe('sec')
+		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
@@ -512,7 +512,7 @@ describe('Graphics', () => {
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.enable).toEqual({ start: 5000, duration: 4000 })
-		expect(piece.outputLayerId).toBe('overlay')
+		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsLower)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
