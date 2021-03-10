@@ -62,7 +62,7 @@ export function CreatePilotGraphic(
 		actions.push(CreatePilotAdLibAction(config, context, partId, parsedCue, engine, settings, adlib, adlibRank))
 	}
 
-	if (!adlib) {
+	if (!(IsTargetingOVL(engine) && adlib)) {
 		pieces.push(CreateFullPiece(config, context, partId, parsedCue, engine, settings, adlib, adlibRank))
 	}
 
