@@ -67,6 +67,7 @@ export const defaultStudioConfig: StudioConfig = {
 	MaximumPartDuration: 10000,
 	DefaultPartDuration: 4000,
 	ServerPostrollDuration: 3000,
+	PreventOverlayWithFull: true,
 	SourcesCam: prepareConfig(
 		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15',
 		'SourcesCam',
@@ -118,7 +119,7 @@ export const defaultStudioConfig: StudioConfig = {
 		volume: 80
 	},
 	CasparPrerollDuration: 280,
-	GraphicsType: 'HTML',
+	GraphicsType: 'VIZ',
 	VizPilotGraphics: {
 		KeepAliveDuration: 700,
 		PrerollDuration: 2000,
