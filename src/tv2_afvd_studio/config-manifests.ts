@@ -601,8 +601,8 @@ export const manifestAFVDDownstreamKeyers: ConfigManifestEntryTable = {
 }
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
-	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf'),
-	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov'),
+	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
+	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov', '', true),
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesDelayedPlayback,

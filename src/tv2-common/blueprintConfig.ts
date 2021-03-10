@@ -42,8 +42,12 @@ export interface TV2StudioConfigBase {
 	NetworkBasePathJingle: string
 	ClipMediaFlowId: string
 	ClipFileExtension: string
+	ClipFolder?: string
+	ClipIgnoreStatus: boolean
 	JingleMediaFlowId: string
 	JingleFileExtension: string
+	JingleFolder?: string
+	JingleIgnoreStatus: boolean
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		Default: number

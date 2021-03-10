@@ -124,10 +124,14 @@ export function CreateFullContent(
 	config: OfftubeShowstyleBlueprintConfig,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 ): GraphicsContent {
-	return {
-		fileName: parsedCue.graphic.name,
-		path: `${config.studio.NetworkBasePathGraphic}\\${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`, // full path on the source network storage, TODO: File extension
+	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
+	return literal<GraphicsContent>({
+		fileName: `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`,
+		path: `${config.studio.NetworkBasePathGraphic}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
+		ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate>({
 				id: '',
@@ -148,7 +152,9 @@ export function CreateFullContent(
 								'250_full': {
 									payload: {
 										type: 'still',
-										url: `${config.studio.FullGraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
+										url: `${config.studio.FullGraphicURL}/${graphicFolder.replace('\\', '/')}${parsedCue.graphic.name}${
+											config.studio.GraphicFileExtension
+										}`
 									}
 								}
 							}
@@ -249,5 +255,5 @@ export function CreateFullContent(
 				classes: ['ab_on_preview']
 			})
 		]
-	}
+	})
 }

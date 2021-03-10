@@ -8,15 +8,15 @@ export interface SisyfosChannel {
 export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel } = {
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A]: {
 		isPgm: 0,
-		label: 'VRT 1'
+		label: 'KOM 1'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A]: {
 		isPgm: 0,
-		label: 'VRT 2'
+		label: 'KOM 2'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A]: {
 		isPgm: 0,
-		label: 'VRT 3'
+		label: 'KOM 3'
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo]: {
 		isPgm: 0,

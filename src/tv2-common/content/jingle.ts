@@ -29,15 +29,20 @@ export function CreateJingleContentBase<
 	layers: JingleLayers,
 	preMultiplied: boolean
 ) {
+	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : ''
 	return literal<VTContent>({
 		studioLabel: '',
-		fileName: file,
-		path: `${config.studio.NetworkBasePathJingle}\\${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
+		fileName,
+		path: `${config.studio.NetworkBasePathJingle}\\${
+			config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
+		}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
 		firstWords: '',
 		lastWords: '',
 		previewFrame: alphaAtStart,
-		ignoreMediaObjectStatus: true,
+		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
@@ -49,7 +54,7 @@ export function CreateJingleContentBase<
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file
+					file: fileName
 				}
 			}),
 
@@ -63,7 +68,7 @@ export function CreateJingleContentBase<
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.MEDIA,
-								file
+								file: fileName
 							}
 						})
 				  ]

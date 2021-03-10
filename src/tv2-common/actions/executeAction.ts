@@ -808,7 +808,7 @@ function startNewDVELayout<
 								!(
 									tlObj.content.deviceType === TSR.DeviceType.ATEM &&
 									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
-								)
+								) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
 						)
 						.map(obj => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
 				}

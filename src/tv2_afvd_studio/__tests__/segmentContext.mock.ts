@@ -17,6 +17,10 @@ const mockStudioConfig: StudioConfig = {
 	ClipMediaFlowId: '',
 	JingleMediaFlowId: '',
 	JingleFileExtension: '',
+	ClipFolder: '',
+	JingleFolder: '',
+	JingleIgnoreStatus: false,
+	ClipIgnoreStatus: false,
 	SourcesCam: [
 		literal<TableConfigItemSourceMappingWithSisyfos>({
 			SisyfosLayers: [],

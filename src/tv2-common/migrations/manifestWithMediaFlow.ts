@@ -4,7 +4,9 @@ export function MakeConfigWithMediaFlow(
 	name: string,
 	defaultBasePath: string,
 	defaultFlowId: string,
-	defaultExtension: string
+	defaultExtension: string,
+	defaultFolder: string,
+	ignoreMediaStatus: boolean // Temp until galleries use same media workflow
 ): ConfigManifestEntry[] {
 	const namePlural = `${name}s`
 	return [
@@ -32,6 +34,22 @@ export function MakeConfigWithMediaFlow(
 			type: ConfigManifestEntryType.STRING,
 			required: true,
 			defaultVal: defaultExtension
+		},
+		{
+			id: `${name}Folder`,
+			name: `Folder for ${namePlural}`,
+			description: `Subfolder to retrieve / store ${namePlural} in`,
+			type: ConfigManifestEntryType.STRING,
+			required: false,
+			defaultVal: defaultFolder
+		},
+		{
+			id: `${name}IgnoreStatus`,
+			name: `Ignore media status for ${namePlural}`,
+			description: `If set, don't show missing media stripes`,
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: true,
+			defaultVal: ignoreMediaStatus
 		}
 	]
 }

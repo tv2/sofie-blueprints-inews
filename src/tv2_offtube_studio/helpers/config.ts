@@ -32,6 +32,8 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	GraphicMediaFlowId: string
 	NetworkBasePathGraphic: string
 	GraphicFileExtension: string
+	GraphicFolder?: string
+	GraphicIgnoreStatus: boolean
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
@@ -65,6 +67,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	CasparPrerollDuration: number
 	FullKeepAliveDuration: number
 	IdleSource: number
+	IdleSisyfosLayers: string[]
 	FullGraphicURL: string
 
 	FullTransitionSettings: {
