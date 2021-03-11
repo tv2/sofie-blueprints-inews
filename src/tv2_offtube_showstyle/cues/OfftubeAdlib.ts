@@ -56,6 +56,7 @@ export function OfftubeEvaluateAdLib(
 				partDefinition,
 				file,
 				false,
+				true,
 				{
 					SourceLayer: {
 						PgmServer: OfftubeSourceLayer.PgmServer,

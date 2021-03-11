@@ -19,8 +19,8 @@ export function OfftubeCreatePartServer(
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
 		SourceLayer: {
-			PgmServer: props.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
-			SelectedServer: props.vo ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
+			PgmServer: props.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: props.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
 		},
 		AtemLLayer: {
 			MEPgm: OfftubeAtemLLayer.AtemMEClean,
@@ -63,11 +63,12 @@ export function OfftubeCreatePartServer(
 			0,
 			partDefinition,
 			file,
-			props.vo,
+			props.voLayer,
+			props.voLevels,
 			{
 				SourceLayer: {
-					PgmServer: props.vo ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
-					SelectedServer: props.vo ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
+					PgmServer: props.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
+					SelectedServer: props.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
 				},
 				Caspar: {
 					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending

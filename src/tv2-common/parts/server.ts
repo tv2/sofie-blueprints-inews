@@ -27,7 +27,8 @@ interface PieceMetaDataServer {
 }
 
 export interface ServerPartProps {
-	vo: boolean
+	voLayer: boolean
+	voLevels: boolean
 	totalWords: number
 	totalTime: number
 	tapeTime: number
@@ -71,12 +72,14 @@ export function CreatePartServerBase<
 	const sourceDuration =
 		mediaObjectDuration !== undefined ? mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration : undefined
 	const duration =
-		(mediaObjectDuration !== undefined && ((props.vo && props.totalWords <= 0) || !props.vo) && sourceDuration) ||
+		(mediaObjectDuration !== undefined &&
+			((props.voLayer && props.totalWords <= 0) || !props.voLayer) &&
+			sourceDuration) ||
 		props.tapeTime * 1000 ||
 		0
 	const sanitisedScript = partDefinition.script.replace(/\n/g, '').replace(/\r/g, '')
 	const actualDuration =
-		props.vo && props.totalWords > 0
+		props.voLayer && props.totalWords > 0
 			? (sanitisedScript.length / props.totalWords) * (props.totalTime * 1000 - duration) + duration
 			: duration
 
@@ -108,7 +111,8 @@ export function CreatePartServerBase<
 					file,
 					partDefinition,
 					duration: actualDuration,
-					vo: props.vo,
+					voLayer: props.voLayer,
+					voLevels: props.voLevels,
 					adLibPix: props.adLibPix
 				})
 			}),
@@ -131,10 +135,10 @@ export function CreatePartServerBase<
 					}
 				},
 				props.adLibPix,
-				props.vo,
+				props.voLevels,
 				sourceDuration
 			),
-			tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.vo)]
+			tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.voLayer)]
 		})
 	)
 
@@ -153,7 +157,7 @@ export function CreatePartServerBase<
 				...GetVTContentProperties(config, file, sourceDuration),
 				timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 			},
-			tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.vo), TallyTags.SERVER_IS_LIVE]
+			tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.voLayer), TallyTags.SERVER_IS_LIVE]
 		})
 	)
 

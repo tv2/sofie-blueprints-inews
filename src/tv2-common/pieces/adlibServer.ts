@@ -25,7 +25,8 @@ export function CreateAdlibServer<
 	rank: number,
 	partDefinition: PartDefinition,
 	file: string,
-	vo: boolean,
+	voLayer: boolean,
+	voLevels: boolean,
 	sourceLayers: ServerPartLayers,
 	duration: number,
 	tagAsAdlib: boolean
@@ -37,7 +38,8 @@ export function CreateAdlibServer<
 			file,
 			partDefinition,
 			duration,
-			vo,
+			voLayer,
+			voLevels,
 			adLibPix: tagAsAdlib
 		}),
 		userDataManifest: {},
@@ -48,12 +50,12 @@ export function CreateAdlibServer<
 			outputLayerId: 'pgm', // TODO: Enum
 			content: GetVTContentProperties(config, file, duration),
 			tags: [
-				tagAsAdlib || vo ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,
+				tagAsAdlib || voLayer ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,
 				AdlibTags.ADLIB_KOMMENTATOR
 			],
-			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!vo)],
-			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!vo)],
-			uniquenessId: `${vo ? 'vo' : 'server'}_${partDefinition.storyName}_${file}`
+			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!voLayer)],
+			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!voLayer)],
+			uniquenessId: `${voLayer ? 'vo' : 'server'}_${partDefinition.storyName}_${file}`
 		}
 	})
 }

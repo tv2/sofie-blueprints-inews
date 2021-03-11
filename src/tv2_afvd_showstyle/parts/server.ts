@@ -19,8 +19,8 @@ export function CreatePartServer(
 ): BlueprintResultPart {
 	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
 		SourceLayer: {
-			PgmServer: props.vo ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
-			SelectedServer: props.vo ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
+			PgmServer: props.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: props.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
 		},
 		AtemLLayer: {
 			MEPgm: AtemLLayer.AtemMEProgram
