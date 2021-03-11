@@ -3,6 +3,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	NotesContext,
 	PieceLifespan,
 	SegmentContext,
 	TSR
@@ -15,6 +16,7 @@ import {
 	CueDefinitionGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
+	GetSisyfosTimelineObjForCamera,
 	GetTagForFull,
 	GetTagForFullNext,
 	GraphicDisplayName,
@@ -33,7 +35,7 @@ import {
 	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, ControlClasses, GraphicEngine, TallyTags } from 'tv2-constants'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { layerToHTMLGraphicSlot, Slots } from '../helpers/html_graphics'
@@ -41,7 +43,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	_context: SegmentContext,
+	context: SegmentContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -56,7 +58,13 @@ export function OfftubeEvaluateGrafikCaspar(
 	const isIdentGrafik = GraphicIsInternal(parsedCue) && !!parsedCue.graphic.template.match(/direkte/i)
 
 	if (GraphicIsPilot(parsedCue)) {
-		const adLibPiece = CreateFullAdLib(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
+		const adLibPiece = CreateFullAdLib(
+			context,
+			config,
+			partDefinition.externalId,
+			parsedCue,
+			partDefinition.segmentExternalId
+		)
 
 		actions.push(
 			literal<IBlueprintActionManifest>({
@@ -80,7 +88,13 @@ export function OfftubeEvaluateGrafikCaspar(
 			})
 		)
 
-		const piece = CreateFullPiece(config, partDefinition.externalId, parsedCue, partDefinition.segmentExternalId)
+		const piece = CreateFullPiece(
+			context,
+			config,
+			partDefinition.externalId,
+			parsedCue,
+			partDefinition.segmentExternalId
+		)
 		pieces.push(piece)
 	} else if (GraphicIsInternal(parsedCue)) {
 		// TODO: Wall
@@ -247,6 +261,7 @@ export function createContentForGraphicTemplate(
 }
 
 export function CreateFullPiece(
+	context: NotesContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
@@ -261,7 +276,7 @@ export function CreateFullPiece(
 		sourceLayerId: OfftubeSourceLayer.PgmFull,
 		outputLayerId: OfftubeOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
-		content: CreateFullContent(config, parsedCue),
+		content: CreateFullContent(context, config, parsedCue),
 		tags: [
 			GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid),
 			GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid),
@@ -271,6 +286,7 @@ export function CreateFullPiece(
 }
 
 function CreateFullAdLib(
+	context: NotesContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	externalId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
@@ -289,11 +305,12 @@ function CreateFullAdLib(
 		tags: [AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR],
 		currentPieceTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid)],
 		nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)],
-		content: CreateFullContent(config, parsedCue)
+		content: CreateFullContent(context, config, parsedCue)
 	})
 }
 
 export function CreateFullContent(
+	context: NotesContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 ): GraphicsContent {
@@ -426,7 +443,8 @@ export function CreateFullContent(
 				},
 				metaData: {},
 				classes: ['ab_on_preview']
-			})
+			}),
+			GetSisyfosTimelineObjForCamera(context, config, 'full', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
 		]
 	})
 }

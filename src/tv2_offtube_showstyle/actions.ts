@@ -134,7 +134,7 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 		iNewsCommand: ''
 	})
 
-	const fullPiece = CreateFullPiece(config, externalId, cue, userData.segmentExternalId)
+	const fullPiece = CreateFullPiece(context, config, externalId, cue, userData.segmentExternalId)
 
 	postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
@@ -151,7 +151,7 @@ function executeActionSelectFull(context: ActionExecutionContext, _actionId: str
 			userData
 		},
 		content: {
-			...CreateFullContent(config, cue),
+			...CreateFullContent(context, config, cue),
 			timelineObjects: []
 		},
 		tags: [GetTagForFullNext(userData.segmentExternalId, userData.vcpid)]
