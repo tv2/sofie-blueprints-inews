@@ -314,14 +314,6 @@ export default literal<BlueprintMappings>({
 		layer: 110,
 		previewWhenNotOnAir: true
 	}),
-	graphic_pilot: literal<TSR.MappingCasparCG & BlueprintMapping>({
-		device: TSR.DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.PRELOAD,
-		channel: 3,
-		layer: 108,
-		previewWhenNotOnAir: false
-	}),
 	casparcg_graphics_full_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
@@ -444,6 +436,14 @@ export default literal<BlueprintMappings>({
 		previewWhenNotOnAir: false,
 		channel: 3,
 		layer: 111
+	}),
+	graphic_pilot: literal<TSR.MappingCasparCG & BlueprintMapping>({
+		device: TSR.DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		lookahead: LookaheadMode.PRELOAD,
+		channel: 3,
+		layer: 108,
+		previewWhenNotOnAir: false
 	}),
 	/** TODO: Revisit these */
 	graphic_pilot_overlay: literal<TSR.MappingCasparCG & BlueprintMapping>({

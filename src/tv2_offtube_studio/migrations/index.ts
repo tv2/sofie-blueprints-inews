@@ -267,6 +267,9 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
 
+	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
+	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
+	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
 	RenameStudioConfig('1.5.0', 'Offtube', 'FullGraphicURL', 'HTMLGraphics.GraphicURL'),
 	RenameStudioConfig('1.5.0', 'Offtube', 'FullKeepAliveDuration', 'HTMLGraphics.KeepAliveDuration'),
 	RenameStudioConfig(
