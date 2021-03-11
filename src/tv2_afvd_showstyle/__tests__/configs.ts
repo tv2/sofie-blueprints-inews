@@ -126,7 +126,7 @@ export const defaultStudioConfig: StudioConfig = {
 		OutTransitionDuration: 280,
 		CutToMediaPlayer: 1500
 	},
-	CasparGraphics: {
+	HTMLGraphics: {
 		GraphicURL: '',
 		KeepAliveDuration: 1000,
 		TransitionSettings: {

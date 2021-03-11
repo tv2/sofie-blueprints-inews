@@ -65,7 +65,7 @@ function makeStudioTimelineViz(
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
 			enable: {
-				start: config.studio.PilotCutToMediaPlayer
+				start: config.studio.VizPilotGraphics.CutToMediaPlayer
 			},
 			priority: 1,
 			layer: AtemLLayer.AtemMEProgram,
@@ -82,7 +82,7 @@ function makeStudioTimelineViz(
 		literal<TSR.TimelineObjAtemDSK>({
 			id: '',
 			enable: {
-				start: config.studio.PilotCutToMediaPlayer
+				start: config.studio.VizPilotGraphics.CutToMediaPlayer
 			},
 			priority: 1,
 			layer: AtemLLayer.AtemAuxPGM,

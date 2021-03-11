@@ -7,7 +7,7 @@ import {
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
-import { AddScript, literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, ApplyFullGraphicPropertiesToPart, literal, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -46,10 +46,7 @@ export function CreatePartGrafik(
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
-	part.prerollDuration = config.studio.VizPilotGraphics.PrerollDuration
-	part.transitionKeepaliveDuration = config.studio.VizPilotGraphics.KeepAliveDuration
-		? Number(config.studio.VizPilotGraphics.KeepAliveDuration)
-		: 60000
+	ApplyFullGraphicPropertiesToPart(config, part)
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 

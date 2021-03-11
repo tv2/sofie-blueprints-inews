@@ -54,6 +54,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	IdleSource: 0,
 	IdleSisyfosLayers: [],
 	ServerPostrollDuration: 5000,
+	PreventOverlayWithFull: true,
 	GraphicsType: 'HTML',
 	VizPilotGraphics: {
 		KeepAliveDuration: 1000,
@@ -61,7 +62,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 		OutTransitionDuration: 1000,
 		CutToMediaPlayer: 1000
 	},
-	CasparGraphics: {
+	HTMLGraphics: {
 		GraphicURL: '',
 		KeepAliveDuration: 1000,
 		TransitionSettings: {

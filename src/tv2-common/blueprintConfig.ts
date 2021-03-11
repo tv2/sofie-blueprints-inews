@@ -79,7 +79,7 @@ export interface TV2StudioConfigBase {
 	PreventOverlayWithFull?: boolean
 	ServerPostrollDuration: number
 	GraphicsType: 'HTML' | 'VIZ'
-	CasparGraphics: {
+	HTMLGraphics: {
 		GraphicURL: string
 		TransitionSettings: {
 			wipeRate: number

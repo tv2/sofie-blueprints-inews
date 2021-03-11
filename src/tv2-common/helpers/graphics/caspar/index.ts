@@ -63,7 +63,7 @@ export function GetPilotGraphicContentCaspar(
 								'250_full': {
 									payload: {
 										type: 'still',
-										url: `${config.studio.CasparGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
+										url: `${config.studio.HTMLGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
 									}
 								}
 							}

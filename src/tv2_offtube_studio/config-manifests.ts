@@ -516,22 +516,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		required: false
 	},
 	{
-		id: 'FullKeepAliveDuration',
-		name: 'Full Keep Alive Duration',
-		description: 'How long to keep the old part alive when going to a full',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 1000
-	},
-	{
-		id: 'FullGraphicURL',
-		name: 'Full Graphic URL',
-		description: 'URL to serve full graphics from',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: 'localhost'
-	},
-	{
 		id: 'ServerPostrollDuration',
 		name: 'Server Postroll Duration',
 		description: 'ms of postroll at the end of Server and VO clips',
@@ -539,28 +523,95 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		required: false,
 		defaultVal: 0
 	},
+	/** Graphics */
 	{
-		id: 'FullTransitionSettings.wipeRate',
-		name: 'Full graphic background loop wipe duration',
-		description: 'Frames (max 250) over which to wipe background loop behind Full',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 10
+		id: 'GraphicsType',
+		name: 'Graphics Type',
+		description: 'Graphics renderer to use',
+		type: ConfigManifestEntryType.SELECT,
+		required: true,
+		defaultVal: 'HTML',
+		options: ['HTML', 'VIZ'],
+		multiple: false
 	},
 	{
-		id: 'FullTransitionSettings.borderSoftness',
-		name: 'Full graphic wipe softness',
+		id: 'HTMLGraphics.GraphicURL',
+		name: 'Full Graphic URL (HTML)',
+		description: 'URL to serve full graphics from',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'localhost'
+	},
+	{
+		id: 'HTMLGraphics.KeepAliveDuration',
+		name: 'Full Keep Alive Duration (HTML)',
+		description: 'How long to keep the old part alive when going to a full',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
+	},
+	{
+		id: 'HTMLGraphics.TransitionSettings.borderSoftness',
+		name: 'Full graphic wipe softness (HTML)',
 		description: 'Border softness of full graphic background wipe',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 7500
 	},
 	{
-		id: 'FullTransitionSettings.loopOutTransitionDuration',
+		id: 'HTMLGraphics.TransitionSettings.loopOutTransitionDuration',
 		name: 'Full graphic background loop out transition duration',
 		description: 'Duration (ms) that the background loop behind a full takes to transition out',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 120
+	},
+	{
+		id: 'HTMLGraphics.TransitionSettings.wipeRate',
+		name: 'Full graphic background loop wipe duration (HTML)',
+		description: 'Frames (max 250) over which to wipe background loop behind Full',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 10
+	},
+	{
+		id: 'VizPilotGraphics.CutToMediaPlayer',
+		name: 'Pilot media Player Cut Point',
+		description: 'ms from start of grafik before switching to background source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 500
+	},
+	{
+		id: 'VizPilotGraphics.KeepAliveDuration',
+		name: 'Pilot Keepalive Duration',
+		description: 'ms to keep old part alive before switching to Pilot elements',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 2000
+	},
+	{
+		id: 'VizPilotGraphics.OutTransitionDuration',
+		name: 'Pilot Out Transition Duration',
+		description: 'ms to keep pilot elements alive before transition to next part',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
+	},
+	{
+		id: 'VizPilotGraphics.PrerollDuration',
+		name: 'Pilot Preroll Duration',
+		description: 'ms of preroll before switching to Pilot elements',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 2000
+	},
+	{
+		id: 'PreventOverlayWithFull',
+		name: 'Prevent Overlay with Full',
+		description: 'Stop overlay elements from showing when a Full graphic is on-air',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: true
 	}
 ]

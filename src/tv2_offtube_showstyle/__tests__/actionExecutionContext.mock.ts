@@ -87,7 +87,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 		OutTransitionDuration: 1000,
 		CutToMediaPlayer: 1000
 	},
-	CasparGraphics: {
+	HTMLGraphics: {
 		GraphicURL: '',
 		KeepAliveDuration: 1000,
 		TransitionSettings: {

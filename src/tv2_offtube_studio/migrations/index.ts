@@ -267,6 +267,22 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
 
+	RenameStudioConfig('1.5.0', 'Offtube', 'FullGraphicURL', 'HTMLGraphics.GraphicURL'),
+	RenameStudioConfig('1.5.0', 'Offtube', 'FullKeepAliveDuration', 'HTMLGraphics.KeepAliveDuration'),
+	RenameStudioConfig(
+		'1.5.0',
+		'Offtube',
+		'FullTransitionSettings.borderSoftness',
+		'HTMLGraphics.TransitionSettings.borderSoftness'
+	),
+	RenameStudioConfig(
+		'1.5.0',
+		'Offtube',
+		'FullTransitionSettings.loopOutTransitionDuration',
+		'HTMLGraphics.TransitionSettings.loopOutTransitionDuration'
+	),
+	RenameStudioConfig('1.5.0', 'Offtube', 'FullTransitionSettings.wipeRate', 'HTMLGraphics.TransitionSettings.wipeRate'),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

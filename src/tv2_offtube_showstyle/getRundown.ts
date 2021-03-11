@@ -30,7 +30,15 @@ import {
 	pgmDSKLayers,
 	SourceInfo
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import {
+	AdlibActionType,
+	AdlibTags,
+	CONSTANTS,
+	GraphicLLayer,
+	SharedOutputLayers,
+	SharedSourceLayers,
+	TallyTags
+} from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	atemLLayersDSK,
@@ -364,7 +372,7 @@ function getGlobalAdlibActionsOfftube(
 			display: {
 				_rank: globalRank++,
 				label: 'GFX FULL',
-				sourceLayerId: OfftubeSourceLayer.PgmFull,
+				sourceLayerId: SharedSourceLayers.PgmPilot,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT],
@@ -594,7 +602,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				while: '1'
 			},
 			priority: 0,
-			layer: OfftubeCasparLLayer.CasparGraphicsFull,
+			layer: GraphicLLayer.GraphicLLayerPilot,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,

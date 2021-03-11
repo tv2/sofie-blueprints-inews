@@ -1728,7 +1728,7 @@ function executeActionSelectFull<
 		graphicType === 'HTML' ? config.studio.CasparPrerollDuration : config.studio.VizPilotGraphics.OutTransitionDuration
 	const transitionKeepaliveDuration =
 		graphicType === 'HTML'
-			? config.studio.CasparGraphics.KeepAliveDuration
+			? config.studio.HTMLGraphics.KeepAliveDuration
 			: config.studio.VizPilotGraphics.KeepAliveDuration
 
 	const part = literal<IBlueprintPart>({

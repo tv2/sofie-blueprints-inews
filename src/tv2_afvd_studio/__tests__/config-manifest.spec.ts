@@ -57,12 +57,7 @@ const blankStudioConfig: StudioConfig = {
 		volume: 0
 	},
 	CasparPrerollDuration: 0,
-	PilotPrerollDuration: 0,
-	PilotKeepaliveDuration: 0,
-	PilotCutToMediaPlayer: 0,
-	PilotOutTransitionDuration: 0,
 	PreventOverlayWithFull: true,
-	ATEMDelay: 1,
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	ServerPostrollDuration: 5000,
@@ -73,7 +68,7 @@ const blankStudioConfig: StudioConfig = {
 		OutTransitionDuration: 1000,
 		CutToMediaPlayer: 1000
 	},
-	CasparGraphics: {
+	HTMLGraphics: {
 		GraphicURL: '',
 		KeepAliveDuration: 1000,
 		TransitionSettings: {

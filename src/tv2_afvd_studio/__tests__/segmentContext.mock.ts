@@ -79,12 +79,7 @@ const mockStudioConfig: StudioConfig = {
 		fadeOut: 0,
 		volume: 0
 	},
-	PilotCutToMediaPlayer: 0,
-	PilotKeepaliveDuration: 0,
-	PilotOutTransitionDuration: 0,
-	PilotPrerollDuration: 0,
 	PreventOverlayWithFull: true,
-	ATEMDelay: 0,
 	CasparPrerollDuration: 280,
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
@@ -96,7 +91,7 @@ const mockStudioConfig: StudioConfig = {
 		OutTransitionDuration: 1000,
 		CutToMediaPlayer: 1000
 	},
-	CasparGraphics: {
+	HTMLGraphics: {
 		GraphicURL: '',
 		KeepAliveDuration: 1000,
 		TransitionSettings: {

@@ -78,10 +78,10 @@ function createPilotATEMTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.T
 					transition: TSR.AtemTransitionStyle.WIPE,
 					transitionSettings: {
 						wipe: {
-							rate: Number(config.studio.CasparGraphics.TransitionSettings.wipeRate),
+							rate: Number(config.studio.HTMLGraphics.TransitionSettings.wipeRate),
 							pattern: 1,
 							reverseDirection: true,
-							borderSoftness: config.studio.CasparGraphics.TransitionSettings.borderSoftness
+							borderSoftness: config.studio.HTMLGraphics.TransitionSettings.borderSoftness
 						}
 					}
 				}
@@ -92,7 +92,7 @@ function createPilotATEMTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.T
 			enable: {
 				start:
 					Number(config.studio.CasparPrerollDuration) +
-					TimeFromFrames(Number(config.studio.CasparGraphics.TransitionSettings.wipeRate))
+					TimeFromFrames(Number(config.studio.HTMLGraphics.TransitionSettings.wipeRate))
 			},
 			priority: 1,
 			layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
@@ -103,7 +103,7 @@ function createPilotATEMTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.T
 				transitions: {
 					outTransition: {
 						type: TSR.Transition.MIX,
-						duration: config.studio.CasparGraphics.TransitionSettings.loopOutTransitionDuration
+						duration: config.studio.HTMLGraphics.TransitionSettings.loopOutTransitionDuration
 					}
 				}
 			}
