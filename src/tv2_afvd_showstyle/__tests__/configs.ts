@@ -1,12 +1,8 @@
-import { ConfigItemValue } from '@sofie-automation/blueprints-integration'
 import { DSKConfig, literal, parseMapStr } from 'tv2-common'
+import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
-
-export interface ConfigMap {
-	[key: string]: ConfigItemValue | ConfigMap | any[]
-}
 
 function getSisyfosLayers(configName: string, id: string): string[] {
 	switch (configName) {
@@ -28,20 +24,45 @@ function prepareConfig(
 	configName: string,
 	studioMics: boolean,
 	keepAudioInStudio?: boolean
-): Array<{ SourceName: string; AtemSource: number; SisyfosLayers: string[]; StudioMics: boolean }> {
+): Array<{
+	SourceName: string
+	AtemSource: number
+	SisyfosLayers: string[]
+	StudioMics: boolean
+	KeepAudioInStudio: boolean
+}> {
 	return parseMapStr(undefined, conf, true).map(c => {
 		return {
 			SourceName: c.id,
 			AtemSource: c.val,
 			SisyfosLayers: getSisyfosLayers(configName, c.id),
 			StudioMics: studioMics,
-			KeepAudioInStudio: keepAudioInStudio
+			KeepAudioInStudio: keepAudioInStudio ?? false
 		}
 	})
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
-export const defaultStudioConfig: ConfigMap = {
+export const defaultStudioConfig: StudioConfig = {
+	ClipMediaFlowId: '',
+	GraphicMediaFlowId: '',
+	JingleMediaFlowId: '',
+	JingleFileExtension: '',
+	ClipFileExtension: 'mxf',
+	GraphicFileExtension: '.png',
+	ClipNetworkBasePath: '/',
+	GraphicNetworkBasePath: '/',
+	JingleNetworkBasePath: '/',
+	ClipFolder: '',
+	GraphicFolder: '',
+	JingleFolder: '',
+	GraphicIgnoreStatus: false,
+	JingleIgnoreStatus: false,
+	ClipIgnoreStatus: false,
+	MaximumPartDuration: 10000,
+	DefaultPartDuration: 4000,
+	ServerPostrollDuration: 3000,
+	PreventOverlayWithFull: true,
 	SourcesCam: prepareConfig(
 		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15',
 		'SourcesCam',
@@ -70,11 +91,7 @@ export const defaultStudioConfig: ConfigMap = {
 		Default: 2001,
 		Continuity: 2002
 	},
-	NetworkBasePathClip: '/media',
-	NetworkBasePathJingle: '',
-	ClipFileExtension: '.mxf',
 	SofieHostURL: '',
-	MediaFlowId: 'testflow0',
 	ABMediaPlayers: [
 		{ SourceName: '1', AtemSource: 1 },
 		{ SourceName: '2', AtemSource: 2 }
@@ -84,7 +101,12 @@ export const defaultStudioConfig: ConfigMap = {
 		VizClip: 50,
 		VizGain: 12.5,
 		CCGClip: 50,
-		CCGGain: 12.5
+		CCGGain: 12.5,
+		MP1Baseline: {
+			Clip: 0,
+			Loop: true,
+			Playing: true
+		}
 	},
 	AudioBedSettings: {
 		fadeIn: 1000,
@@ -92,16 +114,25 @@ export const defaultStudioConfig: ConfigMap = {
 		volume: 80
 	},
 	CasparPrerollDuration: 280,
-	PilotPrerollDuration: 2000,
-	PilotKeepaliveDuration: 700,
-	PilotCutToMediaPlayer: 1500,
-	PreventOverlayWithFull: true,
-	PilotOutTransitionDuration: 280,
-	ATEMDelay: 1,
-	MaximumKamDisplayDuration: 10000
+	GraphicsType: 'VIZ',
+	VizPilotGraphics: {
+		KeepAliveDuration: 700,
+		PrerollDuration: 2000,
+		OutTransitionDuration: 280,
+		CutToMediaPlayer: 1500
+	},
+	HTMLGraphics: {
+		GraphicURL: '',
+		KeepAliveDuration: 1000,
+		TransitionSettings: {
+			wipeRate: 20,
+			borderSoftness: 7500,
+			loopOutTransitionDuration: 120
+		}
+	}
 }
 
-export const defaultShowStyleConfig: ConfigMap = {
+export const defaultShowStyleConfig: ShowStyleConfig = {
 	...defaultStudioConfig,
 	DefaultTemplateDuration: 4,
 	CasparCGLoadingClip: 'LoadingLoop',
@@ -211,8 +242,8 @@ export const defaultShowStyleConfig: ConfigMap = {
 			FadeOut: 0
 		}
 	],
-	AdLibBreakers: [{ Breaker: '1' }, { Breaker: '2' }],
-	DefaultTransition: 'CUT'
+	Transitions: [{ Transition: '1' }, { Transition: '2' }],
+	ShowstyleTransition: 'CUT'
 }
 
 export const defaultDSKConfig: DSKConfig = {

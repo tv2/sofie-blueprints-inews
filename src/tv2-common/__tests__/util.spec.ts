@@ -1,4 +1,5 @@
 import { PieceLifespan } from '@sofie-automation/blueprints-integration'
+import { SharedOutputLayers } from 'tv2-constants'
 import { assertUnreachable, isAdLibPiece } from '../util'
 
 describe('util', () => {
@@ -9,7 +10,7 @@ describe('util', () => {
 				externalId: '-',
 				name: 'test adlib',
 				sourceLayerId: 'Cam',
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				lifespan: PieceLifespan.WithinPart
 			})
 		).toBeTruthy()
@@ -19,7 +20,7 @@ describe('util', () => {
 				externalId: '-',
 				name: 'test non-adlib',
 				sourceLayerId: 'Cam',
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				lifespan: PieceLifespan.WithinPart,
 				enable: {
 					start: 0

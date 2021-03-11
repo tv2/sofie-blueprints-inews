@@ -5,13 +5,14 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { ActionClearGraphics, executeAction, GraphicLLayer, literal } from 'tv2-common'
-import { TallyTags } from 'tv2-constants'
+import { ActionClearGraphics, executeAction, literal } from 'tv2-common'
+import { GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
+import { pilotGeneratorSettingsAFVD } from './helpers/pieces/graphicPilot'
 import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -47,10 +48,6 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				EVS: SourceLayer.PgmLocal,
 				Ident: SourceLayer.PgmGraphicsIdent,
 				Continuity: SourceLayer.PgmContinuity
-			},
-			OutputLayer: {
-				PGM: 'pgm',
-				EFFEKT: 'jingle'
 			},
 			LLayer: {
 				Caspar: {
@@ -89,7 +86,8 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 			],
 			StoppableGraphicsLayers: STOPPABLE_GRAPHICS_LAYERS,
 			executeActionClearGraphics,
-			createJingleContent: createJingleContentAFVD
+			createJingleContent: createJingleContentAFVD,
+			pilotGraphicSettings: pilotGeneratorSettingsAFVD
 		},
 		actionId,
 		userData
@@ -108,7 +106,7 @@ function executeActionClearGraphics(context: ActionExecutionContext, _actionId: 
 			externalId: 'clearAllGFX',
 			name: userData.label,
 			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-			outputLayerId: 'sec',
+			outputLayerId: SharedOutputLayers.SEC,
 			lifespan: PieceLifespan.WithinPart,
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([

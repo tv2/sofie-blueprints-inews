@@ -1,5 +1,6 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from '@sofie-automation/blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 
 const PREVIEW_CHARACTERS = 30
 
@@ -22,7 +23,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 				enable: {
 					start: 0
 				},
-				outputLayerId: 'manus',
+				outputLayerId: SharedOutputLayers.MANUS,
 				sourceLayerId,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<ScriptContent>({

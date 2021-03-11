@@ -7,6 +7,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeSourceLayer } from '../layers'
@@ -29,7 +30,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				_rank: rank || 0,
 				externalId: partId,
 				name: fileName,
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({
@@ -61,7 +62,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				enable: {
 					start
 				},
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: literal<GraphicsContent>({

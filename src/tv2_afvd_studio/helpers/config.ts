@@ -29,9 +29,6 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	// Injected by core
 	SofieHostURL: string
 
-	// Must override
-
-	// Intended overrides
 	SourcesDelayedPlayback: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
@@ -68,17 +65,6 @@ export interface StudioConfig extends TV2StudioConfigBase {
 		fadeOut: number
 		volume: number
 	}
-
-	// Dev overrides
-
-	// Constants
-	CasparPrerollDuration: number
-	PilotPrerollDuration: number
-	PilotKeepaliveDuration: number
-	PilotCutToMediaPlayer: number
-	PilotOutTransitionDuration: number
-	PreventOverlayWithFull: boolean
-	ATEMDelay: number
 }
 
 /*

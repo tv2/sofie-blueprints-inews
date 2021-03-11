@@ -6,7 +6,7 @@ import {
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
-import { AddScript, literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, ApplyFullGraphicPropertiesToPart, literal, PartDefinition, PartTime } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -47,13 +47,11 @@ export function OfftubeCreatePartGrafik(
 			adlib: asAdlibs
 		}
 	)
-	part.prerollDuration = config.studio.CasparPrerollDuration
-	part.transitionKeepaliveDuration = config.studio.FullKeepAliveDuration
-		? Number(config.studio.FullKeepAliveDuration)
-		: 60000
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
-
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
+
+	ApplyFullGraphicPropertiesToPart(config, part)
+
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -14,7 +14,7 @@ import {
 	MakeContentServerSourceLayers,
 	PieceMetaData
 } from 'tv2-common'
-import { AdlibActionType, TallyTags } from 'tv2-constants'
+import { AdlibActionType, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { GetVTContentProperties } from '../content'
@@ -98,7 +98,7 @@ export function CreatePartServerBase<
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
-			outputLayerId: 'sec',
+			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId: layers.SourceLayer.SelectedServer,
 			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: literal<PieceMetaData & PieceMetaDataServer>({
@@ -143,7 +143,7 @@ export function CreatePartServerBase<
 			externalId: partDefinition.externalId,
 			name: file,
 			enable: { start: 0 },
-			outputLayerId: 'pgm',
+			outputLayerId: SharedOutputLayers.PGM,
 			sourceLayerId: layers.SourceLayer.PgmServer,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: literal<PieceMetaData>({

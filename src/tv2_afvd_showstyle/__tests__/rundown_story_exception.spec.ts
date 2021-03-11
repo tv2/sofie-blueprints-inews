@@ -5,8 +5,7 @@ import {
 	IBlueprintPieceGeneric,
 	IBlueprintRundownDB
 } from '@sofie-automation/blueprints-integration'
-import { ConfigMap, defaultShowStyleConfig, defaultStudioConfig } from './configs'
-// import { ConfigMap } from './configs'
+import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
 import { checkAllLayers } from './layers-check'
 
 // @ts-ignore
@@ -17,11 +16,13 @@ global.VERSION_TSR = 'test'
 global.VERSION_INTEGRATION = 'test'
 import { INewsStory, literal } from 'tv2-common'
 import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
+import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
+import { ShowStyleConfig } from '../helpers/config'
 import Blueprints from '../index'
 
 // More ROs can be listed here to make them part of the basic blueprint doesnt crash test
-const rundowns: Array<{ ro: string; studioConfig: ConfigMap; showStyleConfig: ConfigMap }> = [
+const rundowns: Array<{ ro: string; studioConfig: StudioConfig; showStyleConfig: ShowStyleConfig }> = [
 	{ ro: '../../../rundowns/on-air.json', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 ]
 

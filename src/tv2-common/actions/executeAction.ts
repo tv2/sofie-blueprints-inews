@@ -31,9 +31,11 @@ import {
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
 	CalculateTime,
+	CreateFullPiece,
 	CreatePartServerBase,
 	CueDefinition,
 	CueDefinitionDVE,
+	CueDefinitionGraphic,
 	DVEOptions,
 	DVEPieceMetaData,
 	DVESources,
@@ -42,10 +44,12 @@ import {
 	GetCameraMetaData,
 	GetDVETemplate,
 	GetEksternMetaData,
+	GetFullGrafikTemplateName,
 	GetLayersForCamera,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
+	GraphicPilot,
 	literal,
 	MakeContentDVE2,
 	PartDefinition,
@@ -55,9 +59,10 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, CueType, TallyTags } from 'tv2-constants'
+import { AdlibActionType, CueType, SharedOutputLayers, SharedSourceLayers, TallyTags } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
+import { CreateFullDataStore, PilotGeneratorSettings } from '../helpers'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
 import {
@@ -114,10 +119,6 @@ export interface ActionExecutionSettings<
 		/** Ident visual representation layer *not* the infinite layer */
 		Ident: string
 	}
-	OutputLayer: {
-		PGM: string
-		EFFEKT: string
-	}
 	LLayer: {
 		Caspar: {
 			ClipPending: string
@@ -144,7 +145,6 @@ export interface ActionExecutionSettings<
 			Server: string
 			VO: string
 			DVE?: string
-			GFXFull?: string
 			Effekt?: string
 		}
 		OutputLayer: {
@@ -154,11 +154,6 @@ export interface ActionExecutionSettings<
 	}
 	ServerAudioLayers: string[]
 	StoppableGraphicsLayers: string[]
-	executeActionSelectFull?: (
-		context: ActionExecutionContext,
-		actionId: string,
-		userData: ActionSelectFullGrafik
-	) => void
 	executeActionClearGraphics?: (
 		context: ActionExecutionContext,
 		actionId: string,
@@ -170,6 +165,7 @@ export interface ActionExecutionSettings<
 		alphaAtStart: number,
 		loadFirstFrame: boolean
 	) => VTContent
+	pilotGraphicSettings: PilotGeneratorSettings
 }
 
 export function executeAction<
@@ -196,9 +192,7 @@ export function executeAction<
 			executeActionSelectDVELayout(context, settings, actionId, userData as ActionSelectDVELayout)
 			break
 		case AdlibActionType.SELECT_FULL_GRAFIK:
-			if (settings.executeActionSelectFull) {
-				settings.executeActionSelectFull(context, actionId, userData as ActionSelectFullGrafik)
-			}
+			executeActionSelectFull(context, settings, actionId, userData as ActionSelectFullGrafik)
 			break
 		case AdlibActionType.SELECT_JINGLE:
 			executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
@@ -536,7 +530,7 @@ function executeActionSelectDVE<
 			start,
 			...(end ? { duration: end - start } : {})
 		},
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: settings.SourceLayers.DVE,
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
@@ -712,7 +706,7 @@ function executeActionSelectDVELayout<
 			lifespan: PieceLifespan.WithinPart,
 			name: userData.config.DVEName,
 			sourceLayerId: settings.SourceLayers.DVEAdLib,
-			outputLayerId: settings.OutputLayer.PGM,
+			outputLayerId: SharedOutputLayers.PGM,
 			metaData: newMetaData,
 			content: content.content
 		})
@@ -913,7 +907,7 @@ function executeActionSelectJingle<
 			start: 0
 		},
 		lifespan: PieceLifespan.WithinPart,
-		outputLayerId: 'jingle',
+		outputLayerId: SharedOutputLayers.JINGLE,
 		sourceLayerId: settings.SourceLayers.Effekt,
 		content: pieceContent,
 		tags: [
@@ -1014,7 +1008,7 @@ function executeActionCutToCamera<
 		externalId,
 		name: part.title,
 		enable: { start: 0 },
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
@@ -1151,7 +1145,7 @@ function executeActionCutToRemote<
 			start: 0
 		},
 		sourceLayerId: settings.SourceLayers.Live,
-		outputLayerId: settings.OutputLayer.PGM,
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
 		metaData: GetEksternMetaData(
@@ -1433,7 +1427,7 @@ function executeActionTakeWithTransition<
 					externalId,
 					name: 'CUT',
 					sourceLayerId: settings.SourceLayers.Effekt,
-					outputLayerId: settings.OutputLayer.EFFEKT,
+					outputLayerId: SharedOutputLayers.JINGLE,
 					lifespan: PieceLifespan.WithinPart,
 					tags: [GetTagForTransition(userData.variant)]
 				}
@@ -1637,17 +1631,13 @@ function executeActionCommentatorSelectFull<
 	_actionId: string,
 	_userData: ActionCommentatorSelectFull
 ) {
-	if (!settings.SelectedAdlibs.SourceLayer.GFXFull || !settings.executeActionSelectFull) {
-		return
-	}
-
-	const data = findDataStore<ActionSelectFullGrafik>(context, [settings.SelectedAdlibs.SourceLayer.GFXFull])
+	const data = findDataStore<ActionSelectFullGrafik>(context, [SharedSourceLayers.SelectedAdlibGraphicsFull])
 
 	if (!data) {
 		return
 	}
 
-	settings.executeActionSelectFull(context, AdlibActionType.SELECT_FULL_GRAFIK, data)
+	executeActionSelectFull(context, settings, AdlibActionType.SELECT_FULL_GRAFIK, data)
 }
 
 function executeActionCommentatorSelectJingle<
@@ -1659,7 +1649,7 @@ function executeActionCommentatorSelectJingle<
 	_actionId: string,
 	_userData: ActionCommentatorSelectJingle
 ) {
-	if (!settings.SelectedAdlibs.SourceLayer.Effekt || !settings.executeActionSelectFull) {
+	if (!settings.SelectedAdlibs.SourceLayer.Effekt) {
 		return
 	}
 
@@ -1716,4 +1706,74 @@ function executeActionRecallLastLive<
 	}
 
 	context.queuePart(part, pieces)
+}
+
+function executeActionSelectFull<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	_actionId: string,
+	userData: ActionSelectFullGrafik
+) {
+	const config = settings.getConfig(context)
+
+	const template = GetFullGrafikTemplateName(config, userData.name)
+
+	const externalId = `adlib-action_${context.getHashId(`cut_to_full_${template}`)}`
+
+	const graphicType = config.studio.GraphicsType
+	const prerollDuration =
+		graphicType === 'HTML' ? config.studio.CasparPrerollDuration : config.studio.VizPilotGraphics.OutTransitionDuration
+	const transitionKeepaliveDuration =
+		graphicType === 'HTML'
+			? config.studio.HTMLGraphics.KeepAliveDuration
+			: config.studio.VizPilotGraphics.KeepAliveDuration
+
+	const part = literal<IBlueprintPart>({
+		externalId,
+		title: `Full ${template}`,
+		metaData: {},
+		expectedDuration: 0,
+		prerollDuration,
+		transitionKeepaliveDuration
+	})
+
+	const cue = literal<CueDefinitionGraphic<GraphicPilot>>({
+		type: CueType.Graphic,
+		target: 'FULL',
+		graphic: {
+			type: 'pilot',
+			name: userData.name,
+			vcpid: userData.vcpid,
+			continueCount: -1
+		},
+		iNewsCommand: ''
+	})
+
+	const fullPiece = CreateFullPiece(config, context, externalId, cue, 'FULL', settings.pilotGraphicSettings, true, 0)
+
+	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
+
+	const fullDataStore = CreateFullDataStore(
+		config,
+		context,
+		settings.pilotGraphicSettings,
+		cue,
+		'FULL',
+		externalId,
+		true,
+		0
+	)
+
+	context.queuePart(part, [
+		fullPiece,
+		...(fullDataStore ? [fullDataStore] : []),
+		...getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
+			SharedSourceLayers.SelectedAdlibGraphicsFull
+		])
+	])
+
+	context.stopPiecesOnLayers([SharedSourceLayers.SelectedAdlibGraphicsFull])
 }

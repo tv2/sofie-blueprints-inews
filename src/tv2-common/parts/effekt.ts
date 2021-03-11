@@ -17,6 +17,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 
 export function CreateEffektForPartBase(
@@ -115,14 +116,14 @@ export function CreateEffektForPartInner<
 			externalId,
 			name: label,
 			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
-			outputLayerId: 'jingle', // TODO: Enum
+			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: layers.sourceLayer,
 			lifespan: PieceLifespan.WithinPart,
 			isTransition: true,
 			content: literal<VTContent>({
 				studioLabel: '',
 				fileName,
-				path: `${config.studio.NetworkBasePathJingle}\\${
+				path: `${config.studio.JingleNetworkBasePath}\\${
 					config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
 				}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 				mediaFlowIds: [config.studio.JingleMediaFlowId],
@@ -223,7 +224,7 @@ export function CreateMixForPartInner(
 			externalId,
 			name: `MIX ${durationInFrames}`,
 			sourceLayerId: layers.sourceLayer,
-			outputLayerId: 'jingle',
+			outputLayerId: SharedOutputLayers.JINGLE,
 			lifespan: PieceLifespan.WithinPart,
 			tags: [
 				GetTagForTransition(

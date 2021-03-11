@@ -7,6 +7,7 @@ import {
 	PieceLifespan
 } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../layers'
 import { syncIngestUpdateToPartInstance } from '../syncIngestUpdateToPartInstance'
 import { MockSyncIngestUpdateToPartInstanceContext } from './syncContext.mock'
@@ -44,7 +45,7 @@ function makeSoundBed(name: string): IBlueprintPieceInstance<unknown> {
 			name,
 			lifespan: PieceLifespan.OutOnRundownEnd,
 			sourceLayerId: SourceLayer.PgmAudioBed,
-			outputLayerId: 'sec'
+			outputLayerId: SharedOutputLayers.SEC
 		}
 	})
 }

@@ -3,7 +3,7 @@
  * This will go to the graphics package and become a dependency of the blueprints.
  */
 
-import { GraphicLLayer } from 'tv2-common'
+import { GraphicLLayer } from 'tv2-constants'
 
 export const layerToHTMLGraphicSlot: { [slot: string]: string } = {
 	[GraphicLLayer.GraphicLLayerOverlay]: '',

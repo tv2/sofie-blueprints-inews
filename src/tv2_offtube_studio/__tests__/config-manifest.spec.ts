@@ -45,21 +45,31 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	},
 	CasparPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
-	NetworkBasePathClip: '/',
-	NetworkBasePathGraphic: '/',
-	NetworkBasePathJingle: '/',
+	ClipNetworkBasePath: '/',
+	GraphicNetworkBasePath: '/',
+	JingleNetworkBasePath: '/',
 	GraphicFileExtension: '.png',
 	MaximumPartDuration: 0,
 	DefaultPartDuration: 0,
 	IdleSource: 0,
 	IdleSisyfosLayers: [],
-	FullKeepAliveDuration: 0,
-	FullGraphicURL: '',
 	ServerPostrollDuration: 5000,
-	FullTransitionSettings: {
-		wipeRate: 20,
-		borderSoftness: 7500,
-		loopOutTransitionDuration: 120
+	PreventOverlayWithFull: true,
+	GraphicsType: 'HTML',
+	VizPilotGraphics: {
+		KeepAliveDuration: 1000,
+		PrerollDuration: 1000,
+		OutTransitionDuration: 1000,
+		CutToMediaPlayer: 1000
+	},
+	HTMLGraphics: {
+		GraphicURL: '',
+		KeepAliveDuration: 1000,
+		TransitionSettings: {
+			wipeRate: 20,
+			borderSoftness: 7500,
+			loopOutTransitionDuration: 120
+		}
 	}
 }
 

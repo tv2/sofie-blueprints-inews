@@ -26,6 +26,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -54,7 +55,7 @@ export function CreatePartKam(
 				externalId: partDefinition.externalId,
 				name: 'CS 3 (JINGLE)',
 				enable: { start: 0 },
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<VTContent>({
@@ -103,7 +104,7 @@ export function CreatePartKam(
 				externalId: partDefinition.externalId,
 				name: part.title,
 				enable: { start: 0 },
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmCam,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),

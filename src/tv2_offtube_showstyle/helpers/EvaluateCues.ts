@@ -10,7 +10,7 @@ import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartDefinition } 
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
-import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGrafikCaspar'
+import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGraphics'
 import { OfftubeEvaluateCueBackgroundLoop } from '../cues/OfftubeGraphicBackgroundLoop'
 import { OfftubeEvaluateGraphicDesign } from '../cues/OfftubeGraphicDesign'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'

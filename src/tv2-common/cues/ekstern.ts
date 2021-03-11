@@ -27,7 +27,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses } from 'tv2-constants'
+import { ControlClasses, SharedOutputLayers } from 'tv2-constants'
 import { GetTagForLive } from '../pieces'
 
 interface EksternLayers {
@@ -55,7 +55,6 @@ export function EvaluateEksternBase<
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
 	layersEkstern: EksternLayers,
-	_getDefaultOut: (config: ShowStyleConfig) => number,
 	adlib?: boolean,
 	rank?: number
 ) {
@@ -90,7 +89,7 @@ export function EvaluateEksternBase<
 				_rank: rank || 0,
 				externalId: partId,
 				name: eksternProps[0],
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				toBeQueued: true,
 				lifespan: PieceLifespan.WithinPart,
@@ -133,7 +132,7 @@ export function EvaluateEksternBase<
 				enable: {
 					start: 0
 				},
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				lifespan: PieceLifespan.WithinPart,
 				toBeQueued: true,

@@ -27,7 +27,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
-import { TallyTags } from 'tv2-constants'
+import { SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
@@ -56,7 +56,7 @@ export function OfftubeCreatePartKam(
 				externalId: partDefinition.externalId,
 				name: 'CS 3 (JINGLE)',
 				enable: { start: 0 },
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
@@ -106,7 +106,7 @@ export function OfftubeCreatePartKam(
 				externalId: partDefinition.externalId,
 				name: part.title,
 				enable: { start: 0 },
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: OfftubeSourceLayer.PgmCam,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),

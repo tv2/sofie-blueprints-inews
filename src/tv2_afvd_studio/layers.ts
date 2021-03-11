@@ -1,4 +1,4 @@
-import { AbstractLLayer, GraphicLLayer } from 'tv2-common'
+import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 
 export type LLayer = VirtualAbstractLLayer | AtemLLayer | CasparLLayer | SisyfosLLAyer

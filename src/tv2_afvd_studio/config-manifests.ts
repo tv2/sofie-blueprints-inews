@@ -603,6 +603,7 @@ export const manifestAFVDDownstreamKeyers: ConfigManifestEntryTable = {
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
 	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov', '', true),
+	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png', '', true),
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesDelayedPlayback,
@@ -779,54 +780,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 200 // 5 frames
 	},
 	{
-		id: 'PilotPrerollDuration',
-		name: 'Pilot Preroll Duration',
-		description: 'ms of preroll before switching to Pilot elements',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 2000
-	},
-	{
-		id: 'PilotKeepaliveDuration',
-		name: 'Pilot Keepalive Duration',
-		description: 'ms to keep old part alive before switching to Pilot elements',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 2000
-	},
-	{
-		id: 'PilotOutTransitionDuration',
-		name: 'Pilot Out Transition Duration',
-		description: 'ms to keep pilot elements alive before transition to next part',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 1000
-	},
-	{
-		id: 'PilotCutToMediaPlayer',
-		name: 'Pilot media Player Cut Point',
-		description: 'ms from start of grafik before switching to background source',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 500
-	},
-	{
-		id: 'PreventOverlayWithFull',
-		name: 'Prevent Overlay with Full',
-		description: 'Stop overlay elements from showing when a Full graphic is on-air',
-		type: ConfigManifestEntryType.BOOLEAN,
-		required: false,
-		defaultVal: true
-	},
-	{
-		id: 'ATEMDelay',
-		name: 'ATEM Delay',
-		description: 'Frames of latency in ATEM',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 1
-	},
-	{
 		id: 'MaximumPartDuration',
 		name: 'Maximum Part Duration',
 		description: 'Maximum duration (ms) to give parts in UI',
@@ -849,5 +802,96 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 0
+	},
+	/** Graphics */
+	{
+		id: 'GraphicsType',
+		name: 'Graphics Type',
+		description: 'Graphics renderer to use',
+		type: ConfigManifestEntryType.SELECT,
+		required: true,
+		defaultVal: 'VIZ',
+		options: ['HTML', 'VIZ'],
+		multiple: false
+	},
+	{
+		id: 'HTMLGraphics.GraphicURL',
+		name: 'Full Graphic URL (HTML)',
+		description: 'URL to serve full graphics from',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: 'localhost'
+	},
+	{
+		id: 'HTMLGraphics.KeepAliveDuration',
+		name: 'Full Keep Alive Duration (HTML)',
+		description: 'How long to keep the old part alive when going to a full',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
+	},
+	{
+		id: 'HTMLGraphics.TransitionSettings.borderSoftness',
+		name: 'Full graphic wipe softness (HTML)',
+		description: 'Border softness of full graphic background wipe',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 7500
+	},
+	{
+		id: 'HTMLGraphics.TransitionSettings.loopOutTransitionDuration',
+		name: 'Full graphic background loop out transition duration',
+		description: 'Duration (ms) that the background loop behind a full takes to transition out',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 120
+	},
+	{
+		id: 'HTMLGraphics.TransitionSettings.wipeRate',
+		name: 'Full graphic background loop wipe duration (HTML)',
+		description: 'Frames (max 250) over which to wipe background loop behind Full',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 10
+	},
+	{
+		id: 'VizPilotGraphics.CutToMediaPlayer',
+		name: 'Pilot media Player Cut Point',
+		description: 'ms from start of grafik before switching to background source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 500
+	},
+	{
+		id: 'VizPilotGraphics.KeepAliveDuration',
+		name: 'Pilot Keepalive Duration',
+		description: 'ms to keep old part alive before switching to Pilot elements',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 2000
+	},
+	{
+		id: 'VizPilotGraphics.OutTransitionDuration',
+		name: 'Pilot Out Transition Duration',
+		description: 'ms to keep pilot elements alive before transition to next part',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 1000
+	},
+	{
+		id: 'VizPilotGraphics.PrerollDuration',
+		name: 'Pilot Preroll Duration',
+		description: 'ms of preroll before switching to Pilot elements',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 2000
+	},
+	{
+		id: 'PreventOverlayWithFull',
+		name: 'Prevent Overlay with Full',
+		description: 'Stop overlay elements from showing when a Full graphic is on-air',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: true
 	}
 ]

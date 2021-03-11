@@ -5,7 +5,8 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { CreateTimingEnable, CueDefinitionClearGrafiks, GetDefaultOut, GraphicLLayer, literal } from 'tv2-common'
+import { CreateTimingEnable, CueDefinitionClearGrafiks, GetDefaultOut, literal } from 'tv2-common'
+import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 
@@ -39,7 +40,7 @@ export function EvaluateClearGrafiks(
 				start: CreateTimingEnable(parsedCue, GetDefaultOut(config)).enable.start,
 				duration: 1000
 			},
-			outputLayerId: 'sec',
+			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId,
 			lifespan: PieceLifespan.WithinPart,
 			virtual: true
@@ -51,7 +52,7 @@ export function EvaluateClearGrafiks(
 			externalId: partId,
 			name: 'CLEAR',
 			...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
-			outputLayerId: 'sec',
+			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
 			lifespan: PieceLifespan.WithinPart,
 			content: {

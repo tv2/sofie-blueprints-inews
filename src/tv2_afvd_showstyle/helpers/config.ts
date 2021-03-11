@@ -1,5 +1,5 @@
 import { IBlueprintConfig, ShowStyleContext, TableConfigItemValue } from '@sofie-automation/blueprints-integration'
-import { TableConfigItemGFXTemplates, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 
@@ -8,8 +8,6 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 }
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
-	MakeAdlibsForFulls: boolean
-	GFXTemplates: TableConfigItemGFXTemplates[]
 	WipesConfig: TableConfigItemValue
 	LYDConfig: TableConfigItemValue
 }

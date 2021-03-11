@@ -8,6 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinitionPgmClean, FindSourceInfoStrict, literal, SourceInfo, SourceInfoType } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
@@ -52,7 +53,7 @@ export function OfftubeEvaluatePgmClean(
 			enable: {
 				start: 0
 			},
-			outputLayerId: 'aux',
+			outputLayerId: SharedOutputLayers.AUX,
 			sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
 			lifespan: PieceLifespan.OutOnRundownEnd,
 			content: literal<BaseContent>({

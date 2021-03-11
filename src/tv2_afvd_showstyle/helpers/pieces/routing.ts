@@ -9,6 +9,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
@@ -44,7 +45,7 @@ export function EvaluateCueRouting(
 							start: time
 						},
 						name: source,
-						outputLayerId: 'aux',
+						outputLayerId: SharedOutputLayers.AUX,
 						sourceLayerId: SourceLayer.VizFullIn1,
 						lifespan: PieceLifespan.WithinPart,
 						content: literal<CameraContent>({

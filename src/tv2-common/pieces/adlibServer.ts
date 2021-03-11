@@ -10,7 +10,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
@@ -45,7 +45,7 @@ export function CreateAdlibServer<
 			_rank: rank,
 			label: `${partDefinition.storyName}`,
 			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
-			outputLayerId: 'pgm', // TODO: Enum
+			outputLayerId: SharedOutputLayers.PGM,
 			content: GetVTContentProperties(config, file, duration),
 			tags: [
 				tagAsAdlib || vo ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,
