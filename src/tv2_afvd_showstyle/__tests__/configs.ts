@@ -1,13 +1,8 @@
-import { ConfigItemValue } from '@sofie-automation/blueprints-integration'
 import { DSKConfig, literal, parseMapStr } from 'tv2-common'
 import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
-
-export interface ConfigMap {
-	[key: string]: ConfigItemValue | ConfigMap | any[]
-}
 
 function getSisyfosLayers(configName: string, id: string): string[] {
 	switch (configName) {
