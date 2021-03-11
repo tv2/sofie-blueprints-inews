@@ -114,7 +114,8 @@ const selectServerClipAction = literal<ActionSelectServerClip>({
 	type: AdlibActionType.SELECT_SERVER_CLIP,
 	file: '01234A',
 	duration: SERVER_DURATION_A,
-	vo: false,
+	voLayer: false,
+	voLevels: false,
 	partDefinition: literal<PartDefinitionUnknown>({
 		type: PartType.Unknown,
 		externalId: CURRENT_PART_EXTERNAL_ID,
@@ -137,7 +138,8 @@ const selectVOClipAction = literal<ActionSelectServerClip>({
 	type: AdlibActionType.SELECT_SERVER_CLIP,
 	file: 'VOVOA',
 	duration: VO_DURATION_A,
-	vo: true,
+	voLayer: true,
+	voLevels: true,
 	partDefinition: literal<PartDefinitionUnknown>({
 		type: PartType.Unknown,
 		externalId: CURRENT_PART_EXTERNAL_ID,
