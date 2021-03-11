@@ -354,6 +354,25 @@
         "offtube_set_dve_next"
       ],
       "role": "queue"
+    },
+    {
+      "_id": "CfmFqiSNavu8w5nW9",
+      "type": "next_info",
+      "name": "NEXT",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "showThumbnailsInList": false,
+      "hideDuplicates": false,
+      "default": false,
+      "x": 1,
+      "y": 24.9,
+      "width": 22,
+      "scale": 0.8,
+      "showSegmentName": true,
+      "showPartTitle": false,
+      "hideForDynamicallyInsertedParts": true
     }
   ],
   "type": "dashboard_layout",
