@@ -65,7 +65,7 @@ export function MakeContentServer(
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	adLibPix: boolean,
-	vo: boolean,
+	voLevels: boolean,
 	sourceDuration?: number
 ): VTContent {
 	return literal<VTContent>({
@@ -79,7 +79,7 @@ export function MakeContentServer(
 			config,
 			sourceLayers,
 			adLibPix,
-			vo
+			voLevels
 		)
 	})
 }
@@ -92,7 +92,7 @@ function GetServerTimeline(
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	adLibPix?: boolean,
-	vo?: boolean
+	voLevels?: boolean
 ) {
 	const serverEnableClass = `.${GetEnableClassForServer(mediaPlayerSessionId)}`
 
@@ -163,7 +163,9 @@ function GetServerTimeline(
 				}
 			})
 		}),
-		...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)] : []),
+		...(voLevels
+			? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)]
+			: []),
 		...(sourceLayers.ATEM.ServerLookaheadAux
 			? [
 					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({

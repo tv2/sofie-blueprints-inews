@@ -12,7 +12,8 @@ export interface ActionSelectServerClip extends ActionBase {
 	file: string
 	partDefinition: PartDefinition
 	duration: number
-	vo: boolean
+	voLayer: boolean
+	voLevels: boolean
 	adLibPix: boolean
 }
 

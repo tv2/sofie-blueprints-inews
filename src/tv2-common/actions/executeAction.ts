@@ -356,7 +356,9 @@ function executeActionSelectServerClip<
 	const currentPiece = settings.SelectedAdlibs
 		? context
 				.getPieceInstances('current')
-				.find(p => p.piece.sourceLayerId === (userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server))
+				.find(
+					p => p.piece.sourceLayerId === (userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server)
+				)
 		: undefined
 
 	const basePart = CreatePartServerBase(
@@ -364,7 +366,8 @@ function executeActionSelectServerClip<
 		config,
 		partDefinition,
 		{
-			vo: userData.vo,
+			voLayer: userData.voLayer,
+			voLevels: userData.voLevels,
 			totalWords: 0,
 			totalTime: 0,
 			tapeTime: userData.duration / 1000,
@@ -373,8 +376,8 @@ function executeActionSelectServerClip<
 		},
 		{
 			SourceLayer: {
-				PgmServer: userData.vo ? settings.SourceLayers.VO : settings.SourceLayers.Server,
-				SelectedServer: userData.vo
+				PgmServer: userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server,
+				SelectedServer: userData.voLayer
 					? settings.SelectedAdlibs.SourceLayer.VO
 					: settings.SelectedAdlibs.SourceLayer.Server
 			},
@@ -459,7 +462,7 @@ function executeActionSelectServerClip<
 	])
 	if (settings.SelectedAdlibs && !currentPiece) {
 		context.stopPiecesOnLayers([
-			userData.vo ? settings.SelectedAdlibs.SourceLayer.VO : settings.SelectedAdlibs.SourceLayer.Server
+			userData.voLayer ? settings.SelectedAdlibs.SourceLayer.VO : settings.SelectedAdlibs.SourceLayer.Server
 		])
 	}
 }
