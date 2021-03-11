@@ -6,13 +6,13 @@ import {
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
-import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartDefinition } from 'tv2-common'
+import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
-import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGraphics'
 import { OfftubeEvaluateCueBackgroundLoop } from '../cues/OfftubeGraphicBackgroundLoop'
 import { OfftubeEvaluateGraphicDesign } from '../cues/OfftubeGraphicDesign'
+import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGraphics'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { OfftubeEvaluatePgmClean } from '../cues/OfftubePgmClean'
 import { OfftubeShowstyleBlueprintConfig } from './config'
@@ -38,7 +38,8 @@ export function OfftubeEvaluateCues(
 			EvaluateCueGraphic: OfftubeEvaluateGrafikCaspar,
 			EvaluateCueBackgroundLoop: OfftubeEvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: OfftubeEvaluateGraphicDesign,
-			EvaluateCuePgmClean: OfftubeEvaluatePgmClean
+			EvaluateCuePgmClean: OfftubeEvaluatePgmClean,
+			EvaluateCueLYD: EvaluateLYD
 		},
 		context,
 		config,

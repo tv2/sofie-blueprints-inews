@@ -5,7 +5,7 @@ import {
 	IBlueprintRundownDB,
 	PieceLifespan
 } from '@sofie-automation/blueprints-integration'
-import { CueDefinitionLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
+import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
 import { NoteType, PartType } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import {
@@ -16,7 +16,6 @@ import {
 import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getConfig, ShowStyleConfig } from '../../config'
-import { EvaluateLYD } from '../lyd'
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 
@@ -81,7 +80,7 @@ describe('lyd', () => {
 			})
 		)
 
-		expect(pieces[0].lifespan).toEqual(PieceLifespan.OutOnRundownEnd)
+		expect(pieces[0].lifespan).toEqual(PieceLifespan.OutOnRundownChange)
 	})
 
 	test('Lyd with out time', () => {

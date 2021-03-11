@@ -1,3 +1,4 @@
+import { TableConfigItemValue } from '@sofie-automation/blueprints-integration'
 import {
 	TableConfigItemDSK,
 	TableConfigItemSourceMappingWithSisyfos,
@@ -94,6 +95,12 @@ export interface TV2StudioConfigBase {
 		OutTransitionDuration: number
 		CutToMediaPlayer: number
 	}
+
+	AudioBedSettings: {
+		fadeIn: number
+		fadeOut: number
+		volume: number
+	}
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
@@ -114,6 +121,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
+	LYDConfig: TableConfigItemValue
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

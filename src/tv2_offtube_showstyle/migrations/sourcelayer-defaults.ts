@@ -549,6 +549,29 @@ const PGM: ISourceLayer[] = [
 	}
 ]
 
+// MUSIK group
+const MUSIK: ISourceLayer[] = [
+	{
+		_id: SharedSourceLayers.PgmAudioBed,
+		_rank: 30,
+		name: 'Audio bed',
+		abbreviation: 'VO',
+		type: SourceLayerType.AUDIO,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: ',minus',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	}
+]
+
 // MANUS group
 const MANUS: ISourceLayer[] = [
 	{
@@ -737,4 +760,13 @@ const AUX: ISourceLayer[] = [
 	}
 ]
 
-export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...MANUS, ...SEC, ...SELECTED_ADLIB, ...AUX])
+export default literal<ISourceLayer[]>([
+	...OVERLAY,
+	...JINGLE,
+	...PGM,
+	...MUSIK,
+	...MANUS,
+	...SEC,
+	...SELECTED_ADLIB,
+	...AUX
+])

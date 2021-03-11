@@ -31,9 +31,7 @@ export interface DVEConfigInput {
 }
 
 export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
-	GFXTemplates: TableConfigItemGFXTemplates[]
 	WipesConfig: TableConfigItemValue
-	LYDConfig: TableConfigItemValue
 }
 
 /*

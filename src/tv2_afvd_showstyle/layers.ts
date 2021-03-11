@@ -10,7 +10,6 @@ export enum AFVDSourceLayer {
 	PgmFullBackground = 'studio0_full_back',
 	PgmAdlibVizCmd = 'studio0_adlib_viz_cmd', // shortcuts
 	PgmSisyfosAdlibs = 'studio0_sisyfos_adlibs', // shortcuts
-	PgmAudioBed = 'studio0_audio_bed',
 
 	// Wall
 	WallGraphics = 'studio0_wall_graphics'

@@ -9,14 +9,19 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
-import { ControlClasses } from 'tv2-constants'
-import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { BlueprintConfig } from '../config'
+import {
+	AbstractLLayer,
+	ControlClasses,
+	SharedCasparLLayer,
+	SharedOutputLayers,
+	SharedSisyfosLLayer,
+	SharedSourceLayers
+} from 'tv2-constants'
+import { TV2BlueprintConfig } from '../blueprintConfig'
 
 export function EvaluateLYD(
 	context: SegmentContext,
-	config: BlueprintConfig,
+	config: TV2BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -49,8 +54,8 @@ export function EvaluateLYD(
 				_rank: rank || 0,
 				externalId: part.externalId,
 				name: parsedCue.variant,
-				outputLayerId: 'musik',
-				sourceLayerId: SourceLayer.PgmAudioBed,
+				outputLayerId: SharedOutputLayers.MUSIK,
+				sourceLayerId: SharedSourceLayers.PgmAudioBed,
 				lifespan,
 				expectedDuration: fade
 					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
@@ -73,7 +78,7 @@ export function EvaluateLYD(
 							}
 					  }
 					: CreateTimingEnable(parsedCue)),
-				outputLayerId: 'musik',
+				outputLayerId: SharedOutputLayers.MUSIK,
 				sourceLayerId: GetLYDSourceLayer(file),
 				lifespan,
 				content: LydContent(config, file, lydType, fadeIn, fadeOut)
@@ -82,12 +87,12 @@ export function EvaluateLYD(
 	}
 }
 
-export function GetLYDSourceLayer(_name: string): SourceLayer {
-	return SourceLayer.PgmAudioBed
+export function GetLYDSourceLayer(_name: string): SharedSourceLayers {
+	return SharedSourceLayers.PgmAudioBed
 }
 
 function LydContent(
-	config: BlueprintConfig,
+	config: TV2BlueprintConfig,
 	file: string,
 	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,
@@ -102,7 +107,7 @@ function LydContent(
 						start: 0
 					},
 					priority: 50,
-					layer: SisyfosLLAyer.SisyfosSourceAudiobed,
+					layer: SharedSisyfosLLayer.SisyfosSourceAudiobed,
 					content: {
 						deviceType: TSR.DeviceType.ABSTRACT,
 						type: 'empty'
@@ -121,7 +126,7 @@ function LydContent(
 					start: 0
 				},
 				priority: 1,
-				layer: CasparLLayer.CasparCGLYD,
+				layer: SharedCasparLLayer.CasparCGLYD,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
@@ -155,7 +160,7 @@ function LydContent(
 					start: 0
 				},
 				priority: 1,
-				layer: SisyfosLLAyer.SisyfosSourceAudiobed,
+				layer: SharedSisyfosLLayer.SisyfosSourceAudiobed,
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
@@ -164,4 +169,37 @@ function LydContent(
 			})
 		])
 	})
+}
+
+export function CreateLYDBaseline(): TSR.TSRTimelineObj[] {
+	return [
+		literal<TSR.TimelineObjAbstractAny>({
+			id: 'lyd_baseline',
+			enable: {
+				while: `!.${ControlClasses.LYDOnAir}`
+			},
+			priority: 0,
+			layer: AbstractLLayer.AudioBedBaseline,
+			content: {
+				deviceType: TSR.DeviceType.ABSTRACT
+			}
+		}),
+
+		literal<TSR.TimelineObjCCGMedia>({
+			id: '',
+			// Q: Why start 10s? A: It needs to be longer than the longest fade out, a 10s fade out is probably more than we will ever use.
+			enable: { start: '#lyd_baseline.start + 10000', end: `.${ControlClasses.LYDOnAir}` },
+			priority: 0,
+			layer: SharedCasparLLayer.CasparCGLYD,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.MEDIA,
+				loop: true,
+				file: 'EMPTY',
+				mixer: {
+					volume: 0
+				}
+			}
+		})
+	]
 }

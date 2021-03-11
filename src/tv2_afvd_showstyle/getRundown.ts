@@ -19,6 +19,7 @@ import {
 	ActionCutToCamera,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CreateLYDBaseline,
 	GetEksternMetaData,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
@@ -29,15 +30,14 @@ import {
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, ControlClasses, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	AtemLLayer,
 	atemLLayersDSK,
 	CasparLLayer,
 	CasparPlayerClipLoadingLoop,
-	SisyfosLLAyer,
-	VirtualAbstractLLayer
+	SisyfosLLAyer
 } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -1296,34 +1296,7 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			}
 		}),
 
-		literal<TSR.TimelineObjAbstractAny>({
-			id: 'lyd_baseline',
-			enable: {
-				while: `!.${ControlClasses.LYDOnAir}`
-			},
-			priority: 0,
-			layer: VirtualAbstractLLayer.AudioBedBaseline,
-			content: {
-				deviceType: TSR.DeviceType.ABSTRACT
-			}
-		}),
-
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			// Q: Why start 10s? A: It needs to be longer than the longest fade out, a 10s fade out is probably more than we will ever use.
-			enable: { start: '#lyd_baseline.start + 10000', end: `.${ControlClasses.LYDOnAir}` },
-			priority: 0,
-			layer: CasparLLayer.CasparCGLYD,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				loop: true,
-				file: 'EMPTY',
-				mixer: {
-					volume: 0
-				}
-			}
-		}),
+		...CreateLYDBaseline(),
 
 		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {

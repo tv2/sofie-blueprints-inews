@@ -59,12 +59,6 @@ export interface StudioConfig extends TV2StudioConfigBase {
 			Playing: boolean
 		}
 	}
-
-	AudioBedSettings: {
-		fadeIn: number
-		fadeOut: number
-		volume: number
-	}
 }
 
 /*

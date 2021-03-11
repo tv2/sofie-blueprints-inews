@@ -254,6 +254,13 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
+	sisyfos_source_audiobed: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		channel: 9,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
+	}),
 	casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
@@ -313,6 +320,13 @@ export default literal<BlueprintMappings>({
 		channel: 3,
 		layer: 110,
 		previewWhenNotOnAir: true
+	}),
+	casparcg_audio_lyd: literal<TSR.MappingCasparCG & BlueprintMapping>({
+		device: TSR.DeviceType.CASPARCG,
+		deviceId: 'caspar02',
+		lookahead: LookaheadMode.NONE,
+		channel: 1,
+		layer: 101
 	}),
 	casparcg_graphics_full_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
@@ -470,6 +484,11 @@ export default literal<BlueprintMappings>({
 		lookahead: LookaheadMode.NONE
 	}),
 	ident_marker: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
+	}),
+	audio_bed_baseline: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE

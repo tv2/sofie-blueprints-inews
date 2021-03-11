@@ -31,6 +31,12 @@ export default literal<IOutputLayer[]>([
 		isDefaultCollapsed: true
 	},
 	{
+		_id: SharedOutputLayers.MUSIK,
+		name: 'MUSIK',
+		isPGM: false,
+		_rank: 22
+	},
+	{
 		_id: SharedOutputLayers.MANUS,
 		name: 'MANUS',
 		isPGM: false,

@@ -134,11 +134,22 @@ export enum GraphicLLayer {
 export enum AbstractLLayer {
 	ServerEnablePending = 'server_enable_pending',
 	/* Exists to give the Ident UI marker a timeline object so that it gets the startedPlayback callback */
-	IdentMarker = 'ident_marker'
+	IdentMarker = 'ident_marker',
+	AudioBedBaseline = 'audio_bed_baseline'
 }
 
 export enum SharedATEMLLayer {
 	AtemDSKGraphics = 'atem_dsk_graphics'
+}
+
+export enum SharedCasparLLayer {
+	CasparCGLYD = 'casparcg_audio_lyd',
+	CasparPlayerClipPending = 'casparcg_player_clip_pending',
+	CasparPlayerJingle = 'casparcg_player_jingle'
+}
+
+export enum SharedSisyfosLLayer {
+	SisyfosSourceAudiobed = 'sisyfos_source_audiobed'
 }
 
 export enum SharedOutputLayers {
@@ -146,6 +157,7 @@ export enum SharedOutputLayers {
 	SEC = 'sec',
 	PGM = 'pgm',
 	JINGLE = 'jingle',
+	MUSIK = 'musik',
 	MANUS = 'manus',
 	AUX = 'aux',
 	SELECTED_ADLIB = 'selectedAdlib'
@@ -192,6 +204,7 @@ export enum SharedSourceLayers {
 
 	// Other / sec / manus
 	PgmScript = 'studio0_script',
+	PgmAudioBed = 'studio0_audio_bed',
 
 	// DSK toggle
 	PgmDSK1 = 'studio0_dsk_cmd',

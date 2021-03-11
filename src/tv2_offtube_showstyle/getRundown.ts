@@ -22,6 +22,7 @@ import {
 	ActionCutToRemote,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CreateLYDBaseline,
 	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
@@ -882,6 +883,8 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 				}
 			}
 		}),
+
+		...CreateLYDBaseline(),
 
 		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
