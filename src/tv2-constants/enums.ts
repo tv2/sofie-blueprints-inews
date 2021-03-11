@@ -67,6 +67,7 @@ export enum ControlClasses {
 	/** Indicates that a DVE is currently on air */
 	DVEOnAir = 'dve_on_air',
 	ServerOnAir = 'server_on_air',
+	LYDOnAir = 'lyd_on_air',
 	NOLookahead = 'no_lookahead',
 	CopyMediaPlayerSession = 'copy_media_player_session',
 	AbstractLookahead = 'abstract_lookahead'
