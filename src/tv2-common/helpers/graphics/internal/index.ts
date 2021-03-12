@@ -15,12 +15,14 @@ import {
 	TV2BlueprintConfig
 } from 'tv2-common'
 import { AbstractLLayer, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import _ = require('underscore')
 import {
 	CreateTimingGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
 	GetSourceLayerForGraphic,
 	GraphicDisplayName,
+	IsTargetingOVL,
 	IsTargetingTLF,
 	IsTargetingWall
 } from '..'
@@ -67,19 +69,21 @@ export function CreateInternalGraphic(
 			: GetInternalGraphicContentVIZ(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate)
 
 	if (adlib) {
-		const adLibPiece = literal<IBlueprintAdLibPiece>({
-			_rank: rank || 0,
-			externalId: partId,
-			name: GraphicDisplayName(config, parsedCue),
-			uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}_commentator`,
-			sourceLayerId,
-			outputLayerId: SharedOutputLayers.OVERLAY,
-			lifespan: PieceLifespan.WithinPart,
-			expectedDuration: 5000,
-			tags: [AdlibTags.ADLIB_KOMMENTATOR],
-			content
-		})
-		adlibPieces.push(adLibPiece)
+		if (IsTargetingOVL(engine)) {
+			const adLibPiece = literal<IBlueprintAdLibPiece>({
+				_rank: rank || 0,
+				externalId: partId,
+				name: `${name}_fuck`,
+				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}_commentator`,
+				sourceLayerId,
+				outputLayerId: SharedOutputLayers.OVERLAY,
+				lifespan: PieceLifespan.WithinPart,
+				expectedDuration: 5000,
+				tags: [AdlibTags.ADLIB_KOMMENTATOR],
+				content: _.clone(content)
+			})
+			adlibPieces.push(adLibPiece)
+		}
 
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -94,7 +98,7 @@ export function CreateInternalGraphic(
 					? {}
 					: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
-				content
+				content: _.clone(content)
 			})
 		)
 	} else {
@@ -111,7 +115,7 @@ export function CreateInternalGraphic(
 			outputLayerId,
 			sourceLayerId,
 			lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
-			content
+			content: _.clone(content)
 		})
 		pieces.push(piece)
 
