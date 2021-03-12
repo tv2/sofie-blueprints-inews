@@ -379,14 +379,6 @@ export default literal<BlueprintMappings>({
 		channel: 5,
 		layer: 110
 	}),
-	casparcg_studio_screen_loop: literal<TSR.MappingCasparCG & BlueprintMapping>({
-		device: TSR.DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		previewWhenNotOnAir: true,
-		channel: 6,
-		layer: 110
-	}),
 	graphic_adlibs: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
@@ -459,16 +451,16 @@ export default literal<BlueprintMappings>({
 		layer: 108,
 		previewWhenNotOnAir: false
 	}),
-	/** TODO: Revisit these */
-	graphic_pilot_overlay: literal<TSR.MappingCasparCG & BlueprintMapping>({
+	graphic_wall: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
-		channel: 3,
-		layer: 111
+		channel: 6,
+		layer: 110
 	}),
-	graphic_wall: literal<TSR.MappingCasparCG & BlueprintMapping>({
+	/** TODO: Revisit these */
+	graphic_pilot_overlay: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.NONE,

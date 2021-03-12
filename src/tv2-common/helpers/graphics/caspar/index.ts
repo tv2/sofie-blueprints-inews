@@ -11,6 +11,7 @@ import {
 } from 'tv2-common'
 import { GraphicEngine, GraphicLLayer, SharedATEMLLayer } from 'tv2-constants'
 import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
+import { IsTargetingFull, IsTargetingWall } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
 export interface CasparPilotGeneratorSettings {
@@ -33,7 +34,8 @@ export function GetInternalGraphicContentCaspar(
 export function GetPilotGraphicContentCaspar(
 	config: TV2BlueprintConfig,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	settings: CasparPilotGeneratorSettings
+	settings: CasparPilotGeneratorSettings,
+	engine: GraphicEngine
 ) {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
 	return literal<GraphicsContent>({
@@ -50,7 +52,7 @@ export function GetPilotGraphicContentCaspar(
 					while: '1'
 				},
 				priority: 100,
-				layer: GraphicLLayer.GraphicLLayerPilot,
+				layer: IsTargetingWall(engine) ? GraphicLLayer.GraphicLLayerWall : GraphicLLayer.GraphicLLayerPilot,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -103,7 +105,7 @@ export function GetPilotGraphicContentCaspar(
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
-			...settings.createPilotTimelineForStudio(config)
+			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config) : [])
 		]
 	})
 }
