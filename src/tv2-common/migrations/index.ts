@@ -29,8 +29,9 @@ export function RenameStudioConfig(versionStr: string, studio: string, from: str
 			const configVal = context.getConfig(from)
 			if (configVal !== undefined) {
 				context.setConfig(to, configVal)
-				context.removeConfig(from)
 			}
+
+			context.removeConfig(from)
 		}
 	})
 }
