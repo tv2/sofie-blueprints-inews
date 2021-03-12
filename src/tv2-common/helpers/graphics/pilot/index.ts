@@ -186,7 +186,7 @@ function CreateFullContent(
 	adlibRank: number
 ): GraphicsContent {
 	if (config.studio.GraphicsType === 'HTML') {
-		return GetPilotGraphicContentCaspar(config, cue, settings.caspar, engine)
+		return GetPilotGraphicContentCaspar(config, context, cue, settings.caspar, engine)
 	} else {
 		return GetPilotGraphicContentViz(config, context, settings.viz, cue, engine, partId, adlib, adlibRank)
 	}

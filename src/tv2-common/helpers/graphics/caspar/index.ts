@@ -1,6 +1,6 @@
 export * from './slotMappings'
 
-import { GraphicsContent, IBlueprintPiece, TSR } from '@sofie-automation/blueprints-integration'
+import { GraphicsContent, IBlueprintPiece, NotesContext, TSR } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GraphicInternal,
@@ -15,7 +15,7 @@ import { IsTargetingFull, IsTargetingWall } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
 export interface CasparPilotGeneratorSettings {
-	createPilotTimelineForStudio(config: TV2BlueprintConfig): TSR.TSRTimelineObj[]
+	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: NotesContext): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentCaspar(
@@ -33,6 +33,7 @@ export function GetInternalGraphicContentCaspar(
 
 export function GetPilotGraphicContentCaspar(
 	config: TV2BlueprintConfig,
+	context: NotesContext,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	settings: CasparPilotGeneratorSettings,
 	engine: GraphicEngine
@@ -105,7 +106,7 @@ export function GetPilotGraphicContentCaspar(
 				},
 				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
-			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config) : [])
+			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context) : [])
 		]
 	})
 }

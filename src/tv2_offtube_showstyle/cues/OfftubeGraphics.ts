@@ -2,6 +2,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	NotesContext,
 	SegmentContext,
 	TSR
 } from '@sofie-automation/blueprints-integration'
@@ -9,6 +10,7 @@ import {
 	CreateInternalGraphic,
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
+	GetSisyfosTimelineObjForCamera,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
@@ -18,13 +20,13 @@ import {
 	TimeFromFrames,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
 	caspar: {
-		createPilotTimelineForStudio: createPilotATEMTimeline
+		createPilotTimelineForStudio: createPilotTimeline
 	},
 	viz: {
 		createPilotTimelineForStudio: () => []
@@ -61,7 +63,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	}
 }
 
-function createPilotATEMTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObj[] {
+function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: NotesContext): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
@@ -122,6 +124,7 @@ function createPilotATEMTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.T
 			},
 			metaData: {},
 			classes: ['ab_on_preview']
-		})
+		}),
+		GetSisyfosTimelineObjForCamera(context, config, 'full', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
 	]
 }
