@@ -62,7 +62,6 @@ export enum OfftubeAtemLLayer {
 }
 
 enum CasparLLayer {
-	CasparGraphicsOverlay = 'casparcg_graphics_overlay',
 	CasparPlayerJingleLookahead = 'casparcg_player_jingle_looakhead',
 	CasparGraphicsFullLoop = 'casparcg_graphics_full_loop',
 	CasparCGDVELoop = 'casparcg_dve_loop',

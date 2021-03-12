@@ -287,6 +287,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	),
 	RenameStudioConfig('1.5.0', 'Offtube', 'FullTransitionSettings.wipeRate', 'HTMLGraphics.TransitionSettings.wipeRate'),
 	removeMapping('1.5.0', 'casparcg_studio_screen_loop'),
+	removeMapping('1.5.0', 'casparcg_graphics_overlay'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
