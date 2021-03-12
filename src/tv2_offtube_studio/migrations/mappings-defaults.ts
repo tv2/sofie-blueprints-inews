@@ -310,6 +310,7 @@ export default literal<BlueprintMappings>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.PRELOAD,
+		lookaheadMaxSearchDistance: 1,
 		channel: 3,
 		layer: 110,
 		previewWhenNotOnAir: true
