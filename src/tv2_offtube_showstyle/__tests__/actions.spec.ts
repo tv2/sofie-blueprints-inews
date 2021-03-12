@@ -17,7 +17,7 @@ import {
 	literal,
 	PartDefinitionUnknown
 } from 'tv2-common'
-import { AdlibActionType, CueType, PartType } from 'tv2-constants'
+import { AdlibActionType, CueType, PartType, SharedSourceLayers } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { executeActionOfftube } from '../actions'
@@ -206,7 +206,6 @@ const selectLiveAction = literal<ActionCutToRemote>({
 
 const selectFullGrafikAction = literal<ActionSelectFullGrafik>({
 	type: AdlibActionType.SELECT_FULL_GRAFIK,
-	segmentExternalId: 'TEST STORY 3',
 	name: 'scoreboard',
 	vcpid: 1234567890
 })
@@ -248,10 +247,10 @@ function getDVEPieces(context: MockActionContext, part: 'current' | 'next'): Act
 
 function getFullGrafikPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
-		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmFull),
+		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SharedSourceLayers.PgmPilot),
 		dataStore: context
 			.getPieceInstances(part)
-			.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdlibGraphicsFull)
+			.find(p => p.piece.sourceLayerId === SharedSourceLayers.SelectedAdlibGraphicsFull)
 	}
 }
 

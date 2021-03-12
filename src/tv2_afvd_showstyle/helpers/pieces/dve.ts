@@ -18,7 +18,7 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType } from 'tv2-constants'
+import { AdlibActionType, SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -66,7 +66,7 @@ export function EvaluateDVE(
 					_rank: rank || 0,
 					externalId: partDefinition.externalId,
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					sourceLayerId: SourceLayer.PgmDVE,
 					uniquenessId: getUniquenessIdDVE(parsedCue),
 					lifespan: PieceLifespan.WithinPart,
@@ -97,7 +97,7 @@ export function EvaluateDVE(
 						start,
 						...(end ? { duration: end - start } : {})
 					},
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					sourceLayerId: SourceLayer.PgmDVE,
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,

@@ -9,12 +9,12 @@ import {
 	TimelinePersistentState,
 	TSR
 } from '@sofie-automation/blueprints-integration'
+import { AbstractLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
-import { AbstractLLayer } from './layers'
 
 export interface PartEndStateExt {
 	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }

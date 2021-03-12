@@ -6,7 +6,7 @@ import {
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
-import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, PartDefinition } from 'tv2-common'
+import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
@@ -16,7 +16,6 @@ import { EvaluateEkstern } from './ekstern'
 import { EvaluateCueGraphic } from './graphic'
 import { EvaluateCueBackgroundLoop } from './graphicBackgroundLoop'
 import { EvaluateJingle } from './jingle'
-import { EvaluateLYD } from './lyd'
 import { EvaluateCueRouting } from './routing'
 import { EvaluateTelefon } from './telefon'
 

@@ -1,5 +1,12 @@
-import { BlueprintResultSegment, IBlueprintRundownDB, IngestSegment } from '@sofie-automation/blueprints-integration'
+import {
+	BlueprintResultSegment,
+	IBlueprintActionManifest,
+	IBlueprintActionManifestDisplayContent,
+	IBlueprintRundownDB,
+	IngestSegment
+} from '@sofie-automation/blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
+import { SharedSourceLayers } from 'tv2-constants'
 import { SegmentContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -87,7 +94,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 	})
@@ -106,7 +113,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -139,19 +146,24 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
-		expect(fullPart.pieces).toHaveLength(1)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmPilot])
-		expect(fullPart.adLibPieces).toHaveLength(1)
-		const fullAdlib = fullPart.adLibPieces[0]
-		expect(fullAdlib).toBeTruthy()
-		expect(fullAdlib.sourceLayerId).toBe(SourceLayer.PgmPilot)
-		expect(fullPart.actions).toHaveLength(0)
+		expect(fullPart.pieces).toHaveLength(2)
+		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmPilot,
+			SharedSourceLayers.SelectedAdlibGraphicsFull
+		])
+		expect(fullPart.adLibPieces).toHaveLength(0)
+		expect(fullPart.actions).toHaveLength(1)
+		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		expect(fullAdlibAction).toBeTruthy()
+		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
+			SharedSourceLayers.PgmPilot
+		)
 	})
 
 	it("Doesn't merge MOSART=L with GRAFIK=FULL", () => {
@@ -178,7 +190,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -219,19 +231,24 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
-		expect(fullPart.pieces).toHaveLength(1)
-		expect(fullPart.adLibPieces).toHaveLength(1)
-		const fullAdlib = fullPart.adLibPieces[0]
-		expect(fullAdlib).toBeTruthy()
-		expect(fullAdlib.sourceLayerId).toBe(SourceLayer.PgmPilot)
-		expect(fullPart.actions).toHaveLength(0)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmPilot])
+		expect(fullPart.pieces).toHaveLength(2)
+		expect(fullPart.adLibPieces).toHaveLength(0)
+		expect(fullPart.actions).toHaveLength(1)
+		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		expect(fullAdlibAction).toBeTruthy()
+		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
+			SharedSourceLayers.PgmPilot
+		)
+		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmPilot,
+			SharedSourceLayers.SelectedAdlibGraphicsFull
+		])
 	})
 
 	it('Creates full when cues are correct and creates overlay when allowed', () => {
@@ -266,19 +283,25 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
-		expect(fullPart.pieces).toHaveLength(2)
-		expect(fullPart.adLibPieces).toHaveLength(1)
-		const fullAdlib = fullPart.adLibPieces[0]
-		expect(fullAdlib).toBeTruthy()
-		expect(fullAdlib.sourceLayerId).toBe(SourceLayer.PgmPilot)
-		expect(fullPart.actions).toHaveLength(0)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmPilot, SourceLayer.PgmPilotOverlay])
+		expect(fullPart.pieces).toHaveLength(3)
+		expect(fullPart.adLibPieces).toHaveLength(0)
+		expect(fullPart.actions).toHaveLength(1)
+		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		expect(fullAdlibAction).toBeTruthy()
+		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
+			SharedSourceLayers.PgmPilot
+		)
+		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmPilot,
+			SharedSourceLayers.SelectedAdlibGraphicsFull,
+			SharedSourceLayers.PgmPilotOverlay
+		])
 	})
 
 	it('Creates graphic for GRAFIK=FULL with Pilot with space', () => {
@@ -306,19 +329,25 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
-		expect(fullPart.pieces).toHaveLength(1)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmPilot])
-		expect(fullPart.adLibPieces).toHaveLength(1)
-		const fullAdlib = fullPart.adLibPieces[0]
-		expect(fullAdlib).toBeTruthy()
-		expect(fullAdlib.sourceLayerId).toBe(SourceLayer.PgmPilot)
-		expect(fullPart.actions).toHaveLength(0)
+		expect(fullPart.pieces).toHaveLength(2)
+		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmPilot,
+			SharedSourceLayers.SelectedAdlibGraphicsFull
+		])
+		expect(fullPart.adLibPieces).toHaveLength(0)
+		expect(fullPart.actions).toHaveLength(1)
+		expect(fullPart.actions).toHaveLength(1)
+		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		expect(fullAdlibAction).toBeTruthy()
+		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
+			SharedSourceLayers.PgmPilot
+		)
 	})
 
 	it("Creates invalid part for GRAFIK=FULL with Pilot with 'notes'", () => {
@@ -345,7 +374,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -381,7 +410,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -389,7 +418,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart).toBeTruthy()
 		expect(fullPart.part.invalid).toBe(true)
 		expect(fullPart.pieces).toHaveLength(0)
-		expect(fullPart.adLibPieces).toHaveLength(1)
+		expect(fullPart.adLibPieces).toHaveLength(2)
 		expect(fullPart.actions).toHaveLength(0)
 	})
 
@@ -416,7 +445,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart1.adLibPieces).toHaveLength(0)
 		expect(kamPart1.actions).toHaveLength(0)
 
@@ -430,7 +459,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart2 = result.parts[2]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(1)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam])
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam])
 		expect(kamPart2.adLibPieces).toHaveLength(0)
 		expect(kamPart2.actions).toHaveLength(0)
 	})
@@ -460,9 +489,9 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(3)
 		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SourceLayer.PgmCam,
-			SourceLayer.PgmPilotOverlay,
-			SourceLayer.PgmScript
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.PgmPilotOverlay,
+			SharedSourceLayers.PgmScript
 		])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
@@ -493,9 +522,9 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(3)
 		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SourceLayer.PgmCam,
-			SourceLayer.WallGraphics,
-			SourceLayer.PgmScript
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.WallGraphics,
+			SharedSourceLayers.PgmScript
 		])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
@@ -525,19 +554,24 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
-		expect(fullPart.pieces).toHaveLength(1)
-		expect(fullPart.adLibPieces).toHaveLength(1)
-		const fullAdlib = fullPart.adLibPieces[0]
-		expect(fullAdlib).toBeTruthy()
-		expect(fullAdlib.sourceLayerId).toBe(SourceLayer.PgmPilot)
-		expect(fullPart.actions).toHaveLength(0)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmPilot])
+		expect(fullPart.pieces).toHaveLength(2)
+		expect(fullPart.adLibPieces).toHaveLength(0)
+		expect(fullPart.actions).toHaveLength(1)
+		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		expect(fullAdlibAction).toBeTruthy()
+		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
+			SharedSourceLayers.PgmPilot
+		)
+		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmPilot,
+			SharedSourceLayers.SelectedAdlibGraphicsFull
+		])
 	})
 
 	it('Loads graphic on wall, and loop on wall in next part', () => {
@@ -566,15 +600,18 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(3)
 		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SourceLayer.PgmCam,
-			SourceLayer.WallGraphics,
-			SourceLayer.PgmScript
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.WallGraphics,
+			SharedSourceLayers.PgmScript
 		])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.WallGraphics])
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.WallGraphics
+		])
 	})
 
 	it('Shows warning for missing wall graphic', () => {
@@ -595,12 +632,12 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 	})
 
 	it('Shows warning for missing wall graphic with MOSART=L', () => {
@@ -629,15 +666,18 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(3)
 		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SourceLayer.PgmCam,
-			SourceLayer.PgmPilotOverlay,
-			SourceLayer.PgmScript
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.PgmPilotOverlay,
+			SharedSourceLayers.PgmScript
 		])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.WallGraphics])
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.WallGraphics
+		])
 	})
 
 	it('Shows warning for graphic in wrong place', () => {
@@ -665,12 +705,15 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.PgmScript])
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmCam, SourceLayer.WallGraphics])
+		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.WallGraphics
+		])
 	})
 
 	it('Changes design and background loops', () => {
@@ -693,11 +736,11 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(5)
 		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SourceLayer.PgmCam,
-			SourceLayer.PgmDesign,
+			SharedSourceLayers.PgmCam,
+			SharedSourceLayers.PgmDesign,
 			SourceLayer.PgmDVEBackground,
 			SourceLayer.PgmFullBackground,
-			SourceLayer.PgmScript
+			SharedSourceLayers.PgmScript
 		])
 	})
 
@@ -713,7 +756,7 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(1)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmLive])
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
 	})
 
 	it('Creates Live 1', () => {
@@ -728,7 +771,7 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(1)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SourceLayer.PgmLive])
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
 	})
 
 	it('Creates invalid part for EKSTERN=LIVE', () => {

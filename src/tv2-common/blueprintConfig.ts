@@ -1,3 +1,4 @@
+import { TableConfigItemValue } from '@sofie-automation/blueprints-integration'
 import {
 	TableConfigItemDSK,
 	TableConfigItemSourceMappingWithSisyfos,
@@ -38,16 +39,27 @@ export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
 	CasparPrerollDuration: number
-	NetworkBasePathClip: string
-	NetworkBasePathJingle: string
+
+	/** MEDIA WORKFLOWS */
+	/* Clip */
+	ClipNetworkBasePath: string
 	ClipMediaFlowId: string
 	ClipFileExtension: string
 	ClipFolder?: string
 	ClipIgnoreStatus: boolean
+	/* Jingle */
+	JingleNetworkBasePath: string
 	JingleMediaFlowId: string
 	JingleFileExtension: string
 	JingleFolder?: string
 	JingleIgnoreStatus: boolean
+	/* Graphic */
+	GraphicFileExtension: string
+	GraphicMediaFlowId: string
+	GraphicNetworkBasePath: string
+	GraphicFolder?: string
+	GraphicIgnoreStatus: boolean
+
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
 		Default: number
@@ -67,6 +79,28 @@ export interface TV2StudioConfigBase {
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
 	PreventOverlayWithFull?: boolean
 	ServerPostrollDuration: number
+	GraphicsType: 'HTML' | 'VIZ'
+	HTMLGraphics: {
+		GraphicURL: string
+		TransitionSettings: {
+			wipeRate: number
+			borderSoftness: number
+			loopOutTransitionDuration: number
+		}
+		KeepAliveDuration: number
+	}
+	VizPilotGraphics: {
+		KeepAliveDuration: number
+		PrerollDuration: number
+		OutTransitionDuration: number
+		CutToMediaPlayer: number
+	}
+
+	AudioBedSettings: {
+		fadeIn: number
+		fadeOut: number
+		volume: number
+	}
 }
 
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
@@ -86,6 +120,8 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	GFXTemplates: TableConfigItemGFXTemplates[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
+	MakeAdlibsForFulls: boolean
+	LYDConfig: TableConfigItemValue
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

@@ -26,6 +26,7 @@ import {
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
+import { SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -70,7 +71,7 @@ export function CreatePartEVS(
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
-			outputLayerId: 'pgm',
+			outputLayerId: SharedOutputLayers.PGM,
 			sourceLayerId: SourceLayer.PgmLocal,
 			lifespan: PieceLifespan.WithinPart,
 			content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)

@@ -8,7 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { ActionCutToCamera, ActionTakeWithTransition, literal } from 'tv2-common'
-import { AdlibActionType } from 'tv2-constants'
+import { AdlibActionType, SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { MockActionContext } from '../../tv2_offtube_showstyle/__tests__/actionExecutionContext.mock'
 import { executeActionAFVD } from '../actions'
@@ -42,7 +42,7 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart
 	})
 }
@@ -57,7 +57,7 @@ const evsPieceInstance: IBlueprintPieceInstance = {
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart
 	})
 }
@@ -109,7 +109,7 @@ const kamPieceInstance_Cut: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
@@ -144,7 +144,7 @@ const kamPieceInstance_Mix: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
@@ -184,7 +184,7 @@ const kamPieceInstance_Effekt: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
@@ -220,7 +220,7 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EFFEKT 1',
 		sourceLayerId: SourceLayer.PgmJingle,
-		outputLayerId: 'jingle',
+		outputLayerId: SharedOutputLayers.JINGLE,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: []
@@ -239,7 +239,7 @@ const evsPieceInstance_Cut: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
@@ -274,7 +274,7 @@ const evsPieceInstance_Mix: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
@@ -314,7 +314,7 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: 'pgm',
+		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
@@ -719,7 +719,7 @@ describe('Camera shortcuts on server', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'SERVER',
 					sourceLayerId: SourceLayer.PgmServer,
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					lifespan: PieceLifespan.WithinPart
 				})
 			})
@@ -758,7 +758,7 @@ describe('Camera shortcuts on server', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'SERVER',
 					sourceLayerId: SourceLayer.PgmServer,
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					lifespan: PieceLifespan.WithinPart
 				})
 			})
@@ -799,7 +799,7 @@ describe('Camera shortcuts on VO', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'VO',
 					sourceLayerId: SourceLayer.PgmVoiceOver,
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					lifespan: PieceLifespan.WithinPart
 				})
 			})
@@ -838,7 +838,7 @@ describe('Camera shortcuts on VO', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'VO',
 					sourceLayerId: SourceLayer.PgmVoiceOver,
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					lifespan: PieceLifespan.WithinPart
 				})
 			})

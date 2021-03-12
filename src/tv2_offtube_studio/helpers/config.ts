@@ -26,14 +26,6 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	// Injected by core
 	SofieHostURL: string
 
-	// Must override
-
-	// Intended overrides
-	GraphicMediaFlowId: string
-	NetworkBasePathGraphic: string
-	GraphicFileExtension: string
-	GraphicFolder?: string
-	GraphicIgnoreStatus: boolean
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {
@@ -61,20 +53,9 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 		volume: number
 	}
 
-	// Dev overrides
-
-	// Constants
 	CasparPrerollDuration: number
-	FullKeepAliveDuration: number
 	IdleSource: number
 	IdleSisyfosLayers: string[]
-	FullGraphicURL: string
-
-	FullTransitionSettings: {
-		wipeRate: number
-		borderSoftness: number
-		loopOutTransitionDuration: number
-	}
 }
 
 export const defaultDSK: TableConfigItemDSK = {
@@ -85,36 +66,6 @@ export const defaultDSK: TableConfigItemDSK = {
 	DefaultOn: true,
 	FullSource: true
 }
-
-/*
-export function defaultStudioConfig(context: NotesContext): OfftubeStudioBlueprintConfig {
-	const config: OfftubeStudioBlueprintConfig = {
-		studio: {} as any,
-		// showStyle: {} as any,
-		sources: [],
-		mediaPlayers: [],
-		liveAudio: [],
-		stickyLayers: []
-	}
-
-	// Load values injected by core, not via manifest
-	for (const id of CORE_INJECTED_KEYS) {
-		// Use the key as the value. Good enough for now
-		objectPath.set(config.studio, id, id)
-	}
-
-	// Load the config
-	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', {})
-	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', {})
-
-	config.sources = parseSources(config.studio)
-	config.mediaPlayers = parseMediaPlayers(config.studio)
-	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
-
-	return config
-}
-*/
 
 export function parseConfig(rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
 	const studioConfig = (rawConfig as unknown) as OfftubeStudioConfig

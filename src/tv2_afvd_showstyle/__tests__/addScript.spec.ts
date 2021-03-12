@@ -1,6 +1,6 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent } from '@sofie-automation/blueprints-integration'
 import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
-import { PartType } from 'tv2-constants'
+import { PartType, SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
@@ -28,7 +28,7 @@ describe('addScript', () => {
 				name: 'Kam 2',
 				lifespan: PieceLifespan.WithinPart,
 				sourceLayerId: SourceLayer.PgmCam,
-				outputLayerId: 'pgm'
+				outputLayerId: SharedOutputLayers.PGM
 			})
 		]
 		AddScript(part, result, 1000, SourceLayer.PgmScript)
@@ -39,7 +39,7 @@ describe('addScript', () => {
 				enable: {
 					start: 0
 				},
-				outputLayerId: 'manus',
+				outputLayerId: SharedOutputLayers.MANUS,
 				sourceLayerId: SourceLayer.PgmScript,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<ScriptContent>({

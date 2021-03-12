@@ -1,4 +1,4 @@
-import { AbstractLLayer, GraphicLLayer } from 'tv2-common'
+import { AbstractLLayer, GraphicLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 
 export type LLayer = VirtualAbstractLLayer | AtemLLayer | CasparLLayer | SisyfosLLAyer
@@ -50,25 +50,29 @@ export enum AtemLLayer {
 	AtemAuxSSrc = 'atem_aux_ssrc'
 }
 
-export enum CasparLLayer {
-	CasparPlayerClipPending = 'casparcg_player_clip_pending',
-	CasparPlayerJingle = 'casparcg_player_jingle',
+enum AFVDCasparLLayer {
 	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGFullBg = 'casparcg_full_bg',
-	CasparCGLYD = 'casparcg_audio_lyd',
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',
 	CasparCountdown = 'casparcg_countdown'
 }
 
-export enum SisyfosLLAyer {
+// tslint:disable-next-line: variable-name
+export const CasparLLayer = {
+	...AFVDCasparLLayer,
+	...SharedCasparLLayer
+}
+
+export type CasparLLayer = AFVDCasparLLayer | SharedCasparLLayer
+
+enum AFVDSisyfosLLAyer {
 	SisyfosConfig = 'sisyfos_config',
 	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
 	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
-	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
 	SisyfosSourceTLF = 'sisyfos_source_tlf_hybrid',
 	SisyfosSourceHost_1_ST_A = 'sisyfos_source_Host_1_st_a',
 	SisyfosSourceHost_2_ST_A = 'sisyfos_source_Host_2_st_a',
@@ -99,6 +103,14 @@ export enum SisyfosLLAyer {
 	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2',
 	SisyfosResync = 'sisyfos_resync'
 }
+
+// tslint:disable-next-line: variable-name
+export const SisyfosLLAyer = {
+	...SharedSisyfosLLayer,
+	...AFVDSisyfosLLAyer
+}
+
+export type SisyfosLLAyer = SharedSisyfosLLayer | AFVDSisyfosLLAyer
 
 export function CasparPlayerClip(i: number | string) {
 	return `casparcg_player_clip_${i}`

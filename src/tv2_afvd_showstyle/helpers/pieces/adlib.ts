@@ -18,7 +18,7 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, CueType } from 'tv2-constants'
+import { AdlibActionType, CueType, SharedOutputLayers } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
@@ -123,7 +123,7 @@ export function EvaluateAdLib(
 				externalId: partId,
 				name: `DVE: ${parsedCue.variant}`,
 				sourceLayerId: SourceLayer.PgmDVE,
-				outputLayerId: 'pgm',
+				outputLayerId: SharedOutputLayers.PGM,
 				uniquenessId: getUniquenessIdDVE(cueDVE),
 				toBeQueued: true,
 				content: content.content,

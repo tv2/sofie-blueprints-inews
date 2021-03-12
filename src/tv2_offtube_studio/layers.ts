@@ -1,4 +1,4 @@
-import { AbstractLLayer, GraphicLLayer } from 'tv2-common'
+import { AbstractLLayer, GraphicLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
@@ -23,7 +23,7 @@ export enum OfftubeAbstractLLayer {
 	OfftubeAbstractLLayerAbstractLookahead = 'offtube_abstract_layer_abstract_lookahead'
 }
 
-export enum OfftubeSisyfosLLayer {
+enum SisyfosLLayer {
 	SisyfosConfig = 'sisyfos_config',
 	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
 	SisyfosGroupServer = 'sisyfos_group_server',
@@ -61,20 +61,32 @@ export enum OfftubeAtemLLayer {
 	AtemSSrcBox4 = 'atem_supersource_z_box4'
 }
 
-export enum OfftubeCasparLLayer {
-	CasparPlayerClipPending = 'casparcg_player_clip_pending', // TODO: This is a shared layer
+enum CasparLLayer {
 	CasparGraphicsOverlay = 'casparcg_graphics_overlay',
-	CasparPlayerJingle = 'casparcg_player_jingle',
 	CasparPlayerJingleLookahead = 'casparcg_player_jingle_looakhead',
-	CasparGraphicsFull = 'casparcg_graphics_full',
 	CasparGraphicsFullLoop = 'casparcg_graphics_full_loop',
 	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGDVEKeyedLoop = 'casparcg_dve_keyed_loop',
 	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
-	CasparCGDVEFrame = 'casparcg_dve_frame',
-	CasparStudioScreenLoop = 'casparcg_studio_screen_loop'
+	CasparCGDVEFrame = 'casparcg_dve_frame'
 }
+
+// tslint:disable-next-line: variable-name
+export const OfftubeCasparLLayer = {
+	...CasparLLayer,
+	...SharedCasparLLayer
+}
+
+export type OfftubeCasparLLayer = CasparLLayer | SharedCasparLLayer
+
+// tslint:disable-next-line: variable-name
+export const OfftubeSisyfosLLayer = {
+	...SharedSisyfosLLayer,
+	...SisyfosLLayer
+}
+
+export type OfftubeSisyfosLLayer = SharedSisyfosLLayer | SisyfosLLayer
 
 export function CasparPlayerClip(i: number | string) {
 	return `casparcg_player_clip_${i}`

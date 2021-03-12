@@ -8,6 +8,7 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddScript,
+	ApplyFullGraphicPropertiesToPart,
 	CueDefinition,
 	GetJinglePartProperties,
 	GraphicIsPilot,
@@ -60,10 +61,7 @@ export function CreatePartCueOnly(
 		partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length &&
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
-		part.prerollDuration = config.studio.PilotPrerollDuration
-		part.transitionKeepaliveDuration = config.studio.PilotKeepaliveDuration
-			? Number(config.studio.PilotKeepaliveDuration)
-			: 60000
+		ApplyFullGraphicPropertiesToPart(config, part)
 	} else if (partDefinition.cues.filter(c => c.type === CueType.DVE).length) {
 		part.prerollDuration = config.studio.CasparPrerollDuration
 	}

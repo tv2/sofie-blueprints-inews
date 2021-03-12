@@ -28,7 +28,8 @@ import {
 	ensureStudioConfig,
 	GetMappingDefaultMigrationStepForLayer,
 	getMappingsDefaultsMigrationSteps,
-	GetSisyfosLayersForTableMigrationOfftube
+	GetSisyfosLayersForTableMigrationOfftube,
+	removeMapping
 } from './util'
 
 declare const VERSION: string // Injected by webpack
@@ -266,6 +267,26 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	MoveDSKToTable('1.4.6', (manifestOfftubeDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK),
 
 	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
+
+	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
+	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
+	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
+	RenameStudioConfig('1.5.0', 'Offtube', 'FullGraphicURL', 'HTMLGraphics.GraphicURL'),
+	RenameStudioConfig('1.5.0', 'Offtube', 'FullKeepAliveDuration', 'HTMLGraphics.KeepAliveDuration'),
+	RenameStudioConfig(
+		'1.5.0',
+		'Offtube',
+		'FullTransitionSettings.borderSoftness',
+		'HTMLGraphics.TransitionSettings.borderSoftness'
+	),
+	RenameStudioConfig(
+		'1.5.0',
+		'Offtube',
+		'FullTransitionSettings.loopOutTransitionDuration',
+		'HTMLGraphics.TransitionSettings.loopOutTransitionDuration'
+	),
+	RenameStudioConfig('1.5.0', 'Offtube', 'FullTransitionSettings.wipeRate', 'HTMLGraphics.TransitionSettings.wipeRate'),
+	removeMapping('1.5.0', 'casparcg_studio_screen_loop'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

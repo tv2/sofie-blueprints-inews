@@ -1,5 +1,6 @@
 import { ISourceLayer, SourceLayerType } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
+import { SharedSourceLayers } from 'tv2-constants'
 import { SourceLayer } from '../layers'
 
 // OVERLAY group
@@ -479,6 +480,7 @@ const MUSIK: ISourceLayer[] = [
 		onPresenterScreen: false
 	}
 ]
+
 // MANUS group
 const MANUS: ISourceLayer[] = [
 	{
@@ -767,6 +769,25 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		abbreviation: 'VO',
 		type: SourceLayerType.LIVE_SPEAK,
 		exclusiveGroup: 'server',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: true,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: true
+	},
+	{
+		_id: SharedSourceLayers.SelectedAdlibGraphicsFull,
+		_rank: 0,
+		name: 'GFX Full',
+		abbreviation: 'GFX Full',
+		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
 		activateKeyboardHotkeys: '',

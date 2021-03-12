@@ -26,9 +26,9 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	JingleFileExtension: '',
 	ClipFileExtension: 'mxf',
 	GraphicFileExtension: '.png',
-	NetworkBasePathClip: '/',
-	NetworkBasePathGraphic: '/',
-	NetworkBasePathJingle: '/',
+	ClipNetworkBasePath: '/',
+	GraphicNetworkBasePath: '/',
+	JingleNetworkBasePath: '/',
 	ClipFolder: '',
 	GraphicFolder: '',
 	JingleFolder: '',
@@ -79,13 +79,22 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	DefaultPartDuration: 0,
 	IdleSource: 0,
 	IdleSisyfosLayers: [],
-	FullKeepAliveDuration: 1000,
-	FullGraphicURL: '',
 	ServerPostrollDuration: 5000,
-	FullTransitionSettings: {
-		wipeRate: 20,
-		borderSoftness: 7500,
-		loopOutTransitionDuration: 120
+	GraphicsType: 'HTML',
+	VizPilotGraphics: {
+		KeepAliveDuration: 1000,
+		PrerollDuration: 1000,
+		OutTransitionDuration: 1000,
+		CutToMediaPlayer: 1000
+	},
+	HTMLGraphics: {
+		GraphicURL: '',
+		KeepAliveDuration: 1000,
+		TransitionSettings: {
+			wipeRate: 20,
+			borderSoftness: 7500,
+			loopOutTransitionDuration: 120
+		}
 	}
 }
 
@@ -117,7 +126,8 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 	LYDConfig: [],
 	CasparCGLoadingClip: '',
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
-	ShowstyleTransition: 'CUT'
+	ShowstyleTransition: 'CUT',
+	MakeAdlibsForFulls: true
 }
 
 export class MockActionContext implements ActionExecutionContext {

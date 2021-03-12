@@ -6,15 +6,8 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import {
-	CueDefinitionGraphic,
-	CueDefinitionTelefon,
-	GraphicInternal,
-	GraphicLLayer,
-	literal,
-	PartDefinitionKam
-} from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
+import { CueDefinitionGraphic, CueDefinitionTelefon, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
+import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
@@ -111,10 +104,9 @@ describe('telefon', () => {
 				enable: {
 					start: 0
 				},
-				outputLayerId: 'overlay',
+				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
 				lifespan: PieceLifespan.WithinPart,
-				adlibPreroll: 2000,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',

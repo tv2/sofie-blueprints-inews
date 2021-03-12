@@ -19,18 +19,18 @@ import {
 	ActionCutToCamera,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CreateLYDBaseline,
 	GetEksternMetaData,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GetTransitionAdLibActions,
-	GraphicLLayer,
 	literal,
 	pgmDSKLayers,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	AtemLLayer,
@@ -102,7 +102,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLocal,
-			outputLayerId: 'pgm',
+			outputLayerId: SharedOutputLayers.PGM,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
@@ -181,7 +181,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			name: `LIVE ${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLive,
-			outputLayerId: 'pgm',
+			outputLayerId: SharedOutputLayers.PGM,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
@@ -268,7 +268,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			name: info.id + '',
 			_rank: rank,
 			sourceLayerId: SourceLayer.AuxStudioScreen,
-			outputLayerId: 'aux',
+			outputLayerId: SharedOutputLayers.AUX,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnRundownEnd,
 			metaData: GetEksternMetaData(
@@ -326,7 +326,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				name: `EVS in studio aux`,
 				_rank: globalRank++,
 				sourceLayerId: SourceLayer.AuxStudioScreen,
-				outputLayerId: 'aux',
+				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: {
@@ -352,7 +352,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				name: `EVS in viz aux`,
 				_rank: globalRank++,
 				sourceLayerId: SourceLayer.VizFullIn1,
-				outputLayerId: 'aux',
+				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
 				lifespan: PieceLifespan.OutOnRundownEnd,
 				content: {
@@ -381,7 +381,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		name: 'OVL INIT',
 		_rank: 100,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-		outputLayerId: 'sec',
+		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
@@ -409,7 +409,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		name: 'GFX Continue',
 		_rank: 200,
 		sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-		outputLayerId: 'sec',
+		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
@@ -443,7 +443,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					name: `DSK ${dsk.Number} OFF`,
 					_rank: 500 + dsk.Number,
 					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 					content: {
@@ -470,7 +470,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 					name: `DSK ${dsk.Number} ON`,
 					_rank: 500 + dsk.Number,
 					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: 'sec',
+					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownEnd,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 					content: {
@@ -513,7 +513,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		name: 'Mics Up',
 		_rank: 600,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-		outputLayerId: 'sec',
+		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
@@ -541,7 +541,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		name: 'Mics Down',
 		_rank: 650,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-		outputLayerId: 'sec',
+		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
@@ -569,7 +569,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		name: 'Resync Sisyfos',
 		_rank: 700,
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-		outputLayerId: 'sec',
+		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 1000,
@@ -596,7 +596,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			_rank: 301,
 			externalId: 'dve-design-sc',
 			name: 'DVE Design SC',
-			outputLayerId: 'sec',
+			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId: SourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnRundownEnd,
 			content: literal<GraphicsContent>({
@@ -687,7 +687,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 						_rank: rank + 0.1 * box,
 						label: `${type} ${info.id} to box ${box + 1}`,
 						sourceLayerId: layer,
-						outputLayerId: 'sec',
+						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
 						tags: []
 					}
@@ -714,7 +714,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 						_rank: rank + 0.1 * box,
 						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`,
 						sourceLayerId: layer,
-						outputLayerId: 'sec',
+						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
 						tags: []
 					}
@@ -741,7 +741,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 						_rank: rank + 0.1 * box,
 						label: `Server to box ${box + 1}`,
 						sourceLayerId: layer,
-						outputLayerId: 'sec',
+						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
 						tags: []
 					}
@@ -764,7 +764,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					_rank: rank,
 					label: `KAM ${info.id}`,
 					sourceLayerId: SourceLayer.PgmCam,
-					outputLayerId: 'pgm',
+					outputLayerId: SharedOutputLayers.PGM,
 					content: {}
 				}
 			})
@@ -803,7 +803,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				_rank: 1,
 				label: 'Last Live',
 				sourceLayerId: SourceLayer.PgmLive,
-				outputLayerId: 'pgm'
+				outputLayerId: SharedOutputLayers.PGM
 			}
 		})
 	)
@@ -838,7 +838,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				_rank: 300,
 				label: `GFX Clear`,
 				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 				currentPieceTags: [TallyTags.GFX_CLEAR],
@@ -857,7 +857,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				_rank: 400,
 				label: `GFX Altud`,
 				sourceLayerId: SourceLayer.PgmAdlibVizCmd,
-				outputLayerId: 'sec',
+				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
@@ -895,7 +895,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					_rank: 200 + i,
 					label: dveConfig.DVEName,
 					sourceLayerId: SourceLayer.PgmDVEAdLib,
-					outputLayerId: 'pgm'
+					outputLayerId: SharedOutputLayers.PGM
 				}
 			})
 		)
@@ -1296,52 +1296,7 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			}
 		}),
 
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparCGLYD,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				loop: true,
-				file: 'EMPTY',
-				mixer: {
-					volume: {
-						_value: 0,
-						inTransition: {
-							easing: TSR.Ease.LINEAR,
-							direction: TSR.Direction.LEFT,
-							duration: config.studio.AudioBedSettings.fadeIn
-						},
-						changeTransition: {
-							easing: TSR.Ease.LINEAR,
-							direction: TSR.Direction.LEFT,
-							duration: config.studio.AudioBedSettings.fadeOut
-						},
-						outTransition: {
-							easing: TSR.Ease.LINEAR,
-							direction: TSR.Direction.LEFT,
-							duration: config.studio.AudioBedSettings.fadeOut
-						}
-					}
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.MIX,
-						easing: TSR.Ease.LINEAR,
-						direction: TSR.Direction.LEFT,
-						duration: config.studio.AudioBedSettings.fadeIn
-					},
-					outTransition: {
-						type: TSR.Transition.MIX,
-						easing: TSR.Ease.LINEAR,
-						direction: TSR.Direction.LEFT,
-						duration: config.studio.AudioBedSettings.fadeOut
-					}
-				}
-			}
-		}),
+		...CreateLYDBaseline('afvd'),
 
 		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {

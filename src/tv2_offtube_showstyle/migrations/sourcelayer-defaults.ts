@@ -1,5 +1,6 @@
 import { ISourceLayer, SourceLayerType } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
+import { SharedSourceLayers } from 'tv2-constants'
 import { OfftubeSourceLayer } from '../layers'
 
 // OVERLAY group
@@ -174,6 +175,25 @@ const OVERLAY: ISourceLayer[] = [
 		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: false
+	},
+	{
+		_id: SharedSourceLayers.PgmPilotOverlay,
+		_rank: 60,
+		name: 'Overlay',
+		abbreviation: 'O',
+		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: ',q',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: true,
+		onPresenterScreen: false
 	}
 ]
 
@@ -202,25 +222,6 @@ const JINGLE: ISourceLayer[] = [
 
 // PGM group
 const PGM: ISourceLayer[] = [
-	{
-		_id: OfftubeSourceLayer.PgmSourceSelect,
-		_rank: 0,
-		name: 'Source Select',
-		abbreviation: '',
-		type: SourceLayerType.METADATA,
-		exclusiveGroup: 'me2',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
 	{
 		_id: OfftubeSourceLayer.PgmCam,
 		_rank: 0,
@@ -338,7 +339,7 @@ const PGM: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: OfftubeSourceLayer.PgmFull,
+		_id: OfftubeSourceLayer.PgmPilot,
 		_rank: 0,
 		name: 'Full',
 		abbreviation: 'Full',
@@ -548,6 +549,29 @@ const PGM: ISourceLayer[] = [
 	}
 ]
 
+// MUSIK group
+const MUSIK: ISourceLayer[] = [
+	{
+		_id: SharedSourceLayers.PgmAudioBed,
+		_rank: 30,
+		name: 'Audio bed',
+		abbreviation: 'VO',
+		type: SourceLayerType.AUDIO,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: ',minus',
+		assignHotkeysToGlobalAdlibs: false,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	}
+]
+
 // MANUS group
 const MANUS: ISourceLayer[] = [
 	{
@@ -736,4 +760,13 @@ const AUX: ISourceLayer[] = [
 	}
 ]
 
-export default literal<ISourceLayer[]>([...OVERLAY, ...JINGLE, ...PGM, ...MANUS, ...SEC, ...SELECTED_ADLIB, ...AUX])
+export default literal<ISourceLayer[]>([
+	...OVERLAY,
+	...JINGLE,
+	...PGM,
+	...MUSIK,
+	...MANUS,
+	...SEC,
+	...SELECTED_ADLIB,
+	...AUX
+])

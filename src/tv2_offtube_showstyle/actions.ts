@@ -1,24 +1,8 @@
-import {
-	ActionExecutionContext,
-	ActionUserData,
-	IBlueprintPart,
-	IBlueprintPiece,
-	PieceLifespan
-} from '@sofie-automation/blueprints-integration'
-import {
-	ActionSelectFullGrafik,
-	CueDefinitionGraphic,
-	executeAction,
-	GetFullGrafikTemplateName,
-	getPiecesToPreserve,
-	GetTagForFullNext,
-	GraphicPilot,
-	literal
-} from 'tv2-common'
-import { CueType } from 'tv2-constants'
+import { ActionExecutionContext, ActionUserData } from '@sofie-automation/blueprints-integration'
+import { executeAction } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
-import { CreateFullContent, CreateFullPiece } from './cues/OfftubeGrafikCaspar'
+import { pilotGeneratorSettingsOfftube } from './cues/OfftubeGraphics'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
 import { getConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
@@ -56,10 +40,6 @@ export function executeActionOfftube(
 				Ident: OfftubeSourceLayer.PgmGraphicsIdent,
 				Continuity: OfftubeSourceLayer.PgmContinuity
 			},
-			OutputLayer: {
-				PGM: OfftubeOutputLayers.PGM,
-				EFFEKT: OfftubeOutputLayers.JINGLE
-			},
 			LLayer: {
 				Caspar: {
 					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending,
@@ -86,7 +66,6 @@ export function executeActionOfftube(
 					Server: OfftubeSourceLayer.SelectedServer,
 					VO: OfftubeSourceLayer.SelectedVoiceOver,
 					DVE: OfftubeSourceLayer.SelectedAdLibDVE,
-					GFXFull: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
 					Effekt: OfftubeSourceLayer.SelectedAdlibJingle
 				},
 				OutputLayer: { SelectedAdLib: OfftubeOutputLayers.SELECTED_ADLIB },
@@ -98,70 +77,10 @@ export function executeActionOfftube(
 				OfftubeSisyfosLLayer.SisyfosSourceServerB
 			],
 			StoppableGraphicsLayers: [], // TODO: Needs thought for offtubes
-			executeActionSelectFull,
-			createJingleContent: createJingleContentOfftube
+			createJingleContent: createJingleContentOfftube,
+			pilotGraphicSettings: pilotGeneratorSettingsOfftube
 		},
 		actionId,
 		userData
 	)
-}
-
-function executeActionSelectFull(context: ActionExecutionContext, _actionId: string, userData: ActionSelectFullGrafik) {
-	const config = getConfig(context)
-
-	const template = GetFullGrafikTemplateName(config, userData.name)
-
-	const externalId = `adlib-action_${context.getHashId(`cut_to_kam_${template}`)}`
-
-	const part = literal<IBlueprintPart>({
-		externalId,
-		title: `Full ${template}`,
-		metaData: {},
-		expectedDuration: 0,
-		prerollDuration: config.studio.CasparPrerollDuration,
-		transitionKeepaliveDuration: config.studio.FullKeepAliveDuration
-	})
-
-	const cue = literal<CueDefinitionGraphic<GraphicPilot>>({
-		type: CueType.Graphic,
-		target: 'FULL',
-		graphic: {
-			type: 'pilot',
-			name: userData.name,
-			vcpid: userData.vcpid,
-			continueCount: -1
-		},
-		iNewsCommand: ''
-	})
-
-	const fullPiece = CreateFullPiece(context, config, externalId, cue, userData.segmentExternalId)
-
-	postProcessPieceTimelineObjects(context, config, fullPiece, false)
-
-	const fullDataStore = literal<IBlueprintPiece>({
-		externalId,
-		name: template,
-		enable: {
-			start: 0
-		},
-		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
-		sourceLayerId: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
-		lifespan: PieceLifespan.OutOnSegmentEnd,
-		metaData: {
-			userData
-		},
-		content: {
-			...CreateFullContent(context, config, cue),
-			timelineObjects: []
-		},
-		tags: [GetTagForFullNext(userData.segmentExternalId, userData.vcpid)]
-	})
-
-	context.queuePart(part, [
-		fullPiece,
-		fullDataStore,
-		...getPiecesToPreserve(context, SELECTED_ADLIB_LAYERS, [OfftubeSourceLayer.SelectedAdlibGraphicsFull])
-	])
-
-	context.stopPiecesOnLayers([OfftubeSourceLayer.SelectedAdlibGraphicsFull])
 }

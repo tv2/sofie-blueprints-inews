@@ -15,7 +15,7 @@ import {
 	literal,
 	PartDefinition
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -88,7 +88,7 @@ export function OfftubeEvaluateJingle(
 				start: 0
 			},
 			lifespan: PieceLifespan.WithinPart,
-			outputLayerId: 'jingle',
+			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			content: createJingleContentOfftube(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
 		})

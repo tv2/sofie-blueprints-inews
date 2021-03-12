@@ -11,7 +11,7 @@ export function MakeConfigWithMediaFlow(
 	const namePlural = `${name}s`
 	return [
 		{
-			id: `NetworkBasePath${name}`,
+			id: `${name}NetworkBasePath`,
 			name: `Network base path (${namePlural})`,
 			description:
 				'The base path for the Omneon network share. Needs to match the base path of the source in Media manager', // @todo: stupid dependency

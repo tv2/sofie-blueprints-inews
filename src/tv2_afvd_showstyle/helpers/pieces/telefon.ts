@@ -43,33 +43,7 @@ export function EvaluateTelefon(
 		)
 
 		if ((!adlib && pieces.length) || (adlib && adlibPieces.length)) {
-			if (adlib) {
-				// TODO: This find feels redundant
-				const graphicPieceIndex = adlibPieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.graphic!))
-				const graphicPiece = adlibPieces[graphicPieceIndex]
-				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
-					graphicPiece.content.timelineObjects.push(
-						literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosSourceTLF,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 1
-							}
-						}),
-
-						GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
-					)
-					graphicPiece.name = `${parsedCue.source}`
-					graphicPiece.adlibPreroll = config.studio.PilotPrerollDuration
-					adlibPieces[graphicPieceIndex] = graphicPiece
-				}
-			} else {
+			if (!adlib) {
 				const graphicPieceIndex = pieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.graphic!))
 				const graphicPiece = pieces[graphicPieceIndex]
 				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
@@ -91,7 +65,6 @@ export function EvaluateTelefon(
 						GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 					)
 					graphicPiece.name = `${parsedCue.source}`
-					graphicPiece.adlibPreroll = config.studio.PilotPrerollDuration
 					pieces[graphicPieceIndex] = graphicPiece
 				}
 			}
