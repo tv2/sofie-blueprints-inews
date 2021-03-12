@@ -119,6 +119,6 @@ export function createJingleContentOfftube(
 				PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
 			}
 		},
-		true
+		false
 	)
 }
