@@ -131,7 +131,7 @@ function LydContent(
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
-					channelLayout: 'bed',
+					channelLayout: 'stereo',
 					loop: true,
 					noStarttime: true,
 					mixer: {
@@ -171,10 +171,10 @@ function LydContent(
 	})
 }
 
-export function CreateLYDBaseline(): TSR.TSRTimelineObj[] {
+export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjAbstractAny>({
-			id: 'lyd_baseline',
+			id: `${studio}_lyd_baseline`,
 			enable: {
 				while: `!.${ControlClasses.LYDOnAir}`
 			},
@@ -188,7 +188,7 @@ export function CreateLYDBaseline(): TSR.TSRTimelineObj[] {
 		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			// Q: Why start 10s? A: It needs to be longer than the longest fade out, a 10s fade out is probably more than we will ever use.
-			enable: { start: '#lyd_baseline.start + 10000', end: `.${ControlClasses.LYDOnAir}` },
+			enable: { start: `#${studio}_lyd_baseline.start + 10000`, end: `.${ControlClasses.LYDOnAir}` },
 			priority: 0,
 			layer: SharedCasparLLayer.CasparCGLYD,
 			content: {

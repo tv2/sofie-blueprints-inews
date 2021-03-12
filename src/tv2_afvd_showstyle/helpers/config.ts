@@ -9,7 +9,6 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	LYDConfig: TableConfigItemValue
 }
 
 /*

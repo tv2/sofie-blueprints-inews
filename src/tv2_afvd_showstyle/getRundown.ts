@@ -1296,7 +1296,7 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			}
 		}),
 
-		...CreateLYDBaseline(),
+		...CreateLYDBaseline('afvd'),
 
 		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {

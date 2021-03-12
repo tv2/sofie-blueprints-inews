@@ -73,7 +73,7 @@ export function CreateInternalGraphic(
 			const adLibPiece = literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
-				name: `${name}_fuck`,
+				name,
 				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}_commentator`,
 				sourceLayerId,
 				outputLayerId: SharedOutputLayers.OVERLAY,

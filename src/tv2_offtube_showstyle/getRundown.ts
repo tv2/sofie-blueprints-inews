@@ -884,7 +884,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			}
 		}),
 
-		...CreateLYDBaseline(),
+		...CreateLYDBaseline('offtube'),
 
 		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
