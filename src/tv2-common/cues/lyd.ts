@@ -131,7 +131,7 @@ function LydContent(
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file,
-					channelLayout: 'stereo',
+					channelLayout: 'bed',
 					loop: true,
 					noStarttime: true,
 					mixer: {
