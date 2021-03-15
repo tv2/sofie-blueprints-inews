@@ -222,10 +222,10 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparGraphicsFullLoop]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 3,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		channel: 6,
 		layer: 100,
-		previewWhenNotOnAir: false // False, so it doesn't show under jingle when full is next
+		previewWhenNotOnAir: true
 	}),
 	[OfftubeCasparLLayer.CasparCGDVETemplate]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
@@ -343,14 +343,14 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 6,
 		layer: 108,
-		previewWhenNotOnAir: false
+		previewWhenNotOnAir: true
 	}),
 	/** TODO: Revisit these */
 	[GraphicLLayer.GraphicLLayerPilotOverlay]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		previewWhenNotOnAir: false,
+		lookahead: LookaheadMode.PRELOAD,
+		previewWhenNotOnAir: true,
 		channel: 6,
 		layer: 111
 	}),
