@@ -89,12 +89,15 @@ export function disableFirstPilotGFXAnimation(
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
-	if (!previousPartEndState?.isFull && resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
+	if (!previousPartEndState?.isFull) {
 		for (const obj of timeline) {
-			if (obj.content.deviceType === TSR.DeviceType.CASPARCG) {
+			if (
+				obj.content.deviceType === TSR.DeviceType.CASPARCG &&
+				(obj.isLookahead || resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE)))
+			) {
 				const obj2 = obj as TSR.TimelineObjCasparCGAny & TimelineBlueprintExt
 				// TODO: this needs types
-				const payload = obj2.metaData?.templateData.slots['250_full']?.payload
+				const payload = obj2.metaData?.templateData?.slots && obj2.metaData?.templateData?.slots['250_full']?.payload
 				if (obj2.content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE && payload) {
 					payload.noAnimation = true
 					obj2.content.data = `<templateData>${encodeURI(JSON.stringify(obj2.metaData?.templateData))}</templateData>`
