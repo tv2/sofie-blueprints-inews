@@ -341,17 +341,9 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.PRELOAD,
-		channel: 3,
+		channel: 6,
 		layer: 108,
 		previewWhenNotOnAir: false
-	}),
-	[GraphicLLayer.GraphicLLayerWall]: literal<TSR.MappingCasparCG & BlueprintMapping>({
-		device: TSR.DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		previewWhenNotOnAir: false,
-		channel: 6,
-		layer: 110
 	}),
 	/** TODO: Revisit these */
 	[GraphicLLayer.GraphicLLayerPilotOverlay]: literal<TSR.MappingCasparCG & BlueprintMapping>({
@@ -359,7 +351,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
-		channel: 3,
+		channel: 6,
 		layer: 111
 	}),
 	// Full loop and DVE loop are the same channel in Q2.

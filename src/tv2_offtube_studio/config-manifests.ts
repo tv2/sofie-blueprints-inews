@@ -421,7 +421,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		description: 'ATEM source for full graphics',
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
-		defaultVal: 7
+		defaultVal: 12
 	},
 	{
 		id: 'AtemSource.Loop',

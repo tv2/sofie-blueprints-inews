@@ -9,7 +9,7 @@ import {
 	PartDefinition,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine, GraphicLLayer, SharedATEMLLayer } from 'tv2-constants'
+import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
 import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
 import { IsTargetingFull, IsTargetingWall } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
@@ -77,34 +77,6 @@ export function GetPilotGraphicContentCaspar(
 						opacity: 100
 					}
 				}
-			}),
-			literal<TSR.TimelineObjAtemDSK>({
-				id: '',
-				enable: {
-					start: Number(config.studio.CasparPrerollDuration)
-				},
-				priority: 1,
-				layer: SharedATEMLLayer.AtemDSKGraphics,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.DSK,
-					dsk: {
-						onAir: true,
-						sources: {
-							fillSource: config.studio.AtemSource.JingleFill,
-							cutSource: config.studio.AtemSource.JingleKey
-						},
-						properties: {
-							preMultiply: true,
-							clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-							gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-							mask: {
-								enabled: false
-							}
-						}
-					}
-				},
-				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
 			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context) : [])
 		]
