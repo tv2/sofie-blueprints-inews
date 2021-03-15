@@ -5,7 +5,8 @@ import {
 	IBlueprintPiece,
 	NotesContext,
 	PieceLifespan,
-	SegmentContext
+	SegmentContext,
+	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectFullGrafik,
@@ -170,6 +171,8 @@ export function CreateFullDataStore(
 	adlibRank: number,
 	segmentExternalId: string
 ): IBlueprintPiece {
+	const content = CreateFullContent(config, context, settings, parsedCue, engine, partId, adlib, adlibRank)
+	content.timelineObjects = content.timelineObjects.filter(o => o.content.deviceType !== TSR.DeviceType.ATEM)
 	return literal<IBlueprintPiece>({
 		externalId: partId,
 		name: GraphicDisplayName(config, parsedCue),
@@ -187,9 +190,7 @@ export function CreateFullDataStore(
 				segmentExternalId
 			})
 		},
-		content: {
-			...CreateFullContent(config, context, settings, parsedCue, engine, partId, adlib, adlibRank)
-		},
+		content,
 		tags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)]
 	})
 }
