@@ -181,8 +181,7 @@ export function getEndStateForPart(
 ): PartEndState {
 	const endState: PartEndStateExt = {
 		stickySisyfosLevels: {},
-		mediaPlayerSessions: {},
-		isJingle: false
+		mediaPlayerSessions: {}
 	}
 
 	const previousPartEndState2 = previousPartEndState as Partial<PartEndStateExt> | undefined

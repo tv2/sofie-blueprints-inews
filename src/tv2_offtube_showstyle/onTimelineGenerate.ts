@@ -8,7 +8,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { disablePilotWipeAfterJingle, onTimelineGenerate, PartEndStateExt, TimelineBlueprintExt } from 'tv2-common'
-import { TallyTags } from 'tv2-constants'
+import { GraphicLLayer, TallyTags } from 'tv2-constants'
 import {
 	CasparPlayerClip,
 	OfftubeAtemLLayer,
@@ -89,19 +89,19 @@ export function disableFirstPilotGFXAnimation(
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
-	if (!previousPartEndState?.isFull) {
-		for (const obj of timeline) {
-			if (
-				obj.content.deviceType === TSR.DeviceType.CASPARCG &&
-				(obj.isLookahead || resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE)))
-			) {
-				const obj2 = obj as TSR.TimelineObjCasparCGAny & TimelineBlueprintExt
-				// TODO: this needs types
-				const payload = obj2.metaData?.templateData?.slots && obj2.metaData?.templateData?.slots['250_full']?.payload
-				if (obj2.content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE && payload) {
-					payload.noAnimation = true
-					obj2.content.data = `<templateData>${encodeURI(JSON.stringify(obj2.metaData?.templateData))}</templateData>`
-				}
+	const isFull = resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))
+	for (const obj of timeline) {
+		if (
+			obj.layer === GraphicLLayer.GraphicLLayerPilot &&
+			obj.content.deviceType === TSR.DeviceType.CASPARCG &&
+			(obj.isLookahead || (isFull && !previousPartEndState?.isFull))
+		) {
+			const obj2 = obj as TSR.TimelineObjCasparCGAny & TimelineBlueprintExt
+			// TODO: this needs types
+			const payload = obj2.metaData?.templateData?.slots && obj2.metaData?.templateData?.slots['250_full']?.payload
+			if (obj2.content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE && payload) {
+				payload.noAnimation = true
+				obj2.content.data = `<templateData>${encodeURI(JSON.stringify(obj2.metaData?.templateData))}</templateData>`
 			}
 		}
 	}
