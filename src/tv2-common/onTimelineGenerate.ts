@@ -20,6 +20,7 @@ export interface PartEndStateExt {
 	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
 	mediaPlayerSessions: { [layer: string]: string[] }
 	isJingle?: boolean
+	isFull?: boolean
 }
 
 export interface MediaPlayerClaim {
@@ -39,6 +40,7 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 		sisyfosPersistLevel?: boolean
 		mediaPlayerSession?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
+		templateData?: any
 	}
 }
 
@@ -204,8 +206,13 @@ export function getEndStateForPart(
 				endState.mediaPlayerSessions[piece.piece.sourceLayerId] = meta
 			}
 		}
+
+		// TODO: make a proper last part type detection
 		if (piece.piece.tags?.includes(TallyTags.JINGLE_IS_LIVE)) {
 			endState.isJingle = true
+		}
+		if (piece.piece.tags?.includes(TallyTags.FULL_IS_LIVE)) {
+			endState.isFull = true
 		}
 	}
 

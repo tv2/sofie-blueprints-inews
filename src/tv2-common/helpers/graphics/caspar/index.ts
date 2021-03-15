@@ -7,6 +7,7 @@ import {
 	GraphicPilot,
 	literal,
 	PartDefinition,
+	TimelineBlueprintExt,
 	TV2BlueprintConfig
 } from 'tv2-common'
 import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
@@ -39,6 +40,17 @@ export function GetPilotGraphicContentCaspar(
 	engine: GraphicEngine
 ) {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
+	const templateData = {
+		display: 'program',
+		slots: {
+			'250_full': {
+				payload: {
+					type: 'still',
+					url: `${config.studio.HTMLGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
+				}
+			}
+		}
+	}
 	return literal<GraphicsContent>({
 		fileName: `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`,
 		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
@@ -47,31 +59,20 @@ export function GetPilotGraphicContentCaspar(
 		ignoreBlackFrames: true,
 		ignoreFreezeFrame: true,
 		timelineObjects: [
-			literal<TSR.TimelineObjCCGTemplate>({
+			literal<TSR.TimelineObjCCGTemplate & TimelineBlueprintExt>({
 				id: '',
 				enable: {
 					while: '1'
 				},
 				priority: 100,
 				layer: IsTargetingWall(engine) ? GraphicLLayer.GraphicLLayerWall : GraphicLLayer.GraphicLLayerPilot,
+				metaData: { templateData },
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 					templateType: 'html',
 					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(
-						JSON.stringify({
-							display: 'program',
-							slots: {
-								'250_full': {
-									payload: {
-										type: 'still',
-										url: `${config.studio.HTMLGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
-									}
-								}
-							}
-						})
-					)}</templateData>`,
+					data: `<templateData>${encodeURI(JSON.stringify(templateData))}</templateData>`,
 					useStopCommand: false,
 					mixer: {
 						opacity: 100
