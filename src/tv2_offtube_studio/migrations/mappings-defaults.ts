@@ -360,6 +360,12 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
+	}),
+	// No Screen for now
+	[GraphicLLayer.GraphicLLayerWall]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 }
 
