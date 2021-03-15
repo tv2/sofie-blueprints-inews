@@ -7,9 +7,10 @@ import {
 	GraphicPilot,
 	literal,
 	PartDefinition,
+	TimelineBlueprintExt,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine, GraphicLLayer, SharedATEMLLayer } from 'tv2-constants'
+import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
 import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
 import { IsTargetingFull, IsTargetingWall } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
@@ -39,6 +40,17 @@ export function GetPilotGraphicContentCaspar(
 	engine: GraphicEngine
 ) {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
+	const templateData = {
+		display: 'program',
+		slots: {
+			'250_full': {
+				payload: {
+					type: 'still',
+					url: `${config.studio.HTMLGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
+				}
+			}
+		}
+	}
 	return literal<GraphicsContent>({
 		fileName: `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`,
 		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
@@ -47,64 +59,25 @@ export function GetPilotGraphicContentCaspar(
 		ignoreBlackFrames: true,
 		ignoreFreezeFrame: true,
 		timelineObjects: [
-			literal<TSR.TimelineObjCCGTemplate>({
+			literal<TSR.TimelineObjCCGTemplate & TimelineBlueprintExt>({
 				id: '',
 				enable: {
 					while: '1'
 				},
 				priority: 100,
 				layer: IsTargetingWall(engine) ? GraphicLLayer.GraphicLLayerWall : GraphicLLayer.GraphicLLayerPilot,
+				metaData: { templateData },
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 					templateType: 'html',
 					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(
-						JSON.stringify({
-							display: 'program',
-							slots: {
-								'250_full': {
-									payload: {
-										type: 'still',
-										url: `${config.studio.HTMLGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
-									}
-								}
-							}
-						})
-					)}</templateData>`,
+					data: `<templateData>${encodeURI(JSON.stringify(templateData))}</templateData>`,
 					useStopCommand: false,
 					mixer: {
 						opacity: 100
 					}
 				}
-			}),
-			literal<TSR.TimelineObjAtemDSK>({
-				id: '',
-				enable: {
-					start: Number(config.studio.CasparPrerollDuration)
-				},
-				priority: 1,
-				layer: SharedATEMLLayer.AtemDSKGraphics,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.DSK,
-					dsk: {
-						onAir: true,
-						sources: {
-							fillSource: config.studio.AtemSource.JingleFill,
-							cutSource: config.studio.AtemSource.JingleKey
-						},
-						properties: {
-							preMultiply: true,
-							clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-							gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-							mask: {
-								enabled: false
-							}
-						}
-					}
-				},
-				classes: ['MIX_MINUS_OVERRIDE_DSK']
 			}),
 			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context) : [])
 		]

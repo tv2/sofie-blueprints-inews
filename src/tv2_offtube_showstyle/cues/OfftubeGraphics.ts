@@ -16,12 +16,9 @@ import {
 	GraphicIsPilot,
 	literal,
 	PartDefinition,
-	PilotGeneratorSettings,
-	TimeFromFrames,
-	TimelineBlueprintExt
+	PilotGeneratorSettings
 } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { AtemSourceIndex } from '../../types/atem'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
@@ -77,7 +74,7 @@ function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: N
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: config.studio.AtemSource.SplitBackground,
+					input: config.studio.AtemSource.GFXFull,
 					transition: TSR.AtemTransitionStyle.WIPE,
 					transitionSettings: {
 						wipe: {
@@ -92,39 +89,14 @@ function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: N
 		}),
 		literal<TSR.TimelineObjCasparCGAny>({
 			id: '',
-			enable: {
-				start:
-					Number(config.studio.CasparPrerollDuration) +
-					TimeFromFrames(Number(config.studio.HTMLGraphics.TransitionSettings.wipeRate))
-			},
+			enable: { start: 0 },
 			priority: 1,
 			layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop,
-				transitions: {
-					outTransition: {
-						type: TSR.Transition.MIX,
-						duration: config.studio.HTMLGraphics.TransitionSettings.loopOutTransitionDuration
-					}
-				}
+				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
 			}
-		}),
-		literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-			id: '',
-			enable: { start: 0 },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMENext,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					previewInput: AtemSourceIndex.Blk
-				}
-			},
-			metaData: {},
-			classes: ['ab_on_preview']
 		}),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
 	]

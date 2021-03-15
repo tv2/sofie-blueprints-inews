@@ -30,7 +30,8 @@ import {
 	GetMappingDefaultMigrationStepForLayer,
 	getMappingsDefaultsMigrationSteps,
 	GetSisyfosLayersForTableMigrationOfftube,
-	removeMapping
+	removeMapping,
+	setConfigTo
 } from './util'
 
 declare const VERSION: string // Injected by webpack
@@ -291,6 +292,11 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	removeMapping('1.5.0', 'casparcg_graphics_overlay'),
 
 	GetMappingDefaultMigrationStepForLayer('1.5.1', GraphicLLayer.GraphicLLayerAdLibs, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerWall, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilot, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilotOverlay, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerFullLoop, true),
+	setConfigTo('1.5.3', 'AtemSource.GFXFull', 12),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

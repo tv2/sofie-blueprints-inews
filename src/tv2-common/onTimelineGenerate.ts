@@ -9,7 +9,7 @@ import {
 	TimelinePersistentState,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { AbstractLLayer } from 'tv2-constants'
+import { AbstractLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
@@ -19,6 +19,8 @@ import { ABSourceLayers, assignMediaPlayers } from './helpers'
 export interface PartEndStateExt {
 	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
 	mediaPlayerSessions: { [layer: string]: string[] }
+	isJingle?: boolean
+	isFull?: boolean
 }
 
 export interface MediaPlayerClaim {
@@ -38,6 +40,7 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 		sisyfosPersistLevel?: boolean
 		mediaPlayerSession?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
+		templateData?: any
 	}
 }
 
@@ -178,7 +181,8 @@ export function getEndStateForPart(
 ): PartEndState {
 	const endState: PartEndStateExt = {
 		stickySisyfosLevels: {},
-		mediaPlayerSessions: {}
+		mediaPlayerSessions: {},
+		isJingle: false
 	}
 
 	const previousPartEndState2 = previousPartEndState as Partial<PartEndStateExt> | undefined
@@ -201,6 +205,14 @@ export function getEndStateForPart(
 			if (meta && meta.length) {
 				endState.mediaPlayerSessions[piece.piece.sourceLayerId] = meta
 			}
+		}
+
+		// TODO: make a proper last part type detection
+		if (piece.piece.tags?.includes(TallyTags.JINGLE_IS_LIVE)) {
+			endState.isJingle = true
+		}
+		if (piece.piece.tags?.includes(TallyTags.FULL_IS_LIVE)) {
+			endState.isFull = true
 		}
 	}
 
@@ -347,6 +359,24 @@ export function copyPreviousSisyfosLevels(
 		// Apply all persisted levels to all objects in case there's more than one object
 		for (const sisyfosObj of objs) {
 			sisyfosObj.content.channels = allChannels
+		}
+	}
+}
+
+export function disablePilotWipeAfterJingle(
+	timeline: OnGenerateTimelineObj[],
+	previousPartEndState: PartEndStateExt | undefined,
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
+) {
+	if (previousPartEndState?.isJingle && resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
+		for (const obj of timeline) {
+			if (obj.content.deviceType === TSR.DeviceType.ATEM && !obj.isLookahead) {
+				const obj2 = obj as TSR.TimelineObjAtemAny
+				if (obj2.content.type === TSR.TimelineContentTypeAtem.ME) {
+					obj2.content.me.transition = TSR.AtemTransitionStyle.CUT
+					delete obj2.content.me.transitionSettings
+				}
+			}
 		}
 	}
 }

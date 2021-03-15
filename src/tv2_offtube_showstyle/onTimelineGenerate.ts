@@ -4,9 +4,11 @@ import {
 	OnGenerateTimelineObj,
 	PartEndState,
 	TimelineEventContext,
-	TimelinePersistentState
+	TimelinePersistentState,
+	TSR
 } from '@sofie-automation/blueprints-integration'
-import { onTimelineGenerate } from 'tv2-common'
+import { disablePilotWipeAfterJingle, onTimelineGenerate, PartEndStateExt, TimelineBlueprintExt } from 'tv2-common'
+import { TallyTags } from 'tv2-constants'
 import {
 	CasparPlayerClip,
 	OfftubeAtemLLayer,
@@ -55,6 +57,10 @@ export function onTimelineGenerateOfftube(
 		}
 	}*/
 
+	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
+	disablePilotWipeAfterJingle(timeline, previousPartEndState2, resolvedPieces)
+	disableFirstPilotGFXAnimation(timeline, previousPartEndState2, resolvedPieces)
+
 	return onTimelineGenerate(
 		context,
 		timeline,
@@ -76,4 +82,24 @@ export function onTimelineGenerateOfftube(
 		OfftubeCasparLLayer.CasparPlayerClipPending,
 		OfftubeAtemLLayer.AtemMENext
 	)
+}
+
+export function disableFirstPilotGFXAnimation(
+	timeline: OnGenerateTimelineObj[],
+	previousPartEndState: PartEndStateExt | undefined,
+	resolvedPieces: IBlueprintResolvedPieceInstance[]
+) {
+	if (!previousPartEndState?.isFull && resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
+		for (const obj of timeline) {
+			if (obj.content.deviceType === TSR.DeviceType.CASPARCG) {
+				const obj2 = obj as TSR.TimelineObjCasparCGAny & TimelineBlueprintExt
+				// TODO: this needs types
+				const payload = obj2.metaData?.templateData.slots['250_full']?.payload
+				if (obj2.content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE && payload) {
+					payload.noAnimation = true
+					obj2.content.data = `<templateData>${encodeURI(JSON.stringify(obj2.metaData?.templateData))}</templateData>`
+				}
+			}
+		}
+	}
 }

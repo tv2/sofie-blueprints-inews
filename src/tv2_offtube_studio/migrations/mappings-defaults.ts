@@ -229,10 +229,10 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparGraphicsFullLoop]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		channel: 3,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		channel: 6,
 		layer: 100,
-		previewWhenNotOnAir: false // False, so it doesn't show under jingle when full is next
+		previewWhenNotOnAir: true
 	}),
 	[OfftubeCasparLLayer.CasparCGDVETemplate]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
@@ -345,30 +345,28 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.PRELOAD,
-		channel: 3,
-		layer: 108,
-		previewWhenNotOnAir: false
-	}),
-	[GraphicLLayer.GraphicLLayerWall]: literal<TSR.MappingCasparCG & BlueprintMapping>({
-		device: TSR.DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		previewWhenNotOnAir: false,
 		channel: 6,
-		layer: 110
+		layer: 108,
+		previewWhenNotOnAir: true
 	}),
 	/** TODO: Revisit these */
 	[GraphicLLayer.GraphicLLayerPilotOverlay]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		previewWhenNotOnAir: false,
-		channel: 3,
+		lookahead: LookaheadMode.PRELOAD,
+		previewWhenNotOnAir: true,
+		channel: 6,
 		layer: 111
 	}),
 	// Full loop and DVE loop are the same channel in Q2.
 	// No mapping to caspar to avoid conflicts.
 	[GraphicLLayer.GraphicLLayerFullLoop]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
+	}),
+	// No Screen for now
+	[GraphicLLayer.GraphicLLayerWall]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE

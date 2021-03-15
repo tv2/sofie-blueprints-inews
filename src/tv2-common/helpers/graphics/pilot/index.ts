@@ -188,8 +188,7 @@ export function CreateFullDataStore(
 			})
 		},
 		content: {
-			...CreateFullContent(config, context, settings, parsedCue, engine, partId, adlib, adlibRank),
-			timelineObjects: []
+			...CreateFullContent(config, context, settings, parsedCue, engine, partId, adlib, adlibRank)
 		},
 		tags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)]
 	})
