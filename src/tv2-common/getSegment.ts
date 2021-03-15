@@ -157,7 +157,6 @@ export function getSegmentBase<
 		}
 	}
 
-	let serverParts = 0
 	let jingleTime = 0
 	const totalTime = Number(iNewsStory.fields.totalTime) || 0
 	const tapeTime = Number(iNewsStory.fields.tapeTime) || 0
@@ -262,15 +261,6 @@ export function getSegmentBase<
 				break
 		}
 
-		if (
-			part.type === PartType.Server ||
-			(part.type === PartType.VO && (Number(part.fields.tapeTime) > 0 || part.script.length))
-		) {
-			if (blueprintParts[blueprintParts.length - 1]) {
-				serverParts++
-			}
-		}
-
 		if (part.cues.filter(cue => cue.type === CueType.Jingle).length) {
 			if (blueprintParts[blueprintParts.length - 1]) {
 				const t = blueprintParts[blueprintParts.length - 1].part.expectedDuration
@@ -290,11 +280,16 @@ export function getSegmentBase<
 		allocatedTime = 0
 	}
 
+	const partsWithoutExpectedDuration = blueprintParts.reduce(
+		(total, p) => (!p.part.expectedDuration ? total + 1 : total),
+		0
+	)
+
 	blueprintParts.forEach(part => {
 		// part.part.displayDurationGroup = ingestSegment.externalId
 
 		if (!part.part.expectedDuration && totalTimeMs > 0) {
-			part.part.expectedDuration = (totalTimeMs - allocatedTime || 0) / (blueprintParts.length - serverParts)
+			part.part.expectedDuration = (totalTimeMs - allocatedTime || 0) / partsWithoutExpectedDuration
 
 			if (part.part.expectedDuration! < 0) {
 				part.part.expectedDuration = 0
