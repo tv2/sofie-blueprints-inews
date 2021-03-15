@@ -56,7 +56,8 @@ export function OfftubeEvaluateGrafikCaspar(
 			parsedCue,
 			pilotGeneratorSettingsOfftube,
 			adlib,
-			rank ?? 0
+			rank ?? 0,
+			partDefinition.segmentExternalId
 		)
 	} else if (GraphicIsInternal(parsedCue)) {
 		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)

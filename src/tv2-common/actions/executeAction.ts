@@ -1755,7 +1755,17 @@ function executeActionSelectFull<
 		iNewsCommand: ''
 	})
 
-	const fullPiece = CreateFullPiece(config, context, externalId, cue, 'FULL', settings.pilotGraphicSettings, true, 0)
+	const fullPiece = CreateFullPiece(
+		config,
+		context,
+		externalId,
+		cue,
+		'FULL',
+		settings.pilotGraphicSettings,
+		true,
+		0,
+		userData.segmentExternalId
+	)
 
 	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
@@ -1767,7 +1777,8 @@ function executeActionSelectFull<
 		'FULL',
 		externalId,
 		true,
-		0
+		0,
+		userData.segmentExternalId
 	)
 
 	context.queuePart(part, [

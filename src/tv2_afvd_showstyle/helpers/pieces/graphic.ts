@@ -35,6 +35,17 @@ export function EvaluateCueGraphic(
 	if (GraphicIsInternal(parsedCue)) {
 		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
 	} else if (GraphicIsPilot(parsedCue)) {
-		EvaluateCueGraphicPilot(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, rank)
+		EvaluateCueGraphicPilot(
+			config,
+			context,
+			pieces,
+			adlibPieces,
+			actions,
+			partId,
+			parsedCue,
+			adlib,
+			partDefinition.segmentExternalId,
+			rank
+		)
 	}
 }

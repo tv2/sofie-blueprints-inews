@@ -21,6 +21,7 @@ export interface ActionSelectFullGrafik extends ActionBase {
 	type: AdlibActionType.SELECT_FULL_GRAFIK
 	name: string
 	vcpid: number
+	segmentExternalId: string
 }
 
 export interface ActionSelectDVE extends ActionBase {

@@ -35,6 +35,7 @@ export function EvaluateCueGraphicPilot(
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	adlib: boolean,
+	segmentExternalId: string,
 	rank?: number
 ) {
 	CreatePilotGraphic(
@@ -47,7 +48,8 @@ export function EvaluateCueGraphicPilot(
 		parsedCue,
 		pilotGeneratorSettingsAFVD,
 		adlib,
-		rank ?? 0
+		rank ?? 0,
+		segmentExternalId
 	)
 }
 
