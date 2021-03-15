@@ -6,7 +6,7 @@ import {
 	TimelineEventContext,
 	TimelinePersistentState
 } from '@sofie-automation/blueprints-integration'
-import { onTimelineGenerate } from 'tv2-common'
+import { disablePilotWipeAfterJingle, onTimelineGenerate, PartEndStateExt } from 'tv2-common'
 import {
 	CasparPlayerClip,
 	OfftubeAtemLLayer,
@@ -54,6 +54,9 @@ export function onTimelineGenerateOfftube(
 			}
 		}
 	}*/
+
+	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
+	disablePilotWipeAfterJingle(timeline, previousPartEndState2, resolvedPieces)
 
 	return onTimelineGenerate(
 		context,
