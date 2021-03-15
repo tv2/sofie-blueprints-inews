@@ -209,7 +209,8 @@ const selectLiveAction = literal<ActionCutToRemote>({
 const selectFullGrafikAction = literal<ActionSelectFullGrafik>({
 	type: AdlibActionType.SELECT_FULL_GRAFIK,
 	name: 'scoreboard',
-	vcpid: 1234567890
+	vcpid: 1234567890,
+	segmentExternalId: ''
 })
 
 const setMIX20AsTransition = literal<ActionTakeWithTransition>({

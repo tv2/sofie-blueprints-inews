@@ -59,7 +59,14 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, CueType, SharedOutputLayers, SharedSourceLayers, TallyTags } from 'tv2-constants'
+import {
+	AdlibActionType,
+	CueType,
+	GraphicLLayer,
+	SharedOutputLayers,
+	SharedSourceLayers,
+	TallyTags
+} from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import { CreateFullDataStore, PilotGeneratorSettings } from '../helpers'
@@ -82,6 +89,18 @@ import {
 	ActionSelectJingle,
 	ActionTakeWithTransition
 } from './actionTypes'
+
+const STOPPABLE_GRAPHICS_LAYERS = [
+	SharedSourceLayers.PgmGraphicsIdent,
+	SharedSourceLayers.PgmGraphicsIdentPersistent,
+	SharedSourceLayers.PgmGraphicsTop,
+	SharedSourceLayers.PgmGraphicsLower,
+	SharedSourceLayers.PgmGraphicsHeadline,
+	SharedSourceLayers.PgmGraphicsTema,
+	SharedSourceLayers.PgmGraphicsOverlay,
+	SharedSourceLayers.PgmPilotOverlay,
+	SharedSourceLayers.PgmGraphicsTLF
+]
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -154,12 +173,6 @@ export interface ActionExecutionSettings<
 		SELECTED_ADLIB_LAYERS: string[]
 	}
 	ServerAudioLayers: string[]
-	StoppableGraphicsLayers: string[]
-	executeActionClearGraphics?: (
-		context: ActionExecutionContext,
-		actionId: string,
-		userData: ActionClearGraphics
-	) => void
 	createJingleContent?: (
 		config: ShowStyleConfig,
 		file: string,
@@ -199,9 +212,7 @@ export function executeAction<
 			executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
 			break
 		case AdlibActionType.CLEAR_GRAPHICS:
-			if (settings.executeActionClearGraphics) {
-				settings.executeActionClearGraphics(context, actionId, userData as ActionClearGraphics)
-			}
+			executeActionClearGraphics(context, settings, actionId, userData as ActionClearGraphics)
 			break
 		case AdlibActionType.CUT_TO_CAMERA:
 			executeActionCutToCamera(context, settings, actionId, userData as ActionCutToCamera)
@@ -1832,4 +1843,67 @@ function executeActionSelectFull<
 	])
 
 	context.stopPiecesOnLayers([SharedSourceLayers.SelectedAdlibGraphicsFull])
+}
+
+function executeActionClearGraphics<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	_actionId: string,
+	userData: ActionClearGraphics
+) {
+	const config = settings.getConfig(context)
+
+	context.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
+	context.insertPiece(
+		'current',
+		literal<IBlueprintPiece>({
+			enable: {
+				start: 'now',
+				duration: 3000
+			},
+			externalId: 'clearAllGFX',
+			name: userData.label,
+			sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
+			outputLayerId: SharedOutputLayers.SEC,
+			lifespan: PieceLifespan.WithinPart,
+			content:
+				config.studio.GraphicsType === 'HTML'
+					? {
+							timelineObjects: [
+								literal<TSR.TimelineObjAbstractAny>({
+									id: '',
+									enable: {
+										start: 0
+									},
+									priority: 1,
+									layer: GraphicLLayer.GraphicLLayerAdLibs,
+									content: {
+										deviceType: TSR.DeviceType.ABSTRACT
+									}
+								})
+							]
+					  }
+					: {
+							timelineObjects: [
+								literal<TSR.TimelineObjVIZMSEClearAllElements>({
+									id: '',
+									enable: {
+										start: 0
+									},
+									priority: 100,
+									layer: GraphicLLayer.GraphicLLayerAdLibs,
+									content: {
+										deviceType: TSR.DeviceType.VIZMSE,
+										type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+										channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined
+									}
+								})
+							]
+					  },
+			tags: userData.sendCommands ? [TallyTags.GFX_CLEAR] : [TallyTags.GFX_ALTUD]
+		})
+	)
 }

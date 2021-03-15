@@ -13,6 +13,7 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
+	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
 	ActionCommentatorSelectFull,
 	ActionCommentatorSelectJingle,
@@ -38,6 +39,7 @@ import {
 	CONSTANTS,
 	GraphicLLayer,
 	SharedOutputLayers,
+	SharedSisyfosLLayer,
 	SharedSourceLayers,
 	TallyTags
 } from 'tv2-constants'
@@ -185,6 +187,117 @@ function getGlobalAdLibPiecesOfftube(
 		}
 	}
 
+	adlibItems.push({
+		externalId: 'micUp',
+		name: 'Mics Up',
+		_rank: 600,
+		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
+		outputLayerId: SharedOutputLayers.SEC,
+		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		expectedDuration: 0,
+		content: {
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				...config.studio.StudioMics.map<TSR.TimelineObjSisyfosChannel>(layer => {
+					return literal<TSR.TimelineObjSisyfosChannel>({
+						id: '',
+						enable: { start: 0 },
+						priority: 1,
+						layer,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+							isPgm: 1
+						}
+					})
+				})
+			])
+		}
+	})
+
+	adlibItems.push({
+		externalId: 'micDown',
+		name: 'Mics Down',
+		_rank: 650,
+		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
+		outputLayerId: SharedOutputLayers.SEC,
+		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		expectedDuration: 0,
+		content: {
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				...config.studio.StudioMics.map<TSR.TimelineObjSisyfosChannel>(layer => {
+					return literal<TSR.TimelineObjSisyfosChannel>({
+						id: '',
+						enable: { start: 0 },
+						priority: 1,
+						layer,
+						content: {
+							deviceType: TSR.DeviceType.SISYFOS,
+							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+							isPgm: 0
+						}
+					})
+				})
+			])
+		}
+	})
+
+	adlibItems.push({
+		externalId: 'resyncSisyfos',
+		name: 'Resync Sisyfos',
+		_rank: 700,
+		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
+		outputLayerId: SharedOutputLayers.SEC,
+		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		expectedDuration: 1000,
+		content: {
+			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				literal<TSR.TimelineObjSisyfosChannel>({
+					id: '',
+					enable: { start: 0 },
+					priority: 2,
+					layer: SharedSisyfosLLayer.SisyfosResync,
+					content: {
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+						resync: true
+					}
+				})
+			])
+		}
+	})
+
+	adlibItems.push({
+		externalId: 'stopAudioBed',
+		name: 'Stop Soundplayer',
+		_rank: 700,
+		sourceLayerId: SharedSourceLayers.PgmAudioBed,
+		outputLayerId: 'musik',
+		expectedDuration: 1000,
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: [
+				literal<TSR.TimelineObjEmpty>({
+					id: '',
+					enable: {
+						start: 0,
+						duration: 1000
+					},
+					priority: 50,
+					layer: SharedSisyfosLLayer.SisyfosSourceAudiobed,
+					content: {
+						deviceType: TSR.DeviceType.ABSTRACT,
+						type: 'empty'
+					},
+					classes: []
+				})
+			]
+		}
+	})
+
+	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 	return adlibItems
 }
 
@@ -380,6 +493,28 @@ function getGlobalAdlibActionsOfftube(
 				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT],
 				currentPieceTags: [TallyTags.FULL_IS_LIVE],
 				nextPieceTags: [TallyTags.FULL_IS_LIVE]
+			}
+		})
+	)
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			userData: literal<ActionClearGraphics>({
+				type: AdlibActionType.CLEAR_GRAPHICS,
+				sendCommands: false,
+				label: 'GFX Altud'
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 400,
+				label: `GFX Altud`,
+				sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
+				outputLayerId: SharedOutputLayers.SEC,
+				content: {},
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				currentPieceTags: [TallyTags.GFX_ALTUD],
+				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
 		})
 	)

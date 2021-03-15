@@ -155,6 +155,13 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		channel: 9,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
+	}),
+	[OfftubeSisyfosLLayer.SisyfosResync]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		channel: -1,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	})
 }
 
@@ -273,13 +280,10 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 }
 
 const MAPPINGS_GRAPHICS: BlueprintMappings = {
-	[GraphicLLayer.GraphicLLayerAdLibs]: literal<TSR.MappingCasparCG & BlueprintMapping>({
-		device: TSR.DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		lookahead: LookaheadMode.NONE,
-		previewWhenNotOnAir: false,
-		channel: 3,
-		layer: 111
+	[GraphicLLayer.GraphicLLayerAdLibs]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	}),
 	[GraphicLLayer.GraphicLLayerDesign]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,

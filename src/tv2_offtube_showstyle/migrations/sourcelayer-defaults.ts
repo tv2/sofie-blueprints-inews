@@ -598,6 +598,25 @@ const MANUS: ISourceLayer[] = [
 // SEC group
 const SEC: ISourceLayer[] = [
 	{
+		_id: OfftubeSourceLayer.PgmAdlibGraphicCmd,
+		_rank: 10,
+		name: 'Graphic Adlibs',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: 'q',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: true,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
+	{
 		_id: OfftubeSourceLayer.PgmDesign,
 		_rank: 30,
 		name: 'GFX Design',
@@ -613,6 +632,25 @@ const SEC: ISourceLayer[] = [
 		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
 		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
+	{
+		_id: OfftubeSourceLayer.PgmSisyfosAdlibs,
+		_rank: 50,
+		name: 'Sisyfos Adlibs',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: 'ctrl+shift+alt+e,ctrl+shift+alt+d',
+		clearKeyboardHotkey: ',',
+		assignHotkeysToGlobalAdlibs: true,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: false
 	}

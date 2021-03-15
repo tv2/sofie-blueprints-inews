@@ -507,7 +507,7 @@ const MANUS: ISourceLayer[] = [
 // SEC group
 const SEC: ISourceLayer[] = [
 	{
-		_id: SourceLayer.PgmAdlibVizCmd,
+		_id: SourceLayer.PgmAdlibGraphicCmd,
 		_rank: 10,
 		name: 'Viz Full',
 		abbreviation: '',

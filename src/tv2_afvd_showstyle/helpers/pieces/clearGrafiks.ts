@@ -53,7 +53,7 @@ export function EvaluateClearGrafiks(
 			name: 'CLEAR',
 			...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
 			outputLayerId: SharedOutputLayers.SEC,
-			sourceLayerId: SourceLayer.PgmAdlibVizCmd,
+			sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 			lifespan: PieceLifespan.WithinPart,
 			content: {
 				timelineObjects: [

@@ -76,7 +76,6 @@ export function executeActionOfftube(
 				OfftubeSisyfosLLayer.SisyfosSourceServerA,
 				OfftubeSisyfosLLayer.SisyfosSourceServerB
 			],
-			StoppableGraphicsLayers: [], // TODO: Needs thought for offtubes
 			createJingleContent: createJingleContentOfftube,
 			pilotGraphicSettings: pilotGeneratorSettingsOfftube
 		},

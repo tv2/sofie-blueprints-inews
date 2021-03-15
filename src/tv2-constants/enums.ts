@@ -150,7 +150,8 @@ export enum SharedCasparLLayer {
 }
 
 export enum SharedSisyfosLLayer {
-	SisyfosSourceAudiobed = 'sisyfos_source_audiobed'
+	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
+	SisyfosResync = 'sisyfos_resync'
 }
 
 export enum SharedOutputLayers {
@@ -173,6 +174,7 @@ export enum SharedSourceLayers {
 	PgmVoiceOver = 'studio0_voiceover',
 	PgmContinuity = 'studio0_continuity',
 	PgmJingle = 'studio0_jingle',
+	PgmSisyfosAdlibs = 'studio0_sisyfos_adlibs', // shortcuts
 
 	// Graphics
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
@@ -192,7 +194,8 @@ export enum SharedSourceLayers {
 	PgmGraphicsOverlay = 'studio0_overlay',
 	WallGraphics = 'studio0_wall_graphics',
 
-	// Note: there is a regex in core to ignore some DVE layers. That will need updating if adding more
+	PgmAdlibGraphicCmd = 'studio0_adlib_graphic_cmd', // shortcuts
+
 	PgmDVEBox1 = 'studio0_dve_box1',
 	PgmDVEBox2 = 'studio0_dve_box2',
 	PgmDVEBox3 = 'studio0_dve_box3',
