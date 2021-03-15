@@ -106,6 +106,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	removeSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_pgm_source_select'),
 	forceSourceLayerToDefaults('1.5.1', OfftubeSourceLayer.PgmDVE),
 
+	/***
+	 * 1.5.2
+	 * - Remove PgmJingle shortcuts, moved to JingleAdlib layer
+	 */
+	forceSourceLayerToDefaults('1.5.2', OfftubeSourceLayer.PgmJingle),
+
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
 ])

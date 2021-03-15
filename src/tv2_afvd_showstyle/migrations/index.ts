@@ -72,6 +72,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	forceSourceLayerToDefaults('1.4.8', SourceLayer.PgmDVE),
 
+	/***
+	 * 1.5.2
+	 * - Remove PgmJingle shortcuts, moved to JingleAdlib layer
+	 */
+	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle),
+
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
