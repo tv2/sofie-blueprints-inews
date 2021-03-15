@@ -867,20 +867,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		})
 	)
 
-	res.push(
-		...GetTransitionAdLibActions(
-			config,
-			{
-				SourceLayer: {
-					Jingle: SourceLayer.PgmJingle
-				},
-				OutputLayer: {
-					PGM: 'pgm'
-				}
-			},
-			800
-		)
-	)
+	res.push(...GetTransitionAdLibActions(config, 800))
 
 	res.push(
 		literal<IBlueprintActionManifest>({

@@ -195,6 +195,7 @@ export enum SharedSourceLayers {
 	WallGraphics = 'studio0_wall_graphics',
 
 	PgmAdlibGraphicCmd = 'studio0_adlib_graphic_cmd', // shortcuts
+	PgmAdlibJingle = 'studio0_adlib_jingle',
 
 	PgmDVEBox1 = 'studio0_dve_box1',
 	PgmDVEBox2 = 'studio0_dve_box2',

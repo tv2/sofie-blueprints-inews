@@ -10,21 +10,12 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags } from 'tv2-constants'
-
-interface GetTransitionActionSettings {
-	SourceLayer: {
-		Jingle: string
-	}
-	OutputLayer: {
-		PGM: string
-	}
-}
+import { AdlibActionType, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 
 export function GetTransitionAdLibActions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(config: ShowStyleConfig, settings: GetTransitionActionSettings, startingRank: number): IBlueprintActionManifest[] {
+>(config: ShowStyleConfig, startingRank: number): IBlueprintActionManifest[] {
 	const res: IBlueprintActionManifest[] = []
 
 	if (config.showStyle.ShowstyleTransition && config.showStyle.ShowstyleTransition.length) {
@@ -32,7 +23,7 @@ export function GetTransitionAdLibActions<
 
 		const userData = ParseTransitionSetting(defaultTransition, true)
 
-		res.push(makeTransitionAction(settings, userData, startingRank, config.showStyle.ShowstyleTransition))
+		res.push(makeTransitionAction(userData, startingRank, config.showStyle.ShowstyleTransition))
 	}
 
 	startingRank++
@@ -42,7 +33,7 @@ export function GetTransitionAdLibActions<
 			if (transition.Transition && transition.Transition.length) {
 				const userData = ParseTransitionSetting(transition.Transition, true)
 
-				res.push(makeTransitionAction(settings, userData, startingRank + 0.01 * i, transition.Transition))
+				res.push(makeTransitionAction(userData, startingRank + 0.01 * i, transition.Transition))
 			}
 		})
 	}
@@ -78,7 +69,6 @@ export function ParseTransitionSetting(transitionSetting: string, takeNow: boole
 }
 
 function makeTransitionAction(
-	settings: GetTransitionActionSettings,
 	userData: ActionTakeWithTransition,
 	rank: number,
 	label: string
@@ -92,8 +82,8 @@ function makeTransitionAction(
 		display: {
 			_rank: rank,
 			label: !!label.match(/^\d+$/) ? `EFFEKT ${label}` : label,
-			sourceLayerId: settings.SourceLayer.Jingle,
-			outputLayerId: settings.OutputLayer.PGM,
+			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
+			outputLayerId: SharedOutputLayers.PGM,
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag]

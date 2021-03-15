@@ -519,20 +519,7 @@ function getGlobalAdlibActionsOfftube(
 		})
 	)
 
-	res.push(
-		...GetTransitionAdLibActions(
-			config,
-			{
-				SourceLayer: {
-					Jingle: OfftubeSourceLayer.PgmJingle
-				},
-				OutputLayer: {
-					PGM: OfftubeOutputLayers.PGM
-				}
-			},
-			800
-		)
-	)
+	res.push(...GetTransitionAdLibActions(config, 800))
 
 	res.push(
 		literal<IBlueprintActionManifest>({

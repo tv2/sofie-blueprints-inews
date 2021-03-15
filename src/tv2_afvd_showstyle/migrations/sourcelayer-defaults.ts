@@ -170,9 +170,9 @@ const JINGLE: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'NumpadDivide,NumpadSubtract,NumpadAdd',
+		activateKeyboardHotkeys: '',
 		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
+		assignHotkeysToGlobalAdlibs: false,
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
@@ -506,6 +506,25 @@ const MANUS: ISourceLayer[] = [
 
 // SEC group
 const SEC: ISourceLayer[] = [
+	{
+		_id: SourceLayer.PgmAdlibJingle,
+		_rank: 10,
+		name: 'Jingle AdLibs',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: 'NumpadDivide,NumpadSubtract,NumpadAdd',
+		clearKeyboardHotkey: ',',
+		assignHotkeysToGlobalAdlibs: true,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
 	{
 		_id: SourceLayer.PgmAdlibGraphicCmd,
 		_rank: 10,
