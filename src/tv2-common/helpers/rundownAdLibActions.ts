@@ -11,6 +11,8 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { TV2BlueprintConfig } from '../blueprintConfig'
+import { CreateJingleExpectedMedia } from '../content'
 
 export function GetTransitionAdLibActions<
 	StudioConfig extends TV2StudioConfigBase,
@@ -23,7 +25,16 @@ export function GetTransitionAdLibActions<
 
 		const userData = ParseTransitionSetting(defaultTransition, true)
 
-		res.push(makeTransitionAction(userData, startingRank, config.showStyle.ShowstyleTransition))
+		const jingleConfig = config.showStyle.BreakerConfig.find(
+			j => j.BreakerName === config.showStyle.ShowstyleTransition
+		)
+		let alphaAtStart: number | undefined
+
+		if (jingleConfig) {
+			alphaAtStart = jingleConfig.StartAlpha
+		}
+
+		res.push(makeTransitionAction(config, userData, startingRank, config.showStyle.ShowstyleTransition, alphaAtStart))
 	}
 
 	startingRank++
@@ -33,7 +44,14 @@ export function GetTransitionAdLibActions<
 			if (transition.Transition && transition.Transition.length) {
 				const userData = ParseTransitionSetting(transition.Transition, true)
 
-				res.push(makeTransitionAction(userData, startingRank + 0.01 * i, transition.Transition))
+				const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition.Transition)
+				let alphaAtStart: number | undefined
+
+				if (jingleConfig) {
+					alphaAtStart = jingleConfig.StartAlpha
+				}
+
+				res.push(makeTransitionAction(config, userData, startingRank + 0.01 * i, transition.Transition, alphaAtStart))
 			}
 		})
 	}
@@ -69,11 +87,14 @@ export function ParseTransitionSetting(transitionSetting: string, takeNow: boole
 }
 
 function makeTransitionAction(
+	config: TV2BlueprintConfig,
 	userData: ActionTakeWithTransition,
 	rank: number,
-	label: string
+	label: string,
+	alphaAtStart: number | undefined
 ): IBlueprintActionManifest {
 	const tag = GetTagForTransition(userData.variant)
+	const isEffekt = !!label.match(/^\d+$/)
 
 	return literal<IBlueprintActionManifest>({
 		actionId: AdlibActionType.TAKE_WITH_TRANSITION,
@@ -81,12 +102,13 @@ function makeTransitionAction(
 		userDataManifest: {},
 		display: {
 			_rank: rank,
-			label: !!label.match(/^\d+$/) ? `EFFEKT ${label}` : label,
+			label: isEffekt ? `EFFEKT ${label}` : label,
 			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
 			outputLayerId: SharedOutputLayers.PGM,
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 			currentPieceTags: [tag],
-			nextPieceTags: [tag]
+			nextPieceTags: [tag],
+			content: isEffekt ? {} : CreateJingleExpectedMedia(config, label, alphaAtStart ?? 0)
 		}
 	})
 }

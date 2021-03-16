@@ -1,5 +1,5 @@
 import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
-import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -18,6 +18,30 @@ export interface JingleLayers {
 	}
 }
 
+function GetJingleFileName(config: TV2BlueprintConfig, jingle: string): string {
+	return config.studio.JingleFolder ? `${config.studio.JingleFolder}/${jingle}` : ''
+}
+
+export function CreateJingleExpectedMedia(config: TV2BlueprintConfig, jingle: string, alphaAtStart: number) {
+	const fileName = GetJingleFileName(config, jingle)
+
+	return literal<VTContent>({
+		studioLabel: '',
+		fileName,
+		path: `${config.studio.JingleNetworkBasePath}\\${
+			config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
+		}${jingle}${config.studio.JingleFileExtension}`, // full path on the source network storage
+		mediaFlowIds: [config.studio.JingleMediaFlowId],
+		firstWords: '',
+		lastWords: '',
+		previewFrame: alphaAtStart,
+		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
+		timelineObjects: []
+	})
+}
+
 export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -29,20 +53,9 @@ export function CreateJingleContentBase<
 	layers: JingleLayers,
 	preMultiplied: boolean
 ) {
-	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : ''
+	const fileName = GetJingleFileName(config, file)
 	return literal<VTContent>({
-		studioLabel: '',
-		fileName,
-		path: `${config.studio.JingleNetworkBasePath}\\${
-			config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
-		}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
-		mediaFlowIds: [config.studio.JingleMediaFlowId],
-		firstWords: '',
-		lastWords: '',
-		previewFrame: alphaAtStart,
-		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
-		ignoreBlackFrames: true,
-		ignoreFreezeFrame: true,
+		...CreateJingleExpectedMedia(config, file, alphaAtStart),
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
