@@ -107,7 +107,6 @@ const mockShowStyleConfig: ShowStyleConfig = {
 		literal<DVEConfigInput>({
 			DVEName: 'morbarn',
 			DVEJSON: '{}',
-			DVEGraphicsTemplate: '',
 			DVEGraphicsFrame: '',
 			DVEGraphicsKey: '',
 			DVEGraphicsTemplateJSON: '',
@@ -116,7 +115,6 @@ const mockShowStyleConfig: ShowStyleConfig = {
 		literal<DVEConfigInput>({
 			DVEName: 'barnmor',
 			DVEJSON: '{}',
-			DVEGraphicsTemplate: '',
 			DVEGraphicsFrame: '',
 			DVEGraphicsKey: '',
 			DVEGraphicsTemplateJSON: '',

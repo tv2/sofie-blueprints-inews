@@ -66,7 +66,6 @@ enum CasparLLayer {
 	CasparGraphicsFullLoop = 'casparcg_graphics_full_loop',
 	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGDVEKeyedLoop = 'casparcg_dve_keyed_loop',
-	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame'
 }

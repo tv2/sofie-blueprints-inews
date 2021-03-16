@@ -30,7 +30,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				DVEName: '',
 				DVEInputs: '',
 				DVEJSON: '{}',
-				DVEGraphicsTemplate: '',
 				DVEGraphicsTemplateJSON: '{}',
 				DVEGraphicsKey: '',
 				DVEGraphicsFrame: ''
@@ -63,15 +62,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: '{}',
 				rank: 2
-			},
-			{
-				id: 'DVEGraphicsTemplate',
-				name: 'CasparCG template',
-				description: 'File name (path) for CasparCG overlay template (locators)',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: 'dve/locators',
-				rank: 3
 			},
 			{
 				id: 'DVEGraphicsTemplateJSON',

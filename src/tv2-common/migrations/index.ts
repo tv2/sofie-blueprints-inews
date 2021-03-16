@@ -1,9 +1,11 @@
 import {
+	ConfigItemValue,
 	MigrationContextShowStyle,
 	MigrationContextStudio,
 	MigrationStepShowStyle,
 	MigrationStepStudio
 } from '@sofie-automation/blueprints-integration'
+import { TableConfigItemGFXTemplates } from 'tv2-common'
 import { literal } from '../util'
 
 export * from './moveSourcesToTable'
@@ -82,6 +84,33 @@ export function removeSourceLayer(versionStr: string, studioId: string, layer: s
 			}
 
 			context.removeSourceLayer(layer)
+		}
+	})
+}
+
+export function AddGraphicToGFXTable(versionStr: string, studio: string, config: TableConfigItemGFXTemplates) {
+	return literal<MigrationStepShowStyle>({
+		id: `gfxConfig.add${config.INewsName}.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[] | undefined
+
+			if (!existing || !existing.length) {
+				return false
+			}
+
+			return !existing.some(
+				g =>
+					g.INewsName === config.INewsName && g.INewsCode === config.INewsCode && g.VizTemplate === config.VizTemplate
+			)
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[]
+
+			existing.push(config)
+
+			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
 		}
 	})
 }

@@ -28,10 +28,11 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { ControlClasses, GraphicLLayer, MEDIA_PLAYER_AUTO } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
+import { CreateHTMLRendererContent } from '../helpers'
 import { EnableServer } from './server'
 
 export interface DVEConfigBox {
@@ -87,7 +88,6 @@ export interface DVELayers {
 	CASPAR: {
 		CGDVEKey: string
 		CGDVEFrame: string
-		CGDVETemplate: string
 	}
 	SisyfosLLayer: {
 		ClipPending: string
@@ -169,7 +169,7 @@ export function MakeContentDVEBase<
 
 	const graphicsTemplateContent: { [key: string]: string } = {}
 	parsedCue.labels.forEach((label, i) => {
-		graphicsTemplateContent[`locator${i + 1}`] = label
+		graphicsTemplateContent[`${i}`] = label
 	})
 
 	return MakeContentDVE2(
@@ -441,7 +441,6 @@ export function MakeContentDVE2<
 		}
 	})
 
-	const graphicsTemplateName = dveConfig.DVEGraphicsTemplate ? dveConfig.DVEGraphicsTemplate.toString() : ''
 	let graphicsTemplateStyle: any = ''
 	try {
 		if (dveConfig.DVEGraphicsTemplateJSON) {
@@ -556,33 +555,16 @@ export function MakeContentDVE2<
 					},
 					...(adlib ? { classes: ['adlib_deparent'] } : {})
 				}),
-				...(graphicsTemplateName
-					? [
-							literal<TSR.TimelineObjCCGTemplate>({
-								id: '',
-								enable: getDVEEnable(),
-								priority: 1,
-								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVETemplate,
-								content: {
-									deviceType: TSR.DeviceType.CASPARCG,
-									type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-									templateType: 'html',
-									name: graphicsTemplateName,
-									data: {
-										display: {
-											isPreview: false,
-											displayState: 'locators'
-										},
-										locators: {
-											style: graphicsTemplateStyle ? graphicsTemplateStyle : {},
-											content: graphicsTemplateContent
-										}
-									},
-									useStopCommand: false
-								}
-							})
-					  ]
-					: []),
+				literal<TSR.TimelineObjCCGTemplate>({
+					id: '',
+					enable: getDVEEnable(),
+					priority: 1,
+					layer: GraphicLLayer.GraphicLLayerLocators,
+					content: CreateHTMLRendererContent(config, 'locators', {
+						...graphicsTemplateContent,
+						style: graphicsTemplateStyle ?? {}
+					})
+				}),
 				...(keyFile
 					? [
 							literal<TSR.TimelineObjCCGMedia>({

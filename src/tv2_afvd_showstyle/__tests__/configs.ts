@@ -142,7 +142,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			DVEInputs: '1:INP1;2:INP2',
 			DVEJSON:
 				'{"boxes":{"0":{"enabled":true,"source":11,"x":-800,"y":25,"size":550,"cropped":true,"cropTop":0,"cropBottom":150,"cropLeft":0,"cropRight":1500},"1":{"enabled":true,"source":1,"x":800,"y":25,"size":550,"cropped":true,"cropTop":160,"cropBottom":150,"cropLeft":0,"cropRight":0},"2":{"enabled":false,"source":2001,"x":0,"y":0,"size":1000,"cropped":false,"cropTop":0,"cropBottom":0,"cropLeft":0,"cropRight":0},"3":{"enabled":false,"source":2001,"x":0,"y":0,"size":1000,"cropped":false,"cropTop":0,"cropBottom":0,"cropLeft":0,"cropRight":0}},"index":0,"properties":{"artFillSource":30,"artCutSource":32,"artOption":1,"artPreMultiplied":true,"artClip":0,"artGain":0,"artInvertKey":false},"border":{"borderEnabled":false,"borderBevel":0,"borderOuterWidth":0,"borderInnerWidth":0,"borderOuterSoftness":0,"borderInnerSoftness":0,"borderBevelSoftness":0,"borderBevelPosition":0,"borderHue":0,"borderSaturation":0,"borderLuma":0,"borderLightSourceDirection":0,"borderLightSourceAltitude":10}}',
-			DVEGraphicsTemplate: 'dve/locators',
 			DVEGraphicsTemplateJSON:
 				'{"common":{"font-family":"Alright Sans LT","font-weight":"bold","font-variant":"italic","color":"#ffffff","font-size":"35px","background":"rgba(0, 0, 0, 0.5)","height":"45px","line-height":"48px","padding-left":"13px","padding-right":"13px"},"locator1":{"left":"120px","top":"825px"},"locator2":{"right":"100px","top":"825px"}}',
 			DVEGraphicsKey: 'dve/sommerfuglK',
@@ -153,7 +152,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			DVEInputs: '3:INP1;2:INP2',
 			DVEJSON:
 				'{"boxes":{"0":{"enabled":false,"source":12,"x":-500,"y":140,"size":760,"cropped":true,"cropTop":0,"cropBottom":0,"cropLeft":0,"cropRight":1000},"1":{"enabled":true,"source":2001,"x":1100,"y":-245,"size":350,"cropped":true,"cropTop":500,"cropBottom":0,"cropLeft":1600,"cropRight":0},"2":{"enabled":true,"source":2,"x":-460,"y":130,"size":760,"cropped":true,"cropTop":0,"cropBottom":0,"cropLeft":0,"cropRight":1230},"3":{"enabled":false,"source":2001,"x":0,"y":0,"size":1000,"cropped":true,"cropTop":0,"cropBottom":119,"cropLeft":0,"cropRight":0}},"index":0,"properties":{"artFillSource":30,"artCutSource":32,"artOption":1,"artPreMultiplied":true,"artClip":0,"artGain":0,"artInvertKey":false},"border":{"borderEnabled":false,"borderBevel":0,"borderOuterWidth":0,"borderInnerWidth":0,"borderOuterSoftness":0,"borderInnerSoftness":0,"borderBevelSoftness":0,"borderBevelPosition":0,"borderHue":0,"borderSaturation":0,"borderLuma":0,"borderLightSourceDirection":0,"borderLightSourceAltitude":10}}',
-			DVEGraphicsTemplate: 'dve/locators',
 			DVEGraphicsTemplateJSON:
 				'{"common":{"font-family":"Alright Sans LT","font-weight":"bold","font-variant":"italic","color":"#ffffff","font-size":"35px","background":"rgba(0, 0, 0, 0.5)","height":"45px","line-height":"48px","padding-left":"13px","padding-right":"13px"},"locator1":{"left":"120px","top":"880px"},"locator2":{"left":"1800px","top":"880px"}}',
 			DVEGraphicsKey: 'dve/morbarnK',
@@ -164,7 +162,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			DVEInputs: '2:INP2;1:INP1',
 			DVEJSON:
 				'{"boxes":{"0":{"enabled":true,"source":13,"x":-1100,"y":-250,"size":350,"cropped":true,"cropTop":0,"cropBottom":530,"cropLeft":0,"cropRight":1700},"1":{"enabled":true,"source":3,"x":500,"y":130,"size":760,"cropped":true,"cropTop":70,"cropBottom":0,"cropLeft":770,"cropRight":0},"2":{"enabled":false,"source":2001,"x":-460,"y":130,"size":760,"cropped":true,"cropTop":0,"cropBottom":0,"cropLeft":0,"cropRight":1230},"3":{"enabled":false,"source":2001,"x":0,"y":0,"size":1000,"cropped":false,"cropTop":0,"cropBottom":0,"cropLeft":0,"cropRight":0}},"index":0,"properties":{"artFillSource":30,"artCutSource":32,"artOption":1,"artPreMultiplied":true,"artClip":0,"artGain":0,"artInvertKey":false},"border":{"borderEnabled":false,"borderBevel":0,"borderOuterWidth":0,"borderInnerWidth":0,"borderOuterSoftness":0,"borderInnerSoftness":0,"borderBevelSoftness":0,"borderBevelPosition":0,"borderHue":0,"borderSaturation":0,"borderLuma":0,"borderLightSourceDirection":0,"borderLightSourceAltitude":10}}',
-			DVEGraphicsTemplate: 'dve/locators',
 			DVEGraphicsTemplateJSON:
 				'{"common":{"font-family":"Alright Sans LT","font-weight":"bold","font-variant":"italic","color":"#ffffff","font-size":"35px","background":"rgba(0, 0, 0, 0.5)","height":"45px","line-height":"48px","padding-left":"13px","padding-right":"13px"},"locator1":{"left":"120px","top":"880px"},"locator2":{"left":"1800px","top":"880px"}}',
 			DVEGraphicsKey: 'dve/barnmorK',

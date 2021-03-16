@@ -8,6 +8,7 @@ import {
 	RenameStudioConfig,
 	TableConfigItemDSK
 } from 'tv2-common'
+import { GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	manifestAFVDDownstreamKeyers,
@@ -169,6 +170,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.5.0', 'AFVD', 'PilotPrerollDuration', 'VizPilotGraphics.PrerollDuration'),
 
 	renameMapping('1.5.1', 'studio0_adlib_viz_cmd', 'studio0_adlib_graphic_cmd'),
+
+	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

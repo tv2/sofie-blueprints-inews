@@ -13,7 +13,8 @@ export const layerToHTMLGraphicSlot: { [slot: string]: string } = {
 	[GraphicLLayer.GraphicLLayerOverlayTema]: '',
 	[GraphicLLayer.GraphicLLayerOverlayTopt]: '660_topt',
 	[GraphicLLayer.GraphicLLayerPilot]: '250_full',
-	[GraphicLLayer.GraphicLLayerPilotOverlay]: '250_full'
+	[GraphicLLayer.GraphicLLayerPilotOverlay]: '250_full',
+	[GraphicLLayer.GraphicLLayerLocators]: '850_dve'
 }
 
 export interface Slots {

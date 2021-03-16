@@ -103,7 +103,6 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 		literal<DVEConfigInput>({
 			DVEName: 'morbarn',
 			DVEJSON: '{}',
-			DVEGraphicsTemplate: '',
 			DVEGraphicsFrame: '',
 			DVEGraphicsKey: '',
 			DVEGraphicsTemplateJSON: '',
@@ -112,7 +111,6 @@ const mockShowStyleConfig: OfftubeShowStyleConfig = {
 		literal<DVEConfigInput>({
 			DVEName: 'barnmor',
 			DVEJSON: '{}',
-			DVEGraphicsTemplate: '',
 			DVEGraphicsFrame: '',
 			DVEGraphicsKey: '',
 			DVEGraphicsTemplateJSON: '',

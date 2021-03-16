@@ -53,7 +53,6 @@ export enum AtemLLayer {
 enum AFVDCasparLLayer {
 	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGFullBg = 'casparcg_full_bg',
-	CasparCGDVETemplate = 'casparcg_cg_dve_template',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',
 	CasparCountdown = 'casparcg_countdown'

@@ -35,8 +35,7 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		},
 		CASPAR: {
 			CGDVEKey: OfftubeCasparLLayer.CasparCGDVEKey,
-			CGDVEFrame: OfftubeCasparLLayer.CasparCGDVEFrame,
-			CGDVETemplate: OfftubeCasparLLayer.CasparCGDVETemplate
+			CGDVEFrame: OfftubeCasparLLayer.CasparCGDVEFrame
 		},
 		SisyfosLLayer: {
 			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,

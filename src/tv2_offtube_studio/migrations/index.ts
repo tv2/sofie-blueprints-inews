@@ -31,6 +31,7 @@ import {
 	getMappingsDefaultsMigrationSteps,
 	GetSisyfosLayersForTableMigrationOfftube,
 	removeMapping,
+	renameMapping,
 	setConfigTo
 } from './util'
 
@@ -297,6 +298,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilotOverlay, true),
 	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerFullLoop, true),
 	setConfigTo('1.5.3', 'AtemSource.GFXFull', 12),
+
+	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

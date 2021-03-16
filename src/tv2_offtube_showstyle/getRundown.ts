@@ -647,7 +647,8 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			GraphicLLayer.GraphicLLayerOverlayIdent,
 			GraphicLLayer.GraphicLLayerOverlayLower,
 			GraphicLLayer.GraphicLLayerOverlayTema,
-			GraphicLLayer.GraphicLLayerOverlayTopt
+			GraphicLLayer.GraphicLLayerOverlayTopt,
+			GraphicLLayer.GraphicLLayerLocators
 		].map(layer => {
 			return literal<TSR.TimelineObjCCGTemplate>({
 				id: '',
@@ -932,26 +933,6 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			enable: { while: '1' },
 			priority: 0,
 			layer: OfftubeCasparLLayer.CasparCGDVEKey,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
-					}
-				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVETemplate,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
 				type: TSR.TimelineContentTypeCasparCg.MEDIA,

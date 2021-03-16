@@ -99,29 +99,36 @@ function CasparOverlayTimeline(
 			enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGrafik, partDefinition),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: 'sport-overlay/index',
-				data: `<templateData>${encodeURI(
-					JSON.stringify({
-						display: 'program',
-						slots: HTMLTemplateContent(config, mappedTemplate, parsedCue),
-						partialUpdate: true
-					})
-				)}</templateData>`,
-				useStopCommand: false
-			}
+			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })
 		})
 	]
 }
 
-function HTMLTemplateContent(
+export function CreateHTMLRendererContent(
 	config: TV2BlueprintConfig,
-	graphicTemplate: string,
-	parsedCue: CueDefinitionGraphic<GraphicInternal>
-): Partial<Slots> {
+	mappedTemplate: string,
+	data: object
+): TSR.TimelineObjCCGTemplate['content'] {
+	return {
+		deviceType: TSR.DeviceType.CASPARCG,
+		type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+		templateType: 'html',
+		name: 'sport-overlay/index',
+		data: `<templateData>${encodeURI(
+			JSON.stringify({
+				display: 'program',
+				slots: HTMLTemplateContent(config, mappedTemplate, data),
+				partialUpdate: true
+			})
+		)}</templateData>`,
+		useStopCommand: false,
+		mixer: {
+			opacity: 100
+		}
+	}
+}
+
+function HTMLTemplateContent(config: TV2BlueprintConfig, graphicTemplate: string, data: object): Partial<Slots> {
 	const conf = config.showStyle.GFXTemplates.find(g => g.VizTemplate.toLowerCase() === graphicTemplate.toLowerCase())
 
 	if (!conf) {
@@ -141,7 +148,7 @@ function HTMLTemplateContent(
 			display: 'program',
 			payload: {
 				type: graphicTemplate,
-				...parsedCue.graphic.textFields
+				...data
 			}
 		}
 	}

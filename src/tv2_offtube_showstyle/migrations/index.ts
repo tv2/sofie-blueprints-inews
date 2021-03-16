@@ -1,5 +1,6 @@
 import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
+	AddGraphicToGFXTable,
 	literal,
 	removeSourceLayer,
 	renameSourceLayer,
@@ -111,6 +112,17 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Remove PgmJingle shortcuts, moved to JingleAdlib layer
 	 */
 	forceSourceLayerToDefaults('1.5.2', OfftubeSourceLayer.PgmJingle),
+
+	AddGraphicToGFXTable('1.5.4', 'Offtube', {
+		VizTemplate: 'locators',
+		SourceLayer: '',
+		LayerMapping: GraphicLLayer.GraphicLLayerLocators,
+		INewsCode: '',
+		INewsName: 'locators',
+		VizDestination: '',
+		OutType: '',
+		IsDesign: false
+	}),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)

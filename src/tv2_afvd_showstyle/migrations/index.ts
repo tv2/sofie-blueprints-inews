@@ -1,10 +1,17 @@
-import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
+	ConfigItemValue,
+	MigrationContextShowStyle,
+	MigrationStepShowStyle
+} from '@sofie-automation/blueprints-integration'
+import {
+	AddGraphicToGFXTable,
 	literal,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
+	TableConfigItemGFXTemplates,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
+import { GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
@@ -77,6 +84,48 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Remove PgmJingle shortcuts, moved to JingleAdlib layer
 	 */
 	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle),
+
+	literal<MigrationStepShowStyle>({
+		id: `gfxConfig.addLocator.AFVD`,
+		version: '1.5.4',
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[] | undefined
+
+			if (!existing || !existing.length) {
+				return false
+			}
+
+			return true // !existing.some(g => g.INewsName === 'locators')
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[]
+
+			existing.push({
+				VizTemplate: 'locators',
+				SourceLayer: '',
+				LayerMapping: GraphicLLayer.GraphicLLayerLocators,
+				INewsCode: '',
+				INewsName: 'locators',
+				VizDestination: '',
+				OutType: '',
+				IsDesign: false
+			})
+
+			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
+		}
+	}),
+
+	AddGraphicToGFXTable('1.5.4', 'AFVD', {
+		VizTemplate: 'locators',
+		SourceLayer: '',
+		LayerMapping: GraphicLLayer.GraphicLLayerLocators,
+		INewsCode: '',
+		INewsName: 'locators',
+		VizDestination: '',
+		OutType: '',
+		IsDesign: false
+	}),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

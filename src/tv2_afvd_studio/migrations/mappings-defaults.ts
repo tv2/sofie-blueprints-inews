@@ -327,7 +327,7 @@ export const MAPPINGS_CASPAR: BlueprintMappings = {
 		channel: 4,
 		layer: 110
 	}),
-	[CasparLLayer.CasparCGDVETemplate]: literal<TSR.MappingCasparCG & BlueprintMapping>({
+	[GraphicLLayer.GraphicLLayerLocators]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar02',
 		lookahead: LookaheadMode.WHEN_CLEAR,

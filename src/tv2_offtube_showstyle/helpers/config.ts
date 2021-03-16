@@ -19,26 +19,17 @@ export interface OfftubeShowstyleBlueprintConfig extends OfftubeStudioBlueprintC
 }
 
 export interface DVEConfigInput {
-	// _id: string
 	DVEName: string
 	DVEJSON: string
-	DVEGraphicsTemplate: string
 	DVEGraphicsTemplateJSON: string
 	DVEInputs: string
 	DVEGraphicsKey: string
 	DVEGraphicsFrame: string
-	// [key: string]: BasicConfigItemValue
 }
 
 export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
 }
-
-/*
-export function defaultConfig(context: NotesContext): OfftubeShowstyleBlueprintConfig {
-	return extendWithShowStyleConfig(context, defaultStudioConfig(context), {})
-}
-*/
 
 export function parseConfig(config: IBlueprintConfig): any {
 	return { showStyle: config }

@@ -234,7 +234,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 		layer: 100,
 		previewWhenNotOnAir: true
 	}),
-	[OfftubeCasparLLayer.CasparCGDVETemplate]: literal<TSR.MappingCasparCG & BlueprintMapping>({
+	[GraphicLLayer.GraphicLLayerLocators]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		lookahead: LookaheadMode.WHEN_CLEAR,
