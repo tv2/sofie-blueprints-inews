@@ -16,14 +16,7 @@ import {
 import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
 
 export interface VizPilotGeneratorSettings {
-	createPilotTimelineForStudio(
-		config: TV2BlueprintConfig,
-		context: NotesContext,
-		parsedCue: CueDefinitionGraphic<GraphicPilot>,
-		partId: string,
-		adlib: boolean,
-		adlibRank: number
-	): TSR.TSRTimelineObj[]
+	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentVIZ(
@@ -62,9 +55,7 @@ export function GetPilotGraphicContentViz(
 	settings: VizPilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
-	partId: string,
-	adlib: boolean,
-	adlibRank: number
+	adlib: boolean
 ): GraphicsContent {
 	return literal<GraphicsContent>({
 		fileName: 'PILOT_' + parsedCue.graphic.vcpid.toString(),
@@ -102,9 +93,7 @@ export function GetPilotGraphicContentViz(
 				},
 				...(IsTargetingFull(engine) ? { classes: ['full'] } : {})
 			}),
-			...(IsTargetingFull(engine)
-				? settings.createPilotTimelineForStudio(config, context, parsedCue, partId, adlib, adlibRank)
-				: [])
+			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context, adlib) : [])
 		]
 	})
 }

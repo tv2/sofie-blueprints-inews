@@ -53,14 +53,7 @@ export function EvaluateCueGraphicPilot(
 	)
 }
 
-function makeStudioTimelineViz(
-	config: BlueprintConfig,
-	context: NotesContext,
-	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	partId: string,
-	adlib: boolean,
-	adlibRank: number
-): TSR.TSRTimelineObj[] {
+function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
 	const fullsDSK = FindFullSourceDSK(config)
 
 	return [
@@ -102,17 +95,11 @@ function makeStudioTimelineViz(
 			classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 		}),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
-		...muteSisyfosChannels(partId, config.sources, !!adlib, adlibRank ?? 0, parsedCue.graphic.vcpid)
+		...muteSisyfosChannels(config.sources)
 	]
 }
 
-function muteSisyfosChannels(
-	partId: string,
-	sources: SourceInfo[],
-	adlib: boolean,
-	adlibRank: number,
-	vcpid: number
-): TSR.TimelineObjSisyfosChannel[] {
+function muteSisyfosChannels(sources: SourceInfo[]): TSR.TimelineObjSisyfosChannel[] {
 	return [
 		SisyfosLLAyer.SisyfosSourceServerA,
 		SisyfosLLAyer.SisyfosSourceServerB,
@@ -134,7 +121,7 @@ function muteSisyfosChannels(
 		]
 	].map<TSR.TimelineObjSisyfosChannel>(layer => {
 		return literal<TSR.TimelineObjSisyfosChannel>({
-			id: `muteSisyfos-${layer}-${partId}-${vcpid}-${adlib ? `adlib-${adlibRank}` : ''}`,
+			id: '',
 			enable: {
 				start: 0
 			},

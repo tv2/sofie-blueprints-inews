@@ -1816,7 +1816,6 @@ function executeActionSelectFull<
 		'FULL',
 		settings.pilotGraphicSettings,
 		true,
-		0,
 		userData.segmentExternalId
 	)
 
@@ -1830,7 +1829,6 @@ function executeActionSelectFull<
 		'FULL',
 		externalId,
 		true,
-		0,
 		userData.segmentExternalId
 	)
 
