@@ -51,8 +51,9 @@ export function GetPilotGraphicContentCaspar(
 			}
 		}
 	}
+	const fileName = `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`
 	return literal<GraphicsContent>({
-		fileName: `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`,
+		fileName,
 		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
 		ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
@@ -66,7 +67,7 @@ export function GetPilotGraphicContentCaspar(
 				},
 				priority: 100,
 				layer: IsTargetingWall(engine) ? GraphicLLayer.GraphicLLayerWall : GraphicLLayer.GraphicLLayerPilot,
-				metaData: { templateData },
+				metaData: { templateData, fileName },
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,

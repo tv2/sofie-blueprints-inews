@@ -1,5 +1,6 @@
 import {
 	BlueprintResultTimeline,
+	GraphicsContent,
 	IBlueprintResolvedPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
@@ -20,7 +21,7 @@ export interface PartEndStateExt {
 	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
 	mediaPlayerSessions: { [layer: string]: string[] }
 	isJingle?: boolean
-	isFull?: boolean
+	fullFileName?: string
 }
 
 export interface MediaPlayerClaim {
@@ -41,6 +42,7 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 		mediaPlayerSession?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 		templateData?: any
+		fileName?: string
 	}
 }
 
@@ -211,7 +213,7 @@ export function getEndStateForPart(
 			endState.isJingle = true
 		}
 		if (piece.piece.tags?.includes(TallyTags.FULL_IS_LIVE)) {
-			endState.isFull = true
+			endState.fullFileName = (piece.piece.content as GraphicsContent).fileName
 		}
 	}
 

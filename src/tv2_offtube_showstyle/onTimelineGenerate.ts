@@ -59,7 +59,7 @@ export function onTimelineGenerateOfftube(
 
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	disablePilotWipeAfterJingle(timeline, previousPartEndState2, resolvedPieces)
-	disableFirstPilotGFXAnimation(timeline, previousPartEndState2, resolvedPieces)
+	disableFirstPilotGFXAnimation(context, timeline, previousPartEndState2, resolvedPieces)
 
 	return onTimelineGenerate(
 		context,
@@ -85,6 +85,7 @@ export function onTimelineGenerateOfftube(
 }
 
 export function disableFirstPilotGFXAnimation(
+	_context: TimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
@@ -94,7 +95,10 @@ export function disableFirstPilotGFXAnimation(
 		if (
 			obj.layer === GraphicLLayer.GraphicLLayerPilot &&
 			obj.content.deviceType === TSR.DeviceType.CASPARCG &&
-			(obj.isLookahead || (isFull && !previousPartEndState?.isFull))
+			(obj.isLookahead ||
+				(isFull && !previousPartEndState?.fullFileName) ||
+				(previousPartEndState?.fullFileName &&
+					previousPartEndState?.fullFileName === (obj as TimelineBlueprintExt).metaData?.fileName))
 		) {
 			const obj2 = obj as TSR.TimelineObjCasparCGAny & TimelineBlueprintExt
 			// TODO: this needs types
