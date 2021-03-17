@@ -70,7 +70,14 @@ export function OfftubeEvaluateJingle(
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				outputLayerId: OfftubeOutputLayers.JINGLE,
 				content: {
-					...createJingleContentOfftube(config, file, jingle.StartAlpha, jingle.LoadFirstFrame),
+					...createJingleContentOfftube(
+						config,
+						file,
+						jingle.StartAlpha,
+						jingle.LoadFirstFrame,
+						jingle.Duration,
+						jingle.EndAlpha
+					),
 					timelineObjects: []
 				},
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
@@ -90,7 +97,14 @@ export function OfftubeEvaluateJingle(
 			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
-			content: createJingleContentOfftube(config, file, jingle.StartAlpha, jingle.LoadFirstFrame),
+			content: createJingleContentOfftube(
+				config,
+				file,
+				jingle.StartAlpha,
+				jingle.LoadFirstFrame,
+				jingle.Duration,
+				jingle.EndAlpha
+			),
 			tags: [
 				GetTagForJingle(part.segmentExternalId, parsedCue.clip),
 				GetTagForJingleNext(part.segmentExternalId, parsedCue.clip),
@@ -104,13 +118,17 @@ export function createJingleContentOfftube(
 	config: OfftubeShowstyleBlueprintConfig,
 	file: string,
 	alphaAtStart: number,
-	loadFirstFrame: boolean
+	loadFirstFrame: boolean,
+	duration: number,
+	alphaAtEnd: number
 ) {
 	return CreateJingleContentBase(
 		config,
 		file,
 		alphaAtStart,
 		loadFirstFrame,
+		duration,
+		alphaAtEnd,
 		{
 			Caspar: {
 				PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
