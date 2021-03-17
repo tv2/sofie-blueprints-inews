@@ -85,37 +85,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle),
 
-	literal<MigrationStepShowStyle>({
-		id: `gfxConfig.addLocator.AFVD`,
-		version: '1.5.4',
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextShowStyle) => {
-			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[] | undefined
-
-			if (!existing || !existing.length) {
-				return false
-			}
-
-			return true // !existing.some(g => g.INewsName === 'locators')
-		},
-		migrate: (context: MigrationContextShowStyle) => {
-			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[]
-
-			existing.push({
-				VizTemplate: 'locators',
-				SourceLayer: '',
-				LayerMapping: GraphicLLayer.GraphicLLayerLocators,
-				INewsCode: '',
-				INewsName: 'locators',
-				VizDestination: '',
-				OutType: '',
-				IsDesign: false
-			})
-
-			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
-		}
-	}),
-
 	AddGraphicToGFXTable('1.5.4', 'AFVD', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
