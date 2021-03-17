@@ -38,7 +38,9 @@ enum SisyfosLLayer {
 	SisyfosSourceLive_2_Stereo = 'sisyfos_source_live_2_stereo',
 	SisyfosSourceLive_3 = 'sisyfos_source_live_3',
 	SisyfosSourceServerA = 'sisyfos_source_server_a',
-	SisyfosSourceServerB = 'sisyfos_source_server_b'
+	SisyfosSourceServerB = 'sisyfos_source_server_b',
+	// We don't control this layer, just set the label
+	SisyfosN1 = 'sisyfos_source_n1'
 }
 
 export enum OfftubeAtemLLayer {

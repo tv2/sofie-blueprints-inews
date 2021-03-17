@@ -1,7 +1,7 @@
 import { OfftubeSisyfosLLayer } from './layers'
 
 export interface SisyfosChannel {
-	isPgm: 0 | 1 | 2
+	isPgm: 0 | 1 | 2 | undefined
 	label: string
 }
 
@@ -48,6 +48,10 @@ export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel }
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceAudiobed]: {
 		isPgm: 0,
+		label: 'JINGLE'
+	},
+	[OfftubeSisyfosLLayer.SisyfosN1]: {
+		isPgm: undefined,
 		label: 'N-1'
 	}
 }
