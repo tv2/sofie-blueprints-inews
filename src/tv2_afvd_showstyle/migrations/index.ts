@@ -1,14 +1,9 @@
-import {
-	ConfigItemValue,
-	MigrationContextShowStyle,
-	MigrationStepShowStyle
-} from '@sofie-automation/blueprints-integration'
+import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
 	literal,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
-	TableConfigItemGFXTemplates,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { GraphicLLayer } from 'tv2-constants'
