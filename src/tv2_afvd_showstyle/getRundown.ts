@@ -20,6 +20,7 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	GetEksternMetaData,
 	GetLayersForEkstern,
@@ -910,6 +911,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 
 function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
+		...CreateGraphicBaseline(config),
 		// Default timeline
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
