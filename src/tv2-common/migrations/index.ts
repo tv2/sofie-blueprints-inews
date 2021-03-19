@@ -1,4 +1,5 @@
 import {
+	BlueprintMappings,
 	ConfigItemValue,
 	MigrationContextShowStyle,
 	MigrationContextStudio,
@@ -113,4 +114,44 @@ export function AddGraphicToGFXTable(versionStr: string, studio: string, config:
 			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
 		}
 	})
+}
+
+export function SetLayerNamesToDefaults(
+	versionStr: string,
+	studio: string,
+	mappings: BlueprintMappings
+): MigrationStepStudio[] {
+	const migrations: MigrationStepStudio[] = []
+
+	for (const [layerId, mapping] of Object.entries(mappings)) {
+		migrations.push(
+			literal<MigrationStepStudio>({
+				id: `studioConfig.setLayerName.${layerId}.${studio}`,
+				version: versionStr,
+				canBeRunAutomatically: true,
+				validate: (context: MigrationContextStudio) => {
+					const configVal = context.getMapping(layerId)
+
+					if (!configVal) {
+						return false
+					}
+
+					return configVal.layerName !== mapping.layerName
+				},
+				migrate: (context: MigrationContextStudio) => {
+					const configVal = context.getMapping(layerId)
+
+					if (!configVal) {
+						return
+					}
+
+					configVal.layerName = mapping.layerName
+					context.removeMapping(layerId)
+					context.insertMapping(layerId, configVal)
+				}
+			})
+		)
+	}
+
+	return migrations
 }

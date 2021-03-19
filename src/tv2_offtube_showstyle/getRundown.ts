@@ -865,8 +865,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
 						mappedLayer: llayer,
 						isPgm: channel.isPgm,
-						visible: true,
-						label: channel.label
+						visible: true
 					})
 				}),
 				overridePriority: 0

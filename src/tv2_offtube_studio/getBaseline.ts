@@ -36,7 +36,6 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 				mappedChannels.push({
 					mappedLayer: id,
 					isPgm: config.studio.IdleSisyfosLayers.includes(id) ? 1 : sisyfosChannel.isPgm,
-					label: sisyfosChannel.label,
 					visible: true
 				})
 			} else {
