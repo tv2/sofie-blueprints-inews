@@ -20,6 +20,7 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	GetEksternMetaData,
 	GetLayersForEkstern,
@@ -910,6 +911,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 
 function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
+		...CreateGraphicBaseline(config),
 		// Default timeline
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
@@ -1272,8 +1274,7 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
 						mappedLayer: llayer,
 						isPgm: channel.isPgm,
-						visible: !channel.hideInStudioA,
-						label: channel.label
+						visible: !channel.hideInStudioA
 					})
 				}),
 				overridePriority: 0
