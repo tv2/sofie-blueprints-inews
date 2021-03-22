@@ -129,4 +129,3 @@ workflows:
                 - develop
                 - stage
                 - /release\d+/
-                - featdockerhub
