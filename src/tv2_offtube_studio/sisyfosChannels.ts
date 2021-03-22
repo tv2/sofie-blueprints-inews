@@ -1,57 +1,41 @@
 import { OfftubeSisyfosLLayer } from './layers'
 
 export interface SisyfosChannel {
-	isPgm: 0 | 1 | 2 | undefined
-	label: string
+	isPgm: 0 | 1 | 2
 }
 
 export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel } = {
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A]: {
-		isPgm: 0,
-		label: 'KOM 1'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A]: {
-		isPgm: 0,
-		label: 'KOM 2'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A]: {
-		isPgm: 0,
-		label: 'KOM 3'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo]: {
-		isPgm: 0,
-		label: 'LIVE 1 Stereo'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround]: {
-		isPgm: 0,
-		label: 'LIVE 1 5.1'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo]: {
-		isPgm: 0,
-		label: 'Live 2 Stereo'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_3]: {
-		isPgm: 0,
-		label: 'Live 3 Reporter'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceServerA]: {
-		isPgm: 0,
-		label: 'Server A'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceServerB]: {
-		isPgm: 0,
-		label: 'Server B'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceJingle]: {
-		isPgm: 0,
-		label: 'JINGLE'
+		isPgm: 0
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceAudiobed]: {
-		isPgm: 0,
-		label: 'JINGLE'
-	},
-	[OfftubeSisyfosLLayer.SisyfosN1]: {
-		isPgm: undefined,
-		label: 'N-1'
+		isPgm: 0
 	}
 }

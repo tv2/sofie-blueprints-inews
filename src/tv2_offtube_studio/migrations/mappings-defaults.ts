@@ -82,6 +82,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_1_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'KOM 1',
 		channel: 0,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -89,6 +90,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'KOM 2',
 		channel: 1,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -96,6 +98,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'KOM 3',
 		channel: 2,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -103,6 +106,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'LIVE 1 Stereo',
 		channel: 3,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -110,6 +114,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'LIVE 1 5.1',
 		channel: 4,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -117,6 +122,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'LIVE 2 Stereo',
 		channel: 5,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -124,6 +130,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_3]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'LIVE 3 Reporter',
 		channel: 6,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -131,6 +138,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceServerA]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'Server A',
 		channel: 7,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -138,6 +146,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceServerB]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'Server B',
 		channel: 8,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -145,6 +154,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceJingle]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'JINGLE',
 		channel: 9,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -152,6 +162,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceAudiobed]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'JINGLE',
 		channel: 9,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -159,6 +170,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosN1]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
+		layerName: 'N-1',
 		channel: 10,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -183,6 +195,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[CasparPlayerClip(1)]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Server A',
 		lookahead: LookaheadMode.NONE,
 		channel: 1,
 		layer: 110,
@@ -191,6 +204,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[CasparPlayerClip(2)]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Server B',
 		lookahead: LookaheadMode.NONE,
 		channel: 2,
 		layer: 110,
@@ -199,6 +213,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[CasparPlayerClipLoadingLoop(1)]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Server A Loading Loop',
 		lookahead: LookaheadMode.NONE,
 		channel: 1,
 		layer: 109
@@ -206,6 +221,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[CasparPlayerClipLoadingLoop(2)]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Server B Loading Loop',
 		lookahead: LookaheadMode.NONE,
 		channel: 2,
 		layer: 109
@@ -213,6 +229,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparPlayerJingle]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Jingle',
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
 		layer: 110
@@ -220,6 +237,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparPlayerJingleLookahead]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Jingle Lookahead',
 		lookahead: LookaheadMode.PRELOAD,
 		lookaheadMaxSearchDistance: 1,
 		channel: 3,
@@ -229,6 +247,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparCGLYD]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Audio Beds',
 		lookahead: LookaheadMode.NONE,
 		channel: 1,
 		layer: 101
@@ -236,6 +255,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparGraphicsFullLoop]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'Full Background Loop',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		channel: 6,
 		layer: 100,
@@ -244,6 +264,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerLocators]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Locators',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		channel: 4,
@@ -253,6 +274,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparCGDVEKey]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'DVE Key',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		previewWhenNotOnAir: true,
@@ -262,6 +284,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparCGDVEKeyedLoop]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'DVE Loop (keyed)',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 4,
@@ -270,6 +293,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparCGDVEFrame]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'DVE Frame',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		previewWhenNotOnAir: true,
@@ -279,6 +303,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 	[OfftubeCasparLLayer.CasparCGDVELoop]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'DVE Loop',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		previewWhenNotOnAir: true,
 		channel: 5,
@@ -290,11 +315,13 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerAdLibs]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
+		layerName: 'GFX AdLibs',
 		lookahead: LookaheadMode.NONE
 	}),
 	[GraphicLLayer.GraphicLLayerDesign]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Design',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
 		channel: 3,
@@ -303,6 +330,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerOverlay]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Overlay',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
 		channel: 3,
@@ -311,6 +339,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerOverlayHeadline]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Headline',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
 		channel: 3,
@@ -319,6 +348,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerOverlayIdent]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Ident',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
 		channel: 3,
@@ -327,6 +357,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerOverlayLower]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Bund',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
 		channel: 3,
@@ -335,6 +366,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerOverlayTema]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Tema',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
 		channel: 3,
@@ -343,6 +375,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerOverlayTopt]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Topt',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
 		channel: 3,
@@ -351,6 +384,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerPilot]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Pilot (Full)',
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 6,
 		layer: 108,
@@ -360,6 +394,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerPilotOverlay]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
+		layerName: 'GFX Pilot (Overlay)',
 		lookahead: LookaheadMode.PRELOAD,
 		previewWhenNotOnAir: true,
 		channel: 6,
@@ -370,12 +405,14 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	[GraphicLLayer.GraphicLLayerFullLoop]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
+		layerName: 'GFX Full Loop',
 		lookahead: LookaheadMode.NONE
 	}),
 	// No Screen for now
 	[GraphicLLayer.GraphicLLayerWall]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
+		layerName: 'GFX Wall',
 		lookahead: LookaheadMode.NONE
 	})
 }

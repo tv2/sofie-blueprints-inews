@@ -24,11 +24,11 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
-	layerToHTMLGraphicSlot,
 	literal,
 	pgmDSKLayers,
 	SourceInfo
@@ -37,7 +37,6 @@ import {
 	AdlibActionType,
 	AdlibTags,
 	CONSTANTS,
-	GraphicLLayer,
 	SharedOutputLayers,
 	SharedSisyfosLLayer,
 	SharedSourceLayers,
@@ -642,122 +641,7 @@ function getGlobalAdlibActionsOfftube(
 
 function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
 	return [
-		...[
-			GraphicLLayer.GraphicLLayerOverlayHeadline,
-			GraphicLLayer.GraphicLLayerOverlayIdent,
-			GraphicLLayer.GraphicLLayerOverlayLower,
-			GraphicLLayer.GraphicLLayerOverlayTema,
-			GraphicLLayer.GraphicLLayerOverlayTopt,
-			GraphicLLayer.GraphicLLayerLocators
-		].map(layer => {
-			return literal<TSR.TimelineObjCCGTemplate>({
-				id: '',
-				enable: {
-					while: '1'
-				},
-				priority: 0,
-				layer,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-					templateType: 'html',
-					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(
-						JSON.stringify({
-							display: 'program',
-							slots: {
-								[layerToHTMLGraphicSlot[layer]]: {
-									payload: {},
-									display: 'hidden'
-								}
-							},
-							partialUpdate: true
-						})
-					)}</templateData>`,
-					useStopCommand: false
-				}
-			})
-		}),
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 0,
-			layer: GraphicLLayer.GraphicLLayerOverlay,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: 'sport-overlay/index',
-				data: `<templateData>${encodeURI(
-					JSON.stringify({
-						display: 'program',
-						slots: {
-							...[
-								GraphicLLayer.GraphicLLayerOverlayHeadline,
-								GraphicLLayer.GraphicLLayerOverlayIdent,
-								GraphicLLayer.GraphicLLayerOverlayLower,
-								GraphicLLayer.GraphicLLayerOverlayTema,
-								GraphicLLayer.GraphicLLayerOverlayTopt
-							].map(layer => {
-								return {
-									[layerToHTMLGraphicSlot[layer]]: {
-										payload: {},
-										display: 'hidden'
-									}
-								}
-							})
-						},
-						partialUpdate: true
-					})
-				)}</templateData>`,
-				useStopCommand: false
-			}
-		}),
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 0,
-			layer: GraphicLLayer.GraphicLLayerDesign,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: 'sport-overlay/index',
-				data: `<templateData>${encodeURI(
-					JSON.stringify({
-						display: 'program',
-						design: '',
-						partialUpdate: true
-					})
-				)}</templateData>`,
-				useStopCommand: false
-			}
-		}),
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 0,
-			layer: GraphicLLayer.GraphicLLayerPilot,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: 'sport-overlay/index',
-				data: `<templateData>${encodeURI(
-					JSON.stringify({
-						display: 'program',
-						slots: {}
-					})
-				)}</templateData>`,
-				useStopCommand: false
-			}
-		}),
+		...CreateGraphicBaseline(config),
 		// Default timeline
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
@@ -981,8 +865,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
 						mappedLayer: llayer,
 						isPgm: channel.isPgm,
-						visible: true,
-						label: channel.label
+						visible: true
 					})
 				}),
 				overridePriority: 0
