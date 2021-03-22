@@ -1,42 +1,39 @@
-defaults: &defaults
-  docker:
-    - image: circleci/node:12
-  working_directory: ~/project
-
 version: 2
 jobs:
-  Checkout Code:
-    <<: *defaults
+  build:
+    docker:
+      - image: circleci/node:12.13.1
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/project
       - restore_cache:
           keys:
-            - yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-cache-{{ .Branch }}
-            - yarn-cache-
-      - run: yarn install
+            - v1-node-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v1-node-cache-{{ .Branch }}
+      - run:
+          name: yarn install
+          command: yarn install --check-files #--frozen-lockfile
+          no_output_timeout: 60m
+      - run: yarn validate:dependencies
+      - run:
+          name: yarn build
+          command: yarn build
+          no_output_timeout: 60m
+      - run:
+          name: yarn unit test
+          command: yarn unit
+          no_output_timeout: 60m
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths: [node_modules]
+          key: v1-node-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths: 
+            - node_modules
+      - save_cache:
+          key: v3-node-cache-{{ .Branch }}
+          paths: 
+            - node_modules
       - persist_to_workspace:
           root: .
-          paths: [.]
-  Check for vulnerabilities:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - run: yarn install
-      - run: yarn validate:dependencies
-  Test node-12:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - run: yarn install
-      - run: yarn test
+          paths:
+            - .
   publish-tag:
     docker:
       - image: circleci/buildpack-deps:stretch
