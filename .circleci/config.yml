@@ -101,15 +101,14 @@ jobs:
 
 workflows:
   version: 2
-  Test build and deploy(master only):
+  build-test-publish:
     jobs:
-      - Checkout Code
-      - Check for vulnerabilities:
-          requires:
-            - Checkout Code
-      - Test node-12:
-          requires:
-            - Checkout Code
+      - build:
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              only: /.*/
       - publish-tag:
           requires:
             - build
