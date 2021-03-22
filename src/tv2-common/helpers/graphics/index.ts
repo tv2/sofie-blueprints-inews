@@ -47,18 +47,16 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 						templateType: 'html',
 						name: 'sport-overlay/index',
-						data: `<templateData>${encodeURI(
-							JSON.stringify({
-								display: 'program',
-								slots: {
-									[layerToHTMLGraphicSlot[layer]]: {
-										payload: {},
-										display: 'hidden'
-									}
-								},
-								partialUpdate: true
-							})
-						)}</templateData>`,
+						data: {
+							display: 'program',
+							slots: {
+								[layerToHTMLGraphicSlot[layer]]: {
+									payload: {},
+									display: 'hidden'
+								}
+							},
+							partialUpdate: true
+						},
 						useStopCommand: false
 					}
 				})
@@ -75,28 +73,23 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 					templateType: 'html',
 					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(
-						JSON.stringify({
-							display: 'program',
-							slots: {
-								...[
-									GraphicLLayer.GraphicLLayerOverlayHeadline,
-									GraphicLLayer.GraphicLLayerOverlayIdent,
-									GraphicLLayer.GraphicLLayerOverlayLower,
-									GraphicLLayer.GraphicLLayerOverlayTema,
-									GraphicLLayer.GraphicLLayerOverlayTopt
-								].map(layer => {
-									return {
-										[layerToHTMLGraphicSlot[layer]]: {
-											payload: {},
-											display: 'hidden'
-										}
-									}
-								})
-							},
-							partialUpdate: true
-						})
-					)}</templateData>`,
+					data: {
+						display: 'program',
+						slots: [
+							GraphicLLayer.GraphicLLayerOverlayHeadline,
+							GraphicLLayer.GraphicLLayerOverlayIdent,
+							GraphicLLayer.GraphicLLayerOverlayLower,
+							GraphicLLayer.GraphicLLayerOverlayTema,
+							GraphicLLayer.GraphicLLayerOverlayTopt
+						].reduce((obj: Record<string, any>, layer) => {
+							obj[layerToHTMLGraphicSlot[layer]] = {
+								payload: {},
+								display: 'hidden'
+							}
+							return obj
+						}, {}),
+						partialUpdate: true
+					},
 					useStopCommand: false
 				}
 			}),
@@ -112,13 +105,11 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 					templateType: 'html',
 					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(
-						JSON.stringify({
-							display: 'program',
-							design: '',
-							partialUpdate: true
-						})
-					)}</templateData>`,
+					data: {
+						display: 'program',
+						design: '',
+						partialUpdate: true
+					},
 					useStopCommand: false
 				}
 			}),
@@ -134,12 +125,10 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 					templateType: 'html',
 					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(
-						JSON.stringify({
-							display: 'program',
-							slots: {}
-						})
-					)}</templateData>`,
+					data: {
+						display: 'program',
+						slots: {}
+					},
 					useStopCommand: false
 				}
 			})
