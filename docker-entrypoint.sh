@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [[ -z "${SERVER}" ]]; then
-    echo "$SERVER undifnied"
+    echo "SERVER env undefined"
     exit 1
 fi
 
