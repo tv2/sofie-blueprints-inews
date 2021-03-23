@@ -20,7 +20,7 @@ export interface JingleLayers {
 }
 
 function GetJingleFileName(config: TV2BlueprintConfig, jingle: string): string {
-	return config.studio.JingleFolder ? `${config.studio.JingleFolder}/${jingle}` : ''
+	return config.studio.JingleFolder ? `${config.studio.JingleFolder}/${jingle}` : jingle
 }
 
 export function CreateJingleExpectedMedia(
