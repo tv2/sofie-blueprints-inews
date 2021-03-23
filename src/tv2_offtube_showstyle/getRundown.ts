@@ -850,6 +850,18 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 			}
 		}),
 
+		literal<TSR.TimelineObjCasparCGAny>({
+			id: '',
+			enable: { while: 1 },
+			priority: 1,
+			layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.ROUTE,
+				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+			}
+		}),
+
 		// create sisyfos channels from the config
 		literal<TSR.TimelineObjSisyfosChannels>({
 			id: '',

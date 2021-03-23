@@ -18,7 +18,7 @@ import {
 	PartDefinition,
 	PilotGeneratorSettings
 } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
@@ -85,17 +85,6 @@ function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: N
 						}
 					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCasparCGAny>({
-			id: '',
-			enable: { start: 0 },
-			priority: 1,
-			layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
 			}
 		}),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
