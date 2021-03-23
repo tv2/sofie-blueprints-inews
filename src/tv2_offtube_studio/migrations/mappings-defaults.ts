@@ -385,7 +385,7 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		layerName: 'GFX Pilot (Full)',
-		lookahead: LookaheadMode.PRELOAD,
+		lookahead: LookaheadMode.WHEN_CLEAR,
 		channel: 6,
 		layer: 108,
 		previewWhenNotOnAir: true
