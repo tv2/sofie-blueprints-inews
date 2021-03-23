@@ -177,7 +177,9 @@ export interface ActionExecutionSettings<
 		config: ShowStyleConfig,
 		file: string,
 		alphaAtStart: number,
-		loadFirstFrame: boolean
+		loadFirstFrame: boolean,
+		duration: number,
+		alphaAtEnd: number
 	) => VTContent
 	pilotGraphicSettings: PilotGeneratorSettings
 }
@@ -916,7 +918,14 @@ function executeActionSelectJingle<
 
 	const props = GetJinglePartPropertiesFromTableValue(config, jingle)
 
-	const pieceContent = settings.createJingleContent(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
+	const pieceContent = settings.createJingleContent(
+		config,
+		file,
+		jingle.StartAlpha,
+		jingle.LoadFirstFrame,
+		jingle.Duration,
+		jingle.EndAlpha
+	)
 
 	const piece = literal<IBlueprintPiece>({
 		externalId: `${externalId}-JINGLE`,

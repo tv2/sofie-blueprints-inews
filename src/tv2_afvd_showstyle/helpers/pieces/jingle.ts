@@ -68,7 +68,14 @@ export function EvaluateJingle(
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: SharedOutputLayers.JINGLE,
 				lifespan: PieceLifespan.WithinPart,
-				content: createJingleContentAFVD(config, file, jingle.StartAlpha, jingle.LoadFirstFrame),
+				content: createJingleContentAFVD(
+					config,
+					file,
+					jingle.StartAlpha,
+					jingle.LoadFirstFrame,
+					jingle.Duration,
+					jingle.EndAlpha
+				),
 				toBeQueued: true,
 				adlibAutoNext: props.autoNext,
 				adlibAutoNextOverlap: props.autoNextOverlap,
@@ -88,7 +95,14 @@ export function EvaluateJingle(
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: SharedOutputLayers.JINGLE,
 				sourceLayerId: SourceLayer.PgmJingle,
-				content: createJingleContentAFVD(config, file, jingle.StartAlpha, jingle.LoadFirstFrame)
+				content: createJingleContentAFVD(
+					config,
+					file,
+					jingle.StartAlpha,
+					jingle.LoadFirstFrame,
+					jingle.Duration,
+					jingle.EndAlpha
+				)
 			})
 		)
 	}
@@ -98,13 +112,17 @@ export function createJingleContentAFVD(
 	config: BlueprintConfig,
 	file: string,
 	alphaAtStart: number,
-	loadFirstFrame: boolean
+	loadFirstFrame: boolean,
+	duration: number,
+	alphaAtEnd: number
 ) {
 	const content = CreateJingleContentBase(
 		config,
 		file,
 		alphaAtStart,
 		loadFirstFrame,
+		duration,
+		alphaAtEnd,
 		{
 			Caspar: {
 				PlayerJingle: CasparLLayer.CasparPlayerJingle

@@ -38,7 +38,9 @@
 		<div id="stream-container" class="dashboard"></div>
 		<script>
 		const layoutFilename = 'off-tubes-shelf.json'
-		const streamId = "stream3"
+		const params = new URLSearchParams(document.location.search.substring(1))
+		const id = params.get("stream")
+		const streamId = "stream" + (id?.length ? id : 3)
 		const urlBase = window.location.protocol+"//"+window.location.hostname+"/feed"
 		const imgSrc = urlBase + "/stream/" + streamId
 		let images = []

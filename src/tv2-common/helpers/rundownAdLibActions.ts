@@ -29,12 +29,26 @@ export function GetTransitionAdLibActions<
 			j => j.BreakerName === config.showStyle.ShowstyleTransition
 		)
 		let alphaAtStart: number | undefined
+		let duration: number | undefined
+		let alphaAtEnd: number | undefined
 
 		if (jingleConfig) {
 			alphaAtStart = jingleConfig.StartAlpha
+			duration = jingleConfig.Duration
+			alphaAtEnd = jingleConfig.EndAlpha
 		}
 
-		res.push(makeTransitionAction(config, userData, startingRank, config.showStyle.ShowstyleTransition, alphaAtStart))
+		res.push(
+			makeTransitionAction(
+				config,
+				userData,
+				startingRank,
+				config.showStyle.ShowstyleTransition,
+				alphaAtStart,
+				duration,
+				alphaAtEnd
+			)
+		)
 	}
 
 	startingRank++
@@ -46,12 +60,26 @@ export function GetTransitionAdLibActions<
 
 				const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition.Transition)
 				let alphaAtStart: number | undefined
+				let duration: number | undefined
+				let alphaAtEnd: number | undefined
 
 				if (jingleConfig) {
 					alphaAtStart = jingleConfig.StartAlpha
+					duration = jingleConfig.Duration
+					alphaAtEnd = jingleConfig.EndAlpha
 				}
 
-				res.push(makeTransitionAction(config, userData, startingRank + 0.01 * i, transition.Transition, alphaAtStart))
+				res.push(
+					makeTransitionAction(
+						config,
+						userData,
+						startingRank + 0.01 * i,
+						transition.Transition,
+						alphaAtStart,
+						duration,
+						alphaAtEnd
+					)
+				)
 			}
 		})
 	}
@@ -91,7 +119,9 @@ function makeTransitionAction(
 	userData: ActionTakeWithTransition,
 	rank: number,
 	label: string,
-	alphaAtStart: number | undefined
+	alphaAtStart: number | undefined,
+	duration: number | undefined,
+	alphaAtEnd: number | undefined
 ): IBlueprintActionManifest {
 	const tag = GetTagForTransition(userData.variant)
 	const isEffekt = !!label.match(/^\d+$/)
@@ -108,7 +138,9 @@ function makeTransitionAction(
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
-			content: isEffekt ? {} : CreateJingleExpectedMedia(config, label, alphaAtStart ?? 0)
+			content: isEffekt
+				? {}
+				: CreateJingleExpectedMedia(config, label, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
 		}
 	})
 }

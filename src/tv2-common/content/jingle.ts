@@ -1,4 +1,5 @@
 import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
+import { TimeFromFrames } from 'tv2-common'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
@@ -19,10 +20,16 @@ export interface JingleLayers {
 }
 
 function GetJingleFileName(config: TV2BlueprintConfig, jingle: string): string {
-	return config.studio.JingleFolder ? `${config.studio.JingleFolder}/${jingle}` : ''
+	return config.studio.JingleFolder ? `${config.studio.JingleFolder}/${jingle}` : jingle
 }
 
-export function CreateJingleExpectedMedia(config: TV2BlueprintConfig, jingle: string, alphaAtStart: number) {
+export function CreateJingleExpectedMedia(
+	config: TV2BlueprintConfig,
+	jingle: string,
+	alphaAtStart: number,
+	duration: number,
+	alphaAtEnd: number
+) {
 	const fileName = GetJingleFileName(config, jingle)
 
 	return literal<VTContent>({
@@ -38,6 +45,7 @@ export function CreateJingleExpectedMedia(config: TV2BlueprintConfig, jingle: st
 		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 		ignoreBlackFrames: true,
 		ignoreFreezeFrame: true,
+		sourceDuration: TimeFromFrames(Number(duration) - Number(alphaAtEnd)),
 		timelineObjects: []
 	})
 }
@@ -50,12 +58,14 @@ export function CreateJingleContentBase<
 	file: string,
 	alphaAtStart: number,
 	loadFirstFrame: boolean,
+	duration: number,
+	alphaAtEnd: number,
 	layers: JingleLayers,
 	preMultiplied: boolean
 ) {
 	const fileName = GetJingleFileName(config, file)
 	return literal<VTContent>({
-		...CreateJingleExpectedMedia(config, file, alphaAtStart),
+		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 				id: '',
