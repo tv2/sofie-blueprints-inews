@@ -94,7 +94,7 @@ export function OfftubeEvaluateAdLib(
 			return
 		}
 
-		if (!TemplateIsValid(JSON.parse(rawTemplate.DVEJSON as string))) {
+		if (!TemplateIsValid(rawTemplate.DVEJSON as string)) {
 			context.warning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
