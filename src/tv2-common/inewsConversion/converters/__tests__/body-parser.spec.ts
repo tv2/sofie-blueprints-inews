@@ -192,6 +192,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -204,6 +205,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2, cueJingle3],
+					title: '2',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -240,6 +242,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: 'Script here\n',
 					variant: {},
 					externalId: '',
@@ -274,6 +277,7 @@ describe('Body parser', () => {
 							iNewsCommand: 'DVE'
 						})
 					],
+					title: 'MORBARN',
 					script: 'Thid id thr trext for the next DVE\n',
 					variant: {},
 					externalId: '',
@@ -287,6 +291,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1, cueGrafik1],
+					title: '1',
 					script: 'Script here\n',
 					variant: {},
 					externalId: '',
@@ -347,6 +352,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -359,6 +365,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2],
+					title: '2',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -434,6 +441,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1, cueGrafik3],
+					title: '1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -535,6 +543,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -572,6 +581,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -609,6 +619,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -758,6 +769,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -770,6 +782,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2],
+					title: '2',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -904,6 +917,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					fields,
 					modified: 0,
@@ -916,6 +930,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern2],
+					title: '2',
 					script: '',
 					fields,
 					modified: 0,
@@ -1066,6 +1081,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueJingle1],
+					title: '1',
 					script: '',
 					fields,
 					modified: 0,
@@ -1534,6 +1550,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'kg'
 					})
 				],
+				title: 'TELEFON/KORT//LIVE_KABUL',
 				fields,
 				modified: 0,
 				script: '',
@@ -1663,6 +1680,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'DVE'
 					})
 				],
+				title: 'SOMMERFUGL',
 				script: '',
 				fields,
 				modified: 0,
@@ -1681,6 +1699,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'EKSTERN'
 					})
 				],
+				title: 'LIVE 2',
 				script: 'Some Script here\n',
 				fields,
 				modified: 0,
@@ -1715,6 +1734,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern1],
+					title: '1',
 					script: '',
 					fields,
 					modified: 0,
@@ -1727,6 +1747,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern2],
+					title: '2',
 					script: '',
 					fields,
 					modified: 0,
@@ -1831,6 +1852,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'DVE'
 					})
 				],
+				title: 'SOMMERFUGL',
 				script: '',
 				fields,
 				modified: 0,
@@ -1849,6 +1871,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'EKSTERN'
 					})
 				],
+				title: 'LIVE 2',
 				script: 'And some script\n',
 				fields,
 				modified: 0,
@@ -1974,6 +1997,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'DVE'
 					})
 				],
+				title: 'SOMMERFUGL',
 				script: '',
 				fields,
 				modified: 0,
@@ -1993,6 +2017,7 @@ describe('Body parser', () => {
 					})
 				],
 				script: 'Some script\n',
+				title: 'LIVE 2',
 				fields,
 				modified: 0,
 				storyName: 'test-segment',
@@ -2096,6 +2121,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'VCP'
 					})
 				],
+				title: 'SN_breaker_kortnyt_start',
 				script: '',
 				fields,
 				modified: 0,
@@ -2207,6 +2233,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'GRAFIK'
 					})
 				],
+				title: 'PROFILE/MEST BRUGTE STARTERE I NBA/08-12-2019',
 				script: '',
 				fields: {},
 				modified: 0,
@@ -2298,6 +2325,7 @@ describe('Body parser', () => {
 						iNewsCommand: 'EKSTERN'
 					})
 				],
+				title: 'LIVE 1',
 				script: '',
 				fields: {},
 				modified: 0,
@@ -2445,6 +2473,7 @@ describe('Body parser', () => {
 							}
 						})
 					],
+					title: 'TELEFON/KORT//LIVE_KABUL',
 					script: '',
 					fields,
 					modified: 0,
@@ -2508,6 +2537,7 @@ describe('Body parser', () => {
 							}
 						})
 					],
+					title: 'Senderplan/23-10-2019',
 					script: '',
 					fields,
 					modified: 0,
@@ -2541,6 +2571,7 @@ describe('Body parser', () => {
 							}
 						})
 					],
+					title: 'Senderplan/23-10-2019',
 					script: '',
 					fields,
 					modified: 0,
@@ -2824,6 +2855,7 @@ describe('Body parser', () => {
 						}
 					})
 				],
+				title: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 				rawType: '',
 				script: '',
 				fields,
@@ -3135,6 +3167,7 @@ describe('Body parser', () => {
 						}
 					})
 				],
+				title: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 				rawType: '',
 				script: '',
 				fields,

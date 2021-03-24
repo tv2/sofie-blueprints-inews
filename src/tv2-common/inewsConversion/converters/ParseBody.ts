@@ -1,6 +1,5 @@
-import { TV2BlueprintConfig } from 'tv2-common'
+import { PostProcessDefinitions, TV2BlueprintConfig } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
-import { PostProcessDefinitions } from '../../../tv2_afvd_showstyle/helpers/postProcessDefinitions'
 import { CueDefinition, CueDefinitionUnpairedPilot, ParseCue, UnpairedPilotToGraphic, UnparsedCue } from './ParseCue'
 
 interface INewsFields {
@@ -56,6 +55,7 @@ export interface PartDefinitionBase {
 	storyName: string
 	segmentExternalId: string
 	endWords?: string
+	title?: string
 }
 
 export interface PartDefinitionUnknown extends PartDefinitionBase {

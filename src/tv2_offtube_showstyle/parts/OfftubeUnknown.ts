@@ -31,7 +31,7 @@ export function CreatePartUnknown(
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: partDefinition.type + ' - ' + partDefinition.rawType,
+		title: partDefinition.title || partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
 		autoNext: false,
 		expectedDuration: partTime

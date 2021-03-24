@@ -5,10 +5,38 @@ export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmen
 	const foundMap: { [key: string]: number } = {}
 
 	partDefinitions.forEach((part, i) => {
+		setPartTitle(part)
 		partDefinitions[i] = { ...part, externalId: getExternalId(segmentExternalId, part, foundMap), segmentExternalId }
 	})
 
 	return partDefinitions
+}
+
+function setPartTitle(partDefinition: PartDefinition) {
+	const firstCue = partDefinition.cues[0]
+	if (
+		firstCue &&
+		[PartType.Grafik, PartType.DVE, PartType.Ekstern, PartType.Telefon, PartType.Unknown].includes(partDefinition.type)
+	) {
+		switch (firstCue.type) {
+			case CueType.Ekstern:
+				partDefinition.title = firstCue.source
+				break
+			case CueType.DVE:
+				partDefinition.title = firstCue.template
+				break
+			case CueType.Graphic:
+				if (firstCue.target === 'FULL') {
+					partDefinition.title = firstCue.graphic.type === 'pilot' ? firstCue.graphic.name : firstCue.graphic.template
+				}
+				break
+			case CueType.Jingle:
+				partDefinition.title = firstCue.clip
+				break
+			default:
+				break
+		}
+	}
 }
 
 function getExternalId(segmentId: string, partDefinition: PartDefinition, foundMap: { [key: string]: number }): string {
