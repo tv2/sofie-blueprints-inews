@@ -244,12 +244,18 @@ export function ParseBody(
 
 				line = line.replace(/<\/a>/g, '')
 
-				if (shouldPushDefinition(definition)) {
-					definitions.push(definition)
-					definition = initDefinition(fields, modified, segmentName)
-				}
+				const lastCue = definition.cues[definition.cues.length - 1]
+				if (typeStr.match(/GRAFIK/i) && lastCue && lastCue.type === CueType.UNPAIRED_TARGET) {
+					definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
+					definition.cues.push(lastCue)
+				} else {
+					if (shouldPushDefinition(definition)) {
+						definitions.push(definition)
+						definition = initDefinition(fields, modified, segmentName)
+					}
 
-				definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
+					definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
+				}
 
 				definition.cues.push(...secondaryInlineCues)
 			}
