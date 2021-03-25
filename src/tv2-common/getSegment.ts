@@ -18,7 +18,7 @@ import {
 	PartDefinitionKam,
 	PartMetaData
 } from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
+import { CueType, PartType, SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
@@ -332,7 +332,9 @@ export function getSegmentBase<
 		// Filter out Jingle-only parts
 		(blueprintParts.length > 1 ||
 			(blueprintParts[blueprintParts.length - 1] &&
-				!blueprintParts[blueprintParts.length - 1].pieces.some(piece => piece.sourceLayerId === 'studio0_jingle')))
+				!blueprintParts[blueprintParts.length - 1].pieces.some(
+					piece => piece.sourceLayerId === SharedSourceLayers.PgmJingle
+				)))
 	) {
 		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
@@ -345,7 +347,11 @@ export function getSegmentBase<
 	}
 
 	blueprintParts.forEach(part => {
-		if (part.part.expectedDuration! < config.studio.DefaultPartDuration) {
+		if (
+			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
+			// Jingle-only part, do not modify duration
+			!(part.pieces.length === 1 && part.pieces.some(p => p.sourceLayerId === SharedSourceLayers.PgmJingle))
+		) {
 			part.part.expectedDuration = config.studio.DefaultPartDuration
 		}
 	})
