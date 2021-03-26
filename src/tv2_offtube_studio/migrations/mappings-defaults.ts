@@ -1,15 +1,15 @@
 import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@sofie-automation/blueprints-integration'
-import { AbstractLLayerServerEnable, literal } from 'tv2-common'
-import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
 import {
+	AbstractLLayerServerEnable,
 	CasparPlayerClip,
 	CasparPlayerClipLoadingLoop,
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../layers'
+	GetDSKMappings,
+	literal
+} from 'tv2-common'
+import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
+import * as _ from 'underscore'
+import { ATEMModel } from '../../types/atem'
+import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../layers'
 
 const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -448,34 +448,7 @@ const MAPPINGS_ATEM: BlueprintMappings = {
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	}),
-	[OfftubeAtemLLayer.AtemDSKGraphics]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 0 // 0 = DSK1
-	}),
-	[OfftubeAtemLLayer.AtemDSK2]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 1 // 1 = DSK2
-	}),
-	[OfftubeAtemLLayer.AtemDSK3]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 2 // 2 = DSK3
-	}),
-	[OfftubeAtemLLayer.AtemDSK4]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 3 // 3 = DSK4
-	}),
+	...GetDSKMappings(ATEMModel.PRODUCTION_STUDIO_4K_2ME),
 	[OfftubeAtemLLayer.AtemAuxClean]: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',

@@ -156,7 +156,6 @@ export interface ActionExecutionSettings<
 			Next: string
 			ServerLookaheadAUX?: string
 			SSrcDefault: string
-			Effekt: string
 			cutOnclean: boolean
 		}
 	}
@@ -459,7 +458,6 @@ function executeActionSelectServerClip<
 		...part,
 		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
 			sourceLayer: settings.SourceLayers.Effekt,
-			atemLayer: settings.LLayer.Atem.Effekt,
 			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
 			casparLayer: settings.LLayer.Caspar.Effekt
 		})
@@ -1487,7 +1485,6 @@ function executeActionTakeWithTransition<
 				externalId,
 				{
 					sourceLayer: settings.SourceLayers.Effekt,
-					atemLayer: settings.LLayer.Atem.Effekt,
 					casparLayer: settings.LLayer.Caspar.Effekt,
 					sisyfosLayer: settings.LLayer.Sisyfos.Effekt
 				},
@@ -1516,7 +1513,6 @@ function executeActionTakeWithTransition<
 			const pieces: IBlueprintPiece[] = []
 			const partProps = CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
 				sourceLayer: settings.SourceLayers.Effekt,
-				atemLayer: settings.LLayer.Atem.Effekt,
 				casparLayer: settings.LLayer.Caspar.Effekt,
 				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
 			})

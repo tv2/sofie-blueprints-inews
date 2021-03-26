@@ -6,10 +6,11 @@ import {
 	MoveDSKToTable,
 	MoveSourcesToTable,
 	RenameStudioConfig,
+	SetConfigTo,
 	SetLayerNamesToDefaults,
 	TableConfigItemDSK
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { DSKRoles, GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	manifestAFVDDownstreamKeyers,
@@ -161,7 +162,10 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.4.6', 'AFVD', 'MediaFlowId', 'ClipMediaFlowId'),
 	RenameStudioConfig('1.4.6', 'AFVD', 'NetworkBasePath', 'NetworkBasePathClip'),
 	RenameStudioConfig('1.4.6', 'AFVD', 'JingleBasePath', 'NetworkBasePathJingle'),
-	MoveDSKToTable('1.4.6', (manifestAFVDDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK),
+	MoveDSKToTable('1.4.6', (manifestAFVDDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK, [
+		DSKRoles.FULLGFX,
+		DSKRoles.OVERLAYGFX
+	]),
 
 	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
 	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
@@ -176,6 +180,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
 
 	...SetLayerNamesToDefaults('1.5.5', 'AFVD', MappingsDefaults),
+	SetConfigTo('1.6.1', 'AFVD', 'AtemSource.DSK', manifestAFVDDownstreamKeyers.defaultVal),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

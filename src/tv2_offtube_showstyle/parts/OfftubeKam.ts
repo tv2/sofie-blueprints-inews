@@ -17,6 +17,7 @@ import {
 	CameraParentClass,
 	CreatePartInvalid,
 	CreatePartKamBase,
+	FindDSKJingle,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
 	GetLayersForCamera,
@@ -50,6 +51,8 @@ export function OfftubeCreatePartKam(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
+	const jingleDSK = FindDSKJingle(config)
+
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -62,7 +65,7 @@ export function OfftubeCreatePartKam(
 				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
 				content: literal<VTContent>({
 					studioLabel: '',
-					switcherInput: config.dsk[1].Fill,
+					switcherInput: jingleDSK.Fill,
 					ignoreMediaObjectStatus: true,
 					fileName: '',
 					path: '',
@@ -80,7 +83,7 @@ export function OfftubeCreatePartKam(
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
-									input: config.dsk[1].Fill,
+									input: jingleDSK.Fill,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
 										: TSR.AtemTransitionStyle.CUT,

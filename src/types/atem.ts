@@ -50,3 +50,13 @@ export enum AtemSourceIndex {
 	Prg4 = 10040,
 	Prv4 = 10041
 }
+
+/**
+ * !! Not an exhaustive list !!
+ * !! Only contains ATEM models supported by / tested with these blueprints !!
+ */
+export enum ATEMModel {
+	PRODUCTION_STUDIO_4K_2ME = 'PRODUCTION_STUDIO_4K_2ME',
+	CONSTELLATION_8K_UHD_MODE = 'CONSTELLATION_8K_UHD',
+	CONSTELLATION_8K_8K_MODE = 'CONSTELLATION_8K_8K'
+}

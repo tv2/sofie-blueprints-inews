@@ -20,27 +20,24 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CasparPlayerClipLoadingLoop,
+	CreateDSKBaseline,
+	CreateDSKBaselineAdlibs,
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
+	FindDSKJingle,
 	GetEksternMetaData,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GetTransitionAdLibActions,
 	literal,
-	pgmDSKLayers,
 	SourceInfo,
 	TimelineBlueprintExt
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
-import {
-	AtemLLayer,
-	atemLLayersDSK,
-	CasparLLayer,
-	CasparPlayerClipLoadingLoop,
-	SisyfosLLAyer
-} from '../tv2_afvd_studio/layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, getConfig } from './helpers/config'
@@ -437,78 +434,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	})
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
-	for (const dsk of Object.values(config.dsk)) {
-		if (dsk.Toggle && pgmDSKLayers[dsk.Number] && atemLLayersDSK[dsk.Number]) {
-			if (dsk.DefaultOn) {
-				adlibItems.push({
-					externalId: `dskoff${dsk.Number}`,
-					name: `DSK ${dsk.Number} OFF`,
-					_rank: 500 + dsk.Number,
-					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-					content: {
-						timelineObjects: _.compact<TSR.TSRTimelineObj>([
-							literal<TSR.TimelineObjAtemDSK>({
-								id: '',
-								enable: { while: '1' },
-								priority: 10,
-								layer: atemLLayersDSK[dsk.Number],
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.DSK,
-									dsk: {
-										onAir: false
-									}
-								}
-							})
-						])
-					}
-				})
-			} else {
-				adlibItems.push({
-					externalId: `dskon${dsk.Number}`,
-					name: `DSK ${dsk.Number} ON`,
-					_rank: 500 + dsk.Number,
-					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-					content: {
-						timelineObjects: _.compact<TSR.TSRTimelineObj>([
-							literal<TSR.TimelineObjAtemDSK>({
-								id: '',
-								enable: { while: '1' },
-								priority: 10,
-								layer: atemLLayersDSK[dsk.Number],
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.DSK,
-									dsk: {
-										onAir: true,
-										sources: {
-											fillSource: dsk.Fill,
-											cutSource: dsk.Key
-										},
-										properties: {
-											tie: false,
-											preMultiply: false,
-											clip: config.studio.AtemSettings.VizClip * 10, // input is percents (0-100), atem uses 1-000,
-											gain: config.studio.AtemSettings.VizGain * 10, // input is percents (0-100), atem uses 1-000,
-											mask: {
-												enabled: false
-											}
-										}
-									}
-								}
-							})
-						])
-					}
-				})
-			}
-		}
-	}
+	adlibItems.push(...CreateDSKBaselineAdlibs(config, 500))
 
 	adlibItems.push({
 		externalId: 'micUp',
@@ -912,6 +838,8 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 }
 
 function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
+	const jingleDSK = FindDSKJingle(config)
+
 	return [
 		...CreateGraphicBaseline(config),
 		// Default timeline
@@ -1025,89 +953,9 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 		}),
 
 		// keyers
-		literal<TSR.TimelineObjAtemDSK>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemDSKGraphics,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.DSK,
-				dsk: {
-					onAir: true,
-					sources: {
-						fillSource: config.dsk[1].Fill,
-						cutSource: config.dsk[1].Key
-					},
-					properties: {
-						tie: false,
-						preMultiply: false,
-						clip: config.studio.AtemSettings.VizClip * 10, // input is percents (0-100), atem uses 1-000,
-						gain: config.studio.AtemSettings.VizGain * 10, // input is percents (0-100), atem uses 1-000,
-						mask: {
-							enabled: false
-						}
-					}
-				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemDSK>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemDSKEffect,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.DSK,
-				dsk: {
-					onAir: false,
-					sources: {
-						fillSource: config.studio.AtemSource.JingleFill,
-						cutSource: config.studio.AtemSource.JingleKey
-					},
-					properties: {
-						tie: false,
-						preMultiply: false,
-						clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-						gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-						mask: {
-							enabled: false
-						}
-					}
-				}
-			}
-		}),
-		...Object.values(config.dsk)
-			.filter(dsk => [3, 4].includes(dsk.Number) && dsk.DefaultOn)
-			.map(dsk => {
-				return literal<TSR.TimelineObjAtemDSK>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: atemLLayersDSK[dsk.Number],
-					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.DSK,
-						dsk: {
-							onAir: true,
-							sources: {
-								fillSource: config.dsk[dsk.Number].Fill,
-								cutSource: config.dsk[dsk.Number].Key
-							},
-							properties: {
-								tie: false,
-								preMultiply: false,
-								clip: config.studio.AtemSettings.VizClip * 10, // input is percents (0-100), atem uses 1-000,
-								gain: config.studio.AtemSettings.VizGain * 10, // input is percents (0-100), atem uses 1-000,
-								mask: {
-									enabled: false
-								}
-							}
-						}
-					}
-				})
-			}),
-		// slaves the DSK2 for jingles to ME4 USK1 to have effects on CLEAN (ME4)
+		...CreateDSKBaseline(config),
+
+		// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
 			enable: { while: '1' },
@@ -1123,13 +971,13 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 							onAir: false,
 							mixEffectKeyType: 0,
 							flyEnabled: false,
-							fillSource: config.studio.AtemSource.JingleFill,
-							cutSource: config.studio.AtemSource.JingleKey,
+							fillSource: jingleDSK.Fill,
+							cutSource: jingleDSK.Key,
 							maskEnabled: false,
 							lumaSettings: {
 								preMultiplied: false,
-								clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
-								gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
+								clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000
+								gain: jingleDSK.Gain * 10 // input is percents (0-100), atem uses 1-000
 							}
 						}
 					]

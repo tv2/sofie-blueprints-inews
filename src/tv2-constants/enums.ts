@@ -140,9 +140,7 @@ export enum AbstractLLayer {
 	AudioBedBaseline = 'audio_bed_baseline'
 }
 
-export enum SharedATEMLLayer {
-	AtemDSKGraphics = 'atem_dsk_graphics'
-}
+export enum SharedATEMLLayer {}
 
 export enum SharedCasparLLayer {
 	CasparCGLYD = 'casparcg_audio_lyd',
@@ -210,11 +208,11 @@ export enum SharedSourceLayers {
 
 	// Other / sec / manus
 	PgmScript = 'studio0_script',
-	PgmAudioBed = 'studio0_audio_bed',
+	PgmAudioBed = 'studio0_audio_bed'
+}
 
-	// DSK toggle
-	PgmDSK1 = 'studio0_dsk_cmd',
-	PgmDSK2 = 'studio0_dsk_2_cmd',
-	PgmDSK3 = 'studio0_dsk_3_cmd',
-	PgmDSK4 = 'studio0_dsk_4_cmd'
+export enum DSKRoles {
+	FULLGFX = 'full_graphics',
+	OVERLAYGFX = 'overlay_graphics',
+	JINGLE = 'jingle'
 }

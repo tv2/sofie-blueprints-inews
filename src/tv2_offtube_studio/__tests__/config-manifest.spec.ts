@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
-import { OfftubeStudioConfig } from '../helpers/config'
+import { defaultDSKConfig, OfftubeStudioConfig } from '../helpers/config'
 
 const blankStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
@@ -24,21 +24,16 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
-		DSK: [],
+		DSK: defaultDSKConfig,
 		SplitArtF: 0,
 		SplitArtK: 0,
 		Default: 0,
 		Continuity: 0,
 		SplitBackground: 0,
 		GFXFull: 0,
-		Loop: 0,
-		JingleFill: 0,
-		JingleKey: 0
+		Loop: 0
 	},
-	AtemSettings: {
-		CCGClip: 0,
-		CCGGain: 0
-	},
+	AtemSettings: {},
 	AudioBedSettings: {
 		fadeIn: 0,
 		fadeOut: 0,

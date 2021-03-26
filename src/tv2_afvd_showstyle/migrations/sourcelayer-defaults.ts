@@ -1,6 +1,7 @@
 import { ISourceLayer, SourceLayerType } from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
+import { ATEMModel } from '../../types/atem'
 import { SourceLayer } from '../layers'
 
 // OVERLAY group
@@ -544,82 +545,7 @@ const SEC: ISourceLayer[] = [
 		allowDisable: false,
 		onPresenterScreen: false
 	},
-	{
-		_id: SourceLayer.PgmDSK1,
-		_rank: 20,
-		name: 'DSK1 off',
-		abbreviation: '',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: ',',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmDSK2,
-		_rank: 21,
-		name: 'DSK2 off',
-		abbreviation: '',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmDSK3,
-		_rank: 22,
-		name: 'DSK3 off',
-		abbreviation: '',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmDSK4,
-		_rank: 23,
-		name: 'DSK4 off',
-		abbreviation: '',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
+	...GetDSKSourceLayerDefaults(ATEMModel.CONSTELLATION_8K_UHD_MODE),
 	{
 		_id: SourceLayer.PgmDesign,
 		_rank: 30,

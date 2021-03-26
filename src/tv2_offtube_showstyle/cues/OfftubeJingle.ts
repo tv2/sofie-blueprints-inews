@@ -135,7 +135,6 @@ export function createJingleContentOfftube(
 				PlayerJingleLookahead: OfftubeCasparLLayer.CasparPlayerJingleLookahead
 			},
 			ATEM: {
-				DSKJingle: OfftubeAtemLLayer.AtemDSKGraphics,
 				USKJinglePreview: OfftubeAtemLLayer.AtemMENextJingle
 			},
 			Sisyfos: {

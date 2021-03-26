@@ -13,7 +13,7 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { DefaultBreakerConfig } from '../../tv2_afvd_showstyle/__tests__/breakerConfigDefault'
-import { OfftubeStudioConfig, parseConfig } from '../../tv2_offtube_studio/helpers/config'
+import { defaultDSKConfig, OfftubeStudioConfig, parseConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowStyleConfig, parseConfig as parseShowStyleConfig } from '../helpers/config'
 
@@ -55,21 +55,16 @@ const mockStudioConfig: OfftubeStudioConfig = {
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
-		DSK: [],
+		DSK: defaultDSKConfig,
 		SplitArtF: 0,
 		SplitArtK: 0,
 		Default: 0,
 		Continuity: 0,
 		SplitBackground: 0,
 		GFXFull: 0,
-		Loop: 0,
-		JingleFill: 0,
-		JingleKey: 0
+		Loop: 0
 	},
-	AtemSettings: {
-		CCGClip: 0,
-		CCGGain: 0
-	},
+	AtemSettings: {},
 	AudioBedSettings: {
 		fadeIn: 0,
 		fadeOut: 0,

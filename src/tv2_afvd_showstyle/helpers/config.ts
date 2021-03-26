@@ -11,12 +11,6 @@ export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
 }
 
-/*
-export function defaultConfig(context: NotesContext): BlueprintConfig {
-	return extendWithShowStyleConfig(context, defaultStudioConfig(context), {})
-}
-*/
-
 export function parseConfig(config: IBlueprintConfig): any {
 	return { showStyle: config }
 }

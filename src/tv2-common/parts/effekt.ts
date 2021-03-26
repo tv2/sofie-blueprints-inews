@@ -9,6 +9,7 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionTakeWithTransitionVariantMix,
+	AtemLLayerDSK,
 	GetTagForTransition,
 	literal,
 	PartDefinition,
@@ -19,6 +20,7 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
+import { FindDSKJingle } from '../helpers'
 
 export function CreateEffektForPartBase(
 	context: NotesContext,
@@ -27,7 +29,6 @@ export function CreateEffektForPartBase(
 	pieces: IBlueprintPiece[],
 	layers: {
 		sourceLayer: string
-		atemLayer: string
 		casparLayer: string
 		sisyfosLayer: string
 	}
@@ -75,7 +76,6 @@ export function CreateEffektForPartInner<
 	externalId: string,
 	layers: {
 		sourceLayer: string
-		atemLayer: string
 		casparLayer: string
 		sisyfosLayer: string
 	},
@@ -108,6 +108,8 @@ export function CreateEffektForPartInner<
 		context.warning(`Could not find file for ${effekt}`)
 		return false
 	}
+
+	const jingleDSK = FindDSKJingle(config)
 
 	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : ''
 
@@ -153,21 +155,21 @@ export function CreateEffektForPartInner<
 							start: Number(config.studio.CasparPrerollDuration)
 						},
 						priority: 1,
-						layer: layers.atemLayer,
+						layer: AtemLLayerDSK(jingleDSK.Number),
 						content: {
 							deviceType: TSR.DeviceType.ATEM,
 							type: TSR.TimelineContentTypeAtem.DSK,
 							dsk: {
 								onAir: true,
 								sources: {
-									fillSource: config.studio.AtemSource.JingleFill,
-									cutSource: config.studio.AtemSource.JingleKey
+									fillSource: jingleDSK.Fill,
+									cutSource: jingleDSK.Key
 								},
 								properties: {
 									tie: false,
 									preMultiply: false,
-									clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-									gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
+									clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000,
+									gain: jingleDSK.Gain * 10, // input is percents (0-100), atem uses 1-000,
 									mask: {
 										enabled: false
 									}
@@ -210,7 +212,6 @@ export function CreateMixForPartInner(
 	durationInFrames: number,
 	layers: {
 		sourceLayer: string
-		atemLayer: string
 		casparLayer: string
 		sisyfosLayer: string
 	}

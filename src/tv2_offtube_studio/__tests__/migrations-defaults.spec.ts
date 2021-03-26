@@ -1,5 +1,11 @@
-import { AbstractLLayerServerEnable } from 'tv2-common'
+import {
+	AbstractLLayerServerEnable,
+	CasparPlayerClip,
+	CasparPlayerClipLoadingLoop,
+	GetDSKMappingNames
+} from 'tv2-common'
 import * as _ from 'underscore'
+import { ATEMModel } from '../../types/atem'
 
 import { RealLLayers } from '../layers'
 import MappingsDefaults from '../migrations/mappings-defaults'
@@ -19,12 +25,13 @@ describe('Migration Defaults', () => {
 		const layerIds = RealLLayers()
 			.concat(['core_abstract'])
 			.concat([
-				'casparcg_player_clip_1',
-				'casparcg_player_clip_2',
-				'casparcg_player_clip_1_loading_loop',
-				'casparcg_player_clip_2_loading_loop',
+				CasparPlayerClip(1),
+				CasparPlayerClip(2),
+				CasparPlayerClipLoadingLoop(1),
+				CasparPlayerClipLoadingLoop(2),
 				AbstractLLayerServerEnable(1),
-				AbstractLLayerServerEnable(2)
+				AbstractLLayerServerEnable(2),
+				...GetDSKMappingNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME)
 			])
 			.sort()
 

@@ -11,10 +11,11 @@ import {
 	MoveDSKToTable,
 	MoveSourcesToTable,
 	RenameStudioConfig,
+	SetConfigTo,
 	SetLayerNamesToDefaults,
 	TableConfigItemDSK
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { DSKRoles, GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { EnsureSisyfosMappingHasType } from '../../tv2_afvd_studio/migrations/util'
 import {
@@ -33,8 +34,7 @@ import {
 	getMappingsDefaultsMigrationSteps,
 	GetSisyfosLayersForTableMigrationOfftube,
 	removeMapping,
-	renameMapping,
-	setConfigTo
+	renameMapping
 } from './util'
 
 declare const VERSION: string // Injected by webpack
@@ -269,7 +269,10 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
 
-	MoveDSKToTable('1.4.6', (manifestOfftubeDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK),
+	MoveDSKToTable('1.4.6', (manifestOfftubeDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK, [
+		DSKRoles.JINGLE,
+		DSKRoles.OVERLAYGFX
+	]),
 
 	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
 
@@ -299,7 +302,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilot, true),
 	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilotOverlay, true),
 	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerFullLoop, true),
-	setConfigTo('1.5.3', 'AtemSource.GFXFull', 12),
+	SetConfigTo('1.5.3', 'Offtube', 'AtemSource.GFXFull', 12),
 
 	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
 
@@ -307,7 +310,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	GetMappingDefaultMigrationStepForLayer('1.6.0', GraphicLLayer.GraphicLLayerPilot, true),
 
-	setConfigTo('1.6.1', 'SourcesRM', manifestOfftubeSourcesRM.defaultVal),
+	SetConfigTo('1.6.1', 'Offtube', 'SourcesRM', manifestOfftubeSourcesRM.defaultVal),
+	SetConfigTo('1.6.1', 'Offtube', 'AtemSource.DSK', manifestOfftubeDownstreamKeyers.defaultVal),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

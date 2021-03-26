@@ -45,7 +45,6 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 					MEClean: AtemLLayer.AtemMEClean,
 					Next: AtemLLayer.AtemAuxLookahead,
 					SSrcDefault: AtemLLayer.AtemSSrcDefault,
-					Effekt: AtemLLayer.AtemDSKEffect,
 					cutOnclean: false
 				}
 			},

@@ -1,15 +1,14 @@
 import { IBlueprintConfig } from '@sofie-automation/blueprints-integration'
 import {
-	DSKConfig,
 	getLiveAudioLayers,
 	getStickyLayers,
 	MediaPlayerConfig,
-	parseDSK,
 	SourceInfo,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TV2StudioConfigBase
 } from 'tv2-common'
+import { DSKRoles } from 'tv2-constants'
 import * as _ from 'underscore'
 import { parseMediaPlayers, parseSources } from './sources'
 
@@ -19,7 +18,7 @@ export interface OfftubeStudioBlueprintConfig {
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	liveAudio: string[]
 	stickyLayers: string[]
-	dsk: DSKConfig
+	dsk: TableConfigItemDSK[]
 }
 
 export interface OfftubeStudioConfig extends TV2StudioConfigBase {
@@ -38,14 +37,9 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 		Default: number
 		Continuity: number
-		JingleFill: number
-		JingleKey: number
 	}
 
-	AtemSettings: {
-		CCGClip: number
-		CCGGain: number
-	}
+	AtemSettings: {}
 
 	AudioBedSettings: {
 		fadeIn: number
@@ -58,18 +52,8 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	IdleSisyfosLayers: string[]
 }
 
-export const defaultDSK: TableConfigItemDSK = {
-	Number: 1,
-	Fill: 7,
-	Key: 8,
-	Toggle: true,
-	DefaultOn: true,
-	FullSource: true
-}
-
 export function parseConfig(rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
 	const studioConfig = (rawConfig as unknown) as OfftubeStudioConfig
-	const dsk = parseDSK(studioConfig, defaultDSK)
 	const config: OfftubeStudioBlueprintConfig = {
 		studio: rawConfig as any,
 		// showStyle: {} as any,
@@ -77,7 +61,7 @@ export function parseConfig(rawConfig: IBlueprintConfig): OfftubeStudioBlueprint
 		mediaPlayers: [],
 		liveAudio: [],
 		stickyLayers: [],
-		dsk
+		dsk: studioConfig.AtemSource.DSK
 	}
 	config.sources = parseSources(studioConfig)
 	config.mediaPlayers = parseMediaPlayers(studioConfig)
@@ -86,3 +70,16 @@ export function parseConfig(rawConfig: IBlueprintConfig): OfftubeStudioBlueprint
 
 	return config
 }
+
+export const defaultDSKConfig: TableConfigItemDSK[] = [
+	{
+		Number: 0,
+		Key: 8,
+		Fill: 7,
+		Toggle: true,
+		DefaultOn: true,
+		Roles: [DSKRoles.JINGLE, DSKRoles.OVERLAYGFX],
+		Clip: 50.0,
+		Gain: 12.5
+	}
+]

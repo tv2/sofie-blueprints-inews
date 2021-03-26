@@ -8,8 +8,9 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 
-import { literal } from 'tv2-common'
+import { GetDSKSourceLayerNames, literal } from 'tv2-common'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
+import { ATEMModel } from '../../types/atem'
 import { getConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import OutputlayerDefaults from '../migrations/outputlayer-defaults'
@@ -27,6 +28,9 @@ export function checkAllLayers(
 	const config = getConfig(context)
 
 	const allSourceLayers: string[] = _.values(SourceLayer)
+		.map(l => l.toString())
+		.concat(GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE))
+		.sort()
 	const allOutputLayers = _.map(OutputlayerDefaults, m => m._id)
 
 	const allMappings = literal<BlueprintMappings>({

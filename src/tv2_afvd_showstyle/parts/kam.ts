@@ -17,6 +17,7 @@ import {
 	CameraParentClass,
 	CreatePartInvalid,
 	CreatePartKamBase,
+	FindDSKJingle,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
 	GetLayersForCamera,
@@ -49,6 +50,8 @@ export function CreatePartKam(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
+	const jingleDSK = FindDSKJingle(config)
+
 	if (partDefinition.rawType.match(/kam cs 3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
@@ -77,7 +80,7 @@ export function CreatePartKam(
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
-									input: config.studio.AtemSource.JingleFill,
+									input: jingleDSK.Fill,
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
 										: TSR.AtemTransitionStyle.CUT,

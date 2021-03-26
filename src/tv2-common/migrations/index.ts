@@ -7,6 +7,7 @@ import {
 	MigrationStepStudio
 } from '@sofie-automation/blueprints-integration'
 import { TableConfigItemGFXTemplates } from 'tv2-common'
+import _ = require('underscore')
 import { literal } from '../util'
 
 export * from './moveSourcesToTable'
@@ -155,4 +156,25 @@ export function SetLayerNamesToDefaults(
 	}
 
 	return migrations
+}
+
+export function SetConfigTo(versionStr: string, studio: string, id: string, value: any) {
+	return literal<MigrationStepStudio>({
+		id: `config.valueSet.${studio}.${id}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			// Optional mappings based on studio settings can be dropped here
+
+			const existing = context.getConfig(id)
+			if (!existing) {
+				return false
+			}
+
+			return !_.isEqual(existing, value)
+		},
+		migrate: (context: MigrationContextStudio) => {
+			context.setConfig(id, value)
+		}
+	})
 }

@@ -10,7 +10,7 @@ import {
 import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
-	FindFullSourceDSK,
+	FindDSKFullGFX,
 	GetSisyfosTimelineObjForCamera,
 	GraphicPilot,
 	literal,
@@ -54,7 +54,7 @@ export function EvaluateCueGraphicPilot(
 }
 
 function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
-	const fullsDSK = FindFullSourceDSK(config)
+	const fullsDSK = FindDSKFullGFX(config)
 
 	return [
 		literal<TSR.TimelineObjAtemME>({

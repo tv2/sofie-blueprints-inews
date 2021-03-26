@@ -10,6 +10,7 @@ import {
 	TimelinePersistentState,
 	TSR
 } from '@sofie-automation/blueprints-integration'
+import { CasparPlayerClip } from 'tv2-common'
 import { AbstractLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
@@ -125,9 +126,7 @@ function processServerLookaheads(
 		}
 
 		return (
-			[sourceLayers.Caspar.ClipPending, sourceLayers.Caspar.PlayerClip(1), sourceLayers.Caspar.PlayerClip(2)].includes(
-				layer
-			) &&
+			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)].includes(layer) &&
 			!obj.isLookahead &&
 			resolvedPieces.some(
 				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
@@ -165,7 +164,7 @@ function processServerLookaheads(
 		}
 
 		return !(
-			[sourceLayers.Caspar.ClipPending, sourceLayers.Caspar.PlayerClip(1), sourceLayers.Caspar.PlayerClip(2)]
+			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)]
 				.map(l => `${l}_lookahead`)
 				.includes(layer) &&
 			obj.isLookahead &&
