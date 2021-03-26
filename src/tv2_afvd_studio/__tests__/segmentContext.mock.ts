@@ -38,6 +38,7 @@ const mockStudioConfig: StudioConfig = {
 		})
 	],
 	SourcesRM: [],
+	SourcesFeed: [],
 	SourcesSkype: [],
 	ABMediaPlayers: [],
 	SourcesDelayedPlayback: [],
