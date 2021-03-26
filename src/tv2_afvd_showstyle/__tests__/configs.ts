@@ -69,6 +69,7 @@ export const defaultStudioConfig: StudioConfig = {
 		'SourcesCam',
 		true
 	),
+	// TODO: prepareConfig is legacy code, refactor when refactoring FindSourceInfo
 	SourcesSkype: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7', 'SourcesSkype', false),
 	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false, true),
 	SourcesFeed: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesFeed', false, true),
