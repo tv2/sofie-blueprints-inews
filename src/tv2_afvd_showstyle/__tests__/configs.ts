@@ -9,6 +9,7 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 		case 'SourcesCam':
 			return []
 		case 'SourcesRM':
+		case 'SourcesFeed':
 		case 'SourcesSkype':
 			return ['sisyfos_source_live_' + id]
 		case 'SourcesDelayedPlayback':
@@ -70,6 +71,7 @@ export const defaultStudioConfig: StudioConfig = {
 	),
 	SourcesSkype: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7', 'SourcesSkype', false),
 	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false, true),
+	SourcesFeed: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesFeed', false, true),
 	SourcesDelayedPlayback: prepareConfig('1:5,2:5', 'SourcesDelayedPlayback', false),
 	StudioMics: [
 		'sisyfos_source_Host_1_st_a',

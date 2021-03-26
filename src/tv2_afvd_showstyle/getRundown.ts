@@ -672,14 +672,16 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 
 	let globalRank = 1000
 
-	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live', rank: number) {
+	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live' | 'Feed', rank: number) {
 		Object.values(boxLayers).forEach((layer, box) => {
+			const feed = type === 'Live' && info.id.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
+			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 					userData: literal<ActionCutSourceToBox>({
 						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `${type} ${info.id}`,
+						name,
 						port: info.port,
 						sourceType: info.type,
 						box
@@ -687,7 +689,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `${type} ${info.id} to box ${box + 1}`,
+						label: `${name} to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
@@ -814,7 +816,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'Live', globalRank++)
+			makeAdlibBoxesActions(o, o.id.match(/^F/) ? 'Feed' : 'Live', globalRank++)
 		})
 
 	config.sources

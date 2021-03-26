@@ -307,6 +307,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	GetMappingDefaultMigrationStepForLayer('1.6.0', GraphicLLayer.GraphicLLayerPilot, true),
 
+	setConfigTo('1.6.1', 'SourcesRM', manifestOfftubeSourcesRM.defaultVal),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

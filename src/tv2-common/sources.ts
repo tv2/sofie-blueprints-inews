@@ -48,11 +48,12 @@ export function parseMapStr(
 
 export function ParseMappingTable(
 	studioConfig: TableConfigItemSourceMappingWithSisyfos[],
-	type: SourceInfoType
+	type: SourceInfoType,
+	idPrefix?: string
 ): SourceInfo[] {
 	return studioConfig.map(conf => ({
 		type,
-		id: conf.SourceName,
+		id: `${idPrefix || ''}${conf.SourceName}`,
 		port: conf.AtemSource,
 		sisyfosLayers: conf.SisyfosLayers,
 		useStudioMics: conf.StudioMics
@@ -90,12 +91,14 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 			const remoteName = id
 				.replace(/VO/i, '')
 				.replace(/\s/g, '')
-				.match(/^(?:LIVE|SKYPE) ?(.+).*$/i)
+				.match(/^(?:LIVE|SKYPE|FEED) ?(.+).*$/i)
 			if (!remoteName) {
 				return undefined
 			}
 			if (id.match(/^LIVE/i)) {
 				return _.find(sources, s => s.type === type && s.id === remoteName[1])
+			} else if (id.match(/^FEED/i)) {
+				return _.find(sources, s => s.type === type && s.id === `F${remoteName[1]}`)
 			} else {
 				// Skype
 				return _.find(sources, s => s.type === type && s.id === `S${remoteName[1]}`)

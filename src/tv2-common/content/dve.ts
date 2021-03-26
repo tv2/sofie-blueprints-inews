@@ -248,6 +248,10 @@ export function MakeContentDVE2<
 				const match = prop.match(/LIVE ?(.*)/i) as RegExpExecArray
 
 				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}`, sourceLayer }
+			} else if (prop?.match(/FEED ?.*/i)) {
+				const match = prop.match(/FEED ?(.*)/i) as RegExpExecArray
+
+				boxMap[targetBox - 1] = { source: `FEED ${match[1]}`, sourceLayer }
 			} else if (prop?.match(/full/i)) {
 				boxMap[targetBox - 1] = { source: `ENGINE FULL`, sourceLayer }
 			} else if (prop?.match(/EVS ?(?:\d+)? ?.*/i)) {
@@ -363,7 +367,7 @@ export function MakeContentDVE2<
 						audioEnable
 					)
 				)
-			} else if (sourceType.match(/LIVE/i) || sourceType.match(/SKYPE/i)) {
+			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i) || sourceType.match(/SKYPE/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
 					context.warning(`Invalid source: ${mappingFrom.source}`)
