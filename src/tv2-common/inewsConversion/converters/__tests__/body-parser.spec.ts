@@ -85,19 +85,19 @@ const unparsedGrafik3 = ['kg bund 3']
 
 const cueEkstern1: CueDefinitionEkstern = {
 	type: CueType.Ekstern,
-	source: '1',
+	source: 'Live 1',
 	iNewsCommand: 'EKSTERN'
 }
 
-const unparsedEkstern1 = ['EKSTERN=1']
+const unparsedEkstern1 = ['EKSTERN=Live 1']
 
 const cueEkstern2: CueDefinitionEkstern = {
 	type: CueType.Ekstern,
-	source: '2',
+	source: 'Live 2',
 	iNewsCommand: 'EKSTERN'
 }
 
-const unparsedEkstern2 = ['EKSTERN=2']
+const unparsedEkstern2 = ['EKSTERN=Live 2']
 
 const cueJingle1: CueDefinitionJingle = {
 	type: CueType.Jingle,
@@ -192,7 +192,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -205,7 +205,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2, cueJingle3],
-					title: '2',
+					title: 'Live 2',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -242,7 +242,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: 'Script here\n',
 					variant: {},
 					externalId: '',
@@ -291,7 +291,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1, cueGrafik1],
-					title: '1',
+					title: 'Live 1',
 					script: 'Script here\n',
 					variant: {},
 					externalId: '',
@@ -352,7 +352,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -365,7 +365,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2],
-					title: '2',
+					title: 'Live 2',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -441,7 +441,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1, cueGrafik3],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -543,7 +543,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -581,7 +581,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -619,7 +619,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -769,7 +769,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -782,7 +782,7 @@ describe('Body parser', () => {
 					type: PartType.Ekstern,
 					rawType: '',
 					cues: [cueEkstern2],
-					title: '2',
+					title: 'Live 2',
 					script: '',
 					variant: {},
 					externalId: '',
@@ -917,7 +917,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					fields,
 					modified: 0,
@@ -930,7 +930,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern2],
-					title: '2',
+					title: 'Live 2',
 					script: '',
 					fields,
 					modified: 0,
@@ -1734,7 +1734,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern1],
-					title: '1',
+					title: 'Live 1',
 					script: '',
 					fields,
 					modified: 0,
@@ -1747,7 +1747,7 @@ describe('Body parser', () => {
 					variant: {},
 					rawType: '',
 					cues: [cueEkstern2],
-					title: '2',
+					title: 'Live 2',
 					script: '',
 					fields,
 					modified: 0,
