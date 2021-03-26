@@ -2834,7 +2834,7 @@ describe('Body parser', () => {
 		])
 	})
 
-	test('Merge GRAFIK=FULL when target is before redtext', () => {
+	test('Merge GRAFIK=FULL when target precedes redtext', () => {
 		const body =
 			'\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><pi>************ 100%GRAFIK ***********</pi></p>\r\n<p>Some script...</p>\r\n<p><a idref="1"></a></p>\r\n'
 		const cues: UnparsedCue[] = [
@@ -2886,6 +2886,81 @@ describe('Body parser', () => {
 				],
 				rawType: '100%GRAFIK',
 				script: 'Some script...\n',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
+	test('Does not merge GRAFIK=FULL when target precedes redtext, with script in between', () => {
+		const body =
+			'\r\n<p><pi>KAM 1</pi></p>\r\n<p>Some script...</p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script 1...</p>\r\n<p><pi>************ 100%GRAFIK ***********</pi></p>\r\n<p>Some script 2...</p>\r\n<p><a idref="1"></a></p>\r\n'
+		const cues: UnparsedCue[] = [
+			['GRAFIK=FULL'],
+			[
+				']] S3.0 M 0 [[',
+				'cg4 ]] 1 YNYAB 0 [[ pilotdata',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+				'VCPID=2520177',
+				'ContinueCount=-1',
+				'LgfxWeb/-ETKAEM_07-05-2019_17:55:42'
+			]
+		]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionKam>({
+				type: PartType.Kam,
+				variant: {
+					name: '1'
+				},
+				externalId: '',
+				cues: [],
+				rawType: 'KAM 1',
+				script: 'Some script...\n',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionUnknown>({
+				type: PartType.Unknown,
+				externalId: '',
+				variant: {},
+				cues: [
+					literal<CueDefinitionUnpairedTarget>({
+						type: CueType.UNPAIRED_TARGET,
+						target: 'FULL',
+						iNewsCommand: 'GRAFIK',
+						mergeable: true
+					})
+				],
+				rawType: '',
+				script: 'Some script 1...\n',
+				fields,
+				modified: 0,
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionGrafik>({
+				type: PartType.Grafik,
+				externalId: '',
+				variant: {},
+				cues: [
+					literal<CueDefinitionUnpairedPilot>({
+						type: CueType.UNPAIRED_PILOT,
+						name: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
+						vcpid: 2520177,
+						continueCount: -1,
+						iNewsCommand: 'VCP',
+						start: {
+							seconds: 0
+						}
+					})
+				],
+				rawType: '100%GRAFIK',
+				script: 'Some script 2...\n',
 				fields,
 				modified: 0,
 				storyName: 'test-segment',

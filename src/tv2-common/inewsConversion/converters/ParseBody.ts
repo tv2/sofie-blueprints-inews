@@ -245,7 +245,7 @@ export function ParseBody(
 				line = line.replace(/<\/a>/g, '')
 
 				const lastCue = definition.cues[definition.cues.length - 1]
-				if (typeStr.match(/GRAFIK/i) && lastCue && lastCue.type === CueType.UNPAIRED_TARGET) {
+				if (typeStr.match(/GRAFIK/i) && lastCue && lastCue.type === CueType.UNPAIRED_TARGET && !definition.script) {
 					definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
 					definition.cues.push(lastCue)
 				} else {
