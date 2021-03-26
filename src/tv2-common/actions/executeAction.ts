@@ -1153,9 +1153,12 @@ function executeActionCutToRemote<
 
 	const externalId = generateExternalId(context, actionId, [userData.name])
 
+	const feed = userData.name.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
+	const title = feed ? `FEED ${feed[1]}` : `LIVE ${userData.name}`
+
 	const part = literal<IBlueprintPart>({
 		externalId,
-		title: `Live ${userData.name}`,
+		title,
 		metaData: {},
 		expectedDuration: 0
 	})
@@ -1167,7 +1170,7 @@ function executeActionCutToRemote<
 
 	const remotePiece = literal<IBlueprintPiece>({
 		externalId,
-		name: `Live ${userData.name}`,
+		name: title,
 		enable: {
 			start: 0
 		},

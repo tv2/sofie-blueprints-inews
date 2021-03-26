@@ -44,6 +44,7 @@ const mockStudioConfig: OfftubeStudioConfig = {
 		})
 	],
 	SourcesRM: [],
+	SourcesFeed: [],
 	SourcesSkype: [],
 	ABMediaPlayers: [],
 	StudioMics: [

@@ -61,7 +61,7 @@ export function EvaluateEksternBase<
 	const eksternProps = parsedCue.source
 		.replace(/\s+/i, ' ')
 		.trim()
-		.match(/^(?:LIVE|SKYPE) ?([^\s]+)(?: (.+))?$/i)
+		.match(/^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i)
 	if (!eksternProps) {
 		context.warning(`No source entered for EKSTERN`)
 		part.invalid = true

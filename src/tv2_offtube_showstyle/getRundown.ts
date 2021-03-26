@@ -332,7 +332,7 @@ function getGlobalAdlibActionsOfftube(
 		)
 	}
 
-	function makeRemoteAction(name: string, port: number, rank: number) {
+	function makeRemoteAction(name: string, type: 'Live' | 'Feed', port: number, rank: number) {
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.CUT_TO_REMOTE,
@@ -344,7 +344,7 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `Live ${name}`,
+					label: `${type} ${name}`,
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
@@ -358,12 +358,14 @@ function getGlobalAdlibActionsOfftube(
 
 	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live', rank: number) {
 		Object.values(boxLayers).forEach((layer, box) => {
+			const feed = type === 'Live' && info.id.match(/^F(.+).*$/)
+			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 					userData: literal<ActionCutSourceToBox>({
 						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `${type} ${info.id}`,
+						name,
 						port: info.port,
 						sourceType: info.type,
 						box
@@ -371,7 +373,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Cut ${type} ${info.id} to box ${box + 1}`,
+						label: `Cut ${name} to box ${box + 1}`,
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
 						content: {},
@@ -596,7 +598,7 @@ function getGlobalAdlibActionsOfftube(
 		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
-			makeRemoteAction(o.id, o.port, globalRank++)
+			makeRemoteAction(o.id, o.id.match(/^F/) ? 'Feed' : 'Live', o.port, globalRank++)
 		})
 
 	config.sources

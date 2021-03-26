@@ -22,6 +22,7 @@ const blankStudioConfig: StudioConfig = {
 	ClipIgnoreStatus: false,
 	SourcesCam: [],
 	SourcesRM: [],
+	SourcesFeed: [],
 	SourcesSkype: [],
 	SourcesDelayedPlayback: [],
 	ABMediaPlayers: [],

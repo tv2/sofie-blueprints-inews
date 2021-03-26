@@ -341,6 +341,68 @@
             "parts": []
         },
         {
+            "externalId": "1659823A",
+            "name": "LIVE barnmor",
+            "rank": 33500,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "28",
+                        "title": "LIVE barnmor",
+                        "externer": "EX",
+                        "var8": "B",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890240",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "endorseBy": "anry",
+                        "runsTime": "0",
+                        "redOk": " ",
+                        "onair": "ONAIR",
+                        "typecode": "nyx",
+                        "programtitle": "Nyhederne 18:00",
+                        "noarchive": ".",
+                        "livetype": "SNG/QL",
+                        "ikbook": "X",
+                        "kilde": "xborg",
+                        "kanal": "NEWS"
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "DVE=barnmor",
+                            "INP1=KAM 3",
+                            "INP2=FEED 3",
+                            "BYNAVN=København"
+                        ],
+                        [
+                            "EKSTERN=FEED 1"
+                        ],
+                        [
+                            "#kg direkte København",
+                            "; 0.00"
+                        ]
+                    ],
+                    "id": "1659823a:0021e9c4:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p><pi>***FEED*** </pi></p>\r\n<p><a idref=\"0\"></a></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><a idref=\"2\"></a></p>\r\n<p><cc>Spib her</cc></p>\r\n<p></p>\r\n",
+                    "fileId": "1659823A:0021E9C4:5E58EF29",
+                    "identifier": "1659823A"
+                },
+                "modified": "1582890240",
+                "externalId": "1659823A",
+                "rank": 33500,
+                "name": "LIVE barnmor",
+                "float": false
+            },
+            "parts": []
+        },
+        {
             "externalId": "1659822A",
             "name": "LIVE barnmor",
             "rank": 33000,

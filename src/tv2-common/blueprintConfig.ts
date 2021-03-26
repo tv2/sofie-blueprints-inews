@@ -75,6 +75,7 @@ export interface TV2StudioConfigBase {
 	}
 	StudioMics: string[]
 	SourcesRM: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
+	SourcesFeed: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
 	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
 	PreventOverlayWithFull?: boolean

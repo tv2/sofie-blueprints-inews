@@ -9,8 +9,9 @@ export function parseMediaPlayers(studioConfig: OfftubeStudioConfig): Array<{ id
 }
 
 export function parseSources(studioConfig: OfftubeStudioConfig): SourceInfo[] {
-	const rmInputMap: SourceInfo[] = ParseMappingTable(studioConfig.SourcesRM, SourceLayerType.REMOTE)
-	const kamInputMap: SourceInfo[] = ParseMappingTable(studioConfig.SourcesCam, SourceLayerType.CAMERA)
-
-	return rmInputMap.concat(kamInputMap)
+	return [
+		...ParseMappingTable(studioConfig.SourcesFeed, SourceLayerType.REMOTE, 'F'),
+		...ParseMappingTable(studioConfig.SourcesRM, SourceLayerType.REMOTE),
+		...ParseMappingTable(studioConfig.SourcesCam, SourceLayerType.CAMERA)
+	]
 }

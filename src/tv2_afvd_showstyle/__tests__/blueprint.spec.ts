@@ -774,6 +774,36 @@ describe('AFVD Blueprint', () => {
 		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
 	})
 
+	it('Creates Feed1', () => {
+		const ingestSegment = makeIngestSegment([['EKSTERN=FEED1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const feedPart1 = result.parts[0]
+		expect(feedPart1).toBeTruthy()
+		expect(feedPart1.pieces).toHaveLength(1)
+		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
+	})
+
+	it('Creates Feed 1', () => {
+		const ingestSegment = makeIngestSegment([['EKSTERN=FEED 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const feedPart1 = result.parts[0]
+		expect(feedPart1).toBeTruthy()
+		expect(feedPart1.pieces).toHaveLength(1)
+		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
+	})
+
 	it('Creates invalid part for EKSTERN=LIVE', () => {
 		const ingestSegment = makeIngestSegment(
 			[['EKSTERN=LIVE'], ['#kg direkte ODDER', ';0.00']],
