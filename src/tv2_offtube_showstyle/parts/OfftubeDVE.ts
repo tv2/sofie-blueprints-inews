@@ -23,7 +23,7 @@ export function OfftubeCreatePartDVE(
 
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: `DVE`,
+		title: partDefinition.title || `DVE`,
 		autoNext: false,
 		expectedDuration: partTime
 	})
