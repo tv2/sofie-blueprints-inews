@@ -205,7 +205,8 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				type: ConfigManifestEntryType.NUMBER,
 				required: true,
 				defaultVal: 1,
-				rank: 0
+				rank: 0,
+				zeroBased: true
 			},
 			{
 				id: 'Fill',

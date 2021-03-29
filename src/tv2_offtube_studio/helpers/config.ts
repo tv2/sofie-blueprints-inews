@@ -87,7 +87,7 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Key: 0,
 		Fill: 12,
 		Toggle: true,
-		DefaultOn: true,
+		DefaultOn: false,
 		Roles: [DSKRoles.FULLGFX],
 		Clip: 50.0,
 		Gain: 12.5
