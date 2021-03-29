@@ -35,7 +35,6 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	AtemSource: {
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
-		FullFrameGrafikBackground: number
 		DSK: TableConfigItemDSK[]
 
 		Default: number

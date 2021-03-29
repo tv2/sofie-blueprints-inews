@@ -89,6 +89,7 @@ export interface TV2StudioConfigBase {
 		PrerollDuration: number
 		OutTransitionDuration: number
 		CutToMediaPlayer: number
+		FullGraphicBackground: number
 	}
 
 	AudioBedSettings: {

@@ -87,7 +87,6 @@ export const defaultStudioConfig: StudioConfig = {
 		DSK: defaultDSKConfig,
 		SplitArtF: 30,
 		SplitArtK: 32,
-		FullFrameGrafikBackground: 36,
 		Default: 2001,
 		Continuity: 2002
 	},
@@ -115,7 +114,8 @@ export const defaultStudioConfig: StudioConfig = {
 		KeepAliveDuration: 700,
 		PrerollDuration: 2000,
 		OutTransitionDuration: 280,
-		CutToMediaPlayer: 1500
+		CutToMediaPlayer: 1500,
+		FullGraphicBackground: 36
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

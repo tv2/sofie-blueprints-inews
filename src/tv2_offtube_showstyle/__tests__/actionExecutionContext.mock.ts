@@ -80,7 +80,8 @@ const mockStudioConfig: OfftubeStudioConfig = {
 		KeepAliveDuration: 1000,
 		PrerollDuration: 1000,
 		OutTransitionDuration: 1000,
-		CutToMediaPlayer: 1000
+		CutToMediaPlayer: 1000,
+		FullGraphicBackground: 0
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

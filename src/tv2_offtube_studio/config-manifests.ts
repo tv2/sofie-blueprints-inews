@@ -349,6 +349,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 2000
 	},
 	{
+		id: 'VizPilotGraphics.FullGraphicBackground',
+		name: 'Full frame grafik background source',
+		description: 'ATEM source for mos full-frame grafik background source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 0
+	},
+	{
 		id: 'PreventOverlayWithFull',
 		name: 'Prevent Overlay with Full',
 		description: 'Stop overlay elements from showing when a Full graphic is on-air',

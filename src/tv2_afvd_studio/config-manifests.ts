@@ -368,14 +368,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 32
 	},
 	{
-		id: 'AtemSource.FullFrameGrafikBackground',
-		name: 'Full frame grafik background source',
-		description: 'ATEM source for mos full-frame grafik background source',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 36
-	},
-	{
 		id: 'AtemSource.Default',
 		name: 'ATEM Default source',
 		description: 'ATEM vision mixer default source',
@@ -537,6 +529,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 500
+	},
+	{
+		id: 'VizPilotGraphics.FullGraphicBackground',
+		name: 'Full frame grafik background source',
+		description: 'ATEM source for mos full-frame grafik background source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 36
 	},
 	{
 		id: 'VizPilotGraphics.KeepAliveDuration',

@@ -58,7 +58,6 @@ const mockStudioConfig: StudioConfig = {
 		SplitArtK: 0,
 		Default: 0,
 		Continuity: 0,
-		FullFrameGrafikBackground: 0,
 		MixMinusDefault: 0
 	},
 	AtemSettings: {
@@ -83,7 +82,8 @@ const mockStudioConfig: StudioConfig = {
 		KeepAliveDuration: 1000,
 		PrerollDuration: 1000,
 		OutTransitionDuration: 1000,
-		CutToMediaPlayer: 1000
+		CutToMediaPlayer: 1000,
+		FullGraphicBackground: 36
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

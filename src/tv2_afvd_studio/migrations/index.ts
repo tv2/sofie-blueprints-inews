@@ -176,6 +176,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.5.0', 'AFVD', 'PilotKeepaliveDuration', 'VizPilotGraphics.KeepAliveDuration'),
 	RenameStudioConfig('1.5.0', 'AFVD', 'PilotOutTransitionDuration', 'VizPilotGraphics.OutTransitionDuration'),
 	RenameStudioConfig('1.5.0', 'AFVD', 'PilotPrerollDuration', 'VizPilotGraphics.PrerollDuration'),
+	RenameStudioConfig('1.5.0', 'AFVD', 'FullFrameGrafikBackground', 'VizPilotGraphics.FullGraphicBackground'),
 
 	renameMapping('1.5.1', 'studio0_adlib_viz_cmd', 'studio0_adlib_graphic_cmd'),
 

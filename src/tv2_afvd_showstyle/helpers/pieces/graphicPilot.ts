@@ -19,11 +19,12 @@ import {
 	SisyfosEVSSource,
 	SourceInfo
 } from 'tv2-common'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { GraphicLLayer } from 'tv2-constants'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
-	caspar: { createPilotTimelineForStudio: () => [] },
+	caspar: { createPilotTimelineForStudio: makeStudioTimelineCaspar },
 	viz: { createPilotTimelineForStudio: makeStudioTimelineViz }
 }
 
@@ -69,7 +70,7 @@ function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, a
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: config.studio.AtemSource.FullFrameGrafikBackground,
+					input: config.studio.VizPilotGraphics.FullGraphicBackground,
 					transition: TSR.AtemTransitionStyle.CUT
 				}
 			},
@@ -93,6 +94,49 @@ function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, a
 		}),
 		// Assume DSK is off by default (config table)
 		...EnableDSK(config, 'FULL'),
+		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
+		...muteSisyfosChannels(config.sources)
+	]
+}
+
+function makeStudioTimelineCaspar(config: BlueprintConfig, context: NotesContext) {
+	const fullDSK = FindDSKFullGFX(config)
+	return [
+		literal<TSR.TimelineObjAtemME>({
+			id: '',
+			enable: {
+				start: Number(config.studio.CasparPrerollDuration)
+			},
+			priority: 1,
+			layer: AtemLLayer.AtemMEProgram,
+			content: {
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
+				me: {
+					input: fullDSK.Fill,
+					transition: TSR.AtemTransitionStyle.WIPE,
+					transitionSettings: {
+						wipe: {
+							rate: Number(config.studio.HTMLGraphics.TransitionSettings.wipeRate),
+							pattern: 1,
+							reverseDirection: true,
+							borderSoftness: config.studio.HTMLGraphics.TransitionSettings.borderSoftness
+						}
+					}
+				}
+			}
+		}),
+		literal<TSR.TimelineObjCasparCGAny>({
+			id: '',
+			enable: { start: 0 },
+			priority: 1,
+			layer: GraphicLLayer.GraphicLLayerFullLoop,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.ROUTE,
+				mappedLayer: CasparLLayer.CasparCGDVELoop
+			}
+		}),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
 		...muteSisyfosChannels(config.sources)
 	]
