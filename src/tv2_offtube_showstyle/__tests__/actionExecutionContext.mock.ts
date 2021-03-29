@@ -61,7 +61,6 @@ const mockStudioConfig: OfftubeStudioConfig = {
 		Default: 0,
 		Continuity: 0,
 		SplitBackground: 0,
-		GFXFull: 0,
 		Loop: 0
 	},
 	AtemSettings: {},

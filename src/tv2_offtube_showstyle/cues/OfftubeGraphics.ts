@@ -10,6 +10,7 @@ import {
 	CreateInternalGraphic,
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
+	FindDSKFullGFX,
 	GetSisyfosTimelineObjForCamera,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
@@ -62,6 +63,7 @@ export function OfftubeEvaluateGrafikCaspar(
 }
 
 function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: NotesContext): TSR.TSRTimelineObj[] {
+	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
@@ -74,7 +76,7 @@ function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: N
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: config.studio.AtemSource.GFXFull,
+					input: fullDSK.Fill,
 					transition: TSR.AtemTransitionStyle.WIPE,
 					transitionSettings: {
 						wipe: {

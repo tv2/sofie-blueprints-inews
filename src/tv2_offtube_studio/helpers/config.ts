@@ -31,7 +31,6 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
 		SplitBackground: number
-		GFXFull: number
 		Loop: number
 		DSK: TableConfigItemDSK[]
 
@@ -79,6 +78,17 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Toggle: true,
 		DefaultOn: true,
 		Roles: [DSKRoles.JINGLE, DSKRoles.OVERLAYGFX],
+		Clip: 50.0,
+		Gain: 12.5
+	},
+	// Offtube doesn't use DSK for fulls, but this prevents duplicate studio configs + easy switchover to Viz engine
+	{
+		Number: 0,
+		Key: 0,
+		Fill: 12,
+		Toggle: true,
+		DefaultOn: true,
+		Roles: [DSKRoles.FULLGFX],
 		Clip: 50.0,
 		Gain: 12.5
 	}
