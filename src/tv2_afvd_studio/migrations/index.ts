@@ -5,6 +5,7 @@ import {
 	MoveClipSourcePath,
 	MoveDSKToTable,
 	MoveSourcesToTable,
+	RemoveConfig,
 	RenameStudioConfig,
 	SetConfigTo,
 	SetLayerNamesToDefaults,
@@ -30,6 +31,7 @@ import {
 	GetMappingDefaultMigrationStepForLayer,
 	getMappingsDefaultsMigrationSteps,
 	GetSisyfosLayersForTableMigrationAFVD,
+	removeMapping,
 	renameMapping
 } from './util'
 
@@ -180,7 +182,21 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
 
 	...SetLayerNamesToDefaults('1.5.5', 'AFVD', MappingsDefaults),
+
+	/**
+	 * 1.6.1
+	 * - Add concept of roles to DSK config table (and cleanup configs replaced by table)
+	 */
 	SetConfigTo('1.6.1', 'AFVD', 'AtemSource.DSK', manifestAFVDDownstreamKeyers.defaultVal),
+	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.ServerC'),
+	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.JingleFill'),
+	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.JingleKey'),
+	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.VizClip'),
+	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.VizGain'),
+	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.CCGClip'),
+	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.CCGGain'),
+	removeMapping('1.6.1', 'atem_dsk_graphics'),
+	removeMapping('1.6.1', 'atem_dsk_efect'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

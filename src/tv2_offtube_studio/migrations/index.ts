@@ -10,6 +10,7 @@ import {
 	MoveClipSourcePath,
 	MoveDSKToTable,
 	MoveSourcesToTable,
+	RemoveConfig,
 	RenameStudioConfig,
 	SetConfigTo,
 	SetLayerNamesToDefaults,
@@ -310,8 +311,18 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	GetMappingDefaultMigrationStepForLayer('1.6.0', GraphicLLayer.GraphicLLayerPilot, true),
 
+	/**
+	 * 1.6.1
+	 * - Split RM config into FEED and RM configs
+	 * - Add concept of roles to DSK config table (and cleanup configs replaced by table)
+	 */
 	SetConfigTo('1.6.1', 'Offtube', 'SourcesRM', manifestOfftubeSourcesRM.defaultVal),
 	SetConfigTo('1.6.1', 'Offtube', 'AtemSource.DSK', manifestOfftubeDownstreamKeyers.defaultVal),
+	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleFill'),
+	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleKey'),
+	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.CCGClip'),
+	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.CCGGain'),
+	removeMapping('1.6.1', 'atem_dsk_graphics'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

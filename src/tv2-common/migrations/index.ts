@@ -178,3 +178,17 @@ export function SetConfigTo(versionStr: string, studio: string, id: string, valu
 		}
 	})
 }
+
+export function RemoveConfig(versionStr: string, studio: string, id: string) {
+	return literal<MigrationStepStudio>({
+		id: `config.valueSet.${studio}.${id}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			return !!context.getConfig(id)
+		},
+		migrate: (context: MigrationContextStudio) => {
+			context.removeConfig(id)
+		}
+	})
+}
