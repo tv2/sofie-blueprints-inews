@@ -1,8 +1,7 @@
 import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
-import { FindDSKJingle } from '../helpers'
-import { AtemLLayerDSK } from '../layers'
+import { EnableDSK, FindDSKJingle } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -61,8 +60,7 @@ export function CreateJingleContentBase<
 	loadFirstFrame: boolean,
 	duration: number,
 	alphaAtEnd: number,
-	layers: JingleLayers,
-	preMultiplied: boolean
+	layers: JingleLayers
 ) {
 	const fileName = GetJingleFileName(config, file)
 	const jingleDSK = FindDSKJingle(config)
@@ -99,35 +97,7 @@ export function CreateJingleContentBase<
 				  ]
 				: []),
 
-			literal<TSR.TimelineObjAtemDSK>({
-				id: '',
-				enable: {
-					start: Number(config.studio.CasparPrerollDuration)
-				},
-				priority: 1,
-				layer: AtemLLayerDSK(jingleDSK.Number),
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.DSK,
-					dsk: {
-						onAir: true,
-						sources: {
-							fillSource: jingleDSK.Fill,
-							cutSource: jingleDSK.Key
-						},
-						properties: {
-							tie: false,
-							preMultiply: preMultiplied,
-							clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000,
-							gain: jingleDSK.Gain * 10, // input is percents (0-100), atem uses 1-000,
-							mask: {
-								enabled: false
-							}
-						}
-					}
-				},
-				classes: ['MIX_MINUS_OVERRIDE_DSK']
-			}),
+			...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 
 			...(layers.ATEM.USKJinglePreview
 				? [
@@ -156,7 +126,7 @@ export function CreateJingleContentBase<
 											cutSource: jingleDSK.Clip,
 											maskEnabled: false,
 											lumaSettings: {
-												preMultiplied,
+												preMultiplied: false,
 												clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000
 												gain: jingleDSK.Gain * 10 // input is percents (0-100), atem uses 1-000
 											}
@@ -205,7 +175,7 @@ export function CreateJingleContentBase<
 											cutSource: jingleDSK.Key,
 											maskEnabled: false,
 											lumaSettings: {
-												preMultiplied,
+												preMultiplied: false,
 												clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000
 												gain: jingleDSK.Gain * 10 // input is percents (0-100), atem uses 1-000
 											}

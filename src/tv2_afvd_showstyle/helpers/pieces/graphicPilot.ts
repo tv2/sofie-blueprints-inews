@@ -10,6 +10,7 @@ import {
 import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
+	EnableDSK,
 	FindDSKFullGFX,
 	GetSisyfosTimelineObjForCamera,
 	GraphicPilot,
@@ -54,7 +55,7 @@ export function EvaluateCueGraphicPilot(
 }
 
 function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
-	const fullsDSK = FindDSKFullGFX(config)
+	const fullDSK = FindDSKFullGFX(config)
 
 	return [
 		literal<TSR.TimelineObjAtemME>({
@@ -74,7 +75,7 @@ function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, a
 			},
 			...(adlib ? { classes: ['adlib_deparent'] } : {})
 		}),
-		literal<TSR.TimelineObjAtemDSK>({
+		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
 			enable: {
 				start: config.studio.VizPilotGraphics.CutToMediaPlayer
@@ -83,17 +84,15 @@ function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, a
 			layer: AtemLLayer.AtemAuxPGM,
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.DSK,
-				dsk: {
-					onAir: true,
-					sources: {
-						fillSource: fullsDSK.Fill,
-						cutSource: fullsDSK.Key
-					}
+				type: TSR.TimelineContentTypeAtem.AUX,
+				aux: {
+					input: fullDSK.Fill
 				}
 			},
 			classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 		}),
+		// Assume DSK is off by default (config table)
+		...EnableDSK(config, 'FULL'),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
 		...muteSisyfosChannels(config.sources)
 	]

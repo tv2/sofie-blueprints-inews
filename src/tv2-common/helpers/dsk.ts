@@ -41,6 +41,41 @@ export function GetDSKCount(atemModel: ATEMModel) {
 	}
 }
 
+export function EnableDSK(
+	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
+	dsk: 'FULL' | 'OVL' | 'JINGLE',
+	enable?: TSR.TSRTimelineObj['enable']
+): TSR.TSRTimelineObj[] {
+	const dskConf =
+		dsk === 'FULL' ? FindDSKFullGFX(config) : dsk === 'OVL' ? FindDSKOverlayGFX(config) : FindDSKJingle(config)
+
+	return [
+		literal<TSR.TimelineObjAtemDSK>({
+			id: '',
+			enable: enable ?? {
+				start: 0
+			},
+			priority: 1,
+			layer: AtemLLayerDSK(dskConf.Number),
+			content: {
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.DSK,
+				dsk: {
+					onAir: true,
+					sources: {
+						fillSource: dskConf.Fill,
+						cutSource: dskConf.Key
+					},
+					properties: {
+						clip: dskConf.Clip * 10,
+						gain: dskConf.Gain * 10
+					}
+				}
+			}
+		})
+	]
+}
+
 export function CreateDSKBaselineAdlibs(
 	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
 	baseRank: number

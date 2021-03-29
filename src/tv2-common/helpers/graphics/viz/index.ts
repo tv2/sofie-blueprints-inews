@@ -14,6 +14,7 @@ import {
 	TV2BlueprintConfig
 } from 'tv2-common'
 import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
+import { EnableDSK } from '../../dsk'
 
 export interface VizPilotGeneratorSettings {
 	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[]
@@ -31,7 +32,7 @@ export function GetInternalGraphicContentVIZ(
 		fileName: parsedCue.graphic.template,
 		path: parsedCue.graphic.template,
 		ignoreMediaObjectStatus: true,
-		timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
 				enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGraphic, partDefinition),
@@ -44,7 +45,9 @@ export function GetInternalGraphicContentVIZ(
 					templateData: parsedCue.graphic.textFields,
 					channelName: engine === 'WALL' ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
 				}
-			})
+			}),
+			// Assume DSK is off by default (config table)
+			...EnableDSK(config, 'OVL')
 		])
 	})
 }
