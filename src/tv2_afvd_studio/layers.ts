@@ -25,10 +25,6 @@ export enum VirtualAbstractLLayer {}
 export enum AtemLLayer {
 	AtemMEProgram = 'atem_me_program',
 	AtemMEClean = 'atem_me_clean',
-	AtemDSKGraphics = 'atem_dsk_graphics',
-	AtemDSKEffect = 'atem_dsk_effect',
-	AtemDSK3 = 'atem_dsk_3',
-	AtemDSK4 = 'atem_dsk_4',
 	AtemCleanUSKEffect = 'atem_clean_usk_effect',
 	AtemSSrcArt = 'atem_supersource_art',
 	AtemSSrcDefault = 'atem_supersource_default',
@@ -109,18 +105,3 @@ export const SisyfosLLAyer = {
 }
 
 export type SisyfosLLAyer = SharedSisyfosLLayer | AFVDSisyfosLLAyer
-
-export function CasparPlayerClip(i: number | string) {
-	return `casparcg_player_clip_${i}`
-}
-
-export function CasparPlayerClipLoadingLoop(i: number | string) {
-	return `casparcg_player_clip_${i}_loading_loop`
-}
-
-export const atemLLayersDSK: { [num: number]: string } = {
-	1: AtemLLayer.AtemDSKGraphics,
-	2: AtemLLayer.AtemDSKEffect,
-	3: AtemLLayer.AtemDSK3,
-	4: AtemLLayer.AtemDSK4
-}

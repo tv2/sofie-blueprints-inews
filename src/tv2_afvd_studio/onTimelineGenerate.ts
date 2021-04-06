@@ -9,7 +9,7 @@ import {
 import { onTimelineGenerate } from 'tv2-common'
 import * as _ from 'underscore'
 import { getConfig } from '../tv2_afvd_showstyle/helpers/config'
-import { AtemLLayer, CasparLLayer, CasparPlayerClip, SisyfosLLAyer } from './layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from './layers'
 
 export function onTimelineGenerateAFVD(
 	context: TimelineEventContext,
@@ -27,8 +27,7 @@ export function onTimelineGenerateAFVD(
 		getConfig,
 		{
 			Caspar: {
-				ClipPending: CasparLLayer.CasparPlayerClipPending,
-				PlayerClip: CasparPlayerClip
+				ClipPending: CasparLLayer.CasparPlayerClipPending
 			},
 			Sisyfos: {
 				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,

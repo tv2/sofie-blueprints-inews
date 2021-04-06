@@ -1,16 +1,15 @@
 import { IBlueprintConfig, IStudioContext } from '@sofie-automation/blueprints-integration'
 import {
-	DSKConfig,
 	getLiveAudioLayers,
 	getStickyLayers,
 	MediaPlayerConfig,
-	parseDSK,
 	SourceInfo,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos,
 	TV2StudioConfigBase
 } from 'tv2-common'
+import { DSKRoles } from 'tv2-constants'
 import * as _ from 'underscore'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { parseMediaPlayers, parseSources } from './sources'
@@ -22,7 +21,7 @@ export interface BlueprintConfig {
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	liveAudio: string[]
 	stickyLayers: string[]
-	dsk: DSKConfig
+	dsk: TableConfigItemDSK[]
 }
 
 export interface StudioConfig extends TV2StudioConfigBase {
@@ -34,12 +33,8 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	ABPlaybackDebugLogging: boolean
 	StudioMics: string[]
 	AtemSource: {
-		ServerC: number // Studio
-		JingleFill: number
-		JingleKey: number
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
-		FullFrameGrafikBackground: number
 		DSK: TableConfigItemDSK[]
 
 		Default: number
@@ -48,11 +43,6 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	}
 
 	AtemSettings: {
-		VizClip: number
-		VizGain: number
-		CCGClip: number
-		CCGGain: number
-
 		MP1Baseline: {
 			Clip: number
 			Loop: boolean
@@ -61,48 +51,8 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	}
 }
 
-/*
-export function defaultStudioConfig(context: NotesContext): BlueprintConfig {
-	const config: BlueprintConfig = {
-		studio: {} as any,
-		showStyle: {} as any,
-		sources: [],
-		mediaPlayers: [],
-		liveAudio: [],
-		stickyLayers: []
-	}
-
-	// Load values injected by core, not via manifest
-	for (const id of CORE_INJECTED_KEYS) {
-		// Use the key as the value. Good enough for now
-		objectPath.set(config.studio, id, id)
-	}
-
-	// Load the config
-	applyToConfig(context, config.studio, studioConfigManifest, 'Studio', {})
-	// applyToConfig(context, config.showStyle, showStyleConfigManifest, 'ShowStyle', {})
-
-	config.sources = parseSources(config.studio)
-	config.mediaPlayers = parseMediaPlayers(config.studio)
-	config.liveAudio = getLiveAudioLayers(config.studio)
-	config.stickyLayers = getStickyLayers(config.studio, config.liveAudio)
-
-	return config
-}
-*/
-
-export const defaultDSK: TableConfigItemDSK = {
-	Number: 1,
-	Fill: 21,
-	Key: 34,
-	Toggle: true,
-	DefaultOn: true,
-	FullSource: true
-}
-
 export function parseConfig(rawConfig: IBlueprintConfig): any {
 	const studioConfig = (rawConfig as unknown) as StudioConfig
-	const dsk = parseDSK(studioConfig, defaultDSK)
 	const config: BlueprintConfig = {
 		studio: studioConfig,
 		showStyle: {} as any,
@@ -110,7 +60,7 @@ export function parseConfig(rawConfig: IBlueprintConfig): any {
 		mediaPlayers: [],
 		liveAudio: [],
 		stickyLayers: [],
-		dsk
+		dsk: studioConfig.AtemSource.DSK
 	}
 
 	config.sources = parseSources(studioConfig)
@@ -124,3 +74,17 @@ export function parseConfig(rawConfig: IBlueprintConfig): any {
 export function getStudioConfig(context: IStudioContext): BlueprintConfig {
 	return context.getStudioConfig() as BlueprintConfig
 }
+
+export const defaultDSKConfig: TableConfigItemDSK[] = [
+	{
+		Number: 0,
+		Key: 34,
+		Fill: 21,
+		Toggle: true,
+		DefaultOn: true,
+		Roles: [DSKRoles.FULLGFX, DSKRoles.OVERLAYGFX],
+		Clip: 50,
+		Gain: 12.5
+	},
+	{ Number: 1, Key: 31, Fill: 29, Toggle: true, DefaultOn: false, Roles: [DSKRoles.JINGLE], Clip: 50, Gain: 12.5 }
+]

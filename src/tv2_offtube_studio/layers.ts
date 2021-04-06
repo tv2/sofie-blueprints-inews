@@ -45,10 +45,6 @@ enum SisyfosLLayer {
 
 export enum OfftubeAtemLLayer {
 	AtemMEClean = 'atem_me_clean',
-	AtemDSKGraphics = 'atem_dsk_graphics',
-	AtemDSK2 = 'atem_dsk_2',
-	AtemDSK3 = 'atem_dsk_3',
-	AtemDSK4 = 'atem_dsk_4',
 	AtemMEProgram = 'atem_me_program',
 	AtemMENext = 'atem_me_next',
 	AtemMENextJingle = 'atem_me_next_jingle',
@@ -87,18 +83,3 @@ export const OfftubeSisyfosLLayer = {
 }
 
 export type OfftubeSisyfosLLayer = SharedSisyfosLLayer | SisyfosLLayer
-
-export function CasparPlayerClip(i: number | string) {
-	return `casparcg_player_clip_${i}`
-}
-
-export function CasparPlayerClipLoadingLoop(i: number | string) {
-	return `casparcg_player_clip_${i}_loading_loop`
-}
-
-export const atemLLayersDSK: { [num: number]: string } = {
-	1: OfftubeAtemLLayer.AtemDSKGraphics,
-	2: OfftubeAtemLLayer.AtemDSK2,
-	3: OfftubeAtemLLayer.AtemDSK3,
-	4: OfftubeAtemLLayer.AtemDSK4
-}

@@ -8,7 +8,7 @@ import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from
 import { SegmentContext } from '../../__mocks__/context'
 import { DefaultBreakerConfig } from '../../tv2_afvd_showstyle/__tests__/breakerConfigDefault'
 import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
-import { parseConfig, StudioConfig } from '../helpers/config'
+import { defaultDSKConfig, parseConfig, StudioConfig } from '../helpers/config'
 import { SisyfosLLAyer } from '../layers'
 
 const mockStudioConfig: StudioConfig = {
@@ -53,22 +53,14 @@ const mockStudioConfig: StudioConfig = {
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
-		DSK: [],
-		ServerC: 0,
+		DSK: defaultDSKConfig,
 		SplitArtF: 0,
 		SplitArtK: 0,
 		Default: 0,
 		Continuity: 0,
-		JingleFill: 0,
-		JingleKey: 0,
-		FullFrameGrafikBackground: 0,
 		MixMinusDefault: 0
 	},
 	AtemSettings: {
-		CCGClip: 0,
-		CCGGain: 0,
-		VizClip: 0,
-		VizGain: 0,
 		MP1Baseline: {
 			Clip: 0,
 			Loop: false,
@@ -90,7 +82,8 @@ const mockStudioConfig: StudioConfig = {
 		KeepAliveDuration: 1000,
 		PrerollDuration: 1000,
 		OutTransitionDuration: 1000,
-		CutToMediaPlayer: 1000
+		CutToMediaPlayer: 1000,
+		FullGraphicBackground: 36
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

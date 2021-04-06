@@ -57,27 +57,6 @@ export function ensureStudioConfig(
 	}
 }
 
-export function setConfigTo(versionStr: string, id: string, value: any) {
-	return literal<MigrationStepStudio>({
-		id: `config.valueSet.${id}`,
-		version: versionStr,
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextStudio) => {
-			// Optional mappings based on studio settings can be dropped here
-
-			const existing = context.getConfig(id)
-			if (!existing) {
-				return false
-			}
-
-			return !_.isEqual(existing, value)
-		},
-		migrate: (context: MigrationContextStudio) => {
-			context.setConfig(id, value)
-		}
-	})
-}
-
 export function renameStudioConfig(
 	version: string,
 	oldConfigName: string,

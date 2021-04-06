@@ -37,6 +37,7 @@ import {
 import { CasparPilotGeneratorSettings, GetPilotGraphicContentCaspar } from '../caspar'
 import { VizPilotGeneratorSettings } from '../viz'
 
+// Work needed, this should be more generic than expecting showstyles to define how to display pilot graphics
 export interface PilotGeneratorSettings {
 	caspar: CasparPilotGeneratorSettings
 	viz: VizPilotGeneratorSettings

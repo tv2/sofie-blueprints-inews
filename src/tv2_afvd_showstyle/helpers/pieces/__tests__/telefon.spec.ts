@@ -6,15 +6,21 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { CueDefinitionGraphic, CueDefinitionTelefon, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
+import {
+	AtemLLayerDSK,
+	CueDefinitionGraphic,
+	CueDefinitionTelefon,
+	GraphicInternal,
+	literal,
+	PartDefinitionKam
+} from 'tv2-common'
 import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
-import { StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
+import { defaultDSKConfig, StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { AtemSourceIndex } from '../../../../types/atem'
 import { ShowStyleConfig } from '../../config'
 import { EvaluateTelefon } from '../telefon'
 
@@ -78,16 +84,7 @@ describe('telefon', () => {
 				mediaPlayers: [],
 				stickyLayers: [],
 				liveAudio: [],
-				dsk: {
-					1: {
-						Number: 1,
-						Fill: AtemSourceIndex.Col1,
-						Key: AtemSourceIndex.Blk,
-						Toggle: false,
-						DefaultOn: true,
-						FullSource: true
-					}
-				}
+				dsk: defaultDSKConfig
 			},
 			mockContext,
 			pieces,
@@ -125,6 +122,29 @@ describe('telefon', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
+							}
+						}),
+						literal<TSR.TimelineObjAtemDSK>({
+							id: '',
+							enable: {
+								start: 0
+							},
+							priority: 1,
+							layer: AtemLLayerDSK(0),
+							content: {
+								deviceType: TSR.DeviceType.ATEM,
+								type: TSR.TimelineContentTypeAtem.DSK,
+								dsk: {
+									onAir: true,
+									sources: {
+										fillSource: 21,
+										cutSource: 34
+									},
+									properties: {
+										clip: 500,
+										gain: 125
+									}
+								}
 							}
 						}),
 						literal<TSR.TimelineObjSisyfosChannel>({

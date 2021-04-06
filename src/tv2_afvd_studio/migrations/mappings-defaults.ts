@@ -1,9 +1,17 @@
 import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@sofie-automation/blueprints-integration'
-import { AbstractLLayerServerEnable, literal } from 'tv2-common'
+import {
+	AbstractLLayerServerEnable,
+	CasparPlayerClip,
+	CasparPlayerClipLoadingLoop,
+	GetDSKMappings,
+	literal,
+	SisyfosPlayerClip
+} from 'tv2-common'
 import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
+import { ATEMModel } from '../../types/atem'
 import { BlueprintConfig, StudioConfig } from '../helpers/config'
-import { AtemLLayer, CasparLLayer, CasparPlayerClip, CasparPlayerClipLoadingLoop, SisyfosLLAyer } from '../layers'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -583,34 +591,7 @@ export const MAPPINGS_ATEM: BlueprintMappings = {
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 11 // 11 = out 12
 	}),
-	[AtemLLayer.AtemDSKGraphics]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 0 // 0 = DSK1
-	}),
-	[AtemLLayer.AtemDSKEffect]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 1 // 1 = DSK2
-	}),
-	[AtemLLayer.AtemDSK3]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 2 // 2 = DSK3
-	}),
-	[AtemLLayer.AtemDSK4]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingAtemType.DownStreamKeyer,
-		index: 3 // 3 = DSK4
-	}),
+	...GetDSKMappings(ATEMModel.CONSTELLATION_8K_UHD_MODE),
 	[AtemLLayer.AtemSSrcArt]: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
@@ -794,14 +775,14 @@ export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlaye
 	}
 
 	for (const mp of mediaPlayers) {
-		res[`casparcg_player_clip_${mp.id}`] = literal<TSR.MappingCasparCG & BlueprintMapping>({
+		res[CasparPlayerClip(mp.id)] = literal<TSR.MappingCasparCG & BlueprintMapping>({
 			device: TSR.DeviceType.CASPARCG,
 			deviceId: 'caspar01',
 			lookahead: LookaheadMode.NONE,
 			channel: 0, // TODO?
 			layer: 110
 		})
-		res[`sisyfos_player_clip_${mp.id}`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
+		res[SisyfosPlayerClip(mp.id)] = literal<TSR.MappingSisyfos & BlueprintMapping>({
 			device: TSR.DeviceType.SISYFOS,
 			deviceId: 'sisyfos0',
 			lookahead: LookaheadMode.NONE,

@@ -16,7 +16,7 @@ import {
 	DVEConfigInput,
 	DVEParentClass,
 	DVESources,
-	FindFullSourceDSK,
+	FindDSKFullGFX,
 	FindSourceInfoStrict,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEVS,
@@ -410,7 +410,7 @@ export function MakeContentDVE2<
 					const sourceInfoFull: SourceInfo = {
 						type: SourceLayerType.GRAPHICS,
 						id: 'full',
-						port: FindFullSourceDSK(config).Fill
+						port: FindDSKFullGFX(config).Fill
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source)
 					dveTimeline.push(

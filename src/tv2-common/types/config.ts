@@ -1,3 +1,5 @@
+import { DSKRoles } from 'tv2-constants'
+
 export interface TableConfigItemSourceMapping {
 	SourceName: string
 	AtemSource: number
@@ -13,10 +15,13 @@ export type TableConfigItemSourceMappingWithSisyfosAndKeepAudio = {
 } & TableConfigItemSourceMappingWithSisyfos
 
 export interface TableConfigItemDSK {
+	/** 0-based */
 	Number: number
 	Fill: number
 	Key: number
 	Toggle: boolean
 	DefaultOn: boolean
-	FullSource: boolean
+	Roles: DSKRoles[]
+	Clip: number
+	Gain: number
 }

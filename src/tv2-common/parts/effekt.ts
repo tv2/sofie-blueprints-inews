@@ -9,6 +9,7 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionTakeWithTransitionVariantMix,
+	EnableDSK,
 	GetTagForTransition,
 	literal,
 	PartDefinition,
@@ -27,7 +28,6 @@ export function CreateEffektForPartBase(
 	pieces: IBlueprintPiece[],
 	layers: {
 		sourceLayer: string
-		atemLayer: string
 		casparLayer: string
 		sisyfosLayer: string
 	}
@@ -75,7 +75,6 @@ export function CreateEffektForPartInner<
 	externalId: string,
 	layers: {
 		sourceLayer: string
-		atemLayer: string
 		casparLayer: string
 		sisyfosLayer: string
 	},
@@ -147,34 +146,7 @@ export function CreateEffektForPartInner<
 							file: fileName
 						}
 					}),
-					literal<TSR.TimelineObjAtemDSK>({
-						id: '',
-						enable: {
-							start: Number(config.studio.CasparPrerollDuration)
-						},
-						priority: 1,
-						layer: layers.atemLayer,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.DSK,
-							dsk: {
-								onAir: true,
-								sources: {
-									fillSource: config.studio.AtemSource.JingleFill,
-									cutSource: config.studio.AtemSource.JingleKey
-								},
-								properties: {
-									tie: false,
-									preMultiply: false,
-									clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-									gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-									mask: {
-										enabled: false
-									}
-								}
-							}
-						}
-					}),
+					...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 						id: '',
 						enable: {
@@ -210,7 +182,6 @@ export function CreateMixForPartInner(
 	durationInFrames: number,
 	layers: {
 		sourceLayer: string
-		atemLayer: string
 		casparLayer: string
 		sisyfosLayer: string
 	}

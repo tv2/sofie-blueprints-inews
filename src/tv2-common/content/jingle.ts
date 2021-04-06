@@ -1,6 +1,7 @@
 import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { EnableDSK, FindDSKJingle } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -10,7 +11,6 @@ export interface JingleLayers {
 		PlayerJingleLookahead?: string
 	}
 	ATEM: {
-		DSKJingle: string
 		USKCleanEffekt?: string
 		USKJinglePreview?: string
 	}
@@ -60,10 +60,10 @@ export function CreateJingleContentBase<
 	loadFirstFrame: boolean,
 	duration: number,
 	alphaAtEnd: number,
-	layers: JingleLayers,
-	preMultiplied: boolean
+	layers: JingleLayers
 ) {
 	const fileName = GetJingleFileName(config, file)
+	const jingleDSK = FindDSKJingle(config)
 	return literal<VTContent>({
 		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
@@ -97,35 +97,7 @@ export function CreateJingleContentBase<
 				  ]
 				: []),
 
-			literal<TSR.TimelineObjAtemDSK>({
-				id: '',
-				enable: {
-					start: Number(config.studio.CasparPrerollDuration)
-				},
-				priority: 1,
-				layer: layers.ATEM.DSKJingle,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.DSK,
-					dsk: {
-						onAir: true,
-						sources: {
-							fillSource: config.studio.AtemSource.JingleFill,
-							cutSource: config.studio.AtemSource.JingleKey
-						},
-						properties: {
-							tie: false,
-							preMultiply: preMultiplied,
-							clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-							gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-							mask: {
-								enabled: false
-							}
-						}
-					}
-				},
-				classes: ['MIX_MINUS_OVERRIDE_DSK']
-			}),
+			...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 
 			...(layers.ATEM.USKJinglePreview
 				? [
@@ -150,13 +122,13 @@ export function CreateJingleContentBase<
 											onAir: false,
 											mixEffectKeyType: 0,
 											flyEnabled: false,
-											fillSource: config.studio.AtemSource.JingleFill,
-											cutSource: config.studio.AtemSource.JingleKey,
+											fillSource: jingleDSK.Fill,
+											cutSource: jingleDSK.Clip,
 											maskEnabled: false,
 											lumaSettings: {
-												preMultiplied,
-												clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
-												gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
+												preMultiplied: false,
+												clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000
+												gain: jingleDSK.Gain * 10 // input is percents (0-100), atem uses 1-000
 											}
 										}
 									]
@@ -199,13 +171,13 @@ export function CreateJingleContentBase<
 											onAir: true,
 											mixEffectKeyType: 0,
 											flyEnabled: false,
-											fillSource: config.studio.AtemSource.JingleFill,
-											cutSource: config.studio.AtemSource.JingleKey,
+											fillSource: jingleDSK.Fill,
+											cutSource: jingleDSK.Key,
 											maskEnabled: false,
 											lumaSettings: {
-												preMultiplied,
-												clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000
-												gain: config.studio.AtemSettings.CCGGain * 10 // input is percents (0-100), atem uses 1-000
+												preMultiplied: false,
+												clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000
+												gain: jingleDSK.Gain * 10 // input is percents (0-100), atem uses 1-000
 											}
 										}
 									]

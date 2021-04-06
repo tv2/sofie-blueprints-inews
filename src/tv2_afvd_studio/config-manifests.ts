@@ -6,15 +6,15 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
+	DSKConfigManifest,
 	literal,
 	MakeConfigForSources,
 	MakeConfigWithMediaFlow,
-	TableConfigItemDSK,
 	TableConfigItemSourceMapping
 } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
-import { defaultDSK } from './helpers/config'
+import { defaultDSKConfig } from './helpers/config'
 import { SisyfosLLAyer } from './layers'
 
 export const CORE_INJECTED_KEYS = ['SofieHostURL']
@@ -329,70 +329,7 @@ export const manifestAFVDStudioMics: ConfigManifestEntry = {
 	defaultVal: DEFAULT_STUDIO_MICS_LAYERS
 }
 
-export const manifestAFVDDownstreamKeyers: ConfigManifestEntryTable = {
-	id: 'AtemSource.DSK',
-	name: 'ATEM DSK',
-	description: 'ATEM Downstream Keyers Fill and Key',
-	type: ConfigManifestEntryType.TABLE,
-	required: false,
-	defaultVal: literal<Array<TableConfigItemDSK & TableConfigItemValue[0]>>([{ _id: '', ...defaultDSK }]),
-	columns: [
-		{
-			id: 'Number',
-			name: 'Number',
-			description: 'DSK number, starting from 1',
-			type: ConfigManifestEntryType.NUMBER,
-			required: true,
-			defaultVal: 1,
-			rank: 0
-		},
-		{
-			id: 'Fill',
-			name: 'ATEM Fill',
-			description: 'ATEM vision mixer input for DSK Fill',
-			type: ConfigManifestEntryType.NUMBER,
-			required: true,
-			defaultVal: 21,
-			rank: 1
-		},
-		{
-			id: 'Key',
-			name: 'ATEM Key',
-			description: 'ATEM vision mixer input for DSK Key',
-			type: ConfigManifestEntryType.NUMBER,
-			required: true,
-			defaultVal: 34,
-			rank: 2
-		},
-		{
-			id: 'Toggle',
-			name: 'AdLib Toggle',
-			description: 'Make AdLib that toggles the DSK',
-			type: ConfigManifestEntryType.BOOLEAN,
-			required: true,
-			defaultVal: false,
-			rank: 3
-		},
-		{
-			id: 'DefaultOn',
-			name: 'On by default',
-			description: 'Enable the DSK in the baseline',
-			type: ConfigManifestEntryType.BOOLEAN,
-			required: true,
-			defaultVal: false,
-			rank: 4
-		},
-		{
-			id: 'FullSource',
-			name: 'Full graphic source',
-			description: 'Use the DSK Fill as a source for Full graphics',
-			type: ConfigManifestEntryType.BOOLEAN,
-			required: true,
-			defaultVal: false,
-			rank: 5
-		}
-	]
-}
+export const manifestAFVDDownstreamKeyers: ConfigManifestEntryTable = DSKConfigManifest(defaultDSKConfig)
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
@@ -415,62 +352,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: false
 	},
 	{
-		id: 'AtemSource.ServerC',
-		name: 'CasparCG Server C',
-		description: 'ATEM vision mixer input for ServerC',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 28
-	},
-	{
-		id: 'AtemSource.JingleFill',
-		name: 'Jingle Fill Source',
-		description: 'ATEM vision mixer input for Jingle Fill',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 29
-	},
-	{
-		id: 'AtemSource.JingleKey',
-		name: 'Jingle Key Source',
-		description: 'ATEM vision mixer input for Jingle Source',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 31
-	},
-	{
-		id: 'AtemSettings.VizClip',
-		name: 'Viz keyer clip',
-		description: 'Viz keyer clip',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 50.0
-	},
-	{
-		id: 'AtemSettings.VizGain',
-		name: 'Viz keyer gain',
-		description: 'Viz keyer gain',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 12.5
-	},
-	{
-		id: 'AtemSettings.CCGClip',
-		name: 'CasparCG keyer clip',
-		description: 'CasparCG keyer clip',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 50.0
-	},
-	{
-		id: 'AtemSettings.CCGGain',
-		name: 'CasparCG keyer gain',
-		description: 'CasparCG keyer gain',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 12.5
-	},
-	{
 		id: 'AtemSource.SplitArtF',
 		name: 'ATEM Split Screen Art Fill',
 		description: 'ATEM vision mixer input for Split Screen Art Fill',
@@ -485,14 +366,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 32
-	},
-	{
-		id: 'AtemSource.FullFrameGrafikBackground',
-		name: 'Full frame grafik background source',
-		description: 'ATEM source for mos full-frame grafik background source',
-		type: ConfigManifestEntryType.NUMBER,
-		required: false,
-		defaultVal: 36
 	},
 	{
 		id: 'AtemSource.Default',
@@ -656,6 +529,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		type: ConfigManifestEntryType.NUMBER,
 		required: false,
 		defaultVal: 500
+	},
+	{
+		id: 'VizPilotGraphics.FullGraphicBackground',
+		name: 'Full frame grafik background source',
+		description: 'ATEM source for mos full-frame grafik background source',
+		type: ConfigManifestEntryType.NUMBER,
+		required: false,
+		defaultVal: 36
 	},
 	{
 		id: 'VizPilotGraphics.KeepAliveDuration',

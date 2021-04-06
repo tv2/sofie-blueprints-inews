@@ -10,7 +10,7 @@ import {
 	TimelineObjHoldMode,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { literal, TimelineBlueprintExt } from 'tv2-common'
+import { AtemLLayerDSK, FindDSKJingle, literal, TimelineBlueprintExt } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
@@ -34,6 +34,9 @@ export function postProcessPieceTimelineObjects(
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean
 ) {
+	const jingleDSK = FindDSKJingle(config)
+	const jingleDSKLayer = AtemLLayerDSK(jingleDSK.Number)
+
 	if (piece.content?.timelineObjects) {
 		const extraObjs: TimelineObjectCoreExt[] = []
 
@@ -155,7 +158,7 @@ export function postProcessPieceTimelineObjects(
 				obj.content.type === TSR.TimelineContentTypeAtem.DSK
 		)
 		_.each(atemDskObjs, tlObj => {
-			if (tlObj.layer === AtemLLayer.AtemDSKEffect) {
+			if (tlObj.layer === jingleDSKLayer) {
 				const newProps = _.pick(tlObj.content.dsk, 'onAir')
 				if (_.isEqual(newProps, tlObj.content.dsk)) {
 					context.warning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)

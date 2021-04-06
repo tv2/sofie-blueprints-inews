@@ -1,5 +1,5 @@
-import { DSKConfig, literal, parseMapStr } from 'tv2-common'
-import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { literal, parseMapStr } from 'tv2-common'
+import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
@@ -84,13 +84,9 @@ export const defaultStudioConfig: StudioConfig = {
 	],
 	AtemSource: {
 		MixMinusDefault: 2,
-		DSK: [],
-		ServerC: 28,
-		JingleFill: 6,
-		JingleKey: 31,
+		DSK: defaultDSKConfig,
 		SplitArtF: 30,
 		SplitArtK: 32,
-		FullFrameGrafikBackground: 36,
 		Default: 2001,
 		Continuity: 2002
 	},
@@ -101,10 +97,6 @@ export const defaultStudioConfig: StudioConfig = {
 	],
 	ABPlaybackDebugLogging: false,
 	AtemSettings: {
-		VizClip: 50,
-		VizGain: 12.5,
-		CCGClip: 50,
-		CCGGain: 12.5,
 		MP1Baseline: {
 			Clip: 0,
 			Loop: true,
@@ -122,7 +114,8 @@ export const defaultStudioConfig: StudioConfig = {
 		KeepAliveDuration: 700,
 		PrerollDuration: 2000,
 		OutTransitionDuration: 280,
-		CutToMediaPlayer: 1500
+		CutToMediaPlayer: 1500,
+		FullGraphicBackground: 36
 	},
 	HTMLGraphics: {
 		GraphicURL: '',
@@ -244,8 +237,4 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT'
-}
-
-export const defaultDSKConfig: DSKConfig = {
-	1: { Number: 1, Key: 0, Fill: 0, Toggle: true, DefaultOn: true, FullSource: true }
 }

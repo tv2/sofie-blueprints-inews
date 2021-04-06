@@ -122,26 +122,16 @@ export function createJingleContentOfftube(
 	duration: number,
 	alphaAtEnd: number
 ) {
-	return CreateJingleContentBase(
-		config,
-		file,
-		alphaAtStart,
-		loadFirstFrame,
-		duration,
-		alphaAtEnd,
-		{
-			Caspar: {
-				PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
-				PlayerJingleLookahead: OfftubeCasparLLayer.CasparPlayerJingleLookahead
-			},
-			ATEM: {
-				DSKJingle: OfftubeAtemLLayer.AtemDSKGraphics,
-				USKJinglePreview: OfftubeAtemLLayer.AtemMENextJingle
-			},
-			Sisyfos: {
-				PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
-			}
+	return CreateJingleContentBase(config, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
+		Caspar: {
+			PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
+			PlayerJingleLookahead: OfftubeCasparLLayer.CasparPlayerJingleLookahead
 		},
-		false
-	)
+		ATEM: {
+			USKJinglePreview: OfftubeAtemLLayer.AtemMENextJingle
+		},
+		Sisyfos: {
+			PlayerJingle: OfftubeSisyfosLLayer.SisyfosSourceJingle
+		}
+	})
 }

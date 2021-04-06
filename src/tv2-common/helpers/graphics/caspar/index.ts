@@ -12,6 +12,7 @@ import {
 } from 'tv2-common'
 import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
 import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
+import { EnableDSK } from '../../dsk'
 import { IsTargetingFull, IsTargetingWall } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
@@ -100,7 +101,9 @@ function CasparOverlayTimeline(
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })
-		})
+		}),
+		// Assume DSK is off by default (config table)
+		...EnableDSK(config, 'OVL')
 	]
 }
 

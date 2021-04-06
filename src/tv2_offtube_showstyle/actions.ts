@@ -57,7 +57,6 @@ export function executeActionOfftube(
 					Next: OfftubeAtemLLayer.AtemMENext,
 					ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead,
 					SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
-					Effekt: OfftubeAtemLLayer.AtemDSKGraphics,
 					cutOnclean: true
 				}
 			},

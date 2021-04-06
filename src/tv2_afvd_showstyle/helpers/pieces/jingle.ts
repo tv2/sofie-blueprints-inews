@@ -116,27 +116,17 @@ export function createJingleContentAFVD(
 	duration: number,
 	alphaAtEnd: number
 ) {
-	const content = CreateJingleContentBase(
-		config,
-		file,
-		alphaAtStart,
-		loadFirstFrame,
-		duration,
-		alphaAtEnd,
-		{
-			Caspar: {
-				PlayerJingle: CasparLLayer.CasparPlayerJingle
-			},
-			ATEM: {
-				DSKJingle: AtemLLayer.AtemDSKEffect,
-				USKCleanEffekt: AtemLLayer.AtemCleanUSKEffect
-			},
-			Sisyfos: {
-				PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
-			}
+	const content = CreateJingleContentBase(config, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
+		Caspar: {
+			PlayerJingle: CasparLLayer.CasparPlayerJingle
 		},
-		false
-	)
+		ATEM: {
+			USKCleanEffekt: AtemLLayer.AtemCleanUSKEffect
+		},
+		Sisyfos: {
+			PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
+		}
+	})
 
 	return content
 }

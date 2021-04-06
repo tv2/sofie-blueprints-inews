@@ -4,6 +4,7 @@ import {
 	TableConfigItemValue
 } from '@sofie-automation/blueprints-integration'
 import { parseMapStr, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import { DSKRoles } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TableConfigItemDSK } from '../types'
 import { literal } from '../util'
@@ -86,7 +87,11 @@ export function MoveClipSourcePath(versionStr: string, studio: string): Migratio
 	return res
 }
 
-export function MoveDSKToTable(versionStr: string, defaultVal: TableConfigItemDSK): MigrationStepStudio {
+export function MoveDSKToTable(
+	versionStr: string,
+	defaultVal: TableConfigItemDSK,
+	rolesForFullDSK: DSKRoles[]
+): MigrationStepStudio {
 	const configName = 'AtemSource.DSK'
 	const res = literal<MigrationStepStudio>({
 		id: `studioConfig.moveDSKToTable`,
@@ -113,7 +118,9 @@ export function MoveDSKToTable(versionStr: string, defaultVal: TableConfigItemDS
 						Key: oldDSK1Key === undefined ? defaultVal.Key : oldDSK1Key,
 						Toggle: defaultVal.Toggle,
 						DefaultOn: defaultVal.DefaultOn,
-						FullSource: defaultVal.FullSource
+						Roles: rolesForFullDSK,
+						Clip: 50,
+						Gain: 12.5
 					})
 				)
 				context.setConfig(configName, table)

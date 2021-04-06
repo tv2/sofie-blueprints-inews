@@ -7,7 +7,7 @@ import {
 	PieceLifespan,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { CueDefinitionGraphic, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
+import { AtemLLayerDSK, CueDefinitionGraphic, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
 import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
 import { SegmentContext } from '../../../../__mocks__/context'
 import { BlueprintConfig } from '../../../../tv2_afvd_studio/helpers/config'
@@ -48,6 +48,30 @@ const dummyPart = literal<PartDefinitionKam>({
 	fields: {},
 	modified: 0,
 	segmentExternalId: ''
+})
+
+const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
+	id: '',
+	enable: {
+		start: 0
+	},
+	priority: 1,
+	layer: AtemLLayerDSK(0),
+	content: {
+		deviceType: TSR.DeviceType.ATEM,
+		type: TSR.TimelineContentTypeAtem.DSK,
+		dsk: {
+			onAir: true,
+			sources: {
+				fillSource: 21,
+				cutSource: 34
+			},
+			properties: {
+				clip: 500,
+				gain: 125
+			}
+		}
+	}
 })
 
 describe('grafik piece', () => {
@@ -98,7 +122,7 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -113,7 +137,8 @@ describe('grafik piece', () => {
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			})
@@ -165,7 +190,7 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -180,7 +205,8 @@ describe('grafik piece', () => {
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			}),
@@ -198,7 +224,7 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -213,7 +239,8 @@ describe('grafik piece', () => {
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			})
@@ -267,7 +294,7 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -282,7 +309,8 @@ describe('grafik piece', () => {
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			}),
@@ -300,7 +328,7 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -315,7 +343,8 @@ describe('grafik piece', () => {
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			})
@@ -369,7 +398,7 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -384,7 +413,8 @@ describe('grafik piece', () => {
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			})
@@ -440,7 +470,7 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -455,7 +485,8 @@ describe('grafik piece', () => {
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			})
@@ -508,7 +539,7 @@ describe('grafik piece', () => {
 					fileName: 'direkte',
 					path: 'direkte',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -523,7 +554,8 @@ describe('grafik piece', () => {
 								templateData: ['KØBENHAVN'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			}),
@@ -601,7 +633,7 @@ describe('grafik piece', () => {
 					fileName: 'arkiv',
 					path: 'arkiv',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TimelineObjVIZMSEAny[]>([
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
@@ -616,7 +648,8 @@ describe('grafik piece', () => {
 								templateData: ['unnamed org'],
 								channelName: 'OVL1'
 							}
-						})
+						}),
+						dskEnableObj
 					])
 				})
 			})

@@ -24,13 +24,15 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	CasparPlayerClipLoadingLoop,
+	CreateDSKBaseline,
+	CreateDSKBaselineAdlibs,
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	literal,
-	pgmDSKLayers,
 	SourceInfo
 } from 'tv2-common'
 import {
@@ -43,13 +45,7 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
-import {
-	atemLLayersDSK,
-	CasparPlayerClipLoadingLoop,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeSisyfosLLayer
-} from '../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
@@ -113,78 +109,7 @@ function getGlobalAdLibPiecesOfftube(
 
 	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
 
-	for (const dsk of Object.values(config.dsk)) {
-		if (dsk.Toggle && pgmDSKLayers[dsk.Number] && atemLLayersDSK[dsk.Number]) {
-			if (dsk.DefaultOn) {
-				adlibItems.push({
-					externalId: `dskoff${dsk.Number}`,
-					name: `DSK ${dsk.Number} OFF`,
-					_rank: 500 + dsk.Number,
-					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-					content: {
-						timelineObjects: _.compact<TSR.TSRTimelineObj>([
-							literal<TSR.TimelineObjAtemDSK>({
-								id: '',
-								enable: { while: '1' },
-								priority: 10,
-								layer: atemLLayersDSK[dsk.Number],
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.DSK,
-									dsk: {
-										onAir: false
-									}
-								}
-							})
-						])
-					}
-				})
-			} else {
-				adlibItems.push({
-					externalId: `dskon${dsk.Number}`,
-					name: `DSK ${dsk.Number} ON`,
-					_rank: 500 + dsk.Number,
-					sourceLayerId: pgmDSKLayers[dsk.Number],
-					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
-					content: {
-						timelineObjects: _.compact<TSR.TSRTimelineObj>([
-							literal<TSR.TimelineObjAtemDSK>({
-								id: '',
-								enable: { while: '1' },
-								priority: 10,
-								layer: atemLLayersDSK[dsk.Number],
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.DSK,
-									dsk: {
-										onAir: true,
-										sources: {
-											fillSource: dsk.Fill,
-											cutSource: dsk.Key
-										},
-										properties: {
-											tie: false,
-											preMultiply: false,
-											clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-											gain: config.studio.AtemSettings.CCGGain * 10, // input is percents (0-100), atem uses 1-000,
-											mask: {
-												enabled: false
-											}
-										}
-									}
-								}
-							})
-						])
-					}
-				})
-			}
-		}
-	}
+	adlibItems.push(...CreateDSKBaselineAdlibs(config, 500))
 
 	adlibItems.push({
 		externalId: 'micUp',
@@ -713,36 +638,8 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineOb
 		}),
 
 		// keyers
-		...Object.values(config.dsk)
-			.filter(dsk => dsk.DefaultOn)
-			.map(dsk => {
-				return literal<TSR.TimelineObjAtemDSK>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
-					layer: atemLLayersDSK[dsk.Number],
-					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.DSK,
-						dsk: {
-							onAir: true,
-							sources: {
-								fillSource: config.dsk[dsk.Number].Fill,
-								cutSource: config.dsk[dsk.Number].Key
-							},
-							properties: {
-								tie: false,
-								preMultiply: false,
-								clip: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-								gain: config.studio.AtemSettings.CCGClip * 10, // input is percents (0-100), atem uses 1-000,
-								mask: {
-									enabled: false
-								}
-							}
-						}
-					}
-				})
-			}),
+		...CreateDSKBaseline(config),
+
 		literal<TSR.TimelineObjAtemSsrcProps>({
 			id: '',
 			enable: { while: '1' },

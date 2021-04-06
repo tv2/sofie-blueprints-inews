@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
-import { StudioConfig } from '../helpers/config'
+import { defaultDSKConfig, StudioConfig } from '../helpers/config'
 
 const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
@@ -30,22 +30,14 @@ const blankStudioConfig: StudioConfig = {
 	ABPlaybackDebugLogging: false,
 
 	AtemSource: {
-		DSK: [],
-		ServerC: 0,
-		JingleFill: 0,
-		JingleKey: 0,
+		DSK: defaultDSKConfig,
 		SplitArtF: 0,
 		SplitArtK: 0,
 		Default: 0,
 		MixMinusDefault: 0,
-		Continuity: 0,
-		FullFrameGrafikBackground: 0
+		Continuity: 0
 	},
 	AtemSettings: {
-		CCGClip: 0,
-		CCGGain: 0,
-		VizClip: 0,
-		VizGain: 0,
 		MP1Baseline: {
 			Clip: 1,
 			Loop: false,
@@ -67,7 +59,8 @@ const blankStudioConfig: StudioConfig = {
 		KeepAliveDuration: 1000,
 		PrerollDuration: 1000,
 		OutTransitionDuration: 1000,
-		CutToMediaPlayer: 1000
+		CutToMediaPlayer: 1000,
+		FullGraphicBackground: 36
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

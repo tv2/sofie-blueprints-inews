@@ -10,7 +10,8 @@ import {
 import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
-	FindFullSourceDSK,
+	EnableDSK,
+	FindDSKFullGFX,
 	GetSisyfosTimelineObjForCamera,
 	GraphicPilot,
 	literal,
@@ -18,12 +19,13 @@ import {
 	SisyfosEVSSource,
 	SourceInfo
 } from 'tv2-common'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { GraphicLLayer } from 'tv2-constants'
+import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
-	caspar: { createPilotTimelineForStudio: createStudioTimelineCaspar },
-	viz: { createPilotTimelineForStudio: createStudioTimelineViz }
+	caspar: { createPilotTimelineForStudio: makeStudioTimelineCaspar },
+	viz: { createPilotTimelineForStudio: makeStudioTimelineViz }
 }
 
 export function EvaluateCueGraphicPilot(
@@ -53,8 +55,8 @@ export function EvaluateCueGraphicPilot(
 	)
 }
 
-function createStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
-	const fullsDSK = FindFullSourceDSK(config)
+function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
+	const fullDSK = FindDSKFullGFX(config)
 
 	return [
 		literal<TSR.TimelineObjAtemME>({
@@ -68,13 +70,13 @@ function createStudioTimelineViz(config: BlueprintConfig, context: NotesContext,
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: config.studio.AtemSource.FullFrameGrafikBackground,
+					input: config.studio.VizPilotGraphics.FullGraphicBackground,
 					transition: TSR.AtemTransitionStyle.CUT
 				}
 			},
 			...(adlib ? { classes: ['adlib_deparent'] } : {})
 		}),
-		literal<TSR.TimelineObjAtemDSK>({
+		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
 			enable: {
 				start: config.studio.VizPilotGraphics.CutToMediaPlayer
@@ -83,25 +85,22 @@ function createStudioTimelineViz(config: BlueprintConfig, context: NotesContext,
 			layer: AtemLLayer.AtemAuxPGM,
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.DSK,
-				dsk: {
-					onAir: true,
-					sources: {
-						fillSource: fullsDSK.Fill,
-						cutSource: fullsDSK.Key
-					}
+				type: TSR.TimelineContentTypeAtem.AUX,
+				aux: {
+					input: fullDSK.Fill
 				}
 			},
 			classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
 		}),
+		// Assume DSK is off by default (config table)
+		...EnableDSK(config, 'FULL'),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
 		...muteSisyfosChannels(config.sources)
 	]
 }
 
-function createStudioTimelineCaspar(config: BlueprintConfig, context: NotesContext) {
-	const fullsDSK = FindFullSourceDSK(config)
-
+function makeStudioTimelineCaspar(config: BlueprintConfig, context: NotesContext) {
+	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({
 			id: '',
@@ -114,7 +113,7 @@ function createStudioTimelineCaspar(config: BlueprintConfig, context: NotesConte
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
-					input: fullsDSK.Fill,
+					input: fullDSK.Fill,
 					transition: TSR.AtemTransitionStyle.WIPE,
 					transitionSettings: {
 						wipe: {
@@ -125,6 +124,17 @@ function createStudioTimelineCaspar(config: BlueprintConfig, context: NotesConte
 						}
 					}
 				}
+			}
+		}),
+		literal<TSR.TimelineObjCasparCGAny>({
+			id: '',
+			enable: { start: 0 },
+			priority: 1,
+			layer: GraphicLLayer.GraphicLLayerFullLoop,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.ROUTE,
+				mappedLayer: CasparLLayer.CasparCGDVELoop
 			}
 		}),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),

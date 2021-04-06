@@ -8,7 +8,7 @@ import {
 import { AbstractLLayer, MEDIA_PLAYER_AUTO, MediaPlayerClaimType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
-import { AbstractLLayerServerEnable } from '../layers'
+import { AbstractLLayerServerEnable, CasparPlayerClip } from '../layers'
 import {
 	MediaPlayerClaim,
 	PieceMetaData,
@@ -23,7 +23,6 @@ export interface SessionToPlayerMap {
 export interface ABSourceLayers {
 	Caspar: {
 		ClipPending: string
-		PlayerClip: (id: number | string) => string
 	}
 	Sisyfos: {
 		ClipPending: string
@@ -290,12 +289,12 @@ function updateObjectsToMediaPlayer<
 		// Mutate each object to the correct player
 		if (obj.content.deviceType === TSR.DeviceType.CASPARCG) {
 			if (obj.layer === sourceLayers.Caspar.ClipPending) {
-				obj.layer = sourceLayers.Caspar.PlayerClip(playerId)
+				obj.layer = CasparPlayerClip(playerId)
 			} else if (obj.lookaheadForLayer === sourceLayers.Caspar.ClipPending) {
 				// This works on the assumption that layer will contain lookaheadForLayer, but not the exact syntax.
 				// Hopefully this will be durable to any potential future core changes
-				obj.layer = (obj.layer + '').replace(obj.lookaheadForLayer.toString(), sourceLayers.Caspar.PlayerClip(playerId))
-				obj.lookaheadForLayer = sourceLayers.Caspar.PlayerClip(playerId)
+				obj.layer = (obj.layer + '').replace(obj.lookaheadForLayer.toString(), CasparPlayerClip(playerId))
+				obj.lookaheadForLayer = CasparPlayerClip(playerId)
 			} else {
 				context.warning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.warning(obj)

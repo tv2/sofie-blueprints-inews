@@ -124,6 +124,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		IsDesign: false
 	}),
 
+	/**
+	 * 1.6.1
+	 * - Remove studio0_dsk_cmd, will be replaced by studio0_dsk_1_cmd by defaults
+	 */
+	removeSourceLayer('1.6.1', 'AFVD', 'studio0_dsk_cmd'),
+
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
 ])
