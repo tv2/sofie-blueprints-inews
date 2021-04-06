@@ -169,8 +169,8 @@ export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfig
 				dsk: {
 					onAir: dsk.DefaultOn,
 					sources: {
-						fillSource: config.dsk[dsk.Number].Fill,
-						cutSource: config.dsk[dsk.Number].Key
+						fillSource: dsk.Fill,
+						cutSource: dsk.Key
 					},
 					properties: {
 						tie: false,
