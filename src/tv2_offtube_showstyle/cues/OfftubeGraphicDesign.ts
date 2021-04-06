@@ -82,13 +82,11 @@ function designTimeline(parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineO
 				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 				templateType: 'html',
 				name: 'sport-overlay/index',
-				data: `<templateData>${encodeURI(
-					JSON.stringify({
-						display: 'program',
-						design: parsedCue.design,
-						partialUpdate: true
-					})
-				)}</templateData>`,
+				data: {
+					display: 'program',
+					design: parsedCue.design,
+					partialUpdate: true
+				},
 				useStopCommand: false
 			}
 		})

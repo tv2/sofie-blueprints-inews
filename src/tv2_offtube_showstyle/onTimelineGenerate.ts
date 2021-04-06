@@ -105,7 +105,7 @@ export function disableFirstPilotGFXAnimation(
 			const payload = obj2.metaData?.templateData?.slots && obj2.metaData?.templateData?.slots['250_full']?.payload
 			if (obj2.content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE && payload) {
 				payload.noAnimation = true
-				obj2.content.data = `<templateData>${encodeURI(JSON.stringify(obj2.metaData?.templateData))}</templateData>`
+				obj2.content.data = obj2.metaData!.templateData
 			}
 		}
 	}

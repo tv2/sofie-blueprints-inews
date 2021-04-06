@@ -73,7 +73,7 @@ export function GetPilotGraphicContentCaspar(
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 					templateType: 'html',
 					name: 'sport-overlay/index',
-					data: `<templateData>${encodeURI(JSON.stringify(templateData))}</templateData>`,
+					data: templateData,
 					useStopCommand: false,
 					mixer: {
 						opacity: 100
@@ -114,13 +114,11 @@ export function CreateHTMLRendererContent(
 		type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 		templateType: 'html',
 		name: 'sport-overlay/index',
-		data: `<templateData>${encodeURI(
-			JSON.stringify({
-				display: 'program',
-				slots: HTMLTemplateContent(config, mappedTemplate, data),
-				partialUpdate: true
-			})
-		)}</templateData>`,
+		data: {
+			display: 'program',
+			slots: HTMLTemplateContent(config, mappedTemplate, data),
+			partialUpdate: true
+		},
 		useStopCommand: false,
 		mixer: {
 			opacity: 100
