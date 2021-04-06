@@ -22,8 +22,8 @@ import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
-	caspar: { createPilotTimelineForStudio: () => [] },
-	viz: { createPilotTimelineForStudio: makeStudioTimelineViz }
+	caspar: { createPilotTimelineForStudio: createStudioTimelineCaspar },
+	viz: { createPilotTimelineForStudio: createStudioTimelineViz }
 }
 
 export function EvaluateCueGraphicPilot(
@@ -53,7 +53,7 @@ export function EvaluateCueGraphicPilot(
 	)
 }
 
-function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
+function createStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
 	const fullsDSK = FindFullSourceDSK(config)
 
 	return [
@@ -93,6 +93,39 @@ function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, a
 				}
 			},
 			classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
+		}),
+		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
+		...muteSisyfosChannels(config.sources)
+	]
+}
+
+function createStudioTimelineCaspar(config: BlueprintConfig, context: NotesContext) {
+	const fullsDSK = FindFullSourceDSK(config)
+
+	return [
+		literal<TSR.TimelineObjAtemME>({
+			id: '',
+			enable: {
+				start: Number(config.studio.CasparPrerollDuration)
+			},
+			priority: 1,
+			layer: AtemLLayer.AtemMEProgram,
+			content: {
+				deviceType: TSR.DeviceType.ATEM,
+				type: TSR.TimelineContentTypeAtem.ME,
+				me: {
+					input: fullsDSK.Fill,
+					transition: TSR.AtemTransitionStyle.WIPE,
+					transitionSettings: {
+						wipe: {
+							rate: Number(config.studio.HTMLGraphics.TransitionSettings.wipeRate),
+							pattern: 1,
+							reverseDirection: true,
+							borderSoftness: config.studio.HTMLGraphics.TransitionSettings.borderSoftness
+						}
+					}
+				}
+			}
 		}),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
 		...muteSisyfosChannels(config.sources)

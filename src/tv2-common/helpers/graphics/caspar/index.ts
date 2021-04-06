@@ -40,18 +40,18 @@ export function GetPilotGraphicContentCaspar(
 	engine: GraphicEngine
 ) {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
+	const fileName = `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`
 	const templateData = {
 		display: 'program',
 		slots: {
 			'250_full': {
 				payload: {
 					type: 'still',
-					url: `${config.studio.HTMLGraphics.GraphicURL}/${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`
+					url: `${config.studio.HTMLGraphics.GraphicURL}/${fileName}${config.studio.GraphicFileExtension}`
 				}
 			}
 		}
 	}
-	const fileName = `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`
 	return literal<GraphicsContent>({
 		fileName,
 		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
