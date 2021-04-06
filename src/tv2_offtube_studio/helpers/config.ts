@@ -83,10 +83,10 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 	},
 	// Offtube doesn't use DSK for fulls, but this prevents duplicate studio configs + easy switchover to Viz engine
 	{
-		Number: 0,
+		Number: 1,
 		Key: 0,
 		Fill: 12,
-		Toggle: true,
+		Toggle: false,
 		DefaultOn: false,
 		Roles: [DSKRoles.FULLGFX],
 		Clip: 50.0,
