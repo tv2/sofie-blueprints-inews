@@ -2900,6 +2900,7 @@ describe('Body parser', () => {
 				type: PartType.Grafik,
 				externalId: '',
 				variant: {},
+				title: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
 						type: CueType.Graphic,
