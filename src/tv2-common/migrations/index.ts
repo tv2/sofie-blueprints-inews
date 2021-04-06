@@ -185,7 +185,7 @@ export function RemoveConfig(versionStr: string, studio: string, id: string) {
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
-			return !!context.getConfig(id)
+			return context.getConfig(id) !== undefined
 		},
 		migrate: (context: MigrationContextStudio) => {
 			context.removeConfig(id)
