@@ -43,13 +43,13 @@ export function GetDSKMappingNames(atemModel: ATEMModel): string[] {
 
 export function GetDSKMappings(atemModel: ATEMModel): BlueprintMappings {
 	const base: BlueprintMappings = {}
-	return GetDSKMappingNames(atemModel).reduce((prev, name) => {
+	return GetDSKMappingNames(atemModel).reduce((prev, name, index) => {
 		prev[name] = literal<TSR.MappingAtem & BlueprintMapping>({
 			device: TSR.DeviceType.ATEM,
 			deviceId: 'atem0',
 			lookahead: LookaheadMode.NONE,
 			mappingType: TSR.MappingAtemType.DownStreamKeyer,
-			index: 0 // 0 = DSK1
+			index
 		})
 		return prev
 	}, base)
