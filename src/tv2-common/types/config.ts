@@ -21,7 +21,7 @@ export interface TableConfigItemDSK {
 	Key: number
 	Toggle: boolean
 	DefaultOn: boolean
-	Roles: DSKRoles[]
+	Roles?: DSKRoles[]
 	Clip: number
 	Gain: number
 }
