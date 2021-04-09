@@ -49,10 +49,9 @@ export function GetPilotGraphicContentCaspar(
 				payload: {
 					type: 'still',
 					url: encodeURI(
-						`${config.studio.HTMLGraphics.GraphicURL}/${fileName}${config.studio.GraphicFileExtension}`.replace(
-							/\\/g,
-							'\\\\'
-						) // Replace every \ with \\ and encodURI. Double backslash means the HTML template will be able to parse the string correctly. encodeURI so Caspar doesn't mangle the data.
+						`${config.studio.HTMLGraphics.GraphicURL}\\${fileName}${config.studio.GraphicFileExtension}`
+							.replace(/\//g, '\\') // Replace forward slash with backward slash
+							.replace(/\\/g, '\\\\') // Replace every \ with \\ and encodURI. Double backslash means the HTML template will be able to parse the string correctly. encodeURI so Caspar doesn't mangle the data.
 					)
 				}
 			}
