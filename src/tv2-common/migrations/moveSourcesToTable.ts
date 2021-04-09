@@ -119,8 +119,8 @@ export function MoveDSKToTable(
 						Toggle: defaultVal.Toggle,
 						DefaultOn: defaultVal.DefaultOn,
 						Roles: rolesForFullDSK,
-						Clip: 50,
-						Gain: 12.5
+						Clip: '50',
+						Gain: '12.5'
 					})
 				)
 				context.setConfig(configName, table)

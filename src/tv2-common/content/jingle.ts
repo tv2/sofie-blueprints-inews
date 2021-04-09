@@ -127,8 +127,8 @@ export function CreateJingleContentBase<
 											maskEnabled: false,
 											lumaSettings: {
 												preMultiplied: false,
-												clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000
-												gain: jingleDSK.Gain * 10 // input is percents (0-100), atem uses 1-000
+												clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
+												gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
 											}
 										}
 									]
@@ -176,8 +176,8 @@ export function CreateJingleContentBase<
 											maskEnabled: false,
 											lumaSettings: {
 												preMultiplied: false,
-												clip: jingleDSK.Clip * 10, // input is percents (0-100), atem uses 1-000
-												gain: jingleDSK.Gain * 10 // input is percents (0-100), atem uses 1-000
+												clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
+												gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
 											}
 										}
 									]

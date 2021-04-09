@@ -83,8 +83,8 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Toggle: true,
 		DefaultOn: true,
 		Roles: [DSKRoles.FULLGFX, DSKRoles.OVERLAYGFX],
-		Clip: 50,
-		Gain: 12.5
+		Clip: '50',
+		Gain: '12.5'
 	},
-	{ Number: 1, Key: 31, Fill: 29, Toggle: true, DefaultOn: false, Roles: [DSKRoles.JINGLE], Clip: 50, Gain: 12.5 }
+	{ Number: 1, Key: 31, Fill: 29, Toggle: true, DefaultOn: false, Roles: [DSKRoles.JINGLE], Clip: '50', Gain: '12.5' }
 ]

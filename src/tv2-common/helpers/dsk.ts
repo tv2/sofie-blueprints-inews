@@ -67,8 +67,8 @@ export function EnableDSK(
 						cutSource: dskConf.Key
 					},
 					properties: {
-						clip: dskConf.Clip * 10,
-						gain: dskConf.Gain * 10
+						clip: Number(dskConf.Clip) * 10,
+						gain: Number(dskConf.Gain) * 10
 					}
 				}
 			}
@@ -138,8 +138,8 @@ export function CreateDSKBaselineAdlibs(
 										properties: {
 											tie: false,
 											preMultiply: false,
-											clip: dsk.Clip * 10, // input is percents (0-100), atem uses 1-000,
-											gain: dsk.Gain * 10, // input is percents (0-100), atem uses 1-000,
+											clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
+											gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
 											mask: {
 												enabled: false
 											}
@@ -175,8 +175,8 @@ export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfig
 					properties: {
 						tie: false,
 						preMultiply: false,
-						clip: dsk.Clip * 10, // input is percents (0-100), atem uses 1-000,
-						gain: dsk.Gain * 10, // input is percents (0-100), atem uses 1-000,
+						clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
+						gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
 						mask: {
 							enabled: false
 						}
@@ -259,18 +259,18 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Clip',
 				name: 'ATEM Clip',
 				description: 'DSK Clip (0-100)',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: 50,
+				defaultVal: '50',
 				rank: 6
 			},
 			{
 				id: 'Gain',
 				name: 'ATEM Gain',
 				description: 'DSK Gain (0-100)',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.STRING,
 				required: true,
-				defaultVal: 12.5,
+				defaultVal: '12.5',
 				rank: 7
 			}
 		]
