@@ -163,7 +163,7 @@ export function GetMappingDefaultMigrationStepForLayer(
 	force?: boolean
 ): MigrationStepStudio {
 	return literal<MigrationStepStudio>({
-		id: `mappings.defaults.manualEnsure${layer}`,
+		id: `${versionStr}.mappings.defaults.manualEnsure${layer}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
