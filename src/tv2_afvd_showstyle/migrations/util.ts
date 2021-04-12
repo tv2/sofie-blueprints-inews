@@ -14,7 +14,7 @@ export function getSourceLayerDefaultsMigrationSteps(versionStr: string, force?:
 	return _.compact(
 		_.map(SourcelayerDefaults, (defaultVal: ISourceLayer): MigrationStepShowStyle | null => {
 			return literal<MigrationStepShowStyle>({
-				id: `sourcelayer.defaults${force ? '.forced' : ''}.${defaultVal._id}`,
+				id: `${versionStr}.sourcelayer.defaults${force ? '.forced' : ''}.${defaultVal._id}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextShowStyle) => {
@@ -45,7 +45,7 @@ export function getSourceLayerDefaultsMigrationSteps(versionStr: string, force?:
 
 export function forceSourceLayerToDefaults(versionStr: string, layer: string): MigrationStepShowStyle {
 	return literal<MigrationStepShowStyle>({
-		id: `sourcelayer.defaults.${layer}.forced`,
+		id: `${versionStr}.sourcelayer.defaults.${layer}.forced`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -82,7 +82,7 @@ export function forceSourceLayerToDefaults(versionStr: string, layer: string): M
 
 export function forceSettingToDefaults(versionStr: string, setting: string): MigrationStepShowStyle {
 	return literal<MigrationStepShowStyle>({
-		id: `sourcelayer.defaults.${setting}.forced`,
+		id: `${versionStr}.sourcelayer.defaults.${setting}.forced`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -121,7 +121,7 @@ export function getOutputLayerDefaultsMigrationSteps(versionStr: string): Migrat
 	return _.compact(
 		_.map(OutputlayerDefaults, (defaultVal: IOutputLayer): MigrationStepShowStyle | null => {
 			return literal<MigrationStepShowStyle>({
-				id: `outputlayer.defaults.${defaultVal._id}`,
+				id: `${versionStr}.outputlayer.defaults.${defaultVal._id}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextShowStyle) => {

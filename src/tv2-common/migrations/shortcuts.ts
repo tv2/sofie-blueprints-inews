@@ -12,7 +12,7 @@ export function SetShortcutListMigrationStep(
 ): MigrationStepShowStyle[] {
 	return [
 		literal<MigrationStepShowStyle>({
-			id: `remapShortcuts.${sourceLayerId}`,
+			id: `${versionStr}.remapShortcuts.${sourceLayerId}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
 			validate: (context: MigrationContextShowStyle) => {
@@ -42,7 +42,7 @@ export function SetClearShortcutListTransitionStep(
 ): MigrationStepShowStyle[] {
 	return [
 		literal<MigrationStepShowStyle>({
-			id: `remapClearShortcuts.${sourceLayerId}`,
+			id: `${versionStr}.remapClearShortcuts.${sourceLayerId}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
 			validate: (context: MigrationContextShowStyle) => {

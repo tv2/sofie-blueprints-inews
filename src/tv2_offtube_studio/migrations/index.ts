@@ -45,7 +45,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 	for (const layer in renaming) {
 		if (layer in renaming) {
 			const res = literal<MigrationStepStudio>({
-				id: `studioConfig.renameAudioSources.${layer}`,
+				id: `${versionStr}.studioConfig.renameAudioSources.${layer}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextStudio) => {
@@ -78,7 +78,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 
 function ensureMappingDeleted(versionStr: string, mapping: string): MigrationStepStudio {
 	const res = literal<MigrationStepStudio>({
-		id: `studioConfig.ensureMappingDeleted.${mapping}`,
+		id: `${versionStr}.studioConfig.ensureMappingDeleted.${mapping}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -146,7 +146,7 @@ function remapTableColumnValues(
 ): MigrationStepStudio[] {
 	return [
 		literal<MigrationStepStudio>({
-			id: `remapTableColumnValue.${tableId}.${columnId}`,
+			id: `${versionStr}.remapTableColumnValue.${tableId}.${columnId}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
 			validate: (context: MigrationContextStudio) => {

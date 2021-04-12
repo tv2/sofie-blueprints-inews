@@ -23,7 +23,7 @@ export function ensureStudioConfig(
 	dropdownOptions?: string[]
 ): MigrationStepStudio {
 	return {
-		id: `studioConfig.${configName}`,
+		id: `${version}.studioConfig.${configName}`,
 		version,
 		canBeRunAutomatically: _.isNull(value) ? false : true,
 		validate: (context: MigrationContextStudio) => {
@@ -64,7 +64,7 @@ export function renameStudioConfig(
 	updateValue?: (val: any) => ConfigItemValue
 ): MigrationStepStudio {
 	return {
-		id: `studioConfig.${oldConfigName}`,
+		id: `${version}.${oldConfigName}`,
 		version,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -87,7 +87,7 @@ export function renameStudioConfig(
 
 export function renameMapping(version: string, oldMappingName: string, newMappingName: string): MigrationStepStudio {
 	return {
-		id: `studioMapping.${oldMappingName}`,
+		id: `${version}.studioMapping.${oldMappingName}`,
 		version,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -110,7 +110,7 @@ export function renameMapping(version: string, oldMappingName: string, newMappin
 
 export function removeMapping(version: string, oldMappingName: string): MigrationStepStudio {
 	return {
-		id: `studioMapping.${oldMappingName}`,
+		id: `${version}.studioMapping.${oldMappingName}`,
 		version,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -134,7 +134,7 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 	const res = _.compact(
 		_.map(MappingsDefaults, (defaultVal: BlueprintMapping, id: string): MigrationStepStudio | null => {
 			return literal<MigrationStepStudio>({
-				id: `mappings.defaults.${id}`,
+				id: `${versionStr}.mappings.defaults.${id}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextStudio) => {

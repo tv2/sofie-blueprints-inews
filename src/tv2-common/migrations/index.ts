@@ -20,7 +20,7 @@ export * from './sourceManifest'
 
 export function RenameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
 	return literal<MigrationStepStudio>({
-		id: `studioConfig.rename.${from}.${studio}`,
+		id: `${versionStr}.studioConfig.rename.${from}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -48,7 +48,7 @@ export function renameSourceLayer(
 	to: string
 ): MigrationStepShowStyle {
 	return literal<MigrationStepShowStyle>({
-		id: `renameSourceLayer.${studioId}.${from}.${to}`,
+		id: `${versionStr}.renameSourceLayer.${studioId}.${from}.${to}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -71,7 +71,7 @@ export function renameSourceLayer(
 
 export function removeSourceLayer(versionStr: string, studioId: string, layer: string) {
 	return literal<MigrationStepShowStyle>({
-		id: `renameSourceLayer.${studioId}.${layer}`,
+		id: `${versionStr}.renameSourceLayer.${studioId}.${layer}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -93,7 +93,7 @@ export function removeSourceLayer(versionStr: string, studioId: string, layer: s
 
 export function AddGraphicToGFXTable(versionStr: string, studio: string, config: TableConfigItemGFXTemplates) {
 	return literal<MigrationStepShowStyle>({
-		id: `gfxConfig.add${config.INewsName}.${studio}`,
+		id: `${versionStr}.gfxConfig.add${config.INewsName}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -128,7 +128,7 @@ export function SetLayerNamesToDefaults(
 	for (const [layerId, mapping] of Object.entries(mappings)) {
 		migrations.push(
 			literal<MigrationStepStudio>({
-				id: `studioConfig.setLayerName.${layerId}.${studio}`,
+				id: `${versionStr}.studioConfig.setLayerName.${layerId}.${studio}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextStudio) => {
@@ -160,7 +160,7 @@ export function SetLayerNamesToDefaults(
 
 export function SetConfigTo(versionStr: string, studio: string, id: string, value: any) {
 	return literal<MigrationStepStudio>({
-		id: `config.valueSet.${studio}.${id}`,
+		id: `${versionStr}.config.valueSet.${studio}.${id}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -181,7 +181,7 @@ export function SetConfigTo(versionStr: string, studio: string, id: string, valu
 
 export function RemoveConfig(versionStr: string, studio: string, id: string) {
 	return literal<MigrationStepStudio>({
-		id: `config.valueSet.${studio}.${id}`,
+		id: `${versionStr}.config.valueSet.${studio}.${id}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {

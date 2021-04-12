@@ -17,7 +17,7 @@ export function MoveSourcesToTable(
 	studioMics?: boolean
 ): MigrationStepStudio {
 	const res = literal<MigrationStepStudio>({
-		id: `studioConfig.moveToTable.${configName}`,
+		id: `${versionStr}.studioConfig.moveToTable.${configName}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -65,7 +65,7 @@ export function MoveSourcesToTable(
 
 export function MoveClipSourcePath(versionStr: string, studio: string): MigrationStepStudio {
 	const res = literal<MigrationStepStudio>({
-		id: `studioConfig.moveClipSourcePath.${studio}`,
+		id: `${versionStr}.studioConfig.moveClipSourcePath.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
@@ -94,7 +94,7 @@ export function MoveDSKToTable(
 ): MigrationStepStudio {
 	const configName = 'AtemSource.DSK'
 	const res = literal<MigrationStepStudio>({
-		id: `studioConfig.moveDSKToTable`,
+		id: `${versionStr}.studioConfig.moveDSKToTable`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {

@@ -4,7 +4,7 @@ import { TableConfigItemAdLibTransitions } from '../blueprintConfig'
 
 export function SetShowstyleTransitionMigrationStep(versionStr: string, newValue: string): MigrationStepShowStyle {
 	return literal<MigrationStepShowStyle>({
-		id: `setShowstyleTransition`,
+		id: `${versionStr}.setShowstyleTransition`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -33,7 +33,7 @@ export function UpsertValuesIntoTransitionTable(
 	values.forEach(val => {
 		steps.push(
 			literal<MigrationStepShowStyle>({
-				id: `insertTransition.${val.Transition.replace(/[\s\W]/g, '_')}`,
+				id: `${versionStr}.insertTransition.${val.Transition.replace(/[\s\W]/g, '_')}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextShowStyle) => {

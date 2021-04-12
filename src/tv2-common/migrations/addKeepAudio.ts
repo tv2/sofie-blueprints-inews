@@ -8,7 +8,7 @@ import { literal } from '../util'
 
 export function AddKeepAudio(versionStr: string, configName: string): MigrationStepStudio {
 	const res = literal<MigrationStepStudio>({
-		id: `studioConfig.addKeepAudio.${configName}`,
+		id: `${versionStr}.studioConfig.addKeepAudio.${configName}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {

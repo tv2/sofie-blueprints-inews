@@ -184,51 +184,6 @@ const devices: DeviceEntry[] = [
 		createDependsOn: 'Playout-gateway.caspar01.create'
 	},
 	{
-		id: 'caspar01-scanner',
-		firstVersion: '0.1.0',
-		type: TSR.DeviceType.HTTPWATCHER,
-		defaultValue: (_input: MigrationStepInputFilteredResult, context: MigrationContextStudio) => {
-			const mainDev = context.getDevice('caspar01')
-			if (mainDev && mainDev.options) {
-				const mainOpts = mainDev.options as any
-				if (mainOpts.launcherHost) {
-					return {
-						type: TSR.DeviceType.HTTPWATCHER,
-						options: {
-							uri: `http://${mainOpts.host}:8000/stat/seq`,
-							httpMethod: 'GET',
-							expectedHttpResponse: 200,
-							interval: 30000
-						}
-					}
-				}
-			}
-			return undefined
-		},
-		validate: device => {
-			if (!device.options) {
-				return 'Missing options'
-			}
-
-			const opts = device.options as any
-			if (!opts.uri) {
-				return 'URI is not set'
-			}
-			if (!opts.httpMethod) {
-				return 'HTTP Method is not set'
-			}
-			if (!opts.expectedHttpResponse) {
-				return 'Expected response is not set'
-			}
-			if (!opts.interval) {
-				return 'Inteval is not set'
-			}
-
-			return false
-		},
-		createDependsOn: 'Playout-gateway.caspar01.create'
-	},
-	{
 		id: 'atem0',
 		firstVersion: '0.1.0',
 		type: TSR.DeviceType.ATEM,
@@ -260,17 +215,6 @@ const devices: DeviceEntry[] = [
 
 			return false
 		}
-	},
-	{
-		id: 'http0',
-		firstVersion: '0.1.0',
-		type: TSR.DeviceType.HTTPSEND,
-		defaultValue: () => ({
-			type: TSR.DeviceType.HTTPSEND,
-			options: {
-				makeReadyCommands: []
-			}
-		})
 	}
 ]
 
