@@ -44,6 +44,7 @@ export function GetTransitionAdLibActions<
 				userData,
 				startingRank,
 				config.showStyle.ShowstyleTransition,
+				jingleConfig?.ClipName ?? config.showStyle.ShowstyleTransition,
 				alphaAtStart,
 				duration,
 				alphaAtEnd
@@ -75,6 +76,7 @@ export function GetTransitionAdLibActions<
 						userData,
 						startingRank + 0.01 * i,
 						transition.Transition,
+						jingleConfig?.ClipName ?? transition.Transition,
 						alphaAtStart,
 						duration,
 						alphaAtEnd
@@ -119,6 +121,7 @@ function makeTransitionAction(
 	userData: ActionTakeWithTransition,
 	rank: number,
 	label: string,
+	jingle: string,
 	alphaAtStart: number | undefined,
 	duration: number | undefined,
 	alphaAtEnd: number | undefined
@@ -140,7 +143,7 @@ function makeTransitionAction(
 			nextPieceTags: [tag],
 			content: isEffekt
 				? {}
-				: CreateJingleExpectedMedia(config, label, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
+				: CreateJingleExpectedMedia(config, jingle, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
 		}
 	})
 }
