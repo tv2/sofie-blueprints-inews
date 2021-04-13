@@ -129,7 +129,7 @@ function makeStudioTimelineCaspar(config: BlueprintConfig, context: NotesContext
 		literal<TSR.TimelineObjCasparCGAny>({
 			id: '',
 			enable: { start: 0 },
-			priority: 1,
+			priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
 			layer: GraphicLLayer.GraphicLLayerFullLoop,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
