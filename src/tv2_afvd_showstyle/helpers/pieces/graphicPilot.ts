@@ -19,8 +19,7 @@ import {
 	SisyfosEVSSource,
 	SourceInfo
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
@@ -124,17 +123,6 @@ function makeStudioTimelineCaspar(config: BlueprintConfig, context: NotesContext
 						}
 					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCasparCGAny>({
-			id: '',
-			enable: { start: 0 },
-			priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
-			layer: GraphicLLayer.GraphicLLayerFullLoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: CasparLLayer.CasparCGDVELoop
 			}
 		}),
 		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),

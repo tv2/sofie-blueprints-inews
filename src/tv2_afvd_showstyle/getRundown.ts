@@ -1121,6 +1121,22 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			}
 		}),
 
+		...(config.studio.GraphicsType === 'HTML'
+			? [
+					literal<TSR.TimelineObjCasparCGAny>({
+						id: '',
+						enable: { start: 0 },
+						priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
+						layer: GraphicLLayer.GraphicLLayerFullLoop,
+						content: {
+							deviceType: TSR.DeviceType.CASPARCG,
+							type: TSR.TimelineContentTypeCasparCg.ROUTE,
+							mappedLayer: CasparLLayer.CasparCGDVELoop
+						}
+					})
+			  ]
+			: []),
+
 		literal<TSR.TimelineObjSisyfosChannels>({
 			id: '',
 			enable: { while: '1' },
