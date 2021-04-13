@@ -1457,7 +1457,10 @@ function executeActionTakeWithTransition<
 					sourceLayerId: settings.SourceLayers.Effekt,
 					outputLayerId: SharedOutputLayers.JINGLE,
 					lifespan: PieceLifespan.WithinPart,
-					tags: [GetTagForTransition(userData.variant)]
+					tags: [GetTagForTransition(userData.variant)],
+					content: {
+						ignoreMediaObjectStatus: true
+					}
 				}
 
 				context.insertPiece('next', cutTransitionPiece)

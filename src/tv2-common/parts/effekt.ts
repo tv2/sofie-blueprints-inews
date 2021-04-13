@@ -204,7 +204,10 @@ export function CreateMixForPartInner(
 						frames: durationInFrames
 					})
 				)
-			]
+			],
+			content: {
+				ignoreMediaObjectStatus: true
+			}
 		})
 	)
 
