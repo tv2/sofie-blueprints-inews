@@ -532,8 +532,8 @@ export function MakeContentDVE2<
 								? {
 										artPreMultiplied: false,
 										artInvertKey: template.properties.artInvertKey,
-										artClip: template.properties.artClip,
-										artGain: template.properties.artGain
+										artClip: template.properties.artClip * 10,
+										artGain: template.properties.artGain * 10
 								  }
 								: { artPreMultiplied: true }),
 							...(template.border?.borderEnabled
