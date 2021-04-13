@@ -57,7 +57,9 @@ export function EvaluateLYD(
 				outputLayerId: SharedOutputLayers.MUSIK,
 				sourceLayerId: SharedSourceLayers.PgmAudioBed,
 				lifespan,
-				expectedDuration: fade
+				expectedDuration: stop
+					? 2000
+					: fade
 					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
 					: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
 				content: LydContent(config, file, lydType, fadeIn, fadeOut)
@@ -69,7 +71,7 @@ export function EvaluateLYD(
 				externalId: part.externalId,
 				name: parsedCue.variant,
 				...(stop
-					? { enable: { start: CreateTimingEnable(parsedCue).enable.start, duration: 1000 } }
+					? { enable: { start: CreateTimingEnable(parsedCue).enable.start, duration: 2000 } }
 					: fade
 					? {
 							enable: {
