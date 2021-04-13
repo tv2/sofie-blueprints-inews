@@ -51,7 +51,8 @@ enum AFVDCasparLLayer {
 	CasparCGFullBg = 'casparcg_full_bg',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',
-	CasparCountdown = 'casparcg_countdown'
+	CasparCountdown = 'casparcg_countdown',
+	CasparCGDVEKeyedLoop = 'casparcg_dve_keyed_loop'
 }
 
 // tslint:disable-next-line: variable-name

@@ -387,6 +387,15 @@ export const MAPPINGS_CASPAR: BlueprintMappings = {
 		channel: 2,
 		layer: 109
 	}),
+	[CasparLLayer.CasparCGDVEKeyedLoop]: literal<TSR.MappingCasparCG & BlueprintMapping>({
+		device: TSR.DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		layerName: 'DVE Loop (keyed)',
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		previewWhenNotOnAir: true,
+		channel: 2,
+		layer: 110
+	}),
 	[CasparLLayer.CasparCGDVEFrame]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar02',

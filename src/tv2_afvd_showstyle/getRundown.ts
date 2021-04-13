@@ -1102,6 +1102,17 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: 1 },
 			priority: 0,
+			layer: CasparLLayer.CasparCGDVEKeyedLoop,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.ROUTE,
+				mappedLayer: CasparLLayer.CasparCGDVELoop
+			}
+		}),
+		literal<TSR.TimelineObjCCGRoute>({
+			id: '',
+			enable: { while: 1 },
+			priority: 0,
 			layer: CasparLLayer.CasparCGFullBg,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
