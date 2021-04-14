@@ -139,10 +139,7 @@ export function CreateDSKBaselineAdlibs(
 											tie: false,
 											preMultiply: false,
 											clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-											gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
-											mask: {
-												enabled: false
-											}
+											gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000
 										}
 									}
 								}
@@ -176,10 +173,7 @@ export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfig
 						tie: false,
 						preMultiply: false,
 						clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-						gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
-						mask: {
-							enabled: false
-						}
+						gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000
 					}
 				}
 			}
