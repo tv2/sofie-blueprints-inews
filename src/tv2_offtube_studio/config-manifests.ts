@@ -146,7 +146,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'ATEM Split Screen Art Fill',
 		description: 'ATEM vision mixer input for Split Screen Art Fill',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: 10
 	},
 	{
@@ -154,7 +154,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'ATEM Split Screen Art Key',
 		description: 'ATEM vision mixer input for Split Screen Art Key',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: 9
 	},
 	{
@@ -178,7 +178,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'ATEM Default source',
 		description: 'ATEM vision mixer default source',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
@@ -186,7 +186,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'ATEM continuity source',
 		description: 'ATEM input for continuity',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: AtemSourceIndex.Col2
 	},
 	{
@@ -218,7 +218,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'Caspar preroll duration',
 		description: 'ms of preroll before switching to caspar',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: 200 // 5 frames
 	},
 	{
@@ -226,7 +226,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'Maximum Part Duration',
 		description: 'Maximum duration (ms) to give parts in UI',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: 10000
 	},
 	{
@@ -234,7 +234,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'Default Part Duration',
 		description: 'Duration to give parts by default',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: 4000
 	},
 	{
@@ -242,7 +242,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'Idle Source',
 		description: 'Source to display when studio is off-air',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: 1
 	},
 	{
@@ -255,14 +255,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		},
 		multiple: true,
 		defaultVal: [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo, OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround],
-		required: false
+		required: true
 	},
 	{
 		id: 'ServerPostrollDuration',
 		name: 'Server Postroll Duration',
 		description: 'ms of postroll at the end of Server and VO clips',
 		type: ConfigManifestEntryType.NUMBER,
-		required: false,
+		required: true,
 		defaultVal: 0
 	},
 	/** Graphics */
