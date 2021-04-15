@@ -1102,17 +1102,6 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 			id: '',
 			enable: { while: 1 },
 			priority: 0,
-			layer: CasparLLayer.CasparCGDVEKeyedLoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: CasparLLayer.CasparCGDVELoop
-			}
-		}),
-		literal<TSR.TimelineObjCCGRoute>({
-			id: '',
-			enable: { while: 1 },
-			priority: 0,
 			layer: CasparLLayer.CasparCGFullBg,
 			content: {
 				deviceType: TSR.DeviceType.CASPARCG,
@@ -1128,6 +1117,17 @@ function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
 						enable: { start: 0 },
 						priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
 						layer: GraphicLLayer.GraphicLLayerFullLoop,
+						content: {
+							deviceType: TSR.DeviceType.CASPARCG,
+							type: TSR.TimelineContentTypeCasparCg.ROUTE,
+							mappedLayer: CasparLLayer.CasparCGDVELoop
+						}
+					}),
+					literal<TSR.TimelineObjCCGRoute>({
+						id: '',
+						enable: { while: 1 },
+						priority: 0,
+						layer: CasparLLayer.CasparCGDVEKeyedLoop,
 						content: {
 							deviceType: TSR.DeviceType.CASPARCG,
 							type: TSR.TimelineContentTypeCasparCg.ROUTE,
