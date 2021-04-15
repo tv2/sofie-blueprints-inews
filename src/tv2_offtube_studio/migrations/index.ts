@@ -8,15 +8,13 @@ import {
 	AddKeepAudio,
 	literal,
 	MoveClipSourcePath,
-	MoveDSKToTable,
 	MoveSourcesToTable,
 	RemoveConfig,
 	RenameStudioConfig,
 	SetConfigTo,
-	SetLayerNamesToDefaults,
-	TableConfigItemDSK
+	SetLayerNamesToDefaults
 } from 'tv2-common'
-import { DSKRoles, GraphicLLayer } from 'tv2-constants'
+import { GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { EnsureSisyfosMappingHasType } from '../../tv2_afvd_studio/migrations/util'
 import {
@@ -269,11 +267,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.4.6', 'Offtube', 'JingleBasePath', 'NetworkBasePathJingle'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
-
-	MoveDSKToTable('1.4.6', (manifestOfftubeDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK, [
-		DSKRoles.JINGLE,
-		DSKRoles.OVERLAYGFX
-	]),
 
 	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
 

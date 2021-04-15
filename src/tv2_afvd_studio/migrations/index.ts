@@ -3,15 +3,13 @@ import {
 	AddKeepAudio,
 	literal,
 	MoveClipSourcePath,
-	MoveDSKToTable,
 	MoveSourcesToTable,
 	RemoveConfig,
 	RenameStudioConfig,
 	SetConfigTo,
-	SetLayerNamesToDefaults,
-	TableConfigItemDSK
+	SetLayerNamesToDefaults
 } from 'tv2-common'
-import { DSKRoles, GraphicLLayer } from 'tv2-constants'
+import { GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import {
 	manifestAFVDDownstreamKeyers,
@@ -164,10 +162,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.4.6', 'AFVD', 'MediaFlowId', 'ClipMediaFlowId'),
 	RenameStudioConfig('1.4.6', 'AFVD', 'NetworkBasePath', 'NetworkBasePathClip'),
 	RenameStudioConfig('1.4.6', 'AFVD', 'JingleBasePath', 'NetworkBasePathJingle'),
-	MoveDSKToTable('1.4.6', (manifestAFVDDownstreamKeyers.defaultVal as unknown) as TableConfigItemDSK, [
-		DSKRoles.FULLGFX,
-		DSKRoles.OVERLAYGFX
-	]),
 
 	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
 	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
