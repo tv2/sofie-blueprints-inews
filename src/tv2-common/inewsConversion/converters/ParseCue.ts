@@ -543,7 +543,7 @@ function parseAdLib(cue: string[]) {
 			adlib.inputs[input[1].toString().toUpperCase() as keyof DVESources] = input[2]
 		}
 
-		const bynavn = cue[i].match(/^BYNAVN=(.)$/i)
+		const bynavn = cue[i].match(/^BYNAVN=(.+)$/i)
 		if (bynavn) {
 			adlib.bynavn = bynavn[1]
 		}
