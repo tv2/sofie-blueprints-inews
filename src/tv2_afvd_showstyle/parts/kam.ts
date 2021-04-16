@@ -96,6 +96,7 @@ export function CreatePartKam(
 	} else {
 		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
 		if (sourceInfoCam === undefined) {
+			context.warning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
 		}
 		const atemInput = sourceInfoCam.port

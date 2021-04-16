@@ -75,7 +75,7 @@ export function EvaluateEksternBase<
 	}
 	const sourceInfoEkstern = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
 	if (sourceInfoEkstern === undefined) {
-		context.warning(`Could not find ATEM input for source ${parsedCue.source}`)
+		context.warning(`${parsedCue.source} does not exist in this studio`)
 		part.invalid = true
 		return
 	}
