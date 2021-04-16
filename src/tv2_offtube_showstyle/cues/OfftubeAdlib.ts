@@ -103,7 +103,7 @@ export function OfftubeEvaluateAdLib(
 			type: CueType.DVE,
 			template: parsedCue.variant,
 			sources: parsedCue.inputs ? parsedCue.inputs : {},
-			labels: parsedCue.bynavn ? [parsedCue.bynavn] : [],
+			labels: parsedCue.bynavn ? parsedCue.bynavn : [],
 			iNewsCommand: 'DVE'
 		}
 

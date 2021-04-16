@@ -58,7 +58,7 @@ export interface CueDefinitionAdLib extends CueDefinitionBase {
 	type: CueType.AdLib
 	variant: string
 	inputs: DVESources
-	bynavn?: string
+	bynavn?: string[]
 }
 
 export interface CueDefinitionLYD extends CueDefinitionBase {
@@ -545,7 +545,7 @@ function parseAdLib(cue: string[]) {
 
 		const bynavn = cue[i].match(/^BYNAVN=(.+)$/i)
 		if (bynavn) {
-			adlib.bynavn = bynavn[1]
+			adlib.bynavn = bynavn[1].split(/\/|\\/i)
 		}
 	}
 
