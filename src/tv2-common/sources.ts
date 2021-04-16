@@ -118,16 +118,12 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 }
 
 export function FindSourceInfoStrict(
-	context: NotesContext,
+	_context: NotesContext,
 	sources: SourceInfo[],
 	type: SourceInfoType,
 	id: string
 ): SourceInfo | undefined {
-	const source = FindSourceInfo(sources, type, id)
-	if (!source) {
-		context.warning(`Invalid source "${id}" of type "${type}"`)
-	}
-	return source
+	return FindSourceInfo(sources, type, id)
 }
 
 export function FindSourceByName(context: NotesContext, sources: SourceInfo[], name: string): SourceInfo | undefined {
