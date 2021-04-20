@@ -232,7 +232,8 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 		layerName: 'Jingle',
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
-		layer: 110
+		layer: 110,
+		previewWhenNotOnAir: true
 	}),
 	[OfftubeCasparLLayer.CasparPlayerJingleLookahead]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,

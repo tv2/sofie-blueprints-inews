@@ -316,6 +316,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.CCGClip'),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.CCGGain'),
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
+	GetMappingDefaultMigrationStepForLayer('1.6.1', OfftubeCasparLLayer.CasparPlayerJingle, true),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
