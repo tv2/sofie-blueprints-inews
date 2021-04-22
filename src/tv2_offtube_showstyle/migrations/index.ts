@@ -130,6 +130,13 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	removeSourceLayer('1.6.1', 'AFVD', 'studio0_dsk_cmd'),
 
+	/**
+	 * 1.6.2
+	 * - Move Recall Last DVE shortcut to PGMDVEAdLib
+	 */
+	forceSourceLayerToDefaults('1.6.2', OfftubeSourceLayer.PgmDVE),
+	forceSourceLayerToDefaults('1.6.2', OfftubeSourceLayer.PgmDVEAdLib),
+
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
 ])

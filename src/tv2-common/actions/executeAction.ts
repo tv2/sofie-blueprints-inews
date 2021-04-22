@@ -1752,6 +1752,34 @@ function executeActionRecallLastDVE<
 	actionId: string,
 	_userData: ActionRecallLastDVE
 ) {
+	const currentPart = context.getPartInstance('current')
+
+	if (!currentPart) {
+		return
+	}
+
+	const lastPlayedDVE = context.findLastPieceOnLayer(settings.SourceLayers.DVE, { excludeCurrentPart: true })
+
+	if (lastPlayedDVE && lastPlayedDVE.dynamicallyInserted) {
+		const part = context.getPartInstanceForPreviousPiece(lastPlayedDVE)
+
+		const lastPlayedDVEMeta = lastPlayedDVE.piece.metaData as DVEPieceMetaData
+
+		if (part && part.segmentId === currentPart.segmentId) {
+			return executeActionSelectDVE(
+				context,
+				settings,
+				actionId,
+				literal<ActionSelectDVE>({
+					type: AdlibActionType.SELECT_DVE,
+					config: lastPlayedDVEMeta.userData.config,
+					segmentExternalId: generateExternalId(context, actionId, [lastPlayedDVE.piece.name]),
+					videoId: lastPlayedDVEMeta.userData.videoId
+				})
+			)
+		}
+	}
+
 	const lastDVE = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE, { excludeCurrentPart: true })
 
 	if (!lastDVE) {
