@@ -1702,11 +1702,11 @@ function executeActionRecallLastLive<
 ) {
 	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live, {
 		originalOnly: true,
-		excludeCurrentPart: true
+		excludeCurrentPart: false
 	})
 	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident, {
 		originalOnly: true,
-		excludeCurrentPart: true
+		excludeCurrentPart: false
 	})
 
 	if (!lastLive) {
