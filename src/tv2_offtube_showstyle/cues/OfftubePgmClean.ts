@@ -26,7 +26,7 @@ export function OfftubeEvaluatePgmClean(
 	}
 
 	let sourceType: SourceInfoType | undefined
-	if (parsedCue.source.match(/live/i)) {
+	if (parsedCue.source.match(/live|feed/i)) {
 		sourceType = SourceLayerType.REMOTE
 	} else if (parsedCue.source.match(/[k|c]am/i)) {
 		sourceType = SourceLayerType.CAMERA
