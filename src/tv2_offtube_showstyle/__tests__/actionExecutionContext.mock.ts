@@ -329,7 +329,7 @@ export class MockActionContext implements ActionExecutionContext {
 		})
 	}
 
-	public getPartForPreviousPiece(_pieceId: string): IBlueprintPart | undefined {
+	public getPartForPreviousPiece(_piece: { _id: string }): IBlueprintPart | undefined {
 		return
 	}
 }
