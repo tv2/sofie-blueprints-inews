@@ -1758,7 +1758,7 @@ function executeActionRecallLastDVE<
 		return
 	}
 
-	const lastPlayedDVE = context.findLastPieceOnLayer(settings.SourceLayers.DVE, { excludeCurrentPart: true })
+	const lastPlayedDVE = context.findLastPieceOnLayer(settings.SourceLayers.DVE)
 
 	if (lastPlayedDVE && lastPlayedDVE.dynamicallyInserted) {
 		const part = context.getPartInstanceForPreviousPiece(lastPlayedDVE)
@@ -1780,7 +1780,7 @@ function executeActionRecallLastDVE<
 		}
 	}
 
-	const lastDVE = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE, { excludeCurrentPart: true })
+	const lastDVE = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE)
 
 	if (!lastDVE) {
 		return
