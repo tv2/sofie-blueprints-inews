@@ -13,7 +13,8 @@ import {
 	GetTagForJingle,
 	GetTagForJingleNext,
 	literal,
-	PartDefinition
+	PartDefinition,
+	PieceMetaData
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
@@ -97,6 +98,12 @@ export function OfftubeEvaluateJingle(
 			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
+			metaData: literal<PieceMetaData>({
+				transition: {
+					isJingle: !effekt,
+					isEffekt: !!effekt
+				}
+			}),
 			content: createJingleContentOfftube(
 				config,
 				file,

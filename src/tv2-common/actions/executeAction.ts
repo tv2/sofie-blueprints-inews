@@ -935,6 +935,11 @@ function executeActionSelectJingle<
 		outputLayerId: SharedOutputLayers.JINGLE,
 		sourceLayerId: settings.SourceLayers.Effekt,
 		content: pieceContent,
+		metaData: literal<PieceMetaData>({
+			transition: {
+				isJingle: true
+			}
+		}),
 		tags: [
 			GetTagForJingle(userData.segmentExternalId, userData.clip),
 			GetTagForJingleNext(userData.segmentExternalId, userData.clip),

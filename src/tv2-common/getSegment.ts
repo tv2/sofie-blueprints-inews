@@ -30,6 +30,7 @@ import {
 	PartDefinitionTeknik,
 	PartDefinitionTelefon
 } from './inewsConversion'
+import { PieceMetaData } from './onTimelineGenerate'
 import { CreatePartInvalid, ServerPartProps } from './parts'
 
 export interface GetSegmentShowstyleOptions<
@@ -350,7 +351,11 @@ export function getSegmentBase<
 		if (
 			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
 			// Jingle-only part, do not modify duration
-			!(part.pieces.length === 1 && part.pieces.some(p => p.sourceLayerId === SharedSourceLayers.PgmJingle))
+			!part.pieces.some(
+				p =>
+					p.sourceLayerId === SharedSourceLayers.PgmJingle &&
+					(p.metaData as PieceMetaData)?.transition?.isJingle === true
+			)
 		) {
 			part.part.expectedDuration = config.studio.DefaultPartDuration
 		}
