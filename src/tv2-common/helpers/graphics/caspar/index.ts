@@ -134,13 +134,7 @@ export function CreateHTMLRendererContent(
 }
 
 function HTMLTemplateContent(config: TV2BlueprintConfig, graphicTemplate: string, data: object): Partial<Slots> {
-	const conf = config.showStyle.GFXTemplates.find(g => g.VizTemplate.toLowerCase() === graphicTemplate.toLowerCase())
-
-	if (!conf) {
-		return {}
-	}
-
-	const layer = conf.LayerMapping
+	const layer = GetTimelineLayerForGraphic(config, graphicTemplate)
 
 	const slot = layerToHTMLGraphicSlot[layer]
 

@@ -14,6 +14,9 @@ export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: strin
 		// TODO: When adding more sourcelayers
 		// This is here to guard against bad user input
 		case SharedSourceLayers.PgmGraphicsHeadline:
+			if (config.studio.GraphicsType === 'HTML') {
+				return SharedSourceLayers.PgmGraphicsLower
+			}
 			return SharedSourceLayers.PgmGraphicsHeadline
 		case SharedSourceLayers.PgmGraphicsIdent:
 			if (isStickyIdent) {
