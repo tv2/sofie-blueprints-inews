@@ -250,7 +250,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 		deviceId: 'caspar01',
 		layerName: 'Audio Beds',
 		lookahead: LookaheadMode.NONE,
-		channel: 1,
+		channel: 3,
 		layer: 101
 	}),
 	[OfftubeCasparLLayer.CasparGraphicsFullLoop]: literal<TSR.MappingCasparCG & BlueprintMapping>({
