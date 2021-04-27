@@ -10,6 +10,7 @@ export * from './internal'
 export * from './pilot'
 export * from './caspar'
 export * from './viz'
+export * from './design'
 
 export function ApplyFullGraphicPropertiesToPart(config: TV2BlueprintConfig, part: IBlueprintPart) {
 	part.prerollDuration =
