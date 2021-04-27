@@ -52,7 +52,7 @@ export function CreatePartKam(
 
 	const jingleDSK = FindDSKJingle(config)
 
-	if (partDefinition.rawType.match(/kam cs 3/i)) {
+	if (partDefinition.rawType.match(/kam cs ?3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,

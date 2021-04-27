@@ -71,6 +71,38 @@ function expectAllPartsToBeValid(result: BlueprintResultSegment) {
 }
 
 describe('AFVD Blueprint', () => {
+	it('Accepts KAM CS 3', () => {
+		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS 3</pi>\r\n`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const kamPart = result.parts[0]
+		expect(kamPart).toBeTruthy()
+		expect(kamPart.pieces).toHaveLength(1)
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle])
+		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
+	})
+
+	it('Accepts KAM CS3', () => {
+		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS3</pi>\r\n`)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+		expectAllPartsToBeValid(result)
+
+		const kamPart = result.parts[0]
+		expect(kamPart).toBeTruthy()
+		expect(kamPart.pieces).toHaveLength(1)
+		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle])
+		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
+	})
+
 	it('Shows warning for Pilot without destination', () => {
 		const ingestSegment = makeIngestSegment(
 			[
