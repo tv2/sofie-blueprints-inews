@@ -337,14 +337,10 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		channel: 3,
 		layer: 111
 	}),
-	[GraphicLLayer.GraphicLLayerOverlayHeadline]: literal<TSR.MappingCasparCG & BlueprintMapping>({
-		device: TSR.DeviceType.CASPARCG,
-		deviceId: 'caspar01',
-		layerName: 'GFX Headline',
-		lookahead: LookaheadMode.NONE,
-		previewWhenNotOnAir: false,
-		channel: 3,
-		layer: 111
+	[GraphicLLayer.GraphicLLayerOverlayHeadline]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	}),
 	[GraphicLLayer.GraphicLLayerOverlayIdent]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,

@@ -318,6 +318,12 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
 	GetMappingDefaultMigrationStepForLayer('1.6.1', OfftubeCasparLLayer.CasparPlayerJingle, true),
 
+	/**
+	 * 1.6.2
+	 * - Set headline layer to abstract (for potential Viz route set compatibility)
+	 */
+	GetMappingDefaultMigrationStepForLayer('1.6.2', GraphicLLayer.GraphicLLayerOverlayHeadline, true),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

@@ -56,6 +56,9 @@ export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: str
 		case GraphicLLayer.GraphicLLayerOverlayLower:
 			return GraphicLLayer.GraphicLLayerOverlayLower
 		case GraphicLLayer.GraphicLLayerOverlayHeadline:
+			if (config.studio.GraphicsType === 'HTML') {
+				return GraphicLLayer.GraphicLLayerOverlayLower
+			}
 			return GraphicLLayer.GraphicLLayerOverlayHeadline
 		case GraphicLLayer.GraphicLLayerOverlayTema:
 			return GraphicLLayer.GraphicLLayerOverlayTema

@@ -28,7 +28,6 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 	} else {
 		const slotBaselineObjects: TSR.TSRTimelineObj[] = []
 		;[
-			GraphicLLayer.GraphicLLayerOverlayHeadline,
 			GraphicLLayer.GraphicLLayerOverlayIdent,
 			GraphicLLayer.GraphicLLayerOverlayLower,
 			GraphicLLayer.GraphicLLayerOverlayTema,
@@ -83,7 +82,6 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					data: {
 						display: 'program',
 						slots: [
-							GraphicLLayer.GraphicLLayerOverlayHeadline,
 							GraphicLLayer.GraphicLLayerOverlayIdent,
 							GraphicLLayer.GraphicLLayerOverlayLower,
 							GraphicLLayer.GraphicLLayerOverlayTema,

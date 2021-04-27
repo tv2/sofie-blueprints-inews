@@ -7,7 +7,6 @@ import { GraphicLLayer } from 'tv2-constants'
 
 export const layerToHTMLGraphicSlot: { [slot: string]: string } = {
 	[GraphicLLayer.GraphicLLayerOverlay]: '',
-	[GraphicLLayer.GraphicLLayerOverlayHeadline]: '450_lowerThird',
 	[GraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
 	[GraphicLLayer.GraphicLLayerOverlayLower]: '450_lowerThird',
 	[GraphicLLayer.GraphicLLayerOverlayTema]: '',
