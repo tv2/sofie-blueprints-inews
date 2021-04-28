@@ -5,7 +5,7 @@ if [[ -z "${SERVER}" ]]; then
     exit 1
 fi
 
-yarn && yarn build-now --env.server=$SERVER
+yarn && HTTP_PROXY= yarn build-now --env.server=$SERVER
 
 if [[ -d "/opt/blueprints/nginx" ]]; then
     echo "Volume mount exists copying files"
