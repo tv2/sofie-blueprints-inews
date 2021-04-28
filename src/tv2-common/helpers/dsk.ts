@@ -68,7 +68,10 @@ export function EnableDSK(
 					},
 					properties: {
 						clip: Number(dskConf.Clip) * 10,
-						gain: Number(dskConf.Gain) * 10
+						gain: Number(dskConf.Gain) * 10,
+						mask: {
+							enabled: false
+						}
 					}
 				}
 			}
@@ -139,7 +142,10 @@ export function CreateDSKBaselineAdlibs(
 											tie: false,
 											preMultiply: false,
 											clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-											gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000
+											gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
+											mask: {
+												enabled: false
+											}
 										}
 									}
 								}
@@ -173,7 +179,10 @@ export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfig
 						tie: false,
 						preMultiply: false,
 						clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-						gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000
+						gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
+						mask: {
+							enabled: false
+						}
 					}
 				}
 			}
