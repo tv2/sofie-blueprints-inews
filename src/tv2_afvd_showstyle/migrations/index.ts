@@ -1,6 +1,7 @@
 import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	GetDSKSourceLayerNames,
 	literal,
 	removeSourceLayer,
 	SetShortcutListMigrationStep,
@@ -11,6 +12,7 @@ import { GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
+import { ATEMModel } from '../../types/atem'
 import { SourceLayer } from '../layers'
 import {
 	forceSourceLayerToDefaults,
@@ -104,6 +106,14 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	forceSourceLayerToDefaults('1.6.2', SourceLayer.PgmDVE),
 	forceSourceLayerToDefaults('1.6.2', SourceLayer.PgmDVEAdLib),
+
+	/**
+	 * 1.6.3
+	 * - Hide DSK toggle layers
+	 */
+	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map(layerName =>
+		forceSourceLayerToDefaults('1.6.3', layerName)
+	),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

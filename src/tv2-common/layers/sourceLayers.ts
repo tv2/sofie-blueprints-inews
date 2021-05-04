@@ -27,7 +27,7 @@ function GetSourceLayerDefaultsForDSK(i: number): ISourceLayer {
 		isSticky: false,
 		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
-		isHidden: false,
+		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false
 	})
