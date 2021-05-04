@@ -68,7 +68,10 @@ const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 			},
 			properties: {
 				clip: 500,
-				gain: 125
+				gain: 125,
+				mask: {
+					enabled: false
+				}
 			}
 		}
 	}
