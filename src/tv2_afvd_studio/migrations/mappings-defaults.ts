@@ -375,6 +375,7 @@ export const MAPPINGS_CASPAR: BlueprintMappings = {
 		deviceId: 'caspar02',
 		layerName: 'GFX Locators',
 		lookahead: LookaheadMode.WHEN_CLEAR,
+		previewWhenNotOnAir: true,
 		channel: 2,
 		layer: 120
 	}),
