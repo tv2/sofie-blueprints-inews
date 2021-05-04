@@ -89,12 +89,13 @@ export function CreateDSKBaselineAdlibs(
 			if (dsk.DefaultOn) {
 				adlibItems.push({
 					externalId: `dskoff${dsk.Number}`,
-					name: `DSK ${dsk.Number + 1} OFF`,
+					name: `DSK ${dsk.Number + 1} ON`,
 					_rank: baseRank + dsk.Number,
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
+					invertOnAirState: true,
 					content: {
 						timelineObjects: [
 							literal<TSR.TimelineObjAtemDSK>({
