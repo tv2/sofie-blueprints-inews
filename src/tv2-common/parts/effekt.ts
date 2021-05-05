@@ -109,7 +109,7 @@ export function CreateEffektForPartInner<
 		return false
 	}
 
-	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : ''
+	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : file
 
 	pieces.push(
 		literal<IBlueprintPiece>({
