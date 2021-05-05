@@ -122,7 +122,7 @@ export function CreateDSKBaselineAdlibs(
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
 					content: {
 						timelineObjects: [
 							literal<TSR.TimelineObjAtemDSK>({
