@@ -93,7 +93,7 @@ export function CreateDSKBaselineAdlibs(
 					_rank: baseRank + dsk.Number,
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
+					lifespan: PieceLifespan.OutOnRundownChange,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
 					invertOnAirState: true,
 					content: {
@@ -121,7 +121,7 @@ export function CreateDSKBaselineAdlibs(
 					_rank: baseRank + dsk.Number,
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
+					lifespan: PieceLifespan.OutOnRundownChange,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
 					content: {
 						timelineObjects: [
