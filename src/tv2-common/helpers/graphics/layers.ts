@@ -67,6 +67,8 @@ export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: str
 			return GraphicLLayer.GraphicLLayerOverlayTema
 		case GraphicLLayer.GraphicLLayerWall:
 			return GraphicLLayer.GraphicLLayerWall
+		case GraphicLLayer.GraphicLLayerLocators:
+			return GraphicLLayer.GraphicLLayerLocators
 		default:
 			return GraphicLLayer.GraphicLLayerOverlay
 	}

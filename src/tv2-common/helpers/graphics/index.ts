@@ -86,7 +86,8 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 							GraphicLLayer.GraphicLLayerOverlayIdent,
 							GraphicLLayer.GraphicLLayerOverlayLower,
 							GraphicLLayer.GraphicLLayerOverlayTema,
-							GraphicLLayer.GraphicLLayerOverlayTopt
+							GraphicLLayer.GraphicLLayerOverlayTopt,
+							GraphicLLayer.GraphicLLayerLocators
 						].reduce((obj: Record<string, any>, layer) => {
 							if (layerToHTMLGraphicSlot[layer]) {
 								obj[layerToHTMLGraphicSlot[layer]] = {
