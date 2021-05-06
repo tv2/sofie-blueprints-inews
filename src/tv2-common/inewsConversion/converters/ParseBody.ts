@@ -494,11 +494,7 @@ function makeDefinition(
 	const part: PartDefinition = {
 		externalId: `${segmentId}-${i}`, // TODO - this should be something that sticks when inserting a part before the current part
 		...extractTypeProperties(typeStr),
-		rawType: typeStr
-			.replace(/effekt \d+/gi, '')
-			.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
-			.replace(/\s+/gi, ' ')
-			.trim(),
+		rawType: stripTransitionProperties(typeStr),
 		cues: [],
 		script: '',
 		fields,
@@ -508,6 +504,14 @@ function makeDefinition(
 	}
 
 	return part
+}
+
+export function stripTransitionProperties(typeStr: string) {
+	return typeStr
+		.replace(/effekt \d+/gi, '')
+		.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
+		.replace(/\s+/gi, ' ')
+		.trim()
 }
 
 export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTypes, 'effekt' | 'transition'> {
@@ -531,11 +535,8 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 
 function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 	const definition: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(typeStr)
-	const tokens = typeStr
-		.replace(/effekt (\d+)/gi, '')
-		.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
+	const tokens = stripTransitionProperties(typeStr)
 		.replace(/100%/g, '')
-		.replace(/\s+/gi, ' ')
 		.trim()
 		.split(' ')
 	const firstToken = tokens[0]

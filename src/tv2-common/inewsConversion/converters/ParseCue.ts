@@ -1,6 +1,6 @@
 import { literal, TV2BlueprintConfig } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
-import { getTransitionProperties, PartDefinition, PartdefinitionTypes } from './ParseBody'
+import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
 
 export type UnparsedCue = string[] | null
 
@@ -404,12 +404,7 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 }
 
 function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
-	const eksternSource = cue[0]
-		.replace(/effekt \d+/gi, '')
-		.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
-		.replace(/\s+/gi, ' ')
-		.trim()
-		.match(/^EKSTERN=(.+)$/i)
+	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
 	if (eksternSource) {
 		const transitionProperties = getTransitionProperties(cue[0])
 		return literal<CueDefinitionEkstern>({
