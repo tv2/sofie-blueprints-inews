@@ -1,6 +1,6 @@
 import { literal, TV2BlueprintConfig } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
-import { PartDefinition } from './ParseBody'
+import { getTransitionProperties, PartDefinition, PartdefinitionTypes } from './ParseBody'
 
 export type UnparsedCue = string[] | null
 
@@ -25,6 +25,7 @@ export interface CueDefinitionUnknown extends CueDefinitionBase {
 export interface CueDefinitionEkstern extends CueDefinitionBase {
 	type: CueType.Ekstern
 	source: string
+	transition?: Pick<PartdefinitionTypes, 'effekt' | 'transition'>
 }
 
 export interface DVESources {
@@ -200,14 +201,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parsePilot(cue)
 	} else if (cue[0].match(/^EKSTERN=/i)) {
 		// EKSTERN
-		const eksternSource = cue[0].match(/^EKSTERN=(.+)$/i)
-		if (eksternSource) {
-			return {
-				type: CueType.Ekstern,
-				source: eksternSource[1],
-				iNewsCommand: 'EKSTERN'
-			}
-		}
+		return parseEkstern(cue)
 	} else if (cue[0].match(/^DVE=/i)) {
 		// DVE
 		return parseDVE(cue)
@@ -407,6 +401,26 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 	}
 
 	return pilotCue
+}
+
+function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
+	const eksternSource = cue[0]
+		.replace(/effekt \d+/gi, '')
+		.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
+		.replace(/\s+/gi, ' ')
+		.trim()
+		.match(/^EKSTERN=(.+)$/i)
+	if (eksternSource) {
+		const transitionProperties = getTransitionProperties(cue[0])
+		return literal<CueDefinitionEkstern>({
+			type: CueType.Ekstern,
+			source: eksternSource[1],
+			iNewsCommand: 'EKSTERN',
+			transition: transitionProperties
+		})
+	}
+
+	return undefined
 }
 
 function parseDVE(cue: string[]): CueDefinitionDVE {

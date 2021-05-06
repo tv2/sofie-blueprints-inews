@@ -848,4 +848,80 @@ describe('AFVD Blueprint', () => {
 		expect(result.parts).toHaveLength(1)
 		expect(result.parts[0].part.invalid).toBe(true)
 	})
+
+	it('Creates effekt for KAM 1 EFFEKT 1', () => {
+		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 EFFEKT 1</pi></p>\r\n')
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expectAllPartsToBeValid(result)
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+
+		const kamPart1 = result.parts[0]
+		expect(kamPart1).toBeTruthy()
+		expect(kamPart1.pieces).toHaveLength(2)
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle, SharedSourceLayers.PgmCam])
+		expect(kamPart1.pieces[0].name).toBe('EFFEKT 1')
+	})
+
+	it('Creates mix for KAM 1 MIX 5', () => {
+		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 MIX 5</pi></p>\r\n')
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expectAllPartsToBeValid(result)
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+
+		const kamPart1 = result.parts[0]
+		expect(kamPart1).toBeTruthy()
+		expect(kamPart1.pieces).toHaveLength(2)
+		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle, SharedSourceLayers.PgmCam])
+		expect(kamPart1.pieces[0].name).toBe('MIX 5')
+	})
+
+	it('Creates mix for EKSTERN=LIVE 1 EFFEKT 1', () => {
+		const ingestSegment = makeIngestSegment(
+			[['EKSTERN=LIVE 1 EFFEKT 1']],
+			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expectAllPartsToBeValid(result)
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+
+		const livePart1 = result.parts[0]
+		expect(livePart1).toBeTruthy()
+		expect(livePart1.pieces).toHaveLength(2)
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmJingle,
+			SharedSourceLayers.PgmLive
+		])
+		expect(livePart1.pieces[0].name).toBe('EFFEKT 1')
+	})
+
+	it('Creates mix for EKSTERN=LIVE 1 MIX 10', () => {
+		const ingestSegment = makeIngestSegment(
+			[['EKSTERN=LIVE 1 MIX 10']],
+			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
+		)
+		const context = makeMockContext()
+		const result = getSegment(context, ingestSegment)
+		expectNotesToBe(context, [])
+		expectAllPartsToBeValid(result)
+		expect(result.segment.isHidden).toBe(false)
+		expect(result.parts).toHaveLength(1)
+
+		const livePart1 = result.parts[0]
+		expect(livePart1).toBeTruthy()
+		expect(livePart1.pieces).toHaveLength(2)
+		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([
+			SharedSourceLayers.PgmJingle,
+			SharedSourceLayers.PgmLive
+		])
+		expect(livePart1.pieces[0].name).toBe('MIX 10')
+	})
 })

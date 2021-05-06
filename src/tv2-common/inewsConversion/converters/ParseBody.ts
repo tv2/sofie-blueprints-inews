@@ -453,10 +453,11 @@ function makeDefinitionPrimaryCue(
 	partType: PartType,
 	cue: CueDefinition
 ): PartDefinition {
-	const definition = makeDefinition(segmentId, i, typeStr, fields, modified, storyName)
+	let definition = makeDefinition(segmentId, i, typeStr, fields, modified, storyName)
 
 	switch (cue.type) {
 		case CueType.Ekstern:
+			definition = { ...definition, ...cue.transition }
 			definition.type = PartType.Ekstern
 			break
 		case CueType.DVE:
@@ -509,19 +510,27 @@ function makeDefinition(
 	return part
 }
 
-function extractTypeProperties(typeStr: string): PartdefinitionTypes {
+export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTypes, 'effekt' | 'transition'> {
+	const definition: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = {}
 	const effektMatch = typeStr.match(/effekt (\d+)/i)
 	const transitionMatch = typeStr.match(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/i)
-	const definition: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = {}
+
 	if (effektMatch) {
 		definition.effekt = Number(effektMatch[1])
 	}
+
 	if (transitionMatch) {
 		definition.transition = {
 			style: transitionMatch[1].toUpperCase(),
 			duration: transitionMatch[2] ? Number(transitionMatch[2]) : undefined
 		}
 	}
+
+	return definition
+}
+
+function extractTypeProperties(typeStr: string): PartdefinitionTypes {
+	const definition: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(typeStr)
 	const tokens = typeStr
 		.replace(/effekt (\d+)/gi, '')
 		.replace(/(MIX|DIP|WIPE|STING)( \d+)?(?:$| |\n)/gi, '')
