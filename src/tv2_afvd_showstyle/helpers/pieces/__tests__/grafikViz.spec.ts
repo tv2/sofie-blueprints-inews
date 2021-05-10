@@ -658,4 +658,106 @@ describe('grafik piece', () => {
 			})
 		])
 	})
+
+	test('adlib tlftoptlive', () => {
+		const cue = literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'tlftoptlive',
+				cue: 'kg',
+				textFields: ['Line 1', 'Line 2']
+			},
+			adlib: true,
+			iNewsCommand: '#kg'
+		})
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			cue.adlib ? cue.adlib : false,
+			dummyPart,
+			0
+		)
+		expect(adLibPieces).toEqual([
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: partId,
+				name: 'tlftoptlive - Line 1\n - Line 2',
+				lifespan: PieceLifespan.WithinPart,
+				outputLayerId: SharedOutputLayers.OVERLAY,
+				sourceLayerId: SourceLayer.PgmGraphicsTop,
+				expectedDuration: 5000,
+				tags: ['kommentator'],
+				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_commentator',
+				content: literal<GraphicsContent>({
+					fileName: 'tlftoptlive',
+					path: 'tlftoptlive',
+					ignoreMediaObjectStatus: true,
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
+								while: `!.full`
+							},
+							priority: 1,
+							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'tlftoptlive',
+								templateData: ['Line 1', 'Line 2'],
+								channelName: 'OVL1'
+							}
+						}),
+						dskEnableObj
+					])
+				})
+			}),
+			literal<IBlueprintAdLibPiece>({
+				_rank: 0,
+				externalId: partId,
+				name: 'tlftoptlive - Line 1\n - Line 2',
+				lifespan: PieceLifespan.OutOnSegmentEnd,
+				outputLayerId: SharedOutputLayers.OVERLAY,
+				sourceLayerId: SourceLayer.PgmGraphicsTop,
+				expectedDuration: 4000,
+				tags: ['flow_producer'],
+				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_flow',
+				content: literal<GraphicsContent>({
+					fileName: 'tlftoptlive',
+					path: 'tlftoptlive',
+					ignoreMediaObjectStatus: true,
+					timelineObjects: literal<TSR.TSRTimelineObj[]>([
+						literal<TSR.TimelineObjVIZMSEElementInternal>({
+							id: '',
+							enable: {
+								while: `!.full`
+							},
+							priority: 1,
+							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+								templateName: 'tlftoptlive',
+								templateData: ['Line 1', 'Line 2'],
+								channelName: 'OVL1'
+							}
+						}),
+						dskEnableObj
+					])
+				})
+			})
+		])
+	})
 })

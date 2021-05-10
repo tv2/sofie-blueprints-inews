@@ -199,6 +199,16 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				IsDesign: false,
 				SourceLayer: 'studio0_overlay',
 				LayerMapping: 'graphic_overlay'
+			},
+			{
+				INewsCode: 'kg',
+				INewsName: 'tlftoptlive',
+				VizTemplate: 'tlftoptlive',
+				VizDestination: 'OVL1',
+				OutType: 'S',
+				IsDesign: false,
+				SourceLayer: 'studio0_graphicsTop',
+				LayerMapping: 'graphic_overlay_topt'
 			}
 		])
 	],
