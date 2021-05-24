@@ -1,12 +1,11 @@
 import {
-	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	NotesContext,
+	IShowStyleUserContext,
 	PieceLifespan,
-	SegmentContext,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectFullGrafik,
@@ -34,6 +33,7 @@ import {
 	SharedSourceLayers,
 	TallyTags
 } from 'tv2-constants'
+import { t } from '../../translation'
 import { CasparPilotGeneratorSettings, GetPilotGraphicContentCaspar } from '../caspar'
 import { VizPilotGeneratorSettings } from '../viz'
 
@@ -45,7 +45,7 @@ export interface PilotGeneratorSettings {
 
 export function CreatePilotGraphic(
 	config: TV2BlueprintConfig,
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -62,7 +62,7 @@ export function CreatePilotGraphic(
 		parsedCue.graphic.vcpid.toString() === '' ||
 		parsedCue.graphic.vcpid.toString().length === 0
 	) {
-		context.warning('No valid VCPID provided')
+		context.notifyUserWarning('No valid VCPID provided')
 		return
 	}
 
@@ -85,7 +85,7 @@ export function CreatePilotGraphic(
 
 function CreatePilotAdLibAction(
 	config: TV2BlueprintConfig,
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
 	settings: PilotGeneratorSettings,
@@ -108,7 +108,7 @@ function CreatePilotAdLibAction(
 		userDataManifest: {},
 		display: {
 			_rank: adlibRank,
-			label: GetFullGraphicTemplateNameFromCue(config, parsedCue),
+			label: t(GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			sourceLayerId: SharedSourceLayers.PgmPilot,
 			outputLayerId: SharedOutputLayers.PGM,
 			content: {
@@ -128,7 +128,7 @@ function CreatePilotAdLibAction(
 
 export function CreateFullPiece(
 	config: TV2BlueprintConfig,
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
@@ -157,7 +157,7 @@ export function CreateFullPiece(
 
 export function CreateFullDataStore(
 	config: TV2BlueprintConfig,
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	settings: PilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
@@ -193,12 +193,12 @@ export function CreateFullDataStore(
 
 function CreateFullContent(
 	config: TV2BlueprintConfig,
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	settings: PilotGeneratorSettings,
 	cue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
 	adlib: boolean
-): GraphicsContent {
+): WithTimeline<GraphicsContent> {
 	if (config.studio.GraphicsType === 'HTML') {
 		return GetPilotGraphicContentCaspar(config, context, cue, settings.caspar, engine)
 	} else {

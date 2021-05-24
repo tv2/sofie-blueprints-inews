@@ -1,12 +1,12 @@
 import * as _ from 'underscore'
 
-import { NotesContext, SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { IStudioContext, SourceLayerType } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
 
 // TODO: BEGONE!
 export function parseMapStr(
-	context: NotesContext | undefined,
+	context: IStudioContext | undefined,
 	str: string,
 	_canBeStrings: boolean
 ): Array<{ id: string; val: number }> {
@@ -39,7 +39,7 @@ export function parseMapStr(
 			// Ignore?
 		}
 		if (context) {
-			context.warning('Invalid input map chunk: ' + i)
+			// R35: context.notifyUserWarning('Invalid input map chunk: ' + i)
 		}
 	})
 
@@ -118,7 +118,7 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 }
 
 export function FindSourceInfoStrict(
-	_context: NotesContext,
+	_context: IStudioContext,
 	sources: SourceInfo[],
 	type: SourceInfoType,
 	id: string
@@ -126,7 +126,7 @@ export function FindSourceInfoStrict(
 	return FindSourceInfo(sources, type, id)
 }
 
-export function FindSourceByName(context: NotesContext, sources: SourceInfo[], name: string): SourceInfo | undefined {
+export function FindSourceByName(context: IStudioContext, sources: SourceInfo[], name: string): SourceInfo | undefined {
 	name = (name + '').toLowerCase()
 
 	if (name.indexOf('k') === 0 || name.indexOf('c') === 0) {
@@ -138,11 +138,11 @@ export function FindSourceByName(context: NotesContext, sources: SourceInfo[], n
 		return FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, name)
 	}
 
-	context.warning(`Invalid source name "${name}"`)
+	// R35: context.notifyUserWarning(`Invalid source name "${name}"`)
 	return undefined
 }
 
-export function GetInputValue(context: NotesContext, sources: SourceInfo[], name: string): number {
+export function GetInputValue(context: IStudioContext, sources: SourceInfo[], name: string): number {
 	let input = 1000
 	const source = FindSourceByName(context, sources, name)
 

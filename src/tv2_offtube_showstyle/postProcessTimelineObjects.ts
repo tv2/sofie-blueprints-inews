@@ -1,9 +1,8 @@
 import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
-	NotesContext,
+	IStudioUserContext,
 	OnGenerateTimelineObj,
-	SegmentContext,
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
@@ -15,7 +14,7 @@ import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/
 import { OfftubeShowstyleBlueprintConfig } from './helpers/config'
 
 export function postProcessPartTimelineObjects(
-	context: SegmentContext,
+	context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	parts: BlueprintResultPart[]
 ) {
@@ -27,7 +26,7 @@ export function postProcessPartTimelineObjects(
 
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
-	context: NotesContext,
+	context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean

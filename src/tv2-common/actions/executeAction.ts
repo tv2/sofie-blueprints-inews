@@ -1,7 +1,7 @@
 import {
-	ActionExecutionContext,
 	ActionUserData,
-	HackPartMediaObjectSubscription,
+	IActionExecutionContext,
+	// R35: HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -9,14 +9,13 @@ import {
 	IBlueprintPieceDB,
 	IBlueprintPieceGeneric,
 	IBlueprintPieceInstance,
-	NotesContext,
+	IShowStyleUserContext,
 	PieceLifespan,
-	SegmentContext,
-	ShowStyleContext,
 	SourceLayerType,
 	SplitsContent,
 	TSR,
-	VTContent
+	VTContent,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionClearGraphics,
@@ -106,21 +105,21 @@ export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	getConfig: (context: ShowStyleContext) => ShowStyleConfig
+	getConfig: (context: IShowStyleUserContext) => ShowStyleConfig
 	postProcessPieceTimelineObjects: (
-		context: NotesContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		piece: IBlueprintPieceGeneric,
 		isAdlib: boolean
 	) => void
 	EvaluateCues: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		part: IBlueprintPart,
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
-		mediaSubscriptions: HackPartMediaObjectSubscription[],
+		// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
 		cues: CueDefinition[],
 		partDefinition: PartDefinition,
 		options: EvaluateCuesOptions
@@ -179,7 +178,7 @@ export interface ActionExecutionSettings<
 		loadFirstFrame: boolean,
 		duration: number,
 		alphaAtEnd: number
-	) => VTContent
+	) => WithTimeline<VTContent>
 	pilotGraphicSettings: PilotGeneratorSettings
 }
 
@@ -187,7 +186,7 @@ export function executeAction<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionIdStr: string,
 	userData: ActionUserData
@@ -269,7 +268,7 @@ function getExistingTransition<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	part: 'current' | 'next'
 ): ActionTakeWithTransition | undefined {
@@ -325,7 +324,7 @@ function sanitizePieceId(piece: IBlueprintPieceDB): IBlueprintPiece {
 }
 
 export function getPiecesToPreserve(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	adlibLayers: string[],
 	ingoreLayers: string[]
 ): IBlueprintPiece[] {
@@ -349,7 +348,7 @@ export function getPiecesToPreserve(
 		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
 }
 
-function generateExternalId(context: ActionExecutionContext, actionId: string, args: string[]): string {
+function generateExternalId(context: IActionExecutionContext, actionId: string, args: string[]): string {
 	return `adlib_action_${actionId}_${context.getHashId(args.join('_'), true)}`
 }
 
@@ -357,7 +356,7 @@ function executeActionSelectServerClip<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectServerClip,
@@ -427,13 +426,13 @@ function executeActionSelectServerClip<
 	const grafikPieces: IBlueprintPiece[] = []
 
 	settings.EvaluateCues(
-		(context as unknown) as SegmentContext,
+		context,
 		config,
 		basePart.part.part,
 		grafikPieces,
 		[],
 		[],
-		[],
+		// R35: [],
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -443,7 +442,7 @@ function executeActionSelectServerClip<
 	)
 
 	if (basePart.invalid || !activeServerPiece || !serverDataStore) {
-		context.warning(`Could not start server clip`)
+		context.notifyUserWarning(`Could not start server clip`)
 		return
 	}
 
@@ -495,7 +494,7 @@ function executeActionSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectDVE
@@ -508,7 +507,7 @@ function executeActionSelectDVE<
 
 	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.warning(`DVE layout not recognised`)
+		context.notifyUserWarning(`DVE layout not recognised`)
 		return
 	}
 
@@ -586,7 +585,7 @@ function cutServerToBox<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	dvePiece: IBlueprintPiece
 ): IBlueprintPiece {
@@ -611,7 +610,7 @@ function cutServerToBox<
 		)
 
 		if (!currentServer || !currentServer.piece.content?.timelineObjects) {
-			context.warning(`No server is playing, cannot start DVE`)
+			context.notifyUserWarning(`No server is playing, cannot start DVE`)
 			return dvePiece
 		}
 
@@ -637,7 +636,7 @@ function cutServerToBox<
 			!existingCasparObj.metaData ||
 			!existingCasparObj.metaData.mediaPlayerSession
 		) {
-			context.warning(`Failed to start DVE with server`)
+			context.notifyUserWarning(`Failed to start DVE with server`)
 			return dvePiece
 		}
 
@@ -665,7 +664,7 @@ function executeActionSelectDVELayout<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectDVELayout
@@ -788,11 +787,11 @@ function startNewDVELayout<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	config: ShowStyleConfig,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	dvePiece: IBlueprintPiece,
-	pieceContent: SplitsContent,
+	pieceContent: WithTimeline<SplitsContent>,
 	meta: PieceMetaData & DVEPieceMetaData,
 	templateName: string,
 	_sources: CueDefinitionDVE['sources'],
@@ -884,7 +883,7 @@ function executeActionSelectJingle<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectJingle
@@ -898,7 +897,7 @@ function executeActionSelectJingle<
 	const config = settings.getConfig(context)
 
 	if (!config.showStyle.BreakerConfig) {
-		context.warning(`Jingles have not been configured`)
+		context.notifyUserWarning(`Jingles have not been configured`)
 		return
 	}
 
@@ -908,7 +907,7 @@ function executeActionSelectJingle<
 		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === userData.clip.toUpperCase() : false
 	)
 	if (!jingle) {
-		context.warning(`Jingle ${userData.clip} is not configured`)
+		context.notifyUserWarning(`Jingle ${userData.clip} is not configured`)
 		return
 	} else {
 		file = jingle.ClipName.toString()
@@ -998,7 +997,7 @@ function executeActionCutToCamera<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionCutToCamera
@@ -1147,7 +1146,7 @@ function executeActionCutToRemote<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionCutToRemote
@@ -1258,7 +1257,7 @@ function executeActionCutSourceToBox<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	userData: ActionCutSourceToBox
@@ -1377,7 +1376,7 @@ function executeActionTakeWithTransition<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionTakeWithTransition
@@ -1464,7 +1463,8 @@ function executeActionTakeWithTransition<
 					lifespan: PieceLifespan.WithinPart,
 					tags: [GetTagForTransition(userData.variant)],
 					content: {
-						ignoreMediaObjectStatus: true
+						ignoreMediaObjectStatus: true,
+						timelineObjects: []
 					}
 				}
 
@@ -1534,7 +1534,7 @@ function executeActionTakeWithTransition<
 }
 
 function findPieceToRecoverDataFrom(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	dataStoreLayers: string[]
 ): { piece: IBlueprintPieceInstance; part: 'current' | 'next' } | undefined {
 	const currentPieces = context.getPieceInstances('current')
@@ -1567,7 +1567,7 @@ function findPieceToRecoverDataFrom(
 }
 
 function findDataStore<T extends TV2AdlibAction>(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	dataStoreLayers: string[]
 ): T | undefined {
 	const dataStorePiece = findPieceToRecoverDataFrom(context, dataStoreLayers)
@@ -1582,7 +1582,7 @@ function findDataStore<T extends TV2AdlibAction>(
 }
 
 function findMediaPlayerSessions(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	sessionLayers: string[]
 ): { session: string | undefined; part: 'current' | 'next' | undefined } {
 	const mediaPlayerSessionPiece = findPieceToRecoverDataFrom(context, sessionLayers)
@@ -1607,7 +1607,7 @@ function executeActionCommentatorSelectServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectServer
@@ -1638,7 +1638,7 @@ function executeActionCommentatorSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectDVE
@@ -1660,7 +1660,7 @@ function executeActionCommentatorSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectFull
@@ -1678,7 +1678,7 @@ function executeActionCommentatorSelectJingle<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectJingle
@@ -1700,7 +1700,7 @@ function executeActionRecallLastLive<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	_userData: ActionRecallLastLive
@@ -1752,7 +1752,7 @@ function executeActionRecallLastDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	_userData: ActionRecallLastDVE
@@ -1812,7 +1812,7 @@ function executeActionSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	userData: ActionSelectFullGrafik
@@ -1891,7 +1891,7 @@ function executeActionClearGraphics<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ActionExecutionContext,
+	context: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	userData: ActionClearGraphics

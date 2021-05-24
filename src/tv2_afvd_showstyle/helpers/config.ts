@@ -1,4 +1,4 @@
-import { IBlueprintConfig, ShowStyleContext, TableConfigItemValue } from '@sofie-automation/blueprints-integration'
+import { IBlueprintConfig, IShowStyleContext, TableConfigItemValue } from '@sofie-automation/blueprints-integration'
 import { TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
@@ -15,6 +15,6 @@ export function parseConfig(config: IBlueprintConfig): any {
 	return { showStyle: config }
 }
 
-export function getConfig(context: ShowStyleContext): BlueprintConfig {
+export function getConfig(context: IShowStyleContext): BlueprintConfig {
 	return ({ ...(context.getStudioConfig() as any), ...(context.getShowStyleConfig() as any) } as any) as BlueprintConfig
 }

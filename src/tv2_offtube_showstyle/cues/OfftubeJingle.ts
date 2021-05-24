@@ -34,7 +34,7 @@ export function OfftubeEvaluateJingle(
 	effekt?: boolean
 ) {
 	if (!config.showStyle.BreakerConfig) {
-		context.warning(`Jingles have not been configured`)
+		context.notifyUserWarning(`Jingles have not been configured`)
 		return
 	}
 
@@ -44,7 +44,7 @@ export function OfftubeEvaluateJingle(
 		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === parsedCue.clip.toUpperCase() : false
 	)
 	if (!jingle) {
-		context.warning(`Jingle ${parsedCue.clip} is not configured`)
+		context.notifyUserWarning(`Jingle ${parsedCue.clip} is not configured`)
 		return
 	} else {
 		file = jingle.ClipName.toString()
@@ -53,7 +53,7 @@ export function OfftubeEvaluateJingle(
 	const p = GetJinglePartProperties(context, config, part)
 
 	if (JSON.stringify(p) === JSON.stringify({})) {
-		context.warning(`Could not create adlib for ${parsedCue.clip}`)
+		context.notifyUserWarning(`Could not create adlib for ${parsedCue.clip}`)
 		return
 	}
 

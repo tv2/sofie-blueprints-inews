@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { NotesContext, SourceLayerType, Timeline, TSR } from '@sofie-automation/blueprints-integration'
+import { IStudioUserContext, SourceLayerType, Timeline, TSR } from '@sofie-automation/blueprints-integration'
 import {
 	FindSourceInfoStrict,
 	SisyfosEVSSource,
@@ -65,10 +65,10 @@ export function GetCameraMetaData(
 }
 
 export function GetSisyfosTimelineObjForEkstern(
-	context: NotesContext,
+	context: IStudioUserContext,
 	sources: SourceInfo[],
 	sourceType: string,
-	getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
+	getLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	if (!enable) {
@@ -79,7 +79,7 @@ export function GetSisyfosTimelineObjForEkstern(
 	const layers = getLayersForEkstern(context, sources, sourceType)
 
 	if (!layers || !layers.length) {
-		context.warning(`Could not set audio levels for ${sourceType}`)
+		context.notifyUserWarning(`Could not set audio levels for ${sourceType}`)
 		return audioTimeline
 	}
 
@@ -101,7 +101,7 @@ export function GetSisyfosTimelineObjForEkstern(
 	return audioTimeline
 }
 
-export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[], sourceType: string) {
+export function GetLayersForEkstern(context: IStudioUserContext, sources: SourceInfo[], sourceType: string) {
 	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i)
 	const eksternLayers: string[] = []
 	if (eksternProps) {
@@ -114,7 +114,7 @@ export function GetLayersForEkstern(context: NotesContext, sources: SourceInfo[]
 }
 
 export function GetSisyfosTimelineObjForCamera(
-	context: NotesContext,
+	context: IStudioUserContext,
 	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
 	sourceType: string,
 	channelLayer: string,

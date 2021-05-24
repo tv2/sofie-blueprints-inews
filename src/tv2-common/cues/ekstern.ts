@@ -2,12 +2,13 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
+	IShowStyleUserContext,
 	PieceLifespan,
 	RemoteContent,
-	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
@@ -46,7 +47,7 @@ export function EvaluateEksternBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
@@ -63,19 +64,19 @@ export function EvaluateEksternBase<
 		.trim()
 		.match(/^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i)
 	if (!eksternProps) {
-		context.warning(`No source entered for EKSTERN`)
+		context.notifyUserWarning(`No source entered for EKSTERN`)
 		part.invalid = true
 		return
 	}
 	const source = eksternProps[1]
 	if (!source) {
-		context.warning(`Could not find live source for ${parsedCue.source}`)
+		context.notifyUserWarning(`Could not find live source for ${parsedCue.source}`)
 		part.invalid = true
 		return
 	}
 	const sourceInfoEkstern = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
 	if (sourceInfoEkstern === undefined) {
-		context.warning(`${parsedCue.source} does not exist in this studio`)
+		context.notifyUserWarning(`${parsedCue.source} does not exist in this studio`)
 		part.invalid = true
 		return
 	}
@@ -94,7 +95,7 @@ export function EvaluateEksternBase<
 				toBeQueued: true,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
-				content: literal<RemoteContent>({
+				content: literal<WithTimeline<RemoteContent>>({
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
@@ -138,7 +139,7 @@ export function EvaluateEksternBase<
 				toBeQueued: true,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				tags: [GetTagForLive(sourceInfoEkstern.id)],
-				content: literal<RemoteContent>({
+				content: literal<WithTimeline<RemoteContent>>({
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([

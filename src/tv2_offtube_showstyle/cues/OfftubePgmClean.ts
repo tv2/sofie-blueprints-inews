@@ -1,11 +1,12 @@
 import {
 	BaseContent,
 	IBlueprintPiece,
-	NotesContext,
+	IShowStyleUserContext,
 	PieceLifespan,
 	SourceLayerType,
 	TimelineObjectCoreExt,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinitionPgmClean, FindSourceInfoStrict, literal, SourceInfo, SourceInfoType } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
@@ -14,7 +15,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluatePgmClean(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	partId: string,
@@ -35,14 +36,14 @@ export function OfftubeEvaluatePgmClean(
 	}
 
 	if (!sourceType) {
-		context.warning(`Invalid source for clean output: ${parsedCue.source}`)
+		context.notifyUserWarning(`Invalid source for clean output: ${parsedCue.source}`)
 		return
 	}
 
 	sourceInfo = FindSourceInfoStrict(context, config.sources, sourceType, parsedCue.source)
 
 	if (!sourceInfo) {
-		context.warning(`Invalid source for clean output: ${parsedCue.source}`)
+		context.notifyUserWarning(`Invalid source for clean output: ${parsedCue.source}`)
 		return
 	}
 
@@ -56,7 +57,7 @@ export function OfftubeEvaluatePgmClean(
 			outputLayerId: SharedOutputLayers.AUX,
 			sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
 			lifespan: PieceLifespan.OutOnRundownEnd,
-			content: literal<BaseContent>({
+			content: literal<WithTimeline<BaseContent>>({
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					literal<TSR.TimelineObjAtemAUX>({
 						id: '',

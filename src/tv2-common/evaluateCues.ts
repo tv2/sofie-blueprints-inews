@@ -1,10 +1,10 @@
 import {
-	HackPartMediaObjectSubscription,
+	// R35: HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext,
+	ISegmentUserContext,
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
@@ -34,7 +34,7 @@ import {
 export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueGraphic?: (
 		config: TV2BlueprintConfig,
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -55,7 +55,7 @@ export interface EvaluateCuesShowstyleOptions {
 	) => void
 	EvaluateCueGraphicDesign?: (
 		config: TV2BlueprintConfig,
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -66,7 +66,7 @@ export interface EvaluateCuesShowstyleOptions {
 	) => void
 	EvaluateCueRouting?: (
 		config: TV2BlueprintConfig,
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		pieces: IBlueprintPiece[],
 		_adlibPieces: IBlueprintAdLibPiece[],
 		_actions: IBlueprintActionManifest[],
@@ -74,7 +74,7 @@ export interface EvaluateCuesShowstyleOptions {
 		parsedCue: CueDefinitionRouting
 	) => void
 	EvaluateCueEkstern?: (
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		part: IBlueprintPart,
 		pieces: IBlueprintPiece[],
@@ -87,7 +87,7 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueDVE?: (
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -98,11 +98,11 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueAdLib?: (
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
-		mediaSubscriptions: HackPartMediaObjectSubscription[],
+		// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
 		partId: string,
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
@@ -110,7 +110,7 @@ export interface EvaluateCuesShowstyleOptions {
 	) => void
 	EvaluateCueTelefon?: (
 		config: TV2BlueprintConfig,
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -121,7 +121,7 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueJingle?: (
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -133,7 +133,7 @@ export interface EvaluateCuesShowstyleOptions {
 		effekt?: boolean
 	) => void
 	EvaluateCueLYD?: (
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
@@ -153,7 +153,7 @@ export interface EvaluateCuesShowstyleOptions {
 		shouldAdlib: boolean
 	) => void
 	EvaluateCuePgmClean?: (
-		context: SegmentContext,
+		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
 		partId: string,
@@ -180,13 +180,13 @@ export interface EvaluateCuesOptions {
 
 export function EvaluateCuesBase(
 	showStyleOptions: EvaluateCuesShowstyleOptions,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: TV2BlueprintConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	mediaSubscriptions: HackPartMediaObjectSubscription[],
+	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -206,7 +206,7 @@ export function EvaluateCuesBase(
 							cue.target === 'OVL' &&
 							cues.some(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL')
 						) {
-							context.warning(`Cannot create overlay graphic with FULL`)
+							context.notifyUserWarning(`Cannot create overlay graphic with FULL`)
 							break
 						}
 						showStyleOptions.EvaluateCueGraphic(
@@ -276,7 +276,7 @@ export function EvaluateCuesBase(
 							config,
 							adLibPieces,
 							actions,
-							mediaSubscriptions,
+							// R35: mediaSubscriptions,
 							partDefinition.externalId,
 							cue,
 							partDefinition,
@@ -390,16 +390,16 @@ export function EvaluateCuesBase(
 					}
 					break
 				case CueType.UNPAIRED_TARGET:
-					context.warning(`No graphic found after ${cue.iNewsCommand} cue`)
+					context.notifyUserWarning(`No graphic found after ${cue.iNewsCommand} cue`)
 					break
 				case CueType.UNPAIRED_PILOT:
-					context.warning(`Graphic found without target engine`)
+					context.notifyUserWarning(`Graphic found without target engine`)
 					break
 				default:
 					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
 						// TODO: Mic -> For the future
-						// context.warning(`Unimplemented cue type: ${CueType[cue.type]}`)
+						// context.notifyUserWarning(`Unimplemented cue type: ${CueType[cue.type]}`)
 						assertUnreachable(cue)
 					}
 					break
@@ -427,9 +427,9 @@ export function EvaluateCuesBase(
 								content: {
 									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
-									channelName: o.content.channelName,
-									rundownId: context.rundownId,
-									playlistId: ''
+									channelName: o.content.channelName
+									// R35: rundownId: context.rundownId,
+									// R35: playlistId: ''
 								}
 							})
 						}
@@ -440,9 +440,9 @@ export function EvaluateCuesBase(
 								deviceSubType: TSR.DeviceType.VIZMSE,
 								content: {
 									templateName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
-									channelName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName,
-									rundownId: context.rundownId,
-									playlistId: ''
+									channelName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
+									// R35: rundownId: context.rundownId,
+									// R35: playlistId: ''
 								}
 							})
 						}
@@ -452,9 +452,9 @@ export function EvaluateCuesBase(
 							content: {
 								templateName: 'altud',
 								channelName: 'OVL1',
-								templateData: [],
-								rundownId: context.rundownId,
-								playlistId: ''
+								templateData: []
+								// R35: rundownId: context.rundownId,
+								// R35: playlistId: ''
 							}
 						})
 					}

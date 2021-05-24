@@ -28,7 +28,7 @@ export function EvaluateCueRouting(
 	if (parsedCue.INP1 !== undefined || parsedCue.INP !== undefined) {
 		const source = parsedCue.INP1 ?? parsedCue.INP
 		if (!source || !source.length) {
-			context.warning(`No input provided for viz engine aux`)
+			context.notifyUserWarning(`No input provided for viz engine aux`)
 		} else {
 			let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)
 			if (!sourceInfo) {
@@ -36,7 +36,7 @@ export function EvaluateCueRouting(
 			}
 
 			if (!sourceInfo) {
-				context.warning(`Could not find source ${source}`)
+				context.notifyUserWarning(`Could not find source ${source}`)
 			} else {
 				pieces.push(
 					literal<IBlueprintPiece>({

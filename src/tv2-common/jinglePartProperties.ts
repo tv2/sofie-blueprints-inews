@@ -1,11 +1,11 @@
-import { IBlueprintPart, NotesContext } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPart, IShowStyleUserContext } from '@sofie-automation/blueprints-integration'
 import { CueType } from 'tv2-constants'
 import { TableConfigItemBreakers, TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { TimeFromFrames } from './frameTime'
 import { CueDefinitionJingle, PartDefinition } from './inewsConversion'
 
 export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase>(
-	_context: NotesContext,
+	_context: IShowStyleUserContext,
 	config: TV2BlueprintConfigBase<StudioConfig>,
 	part: PartDefinition
 ):

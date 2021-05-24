@@ -1,9 +1,8 @@
 import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
-	NotesContext,
+	IStudioUserContext,
 	OnGenerateTimelineObj,
-	SegmentContext,
 	SourceLayerType,
 	SplitsContent,
 	TimelineObjectCoreExt,
@@ -17,7 +16,7 @@ import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { SourceLayer } from './layers'
 
 export function postProcessPartTimelineObjects(
-	context: SegmentContext,
+	context: IStudioUserContext,
 	config: BlueprintConfig,
 	parts: BlueprintResultPart[]
 ) {
@@ -29,7 +28,7 @@ export function postProcessPartTimelineObjects(
 
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
-	context: NotesContext,
+	context: IStudioUserContext,
 	config: BlueprintConfig,
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean
@@ -161,7 +160,7 @@ export function postProcessPieceTimelineObjects(
 			if (tlObj.layer === jingleDSKLayer) {
 				const newProps = _.pick(tlObj.content.dsk, 'onAir')
 				if (_.isEqual(newProps, tlObj.content.dsk)) {
-					context.warning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
+					context.notifyUserWarning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
 				}
 
 				const cleanObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({

@@ -1,6 +1,6 @@
 export * from './slotMappings'
 
-import { GraphicsContent, IBlueprintPiece, NotesContext, TSR } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPiece, IShowStyleUserContext, TSR, WithTimeline } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GraphicInternal,
@@ -17,7 +17,7 @@ import { IsTargetingFull, IsTargetingWall } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
 export interface CasparPilotGeneratorSettings {
-	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: NotesContext): TSR.TSRTimelineObj[]
+	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: IShowStyleUserContext): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentCaspar(
@@ -44,7 +44,7 @@ export function GetInternalGraphicContentCaspar(
 
 export function GetPilotGraphicContentCaspar(
 	config: TV2BlueprintConfig,
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	settings: CasparPilotGeneratorSettings,
 	engine: GraphicEngine
@@ -66,7 +66,7 @@ export function GetPilotGraphicContentCaspar(
 			}
 		}
 	}
-	return literal<GraphicsContent>({
+	return literal<WithTimeline<GraphicsContent>>({
 		fileName,
 		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],

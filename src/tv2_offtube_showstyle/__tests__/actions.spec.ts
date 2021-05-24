@@ -289,7 +289,7 @@ function validateRemotePiece(piece: IBlueprintPieceInstance | undefined) {
 }
 
 function validateNoWarningsOrErrors(context: MockActionContext) {
-	expect(context.warnings).toEqual([])
+	expect(context.notifyUserWarnings).toEqual([])
 	expect(context.errors).toEqual([])
 }
 

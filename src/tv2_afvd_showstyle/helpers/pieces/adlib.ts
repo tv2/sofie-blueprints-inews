@@ -1,9 +1,8 @@
 import {
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	PieceLifespan,
-	SegmentContext
+	IShowStyleUserContext,
+	PieceLifespan
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectDVE,
@@ -25,11 +24,11 @@ import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateAdLib(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	mediaSubscriptions: HackPartMediaObjectSubscription[],
+	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -43,10 +42,7 @@ export function EvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = Math.max(
-			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
-			0
-		)
+		const sourceDuration = 0 // R35: Math.max((context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,0)
 
 		actions.push(
 			CreateAdlibServer(
@@ -78,7 +74,7 @@ export function EvaluateAdLib(
 			)
 		)
 
-		mediaSubscriptions.push({ mediaId: file.toUpperCase() })
+		// R35: mediaSubscriptions.push({ mediaId: file.toUpperCase() })
 	} else {
 		// DVE
 		if (!parsedCue.variant) {
@@ -87,12 +83,12 @@ export function EvaluateAdLib(
 
 		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
-			context.warning(`Could not find template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
 			return
 		}
 
 		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-			context.warning(`Invalid DVE template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
 

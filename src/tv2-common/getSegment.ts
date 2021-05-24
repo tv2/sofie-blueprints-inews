@@ -3,9 +3,7 @@ import {
 	BlueprintResultSegment,
 	IBlueprintSegment,
 	IngestSegment,
-	NotesContext,
-	SegmentContext,
-	ShowStyleContext
+	IShowStyleUserContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	assertUnreachable,
@@ -37,65 +35,65 @@ export interface GetSegmentShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	getConfig: (context: ShowStyleContext) => ShowStyleConfig
+	getConfig: (context: IShowStyleUserContext) => ShowStyleConfig
 	CreatePartContinuity: (config: ShowStyleConfig, ingestSegment: IngestSegment) => BlueprintResultPart
 	CreatePartUnknown: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number,
 		asAdlibs?: boolean
 	) => BlueprintResultPart
 	CreatePartIntro?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartKam?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionKam,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartServer?: (
-		context: NotesContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		props: ServerPartProps
 	) => BlueprintResultPart
 	CreatePartTeknik?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTeknik,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartGrafik?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionGrafik,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartEkstern?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEkstern,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartTelefon?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTelefon,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartDVE?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionDVE,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartEVS?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEVS,
 		totalWords: number
@@ -106,7 +104,7 @@ export function getSegmentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	ingestSegment: IngestSegment,
 	showStyleOptions: GetSegmentShowstyleOptions<StudioConfig, ShowStyleConfig>
 ): BlueprintResultSegment {
@@ -178,7 +176,7 @@ export function getSegmentBase<
 		if (unpairedTargets.length) {
 			blueprintParts.push(CreatePartInvalid(part))
 			unpairedTargets.forEach(cue => {
-				context.warning(`No graphic found after ${cue.iNewsCommand} cue`)
+				context.notifyUserWarning(`No graphic found after ${cue.iNewsCommand} cue`)
 			})
 			continue
 		}
@@ -337,7 +335,7 @@ export function getSegmentBase<
 					piece => piece.sourceLayerId === SharedSourceLayers.PgmJingle
 				)))
 	) {
-		blueprintParts[0].part.budgetDuration = totalTimeMs
+		// R35: blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
 
 	if (

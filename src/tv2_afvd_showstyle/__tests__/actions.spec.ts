@@ -389,7 +389,7 @@ function expectTakeAfterExecute(context: MockActionContext) {
 }
 
 function expectNoWarningsOrErrors(context: MockActionContext) {
-	expect(context.warnings).toEqual([])
+	expect(context.notifyUserWarnings).toEqual([])
 	expect(context.errors).toEqual([])
 }
 

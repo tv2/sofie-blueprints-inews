@@ -1,4 +1,4 @@
-import { SegmentContext, SplitsContent } from '@sofie-automation/blueprints-integration'
+import { IShowStyleUserContext, SplitsContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionDVE,
 	DVEConfigInput,
@@ -62,14 +62,14 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 }
 
 export function MakeContentDVE(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
 	return MakeContentDVEBase(
 		context,
 		config,

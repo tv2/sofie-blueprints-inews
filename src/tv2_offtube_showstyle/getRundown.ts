@@ -5,10 +5,9 @@ import {
 	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
 	IngestRundown,
-	IStudioConfigContext,
-	NotesContext,
+	IStudioContext,
+	IStudioUserContext,
 	PieceLifespan,
-	ShowStyleContext,
 	SourceLayerType,
 	TSR
 } from '@sofie-automation/blueprints-integration'
@@ -33,7 +32,8 @@ import {
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	literal,
-	SourceInfo
+	SourceInfo,
+	t
 } from 'tv2-common'
 import {
 	AdlibActionType,
@@ -54,7 +54,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
-	_context: IStudioConfigContext,
+	_context: IStudioContext,
 	showStyleVariants: IBlueprintShowStyleVariant[],
 	_ingestRundown: IngestRundown
 ): string | null {
@@ -66,7 +66,7 @@ export function getShowStyleVariantId(
 	return null
 }
 
-export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundown): BlueprintResultRundown {
+export function getRundown(context: IStudioUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const config = getConfig(context)
 
 	let startTime: number = 0
@@ -102,7 +102,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 }
 
 function getGlobalAdLibPiecesOfftube(
-	context: NotesContext,
+	context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
@@ -226,7 +226,7 @@ function getGlobalAdLibPiecesOfftube(
 }
 
 function getGlobalAdlibActionsOfftube(
-	_context: ShowStyleContext,
+	_context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig
 ): IBlueprintActionManifest[] {
 	const res: IBlueprintActionManifest[] = []
@@ -245,7 +245,7 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `KAM ${info.id}`,
+					label: t(`KAM ${info.id}`),
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: SharedOutputLayers.PGM,
 					content: {},
@@ -269,7 +269,7 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `${type} ${name}`,
+					label: t(`${type} ${name}`),
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
@@ -298,7 +298,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Cut ${name} to box ${box + 1}`,
+						label: t(`Cut ${name} to box ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
 						content: {},
@@ -325,7 +325,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`,
+						label: t(`EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
@@ -352,7 +352,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Server to box ${box + 1}`,
+						label: t(`Server to box ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
@@ -372,7 +372,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'Server',
+				label: t('Server'),
 				sourceLayerId: OfftubeSourceLayer.PgmServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -392,7 +392,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'DVE',
+				label: t('DVE'),
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -412,7 +412,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'GFX FULL',
+				label: t('GFX FULL'),
 				sourceLayerId: SharedSourceLayers.PgmPilot,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -434,7 +434,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: 400,
-				label: `GFX Altud`,
+				label: t(`GFX Altud`),
 				sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
 				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
@@ -456,7 +456,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: 1,
-				label: 'Last DVE',
+				label: t('Last DVE'),
 				sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
 				outputLayerId: 'pgm'
 			}
@@ -474,7 +474,7 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: 200 + i,
-					label: dveConfig.DVEName,
+					label: t(dveConfig.DVEName),
 					sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
 					outputLayerId: SharedOutputLayers.PGM
 				}
@@ -512,7 +512,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: 1,
-				label: 'Last Live',
+				label: t('Last Live'),
 				sourceLayerId: OfftubeSourceLayer.PgmLive,
 				outputLayerId: SharedOutputLayers.PGM
 			}
@@ -552,7 +552,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'JINGLE',
+				label: t('JINGLE'),
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -566,7 +566,7 @@ function getGlobalAdlibActionsOfftube(
 	return res
 }
 
-function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
+function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObj[] {
 	return [
 		...CreateGraphicBaseline(config),
 		// Default timeline

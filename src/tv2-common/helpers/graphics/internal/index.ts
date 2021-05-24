@@ -2,8 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	IShowStyleUserContext,
 	PieceLifespan,
-	SegmentContext,
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
@@ -31,7 +31,7 @@ import { GetInternalGraphicContentVIZ } from '../viz'
 
 export function CreateInternalGraphic(
 	config: TV2BlueprintConfig,
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -49,7 +49,7 @@ export function CreateInternalGraphic(
 	const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
 	if (!mappedTemplate || !mappedTemplate.length) {
-		context.warning(`No valid template found for ${parsedCue.graphic.template}`)
+		context.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)
 		return
 	}
 

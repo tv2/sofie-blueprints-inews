@@ -4,9 +4,10 @@ import {
 	CameraContent,
 	IBlueprintPiece,
 	IngestSegment,
+	IRundownUserContext,
 	PieceLifespan,
-	SegmentContext,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { getSegmentBase, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
@@ -24,7 +25,7 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
-export function getSegment(context: SegmentContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+export function getSegment(context: IRundownUserContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const config = getConfig(context)
 
 	const result: BlueprintResultSegment = getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {
@@ -68,7 +69,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				sourceLayerId: SourceLayer.PgmContinuity,
 				outputLayerId: SharedOutputLayers.PGM,
 				lifespan: PieceLifespan.WithinPart,
-				content: literal<CameraContent>({
+				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
 					timelineObjects: _.compact<TSR.TimelineObjAtemAny>([

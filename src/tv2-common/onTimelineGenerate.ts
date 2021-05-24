@@ -329,11 +329,11 @@ export function copyPreviousSisyfosLevels(
 				const metadata = piece.piece.metaData as PieceMetaData | undefined
 				if (metadata && metadata.stickySisyfosLevels) {
 					for (const id of Object.keys(metadata.stickySisyfosLevels)) {
-						// context.warning(
+						// context.notifyUserWarning(
 						// 	`New level from ${piece._id} for ${id} of ${JSON.stringify(val)} (last was ${previousLevels[id]})`
 						// )
 						if (newPreviousLevels[id]) {
-							// context.warning('duplicate level, going with the first!' + id)
+							// context.notifyUserWarning('duplicate level, going with the first!' + id)
 						} else {
 							const val = metadata.stickySisyfosLevels[id]
 							newPreviousLevels[id] =

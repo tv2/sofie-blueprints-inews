@@ -1,11 +1,11 @@
-import { BlueprintResultPart, IBlueprintPart, NotesContext } from '@sofie-automation/blueprints-integration'
+import { BlueprintResultPart, IBlueprintPart, IShowStyleUserContext } from '@sofie-automation/blueprints-integration'
 import { literal, PartDefinition, PartTime, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 export function CreatePartKamBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	_context: NotesContext,
+	_context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	totalWords: number

@@ -1,10 +1,9 @@
 import {
-	ActionExecutionContext,
 	BlueprintResultPart,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PieceLifespan,
-	SegmentContext
+	IShowStyleUserContext,
+	PieceLifespan
 } from '@sofie-automation/blueprints-integration'
 import {
 	CutToServer,
@@ -51,24 +50,24 @@ export function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: SegmentContext | ActionExecutionContext,
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps,
 	layers: ServerPartLayers
 ): { part: BlueprintResultPart; file: string; duration: number; invalid?: true } {
 	if (partDefinition.fields === undefined) {
-		context.warning('Video ID not set!')
+		context.notifyUserWarning('Video ID not set!')
 		return { part: CreatePartInvalid(partDefinition), file: '', duration: 0, invalid: true }
 	}
 
 	if (!partDefinition.fields.videoId) {
-		context.warning('Video ID not set!')
+		context.notifyUserWarning('Video ID not set!')
 		return { part: CreatePartInvalid(partDefinition), file: '', duration: 0, invalid: true }
 	}
 
 	const file = partDefinition.fields.videoId
-	const mediaObjectDuration = context.hackGetMediaObjectDuration(file)
+	const mediaObjectDuration = 0 // R35: context.hackGetMediaObjectDuration(file)
 	const sourceDuration =
 		mediaObjectDuration !== undefined ? mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration : undefined
 	const duration =
@@ -88,8 +87,8 @@ export function CreatePartServerBase<
 		title: file,
 		metaData: {},
 		expectedDuration: actualDuration || 1000,
-		prerollDuration: config.studio.CasparPrerollDuration,
-		hackListenToMediaObjectUpdates: [{ mediaId: file.toUpperCase() }]
+		prerollDuration: config.studio.CasparPrerollDuration
+		// R35: hackListenToMediaObjectUpdates: [{ mediaId: file.toUpperCase() }]
 	})
 
 	const pieces: IBlueprintPiece[] = []

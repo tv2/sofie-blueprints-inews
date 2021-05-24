@@ -3,10 +3,11 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	IShowStyleUserContext,
 	PieceLifespan,
-	SegmentContext,
 	TimelineObjectCoreExt,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
 import {
@@ -20,7 +21,7 @@ import {
 import { TV2BlueprintConfig } from '../blueprintConfig'
 
 export function EvaluateLYD(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: TV2BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -37,7 +38,7 @@ export function EvaluateLYD(
 	const fade = parsedCue.variant.match(/FADE ?(\d+)/i)
 
 	if (!conf && !stop && !fade) {
-		context.warning(`LYD ${parsedCue.variant} not configured`)
+		context.notifyUserWarning(`LYD ${parsedCue.variant} not configured`)
 		return
 	}
 
@@ -99,9 +100,9 @@ function LydContent(
 	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,
 	fadeOut?: number
-): BaseContent {
+): WithTimeline<BaseContent> {
 	if (lydType === 'stop') {
-		return literal<BaseContent>({
+		return literal<WithTimeline<BaseContent>>({
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
 					id: '',
@@ -120,7 +121,7 @@ function LydContent(
 		})
 	}
 
-	return literal<BaseContent>({
+	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia>({
 				id: '',

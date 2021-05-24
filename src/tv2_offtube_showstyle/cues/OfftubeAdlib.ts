@@ -90,12 +90,12 @@ export function OfftubeEvaluateAdLib(
 
 		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
-			context.warning(`Could not find template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
 			return
 		}
 
 		if (!TemplateIsValid(rawTemplate.DVEJSON as string)) {
-			context.warning(`Invalid DVE template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
 

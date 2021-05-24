@@ -41,12 +41,12 @@ export function EvaluateDVE(
 
 	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.warning(`Could not find template ${parsedCue.template}`)
+		context.notifyUserWarning(`Could not find template ${parsedCue.template}`)
 		return
 	}
 
 	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-		context.warning(`Invalid DVE template ${parsedCue.template}`)
+		context.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
 

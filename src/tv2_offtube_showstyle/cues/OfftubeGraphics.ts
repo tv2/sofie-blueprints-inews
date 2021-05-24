@@ -2,8 +2,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	NotesContext,
-	SegmentContext,
+	IShowStyleUserContext,
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
@@ -33,7 +32,7 @@ export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -62,7 +61,10 @@ export function OfftubeEvaluateGrafikCaspar(
 	}
 }
 
-function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: NotesContext): TSR.TSRTimelineObj[] {
+function createPilotTimeline(
+	config: OfftubeShowstyleBlueprintConfig,
+	context: IShowStyleUserContext
+): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({

@@ -1,11 +1,12 @@
 import {
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
+	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
-	VTContent
+	VTContent,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionTakeWithTransitionVariantMix,
@@ -23,7 +24,7 @@ import { TV2BlueprintConfig } from '../blueprintConfig'
 import { PieceMetaData } from '../onTimelineGenerate'
 
 export function CreateEffektForPartBase(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	config: TV2BlueprintConfig,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[],
@@ -69,7 +70,7 @@ export function CreateEffektForPartInner<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPiece[],
 	effekt: string,
@@ -87,7 +88,7 @@ export function CreateEffektForPartInner<
 	  >
 	| false {
 	if (!config.showStyle.BreakerConfig) {
-		context.warning(`Jingles have not been configured`)
+		context.notifyUserWarning(`Jingles have not been configured`)
 		return false
 	}
 
@@ -98,14 +99,14 @@ export function CreateEffektForPartInner<
 				.toUpperCase() === effekt.toUpperCase()
 	)
 	if (!effektConfig) {
-		context.warning(`Could not find effekt ${effekt}`)
+		context.notifyUserWarning(`Could not find effekt ${effekt}`)
 		return false
 	}
 
 	const file = effektConfig.ClipName.toString()
 
 	if (!file) {
-		context.warning(`Could not find file for ${effekt}`)
+		context.notifyUserWarning(`Could not find file for ${effekt}`)
 		return false
 	}
 
@@ -125,19 +126,16 @@ export function CreateEffektForPartInner<
 					isEffekt: true
 				}
 			}),
-			content: literal<VTContent>({
-				studioLabel: '',
+			content: literal<WithTimeline<VTContent>>({
 				fileName,
 				path: `${config.studio.JingleNetworkBasePath}\\${
 					config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
 				}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 				mediaFlowIds: [config.studio.JingleMediaFlowId],
-				firstWords: '',
-				lastWords: '',
-				previewFrame: Number(effektConfig.StartAlpha),
+				// R35: previewFrame: Number(effektConfig.StartAlpha),
 				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
-				ignoreBlackFrames: true,
-				ignoreFreezeFrame: true,
+				// R35: ignoreBlackFrames: true,
+				// R35: ignoreFreezeFrame: true,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
@@ -217,6 +215,7 @@ export function CreateMixForPartInner(
 				)
 			],
 			content: {
+				timelineObjects: [],
 				ignoreMediaObjectStatus: true
 			}
 		})
