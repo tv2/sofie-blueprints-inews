@@ -189,6 +189,7 @@ describe('grafik piece', () => {
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
+				noHotKey: true,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -293,6 +294,7 @@ describe('grafik piece', () => {
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
 				expectedDuration: 5000,
+				noHotKey: true,
 				content: literal<GraphicsContent>({
 					fileName: 'bund',
 					path: 'bund',
@@ -700,6 +702,7 @@ describe('grafik piece', () => {
 				expectedDuration: 5000,
 				tags: ['kommentator'],
 				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_commentator',
+				noHotKey: true,
 				content: literal<GraphicsContent>({
 					fileName: 'tlftoptlive',
 					path: 'tlftoptlive',

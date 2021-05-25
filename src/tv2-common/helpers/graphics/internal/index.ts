@@ -80,7 +80,8 @@ export function CreateInternalGraphic(
 				lifespan: PieceLifespan.WithinPart,
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				content: _.clone(content)
+				content: _.clone(content),
+				noHotKey: true
 			})
 			adlibPieces.push(adLibPiece)
 		}

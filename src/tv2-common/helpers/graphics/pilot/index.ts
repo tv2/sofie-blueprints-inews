@@ -121,7 +121,8 @@ function CreatePilotAdLibAction(
 				...(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine) ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])
 			],
 			currentPieceTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid)],
-			nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)]
+			nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)],
+			noHotKey: !(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine))
 		}
 	})
 }
