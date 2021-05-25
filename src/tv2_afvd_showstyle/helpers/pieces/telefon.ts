@@ -2,7 +2,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	SegmentContext,
+	ISegmentUserContext,
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import {
@@ -18,7 +18,7 @@ import { EvaluateCueGraphic } from './graphic'
 
 export function EvaluateTelefon(
 	config: BlueprintConfig,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],

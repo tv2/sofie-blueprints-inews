@@ -3,7 +3,7 @@ import * as _ from 'underscore'
 import {
 	BlueprintMappings,
 	IBlueprintPieceGeneric,
-	ShowStyleContext,
+	IShowStyleUserContext,
 	TimelineObjectCoreExt,
 	TSR
 } from '@sofie-automation/blueprints-integration'
@@ -16,7 +16,7 @@ import { SourceLayer } from '../layers'
 import OutputlayerDefaults from '../migrations/outputlayer-defaults'
 
 export function checkAllLayers(
-	context: ShowStyleContext,
+	context: IShowStyleUserContext,
 	pieces: IBlueprintPieceGeneric[],
 	otherObjs?: TSR.TSRTimelineObjBase[]
 ) {

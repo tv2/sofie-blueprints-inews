@@ -1,4 +1,4 @@
-import { ActionExecutionContext, ActionUserData } from '@sofie-automation/blueprints-integration'
+import { IActionExecutionContext, ActionUserData } from '@sofie-automation/blueprints-integration'
 import { executeAction } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'
@@ -9,7 +9,7 @@ import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
-export function executeActionAFVD(context: ActionExecutionContext, actionId: string, userData: ActionUserData): void {
+export function executeActionAFVD(context: IActionExecutionContext, actionId: string, userData: ActionUserData): void {
 	executeAction(
 		context,
 		{

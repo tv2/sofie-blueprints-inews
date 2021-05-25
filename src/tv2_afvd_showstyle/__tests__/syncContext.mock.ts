@@ -4,13 +4,13 @@ import {
 	IBlueprintPiece,
 	IBlueprintPieceInstance,
 	PieceLifespan,
-	SyncIngestUpdateToPartInstanceContext
+	ISyncIngestUpdateToPartInstanceContext
 } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import { MockSegmentContext } from '../../tv2_afvd_studio/__tests__/segmentContext.mock'
 
 export class MockSyncIngestUpdateToPartInstanceContext extends MockSegmentContext
-	implements SyncIngestUpdateToPartInstanceContext {
+	implements ISyncIngestUpdateToPartInstanceContext {
 	public syncedPieceInstances: string[] = []
 	public removedPieceInstances: string[] = []
 	public updatedPieceInstances: string[] = []

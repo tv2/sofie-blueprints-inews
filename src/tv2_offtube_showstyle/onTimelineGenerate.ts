@@ -3,7 +3,7 @@ import {
 	IBlueprintResolvedPieceInstance,
 	OnGenerateTimelineObj,
 	PartEndState,
-	TimelineEventContext,
+	ITimelineEventContext,
 	TimelinePersistentState,
 	TSR
 } from '@sofie-automation/blueprints-integration'
@@ -13,7 +13,7 @@ import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '..
 import { getConfig } from './helpers/config'
 
 export function onTimelineGenerateOfftube(
-	context: TimelineEventContext,
+	context: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
@@ -46,7 +46,7 @@ export function onTimelineGenerateOfftube(
 }
 
 export function disableFirstPilotGFXAnimation(
-	_context: TimelineEventContext,
+	_context: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]

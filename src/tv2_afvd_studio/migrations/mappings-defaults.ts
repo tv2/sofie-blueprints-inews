@@ -10,7 +10,7 @@ import {
 import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
-import { BlueprintConfig, StudioConfig } from '../helpers/config'
+import { BlueprintConfig } from '../helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
@@ -76,7 +76,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'VRT 1',
 		channel: 0,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceHost_2_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -84,7 +85,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'VRT 2',
 		channel: 1,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_1_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -92,7 +94,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'GST 1',
 		channel: 2,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_2_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -100,7 +103,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'GST 2',
 		channel: 3,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_3_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -108,7 +112,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'GST 3',
 		channel: 4,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_4_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -116,7 +121,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'GST 4',
 		channel: 5,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceHost_1_ST_B]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -124,7 +130,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'B-VRT 1',
 		channel: 6,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceHost_2_ST_B]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -132,7 +139,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'B-VRT 2',
 		channel: 7,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_1_ST_B]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -140,7 +148,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'B-GST 1',
 		channel: 8,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_2_ST_B]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -148,7 +157,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'B-GST 2',
 		channel: 9,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_3_ST_B]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -156,7 +166,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'B-GST 3',
 		channel: 10,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceGuest_4_ST_B]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -164,7 +175,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'B-GST 4',
 		channel: 11,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_1]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -172,7 +184,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 1',
 		channel: 12,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -180,7 +193,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 2',
 		channel: 13,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_3]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -188,7 +202,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 3',
 		channel: 14,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_4]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -196,7 +211,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 4',
 		channel: 15,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_5]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -204,7 +220,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 5',
 		channel: 16,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_6]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -212,7 +229,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 6',
 		channel: 17,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_7]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -220,7 +238,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 7',
 		channel: 18,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_8]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -228,7 +247,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 8',
 		channel: 19,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_9]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -236,7 +256,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 9',
 		channel: 20,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceLive_10]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -244,7 +265,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 10',
 		channel: 21,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceServerA]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -252,7 +274,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'Server A',
 		channel: 22,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceServerB]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -260,7 +283,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'Server B',
 		channel: 23,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceEVS_1]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -268,7 +292,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'EVS 1',
 		channel: 24,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceEVS_2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -276,7 +301,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'EVS 2',
 		channel: 25,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceJingle]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -284,7 +310,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'JINGLE',
 		channel: 26,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceAudiobed]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -292,7 +319,8 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'BED',
 		channel: 27,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosSourceTLF]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -300,14 +328,16 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'TLF',
 		channel: 28,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[SisyfosLLAyer.SisyfosResync]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: -1,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: false
 	})
 }
 
@@ -665,110 +695,6 @@ export default literal<BlueprintMappings>({
 	...MAPPINGS_ATEM
 })
 
-export function getCameraSisyfosMappings(cameras: StudioConfig['SourcesCam']) {
-	const res: BlueprintMappings = {}
-	cameras.forEach(cam => {
-		if (cam.SourceName !== undefined && cam.AtemSource !== undefined) {
-			res[`sisyfos_camera_active_${cam.SourceName}`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: (cam.AtemSource as number) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-		}
-	})
-
-	return res
-}
-
-export function getRemoteSisyfosMappings(remotes: StudioConfig['SourcesRM']) {
-	const res: BlueprintMappings = {}
-	remotes.forEach(rmt => {
-		if (rmt.SourceName !== undefined && rmt.AtemSource !== undefined) {
-			res[`sisyfos_remote_source_${rmt.SourceName}`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-
-			res[`sisyfos_remote_source_${rmt.SourceName}_spor_2`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-
-			res[`sisyfos_remote_source_${rmt.SourceName}_stereo`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-		}
-	})
-
-	return res
-}
-
-export function getSkypeSisyfosMappings(remotes: StudioConfig['SourcesSkype']) {
-	const res: BlueprintMappings = {}
-	remotes.forEach(rmt => {
-		if (rmt.SourceName !== undefined && rmt.AtemSource !== undefined) {
-			res[`sisyfos_remote_source_skype_${rmt.SourceName}`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-
-			res[`sisyfos_remote_source_skype_${rmt.SourceName}_spor_2`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-
-			res[`sisyfos_remote_source_skype_${rmt.SourceName}_stereo`] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: (rmt.AtemSource as number) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-		}
-	})
-
-	return res
-}
-
-export function getTelefonSisyfosMappings(mappings: string) {
-	const res: BlueprintMappings = {}
-	const telefons = mappings.split(',')
-	telefons.forEach(tlf => {
-		const props = tlf.split(':')
-		if (props[0] && props[1]) {
-			res[`sisyfos_telefon_source_${props[0].replace(' ', '_').trim()}`] = literal<
-				TSR.MappingSisyfos & BlueprintMapping
-			>({
-				device: TSR.DeviceType.SISYFOS,
-				deviceId: 'sisyfos0',
-				lookahead: LookaheadMode.NONE,
-				channel: Number(props[1]) || 0,
-				mappingType: TSR.MappingSisyfosType.CHANNEL
-			})
-		}
-	})
-
-	return res
-}
-
 export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlayers']) {
 	const res: BlueprintMappings = {
 		casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -797,7 +723,9 @@ export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlaye
 			deviceId: 'sisyfos0',
 			lookahead: LookaheadMode.NONE,
 			channel: Number(mp.id) || 0,
-			mappingType: TSR.MappingSisyfosType.CHANNEL
+			mappingType: TSR.MappingSisyfosType.CHANNEL,
+			layerName: `Server ${mp.id === '1' ? 'A' : 'B'}`,
+			setLabelToLayerName: true
 		})
 	}
 

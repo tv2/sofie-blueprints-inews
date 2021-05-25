@@ -1,4 +1,5 @@
 import {
+	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -112,8 +113,7 @@ function CreatePilotAdLibAction(
 			sourceLayerId: SharedSourceLayers.PgmPilot,
 			outputLayerId: SharedOutputLayers.PGM,
 			content: {
-				...CreateFullContent(config, context, settings, parsedCue, engine, adlib),
-				timelineObjects: []
+				...CreateFullContent(config, context, settings, parsedCue, engine, adlib)
 			},
 			uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
 			tags: [

@@ -1,10 +1,9 @@
 import {
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
@@ -20,13 +19,13 @@ import { EvaluateCueRouting } from './routing'
 import { EvaluateTelefon } from './telefon'
 
 export function EvaluateCues(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	mediaSubscriptions: HackPartMediaObjectSubscription[],
+	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -51,7 +50,7 @@ export function EvaluateCues(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// R35: mediaSubscriptions,
 		cues,
 		partDefinition,
 		options

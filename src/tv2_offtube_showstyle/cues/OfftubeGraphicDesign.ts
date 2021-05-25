@@ -2,14 +2,14 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinitionGraphicDesign, EvaluateDesignBase } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export function OfftubeEvaluateGraphicDesign(
 	config: OfftubeShowstyleBlueprintConfig,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],

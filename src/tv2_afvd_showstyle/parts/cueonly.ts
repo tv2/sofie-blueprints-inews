@@ -1,10 +1,9 @@
 import {
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddScript,
@@ -22,7 +21,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartCueOnly(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	id: string,
@@ -43,19 +42,39 @@ export function CreatePartCueOnly(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {})
+	EvaluateCues(
+		context,
+		config,
+		part,
+		pieces,
+		adLibPieces,
+		actions,
+		/* mediaSubscriptions, */ [cue],
+		partDefinitionWithID,
+		{}
+	)
 	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {
-			adlib: true
-		})
+		EvaluateCues(
+			context,
+			config,
+			part,
+			pieces,
+			adLibPieces,
+			actions,
+			/* mediaSubscriptions, */ [cue],
+			partDefinitionWithID,
+			{
+				adlib: true
+			}
+		)
 	}
 
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (
 		partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length &&

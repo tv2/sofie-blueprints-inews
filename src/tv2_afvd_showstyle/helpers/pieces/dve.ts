@@ -2,8 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan,
-	SegmentContext
+	ISegmentUserContext,
+	PieceLifespan
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectDVE,
@@ -25,7 +25,7 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateDVE(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

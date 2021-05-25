@@ -1,4 +1,4 @@
-import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { EnableDSK, FindDSKJingle } from '../helpers'
@@ -26,25 +26,22 @@ function GetJingleFileName(config: TV2BlueprintConfig, jingle: string): string {
 export function CreateJingleExpectedMedia(
 	config: TV2BlueprintConfig,
 	jingle: string,
-	alphaAtStart: number,
+	_alphaAtStart: number,
 	duration: number,
 	alphaAtEnd: number
 ) {
 	const fileName = GetJingleFileName(config, jingle)
 
-	return literal<VTContent>({
-		studioLabel: '',
+	return literal<WithTimeline<VTContent>>({
 		fileName,
 		path: `${config.studio.JingleNetworkBasePath}\\${
 			config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
 		}${jingle}${config.studio.JingleFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
-		firstWords: '',
-		lastWords: '',
-		previewFrame: alphaAtStart,
+		// R35: previewFrame: alphaAtStart,
 		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
-		ignoreBlackFrames: true,
-		ignoreFreezeFrame: true,
+		// R35: ignoreBlackFrames: true,
+		// R35: ignoreFreezeFrame: true,
 		sourceDuration: TimeFromFrames(Number(duration) - Number(alphaAtEnd)),
 		timelineObjects: []
 	})
@@ -64,7 +61,7 @@ export function CreateJingleContentBase<
 ) {
 	const fileName = GetJingleFileName(config, file)
 	const jingleDSK = FindDSKJingle(config)
-	return literal<VTContent>({
+	return literal<WithTimeline<VTContent>>({
 		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({

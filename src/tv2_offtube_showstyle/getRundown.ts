@@ -1,4 +1,5 @@
 import {
+	BlueprintResultBaseline,
 	BlueprintResultRundown,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
@@ -11,6 +12,7 @@ import {
 	SourceLayerType,
 	TSR
 } from '@sofie-automation/blueprints-integration'
+import { getStudioConfig, OfftubeShowstyleBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -49,7 +51,6 @@ import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '..
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { boxLayers } from './content/OfftubeDVEContent'
-import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -67,7 +68,7 @@ export function getShowStyleVariantId(
 }
 
 export function getRundown(context: IStudioUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = getConfig(context)
+	const config = getStudioConfig(context)
 
 	let startTime: number = 0
 	let endTime: number = 0
@@ -566,255 +567,257 @@ function getGlobalAdlibActionsOfftube(
 	return res
 }
 
-function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObj[] {
-	return [
-		...CreateGraphicBaseline(config),
-		// Default timeline
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEClean,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: config.studio.AtemSource.Default,
-					transition: TSR.AtemTransitionStyle.CUT
+function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBaseline {
+	return {
+		timelineObjects: [
+			...CreateGraphicBaseline(config),
+			// Default timeline
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMEClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.AtemSource.Default,
+						transition: TSR.AtemTransitionStyle.CUT
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMENext,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					previewInput: config.studio.AtemSource.Default
+			}),
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMENext,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						previewInput: config.studio.AtemSource.Default
+					}
 				}
-			}
-		}),
+			}),
 
-		// route default outputs
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemAuxClean,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: AtemSourceIndex.Prg2
+			// route default outputs
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemAuxClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: AtemSourceIndex.Prg2
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemAuxScreen,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: config.studio.AtemSource.Loop
+			}),
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemAuxScreen,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: config.studio.AtemSource.Loop
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGRoute>({
-			id: '',
-			enable: { while: 1 },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVEKeyedLoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
-			}
-		}),
+			}),
+			literal<TSR.TimelineObjCCGRoute>({
+				id: '',
+				enable: { while: 1 },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVEKeyedLoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+				}
+			}),
 
-		// keyers
-		...CreateDSKBaseline(config),
+			// keyers
+			...CreateDSKBaseline(config),
 
-		literal<TSR.TimelineObjAtemSsrcProps>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemSSrcArt,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.SSRCPROPS,
-				ssrcProps: {
-					artFillSource: config.studio.AtemSource.SplitArtF,
-					artCutSource: config.studio.AtemSource.SplitArtK,
-					artOption: 1, // foreground
-					artPreMultiplied: true
+			literal<TSR.TimelineObjAtemSsrcProps>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemSSrcArt,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
+					ssrcProps: {
+						artFillSource: config.studio.AtemSource.SplitArtF,
+						artCutSource: config.studio.AtemSource.SplitArtK,
+						artOption: 1, // foreground
+						artPreMultiplied: true
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemSsrc>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemSSrcDefault,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.SSRC,
-				ssrc: {
-					boxes: [
-						{
-							// left
-							enabled: true,
-							source: config.studio.AtemSource.SplitBackground,
-							size: 1000,
-							x: 0,
-							y: 0,
-							cropped: false
-						},
-						{
-							// right
-							enabled: false
-						},
-						{
-							// box 3
-							enabled: false
-						},
-						{
-							// box 4
-							enabled: false
+			}),
+			literal<TSR.TimelineObjAtemSsrc>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemSSrcDefault,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRC,
+					ssrc: {
+						boxes: [
+							{
+								// left
+								enabled: true,
+								source: config.studio.AtemSource.SplitBackground,
+								size: 1000,
+								x: 0,
+								y: 0,
+								cropped: false
+							},
+							{
+								// right
+								enabled: false
+							},
+							{
+								// box 3
+								enabled: false
+							},
+							{
+								// box 4
+								enabled: false
+							}
+						]
+					}
+				}
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVEFrame,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					mixer: {
+						opacity: 0
+					},
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
 						}
-					]
-				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVEFrame,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVEKey,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
-					}
-				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVELoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
-					}
-				}
-			}
-		}),
-
-		literal<TSR.TimelineObjCasparCGAny>({
-			id: '',
-			enable: { while: 1 },
-			priority: 1,
-			layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
-			}
-		}),
-
-		// create sisyfos channels from the config
-		literal<TSR.TimelineObjSisyfosChannels>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeSisyfosLLayer.SisyfosConfig,
-			content: {
-				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-				channels: Object.keys(sisyfosChannels).map(key => {
-					const llayer = key as OfftubeSisyfosLLayer
-					const channel = sisyfosChannels[llayer] as SisyfosChannel
-					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
-						mappedLayer: llayer,
-						isPgm: channel.isPgm,
-						visible: true
-					})
-				}),
-				overridePriority: 0
-			}
-		}),
-
-		// Route ME 2 PGM to ME 1 PGM
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEProgram,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					programInput: AtemSourceIndex.Prg2
-				}
-			}
-		}),
-
-		...CreateLYDBaseline('offtube'),
-
-		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
-			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
-					return literal<TSR.TimelineObjCCGMedia>({
-						id: '',
-						enable: { while: '1' },
-						priority: 0,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: config.showStyle.CasparCGLoadingClip,
-							loop: true
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVEKey,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					mixer: {
+						opacity: 0
+					},
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
 						}
-					})
-			  })
-			: [])
-	]
+					}
+				}
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVELoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
+						}
+					}
+				}
+			}),
+
+			literal<TSR.TimelineObjCasparCGAny>({
+				id: '',
+				enable: { while: 1 },
+				priority: 1,
+				layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+				}
+			}),
+
+			// create sisyfos channels from the config
+			literal<TSR.TimelineObjSisyfosChannels>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeSisyfosLLayer.SisyfosConfig,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					channels: Object.keys(sisyfosChannels).map(key => {
+						const llayer = key as OfftubeSisyfosLLayer
+						const channel = sisyfosChannels[llayer] as SisyfosChannel
+						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+							mappedLayer: llayer,
+							isPgm: channel.isPgm,
+							visible: true
+						})
+					}),
+					overridePriority: 0
+				}
+			}),
+
+			// Route ME 2 PGM to ME 1 PGM
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMEProgram,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						programInput: AtemSourceIndex.Prg2
+					}
+				}
+			}),
+
+			...CreateLYDBaseline('offtube'),
+
+			...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
+				? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
+						return literal<TSR.TimelineObjCCGMedia>({
+							id: '',
+							enable: { while: '1' },
+							priority: 0,
+							layer,
+							content: {
+								deviceType: TSR.DeviceType.CASPARCG,
+								type: TSR.TimelineContentTypeCasparCg.MEDIA,
+								file: config.showStyle.CasparCGLoadingClip,
+								loop: true
+							}
+						})
+				  })
+				: [])
+		]
+	}
 }

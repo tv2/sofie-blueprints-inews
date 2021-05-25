@@ -7,7 +7,7 @@ import {
 	TimelineObjHoldMode,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { literal, TimelineBlueprintExt } from 'tv2-common'
+import { literal, TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
@@ -27,7 +27,7 @@ export function postProcessPartTimelineObjects(
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
 	context: IStudioUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	config: TV2BlueprintConfig,
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean
 ) {

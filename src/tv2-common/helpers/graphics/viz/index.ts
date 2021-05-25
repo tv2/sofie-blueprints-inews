@@ -1,4 +1,10 @@
-import { IBlueprintPiece, IShowStyleUserContext, TSR, WithTimeline } from '@sofie-automation/blueprints-integration'
+import {
+	GraphicsContent,
+	IBlueprintPiece,
+	IShowStyleUserContext,
+	TSR,
+	WithTimeline
+} from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GetEnableForGraphic,

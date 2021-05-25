@@ -4,7 +4,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
@@ -33,7 +34,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnRundownEnd,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName,
 					path,
 					ignoreMediaObjectStatus: true,
@@ -65,7 +66,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnRundownEnd,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName,
 					path,
 					ignoreMediaObjectStatus: true,

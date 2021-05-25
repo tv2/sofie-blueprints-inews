@@ -1,10 +1,9 @@
 import {
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddScript,
@@ -22,7 +21,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartUnknown(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
@@ -41,7 +40,7 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
@@ -52,7 +51,7 @@ export function CreatePartUnknown(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// R35: mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -77,7 +76,7 @@ export function CreatePartUnknown(
 		part.invalid = true
 	}
 
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	return {
 		part,

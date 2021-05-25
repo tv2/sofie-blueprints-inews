@@ -3,7 +3,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
@@ -11,7 +11,7 @@ import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],

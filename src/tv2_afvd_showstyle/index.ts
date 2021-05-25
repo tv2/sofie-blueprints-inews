@@ -8,7 +8,6 @@ import { executeActionAFVD } from './actions'
 import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import { parseConfig } from './helpers/config'
-import onAsRunEvent from './onAsRunEvent'
 import { syncIngestUpdateToPartInstance } from './syncIngestUpdateToPartInstance'
 
 declare const VERSION: string // Injected by webpack
@@ -28,7 +27,6 @@ const manifest: ShowStyleBlueprintManifest = {
 	getRundown,
 	getSegment,
 
-	onAsRunEvent,
 	onTimelineGenerate: onTimelineGenerateAFVD,
 	getEndStateForPart,
 	executeAction: executeActionAFVD,

@@ -1,15 +1,15 @@
 import {
 	BlueprintResultPart,
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
-	VTContent
+	VTContent,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
@@ -35,7 +35,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartKam(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
@@ -48,7 +48,7 @@ export function CreatePartKam(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	const jingleDSK = FindDSKJingle(config)
 
@@ -61,13 +61,10 @@ export function CreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
-				content: literal<VTContent>({
-					studioLabel: '',
+				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
 					path: '',
-					firstWords: '',
-					lastWords: '',
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: ``,
@@ -158,14 +155,14 @@ export function CreatePartKam(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

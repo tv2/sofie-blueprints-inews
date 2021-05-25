@@ -1,4 +1,9 @@
-import { IBlueprintConfig, IShowStyleContext, TableConfigItemValue } from '@sofie-automation/blueprints-integration'
+import {
+	IBlueprintConfig,
+	ICommonContext,
+	IShowStyleContext,
+	TableConfigItemValue
+} from '@sofie-automation/blueprints-integration'
 import { TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
@@ -11,7 +16,7 @@ export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
 }
 
-export function parseConfig(config: IBlueprintConfig): any {
+export function parseConfig(_context: ICommonContext, config: IBlueprintConfig): any {
 	return { showStyle: config }
 }
 

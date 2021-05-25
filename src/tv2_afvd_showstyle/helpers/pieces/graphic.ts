@@ -2,7 +2,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	CreateInternalGraphic,
@@ -18,7 +18,7 @@ import { EvaluateCueRouting } from './routing'
 
 export function EvaluateCueGraphic(
 	config: BlueprintConfig,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],

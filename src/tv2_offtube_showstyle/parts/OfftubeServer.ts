@@ -1,8 +1,7 @@
 import {
 	BlueprintResultPart,
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
@@ -12,7 +11,7 @@ import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartServer(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps
@@ -46,16 +45,13 @@ export function OfftubeCreatePartServer(
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const sourceDuration = Math.max(
-		(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
-		0
-	)
+	const sourceDuration = 0 // Math.max((context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration, 0)
 
 	actions.push(
 		CreateAdlibServer(
@@ -97,7 +93,7 @@ export function OfftubeCreatePartServer(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
@@ -105,7 +101,7 @@ export function OfftubeCreatePartServer(
 
 	AddScript(partDefinition, pieces, duration, OfftubeSourceLayer.PgmScript)
 
-	part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
+	// R35: part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
 
 	if (pieces.length === 0) {
 		part.invalid = true

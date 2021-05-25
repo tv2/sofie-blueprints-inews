@@ -1,10 +1,9 @@
 import {
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import { AddScript, ApplyFullGraphicPropertiesToPart, literal, PartDefinition, PartTime } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -12,7 +11,7 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartGrafik(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
@@ -31,7 +30,7 @@ export function OfftubeCreatePartGrafik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	OfftubeEvaluateCues(
 		context,
@@ -40,7 +39,7 @@ export function OfftubeCreatePartGrafik(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -51,7 +50,7 @@ export function OfftubeCreatePartGrafik(
 
 	ApplyFullGraphicPropertiesToPart(config, part)
 
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

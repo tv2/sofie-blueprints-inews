@@ -1,11 +1,10 @@
 import {
 	BlueprintResultPart,
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddScript,
@@ -22,7 +21,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartIntro(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
@@ -70,7 +69,7 @@ export function CreatePartIntro(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	EvaluateCues(
 		context,
@@ -79,7 +78,7 @@ export function CreatePartIntro(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
@@ -87,8 +86,8 @@ export function CreatePartIntro(
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	part = {
 		...part,
-		...GetJinglePartProperties(context, config, partDefinition),
-		hackListenToMediaObjectUpdates: mediaSubscriptions
+		...GetJinglePartProperties(context, config, partDefinition)
+		// R35: hackListenToMediaObjectUpdates: mediaSubscriptions
 	}
 
 	if (pieces.length === 0) {

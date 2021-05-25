@@ -1,4 +1,10 @@
-import { BlueprintMapping, BlueprintMappings, IStudioContext, TSR } from '@sofie-automation/blueprints-integration'
+import {
+	BlueprintMapping,
+	BlueprintMappings,
+	BlueprintResultBaseline,
+	IStudioContext,
+	TSR
+} from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
@@ -22,7 +28,7 @@ function filterMappings(
 	return result
 }
 
-export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
+export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 	const mappings = context.getStudioMappings()
 	const config = (context.getStudioConfig() as unknown) as OfftubeStudioBlueprintConfig
 
@@ -49,51 +55,53 @@ export function getBaseline(context: IStudioContext): TSR.TSRTimelineObjBase[] {
 		}
 	}
 
-	return [
-		literal<TSR.TimelineObjSisyfosChannels>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 1,
-			layer: OfftubeSisyfosLLayer.SisyfosConfig,
-			content: {
-				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-				channels: mappedChannels,
-				overridePriority: 0
-			}
-		}),
-
-		// have ATEM output default still image
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEClean,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: config.studio.IdleSource,
-					transition: TSR.AtemTransitionStyle.CUT
+	return {
+		timelineObjects: [
+			literal<TSR.TimelineObjSisyfosChannels>({
+				id: '',
+				enable: {
+					while: '1'
+				},
+				priority: 1,
+				layer: OfftubeSisyfosLLayer.SisyfosConfig,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					channels: mappedChannels,
+					overridePriority: 0
 				}
-			}
-		}),
+			}),
 
-		// Route ME 2 PGM to ME 1 PGM
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEProgram,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					programInput: AtemSourceIndex.Prg2
+			// have ATEM output default still image
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMEClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.IdleSource,
+						transition: TSR.AtemTransitionStyle.CUT
+					}
 				}
-			}
-		})
-	]
+			}),
+
+			// Route ME 2 PGM to ME 1 PGM
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMEProgram,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						programInput: AtemSourceIndex.Prg2
+					}
+				}
+			})
+		]
+	}
 }

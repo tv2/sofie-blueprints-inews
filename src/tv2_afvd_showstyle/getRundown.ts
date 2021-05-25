@@ -1,6 +1,7 @@
 import {
 	BlueprintResultBaseline,
 	BlueprintResultRundown,
+	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintRundown,

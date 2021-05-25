@@ -1,4 +1,4 @@
-import { IBlueprintConfig, IStudioContext } from '@sofie-automation/blueprints-integration'
+import { IBlueprintConfig, ICommonContext, IStudioContext } from '@sofie-automation/blueprints-integration'
 import {
 	getLiveAudioLayers,
 	getStickyLayers,
@@ -51,7 +51,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	}
 }
 
-export function parseConfig(rawConfig: IBlueprintConfig): any {
+export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const studioConfig = (rawConfig as unknown) as StudioConfig
 	const config: BlueprintConfig = {
 		studio: studioConfig,

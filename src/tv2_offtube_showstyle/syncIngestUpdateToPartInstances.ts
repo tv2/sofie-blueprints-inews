@@ -1,13 +1,13 @@
 import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
-	SyncIngestUpdateToPartInstanceContext
+	ISyncIngestUpdateToPartInstanceContext
 } from '@sofie-automation/blueprints-integration'
 import { syncIngestUpdateToPartInstanceBase } from 'tv2-common'
 import { OfftubeSourceLayer } from './layers'
 
 export function syncIngestUpdateToPartInstance(
-	context: SyncIngestUpdateToPartInstanceContext,
+	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
 	_playoutStatus: 'current' | 'next'

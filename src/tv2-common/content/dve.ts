@@ -1,5 +1,6 @@
 import {
 	CameraContent,
+	GraphicsContent,
 	IShowStyleUserContext,
 	IStudioUserContext,
 	RemoteContent,

@@ -1,11 +1,10 @@
 import {
 	BlueprintResultPart,
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import { AddScript, literal, PartDefinitionDVE, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -14,7 +13,7 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeCreatePartDVE(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionDVE,
 	totalWords: number
@@ -30,7 +29,7 @@ export function OfftubeCreatePartDVE(
 	const pieces: IBlueprintPiece[] = []
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 	OfftubeEvaluateCues(
 		context,
 		config,
@@ -38,7 +37,7 @@ export function OfftubeCreatePartDVE(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -56,7 +55,7 @@ export function OfftubeCreatePartDVE(
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	return {
 		part,

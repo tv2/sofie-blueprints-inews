@@ -1,9 +1,4 @@
-import {
-	BlueprintMappings,
-	ConfigItemValue,
-	IBlueprintConfig,
-	ShowStyleContext
-} from '@sofie-automation/blueprints-integration'
+import { BlueprintMappings, ConfigItemValue, IBlueprintConfig } from '@sofie-automation/blueprints-integration'
 import { DVEConfigInput, literal, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { SegmentContext } from '../../__mocks__/context'
 import { DefaultBreakerConfig } from '../../tv2_afvd_showstyle/__tests__/breakerConfigDefault'

@@ -1,6 +1,12 @@
 export * from './slotMappings'
 
-import { IBlueprintPiece, IShowStyleUserContext, TSR, WithTimeline } from '@sofie-automation/blueprints-integration'
+import {
+	GraphicsContent,
+	IBlueprintPiece,
+	IShowStyleUserContext,
+	TSR,
+	WithTimeline
+} from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GraphicInternal,
@@ -70,9 +76,9 @@ export function GetPilotGraphicContentCaspar(
 		fileName,
 		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
-		ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
-		ignoreBlackFrames: true,
-		ignoreFreezeFrame: true,
+		// R35: ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
+		// R35: ignoreBlackFrames: true,
+		// R35: ignoreFreezeFrame: true,
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate & TimelineBlueprintExt>({
 				id: '',

@@ -3,10 +3,11 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SourceLayerType,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
@@ -17,7 +18,7 @@ import { BlueprintConfig } from '../config'
 
 export function EvaluateCueRouting(
 	config: BlueprintConfig,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -48,7 +49,7 @@ export function EvaluateCueRouting(
 						outputLayerId: SharedOutputLayers.AUX,
 						sourceLayerId: SourceLayer.VizFullIn1,
 						lifespan: PieceLifespan.WithinPart,
-						content: literal<CameraContent>({
+						content: literal<WithTimeline<CameraContent>>({
 							studioLabel: '',
 							switcherInput: sourceInfo.port,
 							timelineObjects: _.compact<TSR.TSRTimelineObj>([

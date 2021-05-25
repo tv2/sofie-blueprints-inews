@@ -2,8 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SplitsContent
 } from '@sofie-automation/blueprints-integration'
 import {
@@ -18,6 +18,7 @@ import {
 	literal,
 	PartDefinition,
 	PieceMetaData,
+	t,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
@@ -26,7 +27,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateDVE(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
@@ -125,11 +126,10 @@ export function OfftubeEvaluateDVE(
 					_rank: rank,
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
-					label: `${partDefinition.storyName}`,
+					label: t(`${partDefinition.storyName}`),
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
 					content: literal<SplitsContent>({
-						...pieceContent.content,
-						timelineObjects: []
+						...pieceContent.content
 					}),
 					currentPieceTags: [GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)],
 					nextPieceTags: [GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)]

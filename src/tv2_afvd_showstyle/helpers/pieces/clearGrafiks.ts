@@ -43,7 +43,10 @@ export function EvaluateClearGrafiks(
 			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId,
 			lifespan: PieceLifespan.WithinPart,
-			virtual: true
+			virtual: true,
+			content: {
+				timelineObjects: []
+			}
 		})
 	})
 

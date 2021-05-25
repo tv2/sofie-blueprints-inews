@@ -3,8 +3,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	PieceLifespan,
-	SegmentContext
+	ISegmentUserContext,
+	PieceLifespan
 } from '@sofie-automation/blueprints-integration'
 import {
 	CreateJingleContentBase,
@@ -20,7 +20,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studi
 import { BlueprintConfig } from '../config'
 
 export function EvaluateJingle(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

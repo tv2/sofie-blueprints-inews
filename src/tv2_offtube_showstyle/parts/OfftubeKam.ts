@@ -1,15 +1,15 @@
 import {
 	BlueprintResultPart,
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
-	VTContent
+	VTContent,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddParentClass,
@@ -36,7 +36,7 @@ import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartKam(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
@@ -49,7 +49,7 @@ export function OfftubeCreatePartKam(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	const jingleDSK = FindDSKJingle(config)
 
@@ -63,14 +63,10 @@ export function OfftubeCreatePartKam(
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
-				content: literal<VTContent>({
-					studioLabel: '',
-					switcherInput: jingleDSK.Fill,
+				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
 					path: '',
-					firstWords: '',
-					lastWords: '',
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: ``,
@@ -160,7 +156,7 @@ export function OfftubeCreatePartKam(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
@@ -168,7 +164,7 @@ export function OfftubeCreatePartKam(
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -2,8 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan,
-	SegmentContext
+	ISegmentUserContext,
+	PieceLifespan
 } from '@sofie-automation/blueprints-integration'
 import {
 	ActionSelectJingle,
@@ -14,7 +14,8 @@ import {
 	GetTagForJingleNext,
 	literal,
 	PartDefinition,
-	PieceMetaData
+	PieceMetaData,
+	t
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
@@ -22,7 +23,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
@@ -67,7 +68,7 @@ export function OfftubeEvaluateJingle(
 			}),
 			userDataManifest: {},
 			display: {
-				label: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
+				label: t(effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip),
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				outputLayerId: OfftubeOutputLayers.JINGLE,
 				content: {
@@ -78,8 +79,7 @@ export function OfftubeEvaluateJingle(
 						jingle.LoadFirstFrame,
 						jingle.Duration,
 						jingle.EndAlpha
-					),
-					timelineObjects: []
+					)
 				},
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
 				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],

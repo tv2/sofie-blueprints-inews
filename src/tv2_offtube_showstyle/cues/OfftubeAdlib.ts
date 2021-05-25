@@ -1,8 +1,7 @@
 import {
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	SegmentContext,
+	ISegmentUserContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
@@ -16,6 +15,7 @@ import {
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
+	t,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
@@ -26,11 +26,11 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateAdLib(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	mediaSubscriptions: HackPartMediaObjectSubscription[],
+	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
 	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -44,10 +44,7 @@ export function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = Math.max(
-			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
-			0
-		)
+		const sourceDuration = 0 // R35: Math.max((context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,0)
 
 		actions.push(
 			CreateAdlibServer(
@@ -81,7 +78,7 @@ export function OfftubeEvaluateAdLib(
 			)
 		)
 
-		mediaSubscriptions.push({ mediaId: file.toUpperCase() })
+		// R35: mediaSubscriptions.push({ mediaId: file.toUpperCase() })
 	} else {
 		// DVE
 		if (!parsedCue.variant) {
@@ -135,11 +132,10 @@ export function OfftubeEvaluateAdLib(
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					uniquenessId: getUniquenessIdDVE(cueDVE),
-					label: `${partDefinition.storyName}`,
+					label: t(`${partDefinition.storyName}`),
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
 					content: literal<SplitsContent>({
-						...adlibContent.content,
-						timelineObjects: []
+						...adlibContent.content
 					})
 				}
 			})

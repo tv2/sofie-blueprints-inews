@@ -1,10 +1,10 @@
 import {
-	HackPartMediaObjectSubscription,
+	// R35: HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import {
 	AddScript,
@@ -21,7 +21,7 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export function CreatePartUnknown(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number,
@@ -40,7 +40,7 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	OfftubeEvaluateCues(
 		context,
@@ -49,7 +49,7 @@ export function CreatePartUnknown(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// R35: mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -69,7 +69,7 @@ export function CreatePartUnknown(
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
-	part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -4,7 +4,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
 import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
@@ -33,8 +34,8 @@ export function EvaluateCueBackgroundLoop(
 					name: fileName,
 					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmDVEBackground,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					content: literal<GraphicsContent>({
+					lifespan: PieceLifespan.OutOnShowStyleEnd,
+					content: literal<WithTimeline<GraphicsContent>>({
 						fileName,
 						path,
 						ignoreMediaObjectStatus: true,
@@ -52,8 +53,8 @@ export function EvaluateCueBackgroundLoop(
 					},
 					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmDVEBackground,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					content: literal<GraphicsContent>({
+					lifespan: PieceLifespan.OutOnShowStyleEnd,
+					content: literal<WithTimeline<GraphicsContent>>({
 						fileName,
 						path,
 						ignoreMediaObjectStatus: true,
@@ -72,8 +73,8 @@ export function EvaluateCueBackgroundLoop(
 					name: parsedCue.backgroundLoop,
 					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmFullBackground,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					content: literal<GraphicsContent>({
+					lifespan: PieceLifespan.OutOnShowStyleEnd,
+					content: literal<WithTimeline<GraphicsContent>>({
 						fileName: parsedCue.backgroundLoop,
 						path: parsedCue.backgroundLoop,
 						ignoreMediaObjectStatus: true,
@@ -91,8 +92,8 @@ export function EvaluateCueBackgroundLoop(
 					},
 					outputLayerId: SharedOutputLayers.SEC,
 					sourceLayerId: SourceLayer.PgmFullBackground,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					content: literal<GraphicsContent>({
+					lifespan: PieceLifespan.OutOnShowStyleEnd,
+					content: literal<WithTimeline<GraphicsContent>>({
 						fileName: parsedCue.backgroundLoop,
 						path: parsedCue.backgroundLoop,
 						ignoreMediaObjectStatus: true,

@@ -1,14 +1,14 @@
 import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
-	SyncIngestUpdateToPartInstanceContext
+	ISyncIngestUpdateToPartInstanceContext
 } from '@sofie-automation/blueprints-integration'
 import { SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { stopOrReplaceAlwaysEditablePieces, updateAdLibInstances } from './index'
 
 export function syncIngestUpdateToPartInstanceBase(
-	context: SyncIngestUpdateToPartInstanceContext,
+	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
 	_playoutStatus: 'current' | 'next',

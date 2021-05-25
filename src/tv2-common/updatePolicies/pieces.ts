@@ -2,11 +2,11 @@ import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
 	IBlueprintPieceInstance,
-	SyncIngestUpdateToPartInstanceContext
+	ISyncIngestUpdateToPartInstanceContext
 } from '@sofie-automation/blueprints-integration'
 
 export function stopOrReplaceAlwaysEditablePieces(
-	context: SyncIngestUpdateToPartInstanceContext,
+	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
 	allowedSourceLayers: string[]

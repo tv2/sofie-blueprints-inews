@@ -1,10 +1,9 @@
 import {
-	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
+	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
@@ -18,13 +17,13 @@ import { OfftubeEvaluatePgmClean } from '../cues/OfftubePgmClean'
 import { OfftubeShowstyleBlueprintConfig } from './config'
 
 export function OfftubeEvaluateCues(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	mediaSubscriptions: HackPartMediaObjectSubscription[],
+	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -47,7 +46,7 @@ export function OfftubeEvaluateCues(
 		pieces,
 		adLibPieces,
 		actions,
-		mediaSubscriptions,
+		// R35: mediaSubscriptions,
 		cues,
 		partDefinition,
 		options

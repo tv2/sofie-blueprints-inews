@@ -1,4 +1,5 @@
 import {
+	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
