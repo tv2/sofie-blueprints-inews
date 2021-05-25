@@ -59,7 +59,8 @@ export enum AdlibTags {
 	OFFTUBE_SET_DVE_NEXT = 'offtube_set_dve_next',
 	ADLIB_FLOW_PRODUCER = 'flow_producer',
 	ADLIB_STATIC_BUTTON = 'static_button',
-	ADLIB_KOMMENTATOR = 'kommentator'
+	ADLIB_KOMMENTATOR = 'kommentator',
+	ADLIB_NO_NEXT_HIGHLIGHT = 'no_next_highlight'
 }
 
 export enum ControlClasses {

@@ -20,6 +20,7 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
+import { PieceMetaData } from '../onTimelineGenerate'
 
 export function CreateEffektForPartBase(
 	context: NotesContext,
@@ -108,7 +109,7 @@ export function CreateEffektForPartInner<
 		return false
 	}
 
-	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : ''
+	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : file
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -119,6 +120,11 @@ export function CreateEffektForPartInner<
 			sourceLayerId: layers.sourceLayer,
 			lifespan: PieceLifespan.WithinPart,
 			isTransition: true,
+			metaData: literal<PieceMetaData>({
+				transition: {
+					isEffekt: true
+				}
+			}),
 			content: literal<VTContent>({
 				studioLabel: '',
 				fileName,
@@ -197,6 +203,11 @@ export function CreateMixForPartInner(
 			sourceLayerId: layers.sourceLayer,
 			outputLayerId: SharedOutputLayers.JINGLE,
 			lifespan: PieceLifespan.WithinPart,
+			metaData: literal<PieceMetaData>({
+				transition: {
+					isMix: true
+				}
+			}),
 			tags: [
 				GetTagForTransition(
 					literal<ActionTakeWithTransitionVariantMix>({

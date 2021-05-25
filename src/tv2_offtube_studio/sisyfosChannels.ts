@@ -37,5 +37,8 @@ export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel }
 	},
 	[OfftubeSisyfosLLayer.SisyfosSourceAudiobed]: {
 		isPgm: 0
+	},
+	[OfftubeSisyfosLLayer.SisyfosN1]: {
+		isPgm: 0
 	}
 }

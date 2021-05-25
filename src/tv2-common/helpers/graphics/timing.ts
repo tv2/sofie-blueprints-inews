@@ -125,7 +125,8 @@ export function GetEnableForGraphic(
 	engine: GraphicEngine,
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	isStickyIdent: boolean,
-	partDefinition?: PartDefinition
+	partDefinition?: PartDefinition,
+	adlib?: boolean
 ): TSR.TSRTimelineObj['enable'] {
 	if (IsTargetingWall(engine)) {
 		return {
@@ -136,7 +137,8 @@ export function GetEnableForGraphic(
 	if (
 		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
 			GetInfiniteModeForGraphic(engine, config, cue, isStickyIdent) === PieceLifespan.OutOnSegmentEnd) &&
-		partDefinition
+		partDefinition &&
+		!adlib
 	) {
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}

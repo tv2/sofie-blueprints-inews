@@ -1,6 +1,6 @@
 {
   "name": "tv2-sofie-blueprints-inews",
-  "version": "1.6.1-0",
+  "version": "1.6.3-0",
   "repository": "https://github.com/olzzon/tv2-sofie-blueprints-inews",
   "license": "MIT",
   "private": true,
@@ -60,6 +60,6 @@
   },
   "dependencies": {
     "@sofie-automation/blueprints-integration": "https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210525_1",
-    "underscore": "^1.12.0"
+    "underscore": "^1.12.1"
   }
 }

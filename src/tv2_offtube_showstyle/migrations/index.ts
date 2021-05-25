@@ -1,6 +1,7 @@
 import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	GetDSKSourceLayerNames,
 	literal,
 	removeSourceLayer,
 	renameSourceLayer,
@@ -10,6 +11,7 @@ import {
 } from 'tv2-common'
 import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
+import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 import {
 	forceSourceLayerToDefaults,
@@ -129,6 +131,21 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Remove studio0_dsk_cmd, will be replaced by studio0_dsk_1_cmd by defaults
 	 */
 	removeSourceLayer('1.6.1', 'AFVD', 'studio0_dsk_cmd'),
+
+	/**
+	 * 1.6.2
+	 * - Move Recall Last DVE shortcut to PGMDVEAdLib
+	 */
+	forceSourceLayerToDefaults('1.6.2', OfftubeSourceLayer.PgmDVE),
+	forceSourceLayerToDefaults('1.6.2', OfftubeSourceLayer.PgmDVEAdLib),
+
+	/**
+	 * 1.6.3
+	 * - Hide DSK toggle layers
+	 */
+	...GetDSKSourceLayerNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME).map(layerName =>
+		forceSourceLayerToDefaults('1.6.3', layerName)
+	),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)

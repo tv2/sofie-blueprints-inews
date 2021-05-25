@@ -68,7 +68,10 @@ export function EnableDSK(
 					},
 					properties: {
 						clip: Number(dskConf.Clip) * 10,
-						gain: Number(dskConf.Gain) * 10
+						gain: Number(dskConf.Gain) * 10,
+						mask: {
+							enabled: false
+						}
 					}
 				}
 			}
@@ -86,12 +89,13 @@ export function CreateDSKBaselineAdlibs(
 			if (dsk.DefaultOn) {
 				adlibItems.push({
 					externalId: `dskoff${dsk.Number}`,
-					name: `DSK ${dsk.Number + 1} OFF`,
+					name: `DSK ${dsk.Number + 1} ON`,
 					_rank: baseRank + dsk.Number,
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					lifespan: PieceLifespan.OutOnRundownChange,
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
+					invertOnAirState: true,
 					content: {
 						timelineObjects: [
 							literal<TSR.TimelineObjAtemDSK>({
@@ -117,8 +121,8 @@ export function CreateDSKBaselineAdlibs(
 					_rank: baseRank + dsk.Number,
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
-					lifespan: PieceLifespan.OutOnRundownEnd,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+					lifespan: PieceLifespan.OutOnRundownChange,
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
 					content: {
 						timelineObjects: [
 							literal<TSR.TimelineObjAtemDSK>({
@@ -139,7 +143,10 @@ export function CreateDSKBaselineAdlibs(
 											tie: false,
 											preMultiply: false,
 											clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-											gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000
+											gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
+											mask: {
+												enabled: false
+											}
 										}
 									}
 								}
@@ -173,7 +180,10 @@ export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfig
 						tie: false,
 						preMultiply: false,
 						clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-						gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000
+						gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
+						mask: {
+							enabled: false
+						}
 					}
 				}
 			}

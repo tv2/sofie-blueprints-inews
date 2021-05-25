@@ -26,10 +26,19 @@ export function GetInternalGraphicContentCaspar(
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
 	partDefinition: PartDefinition,
-	mappedTemplate: string
+	mappedTemplate: string,
+	adlib: boolean
 ): IBlueprintPiece['content'] {
 	return {
-		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, isIdentGraphic, partDefinition, mappedTemplate)
+		timelineObjects: CasparOverlayTimeline(
+			config,
+			engine,
+			parsedCue,
+			isIdentGraphic,
+			partDefinition,
+			mappedTemplate,
+			adlib
+		)
 	}
 }
 
@@ -96,12 +105,13 @@ function CasparOverlayTimeline(
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
 	partDefinition: PartDefinition,
-	mappedTemplate: string
+	mappedTemplate: string,
+	adlib: boolean
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGrafik, partDefinition),
+			enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGrafik, partDefinition, adlib),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })
@@ -134,13 +144,7 @@ export function CreateHTMLRendererContent(
 }
 
 function HTMLTemplateContent(config: TV2BlueprintConfig, graphicTemplate: string, data: object): Partial<Slots> {
-	const conf = config.showStyle.GFXTemplates.find(g => g.VizTemplate.toLowerCase() === graphicTemplate.toLowerCase())
-
-	if (!conf) {
-		return {}
-	}
-
-	const layer = conf.LayerMapping
+	const layer = GetTimelineLayerForGraphic(config, graphicTemplate)
 
 	const slot = layerToHTMLGraphicSlot[layer]
 

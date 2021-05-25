@@ -37,6 +37,7 @@
 	<body>
 		<div id="stream-container" class="dashboard"></div>
 		<script>
+		document.addEventListener('contextmenu', e => e.preventDefault())
 		const layoutFilename = 'off-tubes-shelf.json'
 		const params = new URLSearchParams(document.location.search.substring(1))
 		const id = params.get("stream")

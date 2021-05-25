@@ -10,6 +10,7 @@ export * from './internal'
 export * from './pilot'
 export * from './caspar'
 export * from './viz'
+export * from './design'
 
 export function ApplyFullGraphicPropertiesToPart(config: TV2BlueprintConfig, part: IBlueprintPart) {
 	part.prerollDuration =
@@ -26,41 +27,47 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 	if (config.studio.GraphicsType === 'VIZ') {
 		return []
 	} else {
-		return [
-			...[
-				GraphicLLayer.GraphicLLayerOverlayHeadline,
-				GraphicLLayer.GraphicLLayerOverlayIdent,
-				GraphicLLayer.GraphicLLayerOverlayLower,
-				GraphicLLayer.GraphicLLayerOverlayTema,
-				GraphicLLayer.GraphicLLayerOverlayTopt,
-				GraphicLLayer.GraphicLLayerLocators
-			].map(layer => {
-				return literal<TSR.TimelineObjCCGTemplate>({
-					id: '',
-					enable: {
-						while: '1'
-					},
-					priority: 0,
-					layer,
-					content: {
-						deviceType: TSR.DeviceType.CASPARCG,
-						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-						templateType: 'html',
-						name: 'sport-overlay/index',
-						data: {
-							display: 'program',
-							slots: {
-								[layerToHTMLGraphicSlot[layer]]: {
-									payload: {},
-									display: 'hidden'
-								}
-							},
-							partialUpdate: true
+		const slotBaselineObjects: TSR.TSRTimelineObj[] = []
+		;[
+			GraphicLLayer.GraphicLLayerOverlayIdent,
+			GraphicLLayer.GraphicLLayerOverlayLower,
+			GraphicLLayer.GraphicLLayerOverlayTema,
+			GraphicLLayer.GraphicLLayerOverlayTopt,
+			GraphicLLayer.GraphicLLayerLocators
+		].forEach(layer => {
+			if (layerToHTMLGraphicSlot[layer]) {
+				slotBaselineObjects.push(
+					literal<TSR.TimelineObjCCGTemplate>({
+						id: '',
+						enable: {
+							while: '1'
 						},
-						useStopCommand: false
-					}
-				})
-			}),
+						priority: 0,
+						layer,
+						content: {
+							deviceType: TSR.DeviceType.CASPARCG,
+							type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+							templateType: 'html',
+							name: 'sport-overlay/index',
+							data: {
+								display: 'program',
+								slots: {
+									[layerToHTMLGraphicSlot[layer]]: {
+										payload: {},
+										display: 'hidden'
+									}
+								},
+								partialUpdate: true
+							},
+							useStopCommand: false
+						}
+					})
+				)
+			}
+		})
+
+		return [
+			...slotBaselineObjects,
 			literal<TSR.TimelineObjCCGTemplate>({
 				id: '',
 				enable: {
@@ -76,15 +83,17 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					data: {
 						display: 'program',
 						slots: [
-							GraphicLLayer.GraphicLLayerOverlayHeadline,
 							GraphicLLayer.GraphicLLayerOverlayIdent,
 							GraphicLLayer.GraphicLLayerOverlayLower,
 							GraphicLLayer.GraphicLLayerOverlayTema,
-							GraphicLLayer.GraphicLLayerOverlayTopt
+							GraphicLLayer.GraphicLLayerOverlayTopt,
+							GraphicLLayer.GraphicLLayerLocators
 						].reduce((obj: Record<string, any>, layer) => {
-							obj[layerToHTMLGraphicSlot[layer]] = {
-								payload: {},
-								display: 'hidden'
+							if (layerToHTMLGraphicSlot[layer]) {
+								obj[layerToHTMLGraphicSlot[layer]] = {
+									payload: {},
+									display: 'hidden'
+								}
 							}
 							return obj
 						}, {}),

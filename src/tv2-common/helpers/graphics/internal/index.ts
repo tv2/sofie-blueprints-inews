@@ -65,8 +65,8 @@ export function CreateInternalGraphic(
 
 	const content =
 		config.studio.GraphicsType === 'HTML'
-			? GetInternalGraphicContentCaspar(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate)
-			: GetInternalGraphicContentVIZ(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate)
+			? GetInternalGraphicContentCaspar(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate, adlib)
+			: GetInternalGraphicContentVIZ(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate, adlib)
 
 	if (adlib) {
 		if (IsTargetingOVL(engine)) {

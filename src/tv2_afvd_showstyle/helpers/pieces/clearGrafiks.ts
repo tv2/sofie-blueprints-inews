@@ -56,21 +56,23 @@ export function EvaluateClearGrafiks(
 			sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 			lifespan: PieceLifespan.WithinPart,
 			content: {
-				timelineObjects: [
-					literal<TSR.TimelineObjVIZMSEClearAllElements>({
-						id: '',
-						enable: {
-							start: 0,
-							duration: 1000
-						},
-						priority: 100,
-						layer: GraphicLLayer.GraphicLLayerAdLibs,
-						content: {
-							deviceType: TSR.DeviceType.VIZMSE,
-							type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
-						}
-					})
-				]
+				timelineObjects: config.studio.HTMLGraphics
+					? [
+							literal<TSR.TimelineObjVIZMSEClearAllElements>({
+								id: '',
+								enable: {
+									start: 0,
+									duration: 1000
+								},
+								priority: 100,
+								layer: GraphicLLayer.GraphicLLayerAdLibs,
+								content: {
+									deviceType: TSR.DeviceType.VIZMSE,
+									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
+								}
+							})
+					  ]
+					: []
 			}
 		})
 	)

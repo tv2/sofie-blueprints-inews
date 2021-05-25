@@ -935,6 +935,11 @@ function executeActionSelectJingle<
 		outputLayerId: SharedOutputLayers.JINGLE,
 		sourceLayerId: settings.SourceLayers.Effekt,
 		content: pieceContent,
+		metaData: literal<PieceMetaData>({
+			transition: {
+				isJingle: true
+			}
+		}),
 		tags: [
 			GetTagForJingle(userData.segmentExternalId, userData.clip),
 			GetTagForJingleNext(userData.segmentExternalId, userData.clip),
@@ -1702,11 +1707,11 @@ function executeActionRecallLastLive<
 ) {
 	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live, {
 		originalOnly: true,
-		excludeCurrentPart: true
+		excludeCurrentPart: false
 	})
 	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident, {
 		originalOnly: true,
-		excludeCurrentPart: true
+		excludeCurrentPart: false
 	})
 
 	if (!lastLive) {
@@ -1752,7 +1757,35 @@ function executeActionRecallLastDVE<
 	actionId: string,
 	_userData: ActionRecallLastDVE
 ) {
-	const lastDVE = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE, { excludeCurrentPart: true })
+	const currentPart = context.getPartInstance('current')
+
+	if (!currentPart) {
+		return
+	}
+
+	const lastPlayedDVE = context.findLastPieceOnLayer(settings.SourceLayers.DVE)
+
+	if (lastPlayedDVE && lastPlayedDVE.dynamicallyInserted) {
+		const part = context.getPartInstanceForPreviousPiece(lastPlayedDVE)
+
+		const lastPlayedDVEMeta = lastPlayedDVE.piece.metaData as DVEPieceMetaData
+
+		if (part && part.segmentId === currentPart.segmentId) {
+			return executeActionSelectDVE(
+				context,
+				settings,
+				actionId,
+				literal<ActionSelectDVE>({
+					type: AdlibActionType.SELECT_DVE,
+					config: lastPlayedDVEMeta.userData.config,
+					segmentExternalId: generateExternalId(context, actionId, [lastPlayedDVE.piece.name]),
+					videoId: lastPlayedDVEMeta.userData.videoId
+				})
+			)
+		}
+	}
+
+	const lastDVE = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE)
 
 	if (!lastDVE) {
 		return

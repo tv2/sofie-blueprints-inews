@@ -26,7 +26,8 @@ export function GetInternalGraphicContentVIZ(
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
 	partDefinition: PartDefinition,
-	mappedTemplate: string
+	mappedTemplate: string,
+	adlib: boolean
 ): IBlueprintPiece['content'] {
 	return literal<GraphicsContent>({
 		fileName: parsedCue.graphic.template,
@@ -35,7 +36,7 @@ export function GetInternalGraphicContentVIZ(
 		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
-				enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGraphic, partDefinition),
+				enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
 				priority: 1,
 				layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				content: {
@@ -67,7 +68,7 @@ export function GetPilotGraphicContentViz(
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
 				enable: IsTargetingOVL(engine)
-					? GetEnableForGraphic(config, engine, parsedCue, false)
+					? GetEnableForGraphic(config, engine, parsedCue, false, undefined, adlib)
 					: {
 							start: 0
 					  },

@@ -11,7 +11,8 @@ import {
 	CueDefinitionJingle,
 	GetJinglePartProperties,
 	literal,
-	PartDefinition
+	PartDefinition,
+	PieceMetaData
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -68,6 +69,12 @@ export function EvaluateJingle(
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: SharedOutputLayers.JINGLE,
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					transition: {
+						isJingle: !effekt,
+						isEffekt: !!effekt
+					}
+				}),
 				content: createJingleContentAFVD(
 					config,
 					file,
@@ -95,6 +102,12 @@ export function EvaluateJingle(
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: SharedOutputLayers.JINGLE,
 				sourceLayerId: SourceLayer.PgmJingle,
+				metaData: literal<PieceMetaData>({
+					transition: {
+						isJingle: !effekt,
+						isEffekt: !!effekt
+					}
+				}),
 				content: createJingleContentAFVD(
 					config,
 					file,
