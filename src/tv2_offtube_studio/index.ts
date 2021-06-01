@@ -1,4 +1,5 @@
 import { BlueprintManifestType, StudioBlueprintManifest } from '@sofie-automation/blueprints-integration'
+import { GetStudioManifestWithMixins, StudioManifestMixinINews } from 'inews-mixins'
 import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
 import { getBaseline } from './getBaseline'
@@ -10,20 +11,23 @@ declare const VERSION: string // Injected by webpack
 declare const VERSION_TSR: string // Injected by webpack
 declare const VERSION_INTEGRATION: string // Injected by webpack
 
-const manifest: StudioBlueprintManifest = {
-	blueprintType: BlueprintManifestType.STUDIO,
+const manifest: StudioBlueprintManifest = GetStudioManifestWithMixins(
+	{
+		blueprintType: BlueprintManifestType.STUDIO,
 
-	blueprintVersion: VERSION,
-	integrationVersion: VERSION_INTEGRATION,
-	TSRVersion: VERSION_TSR,
+		blueprintVersion: VERSION,
+		integrationVersion: VERSION_INTEGRATION,
+		TSRVersion: VERSION_TSR,
 
-	preprocessConfig: parseConfig,
+		preprocessConfig: parseConfig,
 
-	studioConfigManifest,
-	studioMigrations,
+		studioConfigManifest,
+		studioMigrations,
 
-	getBaseline,
-	getShowStyleId
-}
+		getBaseline,
+		getShowStyleId
+	},
+	[StudioManifestMixinINews.INewsPlaylist]
+)
 
 export default manifest

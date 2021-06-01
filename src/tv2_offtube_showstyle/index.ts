@@ -9,31 +9,35 @@ import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import { parseConfig } from './helpers/config'
 import { syncIngestUpdateToPartInstance } from './syncIngestUpdateToPartInstances'
+import { GetShowStyleManifestWithMixins, ShowStyleManifestMixinINews } from 'inews-mixins'
 
 declare const VERSION: string // Injected by webpack
 declare const VERSION_TSR: string // Injected by webpack
 declare const VERSION_INTEGRATION: string // Injected by webpack
 
-const manifest: ShowStyleBlueprintManifest = {
-	blueprintType: BlueprintManifestType.SHOWSTYLE,
+const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
+	{
+		blueprintType: BlueprintManifestType.SHOWSTYLE,
 
-	blueprintVersion: VERSION,
-	integrationVersion: VERSION_INTEGRATION,
-	TSRVersion: VERSION_TSR,
+		blueprintVersion: VERSION,
+		integrationVersion: VERSION_INTEGRATION,
+		TSRVersion: VERSION_TSR,
 
-	preprocessConfig: parseConfig,
+		preprocessConfig: parseConfig,
 
-	getShowStyleVariantId,
-	getRundown,
-	getSegment,
+		getShowStyleVariantId,
+		getRundown,
+		getSegment,
 
-	onTimelineGenerate: onTimelineGenerateOfftube,
-	getEndStateForPart,
-	executeAction: executeActionOfftube,
-	syncIngestUpdateToPartInstance,
+		onTimelineGenerate: onTimelineGenerateOfftube,
+		getEndStateForPart,
+		executeAction: executeActionOfftube,
+		syncIngestUpdateToPartInstance,
 
-	showStyleConfigManifest,
-	showStyleMigrations
-}
+		showStyleConfigManifest,
+		showStyleMigrations
+	},
+	[ShowStyleManifestMixinINews.INewsPlaylist]
+)
 
 export default manifest
