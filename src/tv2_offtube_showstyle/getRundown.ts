@@ -6,13 +6,14 @@ import {
 	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
 	IngestRundown,
+	IShowStyleUserContext,
 	IStudioContext,
 	IStudioUserContext,
 	PieceLifespan,
 	SourceLayerType,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { getStudioConfig, OfftubeShowstyleBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
+import { getConfig, OfftubeShowstyleBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -67,8 +68,8 @@ export function getShowStyleVariantId(
 	return null
 }
 
-export function getRundown(context: IStudioUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = getStudioConfig(context)
+export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
+	const config = getConfig(context)
 
 	let startTime: number = 0
 	let endTime: number = 0
