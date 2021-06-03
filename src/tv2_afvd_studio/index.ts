@@ -3,7 +3,6 @@ import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
 import { getBaseline } from './getBaseline'
 import { getShowStyleId } from './getShowStyleId'
-import { getRundownPlaylistInfo } from './getRundownPlaylistInfo'
 import { parseConfig } from './helpers/config'
 import { studioMigrations } from './migrations'
 import { GetStudioManifestWithMixins, StudioManifestMixinINews } from 'inews-mixins'
@@ -26,8 +25,7 @@ const manifest: StudioBlueprintManifest = GetStudioManifestWithMixins(
 		studioMigrations,
 
 		getBaseline,
-		getShowStyleId,
-		getRundownPlaylistInfo
+		getShowStyleId
 	},
 	[StudioManifestMixinINews.INewsPlaylist]
 )

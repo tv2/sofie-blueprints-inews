@@ -69,11 +69,24 @@ export function GetRundownPlaylistInfoWithMixins(
 	mixins: Array<GetRundownPlaylistInfoMixin>
 ) {
 	return (context: IStudioUserContext, rundowns: IBlueprintRundownDB[]) => {
+		let sortedRundowns = rundowns.sort((a, b) => {
+			const getRank = (externalId: string): number => {
+				const match = externalId.match(/_(\d+)/)
+				if (match) {
+					return Number(match[1])
+				}
+
+				return 0
+			}
+
+			return getRank(a.externalId) - getRank(b.externalId)
+		})
 		let result =
 			(getRundownPlaylistInfo ? getRundownPlaylistInfo(context, rundowns) : undefined) ??
 			literal<BlueprintResultRundownPlaylist>({
 				playlist: literal<IBlueprintRundownPlaylistInfo>({
-					name: (rundowns[0] ?? { name: '' }).name
+					name: (rundowns[0] ?? { name: '' }).name,
+					expectedEnd: sortedRundowns[sortedRundowns.length - 1]?.expectedEnd
 				}),
 				order: null
 			})

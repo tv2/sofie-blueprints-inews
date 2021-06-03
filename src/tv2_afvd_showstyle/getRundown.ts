@@ -63,31 +63,28 @@ export function getShowStyleVariantId(
 export function getRundown(context: IStudioUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const config = getStudioConfig(context)
 
-	let startTime: number = 0
-	let endTime: number = 0
+	const backTime = ingestRundown.segments[ingestRundown.segments.length - 1]?.payload?.iNewsStory?.fields?.backTime as
+		| string
+		| undefined
+	let expectedEnd: number | undefined
 
-	// Set start / end times
-	if ('payload' in ingestRundown) {
-		if (ingestRundown.payload.expectedStart) {
-			startTime = Number(ingestRundown.payload.expectedStart)
+	if (backTime) {
+		const backTimeNum = Number(backTime.replace(/^@/, ''))
+		if (!Number.isNaN(backTimeNum)) {
+			const midnightToday = new Date()
+			midnightToday.setHours(0, 0, 0, 0)
+
+			expectedEnd = midnightToday.getTime() + backTimeNum * 1000
+		} else {
+			expectedEnd = 9000
 		}
-
-		if (ingestRundown.payload.expectedEnd) {
-			endTime = Number(ingestRundown.payload.expectedEnd)
-		}
-	}
-
-	// Can't end before we begin
-	if (endTime < startTime) {
-		endTime = startTime
 	}
 
 	return {
 		rundown: literal<IBlueprintRundown>({
 			externalId: ingestRundown.externalId,
 			name: ingestRundown.name,
-			expectedStart: startTime,
-			expectedDuration: endTime - startTime
+			expectedEnd
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
 		globalActions: getGlobalAdlibActionsAFVD(context, config),
