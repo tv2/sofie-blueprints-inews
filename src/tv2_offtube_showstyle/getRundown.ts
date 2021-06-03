@@ -121,21 +121,23 @@ function getGlobalAdLibPiecesOfftube(
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
-				...config.studio.StudioMics.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel>({
-						id: '',
-						enable: { start: 0 },
-						priority: 1,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+			timelineObjects: [
+				literal<TSR.TimelineObjSisyfosChannels>({
+					id: '',
+					enable: { start: 0 },
+					priority: 10,
+					layer: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
+					content: {
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+						channels: config.studio.StudioMics.map(layer => ({
+							mappedLayer: layer,
 							isPgm: 1
-						}
-					})
+						})),
+						overridePriority: 10
+					}
 				})
-			])
+			]
 		}
 	})
 
@@ -149,21 +151,23 @@ function getGlobalAdLibPiecesOfftube(
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 		expectedDuration: 0,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
-				...config.studio.StudioMics.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel>({
-						id: '',
-						enable: { start: 0 },
-						priority: 1,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+			timelineObjects: [
+				literal<TSR.TimelineObjSisyfosChannels>({
+					id: '',
+					enable: { start: 0 },
+					priority: 10,
+					layer: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
+					content: {
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+						channels: config.studio.StudioMics.map(layer => ({
+							mappedLayer: layer,
 							isPgm: 0
-						}
-					})
+						})),
+						overridePriority: 10
+					}
 				})
-			])
+			]
 		}
 	})
 
