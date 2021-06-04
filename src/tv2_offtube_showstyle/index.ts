@@ -37,7 +37,7 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		showStyleConfigManifest,
 		showStyleMigrations
 	},
-	[ShowStyleManifestMixinINews.INewsPlaylist]
+	[ShowStyleManifestMixinINews.INewsPlaylist, ShowStyleManifestMixinINews.BackTime]
 )
 
 export default manifest

@@ -11,7 +11,7 @@ import {
 	ShowStyleBlueprintManifest,
 	StudioBlueprintManifest
 } from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+import { assertUnreachable, literal } from 'tv2-common'
 
 function getRundownWithINewsPlaylist(
 	_context: IShowStyleUserContext,
@@ -19,6 +19,39 @@ function getRundownWithINewsPlaylist(
 	manifest: BlueprintResultRundown
 ): BlueprintResultRundown {
 	manifest.rundown.playlistExternalId = ingestRundown.payload.playlistExternalId
+	return manifest
+}
+
+function getRundownWithBackTime(
+	_context: IShowStyleUserContext,
+	ingestRundown: ExtendedIngestRundown,
+	manifest: BlueprintResultRundown
+): BlueprintResultRundown {
+	const backTime = ingestRundown.segments[ingestRundown.segments.length - 1]?.payload?.iNewsStory?.fields?.backTime as
+		| string
+		| undefined
+
+	let expectedEnd: number | undefined
+	let expectedStart: number | undefined
+	let expectedDuration =
+		ingestRundown.segments.reduce((prev, curr) => prev + Number(curr.payload?.iNewsStory?.fields?.totalTime) ?? 0, 0) *
+		1000
+
+	if (backTime) {
+		const backTimeNum = Number(backTime.replace(/^@/, ''))
+		if (!Number.isNaN(backTimeNum)) {
+			const midnightToday = new Date()
+			midnightToday.setHours(0, 0, 0, 0)
+
+			expectedEnd = midnightToday.getTime() + backTimeNum * 1000
+			expectedStart = expectedEnd - expectedDuration
+		}
+
+		manifest.rundown.expectedStart = expectedStart
+		manifest.rundown.expectedDuration = expectedDuration
+		manifest.rundown.expectedEnd = expectedEnd
+	}
+
 	return manifest
 }
 
@@ -86,7 +119,9 @@ export function GetRundownPlaylistInfoWithMixins(
 			literal<BlueprintResultRundownPlaylist>({
 				playlist: literal<IBlueprintRundownPlaylistInfo>({
 					name: (rundowns[0] ?? { name: '' }).name,
-					expectedEnd: sortedRundowns[sortedRundowns.length - 1]?.expectedEnd
+					expectedEnd: sortedRundowns[sortedRundowns.length - 1]?.expectedEnd,
+					expectedStart: sortedRundowns[0]?.expectedStart,
+					expectedDuration: sortedRundowns.reduce((prev, curr) => prev + (curr.expectedDuration ?? 0), 0)
 				}),
 				order: null
 			})
@@ -100,7 +135,8 @@ export function GetRundownPlaylistInfoWithMixins(
 }
 
 export enum ShowStyleManifestMixinINews {
-	INewsPlaylist = 'inews-playlist'
+	INewsPlaylist = 'inews-playlist',
+	BackTime = 'inews-back-time'
 }
 
 export enum StudioManifestMixinINews {
@@ -117,6 +153,12 @@ export function GetShowStyleManifestWithMixins(
 		switch (mixin) {
 			case ShowStyleManifestMixinINews.INewsPlaylist:
 				getRundownMixins.push(getRundownWithINewsPlaylist)
+				break
+			case ShowStyleManifestMixinINews.BackTime:
+				getRundownMixins.push(getRundownWithBackTime)
+				break
+			default:
+				assertUnreachable(mixin)
 				break
 		}
 	}
@@ -136,6 +178,9 @@ export function GetStudioManifestWithMixins(
 		switch (mixin) {
 			case StudioManifestMixinINews.INewsPlaylist:
 				getPlaylistMixins.push(getRundownPlaylistInfoINewsPlaylist)
+				break
+			default:
+				assertUnreachable(mixin)
 				break
 		}
 	}
