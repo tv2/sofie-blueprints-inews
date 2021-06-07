@@ -883,6 +883,67 @@
             "parts": []
         },
         {
+            "externalId": "0C59822B",
+            "name": "TLFTopt",
+            "rank": 24500,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.POST-DEPLOY-TEST",
+                "iNewsStory": {
+                    "fields": {
+                        "pageNumber": "21",
+                        "title": "TLFTopt",
+                        "var2": "INDSL",
+                        "tapeTime": "0",
+                        "audioTime": "0",
+                        "totalTime": "0",
+                        "modifyDate": "1582890480",
+                        "modifyBy": "sofie",
+                        "var16": "ååmmdd",
+                        "ready": "KLAR",
+                        "runsTime": "0",
+                        "onair": "ON-AIR",
+                        "typecode": "nyx",
+                        "programtitle": ".",
+                        "noarchive": "."
+                    },
+                    "meta": {
+                        "rate": "140"
+                    },
+                    "cues": [
+                        [
+                            "#kg tlftoptlive Dette er tlff top",
+                            "Tester",
+                            ";0.00"
+                        ],
+                        [
+                            "GRAFIK=full"
+                        ],
+                        [
+                            "#cg4 pilotdata",
+                            "TELEFON/KORT//LIVE_KABUL",
+                            "VCPID=2552305",
+                            "ContinueCount=3",
+                            "TELEFON/KORT//LIVE_KABUL"
+                        ],
+                        [
+                            "#kg tlfdirekte KØBENNHAVN",
+                            ";0.00"
+                        ]
+                    ],
+                    "id": "0c59822b:0021e99e:5e58ef29",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 1</pi></p>\r\n<p><cc>--vo-></cc><a idref=\"0\"><cc><--</cc></a></p>\r\n<p></p>\r\n<p><a idref=\"1\"></a></p>\r\n<p><pi>******** 100% GRAFIK *************</pi></p>\r\n<p><a idref=\"2\"></a></p>\r\n<p><a idref=\"3\"></a></p>\r\n<p></p>\r\n",
+                    "fileId": "0C59822A:0021E99E:5E58EFEE",
+                    "identifier": "0C59822B"
+                },
+                "modified": "1582890480",
+                "externalId": "0C59822B",
+                "rank": 25000,
+                "name": "TLFTopt",
+                "float": false
+            },
+            "parts": []
+        },
+        {
             "externalId": "0F59822A",
             "name": "PILOT ELEMENTER",
             "rank": 24000,

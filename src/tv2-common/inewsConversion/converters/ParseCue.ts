@@ -1,4 +1,4 @@
-import { literal, TV2BlueprintConfig } from 'tv2-common'
+import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
 import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
 
@@ -890,10 +890,25 @@ export function UnknownPartParentClass(studio: string, partDefinition: PartDefin
 	}
 }
 
-export function AddParentClass(partDefinition: PartDefinition) {
-	return !!partDefinition.cues.filter(
-		cue => cue.type === CueType.Graphic && cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B'
-	).length
+export function AddParentClass(config: TV2BlueprintConfig, partDefinition: PartDefinition) {
+	if (
+		partDefinition.cues.some(
+			cue => cue.start === CueType.Graphic && cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B'
+		)
+	) {
+		return true
+	}
+
+	return partDefinition.cues.some(
+		c =>
+			c.type === CueType.Graphic &&
+			GraphicIsInternal(c) &&
+			GetInfiniteModeForGraphic(c.target, config, c, IsStickyIdent(c))
+	)
+}
+
+export function IsStickyIdent(cue: CueDefinitionGraphic<GraphicInternal>) {
+	return !!cue.graphic.template.match(/direkte/i)
 }
 
 export function UnpairedPilotToGraphic(

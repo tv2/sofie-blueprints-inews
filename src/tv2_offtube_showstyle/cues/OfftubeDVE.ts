@@ -57,7 +57,7 @@ export function OfftubeEvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(partDefinition),
+		AddParentClass(config, partDefinition),
 		true
 	)
 
@@ -67,7 +67,7 @@ export function OfftubeEvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(partDefinition),
+		AddParentClass(config, partDefinition),
 		false
 	)
 

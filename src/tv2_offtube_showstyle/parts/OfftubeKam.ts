@@ -136,7 +136,7 @@ export function OfftubeCreatePartKam(
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							},
-							...(AddParentClass(partDefinition)
+							...(AddParentClass(config, partDefinition)
 								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
 								: {})
 						}),
