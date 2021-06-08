@@ -167,7 +167,10 @@ export function CreateFullDataStore(
 ): IBlueprintPiece {
 	const content = CreateFullContent(config, context, settings, parsedCue, engine, adlib)
 	content.timelineObjects = content.timelineObjects.filter(
-		o => o.content.deviceType !== TSR.DeviceType.ATEM && o.content.deviceType !== TSR.DeviceType.SISYFOS
+		o =>
+			o.content.deviceType !== TSR.DeviceType.ATEM &&
+			o.content.deviceType !== TSR.DeviceType.SISYFOS &&
+			o.content.deviceType !== TSR.DeviceType.VIZMSE
 	)
 	return literal<IBlueprintPiece>({
 		externalId: partId,
