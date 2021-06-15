@@ -2655,6 +2655,34 @@ describe('Body parser', () => {
 		])
 	})
 
+	test('EKSTERN 1 with EFFEKT', () => {
+		const body = '\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
+		const cues = [['EKSTERN=LIVE 1 EFFEKT 1']]
+		const result = ParseBody(config, '00000000001', 'test-segment', body, cues, fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionEkstern>({
+				externalId: '',
+				type: PartType.Ekstern,
+				title: 'LIVE 1',
+				rawType: '',
+				variant: {},
+				effekt: 1,
+				cues: [
+					literal<CueDefinitionEkstern>({
+						type: CueType.Ekstern,
+						source: 'LIVE 1',
+						iNewsCommand: 'EKSTERN'
+					})
+				],
+				fields,
+				modified: 0,
+				script: '',
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
 	/** Merging Cues From Config */
 
 	test('Merge VCP', () => {

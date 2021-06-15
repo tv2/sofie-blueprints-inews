@@ -141,9 +141,10 @@ function makeTransitionAction(
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
-			content: isEffekt
-				? {}
-				: CreateJingleExpectedMedia(config, jingle, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
+			content:
+				isEffekt || !!label.match(/^MIX ?\d+$/i) || !!label.match(/^CUT$/i)
+					? {}
+					: CreateJingleExpectedMedia(config, jingle, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
 		}
 	})
 }

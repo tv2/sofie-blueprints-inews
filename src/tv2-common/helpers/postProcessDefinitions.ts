@@ -6,6 +6,13 @@ export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmen
 
 	partDefinitions.forEach((part, i) => {
 		setPartTitle(part)
+		part.cues = part.cues.map(c => {
+			if (c.type === CueType.Ekstern) {
+				c.transition = undefined
+			}
+
+			return c
+		})
 		partDefinitions[i] = { ...part, externalId: getExternalId(segmentExternalId, part, foundMap), segmentExternalId }
 	})
 

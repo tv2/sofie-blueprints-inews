@@ -53,7 +53,7 @@ export function OfftubeCreatePartKam(
 
 	const jingleDSK = FindDSKJingle(config)
 
-	if (partDefinition.rawType.match(/kam cs 3/i)) {
+	if (partDefinition.rawType.match(/kam cs ?3/i)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,
@@ -136,7 +136,7 @@ export function OfftubeCreatePartKam(
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							},
-							...(AddParentClass(partDefinition)
+							...(AddParentClass(config, partDefinition)
 								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
 								: {})
 						}),

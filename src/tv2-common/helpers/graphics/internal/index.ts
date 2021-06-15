@@ -10,6 +10,7 @@ import {
 	CueDefinitionGraphic,
 	GetDefaultOut,
 	GraphicInternal,
+	IsStickyIdent,
 	literal,
 	PartDefinition,
 	TV2BlueprintConfig
@@ -44,7 +45,7 @@ export function CreateInternalGraphic(
 	// Whether this graphic "sticks" to the source it was first assigned to.
 	// e.g. if this is attached to Live 1, when Live 1 is recalled later in a segment,
 	//  this graphic should be shown again.
-	const isStickyIdent = !!parsedCue.graphic.template.match(/direkte/i)
+	const isStickyIdent = IsStickyIdent(parsedCue)
 
 	const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
@@ -80,7 +81,8 @@ export function CreateInternalGraphic(
 				lifespan: PieceLifespan.WithinPart,
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				content: _.clone(content)
+				content: _.clone(content),
+				noHotKey: true
 			})
 			adlibPieces.push(adLibPiece)
 		}

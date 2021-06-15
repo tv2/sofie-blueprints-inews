@@ -18,7 +18,7 @@ import {
 	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, CueType, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CueType, SharedOutputLayers } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
@@ -140,7 +140,8 @@ export function EvaluateAdLib(
 						videoId: partDefinition.fields.videoId,
 						segmentExternalId: partDefinition.segmentExternalId
 					})
-				})
+				}),
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
 		)
 	}
