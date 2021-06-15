@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.5](https://github.com/olzzon/tv2-sofie-blueprints-inews/compare/v1.6.3-4...v1.6.5) (2021-06-10)
+
+
+### Bug Fixes
+
+* Queued camera after full graphic ([c629cc3](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/c629cc36fdab6675a74fd57509387f2b74a87618))
+* Route M/E 2 to clean AUX in baseline ([32e0be2](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/32e0be25bd768ab0d873b50e59c78e916dc9be5d))
+
 ## [1.6.0](https://github.com/olzzon/tv2-sofie-blueprints-inews/compare/v1.4.7...v1.6.0) (2021-03-22)
 
 
