@@ -5,42 +5,52 @@ import {
 	SyncIngestUpdateToPartInstanceContext
 } from '@sofie-automation/blueprints-integration'
 
-export function stopOrReplaceAlwaysEditablePieces(
+function groupPieceInstances(pieceInstances: Array<IBlueprintPieceInstance<unknown>>) {
+	return pieceInstances.reduce<{
+		[sourceLayerId: string]: { [pieceInstanceId: string]: IBlueprintPieceInstance } | undefined
+	}>((acc, curr) => {
+		;(acc[curr.piece.sourceLayerId] = acc[curr.piece.sourceLayerId] || {})[curr._id] = curr
+		return acc
+	}, {})
+}
+
+export function stopOrReplaceEditablePieces(
 	context: SyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
-	allowedSourceLayers: string[]
+	allowedSourceLayers: Set<string> | undefined
 ) {
-	const pieceInstancesOnLayersInExistingPart = existingPartInstance.pieceInstances.filter(p =>
-		allowedSourceLayers.includes(p.piece.sourceLayerId)
-	)
-	const groupedPieceInstancesInExistingPart = pieceInstancesOnLayersInExistingPart.reduce<{
-		[sourceLayerId: string]: IBlueprintPieceInstance | undefined
-	}>((acc, curr) => {
-		acc[curr.piece.sourceLayerId] = curr
-		return acc
-	}, {})
+	let pieceInstancesOnLayersInExistingPart = existingPartInstance.pieceInstances
 
-	const pieceInstancesOnLayersInNewPart = newPart.pieceInstances.filter(p =>
-		allowedSourceLayers.includes(p.piece.sourceLayerId)
-	)
-	const groupedPieceInstancesInNewPart = pieceInstancesOnLayersInNewPart.reduce<{
-		[sourceLayerId: string]: IBlueprintPieceInstance | undefined
-	}>((acc, curr) => {
-		acc[curr.piece.sourceLayerId] = curr
-		return acc
-	}, {})
+	if (allowedSourceLayers) {
+		pieceInstancesOnLayersInExistingPart = existingPartInstance.pieceInstances.filter(p =>
+			allowedSourceLayers.has(p.piece.sourceLayerId)
+		)
+	}
+	const groupedPieceInstancesInExistingPart = groupPieceInstances(pieceInstancesOnLayersInExistingPart)
 
-	for (const layer of allowedSourceLayers) {
-		const existingPieceInstance = groupedPieceInstancesInExistingPart[layer]
-		const newPieceInstance = groupedPieceInstancesInNewPart[layer]
+	let pieceInstancesOnLayersInNewPart = newPart.pieceInstances
+	if (allowedSourceLayers) {
+		pieceInstancesOnLayersInNewPart = newPart.pieceInstances.filter(p => allowedSourceLayers.has(p.piece.sourceLayerId))
+	}
+	const groupedPieceInstancesInNewPart = groupPieceInstances(pieceInstancesOnLayersInNewPart)
 
-		if (newPieceInstance && !existingPieceInstance) {
-			context.syncPieceInstance(newPieceInstance._id)
-		} else if (newPieceInstance && existingPieceInstance) {
-			context.syncPieceInstance(newPieceInstance._id)
-		} else if (!newPieceInstance && existingPieceInstance && !existingPieceInstance.dynamicallyInserted) {
-			context.removePieceInstances(existingPieceInstance._id)
+	for (const layer of allowedSourceLayers ||
+		new Set([...Object.keys(groupedPieceInstancesInExistingPart), ...Object.keys(groupedPieceInstancesInNewPart)])) {
+		const existingPieceInstances = groupedPieceInstancesInExistingPart[layer] || {}
+		const newPieceInstances = groupedPieceInstancesInNewPart[layer] || {}
+
+		for (const existingId of Object.keys(existingPieceInstances)) {
+			if (!newPieceInstances[existingId]) {
+				context.removePieceInstances(existingId)
+			} else {
+				context.syncPieceInstance(existingId)
+			}
+		}
+		for (const newId of Object.keys(newPieceInstances)) {
+			if (!existingPieceInstances[newId]) {
+				context.syncPieceInstance(newId)
+			}
 		}
 	}
 }

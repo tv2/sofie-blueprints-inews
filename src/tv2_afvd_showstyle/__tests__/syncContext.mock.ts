@@ -14,6 +14,7 @@ export class MockSyncIngestUpdateToPartInstanceContext extends MockSegmentContex
 	public syncedPieceInstances: string[] = []
 	public removedPieceInstances: string[] = []
 	public updatedPieceInstances: string[] = []
+	public updatedPartInstance: IBlueprintPartInstance | undefined = undefined
 
 	/** Sync a pieceInstance. Inserts the pieceInstance if new, updates if existing. Optionally pass in a mutated Piece, to change the content of the instance */
 	public syncPieceInstance(
@@ -76,7 +77,7 @@ export class MockSyncIngestUpdateToPartInstanceContext extends MockSegmentContex
 
 	/** Update a partInstance */
 	public updatePartInstance(props: Partial<IBlueprintMutatablePart>): IBlueprintPartInstance {
-		return literal<IBlueprintPartInstance>({
+		this.updatedPartInstance = literal<IBlueprintPartInstance>({
 			_id: '',
 			segmentId: '',
 			part: {
@@ -87,5 +88,6 @@ export class MockSyncIngestUpdateToPartInstanceContext extends MockSegmentContex
 				...props
 			}
 		})
+		return this.updatedPartInstance
 	}
 }
