@@ -32,7 +32,6 @@ function getRundownWithBackTime(
 		| undefined
 
 	let expectedEnd: number | undefined
-	let expectedStart: number | undefined
 	let expectedDuration =
 		ingestRundown.segments.reduce((prev, curr) => prev + Number(curr.payload?.iNewsStory?.fields?.totalTime) ?? 0, 0) *
 		1000
@@ -44,12 +43,27 @@ function getRundownWithBackTime(
 			midnightToday.setHours(0, 0, 0, 0)
 
 			expectedEnd = midnightToday.getTime() + backTimeNum * 1000
-			expectedStart = expectedEnd - expectedDuration
 		}
 
-		manifest.rundown.expectedStart = expectedStart
-		manifest.rundown.expectedDuration = expectedDuration
 		manifest.rundown.expectedEnd = expectedEnd
+	}
+
+	manifest.rundown.expectedDuration = expectedDuration
+
+	return manifest
+}
+
+function getRundownWithCommercialBreakBackTime(
+	_context: IShowStyleUserContext,
+	ingestRundown: ExtendedIngestRundown,
+	manifest: BlueprintResultRundown
+) {
+	const backTime = ingestRundown.segments[ingestRundown.segments.length - 1]?.payload?.iNewsStory?.fields?.backTime as
+		| string
+		| undefined
+
+	if (backTime) {
+		manifest.rundown.endIsBreak = true
 	}
 
 	return manifest
@@ -120,7 +134,6 @@ export function GetRundownPlaylistInfoWithMixins(
 				playlist: literal<IBlueprintRundownPlaylistInfo>({
 					name: (rundowns[0] ?? { name: '' }).name,
 					expectedEnd: sortedRundowns[sortedRundowns.length - 1]?.expectedEnd,
-					expectedStart: sortedRundowns[0]?.expectedStart,
 					expectedDuration: sortedRundowns.reduce((prev, curr) => prev + (curr.expectedDuration ?? 0), 0)
 				}),
 				order: null
@@ -136,7 +149,8 @@ export function GetRundownPlaylistInfoWithMixins(
 
 export enum ShowStyleManifestMixinINews {
 	INewsPlaylist = 'inews-playlist',
-	BackTime = 'inews-back-time'
+	BackTime = 'inews-back-time',
+	CommercialBreakBackTime = 'inews-commercial-break-back-time'
 }
 
 export enum StudioManifestMixinINews {
@@ -156,6 +170,9 @@ export function GetShowStyleManifestWithMixins(
 				break
 			case ShowStyleManifestMixinINews.BackTime:
 				getRundownMixins.push(getRundownWithBackTime)
+				break
+			case ShowStyleManifestMixinINews.CommercialBreakBackTime:
+				getRundownMixins.push(getRundownWithCommercialBreakBackTime)
 				break
 			default:
 				assertUnreachable(mixin)
