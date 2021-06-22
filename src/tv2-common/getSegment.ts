@@ -114,7 +114,6 @@ export function getSegmentBase<
 	const segment = literal<IBlueprintSegment>({
 		name: ingestSegment.name || '',
 		metaData: {},
-		showShelf: true,
 		identifier:
 			iNewsStory && iNewsStory.fields.pageNumber && iNewsStory.fields.pageNumber.trim()
 				? iNewsStory.fields.pageNumber.trim()
