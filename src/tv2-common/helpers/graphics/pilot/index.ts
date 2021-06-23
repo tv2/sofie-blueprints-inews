@@ -171,7 +171,8 @@ export function CreateFullDataStore(
 		o =>
 			o.content.deviceType !== TSR.DeviceType.ATEM &&
 			o.content.deviceType !== TSR.DeviceType.SISYFOS &&
-			o.content.deviceType !== TSR.DeviceType.VIZMSE
+			o.content.deviceType !== TSR.DeviceType.VIZMSE &&
+			o.content.deviceType !== TSR.DeviceType.CASPARCG
 	)
 	return literal<IBlueprintPiece>({
 		externalId: partId,
