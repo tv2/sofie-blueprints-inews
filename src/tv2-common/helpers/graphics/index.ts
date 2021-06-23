@@ -136,7 +136,12 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					name: 'sport-overlay/index',
 					data: {
 						display: 'program',
-						slots: {}
+						slots: {
+							[layerToHTMLGraphicSlot[GraphicLLayer.GraphicLLayerPilot]]: {
+								payload: {},
+								display: 'hidden'
+							}
+						}
 					},
 					useStopCommand: false
 				}
