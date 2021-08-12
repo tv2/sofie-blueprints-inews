@@ -8,13 +8,17 @@ import {
 	TSR
 } from '@sofie-automation/blueprints-integration'
 import { ActionCutToCamera, ActionTakeWithTransition, literal } from 'tv2-common'
-import { AdlibActionType, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, NoteType, SharedOutputLayers } from 'tv2-constants'
+import { ActionExecutionContext } from '../../__mocks__/context'
+import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { MockActionContext } from '../../tv2_offtube_showstyle/__tests__/actionExecutionContext.mock'
+import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { executeActionAFVD } from '../actions'
+import { parseConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { MOCK_EFFEKT_1 } from './breakerConfigDefault'
 
+const RUNDOWN_ID = 'MOCK_ACTION_RUNDOWN'
 const SEGMENT_ID = 'MOCK_ACTION_SEGMENT'
 const CURRENT_PART_ID = 'MOCK_PART_CURRENT'
 const CURRENT_PART_EXTERNAL_ID = `${CURRENT_PART_ID}_EXTERNAL`
@@ -29,7 +33,8 @@ const currentPartMock: IBlueprintPartInstance = {
 		segmentId: SEGMENT_ID,
 		externalId: '',
 		title: 'Current Part'
-	})
+	}),
+	rehearsal: false
 }
 
 const kamPieceInstance: IBlueprintPieceInstance = {
@@ -43,8 +48,12 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
 		outputLayerId: SharedOutputLayers.PGM,
-		lifespan: PieceLifespan.WithinPart
-	})
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: []
+		}
+	}),
+	partInstanceId: ''
 }
 
 const evsPieceInstance: IBlueprintPieceInstance = {
@@ -58,8 +67,12 @@ const evsPieceInstance: IBlueprintPieceInstance = {
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
 		outputLayerId: SharedOutputLayers.PGM,
-		lifespan: PieceLifespan.WithinPart
-	})
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: []
+		}
+	}),
+	partInstanceId: ''
 }
 
 // tslint:disable-next-line: variable-name
@@ -71,7 +84,8 @@ const nextPartMock_Cut: IBlueprintPartInstance = {
 		segmentId: SEGMENT_ID,
 		externalId: '',
 		title: 'Next Part'
-	})
+	}),
+	rehearsal: true
 }
 
 // tslint:disable-next-line: variable-name
@@ -83,7 +97,8 @@ const nextPartMock_Mix: IBlueprintPartInstance = {
 		segmentId: SEGMENT_ID,
 		externalId: '',
 		title: 'Next Part'
-	})
+	}),
+	rehearsal: true
 }
 
 // tslint:disable-next-line: variable-name
@@ -95,7 +110,8 @@ const nextPartMock_Effekt: IBlueprintPartInstance = {
 		segmentId: SEGMENT_ID,
 		externalId: '',
 		title: 'Next Part'
-	})
+	}),
+	rehearsal: true
 }
 
 // tslint:disable-next-line: variable-name
@@ -130,7 +146,8 @@ const kamPieceInstance_Cut: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
 // tslint:disable-next-line: variable-name
@@ -170,7 +187,8 @@ const kamPieceInstance_Mix: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
 // tslint:disable-next-line: variable-name
@@ -205,7 +223,8 @@ const kamPieceInstance_Effekt: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
 // tslint:disable-next-line: variable-name
@@ -225,7 +244,8 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 		content: {
 			timelineObjects: []
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
 // tslint:disable-next-line: variable-name
@@ -260,7 +280,8 @@ const evsPieceInstance_Cut: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
 // tslint:disable-next-line: variable-name
@@ -300,7 +321,8 @@ const evsPieceInstance_Mix: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
 // tslint:disable-next-line: variable-name
@@ -335,24 +357,25 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
-function getCameraPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
+function getCameraPiece(context: ActionExecutionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
 	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmCam)
 	expect(piece).toBeTruthy()
 
 	return piece!
 }
 
-function getEVSPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
+function getEVSPiece(context: ActionExecutionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
 	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmLocal)
 	expect(piece).toBeTruthy()
 
 	return piece!
 }
 
-function getTransitionPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
+function getTransitionPiece(context: ActionExecutionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
 	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmJingle)
 	expect(piece).toBeTruthy()
 
@@ -384,32 +407,46 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 	expect(atemObj.content.me.transitionSettings?.mix).toStrictEqual({ rate: frames })
 }
 
-function expectTakeAfterExecute(context: MockActionContext) {
+function expectTakeAfterExecute(context: ActionExecutionContext) {
 	expect(context.takeAfterExecute).toBe(true)
 }
 
-function expectNoWarningsOrErrors(context: MockActionContext) {
-	expect(context.notifyUserWarnings).toEqual([])
-	expect(context.errors).toEqual([])
+function expectNoWarningsOrErrors(context: ActionExecutionContext) {
+	expect(context.getNotes().filter(n => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual([])
+	expect(
+		context.getNotes().filter(n => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
+	).toEqual([])
 }
 
 function makeMockContext(
 	defaultTransition: 'cut' | 'mix' | 'effekt',
 	currentPiece: 'cam' | 'evs',
 	nextPiece: 'cam' | 'evs'
-): MockActionContext {
+): ActionExecutionContext {
 	switch (defaultTransition) {
 		case 'cut':
-			return new MockActionContext(
+			return new ActionExecutionContext(
+				'test',
+				mappingsDefaults,
+				parseStudioConfig,
+				parseShowStyleConfig,
+				RUNDOWN_ID,
 				SEGMENT_ID,
+				CURRENT_PART_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
 				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance_Cut))],
 				JSON.parse(JSON.stringify(nextPartMock_Cut)),
 				[JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Cut : evsPieceInstance_Cut))]
 			)
 		case 'mix':
-			return new MockActionContext(
+			return new ActionExecutionContext(
+				'test',
+				mappingsDefaults,
+				parseStudioConfig,
+				parseShowStyleConfig,
+				RUNDOWN_ID,
 				SEGMENT_ID,
+				CURRENT_PART_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
 				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance))],
 				JSON.parse(JSON.stringify(nextPartMock_Mix)),
@@ -417,8 +454,14 @@ function makeMockContext(
 			)
 			break
 		case 'effekt':
-			return new MockActionContext(
+			return new ActionExecutionContext(
+				'test',
+				mappingsDefaults,
+				parseStudioConfig,
+				parseShowStyleConfig,
+				RUNDOWN_ID,
 				SEGMENT_ID,
+				CURRENT_PART_ID,
 				JSON.parse(JSON.stringify(currentPartMock)),
 				[JSON.parse(JSON.stringify(currentPiece === 'cam' ? kamPieceInstance : evsPieceInstance_Mix))],
 				JSON.parse(JSON.stringify(nextPartMock_Effekt)),
@@ -432,7 +475,7 @@ function makeMockContext(
 }
 
 function checkPartExistsWithProperties(
-	context: MockActionContext,
+	context: ActionExecutionContext,
 	part: 'current' | 'next',
 	props: Partial<IBlueprintPart>
 ) {
@@ -720,8 +763,12 @@ describe('Camera shortcuts on server', () => {
 					name: 'SERVER',
 					sourceLayerId: SourceLayer.PgmServer,
 					outputLayerId: SharedOutputLayers.PGM,
-					lifespan: PieceLifespan.WithinPart
-				})
+					lifespan: PieceLifespan.WithinPart,
+					content: {
+						timelineObjects: []
+					}
+				}),
+				partInstanceId: ''
 			})
 		]
 
@@ -759,8 +806,12 @@ describe('Camera shortcuts on server', () => {
 					name: 'SERVER',
 					sourceLayerId: SourceLayer.PgmServer,
 					outputLayerId: SharedOutputLayers.PGM,
-					lifespan: PieceLifespan.WithinPart
-				})
+					lifespan: PieceLifespan.WithinPart,
+					content: {
+						timelineObjects: []
+					}
+				}),
+				partInstanceId: ''
 			})
 		]
 
@@ -800,8 +851,12 @@ describe('Camera shortcuts on VO', () => {
 					name: 'VO',
 					sourceLayerId: SourceLayer.PgmVoiceOver,
 					outputLayerId: SharedOutputLayers.PGM,
-					lifespan: PieceLifespan.WithinPart
-				})
+					lifespan: PieceLifespan.WithinPart,
+					content: {
+						timelineObjects: []
+					}
+				}),
+				partInstanceId: ''
 			})
 		]
 
@@ -839,8 +894,12 @@ describe('Camera shortcuts on VO', () => {
 					name: 'VO',
 					sourceLayerId: SourceLayer.PgmVoiceOver,
 					outputLayerId: SharedOutputLayers.PGM,
-					lifespan: PieceLifespan.WithinPart
-				})
+					lifespan: PieceLifespan.WithinPart,
+					content: {
+						timelineObjects: []
+					}
+				}),
+				partInstanceId: ''
 			})
 		]
 

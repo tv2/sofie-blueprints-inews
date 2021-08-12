@@ -4,16 +4,38 @@ import {
 	IBlueprintPartDB,
 	IBlueprintPartInstance,
 	IBlueprintPieceInstance,
-	PieceLifespan
+	IBlueprintRundownDB,
+	PieceLifespan,
+	PlaylistTimingType
 } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
+import { SyncIngestUpdateToPartInstanceContext } from '../../__mocks__/context'
+import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
+import { parseConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { syncIngestUpdateToPartInstance } from '../syncIngestUpdateToPartInstance'
-import { MockSyncIngestUpdateToPartInstanceContext } from './syncContext.mock'
 
-function makeMockContext(): MockSyncIngestUpdateToPartInstanceContext {
-	return new MockSyncIngestUpdateToPartInstanceContext({} as any, {} as any)
+const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
+
+function makeMockContext(): SyncIngestUpdateToPartInstanceContext {
+	const rundown = literal<IBlueprintRundownDB>({
+		externalId: RUNDOWN_EXTERNAL_ID,
+		name: RUNDOWN_EXTERNAL_ID,
+		_id: '',
+		showStyleVariantId: '',
+		timing: {
+			type: PlaylistTimingType.None
+		}
+	})
+	return new SyncIngestUpdateToPartInstanceContext(
+		'test',
+		mappingsDefaults,
+		parseStudioConfig,
+		parseShowStyleConfig,
+		rundown._id
+	)
 }
 
 function makePart(title: string): IBlueprintPartDB {
@@ -29,7 +51,8 @@ function makePartinstance(title: string): IBlueprintPartInstance<unknown> {
 	return literal<IBlueprintPartInstance<unknown>>({
 		_id: '',
 		segmentId: '',
-		part: makePart(title)
+		part: makePart(title),
+		rehearsal: false
 	})
 }
 
@@ -43,10 +66,14 @@ function makeSoundBed(name: string): IBlueprintPieceInstance<unknown> {
 			},
 			externalId: '',
 			name,
-			lifespan: PieceLifespan.OutOnRundownEnd,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			sourceLayerId: SourceLayer.PgmAudioBed,
-			outputLayerId: SharedOutputLayers.SEC
-		}
+			outputLayerId: SharedOutputLayers.SEC,
+			content: {
+				timelineObjects: []
+			}
+		},
+		partInstanceId: ''
 	})
 }
 

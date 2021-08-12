@@ -56,7 +56,8 @@ export function EvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(partDefinition)
+		AddParentClass(partDefinition),
+		adlib
 	)
 
 	if (content.valid) {

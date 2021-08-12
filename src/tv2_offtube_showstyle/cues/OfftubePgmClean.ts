@@ -56,7 +56,7 @@ export function OfftubeEvaluatePgmClean(
 			},
 			outputLayerId: SharedOutputLayers.AUX,
 			sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
-			lifespan: PieceLifespan.OutOnRundownEnd,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<BaseContent>>({
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					literal<TSR.TimelineObjAtemAUX>({

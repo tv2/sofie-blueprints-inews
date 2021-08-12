@@ -121,7 +121,7 @@ export function CreateInternalGraphic(
 
 		if (
 			sourceLayerId === SharedSourceLayers.PgmGraphicsIdentPersistent &&
-			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
+			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnShowStyleEnd) &&
 			isStickyIdent
 		) {
 			// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.

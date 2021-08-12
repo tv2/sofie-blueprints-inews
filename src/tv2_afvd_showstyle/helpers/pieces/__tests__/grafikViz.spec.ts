@@ -3,30 +3,22 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	IBlueprintRundownDB,
 	PieceLifespan,
-	TSR
+	TSR,
+	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { AtemLLayerDSK, CueDefinitionGraphic, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
 import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
-import { SegmentContext } from '../../../../__mocks__/context'
-import { BlueprintConfig } from '../../../../tv2_afvd_studio/helpers/config'
+import { SegmentUserContext } from '../../../../__mocks__/context'
+import { BlueprintConfig, parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
-import { getConfig } from '../../config'
+import { getConfig, parseConfig as parseShowStyleConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
 
-const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
-
 function makeMockContext() {
-	const rundown = literal<IBlueprintRundownDB>({
-		externalId: RUNDOWN_EXTERNAL_ID,
-		name: RUNDOWN_EXTERNAL_ID,
-		_id: '',
-		showStyleVariantId: ''
-	})
-	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
 	mockContext.studioConfig = defaultStudioConfig as any
 	mockContext.showStyleConfig = defaultShowStyleConfig as any
 
@@ -121,7 +113,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
@@ -189,7 +181,7 @@ describe('grafik piece', () => {
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
@@ -223,7 +215,7 @@ describe('grafik piece', () => {
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				expectedDuration: 4000,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
@@ -293,7 +285,7 @@ describe('grafik piece', () => {
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
 				expectedDuration: 5000,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
@@ -327,7 +319,7 @@ describe('grafik piece', () => {
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				expectedDuration: 4000,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
@@ -397,7 +389,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
@@ -469,7 +461,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
@@ -538,7 +530,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.OutOnSegmentEnd,
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdentPersistent,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'direkte',
 					path: 'direkte',
 					ignoreMediaObjectStatus: true,
@@ -632,7 +624,7 @@ describe('grafik piece', () => {
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'arkiv',
 					path: 'arkiv',
 					ignoreMediaObjectStatus: true,
@@ -700,7 +692,7 @@ describe('grafik piece', () => {
 				expectedDuration: 5000,
 				tags: ['kommentator'],
 				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_commentator',
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'tlftoptlive',
 					path: 'tlftoptlive',
 					ignoreMediaObjectStatus: true,
@@ -734,7 +726,7 @@ describe('grafik piece', () => {
 				expectedDuration: 4000,
 				tags: ['flow_producer'],
 				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_flow',
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'tlftoptlive',
 					path: 'tlftoptlive',
 					ignoreMediaObjectStatus: true,

@@ -8,22 +8,14 @@ import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
 
 import { RealLLayers } from '../layers'
-import MappingsDefaults, {
-	getCameraSisyfosMappings,
-	getMediaPlayerMappings,
-	getRemoteSisyfosMappings,
-	getTelefonSisyfosMappings
-} from '../migrations/mappings-defaults'
+import MappingsDefaults, { getMediaPlayerMappings } from '../migrations/mappings-defaults'
 
 describe('Migration Defaults', () => {
 	test('MappingsDefaults', () => {
 		const allMappings = {
 			...MappingsDefaults,
 			// Inject MediaPlayer ones, as they are used directly and part of the enum
-			...getMediaPlayerMappings([]),
-			...getCameraSisyfosMappings([]),
-			...getRemoteSisyfosMappings([]),
-			...getTelefonSisyfosMappings('')
+			...getMediaPlayerMappings([])
 		}
 		const defaultsIds = _.map(allMappings, (v, id) => {
 			v = v

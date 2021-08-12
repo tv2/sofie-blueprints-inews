@@ -9,11 +9,11 @@ import {
 	IngestRundown,
 	IStudioUserContext,
 	PieceLifespan,
+	PlaylistTimingType,
 	SourceLayerType,
 	TSR,
 	WithTimeline
 } from '@sofie-automation/blueprints-integration'
-import { getStudioConfig } from 'src/tv2_afvd_studio/helpers/config'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -39,6 +39,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
+import { getStudioConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -66,7 +67,10 @@ export function getRundown(context: IStudioUserContext, ingestRundown: IngestRun
 	return {
 		rundown: literal<IBlueprintRundown>({
 			externalId: ingestRundown.externalId,
-			name: ingestRundown.name
+			name: ingestRundown.name,
+			timing: {
+				type: PlaylistTimingType.None
+			}
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
 		globalActions: getGlobalAdlibActionsAFVD(context, config),
@@ -250,7 +254,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			sourceLayerId: SourceLayer.AuxStudioScreen,
 			outputLayerId: SharedOutputLayers.AUX,
 			expectedDuration: 0,
-			lifespan: PieceLifespan.OutOnRundownEnd,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			metaData: GetEksternMetaData(
 				config.stickyLayers,
 				config.studio.StudioMics,
@@ -308,7 +312,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 				sourceLayerId: SourceLayer.AuxStudioScreen,
 				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -334,7 +338,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 				sourceLayerId: SourceLayer.VizFullIn1,
 				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -507,7 +511,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			name: 'DVE Design SC',
 			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId: SourceLayer.PgmDesign,
-			lifespan: PieceLifespan.OutOnRundownEnd,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',

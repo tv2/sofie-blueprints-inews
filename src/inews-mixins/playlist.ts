@@ -8,6 +8,8 @@ import {
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
+	PlaylistTimingType,
+	RundownPlaylistTiming,
 	ShowStyleBlueprintManifest,
 	StudioBlueprintManifest
 } from '@sofie-automation/blueprints-integration'
@@ -32,7 +34,7 @@ function getRundownWithBackTime(
 		| undefined
 
 	let expectedEnd: number | undefined
-	let expectedDuration =
+	const expectedDuration =
 		ingestRundown.segments.reduce((prev, curr) => prev + Number(curr.payload?.iNewsStory?.fields?.totalTime) ?? 0, 0) *
 		1000
 
@@ -45,10 +47,16 @@ function getRundownWithBackTime(
 			expectedEnd = midnightToday.getTime() + backTimeNum * 1000
 		}
 
-		manifest.rundown.expectedEnd = expectedEnd
+		expectedEnd = expectedEnd
 	}
 
-	manifest.rundown.expectedDuration = expectedDuration
+	if (expectedEnd) {
+		manifest.rundown.timing = {
+			type: PlaylistTimingType.BackTime,
+			expectedEnd,
+			expectedDuration
+		}
+	}
 
 	return manifest
 }
@@ -63,7 +71,7 @@ function getRundownWithCommercialBreakBackTime(
 		| undefined
 
 	if (backTime) {
-		manifest.rundown.endIsBreak = true
+		manifest.rundown.endOfRundownIsShowBreak = true
 	}
 
 	return manifest
@@ -74,13 +82,14 @@ function getRundownPlaylistInfoINewsPlaylist(
 	rundowns: IBlueprintRundownDB[],
 	resultPlaylist: BlueprintResultRundownPlaylist
 ): BlueprintResultRundownPlaylist {
+	const result: BlueprintResultOrderedRundowns = {}
 	return literal<BlueprintResultRundownPlaylist>({
 		...resultPlaylist,
 		order: rundowns.reduce((prev, curr) => {
-			let rankMatch = curr.externalId.match(/_(\d+)$/)
+			const rankMatch = curr.externalId.match(/_(\d+)$/)
 			prev[curr.externalId] = rankMatch ? Number(rankMatch[1]) : 0
 			return prev
-		}, {} as BlueprintResultOrderedRundowns)
+		}, result)
 	})
 }
 
@@ -96,10 +105,7 @@ type GetRundownPlaylistInfoMixin = (
 	resultPlaylist: BlueprintResultRundownPlaylist
 ) => BlueprintResultRundownPlaylist
 
-export function GetRundownWithMixins(
-	getRundown: ShowStyleBlueprintManifest['getRundown'],
-	mixins: Array<GetRundownMixin>
-) {
+export function GetRundownWithMixins(getRundown: ShowStyleBlueprintManifest['getRundown'], mixins: GetRundownMixin[]) {
 	return (context: IShowStyleUserContext, ingestRundown: ExtendedIngestRundown) => {
 		let result = getRundown(context, ingestRundown)
 
@@ -113,10 +119,10 @@ export function GetRundownWithMixins(
 
 export function GetRundownPlaylistInfoWithMixins(
 	getRundownPlaylistInfo: StudioBlueprintManifest['getRundownPlaylistInfo'] | undefined,
-	mixins: Array<GetRundownPlaylistInfoMixin>
+	mixins: GetRundownPlaylistInfoMixin[]
 ) {
 	return (context: IStudioUserContext, rundowns: IBlueprintRundownDB[]) => {
-		let sortedRundowns = rundowns.sort((a, b) => {
+		const sortedRundowns = rundowns.sort((a, b) => {
 			const getRank = (externalId: string): number => {
 				const match = externalId.match(/_(\d+)/)
 				if (match) {
@@ -128,13 +134,24 @@ export function GetRundownPlaylistInfoWithMixins(
 
 			return getRank(a.externalId) - getRank(b.externalId)
 		})
+		const lastRundownTiming = sortedRundowns[sortedRundowns.length - 1].timing
+		let timing: RundownPlaylistTiming = {
+			type: PlaylistTimingType.None
+		}
+		if (lastRundownTiming.type === PlaylistTimingType.BackTime && lastRundownTiming.expectedEnd) {
+			timing = {
+				type: PlaylistTimingType.BackTime,
+				expectedEnd: lastRundownTiming.expectedEnd,
+				expectedDuration: lastRundownTiming.expectedDuration,
+				expectedStart: lastRundownTiming.expectedStart
+			}
+		}
 		let result =
 			(getRundownPlaylistInfo ? getRundownPlaylistInfo(context, rundowns) : undefined) ??
 			literal<BlueprintResultRundownPlaylist>({
 				playlist: literal<IBlueprintRundownPlaylistInfo>({
 					name: (rundowns[0] ?? { name: '' }).name,
-					expectedEnd: sortedRundowns[sortedRundowns.length - 1]?.expectedEnd,
-					expectedDuration: sortedRundowns.reduce((prev, curr) => prev + (curr.expectedDuration ?? 0), 0)
+					timing
 				}),
 				order: null
 			})
@@ -159,7 +176,7 @@ export enum StudioManifestMixinINews {
 
 export function GetShowStyleManifestWithMixins(
 	manifest: ShowStyleBlueprintManifest,
-	mixins: Array<ShowStyleManifestMixinINews>
+	mixins: ShowStyleManifestMixinINews[]
 ): ShowStyleBlueprintManifest {
 	const getRundownMixins: GetRundownMixin[] = []
 
@@ -187,7 +204,7 @@ export function GetShowStyleManifestWithMixins(
 
 export function GetStudioManifestWithMixins(
 	manifest: StudioBlueprintManifest,
-	mixins: Array<StudioManifestMixinINews>
+	mixins: StudioManifestMixinINews[]
 ): StudioBlueprintManifest {
 	const getPlaylistMixins: GetRundownPlaylistInfoMixin[] = []
 

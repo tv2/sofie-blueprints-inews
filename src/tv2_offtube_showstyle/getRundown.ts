@@ -10,10 +10,10 @@ import {
 	IStudioContext,
 	IStudioUserContext,
 	PieceLifespan,
+	PlaylistTimingType,
 	SourceLayerType,
 	TSR
 } from '@sofie-automation/blueprints-integration'
-import { getConfig, OfftubeShowstyleBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -48,6 +48,7 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
+import { getConfig, OfftubeShowstyleBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -94,8 +95,12 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 		rundown: literal<IBlueprintRundown>({
 			externalId: ingestRundown.externalId,
 			name: ingestRundown.name,
-			expectedStart: startTime,
-			expectedDuration: endTime - startTime
+			timing: {
+				type: PlaylistTimingType.BackTime,
+				expectedStart: startTime,
+				expectedDuration: endTime - startTime,
+				expectedEnd: endTime
+			}
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesOfftube(context, config),
 		globalActions: getGlobalAdlibActionsOfftube(context, config),

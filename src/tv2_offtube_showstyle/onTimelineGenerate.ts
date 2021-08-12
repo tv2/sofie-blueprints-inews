@@ -1,9 +1,9 @@
 import {
 	BlueprintResultTimeline,
 	IBlueprintResolvedPieceInstance,
+	ITimelineEventContext,
 	OnGenerateTimelineObj,
 	PartEndState,
-	ITimelineEventContext,
 	TimelinePersistentState,
 	TSR
 } from '@sofie-automation/blueprints-integration'

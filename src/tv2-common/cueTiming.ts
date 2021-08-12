@@ -86,7 +86,7 @@ export function LifeSpan(mode: 'B' | 'S' | 'O', defaultLifespan: PieceLifespan):
 		case 'S':
 			return PieceLifespan.OutOnSegmentEnd
 		case 'O':
-			return PieceLifespan.OutOnRundownEnd
+			return PieceLifespan.OutOnShowStyleEnd
 	}
 
 	return defaultLifespan

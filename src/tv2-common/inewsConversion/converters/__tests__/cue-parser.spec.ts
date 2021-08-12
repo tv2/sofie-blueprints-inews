@@ -1,8 +1,9 @@
-import { IBlueprintRundownDB } from '@sofie-automation/blueprints-integration'
+import { IBlueprintRundownDB, PlaylistTimingType } from '@sofie-automation/blueprints-integration'
 import { CueType } from 'tv2-constants'
-import { SegmentContext } from '../../../../__mocks__/context'
+import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import { getConfig, parseConfig as parseShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { literal } from '../../../util'
 import {
@@ -36,9 +37,18 @@ function makeMockContext() {
 		externalId: RUNDOWN_EXTERNAL_ID,
 		name: RUNDOWN_EXTERNAL_ID,
 		_id: '',
-		showStyleVariantId: ''
+		showStyleVariantId: '',
+		timing: {
+			type: PlaylistTimingType.None
+		}
 	})
-	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	const mockContext = new SegmentUserContext(
+		'test',
+		mappingsDefaults,
+		parseStudioConfig,
+		parseShowStyleConfig,
+		rundown._id
+	)
 	mockContext.studioConfig = defaultStudioConfig as any
 	mockContext.showStyleConfig = defaultShowStyleConfig as any
 

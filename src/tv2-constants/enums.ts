@@ -1,6 +1,11 @@
 export enum NoteType {
-	WARNING = 1,
-	ERROR = 2
+	INFO = 0,
+	DEBUG = 1,
+	WARNING = 2,
+	ERROR = 3,
+	NOTIFY_USER_INFO = 4,
+	NOTIFY_USER_WARNING = 5,
+	NOTIFY_USER_ERROR = 6
 }
 
 export enum MediaPlayerClaimType {

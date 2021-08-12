@@ -22,7 +22,7 @@ export function GetInfiniteModeForGraphic(
 	isStickyIdent?: boolean
 ): PieceLifespan {
 	return IsTargetingWall(engine)
-		? PieceLifespan.OutOnRundownEnd
+		? PieceLifespan.OutOnShowStyleEnd
 		: IsTargetingTLF(engine)
 		? PieceLifespan.WithinPart
 		: isStickyIdent

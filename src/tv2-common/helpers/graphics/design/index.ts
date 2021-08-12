@@ -36,7 +36,7 @@ export function EvaluateDesignBase(
 				name: parsedCue.design,
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
@@ -55,7 +55,7 @@ export function EvaluateDesignBase(
 				},
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,

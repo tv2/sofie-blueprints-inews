@@ -1,11 +1,11 @@
 import { BlueprintManifestType, StudioBlueprintManifest } from '@sofie-automation/blueprints-integration'
+import { GetStudioManifestWithMixins, StudioManifestMixinINews } from 'inews-mixins'
 import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
 import { getBaseline } from './getBaseline'
 import { getShowStyleId } from './getShowStyleId'
 import { parseConfig } from './helpers/config'
 import { studioMigrations } from './migrations'
-import { GetStudioManifestWithMixins, StudioManifestMixinINews } from 'inews-mixins'
 
 declare const VERSION: string // Injected by webpack
 declare const VERSION_TSR: string // Injected by webpack

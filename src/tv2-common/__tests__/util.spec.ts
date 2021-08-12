@@ -11,7 +11,10 @@ describe('util', () => {
 				name: 'test adlib',
 				sourceLayerId: 'Cam',
 				outputLayerId: SharedOutputLayers.PGM,
-				lifespan: PieceLifespan.WithinPart
+				lifespan: PieceLifespan.WithinPart,
+				content: {
+					timelineObjects: []
+				}
 			})
 		).toBeTruthy()
 
@@ -24,6 +27,9 @@ describe('util', () => {
 				lifespan: PieceLifespan.WithinPart,
 				enable: {
 					start: 0
+				},
+				content: {
+					timelineObjects: []
 				}
 			})
 		).toBeFalsy()

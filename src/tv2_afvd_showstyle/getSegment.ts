@@ -4,7 +4,7 @@ import {
 	CameraContent,
 	IBlueprintPiece,
 	IngestSegment,
-	IRundownUserContext,
+	ISegmentUserContext,
 	PieceLifespan,
 	TSR,
 	WithTimeline
@@ -25,7 +25,7 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
-export function getSegment(context: IRundownUserContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+export function getSegment(context: ISegmentUserContext, ingestSegment: IngestSegment): BlueprintResultSegment {
 	const config = getConfig(context)
 
 	const result: BlueprintResultSegment = getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {

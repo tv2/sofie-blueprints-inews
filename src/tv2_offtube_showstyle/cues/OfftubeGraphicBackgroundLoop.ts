@@ -33,7 +33,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				name: fileName,
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName,
 					path,
@@ -65,7 +65,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				},
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName,
 					path,

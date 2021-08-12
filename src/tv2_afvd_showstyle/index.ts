@@ -2,6 +2,7 @@ import { BlueprintManifestType, ShowStyleBlueprintManifest } from '@sofie-automa
 import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'
 
+import { GetShowStyleManifestWithMixins, ShowStyleManifestMixinINews } from 'inews-mixins'
 import { getEndStateForPart } from 'tv2-common'
 import { onTimelineGenerateAFVD } from '../tv2_afvd_studio/onTimelineGenerate'
 import { executeActionAFVD } from './actions'
@@ -9,7 +10,6 @@ import { getRundown, getShowStyleVariantId } from './getRundown'
 import { getSegment } from './getSegment'
 import { parseConfig } from './helpers/config'
 import { syncIngestUpdateToPartInstance } from './syncIngestUpdateToPartInstance'
-import { GetShowStyleManifestWithMixins, ShowStyleManifestMixinINews } from 'inews-mixins'
 
 declare const VERSION: string // Injected by webpack
 declare const VERSION_TSR: string // Injected by webpack

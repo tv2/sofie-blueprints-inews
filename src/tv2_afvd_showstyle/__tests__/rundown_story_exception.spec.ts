@@ -15,16 +15,20 @@ global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
 import { INewsStory, literal } from 'tv2-common'
-import { SegmentContext, ShowStyleContext } from '../../__mocks__/context'
-import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { SegmentUserContext, ShowStyleUserContext } from '../../__mocks__/context'
+import { parseConfig as parseStudioConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { ShowStyleConfig } from '../helpers/config'
+import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../helpers/config'
 import Blueprints from '../index'
 
 // More ROs can be listed here to make them part of the basic blueprint doesnt crash test
 const rundowns: Array<{ ro: string; studioConfig: StudioConfig; showStyleConfig: ShowStyleConfig }> = [
 	{ ro: '../../../rundowns/on-air.json', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 ]
+
+const RUNDOWN_ID = 'test_rundown'
+const SEGMENT_ID = 'test_segment'
+const PART_ID = 'test_part'
 
 describe('Rundown exceptions', () => {
 	for (const roSpec of rundowns) {
@@ -35,7 +39,15 @@ describe('Rundown exceptions', () => {
 			expect(roData.type).toEqual('inews')
 		})
 
-		const showStyleContext = new ShowStyleContext('mockRo', mappingsDefaults)
+		const showStyleContext = new ShowStyleUserContext(
+			'mockRo',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			PART_ID
+		)
 		// can I do this?:
 		showStyleContext.studioConfig = roSpec.studioConfig as any
 		showStyleContext.showStyleConfig = roSpec.showStyleConfig as any
@@ -48,7 +60,7 @@ describe('Rundown exceptions', () => {
 
 		for (const segment of roData.segments) {
 			test('Rundown segment: ' + roSpec.ro + ' - ' + rundown.externalId, async () => {
-				const mockContext = new SegmentContext(rundown, mappingsDefaults)
+				const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
 				mockContext.studioConfig = roSpec.studioConfig as any
 				mockContext.showStyleConfig = roSpec.showStyleConfig as any
 
