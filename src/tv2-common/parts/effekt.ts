@@ -132,7 +132,7 @@ export function CreateEffektForPartInner<
 					config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
 				}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
 				mediaFlowIds: [config.studio.JingleMediaFlowId],
-				// R35: previewFrame: Number(effektConfig.StartAlpha),
+				previewFrame: Number(effektConfig.StartAlpha),
 				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 				// R35: ignoreBlackFrames: true,
 				// R35: ignoreFreezeFrame: true,

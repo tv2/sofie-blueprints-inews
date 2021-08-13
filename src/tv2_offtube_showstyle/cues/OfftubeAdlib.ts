@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	ISegmentUserContext,
@@ -30,7 +31,7 @@ export function OfftubeEvaluateAdLib(
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -44,7 +45,10 @@ export function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = 0 // R35: Math.max((context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,0)
+		const sourceDuration = Math.max(
+			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+			0
+		)
 
 		actions.push(
 			CreateAdlibServer(
@@ -78,7 +82,7 @@ export function OfftubeEvaluateAdLib(
 			)
 		)
 
-		// R35: mediaSubscriptions.push({ mediaId: file.toUpperCase() })
+		mediaSubscriptions.push({ mediaId: file.toUpperCase() })
 	} else {
 		// DVE
 		if (!parsedCue.variant) {

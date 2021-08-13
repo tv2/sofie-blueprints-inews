@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -49,7 +50,7 @@ export function OfftubeCreatePartKam(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	const jingleDSK = FindDSKJingle(config)
 
@@ -156,7 +157,7 @@ export function OfftubeCreatePartKam(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
@@ -164,7 +165,7 @@ export function OfftubeCreatePartKam(
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
-	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

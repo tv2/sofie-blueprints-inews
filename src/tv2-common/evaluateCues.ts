@@ -1,5 +1,5 @@
 import {
-	// R35: HackPartMediaObjectSubscription,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -102,7 +102,7 @@ export interface EvaluateCuesShowstyleOptions {
 		config: TV2BlueprintConfig,
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
-		// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
+		mediaSubscriptions: HackPartMediaObjectSubscription[],
 		partId: string,
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
@@ -186,7 +186,7 @@ export function EvaluateCuesBase(
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -276,7 +276,7 @@ export function EvaluateCuesBase(
 							config,
 							adLibPieces,
 							actions,
-							// R35: mediaSubscriptions,
+							mediaSubscriptions,
 							partDefinition.externalId,
 							cue,
 							partDefinition,

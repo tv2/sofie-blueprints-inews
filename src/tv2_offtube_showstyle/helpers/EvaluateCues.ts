@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -23,7 +24,7 @@ export function OfftubeEvaluateCues(
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -46,7 +47,7 @@ export function OfftubeEvaluateCues(
 		pieces,
 		adLibPieces,
 		actions,
-		// R35: mediaSubscriptions,
+		mediaSubscriptions,
 		cues,
 		partDefinition,
 		options

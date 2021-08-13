@@ -95,7 +95,7 @@ export function CreateDSKBaselineAdlibs(
 					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownChange,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
-					// R35: invertOnAirState: true,
+					invertOnAirState: true,
 					content: {
 						timelineObjects: [
 							literal<TSR.TimelineObjAtemDSK>({

@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
@@ -45,13 +46,16 @@ export function OfftubeCreatePartServer(
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const sourceDuration = 0 // Math.max((context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration, 0)
+	const sourceDuration = Math.max(
+		(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+		0
+	)
 
 	actions.push(
 		CreateAdlibServer(
@@ -93,7 +97,7 @@ export function OfftubeCreatePartServer(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
@@ -101,7 +105,7 @@ export function OfftubeCreatePartServer(
 
 	AddScript(partDefinition, pieces, duration, OfftubeSourceLayer.PgmScript)
 
-	// R35: part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
+	part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
 
 	if (pieces.length === 0) {
 		part.invalid = true

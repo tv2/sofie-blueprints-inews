@@ -1,7 +1,7 @@
 import {
 	ActionUserData,
+	HackPartMediaObjectSubscription,
 	IActionExecutionContext,
-	// R35: HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -119,7 +119,7 @@ export interface ActionExecutionSettings<
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
-		// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
+		mediaSubscriptions: HackPartMediaObjectSubscription[],
 		cues: CueDefinition[],
 		partDefinition: PartDefinition,
 		options: EvaluateCuesOptions
@@ -432,7 +432,7 @@ function executeActionSelectServerClip<
 		grafikPieces,
 		[],
 		[],
-		// R35: [],
+		[],
 		partDefinition.cues,
 		partDefinition,
 		{

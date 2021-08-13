@@ -26,7 +26,7 @@ function GetJingleFileName(config: TV2BlueprintConfig, jingle: string): string {
 export function CreateJingleExpectedMedia(
 	config: TV2BlueprintConfig,
 	jingle: string,
-	_alphaAtStart: number,
+	alphaAtStart: number,
 	duration: number,
 	alphaAtEnd: number
 ) {
@@ -38,10 +38,10 @@ export function CreateJingleExpectedMedia(
 			config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
 		}${jingle}${config.studio.JingleFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
-		// R35: previewFrame: alphaAtStart,
+		previewFrame: alphaAtStart,
 		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
-		// R35: ignoreBlackFrames: true,
-		// R35: ignoreFreezeFrame: true,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
 		sourceDuration: TimeFromFrames(Number(duration) - Number(alphaAtEnd)),
 		timelineObjects: []
 	})

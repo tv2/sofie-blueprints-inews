@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
@@ -48,7 +49,7 @@ export function CreatePartKam(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	const jingleDSK = FindDSKJingle(config)
 
@@ -155,14 +156,14 @@ export function CreatePartKam(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
-	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

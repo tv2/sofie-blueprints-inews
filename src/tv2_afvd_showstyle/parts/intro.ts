@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -69,7 +70,7 @@ export function CreatePartIntro(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	EvaluateCues(
 		context,
@@ -78,7 +79,7 @@ export function CreatePartIntro(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
@@ -86,8 +87,8 @@ export function CreatePartIntro(
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	part = {
 		...part,
-		...GetJinglePartProperties(context, config, partDefinition)
-		// R35: hackListenToMediaObjectUpdates: mediaSubscriptions
+		...GetJinglePartProperties(context, config, partDefinition),
+		hackListenToMediaObjectUpdates: mediaSubscriptions
 	}
 
 	if (pieces.length === 0) {

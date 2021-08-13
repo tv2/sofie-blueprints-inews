@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -27,7 +28,7 @@ export function CreatePartGrafik(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	EvaluateCues(
 		context,
@@ -36,7 +37,7 @@ export function CreatePartGrafik(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -47,7 +48,7 @@ export function CreatePartGrafik(
 
 	ApplyFullGraphicPropertiesToPart(config, part)
 
-	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -25,7 +26,7 @@ export function EvaluateCues(
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
@@ -50,7 +51,7 @@ export function EvaluateCues(
 		pieces,
 		adLibPieces,
 		actions,
-		// R35: mediaSubscriptions,
+		mediaSubscriptions,
 		cues,
 		partDefinition,
 		options

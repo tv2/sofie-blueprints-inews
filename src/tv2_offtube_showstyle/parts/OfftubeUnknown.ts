@@ -1,5 +1,5 @@
 import {
-	// R35: HackPartMediaObjectSubscription,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -40,7 +40,7 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	OfftubeEvaluateCues(
 		context,
@@ -49,7 +49,7 @@ export function CreatePartUnknown(
 		pieces,
 		adLibPieces,
 		actions,
-		// R35: mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -69,7 +69,7 @@ export function CreatePartUnknown(
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
-	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	if (pieces.length === 0) {
 		part.invalid = true

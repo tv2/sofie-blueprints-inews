@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -30,7 +31,7 @@ export function CreatePartLive(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
@@ -41,14 +42,14 @@ export function CreatePartLive(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 
-	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	const liveCue = partDefinition.cues.find(c => c.type === CueType.Ekstern) as CueDefinitionEkstern
 	const livePiece = pieces.find(p => p.sourceLayerId === SourceLayer.PgmLive)

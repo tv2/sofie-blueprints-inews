@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	ISegmentUserContext
 } from '@sofie-automation/blueprints-integration'
@@ -43,7 +44,7 @@ export function CreatePartServer(
 	const adLibPieces = basePartProps.part.adLibPieces
 	const duration = basePartProps.duration
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = {
 		...part,
@@ -58,13 +59,13 @@ export function CreatePartServer(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{}
 	)
 
-	// R35: part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
+	part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
 
 	if (pieces.length === 0) {
 		part.invalid = true

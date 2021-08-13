@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -40,7 +41,7 @@ export function CreatePartUnknown(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
@@ -51,7 +52,7 @@ export function CreatePartUnknown(
 		pieces,
 		adLibPieces,
 		actions,
-		// R35: mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -76,7 +77,7 @@ export function CreatePartUnknown(
 		part.invalid = true
 	}
 
-	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	return {
 		part,

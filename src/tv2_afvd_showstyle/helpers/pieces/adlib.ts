@@ -1,4 +1,5 @@
 import {
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IShowStyleUserContext,
@@ -28,7 +29,7 @@ export function EvaluateAdLib(
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	// R35: mediaSubscriptions: HackPartMediaObjectSubscription[],
+	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
@@ -42,7 +43,10 @@ export function EvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = 0 // R35: Math.max((context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,0)
+		const sourceDuration = Math.max(
+			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+			0
+		)
 
 		actions.push(
 			CreateAdlibServer(
@@ -74,7 +78,7 @@ export function EvaluateAdLib(
 			)
 		)
 
-		// R35: mediaSubscriptions.push({ mediaId: file.toUpperCase() })
+		mediaSubscriptions.push({ mediaId: file.toUpperCase() })
 	} else {
 		// DVE
 		if (!parsedCue.variant) {

@@ -67,7 +67,7 @@ export function CreatePartServerBase<
 	}
 
 	const file = partDefinition.fields.videoId
-	const mediaObjectDuration = undefined // R35: context.hackGetMediaObjectDuration(file)
+	const mediaObjectDuration = context.hackGetMediaObjectDuration(file)
 	const sourceDuration =
 		mediaObjectDuration !== undefined ? mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration : undefined
 	const duration =
@@ -87,8 +87,8 @@ export function CreatePartServerBase<
 		title: file,
 		metaData: {},
 		expectedDuration: actualDuration || 1000,
-		prerollDuration: config.studio.CasparPrerollDuration
-		// R35: hackListenToMediaObjectUpdates: [{ mediaId: file.toUpperCase() }]
+		prerollDuration: config.studio.CasparPrerollDuration,
+		hackListenToMediaObjectUpdates: [{ mediaId: file.toUpperCase() }]
 	})
 
 	const pieces: IBlueprintPiece[] = []

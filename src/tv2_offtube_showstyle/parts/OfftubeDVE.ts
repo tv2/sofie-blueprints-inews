@@ -1,5 +1,6 @@
 import {
 	BlueprintResultPart,
+	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
@@ -29,7 +30,7 @@ export function OfftubeCreatePartDVE(
 	const pieces: IBlueprintPiece[] = []
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
-	// R35: const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 	OfftubeEvaluateCues(
 		context,
 		config,
@@ -37,7 +38,7 @@ export function OfftubeCreatePartDVE(
 		pieces,
 		adLibPieces,
 		actions,
-		// mediaSubscriptions,
+		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
 		{
@@ -55,7 +56,7 @@ export function OfftubeCreatePartDVE(
 
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
 
-	// R35: part.hackListenToMediaObjectUpdates = mediaSubscriptions
+	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
 	return {
 		part,
