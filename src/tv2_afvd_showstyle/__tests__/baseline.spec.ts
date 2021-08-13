@@ -50,7 +50,7 @@ describe('Baseline', () => {
 			const res = Blueprints.getRundown(mockContext, rundown)
 
 			expect(res).not.toBeNull()
-			expect(res.baseline).not.toHaveLength(0)
+			expect(res.baseline.timelineObjects).not.toHaveLength(0)
 			expect(res.globalAdLibPieces).not.toHaveLength(0)
 
 			checkAllLayers(mockContext, res.globalAdLibPieces, res.baseline.timelineObjects)

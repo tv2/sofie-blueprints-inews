@@ -135,7 +135,7 @@ export class StudioContext extends CommonContext implements IStudioContext {
 	}
 
 	public getStudioConfig() {
-		return this.parseStudioConfig(this, this.studioConfig)
+		return _.clone(this.parseStudioConfig(this, this.studioConfig))
 	}
 	public getStudioConfigRef(_configKey: string): string {
 		return 'test'
@@ -169,7 +169,7 @@ export class ShowStyleContext extends StudioContext implements IShowStyleContext
 	}
 
 	public getShowStyleConfig() {
-		return this.parseShowStyleConfig(this, this.showStyleConfig)
+		return _.clone(this.parseShowStyleConfig(this, this.showStyleConfig))
 	}
 	public getShowStyleConfigRef(_configKey: string): string {
 		return 'test'

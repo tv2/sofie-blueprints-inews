@@ -67,7 +67,7 @@ export function CreatePartServerBase<
 	}
 
 	const file = partDefinition.fields.videoId
-	const mediaObjectDuration = 0 // R35: context.hackGetMediaObjectDuration(file)
+	const mediaObjectDuration = undefined // R35: context.hackGetMediaObjectDuration(file)
 	const sourceDuration =
 		mediaObjectDuration !== undefined ? mediaObjectDuration * 1000 - config.studio.ServerPostrollDuration : undefined
 	const duration =

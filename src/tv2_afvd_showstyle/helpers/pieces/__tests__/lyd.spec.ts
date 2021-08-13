@@ -164,6 +164,6 @@ describe('lyd', () => {
 
 		expect(pieces.length).toEqual(0)
 		expect(context.getNotes().length).toEqual(1)
-		expect(context.getNotes()[0].type).toEqual(NoteType.WARNING)
+		expect(context.getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
 	})
 })

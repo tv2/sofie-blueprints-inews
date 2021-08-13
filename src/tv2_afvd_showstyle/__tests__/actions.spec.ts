@@ -17,6 +17,7 @@ import { executeActionAFVD } from '../actions'
 import { parseConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { MOCK_EFFEKT_1 } from './breakerConfigDefault'
+import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
 
 const RUNDOWN_ID = 'MOCK_ACTION_RUNDOWN'
 const SEGMENT_ID = 'MOCK_ACTION_SEGMENT'
@@ -424,8 +425,8 @@ function makeMockContext(
 	nextPiece: 'cam' | 'evs'
 ): ActionExecutionContext {
 	switch (defaultTransition) {
-		case 'cut':
-			return new ActionExecutionContext(
+		case 'cut': {
+			const context = new ActionExecutionContext(
 				'test',
 				mappingsDefaults,
 				parseStudioConfig,
@@ -438,8 +439,12 @@ function makeMockContext(
 				JSON.parse(JSON.stringify(nextPartMock_Cut)),
 				[JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Cut : evsPieceInstance_Cut))]
 			)
-		case 'mix':
-			return new ActionExecutionContext(
+			context.studioConfig = defaultStudioConfig as any
+			context.showStyleConfig = defaultShowStyleConfig as any
+			return context
+		}
+		case 'mix': {
+			const context = new ActionExecutionContext(
 				'test',
 				mappingsDefaults,
 				parseStudioConfig,
@@ -452,9 +457,12 @@ function makeMockContext(
 				JSON.parse(JSON.stringify(nextPartMock_Mix)),
 				[JSON.parse(JSON.stringify(nextPiece === 'cam' ? kamPieceInstance_Mix : evsPieceInstance_Mix))]
 			)
-			break
-		case 'effekt':
-			return new ActionExecutionContext(
+			context.studioConfig = defaultStudioConfig as any
+			context.showStyleConfig = defaultShowStyleConfig as any
+			return context
+		}
+		case 'effekt': {
+			const context = new ActionExecutionContext(
 				'test',
 				mappingsDefaults,
 				parseStudioConfig,
@@ -470,7 +478,10 @@ function makeMockContext(
 					JSON.stringify(JSON.stringify(effektPieceInstance_1))
 				]
 			)
-			break
+			context.studioConfig = defaultStudioConfig as any
+			context.showStyleConfig = defaultShowStyleConfig as any
+			return context
+		}
 	}
 }
 

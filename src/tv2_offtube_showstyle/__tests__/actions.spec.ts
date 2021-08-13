@@ -19,8 +19,9 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { parseConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
+import { OfftubeStudioConfig, parseConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import mappingsDefaults from '../../tv2_offtube_studio/migrations/mappings-defaults'
 import { executeActionOfftube } from '../actions'
@@ -368,6 +369,9 @@ describe('Select Server Action', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -393,6 +397,9 @@ describe('Select Server Action', () => {
 			currentPartMock,
 			[playingServerPieceInstance, selectedServerPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -422,6 +429,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -454,6 +464,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -487,6 +500,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -520,6 +536,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -552,6 +571,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -583,6 +605,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -614,6 +639,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -645,6 +673,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -677,6 +708,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -708,6 +742,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -738,6 +775,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -768,6 +808,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		// SERVER (A)
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
@@ -895,6 +938,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -935,6 +981,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -976,6 +1025,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -1017,6 +1069,9 @@ describe('Combination Actions', () => {
 			currentPartMock,
 			[kamPieceInstance]
 		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
