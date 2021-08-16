@@ -76,9 +76,9 @@ export function GetPilotGraphicContentCaspar(
 		fileName,
 		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
-		// R35: ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
-		// R35: ignoreBlackFrames: true,
-		// R35: ignoreFreezeFrame: true,
+		ignoreMediaObjectStatus: config.studio.GraphicIgnoreStatus,
+		ignoreBlackFrames: true,
+		ignoreFreezeFrame: true,
 		timelineObjects: [
 			literal<TSR.TimelineObjCCGTemplate & TimelineBlueprintExt>({
 				id: '',

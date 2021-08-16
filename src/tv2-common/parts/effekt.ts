@@ -134,8 +134,8 @@ export function CreateEffektForPartInner<
 				mediaFlowIds: [config.studio.JingleMediaFlowId],
 				previewFrame: Number(effektConfig.StartAlpha),
 				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
-				// R35: ignoreBlackFrames: true,
-				// R35: ignoreFreezeFrame: true,
+				ignoreBlackFrames: true,
+				ignoreFreezeFrame: true,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
 						id: '',
