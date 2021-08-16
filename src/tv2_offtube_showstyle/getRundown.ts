@@ -48,7 +48,10 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
-import { getConfig, OfftubeShowstyleBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
+import {
+	getConfig as getShowStyleConfig,
+	OfftubeShowstyleBlueprintConfig
+} from '../tv2_offtube_showstyle/helpers/config'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -70,7 +73,7 @@ export function getShowStyleVariantId(
 }
 
 export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = getConfig(context)
+	const config = getShowStyleConfig(context)
 
 	let startTime: number = 0
 	let endTime: number = 0

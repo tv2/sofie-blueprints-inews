@@ -7,6 +7,7 @@ import {
 	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
 	IngestRundown,
+	IShowStyleUserContext,
 	IStudioUserContext,
 	PieceLifespan,
 	PlaylistTimingType,
@@ -39,11 +40,10 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
-import { getStudioConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { BlueprintConfig } from './helpers/config'
+import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
 import { boxLayers } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -61,8 +61,8 @@ export function getShowStyleVariantId(
 	return null
 }
 
-export function getRundown(context: IStudioUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = getStudioConfig(context)
+export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
+	const config = getShowStyleConfig(context)
 
 	return {
 		rundown: literal<IBlueprintRundown>({
