@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.7](https://github.com/olzzon/tv2-sofie-blueprints-inews/compare/v1.6.6-5...v1.6.7) (2021-08-18)
+
 ### [1.6.5](https://github.com/olzzon/tv2-sofie-blueprints-inews/compare/v1.6.3-4...v1.6.5) (2021-06-10)
 
 
