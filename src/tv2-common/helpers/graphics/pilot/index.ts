@@ -121,7 +121,8 @@ function CreatePilotAdLibAction(
 				...(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine) ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])
 			],
 			currentPieceTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid)],
-			nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)]
+			nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)],
+			noHotKey: !(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine))
 		}
 	})
 }
@@ -167,7 +168,11 @@ export function CreateFullDataStore(
 ): IBlueprintPiece {
 	const content = CreateFullContent(config, context, settings, parsedCue, engine, adlib)
 	content.timelineObjects = content.timelineObjects.filter(
-		o => o.content.deviceType !== TSR.DeviceType.ATEM && o.content.deviceType !== TSR.DeviceType.SISYFOS
+		o =>
+			o.content.deviceType !== TSR.DeviceType.ATEM &&
+			o.content.deviceType !== TSR.DeviceType.SISYFOS &&
+			o.content.deviceType !== TSR.DeviceType.VIZMSE &&
+			o.content.deviceType !== TSR.DeviceType.CASPARCG
 	)
 	return literal<IBlueprintPiece>({
 		externalId: partId,

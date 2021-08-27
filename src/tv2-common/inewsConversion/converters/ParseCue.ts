@@ -1,6 +1,6 @@
-import { literal, TV2BlueprintConfig } from 'tv2-common'
+import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
-import { PartDefinition } from './ParseBody'
+import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
 
 export type UnparsedCue = string[] | null
 
@@ -25,6 +25,7 @@ export interface CueDefinitionUnknown extends CueDefinitionBase {
 export interface CueDefinitionEkstern extends CueDefinitionBase {
 	type: CueType.Ekstern
 	source: string
+	transition?: Pick<PartdefinitionTypes, 'effekt' | 'transition'>
 }
 
 export interface DVESources {
@@ -200,14 +201,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parsePilot(cue)
 	} else if (cue[0].match(/^EKSTERN=/i)) {
 		// EKSTERN
-		const eksternSource = cue[0].match(/^EKSTERN=(.+)$/i)
-		if (eksternSource) {
-			return {
-				type: CueType.Ekstern,
-				source: eksternSource[1],
-				iNewsCommand: 'EKSTERN'
-			}
-		}
+		return parseEkstern(cue)
 	} else if (cue[0].match(/^DVE=/i)) {
 		// DVE
 		return parseDVE(cue)
@@ -407,6 +401,21 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 	}
 
 	return pilotCue
+}
+
+function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
+	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
+	if (eksternSource) {
+		const transitionProperties = getTransitionProperties(cue[0])
+		return literal<CueDefinitionEkstern>({
+			type: CueType.Ekstern,
+			source: eksternSource[1],
+			iNewsCommand: 'EKSTERN',
+			transition: transitionProperties
+		})
+	}
+
+	return undefined
 }
 
 function parseDVE(cue: string[]): CueDefinitionDVE {
@@ -881,10 +890,25 @@ export function UnknownPartParentClass(studio: string, partDefinition: PartDefin
 	}
 }
 
-export function AddParentClass(partDefinition: PartDefinition) {
-	return !!partDefinition.cues.filter(
-		cue => cue.type === CueType.Graphic && cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B'
-	).length
+export function AddParentClass(config: TV2BlueprintConfig, partDefinition: PartDefinition) {
+	if (
+		partDefinition.cues.some(
+			cue => cue.start === CueType.Graphic && cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B'
+		)
+	) {
+		return true
+	}
+
+	return partDefinition.cues.some(
+		c =>
+			c.type === CueType.Graphic &&
+			GraphicIsInternal(c) &&
+			GetInfiniteModeForGraphic(c.target, config, c, IsStickyIdent(c))
+	)
+}
+
+export function IsStickyIdent(cue: CueDefinitionGraphic<GraphicInternal>) {
+	return !!cue.graphic.template.match(/direkte/i)
 }
 
 export function UnpairedPilotToGraphic(

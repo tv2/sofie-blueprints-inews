@@ -14,7 +14,7 @@ import {
 	PartDefinition,
 	PieceMetaData
 } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { AdlibTags, SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -88,7 +88,8 @@ export function EvaluateJingle(
 				adlibAutoNextOverlap: props.autoNextOverlap,
 				adlibPreroll: props.prerollDuration,
 				expectedDuration: props.expectedDuration,
-				adlibDisableOutTransition: false
+				adlibDisableOutTransition: false,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
 		)
 	} else {

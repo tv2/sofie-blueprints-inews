@@ -52,7 +52,8 @@ export function CreateAdlibServer<
 			content: GetVTContentProperties(config, file, duration),
 			tags: [
 				tagAsAdlib || voLayer ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,
-				AdlibTags.ADLIB_KOMMENTATOR
+				AdlibTags.ADLIB_KOMMENTATOR,
+				AdlibTags.ADLIB_FLOW_PRODUCER
 			],
 			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!voLayer)],
 			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!voLayer)],

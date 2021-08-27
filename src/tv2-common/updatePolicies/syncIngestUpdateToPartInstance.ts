@@ -5,13 +5,14 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import { SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
-import { stopOrReplaceAlwaysEditablePieces, updateAdLibInstances } from './index'
+import { stopOrReplaceEditablePieces, updateAdLibInstances } from './index'
+import { updatePartProperties } from './partProperties'
 
 export function syncIngestUpdateToPartInstanceBase(
 	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
-	_playoutStatus: 'current' | 'next',
+	playoutStatus: 'current' | 'next',
 	/** Layers that can be have pieces added / removed / updated at any time */
 	freelyEditableLayers: string[],
 	preSteps?: () => void,
@@ -21,22 +22,26 @@ export function syncIngestUpdateToPartInstanceBase(
 		preSteps()
 	}
 
-	const editableLayers = [
-		...freelyEditableLayers,
-		SharedSourceLayers.PgmGraphicsHeadline,
-		SharedSourceLayers.PgmGraphicsIdent,
-		SharedSourceLayers.PgmGraphicsIdentPersistent,
-		SharedSourceLayers.PgmGraphicsLower,
-		SharedSourceLayers.PgmGraphicsOverlay,
-		SharedSourceLayers.PgmGraphicsTLF,
-		SharedSourceLayers.PgmGraphicsTema,
-		SharedSourceLayers.PgmGraphicsTop,
-		SharedSourceLayers.PgmPilot,
-		SharedSourceLayers.PgmPilotOverlay
-	]
+	const editableLayers =
+		playoutStatus === 'current'
+			? new Set([
+					...freelyEditableLayers,
+					SharedSourceLayers.PgmGraphicsHeadline,
+					SharedSourceLayers.PgmGraphicsIdent,
+					SharedSourceLayers.PgmGraphicsIdentPersistent,
+					SharedSourceLayers.PgmGraphicsLower,
+					SharedSourceLayers.PgmGraphicsOverlay,
+					SharedSourceLayers.PgmGraphicsTLF,
+					SharedSourceLayers.PgmGraphicsTema,
+					SharedSourceLayers.PgmGraphicsTop,
+					SharedSourceLayers.PgmPilot,
+					SharedSourceLayers.PgmPilotOverlay
+			  ])
+			: undefined
 
-	stopOrReplaceAlwaysEditablePieces(context, existingPartInstance, newPart, editableLayers)
+	stopOrReplaceEditablePieces(context, existingPartInstance, newPart, editableLayers)
 	updateAdLibInstances(context, existingPartInstance, newPart)
+	updatePartProperties(context, existingPartInstance, newPart)
 
 	if (postSteps) {
 		postSteps()

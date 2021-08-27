@@ -56,7 +56,7 @@ export function EvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(partDefinition),
+		AddParentClass(config, partDefinition),
 		adlib
 	)
 

@@ -112,6 +112,7 @@ export function getSegmentBase<
 	const segment = literal<IBlueprintSegment>({
 		name: ingestSegment.name || '',
 		metaData: {},
+		showShelf: false,
 		identifier:
 			iNewsStory && iNewsStory.fields.pageNumber && iNewsStory.fields.pageNumber.trim()
 				? iNewsStory.fields.pageNumber.trim()
@@ -324,6 +325,13 @@ export function getSegmentBase<
 			.length === blueprintParts.length
 	) {
 		segment.isHidden = true
+		if (blueprintParts.length > 0) {
+			segment.showShelf = true
+		}
+	}
+
+	if (blueprintParts.find(part => part.adLibPieces.length || part.actions?.length)) {
+		segment.showShelf = true
 	}
 
 	if (
@@ -335,7 +343,7 @@ export function getSegmentBase<
 					piece => piece.sourceLayerId === SharedSourceLayers.PgmJingle
 				)))
 	) {
-		// R35: blueprintParts[0].part.budgetDuration = totalTimeMs
+		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
 
 	if (

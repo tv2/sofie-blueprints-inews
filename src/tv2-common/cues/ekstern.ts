@@ -167,7 +167,9 @@ export function EvaluateEksternBase<
 									transitionSettings: TransitionSettings(partDefinition)
 								}
 							},
-							...(AddParentClass(partDefinition) ? { classes: [EksternParentClass('studio0', parsedCue.source)] } : {})
+							...(AddParentClass(config, partDefinition)
+								? { classes: [EksternParentClass('studio0', parsedCue.source)] }
+								: {})
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),

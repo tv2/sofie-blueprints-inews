@@ -101,6 +101,19 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 						programInput: AtemSourceIndex.Prg2
 					}
 				}
+			}),
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemAuxClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: AtemSourceIndex.Prg2
+					}
+				}
 			})
 		]
 	}

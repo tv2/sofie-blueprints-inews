@@ -38,27 +38,29 @@ function makeMockContext(): SyncIngestUpdateToPartInstanceContext {
 	)
 }
 
-function makePart(title: string): IBlueprintPartDB {
+function makePart(partProps: Omit<IBlueprintPartDB, '_id' | 'segmentId' | 'externalId'>): IBlueprintPartDB {
 	return literal<IBlueprintPartDB>({
 		_id: '',
 		segmentId: '',
 		externalId: '',
-		title
+		...partProps
 	})
 }
 
-function makePartinstance(title: string): IBlueprintPartInstance<unknown> {
+function makePartinstance(
+	partProps: Omit<IBlueprintPartDB, '_id' | 'segmentId' | 'externalId'>
+): IBlueprintPartInstance<unknown> {
 	return literal<IBlueprintPartInstance<unknown>>({
 		_id: '',
 		segmentId: '',
-		part: makePart(title),
+		part: makePart(partProps),
 		rehearsal: false
 	})
 }
 
-function makeSoundBed(name: string): IBlueprintPieceInstance<unknown> {
+function makeSoundBed(id: string, name: string): IBlueprintPieceInstance<unknown> {
 	return literal<IBlueprintPieceInstance<unknown>>({
-		_id: name,
+		_id: id,
 		piece: {
 			_id: '',
 			enable: {
@@ -80,12 +82,13 @@ function makeSoundBed(name: string): IBlueprintPieceInstance<unknown> {
 describe('Sync Ingest Changes To Part Instances', () => {
 	it('Syncs soundbed removed', () => {
 		const context = makeMockContext()
+		const pieceInstanceId = 'someID'
 		const existingPartInstance: BlueprintSyncIngestPartInstance = literal<BlueprintSyncIngestPartInstance>({
-			partInstance: makePartinstance('Soundbed'),
-			pieceInstances: [makeSoundBed('SN_Intro')]
+			partInstance: makePartinstance({ title: 'Soundbed' }),
+			pieceInstances: [makeSoundBed(pieceInstanceId, 'SN_Intro')]
 		})
 		const newPart: BlueprintSyncIngestNewData = literal<BlueprintSyncIngestNewData>({
-			part: makePart('Soundbed'),
+			part: makePart({ title: 'Soundbed' }),
 			pieceInstances: [],
 			adLibPieces: [],
 			actions: [],
@@ -93,20 +96,21 @@ describe('Sync Ingest Changes To Part Instances', () => {
 		})
 		syncIngestUpdateToPartInstance(context, existingPartInstance, newPart, 'current')
 
-		expect(context.removedPieceInstances).toStrictEqual(['SN_Intro'])
+		expect(context.removedPieceInstances).toStrictEqual([pieceInstanceId])
 		expect(context.syncedPieceInstances).toStrictEqual([])
 		expect(context.updatedPieceInstances).toStrictEqual([])
 	})
 
 	it('Syncs soundbed added', () => {
 		const context = makeMockContext()
+		const pieceInstanceId = 'someID'
 		const existingPartInstance: BlueprintSyncIngestPartInstance = literal<BlueprintSyncIngestPartInstance>({
-			partInstance: makePartinstance('Soundbed'),
+			partInstance: makePartinstance({ title: 'Soundbed' }),
 			pieceInstances: []
 		})
 		const newPart: BlueprintSyncIngestNewData = literal<BlueprintSyncIngestNewData>({
-			part: makePart('Soundbed'),
-			pieceInstances: [makeSoundBed('SN_Intro')],
+			part: makePart({ title: 'Soundbed' }),
+			pieceInstances: [makeSoundBed(pieceInstanceId, 'SN_Intro')],
 			adLibPieces: [],
 			actions: [],
 			referencedAdlibs: []
@@ -114,19 +118,20 @@ describe('Sync Ingest Changes To Part Instances', () => {
 		syncIngestUpdateToPartInstance(context, existingPartInstance, newPart, 'current')
 
 		expect(context.removedPieceInstances).toStrictEqual([])
-		expect(context.syncedPieceInstances).toStrictEqual(['SN_Intro'])
+		expect(context.syncedPieceInstances).toStrictEqual([pieceInstanceId])
 		expect(context.updatedPieceInstances).toStrictEqual([])
 	})
 
 	it('Syncs soundbed changed', () => {
 		const context = makeMockContext()
+		const pieceInstanceId = 'someID'
 		const existingPartInstance: BlueprintSyncIngestPartInstance = literal<BlueprintSyncIngestPartInstance>({
-			partInstance: makePartinstance('Soundbed'),
-			pieceInstances: [makeSoundBed('SN_Intro')]
+			partInstance: makePartinstance({ title: 'Soundbed' }),
+			pieceInstances: [makeSoundBed(pieceInstanceId, 'SN_Intro')]
 		})
 		const newPart: BlueprintSyncIngestNewData = literal<BlueprintSyncIngestNewData>({
-			part: makePart('Soundbed'),
-			pieceInstances: [makeSoundBed('SN_Intro_19')],
+			part: makePart({ title: 'Soundbed' }),
+			pieceInstances: [makeSoundBed(pieceInstanceId, 'SN_Intro_19')], // the id stays the same
 			adLibPieces: [],
 			actions: [],
 			referencedAdlibs: []
@@ -134,7 +139,27 @@ describe('Sync Ingest Changes To Part Instances', () => {
 		syncIngestUpdateToPartInstance(context, existingPartInstance, newPart, 'current')
 
 		expect(context.removedPieceInstances).toStrictEqual([])
-		expect(context.syncedPieceInstances).toStrictEqual(['SN_Intro_19'])
+		expect(context.syncedPieceInstances).toStrictEqual([pieceInstanceId])
 		expect(context.updatedPieceInstances).toStrictEqual([])
+	})
+
+	it('Syncs part properties', () => {
+		const context = makeMockContext()
+		const existingPartInstance: BlueprintSyncIngestPartInstance = literal<BlueprintSyncIngestPartInstance>({
+			partInstance: makePartinstance({ title: 'Kam 1', budgetDuration: 2000, transitionPrerollDuration: 200 }),
+			pieceInstances: []
+		})
+		const newPart: BlueprintSyncIngestNewData = literal<BlueprintSyncIngestNewData>({
+			part: makePart({ title: 'Kam 2', budgetDuration: 1000, transitionPrerollDuration: 500 }),
+			pieceInstances: [],
+			adLibPieces: [],
+			actions: [],
+			referencedAdlibs: []
+		})
+		syncIngestUpdateToPartInstance(context, existingPartInstance, newPart, 'current')
+
+		expect(context.updatedPartInstance?.part.transitionPrerollDuration).toBeUndefined()
+		expect(context.updatedPartInstance?.part.budgetDuration).toBe(1000)
+		expect(context.updatedPartInstance?.part.title).toBe('Kam 2')
 	})
 })

@@ -11,9 +11,9 @@ export function syncIngestUpdateToPartInstance(
 	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
-	_playoutStatus: 'current' | 'next'
+	playoutStatus: 'current' | 'next'
 ): void {
-	syncIngestUpdateToPartInstanceBase(context, existingPartInstance, newPart, _playoutStatus, [
+	syncIngestUpdateToPartInstanceBase(context, existingPartInstance, newPart, playoutStatus, [
 		SourceLayer.PgmAudioBed,
 		SourceLayer.WallGraphics,
 		SourceLayer.PgmScript,

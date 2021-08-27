@@ -964,7 +964,41 @@ describe('Cue parser', () => {
 			literal<CueDefinitionEkstern>({
 				type: CueType.Ekstern,
 				source: 'LIVE 1',
-				iNewsCommand: 'EKSTERN'
+				iNewsCommand: 'EKSTERN',
+				transition: {}
+			})
+		)
+	})
+
+	test('EKSTERN EFFEKT 1', () => {
+		const cueEkstern = ['EKSTERN=LIVE 1 EFFEKT 1']
+		const result = ParseCue(cueEkstern, config)
+		expect(result).toEqual(
+			literal<CueDefinitionEkstern>({
+				type: CueType.Ekstern,
+				source: 'LIVE 1',
+				iNewsCommand: 'EKSTERN',
+				transition: {
+					effekt: 1
+				}
+			})
+		)
+	})
+
+	test('EKSTERN MIX 10', () => {
+		const cueEkstern = ['EKSTERN=LIVE 1 MIX 10']
+		const result = ParseCue(cueEkstern, config)
+		expect(result).toEqual(
+			literal<CueDefinitionEkstern>({
+				type: CueType.Ekstern,
+				source: 'LIVE 1',
+				iNewsCommand: 'EKSTERN',
+				transition: {
+					transition: {
+						style: 'MIX',
+						duration: 10
+					}
+				}
 			})
 		)
 	})

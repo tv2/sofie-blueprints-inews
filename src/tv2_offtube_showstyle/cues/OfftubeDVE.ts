@@ -58,7 +58,7 @@ export function OfftubeEvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(partDefinition),
+		AddParentClass(config, partDefinition),
 		true
 	)
 
@@ -68,7 +68,7 @@ export function OfftubeEvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(partDefinition),
+		AddParentClass(config, partDefinition),
 		false
 	)
 
@@ -128,6 +128,7 @@ export function OfftubeEvaluateDVE(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					label: t(`${partDefinition.storyName}`),
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
+					noHotKey: !adlib,
 					content: literal<SplitsContent>({
 						...pieceContent.content
 					}),

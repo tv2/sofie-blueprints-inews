@@ -174,6 +174,9 @@ export class ShowStyleContext extends StudioContext implements IShowStyleContext
 	public getShowStyleConfigRef(_configKey: string): string {
 		return 'test'
 	}
+	public hackGetMediaObjectDuration(_mediaId: string) {
+		return undefined
+	}
 }
 
 // tslint:disable-next-line: max-classes-per-file
@@ -256,6 +259,7 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 	public syncedPieceInstances: string[] = []
 	public removedPieceInstances: string[] = []
 	public updatedPieceInstances: string[] = []
+	public updatedPartInstance: IBlueprintPartInstance | undefined
 
 	constructor(
 		contextName: string,
@@ -330,7 +334,7 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 		return pieceInstanceIds
 	}
 	public updatePartInstance(props: Partial<IBlueprintMutatablePart<unknown>>): IBlueprintPartInstance<unknown> {
-		return literal<IBlueprintPartInstance>({
+		this.updatedPartInstance = literal<IBlueprintPartInstance>({
 			_id: '',
 			segmentId: '',
 			part: {
@@ -342,6 +346,7 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 			},
 			rehearsal: false
 		})
+		return this.updatedPartInstance
 	}
 }
 
@@ -532,7 +537,7 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 
 		return take
 	}
-	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
+	public hackGetMediaObjectDuration(_mediaId: string) {
 		return undefined
 	}
 	public getPackageInfo(_packageId: string): PackageInfo.Any[] {

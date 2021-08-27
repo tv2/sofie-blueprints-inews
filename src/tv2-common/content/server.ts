@@ -108,7 +108,7 @@ function GetServerTimeline(
 		metaData: {
 			mediaPlayerSession: mediaPlayerSessionId
 		},
-		classes: [...(AddParentClass(partDefinition) && !adLibPix ? [ServerParentClass('studio0', file)] : [])]
+		classes: [...(AddParentClass(config, partDefinition) && !adLibPix ? [ServerParentClass('studio0', file)] : [])]
 	})
 
 	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt

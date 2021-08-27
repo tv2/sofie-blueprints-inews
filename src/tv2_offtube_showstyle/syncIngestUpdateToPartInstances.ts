@@ -10,9 +10,9 @@ export function syncIngestUpdateToPartInstance(
 	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
-	_playoutStatus: 'current' | 'next'
+	playoutStatus: 'current' | 'next'
 ): void {
-	syncIngestUpdateToPartInstanceBase(context, existingPartInstance, newPart, _playoutStatus, [
+	syncIngestUpdateToPartInstanceBase(context, existingPartInstance, newPart, playoutStatus, [
 		// OfftubeSourceLayer.PgmAudioBed,
 		OfftubeSourceLayer.WallGraphics,
 		OfftubeSourceLayer.PgmScript,
