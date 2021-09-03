@@ -3,7 +3,6 @@ node_modules
 *.github
 Dockerfile
 tslint-rules
-src
 
 .gitignore
 .dockerignore
