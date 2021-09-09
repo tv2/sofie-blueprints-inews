@@ -74,7 +74,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	...SetShortcutListMigrationStep('1.3.1', OfftubeSourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
+	SetShortcutListMigrationStep('1.3.1', OfftubeSourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
 
@@ -82,7 +82,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.3.3
 	 * - Shortcuts for DVE Box 1
 	 */
-	...SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
+	SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
 
 	/**
 	 * 1.3.8

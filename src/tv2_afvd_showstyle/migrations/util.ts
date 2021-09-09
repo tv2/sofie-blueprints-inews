@@ -43,11 +43,16 @@ export function getSourceLayerDefaultsMigrationSteps(versionStr: string, force?:
 	)
 }
 
-export function forceSourceLayerToDefaults(versionStr: string, layer: string): MigrationStepShowStyle {
+export function forceSourceLayerToDefaults(
+	versionStr: string,
+	layer: string,
+	overrideSteps?: string[]
+): MigrationStepShowStyle {
 	return literal<MigrationStepShowStyle>({
 		id: `${versionStr}.sourcelayer.defaults.${layer}.forced`,
 		version: versionStr,
 		canBeRunAutomatically: true,
+		overrideSteps,
 		validate: (context: MigrationContextShowStyle) => {
 			const existing = context.getSourceLayer(layer)
 			if (!existing) {

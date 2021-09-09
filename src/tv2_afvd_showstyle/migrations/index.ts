@@ -23,6 +23,10 @@ import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
 
+/** Migrations overriden later */
+// 1.3.1
+const jingle131 = SetShortcutListMigrationStep('1.3.1', SourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd')
+
 /**
  * Versions:
  * 0.1.0: Core 0.24.0
@@ -42,7 +46,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	...SetShortcutListMigrationStep('1.3.1', SourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
+	jingle131,
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
 
@@ -50,7 +54,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.3.3
 	 * - Shortcuts for DVE Box 1
 	 */
-	...SetShortcutListMigrationStep(
+	SetShortcutListMigrationStep(
 		'1.3.3',
 		SourceLayer.PgmDVEBox1,
 		'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0,shift+e,shift+d,shift+i,shift+u,shift+t'
@@ -81,7 +85,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.5.2
 	 * - Remove PgmJingle shortcuts, moved to JingleAdlib layer
 	 */
-	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle),
+	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle, [jingle131.id]),
 
 	AddGraphicToGFXTable('1.5.4', 'AFVD', {
 		VizTemplate: 'locators',

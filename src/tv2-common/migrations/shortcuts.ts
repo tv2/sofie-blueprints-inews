@@ -9,30 +9,28 @@ export function SetShortcutListMigrationStep(
 	versionStr: string,
 	sourceLayerId: string,
 	newValue: string
-): MigrationStepShowStyle[] {
-	return [
-		literal<MigrationStepShowStyle>({
-			id: `${versionStr}.remapShortcuts.${sourceLayerId}`,
-			version: versionStr,
-			canBeRunAutomatically: true,
-			validate: (context: MigrationContextShowStyle) => {
-				const sourceLayer = context.getSourceLayer(sourceLayerId)
+): MigrationStepShowStyle {
+	return literal<MigrationStepShowStyle>({
+		id: `${versionStr}.remapShortcuts.${sourceLayerId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const sourceLayer = context.getSourceLayer(sourceLayerId)
 
-				if (!sourceLayer) {
-					return `Sourcelayer ${sourceLayerId} does not exists`
-				}
-
-				return sourceLayer.activateKeyboardHotkeys !== newValue
-			},
-			migrate: (context: MigrationContextShowStyle) => {
-				const sourceLayer = context.getSourceLayer(sourceLayerId) as ISourceLayer
-
-				sourceLayer.activateKeyboardHotkeys = newValue
-
-				context.updateSourceLayer(sourceLayerId, sourceLayer)
+			if (!sourceLayer) {
+				return `Sourcelayer ${sourceLayerId} does not exists`
 			}
-		})
-	]
+
+			return sourceLayer.activateKeyboardHotkeys !== newValue
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const sourceLayer = context.getSourceLayer(sourceLayerId) as ISourceLayer
+
+			sourceLayer.activateKeyboardHotkeys = newValue
+
+			context.updateSourceLayer(sourceLayerId, sourceLayer)
+		}
+	})
 }
 
 export function SetClearShortcutListTransitionStep(
