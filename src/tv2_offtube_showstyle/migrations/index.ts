@@ -56,6 +56,14 @@ export const remapVizLLayer: Map<string, string> = new Map([
 
 export const remapVizDOvl: Map<string, string> = new Map([['viz-d-ovl', 'OVL1']])
 
+/** Migrations overriden later */
+// 1.3.1
+const jingle131 = SetShortcutListMigrationStep(
+	'1.3.1',
+	OfftubeSourceLayer.PgmJingle,
+	'NumpadDivide,NumpadSubtract,NumpadAdd'
+)
+
 /**
  * Versions:
  * 0.1.0: Core 0.24.0
@@ -74,7 +82,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	SetShortcutListMigrationStep('1.3.1', OfftubeSourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
+	jingle131,
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
 
@@ -95,7 +103,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Create Design layer
 	 */
 	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmDesign),
-	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmJingle),
+	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmJingle, [jingle131.id]),
 
 	/**
 	 * 1.4.6

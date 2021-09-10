@@ -17,6 +17,7 @@ export * from './transitions'
 export * from './graphic-defaults'
 export * from './manifestWithMediaFlow'
 export * from './sourceManifest'
+export * from './forceSourceLayerToDefaultsBase'
 
 export function RenameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
 	return literal<MigrationStepStudio>({
