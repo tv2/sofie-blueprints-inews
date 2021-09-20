@@ -15,6 +15,16 @@ import {
 } from '@sofie-automation/blueprints-integration'
 import { assertUnreachable, literal } from 'tv2-common'
 
+interface RundownMetaData {
+	rank: number
+	backTime: string | undefined
+}
+
+interface RundownPayload {
+	rank: number
+	backTime: string | undefined
+}
+
 function getRundownWithINewsPlaylist(
 	_context: IShowStyleUserContext,
 	ingestRundown: ExtendedIngestRundown,
@@ -29,9 +39,7 @@ function getRundownWithBackTime(
 	ingestRundown: ExtendedIngestRundown,
 	manifest: BlueprintResultRundown
 ): BlueprintResultRundown {
-	const backTime = ingestRundown.segments[ingestRundown.segments.length - 1]?.payload?.iNewsStory?.fields?.backTime as
-		| string
-		| undefined
+	const backTime = (ingestRundown.payload as RundownPayload).backTime
 
 	let expectedEnd: number | undefined
 	const expectedDuration =
@@ -58,17 +66,21 @@ function getRundownWithBackTime(
 		}
 	}
 
+	if (!manifest.rundown.metaData) {
+		manifest.rundown.metaData = {}
+	}
+	;(manifest.rundown.metaData as RundownMetaData).rank = (ingestRundown.payload as RundownPayload).rank
+	;(manifest.rundown.metaData as RundownMetaData).backTime = (ingestRundown.payload as RundownPayload).backTime
+
 	return manifest
 }
 
-function getRundownWithCommercialBreakBackTime(
+function getRundownWithBreakBackTime(
 	_context: IShowStyleUserContext,
 	ingestRundown: ExtendedIngestRundown,
 	manifest: BlueprintResultRundown
 ) {
-	const backTime = ingestRundown.segments[ingestRundown.segments.length - 1]?.payload?.iNewsStory?.fields?.backTime as
-		| string
-		| undefined
+	const backTime = (ingestRundown.payload as RundownPayload).backTime
 
 	if (backTime) {
 		manifest.rundown.endOfRundownIsShowBreak = true
@@ -86,8 +98,7 @@ function getRundownPlaylistInfoINewsPlaylist(
 	return literal<BlueprintResultRundownPlaylist>({
 		...resultPlaylist,
 		order: rundowns.reduce((prev, curr) => {
-			const rankMatch = curr.externalId.match(/_(\d+)$/)
-			prev[curr.externalId] = rankMatch ? Number(rankMatch[1]) : 0
+			prev[curr.externalId] = (curr.metaData as RundownMetaData).rank
 			return prev
 		}, result)
 	})
@@ -123,16 +134,7 @@ export function GetRundownPlaylistInfoWithMixins(
 ) {
 	return (context: IStudioUserContext, rundowns: IBlueprintRundownDB[]) => {
 		const sortedRundowns = rundowns.sort((a, b) => {
-			const getRank = (externalId: string): number => {
-				const match = externalId.match(/_(\d+)/)
-				if (match) {
-					return Number(match[1])
-				}
-
-				return 0
-			}
-
-			return getRank(a.externalId) - getRank(b.externalId)
+			return (a.metaData as RundownMetaData).rank - (b.metaData as RundownMetaData).rank
 		})
 		const lastRundownTiming = sortedRundowns[sortedRundowns.length - 1].timing
 		let timing: RundownPlaylistTiming = {
@@ -167,7 +169,7 @@ export function GetRundownPlaylistInfoWithMixins(
 export enum ShowStyleManifestMixinINews {
 	INewsPlaylist = 'inews-playlist',
 	BackTime = 'inews-back-time',
-	CommercialBreakBackTime = 'inews-commercial-break-back-time'
+	BreakBackTime = 'inews-break-back-time'
 }
 
 export enum StudioManifestMixinINews {
@@ -188,8 +190,8 @@ export function GetShowStyleManifestWithMixins(
 			case ShowStyleManifestMixinINews.BackTime:
 				getRundownMixins.push(getRundownWithBackTime)
 				break
-			case ShowStyleManifestMixinINews.CommercialBreakBackTime:
-				getRundownMixins.push(getRundownWithCommercialBreakBackTime)
+			case ShowStyleManifestMixinINews.BreakBackTime:
+				getRundownMixins.push(getRundownWithBreakBackTime)
 				break
 			default:
 				assertUnreachable(mixin)

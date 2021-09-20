@@ -40,7 +40,7 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 	[
 		ShowStyleManifestMixinINews.INewsPlaylist,
 		ShowStyleManifestMixinINews.BackTime,
-		ShowStyleManifestMixinINews.CommercialBreakBackTime
+		ShowStyleManifestMixinINews.BreakBackTime
 	]
 )
 
