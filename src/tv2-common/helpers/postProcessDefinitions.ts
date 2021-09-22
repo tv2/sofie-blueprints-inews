@@ -65,6 +65,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			// No way of uniquely identifying, add some entropy from cues
 			id += `-${partDefinition.rawType}-${partDefinition.variant.name}-${partDefinition.cues.length}`
 			break
+		case PartType.VO:
 		case PartType.Server:
 			// Changing the videoId would result in a new part if videoId is used as part of the ex ternalId
 			// There _should_ only be one server per story so this is safe, however,
@@ -73,10 +74,6 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 		case PartType.Teknik:
 			// Possibly an unused part type, not seen in production - only one example found in original test data
 			id += `-TEKNIK`
-			break
-		case PartType.VO:
-			// Only one video Id per story. Changing the video Id will result in a new part
-			id += `-${partDefinition.fields.videoId}`
 			break
 		case PartType.Grafik:
 		case PartType.DVE:
