@@ -39,7 +39,11 @@ function getRundownWithBackTime(
 	ingestRundown: ExtendedIngestRundown,
 	manifest: BlueprintResultRundown
 ): BlueprintResultRundown {
-	const backTime = (ingestRundown.payload as RundownPayload).backTime
+	const sortedSegments = ingestRundown.segments.sort((a, b) => a.rank - b.rank)
+	const backTimeStory = sortedSegments.find(
+		segment => segment.name.match(/continuity/i) && segment.payload.iNewsStory.fields.backTime
+	)
+	const backTime = backTimeStory ? backTimeStory.payload.iNewsStory.fields.backTime : undefined
 
 	let expectedEnd: number | undefined
 	const expectedDuration =
