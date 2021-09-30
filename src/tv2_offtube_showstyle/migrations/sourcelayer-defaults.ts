@@ -180,7 +180,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SharedSourceLayers.PgmPilotOverlay,
 		_rank: 60,
-		name: 'GFX overlay (VCP)(Shared)',
+		name: 'GFX overlay (VCP)(shared)',
 		abbreviation: 'O',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',

@@ -170,7 +170,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTema, 'GFX Tema'),
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.WallGraphics, 'GFX Wall'),
-	 SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(Shared)'),
+	 SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(shared)'),
 	// PGM group
 	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmCam, 'Camera'),
 	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
