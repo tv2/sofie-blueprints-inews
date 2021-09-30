@@ -11,6 +11,7 @@ import {
 } from 'tv2-common'
 import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
+import { SetSourceLayerNameMigrationStep } from '../../tv2-common/migrations/shortcuts'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 import {
@@ -154,6 +155,47 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...GetDSKSourceLayerNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME).map(layerName =>
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
+
+	/**
+	 * 1.6.9
+	 * - Renaming source layers
+	 */
+	// OVERLAY gruop
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsIdent, 'GFX Ident'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTop, 'GFX Top'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTema, 'GFX Tema'),
+	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.WallGraphics, 'GFX Wall'),
+	 SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(Shared)'),
+	 SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(Shared)'),
+	// PGM group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmCam, 'Camera'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmVoiceOver, 'VO'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmPilot, 'GFX FULL (VCP)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmContinuity, 'Continuity'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox1, 'DVE Inp 1'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox2, 'DVE Inp 2'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox3, 'DVE Inp 3'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox4, 'DVE Inp 4'),
+	// MUSIK group
+	SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmAudioBed, 'Audiobed (shared)'),
+	// SEC group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
+	// SELECTED_ADLIB group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdLibDVE, 'DVE (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedServer, 'Server (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedVoiceOver, 'VO (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdlibGraphicsFull, 'GFX Full (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdlibJingle, 'Jingle (selected)'),
+	// AUX group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.AuxStudioScreen, 'AUX studio screen'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION)
