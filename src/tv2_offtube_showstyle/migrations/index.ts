@@ -160,7 +160,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.6.9
 	 * - Renaming source layers
 	 */
-	// OVERLAY gruop
+	// OVERLAY group
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsIdent, 'GFX Ident'),
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTop, 'GFX Top'),
@@ -170,7 +170,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTema, 'GFX Tema'),
 	 SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.WallGraphics, 'GFX Wall'),
-	 SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(Shared)'),
 	 SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(Shared)'),
 	// PGM group
 	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmCam, 'Camera'),
