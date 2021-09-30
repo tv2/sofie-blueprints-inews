@@ -148,7 +148,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	// MUSIK group
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAdlibGraphicCmd, 'GFX cmd (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmFullBackground, 'GFX FULL Background'),

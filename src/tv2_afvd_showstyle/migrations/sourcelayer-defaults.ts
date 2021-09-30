@@ -529,7 +529,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmAdlibGraphicCmd,
 		_rank: 10,
-		name: 'GFX cmd (adlib)',
+		name: 'GFX Cmd (adlib)',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
