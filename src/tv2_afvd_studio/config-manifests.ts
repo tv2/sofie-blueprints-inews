@@ -448,22 +448,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 200 // 5 frames
 	},
 	{
-		id: 'MaximumPartDuration',
-		name: 'Maximum Part Duration',
-		description: 'Maximum duration (ms) to give parts in UI',
-		type: ConfigManifestEntryType.NUMBER,
-		required: true,
-		defaultVal: 10000
-	},
-	{
-		id: 'DefaultPartDuration',
-		name: 'Default Part Duration',
-		description: 'Duration to give parts by default',
-		type: ConfigManifestEntryType.NUMBER,
-		required: true,
-		defaultVal: 4000
-	},
-	{
 		id: 'ServerPostrollDuration',
 		name: 'Server Postroll Duration',
 		description: 'ms of postroll at the end of Server and VO clips',

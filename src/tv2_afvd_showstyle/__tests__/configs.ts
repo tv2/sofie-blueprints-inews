@@ -60,8 +60,6 @@ export const defaultStudioConfig: StudioConfig = {
 	GraphicIgnoreStatus: false,
 	JingleIgnoreStatus: false,
 	ClipIgnoreStatus: false,
-	MaximumPartDuration: 10000,
-	DefaultPartDuration: 4000,
 	ServerPostrollDuration: 3000,
 	PreventOverlayWithFull: true,
 	SourcesCam: prepareConfig(

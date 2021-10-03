@@ -294,10 +294,6 @@ export function getSegmentBase<
 			if (part.part.expectedDuration! < 0) {
 				part.part.expectedDuration = 0
 			}
-
-			if (part.part.expectedDuration! > config.studio.MaximumPartDuration) {
-				part.part.expectedDuration = config.studio.MaximumPartDuration
-			}
 		}
 	})
 
@@ -305,12 +301,7 @@ export function getSegmentBase<
 
 	blueprintParts.forEach(part => {
 		if (part.part.expectedDuration === undefined || part.part.expectedDuration < 0) {
-			part.part.expectedDuration =
-				extraTime > config.studio.DefaultPartDuration
-					? extraTime > config.studio.MaximumPartDuration
-						? config.studio.MaximumPartDuration
-						: extraTime
-					: config.studio.DefaultPartDuration
+			part.part.expectedDuration = extraTime
 		}
 
 		extraTime -= part.part.expectedDuration

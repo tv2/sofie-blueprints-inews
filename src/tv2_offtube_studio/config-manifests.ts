@@ -222,22 +222,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 200 // 5 frames
 	},
 	{
-		id: 'MaximumPartDuration',
-		name: 'Maximum Part Duration',
-		description: 'Maximum duration (ms) to give parts in UI',
-		type: ConfigManifestEntryType.NUMBER,
-		required: true,
-		defaultVal: 10000
-	},
-	{
-		id: 'DefaultPartDuration',
-		name: 'Default Part Duration',
-		description: 'Duration to give parts by default',
-		type: ConfigManifestEntryType.NUMBER,
-		required: true,
-		defaultVal: 4000
-	},
-	{
 		id: 'IdleSource',
 		name: 'Idle Source',
 		description: 'Source to display when studio is off-air',

@@ -51,8 +51,6 @@ const blankStudioConfig: StudioConfig = {
 	},
 	CasparPrerollDuration: 0,
 	PreventOverlayWithFull: true,
-	MaximumPartDuration: 0,
-	DefaultPartDuration: 0,
 	ServerPostrollDuration: 5000,
 	GraphicsType: 'HTML',
 	VizPilotGraphics: {

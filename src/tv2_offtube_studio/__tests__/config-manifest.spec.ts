@@ -44,8 +44,6 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	GraphicNetworkBasePath: '/',
 	JingleNetworkBasePath: '/',
 	GraphicFileExtension: '.png',
-	MaximumPartDuration: 0,
-	DefaultPartDuration: 0,
 	IdleSource: 0,
 	IdleSisyfosLayers: [],
 	ServerPostrollDuration: 5000,

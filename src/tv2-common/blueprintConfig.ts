@@ -35,8 +35,6 @@ export interface TableConfigItemAdLibTransitions {
 }
 
 export interface TV2StudioConfigBase {
-	MaximumPartDuration: number
-	DefaultPartDuration: number
 	CasparPrerollDuration: number
 
 	/** MEDIA WORKFLOWS */
