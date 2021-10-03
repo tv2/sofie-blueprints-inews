@@ -18,7 +18,7 @@ export function OfftubeCreatePartGrafik(
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config, partDefinition, totalWords)
+	const partTime = PartTime(partDefinition, totalWords)
 
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

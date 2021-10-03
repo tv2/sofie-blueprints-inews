@@ -32,7 +32,7 @@ export function CreatePartCueOnly(
 	makeAdlibs?: boolean
 ) {
 	const partDefinitionWithID = { ...partDefinition, ...{ externalId: id } }
-	const partTime = PartTime(config, partDefinitionWithID, totalWords, false)
+	const partTime = PartTime(partDefinitionWithID, totalWords)
 
 	let part = literal<IBlueprintPart>({
 		externalId: id,

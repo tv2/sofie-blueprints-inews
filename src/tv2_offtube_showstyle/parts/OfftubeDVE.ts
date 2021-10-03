@@ -19,7 +19,7 @@ export function OfftubeCreatePartDVE(
 	partDefinition: PartDefinitionDVE,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(partDefinition, totalWords)
 
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,

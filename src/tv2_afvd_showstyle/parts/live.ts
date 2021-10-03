@@ -20,7 +20,7 @@ export function CreatePartLive(
 	partDefinition: PartDefinition,
 	totalWords: number
 ): BlueprintResultPart {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(partDefinition, totalWords)
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,

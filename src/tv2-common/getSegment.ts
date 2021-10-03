@@ -344,20 +344,6 @@ export function getSegmentBase<
 		segment.isHidden = true
 	}
 
-	blueprintParts.forEach(part => {
-		if (
-			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
-			// Jingle-only part, do not modify duration
-			!part.pieces.some(
-				p =>
-					p.sourceLayerId === SharedSourceLayers.PgmJingle &&
-					(p.metaData as PieceMetaData)?.transition?.isJingle === true
-			)
-		) {
-			part.part.expectedDuration = config.studio.DefaultPartDuration
-		}
-	})
-
 	blueprintParts = blueprintParts.map(part => {
 		const actualPart = part.part
 		actualPart.metaData = literal<PartMetaData>({
