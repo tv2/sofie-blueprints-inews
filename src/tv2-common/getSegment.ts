@@ -28,7 +28,6 @@ import {
 	PartDefinitionTeknik,
 	PartDefinitionTelefon
 } from './inewsConversion'
-import { PieceMetaData } from './onTimelineGenerate'
 import { CreatePartInvalid, ServerPartProps } from './parts'
 
 export interface GetSegmentShowstyleOptions<

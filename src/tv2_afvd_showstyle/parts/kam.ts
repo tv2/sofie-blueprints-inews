@@ -41,7 +41,7 @@ export function CreatePartKam(
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): BlueprintResultPart {
-	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
+	const partKamBase = CreatePartKamBase(context, partDefinition, totalWords)
 
 	let part = partKamBase.part.part
 	const partTime = partKamBase.duration
