@@ -31,9 +31,9 @@ import {
 	CueDefinitionUnpairedPilot,
 	CueDefinitionUnpairedTarget,
 	GraphicInternal,
-	GraphicPilot,
-	UnparsedCue
+	GraphicPilot
 } from '../ParseCue'
+import { UnparsedCue } from 'tv2-common'
 
 const fields = {}
 
