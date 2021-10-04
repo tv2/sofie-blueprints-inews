@@ -9,7 +9,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsIdent,
 		_rank: 10,
-		name: 'Ident',
+		name: 'GFX Ident',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -28,7 +28,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsIdentPersistent,
 		_rank: 10,
-		name: 'Ident Persistent',
+		name: 'GFX Ident Persistent (hidden)',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -47,7 +47,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsTop,
 		_rank: 20,
-		name: 'Top',
+		name: 'GFX Top',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -66,7 +66,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsLower,
 		_rank: 30,
-		name: 'Bund',
+		name: 'GFX Lowerthirds',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -85,7 +85,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsHeadline,
 		_rank: 40,
-		name: 'Headline',
+		name: 'GFX Headline',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -104,7 +104,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsOverlay,
 		_rank: 50,
-		name: 'Overlay',
+		name: 'GFX Overlay (fallback)',
 		abbreviation: 'O',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -123,7 +123,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsTLF,
 		_rank: 60,
-		name: 'Telefon',
+		name: 'GFX Telefon',
 		abbreviation: 'TLF',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -142,7 +142,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmGraphicsTema,
 		_rank: 70,
-		name: 'Tema',
+		name: 'GFX Tema',
 		abbreviation: 'T',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -161,7 +161,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.WallGraphics,
 		_rank: 80,
-		name: 'Wall',
+		name: 'GFX Wall',
 		abbreviation: 'Wall',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -180,7 +180,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SharedSourceLayers.PgmPilotOverlay,
 		_rank: 60,
-		name: 'Overlay',
+		name: 'GFX overlay (VCP)(shared)',
 		abbreviation: 'O',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -226,7 +226,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmCam,
 		_rank: 0,
-		name: 'Kam',
+		name: 'Camera',
 		abbreviation: 'K',
 		type: SourceLayerType.CAMERA,
 		exclusiveGroup: 'me2',
@@ -285,7 +285,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmDVEAdLib,
 		_rank: 0,
-		name: 'DVE',
+		name: 'DVE (adlib)',
 		abbreviation: 'D',
 		type: SourceLayerType.SPLITS,
 		exclusiveGroup: 'me1',
@@ -323,7 +323,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmVoiceOver,
 		_rank: 0,
-		name: 'Voice Over',
+		name: 'VO',
 		abbreviation: 'VO',
 		type: SourceLayerType.LIVE_SPEAK,
 		exclusiveGroup: 'me2',
@@ -342,7 +342,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmPilot,
 		_rank: 0,
-		name: 'Full',
+		name: 'GFX FULL (VCP)',
 		abbreviation: 'Full',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: 'me2',
@@ -380,7 +380,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmContinuity,
 		_rank: 50,
-		name: 'CONTINUITY',
+		name: 'Continuity',
 		abbreviation: 'CONTINUITY',
 		type: SourceLayerType.METADATA,
 		exclusiveGroup: '',
@@ -399,7 +399,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmDVEBox1,
 		_rank: 0,
-		name: 'DVE INP1',
+		name: 'DVE Inp 1',
 		abbreviation: 'DB1',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -418,7 +418,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmDVEBox2,
 		_rank: 0,
-		name: 'DVE INP2',
+		name: 'DVE Inp 2',
 		abbreviation: 'DB2',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -437,7 +437,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmDVEBox3,
 		_rank: 0,
-		name: 'DVE INP3',
+		name: 'DVE Inp 3',
 		abbreviation: 'DB3',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -456,7 +456,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmDVEBox4,
 		_rank: 0,
-		name: 'DVE INP4',
+		name: 'DVE Inp 4',
 		abbreviation: 'DB4',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -480,7 +480,7 @@ const MUSIK: ISourceLayer[] = [
 	{
 		_id: SharedSourceLayers.PgmAudioBed,
 		_rank: 30,
-		name: 'Audio bed',
+		name: 'Audiobed (shared)',
 		abbreviation: 'VO',
 		type: SourceLayerType.AUDIO,
 		exclusiveGroup: '',
@@ -526,7 +526,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmAdlibGraphicCmd,
 		_rank: 10,
-		name: 'Graphic Adlibs',
+		name: 'GFX Cmd (adlib)',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -564,7 +564,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmSisyfosAdlibs,
 		_rank: 50,
-		name: 'Sisyfos Adlibs',
+		name: 'Sisyfos (adlib)',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -583,7 +583,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.PgmAdlibJingle,
 		_rank: 10,
-		name: 'Jingle AdLibs',
+		name: 'Effect (adlib)',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -606,7 +606,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.SelectedAdLibDVE,
 		_rank: 0,
-		name: 'DVE',
+		name: 'DVE (selected)',
 		abbreviation: 'D',
 		type: SourceLayerType.SPLITS,
 		exclusiveGroup: '',
@@ -625,7 +625,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.SelectedServer,
 		_rank: 0,
-		name: 'Server',
+		name: 'Server (selected)',
 		abbreviation: 'S',
 		type: SourceLayerType.VT,
 		exclusiveGroup: 'server',
@@ -644,7 +644,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.SelectedVoiceOver,
 		_rank: 0,
-		name: 'Voice Over',
+		name: 'VO (selected)',
 		abbreviation: 'VO',
 		type: SourceLayerType.LIVE_SPEAK,
 		exclusiveGroup: 'server',
@@ -663,7 +663,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.SelectedAdlibGraphicsFull,
 		_rank: 0,
-		name: 'GFX Full',
+		name: 'GFX Full (selected)',
 		abbreviation: 'GFX Full',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -682,7 +682,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.SelectedAdlibJingle,
 		_rank: 0,
-		name: 'Jingle',
+		name: 'Jingle (selected)',
 		abbreviation: 'Jingle',
 		type: SourceLayerType.TRANSITION,
 		exclusiveGroup: '',
@@ -705,7 +705,7 @@ const AUX: ISourceLayer[] = [
 	{
 		_id: OfftubeSourceLayer.AuxStudioScreen,
 		_rank: 20,
-		name: 'Studio',
+		name: 'AUX studio screen',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',

@@ -9,7 +9,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsIdent,
 		_rank: 10,
-		name: 'Ident',
+		name: 'GFX Ident',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -28,7 +28,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsIdentPersistent,
 		_rank: 10,
-		name: 'Ident Persistent',
+		name: 'GFX Ident Persistent (hidden)',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -47,7 +47,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsTop,
 		_rank: 20,
-		name: 'Top',
+		name: 'GFX Top',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -66,7 +66,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsLower,
 		_rank: 30,
-		name: 'Bund',
+		name: 'GFX Lowerthirds',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -85,7 +85,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsHeadline,
 		_rank: 40,
-		name: 'Headline',
+		name: 'GFX Headline',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -104,7 +104,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsTema,
 		_rank: 50,
-		name: 'Tema',
+		name: 'GFX Tema',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -123,7 +123,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsOverlay,
 		_rank: 55,
-		name: 'Overlay',
+		name: 'GFX Overlay (fallback)',
 		abbreviation: 'O',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -142,7 +142,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmPilotOverlay,
 		_rank: 60,
-		name: 'Overlay',
+		name: 'GFX Overlay (VCP)',
 		abbreviation: 'O',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -188,7 +188,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmCam,
 		_rank: 0,
-		name: 'Kam',
+		name: 'Camera',
 		abbreviation: 'K',
 		type: SourceLayerType.CAMERA,
 		exclusiveGroup: 'me1',
@@ -267,7 +267,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEAdLib,
 		_rank: 0,
-		name: 'DVE',
+		name: 'DVE (adlib)',
 		abbreviation: 'D',
 		type: SourceLayerType.SPLITS,
 		exclusiveGroup: 'me1',
@@ -286,7 +286,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox1,
 		_rank: 0,
-		name: 'DVE INP1',
+		name: 'DVE Inp 1',
 		abbreviation: 'DB1',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -306,7 +306,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox2,
 		_rank: 0,
-		name: 'DVE INP2',
+		name: 'DVE Inp 2',
 		abbreviation: 'DB2',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -326,7 +326,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox3,
 		_rank: 0,
-		name: 'DVE INP3',
+		name: 'DVE Inp 3',
 		abbreviation: 'DB3',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -346,7 +346,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox4,
 		_rank: 0,
-		name: 'DVE INP4',
+		name: 'DVE Inp 4',
 		abbreviation: 'DB4',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -384,7 +384,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmVoiceOver,
 		_rank: 0,
-		name: 'Voice Over',
+		name: 'VO',
 		abbreviation: 'VO',
 		type: SourceLayerType.LIVE_SPEAK,
 		exclusiveGroup: '',
@@ -403,7 +403,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmPilot,
 		_rank: 0,
-		name: 'Full',
+		name: 'GFX FULL (VCP)',
 		abbreviation: 'F',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: 'me1',
@@ -422,7 +422,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsTLF,
 		_rank: 0,
-		name: 'Telefon',
+		name: 'GFX Telefon',
 		abbreviation: 'TLF',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: 'me1',
@@ -441,7 +441,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmContinuity,
 		_rank: 0,
-		name: 'CONTINUITY',
+		name: 'continuity',
 		abbreviation: 'CONTINUITY',
 		type: SourceLayerType.METADATA,
 		exclusiveGroup: 'me1',
@@ -464,7 +464,7 @@ const MUSIK: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmAudioBed,
 		_rank: 30,
-		name: 'Audio bed',
+		name: 'Audiobed (shared)',
 		abbreviation: 'VO',
 		type: SourceLayerType.AUDIO,
 		exclusiveGroup: '',
@@ -510,7 +510,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmAdlibJingle,
 		_rank: 10,
-		name: 'Jingle AdLibs',
+		name: 'Effect (adlib)',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -529,7 +529,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmAdlibGraphicCmd,
 		_rank: 10,
-		name: 'Viz Full',
+		name: 'GFX Cmd (adlib)',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -587,7 +587,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmFullBackground,
 		_rank: 41,
-		name: 'Full Background',
+		name: 'GFX FULL Background',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -606,7 +606,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmSisyfosAdlibs,
 		_rank: 50,
-		name: 'Sisyfos Adlibs',
+		name: 'Sisyfos (adlib)',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -625,7 +625,7 @@ const SEC: ISourceLayer[] = [
 	{
 		_id: SourceLayer.WallGraphics,
 		_rank: 60,
-		name: 'Wall Graphics',
+		name: 'GFX Wall',
 		abbreviation: '',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -648,7 +648,7 @@ const AUX: ISourceLayer[] = [
 	{
 		_id: SourceLayer.VizFullIn1,
 		_rank: 10,
-		name: 'Viz Full',
+		name: 'Full inp 1',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -667,7 +667,7 @@ const AUX: ISourceLayer[] = [
 	{
 		_id: SourceLayer.AuxStudioScreen,
 		_rank: 20,
-		name: 'Studio',
+		name: 'AUX studio screen',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -691,7 +691,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: SourceLayer.SelectedServer,
 		_rank: 0,
-		name: 'Selected Server',
+		name: 'Server (selected)',
 		abbreviation: 'S',
 		type: SourceLayerType.VT,
 		exclusiveGroup: 'server',
@@ -710,7 +710,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: SourceLayer.SelectedVoiceOver,
 		_rank: 0,
-		name: 'Selected Voice Over',
+		name: 'VO (selected)',
 		abbreviation: 'VO',
 		type: SourceLayerType.LIVE_SPEAK,
 		exclusiveGroup: 'server',
@@ -729,7 +729,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 	{
 		_id: SharedSourceLayers.SelectedAdlibGraphicsFull,
 		_rank: 0,
-		name: 'GFX Full',
+		name: 'GFX Full (selected)',
 		abbreviation: 'GFX Full',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',

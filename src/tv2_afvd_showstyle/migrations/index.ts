@@ -6,6 +6,7 @@ import {
 	removeSourceLayer,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
+	SetSourceLayerNameMigrationStep,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { GraphicLLayer } from 'tv2-constants'
@@ -119,6 +120,46 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 
+	/**
+	 * 1.6.9
+	 * - Set new source layer names
+	 */
+	// OVERLAY group
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsIdent, 'GFX Ident'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTop, 'GFX Top'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTema, 'GFX Tema'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.WallGraphics, 'GFX Wall'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmPilotOverlay, 'GFX Overlay (VCP)'),
+	// PGM group
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmCam, 'Camera'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmVoiceOver, 'VO'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmPilot, 'GFX FULL (VCP)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmContinuity, 'Continuity'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox1, 'DVE Inp 1'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox2, 'DVE Inp 2'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox3, 'DVE Inp 3'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox4, 'DVE Inp 4'),
+	// MUSIK group
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAudioBed, 'Audiobed (shared)'),
+	// SEC group
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmFullBackground, 'GFX FULL Background'),
+	// SELECTED_ADLIB group
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.SelectedServer, 'Server (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.SelectedVoiceOver, 'VO (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.SelectedAdlibGraphicsFull, 'GFX Full (selected)'),
+	// AUX group
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.VizFullIn1, 'Full Inp 1'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.AuxStudioScreen, 'AUX studio screen'),
+	
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
