@@ -14,6 +14,7 @@ import {
 	StudioBlueprintManifest
 } from '@sofie-automation/blueprints-integration'
 import { assertUnreachable, literal } from 'tv2-common'
+import { getRundownDuration } from './rundownDuration'
 
 interface RundownMetaData {
 	rank: number
@@ -46,9 +47,7 @@ function getRundownWithBackTime(
 	const backTime = backTimeStory ? backTimeStory.payload.iNewsStory.fields.backTime : undefined
 
 	let expectedEnd: number | undefined
-	const expectedDuration =
-		ingestRundown.segments.reduce((prev, curr) => prev + Number(curr.payload?.iNewsStory?.fields?.totalTime) ?? 0, 0) *
-		1000
+	const expectedDuration = getRundownDuration(ingestRundown.segments)
 
 	if (backTime) {
 		const backTimeNum = Number(backTime.replace(/^@/, ''))

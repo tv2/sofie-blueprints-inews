@@ -1,8 +1,6 @@
-import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig } from 'tv2-common'
+import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
 import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
-
-export type UnparsedCue = string[] | null
 
 export interface CueTime {
 	frames?: number

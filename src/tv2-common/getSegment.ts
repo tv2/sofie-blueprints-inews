@@ -8,6 +8,7 @@ import {
 import {
 	assertUnreachable,
 	GetNextPartCue,
+	INewsStory,
 	IsTargetingFull,
 	literal,
 	ParseBody,
@@ -21,7 +22,6 @@ import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
 	CueDefinitionUnpairedTarget,
-	INewsStory,
 	PartDefinitionDVE,
 	PartDefinitionEkstern,
 	PartDefinitionGrafik,
