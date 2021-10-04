@@ -128,7 +128,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsIdent, 'GFX Ident'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTop, 'GFX Top'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsLower, 'GFX Lowerthrids'),
+	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTLF, 'GFX Telefon'),

@@ -66,7 +66,7 @@ const OVERLAY: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmGraphicsLower,
 		_rank: 30,
-		name: 'GFX Lowerthrids',
+		name: 'GFX Lowerthirds',
 		abbreviation: 'G',
 		type: SourceLayerType.GRAPHICS,
 		exclusiveGroup: '',
@@ -286,7 +286,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox1,
 		_rank: 0,
-		name: 'DVE inp 1',
+		name: 'DVE Inp 1',
 		abbreviation: 'DB1',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -306,7 +306,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox2,
 		_rank: 0,
-		name: 'DVE inp 2',
+		name: 'DVE Inp 2',
 		abbreviation: 'DB2',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -326,7 +326,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox3,
 		_rank: 0,
-		name: 'DVE inp 3',
+		name: 'DVE Inp 3',
 		abbreviation: 'DB3',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
@@ -346,7 +346,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmDVEBox4,
 		_rank: 0,
-		name: 'DVE inp 4',
+		name: 'DVE Inp 4',
 		abbreviation: 'DB4',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
