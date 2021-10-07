@@ -56,6 +56,10 @@ function getRundownWithBackTime(
 			midnightToday.setHours(0, 0, 0, 0)
 
 			expectedEnd = midnightToday.getTime() + backTimeNum * 1000
+			if (expectedEnd < Date.now()) {
+				// this needs extra conditions (e.g. if playback started and show is in overtime)
+				expectedEnd += 24 * 60 * 60 * 1000
+			}
 		}
 
 		expectedEnd = expectedEnd
