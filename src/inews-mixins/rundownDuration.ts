@@ -9,12 +9,12 @@ export function getRundownDuration(segments: IngestSegment[]) {
 			continue
 		}
 
-		const time = payload?.iNewsStory?.fields.totalTime ?? 0
-		totalTime += Number(time)
-
 		if (segment.name.match(/continuity/i)) {
 			break
 		}
+
+		const time = payload?.iNewsStory?.fields.totalTime ?? 0
+		totalTime += Number(time)
 	}
 
 	return totalTime * 1000

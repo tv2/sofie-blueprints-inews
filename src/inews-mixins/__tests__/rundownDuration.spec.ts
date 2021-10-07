@@ -39,7 +39,7 @@ describe('Rundown Duration', () => {
 		expect(result).toEqual(7000)
 	})
 
-	it('Excludes segments after continuity', () => {
+	it('Excludes segments after continuity (and continuity timing)', () => {
 		const segments = [
 			makeSegmentWithTime('test-segment_1', 1, 0),
 			makeSegmentWithTime('test-segment_2', 1, 1),
@@ -49,7 +49,7 @@ describe('Rundown Duration', () => {
 		]
 
 		const result = getRundownDuration(segments)
-		expect(result).toEqual(6000)
+		expect(result).toEqual(4000)
 	})
 
 	it('Uses the first continuity segment in the rundown as the cutoff', () => {
@@ -63,21 +63,22 @@ describe('Rundown Duration', () => {
 		]
 
 		const result = getRundownDuration(segments)
-		expect(result).toEqual(4000)
+		expect(result).toEqual(2000)
 	})
 
 	it('Does not include floated segments in timing', () => {
 		const segments = [
 			makeSegmentWithTime('test-segment_1', 1, 0, true),
 			makeSegmentWithTime('test-segment_2', 1, 1, true),
+			makeSegmentWithTime('test-segment_3', 1, 1),
 			makeSegmentWithTime('continuity', 2, 2),
-			makeSegmentWithTime('test-segment_3', 2, 3),
+			makeSegmentWithTime('test-segment_4', 2, 3),
 			makeSegmentWithTime('continuity', 2, 4),
-			makeSegmentWithTime('test-segment_4', 3, 5, true)
+			makeSegmentWithTime('test-segment_5', 3, 5, true)
 		]
 
 		const result = getRundownDuration(segments)
-		expect(result).toEqual(2000)
+		expect(result).toEqual(1000)
 	})
 
 	it('Ignores floated continuity segment', () => {
@@ -91,7 +92,7 @@ describe('Rundown Duration', () => {
 		]
 
 		const result = getRundownDuration(segments)
-		expect(result).toEqual(6000)
+		expect(result).toEqual(4000)
 	})
 
 	it('Handles segments without payload', () => {
@@ -118,6 +119,6 @@ describe('Rundown Duration', () => {
 		]
 
 		const result = getRundownDuration(segments)
-		expect(result).toEqual(6000)
+		expect(result).toEqual(4000)
 	})
 })
