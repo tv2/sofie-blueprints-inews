@@ -59,7 +59,7 @@ export function SetSourceLayerNameMigrationStep(
 			context.updateSourceLayer(sourceLayerId, sourceLayer)
 		}
 	})
-} 
+}
 
 export function SetClearShortcutListTransitionStep(
 	versionStr: string,

@@ -159,7 +159,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	// AUX group
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.VizFullIn1, 'Full Inp 1'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.AuxStudioScreen, 'AUX studio screen'),
-	
+
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),

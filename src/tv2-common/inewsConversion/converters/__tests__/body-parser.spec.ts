@@ -1,4 +1,5 @@
 import { IBlueprintRundownDB, PlaylistTimingType } from '@sofie-automation/blueprints-integration'
+import { UnparsedCue } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
@@ -33,7 +34,6 @@ import {
 	GraphicInternal,
 	GraphicPilot
 } from '../ParseCue'
-import { UnparsedCue } from 'tv2-common'
 
 const fields = {}
 
