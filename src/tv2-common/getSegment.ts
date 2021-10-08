@@ -149,7 +149,7 @@ export function getSegmentBase<
 		return prev + cur.script.replace(/\n/g, '').replace(/\r/g, '').length
 	}, 0)
 
-	if (segment.name && segment.name.trim().match(/^CONTINUITY$/i)) {
+	if (segment.name && segment.name.trim().match(/^\s*continuity\s*$/i)) {
 		blueprintParts.push(showStyleOptions.CreatePartContinuity(config, ingestSegment))
 		return {
 			segment,

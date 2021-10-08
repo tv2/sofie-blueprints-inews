@@ -9,7 +9,7 @@ export function getRundownDuration(segments: IngestSegment[]) {
 			continue
 		}
 
-		if (segment.name.match(/continuity/i)) {
+		if (segment.name.match(/^\s*continuity\s*$/i) && payload?.iNewsStory?.fields?.backTime?.match(/^@\d+$/)) {
 			break
 		}
 
