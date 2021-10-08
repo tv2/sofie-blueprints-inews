@@ -335,13 +335,12 @@ export function getSegmentBase<
 	}
 
 	if (
-		totalTimeMs > 0 &&
 		// Filter out Jingle-only parts
-		(blueprintParts.length > 1 ||
-			(blueprintParts[blueprintParts.length - 1] &&
-				!blueprintParts[blueprintParts.length - 1].pieces.some(
-					piece => piece.sourceLayerId === SharedSourceLayers.PgmJingle
-				)))
+		blueprintParts.length > 1 ||
+		(blueprintParts[blueprintParts.length - 1] &&
+			!blueprintParts[blueprintParts.length - 1].pieces.some(
+				piece => piece.sourceLayerId === SharedSourceLayers.PgmJingle
+			))
 	) {
 		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
