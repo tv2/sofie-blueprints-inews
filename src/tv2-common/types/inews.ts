@@ -6,7 +6,7 @@ interface INewsFields {
 	audioTime: string // number
 	totalTime: string // number
 	cumeTime: string // number
-	backTime: string // number
+	backTime?: string // number
 }
 
 interface INewsMetaData {
