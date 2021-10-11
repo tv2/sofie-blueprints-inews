@@ -1,0 +1,42 @@
+{
+	"name": "Mini Shelf",
+	"type": "dashboard_layout",
+	"icon": "",
+	"iconColor": "#ffffff",
+	"regionId": "mini_shelf_layouts",
+	"filters": [
+		{
+			"_id": "mgFpbcnnCMKxBo5r5",
+			"type": "filter",
+			"name": "New Filter",
+			"currentSegment": false,
+			"displayStyle": "buttons",
+			"rank": 0,
+			"rundownBaseline": false,
+			"showThumbnailsInList": false,
+			"hideDuplicates": false,
+			"default": false,
+			"nextInCurrentPart": false,
+			"oneNextPerSourceLayer": false,
+			"sourceLayerIds": [
+				"studio0_clip",
+				"studio0_graphicsIdent",
+				"studio0_graphicsIdent_persistent",
+				"studio0_graphicsTop",
+				"studio0_graphicsLower",
+				"studio0_graphicsHeadline",
+				"studio0_graphicsTema",
+				"studio0_overlay",
+				"studio0_pilotOverlay"
+			],
+			"includeClearInRundownBaseline": false,
+			"sourceLayerTypes": [
+				2,
+				5
+			],
+			"tags": [
+				"flow_producer"
+			]
+		}
+	]
+}
