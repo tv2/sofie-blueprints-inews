@@ -38,7 +38,10 @@ export interface VTFields {
 	duration: number
 }
 
-type VTProps = Pick<VTContent, 'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration'>
+type VTProps = Pick<
+	VTContent,
+	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration'
+>
 
 export function GetVTContentProperties(config: TV2BlueprintConfig, file: string, sourceDuration?: number): VTProps {
 	return literal<VTProps>({
@@ -46,6 +49,7 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string,
 		path: `${config.studio.ClipNetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
 		mediaFlowIds: [config.studio.ClipMediaFlowId],
 		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined,
+		postrollDuration: config.studio.ServerPostrollDuration,
 		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus
 	})
 }
