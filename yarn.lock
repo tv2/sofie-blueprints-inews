@@ -287,10 +287,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@1.37.0-rc12":
-  version "1.37.0-rc12"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.37.0-rc12.tgz#92dc136930c31394abb39cf39c3b1f836388d6db"
-  integrity sha512-EMqkMv26frSSFde55leS/sz8m0NgZfmQFU2eqVegblrUpM7kNEMIdtLys5aFjrKAoPz/fRJQxRo4biFGQr7BAA==
+"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@1.37.0-rc18":
+  version "1.37.0-rc18"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.37.0-rc18.tgz#36fd3ec3d9426719a126c630196fec555cb6764d"
+  integrity sha512-E+YS4130ovMAAx0E5FQ3Ajqn51P720mHb++p8c8U3q0rCLTf/a0SBJJwgNZH5HZzSUGix6kqrnvMX11aA6MRog==
   dependencies:
     moment "2.29.1"
     timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@1.0.0-release37"
