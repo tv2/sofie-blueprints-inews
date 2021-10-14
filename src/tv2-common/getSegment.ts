@@ -381,6 +381,10 @@ export function getSegmentBase<
 			actualPart.invalid = false
 		}
 
+		if (ingestSegment.payload?.untimed) {
+			actualPart.untimed = true
+		}
+
 		return {
 			...part,
 			part: actualPart
