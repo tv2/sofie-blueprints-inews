@@ -54,7 +54,8 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 	return literal<BlueprintResultPart>({
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
-			title: 'CONTINUITY'
+			title: 'CONTINUITY',
+			untimed: true
 		},
 		pieces: [
 			literal<IBlueprintPiece>({
