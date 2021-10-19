@@ -1763,29 +1763,25 @@ function executeActionRecallLastDVE<
 		return
 	}
 
-	const lastPlayedDVE = context.findLastPieceOnLayer(settings.SourceLayers.DVE)
+	const lastPlayedDVE: IBlueprintPieceInstance | undefined = context.findLastPieceOnLayer(settings.SourceLayers.DVE)
 
 	if (lastPlayedDVE && lastPlayedDVE.dynamicallyInserted) {
-		const part = context.getPartInstanceForPreviousPiece(lastPlayedDVE)
+		const lastPlayedDVEMeta: DVEPieceMetaData = lastPlayedDVE.piece.metaData as DVEPieceMetaData
 
-		const lastPlayedDVEMeta = lastPlayedDVE.piece.metaData as DVEPieceMetaData
-
-		if (part && part.segmentId === currentPart.segmentId) {
-			return executeActionSelectDVE(
-				context,
-				settings,
-				actionId,
-				literal<ActionSelectDVE>({
-					type: AdlibActionType.SELECT_DVE,
-					config: lastPlayedDVEMeta.userData.config,
-					segmentExternalId: generateExternalId(context, actionId, [lastPlayedDVE.piece.name]),
-					videoId: lastPlayedDVEMeta.userData.videoId
-				})
-			)
-		}
+		return executeActionSelectDVE(
+			context,
+			settings,
+			actionId,
+			literal<ActionSelectDVE>({
+				type: AdlibActionType.SELECT_DVE,
+				config: lastPlayedDVEMeta.userData.config,
+				segmentExternalId: generateExternalId(context, actionId, [lastPlayedDVE.piece.name]),
+				videoId: lastPlayedDVEMeta.userData.videoId
+			})
+		)
 	}
 
-	const lastDVE = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE)
+	const lastDVE: IBlueprintPiece | undefined = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE)
 
 	if (!lastDVE) {
 		return
@@ -1793,7 +1789,7 @@ function executeActionRecallLastDVE<
 
 	const externalId = generateExternalId(context, actionId, [lastDVE.name])
 
-	const dveMeta = lastDVE.metaData as DVEPieceMetaData
+	const dveMeta: DVEPieceMetaData = lastDVE.metaData as DVEPieceMetaData
 
 	executeActionSelectDVE(
 		context,
