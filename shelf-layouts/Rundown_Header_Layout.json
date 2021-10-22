@@ -19,7 +19,7 @@
 			"default": false,
 			"nextInCurrentPart": false,
 			"oneNextPerSourceLayer": false,
-			"x": 3,
+			"x": 2.9,
 			"y": 0.3,
 			"width": 1,
 			"height": 1,
@@ -44,12 +44,13 @@
 			"oneNextPerSourceLayer": false,
 			"plannedEndText": "",
 			"scale": 0.6,
-			"width": 10,
+			"width": 4,
 			"height": 1,
-			"x": 0.5,
+			"x": 8.8,
 			"y": 0.3,
 			"hidePlannedEnd": true,
-			"hideCountdown": true
+			"hideCountdown": true,
+			"xUnit": "%"
 		},
 		{
 			"_id": "NAT56wYzfbKRX9Dw2",
@@ -69,9 +70,10 @@
 			"hideDiff": true,
 			"scale": 0.6,
 			"y": 0.3,
-			"x": 13,
+			"x": 18.2,
 			"width": 1,
-			"height": 1
+			"height": 1,
+			"xUnit": "%"
 		},
 		{
 			"_id": "qYm6yy529p69wkxC4",
@@ -88,9 +90,10 @@
 			"oneNextPerSourceLayer": false,
 			"scale": 0.6,
 			"y": 0.9,
-			"x": 16,
+			"x": 22,
 			"width": 10,
-			"height": 1
+			"height": 1,
+			"xUnit": "%"
 		},
 		{
 			"_id": "tsCeq5TJR6PNk8mbx",
@@ -109,8 +112,9 @@
 			"width": 10,
 			"height": 1,
 			"text": "INEWS RUNDOWN",
-			"x": 16,
-			"y": 0.3
+			"x": 22,
+			"y": 0.3,
+			"xUnit": "%"
 		},
 		{
 			"_id": "uWHhxH2Mchdeds4q6",
@@ -127,8 +131,8 @@
 			"oneNextPerSourceLayer": false,
 			"scale": 0.6,
 			"y": 0.3,
-			"x": 65,
-			"width": 5,
+			"x": -4.1,
+			"width": 2.6,
 			"height": 1
 		},
 		{
@@ -146,9 +150,10 @@
 			"oneNextPerSourceLayer": false,
 			"scale": 0.6,
 			"y": 0.3,
-			"x": 55,
+			"x": 74.4,
 			"width": 10,
-			"height": 1
+			"height": 1,
+			"xUnit": "%"
 		},
 		{
 			"_id": "NaaYLEHtqmtWkAD48",
@@ -156,7 +161,7 @@
 			"name": "Layout Elements",
 			"currentSegment": false,
 			"displayStyle": "buttons",
-			"rank": 0,
+			"rank": 1,
 			"rundownBaseline": false,
 			"showThumbnailsInList": false,
 			"hideDuplicates": false,
@@ -164,10 +169,11 @@
 			"nextInCurrentPart": false,
 			"oneNextPerSourceLayer": false,
 			"scale": 0.6,
-			"x": 50,
+			"x": 67.3,
 			"y": 0.3,
 			"width": 5,
-			"height": 1
+			"height": 1,
+			"xUnit": "%"
 		},
 		{
 			"_id": "NFhMKGcs94BGTAvs2",
@@ -183,10 +189,12 @@
 			"nextInCurrentPart": false,
 			"oneNextPerSourceLayer": false,
 			"iconColor": "#000000",
-			"x": 16,
-			"width": 10,
+			"x": 37,
+			"width": 26,
 			"height": 1,
-			"y": -1.1
+			"y": -1.1,
+			"xUnit": "%",
+			"widthUnit": "%"
 		},
 		{
 			"_id": "ckTBdCMfJp7mJhBTp",
@@ -207,12 +215,14 @@
 			],
 			"timingType": "count_down",
 			"y": -1,
-			"x": 11,
+			"x": 37.5,
 			"hideLabel": true,
 			"requiredLayerIds": [
 				"studio0_clip",
 				"studio0_voiceover"
-			]
+			],
+			"xUnit": "%",
+			"width": 5
 		},
 		{
 			"_id": "uW28ZfmJ6b2hMZo5Y",
@@ -230,7 +240,9 @@
 			"text": "Part Countdown",
 			"scale": 0.6,
 			"y": 0.25,
-			"x": 27.8
+			"x": 38,
+			"xUnit": "%",
+			"width": 6
 		},
 		{
 			"_id": "zvkPAEWTZWjLbyHPg",
@@ -247,8 +259,11 @@
 			"oneNextPerSourceLayer": false,
 			"timingType": "count_up",
 			"scale": 0.5,
-			"x": 48.1,
-			"y": 0.3
+			"x": -37.7,
+			"y": 0.3,
+			"xUnit": "%",
+			"widthUnit": "em",
+			"width": 3.8
 		},
 		{
 			"_id": "ou4qa2eEmDihBykfQ",
@@ -266,7 +281,9 @@
 			"timingType": "count_down",
 			"scale": 0.5,
 			"y": 0.3,
-			"x": 41.9
+			"x": 49,
+			"xUnit": "%",
+			"width": 6
 		},
 		{
 			"_id": "5dPjQgaZEd3cgjoCo",
@@ -283,18 +300,20 @@
 			"oneNextPerSourceLayer": false,
 			"scale": 0.5,
 			"y": 1.7,
-			"x": 45.3,
+			"x": -37.8,
 			"requiredLayerIds": [
 				"studio0_script"
 			],
-			"width": 6.6,
+			"width": 9.5,
 			"height": 1,
 			"hideLabel": true,
 			"additionalLayers": [
 				"studio0_voiceover",
 				"studio0_clip"
 			],
-			"requireAllAdditionalSourcelayers": false
+			"requireAllAdditionalSourcelayers": false,
+			"xUnit": "%",
+			"widthUnit": "%"
 		},
 		{
 			"_id": "mK85XTh7ERR6Ddhm6",
@@ -311,8 +330,9 @@
 			"oneNextPerSourceLayer": false,
 			"text": "End words",
 			"scale": 0.6,
-			"x": 35,
-			"y": 2
+			"x": 49,
+			"y": 2,
+			"xUnit": "%"
 		}
 	]
 }
