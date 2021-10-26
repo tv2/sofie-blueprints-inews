@@ -1763,33 +1763,62 @@ function executeActionRecallLastDVE<
 		return
 	}
 
-	const lastPlayedDVE: IBlueprintPieceInstance | undefined = context.findLastPieceOnLayer(settings.SourceLayers.DVE)
+	const lastPlayedScheduledDVE: IBlueprintPieceInstance | undefined = context.findLastPieceOnLayer(
+		settings.SourceLayers.DVE,
+		{
+			originalOnly: true
+		}
+	)
+	const isLastPlayedAScheduledDVE: boolean = !lastPlayedScheduledDVE?.dynamicallyInserted
 
-	if (lastPlayedDVE && lastPlayedDVE.dynamicallyInserted) {
-		const lastPlayedDVEMeta: DVEPieceMetaData = lastPlayedDVE.piece.metaData as DVEPieceMetaData
-
-		return executeActionSelectDVE(
-			context,
-			settings,
-			actionId,
-			literal<ActionSelectDVE>({
-				type: AdlibActionType.SELECT_DVE,
-				config: lastPlayedDVEMeta.userData.config,
-				segmentExternalId: generateExternalId(context, actionId, [lastPlayedDVE.piece.name]),
-				videoId: lastPlayedDVEMeta.userData.videoId
-			})
-		)
+	if (lastPlayedScheduledDVE && isLastPlayedAScheduledDVE) {
+		scheduleLastPlayedDVE(context, settings, actionId, lastPlayedScheduledDVE)
+	} else {
+		scheduleNextScriptedDVE(context, settings, actionId)
 	}
+}
 
-	const lastDVE: IBlueprintPiece | undefined = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE)
+function scheduleLastPlayedDVE<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: IActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	lastPlayedDVE: IBlueprintPieceInstance
+): void {
+	const lastPlayedDVEMeta: DVEPieceMetaData = lastPlayedDVE.piece.metaData as DVEPieceMetaData
+	const externalId: string = generateExternalId(context, actionId, [lastPlayedDVE.piece.name])
 
-	if (!lastDVE) {
+	executeActionSelectDVE(
+		context,
+		settings,
+		actionId,
+		literal<ActionSelectDVE>({
+			type: AdlibActionType.SELECT_DVE,
+			config: lastPlayedDVEMeta.userData.config,
+			segmentExternalId: externalId,
+			videoId: lastPlayedDVEMeta.userData.videoId
+		})
+	)
+}
+
+function scheduleNextScriptedDVE<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: IActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string
+): void {
+	const nextScriptedDVE: IBlueprintPiece | undefined = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE)
+
+	if (!nextScriptedDVE) {
 		return
 	}
 
-	const externalId = generateExternalId(context, actionId, [lastDVE.name])
-
-	const dveMeta: DVEPieceMetaData = lastDVE.metaData as DVEPieceMetaData
+	const externalId: string = generateExternalId(context, actionId, [nextScriptedDVE.name])
+	const dveMeta: DVEPieceMetaData = nextScriptedDVE.metaData as DVEPieceMetaData
 
 	executeActionSelectDVE(
 		context,
