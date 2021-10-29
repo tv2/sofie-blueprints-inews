@@ -70,13 +70,13 @@ export function CreatePartServerBase<
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
 	const actualDuration = getActualDuration(duration, sanitisedScript, props)
 
-	const displayTitle = getDisplayTitle(file, partDefinition)
+	const displayTitle = getDisplayTitle(file, partDefinition, context)
 	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file, config.studio.CasparPrerollDuration)
 	const mediaPlayerSession = SanitizeString(`segment_${props.session ?? partDefinition.segmentExternalId}_${file}`)
 
 	const pieces: IBlueprintPiece[] = []
 
-	const serverBluePrintPiece = getServerBluePrintPiece(
+	const serverSelectionBlueprintPiece = getServerSelectionBlueprintPiece(
 		partDefinition,
 		file,
 		actualDuration,
@@ -88,7 +88,7 @@ export function CreatePartServerBase<
 		config
 	)
 
-	const pgmBluePrintPiece = getPgmBluePrintPiece(
+	const pgmBlueprintPiece = getPgmBlueprintPiece(
 		partDefinition,
 		file,
 		props,
@@ -98,8 +98,8 @@ export function CreatePartServerBase<
 		config
 	)
 
-	pieces.push(serverBluePrintPiece)
-	pieces.push(pgmBluePrintPiece)
+	pieces.push(serverSelectionBlueprintPiece)
+	pieces.push(pgmBlueprintPiece)
 
 	return {
 		part: {
@@ -165,14 +165,14 @@ function getBasePart(
 	fileId: string,
 	casparPrerollDuration: number
 ): IBlueprintPart {
-	return literal<IBlueprintPart>({
+	return {
 		externalId: partDefinition.externalId,
 		title: displayTitle,
 		metaData: {},
 		expectedDuration: actualDuration || 1000,
 		prerollDuration: casparPrerollDuration,
 		hackListenToMediaObjectUpdates: [{ mediaId: fileId.toUpperCase() }]
-	})
+	}
 }
 
 function getUserData(
@@ -181,7 +181,7 @@ function getUserData(
 	actualDuration: number,
 	props: ServerPartProps
 ): ActionSelectServerClip {
-	return literal<ActionSelectServerClip>({
+	return {
 		type: AdlibActionType.SELECT_SERVER_CLIP,
 		file,
 		partDefinition,
@@ -189,7 +189,7 @@ function getUserData(
 		voLayer: props.voLayer,
 		voLevels: props.voLevels,
 		adLibPix: props.adLibPix
-	})
+	}
 }
 
 function getContentServerElement<
@@ -229,7 +229,7 @@ function getContentServerElement<
 	)
 }
 
-function getServerBluePrintPiece<
+function getServerSelectionBlueprintPiece<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -271,7 +271,7 @@ function getServerBluePrintPiece<
 	})
 }
 
-function getPgmBluePrintPiece<
+function getPgmBlueprintPiece<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
