@@ -70,7 +70,7 @@ export function CreatePartServerBase<
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
 	const actualDuration = getActualDuration(duration, sanitisedScript, props)
 
-	const displayTitle = getDisplayTitle(file, partDefinition, context)
+	const displayTitle = getDisplayTitle(file, partDefinition)
 	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file, config.studio.CasparPrerollDuration)
 	const mediaPlayerSession = SanitizeString(`segment_${props.session ?? partDefinition.segmentExternalId}_${file}`)
 
