@@ -171,7 +171,7 @@ export interface ActionExecutionSettings<
 		SELECTED_ADLIB_LAYERS: string[]
 	}
 	ServerAudioLayers: string[]
-	createJingleContent?: (
+	createJingleContent: (
 		config: ShowStyleConfig,
 		file: string,
 		alphaAtStart: number,
@@ -888,10 +888,6 @@ function executeActionSelectJingle<
 	actionId: string,
 	userData: ActionSelectJingle
 ) {
-	if (!settings.createJingleContent) {
-		return
-	}
-
 	let file = ''
 
 	const config = settings.getConfig(context)
