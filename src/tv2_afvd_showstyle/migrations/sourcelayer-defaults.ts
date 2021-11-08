@@ -441,7 +441,7 @@ const PGM: ISourceLayer[] = [
 	{
 		_id: SourceLayer.PgmContinuity,
 		_rank: 0,
-		name: 'continuity',
+		name: 'Continuity',
 		abbreviation: 'CONTINUITY',
 		type: SourceLayerType.METADATA,
 		exclusiveGroup: 'me1',
@@ -648,7 +648,7 @@ const AUX: ISourceLayer[] = [
 	{
 		_id: SourceLayer.VizFullIn1,
 		_rank: 10,
-		name: 'Full inp 1',
+		name: 'Full Inp 1',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
