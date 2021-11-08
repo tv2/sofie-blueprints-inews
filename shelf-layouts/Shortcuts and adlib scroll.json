@@ -6,40 +6,40 @@
     {
       "_id": "qSuHDSjekuNhJkyec",
       "type": "filter",
-      "name": "ADLIB BUTTONS",
+      "name": "ADLIB PANEL: overlay, graphic, soundbed",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "x": 0,
-      "y": 0,
-      "width": -12,
-      "height": 6,
+      "x": 1,
+      "y": 7,
+      "width": 58,
+      "height": 5,
       "overflowHorizontally": true,
       "showAsTimeline": true,
       "assignHotKeys": false,
       "buttonWidthScale": 1.5,
-      "sourceLayerIds": [
-        "studio0_clip",
-        "studio0_voiceover",
-        "studio0_dve",
-        "studio0_graphicsIdent",
-        "studio0_graphicsTop",
-        "studio0_graphicsHeadline",
-        "studio0_graphicsTema",
-        "studio0_audio_bed",
-        "studio0_adlib_viz_cmd",
-        "studio0_graphicsLower",
-        "studio0_overlay",
-        "studio0_pilotOverlay",
-        "studio0_aux_viz_full1",
-        "studio0_pilot"
-      ],
       "hide": false,
       "includeClearInRundownBaseline": true,
       "buttonHeightScale": 1.5,
-      "enableSearch": false
+      "enableSearch": false,
+      "hideDuplicates": true,
+      "lineBreak": "\n -",
+      "sourceLayerIds": [
+        "studio0_aux_viz_full1",
+        "studio0_audio_bed",
+        "studio0_graphicsTop",
+        "studio0_graphicsIdent",
+        "studio0_graphicsTema",
+        "studio0_graphicsHeadline",
+        "studio0_overlay",
+        "studio0_pilotOverlay",
+        "studio0_graphicsLower"
+      ],
+      "tags": [
+        "flow_producer"
+      ]
     },
     {
       "_id": "s4KkTnsERPNcrkqeD",
@@ -52,8 +52,8 @@
       "default": false,
       "url": "http://10.201.76.12:8005/keyboardmap",
       "x": 1,
-      "y": 9,
-      "width": 77,
+      "y": 21,
+      "width": 76,
       "height": -1,
       "scale": 0.79
     },
@@ -63,12 +63,12 @@
       "name": "STATIC BUTTONS",
       "currentSegment": false,
       "displayStyle": "buttons",
-      "rank": 0,
+      "rank": 1,
       "rundownBaseline": "only",
       "default": false,
       "x": -1,
       "y": 0,
-      "width": 10,
+      "width": 21,
       "height": -1,
       "includeClearInRundownBaseline": false,
       "assignHotKeys": false,
@@ -76,11 +76,11 @@
       "sourceLayerIds": [
         "studio0_dsk_cmd",
         "studio0_sisyfos_adlibs",
-        "studio0_adlib_viz_cmd",
-        "studio0_jingle"
+        "studio0_dsk_1_cmd",
+        "studio0_adlib_graphic_cmd"
       ],
-      "buttonWidthScale": 1.5,
-      "buttonHeightScale": 1.5
+      "buttonWidthScale": 1.7,
+      "buttonHeightScale": 1.7
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
@@ -98,11 +98,59 @@
       "includeClearInRundownBaseline": true,
       "assignHotKeys": true,
       "hide": true
+    },
+    {
+      "_id": "j54rMBuuTvufKJ8yp",
+      "type": "filter",
+      "name": "ADLIB PANEL: DVE",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "showThumbnailsInList": false,
+      "hideDuplicates": true,
+      "default": false,
+      "x": 1,
+      "y": 14,
+      "sourceLayerIds": [
+        "studio0_dve"
+      ],
+      "width": 58,
+      "height": 5,
+      "buttonWidthScale": 1.5,
+      "buttonHeightScale": 1.5,
+      "showAsTimeline": true,
+      "includeClearInRundownBaseline": true
+    },
+    {
+      "_id": "nmNfZ8azaAAHD7jjT",
+      "type": "filter",
+      "name": "ADLIB PANEL: server",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "showThumbnailsInList": false,
+      "hideDuplicates": true,
+      "default": false,
+      "sourceLayerIds": [
+        "studio0_clip"
+      ],
+      "x": 1,
+      "buttonWidthScale": 1.5,
+      "buttonHeightScale": 1.5,
+      "y": 0,
+      "width": 58,
+      "height": 5,
+      "showAsTimeline": true,
+      "includeClearInRundownBaseline": true
     }
   ],
   "type": "dashboard_layout",
   "exposeAsShelf": false,
   "showBuckets": false,
   "openByDefualt": true,
-  "startingHeight": 50
+  "startingHeight": 50,
+  "openByDefault": true,
+  "regionId": "shelf_layouts"
 }

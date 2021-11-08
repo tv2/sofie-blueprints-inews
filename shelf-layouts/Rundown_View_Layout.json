@@ -1,4 +1,5 @@
 {
+	"_id": "n86syxN338PyTmrNp",
 	"name": "Rundown View",
 	"filters": [],
 	"type": "rundown_view_layout",
@@ -20,5 +21,10 @@
 	"exposeAsSelectableLayout": false,
 	"countdownToSegmentRequireLayers": [
 		"studio0_live"
+	],
+	"showStyleBaseId": "show0",
+	"showDurationSourceLayers": [
+		"studio0_clip",
+		"studio0_voiceover"
 	]
 }
