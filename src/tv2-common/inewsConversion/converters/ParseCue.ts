@@ -407,7 +407,7 @@ function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
 		const transitionProperties = getTransitionProperties(cue[0])
 		return literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: eksternSource[1],
+			source: eksternSource[1].replace(/\s+/i, ' ').trim(),
 			iNewsCommand: 'EKSTERN',
 			transition: transitionProperties
 		})

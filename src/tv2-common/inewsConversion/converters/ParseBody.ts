@@ -21,6 +21,7 @@ export interface PartDefinitionBase {
 	storyName: string
 	segmentExternalId: string
 	endWords?: string
+	/** Title set based on the primary cue for the following PartTypes: Grafik, DVE, Ekstern, Telefon, Unknown */
 	title?: string
 }
 
