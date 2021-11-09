@@ -15,13 +15,7 @@ export function syncIngestUpdateToPartInstanceBase(
 	playoutStatus: 'current' | 'next',
 	/** Layers that can be have pieces added / removed / updated at any time */
 	freelyEditableLayers: string[],
-	preSteps?: () => void,
-	postSteps?: () => void
 ): void {
-	if (preSteps) {
-		preSteps()
-	}
-
 	const editableLayers =
 		playoutStatus === 'current'
 			? new Set([
@@ -42,8 +36,4 @@ export function syncIngestUpdateToPartInstanceBase(
 	stopOrReplaceEditablePieces(context, existingPartInstance, newPart, editableLayers)
 	updateAdLibInstances(context, existingPartInstance, newPart)
 	updatePartProperties(context, existingPartInstance, newPart)
-
-	if (postSteps) {
-		postSteps()
-	}
 }
