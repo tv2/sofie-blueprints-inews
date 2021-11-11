@@ -25,6 +25,7 @@ import {
 	CueDefinitionBackgroundLoop,
 	CueDefinitionGraphic,
 	CueDefinitionGraphicDesign,
+	CueDefinitionMixMinus,
 	CueDefinitionPgmClean,
 	CueDefinitionRouting,
 	GraphicInternalOrPilot,
@@ -158,6 +159,13 @@ export interface EvaluateCuesShowstyleOptions {
 		pieces: IBlueprintPiece[],
 		partId: string,
 		parsedCue: CueDefinitionPgmClean
+	) => void
+	EvaluateCueMixMinus?: (
+		context: ISegmentUserContext,
+		config: TV2BlueprintConfig,
+		pieces: IBlueprintPiece[],
+		part: PartDefinition,
+		parsedCue: CueDefinitionMixMinus
 	) => void
 	/** TODO: Profile -> Change the profile as defined in VIZ device settings */
 	EvaluateCueProfile?: () => void
@@ -387,6 +395,11 @@ export function EvaluateCuesBase(
 				case CueType.PgmClean:
 					if (showStyleOptions.EvaluateCuePgmClean) {
 						showStyleOptions.EvaluateCuePgmClean(context, config, pieces, partDefinition.externalId, cue)
+					}
+					break
+				case CueType.MixMinus:
+					if (showStyleOptions.EvaluateCueMixMinus) {
+						showStyleOptions.EvaluateCueMixMinus(context, config, pieces, partDefinition, cue)
 					}
 					break
 				case CueType.UNPAIRED_TARGET:

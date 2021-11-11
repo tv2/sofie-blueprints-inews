@@ -31,7 +31,8 @@ export enum CueType {
 	GraphicDesign,
 	Graphic,
 	Routing,
-	PgmClean
+	PgmClean,
+	MixMinus
 }
 
 export const enum PartType {
@@ -146,7 +147,9 @@ export enum AbstractLLayer {
 	AudioBedBaseline = 'audio_bed_baseline'
 }
 
-export enum SharedATEMLLayer {}
+export enum SharedATEMLLayer {
+	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus'
+}
 
 export enum SharedCasparLLayer {
 	CasparCGLYD = 'casparcg_audio_lyd',
@@ -214,7 +217,10 @@ export enum SharedSourceLayers {
 
 	// Other / sec / manus
 	PgmScript = 'studio0_script',
-	PgmAudioBed = 'studio0_audio_bed'
+	PgmAudioBed = 'studio0_audio_bed',
+
+	// AUX
+	AuxMixMinus = 'studio0_aux_mix_minus'
 }
 
 export enum DSKRoles {

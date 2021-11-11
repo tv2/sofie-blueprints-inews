@@ -79,6 +79,11 @@ export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 	type: CueType.ClearGrafiks
 }
 
+export interface CueDefinitionMixMinus extends CueDefinitionBase {
+	type: CueType.MixMinus
+	source: string
+}
+
 // If unpaired when evaluated, throw warning. If target === 'FULL' create invalid part.
 export interface CueDefinitionUnpairedTarget extends CueDefinitionBase {
 	type: CueType.UNPAIRED_TARGET
@@ -160,6 +165,7 @@ export type CueDefinition =
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
+	| CueDefinitionMixMinus
 
 export function GraphicIsInternal(
 	o: CueDefinitionGraphic<GraphicInternalOrPilot>
@@ -225,6 +231,8 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parseJingle(cue)
 	} else if (cue[0].match(/^PGMCLEAN=/i)) {
 		return parsePgmClean(cue)
+	} else if (cue[0].match(/^MINUSKAM\s*=/i)) {
+		return parseMixMinus(cue)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -747,6 +755,18 @@ export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
 		pgmCleanCue.source = pgmSource[1].toString().toUpperCase()
 	}
 	return pgmCleanCue
+}
+
+export function parseMixMinus(cue: string[]): CueDefinitionMixMinus | undefined {
+	const sourceMatch = cue[0].match(/^MINUSKAM\s*=\s*(?<source>.+)\s*$/i)
+	if (sourceMatch === null) {
+		return undefined
+	}
+	return literal<CueDefinitionMixMinus>({
+		type: CueType.MixMinus,
+		source: sourceMatch.groups!.source.toUpperCase(),
+		iNewsCommand: 'MINUSKAM'
+	})
 }
 
 export function isTime(line: string) {
