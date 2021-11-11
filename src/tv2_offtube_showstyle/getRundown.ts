@@ -36,6 +36,7 @@ import {
 	GetTransitionAdLibActions,
 	literal,
 	SourceInfo,
+	SourceInfoEkstern,
 	t
 } from 'tv2-common'
 import {
@@ -271,25 +272,26 @@ function getGlobalAdlibActionsOfftube(
 		)
 	}
 
-	function makeRemoteAction(name: string, type: 'Live' | 'Feed', port: number, rank: number) {
+	function makeRemoteAction(info: SourceInfoEkstern, rank: number) {
 		res.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.CUT_TO_REMOTE,
 				userData: literal<ActionCutToRemote>({
 					type: AdlibActionType.CUT_TO_REMOTE,
-					name,
-					port
+					variant: info.variant,
+					name: info.name,
+					port: info.port
 				}),
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: t(`${type} ${name}`),
+					label: t(`${info.variant} ${info.name}`),
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
 					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
-					currentPieceTags: [GetTagForLive(name)],
-					nextPieceTags: [GetTagForLive(name)]
+					currentPieceTags: [GetTagForLive(info)],
+					nextPieceTags: [GetTagForLive(info)]
 				}
 			})
 		)
@@ -534,10 +536,10 @@ function getGlobalAdlibActionsOfftube(
 	)
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+		.filter((u): u is SourceInfoEkstern => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
-			makeRemoteAction(o.id, o.id.match(/^F/) ? 'Feed' : 'Live', o.port, globalRank++)
+			makeRemoteAction(o, globalRank++)
 		})
 
 	config.sources

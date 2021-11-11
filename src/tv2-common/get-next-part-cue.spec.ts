@@ -6,7 +6,7 @@ import {
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
+import { CueType, EksternVariant, PartType } from 'tv2-constants'
 import { CueDefinitionGraphic, GraphicInternal } from './inewsConversion'
 import { GetNextPartCue } from './nextPartCue'
 
@@ -35,7 +35,11 @@ const partDefinitionTest1: PartDefinitionKam = {
 		// Ekstern 1 - (index 1)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1',
+			source: {
+				variant: EksternVariant.LIVE,
+				name: '1'
+			},
+			rawSource: 'LIVE 1',
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -63,7 +67,11 @@ const partDefinitionTest1: PartDefinitionKam = {
 		// Ekstern 2 - (index 4)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '2',
+			source: {
+				variant: EksternVariant.LIVE,
+				name: '2'
+			},
+			rawSource: 'LIVE 2',
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -167,7 +175,11 @@ const partDefinitionTest2: PartDefinitionKam = {
 		// Ekstern 1 - (index 1)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1',
+			source: {
+				variant: EksternVariant.LIVE,
+				name: '1'
+			},
+			rawSource: 'LIVE 1',
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -217,7 +229,11 @@ const partDefinitionTest2: PartDefinitionKam = {
 		// Ekstern 2 - (index 6)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1',
+			source: {
+				variant: EksternVariant.LIVE,
+				name: '2'
+			},
+			rawSource: 'LIVE 2',
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({

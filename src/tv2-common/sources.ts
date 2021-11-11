@@ -1,7 +1,8 @@
 import * as _ from 'underscore'
 
 import { IStudioContext, SourceLayerType } from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+import { SourceDefinition, SourceVariant } from 'tv2-common'
+import { EksternVariant } from 'tv2-constants'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
 
 // TODO: BEGONE!
@@ -49,11 +50,14 @@ export function parseMapStr(
 export function ParseMappingTable(
 	studioConfig: TableConfigItemSourceMappingWithSisyfos[],
 	type: SourceInfoType,
-	idPrefix?: string
+	idPrefix?: string,
+	variant?: SourceVariant
 ): SourceInfo[] {
 	return studioConfig.map(conf => ({
 		type,
 		id: `${idPrefix || ''}${conf.SourceName}`,
+		variant,
+		name: conf.SourceName,
 		port: conf.AtemSource,
 		sisyfosLayers: conf.SisyfosLayers,
 		useStudioMics: conf.StudioMics
@@ -68,14 +72,32 @@ export type SourceInfoType =
 	| SourceLayerType.GRAPHICS
 	| SourceLayerType.UNKNOWN
 	| SourceLayerType.LOCAL
-export interface SourceInfo {
+export interface SourceInfoBase {
 	type: SourceInfoType
+	variant?: SourceVariant
+	/**
+	 * Id with prefixes
+	 * @todo: deprecate in favor of input
+	 */
 	id: string
+	/** Source name without prefixes */
+	name: string
+	/** Physical connection on the ATEM */
 	port: number
 	ptzDevice?: string
 	sisyfosLayers?: string[]
 	useStudioMics?: boolean
 }
+
+export interface SourceInfoEkstern extends SourceInfoBase {
+	type: SourceLayerType.REMOTE
+	variant: EksternVariant
+}
+export interface SourceInfoOther extends SourceInfoBase {
+	variant: undefined
+}
+
+export type SourceInfo = SourceInfoEkstern | SourceInfoBase
 
 export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: string): SourceInfo | undefined {
 	id = id.replace(/\s+/i, ' ').trim()
@@ -117,6 +139,21 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 	}
 }
 
+const searchParamsByVariant: {
+	[variant in SourceVariant]: (source: SourceDefinition) => [SourceLayerType, string]
+} = {
+	['KAM']: s => [SourceLayerType.CAMERA, s.name],
+	['EVS']: s => [SourceLayerType.CAMERA, `DP${s.name}`],
+	[EksternVariant.LIVE]: s => [SourceLayerType.REMOTE, s.name],
+	[EksternVariant.FEED]: s => [SourceLayerType.REMOTE, `F${s.name}`],
+	[EksternVariant.SKYPE]: s => [SourceLayerType.REMOTE, `S${s.name}`]
+}
+
+export function FindSourceInfoByDefinition(sources: SourceInfo[], source: SourceDefinition): SourceInfo | undefined {
+	const searchParams = searchParamsByVariant[source.variant](source)
+	return _.find(sources, s => s.type === searchParams[0] && s.id === searchParams[1])
+}
+
 export function FindSourceInfoStrict(
 	_context: IStudioContext,
 	sources: SourceInfo[],
@@ -124,31 +161,4 @@ export function FindSourceInfoStrict(
 	id: string
 ): SourceInfo | undefined {
 	return FindSourceInfo(sources, type, id)
-}
-
-export function FindSourceByName(context: IStudioContext, sources: SourceInfo[], name: string): SourceInfo | undefined {
-	name = (name + '').toLowerCase()
-
-	if (name.indexOf('k') === 0 || name.indexOf('c') === 0) {
-		return FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, name)
-	}
-
-	// TODO: This will be different for TV 2
-	if (name.indexOf('r') === 0) {
-		return FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, name)
-	}
-
-	// R35: context.notifyUserWarning(`Invalid source name "${name}"`)
-	return undefined
-}
-
-export function GetInputValue(context: IStudioContext, sources: SourceInfo[], name: string): number {
-	let input = 1000
-	const source = FindSourceByName(context, sources, name)
-
-	if (source !== undefined) {
-		input = literal<SourceInfo>(source).port
-	}
-
-	return input
 }

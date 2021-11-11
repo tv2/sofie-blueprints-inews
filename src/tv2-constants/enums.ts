@@ -222,3 +222,9 @@ export enum DSKRoles {
 	OVERLAYGFX = 'overlay_graphics',
 	JINGLE = 'jingle'
 }
+
+export enum EksternVariant {
+	LIVE = 'LIVE',
+	SKYPE = 'SKYPE',
+	FEED = 'FEED'
+}

@@ -1,4 +1,4 @@
-import { ActionTakeWithTransitionVariant, CueDefinitionDVE, SanitizeString } from 'tv2-common'
+import { ActionTakeWithTransitionVariant, CueDefinitionDVE, SanitizeString, SourceDefinitionEkstern } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
 
 export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
@@ -22,8 +22,8 @@ export function GetTagForKam(name: string) {
 	return `${TallyTags.KAM}_${SanitizeString(name)}`
 }
 
-export function GetTagForLive(name: string) {
-	return `${TallyTags.LIVE}_${SanitizeString(name)}`
+export function GetTagForLive(source: SourceDefinitionEkstern) {
+	return `${source.variant}_${source.name}`
 }
 
 export function GetTagForServer(segmentExternalId: string, clip: string, vo: boolean) {

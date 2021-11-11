@@ -116,7 +116,6 @@ export interface DVETimelineObjectGenerators {
 		context: IStudioUserContext,
 		sources: SourceInfo[],
 		sourceType: string,
-		getLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[],
 		enable?: TSR.Timeline.TimelineEnable
 	) => TSR.TSRTimelineObj[]
 	GetLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[]
@@ -307,6 +306,7 @@ export function MakeContentDVE2<
 			literal<SourceInfo>({
 				type: SourceLayerType.UNKNOWN,
 				id: 'black',
+				name: '',
 				port: AtemSourceIndex.Blk
 			}),
 			'Black'
@@ -342,6 +342,7 @@ export function MakeContentDVE2<
 					{
 						type: SourceLayerType.UNKNOWN,
 						id: 'DEFAULT',
+						name: '',
 						port: config.studio.AtemSource.Default
 					},
 					mappingFrom.source
@@ -380,7 +381,6 @@ export function MakeContentDVE2<
 						context,
 						config.sources,
 						mappingFrom.source,
-						dveGeneratorOptions.dveTimelineGenerators.GetLayersForEkstern,
 						audioEnable
 					)
 				)
@@ -408,6 +408,7 @@ export function MakeContentDVE2<
 					const sourceInfoFull: SourceInfo = {
 						type: SourceLayerType.GRAPHICS,
 						id: 'full',
+						name: '',
 						port: FindDSKFullGFX(config).Fill
 					}
 					setBoxSource(num, sourceInfoFull, mappingFrom.source)
@@ -430,7 +431,8 @@ export function MakeContentDVE2<
 					{
 						type: SourceLayerType.VT,
 						id: 'SERVER',
-						port: -1
+						port: -1,
+						name: ''
 					},
 					mappingFrom.source
 				)

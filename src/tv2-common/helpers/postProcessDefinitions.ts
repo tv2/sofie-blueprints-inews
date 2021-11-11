@@ -27,7 +27,7 @@ function setPartTitle(partDefinition: PartDefinition) {
 	) {
 		switch (firstCue.type) {
 			case CueType.Ekstern:
-				partDefinition.title = firstCue.source
+				partDefinition.title = firstCue.rawSource
 				break
 			case CueType.DVE:
 				partDefinition.title = firstCue.template

@@ -35,6 +35,7 @@ import {
 	GetTransitionAdLibActions,
 	literal,
 	SourceInfo,
+	SourceInfoEkstern,
 	t,
 	TimelineBlueprintExt
 } from 'tv2-common'
@@ -154,10 +155,10 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		return res
 	}
 
-	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	function makeRemoteAdLibs(info: SourceInfoEkstern, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
+			...GetSisyfosTimelineObjForEkstern(context, config.sources, info),
 			GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 		]
 		res.push({
@@ -172,7 +173,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			metaData: GetEksternMetaData(
 				config.stickyLayers,
 				config.studio.StudioMics,
-				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+				GetLayersForEkstern(config.sources, info)
 			),
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -245,7 +246,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 	}
 
 	// aux adlibs
-	function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
+	function makeRemoteAuxStudioAdLibs(info: SourceInfoEkstern, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'auxstudio',
@@ -258,7 +259,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			metaData: GetEksternMetaData(
 				config.stickyLayers,
 				config.studio.StudioMics,
-				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
+				GetLayersForEkstern(config.sources, info)
 			),
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -287,14 +288,14 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 	let globalRank = 1000
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+		.filter((u): u is SourceInfoEkstern => u.type === SourceLayerType.REMOTE) // @todo: refactor when sources are no longer an array
 		.slice(0, 10) // the first x cameras to create live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
 		})
 
 	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+		.filter((u): u is SourceInfoEkstern => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAuxStudioAdLibs(o, globalRank++))

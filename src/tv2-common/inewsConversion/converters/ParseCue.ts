@@ -1,5 +1,5 @@
 import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
-import { CueType, GraphicEngine, PartType } from 'tv2-constants'
+import { CueType, EksternVariant, GraphicEngine, PartType } from 'tv2-constants'
 import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
 
 export interface CueTime {
@@ -20,9 +20,17 @@ export interface CueDefinitionUnknown extends CueDefinitionBase {
 	type: CueType.UNKNOWN
 }
 
+export interface SourceDefinitionEkstern {
+	variant: EksternVariant
+	name: string
+	params?: string
+}
+
 export interface CueDefinitionEkstern extends CueDefinitionBase {
 	type: CueType.Ekstern
-	source: string
+	/** Source params parsed from the raw cue; undefined if there was no match */
+	source?: SourceDefinitionEkstern
+	rawSource: string
 	transition?: Pick<PartdefinitionTypes, 'effekt' | 'transition'>
 }
 
@@ -160,6 +168,9 @@ export type CueDefinition =
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
+
+export type SourceDefinition = SourceDefinitionEkstern
+export type SourceVariant = SourceDefinition['variant'] | 'KAM' | 'EVS' // @todo: add source definitions for kam and evs
 
 export function GraphicIsInternal(
 	o: CueDefinitionGraphic<GraphicInternalOrPilot>
@@ -401,16 +412,29 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 	return pilotCue
 }
 
+const eksternVariantsAlternative = Object.values(EksternVariant).join('|')
+const externRegExp = new RegExp(`^(${eksternVariantsAlternative}) ?([^\\s]+)(?: (.+))?$`, 'i')
+
 function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
 	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
 	if (eksternSource) {
 		const transitionProperties = getTransitionProperties(cue[0])
-		return literal<CueDefinitionEkstern>({
+		const eksternSourceTrimmed = eksternSource[1].replace(/\s+/i, ' ').trim()
+		const eksternSourceProps = eksternSourceTrimmed.match(externRegExp)
+		const cueDefinition: CueDefinitionEkstern = {
 			type: CueType.Ekstern,
-			source: eksternSource[1].replace(/\s+/i, ' ').trim(),
+			rawSource: eksternSourceTrimmed,
 			iNewsCommand: 'EKSTERN',
 			transition: transitionProperties
-		})
+		}
+		if (eksternSourceProps) {
+			cueDefinition.source = {
+				variant: eksternSourceProps[1] as EksternVariant,
+				name: eksternSourceProps[2],
+				params: eksternSourceProps[3]
+			}
+		}
+		return cueDefinition
 	}
 
 	return undefined
@@ -880,7 +904,7 @@ export function UnknownPartParentClass(studio: string, partDefinition: PartDefin
 		case CueType.DVE:
 			return DVEParentClass(studio, firstCue.template)
 		case CueType.Ekstern:
-			return EksternParentClass(studio, firstCue.source)
+			return EksternParentClass(studio, firstCue.rawSource)
 		case CueType.Telefon:
 			return TLFParentClass(studio, firstCue.source)
 		default:

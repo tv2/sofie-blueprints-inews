@@ -1,11 +1,11 @@
 import { IShowStyleUserContext, SplitsContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionDVE,
+	Deprecated_GetLayersForEkstern,
+	Deprecated_GetSisyfosTimelineObjForEkstern,
 	DVEConfigInput,
 	DVEOptions,
 	DVESources,
-	GetLayersForEkstern,
-	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
 	PartDefinition
 } from 'tv2-common'
@@ -43,8 +43,8 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		}
 	},
 	dveTimelineGenerators: {
-		GetSisyfosTimelineObjForEkstern,
-		GetLayersForEkstern
+		GetSisyfosTimelineObjForEkstern: Deprecated_GetSisyfosTimelineObjForEkstern,
+		GetLayersForEkstern: Deprecated_GetLayersForEkstern
 	},
 	boxLayers: {
 		INP1: SourceLayer.PgmDVEBox1,

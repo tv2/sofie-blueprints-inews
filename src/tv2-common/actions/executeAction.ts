@@ -45,7 +45,6 @@ import {
 	GetEksternMetaData,
 	GetFullGrafikTemplateName,
 	GetLayersForCamera,
-	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
@@ -68,7 +67,7 @@ import {
 } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
-import { CreateFullDataStore, PilotGeneratorSettings } from '../helpers'
+import { CreateFullDataStore, GetLayersForEkstern, PilotGeneratorSettings } from '../helpers'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
 import {
@@ -1153,10 +1152,9 @@ function executeActionCutToRemote<
 ) {
 	const config = settings.getConfig(context)
 
-	const externalId = generateExternalId(context, actionId, [userData.name])
+	const externalId = generateExternalId(context, actionId, [userData.variant, userData.name])
 
-	const feed = userData.name.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
-	const title = feed ? `FEED ${feed[1]}` : `LIVE ${userData.name}`
+	const title = `${userData.variant} ${userData.name}`
 
 	const part = literal<IBlueprintPart>({
 		externalId,
@@ -1166,7 +1164,7 @@ function executeActionCutToRemote<
 	})
 
 	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
-		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`, GetLayersForEkstern),
+		...GetSisyfosTimelineObjForEkstern(context, config.sources, userData),
 		GetSisyfosTimelineObjForCamera(context, config, 'telefon', settings.LLayer.Sisyfos.StudioMics)
 	]
 
@@ -1183,9 +1181,9 @@ function executeActionCutToRemote<
 		metaData: GetEksternMetaData(
 			config.stickyLayers,
 			config.studio.StudioMics,
-			GetLayersForEkstern(context, config.sources, `Live ${userData.name}`)
+			GetLayersForEkstern(config.sources, userData)
 		),
-		tags: [GetTagForLive(userData.name)],
+		tags: [GetTagForLive(userData)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjAtemME>({

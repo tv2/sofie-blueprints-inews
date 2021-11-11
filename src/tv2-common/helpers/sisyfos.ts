@@ -2,12 +2,15 @@ import * as _ from 'underscore'
 
 import { IStudioUserContext, SourceLayerType, Timeline, TSR } from '@sofie-automation/blueprints-integration'
 import {
+	FindSourceInfoByDefinition,
 	FindSourceInfoStrict,
 	SisyfosEVSSource,
+	SourceDefinition,
 	SourceInfo,
 	TV2StudioBlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
+import { EksternVariant } from 'tv2-constants'
 import { PieceMetaData } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -64,11 +67,10 @@ export function GetCameraMetaData(
 	)
 }
 
-export function GetSisyfosTimelineObjForEkstern(
+export function Deprecated_GetSisyfosTimelineObjForEkstern(
 	context: IStudioUserContext,
 	sources: SourceInfo[],
 	sourceType: string,
-	getLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	if (!enable) {
@@ -76,7 +78,7 @@ export function GetSisyfosTimelineObjForEkstern(
 	}
 
 	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
-	const layers = getLayersForEkstern(context, sources, sourceType)
+	const layers = Deprecated_GetLayersForEkstern(context, sources, sourceType)
 
 	if (!layers || !layers.length) {
 		context.notifyUserWarning(`Could not set audio levels for ${sourceType}`)
@@ -101,11 +103,58 @@ export function GetSisyfosTimelineObjForEkstern(
 	return audioTimeline
 }
 
-export function GetLayersForEkstern(context: IStudioUserContext, sources: SourceInfo[], sourceType: string) {
+export function GetSisyfosTimelineObjForEkstern(
+	context: IStudioUserContext,
+	sources: SourceInfo[],
+	sourceDefinition: SourceDefinition,
+	enable?: Timeline.TimelineEnable
+): TSR.TimelineObjSisyfosAny[] {
+	if (!enable) {
+		enable = { start: 0 }
+	}
+
+	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
+	const layers = GetLayersForEkstern(sources, sourceDefinition)
+
+	if (!layers || !layers.length) {
+		context.notifyUserWarning(`Could not set audio levels for ${sourceDefinition.variant} ${sourceDefinition.name}`)
+		return audioTimeline
+	}
+
+	layers.forEach(layer => {
+		audioTimeline.push(
+			literal<TSR.TimelineObjSisyfosChannel>({
+				id: '',
+				enable: enable!,
+				priority: 1,
+				layer,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+					isPgm: 1
+				}
+			})
+		)
+	})
+	return audioTimeline
+}
+
+export function Deprecated_GetLayersForEkstern(context: IStudioUserContext, sources: SourceInfo[], sourceType: string) {
 	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i)
 	const eksternLayers: string[] = []
 	if (eksternProps) {
 		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
+		if (sourceInfo && sourceInfo.sisyfosLayers) {
+			eksternLayers.push(...sourceInfo.sisyfosLayers)
+		}
+	}
+	return eksternLayers
+}
+
+export function GetLayersForEkstern(sources: SourceInfo[], sourceDefinition: SourceDefinition) {
+	const eksternLayers: string[] = []
+	if (sourceDefinition.variant in EksternVariant) {
+		const sourceInfo = FindSourceInfoByDefinition(sources, sourceDefinition)
 		if (sourceInfo && sourceInfo.sisyfosLayers) {
 			eksternLayers.push(...sourceInfo.sisyfosLayers)
 		}

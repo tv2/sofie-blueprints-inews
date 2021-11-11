@@ -1,5 +1,5 @@
 import { SourceLayerType } from '@sofie-automation/blueprints-integration'
-import { AdlibActionType } from 'tv2-constants'
+import { AdlibActionType, EksternVariant } from 'tv2-constants'
 import { DVEConfigInput } from '../helpers'
 import { CueDefinitionDVE, PartDefinition } from '../inewsConversion'
 
@@ -50,6 +50,7 @@ export interface ActionCutToCamera extends ActionBase {
 
 export interface ActionCutToRemote extends ActionBase {
 	type: AdlibActionType.CUT_TO_REMOTE
+	variant: EksternVariant
 	name: string
 	port: number
 }

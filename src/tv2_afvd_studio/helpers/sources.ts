@@ -2,6 +2,7 @@ import * as _ from 'underscore'
 
 import { SourceLayerType } from '@sofie-automation/blueprints-integration'
 import { ParseMappingTable, SourceInfo } from 'tv2-common'
+import { EksternVariant } from 'tv2-constants'
 import { StudioConfig } from './config'
 
 export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: string; val: string }> {
@@ -13,10 +14,10 @@ export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: strin
 
 export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 	return [
-		...ParseMappingTable(studioConfig.SourcesFeed, SourceLayerType.REMOTE, 'F'),
-		...ParseMappingTable(studioConfig.SourcesRM, SourceLayerType.REMOTE),
+		...ParseMappingTable(studioConfig.SourcesFeed, SourceLayerType.REMOTE, 'F', EksternVariant.FEED),
+		...ParseMappingTable(studioConfig.SourcesRM, SourceLayerType.REMOTE, undefined, EksternVariant.LIVE),
 		...ParseMappingTable(studioConfig.SourcesCam, SourceLayerType.CAMERA),
-		...ParseMappingTable(studioConfig.SourcesSkype, SourceLayerType.REMOTE, 'S'),
+		...ParseMappingTable(studioConfig.SourcesSkype, SourceLayerType.REMOTE, 'S', EksternVariant.SKYPE),
 		...ParseMappingTable(studioConfig.SourcesDelayedPlayback, SourceLayerType.LOCAL, 'DP')
 	]
 }
