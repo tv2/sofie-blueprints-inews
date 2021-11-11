@@ -8,7 +8,7 @@ import {
 	WithTimeline
 } from '@sofie-automation/blueprints-integration'
 import { CueDefinitionMixMinus, FindSourceByName, literal, PartDefinition } from 'tv2-common'
-import { SharedATEMLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { ControlClasses, SharedATEMLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 
 export function EvaluateCueMixMinus(
@@ -52,11 +52,11 @@ function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
 					}
 				},
 				enable: {
-					start: 0
+					while: ControlClasses.LiveSourceOnAir
 				},
 				layer: SharedATEMLLayer.AtemAuxVideoMixMinus,
 				id: '',
-				priority: 0.5
+				priority: 1
 			})
 		])
 	})
