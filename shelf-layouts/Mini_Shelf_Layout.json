@@ -1,5 +1,5 @@
 {
-	"name": "Mini Shelf",
+	"name": "Flow Producer Mini Shelf",
 	"type": "dashboard_layout",
 	"icon": "",
 	"iconColor": "#ffffff",
@@ -19,20 +19,11 @@
 			"nextInCurrentPart": false,
 			"oneNextPerSourceLayer": false,
 			"sourceLayerIds": [
-				"studio0_clip",
-				"studio0_graphicsIdent",
-				"studio0_graphicsIdent_persistent",
-				"studio0_graphicsTop",
-				"studio0_graphicsLower",
-				"studio0_graphicsHeadline",
-				"studio0_graphicsTema",
-				"studio0_overlay",
-				"studio0_pilotOverlay"
+				"studio0_clip"
 			],
 			"includeClearInRundownBaseline": false,
 			"sourceLayerTypes": [
-				2,
-				5
+				2
 			],
 			"tags": [
 				"flow_producer"
