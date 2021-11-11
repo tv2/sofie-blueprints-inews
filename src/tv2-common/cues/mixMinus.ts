@@ -56,7 +56,7 @@ function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
 				},
 				layer: SharedATEMLLayer.AtemAuxVideoMixMinus,
 				id: '',
-				priority: 1
+				priority: 0.5
 			})
 		])
 	})
