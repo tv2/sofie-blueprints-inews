@@ -52,7 +52,7 @@ function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
 					}
 				},
 				enable: {
-					while: ControlClasses.LiveSourceOnAir
+					while: `.${ControlClasses.LiveSourceOnAir}`
 				},
 				layer: SharedATEMLLayer.AtemAuxVideoMixMinus,
 				id: '',
