@@ -14,7 +14,7 @@ export function syncIngestUpdateToPartInstanceBase(
 	newPart: BlueprintSyncIngestNewData,
 	playoutStatus: 'current' | 'next',
 	/** Layers that can be have pieces added / removed / updated at any time */
-	freelyEditableLayers: string[],
+	freelyEditableLayers: string[]
 ): void {
 	const editableLayers =
 		playoutStatus === 'current'

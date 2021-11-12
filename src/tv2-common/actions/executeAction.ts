@@ -52,6 +52,7 @@ import {
 	literal,
 	MakeContentDVE2,
 	PartDefinition,
+	PartMetaData,
 	PieceMetaData,
 	TimelineBlueprintExt,
 	TV2AdlibAction,
@@ -479,6 +480,8 @@ function executeActionSelectServerClip<
 			userData.voLayer ? settings.SelectedAdlibs.SourceLayer.VO : settings.SelectedAdlibs.SourceLayer.Server
 		])
 	}
+
+	markPartAsModifiedByAction(context, 'next')
 }
 
 function dveContainsServer(sources: DVESources) {
@@ -864,6 +867,7 @@ function startNewDVELayout<
 		if (settings.SelectedAdlibs.SourceLayer.DVE) {
 			context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.DVE])
 		}
+		markPartAsModifiedByAction(context, 'next')
 	} else {
 		if (replacePieceInstancesOrQueue.activeDVE) {
 			context.updatePieceInstance(replacePieceInstancesOrQueue.activeDVE, dvePiece)
@@ -875,6 +879,7 @@ function startNewDVELayout<
 					context.insertPiece(part, dveDataStore)
 				}
 			}
+			markPartAsModifiedByAction(context, 'current')
 		}
 	}
 }
@@ -991,6 +996,8 @@ function executeActionSelectJingle<
 	if (settings.SelectedAdlibs.SourceLayer.Effekt) {
 		context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Effekt])
 	}
+
+	markPartAsModifiedByAction(context, 'next')
 }
 
 function executeActionCutToCamera<
@@ -1116,10 +1123,12 @@ function executeActionCutToCamera<
 		if (serverInCurrentPart && !userData.queue) {
 			context.takeAfterExecuteAction(true)
 		}
+		markPartAsModifiedByAction(context, 'next')
 	} else if (currentKam) {
 		kamPiece.externalId = currentKam.piece.externalId
 		kamPiece.enable = currentKam.piece.enable
 		context.updatePieceInstance(currentKam._id, kamPiece)
+		markPartAsModifiedByAction(context, 'current')
 	} else {
 		const currentExternalId = context.getPartInstance('current')?.part.externalId
 
@@ -1139,6 +1148,7 @@ function executeActionCutToCamera<
 		])
 		kamPiece.enable = { start: 'now' }
 		context.insertPiece('current', kamPiece)
+		markPartAsModifiedByAction(context, 'current')
 	}
 }
 
@@ -1251,6 +1261,7 @@ function executeActionCutToRemote<
 		remotePiece,
 		...(settings.SelectedAdlibs ? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, []) : [])
 	])
+	markPartAsModifiedByAction(context, 'next')
 }
 
 function executeActionCutSourceToBox<
@@ -1531,6 +1542,8 @@ function executeActionTakeWithTransition<
 			break
 		}
 	}
+
+	markPartAsModifiedByAction(context, 'next')
 }
 
 function findPieceToRecoverDataFrom(
@@ -1746,6 +1759,7 @@ function executeActionRecallLastLive<
 	}
 
 	context.queuePart(part, pieces)
+	markPartAsModifiedByAction(context, 'next')
 }
 
 function executeActionRecallLastDVE<
@@ -1910,6 +1924,8 @@ function executeActionSelectFull<
 	])
 
 	context.stopPiecesOnLayers([SharedSourceLayers.SelectedAdlibGraphicsFull])
+
+	markPartAsModifiedByAction(context, 'next')
 }
 
 function executeActionClearGraphics<
@@ -1973,4 +1989,19 @@ function executeActionClearGraphics<
 			tags: userData.sendCommands ? [TallyTags.GFX_CLEAR] : [TallyTags.GFX_ALTUD]
 		})
 	)
+
+	markPartAsModifiedByAction(context, 'current')
+}
+
+function markPartAsModifiedByAction(context: IActionExecutionContext, part: 'current' | 'next') {
+	const partInstance = context.getPartInstance(part)
+	if (!partInstance) {
+		return
+	}
+
+	if (!partInstance.part.metaData) {
+		context.updatePartInstance(part, {
+			metaData: literal<PartMetaData>({ ...(partInstance.part.metaData as PartMetaData), dirty: true })
+		})
+	}
 }
