@@ -59,10 +59,8 @@ export function EvaluateEksternBase<
 	adlib?: boolean,
 	rank?: number
 ) {
-	const eksternProps = parsedCue.source
-		.replace(/\s+/i, ' ')
-		.trim()
-		.match(/^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i)
+	const matchesEksternSource = /^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i
+	const eksternProps = parsedCue.source.match(matchesEksternSource)
 	if (!eksternProps) {
 		context.notifyUserWarning(`No source entered for EKSTERN`)
 		part.invalid = true
