@@ -2000,8 +2000,10 @@ function markPartAsModifiedByAction(context: IActionExecutionContext, part: 'cur
 	}
 
 	if (!partInstance.part.metaData) {
-		context.updatePartInstance(part, {
-			metaData: literal<PartMetaData>({ ...(partInstance.part.metaData as PartMetaData), dirty: true })
-		})
+		partInstance.part.metaData = {}
 	}
+
+	context.updatePartInstance(part, {
+		metaData: literal<PartMetaData>({ ...(partInstance.part.metaData as PartMetaData), dirty: true })
+	})
 }
