@@ -8,7 +8,7 @@ export function shouldRemoveOrphanedPartInstance(
 	context: IRemoveOrphanedPartInstanceContext,
 	partInstance: BlueprintRemoveOrphanedPartInstance
 ) {
-	if ((partInstance.partInstance.part.metaData as PartMetaData).dirty) {
+	if (!(partInstance.partInstance.part.metaData as PartMetaData).dirty) {
 		context.removePartInstance()
 	}
 }
