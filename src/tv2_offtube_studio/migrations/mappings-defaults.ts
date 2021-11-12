@@ -527,6 +527,12 @@ const MAPPINGS_ATEM: BlueprintMappings = {
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
+	}),
+	// TODO: Future: Mix Minus in Offtubes
+	[OfftubeAtemLLayer.AtemAuxVideoMixMinus]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 }
 

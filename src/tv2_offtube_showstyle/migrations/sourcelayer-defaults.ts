@@ -740,6 +740,25 @@ const AUX: ISourceLayer[] = [
 		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false
+	},
+	{
+		_id: OfftubeSourceLayer.AuxMixMinus,
+		_rank: 22,
+		name: 'MixMinus AUX',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		activateKeyboardHotkeys: '',
+		clearKeyboardHotkey: '',
+		assignHotkeysToGlobalAdlibs: true,
+		isSticky: false,
+		activateStickyKeyboardHotkey: '',
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: false,
+		onPresenterScreen: false
 	}
 ]
 

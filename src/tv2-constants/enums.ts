@@ -31,7 +31,8 @@ export enum CueType {
 	GraphicDesign,
 	Graphic,
 	Routing,
-	PgmClean
+	PgmClean,
+	MixMinus
 }
 
 export const enum PartType {
@@ -74,6 +75,7 @@ export enum ControlClasses {
 	DVEOnAir = 'dve_on_air',
 	ServerOnAir = 'server_on_air',
 	LYDOnAir = 'lyd_on_air',
+	LiveSourceOnAir = 'live_source_on_air',
 	NOLookahead = 'no_lookahead',
 	CopyMediaPlayerSession = 'copy_media_player_session',
 	AbstractLookahead = 'abstract_lookahead'
@@ -146,7 +148,9 @@ export enum AbstractLLayer {
 	AudioBedBaseline = 'audio_bed_baseline'
 }
 
-export enum SharedATEMLLayer {}
+export enum SharedATEMLLayer {
+	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus'
+}
 
 export enum SharedCasparLLayer {
 	CasparCGLYD = 'casparcg_audio_lyd',
@@ -214,7 +218,10 @@ export enum SharedSourceLayers {
 
 	// Other / sec / manus
 	PgmScript = 'studio0_script',
-	PgmAudioBed = 'studio0_audio_bed'
+	PgmAudioBed = 'studio0_audio_bed',
+
+	// AUX
+	AuxMixMinus = 'studio0_aux_mix_minus'
 }
 
 export enum DSKRoles {

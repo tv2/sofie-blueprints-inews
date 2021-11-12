@@ -114,7 +114,8 @@ export function EvaluateEksternBase<
 										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
-							}
+							},
+							classes: [ControlClasses.LiveSourceOnAir]
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
