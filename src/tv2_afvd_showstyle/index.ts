@@ -3,7 +3,7 @@ import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'
 
 import { GetShowStyleManifestWithMixins, ShowStyleManifestMixinINews } from 'inews-mixins'
-import { getEndStateForPart } from 'tv2-common'
+import { getEndStateForPart, shouldRemoveOrphanedPartInstance } from 'tv2-common'
 import { onTimelineGenerateAFVD } from '../tv2_afvd_studio/onTimelineGenerate'
 import { executeActionAFVD } from './actions'
 import { getRundown, getShowStyleVariantId } from './getRundown'
@@ -33,6 +33,7 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		getEndStateForPart,
 		executeAction: executeActionAFVD,
 		syncIngestUpdateToPartInstance,
+		shouldRemoveOrphanedPartInstance,
 
 		showStyleConfigManifest,
 		showStyleMigrations

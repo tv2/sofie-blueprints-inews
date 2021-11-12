@@ -14,14 +14,8 @@ export function syncIngestUpdateToPartInstanceBase(
 	newPart: BlueprintSyncIngestNewData,
 	playoutStatus: 'current' | 'next',
 	/** Layers that can be have pieces added / removed / updated at any time */
-	freelyEditableLayers: string[],
-	preSteps?: () => void,
-	postSteps?: () => void
+	freelyEditableLayers: string[]
 ): void {
-	if (preSteps) {
-		preSteps()
-	}
-
 	const editableLayers =
 		playoutStatus === 'current'
 			? new Set([
@@ -42,8 +36,4 @@ export function syncIngestUpdateToPartInstanceBase(
 	stopOrReplaceEditablePieces(context, existingPartInstance, newPart, editableLayers)
 	updateAdLibInstances(context, existingPartInstance, newPart)
 	updatePartProperties(context, existingPartInstance, newPart)
-
-	if (postSteps) {
-		postSteps()
-	}
 }
