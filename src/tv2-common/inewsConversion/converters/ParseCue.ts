@@ -833,6 +833,7 @@ export function PartToParentClass(studio: string, partDefinition: PartDefinition
 		case PartType.Kam:
 			return CameraParentClass(studio, partDefinition.variant.name)
 		case PartType.Server:
+		case PartType.VO:
 			const clip = partDefinition.fields.videoId
 
 			if (clip) {
