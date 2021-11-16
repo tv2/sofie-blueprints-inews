@@ -13,7 +13,7 @@ import {
 	ShowStyleBlueprintManifest,
 	StudioBlueprintManifest
 } from '@sofie-automation/blueprints-integration'
-import { assertUnreachable, literal } from 'tv2-common'
+import { assertUnreachable, literal, TimeFromINewsField } from 'tv2-common'
 import { getRundownDuration } from './rundownDuration'
 
 interface RundownMetaData {
@@ -50,14 +50,10 @@ function getRundownWithBackTime(
 	const expectedDuration = getRundownDuration(ingestRundown.segments)
 
 	if (backTime) {
-		const backTimeNum = Number(backTime.replace(/^@/, ''))
-		if (!Number.isNaN(backTimeNum)) {
-			const midnightToday = new Date()
-			midnightToday.setHours(0, 0, 0, 0)
-
-			expectedEnd = midnightToday.getTime() + backTimeNum * 1000
-		}
-
+		const backTimeNum = TimeFromINewsField(backTime.replace(/^@/, ''))
+		const midnightToday = new Date()
+		midnightToday.setHours(0, 0, 0, 0)
+		expectedEnd = midnightToday.getTime() + backTimeNum * 1000
 		expectedEnd = expectedEnd
 	}
 

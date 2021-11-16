@@ -25,6 +25,7 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
+	TimeFromINewsField,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -90,7 +91,7 @@ export function CreatePartKam(
 				})
 			})
 		)
-		part.expectedDuration = Number(partDefinition.fields.totalTime) * 1000 || 0
+		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
 		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
 		if (sourceInfoCam === undefined) {
