@@ -72,7 +72,7 @@ export function GetPilotGraphicContentViz(
 					: {
 							start: 0
 					  },
-				priority: 1,
+				priority: IsTargetingWall(engine) ? 100 : 1,
 				layer: IsTargetingWall(engine)
 					? GraphicLLayer.GraphicLLayerWall
 					: IsTargetingOVL(engine)
