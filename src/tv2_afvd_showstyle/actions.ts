@@ -27,7 +27,8 @@ export function executeActionAFVD(context: ActionExecutionContext, actionId: str
 				Effekt: SourceLayer.PgmJingle,
 				EVS: SourceLayer.PgmLocal,
 				Ident: SourceLayer.PgmGraphicsIdent,
-				Continuity: SourceLayer.PgmContinuity
+				Continuity: SourceLayer.PgmContinuity,
+				Wall: SourceLayer.WallGraphics
 			},
 			LLayer: {
 				Caspar: {

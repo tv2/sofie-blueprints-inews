@@ -1,4 +1,10 @@
-import { GraphicsContent, IBlueprintPiece, NotesContext, TSR } from '@sofie-automation/blueprints-integration'
+import {
+	GraphicsContent,
+	IBlueprintPart,
+	IBlueprintPiece,
+	NotesContext,
+	TSR
+} from '@sofie-automation/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GetEnableForGraphic,
@@ -22,6 +28,7 @@ export interface VizPilotGeneratorSettings {
 
 export function GetInternalGraphicContentVIZ(
 	config: TV2BlueprintConfig,
+	part: Readonly<IBlueprintPart>,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
@@ -36,7 +43,7 @@ export function GetInternalGraphicContentVIZ(
 		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
-				enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
+				enable: GetEnableForGraphic(config, part, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
 				priority: 1,
 				layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				content: {
@@ -55,6 +62,7 @@ export function GetInternalGraphicContentVIZ(
 
 export function GetPilotGraphicContentViz(
 	config: TV2BlueprintConfig,
+	part: Readonly<IBlueprintPart> | undefined,
 	context: NotesContext,
 	settings: VizPilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
@@ -68,11 +76,11 @@ export function GetPilotGraphicContentViz(
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
 				enable: IsTargetingOVL(engine)
-					? GetEnableForGraphic(config, engine, parsedCue, false, undefined, adlib)
+					? GetEnableForGraphic(config, part, engine, parsedCue, false, undefined, adlib)
 					: {
 							start: 0
 					  },
-				priority: IsTargetingWall(engine) ? 100 : 1,
+				priority: 1,
 				layer: IsTargetingWall(engine)
 					? GraphicLLayer.GraphicLLayerWall
 					: IsTargetingOVL(engine)

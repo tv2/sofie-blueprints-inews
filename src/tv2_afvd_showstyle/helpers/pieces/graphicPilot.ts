@@ -1,6 +1,7 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	NotesContext,
 	SegmentContext,
@@ -30,6 +31,7 @@ export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
 export function EvaluateCueGraphicPilot(
 	config: BlueprintConfig,
 	context: SegmentContext,
+	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -42,6 +44,7 @@ export function EvaluateCueGraphicPilot(
 	CreatePilotGraphic(
 		config,
 		context,
+		part,
 		pieces,
 		adlibPieces,
 		actions,
