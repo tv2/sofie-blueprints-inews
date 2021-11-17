@@ -44,6 +44,7 @@ export function CreatePartUnknown(
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	EvaluateCues(
 		context,
@@ -62,7 +63,6 @@ export function CreatePartUnknown(
 	if (!asAdlibs) {
 		AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	}
-	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (
 		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&

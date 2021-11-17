@@ -42,6 +42,8 @@ export function CreatePartUnknown(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
+	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
+
 	OfftubeEvaluateCues(
 		context,
 		config,
@@ -56,7 +58,6 @@ export function CreatePartUnknown(
 			adlib: asAdlibs
 		}
 	)
-	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
 
 	if (
 		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
