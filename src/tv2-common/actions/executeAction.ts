@@ -1428,10 +1428,10 @@ function applyPrerollToWallGraphics<
 	}
 	const enable = GetEnableForWall(partProps)
 	for (const pieceInstance of wallPieces) {
-		const newPieceProps = {
-			content: pieceInstance.piece.content as GraphicsContent | undefined
-		}
-		if (newPieceProps.content?.timelineObjects) {
+		if (pieceInstance.piece.content?.timelineObjects && !pieceInstance.infinite?.fromPreviousPart) {
+			const newPieceProps = {
+				content: pieceInstance.piece.content as GraphicsContent
+			}
 			const timelineObjectsToUpdate = newPieceProps.content.timelineObjects.filter(
 				timelineObject =>
 					timelineObject.layer === GraphicLLayer.GraphicLLayerWall &&
