@@ -75,11 +75,12 @@ export function GetPilotGraphicContentViz(
 		timelineObjects: [
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
-				enable: IsTargetingOVL(engine)
-					? GetEnableForGraphic(config, part, engine, parsedCue, false, undefined, adlib)
-					: {
-							start: 0
-					  },
+				enable:
+					IsTargetingOVL(engine) || IsTargetingWall(engine)
+						? GetEnableForGraphic(config, part, engine, parsedCue, false, undefined, adlib)
+						: {
+								start: 0
+						  },
 				priority: 1,
 				layer: IsTargetingWall(engine)
 					? GraphicLLayer.GraphicLLayerWall
