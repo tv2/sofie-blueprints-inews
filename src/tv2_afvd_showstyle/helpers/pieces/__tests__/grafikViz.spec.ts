@@ -2,6 +2,7 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	IBlueprintRundownDB,
 	PieceLifespan,
@@ -49,6 +50,11 @@ const dummyPart = literal<PartDefinitionKam>({
 	modified: 0,
 	segmentExternalId: ''
 })
+
+const dummyBlueprintPart: IBlueprintPart = {
+	title: 'Kam 1',
+	externalId: '0001'
+}
 
 const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 	id: '',
@@ -101,6 +107,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -169,6 +176,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -274,6 +282,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			newConfig,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -379,6 +388,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -452,6 +462,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -521,6 +532,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -614,6 +626,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -682,6 +695,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
