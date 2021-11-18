@@ -426,7 +426,19 @@ function executeActionSelectServerClip<
 			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO
 	)
 
+	let part = basePart.part.part
+
 	const grafikPieces: IBlueprintPiece[] = []
+	const effektPieces: IBlueprintPiece[] = []
+
+	part = {
+		...part,
+		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
+			sourceLayer: settings.SourceLayers.Effekt,
+			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
+			casparLayer: settings.LLayer.Caspar.Effekt
+		})
+	}
 
 	settings.EvaluateCues(
 		(context as unknown) as SegmentContext,
@@ -451,18 +463,6 @@ function executeActionSelectServerClip<
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
-	}
-
-	let part = basePart.part.part
-
-	const effektPieces: IBlueprintPiece[] = []
-	part = {
-		...part,
-		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
-			sourceLayer: settings.SourceLayers.Effekt,
-			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
-			casparLayer: settings.LLayer.Caspar.Effekt
-		})
 	}
 
 	context.queuePart(part, [
