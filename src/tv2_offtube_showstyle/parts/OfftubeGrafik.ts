@@ -33,6 +33,8 @@ export function OfftubeCreatePartGrafik(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
+	ApplyFullGraphicPropertiesToPart(config, part)
+
 	OfftubeEvaluateCues(
 		context,
 		config,
@@ -48,8 +50,6 @@ export function OfftubeCreatePartGrafik(
 		}
 	)
 	AddScript(partDefinition, pieces, partTime, OfftubeSourceLayer.PgmScript)
-
-	ApplyFullGraphicPropertiesToPart(config, part)
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 

@@ -30,6 +30,8 @@ export function CreatePartGrafik(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
+	ApplyFullGraphicPropertiesToPart(config, part)
+
 	EvaluateCues(
 		context,
 		config,
@@ -45,8 +47,6 @@ export function CreatePartGrafik(
 		}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
-
-	ApplyFullGraphicPropertiesToPart(config, part)
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 

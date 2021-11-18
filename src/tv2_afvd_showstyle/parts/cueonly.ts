@@ -47,6 +47,15 @@ export function CreatePartCueOnly(
 
 	part = { ...part, ...GetJinglePartProperties(context, config, partDefinitionWithID) }
 
+	if (
+		partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length &&
+		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
+	) {
+		ApplyFullGraphicPropertiesToPart(config, part)
+	} else if (partDefinition.cues.filter(c => c.type === CueType.DVE).length) {
+		part.prerollDuration = config.studio.CasparPrerollDuration
+	}
+
 	EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {})
 	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 
@@ -57,15 +66,6 @@ export function CreatePartCueOnly(
 	}
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
-
-	if (
-		partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
-	) {
-		ApplyFullGraphicPropertiesToPart(config, part)
-	} else if (partDefinition.cues.filter(c => c.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
-	}
 
 	if (pieces.length === 0 && adLibPieces.length === 0) {
 		part.invalid = true
