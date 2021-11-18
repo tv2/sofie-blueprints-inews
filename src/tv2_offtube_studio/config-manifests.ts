@@ -126,6 +126,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
 	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov', 'jingler', false),
 	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png', '', false),
+	...MakeConfigWithMediaFlow('AudioBed', '', 'flow1', '.wav', 'audio', true),
+	...MakeConfigWithMediaFlow('DVE', '', 'flow1', '.png', 'dve', true),
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
 	manifestOfftubeSourcesFeed,

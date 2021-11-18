@@ -121,6 +121,8 @@ function LydContent(
 		})
 	}
 
+	const filePath = config.studio.AudioBedFolder ? `${config.studio.AudioBedFolder}/${file}` : file
+
 	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia>({
@@ -133,7 +135,7 @@ function LydContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file,
+					file: filePath,
 					channelLayout: 'bed',
 					loop: true,
 					noStarttime: true,
