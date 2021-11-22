@@ -1,6 +1,7 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	SegmentContext,
@@ -33,6 +34,7 @@ import { GetInternalGraphicContentVIZ } from '../viz'
 export function CreateInternalGraphic(
 	config: TV2BlueprintConfig,
 	context: SegmentContext,
+	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -66,8 +68,26 @@ export function CreateInternalGraphic(
 
 	const content =
 		config.studio.GraphicsType === 'HTML'
-			? GetInternalGraphicContentCaspar(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate, adlib)
-			: GetInternalGraphicContentVIZ(config, engine, parsedCue, isStickyIdent, partDefinition, mappedTemplate, adlib)
+			? GetInternalGraphicContentCaspar(
+					config,
+					part,
+					engine,
+					parsedCue,
+					isStickyIdent,
+					partDefinition,
+					mappedTemplate,
+					adlib
+			  )
+			: GetInternalGraphicContentVIZ(
+					config,
+					part,
+					engine,
+					parsedCue,
+					isStickyIdent,
+					partDefinition,
+					mappedTemplate,
+					adlib
+			  )
 
 	if (adlib) {
 		if (IsTargetingOVL(engine)) {

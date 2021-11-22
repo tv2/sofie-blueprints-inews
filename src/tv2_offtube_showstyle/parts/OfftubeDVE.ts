@@ -31,6 +31,11 @@ export function OfftubeCreatePartDVE(
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
+
+	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
+		part.prerollDuration = config.studio.CasparPrerollDuration
+	}
+
 	OfftubeEvaluateCues(
 		context,
 		config,
@@ -45,10 +50,6 @@ export function OfftubeCreatePartDVE(
 			adlib: true
 		}
 	)
-
-	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
-	}
 
 	if (pieces.length === 0) {
 		part.invalid = true

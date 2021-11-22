@@ -7,7 +7,15 @@ import {
 	IBlueprintPiece,
 	SegmentContext
 } from '@sofie-automation/blueprints-integration'
-import { AddScript, ApplyFullGraphicPropertiesToPart, literal, PartDefinition, PartTime } from 'tv2-common'
+import {
+	AddScript,
+	ApplyFullGraphicPropertiesToPart,
+	GraphicIsPilot,
+	literal,
+	PartDefinition,
+	PartTime
+} from 'tv2-common'
+import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -30,6 +38,10 @@ export function CreatePartGrafik(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
+	if (partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length) {
+		ApplyFullGraphicPropertiesToPart(config, part)
+	}
+
 	EvaluateCues(
 		context,
 		config,
@@ -45,8 +57,6 @@ export function CreatePartGrafik(
 		}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
-
-	ApplyFullGraphicPropertiesToPart(config, part)
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 

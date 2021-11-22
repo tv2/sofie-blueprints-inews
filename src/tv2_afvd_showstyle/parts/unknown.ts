@@ -44,6 +44,16 @@ export function CreatePartUnknown(
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
+
+	if (
+		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
+		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
+	) {
+		ApplyFullGraphicPropertiesToPart(config, part)
+	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
+		part.prerollDuration = config.studio.CasparPrerollDuration
+	}
 
 	EvaluateCues(
 		context,
@@ -61,16 +71,6 @@ export function CreatePartUnknown(
 	)
 	if (!asAdlibs) {
 		AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
-	}
-	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
-
-	if (
-		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
-	) {
-		ApplyFullGraphicPropertiesToPart(config, part)
-	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
 	if (pieces.length === 0) {

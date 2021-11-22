@@ -72,6 +72,11 @@ export function CreatePartIntro(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
+	part = {
+		...part,
+		...GetJinglePartProperties(context, config, partDefinition)
+	}
+
 	EvaluateCues(
 		context,
 		config,
@@ -87,7 +92,6 @@ export function CreatePartIntro(
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)
 	part = {
 		...part,
-		...GetJinglePartProperties(context, config, partDefinition),
 		hackListenToMediaObjectUpdates: mediaSubscriptions
 	}
 

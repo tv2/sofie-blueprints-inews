@@ -2,6 +2,7 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR
@@ -51,6 +52,11 @@ const dummyPart = literal<PartDefinitionKam>({
 	segmentExternalId: ''
 })
 
+const dummyBlueprintPart: IBlueprintPart = {
+	title: 'Kam 1',
+	externalId: '0001'
+}
+
 describe('telefon', () => {
 	test('telefon with vizObj', () => {
 		const cue: CueDefinitionTelefon = {
@@ -87,6 +93,7 @@ describe('telefon', () => {
 				dsk: defaultDSKConfig
 			},
 			mockContext,
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
