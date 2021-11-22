@@ -153,12 +153,8 @@ export function remapTableColumnValues(
 			validate: (context: MigrationContextShowStyle) => {
 				const table = context.getBaseConfig(tableId) as TableConfigItemValue | undefined
 
-				if (!table) {
-					return `Table "${tableId}" does not exist`
-				}
-
-				if (!table.length) {
-					// No values, nothing to remap
+				if (!table || !table.length) {
+					// No table or no values, nothing to remap
 					return false
 				}
 
