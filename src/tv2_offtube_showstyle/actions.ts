@@ -38,7 +38,8 @@ export function executeActionOfftube(
 				Live: OfftubeSourceLayer.PgmLive,
 				Effekt: OfftubeSourceLayer.PgmJingle,
 				Ident: OfftubeSourceLayer.PgmGraphicsIdent,
-				Continuity: OfftubeSourceLayer.PgmContinuity
+				Continuity: OfftubeSourceLayer.PgmContinuity,
+				Wall: OfftubeSourceLayer.WallGraphics
 			},
 			LLayer: {
 				Caspar: {

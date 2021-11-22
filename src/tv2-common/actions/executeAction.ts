@@ -1,5 +1,6 @@
 import {
 	ActionUserData,
+	GraphicsContent,
 	HackPartMediaObjectSubscription,
 	IActionExecutionContext,
 	IBlueprintActionManifest,
@@ -70,7 +71,7 @@ import {
 } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
-import { CreateFullDataStore, PilotGeneratorSettings } from '../helpers'
+import { CreateFullDataStore, GetEnableForWall, PilotGeneratorSettings } from '../helpers'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
 import {
@@ -139,6 +140,7 @@ export interface ActionExecutionSettings<
 		EVS?: string
 		/** Ident visual representation layer *not* the infinite layer */
 		Ident: string
+		Wall: string
 	}
 	LLayer: {
 		Caspar: {
@@ -427,7 +429,19 @@ function executeActionSelectServerClip<
 			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO
 	)
 
+	let part = basePart.part.part
+
 	const grafikPieces: IBlueprintPiece[] = []
+	const effektPieces: IBlueprintPiece[] = []
+
+	part = {
+		...part,
+		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
+			sourceLayer: settings.SourceLayers.Effekt,
+			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
+			casparLayer: settings.LLayer.Caspar.Effekt
+		})
+	}
 
 	settings.EvaluateCues(
 		context,
@@ -452,18 +466,6 @@ function executeActionSelectServerClip<
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
-	}
-
-	let part = basePart.part.part
-
-	const effektPieces: IBlueprintPiece[] = []
-	part = {
-		...part,
-		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
-			sourceLayer: settings.SourceLayers.Effekt,
-			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
-			casparLayer: settings.LLayer.Caspar.Effekt
-		})
 	}
 
 	context.queuePart(part, [
@@ -1372,6 +1374,77 @@ function executeActionCutSourceToBox<
 	}
 }
 
+interface PiecesBySourceLayer {
+	[key: string]: IBlueprintPieceInstance[]
+}
+
+function groupPiecesBySourceLayer(pieceInstances: IBlueprintPieceInstance[]): PiecesBySourceLayer {
+	const piecesBySourceLayer: PiecesBySourceLayer = {}
+	pieceInstances.forEach(piece => {
+		if (!piecesBySourceLayer[piece.piece.sourceLayerId]) {
+			piecesBySourceLayer[piece.piece.sourceLayerId] = []
+		}
+		piecesBySourceLayer[piece.piece.sourceLayerId].push(piece)
+	})
+	return piecesBySourceLayer
+}
+
+function findPrimaryPieceUsingPriority<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>, piecesBySourceLayer: PiecesBySourceLayer) {
+	const sourceLayersOrderedByPriority = [
+		settings.SourceLayers.Cam,
+		settings.SourceLayers.DVE,
+		settings.SourceLayers.DVEAdLib,
+		settings.SourceLayers.Live,
+		settings.SourceLayers.Server,
+		settings.SourceLayers.VO,
+		...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
+		settings.SourceLayers.Effekt,
+		settings.SourceLayers.Continuity
+	]
+	for (const layer of sourceLayersOrderedByPriority) {
+		if (layer && piecesBySourceLayer[layer]) {
+			return piecesBySourceLayer[layer][0]
+		}
+	}
+	return undefined
+}
+
+function applyPrerollToWallGraphics<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ITV2ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	piecesBySourceLayer: PiecesBySourceLayer,
+	partProps: Partial<IBlueprintPart>
+) {
+	const wallPieces = piecesBySourceLayer[settings.SourceLayers.Wall]
+	if (!wallPieces) {
+		return
+	}
+	const enable = GetEnableForWall(partProps)
+	for (const pieceInstance of wallPieces) {
+		if (pieceInstance.piece.content?.timelineObjects && !pieceInstance.infinite?.fromPreviousPart) {
+			const newPieceProps = {
+				content: pieceInstance.piece.content as WithTimeline<GraphicsContent>
+			}
+			const timelineObjectsToUpdate = newPieceProps.content.timelineObjects.filter(
+				timelineObject =>
+					timelineObject.layer === GraphicLLayer.GraphicLLayerWall &&
+					(timelineObject.content.deviceType === TSR.DeviceType.VIZMSE ||
+						timelineObject.content.deviceType === TSR.DeviceType.CASPARCG)
+			)
+			timelineObjectsToUpdate.forEach(timelineObject => {
+				timelineObject.enable = enable
+			})
+			context.updatePieceInstance(pieceInstance._id, newPieceProps)
+		}
+	}
+}
+
 function executeActionTakeWithTransition<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -1384,31 +1457,9 @@ function executeActionTakeWithTransition<
 	const externalId = generateExternalId(context, actionId, [userData.variant.type])
 
 	const nextPieces = context.getPieceInstances('next')
-	const piecesBySourceLayer: { [key: string]: IBlueprintPieceInstance[] } = {}
-	const sourceLayersByPriority = [
-		settings.SourceLayers.Cam,
-		settings.SourceLayers.DVE,
-		settings.SourceLayers.DVEAdLib,
-		settings.SourceLayers.Live,
-		settings.SourceLayers.Server,
-		settings.SourceLayers.VO,
-		...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
-		settings.SourceLayers.Effekt,
-		settings.SourceLayers.Continuity
-	]
-	nextPieces.forEach(piece => {
-		if (!piecesBySourceLayer[piece.piece.sourceLayerId]) {
-			piecesBySourceLayer[piece.piece.sourceLayerId] = []
-		}
-		piecesBySourceLayer[piece.piece.sourceLayerId].push(piece)
-	})
-	let primaryPiece: IBlueprintPieceInstance | undefined
-	for (const layer of sourceLayersByPriority) {
-		if (layer && piecesBySourceLayer[layer]) {
-			primaryPiece = piecesBySourceLayer[layer][0]
-			break
-		}
-	}
+
+	const nextPiecesBySourceLayer = groupPiecesBySourceLayer(nextPieces)
+	const primaryPiece = findPrimaryPieceUsingPriority(settings, nextPiecesBySourceLayer)
 
 	context.takeAfterExecuteAction(userData.takeNow)
 
@@ -1442,6 +1493,8 @@ function executeActionTakeWithTransition<
 		context.removePieceInstances('next', [existingEffektPiece._id])
 	}
 
+	let partProps: Partial<IBlueprintPart> | false = false
+
 	switch (userData.variant.type) {
 		case 'cut':
 			{
@@ -1468,12 +1521,14 @@ function executeActionTakeWithTransition<
 					}
 				}
 
-				context.insertPiece('next', cutTransitionPiece)
-				context.updatePartInstance('next', {
+				partProps = {
 					transitionKeepaliveDuration: undefined,
 					transitionDuration: undefined,
 					transitionPrerollDuration: undefined
-				})
+				}
+
+				context.insertPiece('next', cutTransitionPiece)
+				context.updatePartInstance('next', partProps)
 			}
 			break
 		case 'breaker': {
@@ -1485,7 +1540,7 @@ function executeActionTakeWithTransition<
 
 			const config = settings.getConfig(context)
 			const pieces: IBlueprintPiece[] = []
-			const partProps = CreateEffektForPartInner(
+			partProps = CreateEffektForPartInner(
 				context,
 				config,
 				pieces,
@@ -1519,7 +1574,7 @@ function executeActionTakeWithTransition<
 			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 			const pieces: IBlueprintPiece[] = []
-			const partProps = CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
+			partProps = CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
 				sourceLayer: settings.SourceLayers.Effekt,
 				casparLayer: settings.LLayer.Caspar.Effekt,
 				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
@@ -1530,6 +1585,10 @@ function executeActionTakeWithTransition<
 
 			break
 		}
+	}
+
+	if (partProps) {
+		applyPrerollToWallGraphics(context, settings, nextPiecesBySourceLayer, partProps)
 	}
 }
 
@@ -1880,6 +1939,7 @@ function executeActionSelectFull<
 	const fullPiece = CreateFullPiece(
 		config,
 		context,
+		part,
 		externalId,
 		cue,
 		'FULL',
@@ -1893,6 +1953,7 @@ function executeActionSelectFull<
 	const fullDataStore = CreateFullDataStore(
 		config,
 		context,
+		part,
 		settings.pilotGraphicSettings,
 		cue,
 		'FULL',

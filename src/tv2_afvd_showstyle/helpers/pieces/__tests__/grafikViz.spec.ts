@@ -2,12 +2,20 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR,
 	WithTimeline
 } from '@sofie-automation/blueprints-integration'
-import { AtemLLayerDSK, CueDefinitionGraphic, GraphicInternal, literal, PartDefinitionKam } from 'tv2-common'
+import {
+	AtemLLayerDSK,
+	CueDefinitionGraphic,
+	GraphicInternal,
+	GraphicPilot,
+	literal,
+	PartDefinitionKam
+} from 'tv2-common'
 import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { BlueprintConfig, parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
@@ -41,6 +49,11 @@ const dummyPart = literal<PartDefinitionKam>({
 	modified: 0,
 	segmentExternalId: ''
 })
+
+const dummyBlueprintPart: IBlueprintPart = {
+	title: 'Kam 1',
+	externalId: '0001'
+}
 
 const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 	id: '',
@@ -93,6 +106,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -161,6 +175,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -266,6 +281,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			newConfig,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -371,6 +387,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -444,6 +461,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -513,6 +531,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -606,6 +625,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -674,6 +694,7 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
+			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -754,5 +775,99 @@ describe('grafik piece', () => {
 				})
 			})
 		])
+	})
+
+	it('Applies delay to WALL graphics when part has prerollDuration', () => {
+		const partWithPreroll: IBlueprintPart = {
+			title: 'Server',
+			externalId: '0001',
+			prerollDuration: 1000
+		}
+		const cue: CueDefinitionGraphic<GraphicPilot> = {
+			type: CueType.Graphic,
+			target: 'WALL',
+			graphic: {
+				type: 'pilot',
+				name: '',
+				vcpid: 1234567890,
+				continueCount: -1
+			},
+			iNewsCommand: 'GRAFIK'
+		}
+
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			partWithPreroll,
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			cue.adlib ? cue.adlib : false,
+			dummyPart,
+			0
+		)
+		const piece = pieces[0]
+		expect(piece).toBeTruthy()
+		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
+			obj =>
+				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
+				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
+		) as TSR.TimelineObjVIZMSEElementInternal | undefined
+		expect(tlObj).toBeTruthy()
+		expect(tlObj?.enable).toEqual({ start: 1000 })
+	})
+
+	it('Applies delay to WALL graphics when part has transitionPrerollDuration', () => {
+		const partWithPreroll: IBlueprintPart = {
+			title: 'Kam 1',
+			externalId: '0001',
+			transitionPrerollDuration: 2000
+		}
+		const cue: CueDefinitionGraphic<GraphicPilot> = {
+			type: CueType.Graphic,
+			target: 'WALL',
+			graphic: {
+				type: 'pilot',
+				name: '',
+				vcpid: 1234567890,
+				continueCount: -1
+			},
+			iNewsCommand: 'GRAFIK'
+		}
+
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			partWithPreroll,
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			cue.adlib ? cue.adlib : false,
+			dummyPart,
+			0
+		)
+		const piece = pieces[0]
+		expect(piece).toBeTruthy()
+		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
+			obj =>
+				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
+				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
+		) as TSR.TimelineObjVIZMSEElementInternal | undefined
+		expect(tlObj).toBeTruthy()
+		expect(tlObj?.enable).toEqual({ start: 2000 })
 	})
 })
