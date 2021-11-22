@@ -59,7 +59,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@sofie-automation/blueprints-integration": "https://github.com/olzzon/tv-automation-server-core.git#dist_blueprints_integration20210525_2",
+    "@sofie-automation/blueprints-integration": "https://github.com/tv2/tv-automation-server-core.git#dist_blueprints_integration20210525_2",
     "underscore": "^1.12.1"
   }
 }
