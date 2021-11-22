@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.9](https://github.com/olzzon/tv2-sofie-blueprints-inews/compare/v1.6.8...v1.6.9) (2021-11-22)
+
+
+### Bug Fixes
+
+* apply delayed enable to wall graphics when part has preroll ([b368090](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/b368090f7b18ae01c738eb1fd473186e02118448))
+* apply effekt part properties before evaluating cues ([a235267](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/a2352671f7e1b21362ebf0c1ba87c99cf11a2ffc))
+* apply full and dve part properties before evaluating cues ([cfd5ee5](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/cfd5ee585b2ad7a1ba289245fec9d51c85f654a9))
+* apply full graphic properties only when contains a full ([c1d0fa8](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/c1d0fa8d7fffbc8c753fa115d0ec3df0c78c3f71))
+* Apply jingle part properties before evaluating cues ([e187f60](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/e187f608706ad71a164a92bcc8de7b8d08fae2d7))
+* create parent class for VOs ([784df52](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/784df52cafd21734036593bedfe28fab13904bb0))
+* don't update infinites from previous part ([e2bfa83](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/e2bfa83cebd774bf5bb6496ef8408fcb10065dc9))
+* set enable for pilots targeting wall ([22a2a4c](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/22a2a4c7c2c26cba3bd52ee21a5d411e59d82d53))
+* set higher priority on WALL graphics to make them last during prerollDuration ([de6dbca](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/de6dbca531faf6a2af4eea994dd0625ac04e2819))
+* undefined properties not synced ([cf44d4e](https://github.com/olzzon/tv2-sofie-blueprints-inews/commit/cf44d4eac88f19e8eeda0de086f2d5d6d145e60f))
+
 ### [1.6.8](https://github.com/olzzon/tv2-sofie-blueprints-inews/compare/v1.6.7...v1.6.8) (2021-08-18)
 
 
