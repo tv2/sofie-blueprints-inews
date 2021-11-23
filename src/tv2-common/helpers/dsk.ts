@@ -5,7 +5,7 @@ import {
 	PieceLifespan,
 	TableConfigItemValue,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { AtemLLayerDSK, literal, SourceLayerAtemDSK } from 'tv2-common'
 import { AdlibTags, DSKRoles, SharedOutputLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'

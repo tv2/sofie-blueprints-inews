@@ -8,7 +8,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
 import {
 	AbstractLLayer,

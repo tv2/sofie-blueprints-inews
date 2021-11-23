@@ -5,7 +5,7 @@ import {
 	MigrationContextStudio,
 	MigrationStepShowStyle,
 	MigrationStepStudio
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { TableConfigItemGFXTemplates } from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'

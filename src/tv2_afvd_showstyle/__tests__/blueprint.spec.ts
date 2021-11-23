@@ -3,7 +3,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintActionManifestDisplayContent,
 	IngestSegment
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../__mocks__/context'

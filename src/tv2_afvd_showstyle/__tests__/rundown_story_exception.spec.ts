@@ -1,10 +1,6 @@
 import * as _ from 'underscore'
 
-import {
-	ExtendedIngestRundown,
-	IBlueprintPieceGeneric,
-	IBlueprintRundownDB
-} from '@sofie-automation/blueprints-integration'
+import { ExtendedIngestRundown, IBlueprintPieceGeneric, IBlueprintRundownDB } from '@tv2media/blueprints-integration'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
 import { checkAllLayers } from './layers-check'
 

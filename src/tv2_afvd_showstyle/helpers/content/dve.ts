@@ -1,4 +1,4 @@
-import { IShowStyleUserContext, SplitsContent, WithTimeline } from '@sofie-automation/blueprints-integration'
+import { IShowStyleUserContext, SplitsContent, WithTimeline } from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionDVE,
 	DVEConfigInput,

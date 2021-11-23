@@ -1,4 +1,4 @@
-import { PieceLifespan } from '@sofie-automation/blueprints-integration'
+import { PieceLifespan } from '@tv2media/blueprints-integration'
 import { SharedOutputLayers } from 'tv2-constants'
 import { assertUnreachable, isAdLibPiece } from '../util'
 

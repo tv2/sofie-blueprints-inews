@@ -1,4 +1,4 @@
-import { ISegmentUserContext, SplitsContent, WithTimeline } from '@sofie-automation/blueprints-integration'
+import { ISegmentUserContext, SplitsContent, WithTimeline } from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionDVE,
 	DVEConfigInput,

@@ -1,4 +1,4 @@
-import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
+import { MigrationStepShowStyle } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
 	GetDSKSourceLayerNames,

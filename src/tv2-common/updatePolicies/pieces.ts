@@ -3,7 +3,7 @@ import {
 	BlueprintSyncIngestPartInstance,
 	IBlueprintPieceInstance,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 
 function groupPieceInstances(pieceInstances: Array<IBlueprintPieceInstance<unknown>>) {
 	return pieceInstances.reduce<{

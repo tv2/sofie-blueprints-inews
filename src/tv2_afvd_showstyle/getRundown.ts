@@ -14,7 +14,7 @@ import {
 	SourceLayerType,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,

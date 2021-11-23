@@ -1,4 +1,4 @@
-import { ActionUserData, IActionExecutionContext } from '@sofie-automation/blueprints-integration'
+import { ActionUserData, IActionExecutionContext } from '@tv2media/blueprints-integration'
 import { executeAction } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'

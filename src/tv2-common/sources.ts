@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { IStudioContext, SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { IStudioContext, SourceLayerType } from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
 

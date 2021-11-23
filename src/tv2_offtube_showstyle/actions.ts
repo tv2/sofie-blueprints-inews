@@ -1,4 +1,4 @@
-import { ActionUserData, IActionExecutionContext } from '@sofie-automation/blueprints-integration'
+import { ActionUserData, IActionExecutionContext } from '@tv2media/blueprints-integration'
 import { executeAction } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'

@@ -1,8 +1,4 @@
-import {
-	ISourceLayer,
-	MigrationContextShowStyle,
-	MigrationStepShowStyle
-} from '@sofie-automation/blueprints-integration'
+import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 
 export function SetShortcutListMigrationStep(
@@ -21,11 +17,13 @@ export function SetShortcutListMigrationStep(
 				return `Sourcelayer ${sourceLayerId} does not exists`
 			}
 
+			// @ts-ignore: old property
 			return sourceLayer.activateKeyboardHotkeys !== newValue
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			const sourceLayer = context.getSourceLayer(sourceLayerId) as ISourceLayer
 
+			// @ts-ignore: old property
 			sourceLayer.activateKeyboardHotkeys = newValue
 
 			context.updateSourceLayer(sourceLayerId, sourceLayer)
@@ -78,11 +76,13 @@ export function SetClearShortcutListTransitionStep(
 					return `Sourcelayer ${sourceLayerId} does not exists`
 				}
 
+				// @ts-ignore: old property
 				return sourceLayer.clearKeyboardHotkey !== newValue
 			},
 			migrate: (context: MigrationContextShowStyle) => {
 				const sourceLayer = context.getSourceLayer(sourceLayerId) as ISourceLayer
 
+				// @ts-ignore: old property
 				sourceLayer.clearKeyboardHotkey = newValue
 
 				context.updateSourceLayer(sourceLayerId, sourceLayer)

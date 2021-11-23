@@ -287,7 +287,7 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@1.37.0-rc19":
+"@tv2media/blueprints-integration@1.37.0-rc19":
   version "1.37.0-rc19"
   resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.37.0-rc19.tgz#b0899f1e017747dec24ab5f9188830345fe477eb"
   integrity sha512-ctKx/MHkHku4vINjw1mSqmEGHRBHl0nncGamPXgilLZhoSQDhAM0HOBTqZbznC22DATKK29Gh264VFTOKj6QJg==

@@ -1,8 +1,4 @@
-import {
-	MigrationContextStudio,
-	MigrationStepStudio,
-	TableConfigItemValue
-} from '@sofie-automation/blueprints-integration'
+import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue } from '@tv2media/blueprints-integration'
 import { parseMapStr, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import * as _ from 'underscore'
 import { literal } from '../util'

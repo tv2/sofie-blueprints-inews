@@ -12,7 +12,7 @@ import {
 	RundownPlaylistTiming,
 	ShowStyleBlueprintManifest,
 	StudioBlueprintManifest
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { assertUnreachable, literal, TimeFromINewsField } from 'tv2-common'
 import { getRundownDuration } from './rundownDuration'
 
