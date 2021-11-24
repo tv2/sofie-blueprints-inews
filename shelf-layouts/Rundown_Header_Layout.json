@@ -210,7 +210,7 @@
 			"default": false,
 			"nextInCurrentPart": false,
 			"oneNextPerSourceLayer": false,
-			"scale": 1.5,
+			"scale": 1.3,
 			"customClasses": [
 				""
 			],
