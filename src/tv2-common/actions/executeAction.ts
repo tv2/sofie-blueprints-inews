@@ -1,5 +1,6 @@
 import {
 	ActionUserData,
+	GraphicsContent,
 	HackPartMediaObjectSubscription,
 	IActionExecutionContext,
 	IBlueprintActionManifest,
@@ -39,6 +40,7 @@ import {
 	DVEPieceMetaData,
 	DVESources,
 	EvaluateCuesOptions,
+	executeWithContext,
 	FindSourceInfoStrict,
 	GetCameraMetaData,
 	GetDVETemplate,
@@ -49,6 +51,7 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
+	ITV2ActionExecutionContext,
 	literal,
 	MakeContentDVE2,
 	PartDefinition,
@@ -68,7 +71,7 @@ import {
 } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
-import { CreateFullDataStore, PilotGeneratorSettings } from '../helpers'
+import { CreateFullDataStore, GetEnableForWall, PilotGeneratorSettings } from '../helpers'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
 import {
@@ -137,6 +140,7 @@ export interface ActionExecutionSettings<
 		EVS?: string
 		/** Ident visual representation layer *not* the infinite layer */
 		Ident: string
+		Wall: string
 	}
 	LLayer: {
 		Caspar: {
@@ -171,7 +175,7 @@ export interface ActionExecutionSettings<
 		SELECTED_ADLIB_LAYERS: string[]
 	}
 	ServerAudioLayers: string[]
-	createJingleContent?: (
+	createJingleContent: (
 		config: ShowStyleConfig,
 		file: string,
 		alphaAtStart: number,
@@ -186,74 +190,76 @@ export function executeAction<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	coreContext: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionIdStr: string,
 	userData: ActionUserData
 ): void {
-	const existingTransition = getExistingTransition(context, settings, 'next')
+	executeWithContext(coreContext, context => {
+		const existingTransition = getExistingTransition(context, settings, 'next')
 
-	const actionId = actionIdStr as AdlibActionType
+		const actionId = actionIdStr as AdlibActionType
 
-	switch (actionId) {
-		case AdlibActionType.SELECT_SERVER_CLIP:
-			executeActionSelectServerClip(context, settings, actionId, userData as ActionSelectServerClip)
-			break
-		case AdlibActionType.SELECT_DVE:
-			executeActionSelectDVE(context, settings, actionId, userData as ActionSelectDVE)
-			break
-		case AdlibActionType.SELECT_DVE_LAYOUT:
-			executeActionSelectDVELayout(context, settings, actionId, userData as ActionSelectDVELayout)
-			break
-		case AdlibActionType.SELECT_FULL_GRAFIK:
-			executeActionSelectFull(context, settings, actionId, userData as ActionSelectFullGrafik)
-			break
-		case AdlibActionType.SELECT_JINGLE:
-			executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
-			break
-		case AdlibActionType.CLEAR_GRAPHICS:
-			executeActionClearGraphics(context, settings, actionId, userData as ActionClearGraphics)
-			break
-		case AdlibActionType.CUT_TO_CAMERA:
-			executeActionCutToCamera(context, settings, actionId, userData as ActionCutToCamera)
-			break
-		case AdlibActionType.CUT_TO_REMOTE:
-			executeActionCutToRemote(context, settings, actionId, userData as ActionCutToRemote)
-			break
-		case AdlibActionType.CUT_SOURCE_TO_BOX:
-			executeActionCutSourceToBox(context, settings, actionId, userData as ActionCutSourceToBox)
-			break
-		case AdlibActionType.COMMENTATOR_SELECT_DVE:
-			executeActionCommentatorSelectDVE(context, settings, actionId, userData as ActionCommentatorSelectDVE)
-			break
-		case AdlibActionType.COMMENTATOR_SELECT_SERVER:
-			executeActionCommentatorSelectServer(context, settings, actionId, userData as ActionCommentatorSelectServer)
-			break
-		case AdlibActionType.COMMENTATOR_SELECT_FULL:
-			executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
-			break
-		case AdlibActionType.COMMENTATOR_SELECT_JINGLE:
-			executeActionCommentatorSelectJingle(context, settings, actionId, userData as ActionCommentatorSelectJingle)
-			break
-		case AdlibActionType.TAKE_WITH_TRANSITION:
-			executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
-			break
-		case AdlibActionType.RECALL_LAST_LIVE:
-			executeActionRecallLastLive(context, settings, actionId, userData as ActionRecallLastLive)
-			break
-		case AdlibActionType.RECALL_LAST_DVE:
-			executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
-			break
-		default:
-			assertUnreachable(actionId)
-			break
-	}
-
-	if (actionId !== AdlibActionType.TAKE_WITH_TRANSITION) {
-		if (existingTransition) {
-			executeActionTakeWithTransition(context, settings, AdlibActionType.TAKE_WITH_TRANSITION, existingTransition)
+		switch (actionId) {
+			case AdlibActionType.SELECT_SERVER_CLIP:
+				executeActionSelectServerClip(context, settings, actionId, userData as ActionSelectServerClip)
+				break
+			case AdlibActionType.SELECT_DVE:
+				executeActionSelectDVE(context, settings, actionId, userData as ActionSelectDVE)
+				break
+			case AdlibActionType.SELECT_DVE_LAYOUT:
+				executeActionSelectDVELayout(context, settings, actionId, userData as ActionSelectDVELayout)
+				break
+			case AdlibActionType.SELECT_FULL_GRAFIK:
+				executeActionSelectFull(context, settings, actionId, userData as ActionSelectFullGrafik)
+				break
+			case AdlibActionType.SELECT_JINGLE:
+				executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
+				break
+			case AdlibActionType.CLEAR_GRAPHICS:
+				executeActionClearGraphics(context, settings, actionId, userData as ActionClearGraphics)
+				break
+			case AdlibActionType.CUT_TO_CAMERA:
+				executeActionCutToCamera(context, settings, actionId, userData as ActionCutToCamera)
+				break
+			case AdlibActionType.CUT_TO_REMOTE:
+				executeActionCutToRemote(context, settings, actionId, userData as ActionCutToRemote)
+				break
+			case AdlibActionType.CUT_SOURCE_TO_BOX:
+				executeActionCutSourceToBox(context, settings, actionId, userData as ActionCutSourceToBox)
+				break
+			case AdlibActionType.COMMENTATOR_SELECT_DVE:
+				executeActionCommentatorSelectDVE(context, settings, actionId, userData as ActionCommentatorSelectDVE)
+				break
+			case AdlibActionType.COMMENTATOR_SELECT_SERVER:
+				executeActionCommentatorSelectServer(context, settings, actionId, userData as ActionCommentatorSelectServer)
+				break
+			case AdlibActionType.COMMENTATOR_SELECT_FULL:
+				executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
+				break
+			case AdlibActionType.COMMENTATOR_SELECT_JINGLE:
+				executeActionCommentatorSelectJingle(context, settings, actionId, userData as ActionCommentatorSelectJingle)
+				break
+			case AdlibActionType.TAKE_WITH_TRANSITION:
+				executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
+				break
+			case AdlibActionType.RECALL_LAST_LIVE:
+				executeActionRecallLastLive(context, settings, actionId, userData as ActionRecallLastLive)
+				break
+			case AdlibActionType.RECALL_LAST_DVE:
+				executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
+				break
+			default:
+				assertUnreachable(actionId)
+				break
 		}
-	}
+
+		if (actionId !== AdlibActionType.TAKE_WITH_TRANSITION) {
+			if (existingTransition) {
+				executeActionTakeWithTransition(context, settings, AdlibActionType.TAKE_WITH_TRANSITION, existingTransition)
+			}
+		}
+	})
 }
 
 // Cannot insert pieces with start "now", change to start 0
@@ -268,7 +274,7 @@ function getExistingTransition<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	part: 'current' | 'next'
 ): ActionTakeWithTransition | undefined {
@@ -324,7 +330,7 @@ function sanitizePieceId(piece: IBlueprintPieceDB): IBlueprintPiece {
 }
 
 export function getPiecesToPreserve(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	adlibLayers: string[],
 	ingoreLayers: string[]
 ): IBlueprintPiece[] {
@@ -348,7 +354,7 @@ export function getPiecesToPreserve(
 		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
 }
 
-function generateExternalId(context: IActionExecutionContext, actionId: string, args: string[]): string {
+function generateExternalId(context: ITV2ActionExecutionContext, actionId: string, args: string[]): string {
 	return `adlib_action_${actionId}_${context.getHashId(args.join('_'), true)}`
 }
 
@@ -356,7 +362,7 @@ function executeActionSelectServerClip<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectServerClip,
@@ -423,7 +429,19 @@ function executeActionSelectServerClip<
 			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO
 	)
 
+	let part = basePart.part.part
+
 	const grafikPieces: IBlueprintPiece[] = []
+	const effektPieces: IBlueprintPiece[] = []
+
+	part = {
+		...part,
+		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
+			sourceLayer: settings.SourceLayers.Effekt,
+			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
+			casparLayer: settings.LLayer.Caspar.Effekt
+		})
+	}
 
 	settings.EvaluateCues(
 		context,
@@ -448,18 +466,6 @@ function executeActionSelectServerClip<
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
 		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
-	}
-
-	let part = basePart.part.part
-
-	const effektPieces: IBlueprintPiece[] = []
-	part = {
-		...part,
-		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
-			sourceLayer: settings.SourceLayers.Effekt,
-			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
-			casparLayer: settings.LLayer.Caspar.Effekt
-		})
 	}
 
 	context.queuePart(part, [
@@ -494,7 +500,7 @@ function executeActionSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectDVE
@@ -585,7 +591,7 @@ function cutServerToBox<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	dvePiece: IBlueprintPiece
 ): IBlueprintPiece {
@@ -664,7 +670,7 @@ function executeActionSelectDVELayout<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectDVELayout
@@ -787,7 +793,7 @@ function startNewDVELayout<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	config: ShowStyleConfig,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	dvePiece: IBlueprintPiece,
@@ -883,15 +889,11 @@ function executeActionSelectJingle<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectJingle
 ) {
-	if (!settings.createJingleContent) {
-		return
-	}
-
 	let file = ''
 
 	const config = settings.getConfig(context)
@@ -997,7 +999,7 @@ function executeActionCutToCamera<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionCutToCamera
@@ -1146,7 +1148,7 @@ function executeActionCutToRemote<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionCutToRemote
@@ -1257,7 +1259,7 @@ function executeActionCutSourceToBox<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	userData: ActionCutSourceToBox
@@ -1372,20 +1374,26 @@ function executeActionCutSourceToBox<
 	}
 }
 
-function executeActionTakeWithTransition<
+interface PiecesBySourceLayer {
+	[key: string]: IBlueprintPieceInstance[]
+}
+
+function groupPiecesBySourceLayer(pieceInstances: IBlueprintPieceInstance[]): PiecesBySourceLayer {
+	const piecesBySourceLayer: PiecesBySourceLayer = {}
+	pieceInstances.forEach(piece => {
+		if (!piecesBySourceLayer[piece.piece.sourceLayerId]) {
+			piecesBySourceLayer[piece.piece.sourceLayerId] = []
+		}
+		piecesBySourceLayer[piece.piece.sourceLayerId].push(piece)
+	})
+	return piecesBySourceLayer
+}
+
+function findPrimaryPieceUsingPriority<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: IActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	actionId: string,
-	userData: ActionTakeWithTransition
-) {
-	const externalId = generateExternalId(context, actionId, [userData.variant.type])
-
-	const nextPieces = context.getPieceInstances('next')
-	const piecesBySourceLayer: { [key: string]: IBlueprintPieceInstance[] } = {}
-	const sourceLayersByPriority = [
+>(settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>, piecesBySourceLayer: PiecesBySourceLayer) {
+	const sourceLayersOrderedByPriority = [
 		settings.SourceLayers.Cam,
 		settings.SourceLayers.DVE,
 		settings.SourceLayers.DVEAdLib,
@@ -1396,19 +1404,62 @@ function executeActionTakeWithTransition<
 		settings.SourceLayers.Effekt,
 		settings.SourceLayers.Continuity
 	]
-	nextPieces.forEach(piece => {
-		if (!piecesBySourceLayer[piece.piece.sourceLayerId]) {
-			piecesBySourceLayer[piece.piece.sourceLayerId] = []
-		}
-		piecesBySourceLayer[piece.piece.sourceLayerId].push(piece)
-	})
-	let primaryPiece: IBlueprintPieceInstance | undefined
-	for (const layer of sourceLayersByPriority) {
+	for (const layer of sourceLayersOrderedByPriority) {
 		if (layer && piecesBySourceLayer[layer]) {
-			primaryPiece = piecesBySourceLayer[layer][0]
-			break
+			return piecesBySourceLayer[layer][0]
 		}
 	}
+	return undefined
+}
+
+function applyPrerollToWallGraphics<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ITV2ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	piecesBySourceLayer: PiecesBySourceLayer,
+	partProps: Partial<IBlueprintPart>
+) {
+	const wallPieces = piecesBySourceLayer[settings.SourceLayers.Wall]
+	if (!wallPieces) {
+		return
+	}
+	const enable = GetEnableForWall(partProps)
+	for (const pieceInstance of wallPieces) {
+		if (pieceInstance.piece.content?.timelineObjects && !pieceInstance.infinite?.fromPreviousPart) {
+			const newPieceProps = {
+				content: pieceInstance.piece.content as WithTimeline<GraphicsContent>
+			}
+			const timelineObjectsToUpdate = newPieceProps.content.timelineObjects.filter(
+				timelineObject =>
+					timelineObject.layer === GraphicLLayer.GraphicLLayerWall &&
+					(timelineObject.content.deviceType === TSR.DeviceType.VIZMSE ||
+						timelineObject.content.deviceType === TSR.DeviceType.CASPARCG)
+			)
+			timelineObjectsToUpdate.forEach(timelineObject => {
+				timelineObject.enable = enable
+			})
+			context.updatePieceInstance(pieceInstance._id, newPieceProps)
+		}
+	}
+}
+
+function executeActionTakeWithTransition<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ITV2ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	userData: ActionTakeWithTransition
+) {
+	const externalId = generateExternalId(context, actionId, [userData.variant.type])
+
+	const nextPieces = context.getPieceInstances('next')
+
+	const nextPiecesBySourceLayer = groupPiecesBySourceLayer(nextPieces)
+	const primaryPiece = findPrimaryPieceUsingPriority(settings, nextPiecesBySourceLayer)
 
 	context.takeAfterExecuteAction(userData.takeNow)
 
@@ -1442,6 +1493,8 @@ function executeActionTakeWithTransition<
 		context.removePieceInstances('next', [existingEffektPiece._id])
 	}
 
+	let partProps: Partial<IBlueprintPart> | false = false
+
 	switch (userData.variant.type) {
 		case 'cut':
 			{
@@ -1468,12 +1521,14 @@ function executeActionTakeWithTransition<
 					}
 				}
 
-				context.insertPiece('next', cutTransitionPiece)
-				context.updatePartInstance('next', {
+				partProps = {
 					transitionKeepaliveDuration: undefined,
 					transitionDuration: undefined,
 					transitionPrerollDuration: undefined
-				})
+				}
+
+				context.insertPiece('next', cutTransitionPiece)
+				context.updatePartInstance('next', partProps)
 			}
 			break
 		case 'breaker': {
@@ -1485,7 +1540,7 @@ function executeActionTakeWithTransition<
 
 			const config = settings.getConfig(context)
 			const pieces: IBlueprintPiece[] = []
-			const partProps = CreateEffektForPartInner(
+			partProps = CreateEffektForPartInner(
 				context,
 				config,
 				pieces,
@@ -1519,7 +1574,7 @@ function executeActionTakeWithTransition<
 			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 			const pieces: IBlueprintPiece[] = []
-			const partProps = CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
+			partProps = CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
 				sourceLayer: settings.SourceLayers.Effekt,
 				casparLayer: settings.LLayer.Caspar.Effekt,
 				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
@@ -1531,10 +1586,14 @@ function executeActionTakeWithTransition<
 			break
 		}
 	}
+
+	if (partProps) {
+		applyPrerollToWallGraphics(context, settings, nextPiecesBySourceLayer, partProps)
+	}
 }
 
 function findPieceToRecoverDataFrom(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	dataStoreLayers: string[]
 ): { piece: IBlueprintPieceInstance; part: 'current' | 'next' } | undefined {
 	const currentPieces = context.getPieceInstances('current')
@@ -1567,7 +1626,7 @@ function findPieceToRecoverDataFrom(
 }
 
 function findDataStore<T extends TV2AdlibAction>(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	dataStoreLayers: string[]
 ): T | undefined {
 	const dataStorePiece = findPieceToRecoverDataFrom(context, dataStoreLayers)
@@ -1582,7 +1641,7 @@ function findDataStore<T extends TV2AdlibAction>(
 }
 
 function findMediaPlayerSessions(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	sessionLayers: string[]
 ): { session: string | undefined; part: 'current' | 'next' | undefined } {
 	const mediaPlayerSessionPiece = findPieceToRecoverDataFrom(context, sessionLayers)
@@ -1607,7 +1666,7 @@ function executeActionCommentatorSelectServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectServer
@@ -1638,7 +1697,7 @@ function executeActionCommentatorSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectDVE
@@ -1660,7 +1719,7 @@ function executeActionCommentatorSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectFull
@@ -1678,7 +1737,7 @@ function executeActionCommentatorSelectJingle<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	_userData: ActionCommentatorSelectJingle
@@ -1700,7 +1759,7 @@ function executeActionRecallLastLive<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	_userData: ActionRecallLastLive
@@ -1752,7 +1811,7 @@ function executeActionRecallLastDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	_userData: ActionRecallLastDVE
@@ -1782,7 +1841,7 @@ function scheduleLastPlayedDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	lastPlayedDVE: IBlueprintPieceInstance
@@ -1807,7 +1866,7 @@ function scheduleNextScriptedDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string
 ): void {
@@ -1837,7 +1896,7 @@ function executeActionSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	userData: ActionSelectFullGrafik
@@ -1880,6 +1939,7 @@ function executeActionSelectFull<
 	const fullPiece = CreateFullPiece(
 		config,
 		context,
+		part,
 		externalId,
 		cue,
 		'FULL',
@@ -1893,6 +1953,7 @@ function executeActionSelectFull<
 	const fullDataStore = CreateFullDataStore(
 		config,
 		context,
+		part,
 		settings.pilotGraphicSettings,
 		cue,
 		'FULL',
@@ -1916,7 +1977,7 @@ function executeActionClearGraphics<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	_actionId: string,
 	userData: ActionClearGraphics

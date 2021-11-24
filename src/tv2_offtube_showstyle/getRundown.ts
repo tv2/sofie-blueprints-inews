@@ -36,7 +36,8 @@ import {
 	GetTransitionAdLibActions,
 	literal,
 	SourceInfo,
-	t
+	t,
+	TimeFromINewsField
 } from 'tv2-common'
 import {
 	AdlibActionType,
@@ -81,11 +82,11 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 	// Set start / end times
 	if ('payload' in ingestRundown) {
 		if (ingestRundown.payload.expectedStart) {
-			startTime = Number(ingestRundown.payload.expectedStart)
+			startTime = TimeFromINewsField(ingestRundown.payload.expectedStart)
 		}
 
 		if (ingestRundown.payload.expectedEnd) {
-			endTime = Number(ingestRundown.payload.expectedEnd)
+			endTime = TimeFromINewsField(ingestRundown.payload.expectedEnd)
 		}
 	}
 

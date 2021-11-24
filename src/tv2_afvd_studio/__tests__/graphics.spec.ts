@@ -284,7 +284,7 @@ describe('Graphics', () => {
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
-		expect(vizObj.enable).toEqual({ start: 0 })
+		expect(vizObj.enable).toEqual({ while: '1' })
 		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerWall)
 		expect(vizObj.content.channelName).toBe('WALL1') // TODO: OVL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)

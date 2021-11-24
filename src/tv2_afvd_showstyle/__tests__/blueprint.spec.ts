@@ -35,6 +35,7 @@ function makeIngestSegment(cues: UnparsedCue[], body: string) {
 		parts: [],
 		payload: {
 			iNewsStory: literal<INewsStory>({
+				id: '00000000',
 				identifier: '00000000',
 				locator: '01',
 				fields: {

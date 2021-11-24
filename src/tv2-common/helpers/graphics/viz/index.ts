@@ -1,5 +1,6 @@
 import {
 	GraphicsContent,
+	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	TSR,
@@ -32,6 +33,7 @@ export interface VizPilotGeneratorSettings {
 
 export function GetInternalGraphicContentVIZ(
 	config: TV2BlueprintConfig,
+	part: Readonly<IBlueprintPart>,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
@@ -46,7 +48,7 @@ export function GetInternalGraphicContentVIZ(
 		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
-				enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
+				enable: GetEnableForGraphic(config, part, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
 				priority: 1,
 				layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				content: {
@@ -65,6 +67,7 @@ export function GetInternalGraphicContentVIZ(
 
 export function GetPilotGraphicContentViz(
 	config: TV2BlueprintConfig,
+	part: Readonly<IBlueprintPart> | undefined,
 	context: IShowStyleUserContext,
 	settings: VizPilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
@@ -77,11 +80,12 @@ export function GetPilotGraphicContentViz(
 		timelineObjects: [
 			literal<TSR.TimelineObjVIZMSEElementPilot>({
 				id: '',
-				enable: IsTargetingOVL(engine)
-					? GetEnableForGraphic(config, engine, parsedCue, false, undefined, adlib)
-					: {
-							start: 0
-					  },
+				enable:
+					IsTargetingOVL(engine) || IsTargetingWall(engine)
+						? GetEnableForGraphic(config, part, engine, parsedCue, false, undefined, adlib)
+						: {
+								start: 0
+						  },
 				priority: 1,
 				layer: IsTargetingWall(engine)
 					? GraphicLLayer.GraphicLLayerWall

@@ -62,6 +62,8 @@ export interface PieceMetaData {
 
 export interface PartMetaData {
 	segmentExternalId: string
+	/** If set, part has been modified by an action */
+	dirty?: true
 }
 
 export function onTimelineGenerate<

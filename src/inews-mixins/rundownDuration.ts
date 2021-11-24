@@ -1,5 +1,5 @@
 import { IngestSegment } from '@sofie-automation/blueprints-integration'
-import { INewsPayload } from 'tv2-common'
+import { INewsPayload, TimeFromINewsField } from 'tv2-common'
 
 export function getRundownDuration(segments: IngestSegment[]) {
 	let totalTime = 0
@@ -9,8 +9,7 @@ export function getRundownDuration(segments: IngestSegment[]) {
 			continue
 		}
 
-		const time = payload?.iNewsStory?.fields.totalTime ?? 0
-		totalTime += Number(time)
+		totalTime += TimeFromINewsField(payload?.iNewsStory?.fields.totalTime)
 	}
 
 	return totalTime * 1000

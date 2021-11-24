@@ -23,6 +23,7 @@ import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { PieceMetaData } from '../onTimelineGenerate'
 
+/** Has to be executed before calling EvaluateCues, as some cues may depend on it */
 export function CreateEffektForPartBase(
 	context: IShowStyleUserContext,
 	config: TV2BlueprintConfig,

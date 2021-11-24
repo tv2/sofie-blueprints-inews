@@ -26,7 +26,8 @@ import {
 	PartDefinitionEkstern,
 	PartDefinitionGrafik,
 	PartDefinitionTeknik,
-	PartDefinitionTelefon
+	PartDefinitionTelefon,
+	TimeFromINewsField
 } from './inewsConversion'
 import { PieceMetaData } from './onTimelineGenerate'
 import { CreatePartInvalid, ServerPartProps } from './parts'
@@ -130,7 +131,7 @@ export function getSegmentBase<
 		segment.isHidden = false
 	}
 
-	const totalTimeMs = Number(iNewsStory.fields.totalTime) * 1000
+	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
 	const parsedParts = ParseBody(
 		config,
@@ -139,7 +140,7 @@ export function getSegmentBase<
 		iNewsStory.body,
 		iNewsStory.cues,
 		iNewsStory.fields,
-		Number(iNewsStory.fields.modifyDate) || Date.now()
+		TimeFromINewsField(iNewsStory.fields.modifyDate) || Date.now()
 	)
 
 	const totalWords = parsedParts.reduce((prev, cur) => {
@@ -158,8 +159,9 @@ export function getSegmentBase<
 	}
 
 	let jingleTime = 0
-	const totalTime = Number(iNewsStory.fields.totalTime) || 0
-	const tapeTime = Number(iNewsStory.fields.tapeTime) || 0
+	const totalTime = TimeFromINewsField(iNewsStory.fields.totalTime)
+	const tapeTime = TimeFromINewsField(iNewsStory.fields.tapeTime)
+
 	for (const part of parsedParts) {
 		// Make orphaned secondary cues into adlibs
 		if (

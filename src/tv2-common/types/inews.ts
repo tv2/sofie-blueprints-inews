@@ -1,15 +1,15 @@
-interface INewsFields {
-	title: string
-	modifyDate: string // number
+export interface INewsFields {
+	title?: string
+	modifyDate?: string // number
 	pageNumber?: string
-	tapeTime: string // number
-	audioTime: string // number
-	totalTime: string // number
-	cumeTime: string // number
-	backTime?: string // number
+	tapeTime?: string // number
+	audioTime?: string // number
+	totalTime?: string // number
+	cumeTime?: string // number
+	backTime?: string // @number (seconds since midnight)
 }
 
-interface INewsMetaData {
+export interface INewsMetaData {
 	wire?: 'f' | 'b' | 'u' | 'r' | 'o'
 	mail?: 'read' | 'unread'
 	locked?: 'pass' | 'user'
@@ -24,6 +24,7 @@ interface INewsMetaData {
 
 export interface INewsStory {
 	/** Same identifier as the file the story came from */
+	id: string
 	identifier: string
 	locator: string
 	fields: INewsFields
