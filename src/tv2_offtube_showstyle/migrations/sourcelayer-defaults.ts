@@ -319,66 +319,6 @@ const PGM: ISourceLayer[] = [
 		allowDisable: false,
 		onPresenterScreen: true
 	},
-	{
-		_id: OfftubeSourceLayer.PgmDVEBox1,
-		_rank: 0,
-		name: 'DVE Inp 1',
-		abbreviation: 'DB1',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		isSticky: false,
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: OfftubeSourceLayer.PgmDVEBox2,
-		_rank: 0,
-		name: 'DVE Inp 2',
-		abbreviation: 'DB2',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		isSticky: false,
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: OfftubeSourceLayer.PgmDVEBox3,
-		_rank: 0,
-		name: 'DVE Inp 3',
-		abbreviation: 'DB3',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		isSticky: false,
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: OfftubeSourceLayer.PgmDVEBox4,
-		_rank: 0,
-		name: 'DVE Inp 4',
-		abbreviation: 'DB4',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		isSticky: false,
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
 	...GetDSKSourceLayerDefaults(ATEMModel.PRODUCTION_STUDIO_4K_2ME)
 ]
 

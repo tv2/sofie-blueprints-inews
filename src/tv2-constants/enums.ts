@@ -66,7 +66,39 @@ export enum AdlibTags {
 	ADLIB_FLOW_PRODUCER = 'flow_producer',
 	ADLIB_STATIC_BUTTON = 'static_button',
 	ADLIB_KOMMENTATOR = 'kommentator',
-	ADLIB_NO_NEXT_HIGHLIGHT = 'no_next_highlight'
+	ADLIB_NO_NEXT_HIGHLIGHT = 'no_next_highlight',
+	ADLIB_CUT_DIRECT = 'cut_direct',
+	ADLIB_QUEUE_NEXT = 'queue_next',
+	ADLIB_VO_AUDIO_LEVEL = 'vo_audio_level',
+	ADLIB_FULL_AUDIO_LEVEL = 'full_audio_level',
+	ADLIB_TO_STUDIO_SCREEN_AUX = 'to_studio_screen_aux',
+	ADLIB_TO_GRAPHICS_ENGINE_AUX = 'to_graphics_engine_aux',
+	ADLIB_CUT_TO_BOX_1 = 'cut_to_box_1',
+	ADLIB_CUT_TO_BOX_2 = 'cut_to_box_2',
+	ADLIB_CUT_TO_BOX_3 = 'cut_to_box_3',
+	ADLIB_CUT_TO_BOX_4 = 'cut_to_box_4',
+	ADLIB_GFX_ALTUD = 'gfx_altud',
+	ADLIB_GFX_LOAD = 'gfx_load',
+	ADLIB_GFX_CONTINUE_FORWARD = 'gfx_continue_forward',
+	ADLIB_DSK_ON = 'dsk_on',
+	ADLIB_DSK_OFF = 'dsk_off',
+	ADLIB_MICS_UP = 'mics_up',
+	ADLIB_MICS_DOWN = 'mics_down',
+	ADLIBS_RESYNC_SISYFOS = 'resync_sisyfos',
+	ADLIB_DESIGN_STYLE_SC = 'design_style_sc',
+	ADLIB_STOP_AUDIO_BED = 'stop_audio_bed',
+	ADLIB_RECALL_LAST_LIVE = 'recall_last_live',
+	ADLIB_RECALL_LAST_DVE = 'recall_last_dve',
+	ADLIB_SELECT_DVE_LAYOUT = 'select_dve_layout',
+	ADLIB_TAKE_WITH_TRANSITION = 'take_with_transition'
+}
+
+/**
+ * Generates a tag for a 'cut to box' adlib
+ * @param box Box number (0-indexed)
+ */
+export function AdlibTagCutToBox(box: number): AdlibTags {
+	return `cut_to_box_${box + 1}` as AdlibTags
 }
 
 export enum ControlClasses {
@@ -205,11 +237,6 @@ export enum SharedSourceLayers {
 
 	PgmAdlibGraphicCmd = 'studio0_adlib_graphic_cmd', // shortcuts
 	PgmAdlibJingle = 'studio0_adlib_jingle',
-
-	PgmDVEBox1 = 'studio0_dve_box1',
-	PgmDVEBox2 = 'studio0_dve_box2',
-	PgmDVEBox3 = 'studio0_dve_box3',
-	PgmDVEBox4 = 'studio0_dve_box4',
 
 	// Selected Sources
 	SelectedServer = 'studio0_selected_clip',

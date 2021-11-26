@@ -38,13 +38,21 @@ import {
 	t,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import {
+	AdlibActionType,
+	AdlibTagCutToBox,
+	AdlibTags,
+	CONSTANTS,
+	GraphicLLayer,
+	SharedOutputLayers,
+	TallyTags
+} from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
-import { boxLayers } from './helpers/content/dve'
+import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -91,6 +99,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
 			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
+			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -174,6 +183,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 				config.studio.StudioMics,
 				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
 			),
+			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
@@ -260,6 +270,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 				config.studio.StudioMics,
 				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
 			),
+			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemAUX>({
@@ -313,6 +324,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -339,6 +351,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -368,7 +381,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_LOAD],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSELoadAllElements>({
@@ -396,7 +409,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSEElementContinue>({
@@ -428,7 +441,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_UP],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -458,7 +471,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_DOWN],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -488,7 +501,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -516,6 +529,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId: SourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			tags: [AdlibTags.ADLIB_DESIGN_STYLE_SC],
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
@@ -558,6 +572,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		outputLayerId: 'musik',
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
@@ -588,9 +603,10 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 	let globalRank = 1000
 
 	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live' | 'Feed', rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			const feed = type === 'Live' && info.id.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
 			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
+			const layer = type === 'Kamera' ? SourceLayer.PgmCam : SourceLayer.PgmLive
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -608,15 +624,15 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 						sourceLayerId: layer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -632,18 +648,18 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					display: {
 						_rank: rank + 0.1 * box,
 						label: t(`EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`),
-						sourceLayerId: layer,
+						sourceLayerId: SourceLayer.PgmLocal,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	function makeServerAdlibBoxesActions(rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -659,14 +675,14 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					display: {
 						_rank: rank + 0.1 * box,
 						label: t(`Server to box ${box + 1}`),
-						sourceLayerId: layer,
+						sourceLayerId: SourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
@@ -684,7 +700,8 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					label: t(`KAM ${info.id}`),
 					sourceLayerId: SourceLayer.PgmCam,
 					outputLayerId: SharedOutputLayers.PGM,
-					content: {}
+					content: {},
+					tags: queue ? [AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT]
 				}
 			})
 		)
@@ -722,7 +739,8 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				_rank: 1,
 				label: t('Last Live'),
 				sourceLayerId: SourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		})
 	)
@@ -778,7 +796,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
@@ -798,7 +816,8 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				_rank: 1,
 				label: t('Last DVE'),
 				sourceLayerId: SourceLayer.PgmDVEAdLib,
-				outputLayerId: 'pgm'
+				outputLayerId: 'pgm',
+				tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
 			}
 		})
 	)
@@ -817,7 +836,8 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					_rank: 200 + i,
 					label: t(dveConfig.DVEName),
 					sourceLayerId: SourceLayer.PgmDVEAdLib,
-					outputLayerId: SharedOutputLayers.PGM
+					outputLayerId: SharedOutputLayers.PGM,
+					tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
 				}
 			})
 		)

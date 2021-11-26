@@ -18,6 +18,7 @@ export * from './graphic-defaults'
 export * from './manifestWithMediaFlow'
 export * from './sourceManifest'
 export * from './forceSourceLayerToDefaultsBase'
+export * from './hotkeys'
 
 export function RenameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
 	return literal<MigrationStepStudio>({
@@ -72,7 +73,7 @@ export function renameSourceLayer(
 
 export function removeSourceLayer(versionStr: string, studioId: string, layer: string) {
 	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.renameSourceLayer.${studioId}.${layer}`,
+		id: `${versionStr}.removeSourceLayer.${studioId}.${layer}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
