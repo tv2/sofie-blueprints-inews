@@ -24,7 +24,7 @@ export function GetDefaultStudioSourcesForOfftube(context: MigrationContextShowS
 
 	const camera = manifestOfftubeSourcesCam.defaultVal.map(source => source.SourceName) as string[]
 	const remote = manifestOfftubeSourcesRM.defaultVal.map(source => source.SourceName) as string[]
-	const feed = manifestOfftubeSourcesFeed.defaultVal.map(source => source.SourceName) as string[]
+	const feed = manifestOfftubeSourcesFeed.defaultVal.map(source => `F${source.SourceName}`) as string[]
 	const local: string[] = []
 
 	return {

@@ -25,7 +25,7 @@ export function GetDefaultStudioSourcesForAFVD(context: MigrationContextShowStyl
 
 	const camera = manifestAFVDSourcesCam.defaultVal.map(source => source.SourceName) as string[]
 	const remote = manifestAFVDSourcesRM.defaultVal.map(source => source.SourceName) as string[]
-	const feed = manifestAFVDSourcesFeed.defaultVal.map(source => source.SourceName) as string[]
+	const feed = manifestAFVDSourcesFeed.defaultVal.map(source => `F${source.SourceName}`) as string[]
 	const local = manifestAFVDSourcesDelayedPlayback.defaultVal.map(source => source.SourceName) as string[]
 
 	return {
