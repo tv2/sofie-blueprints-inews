@@ -66,14 +66,16 @@ export function MakeGlobalTriggers(
 		SharedSourceLayers.PgmLive,
 		sources.remote,
 		assignments.remote,
-		getNextRank
+		getNextRank,
+		false
 	)
 	const feedTriggers = MakeRemoteHotkeys(
 		showStyleId,
 		SharedSourceLayers.PgmLive,
 		sources.feed,
 		assignments.feed,
-		getNextRank
+		getNextRank,
+		true
 	)
 	const localTriggers = layers.local
 		? MakeLocalSourceHotkeys(showStyleId, layers.local, sources.local, assignments.local, getNextRank)

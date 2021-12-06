@@ -7,6 +7,10 @@ function remoteHotkeyId(showStyleId: string, sourceLayer: string, hotkeyType: st
 	return `${showStyleId}_${sourceLayer}_remote_${hotkeyType}_${index}`
 }
 
+function feedHotkeyId(showStyleId: string, sourceLayer: string, hotkeyType: string, index: number) {
+	return `${showStyleId}_${sourceLayer}_feed_${hotkeyType}_${index}`
+}
+
 function remoteHotkeyName(remote: string) {
 	const feed = remote.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
 	return feed ? `Feed ${feed[1]}` : `LIVE ${remote}`
@@ -17,7 +21,8 @@ export function MakeRemoteHotkeys(
 	sourceLayerId: string,
 	remotes: string[],
 	assignments: RemoteSourceHotkeyAssignments,
-	getNextRank: () => number
+	getNextRank: () => number,
+	feed: boolean
 ): IBlueprintTriggeredActions[] {
 	return MakeStudioSourceHotkeys(
 		showStyleId,
@@ -26,6 +31,6 @@ export function MakeRemoteHotkeys(
 		assignments,
 		getNextRank,
 		remoteHotkeyName,
-		remoteHotkeyId
+		feed ? feedHotkeyId : remoteHotkeyId
 	)
 }

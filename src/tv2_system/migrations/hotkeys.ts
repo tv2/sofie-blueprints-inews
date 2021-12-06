@@ -16,9 +16,13 @@ export function RemoveDefaultCoreShortcuts(versionStr: string) {
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const allTriggers = context.getAllTriggeredActions()
+			for (const coreTrigger of DEFAULT_CORE_TRIGGERS) {
+				if (context.getTriggeredAction(coreTrigger._id)) {
+					return true
+				}
+			}
 
-			return allTriggers.some(trigger => defaultTriggerIds.includes(trigger._id))
+			return false
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			for (const trigger of defaultTriggerIds) {
@@ -33,7 +37,7 @@ const t = (text: string) => text
 let j = 0
 const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 	{
-		_id: 'core_toggleShelf',
+		_id: 'toggleShelf',
 		actions: [
 			{
 				action: ClientActions.shelf,
@@ -56,7 +60,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Toggle Shelf')
 	},
 	{
-		_id: 'core_activateRundownPlaylist',
+		_id: 'activateRundownPlaylist',
 		actions: [
 			{
 				action: PlayoutActions.activateRundownPlaylist,
@@ -79,7 +83,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Activate (On-Air)')
 	},
 	{
-		_id: 'core_activateRundownPlaylist_rehearsal',
+		_id: 'activateRundownPlaylist_rehearsal',
 		actions: [
 			{
 				action: PlayoutActions.activateRundownPlaylist,
@@ -102,7 +106,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Activate (Rehearsal)')
 	},
 	{
-		_id: 'core_deactivateRundownPlaylist',
+		_id: 'deactivateRundownPlaylist',
 		actions: [
 			{
 				action: PlayoutActions.deactivateRundownPlaylist,
@@ -124,7 +128,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Deactivate')
 	},
 	{
-		_id: 'core_take',
+		_id: 'take',
 		actions: [
 			{
 				action: PlayoutActions.take,
@@ -151,7 +155,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Take')
 	},
 	{
-		_id: 'core_hold',
+		_id: 'hold',
 		actions: [
 			{
 				action: PlayoutActions.hold,
@@ -173,7 +177,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Hold')
 	},
 	{
-		_id: 'core_hold_undo',
+		_id: 'hold_undo',
 		actions: [
 			{
 				action: PlayoutActions.hold,
@@ -196,7 +200,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Undo Hold')
 	},
 	{
-		_id: 'core_reset_rundown_playlist',
+		_id: 'reset_rundown_playlist',
 		actions: [
 			{
 				action: PlayoutActions.resetRundownPlaylist,
@@ -223,7 +227,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Reset Rundown')
 	},
 	{
-		_id: 'core_disable_next_piece',
+		_id: 'disable_next_piece',
 		actions: [
 			{
 				action: PlayoutActions.disableNextPiece,
@@ -245,7 +249,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Disable the next element')
 	},
 	{
-		_id: 'core_disable_next_piece_undo',
+		_id: 'disable_next_piece_undo',
 		actions: [
 			{
 				action: PlayoutActions.disableNextPiece,
@@ -268,7 +272,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Undo Disable the next element')
 	},
 	{
-		_id: 'core_create_snapshot_for_debug',
+		_id: 'create_snapshot_for_debug',
 		actions: [
 			{
 				action: PlayoutActions.createSnapshotForDebug,
@@ -290,7 +294,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Store Snapshot')
 	},
 	{
-		_id: 'core_move_next_part',
+		_id: 'move_next_part',
 		actions: [
 			{
 				action: PlayoutActions.moveNext,
@@ -314,7 +318,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Move Next forwards')
 	},
 	{
-		_id: 'core_move_next_segment',
+		_id: 'move_next_segment',
 		actions: [
 			{
 				action: PlayoutActions.moveNext,
@@ -338,7 +342,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Move Next to the following segment')
 	},
 	{
-		_id: 'core_move_previous_part',
+		_id: 'move_previous_part',
 		actions: [
 			{
 				action: PlayoutActions.moveNext,
@@ -362,7 +366,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Move Next backwards')
 	},
 	{
-		_id: 'core_move_previous_segment',
+		_id: 'move_previous_segment',
 		actions: [
 			{
 				action: PlayoutActions.moveNext,
@@ -386,7 +390,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Move Next to the previous segment')
 	},
 	{
-		_id: 'core_go_to_onAir_line',
+		_id: 'go_to_onAir_line',
 		actions: [
 			{
 				action: ClientActions.goToOnAirLine,
@@ -408,7 +412,7 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 		name: t('Go to On Air line')
 	},
 	{
-		_id: 'core_rewind_segments',
+		_id: 'rewind_segments',
 		actions: [
 			{
 				action: ClientActions.rewindSegments,
