@@ -21,6 +21,7 @@ import {
 	FindSourceInfoStrict,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEVS,
+	JoinAssetToFolder,
 	literal,
 	PartDefinition,
 	SourceInfo,
@@ -455,12 +456,12 @@ export function MakeContentDVE2<
 	let keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : undefined
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
 
-	if (keyFile && config.studio.DVEFolder) {
-		keyFile = `${config.studio.DVEFolder}/${keyFile}`
+	if (keyFile) {
+		keyFile = keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
 	}
 
-	if (frameFile && config.studio.DVEFolder) {
-		frameFile = `${config.studio.DVEFolder}/${frameFile}`
+	if (frameFile) {
+		frameFile = JoinAssetToFolder(config.studio.DVEFolder, frameFile)
 	}
 
 	if (adlib) {

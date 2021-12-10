@@ -19,6 +19,7 @@ import {
 	SharedSourceLayers
 } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
+import { JoinAssetToFolder } from '../util'
 
 export function EvaluateLYD(
 	context: IShowStyleUserContext,
@@ -121,7 +122,7 @@ function LydContent(
 		})
 	}
 
-	const filePath = config.studio.AudioBedFolder ? `${config.studio.AudioBedFolder}/${file}` : file
+	const filePath = JoinAssetToFolder(config.studio.AudioBedFolder, file)
 
 	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([

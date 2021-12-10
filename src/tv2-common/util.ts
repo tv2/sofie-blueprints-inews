@@ -32,3 +32,50 @@ export function isAdLibPiece(piece: IBlueprintPiece | IBlueprintAdLibPiece) {
 export function SanitizeString(str: string) {
 	return str.replace(/\W/g, '_')
 }
+
+export function JoinAssetToFolder(folder: string | undefined, assetFile: string) {
+	if (!folder) {
+		return assetFile
+	}
+
+	// Replace every `\\` with `\`, then replace every `\` with `/`
+	const folderWithForwardSlashes = folder.replace(/\\\\/g, '\\').replace(/\\/g, '/')
+	const assetWithForwardSlashes = assetFile.replace(/\\\\/g, '\\').replace(/\\/g, '/')
+
+	// Remove trailing slash from folder and leading slash from asset
+	const folderWithoutTrailingSlashes = folderWithForwardSlashes.replace(/\/+$/, '')
+	const assetFileWithoutLeadingSlashes = assetWithForwardSlashes.replace(/^\/+/, '')
+
+	return `${folderWithoutTrailingSlashes}/${assetFileWithoutLeadingSlashes}`
+}
+
+export function JoinAssetToNetworkPath(
+	networkPath: string,
+	folder: string | undefined,
+	assetFile: string,
+	extension: string
+) {
+	// Replace every `\\` with `\`, then replace every `\` with `/`
+	const folderWithForwardSlashes = folder?.replace(/\\\\/g, '/').replace(/\\/g, '/')
+	const assetWithForwardSlashes = assetFile.replace(/\\\\/g, '/').replace(/\\/g, '/')
+	const networkPathWithForwardSlashes = networkPath.replace(/\\\\/g, '/').replace(/\\/g, '/')
+
+	// Remove trailing/leading slash from folder and leading slash from asset
+	const folderWithoutLeadingTrailingSlashes = folderWithForwardSlashes?.replace(/\/+$/, '').replace(/^\/+/, '')
+	const assetFileWithoutLeadingSlashes = assetWithForwardSlashes.replace(/^\/+/, '')
+	const networkPathWithoutTrailingSlashes = networkPathWithForwardSlashes.replace(/\/+$/, '')
+
+	// Replace all forward slashes with a single backslash
+	const folderWithWindowsPaths = folderWithoutLeadingTrailingSlashes?.replace(/\//g, '\\')
+	const assetFileWithWindowsPaths = assetFileWithoutLeadingSlashes.replace(/\//g, '\\')
+	const networkPathWithWindowsPaths = networkPathWithoutTrailingSlashes.replace(/\//g, '\\')
+
+	// Remove leading dot from e.g. '.mxf' => 'mxf'
+	const extensionWithoutLeadingDot = extension.replace(/^\./, '')
+
+	if (!folderWithWindowsPaths) {
+		return `${networkPathWithWindowsPaths}\\${assetFileWithWindowsPaths}.${extensionWithoutLeadingDot}`
+	}
+
+	return `${networkPathWithWindowsPaths}\\${folderWithWindowsPaths}\\${assetFileWithWindowsPaths}.${extensionWithoutLeadingDot}`
+}

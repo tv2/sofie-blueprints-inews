@@ -22,6 +22,7 @@ import {
 import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { PieceMetaData } from '../onTimelineGenerate'
+import { JoinAssetToFolder, JoinAssetToNetworkPath } from '../util'
 
 export function CreateEffektForPartBase(
 	context: IShowStyleUserContext,
@@ -110,7 +111,7 @@ export function CreateEffektForPartInner<
 		return false
 	}
 
-	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : file
+	const fileName = JoinAssetToFolder(config.studio.JingleFolder, file)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -128,9 +129,12 @@ export function CreateEffektForPartInner<
 			}),
 			content: literal<WithTimeline<VTContent>>({
 				fileName,
-				path: `${config.studio.JingleNetworkBasePath}\\${
-					config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
-				}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
+				path: JoinAssetToNetworkPath(
+					config.studio.JingleNetworkBasePath,
+					config.studio.JingleFolder,
+					file,
+					config.studio.JingleFileExtension
+				), // full path on the source network storage
 				mediaFlowIds: [config.studio.JingleMediaFlowId],
 				previewFrame: Number(effektConfig.StartAlpha),
 				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
