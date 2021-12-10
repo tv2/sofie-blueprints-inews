@@ -21,6 +21,7 @@ import {
 	FindSourceInfoStrict,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEVS,
+	JoinAssetToFolder,
 	literal,
 	PartDefinition,
 	SourceInfo,
@@ -452,8 +453,16 @@ export function MakeContentDVE2<
 		context.notifyUserWarning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
 	}
 
-	const keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : ''
-	const frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : ''
+	let keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : undefined
+	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
+
+	if (keyFile) {
+		keyFile = keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
+	}
+
+	if (frameFile) {
+		frameFile = JoinAssetToFolder(config.studio.DVEFolder, frameFile)
+	}
 
 	if (adlib) {
 		dveTimeline.push(

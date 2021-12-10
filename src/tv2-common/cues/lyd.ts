@@ -19,6 +19,7 @@ import {
 	SharedSourceLayers
 } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
+import { JoinAssetToFolder } from '../util'
 
 export function EvaluateLYD(
 	context: IShowStyleUserContext,
@@ -121,6 +122,8 @@ function LydContent(
 		})
 	}
 
+	const filePath = JoinAssetToFolder(config.studio.AudioBedFolder, file)
+
 	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia>({
@@ -133,7 +136,7 @@ function LydContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file,
+					file: filePath,
 					channelLayout: 'bed',
 					loop: true,
 					noStarttime: true,

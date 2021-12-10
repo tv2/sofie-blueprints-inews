@@ -18,6 +18,7 @@ import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-con
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
+import { JoinAssetToNetworkPath } from '../util'
 
 // TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
@@ -46,7 +47,12 @@ type VTProps = Pick<
 export function GetVTContentProperties(config: TV2BlueprintConfig, file: string, sourceDuration?: number): VTProps {
 	return literal<VTProps>({
 		fileName: file,
-		path: `${config.studio.ClipNetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		path: JoinAssetToNetworkPath(
+			config.studio.ClipNetworkBasePath,
+			config.studio.ClipFolder,
+			file,
+			config.studio.ClipFileExtension
+		), // full path on the source network storage
 		mediaFlowIds: [config.studio.ClipMediaFlowId],
 		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined,
 		postrollDuration: config.studio.ServerPostrollDuration,
