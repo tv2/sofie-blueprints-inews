@@ -135,7 +135,7 @@ export function forceSourceLayerToDefaults(
 	layer: string,
 	overrideSteps?: string[]
 ): MigrationStepShowStyle {
-	return forceSourceLayerToDefaultsBase(SourcelayerDefaults, versionStr, layer, overrideSteps)
+	return forceSourceLayerToDefaultsBase(SourcelayerDefaults, versionStr, 'Offtube', layer, overrideSteps)
 }
 
 export function remapTableColumnValues(

@@ -166,9 +166,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.6.10
 	 * - Remove 'audio/' from soundbed configs
 	 * - Remove 'dve/' from DVE frame/key configs
+	 * - Add PgmJingle to presenter screen
 	 */
 	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
 	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
+	forceSourceLayerToDefaults('1.6.10', SourceLayer.PgmJingle),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

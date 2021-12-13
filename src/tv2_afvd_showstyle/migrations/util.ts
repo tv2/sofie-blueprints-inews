@@ -48,7 +48,7 @@ export function forceSourceLayerToDefaults(
 	layer: string,
 	overrideSteps?: string[]
 ): MigrationStepShowStyle {
-	return forceSourceLayerToDefaultsBase(SourcelayerDefaults, versionStr, layer, overrideSteps)
+	return forceSourceLayerToDefaultsBase(SourcelayerDefaults, versionStr, 'AFVD', layer, overrideSteps)
 }
 
 export function forceSettingToDefaults(versionStr: string, setting: string): MigrationStepShowStyle {
