@@ -223,7 +223,7 @@ export function StripFolderFromShowStyleConfig(
 	regex: RegExp
 ): MigrationStepShowStyle {
 	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.normalizeSoundbedConfig.${studio}`,
+		id: `${versionStr}.normalizeFolders.${studio}.${configId}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
