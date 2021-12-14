@@ -2,7 +2,7 @@ import { IngestSegment } from '@sofie-automation/blueprints-integration'
 import { literal } from 'tv2-common'
 import { getRundownDuration } from '../rundownDuration'
 
-function makeSegmentWithoutTime(externalId: string, rank: number): IngestSegment {
+export function makeSegmentWithoutTime(externalId: string, rank: number): IngestSegment {
 	return literal<IngestSegment>({
 		externalId,
 		name: externalId,
@@ -11,20 +11,22 @@ function makeSegmentWithoutTime(externalId: string, rank: number): IngestSegment
 	})
 }
 
-function makeSegmentWithTime(
+export function makeSegmentWithTime(
 	externalId: string,
 	time: number,
 	rank: number,
 	options: {
 		floated?: boolean
 		untimed?: boolean
+		backTimeInHours?: number
 	}
 ): IngestSegment {
 	const segment = makeSegmentWithoutTime(externalId, rank)
 	segment.payload = {
 		iNewsStory: {
 			fields: {
-				totalTime: time
+				totalTime: time,
+				backTime: options.backTimeInHours ? `@${options.backTimeInHours * 3600}` : undefined
 			},
 			meta: {
 				float: options.floated ? 'float' : undefined
