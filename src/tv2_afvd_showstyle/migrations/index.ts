@@ -1,4 +1,4 @@
-import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
+import { MigrationStepShowStyle, SourceLayerType } from '@sofie-automation/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
 	GetDSKSourceLayerNames,
@@ -6,7 +6,8 @@ import {
 	removeSourceLayer,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
-	SetSourceLayerNameMigrationStep,
+	SetSourceLayerName,
+	SetSourceLayerProperties,
 	StripFolderFromAudioBedConfig,
 	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
@@ -127,40 +128,40 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Set new source layer names
 	 */
 	// OVERLAY group
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsIdent, 'GFX Ident'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTop, 'GFX Top'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmGraphicsTema, 'GFX Tema'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.WallGraphics, 'GFX Wall'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmPilotOverlay, 'GFX Overlay (VCP)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsIdent, 'GFX Ident'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsTop, 'GFX Top'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsTema, 'GFX Tema'),
+	SetSourceLayerName('1.6.9', SourceLayer.WallGraphics, 'GFX Wall'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmPilotOverlay, 'GFX Overlay (VCP)'),
 	// PGM group
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmCam, 'Camera'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmVoiceOver, 'VO'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmPilot, 'GFX FULL (VCP)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmContinuity, 'Continuity'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox1, 'DVE Inp 1'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox2, 'DVE Inp 2'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox3, 'DVE Inp 3'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmDVEBox4, 'DVE Inp 4'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmCam, 'Camera'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmVoiceOver, 'VO'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmPilot, 'GFX FULL (VCP)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmContinuity, 'Continuity'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox1, 'DVE Inp 1'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox2, 'DVE Inp 2'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox3, 'DVE Inp 3'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox4, 'DVE Inp 4'),
 	// MUSIK group
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAudioBed, 'Audiobed (shared)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmFullBackground, 'GFX FULL Background'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
+	SetSourceLayerName('1.6.9', SourceLayer.PgmFullBackground, 'GFX FULL Background'),
 	// SELECTED_ADLIB group
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.SelectedServer, 'Server (selected)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.SelectedVoiceOver, 'VO (selected)'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.SelectedAdlibGraphicsFull, 'GFX Full (selected)'),
+	SetSourceLayerName('1.6.9', SourceLayer.SelectedServer, 'Server (selected)'),
+	SetSourceLayerName('1.6.9', SourceLayer.SelectedVoiceOver, 'VO (selected)'),
+	SetSourceLayerName('1.6.9', SourceLayer.SelectedAdlibGraphicsFull, 'GFX Full (selected)'),
 	// AUX group
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.VizFullIn1, 'Full Inp 1'),
-	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.AuxStudioScreen, 'AUX studio screen'),
+	SetSourceLayerName('1.6.9', SourceLayer.VizFullIn1, 'Full Inp 1'),
+	SetSourceLayerName('1.6.9', SourceLayer.AuxStudioScreen, 'AUX studio screen'),
 
 	/**
 	 * 1.6.10
@@ -169,6 +170,16 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
 	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
+
+	/**
+	 * 1.6.11
+	 * - Change source layer type for graphics that don't have previews
+	 */
+	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsIdentPersistent, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsTop, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

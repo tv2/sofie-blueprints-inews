@@ -3,14 +3,13 @@ import {
 	MigrationContextShowStyle,
 	MigrationStepShowStyle
 } from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
 
 export function SetShortcutListMigrationStep(
 	versionStr: string,
 	sourceLayerId: string,
 	newValue: string
 ): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
+	return {
 		id: `${versionStr}.remapShortcuts.${sourceLayerId}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -18,7 +17,9 @@ export function SetShortcutListMigrationStep(
 			const sourceLayer = context.getSourceLayer(sourceLayerId)
 
 			if (!sourceLayer) {
-				return `Sourcelayer ${sourceLayerId} does not exists`
+				// nothing to migrate
+				// getSourceLayerDefaultsMigrationSteps should create this layer later
+				return false
 			}
 
 			return sourceLayer.activateKeyboardHotkeys !== newValue
@@ -30,35 +31,7 @@ export function SetShortcutListMigrationStep(
 
 			context.updateSourceLayer(sourceLayerId, sourceLayer)
 		}
-	})
-}
-
-export function SetSourceLayerNameMigrationStep(
-	versionStr: string,
-	sourceLayerId: string,
-	newValue: string
-): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.remapSourceLayerName.${sourceLayerId}`,
-		version: versionStr,
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextShowStyle) => {
-			const sourceLayer = context.getSourceLayer(sourceLayerId)
-
-			if (!sourceLayer) {
-				return `Sourcelayer ${sourceLayerId} does not exists`
-			}
-
-			return sourceLayer.name !== newValue
-		},
-		migrate: (context: MigrationContextShowStyle) => {
-			const sourceLayer = context.getSourceLayer(sourceLayerId) as ISourceLayer
-
-			sourceLayer.name = newValue
-
-			context.updateSourceLayer(sourceLayerId, sourceLayer)
-		}
-	})
+	}
 }
 
 export function SetClearShortcutListTransitionStep(
@@ -67,7 +40,7 @@ export function SetClearShortcutListTransitionStep(
 	newValue: string
 ): MigrationStepShowStyle[] {
 	return [
-		literal<MigrationStepShowStyle>({
+		{
 			id: `${versionStr}.remapClearShortcuts.${sourceLayerId}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
@@ -75,7 +48,9 @@ export function SetClearShortcutListTransitionStep(
 				const sourceLayer = context.getSourceLayer(sourceLayerId)
 
 				if (!sourceLayer) {
-					return `Sourcelayer ${sourceLayerId} does not exists`
+					// nothing to migrate
+					// getSourceLayerDefaultsMigrationSteps should create this layer later
+					return false
 				}
 
 				return sourceLayer.clearKeyboardHotkey !== newValue
@@ -87,6 +62,6 @@ export function SetClearShortcutListTransitionStep(
 
 				context.updateSourceLayer(sourceLayerId, sourceLayer)
 			}
-		})
+		}
 	]
 }

@@ -7,6 +7,7 @@ export function assertUnreachable(_never: never): never {
 	throw new Error('Switch validation failed, look for assertUnreachable(...)')
 }
 
+export type WithValuesOfTypes<T, Q> = { [P in keyof T as T[P] extends Q | undefined ? P : never]: T[P] }
 export type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
 export type EmptyBaseObj = OptionalExceptFor<Omit<TSR.TimelineObjEmpty, 'content'>, 'layer' | 'enable' | 'classes'>
 export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
