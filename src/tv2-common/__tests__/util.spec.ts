@@ -131,6 +131,22 @@ const JOIN_ASSET_NETWORK_PATH_TESTS: Array<{
 		assetFile: 'amb',
 		extensiton: '.asset.mp4',
 		result: 'S:\\Sofie\\assets\\amb.asset.mp4'
+	},
+	{
+		name: 'Handles win shares',
+		networkPath: '\\\\Sofie\\\\share',
+		folder: 'assets',
+		assetFile: 'amb',
+		extensiton: '.asset.mp4',
+		result: '\\\\Sofie\\share\\assets\\amb.asset.mp4'
+	},
+	{
+		name: 'Handles win shares #2',
+		networkPath: '\\\\\\Sofie\\share\\',
+		folder: 'assets',
+		assetFile: 'amb',
+		extensiton: '.asset.mp4',
+		result: '\\\\Sofie\\share\\assets\\amb.asset.mp4'
 	}
 ]
 
