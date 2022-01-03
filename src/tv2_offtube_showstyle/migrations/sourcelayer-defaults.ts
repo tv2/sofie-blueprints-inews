@@ -175,7 +175,7 @@ const JINGLE: ISourceLayer[] = [
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: false
+		onPresenterScreen: true
 	}
 ]
 
