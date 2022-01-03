@@ -2,7 +2,7 @@ import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { stopOrReplaceEditablePieces, updateAdLibInstances } from './index'

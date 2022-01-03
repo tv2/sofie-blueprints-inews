@@ -1,4 +1,4 @@
-import { IBlueprintPart, IShowStyleUserContext } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPart, IShowStyleUserContext } from '@tv2media/blueprints-integration'
 import { CueType } from 'tv2-constants'
 import { TableConfigItemBreakers, TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { TimeFromFrames } from './frameTime'

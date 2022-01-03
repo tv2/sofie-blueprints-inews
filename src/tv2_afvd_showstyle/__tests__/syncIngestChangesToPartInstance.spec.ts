@@ -7,7 +7,7 @@ import {
 	IBlueprintRundownDB,
 	PieceLifespan,
 	PlaylistTimingType
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { SyncIngestUpdateToPartInstanceContext } from '../../__mocks__/context'

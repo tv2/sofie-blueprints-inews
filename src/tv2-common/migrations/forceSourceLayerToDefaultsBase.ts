@@ -1,8 +1,4 @@
-import {
-	ISourceLayer,
-	MigrationContextShowStyle,
-	MigrationStepShowStyle
-} from '@sofie-automation/blueprints-integration'
+import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import _ = require('underscore')
 

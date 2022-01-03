@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { IStudioUserContext, SourceLayerType, Timeline, TSR } from '@sofie-automation/blueprints-integration'
+import { IStudioUserContext, SourceLayerType, Timeline, TSR } from '@tv2media/blueprints-integration'
 import {
 	FindSourceInfoStrict,
 	SisyfosEVSSource,

@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
 import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'

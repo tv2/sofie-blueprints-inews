@@ -2,7 +2,7 @@ import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { PieceMetaData } from 'tv2-common'
 import _ = require('underscore')
 

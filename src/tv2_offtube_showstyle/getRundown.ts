@@ -13,7 +13,7 @@ import {
 	PlaylistTimingType,
 	SourceLayerType,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -41,6 +41,7 @@ import {
 } from 'tv2-common'
 import {
 	AdlibActionType,
+	AdlibTagCutToBox,
 	AdlibTags,
 	CONSTANTS,
 	SharedOutputLayers,
@@ -56,7 +57,7 @@ import {
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { boxLayers } from './content/OfftubeDVEContent'
+import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
@@ -129,7 +130,7 @@ function getGlobalAdLibPiecesOfftube(
 		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_UP],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -159,7 +160,7 @@ function getGlobalAdLibPiecesOfftube(
 		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_DOWN],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -189,7 +190,7 @@ function getGlobalAdLibPiecesOfftube(
 		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -216,6 +217,7 @@ function getGlobalAdLibPiecesOfftube(
 		outputLayerId: 'musik',
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
@@ -264,7 +266,7 @@ function getGlobalAdlibActionsOfftube(
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: SharedOutputLayers.PGM,
 					content: {},
-					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
+					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT],
 					currentPieceTags: [GetTagForKam(info.id)],
 					nextPieceTags: [GetTagForKam(info.id)]
 				}
@@ -288,7 +290,7 @@ function getGlobalAdlibActionsOfftube(
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
-					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
+					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT, AdlibTags.ADLIB_QUEUE_NEXT],
 					currentPieceTags: [GetTagForLive(name)],
 					nextPieceTags: [GetTagForLive(name)]
 				}
@@ -297,9 +299,10 @@ function getGlobalAdlibActionsOfftube(
 	}
 
 	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live', rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			const feed = type === 'Live' && info.id.match(/^F(.+).*$/)
 			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
+			const layer = type === 'Kamera' ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -317,42 +320,15 @@ function getGlobalAdlibActionsOfftube(
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
-	}
-
-	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
-			res.push(
-				literal<IBlueprintActionManifest>({
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
-						port: info.port,
-						sourceType: info.type,
-						box,
-						vo
-					}),
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: t(`EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`),
-						sourceLayerId: layer,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: []
-					}
-				})
-			)
-		})
+		}
 	}
 
 	function makeServerAdlibBoxesActions(rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -368,14 +344,14 @@ function getGlobalAdlibActionsOfftube(
 					display: {
 						_rank: rank + 0.1 * box,
 						label: t(`Server to box ${box + 1}`),
-						sourceLayerId: layer,
+						sourceLayerId: OfftubeSourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	res.push(
@@ -453,7 +429,7 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
 				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
@@ -473,7 +449,8 @@ function getGlobalAdlibActionsOfftube(
 				_rank: 1,
 				label: t('Last DVE'),
 				sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
-				outputLayerId: 'pgm'
+				outputLayerId: 'pgm',
+				tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
 			}
 		})
 	)
@@ -491,7 +468,8 @@ function getGlobalAdlibActionsOfftube(
 					_rank: 200 + i,
 					label: t(dveConfig.DVEName),
 					sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
-					outputLayerId: SharedOutputLayers.PGM
+					outputLayerId: SharedOutputLayers.PGM,
+					tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
 				}
 			})
 		)
@@ -529,7 +507,8 @@ function getGlobalAdlibActionsOfftube(
 				_rank: 1,
 				label: t('Last Live'),
 				sourceLayerId: OfftubeSourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		})
 	)
@@ -546,14 +525,6 @@ function getGlobalAdlibActionsOfftube(
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
-		})
-
-	config.sources
-		.filter(u => u.type === SourceLayerType.LOCAL)
-		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
-		.forEach(o => {
-			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)
-			makeAdlibBoxesActionsDirectPlayback(o, true, globalRank++)
 		})
 
 	makeServerAdlibBoxesActions(globalRank++)

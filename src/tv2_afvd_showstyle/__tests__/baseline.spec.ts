@@ -1,4 +1,4 @@
-import { ExtendedIngestRundown } from '@sofie-automation/blueprints-integration'
+import { ExtendedIngestRundown } from '@tv2media/blueprints-integration'
 import { ShowStyleUserContext } from '../../__mocks__/context'
 import { checkAllLayers } from './layers-check'
 

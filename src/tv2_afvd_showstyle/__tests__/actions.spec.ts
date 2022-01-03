@@ -6,7 +6,7 @@ import {
 	IBlueprintPieceInstance,
 	PieceLifespan,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { ActionCutToCamera, ActionTakeWithTransition, literal } from 'tv2-common'
 import { AdlibActionType, NoteType, SharedOutputLayers } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'

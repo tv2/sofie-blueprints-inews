@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest } from '@sofie-automation/blueprints-integration'
+import { IBlueprintActionManifest } from '@tv2media/blueprints-integration'
 import {
 	ActionSelectServerClip,
 	GetTagForServer,

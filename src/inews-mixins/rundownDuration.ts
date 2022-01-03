@@ -1,4 +1,4 @@
-import { IngestSegment } from '@sofie-automation/blueprints-integration'
+import { IngestSegment } from '@tv2media/blueprints-integration'
 import { INewsPayload, TimeFromINewsField } from 'tv2-common'
 
 export function getRundownDuration(segments: IngestSegment[]) {

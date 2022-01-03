@@ -1,4 +1,4 @@
-import { ConfigManifestEntryTable, ConfigManifestEntryType, TSR } from '@sofie-automation/blueprints-integration'
+import { ConfigManifestEntryTable, ConfigManifestEntryType, TSR } from '@tv2media/blueprints-integration'
 import { literal } from '../util'
 
 export function MakeConfigForSources(

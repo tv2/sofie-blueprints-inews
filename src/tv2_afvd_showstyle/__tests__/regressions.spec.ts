@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { BlueprintResultSegment, PieceLifespan, TimelineObjectCoreExt } from '@sofie-automation/blueprints-integration'
+import { BlueprintResultSegment, PieceLifespan, TimelineObjectCoreExt } from '@tv2media/blueprints-integration'
 
 // @ts-ignore
 global.VERSION = 'test'

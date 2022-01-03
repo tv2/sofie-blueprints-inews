@@ -3,7 +3,7 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddKeepAudio,
 	literal,

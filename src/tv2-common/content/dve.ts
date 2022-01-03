@@ -10,7 +10,7 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	createEmptyObject,
 	CueDefinitionDVE,
@@ -127,12 +127,6 @@ export interface DVEOptions {
 	dveLayers: DVELayers
 	dveTimelineGenerators: DVETimelineObjectGenerators
 	boxMappings: [string, string, string, string]
-	boxLayers: {
-		INP1: string
-		INP2: string
-		INP3: string
-		INP4: string
-	}
 	/** All audio layers */
 	AUDIO_LAYERS: string[]
 	/** Layers to exclude from filter */
@@ -220,7 +214,7 @@ export function MakeContentDVE2<
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
-	const boxMap: Array<{ source: string; sourceLayer: string }> = []
+	const boxMap: Array<{ source: string }> = []
 
 	const classes: string[] = []
 
@@ -233,8 +227,7 @@ export function MakeContentDVE2<
 			return
 		}
 
-		const sourceLayer = dveGeneratorOptions.boxLayers[fromCue as keyof DVESources] as string
-		classes.push(`${sourceLayer}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
+		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
 
 		let usedServer = false
 
@@ -243,42 +236,42 @@ export function MakeContentDVE2<
 			if (prop?.match(/[K|C]AM(?:era)? ?.*/i)) {
 				const match = prop.match(/[K|C]AM(?:era)? ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `KAM ${match[1]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `KAM ${match[1]}` }
 			} else if (prop?.match(/LIVE ?.*/i)) {
 				const match = prop.match(/LIVE ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}` }
 			} else if (prop?.match(/FEED ?.*/i)) {
 				const match = prop.match(/FEED ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `FEED ${match[1]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `FEED ${match[1]}` }
 			} else if (prop?.match(/full/i)) {
-				boxMap[targetBox - 1] = { source: `ENGINE FULL`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `ENGINE FULL` }
 			} else if (prop?.match(/EVS ?(?:\d+)? ?.*/i)) {
 				const match = prop.match(/EVS ?(\d+)? ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `EVS${match[1]} ${match[2]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `EVS${match[1]} ${match[2]}` }
 			} else if (prop?.match(/DEFAULT/)) {
-				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE` }
 			} else if (prop) {
 				if (videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
 					usedServer = true
 				} else {
-					boxMap[targetBox - 1] = { source: prop, sourceLayer }
+					boxMap[targetBox - 1] = { source: prop }
 				}
 			} else {
 				if (videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
 					usedServer = true
 				} else {
 					context.notifyUserWarning(`Missing mapping for ${targetBox}`)
-					boxMap[targetBox - 1] = { source: '', sourceLayer }
+					boxMap[targetBox - 1] = { source: '' }
 				}
 			}
 		} else {
 			// Need something to keep the layout etc
-			boxMap[targetBox - 1] = { source: '', sourceLayer }
+			boxMap[targetBox - 1] = { source: '' }
 		}
 	})
 

@@ -5,7 +5,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'

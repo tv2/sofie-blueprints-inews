@@ -7,7 +7,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, literal, TV2BlueprintConfig } from 'tv2-common'
 import { GraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 

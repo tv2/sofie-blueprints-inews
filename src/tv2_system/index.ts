@@ -1,5 +1,6 @@
-import { BlueprintManifestType, SystemBlueprintManifest } from '@sofie-automation/blueprints-integration'
+import { BlueprintManifestType, SystemBlueprintManifest } from '@tv2media/blueprints-integration'
 import * as _ from 'underscore'
+import { systemMigrations } from './migrations'
 
 declare const VERSION: string // Injected by webpack
 declare const VERSION_TSR: string // Injected by webpack
@@ -10,7 +11,8 @@ const manifest: SystemBlueprintManifest = {
 
 	blueprintVersion: VERSION,
 	integrationVersion: VERSION_INTEGRATION,
-	TSRVersion: VERSION_TSR
+	TSRVersion: VERSION_TSR,
+	coreMigrations: systemMigrations
 }
 
 export default manifest

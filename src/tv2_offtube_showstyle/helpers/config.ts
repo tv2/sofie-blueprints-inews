@@ -4,7 +4,7 @@ import {
 	IShowStyleContext,
 	IStudioContext,
 	TableConfigItemValue
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
