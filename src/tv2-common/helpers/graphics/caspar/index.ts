@@ -12,6 +12,8 @@ import {
 	CueDefinitionGraphic,
 	GraphicInternal,
 	GraphicPilot,
+	JoinAssetToFolder,
+	JoinAssetToNetworkPath,
 	literal,
 	PartDefinition,
 	TimelineBlueprintExt,
@@ -59,7 +61,7 @@ export function GetPilotGraphicContentCaspar(
 	engine: GraphicEngine
 ) {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
-	const fileName = `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`
+	const fileName = JoinAssetToFolder(config.studio.GraphicFolder, parsedCue.graphic.name)
 	const templateData = {
 		display: 'program',
 		slots: {
@@ -77,7 +79,12 @@ export function GetPilotGraphicContentCaspar(
 	}
 	return literal<WithTimeline<GraphicsContent>>({
 		fileName,
-		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
+		path: JoinAssetToNetworkPath(
+			config.studio.GraphicNetworkBasePath,
+			graphicFolder,
+			parsedCue.graphic.name,
+			config.studio.GraphicFileExtension
+		),
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
 		ignoreMediaObjectStatus: config.studio.GraphicIgnoreStatus,
 		ignoreBlackFrames: true,

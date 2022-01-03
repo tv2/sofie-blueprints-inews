@@ -59,7 +59,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@tv2media/blueprints-integration": "1.37.0-rc19",
+    "@tv2media/blueprints-integration": "v1.37.1-in-testing.1",
     "underscore": "^1.12.1"
   }
 }

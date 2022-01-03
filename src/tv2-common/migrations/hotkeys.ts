@@ -18,9 +18,9 @@ function shortcutsAreDifferent(
 	defaultShortcut: IBlueprintTriggeredActions,
 	existingShortcut: IBlueprintTriggeredActions
 ) {
-	let nameDiffers = existingShortcut.name !== defaultShortcut.name
-	let actionsDiffer = !_.isEqual(existingShortcut.actions, defaultShortcut.actions)
-	let triggersDiffer = !_.isEqual(existingShortcut.triggers, defaultShortcut.triggers)
+	const nameDiffers = existingShortcut.name !== defaultShortcut.name
+	const actionsDiffer = !_.isEqual(existingShortcut.actions, defaultShortcut.actions)
+	const triggersDiffer = !_.isEqual(existingShortcut.triggers, defaultShortcut.triggers)
 	return nameDiffers || actionsDiffer || triggersDiffer
 }
 
@@ -43,8 +43,8 @@ export function GetDefaultAdLibTriggers(
 				sourceLayers
 			)
 
-			let needsMigration = shortcutsDefaults.some(defaultShortcut => {
-				let existingShortcut = context.getTriggeredAction(defaultShortcut._id)
+			const needsMigration = shortcutsDefaults.some(defaultShortcut => {
+				const existingShortcut = context.getTriggeredAction(defaultShortcut._id)
 
 				if (!existingShortcut) {
 					return true
@@ -64,7 +64,7 @@ export function GetDefaultAdLibTriggers(
 
 			for (const newShortcut of shortcutsDefaults) {
 				const existingShortcut = context.getTriggeredAction(newShortcut._id)
-				let needsMigration =
+				const needsMigration =
 					!existingShortcut || (forceToDefaults && shortcutsAreDifferent(existingShortcut, newShortcut))
 				if (needsMigration) {
 					context.setTriggeredAction(newShortcut)

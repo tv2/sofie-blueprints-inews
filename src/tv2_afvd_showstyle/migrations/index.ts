@@ -1,14 +1,16 @@
 import { MigrationStepShowStyle } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
-	GetDefaultAdLibTriggers,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
 	SetSourceLayerNameMigrationStep,
+	StripFolderFromAudioBedConfig,
+	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { GraphicLLayer } from 'tv2-constants'
@@ -165,6 +167,14 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	// AUX group
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.VizFullIn1, 'Full Inp 1'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.AuxStudioScreen, 'AUX studio screen'),
+
+	/**
+	 * 1.6.10
+	 * - Remove 'audio/' from soundbed configs
+	 * - Remove 'dve/' from DVE frame/key configs
+	 */
+	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
+	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
 
 	/**
 	 * 1.7.0

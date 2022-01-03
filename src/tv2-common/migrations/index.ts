@@ -4,7 +4,8 @@ import {
 	MigrationContextShowStyle,
 	MigrationContextStudio,
 	MigrationStepShowStyle,
-	MigrationStepStudio
+	MigrationStepStudio,
+	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
 import { TableConfigItemGFXTemplates } from 'tv2-common'
 import _ = require('underscore')
@@ -191,6 +192,78 @@ export function RemoveConfig(versionStr: string, studio: string, id: string) {
 		},
 		migrate: (context: MigrationContextStudio) => {
 			context.removeConfig(id)
+		}
+	})
+}
+
+const SOUNDBED_REGEX = /^audio\/(.*)/i
+/**
+ * Removes `audio/` from the start of all entries in the soundbed config table
+ */
+export function StripFolderFromAudioBedConfig(versionStr: string, studio: string): MigrationStepShowStyle {
+	const configId = 'LYDConfig'
+	const configFields = ['FileName']
+	return StripFolderFromShowStyleConfig(versionStr, studio, configId, configFields, SOUNDBED_REGEX)
+}
+
+const DVE_REGEX = /^dve\/(.*)/i
+/**
+ * Removes `dve/` from the start of all entries in the DVE config table
+ */
+export function StripFolderFromDVEConfig(versionStr: string, studio: string): MigrationStepShowStyle {
+	const configId = 'DVEStyles'
+	const configFields = ['DVEGraphicsKey', 'DVEGraphicsFrame']
+	return StripFolderFromShowStyleConfig(versionStr, studio, configId, configFields, DVE_REGEX)
+}
+
+export function StripFolderFromShowStyleConfig(
+	versionStr: string,
+	studio: string,
+	configId: string,
+	configFields: string[],
+	regex: RegExp
+): MigrationStepShowStyle {
+	return literal<MigrationStepShowStyle>({
+		id: `${versionStr}.normalizeFolders.${studio}.${configId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const configTableValue = context.getBaseConfig(configId) as TableConfigItemValue | undefined
+
+			if (!configTableValue) {
+				return false
+			}
+
+			// Some entry in the table contains a field that needs migrating
+			return configTableValue.some(config => {
+				return configFields.some(field => {
+					return ((config[field] as unknown) as string | undefined)?.match(regex)
+				})
+			})
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			let configTableValue = context.getBaseConfig(configId) as TableConfigItemValue | undefined
+
+			if (!configTableValue) {
+				return
+			}
+
+			configTableValue = configTableValue.map(config => {
+				configFields.forEach(field => {
+					const newConfig = (config[field] as unknown) as string
+
+					const matches = newConfig.match(regex)
+
+					if (matches) {
+						// Remove folder name
+						config[field] = matches[1]
+					}
+				})
+
+				return config
+			})
+
+			context.setBaseConfig(configId, configTableValue)
 		}
 	})
 }

@@ -324,6 +324,12 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	 */
 	GetMappingDefaultMigrationStepForLayer('1.6.2', GraphicLLayer.GraphicLLayerOverlayHeadline, true),
 
+	/**
+	 * 1.6.10
+	 * - Force soundbed caspar layer to defaults (channel 3, layer 101)
+	 */
+	GetMappingDefaultMigrationStepForLayer('1.6.10', OfftubeCasparLLayer.CasparCGLYD, true),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

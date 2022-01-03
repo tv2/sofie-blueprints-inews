@@ -1,10 +1,10 @@
 import {
-	MigrationStepShowStyle,
-	MigrationContextShowStyle,
-	IBlueprintTriggeredActions,
 	ClientActions,
-	TriggerType,
-	PlayoutActions
+	IBlueprintTriggeredActions,
+	MigrationContextShowStyle,
+	MigrationStepShowStyle,
+	PlayoutActions,
+	TriggerType
 } from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 

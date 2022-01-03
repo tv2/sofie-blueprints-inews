@@ -1,14 +1,16 @@
 import { MigrationStepShowStyle } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
-	GetDefaultAdLibTriggers,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
+	StripFolderFromAudioBedConfig,
+	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
@@ -205,6 +207,14 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdlibJingle, 'Jingle (selected)'),
 	// AUX group
 	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.AuxStudioScreen, 'AUX studio screen'),
+
+	/**
+	 * 1.6.10
+	 * - Remove 'audio/' from soundbed configs
+	 * - Remove 'dve/' from DVE frame/key configs
+	 */
+	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
+	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
 
 	/**
 	 * 1.7.0
