@@ -106,7 +106,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'LIVE 1 Stereo',
+		layerName: 'FEED 1 Stereo',
 		channel: 3,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -114,7 +114,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'LIVE 1 5.1',
+		layerName: 'FEED 1 5.1',
 		channel: 4,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -122,7 +122,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'LIVE 2 Stereo',
+		layerName: 'FEED 2 Stereo',
 		channel: 5,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -130,7 +130,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_3]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'LIVE 3 Reporter',
+		layerName: 'LIVE 1 Reporter',
 		channel: 6,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
@@ -170,10 +170,28 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 	[OfftubeSisyfosLLayer.SisyfosN1]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'N-1',
+		layerName: 'MixMinus (N-1)',
 		channel: 10,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL
+	}),
+	[OfftubeSisyfosLLayer.SisyfosSourceDisp1]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		layerName: 'Disp 1',
+		channel: 11,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
+	}),
+	[OfftubeSisyfosLLayer.SisyfosSourceDisp2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		layerName: 'Disp 2',
+		channel: 12,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosResync]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
