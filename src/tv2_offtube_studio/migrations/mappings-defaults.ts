@@ -181,8 +181,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'Disp 1',
 		channel: 11,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL,
-		setLabelToLayerName: true
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceDisp2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -190,8 +189,7 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'Disp 2',
 		channel: 12,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL,
-		setLabelToLayerName: true
+		mappingType: TSR.MappingSisyfosType.CHANNEL
 	}),
 	[OfftubeSisyfosLLayer.SisyfosResync]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
