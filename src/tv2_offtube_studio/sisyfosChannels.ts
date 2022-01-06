@@ -40,5 +40,11 @@ export const sisyfosChannels: { [key in OfftubeSisyfosLLayer]?: SisyfosChannel }
 	},
 	[OfftubeSisyfosLLayer.SisyfosN1]: {
 		isPgm: 0
+	},
+	[OfftubeSisyfosLLayer.SisyfosSourceDisp1]: {
+		isPgm: 0
+	},
+	[OfftubeSisyfosLLayer.SisyfosSourceDisp2]: {
+		isPgm: 0
 	}
 }
