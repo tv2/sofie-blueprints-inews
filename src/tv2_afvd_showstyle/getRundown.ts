@@ -59,10 +59,11 @@ import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 export function getShowStyleVariantId(
 	_context: IStudioUserContext,
 	showStyleVariants: IBlueprintShowStyleVariant[],
-	_ingestRundown: IngestRundown
+	ingestRundown: IngestRundown
 ): string | null {
-	const variant = _.first(showStyleVariants)
-
+	const graphicsProfile = ingestRundown.payload.graphicsProfile
+	const variant = showStyleVariants.find((v) => v.name === graphicsProfile) ?? _.first(showStyleVariants)
+	
 	if (variant) {
 		return variant._id
 	}
