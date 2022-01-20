@@ -1,5 +1,4 @@
 import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
-import { literal } from 'tv2-common'
 
 export function SetShortcutListMigrationStep(
 	versionStr: string,
