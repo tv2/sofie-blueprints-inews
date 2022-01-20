@@ -66,8 +66,8 @@ export function getShowStyleVariantId(
 	showStyleVariants: IBlueprintShowStyleVariant[],
 	ingestRundown: IngestRundown
 ): string | null {
-	const graphicsProfile = ingestRundown.payload.graphicsProfile
-	const variant = showStyleVariants.find((v) => v.name === graphicsProfile) ?? _.first(showStyleVariants)
+	const graphicsprofile = ingestRundown.payload.graphicProfile
+	const variant = showStyleVariants.find((v) => v.name === graphicsprofile) ?? _.first(showStyleVariants)
 
 	if (variant) {
 		return variant._id
