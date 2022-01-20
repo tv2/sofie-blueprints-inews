@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PlaylistTimingType } from '@sofie-automation/blueprints-integration'
+import { IBlueprintRundownDB, PlaylistTimingType } from '@tv2media/blueprints-integration'
 import { UnparsedCue } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'

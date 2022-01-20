@@ -1,4 +1,4 @@
-import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from '@tv2media/blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { EnableDSK, FindDSKJingle } from '../helpers'

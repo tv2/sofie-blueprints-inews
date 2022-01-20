@@ -1,7 +1,7 @@
 import {
 	BlueprintRemoveOrphanedPartInstance,
 	IRemoveOrphanedPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { PartMetaData } from 'tv2-common'
 
 export function shouldRemoveOrphanedPartInstance(

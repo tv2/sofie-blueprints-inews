@@ -1,4 +1,4 @@
-import { BlueprintResultPart, IBlueprintPart } from '@sofie-automation/blueprints-integration'
+import { BlueprintResultPart, IBlueprintPart } from '@tv2media/blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
 
 export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?: string): BlueprintResultPart {
@@ -6,8 +6,7 @@ export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?:
 		externalId: ingestPart.externalId + (externalIdSuffix ? `_${externalIdSuffix}` : ''),
 		title: ingestPart.rawType || 'Unknown',
 		metaData: {},
-		invalid: true,
-		autoNext: true
+		invalid: true
 	})
 
 	return {

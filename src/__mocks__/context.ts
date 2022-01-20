@@ -25,7 +25,7 @@ import {
 	OmitId,
 	PackageInfo,
 	PieceLifespan
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import { NoteType } from 'tv2-constants'
 

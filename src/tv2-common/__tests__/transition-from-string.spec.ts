@@ -1,4 +1,4 @@
-import { TSR } from '@sofie-automation/blueprints-integration'
+import { TSR } from '@tv2media/blueprints-integration'
 import { TransitionFromString } from '../transitionFromString'
 
 describe('Transition From String', () => {

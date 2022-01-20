@@ -9,7 +9,7 @@ import {
 	IBlueprintPieceInstance,
 	IBlueprintResolvedPieceInstance,
 	PackageInfo
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { literal, PartMetaData } from 'tv2-common'
 
 export interface ITV2ActionExecutionContext extends IActionExecutionContext {

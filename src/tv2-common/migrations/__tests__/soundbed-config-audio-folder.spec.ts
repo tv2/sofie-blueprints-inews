@@ -1,4 +1,4 @@
-import { ConfigItemValue, TableConfigItemValue } from '@sofie-automation/blueprints-integration'
+import { ConfigItemValue, TableConfigItemValue } from '@tv2media/blueprints-integration'
 import { literal, StripFolderFromAudioBedConfig } from 'tv2-common'
 import { MockShowstyleMigrationContext } from './migrationContext.mock'
 

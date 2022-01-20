@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest } from '@sofie-automation/blueprints-integration'
+import { IBlueprintActionManifest } from '@tv2media/blueprints-integration'
 import {
 	ActionTakeWithTransition,
 	ActionTakeWithTransitionVariant,
@@ -139,7 +139,7 @@ function makeTransitionAction(
 			label: t(isEffekt ? `EFFEKT ${label}` : label),
 			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
 			outputLayerId: SharedOutputLayers.PGM,
-			tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+			tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_TAKE_WITH_TRANSITION],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
 			content:

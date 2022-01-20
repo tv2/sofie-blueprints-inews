@@ -1,8 +1,10 @@
-import { MigrationStepShowStyle, SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
+	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
 	SetShortcutListMigrationStep,
@@ -17,6 +19,8 @@ import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
+import { GetDefaultStudioSourcesForOfftube } from './hotkeys'
+import sourcelayerDefaults from './sourcelayer-defaults'
 import {
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
@@ -68,6 +72,8 @@ const jingle131 = SetShortcutListMigrationStep(
 	'NumpadDivide,NumpadSubtract,NumpadAdd'
 )
 
+const SHOW_STYLE_ID = 'tv2_offtube_showstyle'
+
 /**
  * Versions:
  * 0.1.0: Core 0.24.0
@@ -94,7 +100,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.3.3
 	 * - Shortcuts for DVE Box 1
 	 */
-	SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
+	SetShortcutListMigrationStep('1.3.3', 'studio0_dve_box1', 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
 
 	/**
 	 * 1.3.8
@@ -180,10 +186,10 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmVoiceOver, 'VO'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmPilot, 'GFX FULL (VCP)'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmContinuity, 'Continuity'),
-	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmDVEBox1, 'DVE Inp 1'),
-	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmDVEBox2, 'DVE Inp 2'),
-	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmDVEBox3, 'DVE Inp 3'),
-	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmDVEBox4, 'DVE Inp 4'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box1', 'DVE Inp 1'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box2', 'DVE Inp 2'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box3', 'DVE Inp 3'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box4', 'DVE Inp 4'),
 	// MUSIK group
 	SetSourceLayerName('1.6.9', SharedSourceLayers.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
@@ -203,9 +209,24 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.6.10
 	 * - Remove 'audio/' from soundbed configs
 	 * - Remove 'dve/' from DVE frame/key configs
+	 * - Add PgmJingle to presenter screen
 	 */
 	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
 	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
+	forceSourceLayerToDefaults('1.6.10', OfftubeSourceLayer.PgmJingle),
+
+	/**
+	 * 1.7.0
+	 * - Remove DVE box layers (no longer needed due to triggers)
+	 * - Remove old shortcuts
+	 * - Migrate shortcuts to Action Triggers
+	 */
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box1'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box2'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box3'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box4'),
+	RemoveOldShortcuts('1.7.0', SHOW_STYLE_ID, sourcelayerDefaults),
+	GetDefaultAdLibTriggers('1.7.0', SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, true),
 
 	/**
 	 * 1.6.11
@@ -221,5 +242,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsTLF, { type: SourceLayerType.LOWER_THIRD }),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION)
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
 ])

@@ -1,4 +1,4 @@
-import { ISourceLayer, SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
 import { ATEMModel } from '../../types/atem'
 import { GetDSKCount } from '../helpers'
 import { literal } from '../util'
@@ -21,11 +21,8 @@ function GetSourceLayerDefaultsForDSK(i: number): ISourceLayer {
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
+		isClearable: true,
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,

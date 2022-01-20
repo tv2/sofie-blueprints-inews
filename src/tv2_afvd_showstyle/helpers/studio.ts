@@ -1,4 +1,4 @@
-import { IStudioContext } from '@sofie-automation/blueprints-integration'
+import { IStudioContext } from '@tv2media/blueprints-integration'
 
 /**
  * Gets the name of the studio this context belongs to.

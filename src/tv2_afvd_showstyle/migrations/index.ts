@@ -1,8 +1,10 @@
-import { MigrationStepShowStyle, SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
+	RemoveOldShortcuts,
 	removeSourceLayer,
 	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
@@ -18,6 +20,8 @@ import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrat
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { ATEMModel } from '../../types/atem'
 import { SourceLayer } from '../layers'
+import { GetDefaultStudioSourcesForAFVD } from './hotkeys'
+import sourcelayerDefaults from './sourcelayer-defaults'
 import {
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
@@ -30,6 +34,8 @@ declare const VERSION: string // Injected by webpack
 /** Migrations overriden later */
 // 1.3.1
 const jingle131 = SetShortcutListMigrationStep('1.3.1', SourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd')
+
+const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
 
 /**
  * Versions:
@@ -60,7 +66,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	SetShortcutListMigrationStep(
 		'1.3.3',
-		SourceLayer.PgmDVEBox1,
+		'studio0_dve_box1',
 		'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0,shift+e,shift+d,shift+i,shift+u,shift+t'
 	),
 
@@ -144,10 +150,10 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerName('1.6.9', SourceLayer.PgmVoiceOver, 'VO'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmPilot, 'GFX FULL (VCP)'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmContinuity, 'Continuity'),
-	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox1, 'DVE Inp 1'),
-	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox2, 'DVE Inp 2'),
-	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox3, 'DVE Inp 3'),
-	SetSourceLayerName('1.6.9', SourceLayer.PgmDVEBox4, 'DVE Inp 4'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box1', 'DVE Inp 1'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box2', 'DVE Inp 2'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box3', 'DVE Inp 3'),
+	SetSourceLayerName('1.6.9', 'studio0_dve_box4', 'DVE Inp 4'),
 	// MUSIK group
 	SetSourceLayerName('1.6.9', SourceLayer.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
@@ -167,9 +173,30 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.6.10
 	 * - Remove 'audio/' from soundbed configs
 	 * - Remove 'dve/' from DVE frame/key configs
+	 * - Add PgmJingle to presenter screen
 	 */
 	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
 	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
+	forceSourceLayerToDefaults('1.6.10', SourceLayer.PgmJingle),
+
+	/**
+	 * 1.7.0
+	 * - Remove DVE box layers (no longer needed due to triggers)
+	 * - Remove old shortcuts
+	 * - Migrate shortcuts to Action Triggers
+	 */
+	removeSourceLayer('1.7.0', 'AFVD', 'studio0_dve_box1'),
+	removeSourceLayer('1.7.0', 'AFVD', 'studio0_dve_box2'),
+	removeSourceLayer('1.7.0', 'AFVD', 'studio0_dve_box3'),
+	removeSourceLayer('1.7.0', 'AFVD', 'studio0_dve_box4'),
+	RemoveOldShortcuts('1.7.0', SHOW_STYLE_ID, sourcelayerDefaults),
+	GetDefaultAdLibTriggers(
+		'1.7.0',
+		SHOW_STYLE_ID,
+		{ local: SourceLayer.PgmLocal },
+		GetDefaultStudioSourcesForAFVD,
+		true
+	),
 
 	/**
 	 * 1.6.11
@@ -184,5 +211,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION)
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(
+		VERSION,
+		SHOW_STYLE_ID,
+		{ local: SourceLayer.PgmLocal },
+		GetDefaultStudioSourcesForAFVD,
+		false
+	)
 ])

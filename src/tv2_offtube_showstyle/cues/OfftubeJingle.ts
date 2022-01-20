@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,

@@ -3,7 +3,7 @@ import {
 	ISourceLayer,
 	MigrationContextShowStyle,
 	MigrationStepShowStyle
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { forceSourceLayerToDefaultsBase, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'
@@ -48,7 +48,7 @@ export function forceSourceLayerToDefaults(
 	layer: string,
 	overrideSteps?: string[]
 ): MigrationStepShowStyle {
-	return forceSourceLayerToDefaultsBase(SourcelayerDefaults, versionStr, layer, overrideSteps)
+	return forceSourceLayerToDefaultsBase(SourcelayerDefaults, versionStr, 'AFVD', layer, overrideSteps)
 }
 
 export function forceSettingToDefaults(versionStr: string, setting: string): MigrationStepShowStyle {

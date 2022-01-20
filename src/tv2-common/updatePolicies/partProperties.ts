@@ -3,7 +3,7 @@ import {
 	BlueprintSyncIngestPartInstance,
 	IBlueprintMutatablePart,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import _ = require('underscore')
 
 type Complete<T> = {

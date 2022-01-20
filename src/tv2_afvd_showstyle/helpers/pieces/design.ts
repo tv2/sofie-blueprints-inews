@@ -3,7 +3,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CueDefinitionGraphicDesign, EvaluateDesignBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
