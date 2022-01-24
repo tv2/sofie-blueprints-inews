@@ -67,7 +67,7 @@ export function getShowStyleVariantId(
 	ingestRundown: IngestRundown
 ): string | null {
 	const graphicsprofile = ingestRundown.payload.graphicProfile
-	const variant = showStyleVariants.find((v) => v.name === graphicsprofile) ?? _.first(showStyleVariants)
+	const variant = showStyleVariants.find(v => v.name === graphicsprofile) ?? _.first(showStyleVariants)
 
 	if (variant) {
 		return variant._id
