@@ -2,8 +2,8 @@ import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
 	IBlueprintMutatablePart,
-	SyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+	ISyncIngestUpdateToPartInstanceContext
+} from '@tv2media/blueprints-integration'
 import _ = require('underscore')
 
 type Complete<T> = {
@@ -37,7 +37,7 @@ const clearedMutatablePart: Complete<Omit<IBlueprintMutatablePart, typeof partPr
 }
 
 export function updatePartProperties(
-	context: SyncIngestUpdateToPartInstanceContext,
+	context: ISyncIngestUpdateToPartInstanceContext,
 	_existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData
 ) {

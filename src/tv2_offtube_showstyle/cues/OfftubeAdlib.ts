@@ -2,11 +2,11 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	SegmentContext,
+	ISegmentUserContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
@@ -16,6 +16,7 @@ import {
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
+	t,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
@@ -26,7 +27,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateAdLib(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -90,12 +91,12 @@ export function OfftubeEvaluateAdLib(
 
 		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
-			context.warning(`Could not find template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
 			return
 		}
 
 		if (!TemplateIsValid(rawTemplate.DVEJSON as string)) {
-			context.warning(`Invalid DVE template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
 
@@ -135,11 +136,10 @@ export function OfftubeEvaluateAdLib(
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					uniquenessId: getUniquenessIdDVE(cueDVE),
-					label: `${partDefinition.storyName}`,
+					label: t(`${partDefinition.storyName}`),
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
 					content: literal<SplitsContent>({
-						...adlibContent.content,
-						timelineObjects: []
+						...adlibContent.content
 					})
 				}
 			})

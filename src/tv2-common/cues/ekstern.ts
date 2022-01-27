@@ -2,13 +2,14 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
+	IShowStyleUserContext,
 	PieceLifespan,
 	RemoteContent,
-	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
 	createEmptyObject,
@@ -46,7 +47,7 @@ export function EvaluateEksternBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
@@ -58,24 +59,22 @@ export function EvaluateEksternBase<
 	adlib?: boolean,
 	rank?: number
 ) {
-	const eksternProps = parsedCue.source
-		.replace(/\s+/i, ' ')
-		.trim()
-		.match(/^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i)
+	const matchesEksternSource = /^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i
+	const eksternProps = parsedCue.source.match(matchesEksternSource)
 	if (!eksternProps) {
-		context.warning(`No source entered for EKSTERN`)
+		context.notifyUserWarning(`No source entered for EKSTERN`)
 		part.invalid = true
 		return
 	}
 	const source = eksternProps[1]
 	if (!source) {
-		context.warning(`Could not find live source for ${parsedCue.source}`)
+		context.notifyUserWarning(`Could not find live source for ${parsedCue.source}`)
 		part.invalid = true
 		return
 	}
 	const sourceInfoEkstern = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
 	if (sourceInfoEkstern === undefined) {
-		context.warning(`${parsedCue.source} does not exist in this studio`)
+		context.notifyUserWarning(`${parsedCue.source} does not exist in this studio`)
 		part.invalid = true
 		return
 	}
@@ -94,7 +93,7 @@ export function EvaluateEksternBase<
 				toBeQueued: true,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
-				content: literal<RemoteContent>({
+				content: literal<WithTimeline<RemoteContent>>({
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
@@ -115,7 +114,8 @@ export function EvaluateEksternBase<
 										: TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(partDefinition)
 								}
-							}
+							},
+							classes: [ControlClasses.LiveSourceOnAir]
 						}),
 
 						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
@@ -138,7 +138,7 @@ export function EvaluateEksternBase<
 				toBeQueued: true,
 				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
 				tags: [GetTagForLive(sourceInfoEkstern.id)],
-				content: literal<RemoteContent>({
+				content: literal<WithTimeline<RemoteContent>>({
 					studioLabel: '',
 					switcherInput: atemInput,
 					timelineObjects: literal<TimelineObjectCoreExt[]>([

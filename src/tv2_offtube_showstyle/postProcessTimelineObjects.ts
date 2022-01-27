@@ -1,21 +1,20 @@
 import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
-	NotesContext,
+	IStudioUserContext,
 	OnGenerateTimelineObj,
-	SegmentContext,
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
-} from '@sofie-automation/blueprints-integration'
-import { literal, TimelineBlueprintExt } from 'tv2-common'
+} from '@tv2media/blueprints-integration'
+import { literal, TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from './helpers/config'
 
 export function postProcessPartTimelineObjects(
-	context: SegmentContext,
+	context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	parts: BlueprintResultPart[]
 ) {
@@ -27,8 +26,8 @@ export function postProcessPartTimelineObjects(
 
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
-	context: NotesContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: IStudioUserContext,
+	config: TV2BlueprintConfig,
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean
 ) {

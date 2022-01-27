@@ -4,8 +4,8 @@ import {
 	MigrationContextShowStyle,
 	MigrationStepShowStyle,
 	TableConfigItemValue
-} from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+} from '@tv2media/blueprints-integration'
+import { forceSourceLayerToDefaultsBase, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'
 import OutputlayerDefaults from './outputlayer-defaults'
@@ -130,41 +130,12 @@ function remapTableColumnValuesInner(
 	return { changed, table }
 }
 
-export function forceSourceLayerToDefaults(versionStr: string, layer: string): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.sourcelayer.defaults.${layer}.forced`,
-		version: versionStr,
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextShowStyle) => {
-			const existing = context.getSourceLayer(layer)
-			if (!existing) {
-				return `SourceLayer "${layer}" doesn't exist on ShowBaseStyle`
-			}
-
-			const defaultVal = SourcelayerDefaults.find(l => l._id === layer)
-
-			if (!defaultVal) {
-				return false
-			}
-
-			return !_.isEqual(existing, defaultVal)
-		},
-		migrate: (context: MigrationContextShowStyle) => {
-			if (context.getSourceLayer(layer)) {
-				context.removeSourceLayer(layer)
-			}
-
-			const defaultVal = SourcelayerDefaults.find(l => l._id === layer)
-
-			if (!defaultVal) {
-				return
-			}
-
-			if (!context.getSourceLayer(layer)) {
-				context.insertSourceLayer(layer, defaultVal)
-			}
-		}
-	})
+export function forceSourceLayerToDefaults(
+	versionStr: string,
+	layer: string,
+	overrideSteps?: string[]
+): MigrationStepShowStyle {
+	return forceSourceLayerToDefaultsBase(SourcelayerDefaults, versionStr, 'Offtube', layer, overrideSteps)
 }
 
 export function remapTableColumnValues(
@@ -182,12 +153,8 @@ export function remapTableColumnValues(
 			validate: (context: MigrationContextShowStyle) => {
 				const table = context.getBaseConfig(tableId) as TableConfigItemValue | undefined
 
-				if (!table) {
-					return `Table "${tableId}" does not exist`
-				}
-
-				if (!table.length) {
-					// No values, nothing to remap
+				if (!table || !table.length) {
+					// No table or no values, nothing to remap
 					return false
 				}
 

@@ -3,11 +3,11 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
-	SegmentContext,
+	IShowStyleUserContext,
+	IStudioUserContext,
 	SourceLayerType,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
@@ -30,7 +30,7 @@ export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
 
 export function EvaluateCueGraphicPilot(
 	config: BlueprintConfig,
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -57,7 +57,11 @@ export function EvaluateCueGraphicPilot(
 	)
 }
 
-function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[] {
+function makeStudioTimelineViz(
+	config: BlueprintConfig,
+	context: IStudioUserContext,
+	adlib: boolean
+): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 
 	return [
@@ -101,7 +105,7 @@ function makeStudioTimelineViz(config: BlueprintConfig, context: NotesContext, a
 	]
 }
 
-function makeStudioTimelineCaspar(config: BlueprintConfig, context: NotesContext) {
+function makeStudioTimelineCaspar(config: BlueprintConfig, context: IStudioUserContext) {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({

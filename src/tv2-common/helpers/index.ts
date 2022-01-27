@@ -5,6 +5,7 @@ export * from './sisyfos'
 export * from './graphics/index'
 export * from './rundownAdLibActions'
 export * from './postProcessDefinitions'
+export * from './translation'
 
 export function SanitizePath(path: string): string {
 	return path.replace(/[\/\\]*$/, '')

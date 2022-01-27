@@ -1,18 +1,24 @@
-import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
+import { MigrationStepShowStyle } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
+	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
-	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
+	StripFolderFromAudioBedConfig,
+	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
+import { SetSourceLayerNameMigrationStep } from '../../tv2-common/migrations/shortcuts'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
+import { GetDefaultStudioSourcesForOfftube } from './hotkeys'
+import sourcelayerDefaults from './sourcelayer-defaults'
 import {
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
@@ -56,6 +62,8 @@ export const remapVizLLayer: Map<string, string> = new Map([
 
 export const remapVizDOvl: Map<string, string> = new Map([['viz-d-ovl', 'OVL1']])
 
+const SHOW_STYLE_ID = 'tv2_offtube_showstyle'
+
 /**
  * Versions:
  * 0.1.0: Core 0.24.0
@@ -70,19 +78,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 
 	/**
 	 * 1.3.1
-	 * - Shortcuts for Jingle layer (transition buttons)
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	...SetShortcutListMigrationStep('1.3.1', OfftubeSourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd'),
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
-
-	/**
-	 * 1.3.3
-	 * - Shortcuts for DVE Box 1
-	 */
-	...SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
 
 	/**
 	 * 1.3.8
@@ -147,6 +147,70 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 
+	/**
+	 * 1.6.9
+	 * - Renaming source layers
+	 */
+	// OVERLAY group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsIdent, 'GFX Ident'),
+	SetSourceLayerNameMigrationStep(
+		'1.6.9',
+		OfftubeSourceLayer.PgmGraphicsIdentPersistent,
+		'GFX Ident Persistent (hidden)'
+	),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTop, 'GFX Top'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTema, 'GFX Tema'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.WallGraphics, 'GFX Wall'),
+	SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(shared)'),
+	// PGM group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmCam, 'Camera'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmVoiceOver, 'VO'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmPilot, 'GFX FULL (VCP)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmContinuity, 'Continuity'),
+	// MUSIK group
+	SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmAudioBed, 'Audiobed (shared)'),
+	// SEC group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
+	// SELECTED_ADLIB group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdLibDVE, 'DVE (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedServer, 'Server (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedVoiceOver, 'VO (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdlibGraphicsFull, 'GFX Full (selected)'),
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdlibJingle, 'Jingle (selected)'),
+	// AUX group
+	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.AuxStudioScreen, 'AUX studio screen'),
+
+	/**
+	 * 1.6.10
+	 * - Remove 'audio/' from soundbed configs
+	 * - Remove 'dve/' from DVE frame/key configs
+	 * - Add PgmJingle to presenter screen
+	 */
+	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
+	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
+	forceSourceLayerToDefaults('1.6.10', OfftubeSourceLayer.PgmJingle),
+
+	/**
+	 * 1.7.0
+	 * - Remove DVE box layers (no longer needed due to triggers)
+	 * - Remove old shortcuts
+	 * - Migrate shortcuts to Action Triggers
+	 */
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box1'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box2'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box3'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box4'),
+	RemoveOldShortcuts('1.7.0', SHOW_STYLE_ID, sourcelayerDefaults),
+	GetDefaultAdLibTriggers('1.7.0', SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, true),
+
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION)
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
 ])

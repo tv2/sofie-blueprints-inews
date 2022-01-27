@@ -1,0 +1,13 @@
+node_modules
+*.vscode
+*.github
+Dockerfile
+tslint-rules
+
+.gitignore
+.dockerignore
+.prettierignore
+.prettierrc.json
+jest.config.js
+tsconfig.jest.json
+tslint.json

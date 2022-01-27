@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PieceLifespan, TSR } from '@sofie-automation/blueprints-integration'
+import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
 import {
 	CueDefinition,
 	CueDefinitionBackgroundLoop,
@@ -12,12 +12,13 @@ import {
 	PartDefinition
 } from 'tv2-common'
 import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
-import { SegmentContext } from '../../__mocks__/context'
+import { SegmentUserContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { getConfig, parseConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../tv2_afvd_showstyle/layers'
 import { CreatePartGrafik } from '../../tv2_afvd_showstyle/parts/grafik'
 import { CreatePartUnknown } from '../../tv2_afvd_showstyle/parts/unknown'
+import { parseConfig as parseStudioConfig } from '../helpers/config'
 import { AtemLLayer, CasparLLayer } from '../layers'
 import mappingsDefaults from '../migrations/mappings-defaults'
 
@@ -29,9 +30,18 @@ function makeMockContext() {
 		externalId: RUNDOWN_EXTERNAL_ID,
 		name: RUNDOWN_EXTERNAL_ID,
 		_id: '',
-		showStyleVariantId: ''
+		showStyleVariantId: '',
+		timing: {
+			type: PlaylistTimingType.None
+		}
 	})
-	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	const mockContext = new SegmentUserContext(
+		'mock_context',
+		mappingsDefaults,
+		parseStudioConfig,
+		parseShowStyleConfig,
+		rundown._id
+	)
 	mockContext.studioConfig = defaultStudioConfig as any
 	mockContext.showStyleConfig = defaultShowStyleConfig as any
 
@@ -208,7 +218,7 @@ describe('Graphics', () => {
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
 		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
@@ -266,7 +276,7 @@ describe('Graphics', () => {
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.enable).toEqual({ start: 0 })
 		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
@@ -425,7 +435,7 @@ describe('Graphics', () => {
 		expect(piece).toBeTruthy()
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDesign)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		expect(piece.enable).toEqual({ start: 0 })
 	})
 
@@ -462,7 +472,7 @@ describe('Graphics', () => {
 		expect(piece.name).toBe('DESIGN_SC')
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
 			obj =>
 				obj.content.deviceType === TSR.DeviceType.CASPARCG && obj.content.type === TSR.TimelineContentTypeCasparCg.MEDIA

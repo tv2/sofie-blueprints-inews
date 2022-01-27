@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { SourceLayerType } from '@tv2media/blueprints-integration'
 import { ParseMappingTable, SourceInfo } from 'tv2-common'
 import { OfftubeStudioConfig } from './config'
 

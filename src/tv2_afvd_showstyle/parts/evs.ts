@@ -5,12 +5,12 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddScript,
 	CreatePartInvalid,
@@ -34,7 +34,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartEVS(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionEVS,
 	totalWords: number
@@ -107,7 +107,7 @@ export function CreatePartEVS(
 }
 
 function makeContentEVS(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	atemInput: number,
 	partDefinition: PartDefinitionEVS,

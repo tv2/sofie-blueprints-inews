@@ -2,18 +2,18 @@ import {
 	BlueprintResultSegment,
 	IBlueprintPart,
 	IBlueprintPiece,
-	IBlueprintRundownDB,
 	IngestSegment,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { fail } from 'assert'
 import { TimeFromFrames } from 'tv2-common'
 import * as _ from 'underscore'
-import { SegmentContext } from '../../__mocks__/context'
+import { SegmentUserContext } from '../../__mocks__/context'
+import { parseConfig } from '../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getSegment } from '../getSegment'
-import { ShowStyleConfig } from '../helpers/config'
+import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { MOCK_EFFEKT_1, MOCK_EFFEKT_2 } from './breakerConfigDefault'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
@@ -63,7 +63,7 @@ const templateSegment: IngestSegment = {
 	parts: []
 }
 
-function makeMockContextWithoutTransitionsConfig(): SegmentContext {
+function makeMockContextWithoutTransitionsConfig(): SegmentUserContext {
 	const context = makeMockContext()
 
 	// context.showStyleConfig.DefaultTransitions = []
@@ -71,17 +71,10 @@ function makeMockContextWithoutTransitionsConfig(): SegmentContext {
 	return context
 }
 
-function makeMockContext(): SegmentContext {
+function makeMockContext(): SegmentUserContext {
 	const config = { id: 'default', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 
-	const rundown: IBlueprintRundownDB = {
-		_id: '',
-		externalId: 'test_rundown',
-		name: 'Test Rundown',
-		showStyleVariantId: ''
-	}
-
-	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseConfig, parseShowStyleConfig)
 	mockContext.studioConfig = config.studioConfig as any
 	mockContext.showStyleConfig = config.showStyleConfig as any
 
@@ -130,7 +123,7 @@ function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	return atemMEObj
 }
 
-function testNotes(context: SegmentContext) {
+function testNotes(context: SegmentUserContext) {
 	expect(context.getNotes()).toStrictEqual([])
 }
 

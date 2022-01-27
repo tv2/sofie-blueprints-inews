@@ -1,8 +1,9 @@
-import { IBlueprintRundownDB } from '@sofie-automation/blueprints-integration'
+import { IBlueprintRundownDB, PlaylistTimingType } from '@tv2media/blueprints-integration'
 import { CueType } from 'tv2-constants'
-import { SegmentContext } from '../../../../__mocks__/context'
+import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import { getConfig, parseConfig as parseShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
+import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
 import { literal } from '../../../util'
 import {
@@ -16,6 +17,7 @@ import {
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionMic,
+	CueDefinitionMixMinus,
 	CueDefinitionPgmClean,
 	CueDefinitionProfile,
 	CueDefinitionTelefon,
@@ -36,9 +38,18 @@ function makeMockContext() {
 		externalId: RUNDOWN_EXTERNAL_ID,
 		name: RUNDOWN_EXTERNAL_ID,
 		_id: '',
-		showStyleVariantId: ''
+		showStyleVariantId: '',
+		timing: {
+			type: PlaylistTimingType.None
+		}
 	})
-	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	const mockContext = new SegmentUserContext(
+		'test',
+		mappingsDefaults,
+		parseStudioConfig,
+		parseShowStyleConfig,
+		rundown._id
+	)
 	mockContext.studioConfig = defaultStudioConfig as any
 	mockContext.showStyleConfig = defaultShowStyleConfig as any
 
@@ -1420,6 +1431,156 @@ describe('Cue parser', () => {
 					seconds: 0
 				},
 				iNewsCommand: 'VCP'
+			})
+		)
+	})
+
+	test('MINUSKAM=KAM 1', () => {
+		const minusKamCue = ['MINUSKAM=KAM 1']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'KAM 1',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=KAM 2', () => {
+		const minusKamCue = ['MINUSKAM=KAM 2']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'KAM 2',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=KAMERA 1', () => {
+		const minusKamCue = ['MINUSKAM=KAMERA 1']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'KAMERA 1',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=KAMERA 2', () => {
+		const minusKamCue = ['MINUSKAM=KAMERA 2']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'KAMERA 2',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=LIVE 1', () => {
+		const minusKamCue = ['MINUSKAM=LIVE 1']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'LIVE 1',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=LIVE 2', () => {
+		const minusKamCue = ['MINUSKAM=LIVE 2']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'LIVE 2',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=SERVER', () => {
+		const minusKamCue = ['MINUSKAM=SERVER']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'SERVER',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM = SERVER', () => {
+		const minusKamCue = ['MINUSKAM = SERVER']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'SERVER',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM = LIVE 1', () => {
+		const minusKamCue = ['MINUSKAM = LIVE 1']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'LIVE 1',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=LIVE 2 ', () => {
+		const minusKamCue = ['MINUSKAM=LIVE 2 ']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'LIVE 2',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('MINUSKAM=', () => {
+		const minusKamCue = ['MINUSKAM=']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(undefined)
+	})
+
+	test('minuskam=Kam 2', () => {
+		const minusKamCue = ['minuskam=Kam 2']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'KAM 2',
+				iNewsCommand: 'MINUSKAM'
+			})
+		)
+	})
+
+	test('minuskam = Kam 3 ', () => {
+		const minusKamCue = ['minuskam = Kam 3 ']
+		const result = ParseCue(minusKamCue, config)
+		expect(result).toEqual(
+			literal<CueDefinitionMixMinus>({
+				type: CueType.MixMinus,
+				source: 'KAM 3',
+				iNewsCommand: 'MINUSKAM'
 			})
 		)
 	})

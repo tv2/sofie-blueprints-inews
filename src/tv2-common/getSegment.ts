@@ -3,13 +3,12 @@ import {
 	BlueprintResultSegment,
 	IBlueprintSegment,
 	IngestSegment,
-	NotesContext,
-	SegmentContext,
-	ShowStyleContext
-} from '@sofie-automation/blueprints-integration'
+	IShowStyleUserContext
+} from '@tv2media/blueprints-integration'
 import {
 	assertUnreachable,
 	GetNextPartCue,
+	INewsStory,
 	IsTargetingFull,
 	literal,
 	ParseBody,
@@ -23,12 +22,12 @@ import * as _ from 'underscore'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
 	CueDefinitionUnpairedTarget,
-	INewsStory,
 	PartDefinitionDVE,
 	PartDefinitionEkstern,
 	PartDefinitionGrafik,
 	PartDefinitionTeknik,
-	PartDefinitionTelefon
+	PartDefinitionTelefon,
+	TimeFromINewsField
 } from './inewsConversion'
 import { PieceMetaData } from './onTimelineGenerate'
 import { CreatePartInvalid, ServerPartProps } from './parts'
@@ -37,65 +36,65 @@ export interface GetSegmentShowstyleOptions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	getConfig: (context: ShowStyleContext) => ShowStyleConfig
+	getConfig: (context: IShowStyleUserContext) => ShowStyleConfig
 	CreatePartContinuity: (config: ShowStyleConfig, ingestSegment: IngestSegment) => BlueprintResultPart
 	CreatePartUnknown: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number,
 		asAdlibs?: boolean
 	) => BlueprintResultPart
 	CreatePartIntro?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartKam?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionKam,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartServer?: (
-		context: NotesContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		props: ServerPartProps
 	) => BlueprintResultPart
 	CreatePartTeknik?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTeknik,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartGrafik?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionGrafik,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartEkstern?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEkstern,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartTelefon?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTelefon,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartDVE?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionDVE,
 		totalWords: number
 	) => BlueprintResultPart
 	CreatePartEVS?: (
-		context: SegmentContext,
+		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEVS,
 		totalWords: number
@@ -106,7 +105,7 @@ export function getSegmentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	ingestSegment: IngestSegment,
 	showStyleOptions: GetSegmentShowstyleOptions<StudioConfig, ShowStyleConfig>
 ): BlueprintResultSegment {
@@ -132,7 +131,7 @@ export function getSegmentBase<
 		segment.isHidden = false
 	}
 
-	const totalTimeMs = Number(iNewsStory.fields.totalTime) * 1000
+	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
 	const parsedParts = ParseBody(
 		config,
@@ -141,7 +140,7 @@ export function getSegmentBase<
 		iNewsStory.body,
 		iNewsStory.cues,
 		iNewsStory.fields,
-		Number(iNewsStory.fields.modifyDate) || Date.now()
+		TimeFromINewsField(iNewsStory.fields.modifyDate) || Date.now()
 	)
 
 	const totalWords = parsedParts.reduce((prev, cur) => {
@@ -151,7 +150,7 @@ export function getSegmentBase<
 		return prev + cur.script.replace(/\n/g, '').replace(/\r/g, '').length
 	}, 0)
 
-	if (segment.name && segment.name.trim().match(/^CONTINUITY$/i)) {
+	if (segment.name && segment.name.trim().match(/^\s*continuity\s*$/i)) {
 		blueprintParts.push(showStyleOptions.CreatePartContinuity(config, ingestSegment))
 		return {
 			segment,
@@ -160,8 +159,9 @@ export function getSegmentBase<
 	}
 
 	let jingleTime = 0
-	const totalTime = Number(iNewsStory.fields.totalTime) || 0
-	const tapeTime = Number(iNewsStory.fields.tapeTime) || 0
+	const totalTime = TimeFromINewsField(iNewsStory.fields.totalTime)
+	const tapeTime = TimeFromINewsField(iNewsStory.fields.tapeTime)
+
 	for (const part of parsedParts) {
 		// Make orphaned secondary cues into adlibs
 		if (
@@ -179,7 +179,7 @@ export function getSegmentBase<
 		if (unpairedTargets.length) {
 			blueprintParts.push(CreatePartInvalid(part))
 			unpairedTargets.forEach(cue => {
-				context.warning(`No graphic found after ${cue.iNewsCommand} cue`)
+				context.notifyUserWarning(`No graphic found after ${cue.iNewsCommand} cue`)
 			})
 			continue
 		}
@@ -337,13 +337,12 @@ export function getSegmentBase<
 	}
 
 	if (
-		totalTimeMs > 0 &&
 		// Filter out Jingle-only parts
-		(blueprintParts.length > 1 ||
-			(blueprintParts[blueprintParts.length - 1] &&
-				!blueprintParts[blueprintParts.length - 1].pieces.some(
-					piece => piece.sourceLayerId === SharedSourceLayers.PgmJingle
-				)))
+		blueprintParts.length > 1 ||
+		(blueprintParts[blueprintParts.length - 1] &&
+			!blueprintParts[blueprintParts.length - 1].pieces.some(
+				piece => piece.sourceLayerId === SharedSourceLayers.PgmJingle
+			))
 	) {
 		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
@@ -382,6 +381,10 @@ export function getSegmentBase<
 
 		if (actualPart.invalid === undefined) {
 			actualPart.invalid = false
+		}
+
+		if (ingestSegment.payload?.untimed) {
+			actualPart.untimed = true
 		}
 
 		return {

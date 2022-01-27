@@ -1,4 +1,4 @@
-import { AbstractLLayer, GraphicLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
+import { AbstractLLayer, GraphicLLayer, SharedATEMLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
@@ -43,7 +43,7 @@ enum SisyfosLLayer {
 	SisyfosN1 = 'sisyfos_source_n1'
 }
 
-export enum OfftubeAtemLLayer {
+export enum AtemLLayer {
 	AtemMEClean = 'atem_me_clean',
 	AtemMEProgram = 'atem_me_program',
 	AtemMENext = 'atem_me_next',
@@ -58,6 +58,14 @@ export enum OfftubeAtemLLayer {
 	AtemSSrcBox3 = 'atem_supersource_z_box3',
 	AtemSSrcBox4 = 'atem_supersource_z_box4'
 }
+
+// tslint:disable-next-line: variable-name
+export const OfftubeAtemLLayer = {
+	...AtemLLayer,
+	...SharedATEMLLayer
+}
+
+export type OfftubeAtemLLayer = AtemLLayer | SharedATEMLLayer
 
 enum CasparLLayer {
 	CasparPlayerJingleLookahead = 'casparcg_player_jingle_looakhead',

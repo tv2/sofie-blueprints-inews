@@ -3,8 +3,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext
+} from '@tv2media/blueprints-integration'
 import {
 	CreateInternalGraphic,
 	CueDefinitionGraphic,
@@ -19,7 +19,7 @@ import { EvaluateCueRouting } from './routing'
 
 export function EvaluateCueGraphic(
 	config: BlueprintConfig,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

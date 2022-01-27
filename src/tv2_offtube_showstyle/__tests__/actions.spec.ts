@@ -5,7 +5,7 @@ import {
 	IBlueprintPieceInstance,
 	PieceLifespan,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionCommentatorSelectDVE,
 	ActionCutToCamera,
@@ -17,13 +17,18 @@ import {
 	literal,
 	PartDefinitionUnknown
 } from 'tv2-common'
-import { AdlibActionType, CueType, PartType, SharedSourceLayers } from 'tv2-constants'
+import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers } from 'tv2-constants'
+import { ActionExecutionContext } from '../../__mocks__/context'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
+import { OfftubeStudioConfig, parseConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
+import mappingsDefaults from '../../tv2_offtube_studio/migrations/mappings-defaults'
 import { executeActionOfftube } from '../actions'
+import { parseConfig as parseShowStyleConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
-import { MockActionContext } from './actionExecutionContext.mock'
 
+const RUNDOWN_ID = 'MOCK_ACTION_RUNDOWN'
 const SEGMENT_ID = 'MOCK_ACTION_SEGMENT'
 const SEGMENT_ID_EXTERNAL = `${SEGMENT_ID}_EXTERNAL`
 const CURRENT_PART_ID = 'MOCK_PART_CURRENT'
@@ -43,7 +48,8 @@ const currentPartMock: IBlueprintPartInstance = {
 		segmentId: SEGMENT_ID,
 		externalId: '',
 		title: 'Current Part'
-	})
+	}),
+	rehearsal: false
 }
 
 const kamPieceInstance: IBlueprintPieceInstance = {
@@ -77,7 +83,8 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	})
+	}),
+	partInstanceId: ''
 }
 
 const playingServerPieceInstance: IBlueprintPieceInstance = {
@@ -91,8 +98,12 @@ const playingServerPieceInstance: IBlueprintPieceInstance = {
 		name: 'Playing Server',
 		sourceLayerId: OfftubeSourceLayer.PgmServer,
 		outputLayerId: OfftubeOutputLayers.PGM,
-		lifespan: PieceLifespan.WithinPart
-	})
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: []
+		}
+	}),
+	partInstanceId: ''
 }
 
 const selectedServerPieceInstance: IBlueprintPieceInstance = {
@@ -106,8 +117,12 @@ const selectedServerPieceInstance: IBlueprintPieceInstance = {
 		name: 'Selected Server',
 		sourceLayerId: OfftubeSourceLayer.SelectedServer,
 		outputLayerId: OfftubeOutputLayers.SELECTED_ADLIB,
-		lifespan: PieceLifespan.OutOnSegmentEnd
-	})
+		lifespan: PieceLifespan.OutOnSegmentEnd,
+		content: {
+			timelineObjects: []
+		}
+	}),
+	partInstanceId: ''
 }
 
 const selectServerClipAction = literal<ActionSelectServerClip>({
@@ -227,28 +242,28 @@ interface ActivePiecesForSource {
 	dataStore: IBlueprintPieceInstance | undefined
 }
 
-function getServerPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getServerPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer),
 		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedServer)
 	}
 }
 
-function getVOPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getVOPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver),
 		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedVoiceOver)
 	}
 }
 
-function getDVEPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getDVEPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE),
 		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE)
 	}
 }
 
-function getFullGrafikPieces(context: MockActionContext, part: 'current' | 'next'): ActivePiecesForSource {
+function getFullGrafikPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
 	return {
 		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SharedSourceLayers.PgmPilot),
 		dataStore: context
@@ -257,11 +272,17 @@ function getFullGrafikPieces(context: MockActionContext, part: 'current' | 'next
 	}
 }
 
-function getCameraPiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance | undefined {
+function getCameraPiece(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): IBlueprintPieceInstance | undefined {
 	return context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmCam)
 }
 
-function getRemotePiece(context: MockActionContext, part: 'current' | 'next'): IBlueprintPieceInstance | undefined {
+function getRemotePiece(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): IBlueprintPieceInstance | undefined {
 	return context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmLive)
 }
 
@@ -288,22 +309,24 @@ function validateRemotePiece(piece: IBlueprintPieceInstance | undefined) {
 	expect(piece).toBeTruthy()
 }
 
-function validateNoWarningsOrErrors(context: MockActionContext) {
-	expect(context.warnings).toEqual([])
-	expect(context.errors).toEqual([])
+function validateNoWarningsOrErrors(context: ActionExecutionContext) {
+	expect(
+		context.getNotes().filter(n => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
+	).toEqual([])
+	expect(context.getNotes().filter(n => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual([])
 }
 
-function validateNextPartExistsWithDuration(context: MockActionContext, duration: number) {
+function validateNextPartExistsWithDuration(context: ActionExecutionContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.expectedDuration).toEqual(duration)
 }
 
-function validateNextPartExistsWithPreRoll(context: MockActionContext, duration: number) {
+function validateNextPartExistsWithPreRoll(context: ActionExecutionContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.prerollDuration).toEqual(duration)
 }
 
-function validateNextPartExistsWithTransitionKeepAlive(context: MockActionContext, duration: number) {
+function validateNextPartExistsWithTransitionKeepAlive(context: ActionExecutionContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.transitionKeepaliveDuration).toEqual(duration)
 }
@@ -335,7 +358,20 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 
 describe('Select Server Action', () => {
 	it('Inserts a new part when no next part is present', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -350,10 +386,20 @@ describe('Select Server Action', () => {
 	})
 
 	it('Leaves current part unaffected when a clip is currently playing', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [
-			playingServerPieceInstance,
-			selectedServerPieceInstance
-		])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[playingServerPieceInstance, selectedServerPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -372,7 +418,20 @@ describe('Select Server Action', () => {
 
 describe('Combination Actions', () => {
 	it('Server -> DVE', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -394,7 +453,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> Full', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -417,7 +489,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> VO', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -440,7 +525,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> DVE', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -462,7 +560,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> CAM', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -483,7 +594,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> LIVE', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -504,7 +628,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> Server', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -525,7 +662,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> Full', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -547,7 +697,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> VO', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -568,7 +731,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> CAM', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -588,7 +764,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> LIVE', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -608,7 +797,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server (01234A) -> DVE (morbarn) -> VO (VOVOA) -> DVE (barnmor) -> CAM (1) -> LIVE (2) -> SERVER (01234A) -> Commentator Select DVE', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		// SERVER (A)
 		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
@@ -725,7 +927,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> LIVE (2)', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -755,7 +970,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> SERVER', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -786,7 +1014,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> VO', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -817,7 +1058,20 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> DVE', () => {
-		const context = new MockActionContext(SEGMENT_ID, currentPartMock, [kamPieceInstance])
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 

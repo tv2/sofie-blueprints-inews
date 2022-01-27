@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan, ScriptContent } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from '@tv2media/blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 
@@ -26,7 +26,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 				outputLayerId: SharedOutputLayers.MANUS,
 				sourceLayerId,
 				lifespan: PieceLifespan.WithinPart,
-				content: literal<ScriptContent>({
+				content: literal<WithTimeline<ScriptContent>>({
 					firstWords: script.slice(0, stripLength),
 					lastWords: script
 						.replace(/\n/gi, ' ')
@@ -35,7 +35,8 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 						?.trim(),
 					fullScript: script,
 					sourceDuration: duration,
-					lastModified: part.modified * 1000
+					lastModified: part.modified * 1000,
+					timelineObjects: []
 				})
 			})
 		)

@@ -1,19 +1,19 @@
 import {
 	BlueprintResultTimeline,
 	IBlueprintResolvedPieceInstance,
+	ITimelineEventContext,
 	OnGenerateTimelineObj,
 	PartEndState,
-	TimelineEventContext,
 	TimelinePersistentState,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { disablePilotWipeAfterJingle, onTimelineGenerate, PartEndStateExt, TimelineBlueprintExt } from 'tv2-common'
 import { GraphicLLayer, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { getConfig } from './helpers/config'
 
 export function onTimelineGenerateOfftube(
-	context: TimelineEventContext,
+	context: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
@@ -46,7 +46,7 @@ export function onTimelineGenerateOfftube(
 }
 
 export function disableFirstPilotGFXAnimation(
-	_context: TimelineEventContext,
+	_context: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]

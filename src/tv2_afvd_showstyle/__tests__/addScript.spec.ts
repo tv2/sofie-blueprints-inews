@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan, ScriptContent } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from '@tv2media/blueprints-integration'
 import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
 import { PartType, SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../layers'
@@ -28,7 +28,10 @@ describe('addScript', () => {
 				name: 'Kam 2',
 				lifespan: PieceLifespan.WithinPart,
 				sourceLayerId: SourceLayer.PgmCam,
-				outputLayerId: SharedOutputLayers.PGM
+				outputLayerId: SharedOutputLayers.PGM,
+				content: {
+					timelineObjects: []
+				}
 			})
 		]
 		AddScript(part, result, 1000, SourceLayer.PgmScript)
@@ -42,12 +45,13 @@ describe('addScript', () => {
 				outputLayerId: SharedOutputLayers.MANUS,
 				sourceLayerId: SourceLayer.PgmScript,
 				lifespan: PieceLifespan.WithinPart,
-				content: literal<ScriptContent>({
+				content: literal<WithTimeline<ScriptContent>>({
 					firstWords: 'Hallo, I wnat to tell you.....',
 					lastWords: 'you...... HEREEEELLLLOOOK YES',
 					fullScript: 'Hallo, I wnat to tell you......\nHEREEEELLLLOOOK\nYES',
 					sourceDuration: 1000,
-					lastModified: part.modified * 1000
+					lastModified: part.modified * 1000,
+					timelineObjects: []
 				})
 			})
 		)

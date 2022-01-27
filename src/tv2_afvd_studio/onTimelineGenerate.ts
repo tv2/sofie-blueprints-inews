@@ -1,18 +1,18 @@
 import {
 	BlueprintResultTimeline,
 	IBlueprintResolvedPieceInstance,
+	ITimelineEventContext,
 	OnGenerateTimelineObj,
 	PartEndState,
-	TimelineEventContext,
 	TimelinePersistentState
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { onTimelineGenerate } from 'tv2-common'
 import * as _ from 'underscore'
 import { getConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from './layers'
 
 export function onTimelineGenerateAFVD(
-	context: TimelineEventContext,
+	context: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,

@@ -5,8 +5,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext
+} from '@tv2media/blueprints-integration'
 import {
 	AddScript,
 	CreatePartInvalid,
@@ -22,7 +22,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartIntro(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
@@ -35,14 +35,14 @@ export function CreatePartIntro(
 	})
 
 	if (!jingleCue) {
-		context.warning(`Intro must contain a jingle`)
+		context.notifyUserWarning(`Intro must contain a jingle`)
 		return CreatePartInvalid(partDefinition)
 	}
 
 	const parsedJingle = jingleCue as CueDefinitionJingle
 
 	if (!config.showStyle.BreakerConfig) {
-		context.warning(`Jingles have not been configured`)
+		context.notifyUserWarning(`Jingles have not been configured`)
 		return CreatePartInvalid(partDefinition)
 	}
 
@@ -50,14 +50,14 @@ export function CreatePartIntro(
 		jngl.BreakerName ? jngl.BreakerName.toString().toUpperCase() === parsedJingle.clip.toString().toUpperCase() : false
 	)
 	if (!jingle) {
-		context.warning(`Jingle ${parsedJingle.clip} is not configured`)
+		context.notifyUserWarning(`Jingle ${parsedJingle.clip} is not configured`)
 		return CreatePartInvalid(partDefinition)
 	}
 
 	const overlapFrames = jingle.EndAlpha
 
 	if (overlapFrames === undefined) {
-		context.warning(`Jingle ${parsedJingle.clip} does not have an out-duration set.`)
+		context.notifyUserWarning(`Jingle ${parsedJingle.clip} does not have an out-duration set.`)
 		return CreatePartInvalid(partDefinition)
 	}
 

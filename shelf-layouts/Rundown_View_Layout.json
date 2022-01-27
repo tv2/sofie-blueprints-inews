@@ -1,0 +1,30 @@
+{
+	"_id": "n86syxN338PyTmrNp",
+	"name": "Rundown View",
+	"filters": [],
+	"type": "rundown_view_layout",
+	"icon": "",
+	"iconColor": "#ffffff",
+	"openByDefault": false,
+	"showBuckets": true,
+	"disableContextMenu": false,
+	"regionId": "rundown_view_layouts",
+	"liveLineProps": {
+		"requiredLayerIds": [
+			"studio0_clip",
+			"studio0_voiceover"
+		]
+	},
+	"hideRundownDivider": true,
+	"showBreaksAsSegments": true,
+	"fixedSegmentDuration": true,
+	"exposeAsSelectableLayout": false,
+	"countdownToSegmentRequireLayers": [
+		"studio0_live"
+	],
+	"showStyleBaseId": "show0",
+	"showDurationSourceLayers": [
+		"studio0_clip",
+		"studio0_voiceover"
+	]
+}

@@ -1,8 +1,6 @@
-import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig } from 'tv2-common'
+import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
 import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
-
-export type UnparsedCue = string[] | null
 
 export interface CueTime {
 	frames?: number
@@ -79,6 +77,11 @@ export interface CueDefinitionProfile extends CueDefinitionBase {
 
 export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 	type: CueType.ClearGrafiks
+}
+
+export interface CueDefinitionMixMinus extends CueDefinitionBase {
+	type: CueType.MixMinus
+	source: string
 }
 
 // If unpaired when evaluated, throw warning. If target === 'FULL' create invalid part.
@@ -162,6 +165,7 @@ export type CueDefinition =
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
+	| CueDefinitionMixMinus
 
 export function GraphicIsInternal(
 	o: CueDefinitionGraphic<GraphicInternalOrPilot>
@@ -227,6 +231,8 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parseJingle(cue)
 	} else if (cue[0].match(/^PGMCLEAN=/i)) {
 		return parsePgmClean(cue)
+	} else if (cue[0].match(/^MINUSKAM\s*=/i)) {
+		return parseMixMinus(cue)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -409,7 +415,7 @@ function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
 		const transitionProperties = getTransitionProperties(cue[0])
 		return literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: eksternSource[1],
+			source: eksternSource[1].replace(/\s+/i, ' ').trim(),
 			iNewsCommand: 'EKSTERN',
 			transition: transitionProperties
 		})
@@ -749,6 +755,18 @@ export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
 		pgmCleanCue.source = pgmSource[1].toString().toUpperCase()
 	}
 	return pgmCleanCue
+}
+
+export function parseMixMinus(cue: string[]): CueDefinitionMixMinus | undefined {
+	const sourceMatch = cue[0].match(/^MINUSKAM\s*=\s*(?<source>.+)\s*$/i)
+	if (sourceMatch === null) {
+		return undefined
+	}
+	return literal<CueDefinitionMixMinus>({
+		type: CueType.MixMinus,
+		source: sourceMatch.groups!.source.toUpperCase(),
+		iNewsCommand: 'MINUSKAM'
+	})
 }
 
 export function isTime(line: string) {

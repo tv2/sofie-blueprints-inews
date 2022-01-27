@@ -4,13 +4,16 @@ import {
 	GraphicsContent,
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	IShowStyleUserContext,
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GraphicInternal,
 	GraphicPilot,
+	JoinAssetToFolder,
+	JoinAssetToNetworkPath,
 	literal,
 	PartDefinition,
 	TimelineBlueprintExt,
@@ -23,7 +26,7 @@ import { IsTargetingFull, IsTargetingWall } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
 export interface CasparPilotGeneratorSettings {
-	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: NotesContext): TSR.TSRTimelineObj[]
+	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: IShowStyleUserContext): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentCaspar(
@@ -52,13 +55,13 @@ export function GetInternalGraphicContentCaspar(
 
 export function GetPilotGraphicContentCaspar(
 	config: TV2BlueprintConfig,
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	settings: CasparPilotGeneratorSettings,
 	engine: GraphicEngine
 ) {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
-	const fileName = `${config.studio.GraphicFolder ? `${config.studio.GraphicFolder}/` : ''}${parsedCue.graphic.name}`
+	const fileName = JoinAssetToFolder(config.studio.GraphicFolder, parsedCue.graphic.name)
 	const templateData = {
 		display: 'program',
 		slots: {
@@ -74,11 +77,16 @@ export function GetPilotGraphicContentCaspar(
 			}
 		}
 	}
-	return literal<GraphicsContent>({
+	return literal<WithTimeline<GraphicsContent>>({
 		fileName,
-		path: `${config.studio.GraphicNetworkBasePath}\\${graphicFolder}${parsedCue.graphic.name}${config.studio.GraphicFileExtension}`,
+		path: JoinAssetToNetworkPath(
+			config.studio.GraphicNetworkBasePath,
+			graphicFolder,
+			parsedCue.graphic.name,
+			config.studio.GraphicFileExtension
+		),
 		mediaFlowIds: [config.studio.GraphicMediaFlowId],
-		ignoreMediaStatus: config.studio.GraphicIgnoreStatus,
+		ignoreMediaObjectStatus: config.studio.GraphicIgnoreStatus,
 		ignoreBlackFrames: true,
 		ignoreFreezeFrame: true,
 		timelineObjects: [

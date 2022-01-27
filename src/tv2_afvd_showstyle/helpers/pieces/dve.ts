@@ -2,9 +2,9 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext,
+	PieceLifespan
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectDVE,
 	AddParentClass,
@@ -25,7 +25,7 @@ import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateDVE(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -41,12 +41,12 @@ export function EvaluateDVE(
 
 	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.warning(`Could not find template ${parsedCue.template}`)
+		context.notifyUserWarning(`Could not find template ${parsedCue.template}`)
 		return
 	}
 
 	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-		context.warning(`Invalid DVE template ${parsedCue.template}`)
+		context.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
 
@@ -56,7 +56,8 @@ export function EvaluateDVE(
 		partDefinition,
 		parsedCue,
 		rawTemplate,
-		AddParentClass(config, partDefinition)
+		AddParentClass(config, partDefinition),
+		adlib
 	)
 
 	if (content.valid) {

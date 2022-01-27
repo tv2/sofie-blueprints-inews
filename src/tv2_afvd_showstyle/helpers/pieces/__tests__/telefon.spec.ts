@@ -5,8 +5,9 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,
@@ -16,24 +17,20 @@ import {
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
-import { SegmentContext } from '../../../../__mocks__/context'
+import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
-import { defaultDSKConfig, StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
+import {
+	defaultDSKConfig,
+	parseConfig as parseStudioConfig,
+	StudioConfig
+} from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { ShowStyleConfig } from '../../config'
+import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../config'
 import { EvaluateTelefon } from '../telefon'
 
-const mockContext = new SegmentContext(
-	{
-		_id: '',
-		externalId: '',
-		name: '',
-		showStyleVariantId: ''
-	},
-	mappingsDefaults
-)
+const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
 mockContext.studioConfig = defaultStudioConfig as any
 mockContext.showStyleConfig = defaultShowStyleConfig as any
 
@@ -111,7 +108,7 @@ describe('telefon', () => {
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
 				lifespan: PieceLifespan.WithinPart,
-				content: literal<GraphicsContent>({
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,

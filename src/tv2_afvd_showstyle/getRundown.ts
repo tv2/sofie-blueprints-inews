@@ -1,4 +1,5 @@
 import {
+	BlueprintResultBaseline,
 	BlueprintResultRundown,
 	GraphicsContent,
 	IBlueprintActionManifest,
@@ -6,13 +7,14 @@ import {
 	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
 	IngestRundown,
-	IStudioConfigContext,
-	NotesContext,
+	IShowStyleUserContext,
+	IStudioUserContext,
 	PieceLifespan,
-	ShowStyleContext,
+	PlaylistTimingType,
 	SourceLayerType,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -33,20 +35,29 @@ import {
 	GetTransitionAdLibActions,
 	literal,
 	SourceInfo,
+	t,
 	TimelineBlueprintExt
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import {
+	AdlibActionType,
+	AdlibTagCutToBox,
+	AdlibTags,
+	CONSTANTS,
+	GraphicLLayer,
+	SharedOutputLayers,
+	TallyTags
+} from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { BlueprintConfig, getConfig } from './helpers/config'
-import { boxLayers } from './helpers/content/dve'
+import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
+import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
-	_context: IStudioConfigContext,
+	_context: IStudioUserContext,
 	showStyleVariants: IBlueprintShowStyleVariant[],
 	_ingestRundown: IngestRundown
 ): string | null {
@@ -58,34 +69,16 @@ export function getShowStyleVariantId(
 	return null
 }
 
-export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = getConfig(context)
-
-	let startTime: number = 0
-	let endTime: number = 0
-
-	// Set start / end times
-	if ('payload' in ingestRundown) {
-		if (ingestRundown.payload.expectedStart) {
-			startTime = Number(ingestRundown.payload.expectedStart)
-		}
-
-		if (ingestRundown.payload.expectedEnd) {
-			endTime = Number(ingestRundown.payload.expectedEnd)
-		}
-	}
-
-	// Can't end before we begin
-	if (endTime < startTime) {
-		endTime = startTime
-	}
+export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
+	const config = getShowStyleConfig(context)
 
 	return {
 		rundown: literal<IBlueprintRundown>({
 			externalId: ingestRundown.externalId,
 			name: ingestRundown.name,
-			expectedStart: startTime,
-			expectedDuration: endTime - startTime
+			timing: {
+				type: PlaylistTimingType.None
+			}
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
 		globalActions: getGlobalAdlibActionsAFVD(context, config),
@@ -93,7 +86,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 	}
 }
 
-function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
 	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
@@ -106,6 +99,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
 			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
+			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -189,6 +183,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				config.studio.StudioMics,
 				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
 			),
+			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemME>({
@@ -269,12 +264,13 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			sourceLayerId: SourceLayer.AuxStudioScreen,
 			outputLayerId: SharedOutputLayers.AUX,
 			expectedDuration: 0,
-			lifespan: PieceLifespan.OutOnRundownEnd,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			metaData: GetEksternMetaData(
 				config.stickyLayers,
 				config.studio.StudioMics,
 				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
 			),
+			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
 					literal<TSR.TimelineObjAtemAUX>({
@@ -327,7 +323,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				sourceLayerId: SourceLayer.AuxStudioScreen,
 				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -353,7 +350,8 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 				sourceLayerId: SourceLayer.VizFullIn1,
 				outputLayerId: SharedOutputLayers.AUX,
 				expectedDuration: 0,
-				lifespan: PieceLifespan.OutOnRundownEnd,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
 				content: {
 					timelineObjects: _.compact<TSR.TSRTimelineObj>([
 						literal<TSR.TimelineObjAtemAUX>({
@@ -383,7 +381,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_LOAD],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSELoadAllElements>({
@@ -411,7 +409,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				literal<TSR.TimelineObjVIZMSEElementContinue>({
@@ -443,7 +441,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_UP],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -473,7 +471,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_DOWN],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -503,7 +501,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -530,8 +528,9 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 			name: 'DVE Design SC',
 			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId: SourceLayer.PgmDesign,
-			lifespan: PieceLifespan.OutOnRundownEnd,
-			content: literal<GraphicsContent>({
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			tags: [AdlibTags.ADLIB_DESIGN_STYLE_SC],
+			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
 				ignoreMediaObjectStatus: true,
@@ -573,6 +572,7 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 		outputLayerId: 'musik',
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
@@ -597,15 +597,16 @@ function getGlobalAdLibPiecesAFKD(context: NotesContext, config: BlueprintConfig
 	return adlibItems
 }
 
-function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: BlueprintConfig): IBlueprintActionManifest[] {
+function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: BlueprintConfig): IBlueprintActionManifest[] {
 	const res: IBlueprintActionManifest[] = []
 
 	let globalRank = 1000
 
 	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live' | 'Feed', rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			const feed = type === 'Live' && info.id.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
 			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
+			const layer = type === 'Kamera' ? SourceLayer.PgmCam : SourceLayer.PgmLive
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -619,19 +620,19 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `${name} to box ${box + 1}`,
+						label: t(`${name} to box ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -646,19 +647,19 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`,
-						sourceLayerId: layer,
+						label: t(`EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`),
+						sourceLayerId: SourceLayer.PgmLocal,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	function makeServerAdlibBoxesActions(rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -673,15 +674,15 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Server to box ${box + 1}`,
-						sourceLayerId: layer,
+						label: t(`Server to box ${box + 1}`),
+						sourceLayerId: SourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
@@ -696,10 +697,11 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `KAM ${info.id}`,
+					label: t(`KAM ${info.id}`),
 					sourceLayerId: SourceLayer.PgmCam,
 					outputLayerId: SharedOutputLayers.PGM,
-					content: {}
+					content: {},
+					tags: queue ? [AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT]
 				}
 			})
 		)
@@ -735,9 +737,10 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			userDataManifest: {},
 			display: {
 				_rank: 1,
-				label: 'Last Live',
+				label: t('Last Live'),
 				sourceLayerId: SourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		})
 	)
@@ -770,7 +773,7 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			userDataManifest: {},
 			display: {
 				_rank: 300,
-				label: `GFX Clear`,
+				label: t(`GFX Clear`),
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
@@ -789,11 +792,11 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			userDataManifest: {},
 			display: {
 				_rank: 400,
-				label: `GFX Altud`,
+				label: t(`GFX Altud`),
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
@@ -811,9 +814,10 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 			userDataManifest: {},
 			display: {
 				_rank: 1,
-				label: 'Last DVE',
+				label: t('Last DVE'),
 				sourceLayerId: SourceLayer.PgmDVEAdLib,
-				outputLayerId: 'pgm'
+				outputLayerId: 'pgm',
+				tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
 			}
 		})
 	)
@@ -830,9 +834,10 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 				userDataManifest: {},
 				display: {
 					_rank: 200 + i,
-					label: dveConfig.DVEName,
+					label: t(dveConfig.DVEName),
 					sourceLayerId: SourceLayer.PgmDVEAdLib,
-					outputLayerId: SharedOutputLayers.PGM
+					outputLayerId: SharedOutputLayers.PGM,
+					tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
 				}
 			})
 		)
@@ -841,344 +846,346 @@ function getGlobalAdlibActionsAFVD(_context: ShowStyleContext, config: Blueprint
 	return res
 }
 
-function getBaseline(config: BlueprintConfig): TSR.TSRTimelineObjBase[] {
+function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 	const jingleDSK = FindDSKJingle(config)
 
-	return [
-		...CreateGraphicBaseline(config),
-		// Default timeline
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemMEProgram,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: config.studio.AtemSource.Default,
-					transition: TSR.AtemTransitionStyle.CUT
+	return {
+		timelineObjects: [
+			...CreateGraphicBaseline(config),
+			// Default timeline
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemMEProgram,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.AtemSource.Default,
+						transition: TSR.AtemTransitionStyle.CUT
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemMEClean,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: config.studio.AtemSource.Default,
-					transition: TSR.AtemTransitionStyle.CUT
+			}),
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemMEClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.AtemSource.Default,
+						transition: TSR.AtemTransitionStyle.CUT
+					}
 				}
-			}
-		}),
+			}),
 
-		// route default outputs
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemAuxPGM,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: AtemSourceIndex.Prg1
+			// route default outputs
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemAuxPGM,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: AtemSourceIndex.Prg1
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemAuxClean,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: AtemSourceIndex.Prg4
+			}),
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemAuxClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: AtemSourceIndex.Prg4
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemAuxLookahead,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: config.studio.AtemSource.Default
+			}),
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemAuxLookahead,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: config.studio.AtemSource.Default
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemAuxSSrc,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: AtemSourceIndex.SSrc
+			}),
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemAuxSSrc,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: AtemSourceIndex.SSrc
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemAuxVideoMixMinus,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: config.studio.AtemSource.MixMinusDefault
+			}),
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemAuxVideoMixMinus,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: config.studio.AtemSource.MixMinusDefault
+					}
 				}
-			}
-		}),
+			}),
 
-		// render presenter screen
-		literal<TSR.TimelineObjCCGHTMLPage>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparCountdown,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.HTMLPAGE,
-				url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
-			}
-		}),
+			// render presenter screen
+			literal<TSR.TimelineObjCCGHTMLPage>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: CasparLLayer.CasparCountdown,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.HTMLPAGE,
+					url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
+				}
+			}),
 
-		// keyers
-		...CreateDSKBaseline(config),
+			// keyers
+			...CreateDSKBaseline(config),
 
-		// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemCleanUSKEffect,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					upstreamKeyers: [
-						{
-							upstreamKeyerId: 0,
-							onAir: false,
-							mixEffectKeyType: 0,
-							flyEnabled: false,
-							fillSource: jingleDSK.Fill,
-							cutSource: jingleDSK.Key,
-							maskEnabled: false,
-							lumaSettings: {
-								preMultiplied: false,
-								clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
-								gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
+			// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemCleanUSKEffect,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						upstreamKeyers: [
+							{
+								upstreamKeyerId: 0,
+								onAir: false,
+								mixEffectKeyType: 0,
+								flyEnabled: false,
+								fillSource: jingleDSK.Fill,
+								cutSource: jingleDSK.Key,
+								maskEnabled: false,
+								lumaSettings: {
+									preMultiplied: false,
+									clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
+									gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
+								}
 							}
+						]
+					}
+				}
+			}),
+			literal<TSR.TimelineObjAtemSsrcProps>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemSSrcArt,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
+					ssrcProps: {
+						artFillSource: config.studio.AtemSource.SplitArtF,
+						artCutSource: config.studio.AtemSource.SplitArtK,
+						artOption: 1,
+						artPreMultiplied: true
+					}
+				}
+			}),
+			literal<TSR.TimelineObjAtemSsrc>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayer.AtemSSrcDefault,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRC,
+					ssrc: {
+						boxes: [
+							{
+								// left
+								enabled: true,
+								source: AtemSourceIndex.Bars,
+								size: 580,
+								x: -800,
+								y: 50,
+								cropped: true,
+								cropRight: 2000
+							},
+							{
+								// right
+								enabled: true,
+								source: AtemSourceIndex.Bars,
+								size: 580,
+								x: 800,
+								y: 50
+								// note: this sits behind box1, so don't crop it to ensure there is no gap between
+							},
+							{
+								// box 3
+								enabled: false
+							},
+							{
+								// box 4
+								enabled: false
+							}
+						]
+					}
+				}
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: CasparLLayer.CasparCGDVEFrame,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					mixer: {
+						opacity: 0
+					},
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
 						}
-					]
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemSsrcProps>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemSSrcArt,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.SSRCPROPS,
-				ssrcProps: {
-					artFillSource: config.studio.AtemSource.SplitArtF,
-					artCutSource: config.studio.AtemSource.SplitArtK,
-					artOption: 1,
-					artPreMultiplied: true
-				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemSsrc>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayer.AtemSSrcDefault,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.SSRC,
-				ssrc: {
-					boxes: [
-						{
-							// left
-							enabled: true,
-							source: AtemSourceIndex.Bars,
-							size: 580,
-							x: -800,
-							y: 50,
-							cropped: true,
-							cropRight: 2000
-						},
-						{
-							// right
-							enabled: true,
-							source: AtemSourceIndex.Bars,
-							size: 580,
-							x: 800,
-							y: 50
-							// note: this sits behind box1, so don't crop it to ensure there is no gap between
-						},
-						{
-							// box 3
-							enabled: false
-						},
-						{
-							// box 4
-							enabled: false
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: CasparLLayer.CasparCGDVEKey,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					mixer: {
+						opacity: 0
+					},
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
 						}
-					]
-				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparCGDVEFrame,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparCGDVEKey,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: CasparLLayer.CasparCGDVELoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
+						}
 					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: CasparLLayer.CasparCGDVELoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
-					}
+			}),
+			literal<TSR.TimelineObjCCGRoute>({
+				id: '',
+				enable: { while: 1 },
+				priority: 0,
+				layer: CasparLLayer.CasparCGFullBg,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: CasparLLayer.CasparCGDVELoop
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGRoute>({
-			id: '',
-			enable: { while: 1 },
-			priority: 0,
-			layer: CasparLLayer.CasparCGFullBg,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: CasparLLayer.CasparCGDVELoop
-			}
-		}),
+			}),
 
-		...(config.studio.GraphicsType === 'HTML'
-			? [
-					literal<TSR.TimelineObjCasparCGAny>({
-						id: '',
-						enable: { start: 0 },
-						priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
-						layer: GraphicLLayer.GraphicLLayerFullLoop,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.ROUTE,
-							mappedLayer: CasparLLayer.CasparCGDVELoop
-						}
+			...(config.studio.GraphicsType === 'HTML'
+				? [
+						literal<TSR.TimelineObjCasparCGAny>({
+							id: '',
+							enable: { start: 0 },
+							priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
+							layer: GraphicLLayer.GraphicLLayerFullLoop,
+							content: {
+								deviceType: TSR.DeviceType.CASPARCG,
+								type: TSR.TimelineContentTypeCasparCg.ROUTE,
+								mappedLayer: CasparLLayer.CasparCGDVELoop
+							}
+						}),
+						literal<TSR.TimelineObjCCGRoute>({
+							id: '',
+							enable: { while: 1 },
+							priority: 0,
+							layer: CasparLLayer.CasparCGDVEKeyedLoop,
+							content: {
+								deviceType: TSR.DeviceType.CASPARCG,
+								type: TSR.TimelineContentTypeCasparCg.ROUTE,
+								mappedLayer: CasparLLayer.CasparCGDVELoop
+							}
+						})
+				  ]
+				: []),
+
+			literal<TSR.TimelineObjSisyfosChannels>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: SisyfosLLAyer.SisyfosConfig,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					channels: Object.keys(sisyfosChannels).map(key => {
+						const llayer = key as SisyfosLLAyer
+						const channel = sisyfosChannels[llayer] as SisyfosChannel
+						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+							mappedLayer: llayer,
+							isPgm: channel.isPgm,
+							visible: !channel.hideInStudioA
+						})
 					}),
-					literal<TSR.TimelineObjCCGRoute>({
-						id: '',
-						enable: { while: 1 },
-						priority: 0,
-						layer: CasparLLayer.CasparCGDVEKeyedLoop,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.ROUTE,
-							mappedLayer: CasparLLayer.CasparCGDVELoop
-						}
-					})
-			  ]
-			: []),
+					overridePriority: 0
+				}
+			}),
 
-		literal<TSR.TimelineObjSisyfosChannels>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: SisyfosLLAyer.SisyfosConfig,
-			content: {
-				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-				channels: Object.keys(sisyfosChannels).map(key => {
-					const llayer = key as SisyfosLLAyer
-					const channel = sisyfosChannels[llayer] as SisyfosChannel
-					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
-						mappedLayer: llayer,
-						isPgm: channel.isPgm,
-						visible: !channel.hideInStudioA
-					})
-				}),
-				overridePriority: 0
-			}
-		}),
+			...CreateLYDBaseline('afvd'),
 
-		...CreateLYDBaseline('afvd'),
-
-		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
-			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
-					return literal<TSR.TimelineObjCCGMedia>({
-						id: '',
-						enable: { while: '1' },
-						priority: 0,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: config.showStyle.CasparCGLoadingClip,
-							loop: true
-						}
-					})
-			  })
-			: [])
-	]
+			...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
+				? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
+						return literal<TSR.TimelineObjCCGMedia>({
+							id: '',
+							enable: { while: '1' },
+							priority: 0,
+							layer,
+							content: {
+								deviceType: TSR.DeviceType.CASPARCG,
+								type: TSR.TimelineContentTypeCasparCg.MEDIA,
+								file: config.showStyle.CasparCGLoadingClip,
+								loop: true
+							}
+						})
+				  })
+				: [])
+		]
+	}
 }

@@ -1,15 +1,16 @@
 import {
 	CameraContent,
 	GraphicsContent,
-	NotesContext,
+	IShowStyleUserContext,
+	IStudioUserContext,
 	RemoteContent,
-	SegmentContext,
 	SourceLayerType,
 	SplitsContent,
 	SplitsContentBoxProperties,
 	TSR,
-	VTContent
-} from '@sofie-automation/blueprints-integration'
+	VTContent,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	createEmptyObject,
 	CueDefinitionDVE,
@@ -20,6 +21,7 @@ import {
 	FindSourceInfoStrict,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEVS,
+	JoinAssetToFolder,
 	literal,
 	PartDefinition,
 	SourceInfo,
@@ -112,25 +114,19 @@ export interface DVEPieceMetaData {
 
 export interface DVETimelineObjectGenerators {
 	GetSisyfosTimelineObjForEkstern: (
-		context: NotesContext,
+		context: IStudioUserContext,
 		sources: SourceInfo[],
 		sourceType: string,
-		getLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[],
+		getLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[],
 		enable?: TSR.Timeline.TimelineEnable
 	) => TSR.TSRTimelineObj[]
-	GetLayersForEkstern: (context: NotesContext, sources: SourceInfo[], sourceType: string) => string[]
+	GetLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[]
 }
 
 export interface DVEOptions {
 	dveLayers: DVELayers
 	dveTimelineGenerators: DVETimelineObjectGenerators
 	boxMappings: [string, string, string, string]
-	boxLayers: {
-		INP1: string
-		INP2: string
-		INP3: string
-		INP4: string
-	}
 	/** All audio layers */
 	AUDIO_LAYERS: string[]
 	/** Layers to exclude from filter */
@@ -141,7 +137,7 @@ export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
@@ -149,15 +145,14 @@ export function MakeContentDVEBase<
 	dveGeneratorOptions: DVEOptions,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
 	if (!dveConfig) {
-		context.warning(`DVE ${parsedCue.template} is not configured`)
+		context.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
 		return {
 			valid: false,
 			content: {
 				boxSourceConfiguration: [],
-				timelineObjects: [],
-				dveConfiguration: []
+				timelineObjects: []
 			},
 			stickyLayers: []
 		}
@@ -190,7 +185,7 @@ export function MakeContentDVE2<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	dveConfig: DVEConfigInput,
 	graphicsTemplateContent: { [key: string]: string },
@@ -200,18 +195,17 @@ export function MakeContentDVE2<
 	adlib?: boolean,
 	videoId?: string,
 	mediaPlayerSessionId?: string
-): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
 	let template: DVEConfig
 	try {
 		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
 	} catch (e) {
-		context.warning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
+		context.notifyUserWarning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
 		return {
 			valid: false,
 			content: {
 				boxSourceConfiguration: [],
-				timelineObjects: [],
-				dveConfiguration: []
+				timelineObjects: []
 			},
 			stickyLayers: []
 		}
@@ -220,7 +214,7 @@ export function MakeContentDVE2<
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
-	const boxMap: Array<{ source: string; sourceLayer: string }> = []
+	const boxMap: Array<{ source: string }> = []
 
 	const classes: string[] = []
 
@@ -229,12 +223,11 @@ export function MakeContentDVE2<
 		const fromCue = sourceProps[1]
 		const targetBox = Number(sourceProps[0])
 		if (!fromCue || !targetBox || isNaN(targetBox)) {
-			context.warning(`Invalid DVE mapping: ${sourceProps}`)
+			context.notifyUserWarning(`Invalid DVE mapping: ${sourceProps}`)
 			return
 		}
 
-		const sourceLayer = dveGeneratorOptions.boxLayers[fromCue as keyof DVESources] as string
-		classes.push(`${sourceLayer}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
+		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
 
 		let usedServer = false
 
@@ -243,42 +236,42 @@ export function MakeContentDVE2<
 			if (prop?.match(/[K|C]AM(?:era)? ?.*/i)) {
 				const match = prop.match(/[K|C]AM(?:era)? ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `KAM ${match[1]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `KAM ${match[1]}` }
 			} else if (prop?.match(/LIVE ?.*/i)) {
 				const match = prop.match(/LIVE ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}` }
 			} else if (prop?.match(/FEED ?.*/i)) {
 				const match = prop.match(/FEED ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `FEED ${match[1]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `FEED ${match[1]}` }
 			} else if (prop?.match(/full/i)) {
-				boxMap[targetBox - 1] = { source: `ENGINE FULL`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `ENGINE FULL` }
 			} else if (prop?.match(/EVS ?(?:\d+)? ?.*/i)) {
 				const match = prop.match(/EVS ?(\d+)? ?(.*)/i) as RegExpExecArray
 
-				boxMap[targetBox - 1] = { source: `EVS${match[1]} ${match[2]}`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `EVS${match[1]} ${match[2]}` }
 			} else if (prop?.match(/DEFAULT/)) {
-				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE`, sourceLayer }
+				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE` }
 			} else if (prop) {
 				if (videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
 					usedServer = true
 				} else {
-					boxMap[targetBox - 1] = { source: prop, sourceLayer }
+					boxMap[targetBox - 1] = { source: prop }
 				}
 			} else {
 				if (videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
+					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
 					usedServer = true
 				} else {
-					context.warning(`Missing mapping for ${targetBox}`)
-					boxMap[targetBox - 1] = { source: '', sourceLayer }
+					context.notifyUserWarning(`Missing mapping for ${targetBox}`)
+					boxMap[targetBox - 1] = { source: '' }
 				}
 			}
 		} else {
 			// Need something to keep the layout etc
-			boxMap[targetBox - 1] = { source: '', sourceLayer }
+			boxMap[targetBox - 1] = { source: '' }
 		}
 	})
 
@@ -296,8 +289,7 @@ export function MakeContentDVE2<
 				...boxSource(sourceInfo, label),
 				...literal<CameraContent | RemoteContent>({
 					studioLabel: '',
-					switcherInput: Number(sourceInfo.port),
-					timelineObjects: []
+					switcherInput: Number(sourceInfo.port)
 				})
 			})
 		}
@@ -323,7 +315,7 @@ export function MakeContentDVE2<
 			if (sources) {
 				// If it is intentional there are no sources, then ignore
 				// TODO - should this warn?
-				context.warning(`Missing source type for DVE box: ${num + 1}`)
+				context.notifyUserWarning(`Missing source type for DVE box: ${num + 1}`)
 				valid = false
 			}
 		} else {
@@ -331,7 +323,7 @@ export function MakeContentDVE2<
 			const sourceType = props[0]
 			const sourceInput = props[1]
 			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/EVS/i) && !mappingFrom.source.match(/SERVER/)) {
-				context.warning(`Invalid DVE source: ${mappingFrom.source}`)
+				context.notifyUserWarning(`Invalid DVE source: ${mappingFrom.source}`)
 				setBoxToBlack(num)
 				return
 			}
@@ -351,7 +343,7 @@ export function MakeContentDVE2<
 			} else if (sourceType.match(/KAM/i)) {
 				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
 				if (sourceInfoCam === undefined) {
-					context.warning(`Invalid source: ${mappingFrom.source}`)
+					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
 					setBoxToBlack(num)
 					valid = false
 					return
@@ -370,7 +362,7 @@ export function MakeContentDVE2<
 			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i) || sourceType.match(/SKYPE/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
-					context.warning(`Invalid source: ${mappingFrom.source}`)
+					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
 					setBoxToBlack(num)
 					valid = false
 					return
@@ -394,7 +386,7 @@ export function MakeContentDVE2<
 					mappingFrom.source
 				)
 				if (sourceInfoDelayedPlayback === undefined) {
-					context.warning(`Invalid source: ${mappingFrom.source}`)
+					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
 					setBoxToBlack(num)
 					valid = false
 					return
@@ -422,7 +414,7 @@ export function MakeContentDVE2<
 						)
 					)
 				} else {
-					context.warning(`Unsupported engine for DVE: ${sourceInput}`)
+					context.notifyUserWarning(`Unsupported engine for DVE: ${sourceInput}`)
 					setBoxToBlack(num)
 				}
 			} else if (sourceType.match(/SERVER/i)) {
@@ -438,7 +430,7 @@ export function MakeContentDVE2<
 				)
 				return
 			} else {
-				context.warning(`Unknown source type for DVE: ${mappingFrom.source}`)
+				context.notifyUserWarning(`Unknown source type for DVE: ${mappingFrom.source}`)
 				setBoxToBlack(num)
 				valid = false
 			}
@@ -451,11 +443,19 @@ export function MakeContentDVE2<
 			graphicsTemplateStyle = JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
 		}
 	} catch {
-		context.warning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
+		context.notifyUserWarning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
 	}
 
-	const keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : ''
-	const frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : ''
+	let keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : undefined
+	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
+
+	if (keyFile) {
+		keyFile = keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
+	}
+
+	if (frameFile) {
+		frameFile = JoinAssetToFolder(config.studio.DVEFolder, frameFile)
+	}
 
 	if (adlib) {
 		dveTimeline.push(
@@ -487,9 +487,8 @@ export function MakeContentDVE2<
 
 	return {
 		valid,
-		content: literal<SplitsContent>({
+		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
-			dveConfiguration: {},
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
 				// Setup classes for adlibs to be able to override boxes
 				createEmptyObject({

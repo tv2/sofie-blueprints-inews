@@ -5,15 +5,15 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext
+} from '@tv2media/blueprints-integration'
 import { AddScript, literal, PartDefinition, PartTime } from 'tv2-common'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export function CreatePartTeknik(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number

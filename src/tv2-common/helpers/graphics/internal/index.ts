@@ -3,10 +3,10 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
+	IShowStyleUserContext,
 	PieceLifespan,
-	SegmentContext,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GetDefaultOut,
@@ -33,7 +33,7 @@ import { GetInternalGraphicContentVIZ } from '../viz'
 
 export function CreateInternalGraphic(
 	config: TV2BlueprintConfig,
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -52,7 +52,7 @@ export function CreateInternalGraphic(
 	const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
 	if (!mappedTemplate || !mappedTemplate.length) {
-		context.warning(`No valid template found for ${parsedCue.graphic.template}`)
+		context.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)
 		return
 	}
 
@@ -143,7 +143,7 @@ export function CreateInternalGraphic(
 
 		if (
 			sourceLayerId === SharedSourceLayers.PgmGraphicsIdentPersistent &&
-			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnRundownEnd) &&
+			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnShowStyleEnd) &&
 			isStickyIdent
 		) {
 			// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.

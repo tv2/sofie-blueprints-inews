@@ -1,6 +1,6 @@
 import { CueDefinition, CueDefinitionBase, CueTime } from './inewsConversion/converters/ParseCue'
 
-import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@sofie-automation/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 const FRAME_TIME = 1000 / 25 // TODO: This should be pulled from config.
@@ -86,7 +86,7 @@ export function LifeSpan(mode: 'B' | 'S' | 'O', defaultLifespan: PieceLifespan):
 		case 'S':
 			return PieceLifespan.OutOnSegmentEnd
 		case 'O':
-			return PieceLifespan.OutOnRundownEnd
+			return PieceLifespan.OutOnShowStyleEnd
 	}
 
 	return defaultLifespan

@@ -1,30 +1,32 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
-	PieceLifespan,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext,
+	PieceLifespan
+} from '@tv2media/blueprints-integration'
 import {
+	ActionSelectJingle,
 	CreateJingleContentBase,
 	CueDefinitionJingle,
-	GetJinglePartProperties,
+	GetTagForJingle,
+	GetTagForJingleNext,
 	literal,
 	PartDefinition,
-	PieceMetaData
+	PieceMetaData,
+	t
 } from 'tv2-common'
-import { AdlibTags, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export function EvaluateJingle(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	_actions: IBlueprintActionManifest[],
+	_adlibPieces: IBlueprintAdLibPiece[],
+	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
 	adlib?: boolean,
@@ -32,7 +34,7 @@ export function EvaluateJingle(
 	effekt?: boolean
 ) {
 	if (!config.showStyle.BreakerConfig) {
-		context.warning(`Jingles have not been configured`)
+		context.notifyUserWarning(`Jingles have not been configured`)
 		return
 	}
 
@@ -42,54 +44,42 @@ export function EvaluateJingle(
 		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === parsedCue.clip.toUpperCase() : false
 	)
 	if (!jingle) {
-		context.warning(`Jingle ${parsedCue.clip} is not configured`)
+		context.notifyUserWarning(`Jingle ${parsedCue.clip} is not configured`)
 		return
 	} else {
 		file = jingle.ClipName.toString()
 	}
 
 	if (adlib) {
-		const p = GetJinglePartProperties(context, config, part)
-
-		if (JSON.stringify(p) === JSON.stringify({})) {
-			context.warning(`Could not create adlib for ${parsedCue.clip}`)
-			return
-		}
-
-		const props = p as Pick<
-			IBlueprintPart,
-			'autoNext' | 'expectedDuration' | 'prerollDuration' | 'autoNextOverlap' | 'disableOutTransition'
-		>
-
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank ?? 0,
-				externalId: `${part.externalId}-JINGLE-adlib`,
-				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
-				sourceLayerId: SourceLayer.PgmJingle,
-				outputLayerId: SharedOutputLayers.JINGLE,
-				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData>({
-					transition: {
-						isJingle: !effekt,
-						isEffekt: !!effekt
-					}
+		actions.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.SELECT_JINGLE,
+				userData: literal<ActionSelectJingle>({
+					type: AdlibActionType.SELECT_JINGLE,
+					clip: parsedCue.clip,
+					segmentExternalId: part.segmentExternalId
 				}),
-				content: createJingleContentAFVD(
-					config,
-					file,
-					jingle.StartAlpha,
-					jingle.LoadFirstFrame,
-					jingle.Duration,
-					jingle.EndAlpha
-				),
-				toBeQueued: true,
-				adlibAutoNext: props.autoNext,
-				adlibAutoNextOverlap: props.autoNextOverlap,
-				adlibPreroll: props.prerollDuration,
-				expectedDuration: props.expectedDuration,
-				adlibDisableOutTransition: false,
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
+				userDataManifest: {},
+				display: {
+					_rank: rank ?? 0,
+					label: t(effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip),
+					sourceLayerId: SourceLayer.PgmJingle,
+					outputLayerId: SharedOutputLayers.JINGLE,
+					content: {
+						...createJingleContentAFVD(
+							config,
+							file,
+							jingle.StartAlpha,
+							jingle.LoadFirstFrame,
+							jingle.Duration,
+							jingle.EndAlpha
+						)
+					},
+					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+					currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
+					nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)],
+					noHotKey: true
+				}
 			})
 		)
 	} else {

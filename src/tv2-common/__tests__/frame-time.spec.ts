@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
 import { CueType } from 'tv2-constants'
 import { CreateTiming } from '../cueTiming'
 import { CueDefinitionEkstern } from '../inewsConversion/converters/ParseCue'
@@ -188,7 +188,7 @@ describe('CreateTiming', () => {
 				enable: {
 					start: 0
 				},
-				lifespan: PieceLifespan.OutOnRundownEnd
+				lifespan: PieceLifespan.OutOnShowStyleEnd
 			})
 		)
 	})

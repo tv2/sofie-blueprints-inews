@@ -1,12 +1,13 @@
 import {
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
+	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
-	VTContent
-} from '@sofie-automation/blueprints-integration'
+	VTContent,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	ActionTakeWithTransitionVariantMix,
 	EnableDSK,
@@ -21,10 +22,11 @@ import {
 import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { PieceMetaData } from '../onTimelineGenerate'
+import { JoinAssetToFolder, JoinAssetToNetworkPath } from '../util'
 
 /** Has to be executed before calling EvaluateCues, as some cues may depend on it */
 export function CreateEffektForPartBase(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	config: TV2BlueprintConfig,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[],
@@ -70,7 +72,7 @@ export function CreateEffektForPartInner<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	pieces: IBlueprintPiece[],
 	effekt: string,
@@ -88,7 +90,7 @@ export function CreateEffektForPartInner<
 	  >
 	| false {
 	if (!config.showStyle.BreakerConfig) {
-		context.warning(`Jingles have not been configured`)
+		context.notifyUserWarning(`Jingles have not been configured`)
 		return false
 	}
 
@@ -99,18 +101,18 @@ export function CreateEffektForPartInner<
 				.toUpperCase() === effekt.toUpperCase()
 	)
 	if (!effektConfig) {
-		context.warning(`Could not find effekt ${effekt}`)
+		context.notifyUserWarning(`Could not find effekt ${effekt}`)
 		return false
 	}
 
 	const file = effektConfig.ClipName.toString()
 
 	if (!file) {
-		context.warning(`Could not find file for ${effekt}`)
+		context.notifyUserWarning(`Could not find file for ${effekt}`)
 		return false
 	}
 
-	const fileName = config.studio.JingleFolder ? `${config.studio.JingleFolder}/${file}` : file
+	const fileName = JoinAssetToFolder(config.studio.JingleFolder, file)
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -126,15 +128,15 @@ export function CreateEffektForPartInner<
 					isEffekt: true
 				}
 			}),
-			content: literal<VTContent>({
-				studioLabel: '',
+			content: literal<WithTimeline<VTContent>>({
 				fileName,
-				path: `${config.studio.JingleNetworkBasePath}\\${
-					config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
-				}${file}${config.studio.JingleFileExtension}`, // full path on the source network storage
+				path: JoinAssetToNetworkPath(
+					config.studio.JingleNetworkBasePath,
+					config.studio.JingleFolder,
+					file,
+					config.studio.JingleFileExtension
+				), // full path on the source network storage
 				mediaFlowIds: [config.studio.JingleMediaFlowId],
-				firstWords: '',
-				lastWords: '',
 				previewFrame: Number(effektConfig.StartAlpha),
 				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 				ignoreBlackFrames: true,
@@ -218,6 +220,7 @@ export function CreateMixForPartInner(
 				)
 			],
 			content: {
+				timelineObjects: [],
 				ignoreMediaObjectStatus: true
 			}
 		})

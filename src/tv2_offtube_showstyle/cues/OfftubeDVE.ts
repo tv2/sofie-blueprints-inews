@@ -2,10 +2,10 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SplitsContent
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectDVE,
 	AddParentClass,
@@ -18,6 +18,7 @@ import {
 	literal,
 	PartDefinition,
 	PieceMetaData,
+	t,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
@@ -26,7 +27,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateDVE(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
@@ -42,12 +43,12 @@ export function OfftubeEvaluateDVE(
 
 	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.warning(`Could not find template ${parsedCue.template}`)
+		context.notifyUserWarning(`Could not find template ${parsedCue.template}`)
 		return
 	}
 
 	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-		context.warning(`Invalid DVE template ${parsedCue.template}`)
+		context.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
 
@@ -125,12 +126,11 @@ export function OfftubeEvaluateDVE(
 					_rank: rank,
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,
 					outputLayerId: OfftubeOutputLayers.PGM,
-					label: `${partDefinition.storyName}`,
+					label: t(`${partDefinition.storyName}`),
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
 					noHotKey: !adlib,
 					content: literal<SplitsContent>({
-						...pieceContent.content,
-						timelineObjects: []
+						...pieceContent.content
 					}),
 					currentPieceTags: [GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)],
 					nextPieceTags: [GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)]

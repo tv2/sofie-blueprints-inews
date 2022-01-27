@@ -2,27 +2,22 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	IBlueprintRundownDB,
 	PieceLifespan
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
 import { NoteType, PartType } from 'tv2-constants'
-import { SegmentContext } from '../../../../__mocks__/context'
+import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { defaultDSKConfig, StudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
+import {
+	defaultDSKConfig,
+	parseConfig as parseStudioConfig,
+	StudioConfig
+} from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { getConfig, ShowStyleConfig } from '../../config'
-
-const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
+import { getConfig, parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../config'
 
 function makeMockContext() {
-	const rundown = literal<IBlueprintRundownDB>({
-		externalId: RUNDOWN_EXTERNAL_ID,
-		name: RUNDOWN_EXTERNAL_ID,
-		_id: '',
-		showStyleVariantId: ''
-	})
-	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
 	mockContext.studioConfig = defaultStudioConfig as any
 	mockContext.showStyleConfig = defaultShowStyleConfig as any
 
@@ -169,6 +164,6 @@ describe('lyd', () => {
 
 		expect(pieces.length).toEqual(0)
 		expect(context.getNotes().length).toEqual(1)
-		expect(context.getNotes()[0].type).toEqual(NoteType.WARNING)
+		expect(context.getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
 	})
 })

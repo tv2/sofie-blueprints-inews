@@ -1,4 +1,10 @@
-import { NotesContext, TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
+import {
+	IShowStyleUserContext,
+	TimelineObjectCoreExt,
+	TSR,
+	VTContent,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
 	GetSisyfosTimelineObjForCamera,
@@ -12,6 +18,7 @@ import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-con
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { AdlibServerOfftubeOptions } from '../pieces'
+import { JoinAssetToNetworkPath } from '../util'
 
 // TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
@@ -34,31 +41,27 @@ export interface VTFields {
 
 type VTProps = Pick<
 	VTContent,
-	| 'studioLabel'
-	| 'fileName'
-	| 'path'
-	| 'mediaFlowIds'
-	| 'firstWords'
-	| 'lastWords'
-	| 'ignoreMediaObjectStatus'
-	| 'sourceDuration'
+	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration'
 >
 
 export function GetVTContentProperties(config: TV2BlueprintConfig, file: string, sourceDuration?: number): VTProps {
 	return literal<VTProps>({
-		studioLabel: '',
 		fileName: file,
-		path: `${config.studio.ClipNetworkBasePath}\\${file}${config.studio.ClipFileExtension}`, // full path on the source network storage
+		path: JoinAssetToNetworkPath(
+			config.studio.ClipNetworkBasePath,
+			config.studio.ClipFolder,
+			file,
+			config.studio.ClipFileExtension
+		), // full path on the source network storage
 		mediaFlowIds: [config.studio.ClipMediaFlowId],
-		firstWords: '',
-		lastWords: '',
 		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined,
+		postrollDuration: config.studio.ServerPostrollDuration,
 		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus
 	})
 }
 
 export function MakeContentServer(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
@@ -67,8 +70,8 @@ export function MakeContentServer(
 	adLibPix: boolean,
 	voLevels: boolean,
 	sourceDuration?: number
-): VTContent {
-	return literal<VTContent>({
+): WithTimeline<VTContent> {
+	return literal<WithTimeline<VTContent>>({
 		...GetVTContentProperties(config, file, sourceDuration),
 		ignoreMediaObjectStatus: true,
 		timelineObjects: GetServerTimeline(
@@ -85,7 +88,7 @@ export function MakeContentServer(
 }
 
 function GetServerTimeline(
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,

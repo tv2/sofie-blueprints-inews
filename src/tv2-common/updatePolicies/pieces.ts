@@ -2,8 +2,8 @@ import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
 	IBlueprintPieceInstance,
-	SyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+	ISyncIngestUpdateToPartInstanceContext
+} from '@tv2media/blueprints-integration'
 
 function groupPieceInstances(pieceInstances: Array<IBlueprintPieceInstance<unknown>>) {
 	return pieceInstances.reduce<{
@@ -13,9 +13,8 @@ function groupPieceInstances(pieceInstances: Array<IBlueprintPieceInstance<unkno
 		return acc
 	}, {})
 }
-
 export function stopOrReplaceEditablePieces(
-	context: SyncIngestUpdateToPartInstanceContext,
+	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData,
 	allowedSourceLayers: Set<string> | undefined

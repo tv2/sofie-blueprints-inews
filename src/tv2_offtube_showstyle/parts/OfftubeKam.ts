@@ -4,13 +4,14 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
-	VTContent
-} from '@sofie-automation/blueprints-integration'
+	VTContent,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
 	AddScript,
@@ -36,7 +37,7 @@ import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartKam(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
@@ -63,14 +64,10 @@ export function OfftubeCreatePartKam(
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
-				content: literal<VTContent>({
-					studioLabel: '',
-					switcherInput: jingleDSK.Fill,
+				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
 					path: '',
-					firstWords: '',
-					lastWords: '',
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: ``,

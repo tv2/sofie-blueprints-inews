@@ -2,14 +2,15 @@ import {
 	BlueprintResultTimeline,
 	GraphicsContent,
 	IBlueprintResolvedPieceInstance,
+	IRundownContext,
+	IShowStyleContext,
+	ITimelineEventContext,
 	OnGenerateTimelineObj,
 	PartEndState,
-	RundownContext,
-	TimelineEventContext,
 	TimelineObjectCoreExt,
 	TimelinePersistentState,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CasparPlayerClip } from 'tv2-common'
 import { AbstractLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -61,18 +62,20 @@ export interface PieceMetaData {
 
 export interface PartMetaData {
 	segmentExternalId: string
+	/** If set, part has been modified by an action */
+	dirty?: true
 }
 
 export function onTimelineGenerate<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: TimelineEventContext,
+	context: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
-	getConfig: (context: TimelineEventContext) => ShowStyleConfig,
+	getConfig: (context: IShowStyleContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
 	_casparLayerClipPending: string,
 	_atemLayerNext: string
@@ -113,7 +116,7 @@ export function onTimelineGenerate<
 }
 
 function processServerLookaheads(
-	context: TimelineEventContext,
+	context: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
@@ -179,7 +182,7 @@ function processServerLookaheads(
 }
 
 export function getEndStateForPart(
-	_context: RundownContext,
+	_context: IRundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
@@ -284,7 +287,7 @@ function isSisyfosPersistObject(obj: TSR.TimelineObjSisyfosChannels & TimelineBl
 }
 
 export function copyPreviousSisyfosLevels(
-	_context: RundownContext,
+	_context: IRundownContext,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousLevels: PartEndStateExt['stickySisyfosLevels'],
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
@@ -329,11 +332,11 @@ export function copyPreviousSisyfosLevels(
 				const metadata = piece.piece.metaData as PieceMetaData | undefined
 				if (metadata && metadata.stickySisyfosLevels) {
 					for (const id of Object.keys(metadata.stickySisyfosLevels)) {
-						// context.warning(
+						// context.notifyUserWarning(
 						// 	`New level from ${piece._id} for ${id} of ${JSON.stringify(val)} (last was ${previousLevels[id]})`
 						// )
 						if (newPreviousLevels[id]) {
-							// context.warning('duplicate level, going with the first!' + id)
+							// context.notifyUserWarning('duplicate level, going with the first!' + id)
 						} else {
 							const val = metadata.stickySisyfosLevels[id]
 							newPreviousLevels[id] =

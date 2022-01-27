@@ -14,7 +14,11 @@
       ],
       "tv2-constants": [
         "src/tv2-constants/index.ts"
+      ],
+      "inews-mixins": [
+        "src/inews-mixins/index.ts"
       ]
     },
+    "experimentalDecorators": true
   }
 }

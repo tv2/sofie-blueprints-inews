@@ -4,9 +4,16 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
-import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
+	ISegmentUserContext
+} from '@tv2media/blueprints-integration'
+import {
+	CueDefinition,
+	EvaluateCueMixMinus,
+	EvaluateCuesBase,
+	EvaluateCuesOptions,
+	EvaluateLYD,
+	PartDefinition
+} from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
@@ -20,7 +27,7 @@ import { EvaluateCueRouting } from './routing'
 import { EvaluateTelefon } from './telefon'
 
 export function EvaluateCues(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
@@ -43,7 +50,8 @@ export function EvaluateCues(
 			EvaluateCueGraphic,
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
-			EvaluateCueRouting
+			EvaluateCueRouting,
+			EvaluateCueMixMinus
 		},
 		context,
 		config,

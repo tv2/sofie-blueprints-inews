@@ -3,11 +3,12 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SourceLayerType,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
@@ -17,7 +18,7 @@ import { BlueprintConfig } from '../config'
 
 export function EvaluateCueRouting(
 	config: BlueprintConfig,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -28,7 +29,7 @@ export function EvaluateCueRouting(
 	if (parsedCue.INP1 !== undefined || parsedCue.INP !== undefined) {
 		const source = parsedCue.INP1 ?? parsedCue.INP
 		if (!source || !source.length) {
-			context.warning(`No input provided for viz engine aux`)
+			context.notifyUserWarning(`No input provided for viz engine aux`)
 		} else {
 			let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)
 			if (!sourceInfo) {
@@ -36,7 +37,7 @@ export function EvaluateCueRouting(
 			}
 
 			if (!sourceInfo) {
-				context.warning(`Could not find source ${source}`)
+				context.notifyUserWarning(`Could not find source ${source}`)
 			} else {
 				pieces.push(
 					literal<IBlueprintPiece>({
@@ -48,7 +49,7 @@ export function EvaluateCueRouting(
 						outputLayerId: SharedOutputLayers.AUX,
 						sourceLayerId: SourceLayer.VizFullIn1,
 						lifespan: PieceLifespan.WithinPart,
-						content: literal<CameraContent>({
+						content: literal<WithTimeline<CameraContent>>({
 							studioLabel: '',
 							switcherInput: sourceInfo.port,
 							timelineObjects: _.compact<TSR.TSRTimelineObj>([

@@ -1,9 +1,9 @@
-import { IBlueprintPart } from '@sofie-automation/blueprints-integration'
-import { INewsStory } from 'tv2-common'
+import { IBlueprintPart } from '@tv2media/blueprints-integration'
+import { INewsStory, TimeFromINewsField } from 'tv2-common'
 
 export function GetTimeFromPart(story: INewsStory): Partial<IBlueprintPart> {
 	return {
-		expectedDuration: Number(story.fields.audioTime),
+		expectedDuration: TimeFromINewsField(story.fields.audioTime),
 		prerollDuration: 0
 	}
 }

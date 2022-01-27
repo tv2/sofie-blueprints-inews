@@ -1,4 +1,4 @@
-import { IBlueprintPart, PieceLifespan, TSR } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPart, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
 import {
 	CalculateTime,
 	CreateTimingEnable,
@@ -22,7 +22,7 @@ export function GetInfiniteModeForGraphic(
 	isStickyIdent?: boolean
 ): PieceLifespan {
 	return IsTargetingWall(engine)
-		? PieceLifespan.OutOnRundownEnd
+		? PieceLifespan.OutOnShowStyleEnd
 		: IsTargetingTLF(engine)
 		? PieceLifespan.WithinPart
 		: isStickyIdent

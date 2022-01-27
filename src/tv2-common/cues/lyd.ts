@@ -3,11 +3,12 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	IShowStyleUserContext,
 	PieceLifespan,
-	SegmentContext,
 	TimelineObjectCoreExt,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
 import {
 	AbstractLLayer,
@@ -18,9 +19,10 @@ import {
 	SharedSourceLayers
 } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
+import { JoinAssetToFolder } from '../util'
 
 export function EvaluateLYD(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: TV2BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -37,7 +39,7 @@ export function EvaluateLYD(
 	const fade = parsedCue.variant.match(/FADE ?(\d+)/i)
 
 	if (!conf && !stop && !fade) {
-		context.warning(`LYD ${parsedCue.variant} not configured`)
+		context.notifyUserWarning(`LYD ${parsedCue.variant} not configured`)
 		return
 	}
 
@@ -99,9 +101,9 @@ function LydContent(
 	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,
 	fadeOut?: number
-): BaseContent {
+): WithTimeline<BaseContent> {
 	if (lydType === 'stop') {
-		return literal<BaseContent>({
+		return literal<WithTimeline<BaseContent>>({
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
 					id: '',
@@ -120,7 +122,9 @@ function LydContent(
 		})
 	}
 
-	return literal<BaseContent>({
+	const filePath = JoinAssetToFolder(config.studio.AudioBedFolder, file)
+
+	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia>({
 				id: '',
@@ -132,7 +136,7 @@ function LydContent(
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file,
+					file: filePath,
 					channelLayout: 'bed',
 					loop: true,
 					noStarttime: true,

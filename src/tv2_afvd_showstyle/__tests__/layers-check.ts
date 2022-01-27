@@ -3,10 +3,10 @@ import * as _ from 'underscore'
 import {
 	BlueprintMappings,
 	IBlueprintPieceGeneric,
-	ShowStyleContext,
+	IShowStyleUserContext,
 	TimelineObjectCoreExt,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 
 import { GetDSKSourceLayerNames, literal } from 'tv2-common'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -16,7 +16,7 @@ import { SourceLayer } from '../layers'
 import OutputlayerDefaults from '../migrations/outputlayer-defaults'
 
 export function checkAllLayers(
-	context: ShowStyleContext,
+	context: IShowStyleUserContext,
 	pieces: IBlueprintPieceGeneric[],
 	otherObjs?: TSR.TSRTimelineObjBase[]
 ) {

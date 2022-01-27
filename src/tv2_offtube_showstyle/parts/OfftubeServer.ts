@@ -2,8 +2,8 @@ import {
 	BlueprintResultPart,
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext
+} from '@tv2media/blueprints-integration'
 import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -12,7 +12,7 @@ import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export function OfftubeCreatePartServer(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps

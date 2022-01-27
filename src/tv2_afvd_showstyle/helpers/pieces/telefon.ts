@@ -3,9 +3,9 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext,
+	ISegmentUserContext,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionTelefon,
 	GetSisyfosTimelineObjForCamera,
@@ -19,7 +19,7 @@ import { EvaluateCueGraphic } from './graphic'
 
 export function EvaluateTelefon(
 	config: BlueprintConfig,
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

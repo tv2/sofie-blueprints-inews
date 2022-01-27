@@ -1,4 +1,4 @@
-import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@sofie-automation/blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@tv2media/blueprints-integration'
 import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,
@@ -85,7 +85,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'KOM 1',
 		channel: 0,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_2_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -93,7 +94,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'KOM 2',
 		channel: 1,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -101,7 +103,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'KOM 3',
 		channel: 2,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -109,7 +112,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 1 Stereo',
 		channel: 3,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -117,7 +121,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 1 5.1',
 		channel: 4,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -125,7 +130,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 2 Stereo',
 		channel: 5,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceLive_3]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -133,7 +139,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'LIVE 3 Reporter',
 		channel: 6,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceServerA]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -141,7 +148,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'Server A',
 		channel: 7,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceServerB]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -149,7 +157,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'Server B',
 		channel: 8,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceJingle]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -157,7 +166,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'JINGLE',
 		channel: 9,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosSourceAudiobed]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -165,7 +175,8 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'JINGLE',
 		channel: 9,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosN1]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
@@ -173,14 +184,16 @@ const MAPPINGS_SISYFOS: BlueprintMappings = {
 		layerName: 'N-1',
 		channel: 10,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
 	}),
 	[OfftubeSisyfosLLayer.SisyfosResync]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
 		channel: -1,
 		lookahead: LookaheadMode.NONE,
-		mappingType: TSR.MappingSisyfosType.CHANNEL
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: false
 	})
 }
 
@@ -514,6 +527,12 @@ const MAPPINGS_ATEM: BlueprintMappings = {
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
+	}),
+	// TODO: Future: Mix Minus in Offtubes
+	[OfftubeAtemLLayer.AtemAuxVideoMixMinus]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 }
 

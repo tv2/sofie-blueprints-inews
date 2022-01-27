@@ -2,28 +2,22 @@ import {
 	BlueprintResultSegment,
 	IBlueprintActionManifest,
 	IBlueprintActionManifestDisplayContent,
-	IBlueprintRundownDB,
 	IngestSegment
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
-import { SegmentContext } from '../../__mocks__/context'
+import { SegmentUserContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
+import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getSegment } from '../getSegment'
+import { parseConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 
-const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 const SEGMENT_EXTERNAL_ID = '00000000'
 
 function makeMockContext(preventOverlay?: boolean) {
-	const rundown = literal<IBlueprintRundownDB>({
-		externalId: RUNDOWN_EXTERNAL_ID,
-		name: RUNDOWN_EXTERNAL_ID,
-		_id: '',
-		showStyleVariantId: ''
-	})
-	const mockContext = new SegmentContext(rundown, mappingsDefaults)
+	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
 	mockContext.studioConfig =
 		preventOverlay === undefined
 			? defaultStudioConfig
@@ -41,6 +35,7 @@ function makeIngestSegment(cues: UnparsedCue[], body: string) {
 		parts: [],
 		payload: {
 			iNewsStory: literal<INewsStory>({
+				id: '00000000',
 				identifier: '00000000',
 				locator: '01',
 				fields: {
@@ -61,7 +56,7 @@ function makeIngestSegment(cues: UnparsedCue[], body: string) {
 	})
 }
 
-function expectNotesToBe(context: SegmentContext, notes: string[]) {
+function expectNotesToBe(context: SegmentUserContext, notes: string[]) {
 	expect(context.getNotes().map(msg => msg.message)).toEqual(notes)
 }
 

@@ -2,9 +2,9 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	PieceLifespan,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	IShowStyleUserContext,
+	PieceLifespan
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
@@ -25,7 +25,7 @@ import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateAdLib(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -87,12 +87,12 @@ export function EvaluateAdLib(
 
 		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
-			context.warning(`Could not find template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
 			return
 		}
 
 		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-			context.warning(`Invalid DVE template ${parsedCue.variant}`)
+			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
 

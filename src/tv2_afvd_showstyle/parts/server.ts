@@ -2,8 +2,8 @@ import {
 	BlueprintResultPart,
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext
+} from '@tv2media/blueprints-integration'
 import { AddScript, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
@@ -12,7 +12,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartServer(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps

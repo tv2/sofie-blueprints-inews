@@ -3,16 +3,17 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	IShowStyleUserContext,
 	PieceLifespan,
-	SegmentContext,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, literal, TV2BlueprintConfig } from 'tv2-common'
 import { GraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 
 export function EvaluateDesignBase(
 	config: TV2BlueprintConfig,
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -23,7 +24,7 @@ export function EvaluateDesignBase(
 ) {
 	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
 	if (!parsedCue.design || !parsedCue.design.length) {
-		context.warning(`No valid design found for ${parsedCue.design}`)
+		context.notifyUserWarning(`No valid design found for ${parsedCue.design}`)
 		return
 	}
 
@@ -35,8 +36,8 @@ export function EvaluateDesignBase(
 				name: parsedCue.design,
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnRundownEnd,
-				content: literal<GraphicsContent>({
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
 					ignoreMediaObjectStatus: true,
@@ -54,8 +55,8 @@ export function EvaluateDesignBase(
 				},
 				outputLayerId: SharedOutputLayers.SEC,
 				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnRundownEnd,
-				content: literal<GraphicsContent>({
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.design,
 					path: parsedCue.design,
 					ignoreMediaObjectStatus: true,

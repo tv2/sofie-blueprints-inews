@@ -1,8 +1,8 @@
 import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
-	SyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+	ISyncIngestUpdateToPartInstanceContext
+} from '@tv2media/blueprints-integration'
 import { PieceMetaData } from 'tv2-common'
 import _ = require('underscore')
 
@@ -16,7 +16,7 @@ function normalizeArrayToMap<T, K extends keyof T>(array: T[], indexKey: K): Map
 }
 
 export function updateAdLibInstances(
-	context: SyncIngestUpdateToPartInstanceContext,
+	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
 	newPart: BlueprintSyncIngestNewData
 ) {

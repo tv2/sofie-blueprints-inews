@@ -1,8 +1,8 @@
-import { IBlueprintShowStyleBase, IngestRundown, IStudioConfigContext } from '@sofie-automation/blueprints-integration'
+import { IBlueprintShowStyleBase, IngestRundown, IStudioContext } from '@tv2media/blueprints-integration'
 import * as _ from 'underscore'
 
 export function getShowStyleId(
-	_context: IStudioConfigContext,
+	_context: IStudioContext,
 	showStyles: IBlueprintShowStyleBase[],
 	_ingestRundown: IngestRundown
 ): string | null {

@@ -1,9 +1,9 @@
-import { TimelineObjectCoreExt, TSR, VTContent } from '@sofie-automation/blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from '@tv2media/blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { EnableDSK, FindDSKJingle } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
-import { literal } from '../util'
+import { JoinAssetToFolder, JoinAssetToNetworkPath, literal } from '../util'
 
 export interface JingleLayers {
 	Caspar: {
@@ -19,10 +19,6 @@ export interface JingleLayers {
 	}
 }
 
-function GetJingleFileName(config: TV2BlueprintConfig, jingle: string): string {
-	return config.studio.JingleFolder ? `${config.studio.JingleFolder}/${jingle}` : jingle
-}
-
 export function CreateJingleExpectedMedia(
 	config: TV2BlueprintConfig,
 	jingle: string,
@@ -30,17 +26,17 @@ export function CreateJingleExpectedMedia(
 	duration: number,
 	alphaAtEnd: number
 ) {
-	const fileName = GetJingleFileName(config, jingle)
+	const fileName = JoinAssetToFolder(config.studio.JingleFolder, jingle)
 
-	return literal<VTContent>({
-		studioLabel: '',
+	return literal<WithTimeline<VTContent>>({
 		fileName,
-		path: `${config.studio.JingleNetworkBasePath}\\${
-			config.studio.JingleFolder ? `${config.studio.JingleFolder}\\` : ''
-		}${jingle}${config.studio.JingleFileExtension}`, // full path on the source network storage
+		path: JoinAssetToNetworkPath(
+			config.studio.JingleNetworkBasePath,
+			config.studio.JingleFolder,
+			jingle,
+			config.studio.JingleFileExtension
+		), // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
-		firstWords: '',
-		lastWords: '',
 		previewFrame: alphaAtStart,
 		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 		ignoreBlackFrames: true,
@@ -62,9 +58,9 @@ export function CreateJingleContentBase<
 	alphaAtEnd: number,
 	layers: JingleLayers
 ) {
-	const fileName = GetJingleFileName(config, file)
+	const fileName = JoinAssetToFolder(config.studio.JingleFolder, file)
 	const jingleDSK = FindDSKJingle(config)
-	return literal<VTContent>({
+	return literal<WithTimeline<VTContent>>({
 		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({

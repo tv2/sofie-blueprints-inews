@@ -1,4 +1,4 @@
-import { TableConfigItemValue } from '@sofie-automation/blueprints-integration'
+import { TableConfigItemValue } from '@tv2media/blueprints-integration'
 import {
 	TableConfigItemDSK,
 	TableConfigItemSourceMappingWithSisyfos,
@@ -58,6 +58,18 @@ export interface TV2StudioConfigBase {
 	GraphicNetworkBasePath: string
 	GraphicFolder?: string
 	GraphicIgnoreStatus: boolean
+	/* AudioBed */
+	AudioBedFileExtension: string
+	AudioBedMediaFlowId: string
+	AudioBedNetworkBasePath: string
+	AudioBedFolder?: string
+	AudioBedIgnoreStatus: boolean
+	/* DVE */
+	DVEFileExtension: string
+	DVEMediaFlowId: string
+	DVENetworkBasePath: string
+	DVEFolder?: string
+	DVEIgnoreStatus: boolean
 
 	ABPlaybackDebugLogging: boolean
 	AtemSource: {

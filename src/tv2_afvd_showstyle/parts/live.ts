@@ -5,8 +5,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	SegmentContext
-} from '@sofie-automation/blueprints-integration'
+	ISegmentUserContext
+} from '@tv2media/blueprints-integration'
 import { AddScript, CueDefinitionEkstern, literal, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
@@ -15,7 +15,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartLive(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
@@ -23,7 +23,7 @@ export function CreatePartLive(
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: partDefinition.type + ' - ' + partDefinition.rawType,
+		title: partDefinition.title || 'Ekstern',
 		metaData: {},
 		expectedDuration: partTime > 0 ? partTime : 0
 	})

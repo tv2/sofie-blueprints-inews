@@ -1,9 +1,8 @@
-import { SegmentContext, SplitsContent } from '@sofie-automation/blueprints-integration'
+import { IShowStyleUserContext, SplitsContent, WithTimeline } from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVEOptions,
-	DVESources,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForEkstern,
 	MakeContentDVEBase,
@@ -12,14 +11,9 @@ import {
 import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { SourceLayer } from '../../layers'
 
-export const boxLayers: DVESources = {
-	INP1: SourceLayer.PgmDVEBox1,
-	INP2: SourceLayer.PgmDVEBox2,
-	INP3: SourceLayer.PgmDVEBox3,
-	INP4: SourceLayer.PgmDVEBox4
-}
+export const NUMBER_OF_DVE_BOXES = 4
+
 export const boxMappings = [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3]
 
 export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
@@ -46,12 +40,6 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		GetSisyfosTimelineObjForEkstern,
 		GetLayersForEkstern
 	},
-	boxLayers: {
-		INP1: SourceLayer.PgmDVEBox1,
-		INP2: SourceLayer.PgmDVEBox2,
-		INP3: SourceLayer.PgmDVEBox3,
-		INP4: SourceLayer.PgmDVEBox4
-	},
 	boxMappings: [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3, AtemLLayer.AtemSSrcBox4],
 	AUDIO_LAYERS: Object.keys(SisyfosLLAyer),
 	EXCLUDED_LAYERS: [
@@ -62,14 +50,14 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 }
 
 export function MakeContentDVE(
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: SplitsContent; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
 	return MakeContentDVEBase(
 		context,
 		config,

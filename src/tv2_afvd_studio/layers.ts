@@ -1,4 +1,4 @@
-import { AbstractLLayer, GraphicLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
+import { AbstractLLayer, GraphicLLayer, SharedATEMLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 
 export type LLayer = VirtualAbstractLLayer | AtemLLayer | CasparLLayer | SisyfosLLAyer
@@ -22,7 +22,7 @@ export function RealLLayers(): string[] {
 
 export enum VirtualAbstractLLayer {}
 
-export enum AtemLLayer {
+export enum AFVDAtemLLayer {
 	AtemMEProgram = 'atem_me_program',
 	AtemMEClean = 'atem_me_clean',
 	AtemCleanUSKEffect = 'atem_clean_usk_effect',
@@ -40,11 +40,18 @@ export enum AtemLLayer {
 	AtemAuxAR = 'atem_aux_ar',
 	AtemAuxVizOvlIn1 = 'atem_aux_viz_ovl_in_1',
 	// AtemAuxVizFullIn1 = 'atem_aux_viz_full_in_1',
-	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus',
 	AtemAuxVenue = 'atem_aux_venue',
 	AtemAuxLookahead = 'atem_aux_lookahead',
 	AtemAuxSSrc = 'atem_aux_ssrc'
 }
+
+// tslint:disable-next-line: variable-name
+export const AtemLLayer = {
+	...AFVDAtemLLayer,
+	...SharedATEMLLayer
+}
+
+export type AtemLLayer = AFVDAtemLLayer | SharedATEMLLayer
 
 enum AFVDCasparLLayer {
 	CasparCGDVELoop = 'casparcg_dve_loop',

@@ -4,7 +4,7 @@ import {
 	ConfigManifestEntryType,
 	TableConfigItemValue,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	DSKConfigManifest,
 	literal,
@@ -335,6 +335,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
 	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov', '', true),
 	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png', '', true),
+	...MakeConfigWithMediaFlow('AudioBed', '', 'flow1', '.wav', 'audio', true),
+	...MakeConfigWithMediaFlow('DVE', '', 'flow1', '.png', 'dve', true),
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesFeed,

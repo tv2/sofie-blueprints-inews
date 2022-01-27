@@ -3,10 +3,9 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
-	SegmentContext,
+	IShowStyleUserContext,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	CreateInternalGraphic,
 	CreatePilotGraphic,
@@ -34,7 +33,7 @@ export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
 
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
-	context: SegmentContext,
+	context: IShowStyleUserContext,
 	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -77,7 +76,10 @@ export function OfftubeEvaluateGrafikCaspar(
 	}
 }
 
-function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig, context: NotesContext): TSR.TSRTimelineObj[] {
+function createPilotTimeline(
+	config: OfftubeShowstyleBlueprintConfig,
+	context: IShowStyleUserContext
+): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({

@@ -4,13 +4,14 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
+	ISegmentUserContext,
 	PieceLifespan,
-	SegmentContext,
 	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
-	VTContent
-} from '@sofie-automation/blueprints-integration'
+	VTContent,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
 	AddScript,
@@ -24,6 +25,7 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
+	TimeFromINewsField,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -35,7 +37,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export function CreatePartKam(
-	context: SegmentContext,
+	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
@@ -61,13 +63,10 @@ export function CreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
-				content: literal<VTContent>({
-					studioLabel: '',
+				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
 					path: '',
-					firstWords: '',
-					lastWords: '',
 					timelineObjects: literal<TimelineObjectCoreExt[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: ``,
@@ -92,11 +91,11 @@ export function CreatePartKam(
 				})
 			})
 		)
-		part.expectedDuration = Number(partDefinition.fields.totalTime) * 1000 || 0
+		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
 		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
 		if (sourceInfoCam === undefined) {
-			context.warning(`${partDefinition.rawType} does not exist in this studio`)
+			context.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
 		}
 		const atemInput = sourceInfoCam.port

@@ -1,17 +1,19 @@
 import {
+	BlueprintResultBaseline,
 	BlueprintResultRundown,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
 	IngestRundown,
-	IStudioConfigContext,
-	NotesContext,
+	IShowStyleUserContext,
+	IStudioContext,
+	IStudioUserContext,
 	PieceLifespan,
-	ShowStyleContext,
+	PlaylistTimingType,
 	SourceLayerType,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -33,10 +35,13 @@ import {
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	literal,
-	SourceInfo
+	SourceInfo,
+	t,
+	TimeFromINewsField
 } from 'tv2-common'
 import {
 	AdlibActionType,
+	AdlibTagCutToBox,
 	AdlibTags,
 	CONSTANTS,
 	SharedOutputLayers,
@@ -45,16 +50,19 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
+import {
+	getConfig as getShowStyleConfig,
+	OfftubeShowstyleBlueprintConfig
+} from '../tv2_offtube_showstyle/helpers/config'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { boxLayers } from './content/OfftubeDVEContent'
-import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
+import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getShowStyleVariantId(
-	_context: IStudioConfigContext,
+	_context: IStudioContext,
 	showStyleVariants: IBlueprintShowStyleVariant[],
 	_ingestRundown: IngestRundown
 ): string | null {
@@ -66,8 +74,8 @@ export function getShowStyleVariantId(
 	return null
 }
 
-export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = getConfig(context)
+export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
+	const config = getShowStyleConfig(context)
 
 	let startTime: number = 0
 	let endTime: number = 0
@@ -75,11 +83,11 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 	// Set start / end times
 	if ('payload' in ingestRundown) {
 		if (ingestRundown.payload.expectedStart) {
-			startTime = Number(ingestRundown.payload.expectedStart)
+			startTime = TimeFromINewsField(ingestRundown.payload.expectedStart)
 		}
 
 		if (ingestRundown.payload.expectedEnd) {
-			endTime = Number(ingestRundown.payload.expectedEnd)
+			endTime = TimeFromINewsField(ingestRundown.payload.expectedEnd)
 		}
 	}
 
@@ -92,8 +100,12 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 		rundown: literal<IBlueprintRundown>({
 			externalId: ingestRundown.externalId,
 			name: ingestRundown.name,
-			expectedStart: startTime,
-			expectedDuration: endTime - startTime
+			timing: {
+				type: PlaylistTimingType.BackTime,
+				expectedStart: startTime,
+				expectedDuration: endTime - startTime,
+				expectedEnd: endTime
+			}
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesOfftube(context, config),
 		globalActions: getGlobalAdlibActionsOfftube(context, config),
@@ -102,7 +114,7 @@ export function getRundown(context: ShowStyleContext, ingestRundown: IngestRundo
 }
 
 function getGlobalAdLibPiecesOfftube(
-	context: NotesContext,
+	context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
@@ -118,7 +130,7 @@ function getGlobalAdLibPiecesOfftube(
 		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_UP],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -148,7 +160,7 @@ function getGlobalAdLibPiecesOfftube(
 		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_DOWN],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -178,7 +190,7 @@ function getGlobalAdLibPiecesOfftube(
 		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -205,6 +217,7 @@ function getGlobalAdLibPiecesOfftube(
 		outputLayerId: 'musik',
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
@@ -230,7 +243,7 @@ function getGlobalAdLibPiecesOfftube(
 }
 
 function getGlobalAdlibActionsOfftube(
-	_context: ShowStyleContext,
+	_context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig
 ): IBlueprintActionManifest[] {
 	const res: IBlueprintActionManifest[] = []
@@ -249,11 +262,11 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `KAM ${info.id}`,
+					label: t(`KAM ${info.id}`),
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: SharedOutputLayers.PGM,
 					content: {},
-					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT] : [],
+					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT],
 					currentPieceTags: [GetTagForKam(info.id)],
 					nextPieceTags: [GetTagForKam(info.id)]
 				}
@@ -273,11 +286,11 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: `${type} ${name}`,
+					label: t(`${type} ${name}`),
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
-					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT],
+					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT, AdlibTags.ADLIB_QUEUE_NEXT],
 					currentPieceTags: [GetTagForLive(name)],
 					nextPieceTags: [GetTagForLive(name)]
 				}
@@ -286,9 +299,10 @@ function getGlobalAdlibActionsOfftube(
 	}
 
 	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live', rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			const feed = type === 'Live' && info.id.match(/^F(.+).*$/)
 			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
+			const layer = type === 'Kamera' ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -302,46 +316,19 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Cut ${name} to box ${box + 1}`,
+						label: t(`Cut ${name} to box ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
-	}
-
-	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
-			res.push(
-				literal<IBlueprintActionManifest>({
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
-						port: info.port,
-						sourceType: info.type,
-						box,
-						vo
-					}),
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`,
-						sourceLayerId: layer,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: []
-					}
-				})
-			)
-		})
+		}
 	}
 
 	function makeServerAdlibBoxesActions(rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -356,15 +343,15 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: `Server to box ${box + 1}`,
-						sourceLayerId: layer,
+						label: t(`Server to box ${box + 1}`),
+						sourceLayerId: OfftubeSourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: []
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)
-		})
+		}
 	}
 
 	res.push(
@@ -376,7 +363,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'Server',
+				label: t('Server'),
 				sourceLayerId: OfftubeSourceLayer.PgmServer,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -396,7 +383,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'DVE',
+				label: t('DVE'),
 				sourceLayerId: OfftubeSourceLayer.PgmDVE,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -416,7 +403,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'GFX FULL',
+				label: t('GFX FULL'),
 				sourceLayerId: SharedSourceLayers.PgmPilot,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -438,11 +425,11 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: 400,
-				label: `GFX Altud`,
+				label: t(`GFX Altud`),
 				sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
 				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
@@ -460,9 +447,10 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: 1,
-				label: 'Last DVE',
+				label: t('Last DVE'),
 				sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
-				outputLayerId: 'pgm'
+				outputLayerId: 'pgm',
+				tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
 			}
 		})
 	)
@@ -478,9 +466,10 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: 200 + i,
-					label: dveConfig.DVEName,
+					label: t(dveConfig.DVEName),
 					sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
-					outputLayerId: SharedOutputLayers.PGM
+					outputLayerId: SharedOutputLayers.PGM,
+					tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
 				}
 			})
 		)
@@ -516,9 +505,10 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: 1,
-				label: 'Last Live',
+				label: t('Last Live'),
 				sourceLayerId: OfftubeSourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		})
 	)
@@ -537,14 +527,6 @@ function getGlobalAdlibActionsOfftube(
 			makeAdlibBoxesActions(o, 'Live', globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.LOCAL)
-		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
-		.forEach(o => {
-			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)
-			makeAdlibBoxesActionsDirectPlayback(o, true, globalRank++)
-		})
-
 	makeServerAdlibBoxesActions(globalRank++)
 
 	res.push(
@@ -556,7 +538,7 @@ function getGlobalAdlibActionsOfftube(
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
-				label: 'JINGLE',
+				label: t('JINGLE'),
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
@@ -570,255 +552,257 @@ function getGlobalAdlibActionsOfftube(
 	return res
 }
 
-function getBaseline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObjBase[] {
-	return [
-		...CreateGraphicBaseline(config),
-		// Default timeline
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEClean,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: config.studio.AtemSource.Default,
-					transition: TSR.AtemTransitionStyle.CUT
+function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBaseline {
+	return {
+		timelineObjects: [
+			...CreateGraphicBaseline(config),
+			// Default timeline
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMEClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						input: config.studio.AtemSource.Default,
+						transition: TSR.AtemTransitionStyle.CUT
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMENext,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					previewInput: config.studio.AtemSource.Default
+			}),
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMENext,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						previewInput: config.studio.AtemSource.Default
+					}
 				}
-			}
-		}),
+			}),
 
-		// route default outputs
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemAuxClean,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: AtemSourceIndex.Prg2
+			// route default outputs
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemAuxClean,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: AtemSourceIndex.Prg2
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemAUX>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemAuxScreen,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.AUX,
-				aux: {
-					input: config.studio.AtemSource.Loop
+			}),
+			literal<TSR.TimelineObjAtemAUX>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemAuxScreen,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.AUX,
+					aux: {
+						input: config.studio.AtemSource.Loop
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGRoute>({
-			id: '',
-			enable: { while: 1 },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVEKeyedLoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
-			}
-		}),
+			}),
+			literal<TSR.TimelineObjCCGRoute>({
+				id: '',
+				enable: { while: 1 },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVEKeyedLoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+				}
+			}),
 
-		// keyers
-		...CreateDSKBaseline(config),
+			// keyers
+			...CreateDSKBaseline(config),
 
-		literal<TSR.TimelineObjAtemSsrcProps>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemSSrcArt,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.SSRCPROPS,
-				ssrcProps: {
-					artFillSource: config.studio.AtemSource.SplitArtF,
-					artCutSource: config.studio.AtemSource.SplitArtK,
-					artOption: 1, // foreground
-					artPreMultiplied: true
+			literal<TSR.TimelineObjAtemSsrcProps>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemSSrcArt,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
+					ssrcProps: {
+						artFillSource: config.studio.AtemSource.SplitArtF,
+						artCutSource: config.studio.AtemSource.SplitArtK,
+						artOption: 1, // foreground
+						artPreMultiplied: true
+					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjAtemSsrc>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemSSrcDefault,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.SSRC,
-				ssrc: {
-					boxes: [
-						{
-							// left
-							enabled: true,
-							source: config.studio.AtemSource.SplitBackground,
-							size: 1000,
-							x: 0,
-							y: 0,
-							cropped: false
-						},
-						{
-							// right
-							enabled: false
-						},
-						{
-							// box 3
-							enabled: false
-						},
-						{
-							// box 4
-							enabled: false
+			}),
+			literal<TSR.TimelineObjAtemSsrc>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemSSrcDefault,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRC,
+					ssrc: {
+						boxes: [
+							{
+								// left
+								enabled: true,
+								source: config.studio.AtemSource.SplitBackground,
+								size: 1000,
+								x: 0,
+								y: 0,
+								cropped: false
+							},
+							{
+								// right
+								enabled: false
+							},
+							{
+								// box 3
+								enabled: false
+							},
+							{
+								// box 4
+								enabled: false
+							}
+						]
+					}
+				}
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVEFrame,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					mixer: {
+						opacity: 0
+					},
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
 						}
-					]
-				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVEFrame,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
 					}
 				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVEKey,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				mixer: {
-					opacity: 0
-				},
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
-					}
-				}
-			}
-		}),
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeCasparLLayer.CasparCGDVELoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: 'empty',
-				transitions: {
-					inTransition: {
-						type: TSR.Transition.CUT,
-						duration: CONSTANTS.DefaultClipFadeOut
-					}
-				}
-			}
-		}),
-
-		literal<TSR.TimelineObjCasparCGAny>({
-			id: '',
-			enable: { while: 1 },
-			priority: 1,
-			layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.ROUTE,
-				mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
-			}
-		}),
-
-		// create sisyfos channels from the config
-		literal<TSR.TimelineObjSisyfosChannels>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeSisyfosLLayer.SisyfosConfig,
-			content: {
-				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-				channels: Object.keys(sisyfosChannels).map(key => {
-					const llayer = key as OfftubeSisyfosLLayer
-					const channel = sisyfosChannels[llayer] as SisyfosChannel
-					return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
-						mappedLayer: llayer,
-						isPgm: channel.isPgm,
-						visible: true
-					})
-				}),
-				overridePriority: 0
-			}
-		}),
-
-		// Route ME 2 PGM to ME 1 PGM
-		literal<TSR.TimelineObjAtemME>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: OfftubeAtemLLayer.AtemMEProgram,
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					programInput: AtemSourceIndex.Prg2
-				}
-			}
-		}),
-
-		...CreateLYDBaseline('offtube'),
-
-		...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
-			? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
-					return literal<TSR.TimelineObjCCGMedia>({
-						id: '',
-						enable: { while: '1' },
-						priority: 0,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: config.showStyle.CasparCGLoadingClip,
-							loop: true
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVEKey,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					mixer: {
+						opacity: 0
+					},
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
 						}
-					})
-			  })
-			: [])
-	]
+					}
+				}
+			}),
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeCasparLLayer.CasparCGDVELoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'empty',
+					transitions: {
+						inTransition: {
+							type: TSR.Transition.CUT,
+							duration: CONSTANTS.DefaultClipFadeOut
+						}
+					}
+				}
+			}),
+
+			literal<TSR.TimelineObjCasparCGAny>({
+				id: '',
+				enable: { while: 1 },
+				priority: 1,
+				layer: OfftubeCasparLLayer.CasparGraphicsFullLoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.ROUTE,
+					mappedLayer: OfftubeCasparLLayer.CasparCGDVELoop
+				}
+			}),
+
+			// create sisyfos channels from the config
+			literal<TSR.TimelineObjSisyfosChannels>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeSisyfosLLayer.SisyfosConfig,
+				content: {
+					deviceType: TSR.DeviceType.SISYFOS,
+					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+					channels: Object.keys(sisyfosChannels).map(key => {
+						const llayer = key as OfftubeSisyfosLLayer
+						const channel = sisyfosChannels[llayer] as SisyfosChannel
+						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+							mappedLayer: llayer,
+							isPgm: channel.isPgm,
+							visible: true
+						})
+					}),
+					overridePriority: 0
+				}
+			}),
+
+			// Route ME 2 PGM to ME 1 PGM
+			literal<TSR.TimelineObjAtemME>({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeAtemLLayer.AtemMEProgram,
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.ME,
+					me: {
+						programInput: AtemSourceIndex.Prg2
+					}
+				}
+			}),
+
+			...CreateLYDBaseline('offtube'),
+
+			...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
+				? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
+						return literal<TSR.TimelineObjCCGMedia>({
+							id: '',
+							enable: { while: '1' },
+							priority: 0,
+							layer,
+							content: {
+								deviceType: TSR.DeviceType.CASPARCG,
+								type: TSR.TimelineContentTypeCasparCg.MEDIA,
+								file: config.showStyle.CasparCGLoadingClip,
+								loop: true
+							}
+						})
+				  })
+				: [])
+		]
+	}
 }

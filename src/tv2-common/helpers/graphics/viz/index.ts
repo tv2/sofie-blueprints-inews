@@ -2,9 +2,10 @@ import {
 	GraphicsContent,
 	IBlueprintPart,
 	IBlueprintPiece,
-	NotesContext,
-	TSR
-} from '@sofie-automation/blueprints-integration'
+	IShowStyleUserContext,
+	TSR,
+	WithTimeline
+} from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GetEnableForGraphic,
@@ -23,7 +24,11 @@ import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
 import { EnableDSK } from '../../dsk'
 
 export interface VizPilotGeneratorSettings {
-	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: NotesContext, adlib: boolean): TSR.TSRTimelineObj[]
+	createPilotTimelineForStudio(
+		config: TV2BlueprintConfig,
+		context: IShowStyleUserContext,
+		adlib: boolean
+	): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentVIZ(
@@ -36,7 +41,7 @@ export function GetInternalGraphicContentVIZ(
 	mappedTemplate: string,
 	adlib: boolean
 ): IBlueprintPiece['content'] {
-	return literal<GraphicsContent>({
+	return literal<WithTimeline<GraphicsContent>>({
 		fileName: parsedCue.graphic.template,
 		path: parsedCue.graphic.template,
 		ignoreMediaObjectStatus: true,
@@ -63,13 +68,13 @@ export function GetInternalGraphicContentVIZ(
 export function GetPilotGraphicContentViz(
 	config: TV2BlueprintConfig,
 	part: Readonly<IBlueprintPart> | undefined,
-	context: NotesContext,
+	context: IShowStyleUserContext,
 	settings: VizPilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
 	adlib: boolean
-): GraphicsContent {
-	return literal<GraphicsContent>({
+): WithTimeline<GraphicsContent> {
+	return literal<WithTimeline<GraphicsContent>>({
 		fileName: 'PILOT_' + parsedCue.graphic.vcpid.toString(),
 		path: parsedCue.graphic.vcpid.toString(),
 		timelineObjects: [
