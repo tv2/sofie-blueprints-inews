@@ -1,8 +1,8 @@
 import {
 	ClientActions,
 	IBlueprintTriggeredActions,
-	MigrationContextShowStyle,
-	MigrationStepShowStyle,
+	MigrationContextSystem,
+	MigrationStepSystem,
 	PlayoutActions,
 	TriggerType
 } from '@tv2media/blueprints-integration'
@@ -11,22 +11,27 @@ import { literal } from 'tv2-common'
 export function RemoveDefaultCoreShortcuts(versionStr: string) {
 	const defaultTriggerIds = DEFAULT_CORE_TRIGGERS.map(trigger => trigger._id)
 
-	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.removeCoreDefaultTriggers`,
+	return literal<MigrationStepSystem>({
+		id: `${versionStr}.disableCoreDefaultTriggers`,
 		version: versionStr,
 		canBeRunAutomatically: true,
-		validate: (context: MigrationContextShowStyle) => {
+		validate: (context: MigrationContextSystem) => {
 			for (const coreTrigger of DEFAULT_CORE_TRIGGERS) {
-				if (context.getTriggeredAction(coreTrigger._id)) {
+				const defaultTrigger = context.getTriggeredAction(coreTrigger._id)
+				if (defaultTrigger && defaultTrigger.triggers.length) {
 					return true
 				}
 			}
 
 			return false
 		},
-		migrate: (context: MigrationContextShowStyle) => {
+		migrate: (context: MigrationContextSystem) => {
 			for (const trigger of defaultTriggerIds) {
-				context.removeTriggeredAction(trigger)
+				const defaultTrigger = context.getTriggeredAction(trigger)
+				if (defaultTrigger) {
+					defaultTrigger.triggers = []
+					context.setTriggeredAction(defaultTrigger)
+				}
 			}
 		}
 	})

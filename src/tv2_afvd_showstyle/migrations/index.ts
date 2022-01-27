@@ -6,7 +6,6 @@ import {
 	literal,
 	RemoveOldShortcuts,
 	removeSourceLayer,
-	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
 	SetSourceLayerNameMigrationStep,
 	StripFolderFromAudioBedConfig,
@@ -30,10 +29,6 @@ import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
 
-/** Migrations overriden later */
-// 1.3.1
-const jingle131 = SetShortcutListMigrationStep('1.3.1', SourceLayer.PgmJingle, 'NumpadDivide,NumpadSubtract,NumpadAdd')
-
 const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
 
 /**
@@ -51,23 +46,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 
 	/**
 	 * 1.3.1
-	 * - Shortcuts for Jingle layer (transition buttons)
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	jingle131,
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
-
-	/**
-	 * 1.3.3
-	 * - Shortcuts for DVE Box 1
-	 */
-	SetShortcutListMigrationStep(
-		'1.3.3',
-		'studio0_dve_box1',
-		'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0,shift+e,shift+d,shift+i,shift+u,shift+t'
-	),
 
 	// 1.3.7 - Unhide wall layer
 	forceSourceLayerToDefaults('1.3.7', SourceLayer.WallGraphics),
@@ -94,7 +77,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * 1.5.2
 	 * - Remove PgmJingle shortcuts, moved to JingleAdlib layer
 	 */
-	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle, [jingle131.id]),
+	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle),
 
 	AddGraphicToGFXTable('1.5.4', 'AFVD', {
 		VizTemplate: 'locators',
@@ -149,10 +132,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmVoiceOver, 'VO'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmPilot, 'GFX FULL (VCP)'),
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmContinuity, 'Continuity'),
-	SetSourceLayerNameMigrationStep('1.6.9', 'studio0_dve_box1', 'DVE Inp 1'),
-	SetSourceLayerNameMigrationStep('1.6.9', 'studio0_dve_box2', 'DVE Inp 2'),
-	SetSourceLayerNameMigrationStep('1.6.9', 'studio0_dve_box3', 'DVE Inp 3'),
-	SetSourceLayerNameMigrationStep('1.6.9', 'studio0_dve_box4', 'DVE Inp 4'),
 	// MUSIK group
 	SetSourceLayerNameMigrationStep('1.6.9', SourceLayer.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
