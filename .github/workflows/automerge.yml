@@ -1,0 +1,19 @@
+name: Merge staging to develop
+
+on:
+  schedule:
+    - cron: '15 0 * * *' # every night
+  workflow_dispatch: # on button click
+
+jobs:
+  sync:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: tgymnich/fork-sync@v1.6
+        with:
+          owner: tv2
+          head: staging
+          base: develop
+          pr_title: Automerge staging
