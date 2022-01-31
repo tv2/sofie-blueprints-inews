@@ -6,15 +6,18 @@ on:
   workflow_dispatch: # on button click
 
 jobs:
-  sync:
-
+  merge-staging-to-dev:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: tgymnich/fork-sync@v1.6
-        with:
-          owner: tv2
-          head: master
-          base: staging
-          pr_title: Automerge master
-          auto_merge: false
+      - uses: actions/checkout@v2
+      - name: Set Git config
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+      - name: Merge master to staging
+        run: |
+          git fetch --unshallow
+          git checkout staging
+          git pull
+          git merge --no-ff master -m "Auto-merge master to staging"
+          git push
