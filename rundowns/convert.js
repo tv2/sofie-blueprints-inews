@@ -1,8 +1,8 @@
 // this converts a snapshot into importable rundown data
-// use with `node convert.js snapshot.json mock-rundown.json`
-if (process.argv.length < 4) {
+// use with `node convert.js snapshot.json`
+if (process.argv.length < 3) {
     console.log(process.argv)
-    console.log(`Usage: node convert.js snapshot.json mock-rundown.json`)
+    console.log(`Usage: node convert.js snapshot.json`)
     process.exit(0)
 }
 const fs = require('fs')
@@ -26,5 +26,5 @@ segments = segments.sort((a, b) => b.rank - a.rank)
 const rundown = rundownData[0].data
 rundown.segments = segments
 // console.log(JSON.stringify(rundown, undefined, 4))
-fs.writeFileSync(process.argv[3], JSON.stringify(rundown, undefined, 4))
+fs.writeFileSync('output.json', JSON.stringify(rundown, undefined, 4))
 console.log('done')
