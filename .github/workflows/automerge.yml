@@ -1,4 +1,4 @@
-name: Merge staging to develop
+name: automerge
 
 on:
   schedule:
