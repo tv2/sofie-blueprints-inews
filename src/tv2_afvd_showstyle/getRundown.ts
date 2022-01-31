@@ -131,7 +131,34 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 							}
 						})
 					}),
-					GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
+					...(vo
+						? [
+								literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+									id: '',
+									enable: {
+										start: 1
+									},
+									priority: 1,
+									layer: SisyfosLLAyer.SisyfosPersistedLevels,
+									content: {
+										deviceType: TSR.DeviceType.SISYFOS,
+										type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+										overridePriority: 1,
+										channels: config.stickyLayers
+											.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+												return {
+													mappedLayer: layer,
+													isPgm: 0
+												}
+											})
+									},
+									metaData: {
+										sisyfosPersistLevel: true
+									}
+								}),
+								GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
+						  ]
+						: [])
 				])
 			}
 		})

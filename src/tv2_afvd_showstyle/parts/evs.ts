@@ -22,7 +22,6 @@ import {
 	PartDefinitionEVS,
 	PartTime,
 	SourceInfo,
-	TimelineBlueprintExt,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -141,30 +140,7 @@ function makeContentEVS(
 			GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, partDefinition.variant.isVO),
 			...(partDefinition.variant.isVO
 				? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)]
-				: [
-						literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: SisyfosLLAyer.SisyfosPersistedLevels,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-								overridePriority: 1,
-								channels: config.liveAudio.map(layer => {
-									return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
-										mappedLayer: layer,
-										isPgm: 0
-									})
-								})
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-				  ])
+				: [])
 		])
 	}
 }
