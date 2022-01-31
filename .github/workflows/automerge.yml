@@ -1,4 +1,4 @@
-name: Merge master to staging
+name: automerge
 
 on:
   schedule:
