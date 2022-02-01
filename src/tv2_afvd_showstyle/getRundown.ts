@@ -131,31 +131,34 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 							}
 						})
 					}),
-					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: SisyfosLLAyer.SisyfosPersistedLevels,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							overridePriority: 1,
-							channels: config.stickyLayers
-								.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
-								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-									return {
-										mappedLayer: layer,
-										isPgm: 0
+					...(vo
+						? [
+								literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+									id: '',
+									enable: {
+										start: 1
+									},
+									priority: 1,
+									layer: SisyfosLLAyer.SisyfosPersistedLevels,
+									content: {
+										deviceType: TSR.DeviceType.SISYFOS,
+										type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+										overridePriority: 1,
+										channels: config.stickyLayers
+											.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+												return {
+													mappedLayer: layer,
+													isPgm: 0
+												}
+											})
+									},
+									metaData: {
+										sisyfosPersistLevel: true
 									}
-								})
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					}),
-					GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
+								}),
+								GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
+						  ]
+						: [])
 				])
 			}
 		})
