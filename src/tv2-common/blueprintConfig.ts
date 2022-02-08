@@ -34,6 +34,11 @@ export interface TableConfigItemAdLibTransitions {
 	Transition: string
 }
 
+export interface TableConfigGraphicSetup {
+	INewsCode: string
+	Concept: string
+}
+
 export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
@@ -130,6 +135,8 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
+	GraphicINewsCode: string
+	GraphicSetups: TableConfigGraphicSetup[]
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>
