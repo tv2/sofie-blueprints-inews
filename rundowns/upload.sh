@@ -1,11 +1,19 @@
 #!/bin/bash
 
-STUDIO_ID=studio0
+RUNDOWN_FILE=converted-rundown.json
 if [[ $1 != "" ]]
 then
-  STUDIO_ID=$1
+  RUNDOWN_FILE=$1
 fi
 
-curl -ks --data-binary @output.json --header 'Content-Type:application/json' http://localhost:3000/ingest/${STUDIO_ID}
+STUDIO_ID=studio0
+if [[ $2 != "" ]]
+then
+  STUDIO_ID=$2
+fi
+
+echo $STUDIO_ID
+
+curl -ks --data-binary @$RUNDOWN_FILE --header 'Content-Type:application/json' http://localhost:3000/ingest/${STUDIO_ID}
 
 echo "\n"
