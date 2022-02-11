@@ -49,7 +49,7 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
-import { TimelineContentTypeVizMSE } from '../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types'
+import { TimelineContentTypeVizMSE } from '../../node_modules/timeline-state-resolver-types'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
