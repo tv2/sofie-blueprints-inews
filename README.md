@@ -52,8 +52,10 @@ yarn test # watch for changes
 ```
 
 ## Ingest mockdata: 
-Ingest mock data into Sofie:
-In ./rundowns/upload.sh rename "studio0" to _id of studio (look in mongoDb under collection studios)
+To ingest mock data into Sofie use the 'upload.sh' script found in ./rundowns.
+
+The script takes two optional parameters: name of the rundown file and id of the studio. The default values are: 'converted-rundown.json' and 'studio0'.
+
 Run: 
 ```
 ./upload.sh on-air.json
