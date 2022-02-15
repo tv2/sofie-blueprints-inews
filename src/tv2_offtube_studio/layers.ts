@@ -40,7 +40,9 @@ enum SisyfosLLayer {
 	SisyfosSourceServerA = 'sisyfos_source_server_a',
 	SisyfosSourceServerB = 'sisyfos_source_server_b',
 	// We don't control this layer, just set the label
-	SisyfosN1 = 'sisyfos_source_n1'
+	SisyfosN1 = 'sisyfos_source_n1',
+	SisyfosSourceDisp1 = 'sisyfos_source_disp_1',
+	SisyfosSourceDisp2 = 'sisyfos_source_disp_2'
 }
 
 export enum AtemLLayer {

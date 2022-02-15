@@ -11,5 +11,5 @@ wallaby.conf.js
 
 .DS_Store
 
-# Exclude JetBrains specific files
+# Ignore JetBrains config files
 .idea
