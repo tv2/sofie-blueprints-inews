@@ -1,4 +1,5 @@
 import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@tv2media/blueprints-integration'
+import { DeviceType } from '@tv2media/timeline-state-resolver-types'
 import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,
@@ -8,7 +9,6 @@ import {
 	SisyfosPlayerClip
 } from 'tv2-common'
 import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
-import { DeviceType } from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types'
 import { ATEMModel } from '../../types/atem'
 import { BlueprintConfig } from '../helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../layers'
