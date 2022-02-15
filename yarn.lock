@@ -297,6 +297,13 @@
     tslib "^2.3.1"
     underscore "1.13.1"
 
+"@tv2media/timeline-state-resolver-types@^1.0.0-release37.5":
+  version "1.0.0-release37.5"
+  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-1.0.0-release37.5.tgz#6d8c9d2b9fc5f48bce88fd8a2da3dec49b29fca6"
+  integrity sha512-LZHzJm/Ss6Xd/H1xvsPRvZ98ou33szscyD0hzs8gtFcU7B15nzyD5ImgMRrgJl6+tlcIIhfHq6oc83/HqHBLZw==
+  dependencies:
+    tslib "^2.3.1"
+
 "@types/babel__core@^7.1.0":
   version "7.1.6"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.6.tgz#16ff42a5ae203c9af1c6e190ed1f30f83207b610"

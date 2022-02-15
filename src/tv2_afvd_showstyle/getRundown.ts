@@ -15,6 +15,7 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
+import { TimelineContentTypeVizMSE, TimelineObjVIZMSESetConcept } from '@tv2media/timeline-state-resolver-types'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -36,7 +37,6 @@ import {
 	literal,
 	SourceInfo,
 	t,
-	TableConfigGraphicSetup,
 	TimelineBlueprintExt
 } from 'tv2-common'
 import {
@@ -49,11 +49,10 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
-import { TimelineContentTypeVizMSE } from '../../node_modules/timeline-state-resolver-types'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
+import { BlueprintConfig, getConfig as getShowStyleConfig, TableConfigGraphicSetup } from './helpers/config'
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -1193,7 +1192,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				  })
 				: []),
 
-			literal<TSR.TimelineObjVIZMSESetConcept>({
+			literal<TimelineObjVIZMSESetConcept>({
 				id: '',
 				enable: { while: '1' },
 				layer: GraphicLLayer.GraphicLLayerConcept,
