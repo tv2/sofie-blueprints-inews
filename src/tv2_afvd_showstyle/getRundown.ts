@@ -15,7 +15,7 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { TimelineContentTypeVizMSE, TimelineObjVIZMSESetConcept } from '@tv2media/timeline-state-resolver-types'
+import { TimelineContentTypeVizMSE, TimelineObjVIZMSEConcept } from '@tv2media/timeline-state-resolver-types'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -1192,13 +1192,13 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				  })
 				: []),
 
-			literal<TimelineObjVIZMSESetConcept>({
+			literal<TimelineObjVIZMSEConcept>({
 				id: '',
 				enable: { while: '1' },
 				layer: GraphicLLayer.GraphicLLayerConcept,
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
-					type: TimelineContentTypeVizMSE.SET_CONCEPT,
+					type: TimelineContentTypeVizMSE.CONCEPT,
 					concept: findGraphicConcept(config)
 				}
 			})

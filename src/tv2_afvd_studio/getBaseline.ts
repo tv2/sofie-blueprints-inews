@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TSR
 } from '@tv2media/blueprints-integration'
-import { TimelineContentTypeVizMSE, TimelineObjVIZMSESetConcept } from '@tv2media/timeline-state-resolver-types'
+import { TimelineContentTypeVizMSE, TimelineObjVIZMSEConcept } from '@tv2media/timeline-state-resolver-types'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { GraphicLLayer } from '../tv2-constants'
@@ -160,13 +160,13 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TimelineObjVIZMSESetConcept>({
+			literal<TimelineObjVIZMSEConcept>({
 				id: '',
 				enable: { while: '1' },
 				layer: GraphicLLayer.GraphicLLayerConcept,
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
-					type: TimelineContentTypeVizMSE.SET_CONCEPT,
+					type: TimelineContentTypeVizMSE.CONCEPT,
 					concept: ''
 				}
 			})
