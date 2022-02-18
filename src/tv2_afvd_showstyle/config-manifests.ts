@@ -142,6 +142,47 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
+const graphicProfileSetup: ConfigManifestEntry[] = [
+	{
+		id: 'GraphicSetups',
+		name: 'Graphic Setups',
+		description: 'Possible graphic profile setup',
+		type: ConfigManifestEntryType.TABLE,
+		required: false,
+		defaultVal: [],
+		columns: [
+			{
+				id: 'INewsCode',
+				name: 'iNews Command (*)',
+				description: 'The code as it will appear in iNews',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 0
+			},
+			{
+				id: 'Concept',
+				name: 'Concept',
+				rank: 1,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: '',
+				type: ConfigManifestEntryType.STRING
+			}
+		],
+		hint: ''
+	},
+	{
+		id: 'GraphicINewsCode',
+		name: 'Graphic Profile cue',
+		description: 'GRAPHIC_PROFILE cue from iNews',
+		type: ConfigManifestEntryType.STRING,
+		required: false,
+		defaultVal: ''
+	}
+]
+
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'MakeAdlibsForFulls',
@@ -263,6 +304,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
+	...graphicProfileSetup,
 	{
 		/*
 		Wipes Config

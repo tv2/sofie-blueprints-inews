@@ -7,7 +7,6 @@ import {
 	literal
 } from 'tv2-common'
 import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../layers'
 
@@ -441,6 +440,12 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		layerName: 'GFX Wall',
+		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerConcept]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		layerName: 'Override Concept',
 		lookahead: LookaheadMode.NONE
 	})
 }

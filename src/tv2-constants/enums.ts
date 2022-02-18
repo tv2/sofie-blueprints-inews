@@ -170,7 +170,8 @@ export enum GraphicLLayer {
 	GraphicLLayerFullLoop = 'graphic_full_loop',
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall', // <= viz_layer_wall
-	GraphicLLayerLocators = 'graphic_locators'
+	GraphicLLayerLocators = 'graphic_locators',
+	GraphicLLayerConcept = 'graphic_concept'
 }
 
 export enum AbstractLLayer {

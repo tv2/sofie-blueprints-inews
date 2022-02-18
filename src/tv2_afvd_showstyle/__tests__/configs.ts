@@ -255,6 +255,8 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			FadeOut: 0
 		}
 	],
+	GraphicINewsCode: '',
+	GraphicSetups: [],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT'
 }
