@@ -62,8 +62,9 @@ export function getShowStyleVariantId(
 	showStyleVariants: IBlueprintShowStyleVariant[],
 	ingestRundown: IngestRundown
 ): string | null {
-	const graphicsprofile = ingestRundown.payload?.graphicProfile?.trim().toLowerCase();
-	const variant = showStyleVariants.find(v => v.name.trim().toLowerCase() === graphicsprofile) ?? _.first(showStyleVariants)
+	const graphicsprofile = ingestRundown.payload?.graphicProfile?.trim().toLowerCase()
+	const variant =
+		showStyleVariants.find(v => v.name.trim().toLowerCase() === graphicsprofile) ?? _.first(showStyleVariants)
 
 	if (variant) {
 		return variant._id
@@ -82,13 +83,13 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 				type: PlaylistTimingType.None
 			}
 		}),
-		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
+		globalAdLibPieces: getGlobalAdLibPiecesAFVD(context, config),
 		globalActions: getGlobalAdlibActionsAFVD(context, config),
 		baseline: getBaseline(config)
 	}
 }
 
-function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
 	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
