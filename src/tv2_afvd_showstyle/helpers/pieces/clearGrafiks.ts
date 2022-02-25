@@ -7,8 +7,8 @@ import {
 } from '@tv2media/blueprints-integration'
 import { CreateTimingEnable, CueDefinitionClearGrafiks, GetDefaultOut, literal } from 'tv2-common'
 import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 
 export function EvaluateClearGrafiks(
 	config: BlueprintConfig,
@@ -71,7 +71,8 @@ export function EvaluateClearGrafiks(
 								layer: GraphicLLayer.GraphicLLayerAdLibs,
 								content: {
 									deviceType: TSR.DeviceType.VIZMSE,
-									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
+									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+									showId: config.selectedGraphicsSetup.OvlShowId
 								}
 							})
 					  ]

@@ -1,6 +1,6 @@
 import { IBlueprintPart, TSR } from '@tv2media/blueprints-integration'
 import { layerToHTMLGraphicSlot, literal, TV2BlueprintConfig } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
 
 export * from './name'
 export * from './timing'
@@ -147,5 +147,17 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 				}
 			})
 		]
+	}
+}
+
+export function findShowId(config: TV2BlueprintConfig, engine: GraphicEngine) {
+	const graphicSetup = config.selectedGraphicsSetup
+	switch (engine) {
+		case 'FULL':
+		case 'WALL':
+			return graphicSetup.FullShowId
+		case 'TLF':
+		case 'OVL':
+			return graphicSetup.OvlShowId
 	}
 }

@@ -9,15 +9,14 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal } from 'tv2-common'
+import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
-import { BlueprintConfig } from '../config'
 
 export function EvaluateCueRouting(
-	config: BlueprintConfig,
+	config: TV2BlueprintConfig,
 	context: ISegmentUserContext,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],

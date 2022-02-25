@@ -52,7 +52,7 @@ import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { BlueprintConfig, getConfig as getShowStyleConfig, TableConfigGraphicSetup } from './helpers/config'
+import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -542,18 +542,21 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				path: 'BG_LOADER_SC',
 				ignoreMediaObjectStatus: true,
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					literal<TSR.TimelineObjVIZMSEElementInternal>({
-						id: '',
-						enable: { start: 0 },
-						priority: 110,
-						layer: GraphicLLayer.GraphicLLayerDesign,
-						content: {
-							deviceType: TSR.DeviceType.VIZMSE,
-							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-							templateName: 'BG_LOADER_SC',
-							templateData: []
-						}
-					}),
+					config.studio.GraphicsType === 'VIZ'
+						? literal<TSR.TimelineObjVIZMSEElementInternal>({
+								id: '',
+								enable: { start: 0 },
+								priority: 110,
+								layer: GraphicLLayer.GraphicLLayerDesign,
+								content: {
+									deviceType: TSR.DeviceType.VIZMSE,
+									type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+									templateName: 'BG_LOADER_SC',
+									templateData: [],
+									showId: config.selectedGraphicsSetup.OvlShowId
+								}
+						  })
+						: null,
 					literal<TSR.TimelineObjCCGMedia>({
 						id: '',
 						enable: { start: 0 },
@@ -1201,16 +1204,9 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TimelineContentTypeVizMSE.CONCEPT,
-					concept: findGraphicConcept(config)
+					concept: config.selectedGraphicsSetup.Concept
 				}
 			})
 		]
 	}
-}
-
-function findGraphicConcept(config: BlueprintConfig): string {
-	const foundTableConfigGraphicSetup: TableConfigGraphicSetup | undefined = config.showStyle.GraphicSetups.find(
-		tableConfigGraphicSetup => tableConfigGraphicSetup.INewsCode === config.showStyle.GraphicINewsCode
-	)
-	return !!foundTableConfigGraphicSetup ? foundTableConfigGraphicSetup.Concept : ''
 }

@@ -8,6 +8,7 @@ import {
 } from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionGraphic,
+	findShowId,
 	GetEnableForGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetTimelineLayerForGraphic,
@@ -56,7 +57,8 @@ export function GetInternalGraphicContentVIZ(
 					type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 					templateName: mappedTemplate,
 					templateData: parsedCue.graphic.textFields,
-					channelName: engine === 'WALL' ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
+					channelName: engine === 'WALL' ? 'WALL1' : 'OVL1', // TODO: TranslateEngine
+					showId: findShowId(config, engine)
 				}
 			}),
 			// Assume DSK is off by default (config table)

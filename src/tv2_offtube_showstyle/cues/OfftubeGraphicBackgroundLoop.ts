@@ -7,13 +7,14 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
+import { CalculateTime, CueDefinitionBackgroundLoop, literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateCueBackgroundLoop(
+	_config: TV2BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],

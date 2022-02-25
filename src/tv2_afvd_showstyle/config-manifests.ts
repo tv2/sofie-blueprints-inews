@@ -169,6 +169,26 @@ const graphicProfileSetup: ConfigManifestEntry[] = [
 				hint: '',
 				description: '',
 				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'OvlShowId',
+				name: 'OVL Show ID',
+				rank: 2,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'UUID of the show used for OVL channel',
+				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'FullShowId',
+				name: 'FULL Show ID',
+				rank: 3,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'UUID of the show used for FULL and WALL channels',
+				type: ConfigManifestEntryType.STRING
 			}
 		],
 		hint: ''
