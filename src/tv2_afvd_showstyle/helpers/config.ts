@@ -4,26 +4,26 @@ import {
 	IShowStyleContext,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import { TableConfigGraphicSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 
 export interface BlueprintConfig extends BlueprintConfigBase {
 	showStyle: ShowStyleConfig
-	selectedGraphicsSetup: TableConfigGraphicSetup
+	selectedGraphicsSetup: TableConfigGraphicsSetup
 }
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	GraphicINewsCode: string
-	GraphicSetups: TableConfigGraphicSetup[]
+	GraphicsINewsCode: string
+	GraphicsSetups: TableConfigGraphicsSetup[]
 }
 
-export function findGraphicSetup(context: ICommonContext, config: ShowStyleConfig): TableConfigGraphicSetup {
-	const foundTableConfigGraphicSetup: TableConfigGraphicSetup | undefined = config.GraphicSetups.find(
-		tableConfigGraphicSetup => tableConfigGraphicSetup.INewsCode === config.GraphicINewsCode
+export function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): TableConfigGraphicsSetup {
+	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
+		tableConfigGraphicsSetup => tableConfigGraphicsSetup.INewsCode === config.GraphicsINewsCode
 	)
-	if (!foundTableConfigGraphicSetup) {
-		context.logWarning(`No graphics setup found for profile ${config.GraphicINewsCode})`)
+	if (!foundTableConfigGraphicsSetup) {
+		context.logWarning(`No graphics setup found for profile ${config.GraphicsINewsCode})`)
 		return {
 			INewsCode: '',
 			Concept: '',
@@ -31,12 +31,12 @@ export function findGraphicSetup(context: ICommonContext, config: ShowStyleConfi
 			FullShowId: ''
 		}
 	}
-	return foundTableConfigGraphicSetup
+	return foundTableConfigGraphicsSetup
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const showstyleConfig = (rawConfig as unknown) as ShowStyleConfig
-	const selectedGraphicsSetup = findGraphicSetup(context, showstyleConfig)
+	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig)
 	return {
 		showStyle: showstyleConfig,
 		selectedGraphicsSetup

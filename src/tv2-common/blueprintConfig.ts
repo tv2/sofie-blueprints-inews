@@ -34,7 +34,7 @@ export interface TableConfigItemAdLibTransitions {
 	Transition: string
 }
 
-export interface TableConfigGraphicSetup {
+export interface TableConfigGraphicsSetup {
 	INewsCode: string
 	Concept: string
 	OvlShowId: string
@@ -142,7 +142,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
-	selectedGraphicsSetup: TableConfigGraphicSetup
+	selectedGraphicsSetup: TableConfigGraphicsSetup
 }
 
 export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>

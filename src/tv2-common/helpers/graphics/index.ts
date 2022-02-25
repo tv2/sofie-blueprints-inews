@@ -151,13 +151,13 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 }
 
 export function findShowId(config: TV2BlueprintConfig, engine: GraphicEngine) {
-	const graphicSetup = config.selectedGraphicsSetup
+	const graphicsSetup = config.selectedGraphicsSetup
 	switch (engine) {
 		case 'FULL':
 		case 'WALL':
-			return graphicSetup.FullShowId
+			return graphicsSetup.FullShowId
 		case 'TLF':
 		case 'OVL':
-			return graphicSetup.OvlShowId
+			return graphicsSetup.OvlShowId
 	}
 }

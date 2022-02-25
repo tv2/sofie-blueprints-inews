@@ -144,8 +144,8 @@ export const dveStylesManifest: ConfigManifestEntry = {
 
 const graphicProfileSetup: ConfigManifestEntry[] = [
 	{
-		id: 'GraphicSetups',
-		name: 'Graphic Setups',
+		id: 'GraphicsSetups',
+		name: 'Graphics Setups',
 		description: 'Possible graphic profile setup',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
@@ -194,9 +194,9 @@ const graphicProfileSetup: ConfigManifestEntry[] = [
 		hint: ''
 	},
 	{
-		id: 'GraphicINewsCode',
-		name: 'Graphic Profile cue',
-		description: 'GRAPHIC_PROFILE cue from iNews',
+		id: 'GraphicsINewsCode',
+		name: 'Graphics Profile cue',
+		description: 'GRAPHICS_PROFILE cue from iNews',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: ''
