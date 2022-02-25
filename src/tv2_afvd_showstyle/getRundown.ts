@@ -20,6 +20,7 @@ import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
+	ActionFadeDownPersistedAudioLevels,
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
@@ -849,6 +850,23 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 			})
 		)
 	})
+
+	res.push(
+		literal<IBlueprintActionManifest>({
+			actionId: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
+			userData: literal<ActionFadeDownPersistedAudioLevels>({
+				type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
+			}),
+			userDataManifest: {},
+			display: {
+				_rank: 300,
+				label: t('Fade down persisted audio levels'),
+				sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
+				outputLayerId: SharedOutputLayers.SEC,
+				tags: [AdlibTags.ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS]
+			}
+		})
+	)
 
 	return res
 }

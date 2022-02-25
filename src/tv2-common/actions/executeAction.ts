@@ -86,6 +86,7 @@ import {
 import { assertUnreachable } from '../util'
 import {
 	ActionCommentatorSelectJingle,
+	ActionFadeDownPersistedAudioLevels,
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectJingle,
@@ -248,6 +249,9 @@ export function executeAction<
 				break
 			case AdlibActionType.RECALL_LAST_DVE:
 				executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
+				break
+			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
+				executeActionFadeDownPersistedAudioLevels(context, settings, actionId, userData as ActionFadeDownPersistedAudioLevels)
 				break
 			default:
 				assertUnreachable(actionId)
@@ -1835,6 +1839,19 @@ function executeActionRecallLastDVE<
 	} else {
 		scheduleNextScriptedDVE(context, settings, actionId)
 	}
+}
+
+function executeActionFadeDownPersistedAudioLevels<
+StudioConfig extends TV2StudioConfigBase,
+ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ITV2ActionExecutionContext,
+	_settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	_actionId: string,
+	_userData: ActionFadeDownPersistedAudioLevels
+) {
+	// TODO: Use enum instead of string literal.
+	context.stopPiecesOnLayers(['sisyfos_persisted_levels'])
 }
 
 function scheduleLastPlayedDVE<
