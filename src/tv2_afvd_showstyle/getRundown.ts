@@ -62,7 +62,7 @@ export function getShowStyleVariantId(
 	showStyleVariants: IBlueprintShowStyleVariant[],
 	ingestRundown: IngestRundown
 ): string | null {
-	const graphicsprofile = ingestRundown.payload?.graphicProfile?.trim().toLowerCase()
+	const graphicsprofile = ingestRundown.payload?.showstyleVariant?.trim().toLowerCase()
 	const variant =
 		showStyleVariants.find(v => v.name.trim().toLowerCase() === graphicsprofile) ?? _.first(showStyleVariants)
 
