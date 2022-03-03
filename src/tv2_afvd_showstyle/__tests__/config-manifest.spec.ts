@@ -12,7 +12,9 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	LYDConfig: [],
 	CasparCGLoadingClip: '',
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
-	ShowstyleTransition: 'CUT'
+	ShowstyleTransition: 'CUT',
+	GraphicINewsCode: '',
+	GraphicSetups: []
 }
 
 describe('Config Manifest', () => {

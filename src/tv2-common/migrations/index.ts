@@ -13,7 +13,6 @@ import { literal } from '../util'
 
 export * from './moveSourcesToTable'
 export * from './addKeepAudio'
-export * from './shortcuts'
 export * from './transitions'
 export * from './graphic-defaults'
 export * from './manifestWithMediaFlow'

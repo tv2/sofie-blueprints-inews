@@ -8,7 +8,7 @@ import {
 	TriggerType
 } from '@tv2media/blueprints-integration'
 import { literal, TRIGGER_HOTKEYS_ON_KEYUP } from 'tv2-common'
-import { SharedSourceLayers } from 'tv2-constants'
+import { AdlibTags, SharedSourceLayers } from 'tv2-constants'
 
 export interface ActiveSegmentHotketAssignments {
 	lowerThirds: string[]
@@ -67,6 +67,11 @@ function makeSegmentHotKey(
 						object: 'adLib',
 						field: 'segment',
 						value: 'current'
+					}),
+					literal<IAdLibFilterLink>({
+						object: 'adLib',
+						field: 'tag',
+						value: [AdlibTags.ADLIB_FLOW_PRODUCER]
 					}),
 					literal<IAdLibFilterLink>({
 						object: 'adLib',

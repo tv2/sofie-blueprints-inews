@@ -15,6 +15,7 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
+import { TimelineContentTypeVizMSE, TimelineObjVIZMSEConcept } from '@tv2media/timeline-state-resolver-types'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -51,7 +52,7 @@ import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
+import { BlueprintConfig, getConfig as getShowStyleConfig, TableConfigGraphicSetup } from './helpers/config'
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -59,9 +60,11 @@ import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 export function getShowStyleVariantId(
 	_context: IStudioUserContext,
 	showStyleVariants: IBlueprintShowStyleVariant[],
-	_ingestRundown: IngestRundown
+	ingestRundown: IngestRundown
 ): string | null {
-	const variant = _.first(showStyleVariants)
+	const graphicsprofile = ingestRundown.payload?.graphicProfile?.trim().toLowerCase()
+	const variant =
+		showStyleVariants.find(v => v.name.trim().toLowerCase() === graphicsprofile) ?? _.first(showStyleVariants)
 
 	if (variant) {
 		return variant._id
@@ -80,13 +83,13 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 				type: PlaylistTimingType.None
 			}
 		}),
-		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
+		globalAdLibPieces: getGlobalAdLibPiecesAFVD(context, config),
 		globalActions: getGlobalAdlibActionsAFVD(context, config),
 		baseline: getBaseline(config)
 	}
 }
 
-function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
 	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
@@ -131,31 +134,35 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 							}
 						})
 					}),
-					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: SisyfosLLAyer.SisyfosPersistedLevels,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							overridePriority: 1,
-							channels: config.stickyLayers
-								.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
-								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-									return {
-										mappedLayer: layer,
-										isPgm: 0
+					...(vo
+						? [
+								literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
+									id: '',
+									enable: {
+										start: 1
+									},
+									priority: 1,
+									layer: SisyfosLLAyer.SisyfosPersistedLevels,
+									content: {
+										deviceType: TSR.DeviceType.SISYFOS,
+										type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+										overridePriority: 1,
+										channels: config.stickyLayers.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(
+											layer => {
+												return {
+													mappedLayer: layer,
+													isPgm: 0
+												}
+											}
+										)
+									},
+									metaData: {
+										sisyfosPersistLevel: true
 									}
-								})
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					}),
-					GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
+								}),
+								GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
+						  ]
+						: [])
 				])
 			}
 		})
@@ -1185,7 +1192,25 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 							}
 						})
 				  })
-				: [])
+				: []),
+
+			literal<TimelineObjVIZMSEConcept>({
+				id: '',
+				enable: { while: '1' },
+				layer: GraphicLLayer.GraphicLLayerConcept,
+				content: {
+					deviceType: TSR.DeviceType.VIZMSE,
+					type: TimelineContentTypeVizMSE.CONCEPT,
+					concept: findGraphicConcept(config)
+				}
+			})
 		]
 	}
+}
+
+function findGraphicConcept(config: BlueprintConfig): string {
+	const foundTableConfigGraphicSetup: TableConfigGraphicSetup | undefined = config.showStyle.GraphicSetups.find(
+		tableConfigGraphicSetup => tableConfigGraphicSetup.INewsCode === config.showStyle.GraphicINewsCode
+	)
+	return !!foundTableConfigGraphicSetup ? foundTableConfigGraphicSetup.Concept : ''
 }

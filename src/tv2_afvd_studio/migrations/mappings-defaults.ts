@@ -1,4 +1,5 @@
 import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@tv2media/blueprints-integration'
+import { DeviceType } from '@tv2media/timeline-state-resolver-types'
 import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,
@@ -8,7 +9,6 @@ import {
 	SisyfosPlayerClip
 } from 'tv2-common'
 import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
 import { BlueprintConfig } from '../helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../layers'
@@ -535,6 +535,12 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		device: TSR.DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		layerName: 'GFX Full Loop',
+		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerConcept]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		layerName: 'Override Concept',
 		lookahead: LookaheadMode.NONE
 	})
 }

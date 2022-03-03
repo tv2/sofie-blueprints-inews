@@ -7,7 +7,6 @@ import {
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
-	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
 	SetSourceLayerName,
 	SetSourceLayerProperties,
@@ -64,14 +63,6 @@ export const remapVizLLayer: Map<string, string> = new Map([
 
 export const remapVizDOvl: Map<string, string> = new Map([['viz-d-ovl', 'OVL1']])
 
-/** Migrations overriden later */
-// 1.3.1
-const jingle131 = SetShortcutListMigrationStep(
-	'1.3.1',
-	OfftubeSourceLayer.PgmJingle,
-	'NumpadDivide,NumpadSubtract,NumpadAdd'
-)
-
 const SHOW_STYLE_ID = 'tv2_offtube_showstyle'
 
 /**
@@ -88,19 +79,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 
 	/**
 	 * 1.3.1
-	 * - Shortcuts for Jingle layer (transition buttons)
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	jingle131,
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
-
-	/**
-	 * 1.3.3
-	 * - Shortcuts for DVE Box 1
-	 */
-	SetShortcutListMigrationStep('1.3.3', 'studio0_dve_box1', 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
 
 	/**
 	 * 1.3.8
@@ -113,7 +96,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Create Design layer
 	 */
 	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmDesign),
-	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmJingle, [jingle131.id]),
+	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmJingle),
 
 	/**
 	 * 1.4.6
@@ -186,10 +169,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmVoiceOver, 'VO'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmPilot, 'GFX FULL (VCP)'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmContinuity, 'Continuity'),
-	SetSourceLayerName('1.6.9', 'studio0_dve_box1', 'DVE Inp 1'),
-	SetSourceLayerName('1.6.9', 'studio0_dve_box2', 'DVE Inp 2'),
-	SetSourceLayerName('1.6.9', 'studio0_dve_box3', 'DVE Inp 3'),
-	SetSourceLayerName('1.6.9', 'studio0_dve_box4', 'DVE Inp 4'),
 	// MUSIK group
 	SetSourceLayerName('1.6.9', SharedSourceLayers.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
