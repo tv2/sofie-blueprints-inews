@@ -10,3 +10,6 @@ src/**.js
 wallaby.conf.js
 
 .DS_Store
+
+# Ignore JetBrains config files
+.idea

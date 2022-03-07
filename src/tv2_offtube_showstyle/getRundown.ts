@@ -64,9 +64,11 @@ import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 export function getShowStyleVariantId(
 	_context: IStudioContext,
 	showStyleVariants: IBlueprintShowStyleVariant[],
-	_ingestRundown: IngestRundown
+	ingestRundown: IngestRundown
 ): string | null {
-	const variant = _.first(showStyleVariants)
+	const showstyleVariant = ingestRundown.payload?.showstyleVariant?.trim().toLowerCase()
+	const variant =
+		showStyleVariants.find(v => v.name.trim().toLowerCase() === showstyleVariant) ?? _.first(showStyleVariants)
 
 	if (variant) {
 		return variant._id
