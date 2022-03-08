@@ -25,7 +25,7 @@ export const defaultHotkeys: TV2Hotkeys = {
 			queue: ['Ctrl+Shift+F1', 'Ctrl+Shift+F2', 'Ctrl+Shift+F3', 'Ctrl+Shift+F4', 'Ctrl+Shift+F5'],
 			cutToBox: [
 				['Shift+F1', 'Shift+F2', 'Shift+F3', 'Shift+F4', 'Shift+F5'],
-				['Ctrl+F1', 'Crtl+F2', 'Ctrl+F3', 'Ctrl+Alt+Shift+KeyA', 'Ctrl+F5'],
+				['Ctrl+F1', 'Ctrl+F2', 'Ctrl+F3', 'Ctrl+Alt+Shift+KeyA', 'Ctrl+F5'],
 				['Shift+Alt+F1', 'Shift+Alt+F2', 'Shift+Alt+F3', 'Shift+Alt+F4', 'Shift+Alt+F5'],
 				[]
 			],
@@ -210,7 +210,7 @@ export const defaultHotkeys: TV2Hotkeys = {
 	rundownView: literal<RundownViewHotkeyAssignments>({
 		activate: 'Backquote',
 		activateRehearsal: 'Ctrl+Backquote',
-		deactivate: 'Crtl+Shift+Backquote',
+		deactivate: 'Ctrl+Shift+Backquote',
 		take: 'AnyEnter',
 		goToLiveLive: 'Shift+Home',
 		rewindSegments: 'Ctrl+Home',
