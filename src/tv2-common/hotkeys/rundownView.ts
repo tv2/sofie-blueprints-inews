@@ -51,7 +51,7 @@ export function MakeRundownViewTriggers(
 				literal<IRundownPlaylistActivateAction>({
 					action: PlayoutActions.activateRundownPlaylist,
 					rehearsal: false,
-					force: true,
+					force: false,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
 							object: 'view'
@@ -75,7 +75,7 @@ export function MakeRundownViewTriggers(
 				literal<IRundownPlaylistActivateAction>({
 					action: PlayoutActions.activateRundownPlaylist,
 					rehearsal: true,
-					force: true,
+					force: false,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
 							object: 'view'
