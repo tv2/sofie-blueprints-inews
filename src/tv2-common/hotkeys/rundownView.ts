@@ -87,7 +87,7 @@ export function MakeRundownViewTriggers(
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'deactivate_rundown'),
 			_rank: getNextRank(),
-			name: 'deaktivate rundown',
+			name: 'Deactivate rundown',
 			triggers: [
 				literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
