@@ -105,7 +105,7 @@ export function MakeGlobalTriggers(
 	)
 	const recallLastTriggers = [
 		makeRecallLastTrigger(
-			SharedSourceLayers.PgmDVE,
+			SharedSourceLayers.PgmDVEAdLib,
 			getNextRank,
 			recallLastHotkeyId(showStyleId, SharedSourceLayers.PgmDVE, 'dve', 0),
 			'Last DVE',
@@ -117,7 +117,7 @@ export function MakeGlobalTriggers(
 			getNextRank,
 			recallLastHotkeyId(showStyleId, SharedSourceLayers.PgmLive, 'live', 0),
 			'Last Live',
-			assignments.recallLast.DVE,
+			assignments.recallLast.Live,
 			[AdlibTags.ADLIB_RECALL_LAST_LIVE]
 		)
 	]
