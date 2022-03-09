@@ -85,8 +85,6 @@ describe('telefon', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig
 			},
 			mockContext,

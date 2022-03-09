@@ -24,13 +24,13 @@ function prepareConfig(
 	conf: string,
 	configName: string,
 	studioMics: boolean,
-	keepAudioInStudio?: boolean
+	wantsToPersistAudio?: boolean
 ): Array<{
 	SourceName: string
 	AtemSource: number
 	SisyfosLayers: string[]
 	StudioMics: boolean
-	KeepAudioInStudio: boolean
+	wantsToPersistAudio: boolean
 }> {
 	return parseMapStr(undefined, conf, true).map(c => {
 		return {
@@ -38,7 +38,7 @@ function prepareConfig(
 			AtemSource: c.val,
 			SisyfosLayers: getSisyfosLayers(configName, c.id),
 			StudioMics: studioMics,
-			KeepAudioInStudio: keepAudioInStudio ?? false
+			wantsToPersistAudio: wantsToPersistAudio ?? false
 		}
 	})
 }

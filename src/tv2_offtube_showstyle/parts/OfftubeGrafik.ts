@@ -6,7 +6,14 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import { AddScript, ApplyFullGraphicPropertiesToPart, literal, PartDefinition, PartTime } from 'tv2-common'
+import {
+	AddScript,
+	ApplyFullGraphicPropertiesToPart,
+	literal,
+	MapSisyfosPersistMetaDataToPieces,
+	PartDefinition,
+	PartTime
+} from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -29,7 +36,7 @@ export function OfftubeCreatePartGrafik(
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	const pieces: IBlueprintPiece[] = []
+	let pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
@@ -56,6 +63,8 @@ export function OfftubeCreatePartGrafik(
 	if (pieces.length === 0) {
 		part.invalid = true
 	}
+
+	pieces = MapSisyfosPersistMetaDataToPieces(pieces)
 
 	return {
 		part,

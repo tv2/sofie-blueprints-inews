@@ -8,13 +8,10 @@ import {
 	MakeContentDVEBase,
 	PartDefinition
 } from 'tv2-common'
-import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
 export const NUMBER_OF_DVE_BOXES = 4
-
-export const boxMappings = [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3]
 
 export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	dveLayers: {
@@ -29,8 +26,7 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		},
 		SisyfosLLayer: {
 			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-			StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics,
-			PersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
+			StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
 		},
 		CasparLLayer: {
 			ClipPending: CasparLLayer.CasparPlayerClipPending
@@ -41,12 +37,7 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		GetLayersForEkstern
 	},
 	boxMappings: [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3, AtemLLayer.AtemSSrcBox4],
-	AUDIO_LAYERS: Object.keys(SisyfosLLAyer),
-	EXCLUDED_LAYERS: [
-		SisyfosLLAyer.SisyfosSourceClipPending,
-		SisyfosLLAyer.SisyfosSourceServerA,
-		SisyfosLLAyer.SisyfosSourceServerB
-	]
+	AUDIO_LAYERS: Object.keys(SisyfosLLAyer)
 }
 
 export function MakeContentDVE(
@@ -57,7 +48,7 @@ export function MakeContentDVE(
 	dveConfig: DVEConfigInput | undefined,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	return MakeContentDVEBase(
 		context,
 		config,

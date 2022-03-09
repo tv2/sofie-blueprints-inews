@@ -56,7 +56,9 @@ export function ParseMappingTable(
 		id: `${idPrefix || ''}${conf.SourceName}`,
 		port: conf.AtemSource,
 		sisyfosLayers: conf.SisyfosLayers,
-		useStudioMics: conf.StudioMics
+		useStudioMics: conf.StudioMics,
+		wantsToPersistAudio: conf.WantsToPersistAudio,
+		acceptPersistAudio: conf.AcceptPersistAudio
 	}))
 }
 
@@ -75,6 +77,8 @@ export interface SourceInfo {
 	ptzDevice?: string
 	sisyfosLayers?: string[]
 	useStudioMics?: boolean
+	wantsToPersistAudio?: boolean
+	acceptPersistAudio?: boolean
 }
 
 export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: string): SourceInfo | undefined {

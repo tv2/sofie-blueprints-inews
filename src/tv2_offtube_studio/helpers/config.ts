@@ -1,7 +1,5 @@
 import { IBlueprintConfig, ICommonContext } from '@tv2media/blueprints-integration'
 import {
-	getLiveAudioLayers,
-	getStickyLayers,
 	MediaPlayerConfig,
 	SourceInfo,
 	TableConfigItemDSK,
@@ -16,8 +14,6 @@ export interface OfftubeStudioBlueprintConfig {
 	studio: OfftubeStudioConfig
 	sources: SourceInfo[]
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
-	liveAudio: string[]
-	stickyLayers: string[]
 	dsk: TableConfigItemDSK[]
 }
 
@@ -58,14 +54,10 @@ export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfi
 		// showStyle: {} as any,
 		sources: [],
 		mediaPlayers: [],
-		liveAudio: [],
-		stickyLayers: [],
 		dsk: studioConfig.AtemSource.DSK
 	}
 	config.sources = parseSources(studioConfig)
 	config.mediaPlayers = parseMediaPlayers(studioConfig)
-	config.liveAudio = getLiveAudioLayers(studioConfig)
-	config.stickyLayers = getStickyLayers(studioConfig, config.liveAudio)
 
 	return config
 }

@@ -330,6 +330,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	 */
 	GetMappingDefaultMigrationStepForLayer('1.6.10', OfftubeCasparLLayer.CasparCGLYD, true),
 
+	RenameStudioConfig('1.6.11', 'Offtube', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

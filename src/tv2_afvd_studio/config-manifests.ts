@@ -28,7 +28,7 @@ const DEFAULT_STUDIO_MICS_LAYERS = [
 	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
 ]
 
-export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', false, [
+export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', false, true, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -101,14 +101,15 @@ export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', fals
 	}
 ])
 
-export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
+export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, true, [
 	{
 		_id: '',
 		SourceName: '1',
 		AtemSource: 1,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
-		StudioMics: false,
-		KeepAudioInStudio: true
+		StudioMics: true,
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -116,7 +117,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 2,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudion: false
 	},
 	{
 		_id: '',
@@ -124,7 +126,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 3,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -132,7 +135,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 4,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -140,7 +144,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 5,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -148,7 +153,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 6,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -156,7 +162,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 7,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -164,7 +171,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 8,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -172,7 +180,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 9,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -180,13 +189,14 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 10,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	}
 ])
 
-export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, [])
+export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, false, [])
 
-export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedPlayback', 'EVS', false, [
+export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedPlayback', 'EVS', false, false, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -203,7 +213,7 @@ export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedP
 	}
 ])
 
-export const manifestAFVDSourcesSkype = MakeConfigForSources('Skype', 'Skype', false, [
+export const manifestAFVDSourcesSkype = MakeConfigForSources('Skype', 'Skype', false, true, [
 	{
 		_id: '',
 		SourceName: '1',

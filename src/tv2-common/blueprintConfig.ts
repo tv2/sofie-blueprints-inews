@@ -1,9 +1,5 @@
 import { TableConfigItemValue } from '@tv2media/blueprints-integration'
-import {
-	TableConfigItemDSK,
-	TableConfigItemSourceMappingWithSisyfos,
-	TableConfigItemSourceMappingWithSisyfosAndKeepAudio
-} from 'tv2-common'
+import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
 
@@ -80,8 +76,8 @@ export interface TV2StudioConfigBase {
 	}
 	AtemSettings: {}
 	StudioMics: string[]
-	SourcesRM: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
-	SourcesFeed: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
+	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesFeed: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
 	PreventOverlayWithFull?: boolean
@@ -115,8 +111,6 @@ export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConf
 	studio: StudioConfig
 	sources: SourceInfo[]
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
-	liveAudio: string[]
-	stickyLayers: string[]
 	dsk: TableConfigItemDSK[]
 }
 

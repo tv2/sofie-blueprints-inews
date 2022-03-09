@@ -29,15 +29,14 @@ import {
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	FindDSKJingle,
-	GetEksternMetaData,
-	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GetTransitionAdLibActions,
 	literal,
+	PieceMetaData,
+	SisyfosPersistMetaData,
 	SourceInfo,
-	t,
-	TimelineBlueprintExt
+	t
 } from 'tv2-common'
 import {
 	AdlibActionType,
@@ -101,7 +100,12 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
+			metaData: literal<PieceMetaData>({
+				sisyfosPersistMetaData: {
+					sisyfosLayers: info.sisyfosLayers ?? [],
+					acceptPersistAudio: vo
+				}
+			}),
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
@@ -134,35 +138,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 							}
 						})
 					}),
-					...(vo
-						? [
-								literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-									id: '',
-									enable: {
-										start: 1
-									},
-									priority: 1,
-									layer: SisyfosLLAyer.SisyfosPersistedLevels,
-									content: {
-										deviceType: TSR.DeviceType.SISYFOS,
-										type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-										overridePriority: 1,
-										channels: config.stickyLayers.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(
-											layer => {
-												return {
-													mappedLayer: layer,
-													isPgm: 0
-												}
-											}
-										)
-									},
-									metaData: {
-										sisyfosPersistLevel: true
-									}
-								}),
-								GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
-						  ]
-						: [])
+					...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)] : [])
 				])
 			}
 		})
@@ -173,7 +149,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
 		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
+			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`),
 			GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
 		]
 		res.push({
@@ -185,11 +161,13 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(
-				config.stickyLayers,
-				config.studio.StudioMics,
-				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
-			),
+			metaData: {
+				sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+					sisyfosLayers: info.sisyfosLayers ?? [],
+					wantsToPersistAudio: info.wantsToPersistAudio,
+					acceptPersistAudio: info.acceptPersistAudio
+				})
+			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -208,52 +186,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						},
 						classes: ['adlib_deparent']
 					}),
-					...eksternSisyfos,
-					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: SisyfosLLAyer.SisyfosPersistedLevels,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							overridePriority: 1,
-							channels: config.stickyLayers
-								.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-								.filter(layer => config.liveAudio.indexOf(layer) === -1)
-								.map(layer => {
-									return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
-										mappedLayer: layer,
-										isPgm: 0
-									})
-								})
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					}),
-					// Force server to be muted (for adlibbing over DVE)
-					...[
-						SisyfosLLAyer.SisyfosSourceClipPending,
-						SisyfosLLAyer.SisyfosSourceServerA,
-						SisyfosLLAyer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
-					})
+					...eksternSisyfos
 				])
 			}
 		})
@@ -272,11 +205,13 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			outputLayerId: SharedOutputLayers.AUX,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
-			metaData: GetEksternMetaData(
-				config.stickyLayers,
-				config.studio.StudioMics,
-				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
-			),
+			metaData: {
+				sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+					sisyfosLayers: info.sisyfosLayers ?? [],
+					wantsToPersistAudio: info.wantsToPersistAudio,
+					acceptPersistAudio: info.acceptPersistAudio
+				})
+			},
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
 				timelineObjects: _.compact<TSR.TSRTimelineObj>([

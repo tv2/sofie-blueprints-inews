@@ -193,6 +193,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
 	removeMapping('1.6.1', 'atem_dsk_efect'),
 
+	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)
