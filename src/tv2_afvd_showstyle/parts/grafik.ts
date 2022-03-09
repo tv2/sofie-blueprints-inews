@@ -12,7 +12,6 @@ import {
 	ApplyFullGraphicPropertiesToPart,
 	GraphicIsPilot,
 	literal,
-	MapSisyfosPersistMetaDataToPieces,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -35,7 +34,7 @@ export function CreatePartGrafik(
 	})
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	let pieces: IBlueprintPiece[] = []
+	const pieces: IBlueprintPiece[] = []
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
@@ -64,8 +63,6 @@ export function CreatePartGrafik(
 	if (pieces.length === 0) {
 		part.invalid = true
 	}
-
-	pieces = MapSisyfosPersistMetaDataToPieces(pieces)
 
 	return {
 		part,

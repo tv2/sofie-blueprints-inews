@@ -14,6 +14,7 @@ import {
 	IsStickyIdent,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	TV2BlueprintConfig
 } from 'tv2-common'
 import { AbstractLLayer, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
@@ -99,6 +100,11 @@ export function CreateInternalGraphic(
 				sourceLayerId,
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
 				content: _.clone(content),
@@ -120,6 +126,11 @@ export function CreateInternalGraphic(
 					? {}
 					: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
 				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				content: _.clone(content)
 			})
 		)
@@ -137,6 +148,11 @@ export function CreateInternalGraphic(
 			outputLayerId,
 			sourceLayerId,
 			lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
+			metaData: literal<PieceMetaData>({
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			}),
 			content: _.clone(content)
 		})
 		pieces.push(piece)
@@ -154,6 +170,11 @@ export function CreateInternalGraphic(
 					enable: { ...CreateTimingGraphic(config, parsedCue, true) }, // Allow default out for visual representation
 					sourceLayerId: SharedSourceLayers.PgmGraphicsIdent,
 					lifespan: PieceLifespan.WithinPart,
+					metaData: literal<PieceMetaData>({
+						sisyfosPersistMetaData: {
+							sisyfosLayers: []
+						}
+					}),
 					content: {
 						timelineObjects: [
 							literal<TSR.TimelineObjAbstractAny>({

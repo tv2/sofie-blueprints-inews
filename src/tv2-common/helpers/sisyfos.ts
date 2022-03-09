@@ -1,5 +1,5 @@
-import { IBlueprintPiece, IStudioUserContext, SourceLayerType, Timeline, TSR } from '@tv2media/blueprints-integration'
-import { FindSourceInfoStrict, PieceMetaData, SisyfosEVSSource, SisyfosPersistMetaData, SourceInfo } from 'tv2-common'
+import { IStudioUserContext, SourceLayerType, Timeline, TSR } from '@tv2media/blueprints-integration'
+import { FindSourceInfoStrict, SisyfosEVSSource, SourceInfo } from 'tv2-common'
 import { literal } from '../util'
 
 export function GetSisyfosTimelineObjForEkstern(
@@ -115,18 +115,5 @@ export function GetSisyfosTimelineObjForEVS(sourceInfo: SourceInfo, vo: boolean)
 			type: TSR.TimelineContentTypeSisyfos.CHANNEL,
 			isPgm: vo ? 2 : 1
 		}
-	})
-}
-
-export function MapSisyfosPersistMetaDataToPieces(pieces: IBlueprintPiece[]) {
-	return pieces.map(piece => {
-		const metaData = piece.metaData as PieceMetaData
-		piece.metaData = {
-			...metaData,
-			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
-				sisyfosLayers: []
-			})
-		}
-		return piece
 	})
 }
