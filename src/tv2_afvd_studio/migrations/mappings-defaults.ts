@@ -542,6 +542,18 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		deviceId: 'viz0',
 		layerName: 'Override Concept',
 		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerInitialize]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		layerName: 'GFX Show Initialization',
+		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerCleanup]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		layerName: 'GFX Show Cleanup',
+		lookahead: LookaheadMode.NONE
 	})
 }
 

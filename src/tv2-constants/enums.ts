@@ -171,7 +171,9 @@ export enum GraphicLLayer {
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall', // <= viz_layer_wall
 	GraphicLLayerLocators = 'graphic_locators',
-	GraphicLLayerConcept = 'graphic_concept'
+	GraphicLLayerConcept = 'graphic_concept',
+	GraphicLLayerInitialize = 'graphic_initialize',
+	GraphicLLayerCleanup = 'graphic_cleanup'
 }
 
 export enum AbstractLLayer {
@@ -247,6 +249,7 @@ export enum SharedSourceLayers {
 	// Other / sec / manus
 	PgmScript = 'studio0_script',
 	PgmAudioBed = 'studio0_audio_bed',
+	GraphicsShowLifecycle = 'studio0_graphic_show_lifecycle',
 
 	// AUX
 	AuxMixMinus = 'studio0_aux_mix_minus'
