@@ -65,8 +65,6 @@ export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', t
 	}
 ])
 
-export const manifestOfftubeSourcesSkype = MakeConfigForSources('Skype', 'Skype', false, true, [])
-
 export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	id: 'ABMediaPlayers',
 	name: 'Media Players inputs',
@@ -131,7 +129,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
 	manifestOfftubeSourcesFeed,
-	manifestOfftubeSourcesSkype,
 	manifestOfftubeSourcesABMediaPlayers,
 	manifestOfftubeStudioMics,
 	manifestOfftubeDownstreamKeyers,

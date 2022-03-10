@@ -95,17 +95,14 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 			const remoteName = id
 				.replace(/VO/i, '')
 				.replace(/\s/g, '')
-				.match(/^(?:LIVE|SKYPE|FEED) ?(.+).*$/i)
+				.match(/^(?:LIVE|FEED) ?(.+).*$/i)
 			if (!remoteName) {
 				return undefined
 			}
 			if (id.match(/^LIVE/i)) {
 				return _.find(sources, s => s.type === type && s.id === remoteName[1])
-			} else if (id.match(/^FEED/i)) {
-				return _.find(sources, s => s.type === type && s.id === `F${remoteName[1]}`)
 			} else {
-				// Skype
-				return _.find(sources, s => s.type === type && s.id === `S${remoteName[1]}`)
+				return _.find(sources, s => s.type === type && s.id === `F${remoteName[1]}`)
 			}
 		case SourceLayerType.LOCAL:
 			const dpName = id

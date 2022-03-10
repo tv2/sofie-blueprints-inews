@@ -353,7 +353,7 @@ export function MakeContentDVE2<
 						audioEnable
 					)
 				)
-			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i) || sourceType.match(/SKYPE/i)) {
+			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
 					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)

@@ -21,7 +21,6 @@ import {
 	manifestOfftubeDownstreamKeyers,
 	manifestOfftubeSourcesABMediaPlayers,
 	manifestOfftubeSourcesCam,
-	manifestOfftubeSourcesRM,
 	manifestOfftubeStudioMics
 } from '../config-manifests'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../layers'
@@ -205,11 +204,29 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesRM',
-		manifestOfftubeSourcesRM.defaultVal,
+		[
+			{
+				_id: '',
+				SourceName: '1',
+				AtemSource: 3,
+				SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
+				StudioMics: true,
+				KeepAudioInStudio: true
+			}
+		],
 		'text',
 		'Studio config: Remote mappings',
 		'Enter the remote input mapping',
-		manifestOfftubeSourcesRM.defaultVal
+		[
+			{
+				_id: '',
+				SourceName: '1',
+				AtemSource: 3,
+				SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
+				StudioMics: true,
+				KeepAudioInStudio: true
+			}
+		]
 	),
 
 	ensureStudioConfig(
@@ -309,7 +326,16 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	 * - Split RM config into FEED and RM configs
 	 * - Add concept of roles to DSK config table (and cleanup configs replaced by table)
 	 */
-	SetConfigTo('1.6.1', 'Offtube', 'SourcesRM', manifestOfftubeSourcesRM.defaultVal),
+	SetConfigTo('1.6.1', 'Offtube', 'SourcesRM', [
+		{
+			_id: '',
+			SourceName: '1',
+			AtemSource: 3,
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
+			StudioMics: true,
+			KeepAudioInStudio: true
+		}
+	]),
 	SetConfigTo('1.6.1', 'Offtube', 'AtemSource.DSK', manifestOfftubeDownstreamKeyers.defaultVal),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleFill'),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleKey'),

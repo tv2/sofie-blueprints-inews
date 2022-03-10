@@ -10,7 +10,6 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 			return []
 		case 'SourcesRM':
 		case 'SourcesFeed':
-		case 'SourcesSkype':
 			return ['sisyfos_source_live_' + id]
 		case 'SourcesDelayedPlayback':
 			return ['sisyfos_source_evs_' + id]
@@ -80,7 +79,6 @@ export const defaultStudioConfig: StudioConfig = {
 		true
 	),
 	// TODO: prepareConfig is legacy code, refactor when refactoring FindSourceInfo
-	SourcesSkype: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7', 'SourcesSkype', false),
 	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false, true),
 	SourcesFeed: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesFeed', false, true),
 	SourcesDelayedPlayback: prepareConfig('1:5,2:5', 'SourcesDelayedPlayback', false),

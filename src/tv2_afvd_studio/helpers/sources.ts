@@ -16,7 +16,6 @@ export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
 		...ParseMappingTable(studioConfig.SourcesFeed, SourceLayerType.REMOTE, 'F'),
 		...ParseMappingTable(studioConfig.SourcesRM, SourceLayerType.REMOTE),
 		...ParseMappingTable(studioConfig.SourcesCam, SourceLayerType.CAMERA),
-		...ParseMappingTable(studioConfig.SourcesSkype, SourceLayerType.REMOTE, 'S'),
 		...ParseMappingTable(studioConfig.SourcesDelayedPlayback, SourceLayerType.LOCAL, 'DP')
 	]
 }
