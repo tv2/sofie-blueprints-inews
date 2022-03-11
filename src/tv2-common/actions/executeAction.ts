@@ -42,12 +42,8 @@ import {
 	EvaluateCuesOptions,
 	executeWithContext,
 	FindSourceInfoStrict,
-	GetCameraMetaData,
 	GetDVETemplate,
-	GetEksternMetaData,
 	GetFullGrafikTemplateName,
-	GetLayersForCamera,
-	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
@@ -56,6 +52,7 @@ import {
 	MakeContentDVE2,
 	PartDefinition,
 	PieceMetaData,
+	SisyfosPersistMetaData,
 	TimelineBlueprintExt,
 	TV2AdlibAction,
 	TV2BlueprintConfigBase,
@@ -152,7 +149,6 @@ export interface ActionExecutionSettings<
 			ClipPending: string
 			Effekt: string
 			StudioMics: string
-			PersistedLevels: string
 		}
 		Atem: {
 			MEProgram: string
@@ -175,7 +171,6 @@ export interface ActionExecutionSettings<
 		}
 		SELECTED_ADLIB_LAYERS: string[]
 	}
-	ServerAudioLayers: string[]
 	createJingleContent: (
 		config: ShowStyleConfig,
 		file: string,
@@ -547,6 +542,9 @@ function executeActionSelectDVE<
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
+		sisyfosPersistMetaData: {
+			sisyfosLayers: []
+		},
 		userData
 	})
 
@@ -708,9 +706,12 @@ function executeActionSelectDVELayout<
 			return
 		}
 
-		const newMetaData = literal<DVEPieceMetaData>({
+		const newMetaData = literal<DVEPieceMetaData & PieceMetaData>({
 			sources,
 			config: userData.config,
+			sisyfosPersistMetaData: {
+				sisyfosLayers: []
+			},
 			userData: literal<ActionSelectDVE>({
 				type: AdlibActionType.SELECT_DVE,
 				config: literal<CueDefinitionDVE>({
@@ -758,7 +759,10 @@ function executeActionSelectDVELayout<
 
 	const newMetaData2 = literal<PieceMetaData & DVEPieceMetaData>({
 		...meta,
-		config: userData.config
+		config: userData.config,
+		sisyfosPersistMetaData: {
+			sisyfosLayers: []
+		}
 	})
 
 	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
@@ -1046,7 +1050,12 @@ function executeActionCutToCamera<
 		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
-		metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+		metaData: {
+			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+				sisyfosLayers: [],
+				acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+			})
+		},
 		tags: [GetTagForKam(userData.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -1065,47 +1074,7 @@ function executeActionCutToCamera<
 					},
 					classes: ['adlib_deparent']
 				}),
-				camSisyfos,
-				literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-					id: '',
-					enable: {
-						start: 0
-					},
-					priority: 1,
-					layer: settings.LLayer.Sisyfos.PersistedLevels,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						overridePriority: 1,
-						channels: config.stickyLayers
-							.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
-							.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-								return {
-									mappedLayer: layer,
-									isPgm: 0
-								}
-							})
-					},
-					metaData: {
-						sisyfosPersistLevel: true
-					}
-				}),
-				// Force server to be muted (for adlibbing over DVE)
-				...settings.ServerAudioLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 2,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						}
-					})
-				})
+				camSisyfos
 			])
 		}
 	})
@@ -1125,6 +1094,10 @@ function executeActionCutToCamera<
 	} else if (currentKam) {
 		kamPiece.externalId = currentKam.piece.externalId
 		kamPiece.enable = currentKam.piece.enable
+		const currentMetaData = currentKam.piece.metaData as PieceMetaData
+		const metaData = kamPiece.metaData as PieceMetaData
+		metaData.sisyfosPersistMetaData!.previousPersistMetaDataForCurrentPiece = currentMetaData.sisyfosPersistMetaData
+
 		context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
 		const currentExternalId = context.getPartInstance('current')?.part.externalId
@@ -1172,9 +1145,19 @@ function executeActionCutToRemote<
 	})
 
 	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
-		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`, GetLayersForEkstern),
+		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`),
 		GetSisyfosTimelineObjForCamera(context, config, 'telefon', settings.LLayer.Sisyfos.StudioMics)
 	]
+
+	const sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, `Live ${userData.name}`)
+	const sisyfosPersistMetaData: SisyfosPersistMetaData =
+		sourceInfo !== undefined
+			? {
+					sisyfosLayers: sourceInfo.sisyfosLayers ?? [],
+					wantsToPersistAudio: sourceInfo.wantsToPersistAudio,
+					acceptPersistAudio: sourceInfo.acceptPersistAudio
+			  }
+			: { sisyfosLayers: [] }
 
 	const remotePiece = literal<IBlueprintPiece>({
 		externalId,
@@ -1186,11 +1169,9 @@ function executeActionCutToRemote<
 		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
-		metaData: GetEksternMetaData(
-			config.stickyLayers,
-			config.studio.StudioMics,
-			GetLayersForEkstern(context, config.sources, `Live ${userData.name}`)
-		),
+		metaData: {
+			sisyfosPersistMetaData
+		},
 		tags: [GetTagForLive(userData.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -1209,44 +1190,7 @@ function executeActionCutToRemote<
 					},
 					classes: ['adlib_deparent']
 				}),
-				...eksternSisyfos,
-				...config.stickyLayers
-					.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-					.filter(layer => config.liveAudio.indexOf(layer) === -1)
-					.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-					}),
-				// Force server to be muted (for adlibbing over DVE)
-				...settings.ServerAudioLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 2,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						}
-					})
-				})
+				...eksternSisyfos
 			])
 		}
 	})
@@ -1306,6 +1250,10 @@ function executeActionCutSourceToBox<
 
 	const meta: (DVEPieceMetaData & PieceMetaData) | undefined = modifiedPiece?.piece.metaData as PieceMetaData &
 		DVEPieceMetaData
+
+	meta.sisyfosPersistMetaData = {
+		sisyfosLayers: []
+	}
 
 	if (
 		!modifiedPiece ||

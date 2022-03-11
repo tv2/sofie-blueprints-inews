@@ -24,7 +24,6 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesFeed: [],
-	SourcesSkype: [],
 	ABMediaPlayers: [],
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,

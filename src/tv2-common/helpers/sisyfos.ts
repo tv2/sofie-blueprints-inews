@@ -1,74 +1,11 @@
-import * as _ from 'underscore'
-
 import { IStudioUserContext, SourceLayerType, Timeline, TSR } from '@tv2media/blueprints-integration'
-import {
-	FindSourceInfoStrict,
-	SisyfosEVSSource,
-	SourceInfo,
-	TV2StudioBlueprintConfigBase,
-	TV2StudioConfigBase
-} from 'tv2-common'
-import { PieceMetaData } from '../onTimelineGenerate'
+import { FindSourceInfoStrict, SisyfosEVSSource, SourceInfo } from 'tv2-common'
 import { literal } from '../util'
-
-export function GetStickyForPiece(
-	layers: Array<{ layer: string; isPgm: 0 | 1 | 2 }>,
-	STICKY_LAYERS: string[]
-): PieceMetaData | undefined {
-	return literal<PieceMetaData>({
-		stickySisyfosLevels: _.object(
-			layers
-				.filter(layer => STICKY_LAYERS.indexOf(layer.layer) !== -1)
-				.map<[string, { value: number; followsPrevious: boolean }]>(layer => {
-					return [
-						layer.layer,
-						{
-							value: layer.isPgm,
-							followsPrevious: false
-						}
-					]
-				})
-		)
-	})
-}
-
-export function GetEksternMetaData(
-	STICKY_LAYERS: string[],
-	studioMics: string[],
-	layers?: string[]
-): PieceMetaData | undefined {
-	return layers && layers.length
-		? GetStickyForPiece(
-				[
-					...layers.map<{ layer: string; isPgm: 0 | 1 | 2 }>(layer => {
-						return { layer, isPgm: 1 }
-					}),
-					...studioMics.map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
-						return { layer: l, isPgm: 1 }
-					})
-				],
-				STICKY_LAYERS
-		  )
-		: undefined
-}
-
-export function GetCameraMetaData(
-	config: TV2StudioBlueprintConfigBase<TV2StudioConfigBase>,
-	layers?: string[]
-): PieceMetaData | undefined {
-	return GetStickyForPiece(
-		[...(layers || []), ...config.studio.StudioMics].map<{ layer: string; isPgm: 0 | 1 | 2 }>(l => {
-			return { layer: l, isPgm: 1 }
-		}),
-		config.stickyLayers
-	)
-}
 
 export function GetSisyfosTimelineObjForEkstern(
 	context: IStudioUserContext,
 	sources: SourceInfo[],
 	sourceType: string,
-	getLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[] | undefined,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	if (!enable) {
@@ -76,7 +13,7 @@ export function GetSisyfosTimelineObjForEkstern(
 	}
 
 	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
-	const layers = getLayersForEkstern(context, sources, sourceType)
+	const layers = GetLayersForEkstern(context, sources, sourceType)
 
 	if (!layers || !layers.length) {
 		context.notifyUserWarning(`Could not set audio levels for ${sourceType}`)
@@ -102,7 +39,7 @@ export function GetSisyfosTimelineObjForEkstern(
 }
 
 export function GetLayersForEkstern(context: IStudioUserContext, sources: SourceInfo[], sourceType: string) {
-	const eksternProps = sourceType.match(/^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i)
+	const eksternProps = sourceType.match(/^(?:LIVE|FEED) ?([^\s]+)(?: (.+))?$/i)
 	const eksternLayers: string[] = []
 	if (eksternProps) {
 		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
@@ -163,40 +100,6 @@ export function GetSisyfosTimelineObjForCamera(
 			overridePriority: 2
 		}
 	})
-}
-
-export function GetLayersForCamera(config: TV2StudioBlueprintConfigBase<TV2StudioConfigBase>, sourceInfo: SourceInfo) {
-	const cameraLayers: string[] = []
-	if (sourceInfo.sisyfosLayers) {
-		cameraLayers.push(...sourceInfo.sisyfosLayers)
-	}
-	if (sourceInfo.useStudioMics) {
-		cameraLayers.push(...config.studio.StudioMics)
-	}
-	return cameraLayers
-}
-
-export function getStickyLayers(studioConfig: TV2StudioConfigBase, liveAudioLayers: string[]) {
-	return [...studioConfig.StudioMics, ...liveAudioLayers]
-}
-
-export function getLiveAudioLayers(studioConfig: TV2StudioConfigBase): string[] {
-	const res = new Set<string>()
-	for (const src of studioConfig.SourcesRM) {
-		if (src.SisyfosLayers && src.KeepAudioInStudio) {
-			for (const layer of src.SisyfosLayers) {
-				res.add(layer)
-			}
-		}
-	}
-	for (const src of studioConfig.SourcesSkype) {
-		if (src.SisyfosLayers) {
-			for (const layer of src.SisyfosLayers) {
-				res.add(layer)
-			}
-		}
-	}
-	return Array.from(res)
 }
 
 export function GetSisyfosTimelineObjForEVS(sourceInfo: SourceInfo, vo: boolean) {

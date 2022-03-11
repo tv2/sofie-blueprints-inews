@@ -8,11 +8,9 @@ export interface TableConfigItemSourceMapping {
 export type TableConfigItemSourceMappingWithSisyfos = {
 	SisyfosLayers: string[]
 	StudioMics: boolean
+	WantsToPersistAudio?: boolean
+	AcceptPersistAudio?: boolean
 } & TableConfigItemSourceMapping
-
-export type TableConfigItemSourceMappingWithSisyfosAndKeepAudio = {
-	KeepAudioInStudio: boolean
-} & TableConfigItemSourceMappingWithSisyfos
 
 export interface TableConfigItemDSK {
 	/** 0-based */

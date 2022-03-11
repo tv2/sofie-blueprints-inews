@@ -19,7 +19,7 @@
     "traceResolution": false,
     "pretty": true,
     "lib": [
-      "es6"
+      "ES2019"
     ],
     "types": [
       "node",

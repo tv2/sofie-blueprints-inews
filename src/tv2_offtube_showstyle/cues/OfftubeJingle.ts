@@ -103,6 +103,9 @@ export function OfftubeEvaluateJingle(
 				transition: {
 					isJingle: !effekt,
 					isEffekt: !!effekt
+				},
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
 				}
 			}),
 			content: createJingleContentOfftube(
