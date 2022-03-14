@@ -373,6 +373,25 @@
       "showSegmentName": true,
       "showPartTitle": false,
       "hideForDynamicallyInsertedParts": true
+    },
+    {
+      "_id" : "jLzHen2LoGEMxE68N",
+      "type" : "mini_rundown",
+      "name" : "Mini rundown",
+      "currentSegment" : false,
+      "displayStyle" : "buttons",
+      "rank" : 0,
+      "rundownBaseline" : false,
+      "showThumbnailsInList" : false,
+      "hideDuplicates" : false,
+      "default" : false,
+      "nextInCurrentPart" : false,
+      "oneNextPerSourceLayer" : false,
+      "x" : 7,
+      "y" : 0,
+      "width" : 14,
+      "height" : 7,
+      "scale" : 1
     }
   ],
   "type": "dashboard_layout",
