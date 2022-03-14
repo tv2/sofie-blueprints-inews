@@ -91,7 +91,7 @@ export enum AdlibTags {
 	ADLIB_RECALL_LAST_DVE = 'recall_last_dve',
 	ADLIB_SELECT_DVE_LAYOUT = 'select_dve_layout',
 	ADLIB_TAKE_WITH_TRANSITION = 'take_with_transition',
-	ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
+	ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
 }
 
 /**
@@ -135,7 +135,7 @@ export enum AdlibActionType {
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
 	RECALL_LAST_DVE = 'recall_last_dve',
-	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
+	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
 }
 
 export enum TallyTags {

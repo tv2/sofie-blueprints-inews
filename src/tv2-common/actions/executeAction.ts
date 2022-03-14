@@ -10,6 +10,7 @@ import {
 	IBlueprintPieceDB,
 	IBlueprintPieceGeneric,
 	IBlueprintPieceInstance,
+	IBlueprintResolvedPieceInstance,
 	IShowStyleUserContext,
 	PieceLifespan,
 	SourceLayerType,
@@ -83,7 +84,6 @@ import {
 import { assertUnreachable } from '../util'
 import {
 	ActionCommentatorSelectJingle,
-	ActionFadeDownPersistedAudioLevels,
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectJingle,
@@ -101,6 +101,8 @@ const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayers.PgmPilotOverlay,
 	SharedSourceLayers.PgmGraphicsTLF
 ]
+
+const FADE_SISYFOS_LEVELS_PIECE_NAME = 'fadeDown'
 
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
@@ -246,7 +248,7 @@ export function executeAction<
 				executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
 				break
 			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
-				executeActionFadeDownPersistedAudioLevels(context, settings, actionId, userData as ActionFadeDownPersistedAudioLevels)
+				executeActionFadeDownPersistedAudioLevels(context, settings)
 				break
 			default:
 				assertUnreachable(actionId)
@@ -1790,16 +1792,51 @@ function executeActionRecallLastDVE<
 }
 
 function executeActionFadeDownPersistedAudioLevels<
-StudioConfig extends TV2StudioConfigBase,
-ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ITV2ActionExecutionContext,
-	_settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
-	_userData: ActionFadeDownPersistedAudioLevels
-) {
-	// TODO: Use enum instead of string literal.
-	context.stopPiecesOnLayers(['sisyfos_persisted_levels'])
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(context: ITV2ActionExecutionContext, _settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
+	const fadeSisyfosMetaData = createFadeSisyfosLevelsMetaData(context)
+	const resetSisyfosPersistedLevelsPiece: IBlueprintPiece = {
+		externalId: 'fadeSisyfosPersistedLevelsDown',
+		name: FADE_SISYFOS_LEVELS_PIECE_NAME,
+		outputLayerId: '',
+		sourceLayerId: '',
+		enable: { start: 'now' },
+		lifespan: PieceLifespan.WithinPart,
+		metaData: literal<PieceMetaData>({
+			sisyfosPersistMetaData: fadeSisyfosMetaData
+		}),
+		content: {
+			timelineObjects: []
+		}
+	}
+	context.insertPiece('current', resetSisyfosPersistedLevelsPiece)
+}
+
+function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {
+	const resolvedPieceInstances: IBlueprintResolvedPieceInstance[] = context.getResolvedPieceInstances('current')
+	const emptySisyfosMetaData: SisyfosPersistMetaData = {
+		sisyfosLayers: []
+	}
+	if (resolvedPieceInstances.length === 0) {
+		return emptySisyfosMetaData
+	}
+
+	const latestPiece: IBlueprintResolvedPieceInstance = resolvedPieceInstances
+		.filter(piece => piece.piece.name !== FADE_SISYFOS_LEVELS_PIECE_NAME)
+		.sort((a, b) => b.resolvedStart - a.resolvedStart)[0]
+
+	const latestPieceMetaData = latestPiece.piece.metaData as PieceMetaData
+
+	if (!latestPieceMetaData || !latestPieceMetaData.sisyfosPersistMetaData) {
+		return emptySisyfosMetaData
+	}
+
+	return {
+		sisyfosLayers: latestPieceMetaData.sisyfosPersistMetaData.sisyfosLayers,
+		wantsToPersistAudio: latestPieceMetaData.sisyfosPersistMetaData.wantsToPersistAudio,
+		acceptPersistAudio: false
+	}
 }
 
 function scheduleLastPlayedDVE<

@@ -790,7 +790,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		literal<IBlueprintActionManifest>({
 			actionId: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
 			userData: literal<ActionFadeDownPersistedAudioLevels>({
-				type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
+				type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
 			}),
 			userDataManifest: {},
 			display: {
