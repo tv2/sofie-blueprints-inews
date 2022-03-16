@@ -12,6 +12,7 @@ import {
 	PieceLifespan,
 	PlaylistTimingType,
 	SourceLayerType,
+	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
@@ -528,8 +529,39 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 	})
 
 	// viz styles and dve backgrounds
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
+	function makeDesignAdLib(): IBlueprintAdLibPiece {
+		const timelineObjects: TimelineObjectCoreExt[] = [
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { start: 0 },
+				priority: 110,
+				layer: CasparLLayer.CasparCGDVELoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'dve/BG_LOADER_SC',
+					loop: true
+				}
+			})
+		]
+		if (config.studio.GraphicsType === 'VIZ') {
+			timelineObjects.push(
+				literal<TSR.TimelineObjVIZMSEElementInternal>({
+					id: '',
+					enable: { start: 0 },
+					priority: 110,
+					layer: GraphicLLayer.GraphicLLayerDesign,
+					content: {
+						deviceType: TSR.DeviceType.VIZMSE,
+						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+						templateName: 'BG_LOADER_SC',
+						templateData: [],
+						showId: config.selectedGraphicsSetup.OvlShowId
+					}
+				})
+			)
+		}
+		const adLibPiece: IBlueprintAdLibPiece = {
 			_rank: 301,
 			externalId: 'dve-design-sc',
 			name: 'DVE Design SC',
@@ -541,38 +573,12 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					config.studio.GraphicsType === 'VIZ'
-						? literal<TSR.TimelineObjVIZMSEElementInternal>({
-								id: '',
-								enable: { start: 0 },
-								priority: 110,
-								layer: GraphicLLayer.GraphicLLayerDesign,
-								content: {
-									deviceType: TSR.DeviceType.VIZMSE,
-									type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-									templateName: 'BG_LOADER_SC',
-									templateData: [],
-									showId: config.selectedGraphicsSetup.OvlShowId
-								}
-						  })
-						: null,
-					literal<TSR.TimelineObjCCGMedia>({
-						id: '',
-						enable: { start: 0 },
-						priority: 110,
-						layer: CasparLLayer.CasparCGDVELoop,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: 'dve/BG_LOADER_SC',
-							loop: true
-						}
-					})
-				])
+				timelineObjects
 			})
-		})
-	)
+		}
+		return adLibPiece
+	}
+	adlibItems.push(makeDesignAdLib())
 
 	adlibItems.push({
 		externalId: 'stopAudioBed',

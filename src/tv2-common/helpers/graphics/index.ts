@@ -150,7 +150,7 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 	}
 }
 
-export function findShowId(config: TV2BlueprintConfig, engine: GraphicEngine) {
+export function findShowId(config: TV2BlueprintConfig, engine: GraphicEngine): string {
 	const graphicsSetup = config.selectedGraphicsSetup
 	switch (engine) {
 		case 'FULL':
