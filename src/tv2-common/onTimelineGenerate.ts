@@ -199,9 +199,7 @@ export function getEndStateForPart(
 		},
 		mediaPlayerSessions: {}
 	}
-	const previousPartEndState = !!previousPartInstance
-		? (previousPartInstance.previousPartEndState as Partial<PartEndStateExt>)
-		: undefined
+	const previousPartEndState = previousPartInstance?.previousPartEndState as Partial<PartEndStateExt>
 
 	const activePieces = resolvedPieces.filter(
 		p =>
@@ -279,18 +277,21 @@ export function createSisyfosPersistedLevelsTimelineObject(
 			channels: layersToPersist.map(layer => {
 				return {
 					mappedLayer: layer,
-					isPgm: layer.includes('VO') ? 2 : 1
+					isPgm: 1
 				}
 			})
 		}
 	})
 }
 
-function findLayersToPersist(pieces: IBlueprintResolvedPieceInstance[], sisyfosLayersThatWantsToBePersisted: string[]) {
+function findLayersToPersist(
+	pieces: IBlueprintResolvedPieceInstance[],
+	sisyfosLayersThatWantsToBePersisted: string[]
+): string[] {
 	const sortedPieces = pieces
 		.filter(piece => {
 			const metaData = piece.piece.metaData as PieceMetaData
-			return !(!metaData || !metaData.sisyfosPersistMetaData)
+			return metaData?.sisyfosPersistMetaData
 		})
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)
 
@@ -329,7 +330,7 @@ function doesMetaDataNotAcceptPersistAudioDeep(metaData: SisyfosPersistMetaData)
 	if (!metaData.acceptPersistAudio) {
 		return true
 	}
-	if (!!metaData.previousPersistMetaDataForCurrentPiece) {
+	if (metaData.previousPersistMetaDataForCurrentPiece) {
 		return doesMetaDataNotAcceptPersistAudioDeep(metaData.previousPersistMetaDataForCurrentPiece)
 	}
 	return false

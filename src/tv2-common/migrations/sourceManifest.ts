@@ -60,7 +60,7 @@ export function MakeConfigForSources(
 				? [
 						literal<ConfigManifestEntryTable['columns'][0]>({
 							id: 'WantsToPersistAudio',
-							name: 'Wants to persist audio in Studio',
+							name: 'Wants To Persist Audio',
 							description:
 								'Tells the system that it wants to persist the audio. If the next piece accepts persistence, the audio will be persisted',
 							type: ConfigManifestEntryType.BOOLEAN,

@@ -1,6 +1,11 @@
 import { IBlueprintPieceDB, IBlueprintResolvedPieceInstance, TSR } from '@tv2media/blueprints-integration'
 import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
-import { createSisyfosPersistedLevelsTimelineObject, SisyfosPersistMetaData } from '../onTimelineGenerate'
+import {
+	createSisyfosPersistedLevelsTimelineObject,
+	PieceMetaData,
+	SisyfosPersistMetaData
+} from '../onTimelineGenerate'
+import { literal } from '../util'
 
 const LAYER_THAT_WANTS_TO_BE_PERSISTED = 'layerThatWantsToBePersisted'
 const LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY: SisyfosPersistMetaData['sisyfosLayers'] = [
@@ -43,18 +48,6 @@ describe('onTimelineGenerate', () => {
 
 			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
 			expect(result.content.channels[0].isPgm).toEqual(1)
-		})
-
-		it('should persist a VO layer, isPgm is 2', () => {
-			const sisyfosLayersThatWantsToBePersisted: SisyfosPersistMetaData['sisyfosLayers'] = [
-				'layerThatWantsToBePersisted VO'
-			]
-			const resolvedPieces: IBlueprintResolvedPieceInstance[] = [
-				createPieceInstance('currentPiece VO', 10, undefined, true, true)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, sisyfosLayersThatWantsToBePersisted)
-			expect(result.content.channels[0].isPgm).toEqual(2)
 		})
 
 		it('should persist only current piece layer when piece wants to persist but dont accept', () => {
@@ -302,22 +295,20 @@ function createPieceInstance(
 	start: number,
 	duration: number | undefined,
 	wantToPersistAudio: boolean,
-	acceptPersistAudio: boolean,
-	isExecuteAction?: boolean
+	acceptPersistAudio: boolean
 ): IBlueprintResolvedPieceInstance {
 	return {
 		resolvedStart: start,
 		resolvedDuration: duration,
 		piece: {
 			name,
-			metaData: {
+			metaData: literal<PieceMetaData>({
 				sisyfosPersistMetaData: {
 					sisyfosLayers: [name],
 					wantsToPersistAudio: wantToPersistAudio,
-					acceptPersistAudio,
-					isExecuteAction
-				} as SisyfosPersistMetaData
-			}
+					acceptPersistAudio
+				}
+			})
 		} as IBlueprintPieceDB
 	} as IBlueprintResolvedPieceInstance
 }
