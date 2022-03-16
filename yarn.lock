@@ -568,10 +568,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@tv2media/blueprints-integration@v1.37.1-in-testing.1":
-  version "1.37.1-in-testing.1"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.37.1-in-testing.1.tgz#92b11e3c4402650858db539fa5bf7ce7d04b992d"
-  integrity sha512-hJ+10Gt8xkbwjyGuPWnIecAxbE6a9oiClWW+Dr/9GXjU8z5FcnbKLGXdX/qnbGAMGTU+pNaPo/QUEbyAuFENrQ==
+"@tv2media/blueprints-integration@1.37.1":
+  version "1.37.1"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.37.1.tgz#7a14af5f1db1eab8da8277f72836d385cd7d9573"
+  integrity sha512-ylZuzBjPcXmQMsZYBXGYd1Yd7kGWxHYuGr+HQgEvtphKFKQMhLfbQV0AOZ38BlpC6qKoZcYuANuLFcMTk3Vb9g==
   dependencies:
     moment "2.29.1"
     timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@1.0.0-release37"

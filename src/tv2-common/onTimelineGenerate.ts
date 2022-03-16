@@ -34,6 +34,7 @@ export interface MediaPlayerClaim {
 
 export interface TimelinePersistentStateExt {
 	activeMediaPlayers: { [player: string]: MediaPlayerClaim[] | undefined }
+	isNewSegment?: boolean
 }
 
 export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
@@ -88,16 +89,19 @@ export function onTimelineGenerate<
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	const persistentState: TimelinePersistentStateExt = {
-		activeMediaPlayers: {}
+		activeMediaPlayers: {},
+		isNewSegment: context.previousPartInstance?.segmentId !== context.currentPartInstance?.segmentId
 	}
 
 	const config = getConfig(context)
 
-	const sisyfosPersistedLevelsTimelineObject = createSisyfosPersistedLevelsTimelineObject(
-		resolvedPieces,
-		previousPartEndState2 ? previousPartEndState2.sisyfosPersistMetaData.sisyfosLayers : []
-	)
-	timeline.push(sisyfosPersistedLevelsTimelineObject)
+	if (!persistentState.isNewSegment) {
+		const sisyfosPersistedLevelsTimelineObject = createSisyfosPersistedLevelsTimelineObject(
+			resolvedPieces,
+			previousPartEndState2 ? previousPartEndState2.sisyfosPersistMetaData.sisyfosLayers : []
+		)
+		timeline.push(sisyfosPersistedLevelsTimelineObject)
+	}
 
 	const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt | undefined
 
@@ -189,7 +193,7 @@ function processServerLookaheads(
 export function getEndStateForPart(
 	_context: IRundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
-	previousPartInstance: IBlueprintPartInstance | undefined,
+	partInstance: IBlueprintPartInstance | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	time: number
 ): PartEndState {
@@ -199,7 +203,7 @@ export function getEndStateForPart(
 		},
 		mediaPlayerSessions: {}
 	}
-	const previousPartEndState = previousPartInstance?.previousPartEndState as Partial<PartEndStateExt>
+	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
 
 	const activePieces = resolvedPieces.filter(
 		p =>
@@ -209,9 +213,10 @@ export function getEndStateForPart(
 			(!p.piece.enable.duration || p.piece.enable.start + (p.piece.enable.duration as number) >= time)
 	)
 
+	const previousPersistentState: TimelinePersistentStateExt = _previousPersistentState as TimelinePersistentStateExt
 	endState.sisyfosPersistMetaData.sisyfosLayers = findLayersToPersist(
 		activePieces,
-		previousPartEndState && previousPartEndState.sisyfosPersistMetaData
+		!previousPersistentState.isNewSegment && previousPartEndState && previousPartEndState.sisyfosPersistMetaData
 			? previousPartEndState.sisyfosPersistMetaData.sisyfosLayers
 			: []
 	)
