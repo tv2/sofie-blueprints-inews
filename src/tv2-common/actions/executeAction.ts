@@ -26,11 +26,13 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionPlayGraphics,
 	ActionSelectDVE,
 	ActionSelectDVELayout,
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
 	CalculateTime,
+	CreateContinuationPieceForIdentPersistent,
 	CreateFullPiece,
 	CreatePartServerBase,
 	CueDefinition,
@@ -46,11 +48,16 @@ import {
 	GetDVETemplate,
 	GetEksternMetaData,
 	GetFullGrafikTemplateName,
+	GetInfiniteModeForGraphic,
+	getInternalGraphic,
+	getInternalGraphicContent,
 	GetLayersForCamera,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
+	InternalGraphic,
+	IsTargetingOVL,
 	ITV2ActionExecutionContext,
 	literal,
 	MakeContentDVE2,
@@ -248,6 +255,9 @@ export function executeAction<
 				break
 			case AdlibActionType.RECALL_LAST_DVE:
 				executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
+				break
+			case AdlibActionType.PLAY_GRAPHICS:
+				executeActionPlayGraphics(context, settings, actionId, userData as ActionPlayGraphics)
 				break
 			default:
 				assertUnreachable(actionId)
@@ -1835,6 +1845,59 @@ function executeActionRecallLastDVE<
 	} else {
 		scheduleNextScriptedDVE(context, settings, actionId)
 	}
+}
+
+function executeActionPlayGraphics<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ITV2ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	_userData: ActionPlayGraphics
+) {
+	const internalGraphic: InternalGraphic = getInternalGraphic(
+		settings.getConfig(context),
+		_userData.graphic,
+		true,
+		undefined,
+		undefined,
+		undefined,
+		undefined
+	)
+	const pieces: IBlueprintPiece[] = []
+	if (IsTargetingOVL(_userData.graphic.target)) {
+		const externalId = context.getPartInstance('current')?.part.externalId ?? generateExternalId(context, actionId, [])
+
+		const content: IBlueprintPiece['content'] = getInternalGraphicContent(internalGraphic)
+
+		const piece = literal<IBlueprintPiece>({
+			externalId,
+			name: internalGraphic.name,
+			enable: { start: 0 },
+			outputLayerId: internalGraphic.outputLayerId,
+			sourceLayerId: internalGraphic.sourceLayerId,
+			lifespan: GetInfiniteModeForGraphic(
+				internalGraphic.engine,
+				internalGraphic.config,
+				internalGraphic.parsedCue,
+				internalGraphic.isStickyIdent
+			),
+			content: _.clone(content)
+		})
+		pieces.push(piece)
+
+		if (
+			internalGraphic.sourceLayerId === SharedSourceLayers.PgmGraphicsIdentPersistent &&
+			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnShowStyleEnd) &&
+			internalGraphic.isStickyIdent
+		) {
+			pieces.push(CreateContinuationPieceForIdentPersistent(piece, internalGraphic))
+		}
+	}
+	pieces.forEach((piece: IBlueprintPiece) => {
+		context.insertPiece('current', piece)
+	})
 }
 
 function scheduleLastPlayedDVE<

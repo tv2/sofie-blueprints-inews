@@ -133,7 +133,8 @@ export enum AdlibActionType {
 	CLEAR_GRAPHICS = 'clear_graphics',
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
-	RECALL_LAST_DVE = 'recall_last_dve'
+	RECALL_LAST_DVE = 'recall_last_dve',
+	PLAY_GRAPHICS = 'play_graphics'
 }
 
 export enum TallyTags {

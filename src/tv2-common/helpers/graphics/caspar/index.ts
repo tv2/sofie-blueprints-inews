@@ -31,11 +31,11 @@ export interface CasparPilotGeneratorSettings {
 
 export function GetInternalGraphicContentCaspar(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
+	part: Readonly<IBlueprintPart> | undefined,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): IBlueprintPiece['content'] {
@@ -117,11 +117,11 @@ export function GetPilotGraphicContentCaspar(
 
 function CasparOverlayTimeline(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
+	part: Readonly<IBlueprintPart> | undefined,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): TSR.TSRTimelineObj[] {

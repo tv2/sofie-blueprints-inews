@@ -8,15 +8,24 @@ import {
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
+	ActionPlayGraphics,
 	CueDefinitionGraphic,
 	GetDefaultOut,
 	GraphicInternal,
 	IsStickyIdent,
 	literal,
 	PartDefinition,
+	t,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { AbstractLLayer, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import {
+	AbstractLLayer,
+	AdlibActionType,
+	AdlibTags,
+	GraphicEngine,
+	SharedOutputLayers,
+	SharedSourceLayers
+} from 'tv2-constants'
 import _ = require('underscore')
 import {
 	CreateTimingGraphic,
@@ -31,6 +40,22 @@ import {
 import { GetInternalGraphicContentCaspar } from '../caspar'
 import { GetInternalGraphicContentVIZ } from '../viz'
 
+export interface InternalGraphic {
+	config: TV2BlueprintConfig
+	part?: Readonly<IBlueprintPart>
+	parsedCue: CueDefinitionGraphic<GraphicInternal>
+	partDefinition?: PartDefinition
+	adlib: boolean
+	mappedTemplate: string
+	isStickyIdent: boolean
+	engine: GraphicEngine
+	name: string
+	sourceLayerId: SharedSourceLayers
+	outputLayerId: SharedOutputLayers
+	partId?: string
+	rank?: number
+}
+
 export function CreateInternalGraphic(
 	config: TV2BlueprintConfig,
 	context: IShowStyleUserContext,
@@ -44,19 +69,48 @@ export function CreateInternalGraphic(
 	partDefinition: PartDefinition,
 	rank?: number
 ) {
+	const internalGraphic: InternalGraphic = getInternalGraphic(
+		config,
+		parsedCue,
+		adlib,
+		part,
+		partId,
+		partDefinition,
+		rank
+	)
+
+	if (!internalGraphic.mappedTemplate || !internalGraphic.mappedTemplate.length) {
+		context.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)
+		return
+	}
+
+	const content: IBlueprintPiece['content'] = getInternalGraphicContent(internalGraphic)
+
+	if (adlib) {
+		createAdlibTargetingOVL(internalGraphic, _actions, adlibPieces, content)
+		createAdlib(internalGraphic, _actions, adlibPieces, content)
+	} else {
+		createPiece(internalGraphic, pieces, content)
+	}
+}
+
+export function getInternalGraphic(
+	config: TV2BlueprintConfig,
+	parsedCue: CueDefinitionGraphic<GraphicInternal>,
+	adlib: boolean,
+	part?: Readonly<IBlueprintPart>,
+	partId?: string,
+	partDefinition?: PartDefinition,
+	rank?: number
+): InternalGraphic {
 	// Whether this graphic "sticks" to the source it was first assigned to.
 	// e.g. if this is attached to Live 1, when Live 1 is recalled later in a segment,
 	//  this graphic should be shown again.
 	const isStickyIdent = IsStickyIdent(parsedCue)
 
-	const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
-
-	if (!mappedTemplate || !mappedTemplate.length) {
-		context.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)
-		return
-	}
-
 	const engine = parsedCue.target
+
+	const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
 	const sourceLayerId = IsTargetingTLF(engine)
 		? SharedSourceLayers.PgmGraphicsTLF
@@ -65,111 +119,208 @@ export function CreateInternalGraphic(
 	const outputLayerId = IsTargetingWall(engine) ? SharedOutputLayers.SEC : SharedOutputLayers.OVERLAY
 
 	const name = GraphicDisplayName(config, parsedCue)
+	return {
+		config,
+		part,
+		parsedCue,
+		partDefinition,
+		adlib,
+		mappedTemplate,
+		isStickyIdent,
+		engine: parsedCue.target,
+		name,
+		sourceLayerId,
+		outputLayerId,
+		partId,
+		rank
+	}
+}
 
-	const content =
-		config.studio.GraphicsType === 'HTML'
-			? GetInternalGraphicContentCaspar(
-					config,
-					part,
-					engine,
-					parsedCue,
-					isStickyIdent,
-					partDefinition,
-					mappedTemplate,
-					adlib
-			  )
-			: GetInternalGraphicContentVIZ(
-					config,
-					part,
-					engine,
-					parsedCue,
-					isStickyIdent,
-					partDefinition,
-					mappedTemplate,
-					adlib
-			  )
+export function getInternalGraphicContent(internalGraphic: InternalGraphic): IBlueprintPiece['content'] {
+	return internalGraphic.config.studio.GraphicsType === 'HTML'
+		? GetInternalGraphicContentCaspar(
+				internalGraphic.config,
+				internalGraphic.part,
+				internalGraphic.engine,
+				internalGraphic.parsedCue,
+				internalGraphic.isStickyIdent,
+				internalGraphic.partDefinition,
+				internalGraphic.mappedTemplate,
+				internalGraphic.adlib
+		  )
+		: GetInternalGraphicContentVIZ(
+				internalGraphic.config,
+				internalGraphic.part,
+				internalGraphic.engine,
+				internalGraphic.parsedCue,
+				internalGraphic.isStickyIdent,
+				internalGraphic.partDefinition,
+				internalGraphic.mappedTemplate,
+				internalGraphic.adlib
+		  )
+}
 
-	if (adlib) {
-		if (IsTargetingOVL(engine)) {
-			const adLibPiece = literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partId,
-				name,
-				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}_commentator`,
-				sourceLayerId,
-				outputLayerId: SharedOutputLayers.OVERLAY,
-				lifespan: PieceLifespan.WithinPart,
-				expectedDuration: 5000,
-				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				content: _.clone(content),
-				noHotKey: true
+function createAdlibTargetingOVL(
+	internalGraphic: InternalGraphic,
+	_actions: IBlueprintActionManifest[],
+	adlibPieces: IBlueprintAdLibPiece[],
+	content: IBlueprintPiece['content']
+): void {
+	if (IsTargetingOVL(internalGraphic.engine) && internalGraphic.isStickyIdent) {
+		_actions.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.PLAY_GRAPHICS,
+				userData: literal<ActionPlayGraphics>({
+					type: AdlibActionType.PLAY_GRAPHICS,
+					graphic: internalGraphic.parsedCue
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: internalGraphic.rank || 0,
+					label: t(internalGraphic.name),
+					uniquenessId: `gfx_${internalGraphic.name}_${internalGraphic.sourceLayerId}_${internalGraphic.outputLayerId}_commentator`,
+					sourceLayerId: internalGraphic.sourceLayerId,
+					outputLayerId: SharedOutputLayers.OVERLAY,
+					tags: [AdlibTags.ADLIB_KOMMENTATOR],
+					content: _.clone(content),
+					noHotKey: true
+				}
 			})
-			adlibPieces.push(adLibPiece)
-		}
+		)
+	} else if (IsTargetingOVL(internalGraphic.engine)) {
+		const adLibPiece = literal<IBlueprintAdLibPiece>({
+			_rank: internalGraphic.rank || 0,
+			externalId: internalGraphic.partId ?? '',
+			name: internalGraphic.name,
+			uniquenessId: `gfx_${internalGraphic.name}_${internalGraphic.sourceLayerId}_${internalGraphic.outputLayerId}_commentator`,
+			sourceLayerId: internalGraphic.sourceLayerId,
+			outputLayerId: SharedOutputLayers.OVERLAY,
+			lifespan: PieceLifespan.WithinPart,
+			expectedDuration: 5000,
+			tags: [AdlibTags.ADLIB_KOMMENTATOR],
+			content: _.clone(content),
+			noHotKey: true
+		})
+		adlibPieces.push(adLibPiece)
+	}
+}
 
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partId,
-				name,
-				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}_flow`,
-				sourceLayerId,
-				outputLayerId,
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				...(IsTargetingTLF(engine) || (parsedCue.end && parsedCue.end.infiniteMode)
-					? {}
-					: { expectedDuration: CreateTimingGraphic(config, parsedCue).duration || GetDefaultOut(config) }),
-				lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
-				content: _.clone(content)
+function createAdlib(
+	internalGraphic: InternalGraphic,
+	_actions: IBlueprintActionManifest[],
+	adlibPieces: IBlueprintAdLibPiece[],
+	content: IBlueprintPiece['content']
+): void {
+	if (internalGraphic.isStickyIdent) {
+		_actions.push(
+			literal<IBlueprintActionManifest>({
+				actionId: AdlibActionType.PLAY_GRAPHICS,
+				userData: literal<ActionPlayGraphics>({
+					type: AdlibActionType.PLAY_GRAPHICS,
+					graphic: internalGraphic.parsedCue
+				}),
+				userDataManifest: {},
+				display: {
+					_rank: internalGraphic.rank || 0,
+					label: t(internalGraphic.name),
+					uniquenessId: `gfx_${internalGraphic.name}_${internalGraphic.sourceLayerId}_${internalGraphic.outputLayerId}_flow`,
+					sourceLayerId: internalGraphic.sourceLayerId,
+					outputLayerId: SharedOutputLayers.OVERLAY,
+					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+					content: _.clone(content)
+				}
 			})
 		)
 	} else {
-		const piece = literal<IBlueprintPiece>({
-			externalId: partId,
-			name,
-			...(IsTargetingTLF(engine) || IsTargetingWall(engine)
-				? { enable: { start: 0 } }
-				: {
-						enable: {
-							...CreateTimingGraphic(config, parsedCue, !isStickyIdent)
-						}
-				  }),
-			outputLayerId,
-			sourceLayerId,
-			lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue, isStickyIdent),
-			content: _.clone(content)
-		})
-		pieces.push(piece)
+		adlibPieces.push(
+			literal<IBlueprintAdLibPiece>({
+				_rank: internalGraphic.rank || 0,
+				externalId: internalGraphic.partId ?? '',
+				name: internalGraphic.name,
+				uniquenessId: `gfx_${internalGraphic.name}_${internalGraphic.sourceLayerId}_${internalGraphic.outputLayerId}_flow`,
+				sourceLayerId: internalGraphic.sourceLayerId,
+				outputLayerId: internalGraphic.outputLayerId,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+				...(IsTargetingTLF(internalGraphic.engine) ||
+				(internalGraphic.parsedCue.end && internalGraphic.parsedCue.end.infiniteMode)
+					? {}
+					: {
+							expectedDuration:
+								CreateTimingGraphic(internalGraphic.config, internalGraphic.parsedCue).duration ||
+								GetDefaultOut(internalGraphic.config)
+					  }),
+				lifespan: GetInfiniteModeForGraphic(
+					internalGraphic.engine,
+					internalGraphic.config,
+					internalGraphic.parsedCue,
+					internalGraphic.isStickyIdent
+				),
+				content: _.clone(content)
+			})
+		)
+	}
+}
 
-		if (
-			sourceLayerId === SharedSourceLayers.PgmGraphicsIdentPersistent &&
-			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnShowStyleEnd) &&
-			isStickyIdent
-		) {
-			// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
-			// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
-			pieces.push(
-				literal<IBlueprintPiece>({
-					...piece,
-					enable: { ...CreateTimingGraphic(config, parsedCue, true) }, // Allow default out for visual representation
-					sourceLayerId: SharedSourceLayers.PgmGraphicsIdent,
-					lifespan: PieceLifespan.WithinPart,
+function createPiece(
+	internalGraphic: InternalGraphic,
+	pieces: IBlueprintPiece[],
+	content: IBlueprintPiece['content']
+): void {
+	const piece = literal<IBlueprintPiece>({
+		externalId: internalGraphic.partId ?? '',
+		name: internalGraphic.name,
+		...(IsTargetingTLF(internalGraphic.engine) || IsTargetingWall(internalGraphic.engine)
+			? { enable: { start: 0 } }
+			: {
+					enable: {
+						...CreateTimingGraphic(internalGraphic.config, internalGraphic.parsedCue, !internalGraphic.isStickyIdent)
+					}
+			  }),
+		outputLayerId: internalGraphic.outputLayerId,
+		sourceLayerId: internalGraphic.sourceLayerId,
+		lifespan: GetInfiniteModeForGraphic(
+			internalGraphic.engine,
+			internalGraphic.config,
+			internalGraphic.parsedCue,
+			internalGraphic.isStickyIdent
+		),
+		content: _.clone(content)
+	})
+	pieces.push(piece)
+
+	if (
+		internalGraphic.sourceLayerId === SharedSourceLayers.PgmGraphicsIdentPersistent &&
+		(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnShowStyleEnd) &&
+		internalGraphic.isStickyIdent
+	) {
+		// Special case for the ident. We want it to continue to exist in case the Live gets shown again, but we dont want the continuation showing in the ui.
+		// So we create the normal object on a hidden layer, and then clone it on another layer without content for the ui
+		pieces.push(CreateContinuationPieceForIdentPersistent(piece, internalGraphic))
+	}
+}
+
+export function CreateContinuationPieceForIdentPersistent(
+	piece: IBlueprintPiece,
+	internalGraphic: InternalGraphic
+): IBlueprintPiece {
+	return literal<IBlueprintPiece>({
+		...piece,
+		enable: { ...CreateTimingGraphic(internalGraphic.config, internalGraphic.parsedCue, true) }, // Allow default out for visual representation
+		sourceLayerId: SharedSourceLayers.PgmGraphicsIdent,
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: [
+				literal<TSR.TimelineObjAbstractAny>({
+					id: '',
+					enable: {
+						while: '1'
+					},
+					layer: AbstractLLayer.IdentMarker,
 					content: {
-						timelineObjects: [
-							literal<TSR.TimelineObjAbstractAny>({
-								id: '',
-								enable: {
-									while: '1'
-								},
-								layer: AbstractLLayer.IdentMarker,
-								content: {
-									deviceType: TSR.DeviceType.ABSTRACT
-								}
-							})
-						]
+						deviceType: TSR.DeviceType.ABSTRACT
 					}
 				})
-			)
+			]
 		}
-	}
+	})
 }
