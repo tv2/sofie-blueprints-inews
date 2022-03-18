@@ -11,7 +11,7 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "url": "https://multiview.sofsrv04-od.tv2.local/",
+      "url": "http://multiview.sofqbXX-od.tv2.local/",
       "width": -1,
       "height": -1,
       "x": 0,
@@ -43,7 +43,8 @@
       "tags": [
         "kommentator"
       ],
-      "showThumbnailsInList": true
+      "showThumbnailsInList": true,
+      "hideDuplicates": false
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
@@ -67,7 +68,7 @@
       "showAsTimeline": false,
       "overflowHorizontally": false,
       "sourceLayerIds": [
-        "studio0_selected_clip",
+        "studio0_offtube_clip",
         "studio0_offtube_jingle",
         "studio0_clip",
         "studio0_jingle"
@@ -98,11 +99,12 @@
         "kommentator"
       ],
       "sourceLayerIds": [
-        "studio0_selected_voiceover",
-        "studio0_selected_clip",
+        "studio0_offtube_voiceover",
+        "studio0_offtube_clip",
         "studio0_clip",
         "studio0_voiceover"
-      ]
+      ],
+      "showThumbnailsInList": true
     },
     {
       "_id": "YC7RNPTbkXd5wnagp",
@@ -125,7 +127,9 @@
       ],
       "tags": [
         "kommentator"
-      ]
+      ],
+      "hideDuplicates": true,
+      "lineBreak": "\n - "
     },
     {
       "_id": "icuekg6wiJxejsYsZ",
@@ -136,33 +140,19 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "x": 23,
-      "width": 11,
+      "x": 20,
+      "width": 14,
       "height": 7,
       "sourceLayerIds": [
         "studio0_offtube_graphicsFull",
-        "studio0_full"
+        "studio0_full",
+        "studio0_selected_graphicsFull",
+        "studio0_pilot"
       ],
       "tags": [
         "kommentator"
       ],
       "showThumbnailsInList": true
-    },
-    {
-      "_id": "LiFso7gPYn2SPwHwg",
-      "type": "external_frame",
-      "name": "Sisyfos",
-      "currentSegment": false,
-      "displayStyle": "buttons",
-      "rank": 0,
-      "rundownBaseline": false,
-      "default": false,
-      "x": 0,
-      "y": 0,
-      "width": 22,
-      "height": 7,
-      "url": "https://sisyfos.sofsrv04-od.tv2.local?minimonitor=1",
-      "scale": 0.85
     },
     {
       "_id": "6GDpdq547HjjZL9YK",
@@ -180,8 +170,11 @@
       "windowNumber": 1,
       "role": "take",
       "scale": 1,
+      "thumbnailPriorityNextPieces": true,
+      "hideThumbnailsForActivePieces": true,
       "thumbnailSourceLayerIds": [
-        "studio0_full"
+        "studio0_full",
+        "studio0_jingle"
       ]
     },
     {
@@ -198,12 +191,17 @@
       "width": 22,
       "height": -11,
       "y": -2,
-      "role": "program"
+      "role": "program",
+      "thumbnailSourceLayerIds": [
+        "studio0_offtube_jingle"
+      ],
+      "showBlackIfNoThumbnailPiece": false,
+      "hideThumbnailsForActivePieces": true
     },
     {
       "_id": "ooCyWRXeDE6ufYWWQ",
       "type": "adlib_region",
-      "name": "Cam 1",
+      "name": "KAM 1",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -221,7 +219,7 @@
     {
       "_id": "PDKiKYeYB7zcAq6Lp",
       "type": "adlib_region",
-      "name": "LIVE 1 (WF 1)  st/5.1",
+      "name": "FEED 1",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -240,7 +238,7 @@
     {
       "_id": "AMrCRTvefKDS6qogp",
       "type": "adlib_region",
-      "name": "LIVE 2 (WF 2)  stereo",
+      "name": "FEED 2",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -259,7 +257,7 @@
     {
       "_id": "HLzpg7NdLk6tdYZfT",
       "type": "adlib_region",
-      "name": "LIVE 3 (REP)",
+      "name": "LIVE 1",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -292,9 +290,8 @@
         "offtube_set_full_next"
       ],
       "role": "queue",
-      "thumbnailSourceLayerIds": [
-        "studio0_offtube_graphicsFull"
-      ]
+      "thumbnailPriorityNextPieces": false,
+      "showBlackIfNoThumbnailPiece": false
     },
     {
       "_id": "PDKiKYeYB7zcAq6La",
@@ -314,8 +311,10 @@
         "offtube_set_jingle_next"
       ],
       "thumbnailSourceLayerIds": [
-        "studio0_offtube_jingle"
-      ]
+        "studio0_offtube_jingle",
+        "studio0_jingle"
+      ],
+      "showBlackIfNoThumbnailPiece": true
     },
     {
       "_id": "AMrCRTvefKDS6qoga",
@@ -356,9 +355,29 @@
       "role": "queue"
     },
     {
-      "_id": "CfmFqiSNavu8w5nW9",
+      "_id": "zavcByHmMndMvZjCA",
+      "type": "piece_countdown",
+      "name": "Piece Countdown",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "showThumbnailsInList": false,
+      "default": false,
+      "x": 26,
+      "y": 25,
+      "sourceLayerIds": [
+        "studio0_offtube_clip",
+        "studio0_offtube_voiceover",
+        "studio0_clip",
+        "studio0_voiceover",
+        "studio0_jingle"
+      ]
+    },
+    {
+      "_id": "get64yaM3ZzT9aRs3",
       "type": "next_info",
-      "name": "NEXT",
+      "name": " NÆSTE INEWS CUE : ",
       "currentSegment": false,
       "displayStyle": "buttons",
       "rank": 0,
@@ -366,13 +385,13 @@
       "showThumbnailsInList": false,
       "hideDuplicates": false,
       "default": false,
-      "x": 1,
+      "showSegmentName": true,
+      "hideForDynamicallyInsertedParts": true,
+      "x": 1.3,
       "y": 24.9,
       "width": 22,
       "scale": 0.8,
-      "showSegmentName": true,
-      "showPartTitle": false,
-      "hideForDynamicallyInsertedParts": true
+      "showPartTitle": true
     }
   ],
   "type": "dashboard_layout",
@@ -386,9 +405,31 @@
       "width": 14,
       "height": 1.3,
       "labelToggled": "Deactivate"
+    },
+    {
+      "_id": "m4ouEduSAvNXm6WZh",
+      "label": "▲ Previous Segment",
+      "type": "move_previous_segment",
+      "x": 0,
+      "y": 0,
+      "width": 6,
+      "height": 1,
+      "labelToggled": ""
+    },
+    {
+      "_id": "FgyddcqkKFhSQeMBS",
+      "label": "▼ Next Segment",
+      "type": "move_next_segment",
+      "x": 0,
+      "y": 2,
+      "width": 6,
+      "height": 1,
+      "labelToggled": ""
     }
   ],
   "exposeAsStandalone": true,
+  "regionId": "shelf_layouts",
+  "exposeAsShelf": true,
   "iconColor": "#8e44ad",
   "icon": {
     "prefix": "fas",
@@ -400,5 +441,9 @@
       "f3c9",
       "M336 192h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16zM176 352c53.02 0 96-42.98 96-96h-85.33c-5.89 0-10.67-3.58-10.67-8v-16c0-4.42 4.78-8 10.67-8H272v-32h-85.33c-5.89 0-10.67-3.58-10.67-8v-16c0-4.42 4.78-8 10.67-8H272v-32h-85.33c-5.89 0-10.67-3.58-10.67-8v-16c0-4.42 4.78-8 10.67-8H272c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96z"
     ]
-  }
+  },
+  "openByDefault": true,
+  "startingHeight": 80,
+  "disableContextMenu": true,
+  "regionId": "shelf_layouts"
 }
