@@ -11,7 +11,11 @@ function localSourceFullAudioHotkeyId(showStyleId: string, sourceLayer: string, 
 }
 
 function localSourceFullAudioHotkeyName(source: string) {
-	return `EVS ${source}`
+	return `EVS ${source} 100%`
+}
+
+function localSourceFullAudioPickId(sourceIndex: number, hotkeyType: string): number {
+	return sourceIndex * (hotkeyType === 'queue' ? 2 : 0)
 }
 
 function localSourceVoAudioHotkeyId(showStyleId: string, sourceLayer: string, hotkeyType: string, index: number) {
@@ -19,7 +23,11 @@ function localSourceVoAudioHotkeyId(showStyleId: string, sourceLayer: string, ho
 }
 
 function localSourceVoAudioHotkeyName(source: string) {
-	return `EVS ${source}`
+	return `EVS ${source} VO`
+}
+
+function localSourceVoAudioPickId(sourceIndex: number, hotkeyType: string): number {
+	return 1 + sourceIndex * (hotkeyType === 'queue' ? 2 : 0)
 }
 
 export function MakeLocalSourceHotkeys(
@@ -36,7 +44,8 @@ export function MakeLocalSourceHotkeys(
 		assignemnts.fullAudio,
 		getNextRank,
 		localSourceFullAudioHotkeyName,
-		localSourceFullAudioHotkeyId
+		localSourceFullAudioHotkeyId,
+		localSourceFullAudioPickId,
 	)
 
 	const voAudioKeys = MakeStudioSourceHotkeys(
@@ -46,7 +55,8 @@ export function MakeLocalSourceHotkeys(
 		assignemnts.voAudio,
 		getNextRank,
 		localSourceVoAudioHotkeyName,
-		localSourceVoAudioHotkeyId
+		localSourceVoAudioHotkeyId,
+		localSourceVoAudioPickId,
 	)
 
 	return [...fullAudioKeys, ...voAudioKeys]
