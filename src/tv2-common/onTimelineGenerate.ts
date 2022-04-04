@@ -65,6 +65,7 @@ export interface SisyfosPersistMetaData {
 	wantsToPersistAudio?: boolean
 	acceptPersistAudio?: boolean
 	previousPersistMetaDataForCurrentPiece?: SisyfosPersistMetaData
+	isPieceInjectedInPart?: boolean
 }
 
 export interface PartMetaData {
@@ -95,7 +96,7 @@ export function onTimelineGenerate<
 
 	const config = getConfig(context)
 
-	if (!persistentState.isNewSegment) {
+	if (!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(resolvedPieces, context)) {
 		const sisyfosPersistedLevelsTimelineObject = createSisyfosPersistedLevelsTimelineObject(
 			resolvedPieces,
 			previousPartEndState2 ? previousPartEndState2.sisyfosPersistMetaData.sisyfosLayers : []
@@ -188,6 +189,15 @@ function processServerLookaheads(
 			sessionsInCurrentPart.includes(mediaPlayerSession)
 		)
 	})
+}
+
+function isAnyPieceInjectedIntoPart(resolvedPieces: IBlueprintResolvedPieceInstance[], context: ITimelineEventContext) {
+	return resolvedPieces
+		.filter(piece => piece.partInstanceId === context.currentPartInstance?._id)
+		.some(piece => {
+			const metaData = piece.piece.metaData as PieceMetaData
+			return metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
+		})
 }
 
 export function getEndStateForPart(

@@ -1049,7 +1049,8 @@ function executeActionCutToCamera<
 		metaData: {
 			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
 				sisyfosLayers: [],
-				acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+				acceptPersistAudio: sourceInfoCam.acceptPersistAudio,
+				isPieceInjectedInPart: true
 			})
 		},
 		tags: [GetTagForKam(userData.name)],
