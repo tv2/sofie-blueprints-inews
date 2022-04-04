@@ -71,7 +71,7 @@ export function CreatePartServerBase<
 	const actualDuration = getActualDuration(duration, sanitisedScript, props)
 
 	const displayTitle = getDisplayTitle(partDefinition)
-	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file, config.studio.CasparPrerollDuration)
+	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file)
 	const mediaPlayerSession = SanitizeString(`segment_${props.session ?? partDefinition.segmentExternalId}_${file}`)
 
 	const pieces: IBlueprintPiece[] = []
@@ -85,7 +85,8 @@ export function CreatePartServerBase<
 		sourceDuration,
 		mediaPlayerSession,
 		context,
-		config
+		config,
+		config.studio.CasparPrerollDuration
 	)
 
 	const pgmBlueprintPiece = getPgmBlueprintPiece(
@@ -95,7 +96,8 @@ export function CreatePartServerBase<
 		layers,
 		sourceDuration,
 		mediaPlayerSession,
-		config
+		config,
+		config.studio.CasparPrerollDuration
 	)
 
 	pieces.push(serverSelectionBlueprintPiece)
@@ -105,7 +107,8 @@ export function CreatePartServerBase<
 		part: {
 			part: basePart,
 			adLibPieces: [],
-			pieces
+			pieces,
+			actions: []
 		},
 		file,
 		duration: actualDuration
@@ -162,15 +165,13 @@ function getBasePart(
 	partDefinition: PartDefinition,
 	displayTitle: string,
 	actualDuration: number,
-	fileId: string,
-	casparPrerollDuration: number
+	fileId: string
 ): IBlueprintPart {
 	return {
 		externalId: partDefinition.externalId,
 		title: displayTitle,
 		metaData: {},
 		expectedDuration: actualDuration || 1000,
-		prerollDuration: casparPrerollDuration,
 		hackListenToMediaObjectUpdates: [{ mediaId: fileId.toUpperCase() }]
 	}
 }
@@ -241,7 +242,8 @@ function getServerSelectionBlueprintPiece<
 	sourceDuration: number | undefined,
 	mediaPlayerSession: string,
 	context: IShowStyleUserContext,
-	config: ShowStyleConfig
+	config: ShowStyleConfig,
+	prerollDuration: number
 ): IBlueprintPiece {
 	const userDataElement = getUserData(partDefinition, file, actualDuration, props)
 	const contentServerElement = getContentServerElement(
@@ -267,7 +269,8 @@ function getServerSelectionBlueprintPiece<
 			userData: userDataElement
 		}),
 		content: contentServerElement,
-		tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.voLayer)]
+		tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.voLayer)],
+		prerollDuration
 	})
 }
 
@@ -281,7 +284,8 @@ function getPgmBlueprintPiece<
 	layers: ServerPartLayers,
 	sourceDuration: number | undefined,
 	mediaPlayerSession: string,
-	config: ShowStyleConfig
+	config: ShowStyleConfig,
+	prerollDuration: number
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
 		externalId: partDefinition.externalId,
@@ -297,6 +301,7 @@ function getPgmBlueprintPiece<
 			...GetVTContentProperties(config, file, sourceDuration),
 			timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 		},
-		tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.voLayer), TallyTags.SERVER_IS_LIVE]
+		tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.voLayer), TallyTags.SERVER_IS_LIVE],
+		prerollDuration
 	})
 }

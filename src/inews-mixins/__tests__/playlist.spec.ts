@@ -40,7 +40,8 @@ function getMockResult(): BlueprintResultRundown {
 		globalAdLibPieces: [],
 		baseline: {
 			timelineObjects: []
-		}
+		},
+		globalActions: []
 	}
 }
 

@@ -131,6 +131,7 @@ function makeTransitionAction(
 	const isEffekt = !!label.match(/^\d+$/)
 
 	return literal<IBlueprintActionManifest>({
+		externalId: `${JSON.stringify(userData)}_${AdlibActionType.TAKE_WITH_TRANSITION}_${rank}`,
 		actionId: AdlibActionType.TAKE_WITH_TRANSITION,
 		userData,
 		userDataManifest: {},

@@ -10,8 +10,9 @@ global.VERSION = 'test'
 global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
+
 import { INewsStory, literal } from 'tv2-common'
-import { SegmentUserContext, ShowStyleUserContext } from '../../__mocks__/context'
+import { GetRundownContext, SegmentUserContext } from '../../__mocks__/context'
 import { parseConfig as parseStudioConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../helpers/config'
@@ -26,7 +27,7 @@ const RUNDOWN_ID = 'test_rundown'
 const SEGMENT_ID = 'test_segment'
 const PART_ID = 'test_part'
 
-describe('Rundown exceptions', () => {
+describe('Rundown exceptions', async () => {
 	for (const roSpec of rundowns) {
 		const roData = require(roSpec.ro) as ExtendedIngestRundown
 		test('Valid file: ' + roSpec.ro, () => {
@@ -35,7 +36,7 @@ describe('Rundown exceptions', () => {
 			expect(roData.type).toEqual('inews')
 		})
 
-		const showStyleContext = new ShowStyleUserContext(
+		const showStyleContext = new GetRundownContext(
 			'mockRo',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -47,9 +48,9 @@ describe('Rundown exceptions', () => {
 		// can I do this?:
 		showStyleContext.studioConfig = roSpec.studioConfig as any
 		showStyleContext.showStyleConfig = roSpec.showStyleConfig as any
-		const blueprintRundown = Blueprints.getRundown(showStyleContext, roData)
+		const blueprintRundown = await Blueprints.getRundown(showStyleContext, roData)
 		const rundown = literal<IBlueprintRundownDB>({
-			...blueprintRundown.rundown,
+			...blueprintRundown!.rundown,
 			_id: 'mockRo',
 			showStyleVariantId: 'mock'
 		})

@@ -2,7 +2,6 @@ export * from './slotMappings'
 
 import {
 	GraphicsContent,
-	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	TSR,
@@ -31,7 +30,6 @@ export interface CasparPilotGeneratorSettings {
 
 export function GetInternalGraphicContentCaspar(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
@@ -42,7 +40,6 @@ export function GetInternalGraphicContentCaspar(
 	return {
 		timelineObjects: CasparOverlayTimeline(
 			config,
-			part,
 			engine,
 			parsedCue,
 			isIdentGraphic,
@@ -117,7 +114,6 @@ export function GetPilotGraphicContentCaspar(
 
 function CasparOverlayTimeline(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
@@ -128,7 +124,7 @@ function CasparOverlayTimeline(
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGraphic(config, part, engine, parsedCue, isIdentGrafik, partDefinition, adlib),
+			enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGrafik, partDefinition, adlib),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })

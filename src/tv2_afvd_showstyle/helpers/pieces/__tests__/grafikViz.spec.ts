@@ -2,7 +2,6 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR,
@@ -49,11 +48,6 @@ const dummyPart = literal<PartDefinitionKam>({
 	modified: 0,
 	segmentExternalId: ''
 })
-
-const dummyBlueprintPart: IBlueprintPart = {
-	title: 'Kam 1',
-	externalId: '0001'
-}
 
 const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 	id: '',
@@ -106,7 +100,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -175,7 +168,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -281,7 +273,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			newConfig,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -387,7 +378,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -461,7 +451,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -531,7 +520,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -625,7 +613,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -694,7 +681,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -777,12 +763,7 @@ describe('grafik piece', () => {
 		])
 	})
 
-	it('Applies delay to WALL graphics when part has prerollDuration', () => {
-		const partWithPreroll: IBlueprintPart = {
-			title: 'Server',
-			externalId: '0001',
-			prerollDuration: 1000
-		}
+	it('WALL graphics have enable equal while 1', () => {
 		const cue: CueDefinitionGraphic<GraphicPilot> = {
 			type: CueType.Graphic,
 			target: 'WALL',
@@ -803,7 +784,6 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			partWithPreroll,
 			pieces,
 			adLibPieces,
 			actions,
@@ -821,53 +801,6 @@ describe('grafik piece', () => {
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined
 		expect(tlObj).toBeTruthy()
-		expect(tlObj?.enable).toEqual({ start: 1000 })
-	})
-
-	it('Applies delay to WALL graphics when part has transitionPrerollDuration', () => {
-		const partWithPreroll: IBlueprintPart = {
-			title: 'Kam 1',
-			externalId: '0001',
-			transitionPrerollDuration: 2000
-		}
-		const cue: CueDefinitionGraphic<GraphicPilot> = {
-			type: CueType.Graphic,
-			target: 'WALL',
-			graphic: {
-				type: 'pilot',
-				name: '',
-				vcpid: 1234567890,
-				continueCount: -1
-			},
-			iNewsCommand: 'GRAFIK'
-		}
-
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
-		const partId = '0000000001'
-
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			partWithPreroll,
-			pieces,
-			adLibPieces,
-			actions,
-			partId,
-			cue,
-			cue.adlib ? cue.adlib : false,
-			dummyPart,
-			0
-		)
-		const piece = pieces[0]
-		expect(piece).toBeTruthy()
-		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
-				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
-				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
-		) as TSR.TimelineObjVIZMSEElementInternal | undefined
-		expect(tlObj).toBeTruthy()
-		expect(tlObj?.enable).toEqual({ start: 2000 })
+		expect(tlObj?.enable).toEqual({ while: '1' })
 	})
 })

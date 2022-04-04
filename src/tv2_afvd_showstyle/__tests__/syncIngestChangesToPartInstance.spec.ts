@@ -146,11 +146,19 @@ describe('Sync Ingest Changes To Part Instances', () => {
 	it('Syncs part properties', () => {
 		const context = makeMockContext()
 		const existingPartInstance: BlueprintSyncIngestPartInstance = literal<BlueprintSyncIngestPartInstance>({
-			partInstance: makePartinstance({ title: 'Kam 1', budgetDuration: 2000, transitionPrerollDuration: 200 }),
+			partInstance: makePartinstance({
+				title: 'Kam 1',
+				budgetDuration: 2000,
+				inTransition: { partContentDelayDuration: 200, previousPartKeepaliveDuration: 0, blockTakeDuration: 0 }
+			}),
 			pieceInstances: []
 		})
 		const newPart: BlueprintSyncIngestNewData = literal<BlueprintSyncIngestNewData>({
-			part: makePart({ title: 'Kam 2', budgetDuration: 1000, transitionPrerollDuration: 500 }),
+			part: makePart({
+				title: 'Kam 2',
+				budgetDuration: 1000,
+				inTransition: { partContentDelayDuration: 500, previousPartKeepaliveDuration: 0, blockTakeDuration: 0 }
+			}),
 			pieceInstances: [],
 			adLibPieces: [],
 			actions: [],
@@ -158,7 +166,7 @@ describe('Sync Ingest Changes To Part Instances', () => {
 		})
 		syncIngestUpdateToPartInstance(context, existingPartInstance, newPart, 'current')
 
-		expect(context.updatedPartInstance?.part.transitionPrerollDuration).toBeUndefined()
+		expect(context.updatedPartInstance?.part.inTransition).toBeUndefined()
 		expect(context.updatedPartInstance?.part.budgetDuration).toBe(1000)
 		expect(context.updatedPartInstance?.part.title).toBe('Kam 2')
 	})

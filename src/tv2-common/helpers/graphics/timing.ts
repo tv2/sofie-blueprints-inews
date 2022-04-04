@@ -1,4 +1,4 @@
-import { IBlueprintPart, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
+import { PieceLifespan, TSR } from '@tv2media/blueprints-integration'
 import {
 	CalculateTime,
 	CreateTimingEnable,
@@ -120,22 +120,14 @@ export function CreateTimingGraphic(
 	return ret
 }
 
-export function GetPartPrerollDuration(part: Readonly<Partial<IBlueprintPart>> | undefined): number {
-	return (part && (part.transitionPrerollDuration || part.prerollDuration)) || 0
-}
-
-export function GetEnableForWall(part: Readonly<Partial<IBlueprintPart>> | undefined): TSR.TSRTimelineObj['enable'] {
-	const partPrerollDuration = GetPartPrerollDuration(part)
-	return partPrerollDuration
-		? { start: partPrerollDuration }
-		: {
-				while: '1'
-		  }
+export function GetEnableForWall(): TSR.TSRTimelineObj['enable'] {
+	return {
+		while: '1'
+	}
 }
 
 export function GetEnableForGraphic(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart> | undefined,
 	engine: GraphicEngine,
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	isStickyIdent: boolean,
@@ -143,7 +135,7 @@ export function GetEnableForGraphic(
 	adlib?: boolean
 ): TSR.TSRTimelineObj['enable'] {
 	if (IsTargetingWall(engine)) {
-		return GetEnableForWall(part)
+		return GetEnableForWall()
 	}
 
 	if (

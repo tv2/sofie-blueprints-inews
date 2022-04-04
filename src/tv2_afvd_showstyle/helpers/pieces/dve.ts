@@ -73,7 +73,7 @@ export function EvaluateDVE(
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
 					metaData: literal<DVEPieceMetaData>({
 						sources: parsedCue.sources,
 						config: rawTemplate,
@@ -103,7 +103,7 @@ export function EvaluateDVE(
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
 					metaData: literal<PieceMetaData & DVEPieceMetaData>({
 						mediaPlayerSessions: [partDefinition.segmentExternalId],
 						sources: parsedCue.sources,

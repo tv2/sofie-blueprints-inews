@@ -3,7 +3,7 @@ import { AdlibActionType } from 'tv2-constants'
 import { DVEConfigInput } from '../helpers'
 import { CueDefinitionDVE, PartDefinition } from '../inewsConversion'
 
-interface ActionBase {
+export interface ActionBase {
 	type: AdlibActionType
 }
 

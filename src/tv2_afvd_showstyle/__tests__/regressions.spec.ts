@@ -112,7 +112,8 @@ describe('regressions-migrations', () => {
 								]
 							}
 						}
-					]
+					],
+					actions: []
 				}
 			]
 		}
@@ -216,7 +217,8 @@ describe('regressions-migrations', () => {
 								]
 							}
 						}
-					]
+					],
+					actions: []
 				}
 			]
 		}

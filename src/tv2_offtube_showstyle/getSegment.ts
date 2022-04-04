@@ -91,6 +91,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				})
 			})
 		],
-		adLibPieces: []
+		adLibPieces: [],
+		actions: []
 	})
 }

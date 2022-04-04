@@ -12,6 +12,7 @@ import {
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
+	generateExternalId,
 	GetDVETemplate,
 	GetTagForDVE,
 	GetTagForDVENext,
@@ -92,7 +93,7 @@ export function OfftubeEvaluateDVE(
 					...pieceContent.content,
 					timelineObjects: [...pieceContent.content.timelineObjects]
 				},
-				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+				prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
 				metaData: literal<PieceMetaData & DVEPieceMetaData>({
 					mediaPlayerSessions: [partDefinition.segmentExternalId],
 					sources: parsedCue.sources,
@@ -112,15 +113,17 @@ export function OfftubeEvaluateDVE(
 			})
 		)
 
+		const userData = literal<ActionSelectDVE>({
+			type: AdlibActionType.SELECT_DVE,
+			config: parsedCue,
+			videoId: partDefinition.fields.videoId,
+			segmentExternalId: partDefinition.segmentExternalId
+		})
 		actions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(context, userData),
 				actionId: AdlibActionType.SELECT_DVE,
-				userData: literal<ActionSelectDVE>({
-					type: AdlibActionType.SELECT_DVE,
-					config: parsedCue,
-					videoId: partDefinition.fields.videoId,
-					segmentExternalId: partDefinition.segmentExternalId
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: rank,

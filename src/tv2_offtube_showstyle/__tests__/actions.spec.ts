@@ -35,9 +35,6 @@ const CURRENT_PART_ID = 'MOCK_PART_CURRENT'
 const CURRENT_PART_EXTERNAL_ID = `${CURRENT_PART_ID}_EXTERNAL`
 const SERVER_DURATION_A = 12000
 const VO_DURATION_A = 20000
-const SERVER_PREROLL = 280
-const DVE_PREROLL = 280
-const FULL_PREROLL = 280
 const FULL_KEEPALIVE = 1000
 
 const currentPartMock: IBlueprintPartInstance = {
@@ -242,53 +239,85 @@ interface ActivePiecesForSource {
 	dataStore: IBlueprintPieceInstance | undefined
 }
 
-function getServerPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
+async function getActiveServerPieces(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): Promise<ActivePiecesForSource> {
 	return {
-		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer),
-		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedServer)
-	}
-}
-
-function getVOPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
-	return {
-		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver),
-		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedVoiceOver)
-	}
-}
-
-function getDVEPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
-	return {
-		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE),
-		dataStore: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE)
-	}
-}
-
-function getFullGrafikPieces(context: ActionExecutionContext, part: 'current' | 'next'): ActivePiecesForSource {
-	return {
-		activePiece: context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SharedSourceLayers.PgmPilot),
-		dataStore: context
+		activePiece: await context
 			.getPieceInstances(part)
-			.find(p => p.piece.sourceLayerId === SharedSourceLayers.SelectedAdlibGraphicsFull)
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer)),
+		dataStore: await context
+			.getPieceInstances(part)
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedServer))
 	}
 }
 
-function getCameraPiece(
-	context: ActionExecutionContext,
-	part: 'current' | 'next'
-): IBlueprintPieceInstance | undefined {
-	return context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmCam)
+async function getVOPieces(context: ActionExecutionContext, part: 'current' | 'next'): Promise<ActivePiecesForSource> {
+	return {
+		activePiece: await context
+			.getPieceInstances(part)
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver)),
+		dataStore: await context
+			.getPieceInstances(part)
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedVoiceOver))
+	}
 }
 
-function getRemotePiece(
+async function getDVEPieces(context: ActionExecutionContext, part: 'current' | 'next'): Promise<ActivePiecesForSource> {
+	return {
+		activePiece: await context
+			.getPieceInstances(part)
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE)),
+		dataStore: await context
+			.getPieceInstances(part)
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE))
+	}
+}
+
+async function getFullGrafikPieces(
 	context: ActionExecutionContext,
 	part: 'current' | 'next'
-): IBlueprintPieceInstance | undefined {
-	return context.getPieceInstances(part).find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmLive)
+): Promise<ActivePiecesForSource> {
+	return {
+		activePiece: await context
+			.getPieceInstances(part)
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayers.PgmPilot)),
+		dataStore: await context
+			.getPieceInstances(part)
+			.then(pieceInstances =>
+				pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayers.SelectedAdlibGraphicsFull)
+			)
+	}
+}
+
+async function getCameraPiece(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): Promise<IBlueprintPieceInstance | undefined> {
+	return context
+		.getPieceInstances(part)
+		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmCam))
+}
+
+async function getRemotePiece(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): Promise<IBlueprintPieceInstance | undefined> {
+	return context
+		.getPieceInstances(part)
+		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmLive))
 }
 
 function validateSourcePiecesExist(pieces: ActivePiecesForSource) {
 	expect(pieces.activePiece).toBeTruthy()
 	expect(pieces.dataStore).toBeTruthy()
+}
+
+function validateSourcePiecesExistWithPrerollDuration(pieces: ActivePiecesForSource) {
+	validateSourcePiecesExist(pieces)
+	expect(pieces.activePiece!.piece.prerollDuration)
+	expect(pieces.dataStore!.piece.prerollDuration)
 }
 
 function validateOnlySelectionIsPreserved(pieces: ActivePiecesForSource) {
@@ -321,14 +350,9 @@ function validateNextPartExistsWithDuration(context: ActionExecutionContext, dur
 	expect(context.nextPart?.part.expectedDuration).toEqual(duration)
 }
 
-function validateNextPartExistsWithPreRoll(context: ActionExecutionContext, duration: number) {
+function validateNextPartExistsWithPreviousPartKeepaliveDuration(context: ActionExecutionContext, duration: number) {
 	expect(context.nextPart).toBeTruthy()
-	expect(context.nextPart?.part.prerollDuration).toEqual(duration)
-}
-
-function validateNextPartExistsWithTransitionKeepAlive(context: ActionExecutionContext, duration: number) {
-	expect(context.nextPart).toBeTruthy()
-	expect(context.nextPart?.part.transitionKeepaliveDuration).toEqual(duration)
+	expect(context.nextPart?.part.inTransition?.previousPartKeepaliveDuration).toEqual(duration)
 }
 
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
@@ -357,7 +381,7 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 }
 
 describe('Select Server Action', () => {
-	it('Inserts a new part when no next part is present', () => {
+	it('Inserts a new part when no next part is present', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -373,19 +397,18 @@ describe('Select Server Action', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		const pieces = getServerPieces(context, 'next')
+		const activePieces: ActivePiecesForSource = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(pieces)
-		expect(pieces.dataStore?.piece.lifespan).toEqual(PieceLifespan.OutOnSegmentEnd)
+		validateSourcePiecesExistWithPrerollDuration(activePieces)
+		expect(activePieces.dataStore?.piece.lifespan).toEqual(PieceLifespan.OutOnSegmentEnd)
 
 		validateNoWarningsOrErrors(context)
 	})
 
-	it('Leaves current part unaffected when a clip is currently playing', () => {
+	it('Leaves current part unaffected when a clip is currently playing', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -401,10 +424,10 @@ describe('Select Server Action', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		const currentPieces = getServerPieces(context, 'current')
-		const nextPieces = getServerPieces(context, 'next')
+		const currentPieces = await getActiveServerPieces(context, 'current')
+		const nextPieces = await getActiveServerPieces(context, 'next')
 
 		validateSourcePiecesExist(currentPieces)
 		expect(currentPieces.activePiece?.piece.name).toEqual('Playing Server')
@@ -417,7 +440,7 @@ describe('Select Server Action', () => {
 })
 
 describe('Combination Actions', () => {
-	it('Server -> DVE', () => {
+	it('Server -> DVE', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -433,26 +456,24 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		let serverPieces = getServerPieces(context, 'next')
+		let serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		serverPieces = getServerPieces(context, 'next')
-		const dvePieces = getDVEPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		const dvePieces = await getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
-		validateSourcePiecesExist(dvePieces)
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 	})
 
-	it('Server -> Full', () => {
+	it('Server -> Full', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -468,27 +489,25 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		let serverPieces = getServerPieces(context, 'next')
+		let serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
 
-		serverPieces = getServerPieces(context, 'next')
-		const fullGrafikPieces = getFullGrafikPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		const fullGrafikPieces = await getFullGrafikPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, FULL_PREROLL)
-		validateNextPartExistsWithTransitionKeepAlive(context, FULL_KEEPALIVE)
+		validateNextPartExistsWithPreviousPartKeepaliveDuration(context, FULL_KEEPALIVE)
 		validateOnlySelectionIsPreserved(serverPieces)
-		validateSourcePiecesExist(fullGrafikPieces)
+		validateSourcePiecesExistWithPrerollDuration(fullGrafikPieces)
 	})
 
-	it('Server -> VO', () => {
+	it('Server -> VO', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -504,27 +523,25 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		let serverPieces = getServerPieces(context, 'next')
+		let serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
-		serverPieces = getServerPieces(context, 'next')
-		const voPieces = getVOPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		const voPieces = await getVOPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(serverPieces)
-		validateSourcePiecesExist(voPieces)
+		validateSourcePiecesExistWithPrerollDuration(voPieces)
 		expect(voPieces.dataStore?.piece.name).toEqual('VOVOA')
 	})
 
-	it('Server -> DVE', () => {
+	it('Server -> DVE', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -540,26 +557,24 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		let serverPieces = getServerPieces(context, 'next')
+		let serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		serverPieces = getServerPieces(context, 'next')
-		const dvePieces = getDVEPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		const dvePieces = await getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
-		validateSourcePiecesExist(dvePieces)
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 	})
 
-	it('Server -> CAM', () => {
+	it('Server -> CAM', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -575,25 +590,24 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		let serverPieces = getServerPieces(context, 'next')
+		let serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
-		serverPieces = getServerPieces(context, 'next')
-		const camPiece = getCameraPiece(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateCameraPiece(camPiece)
 	})
 
-	it('Server -> LIVE', () => {
+	it('Server -> LIVE', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -609,25 +623,24 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		let serverPieces = getServerPieces(context, 'next')
+		let serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
-		serverPieces = getServerPieces(context, 'next')
-		const remotePiece = getRemotePiece(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		const remotePiece = await getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateOnlySelectionIsPreserved(serverPieces)
 		validateRemotePiece(remotePiece)
 	})
 
-	it('DVE -> Server', () => {
+	it('DVE -> Server', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -643,25 +656,23 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		let dvePieces = getDVEPieces(context, 'next')
-		validateSourcePiecesExist(dvePieces)
+		let dvePieces = await getDVEPieces(context, 'next')
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		dvePieces = getDVEPieces(context, 'next')
-		const serverPieces = getServerPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		const serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateOnlySelectionIsPreserved(dvePieces)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 	})
 
-	it('DVE -> Full', () => {
+	it('DVE -> Full', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -677,26 +688,24 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		let dvePieces = getDVEPieces(context, 'next')
+		let dvePieces = await getDVEPieces(context, 'next')
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
-		validateSourcePiecesExist(dvePieces)
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_FULL_GRAFIK, selectFullGrafikAction)
 
-		dvePieces = getDVEPieces(context, 'next')
-		const fullGrafikPieces = getFullGrafikPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		const fullGrafikPieces = await getFullGrafikPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, FULL_PREROLL)
-		validateNextPartExistsWithTransitionKeepAlive(context, FULL_KEEPALIVE)
+		validateNextPartExistsWithPreviousPartKeepaliveDuration(context, FULL_KEEPALIVE)
 		validateOnlySelectionIsPreserved(dvePieces)
-		validateSourcePiecesExist(fullGrafikPieces)
+		validateSourcePiecesExistWithPrerollDuration(fullGrafikPieces)
 	})
 
-	it('DVE -> VO', () => {
+	it('DVE -> VO', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -712,25 +721,23 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		let dvePieces = getDVEPieces(context, 'next')
-		validateSourcePiecesExist(dvePieces)
+		let dvePieces = await getDVEPieces(context, 'next')
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
-		dvePieces = getDVEPieces(context, 'next')
-		const voPieces = getVOPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		const voPieces = await getVOPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateOnlySelectionIsPreserved(dvePieces)
-		validateSourcePiecesExist(voPieces)
+		validateSourcePiecesExistWithPrerollDuration(voPieces)
 	})
 
-	it('DVE -> CAM', () => {
+	it('DVE -> CAM', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -746,24 +753,23 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		let dvePieces = getDVEPieces(context, 'next')
-		validateSourcePiecesExist(dvePieces)
+		let dvePieces = await getDVEPieces(context, 'next')
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
-		dvePieces = getDVEPieces(context, 'next')
-		const camPiece = getCameraPiece(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateCameraPiece(camPiece)
 	})
 
-	it('DVE -> LIVE', () => {
+	it('DVE -> LIVE', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -779,24 +785,23 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		let dvePieces = getDVEPieces(context, 'next')
-		validateSourcePiecesExist(dvePieces)
+		let dvePieces = await getDVEPieces(context, 'next')
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
-		dvePieces = getDVEPieces(context, 'next')
-		const remotePiece = getRemotePiece(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		const remotePiece = await getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateOnlySelectionIsPreserved(dvePieces)
 		validateRemotePiece(remotePiece)
 	})
 
-	it('Server (01234A) -> DVE (morbarn) -> VO (VOVOA) -> DVE (barnmor) -> CAM (1) -> LIVE (2) -> SERVER (01234A) -> Commentator Select DVE', () => {
+	it('Server (01234A) -> DVE (morbarn) -> VO (VOVOA) -> DVE (barnmor) -> CAM (1) -> LIVE (2) -> SERVER (01234A) -> Commentator Select DVE', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -813,60 +818,56 @@ describe('Combination Actions', () => {
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		// SERVER (A)
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		let serverPieces = getServerPieces(context, 'next')
+		let serverPieces = await getActiveServerPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 
 		// DVE (A)
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		serverPieces = getServerPieces(context, 'next')
-		let dvePieces = getDVEPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		let dvePieces = await getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateOnlySelectionIsPreserved(serverPieces)
-		validateSourcePiecesExist(dvePieces)
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 
 		// VO (A)
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
-		let voPieces = getVOPieces(context, 'next')
-		serverPieces = getServerPieces(context, 'next')
-		dvePieces = getDVEPieces(context, 'next')
+		let voPieces = await getVOPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(serverPieces)
 		validateOnlySelectionIsPreserved(dvePieces)
-		validateSourcePiecesExist(voPieces)
+		validateSourcePiecesExistWithPrerollDuration(voPieces)
 
 		// DVE (B)
 		expect(dvePieces.dataStore?.piece.name).toEqual('morbarn')
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionBarnmor)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionBarnmor)
 
-		voPieces = getVOPieces(context, 'next')
-		serverPieces = getServerPieces(context, 'next')
-		dvePieces = getDVEPieces(context, 'next')
+		voPieces = await getVOPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
-		validateSourcePiecesExist(dvePieces)
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 		validateSelectionRemoved(serverPieces)
 		validateOnlySelectionIsPreserved(voPieces)
 		expect(dvePieces.dataStore?.piece.name).toEqual('barnmor')
 
 		// CAM (1)
-		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
-		voPieces = getVOPieces(context, 'next')
-		serverPieces = getServerPieces(context, 'next')
-		dvePieces = getDVEPieces(context, 'next')
-		let camPiece = getCameraPiece(context, 'next')
+		voPieces = await getVOPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		let camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateOnlySelectionIsPreserved(voPieces)
@@ -875,13 +876,13 @@ describe('Combination Actions', () => {
 		validateCameraPiece(camPiece)
 
 		// LIVE (2)
-		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
-		voPieces = getVOPieces(context, 'next')
-		serverPieces = getServerPieces(context, 'next')
-		dvePieces = getDVEPieces(context, 'next')
-		camPiece = getCameraPiece(context, 'next')
-		let remotePiece = getRemotePiece(context, 'next')
+		voPieces = await getVOPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
+		let remotePiece = await getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateOnlySelectionIsPreserved(voPieces)
@@ -891,42 +892,40 @@ describe('Combination Actions', () => {
 		validateRemotePiece(remotePiece)
 
 		// SERVER (A)
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		voPieces = getVOPieces(context, 'next')
-		serverPieces = getServerPieces(context, 'next')
-		dvePieces = getDVEPieces(context, 'next')
-		camPiece = getCameraPiece(context, 'next')
-		remotePiece = getRemotePiece(context, 'next')
+		voPieces = await getVOPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
+		remotePiece = await getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
 		validateSelectionRemoved(voPieces)
 		validateOnlySelectionIsPreserved(dvePieces)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 		expect(camPiece).toBeFalsy()
 		expect(remotePiece).toBeFalsy()
 
 		// Commentator Select DVE
-		executeActionOfftube(context, AdlibActionType.COMMENTATOR_SELECT_DVE, commentatorSelectDVE)
+		await executeActionOfftube(context, AdlibActionType.COMMENTATOR_SELECT_DVE, commentatorSelectDVE)
 
-		voPieces = getVOPieces(context, 'next')
-		serverPieces = getServerPieces(context, 'next')
-		dvePieces = getDVEPieces(context, 'next')
-		camPiece = getCameraPiece(context, 'next')
-		remotePiece = getRemotePiece(context, 'next')
+		voPieces = await getVOPieces(context, 'next')
+		serverPieces = await getActiveServerPieces(context, 'next')
+		dvePieces = await getDVEPieces(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
+		remotePiece = await getRemotePiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
 		validateSelectionRemoved(voPieces)
 		validateOnlySelectionIsPreserved(serverPieces)
-		validateSourcePiecesExist(dvePieces)
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 		expect(camPiece).toBeFalsy()
 		expect(remotePiece).toBeFalsy()
 		expect(dvePieces.activePiece?.piece.name).toEqual('barnmor')
 	})
 
-	it('CAM -> MIX 20 (No Take) -> LIVE (2)', () => {
+	it('CAM -> MIX 20 (No Take) -> LIVE (2)', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -942,26 +941,26 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
-		let camPiece = getCameraPiece(context, 'next')
+		let camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToCut(camPiece!)
 
-		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
-		camPiece = getCameraPiece(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToMixOver(camPiece!, 20)
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_REMOTE, selectLiveAction)
 
-		const livePiece = getRemotePiece(context, 'next')
-		camPiece = getCameraPiece(context, 'next')
+		const livePiece = await getRemotePiece(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
 
 		expect(camPiece).toBeFalsy()
 		validateNextPartExistsWithDuration(context, 0)
@@ -969,7 +968,7 @@ describe('Combination Actions', () => {
 		expectATEMToMixOver(livePiece!, 20)
 	})
 
-	it('CAM -> MIX 20 (No Take) -> SERVER', () => {
+	it('CAM -> MIX 20 (No Take) -> SERVER', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -985,35 +984,34 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
-		let camPiece = getCameraPiece(context, 'next')
+		let camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToCut(camPiece!)
 
-		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
-		camPiece = getCameraPiece(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToMixOver(camPiece!, 20)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
-		const serverPieces = getServerPieces(context, 'next')
-		camPiece = getCameraPiece(context, 'next')
+		const serverPieces = await getActiveServerPieces(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 		expect(camPiece).toBeFalsy()
 		expectATEMToMixOver(serverPieces.activePiece!, 20)
 	})
 
-	it('CAM -> MIX 20 (No Take) -> VO', () => {
+	it('CAM -> MIX 20 (No Take) -> VO', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -1029,35 +1027,34 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
-		let camPiece = getCameraPiece(context, 'next')
+		let camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToCut(camPiece!)
 
-		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
-		camPiece = getCameraPiece(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToMixOver(camPiece!, 20)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
 
-		const serverPieces = getVOPieces(context, 'next')
-		camPiece = getCameraPiece(context, 'next')
+		const serverPieces = await getVOPieces(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, VO_DURATION_A)
-		validateNextPartExistsWithPreRoll(context, SERVER_PREROLL)
-		validateSourcePiecesExist(serverPieces)
+		validateSourcePiecesExistWithPrerollDuration(serverPieces)
 		expect(camPiece).toBeFalsy()
 		expectATEMToMixOver(serverPieces.activePiece!, 20)
 	})
 
-	it('CAM -> MIX 20 (No Take) -> DVE', () => {
+	it('CAM -> MIX 20 (No Take) -> DVE', async () => {
 		const context = new ActionExecutionContext(
 			'test',
 			mappingsDefaults,
@@ -1073,28 +1070,27 @@ describe('Combination Actions', () => {
 		context.showStyleConfig = defaultShowStyleConfig as any
 		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
 
-		executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
+		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
-		let camPiece = getCameraPiece(context, 'next')
+		let camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToCut(camPiece!)
 
-		executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
+		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
-		camPiece = getCameraPiece(context, 'next')
+		camPiece = await getCameraPiece(context, 'next')
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
 		expectATEMToMixOver(camPiece!, 20)
 
-		executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
+		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
-		const dvePieces = getDVEPieces(context, 'next')
+		const dvePieces = await getDVEPieces(context, 'next')
 		validateNextPartExistsWithDuration(context, 0)
-		validateNextPartExistsWithPreRoll(context, DVE_PREROLL)
-		validateSourcePiecesExist(dvePieces)
+		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 		expectATEMToMixOver(dvePieces.activePiece!, 20)
 	})
 })

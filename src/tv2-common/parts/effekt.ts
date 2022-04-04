@@ -1,6 +1,7 @@
 import {
 	IBlueprintPart,
 	IBlueprintPiece,
+	IBlueprintPieceType,
 	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
@@ -21,7 +22,6 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { PieceMetaData } from '../onTimelineGenerate'
 import { JoinAssetToFolder, JoinAssetToNetworkPath } from '../util'
 
 /** Has to be executed before calling EvaluateCues, as some cues may depend on it */
@@ -35,13 +35,7 @@ export function CreateEffektForPartBase(
 		casparLayer: string
 		sisyfosLayer: string
 	}
-):
-	| Pick<
-			IBlueprintPart,
-			'transitionDuration' | 'transitionKeepaliveDuration' | 'transitionPrerollDuration' | 'autoNext'
-	  >
-	| Pick<IBlueprintPart, 'transitionDuration' | 'transitionKeepaliveDuration'>
-	| {} {
+): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | {} {
 	const effekt = partDefinition.effekt
 	const transition = partDefinition.transition
 
@@ -83,12 +77,7 @@ export function CreateEffektForPartInner<
 		sisyfosLayer: string
 	},
 	label: string
-):
-	| Pick<
-			IBlueprintPart,
-			'transitionDuration' | 'transitionKeepaliveDuration' | 'transitionPrerollDuration' | 'autoNext'
-	  >
-	| false {
+): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
 	if (!config.showStyle.BreakerConfig) {
 		context.notifyUserWarning(`Jingles have not been configured`)
 		return false
@@ -122,12 +111,7 @@ export function CreateEffektForPartInner<
 			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: layers.sourceLayer,
 			lifespan: PieceLifespan.WithinPart,
-			isTransition: true,
-			metaData: literal<PieceMetaData>({
-				transition: {
-					isEffekt: true
-				}
-			}),
+			pieceType: IBlueprintPieceType.InTransition,
 			content: literal<WithTimeline<VTContent>>({
 				fileName,
 				path: JoinAssetToNetworkPath(
@@ -175,12 +159,15 @@ export function CreateEffektForPartInner<
 	)
 
 	return {
-		transitionDuration: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
-		transitionKeepaliveDuration: TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
-		transitionPrerollDuration:
-			TimeFromFrames(Number(effektConfig.Duration)) -
-			TimeFromFrames(Number(effektConfig.EndAlpha)) +
-			config.studio.CasparPrerollDuration,
+		inTransition: {
+			blockTakeDuration: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
+			previousPartKeepaliveDuration:
+				TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
+			partContentDelayDuration:
+				TimeFromFrames(Number(effektConfig.Duration)) -
+				TimeFromFrames(Number(effektConfig.EndAlpha)) +
+				config.studio.CasparPrerollDuration
+		},
 		autoNext: false
 	}
 }
@@ -194,7 +181,7 @@ export function CreateMixForPartInner(
 		casparLayer: string
 		sisyfosLayer: string
 	}
-): Pick<IBlueprintPart, 'transitionDuration' | 'transitionKeepaliveDuration'> {
+): Pick<IBlueprintPart, 'inTransition'> {
 	pieces.push(
 		literal<IBlueprintPiece>({
 			enable: {
@@ -206,11 +193,6 @@ export function CreateMixForPartInner(
 			sourceLayerId: layers.sourceLayer,
 			outputLayerId: SharedOutputLayers.JINGLE,
 			lifespan: PieceLifespan.WithinPart,
-			metaData: literal<PieceMetaData>({
-				transition: {
-					isMix: true
-				}
-			}),
 			tags: [
 				GetTagForTransition(
 					literal<ActionTakeWithTransitionVariantMix>({
@@ -229,7 +211,10 @@ export function CreateMixForPartInner(
 	const transitionDuration = TimeFromFrames(durationInFrames)
 
 	return {
-		transitionKeepaliveDuration: transitionDuration,
-		transitionDuration
+		inTransition: {
+			previousPartKeepaliveDuration: transitionDuration,
+			blockTakeDuration: transitionDuration,
+			partContentDelayDuration: 0
+		}
 	}
 }

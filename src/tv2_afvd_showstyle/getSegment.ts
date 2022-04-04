@@ -94,6 +94,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				})
 			})
 		],
-		adLibPieces: []
+		adLibPieces: [],
+		actions: []
 	})
 }

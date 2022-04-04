@@ -174,6 +174,7 @@ export function OfftubeCreatePartKam(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

@@ -13,14 +13,19 @@ export * from './viz'
 export * from './design'
 
 export function ApplyFullGraphicPropertiesToPart(config: TV2BlueprintConfig, part: IBlueprintPart) {
-	part.prerollDuration =
-		config.studio.GraphicsType === 'HTML'
-			? config.studio.CasparPrerollDuration
-			: config.studio.VizPilotGraphics.PrerollDuration
-	part.transitionKeepaliveDuration =
+	const keepAliveDuration =
 		config.studio.GraphicsType === 'HTML'
 			? config.studio.HTMLGraphics.KeepAliveDuration
 			: config.studio.VizPilotGraphics.KeepAliveDuration
+	if (part.inTransition === undefined) {
+		part.inTransition = {
+			partContentDelayDuration: 0,
+			blockTakeDuration: 0,
+			previousPartKeepaliveDuration: keepAliveDuration
+		}
+	} else {
+		part.inTransition.previousPartKeepaliveDuration = keepAliveDuration
+	}
 }
 
 export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimelineObj[] {

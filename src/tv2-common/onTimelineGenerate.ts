@@ -49,11 +49,6 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 }
 
 export interface PieceMetaData {
-	transition?: {
-		isEffekt?: boolean
-		isMix?: boolean
-		isJingle?: boolean
-	}
 	stickySisyfosLevels?: { [key: string]: { value: number; followsPrevious: boolean } }
 	mediaPlayerSessions?: string[]
 	mediaPlayerOptional?: boolean

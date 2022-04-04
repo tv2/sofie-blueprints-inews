@@ -1,7 +1,6 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext,
 	TSR
@@ -20,7 +19,6 @@ import { EvaluateCueGraphic } from './graphic'
 export function EvaluateTelefon(
 	config: BlueprintConfig,
 	context: ISegmentUserContext,
-	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -34,7 +32,6 @@ export function EvaluateTelefon(
 		EvaluateCueGraphic(
 			config,
 			context,
-			part,
 			pieces,
 			adlibPieces,
 			actions,

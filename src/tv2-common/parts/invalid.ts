@@ -12,6 +12,7 @@ export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?:
 	return {
 		part,
 		adLibPieces: [],
-		pieces: []
+		pieces: [],
+		actions: []
 	}
 }
