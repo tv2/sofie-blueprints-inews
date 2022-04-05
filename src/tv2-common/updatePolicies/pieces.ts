@@ -13,6 +13,17 @@ function groupPieceInstances(pieceInstances: Array<IBlueprintPieceInstance<unkno
 		return acc
 	}, {})
 }
+function isRemovable(pieceInstance: IBlueprintPieceInstance) {
+	// We aren't informed about a hold piece, so ignore that. adlibs are handled separately too
+	// We are also not aware of infinites that were generated in previous parts
+	return !(
+		pieceInstance.adLibSourceId ||
+		pieceInstance.dynamicallyInserted ||
+		pieceInstance.infinite?.fromHold ||
+		pieceInstance.infinite?.fromPreviousPlayhead ||
+		pieceInstance.infinite?.fromPreviousPart
+	)
+}
 export function stopOrReplaceEditablePieces(
 	context: ISyncIngestUpdateToPartInstanceContext,
 	existingPartInstance: BlueprintSyncIngestPartInstance,
@@ -40,10 +51,10 @@ export function stopOrReplaceEditablePieces(
 		const newPieceInstances = groupedPieceInstancesInNewPart[layer] || {}
 
 		for (const existingId of Object.keys(existingPieceInstances)) {
-			if (!newPieceInstances[existingId]) {
-				context.removePieceInstances(existingId)
-			} else {
+			if (newPieceInstances[existingId]) {
 				context.syncPieceInstance(existingId)
+			} else if (isRemovable(existingPieceInstances[existingId])) {
+				context.removePieceInstances(existingId)
 			}
 		}
 		for (const newId of Object.keys(newPieceInstances)) {
