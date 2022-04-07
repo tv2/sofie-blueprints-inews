@@ -38,8 +38,7 @@ export function executeActionAFVD(context: IActionExecutionContext, actionId: st
 				Sisyfos: {
 					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
 					Effekt: SisyfosLLAyer.SisyfosSourceJingle,
-					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics,
-					PersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
+					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
 				},
 				Atem: {
 					MEProgram: AtemLLayer.AtemMEProgram,
@@ -59,11 +58,6 @@ export function executeActionAFVD(context: IActionExecutionContext, actionId: st
 				},
 				SELECTED_ADLIB_LAYERS: [SourceLayer.SelectedServer, SourceLayer.SelectedVoiceOver]
 			},
-			ServerAudioLayers: [
-				SisyfosLLAyer.SisyfosSourceClipPending,
-				SisyfosLLAyer.SisyfosSourceServerA,
-				SisyfosLLAyer.SisyfosSourceServerB
-			],
 			createJingleContent: createJingleContentAFVD,
 			pilotGraphicSettings: pilotGeneratorSettingsAFVD
 		},

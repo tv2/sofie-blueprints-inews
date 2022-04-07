@@ -4,7 +4,8 @@ import { literal } from '../util'
 export function MakeConfigForSources(
 	name: string,
 	displayName: string,
-	withKeepAudio: boolean,
+	wantsToPersistAudio: boolean,
+	acceptPersistAudio: boolean,
 	defaultVal: ConfigManifestEntryTable['defaultVal']
 ): ConfigManifestEntryTable {
 	return literal<ConfigManifestEntryTable>({
@@ -55,16 +56,31 @@ export function MakeConfigForSources(
 				defaultVal: true,
 				rank: 3
 			},
-			...(withKeepAudio
+			...(wantsToPersistAudio
 				? [
 						literal<ConfigManifestEntryTable['columns'][0]>({
-							id: 'KeepAudioInStudio',
-							name: 'Keep audio in Studio',
-							description: 'Keep audio in Studio',
+							id: 'WantsToPersistAudio',
+							name: 'Wants To Persist Audio',
+							description:
+								'Tells the system that it wants to persist the audio. If the next piece accepts persistence, the audio will be persisted',
 							type: ConfigManifestEntryType.BOOLEAN,
 							required: true,
-							defaultVal: true,
+							defaultVal: false,
 							rank: 4
+						})
+				  ]
+				: []),
+			...(acceptPersistAudio
+				? [
+						literal<ConfigManifestEntryTable['columns'][0]>({
+							id: 'AcceptPersistAudio',
+							name: 'Accept Persist Audio',
+							description:
+								'Accept the persistence of audio from the previous piece if that piece wants to persist audio',
+							type: ConfigManifestEntryType.BOOLEAN,
+							required: false,
+							defaultVal: false,
+							rank: 5
 						})
 				  ]
 				: [])

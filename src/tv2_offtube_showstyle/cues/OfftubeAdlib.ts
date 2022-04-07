@@ -110,18 +110,6 @@ export function OfftubeEvaluateAdLib(
 
 		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
-		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
-
-		adlibContent.stickyLayers.forEach(layer => {
-			sticky = {
-				...sticky,
-				[layer]: {
-					value: 1,
-					followsPrevious: false
-				}
-			}
-		})
-
 		actions.push(
 			literal<IBlueprintActionManifest>({
 				actionId: AdlibActionType.SELECT_DVE,

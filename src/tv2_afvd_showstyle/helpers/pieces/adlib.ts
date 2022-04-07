@@ -106,18 +106,6 @@ export function EvaluateAdLib(
 
 		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
-		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
-
-		content.stickyLayers.forEach(layer => {
-			sticky = {
-				...sticky,
-				[layer]: {
-					value: 1,
-					followsPrevious: false
-				}
-			}
-		})
-
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank,
@@ -131,7 +119,6 @@ export function EvaluateAdLib(
 				invalid: !content.valid,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: literal<PieceMetaData & DVEPieceMetaData>({
-					stickySisyfosLevels: sticky,
 					sources: cueDVE.sources,
 					config: rawTemplate,
 					userData: literal<ActionSelectDVE>({
@@ -139,7 +126,10 @@ export function EvaluateAdLib(
 						config: cueDVE,
 						videoId: partDefinition.fields.videoId,
 						segmentExternalId: partDefinition.segmentExternalId
-					})
+					}),
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
 				}),
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
