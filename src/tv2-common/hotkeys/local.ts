@@ -14,10 +14,6 @@ function localSourceFullAudioHotkeyName(source: string) {
 	return `EVS ${source} 100%`
 }
 
-function shouldUseCustomIndexPickerForLocalSourceAudio(hotkeyType: string): boolean {
-	return hotkeyType === 'queue' || /^cut_to_box_\d+$/.test(hotkeyType)
-}
-
 function localSourceFullAudioPick(sourceIndex: number, hotkeyType: string): number {
 	if (shouldUseCustomIndexPickerForLocalSourceAudio(hotkeyType)) {
 		return 2 * sourceIndex
@@ -38,6 +34,10 @@ function localSourceVoAudioPick(sourceIndex: number, hotkeyType: string): number
 		return 1 + 2 * sourceIndex
 	}
 	return sourceIndex
+}
+
+function shouldUseCustomIndexPickerForLocalSourceAudio(hotkeyType: string): boolean {
+	return hotkeyType === 'queue' || /^cut_to_box_\d+$/.test(hotkeyType)
 }
 
 export function MakeLocalSourceHotkeys(
