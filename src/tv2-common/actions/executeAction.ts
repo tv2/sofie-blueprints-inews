@@ -74,6 +74,7 @@ import {
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import { CreateFullDataStore, GetEnableForWall, PilotGeneratorSettings } from '../helpers'
+import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
 import {
@@ -93,7 +94,6 @@ import {
 	ActionSelectJingle,
 	ActionTakeWithTransition
 } from './actionTypes'
-import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 
 const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayers.PgmGraphicsIdent,
