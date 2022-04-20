@@ -94,7 +94,6 @@ export interface DVELayers {
 	SisyfosLLayer: {
 		ClipPending: string
 		StudioMics: string
-		PersistedLevels: string
 	}
 	CasparLLayer: {
 		ClipPending: string
@@ -117,7 +116,6 @@ export interface DVETimelineObjectGenerators {
 		context: IStudioUserContext,
 		sources: SourceInfo[],
 		sourceType: string,
-		getLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[],
 		enable?: TSR.Timeline.TimelineEnable
 	) => TSR.TSRTimelineObj[]
 	GetLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[]
@@ -129,8 +127,6 @@ export interface DVEOptions {
 	boxMappings: [string, string, string, string]
 	/** All audio layers */
 	AUDIO_LAYERS: string[]
-	/** Layers to exclude from filter */
-	EXCLUDED_LAYERS: string[]
 }
 
 export function MakeContentDVEBase<
@@ -145,7 +141,7 @@ export function MakeContentDVEBase<
 	dveGeneratorOptions: DVEOptions,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	if (!dveConfig) {
 		context.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
 		return {
@@ -153,8 +149,7 @@ export function MakeContentDVEBase<
 			content: {
 				boxSourceConfiguration: [],
 				timelineObjects: []
-			},
-			stickyLayers: []
+			}
 		}
 	}
 
@@ -195,7 +190,7 @@ export function MakeContentDVE2<
 	adlib?: boolean,
 	videoId?: string,
 	mediaPlayerSessionId?: string
-): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	let template: DVEConfig
 	try {
 		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
@@ -206,8 +201,7 @@ export function MakeContentDVE2<
 			content: {
 				boxSourceConfiguration: [],
 				timelineObjects: []
-			},
-			stickyLayers: []
+			}
 		}
 	}
 
@@ -359,7 +353,7 @@ export function MakeContentDVE2<
 						audioEnable
 					)
 				)
-			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i) || sourceType.match(/SKYPE/i)) {
+			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
 					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
@@ -374,7 +368,6 @@ export function MakeContentDVE2<
 						context,
 						config.sources,
 						mappingFrom.source,
-						dveGeneratorOptions.dveTimelineGenerators.GetLayersForEkstern,
 						audioEnable
 					)
 				)
@@ -455,34 +448,6 @@ export function MakeContentDVE2<
 
 	if (frameFile) {
 		frameFile = JoinAssetToFolder(config.studio.DVEFolder, frameFile)
-	}
-
-	if (adlib) {
-		dveTimeline.push(
-			literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-				id: '',
-				enable: getDVEEnable(),
-				priority: 1,
-				layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.PersistedLevels,
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-					overridePriority: 1,
-					channels: config.stickyLayers
-						.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => config.liveAudio.indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-							return {
-								mappedLayer: layer,
-								isPgm: 0
-							}
-						})
-				},
-				metaData: {
-					sisyfosPersistLevel: true
-				}
-			})
-		)
 	}
 
 	return {
@@ -606,14 +571,7 @@ export function MakeContentDVE2<
 				...(server && mediaPlayerSessionId ? [EnableServer(mediaPlayerSessionId)] : []),
 				...dveTimeline
 			])
-		}),
-		stickyLayers: [
-			...dveTimeline
-				.filter(obj => obj.content.deviceType === TSR.DeviceType.SISYFOS)
-				.filter(obj => dveGeneratorOptions.AUDIO_LAYERS.includes(obj.layer.toString()))
-				.filter(obj => !dveGeneratorOptions.EXCLUDED_LAYERS.includes(obj.layer.toString()))
-				.map<string>(obj => obj.layer.toString())
-		]
+		})
 	}
 }
 

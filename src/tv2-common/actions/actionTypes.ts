@@ -124,6 +124,10 @@ export interface ActionRecallLastDVE extends ActionBase {
 	type: AdlibActionType.RECALL_LAST_DVE
 }
 
+export interface ActionFadeDownPersistedAudioLevels extends ActionBase {
+	type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
+}
+
 export interface ActionPlayGraphics extends ActionBase {
 	type: AdlibActionType.PLAY_GRAPHICS
 	graphic: CueDefinitionGraphic<GraphicInternal>
@@ -145,4 +149,5 @@ export type TV2AdlibAction =
 	| ActionTakeWithTransition
 	| ActionRecallLastLive
 	| ActionRecallLastDVE
+	| ActionFadeDownPersistedAudioLevels
 	| ActionPlayGraphics

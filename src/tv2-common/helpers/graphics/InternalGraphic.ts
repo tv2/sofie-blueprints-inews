@@ -19,6 +19,7 @@ import { ActionPlayGraphics } from '../../actions'
 import { TV2BlueprintConfig } from '../../blueprintConfig'
 import { GetDefaultOut } from '../../cueTiming'
 import { CueDefinitionGraphic, GraphicInternal, IsStickyIdent, PartDefinition } from '../../inewsConversion'
+import { PieceMetaData } from '../../onTimelineGenerate'
 import { literal } from '../../util'
 import { t } from '../translation'
 import { GetInternalGraphicContentCaspar } from './caspar'
@@ -110,6 +111,11 @@ export class InternalGraphic {
 				sourceLayerId: this.sourceLayerId,
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
 				content: _.clone(this.content),
@@ -157,6 +163,11 @@ export class InternalGraphic {
 									CreateTimingGraphic(this.config, this.parsedCue).duration || GetDefaultOut(this.config)
 						  }),
 					lifespan: GetInfiniteModeForGraphic(this.engine, this.config, this.parsedCue, this.isStickyIdent),
+					metaData: literal<PieceMetaData>({
+						sisyfosPersistMetaData: {
+							sisyfosLayers: []
+						}
+					}),
 					content: _.clone(this.content)
 				})
 			)
@@ -177,6 +188,11 @@ export class InternalGraphic {
 			outputLayerId: this.outputLayerId,
 			sourceLayerId: this.sourceLayerId,
 			lifespan: GetInfiniteModeForGraphic(this.engine, this.config, this.parsedCue, this.isStickyIdent),
+			metaData: literal<PieceMetaData>({
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			}),
 			content: _.clone(this.content)
 		})
 		pieces.push(piece)
@@ -198,6 +214,11 @@ export class InternalGraphic {
 			enable: { ...CreateTimingGraphic(this.config, this.parsedCue, true) }, // Allow default out for visual representation
 			sourceLayerId: SharedSourceLayers.PgmGraphicsIdent,
 			lifespan: PieceLifespan.WithinPart,
+			metaData: literal<PieceMetaData>({
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			}),
 			content: {
 				timelineObjects: [
 					literal<TSR.TimelineObjAbstractAny>({

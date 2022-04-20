@@ -16,13 +16,12 @@ import {
 	CueDefinitionEkstern,
 	EksternParentClass,
 	FindSourceInfoStrict,
-	GetEksternMetaData,
-	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	literal,
 	PartDefinition,
 	PartToParentClass,
+	SisyfosPersistMetaData,
 	TransitionFromString,
 	TransitionSettings,
 	TV2BlueprintConfigBase,
@@ -59,7 +58,7 @@ export function EvaluateEksternBase<
 	adlib?: boolean,
 	rank?: number
 ) {
-	const matchesEksternSource = /^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i
+	const matchesEksternSource = /^(?:LIVE|FEED) ?([^\s]+)(?: (.+))?$/i
 	const eksternProps = parsedCue.source.match(matchesEksternSource)
 	if (!eksternProps) {
 		context.notifyUserWarning(`No source entered for EKSTERN`)
@@ -80,8 +79,6 @@ export function EvaluateEksternBase<
 	}
 	const atemInput = sourceInfoEkstern.port
 
-	const layers = GetLayersForEkstern(context, config.sources, parsedCue.source)
-
 	if (adlib) {
 		adlibPieces.push(
 			literal<IBlueprintAdLibPiece>({
@@ -92,7 +89,13 @@ export function EvaluateEksternBase<
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				toBeQueued: true,
 				lifespan: PieceLifespan.WithinPart,
-				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
+				metaData: {
+					sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+						sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
+						wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,
+						acceptPersistAudio: sourceInfoEkstern.acceptPersistAudio
+					})
+				},
 				content: literal<WithTimeline<RemoteContent>>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -118,7 +121,7 @@ export function EvaluateEksternBase<
 							classes: [ControlClasses.LiveSourceOnAir]
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
 						GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
 					])
 				})
@@ -136,7 +139,13 @@ export function EvaluateEksternBase<
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				lifespan: PieceLifespan.WithinPart,
 				toBeQueued: true,
-				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
+				metaData: {
+					sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+						sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
+						wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,
+						acceptPersistAudio: sourceInfoEkstern.acceptPersistAudio
+					})
+				},
 				tags: [GetTagForLive(sourceInfoEkstern.id)],
 				content: literal<WithTimeline<RemoteContent>>({
 					studioLabel: '',
@@ -171,7 +180,7 @@ export function EvaluateEksternBase<
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
+						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
 						GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
 					])
 				})

@@ -245,7 +245,6 @@ export function GetSisyfosLayersForTableMigrationAFVD(configName: string, val: s
 		case 'SourcesCam':
 			return []
 		case 'SourcesRM':
-		case 'SourcesSkype':
 			switch (val) {
 				case '1':
 					return [SisyfosLLAyer.SisyfosSourceLive_1]

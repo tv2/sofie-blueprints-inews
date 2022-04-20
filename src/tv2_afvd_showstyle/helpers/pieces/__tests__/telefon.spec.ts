@@ -14,7 +14,8 @@ import {
 	CueDefinitionTelefon,
 	GraphicInternal,
 	literal,
-	PartDefinitionKam
+	PartDefinitionKam,
+	PieceMetaData
 } from 'tv2-common'
 import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
@@ -85,8 +86,6 @@ describe('telefon', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig
 			},
 			mockContext,
@@ -108,6 +107,11 @@ describe('telefon', () => {
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTLF,
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',

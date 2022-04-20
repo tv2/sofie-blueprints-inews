@@ -33,7 +33,6 @@ const blankStudioConfig: StudioConfig = {
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesFeed: [],
-	SourcesSkype: [],
 	SourcesDelayedPlayback: [],
 	ABMediaPlayers: [],
 	StudioMics: [],
