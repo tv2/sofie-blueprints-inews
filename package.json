@@ -62,5 +62,8 @@
     "@tv2media/blueprints-integration": "1.37.1",
     "@tv2media/timeline-state-resolver-types": "^1.0.0-release37.6",
     "underscore": "^1.12.1"
+  },
+  "resolutions": {
+    "moment": "^2.29.2"
   }
 }
