@@ -32,7 +32,6 @@ import {
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
 	CalculateTime,
-	CreateContinuationPieceForIdentPersistent,
 	CreateFullPiece,
 	CreatePartServerBase,
 	CueDefinition,
@@ -48,15 +47,11 @@ import {
 	GetDVETemplate,
 	GetEksternMetaData,
 	GetFullGrafikTemplateName,
-	GetInfiniteModeForGraphic,
-	getInternalGraphic,
-	getInternalGraphicContent,
 	GetLayersForCamera,
 	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
-	InternalGraphic,
 	IsTargetingOVL,
 	ITV2ActionExecutionContext,
 	literal,
@@ -98,6 +93,7 @@ import {
 	ActionSelectJingle,
 	ActionTakeWithTransition
 } from './actionTypes'
+import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 
 const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayers.PgmGraphicsIdent,
@@ -1854,47 +1850,27 @@ function executeActionPlayGraphics<
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
-	_userData: ActionPlayGraphics
+	userData: ActionPlayGraphics
 ) {
-	const internalGraphic: InternalGraphic = getInternalGraphic(
+	if (!IsTargetingOVL(userData.graphic.target)) {
+		return
+	}
+
+	const externalId = context.getPartInstance('current')?.part.externalId ?? generateExternalId(context, actionId, [])
+
+	const internalGraphic: InternalGraphic = new InternalGraphic(
 		settings.getConfig(context),
-		_userData.graphic,
+		userData.graphic,
 		true,
 		undefined,
-		undefined,
+		externalId,
 		undefined,
 		undefined
 	)
 	const pieces: IBlueprintPiece[] = []
-	if (IsTargetingOVL(_userData.graphic.target)) {
-		const externalId = context.getPartInstance('current')?.part.externalId ?? generateExternalId(context, actionId, [])
 
-		const content: IBlueprintPiece['content'] = getInternalGraphicContent(internalGraphic)
+	internalGraphic.createPiece(pieces)
 
-		const piece = literal<IBlueprintPiece>({
-			externalId,
-			name: internalGraphic.name,
-			enable: { start: 0 },
-			outputLayerId: internalGraphic.outputLayerId,
-			sourceLayerId: internalGraphic.sourceLayerId,
-			lifespan: GetInfiniteModeForGraphic(
-				internalGraphic.engine,
-				internalGraphic.config,
-				internalGraphic.parsedCue,
-				internalGraphic.isStickyIdent
-			),
-			content: _.clone(content)
-		})
-		pieces.push(piece)
-
-		if (
-			internalGraphic.sourceLayerId === SharedSourceLayers.PgmGraphicsIdentPersistent &&
-			(piece.lifespan === PieceLifespan.OutOnSegmentEnd || piece.lifespan === PieceLifespan.OutOnShowStyleEnd) &&
-			internalGraphic.isStickyIdent
-		) {
-			pieces.push(CreateContinuationPieceForIdentPersistent(piece, internalGraphic))
-		}
-	}
 	pieces.forEach((piece: IBlueprintPiece) => {
 		context.insertPiece('current', piece)
 	})
