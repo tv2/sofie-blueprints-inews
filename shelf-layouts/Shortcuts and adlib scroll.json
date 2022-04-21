@@ -31,6 +31,7 @@
         "studio0_audio_bed",
         "studio0_graphicsTop",
         "studio0_graphicsIdent",
+        "studio0_graphicsIdent_persistent",
         "studio0_graphicsTema",
         "studio0_graphicsHeadline",
         "studio0_overlay",
