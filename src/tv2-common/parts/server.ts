@@ -13,7 +13,8 @@ import {
 	GetTagForServerNext,
 	MakeContentServer,
 	MakeContentServerSourceLayers,
-	PieceMetaData
+	PieceMetaData,
+	SisyfosPersistMetaData
 } from 'tv2-common'
 import { AdlibActionType, PartType, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { ActionSelectServerClip } from '../actions'
@@ -266,7 +267,11 @@ function getServerSelectionBlueprintPiece<
 		lifespan: PieceLifespan.OutOnSegmentEnd,
 		metaData: literal<PieceMetaData & PieceMetaDataServer>({
 			mediaPlayerSessions: [mediaPlayerSession],
-			userData: userDataElement
+			userData: userDataElement,
+			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+				sisyfosLayers: [],
+				acceptPersistAudio: props.adLibPix && props.voLayer
+			})
 		}),
 		content: contentServerElement,
 		tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.voLayer)],

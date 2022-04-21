@@ -10,6 +10,7 @@ import {
 	IBlueprintPieceDB,
 	IBlueprintPieceGeneric,
 	IBlueprintPieceInstance,
+	IBlueprintResolvedPieceInstance,
 	IShowStyleUserContext,
 	PieceLifespan,
 	SourceLayerType,
@@ -42,12 +43,8 @@ import {
 	EvaluateCuesOptions,
 	executeWithContext,
 	FindSourceInfoStrict,
-	GetCameraMetaData,
 	GetDVETemplate,
-	GetEksternMetaData,
 	GetFullGrafikTemplateName,
-	GetLayersForCamera,
-	GetLayersForEkstern,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
@@ -56,6 +53,7 @@ import {
 	MakeContentDVE2,
 	PartDefinition,
 	PieceMetaData,
+	SisyfosPersistMetaData,
 	TimeFromFrames,
 	TimelineBlueprintExt,
 	TV2AdlibAction,
@@ -105,6 +103,8 @@ const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayers.PgmGraphicsTLF
 ]
 
+const FADE_SISYFOS_LEVELS_PIECE_NAME = 'fadeDown'
+
 export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -152,7 +152,6 @@ export interface ActionExecutionSettings<
 			ClipPending: string
 			Effekt: string
 			StudioMics: string
-			PersistedLevels: string
 		}
 		Atem: {
 			MEProgram: string
@@ -175,7 +174,6 @@ export interface ActionExecutionSettings<
 		}
 		SELECTED_ADLIB_LAYERS: string[]
 	}
-	ServerAudioLayers: string[]
 	createJingleContent: (
 		config: ShowStyleConfig,
 		file: string,
@@ -259,6 +257,9 @@ export async function executeAction<
 				break
 			case AdlibActionType.RECALL_LAST_DVE:
 				await executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
+				break
+			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
+				await executeActionFadeDownPersistedAudioLevels(context, settings)
 				break
 			default:
 				assertUnreachable(actionId)
@@ -563,6 +564,9 @@ async function executeActionSelectDVE<
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
+		sisyfosPersistMetaData: {
+			sisyfosLayers: []
+		},
 		userData
 	})
 
@@ -728,9 +732,12 @@ async function executeActionSelectDVELayout<
 			return
 		}
 
-		const newMetaData = literal<DVEPieceMetaData>({
+		const newMetaData = literal<DVEPieceMetaData & PieceMetaData>({
 			sources,
 			config: userData.config,
+			sisyfosPersistMetaData: {
+				sisyfosLayers: []
+			},
 			userData: literal<ActionSelectDVE>({
 				type: AdlibActionType.SELECT_DVE,
 				config: literal<CueDefinitionDVE>({
@@ -778,7 +785,10 @@ async function executeActionSelectDVELayout<
 
 	const newMetaData2 = literal<PieceMetaData & DVEPieceMetaData>({
 		...meta,
-		config: userData.config
+		config: userData.config,
+		sisyfosPersistMetaData: {
+			sisyfosLayers: []
+		}
 	})
 
 	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
@@ -1063,7 +1073,13 @@ async function executeActionCutToCamera<
 		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
-		metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+		metaData: {
+			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+				sisyfosLayers: [],
+				acceptPersistAudio: sourceInfoCam.acceptPersistAudio,
+				isPieceInjectedInPart: true
+			})
+		},
 		tags: [GetTagForKam(userData.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -1082,47 +1098,7 @@ async function executeActionCutToCamera<
 					},
 					classes: ['adlib_deparent']
 				}),
-				camSisyfos,
-				literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-					id: '',
-					enable: {
-						start: 0
-					},
-					priority: 1,
-					layer: settings.LLayer.Sisyfos.PersistedLevels,
-					content: {
-						deviceType: TSR.DeviceType.SISYFOS,
-						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						overridePriority: 1,
-						channels: config.stickyLayers
-							.filter(layer => camSisyfos.content.channels.map(channel => channel.mappedLayer).indexOf(layer) === -1)
-							.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-								return {
-									mappedLayer: layer,
-									isPgm: 0
-								}
-							})
-					},
-					metaData: {
-						sisyfosPersistLevel: true
-					}
-				}),
-				// Force server to be muted (for adlibbing over DVE)
-				...settings.ServerAudioLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 2,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						}
-					})
-				})
+				camSisyfos
 			])
 		}
 	})
@@ -1143,6 +1119,10 @@ async function executeActionCutToCamera<
 	} else if (currentKam) {
 		kamPiece.externalId = currentKam.piece.externalId
 		kamPiece.enable = currentKam.piece.enable
+		const currentMetaData = currentKam.piece.metaData as PieceMetaData
+		const metaData = kamPiece.metaData as PieceMetaData
+		metaData.sisyfosPersistMetaData!.previousPersistMetaDataForCurrentPiece = currentMetaData.sisyfosPersistMetaData
+
 		await context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
 		const currentExternalId = await context
@@ -1193,9 +1173,19 @@ async function executeActionCutToRemote<
 	})
 
 	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
-		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`, GetLayersForEkstern),
+		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`),
 		GetSisyfosTimelineObjForCamera(context, config, 'telefon', settings.LLayer.Sisyfos.StudioMics)
 	]
+
+	const sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, `Live ${userData.name}`)
+	const sisyfosPersistMetaData: SisyfosPersistMetaData =
+		sourceInfo !== undefined
+			? {
+					sisyfosLayers: sourceInfo.sisyfosLayers ?? [],
+					wantsToPersistAudio: sourceInfo.wantsToPersistAudio,
+					acceptPersistAudio: sourceInfo.acceptPersistAudio
+			  }
+			: { sisyfosLayers: [] }
 
 	const remotePiece = literal<IBlueprintPiece>({
 		externalId,
@@ -1207,11 +1197,9 @@ async function executeActionCutToRemote<
 		outputLayerId: SharedOutputLayers.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
-		metaData: GetEksternMetaData(
-			config.stickyLayers,
-			config.studio.StudioMics,
-			GetLayersForEkstern(context, config.sources, `Live ${userData.name}`)
-		),
+		metaData: {
+			sisyfosPersistMetaData
+		},
 		tags: [GetTagForLive(userData.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj>([
@@ -1230,44 +1218,7 @@ async function executeActionCutToRemote<
 					},
 					classes: ['adlib_deparent']
 				}),
-				...eksternSisyfos,
-				...config.stickyLayers
-					.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-					.filter(layer => config.liveAudio.indexOf(layer) === -1)
-					.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							},
-							metaData: {
-								sisyfosPersistLevel: true
-							}
-						})
-					}),
-				// Force server to be muted (for adlibbing over DVE)
-				...settings.ServerAudioLayers.map<TSR.TimelineObjSisyfosChannel>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 2,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						}
-					})
-				})
+				...eksternSisyfos
 			])
 		}
 	})
@@ -1329,6 +1280,10 @@ async function executeActionCutSourceToBox<
 
 	const meta: (DVEPieceMetaData & PieceMetaData) | undefined = modifiedPiece?.piece.metaData as PieceMetaData &
 		DVEPieceMetaData
+
+	meta.sisyfosPersistMetaData = {
+		sisyfosLayers: []
+	}
 
 	if (
 		!modifiedPiece ||
@@ -1860,6 +1815,54 @@ async function executeActionRecallLastDVE<
 		await scheduleLastPlayedDVE(context, settings, actionId, lastPlayedScheduledDVE)
 	} else {
 		await scheduleNextScriptedDVE(context, settings, actionId)
+	}
+}
+
+async function executeActionFadeDownPersistedAudioLevels<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(context: ITV2ActionExecutionContext, _settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
+	const fadeSisyfosMetaData = await createFadeSisyfosLevelsMetaData(context)
+	const resetSisyfosPersistedLevelsPiece: IBlueprintPiece = {
+		externalId: 'fadeSisyfosPersistedLevelsDown',
+		name: FADE_SISYFOS_LEVELS_PIECE_NAME,
+		outputLayerId: '',
+		sourceLayerId: '',
+		enable: { start: 'now' },
+		lifespan: PieceLifespan.WithinPart,
+		metaData: literal<PieceMetaData>({
+			sisyfosPersistMetaData: fadeSisyfosMetaData
+		}),
+		content: {
+			timelineObjects: []
+		}
+	}
+	context.insertPiece('current', resetSisyfosPersistedLevelsPiece)
+}
+
+async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {
+	const resolvedPieceInstances: IBlueprintResolvedPieceInstance[] = await context.getResolvedPieceInstances('current')
+	const emptySisyfosMetaData: SisyfosPersistMetaData = {
+		sisyfosLayers: []
+	}
+	if (resolvedPieceInstances.length === 0) {
+		return emptySisyfosMetaData
+	}
+
+	const latestPiece: IBlueprintResolvedPieceInstance = resolvedPieceInstances
+		.filter(piece => piece.piece.name !== FADE_SISYFOS_LEVELS_PIECE_NAME)
+		.sort((a, b) => b.resolvedStart - a.resolvedStart)[0]
+
+	const latestPieceMetaData = latestPiece.piece.metaData as PieceMetaData
+
+	if (!latestPieceMetaData || !latestPieceMetaData.sisyfosPersistMetaData) {
+		return emptySisyfosMetaData
+	}
+
+	return {
+		sisyfosLayers: latestPieceMetaData.sisyfosPersistMetaData.sisyfosLayers,
+		wantsToPersistAudio: latestPieceMetaData.sisyfosPersistMetaData.wantsToPersistAudio,
+		acceptPersistAudio: false
 	}
 }
 

@@ -21,6 +21,7 @@ import {
 	literal,
 	PartDefinitionEVS,
 	PartTime,
+	PieceMetaData,
 	SourceInfo,
 	TransitionFromString,
 	TransitionSettings
@@ -73,6 +74,11 @@ export function CreatePartEVS(
 			outputLayerId: SharedOutputLayers.PGM,
 			sourceLayerId: SourceLayer.PgmLocal,
 			lifespan: PieceLifespan.WithinPart,
+			metaData: literal<PieceMetaData>({
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			}),
 			content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
 		})
 	)

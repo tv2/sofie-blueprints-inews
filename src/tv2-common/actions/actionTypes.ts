@@ -124,6 +124,10 @@ export interface ActionRecallLastDVE extends ActionBase {
 	type: AdlibActionType.RECALL_LAST_DVE
 }
 
+export interface ActionFadeDownPersistedAudioLevels extends ActionBase {
+	type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -140,3 +144,4 @@ export type TV2AdlibAction =
 	| ActionTakeWithTransition
 	| ActionRecallLastLive
 	| ActionRecallLastDVE
+	| ActionFadeDownPersistedAudioLevels

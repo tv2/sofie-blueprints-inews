@@ -15,6 +15,7 @@ import {
 	GetTagForJingleNext,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	t,
 	TimeFromFrames
 } from 'tv2-common'
@@ -102,6 +103,11 @@ export function OfftubeEvaluateJingle(
 			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
+			metaData: literal<PieceMetaData>({
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			}),
 			prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
 			content: createJingleContentOfftube(
 				config,

@@ -20,12 +20,11 @@ import {
 	CreatePartKamBase,
 	FindDSKJingle,
 	FindSourceInfoStrict,
-	GetCameraMetaData,
-	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	GetTagForKam,
 	literal,
 	PartDefinitionKam,
+	SisyfosPersistMetaData,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -109,7 +108,12 @@ export function OfftubeCreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: OfftubeSourceLayer.PgmCam,
 				lifespan: PieceLifespan.WithinPart,
-				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+				metaData: {
+					sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+						sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
+						acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+					})
+				},
 				tags: [GetTagForKam(sourceInfoCam.id)],
 				content: {
 					studioLabel: '',

@@ -74,7 +74,7 @@ export function EvaluateDVE(
 					toBeQueued: true,
 					content: content.content,
 					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: literal<DVEPieceMetaData>({
+					metaData: literal<DVEPieceMetaData & PieceMetaData>({
 						sources: parsedCue.sources,
 						config: rawTemplate,
 						userData: literal<ActionSelectDVE>({
@@ -82,7 +82,10 @@ export function EvaluateDVE(
 							config: parsedCue,
 							videoId: partDefinition.fields.videoId,
 							segmentExternalId: partDefinition.segmentExternalId
-						})
+						}),
+						sisyfosPersistMetaData: {
+							sisyfosLayers: []
+						}
 					})
 				})
 			)
@@ -113,7 +116,10 @@ export function EvaluateDVE(
 							config: parsedCue,
 							videoId: partDefinition.fields.videoId,
 							segmentExternalId: partDefinition.segmentExternalId
-						})
+						}),
+						sisyfosPersistMetaData: {
+							sisyfosLayers: []
+						}
 					})
 				})
 			)

@@ -54,8 +54,6 @@ describe('lyd', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig
 			},
 			pieces,
@@ -101,8 +99,6 @@ describe('lyd', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig
 			},
 			pieces,
@@ -151,8 +147,6 @@ describe('lyd', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig
 			},
 			pieces,
