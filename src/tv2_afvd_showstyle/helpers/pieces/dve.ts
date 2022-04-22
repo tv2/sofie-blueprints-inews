@@ -19,7 +19,6 @@ import {
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, SharedOutputLayers } from 'tv2-constants'
-import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'

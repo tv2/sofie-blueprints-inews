@@ -1082,7 +1082,7 @@ async function executeActionCutToCamera<
 		},
 		tags: [GetTagForKam(userData.name)],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
 					enable: { while: '1' },
@@ -1202,7 +1202,7 @@ async function executeActionCutToRemote<
 		},
 		tags: [GetTagForLive(userData.name)],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
 					enable: { while: '1' },

@@ -73,7 +73,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny>([
+					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {

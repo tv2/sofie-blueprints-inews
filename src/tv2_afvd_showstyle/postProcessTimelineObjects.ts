@@ -122,7 +122,9 @@ export function postProcessPieceTimelineObjects(
 				if (mixMinusSource !== null && mixMinusSource !== -1) {
 					const mixMinusObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 						..._.omit(tlObj, 'content'),
-						...literal<Partial<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>>({
+						...literal<
+							Partial<TSR.TimelineObjAtemAUX & TimelineBlueprintExt> & Pick<TSR.TimelineObjAtemAUX, 'content'>
+						>({
 							id: '',
 							layer: AtemLLayer.AtemAuxVideoMixMinus,
 							priority: tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK') ? 10 : tlObj.priority,
@@ -165,7 +167,7 @@ export function postProcessPieceTimelineObjects(
 
 				const cleanObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
 					..._.omit(tlObj, 'content'),
-					...literal<Partial<TSR.TimelineObjAtemME & TimelineBlueprintExt>>({
+					...literal<Partial<TSR.TimelineObjAtemME & TimelineBlueprintExt> & Pick<TSR.TimelineObjAtemME, 'content'>>({
 						id: '',
 						layer: AtemLLayer.AtemCleanUSKEffect,
 						content: {

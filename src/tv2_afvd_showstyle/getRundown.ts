@@ -111,7 +111,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -172,7 +172,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -216,7 +216,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			},
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 					literal<TSR.TimelineObjAtemAUX>({
 						id: '',
 						enable: { while: '1' },
@@ -270,7 +270,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
@@ -297,7 +297,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
 				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
@@ -327,7 +327,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_LOAD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjVIZMSELoadAllElements>({
 					id: 'loadAllElements',
 					enable: {
@@ -355,7 +355,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjVIZMSEElementContinue>({
 					id: '',
 					enable: {
@@ -448,7 +448,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { start: 0 },
@@ -478,7 +478,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
 						enable: { start: 0 },

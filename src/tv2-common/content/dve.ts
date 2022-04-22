@@ -454,7 +454,7 @@ export function MakeContentDVE2<
 		valid,
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				// Setup classes for adlibs to be able to override boxes
 				createEmptyObject({
 					enable: getDVEEnable(),
