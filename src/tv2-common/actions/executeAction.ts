@@ -27,6 +27,7 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
+	ActionPlayGraphics,
 	ActionSelectDVE,
 	ActionSelectDVELayout,
 	ActionSelectFullGrafik,
@@ -48,6 +49,7 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
+	IsTargetingOVL,
 	ITV2ActionExecutionContext,
 	literal,
 	MakeContentDVE2,
@@ -71,6 +73,7 @@ import {
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import { CreateFullDataStore, GetEnableForWall, PilotGeneratorSettings } from '../helpers'
+import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
 import {
@@ -260,6 +263,9 @@ export async function executeAction<
 				break
 			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
 				await executeActionFadeDownPersistedAudioLevels(context, settings)
+				break
+			case AdlibActionType.PLAY_GRAPHICS:
+				await executeActionPlayGraphics(context, settings, actionId, userData as ActionPlayGraphics)
 				break
 			default:
 				assertUnreachable(actionId)
@@ -1864,6 +1870,39 @@ async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionConte
 		wantsToPersistAudio: latestPieceMetaData.sisyfosPersistMetaData.wantsToPersistAudio,
 		acceptPersistAudio: false
 	}
+}
+
+async function executeActionPlayGraphics<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ITV2ActionExecutionContext,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	actionId: string,
+	userData: ActionPlayGraphics
+): Promise<void> {
+	if (!IsTargetingOVL(userData.graphic.target)) {
+		return
+	}
+
+	const currentPartInstance = await context.getPartInstance('current')
+	const externalId = currentPartInstance?.part.externalId ?? generateExternalId(context, actionId, [])
+
+	const internalGraphic: InternalGraphic = new InternalGraphic(
+		settings.getConfig(context),
+		userData.graphic,
+		true,
+		externalId,
+		undefined,
+		undefined
+	)
+	const pieces: IBlueprintPiece[] = []
+
+	internalGraphic.createPiece(pieces)
+
+	pieces.forEach((piece: IBlueprintPiece) => {
+		context.insertPiece('current', piece)
+	})
 }
 
 async function scheduleLastPlayedDVE<

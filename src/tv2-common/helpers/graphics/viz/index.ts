@@ -35,7 +35,7 @@ export function GetInternalGraphicContentVIZ(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): IBlueprintPiece['content'] {

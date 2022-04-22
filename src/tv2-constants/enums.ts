@@ -135,7 +135,8 @@ export enum AdlibActionType {
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
 	RECALL_LAST_DVE = 'recall_last_dve',
-	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
+	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
+	PLAY_GRAPHICS = 'play_graphics'
 }
 
 export enum TallyTags {

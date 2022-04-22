@@ -33,7 +33,7 @@ export function GetInternalGraphicContentCaspar(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): IBlueprintPiece['content'] {
@@ -117,7 +117,7 @@ function CasparOverlayTimeline(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGrafik: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): TSR.TSRTimelineObj[] {

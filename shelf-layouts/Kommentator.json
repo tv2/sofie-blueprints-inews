@@ -122,6 +122,7 @@
       "displayTakeButtons": true,
       "sourceLayerIds": [
         "studio0_graphicsIdent",
+        "studio0_graphicsIdent_persistent",
         "studio0_graphicsTop",
         "studio0_graphicsLower"
       ],
