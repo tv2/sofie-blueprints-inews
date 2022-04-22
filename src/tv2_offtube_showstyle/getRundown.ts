@@ -196,7 +196,7 @@ function getGlobalAdLibPiecesOfftube(
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { start: 0 },
