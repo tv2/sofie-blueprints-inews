@@ -19,7 +19,7 @@ import {
 	TimelineBlueprintExt,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
+import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
 import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
 import { EnableDSK } from '../../dsk'
 import { IsTargetingFull, IsTargetingWall } from '../target'
@@ -96,7 +96,7 @@ export function GetPilotGraphicContentCaspar(
 					while: '1'
 				},
 				priority: 100,
-				layer: IsTargetingWall(engine) ? GraphicLLayer.GraphicLLayerWall : GraphicLLayer.GraphicLLayerPilot,
+				layer: IsTargetingWall(engine) ? SharedGraphicLLayer.GraphicLLayerWall : SharedGraphicLLayer.GraphicLLayerPilot,
 				metaData: { templateData, fileName },
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,

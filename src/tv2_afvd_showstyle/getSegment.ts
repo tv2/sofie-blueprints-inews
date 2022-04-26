@@ -9,12 +9,13 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CreateShowLifecyclePieces, getSegmentBase, INewsPayload, literal } from 'tv2-common'
+import { getSegmentBase, INewsPayload, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { StudioConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig as ShowStyleConfig, getConfig } from './helpers/config'
+import { CreateShowLifecyclePieces } from './helpers/pieces/showLifecycle'
 import { SourceLayer } from './layers'
 import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'

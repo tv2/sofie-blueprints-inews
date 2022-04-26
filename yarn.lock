@@ -287,22 +287,15 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@tv2media/blueprints-integration@v1.37.1-in-testing.1":
-  version "1.37.1-in-testing.1"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.37.1-in-testing.1.tgz#92b11e3c4402650858db539fa5bf7ce7d04b992d"
-  integrity sha512-hJ+10Gt8xkbwjyGuPWnIecAxbE6a9oiClWW+Dr/9GXjU8z5FcnbKLGXdX/qnbGAMGTU+pNaPo/QUEbyAuFENrQ==
+"@tv2media/blueprints-integration@v1.37.1-1":
+  version "1.37.1-1"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.37.1-1.tgz#6ea17006d9402f35aad12d1d4b2b8f4a75c04200"
+  integrity sha512-9zjm4NexyyAOVsDBfBtCdqAtlr1afj/9yva6cQb/VAlXPcLo/RtCMD4FaHPGrcQqqlyGKaCFeljnnUbLfLCQOg==
   dependencies:
     moment "2.29.1"
-    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@1.0.0-release37"
+    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@1.0.0-release37.7"
     tslib "^2.3.1"
     underscore "1.13.1"
-
-"@tv2media/timeline-state-resolver-types@^1.0.0-release37.6":
-  version "1.0.0-release37.6"
-  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-1.0.0-release37.6.tgz#48eca1760f254e38564b5901fead16ba02022e13"
-  integrity sha512-+Gd5fTSWyP4Z9l2CUC/gABJhCOKGD4gn5oR5VmnaL33U4KvGEgJE3X0SsW9Gn80O6y+2NBb/YcbDavRmlIG0TA==
-  dependencies:
-    tslib "^2.3.1"
 
 "@types/babel__core@^7.1.0":
   version "7.1.6"
@@ -5669,12 +5662,12 @@ through@2, "through@>=2.2.7 <3":
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@1.0.0-release37":
-  version "1.0.0-release37"
-  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-1.0.0-release37.tgz#3271b202cd0c4e03ae418c76019276238eede7db"
-  integrity sha512-HdCWUQ0EJ7LwlaH9eRtURwzXknIvo3U8kInzus9Vx0M0HoUixYgfV5Z80w/PVSYdUk0L95kW2oLZB4ECB1M7Pg==
+"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@1.0.0-release37.7":
+  version "1.0.0-release37.7"
+  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-1.0.0-release37.7.tgz#2cb32cd81343c1ed3d160f6f63b909f2a3f47935"
+  integrity sha512-o5DbFCJRMLHGrzoVjhjAAsZ+F90EjuKrwk7kfVlplMosouv4Kw4cucUQGOU26DzIM8tTlmIkadnZGMnT5sCmUA==
   dependencies:
-    tslib "^2.1.0"
+    tslib "^2.3.1"
 
 timers-browserify@^2.0.4:
   version "2.0.12"
@@ -5822,7 +5815,7 @@ tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
   integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
 
-tslib@^2.1.0, tslib@^2.3.1:
+tslib@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==

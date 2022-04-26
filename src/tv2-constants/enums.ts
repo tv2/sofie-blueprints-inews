@@ -157,7 +157,7 @@ export enum TallyTags {
 	JINGLE_IS_LIVE = 'JINGLE_IS_LIVE'
 }
 
-export enum GraphicLLayer {
+export enum SharedGraphicLLayer {
 	GraphicLLayerOverlay = 'graphic_overlay', // <= viz_layer_overlay
 	GraphicLLayerOverlayIdent = 'graphic_overlay_ident', // <= viz_layer_overlay_ident
 	GraphicLLayerOverlayTopt = 'graphic_overlay_topt', // <= viz_layer_overlay_topt
@@ -171,9 +171,7 @@ export enum GraphicLLayer {
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall', // <= viz_layer_wall
 	GraphicLLayerLocators = 'graphic_locators',
-	GraphicLLayerConcept = 'graphic_concept',
-	GraphicLLayerInitialize = 'graphic_initialize',
-	GraphicLLayerCleanup = 'graphic_cleanup'
+	GraphicLLayerConcept = 'graphic_concept'
 }
 
 export enum AbstractLLayer {
@@ -249,7 +247,6 @@ export enum SharedSourceLayers {
 	// Other / sec / manus
 	PgmScript = 'studio0_script',
 	PgmAudioBed = 'studio0_audio_bed',
-	GraphicsShowLifecycle = 'studio0_graphic_show_lifecycle',
 
 	// AUX
 	AuxMixMinus = 'studio0_aux_mix_minus'

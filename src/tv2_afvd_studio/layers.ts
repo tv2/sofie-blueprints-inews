@@ -1,4 +1,10 @@
-import { AbstractLLayer, GraphicLLayer, SharedATEMLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
+import {
+	AbstractLLayer,
+	SharedATEMLLayer,
+	SharedCasparLLayer,
+	SharedGraphicLLayer,
+	SharedSisyfosLLayer
+} from 'tv2-constants'
 import * as _ from 'underscore'
 
 export type LLayer = VirtualAbstractLLayer | AtemLLayer | CasparLLayer | SisyfosLLAyer
@@ -69,6 +75,19 @@ export const CasparLLayer = {
 }
 
 export type CasparLLayer = AFVDCasparLLayer | SharedCasparLLayer
+
+enum AFVDGraphicLLayer {
+	GraphicLLayerInitialize = 'graphic_initialize',
+	GraphicLLayerCleanup = 'graphic_cleanup'
+}
+
+// tslint:disable-next-line: variable-name
+export const GraphicLLayer = {
+	...AFVDGraphicLLayer,
+	...SharedGraphicLLayer
+}
+
+export type GraphicLLayer = AFVDGraphicLLayer | SharedGraphicLLayer
 
 enum AFVDSisyfosLLAyer {
 	SisyfosConfig = 'sisyfos_config',

@@ -16,7 +16,7 @@ import {
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
-import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import {
 	DEFAULT_GRAPHICS_SETUP,
@@ -125,7 +125,7 @@ describe('telefon', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

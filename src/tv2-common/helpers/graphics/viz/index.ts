@@ -21,7 +21,7 @@ import {
 	PartDefinition,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
+import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
 import { EnableDSK } from '../../dsk'
 
 export interface VizPilotGeneratorSettings {
@@ -90,10 +90,10 @@ export function GetPilotGraphicContentViz(
 						  },
 				priority: 1,
 				layer: IsTargetingWall(engine)
-					? GraphicLLayer.GraphicLLayerWall
+					? SharedGraphicLLayer.GraphicLLayerWall
 					: IsTargetingOVL(engine)
-					? GraphicLLayer.GraphicLLayerPilotOverlay
-					: GraphicLLayer.GraphicLLayerPilot,
+					? SharedGraphicLLayer.GraphicLLayerPilotOverlay
+					: SharedGraphicLLayer.GraphicLLayerPilot,
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT,

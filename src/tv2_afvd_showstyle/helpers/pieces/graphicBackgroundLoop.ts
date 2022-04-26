@@ -8,7 +8,7 @@ import {
 	WithTimeline
 } from '@tv2media/blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal, TV2BlueprintConfig } from 'tv2-common'
-import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
@@ -129,7 +129,7 @@ function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBa
 			id: '',
 			enable: { start: 0 },
 			priority: 1,
-			layer: GraphicLLayer.GraphicLLayerFullLoop,
+			layer: SharedGraphicLLayer.GraphicLLayerFullLoop,
 			content: {
 				deviceType: TSR.DeviceType.VIZMSE,
 				type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

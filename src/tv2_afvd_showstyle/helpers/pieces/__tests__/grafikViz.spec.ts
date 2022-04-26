@@ -16,7 +16,7 @@ import {
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
-import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import { AbstractLLayer, AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -138,7 +138,7 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -209,7 +209,7 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -244,7 +244,7 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -317,7 +317,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -352,7 +352,7 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -424,7 +424,7 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -498,7 +498,7 @@ describe('grafik piece', () => {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -569,7 +569,7 @@ describe('grafik piece', () => {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -665,7 +665,7 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -736,7 +736,7 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayTopt,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -771,7 +771,7 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayTopt,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,

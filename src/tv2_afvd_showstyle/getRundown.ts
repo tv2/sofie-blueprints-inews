@@ -16,7 +16,6 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { TimelineContentTypeVizMSE, TimelineObjVIZMSEConcept } from '@tv2media/timeline-state-resolver-types'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -45,7 +44,7 @@ import {
 	AdlibTagCutToBox,
 	AdlibTags,
 	CONSTANTS,
-	GraphicLLayer,
+	SharedGraphicLLayer,
 	SharedOutputLayers,
 	TallyTags
 } from 'tv2-constants'
@@ -399,7 +398,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						duration: 1000
 					},
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerAdLibs,
+					layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
@@ -427,12 +426,12 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						duration: 1000
 					},
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerAdLibs,
+					layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
-						reference: GraphicLLayer.GraphicLLayerPilot
+						reference: SharedGraphicLLayer.GraphicLLayerPilot
 					}
 				})
 			])
@@ -550,7 +549,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 					id: '',
 					enable: { start: 0 },
 					priority: 110,
-					layer: GraphicLLayer.GraphicLLayerDesign,
+					layer: SharedGraphicLLayer.GraphicLLayerDesign,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -1142,7 +1141,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 							id: '',
 							enable: { start: 0 },
 							priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
-							layer: GraphicLLayer.GraphicLLayerFullLoop,
+							layer: SharedGraphicLLayer.GraphicLLayerFullLoop,
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.ROUTE,
@@ -1203,13 +1202,13 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				  })
 				: []),
 
-			literal<TimelineObjVIZMSEConcept>({
+			literal<TSR.TimelineObjVIZMSEConcept>({
 				id: '',
 				enable: { while: '1' },
-				layer: GraphicLLayer.GraphicLLayerConcept,
+				layer: SharedGraphicLLayer.GraphicLLayerConcept,
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
-					type: TimelineContentTypeVizMSE.CONCEPT,
+					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
 					concept: config.selectedGraphicsSetup.Concept
 				}
 			})
