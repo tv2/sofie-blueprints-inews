@@ -160,7 +160,7 @@ export enum TallyTags {
 	JINGLE_IS_LIVE = 'JINGLE_IS_LIVE'
 }
 
-export enum GraphicLLayer {
+export enum SharedGraphicLLayer {
 	GraphicLLayerOverlay = 'graphic_overlay', // <= viz_layer_overlay
 	GraphicLLayerOverlayIdent = 'graphic_overlay_ident', // <= viz_layer_overlay_ident
 	GraphicLLayerOverlayTopt = 'graphic_overlay_topt', // <= viz_layer_overlay_topt

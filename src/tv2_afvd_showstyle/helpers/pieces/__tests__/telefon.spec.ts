@@ -17,9 +17,14 @@ import {
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
-import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import {
+	DEFAULT_GRAPHICS_SETUP,
+	defaultShowStyleConfig,
+	defaultStudioConfig,
+	OVL_SHOW_ID
+} from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import {
 	defaultDSKConfig,
@@ -86,7 +91,8 @@ describe('telefon', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				dsk: defaultDSKConfig
+				dsk: defaultDSKConfig,
+				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
 			},
 			mockContext,
 			dummyBlueprintPart,
@@ -123,13 +129,14 @@ describe('telefon', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						literal<TSR.TimelineObjAtemDSK>({

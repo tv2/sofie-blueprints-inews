@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import { TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
 
@@ -22,6 +22,7 @@ export interface TableConfigItemGFXTemplates {
 
 export interface OfftubeShowstyleBlueprintConfig extends OfftubeStudioBlueprintConfig {
 	showStyle: OfftubeShowStyleConfig
+	selectedGraphicsSetup: TableConfigGraphicsSetup
 }
 
 export interface DVEConfigInput {
@@ -37,8 +38,26 @@ export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 	WipesConfig: TableConfigItemValue
 }
 
-export function parseConfig(_context: ICommonContext, config: IBlueprintConfig): any {
-	return { showStyle: config }
+export function findGraphicsSetup(
+	_context: ICommonContext,
+	_config: TV2ShowstyleBlueprintConfigBase
+): TableConfigGraphicsSetup {
+	// just for type compatibility, not really supported in offtube
+	return {
+		INewsCode: '',
+		Concept: '',
+		OvlShowId: '',
+		FullShowId: ''
+	}
+}
+
+export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
+	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
+	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig)
+	return {
+		showStyle: showstyleConfig,
+		selectedGraphicsSetup
+	}
 }
 
 export function getConfig(context: IShowStyleContext): OfftubeShowstyleBlueprintConfig {

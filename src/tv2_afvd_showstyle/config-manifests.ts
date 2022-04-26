@@ -144,8 +144,8 @@ export const dveStylesManifest: ConfigManifestEntry = {
 
 const graphicProfileSetup: ConfigManifestEntry[] = [
 	{
-		id: 'GraphicSetups',
-		name: 'Graphic Setups',
+		id: 'GraphicsSetups',
+		name: 'Graphics Setups',
 		description: 'Possible graphic profile setup',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
@@ -169,14 +169,34 @@ const graphicProfileSetup: ConfigManifestEntry[] = [
 				hint: '',
 				description: '',
 				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'OvlShowId',
+				name: 'OVL Show ID',
+				rank: 2,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'UUID of the show used for OVL channel',
+				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'FullShowId',
+				name: 'FULL Show ID',
+				rank: 3,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'UUID of the show used for FULL and WALL channels',
+				type: ConfigManifestEntryType.STRING
 			}
 		],
 		hint: ''
 	},
 	{
-		id: 'GraphicINewsCode',
-		name: 'Graphic Profile cue',
-		description: 'GRAPHIC_PROFILE cue from iNews',
+		id: 'GraphicsINewsCode',
+		name: 'Graphics Profile cue',
+		description: 'GRAPHICS_PROFILE cue from iNews',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: ''

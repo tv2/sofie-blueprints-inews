@@ -14,7 +14,7 @@ import {
 	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
-import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
@@ -48,17 +48,17 @@ enum VizLLayer {
 }
 
 export const remapVizLLayer: Map<string, string> = new Map([
-	[VizLLayer.VizLLayerOverlay, GraphicLLayer.GraphicLLayerOverlay],
-	[VizLLayer.VizLLayerOverlayIdent, GraphicLLayer.GraphicLLayerOverlayIdent],
-	[VizLLayer.VizLLayerOverlayTopt, GraphicLLayer.GraphicLLayerOverlayIdent],
-	[VizLLayer.VizLLayerOverlayLower, GraphicLLayer.GraphicLLayerOverlayLower],
-	[VizLLayer.VizLLayerOverlayHeadline, GraphicLLayer.GraphicLLayerOverlayHeadline],
-	[VizLLayer.VizLLayerOverlayTema, GraphicLLayer.GraphicLLayerOverlayTema],
-	[VizLLayer.VizLLayerPilot, GraphicLLayer.GraphicLLayerPilot],
-	[VizLLayer.VizLLayerPilotOverlay, GraphicLLayer.GraphicLLayerPilotOverlay],
-	[VizLLayer.VizLLayerDesign, GraphicLLayer.GraphicLLayerDesign],
-	[VizLLayer.VizLLayerAdLibs, GraphicLLayer.GraphicLLayerAdLibs],
-	[VizLLayer.VizLLayerWall, GraphicLLayer.GraphicLLayerWall]
+	[VizLLayer.VizLLayerOverlay, SharedGraphicLLayer.GraphicLLayerOverlay],
+	[VizLLayer.VizLLayerOverlayIdent, SharedGraphicLLayer.GraphicLLayerOverlayIdent],
+	[VizLLayer.VizLLayerOverlayTopt, SharedGraphicLLayer.GraphicLLayerOverlayIdent],
+	[VizLLayer.VizLLayerOverlayLower, SharedGraphicLLayer.GraphicLLayerOverlayLower],
+	[VizLLayer.VizLLayerOverlayHeadline, SharedGraphicLLayer.GraphicLLayerOverlayHeadline],
+	[VizLLayer.VizLLayerOverlayTema, SharedGraphicLLayer.GraphicLLayerOverlayTema],
+	[VizLLayer.VizLLayerPilot, SharedGraphicLLayer.GraphicLLayerPilot],
+	[VizLLayer.VizLLayerPilotOverlay, SharedGraphicLLayer.GraphicLLayerPilotOverlay],
+	[VizLLayer.VizLLayerDesign, SharedGraphicLLayer.GraphicLLayerDesign],
+	[VizLLayer.VizLLayerAdLibs, SharedGraphicLLayer.GraphicLLayerAdLibs],
+	[VizLLayer.VizLLayerWall, SharedGraphicLLayer.GraphicLLayerWall]
 ])
 
 export const remapVizDOvl: Map<string, string> = new Map([['viz-d-ovl', 'OVL1']])
@@ -119,7 +119,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	AddGraphicToGFXTable('1.5.4', 'Offtube', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
-		LayerMapping: GraphicLLayer.GraphicLLayerLocators,
+		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
 		INewsCode: '',
 		INewsName: 'locators',
 		VizDestination: '',

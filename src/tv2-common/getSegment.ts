@@ -8,7 +8,7 @@ import {
 import {
 	assertUnreachable,
 	GetNextPartCue,
-	INewsStory,
+	INewsPayload,
 	IsTargetingFull,
 	literal,
 	ParseBody,
@@ -109,7 +109,8 @@ export function getSegmentBase<
 	ingestSegment: IngestSegment,
 	showStyleOptions: GetSegmentShowstyleOptions<StudioConfig, ShowStyleConfig>
 ): BlueprintResultSegment {
-	const iNewsStory: INewsStory | undefined = ingestSegment.payload?.iNewsStory
+	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
+	const iNewsStory = segmentPayload?.iNewsStory
 	const segment = literal<IBlueprintSegment>({
 		name: ingestSegment.name || '',
 		metaData: {},
@@ -121,7 +122,7 @@ export function getSegmentBase<
 	})
 	const config = showStyleOptions.getConfig(context)
 
-	if (!iNewsStory || iNewsStory.meta.float === 'float' || !iNewsStory.body) {
+	if (!segmentPayload || !iNewsStory || iNewsStory.meta.float === 'float' || !iNewsStory.body) {
 		segment.isHidden = true
 		return {
 			segment,
@@ -383,7 +384,7 @@ export function getSegmentBase<
 			actualPart.invalid = false
 		}
 
-		if (ingestSegment.payload?.untimed) {
+		if (segmentPayload?.untimed) {
 			actualPart.untimed = true
 		}
 

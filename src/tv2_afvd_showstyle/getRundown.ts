@@ -12,10 +12,10 @@ import {
 	PieceLifespan,
 	PlaylistTimingType,
 	SourceLayerType,
+	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { TimelineContentTypeVizMSE, TimelineObjVIZMSEConcept } from '@tv2media/timeline-state-resolver-types'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -44,7 +44,7 @@ import {
 	AdlibTagCutToBox,
 	AdlibTags,
 	CONSTANTS,
-	GraphicLLayer,
+	SharedGraphicLLayer,
 	SharedOutputLayers,
 	TallyTags
 } from 'tv2-constants'
@@ -52,7 +52,7 @@ import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
-import { BlueprintConfig, getConfig as getShowStyleConfig, TableConfigGraphicSetup } from './helpers/config'
+import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -334,7 +334,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						duration: 1000
 					},
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerAdLibs,
+					layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
@@ -362,12 +362,12 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						duration: 1000
 					},
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerAdLibs,
+					layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
-						reference: GraphicLLayer.GraphicLLayerPilot
+						reference: SharedGraphicLLayer.GraphicLLayerPilot
 					}
 				})
 			])
@@ -464,8 +464,39 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 	})
 
 	// viz styles and dve backgrounds
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
+	function makeDesignAdLib(): IBlueprintAdLibPiece {
+		const timelineObjects: TimelineObjectCoreExt[] = [
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { start: 0 },
+				priority: 110,
+				layer: CasparLLayer.CasparCGDVELoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'dve/BG_LOADER_SC',
+					loop: true
+				}
+			})
+		]
+		if (config.studio.GraphicsType === 'VIZ') {
+			timelineObjects.push(
+				literal<TSR.TimelineObjVIZMSEElementInternal>({
+					id: '',
+					enable: { start: 0 },
+					priority: 110,
+					layer: SharedGraphicLLayer.GraphicLLayerDesign,
+					content: {
+						deviceType: TSR.DeviceType.VIZMSE,
+						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+						templateName: 'BG_LOADER_SC',
+						templateData: [],
+						showId: config.selectedGraphicsSetup.OvlShowId
+					}
+				})
+			)
+		}
+		const adLibPiece: IBlueprintAdLibPiece = {
 			_rank: 301,
 			externalId: 'dve-design-sc',
 			name: 'DVE Design SC',
@@ -477,35 +508,12 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					literal<TSR.TimelineObjVIZMSEElementInternal>({
-						id: '',
-						enable: { start: 0 },
-						priority: 110,
-						layer: GraphicLLayer.GraphicLLayerDesign,
-						content: {
-							deviceType: TSR.DeviceType.VIZMSE,
-							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-							templateName: 'BG_LOADER_SC',
-							templateData: []
-						}
-					}),
-					literal<TSR.TimelineObjCCGMedia>({
-						id: '',
-						enable: { start: 0 },
-						priority: 110,
-						layer: CasparLLayer.CasparCGDVELoop,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: 'dve/BG_LOADER_SC',
-							loop: true
-						}
-					})
-				])
+				timelineObjects
 			})
-		})
-	)
+		}
+		return adLibPiece
+	}
+	adlibItems.push(makeDesignAdLib())
 
 	adlibItems.push({
 		externalId: 'stopAudioBed',
@@ -1086,7 +1094,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 							id: '',
 							enable: { start: 0 },
 							priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
-							layer: GraphicLLayer.GraphicLLayerFullLoop,
+							layer: SharedGraphicLLayer.GraphicLLayerFullLoop,
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.ROUTE,
@@ -1147,23 +1155,16 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				  })
 				: []),
 
-			literal<TimelineObjVIZMSEConcept>({
+			literal<TSR.TimelineObjVIZMSEConcept>({
 				id: '',
 				enable: { while: '1' },
-				layer: GraphicLLayer.GraphicLLayerConcept,
+				layer: SharedGraphicLLayer.GraphicLLayerConcept,
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
-					type: TimelineContentTypeVizMSE.CONCEPT,
-					concept: findGraphicConcept(config)
+					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
+					concept: config.selectedGraphicsSetup.Concept
 				}
 			})
 		]
 	}
-}
-
-function findGraphicConcept(config: BlueprintConfig): string {
-	const foundTableConfigGraphicSetup: TableConfigGraphicSetup | undefined = config.showStyle.GraphicSetups.find(
-		tableConfigGraphicSetup => tableConfigGraphicSetup.INewsCode === config.showStyle.GraphicINewsCode
-	)
-	return !!foundTableConfigGraphicSetup ? foundTableConfigGraphicSetup.Concept : ''
 }
