@@ -147,27 +147,6 @@ function GetServerTimeline(
 			},
 			classes: []
 		}),
-
-		...(adLibPix
-			? config.stickyLayers.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							while: serverEnableClass
-						},
-						priority: 1,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					})
-			  })
-			: []),
 		...(voLevels
 			? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)]
 			: []),

@@ -58,8 +58,6 @@ describe('lyd', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
 			},
@@ -106,8 +104,6 @@ describe('lyd', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
 			},
@@ -157,8 +153,6 @@ describe('lyd', () => {
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
 				sources: [],
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
 			},

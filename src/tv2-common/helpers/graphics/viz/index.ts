@@ -34,11 +34,11 @@ export interface VizPilotGeneratorSettings {
 
 export function GetInternalGraphicContentVIZ(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
+	part: Readonly<IBlueprintPart> | undefined,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	isIdentGraphic: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): IBlueprintPiece['content'] {

@@ -1,7 +1,7 @@
 import { SourceLayerType } from '@tv2media/blueprints-integration'
 import { AdlibActionType } from 'tv2-constants'
 import { DVEConfigInput } from '../helpers'
-import { CueDefinitionDVE, PartDefinition } from '../inewsConversion'
+import { CueDefinitionDVE, CueDefinitionGraphic, GraphicInternal, PartDefinition } from '../inewsConversion'
 
 interface ActionBase {
 	type: AdlibActionType
@@ -124,6 +124,15 @@ export interface ActionRecallLastDVE extends ActionBase {
 	type: AdlibActionType.RECALL_LAST_DVE
 }
 
+export interface ActionFadeDownPersistedAudioLevels extends ActionBase {
+	type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
+}
+
+export interface ActionPlayGraphics extends ActionBase {
+	type: AdlibActionType.PLAY_GRAPHICS
+	graphic: CueDefinitionGraphic<GraphicInternal>
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -140,3 +149,5 @@ export type TV2AdlibAction =
 	| ActionTakeWithTransition
 	| ActionRecallLastLive
 	| ActionRecallLastDVE
+	| ActionFadeDownPersistedAudioLevels
+	| ActionPlayGraphics

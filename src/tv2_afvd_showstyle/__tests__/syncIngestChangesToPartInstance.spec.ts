@@ -58,9 +58,14 @@ function makePartinstance(
 	})
 }
 
-function makeSoundBed(id: string, name: string): IBlueprintPieceInstance<unknown> {
+function makeSoundBed(
+	id: string,
+	name: string,
+	instanceProps?: Partial<IBlueprintPieceInstance>
+): IBlueprintPieceInstance<unknown> {
 	return literal<IBlueprintPieceInstance<unknown>>({
 		_id: id,
+		...instanceProps,
 		piece: {
 			_id: '',
 			enable: {
@@ -161,5 +166,35 @@ describe('Sync Ingest Changes To Part Instances', () => {
 		expect(context.updatedPartInstance?.part.transitionPrerollDuration).toBeUndefined()
 		expect(context.updatedPartInstance?.part.budgetDuration).toBe(1000)
 		expect(context.updatedPartInstance?.part.title).toBe('Kam 2')
+	})
+
+	it('Does not remove adlib instances or infinite continuations', () => {
+		const context = makeMockContext()
+		const existingPartInstance: BlueprintSyncIngestPartInstance = literal<BlueprintSyncIngestPartInstance>({
+			partInstance: makePartinstance({ title: 'Soundbed' }),
+			pieceInstances: [
+				makeSoundBed('someId1', 'SN_Intro', { adLibSourceId: 'someAdLib' }),
+				makeSoundBed('someId2', 'SN_Intro', { infinite: { infinitePieceId: 'someInfinite', fromPreviousPart: true } }),
+				makeSoundBed('someId3', 'SN_Intro', {
+					infinite: { infinitePieceId: 'someInfinite', fromPreviousPart: false, fromPreviousPlayhead: true }
+				}),
+				makeSoundBed('someId4', 'SN_Intro', {
+					infinite: { infinitePieceId: 'someInfinite', fromPreviousPart: false, fromHold: true }
+				}),
+				makeSoundBed('someId5', 'SN_Intro', { dynamicallyInserted: 1649158767173 })
+			]
+		})
+		const newPart: BlueprintSyncIngestNewData = literal<BlueprintSyncIngestNewData>({
+			part: makePart({ title: 'Soundbed' }),
+			pieceInstances: [],
+			adLibPieces: [],
+			actions: [],
+			referencedAdlibs: []
+		})
+		syncIngestUpdateToPartInstance(context, existingPartInstance, newPart, 'current')
+
+		expect(context.removedPieceInstances).toStrictEqual([])
+		expect(context.syncedPieceInstances).toStrictEqual([])
+		expect(context.updatedPieceInstances).toStrictEqual([])
 	})
 })

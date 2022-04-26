@@ -14,7 +14,8 @@ import {
 	GraphicInternal,
 	GraphicPilot,
 	literal,
-	PartDefinitionKam
+	PartDefinitionKam,
+	PieceMetaData
 } from 'tv2-common'
 import { AbstractLLayer, AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
@@ -125,6 +126,11 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -192,6 +198,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
@@ -228,6 +239,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
@@ -300,6 +316,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
@@ -336,6 +357,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
@@ -411,6 +437,11 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -485,6 +516,11 @@ describe('grafik piece', () => {
 					start: 10000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -556,6 +592,11 @@ describe('grafik piece', () => {
 					start: 0
 				},
 				lifespan: PieceLifespan.OutOnSegmentEnd,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdentPersistent,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -590,6 +631,11 @@ describe('grafik piece', () => {
 					start: 0
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: {
@@ -652,6 +698,11 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -719,6 +770,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'tlftoptlive - Line 1\n - Line 2',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				expectedDuration: 5000,
@@ -755,6 +811,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'tlftoptlive - Line 1\n - Line 2',
 				lifespan: PieceLifespan.OutOnSegmentEnd,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				expectedDuration: 4000,

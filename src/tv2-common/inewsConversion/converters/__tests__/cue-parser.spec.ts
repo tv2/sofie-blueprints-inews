@@ -569,6 +569,26 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('Grafik (kg) - direkte - create adlib', () => {
+		const cueGrafik = ['#kg direkte KØBENHAVN', ';x.xx']
+		const result = ParseCue(cueGrafik, config)
+		expect(result).toEqual(
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'direkte',
+					cue: '#kg',
+					textFields: ['KØBENHAVN']
+				},
+				adlib: true,
+				iNewsCommand: '#kg'
+			})
+		)
+	})
+
 	test('Grafik (kg) - BillederFra_logo', () => {
 		const cueGrafik = ['#kg BillederFra_logo KØBENHAVN', ';0.01']
 		const result = ParseCue(cueGrafik, config)
@@ -724,6 +744,35 @@ describe('Cue parser', () => {
 					seconds: 0
 				},
 				iNewsCommand: 'VCP'
+			})
+		)
+	})
+
+	test('MOS object manual', () => {
+		const cueMOS = [
+			'*cg4 pilotdata',
+			'LgfxWeb/18-AARIG_02-03-2022_13:15:42/Mosart=L|M|00:10',
+			'VCPID=2762780',
+			'ContinueCount=1',
+			'LgfxWeb/18-AARIG_02-03-2022_13:15:42/Mosart=L|M|00:10'
+		]
+		const result = ParseCue(cueMOS, config)
+		expect(result).toEqual(
+			literal<CueDefinitionGraphic<GraphicPilot>>({
+				type: CueType.Graphic,
+				adlib: true,
+				end: {
+					seconds: 10
+				},
+				engineNumber: 4,
+				graphic: {
+					type: 'pilot',
+					name: 'LgfxWeb/18-AARIG_02-03-2022_13:15:42',
+					vcpid: 2762780,
+					continueCount: 1
+				},
+				iNewsCommand: 'VCP',
+				target: 'OVL'
 			})
 		)
 	})

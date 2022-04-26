@@ -20,11 +20,10 @@ import {
 	CreatePartKamBase,
 	FindDSKJingle,
 	FindSourceInfoStrict,
-	GetCameraMetaData,
-	GetLayersForCamera,
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
+	PieceMetaData,
 	TimeFromINewsField,
 	TransitionFromString,
 	TransitionSettings
@@ -63,6 +62,11 @@ export function CreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
@@ -110,7 +114,12 @@ export function CreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmCam,
 				lifespan: PieceLifespan.WithinPart,
-				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
+						acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+					}
+				}),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,

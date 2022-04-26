@@ -10,14 +10,12 @@ import {
 	SetLayerNamesToDefaults
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
 import {
 	manifestAFVDDownstreamKeyers,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesDelayedPlayback,
 	manifestAFVDSourcesRM,
-	manifestAFVDSourcesSkype,
 	manifestAFVDStudioMics
 } from '../config-manifests'
 import { CasparLLayer, SisyfosLLAyer } from '../layers'
@@ -73,16 +71,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	ensureStudioConfig(
 		'0.1.0',
-		'SourcesSkype',
-		manifestAFVDSourcesSkype.defaultVal,
-		'text',
-		'Studio config: Skype mappings',
-		'Enter the Skype input mapping',
-		manifestAFVDSourcesSkype.defaultVal
-	),
-
-	ensureStudioConfig(
-		'0.1.0',
 		'ABMediaPlayers',
 		manifestAFVDSourcesABMediaPlayers.defaultVal,
 		'text',
@@ -105,7 +93,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationAFVD, true),
 	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationAFVD, false),
 	MoveSourcesToTable('0.1.0', 'SourcesDelayedPlayback', true, GetSisyfosLayersForTableMigrationAFVD, true),
-	MoveSourcesToTable('0.1.0', 'SourcesSkype', true, GetSisyfosLayersForTableMigrationAFVD, false),
 	MoveSourcesToTable('0.1.0', 'ABMediaPlayers', true, GetSisyfosLayersForTableMigrationAFVD),
 	...[
 		'viz_layer_adlibs',
@@ -192,6 +179,9 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.CCGGain'),
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
 	removeMapping('1.6.1', 'atem_dsk_efect'),
+
+	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+	RemoveConfig('1.6.2', 'AFVD', 'SourcesSkype'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

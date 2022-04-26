@@ -25,6 +25,8 @@ import {
 	IsTargetingTLF,
 	IsTargetingWall,
 	literal,
+	PieceMetaData,
+	SisyfosPersistMetaData,
 	TV2BlueprintConfig
 } from 'tv2-common'
 import {
@@ -156,6 +158,11 @@ export function CreateFullPiece(
 		sourceLayerId: GetSourceLayer(engine),
 		adlibPreroll: config.studio.VizPilotGraphics.PrerollDuration,
 		lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue),
+		metaData: literal<PieceMetaData>({
+			sisyfosPersistMetaData: {
+				sisyfosLayers: []
+			}
+		}),
 		content: CreateFullContent(config, context, part, settings, parsedCue, engine, adlib),
 		tags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
 	})
@@ -195,6 +202,9 @@ export function CreateFullDataStore(
 				name: parsedCue.graphic.name,
 				vcpid: parsedCue.graphic.vcpid,
 				segmentExternalId
+			}),
+			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+				sisyfosLayers: []
 			})
 		},
 		content,

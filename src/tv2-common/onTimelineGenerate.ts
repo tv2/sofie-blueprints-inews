@@ -1,6 +1,7 @@
 import {
 	BlueprintResultTimeline,
 	GraphicsContent,
+	IBlueprintPartInstance,
 	IBlueprintResolvedPieceInstance,
 	IRundownContext,
 	IShowStyleContext,
@@ -11,16 +12,15 @@ import {
 	TimelinePersistentState,
 	TSR
 } from '@tv2media/blueprints-integration'
-import { CasparPlayerClip } from 'tv2-common'
+import { CasparPlayerClip, literal } from 'tv2-common'
 import { AbstractLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
-import { OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers' // TODO: REMOVE
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import { ABSourceLayers, assignMediaPlayers } from './helpers'
 
 export interface PartEndStateExt {
-	stickySisyfosLevels: { [key: string]: 0 | 1 | 2 | undefined }
+	sisyfosPersistMetaData: SisyfosPersistMetaData
 	mediaPlayerSessions: { [layer: string]: string[] }
 	isJingle?: boolean
 	fullFileName?: string
@@ -34,13 +34,13 @@ export interface MediaPlayerClaim {
 
 export interface TimelinePersistentStateExt {
 	activeMediaPlayers: { [player: string]: MediaPlayerClaim[] | undefined }
+	isNewSegment?: boolean
 }
 
 export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 	/** Metadata for use by the OnTimelineGenerate or other callbacks */
 	metaData?: {
 		context?: string
-		sisyfosPersistLevel?: boolean
 		mediaPlayerSession?: string
 		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 		templateData?: any
@@ -54,10 +54,18 @@ export interface PieceMetaData {
 		isMix?: boolean
 		isJingle?: boolean
 	}
-	stickySisyfosLevels?: { [key: string]: { value: number; followsPrevious: boolean } }
+	sisyfosPersistMetaData?: SisyfosPersistMetaData
 	mediaPlayerSessions?: string[]
 	mediaPlayerOptional?: boolean
 	modifiedByAction?: boolean
+}
+
+export interface SisyfosPersistMetaData {
+	sisyfosLayers: string[]
+	wantsToPersistAudio?: boolean
+	acceptPersistAudio?: boolean
+	previousPersistMetaDataForCurrentPiece?: SisyfosPersistMetaData
+	isPieceInjectedInPart?: boolean
 }
 
 export interface PartMetaData {
@@ -81,19 +89,21 @@ export function onTimelineGenerate<
 	_atemLayerNext: string
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
+	const persistentState: TimelinePersistentStateExt = {
+		activeMediaPlayers: {},
+		isNewSegment: context.previousPartInstance?.segmentId !== context.currentPartInstance?.segmentId
+	}
 
 	const config = getConfig(context)
 
-	copyPreviousSisyfosLevels(
-		context,
-		timeline,
-		previousPartEndState2 ? previousPartEndState2.stickySisyfosLevels : {},
-		resolvedPieces
-	)
-
-	const persistentState: TimelinePersistentStateExt = {
-		activeMediaPlayers: {}
+	if (!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(resolvedPieces, context)) {
+		const sisyfosPersistedLevelsTimelineObject = createSisyfosPersistedLevelsTimelineObject(
+			resolvedPieces,
+			previousPartEndState2 ? previousPartEndState2.sisyfosPersistMetaData.sisyfosLayers : []
+		)
+		timeline.push(sisyfosPersistedLevelsTimelineObject)
 	}
+
 	const previousPersistentState2 = previousPersistentState as TimelinePersistentStateExt | undefined
 
 	timeline = processServerLookaheads(context, timeline, resolvedPieces, sourceLayers)
@@ -181,19 +191,29 @@ function processServerLookaheads(
 	})
 }
 
+function isAnyPieceInjectedIntoPart(resolvedPieces: IBlueprintResolvedPieceInstance[], context: ITimelineEventContext) {
+	return resolvedPieces
+		.filter(piece => piece.partInstanceId === context.currentPartInstance?._id)
+		.some(piece => {
+			const metaData = piece.piece.metaData as PieceMetaData
+			return metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
+		})
+}
+
 export function getEndStateForPart(
 	_context: IRundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
-	previousPartEndState: PartEndState | undefined,
+	partInstance: IBlueprintPartInstance | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	time: number
 ): PartEndState {
 	const endState: PartEndStateExt = {
-		stickySisyfosLevels: {},
+		sisyfosPersistMetaData: {
+			sisyfosLayers: []
+		},
 		mediaPlayerSessions: {}
 	}
-
-	const previousPartEndState2 = previousPartEndState as Partial<PartEndStateExt> | undefined
+	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
 
 	const activePieces = resolvedPieces.filter(
 		p =>
@@ -203,9 +223,13 @@ export function getEndStateForPart(
 			(!p.piece.enable.duration || p.piece.enable.start + (p.piece.enable.duration as number) >= time)
 	)
 
-	for (const piece of activePieces) {
-		preservePieceSisfosLevel(endState, previousPartEndState2, piece)
-	}
+	const previousPersistentState: TimelinePersistentStateExt = _previousPersistentState as TimelinePersistentStateExt
+	endState.sisyfosPersistMetaData.sisyfosLayers = findLayersToPersist(
+		activePieces,
+		!previousPersistentState.isNewSegment && previousPartEndState && previousPartEndState.sisyfosPersistMetaData
+			? previousPartEndState.sisyfosPersistMetaData.sisyfosLayers
+			: []
+	)
 
 	for (const piece of activePieces) {
 		if (piece.piece.metaData) {
@@ -250,125 +274,81 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 	}
 }
 
-export function preservePieceSisfosLevel(
-	endState: PartEndStateExt,
-	previousPartEndState: Partial<PartEndStateExt> | undefined,
-	piece: IBlueprintResolvedPieceInstance
-) {
-	const metaData = piece.piece.metaData as PieceMetaData | undefined
-	if (metaData) {
-		// Loop through rm level persistance
-		if (metaData.stickySisyfosLevels) {
-			for (const key of Object.keys(metaData.stickySisyfosLevels)) {
-				const values = metaData.stickySisyfosLevels[key]
-
-				// Follow the previous state, if specified, or start with this exposed value
-				endState.stickySisyfosLevels[key] =
-					values.followsPrevious &&
-					previousPartEndState &&
-					previousPartEndState.stickySisyfosLevels &&
-					previousPartEndState.stickySisyfosLevels[key]
-						? previousPartEndState.stickySisyfosLevels[key]
-						: (values.value as 0 | 1 | 2 | undefined)
-			}
-		}
-	}
-}
-
-function isSisyfosPersistObject(obj: TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt) {
-	return (
-		(obj.layer === OfftubeSisyfosLLayer.SisyfosPersistedLevels || obj.layer === SisyfosLLAyer.SisyfosPersistedLevels) &&
-		obj.content.deviceType === TSR.DeviceType.SISYFOS &&
-		obj.content.type === TSR.TimelineContentTypeSisyfos.CHANNELS &&
-		obj.metaData?.sisyfosPersistLevel &&
-		!obj.id.match(/previous/i) &&
-		!obj.id.match(/future/)
-	)
-}
-
-export function copyPreviousSisyfosLevels(
-	_context: IRundownContext,
-	timelineObjs: OnGenerateTimelineObj[],
-	previousLevels: PartEndStateExt['stickySisyfosLevels'],
-	resolvedPieces: IBlueprintResolvedPieceInstance[]
-) {
-	const objectsLookingToPersistLevels: Array<TSR.TimelineObjSisyfosChannels &
-		TimelineBlueprintExt &
-		OnGenerateTimelineObj> = (timelineObjs as Array<
-		TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt & OnGenerateTimelineObj
-	>).filter(isSisyfosPersistObject)
-
-	// This needs to look at previous pieces within the part, to make it work for adlibs
-	// Pieces should be ordered, we shall assume that
-	const groupedPieces = _.groupBy(resolvedPieces, p => p.resolvedStart)
-	const sisyfosObjectsByPiece = _.groupBy(objectsLookingToPersistLevels, o => o.pieceInstanceId)
-
-	for (const k of Object.keys(groupedPieces)) {
-		const pieces = groupedPieces[k]
-		const pieceIds = _.pluck(pieces, '_id') // getPieceGroupId(p._id))
-		// Find all the objs that start here
-		const objs = _.flatten(Object.values(_.pick(sisyfosObjectsByPiece, pieceIds)))
-		// Stop if no objects
-		if (objs.length === 0) {
-			continue
-		}
-
-		// Find the active pieces before this time
-		const time = pieces[0].resolvedStart
-
-		// Start of part
-		if (time !== 0) {
-			// Calculate the previous 'state'
-			const activePieces = resolvedPieces.filter(p => {
-				const start = p.resolvedStart // Core should be always setting this to a number
-				const duration = p.resolvedDuration
-
-				// Piece must start before target, and end at or after target starts
-				return start < time && (duration === undefined || start + duration >= time)
+export function createSisyfosPersistedLevelsTimelineObject(
+	resolvedPieces: IBlueprintResolvedPieceInstance[],
+	previousSisyfosLayersThatWantsToBePersisted: SisyfosPersistMetaData['sisyfosLayers']
+): TSR.TimelineObjSisyfosChannels {
+	const layersToPersist = findLayersToPersist(resolvedPieces, previousSisyfosLayersThatWantsToBePersisted)
+	return literal<TSR.TimelineObjSisyfosChannels>({
+		id: 'sisyfosPersistenceObject',
+		enable: {
+			start: 0
+		},
+		layer: SisyfosLLAyer.SisyfosPersistedLevels,
+		content: {
+			deviceType: TSR.DeviceType.SISYFOS,
+			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+			overridePriority: 1,
+			channels: layersToPersist.map(layer => {
+				return {
+					mappedLayer: layer,
+					isPgm: 1
+				}
 			})
+		}
+	})
+}
 
-			const newPreviousLevels: PartEndStateExt['stickySisyfosLevels'] = {}
-			for (const piece of activePieces) {
-				const metadata = piece.piece.metaData as PieceMetaData | undefined
-				if (metadata && metadata.stickySisyfosLevels) {
-					for (const id of Object.keys(metadata.stickySisyfosLevels)) {
-						// context.notifyUserWarning(
-						// 	`New level from ${piece._id} for ${id} of ${JSON.stringify(val)} (last was ${previousLevels[id]})`
-						// )
-						if (newPreviousLevels[id]) {
-							// context.notifyUserWarning('duplicate level, going with the first!' + id)
-						} else {
-							const val = metadata.stickySisyfosLevels[id]
-							newPreviousLevels[id] =
-								val.followsPrevious && previousLevels[id] !== undefined
-									? previousLevels[id]
-									: (val.value as 0 | 1 | 2 | undefined)
-						}
-					}
-				}
-			}
+function findLayersToPersist(
+	pieces: IBlueprintResolvedPieceInstance[],
+	sisyfosLayersThatWantsToBePersisted: string[]
+): string[] {
+	const sortedPieces = pieces
+		.filter(piece => {
+			const metaData = piece.piece.metaData as PieceMetaData
+			return metaData?.sisyfosPersistMetaData
+		})
+		.sort((a, b) => b.resolvedStart - a.resolvedStart)
 
-			// Apply newly calculated levels
-			previousLevels = newPreviousLevels
+	if (sortedPieces.length === 0) {
+		return []
+	}
+
+	const firstPieceMetaData = sortedPieces[0].piece.metaData as PieceMetaData
+	if (!firstPieceMetaData.sisyfosPersistMetaData!.acceptPersistAudio) {
+		return firstPieceMetaData.sisyfosPersistMetaData!.wantsToPersistAudio
+			? firstPieceMetaData.sisyfosPersistMetaData!.sisyfosLayers
+			: []
+	}
+
+	const layersToPersist: string[] = []
+	for (let i = 0; i < sortedPieces.length; i++) {
+		const pieceMetaData = sortedPieces[i].piece.metaData as PieceMetaData
+		const sisyfosPersistMetaData: SisyfosPersistMetaData = pieceMetaData!.sisyfosPersistMetaData!
+		if (sisyfosPersistMetaData.wantsToPersistAudio) {
+			layersToPersist.push(...sisyfosPersistMetaData.sisyfosLayers)
 		}
 
-		const allChannels = []
-		// Apply newly calculated levels
-		for (const sisyfosObj of objs) {
-			const contentObj = sisyfosObj.content
-			for (const channel of contentObj.channels) {
-				const previousVal = previousLevels[channel.mappedLayer]
-				if (previousVal !== undefined) {
-					channel.isPgm = previousVal
-					allChannels.push(channel)
-				}
-			}
+		if (doesMetaDataNotAcceptPersistAudioDeep(sisyfosPersistMetaData)) {
+			break
 		}
-		// Apply all persisted levels to all objects in case there's more than one object
-		for (const sisyfosObj of objs) {
-			sisyfosObj.content.channels = allChannels
+
+		if (i === sortedPieces.length - 1) {
+			layersToPersist.push(...sisyfosLayersThatWantsToBePersisted)
 		}
 	}
+
+	return Array.from(new Set(layersToPersist))
+}
+
+function doesMetaDataNotAcceptPersistAudioDeep(metaData: SisyfosPersistMetaData): boolean {
+	if (!metaData.acceptPersistAudio) {
+		return true
+	}
+	if (metaData.previousPersistMetaDataForCurrentPiece) {
+		return doesMetaDataNotAcceptPersistAudioDeep(metaData.previousPersistMetaDataForCurrentPiece)
+	}
+	return false
 }
 
 export function disablePilotWipeAfterJingle(
