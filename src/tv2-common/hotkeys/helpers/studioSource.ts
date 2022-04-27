@@ -23,7 +23,7 @@ export function MakeStudioSourceHotkeys(
 	getNextRank: () => number,
 	nameFunc: (source: string) => string,
 	idFunc: (showStyleId: string, sourceLayer: string, hotkeyType: string, index: number) => string,
-	pickFunc: (sourceIndex: number, hotkeyType: string) => number = (sourceIndex) => sourceIndex,
+	isVO: boolean = false
 ): IBlueprintTriggeredActions[] {
 	const directCutHotkeys: IBlueprintTriggeredActions[] = []
 	const queueHotkeys: IBlueprintTriggeredActions[] = []
@@ -44,7 +44,7 @@ export function MakeStudioSourceHotkeys(
 					name,
 					directHotkey,
 					sourceLayerId,
-					pickFunc(currentSourceIndex, 'cut_direct')
+					currentSourceIndex
 				)
 			)
 		}
@@ -58,7 +58,8 @@ export function MakeStudioSourceHotkeys(
 					name,
 					queueHotkey,
 					sourceLayerId,
-					pickFunc(currentSourceIndex, 'queue')
+					isVO,
+					currentSourceIndex
 				)
 			)
 		}
@@ -73,7 +74,8 @@ export function MakeStudioSourceHotkeys(
 						name + ` inp ${box + 1}`,
 						boxHotkey,
 						sourceLayerId,
-						pickFunc(currentSourceIndex, `cut_to_box_${box + 1}`),
+						isVO,
+						currentSourceIndex,
 						box
 					)
 				)
@@ -89,7 +91,7 @@ export function MakeStudioSourceHotkeys(
 					name + ` til SS`,
 					toStudioScreenHotkey,
 					sourceLayerId,
-					pickFunc(currentSourceIndex, 'studio_screen')
+					currentSourceIndex
 				)
 			)
 		}
@@ -103,7 +105,7 @@ export function MakeStudioSourceHotkeys(
 					name,
 					toGraphicsEngineHotkey,
 					sourceLayerId,
-					pickFunc(currentSourceIndex, 'graphics_engine')
+					currentSourceIndex
 				)
 			)
 		}
