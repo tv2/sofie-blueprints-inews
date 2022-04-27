@@ -155,7 +155,7 @@ export function CreateFullPiece(
 			  }),
 		outputLayerId: GetOutputLayer(engine),
 		sourceLayerId: GetSourceLayer(engine),
-		prerollDuration: prerollDuration ? prerollDuration : config.studio.VizPilotGraphics.PrerollDuration,
+		prerollDuration: prerollDuration ?? config.studio.VizPilotGraphics.PrerollDuration,
 		lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue),
 		metaData: literal<PieceMetaData>({
 			sisyfosPersistMetaData: {
