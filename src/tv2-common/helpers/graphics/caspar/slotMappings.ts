@@ -3,17 +3,17 @@
  * This will go to the graphics package and become a dependency of the blueprints.
  */
 
-import { GraphicLLayer } from 'tv2-constants'
+import { SharedGraphicLLayer } from 'tv2-constants'
 
 export const layerToHTMLGraphicSlot: { [slot: string]: string } = {
-	[GraphicLLayer.GraphicLLayerOverlay]: '',
-	[GraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
-	[GraphicLLayer.GraphicLLayerOverlayLower]: '450_lowerThird',
-	[GraphicLLayer.GraphicLLayerOverlayTema]: '',
-	[GraphicLLayer.GraphicLLayerOverlayTopt]: '660_topt',
-	[GraphicLLayer.GraphicLLayerPilot]: '250_full',
-	[GraphicLLayer.GraphicLLayerPilotOverlay]: '250_full',
-	[GraphicLLayer.GraphicLLayerLocators]: '850_dve'
+	[SharedGraphicLLayer.GraphicLLayerOverlay]: '',
+	[SharedGraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
+	[SharedGraphicLLayer.GraphicLLayerOverlayLower]: '450_lowerThird',
+	[SharedGraphicLLayer.GraphicLLayerOverlayTema]: '',
+	[SharedGraphicLLayer.GraphicLLayerOverlayTopt]: '660_topt',
+	[SharedGraphicLLayer.GraphicLLayerPilot]: '250_full',
+	[SharedGraphicLLayer.GraphicLLayerPilotOverlay]: '250_full',
+	[SharedGraphicLLayer.GraphicLLayerLocators]: '850_dve'
 }
 
 export interface Slots {

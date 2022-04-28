@@ -11,7 +11,7 @@ import {
 	literal,
 	PartDefinition
 } from 'tv2-common'
-import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { getConfig, parseConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
@@ -162,7 +162,7 @@ describe('Graphics', () => {
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerPilot)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilot)
 		expect(vizObj.content.channelName).toBe('FULL1') // TODO: FULL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -227,7 +227,7 @@ describe('Graphics', () => {
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '!.full' })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerPilotOverlay)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilotOverlay)
 		expect(vizObj.content.channelName).toBe('OVL1') // TODO: OVL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -285,7 +285,7 @@ describe('Graphics', () => {
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '1' })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerWall)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerWall)
 		expect(vizObj.content.channelName).toBe('WALL1') // TODO: OVL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -340,7 +340,7 @@ describe('Graphics', () => {
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerPilot)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilot)
 		expect(vizObj.content.channelName).toBe('FULL1') // TODO: FULL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -531,7 +531,7 @@ describe('Graphics', () => {
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined
 		expect(tlObj).toBeTruthy()
-		expect(tlObj?.layer).toBe(GraphicLLayer.GraphicLLayerOverlayLower)
+		expect(tlObj?.layer).toBe(SharedGraphicLLayer.GraphicLLayerOverlayLower)
 		expect(tlObj?.content.templateName).toBe('bund')
 		expect(tlObj?.content.templateData).toStrictEqual(['Some Person', 'Some Info'])
 		expect(tlObj?.content.channelName).toBe('OVL1')

@@ -9,7 +9,7 @@ import {
 	WithTimeline
 } from '@tv2media/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, literal, TV2BlueprintConfig } from 'tv2-common'
-import { GraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 
 export function EvaluateDesignBase(
 	config: TV2BlueprintConfig,
@@ -77,7 +77,7 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 						start: 0
 					},
 					priority: 1,
-					layer: GraphicLLayer.GraphicLLayerDesign,
+					layer: SharedGraphicLLayer.GraphicLLayerDesign,
 					content: {
 						deviceType: TSR.DeviceType.CASPARCG,
 						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -98,12 +98,13 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 					id: '',
 					enable: { start: 0 },
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerDesign,
+					layer: SharedGraphicLLayer.GraphicLLayerDesign,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: parsedCue.design,
-						templateData: []
+						templateData: [],
+						showId: config.selectedGraphicsSetup.OvlShowId
 					}
 				})
 			]

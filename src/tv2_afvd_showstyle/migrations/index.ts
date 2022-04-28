@@ -13,7 +13,7 @@ import {
 	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { SharedGraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
@@ -83,7 +83,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	AddGraphicToGFXTable('1.5.4', 'AFVD', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
-		LayerMapping: GraphicLLayer.GraphicLLayerLocators,
+		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
 		INewsCode: '',
 		INewsName: 'locators',
 		VizDestination: '',

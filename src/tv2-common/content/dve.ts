@@ -30,7 +30,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, GraphicLLayer, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { ControlClasses, MEDIA_PLAYER_AUTO, SharedGraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
@@ -527,7 +527,7 @@ export function MakeContentDVE2<
 					id: '',
 					enable: getDVEEnable(),
 					priority: 1,
-					layer: GraphicLLayer.GraphicLLayerLocators,
+					layer: SharedGraphicLLayer.GraphicLLayerLocators,
 					content: CreateHTMLRendererContent(config, 'locators', {
 						...graphicsTemplateContent,
 						style: graphicsTemplateStyle ?? {}

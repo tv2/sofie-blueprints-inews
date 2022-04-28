@@ -149,6 +149,24 @@ const OVERLAY: ISourceLayer[] = [
 		isHidden: false,
 		allowDisable: true,
 		onPresenterScreen: false
+	},
+	{
+		_id: SourceLayer.GraphicsShowLifecycle,
+		_rank: 60,
+		name: 'GFX Show Lifecycle',
+		abbreviation: '',
+		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		isClearable: false,
+
+		isSticky: false,
+
+		isQueueable: false,
+		isHidden: true,
+		allowDisable: true,
+		onPresenterScreen: false
 	}
 ]
 

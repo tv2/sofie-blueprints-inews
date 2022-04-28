@@ -17,7 +17,8 @@ import {
 	literal,
 	PilotGeneratorSettings,
 	SisyfosEVSSource,
-	SourceInfo
+	SourceInfo,
+	TV2BlueprintConfig
 } from 'tv2-common'
 import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -28,7 +29,7 @@ export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
 }
 
 export function EvaluateCueGraphicPilot(
-	config: BlueprintConfig,
+	config: TV2BlueprintConfig,
 	context: IShowStyleUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],

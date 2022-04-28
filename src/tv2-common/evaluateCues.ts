@@ -46,6 +46,7 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueBackgroundLoop?: (
+		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -369,6 +370,7 @@ export function EvaluateCuesBase(
 				case CueType.BackgroundLoop:
 					if (showStyleOptions.EvaluateCueBackgroundLoop) {
 						showStyleOptions.EvaluateCueBackgroundLoop(
+							config,
 							pieces,
 							adLibPieces,
 							actions,
@@ -440,9 +442,8 @@ export function EvaluateCuesBase(
 								content: {
 									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
-									channelName: o.content.channelName
-									// R35: rundownId: context.rundownId,
-									// R35: playlistId: ''
+									channel: o.content.channelName,
+									showId: o.content.showId
 								}
 							})
 						}
@@ -452,10 +453,8 @@ export function EvaluateCuesBase(
 							piece.expectedPlayoutItems.push({
 								deviceSubType: TSR.DeviceType.VIZMSE,
 								content: {
-									templateName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
-									channelName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
-									// R35: rundownId: context.rundownId,
-									// R35: playlistId: ''
+									vcpid: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
+									channel: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
 								}
 							})
 						}
@@ -464,10 +463,9 @@ export function EvaluateCuesBase(
 							deviceSubType: TSR.DeviceType.VIZMSE,
 							content: {
 								templateName: 'altud',
-								channelName: 'OVL1',
-								templateData: []
-								// R35: rundownId: context.rundownId,
-								// R35: playlistId: ''
+								channel: 'OVL1',
+								templateData: [],
+								showId: config.selectedGraphicsSetup.OvlShowId
 							}
 						})
 					}

@@ -11,8 +11,8 @@ import {
 } from '@tv2media/blueprints-integration'
 import { AtemLLayerDSK, FindDSKJingle, literal, TimelineBlueprintExt } from 'tv2-common'
 import * as _ from 'underscore'
-import { BlueprintConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
+import { BlueprintConfig } from './helpers/config'
 import { SourceLayer } from './layers'
 
 export function postProcessPartTimelineObjects(

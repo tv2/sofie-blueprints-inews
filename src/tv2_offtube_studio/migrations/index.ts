@@ -14,7 +14,7 @@ import {
 	SetConfigTo,
 	SetLayerNamesToDefaults
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { SharedGraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { EnsureSisyfosMappingHasType } from '../../tv2_afvd_studio/migrations/util'
 import {
@@ -308,18 +308,18 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	removeMapping('1.5.0', 'casparcg_studio_screen_loop'),
 	removeMapping('1.5.0', 'casparcg_graphics_overlay'),
 
-	GetMappingDefaultMigrationStepForLayer('1.5.1', GraphicLLayer.GraphicLLayerAdLibs, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerWall, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilot, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilotOverlay, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerFullLoop, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.1', SharedGraphicLLayer.GraphicLLayerAdLibs, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerWall, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerPilot, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerPilotOverlay, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerFullLoop, true),
 	SetConfigTo('1.5.3', 'Offtube', 'AtemSource.GFXFull', 12),
 
-	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
+	renameMapping('1.5.4', 'casparcg_cg_dve_template', SharedGraphicLLayer.GraphicLLayerLocators),
 
 	...SetLayerNamesToDefaults('1.5.5', 'AFVD', MappingsDefaults),
 
-	GetMappingDefaultMigrationStepForLayer('1.6.0', GraphicLLayer.GraphicLLayerPilot, true),
+	GetMappingDefaultMigrationStepForLayer('1.6.0', SharedGraphicLLayer.GraphicLLayerPilot, true),
 
 	/**
 	 * 1.6.1
@@ -348,7 +348,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	 * 1.6.2
 	 * - Set headline layer to abstract (for potential Viz route set compatibility)
 	 */
-	GetMappingDefaultMigrationStepForLayer('1.6.2', GraphicLLayer.GraphicLLayerOverlayHeadline, true),
+	GetMappingDefaultMigrationStepForLayer('1.6.2', SharedGraphicLLayer.GraphicLLayerOverlayHeadline, true),
 
 	/**
 	 * 1.6.10

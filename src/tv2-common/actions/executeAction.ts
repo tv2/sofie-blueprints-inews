@@ -65,7 +65,7 @@ import {
 import {
 	AdlibActionType,
 	CueType,
-	GraphicLLayer,
+	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SharedSourceLayers,
 	TallyTags
@@ -1420,7 +1420,7 @@ async function applyPrerollToWallGraphics<
 			}
 			const timelineObjectsToUpdate = newPieceProps.content.timelineObjects.filter(
 				timelineObject =>
-					timelineObject.layer === GraphicLLayer.GraphicLLayerWall &&
+					timelineObject.layer === SharedGraphicLLayer.GraphicLLayerWall &&
 					(timelineObject.content.deviceType === TSR.DeviceType.VIZMSE ||
 						timelineObject.content.deviceType === TSR.DeviceType.CASPARCG)
 			)
@@ -2079,7 +2079,7 @@ async function executeActionClearGraphics<
 										start: 0
 									},
 									priority: 1,
-									layer: GraphicLLayer.GraphicLLayerAdLibs,
+									layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 									content: {
 										deviceType: TSR.DeviceType.ABSTRACT
 									}
@@ -2094,11 +2094,12 @@ async function executeActionClearGraphics<
 										start: 0
 									},
 									priority: 100,
-									layer: GraphicLLayer.GraphicLLayerAdLibs,
+									layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 									content: {
 										deviceType: TSR.DeviceType.VIZMSE,
 										type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-										channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined
+										channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined,
+										showId: config.selectedGraphicsSetup.OvlShowId
 									}
 								})
 							]

@@ -42,6 +42,15 @@ function prepareConfig(
 	})
 }
 
+export const OVL_SHOW_ID = 'ovl-show-id'
+export const FULL_SHOW_ID = 'full-show-id'
+export const DEFAULT_GRAPHICS_SETUP = {
+	INewsCode: 'SomeProfile',
+	Concept: 'SomeConcept',
+	OvlShowId: OVL_SHOW_ID,
+	FullShowId: FULL_SHOW_ID
+}
+
 // in here will be some mock configs that can be referenced paired with ro's for the tests
 export const defaultStudioConfig: StudioConfig = {
 	ClipMediaFlowId: '',
@@ -253,8 +262,8 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			FadeOut: 0
 		}
 	],
-	GraphicINewsCode: '',
-	GraphicSetups: [],
+	GraphicsINewsCode: 'SomeProfile',
+	GraphicsSetups: [DEFAULT_GRAPHICS_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT'
 }

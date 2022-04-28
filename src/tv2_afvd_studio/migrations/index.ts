@@ -9,7 +9,7 @@ import {
 	SetConfigTo,
 	SetLayerNamesToDefaults
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { SharedGraphicLLayer } from 'tv2-constants'
 import {
 	manifestAFVDDownstreamKeyers,
 	manifestAFVDSourcesABMediaPlayers,
@@ -161,7 +161,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	renameMapping('1.5.1', 'studio0_adlib_viz_cmd', 'studio0_adlib_graphic_cmd'),
 
-	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
+	renameMapping('1.5.4', 'casparcg_cg_dve_template', SharedGraphicLLayer.GraphicLLayerLocators),
 
 	...SetLayerNamesToDefaults('1.5.5', 'AFVD', MappingsDefaults),
 

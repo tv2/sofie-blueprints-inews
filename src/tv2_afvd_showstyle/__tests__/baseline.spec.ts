@@ -9,7 +9,7 @@ global.VERSION_INTEGRATION = 'test'
 
 import { ExtendedIngestRundown, IGetRundownContext, TSR } from '@tv2media/blueprints-integration'
 import { GetRundownContext } from '../../__mocks__/context'
-import { GraphicLLayer } from '../../tv2-constants'
+import { SharedGraphicLLayer } from '../../tv2-constants'
 import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { parseConfig as parseShowStyleConfig } from '../helpers/config'
@@ -54,7 +54,7 @@ describe('Baseline', () => {
 
 		const result = rundown.baseline.timelineObjects.filter(
 			timelineObject =>
-				timelineObject.layer === GraphicLLayer.GraphicLLayerConcept &&
+				timelineObject.layer === SharedGraphicLLayer.GraphicLLayerConcept &&
 				timelineObject.content.deviceType === TSR.DeviceType.VIZMSE
 		)
 

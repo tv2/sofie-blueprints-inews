@@ -16,13 +16,13 @@ import {
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
-import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import { AbstractLLayer, AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
-import { BlueprintConfig, parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
+import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../__tests__/configs'
+import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_ID } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
-import { getConfig, parseConfig as parseShowStyleConfig } from '../../config'
+import { BlueprintConfig, getConfig, parseConfig as parseShowStyleConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
 
 function makeMockContext() {
@@ -137,13 +137,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -211,13 +212,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -250,13 +252,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -326,13 +329,14 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -365,13 +369,14 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -440,13 +445,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -517,13 +523,14 @@ describe('grafik piece', () => {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -591,13 +598,14 @@ describe('grafik piece', () => {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'direkte',
 								templateData: ['KØBENHAVN'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -695,13 +703,14 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'arkiv',
 								templateData: ['unnamed org'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -769,13 +778,14 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayTopt,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -808,13 +818,14 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayTopt,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj

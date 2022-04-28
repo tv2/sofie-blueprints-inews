@@ -36,6 +36,7 @@ export interface INewsStory {
 export interface INewsPayload {
 	iNewsStory?: INewsStory
 	untimed?: boolean
+	initializeShows?: string[]
 }
 
 export type UnparsedCue = string[] | null
