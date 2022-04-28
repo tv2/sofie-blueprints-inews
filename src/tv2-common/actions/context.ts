@@ -204,9 +204,9 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 	 * Call this when the context is finished with.
 	 * After this, no further calls can be made.
 	 */
-	public afterActions() {
+	public async afterActions() {
 		for (const part of this.modifiedParts) {
-			this.markPartAsModifiedByAction(part).then()
+			await this.markPartAsModifiedByAction(part)
 		}
 	}
 
@@ -228,11 +228,9 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 			partInstance.part.metaData = {}
 		}
 
-		this.coreContext
-			.updatePartInstance(part, {
-				metaData: literal<PartMetaData>({ ...(partInstance.part.metaData as PartMetaData), dirty: true })
-			})
-			.then()
+		await this.coreContext.updatePartInstance(part, {
+			metaData: literal<PartMetaData>({ ...(partInstance.part.metaData as PartMetaData), dirty: true })
+		})
 	}
 }
 
@@ -242,5 +240,5 @@ export async function executeWithContext(
 ) {
 	const context = new TV2ActionExecutionContext(coreContext)
 	await func(context)
-	context.afterActions()
+	await context.afterActions()
 }

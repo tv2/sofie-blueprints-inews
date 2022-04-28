@@ -117,9 +117,7 @@ function CreatePilotAdLibAction(
 			label: t(GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			sourceLayerId: SharedSourceLayers.PgmPilot,
 			outputLayerId: SharedOutputLayers.PGM,
-			content: {
-				...CreateFullContent(config, context, settings, parsedCue, engine, adlib)
-			},
+			content: CreateFullContent(config, context, settings, parsedCue, engine, adlib),
 			uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
 			tags: [
 				AdlibTags.ADLIB_KOMMENTATOR,

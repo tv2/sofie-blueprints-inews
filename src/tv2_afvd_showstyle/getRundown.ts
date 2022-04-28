@@ -111,7 +111,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -141,7 +141,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						})
 					}),
 					...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)] : [])
-				])
+				]
 			}
 		})
 
@@ -172,7 +172,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -189,7 +189,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						classes: ['adlib_deparent']
 					}),
 					...eksternSisyfos
-				])
+				]
 			}
 		})
 
@@ -216,7 +216,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			},
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemAUX>({
 						id: '',
 						enable: { while: '1' },
@@ -230,7 +230,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 							}
 						}
 					})
-				])
+				]
 			}
 		})
 
@@ -270,7 +270,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+					timelineObjects: [
 						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
@@ -284,7 +284,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								}
 							}
 						})
-					])
+					]
 				}
 			})
 			adlibItems.push({
@@ -297,7 +297,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
 				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+					timelineObjects: [
 						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
@@ -311,7 +311,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								}
 							}
 						})
-					])
+					]
 				}
 			})
 		})
@@ -355,7 +355,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+			timelineObjects: [
 				literal<TSR.TimelineObjVIZMSEElementContinue>({
 					id: '',
 					enable: {
@@ -371,7 +371,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						reference: GraphicLLayer.GraphicLLayerPilot
 					}
 				})
-			])
+			]
 		}
 	})
 
@@ -448,7 +448,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+			timelineObjects: [
 				literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { start: 0 },
@@ -460,7 +460,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						resync: true
 					}
 				})
-			])
+			]
 		}
 	})
 
@@ -478,7 +478,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+				timelineObjects: [
 					literal<TSR.TimelineObjVIZMSEElementInternal>({
 						id: '',
 						enable: { start: 0 },
@@ -503,7 +503,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 							loop: true
 						}
 					})
-				])
+				]
 			})
 		})
 	)

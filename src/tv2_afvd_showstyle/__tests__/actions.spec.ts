@@ -506,7 +506,6 @@ async function checkPartExistsWithProperties(
 	props: Partial<IBlueprintPart>
 ) {
 	const partInstance = await context.getPartInstance(part)!
-	expect(partInstance).toBeTruthy()
 
 	if (partInstance === undefined) {
 		fail('PartInstances must not be undefined')

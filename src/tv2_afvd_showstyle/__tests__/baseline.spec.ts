@@ -21,7 +21,6 @@ const configSpec = { id: 'default', studioConfig: defaultStudioConfig, showStyle
 const RUNDOWN_ID = 'test_rundown'
 const SEGMENT_ID = 'test_segment'
 const PART_ID = 'test_part'
-
 describe('Baseline', () => {
 	test('Config: ' + configSpec.id, async () => {
 		expect(configSpec.studioConfig).toBeTruthy()
@@ -32,7 +31,7 @@ describe('Baseline', () => {
 
 		const result = await Blueprints.getRundown(mockContext, mockRundown)
 		if (result === null) {
-			fail('Result is not allowed to null')
+			throw new Error('result must not be null')
 		}
 
 		expect(result.baseline.timelineObjects).not.toHaveLength(0)

@@ -33,7 +33,7 @@ export function CreateAdlibServer<
 	tagAsAdlib: boolean
 ): IBlueprintActionManifest {
 	return literal<IBlueprintActionManifest>({
-		externalId: partDefinition.externalId + '-addLib-server',
+		externalId: partDefinition.externalId + '-adLib-server',
 		actionId: AdlibActionType.SELECT_SERVER_CLIP,
 		userData: literal<ActionSelectServerClip>({
 			type: AdlibActionType.SELECT_SERVER_CLIP,
