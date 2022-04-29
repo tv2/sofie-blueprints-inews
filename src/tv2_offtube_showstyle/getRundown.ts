@@ -300,11 +300,11 @@ function getGlobalAdlibActionsOfftube(
 		)
 	}
 
-	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live', rank: number) {
+	function makeAdlibBoxesActions(info: SourceInfo, type: 'KAM' | 'LIVE', rank: number) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			const feed = type === 'Live' && info.id.match(/^F(.+).*$/)
-			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
-			const layer = type === 'Kamera' ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
+			const feed = type === 'LIVE' && info.id.match(/^F(.+).*$/)
+			const name = feed ? `FEED ${feed[1]}` : `${type} ${info.id}`
+			const layer = type === 'KAM' ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -318,7 +318,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`Cut ${name} to box ${box + 1}`),
+						label: t(`${name} inp ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
 						content: {},
@@ -495,7 +495,7 @@ function getGlobalAdlibActionsOfftube(
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
+			makeAdlibBoxesActions(o, 'KAM', globalRank++)
 		})
 
 	res.push(
@@ -526,7 +526,7 @@ function getGlobalAdlibActionsOfftube(
 		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'Live', globalRank++)
+			makeAdlibBoxesActions(o, 'LIVE', globalRank++)
 		})
 
 	makeServerAdlibBoxesActions(globalRank++)

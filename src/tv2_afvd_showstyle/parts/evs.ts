@@ -42,7 +42,7 @@ export function CreatePartEVS(
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: `EVS ${partDefinition.variant.evs} ${partDefinition.variant.isVO ? ' VO' : ''}`,
+		title: `EVS ${partDefinition.variant.evs} ${partDefinition.variant.vo ?? ''}`,
 		metaData: {},
 		expectedDuration: partTime > 0 ? partTime : 0
 	})
@@ -137,8 +137,8 @@ function makeContentEVS(
 				},
 				classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
 			}),
-			GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, partDefinition.variant.isVO),
-			...(partDefinition.variant.isVO
+			GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!partDefinition.variant.vo),
+			...(partDefinition.variant.vo
 				? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)]
 				: [])
 		])
