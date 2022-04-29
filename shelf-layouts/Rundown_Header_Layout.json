@@ -300,8 +300,8 @@
 			"nextInCurrentPart": false,
 			"oneNextPerSourceLayer": false,
 			"scale": 0.6,
-			"y": 1.7,
-			"x": -36.7,
+			"y": 1.4,
+			"x": 50.6,
 			"requiredLayerIds": [
 				"studio0_script"
 			],
