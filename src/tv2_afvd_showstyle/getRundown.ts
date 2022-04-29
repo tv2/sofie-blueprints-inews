@@ -584,12 +584,13 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 
 	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
+			const evsId = info.id.replace(/dp/i, '')
 			res.push(
 				literal<IBlueprintActionManifest>({
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 					userData: literal<ActionCutSourceToBox>({
 						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
+						name: `EVS ${evsId}${vo ? ' VO' : ''}`,
 						port: info.port,
 						sourceType: info.type,
 						box,
@@ -598,11 +599,11 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`),
+						label: t(`EVS ${evsId}${vo ? ' VO' : ''} to box ${box + 1}`),
 						sourceLayerId: SourceLayer.PgmLocal,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: [AdlibTagCutToBox(box)]
+						tags: [AdlibTagCutToBox(box), vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
 					}
 				})
 			)
@@ -629,7 +630,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 						sourceLayerId: SourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: [AdlibTagCutToBox(box)]
+						tags: [AdlibTagCutToBox(box), AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
 					}
 				})
 			)
