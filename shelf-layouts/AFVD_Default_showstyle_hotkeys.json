@@ -642,12 +642,5 @@
         "label": "serv til inp 1",
         "sourceLayerType": 2,
         "platformKey": "shift+t"
-    },
-    {
-        "_id": "6gREn5sKmuyE8dN8h",
-        "key": "ctrl+r",
-        "label": "Reload Browser",
-        "platformKey": "ctrl+r",
-        "buttonColor": "#95a5a6"
     }
 ]
