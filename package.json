@@ -20,6 +20,7 @@
     "test": "yarn lint --fix && yarn unit",
     "release": "standard-version",
     "prepareChangelog": "standard-version --prerelease",
+    "validate": "yarn validate:dependencies && yarn license-validate",
     "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
     "license-validate": "node-license-validator -p -d --allow-licenses MIT MIT/X11 BSD BSD-3-Clause 0BSD ISC Apache Unlicense"
   },

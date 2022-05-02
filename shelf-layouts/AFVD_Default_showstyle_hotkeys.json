@@ -29,34 +29,6 @@
         "buttonColor": "#f0d718"
     },
     {
-        "_id": "agPkaQMbK2FKZpPcv",
-        "key": "E",
-        "label": "EVS 1 VO",
-        "sourceLayerType": 15,
-        "platformKey": "E"
-    },
-    {
-        "_id": "Kz8QpoLd3iEWtspyb",
-        "key": "R",
-        "label": "EVS 1 100%",
-        "sourceLayerType": 15,
-        "platformKey": "R"
-    },
-    {
-        "_id": "7oCTKdx4Qn7hoKxFT",
-        "key": "U",
-        "label": "EVS 2 VO",
-        "sourceLayerType": 15,
-        "platformKey": "U"
-    },
-    {
-        "_id": "YSXBpa44zMLAGdrSx",
-        "key": "I",
-        "label": "EVS 2 100%",
-        "sourceLayerType": 15,
-        "platformKey": "I"
-    },
-    {
         "_id": "qSptFwTukCezFNK8D",
         "key": "C",
         "label": "3 SPLIT",
@@ -113,20 +85,6 @@
         "buttonColor": "#8e44ad"
     },
     {
-        "_id": "gzN4rBopAsrN9Hubh",
-        "key": "SHIFT+e",
-        "label": "EVS 1 100% inp 1",
-        "sourceLayerType": 15,
-        "platformKey": "SHIFT+e"
-    },
-    {
-        "_id": "cjzA9Wi7ReFeGQHRk",
-        "key": "SHIFT+D",
-        "label": "EVS 1 VO inp 1",
-        "sourceLayerType": 15,
-        "platformKey": "SHIFT+D"
-    },
-    {
         "_id": "CRmsnZEboXfLtiRQw",
         "key": "SHIFT+A",
         "label": "Design Style SC",
@@ -140,20 +98,6 @@
         "sourceLayerType": 7,
         "platformKey": "",
         "buttonColor": "#000000"
-    },
-    {
-        "_id": "zXCnABCGodoiBjecn",
-        "key": "SHIFT+U",
-        "label": "EVS 2 VO inp 1",
-        "sourceLayerType": 15,
-        "platformKey": "SHIFT+U"
-    },
-    {
-        "_id": "5xmjuHQidyXfgJcHb",
-        "key": "SHIFT+I",
-        "label": "EVS 2 100% inp 1",
-        "sourceLayerType": 15,
-        "platformKey": "SHIFT+I"
     },
     {
         "_id": "vDF35PGiHBvWpeTxv",
@@ -490,34 +434,6 @@
         "platformKey": "ctrl+½"
     },
     {
-        "_id": "sCzTBw8MCcSxrXNqD",
-        "key": "ctrl+e",
-        "label": "EVS 1 100% inp 2",
-        "sourceLayerType": 15,
-        "platformKey": "ctrl+e"
-    },
-    {
-        "_id": "Ew6cNpWbBEbr99h9K",
-        "key": "ctrl+d",
-        "label": "EVS 1 VO inp 2",
-        "sourceLayerType": 15,
-        "platformKey": "ctrl+d"
-    },
-    {
-        "_id": "p4jf6mpGY3CfNJhiJ",
-        "key": "Ctrl+Alt+Shift+i",
-        "label": "EVS 2 VO inp 2",
-        "sourceLayerType": 15,
-        "platformKey": "ctrl+u"
-    },
-    {
-        "_id": "6BdRrR258vtZr35jv",
-        "key": "ctrl+i",
-        "label": "EVS 2 100% inp 2",
-        "sourceLayerType": 15,
-        "platformKey": "ctrl+i"
-    },
-    {
         "_id": "rphiEaRPCrQphceAZ",
         "key": "ctrl+home",
         "label": "REW tidslinje",
@@ -636,12 +552,6 @@
         "platformKey": "shift+ctrl+0"
     },
     {
-        "_id": "R2i2648kXwPaJpGb4",
-        "key": "shift+ctrl+e",
-        "label": "EVS 1 til SS",
-        "platformKey": "shift+ctrl+e"
-    },
-    {
         "_id": "6Lyc63BnGt5k8LXus",
         "key": "shift+ctrl+a",
         "label": "ovl: ident OUT",
@@ -676,12 +586,6 @@
         "key": "ctrl+shift+½",
         "label": "deaktivate rundown",
         "platformKey": "ctrl+shift+½"
-    },
-    {
-        "_id": "zfr6hP3ozv4nomNRC",
-        "key": "CTRL+ALT+SHIFT+F",
-        "label": "EVS 1 til OVL inp1",
-        "platformKey": "ALT+E"
     },
     {
         "_id": "BDi5mebWYmX5dp8YQ",
@@ -738,12 +642,5 @@
         "label": "serv til inp 1",
         "sourceLayerType": 2,
         "platformKey": "shift+t"
-    },
-    {
-        "_id": "6gREn5sKmuyE8dN8h",
-        "key": "ctrl+r",
-        "label": "Reload Browser",
-        "platformKey": "ctrl+r",
-        "buttonColor": "#95a5a6"
     }
 ]
