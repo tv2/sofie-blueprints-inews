@@ -450,7 +450,7 @@
     {
         "_id": "kS3YARWkhv3nLfRsJ",
         "key": "CTRL+ALT+SHIFT+G",
-        "label": "serv til inp 2",
+        "label": "serv inp 2",
         "sourceLayerType": 2,
         "platformKey": "ctrl+T"
     },
@@ -460,13 +460,6 @@
         "label": "KAM 5",
         "sourceLayerType": 1,
         "platformKey": "F5"
-    },
-    {
-        "_id": "QS6pXQ2CARySFJKkh",
-        "key": "shift+t",
-        "label": "serv til inp 1",
-        "sourceLayerType": 2,
-        "platformKey": "shift+t"
     },
     {
         "_id": "6gREn5sKmuyE8dN8h",
