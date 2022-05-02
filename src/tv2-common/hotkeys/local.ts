@@ -1,4 +1,5 @@
 import { IBlueprintTriggeredActions } from '@tv2media/blueprints-integration'
+import { localSourceFullAudioName, localSourceVoAudioName } from '../helpers'
 import { MakeStudioSourceHotkeys, SourceHotkeyTriggers } from './helpers'
 
 export interface LocalSourceHotkeyAssignments {
@@ -10,16 +11,8 @@ function localSourceFullAudioHotkeyId(showStyleId: string, sourceLayer: string, 
 	return `${showStyleId}_${sourceLayer}_local_full_audio_${hotkeyType}_${index}`
 }
 
-function localSourceFullAudioHotkeyName(source: string) {
-	return `EVS ${source} 100%`
-}
-
 function localSourceVoAudioHotkeyId(showStyleId: string, sourceLayer: string, hotkeyType: string, index: number) {
 	return `${showStyleId}_${sourceLayer}_local_vo_audio_${hotkeyType}_${index}`
-}
-
-function localSourceVoAudioHotkeyName(source: string) {
-	return `EVS ${source} VO`
 }
 
 export function MakeLocalSourceHotkeys(
@@ -35,7 +28,7 @@ export function MakeLocalSourceHotkeys(
 		localSources,
 		assignemnts.fullAudio,
 		getNextRank,
-		localSourceFullAudioHotkeyName,
+		localSourceFullAudioName,
 		localSourceFullAudioHotkeyId,
 		false
 	)
@@ -46,7 +39,7 @@ export function MakeLocalSourceHotkeys(
 		localSources,
 		assignemnts.voAudio,
 		getNextRank,
-		localSourceVoAudioHotkeyName,
+		localSourceVoAudioName,
 		localSourceVoAudioHotkeyId,
 		true
 	)

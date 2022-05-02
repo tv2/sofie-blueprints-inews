@@ -52,7 +52,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 	switch (partDefinition.type) {
 		case PartType.EVS:
 			// Common pattern to see EV1 and EVS1VO in the same story. Changing from EVS1 to EVS1VO would mean a new part
-			id += `-${partDefinition.variant.evs}-${partDefinition.variant.isVO}`
+			id += `-${partDefinition.variant.evs}-${!!partDefinition.variant.vo}`
 			break
 		case PartType.INTRO:
 			// Intro must have a jingle cue, if it doesn't then padId will handle
