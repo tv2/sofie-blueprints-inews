@@ -345,7 +345,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`Server to box ${box + 1}`),
+						label: t(`Server inp ${box + 1}`),
 						sourceLayerId: OfftubeSourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},

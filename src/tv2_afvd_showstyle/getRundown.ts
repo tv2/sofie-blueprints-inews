@@ -683,7 +683,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`Server to box ${box + 1}`),
+						label: t(`Server inp ${box + 1}`),
 						sourceLayerId: SourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
