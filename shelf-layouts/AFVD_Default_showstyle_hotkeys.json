@@ -460,12 +460,5 @@
         "label": "KAM 5",
         "sourceLayerType": 1,
         "platformKey": "F5"
-    },
-    {
-        "_id": "6gREn5sKmuyE8dN8h",
-        "key": "ctrl+r",
-        "label": "Reload Browser",
-        "platformKey": "ctrl+r",
-        "buttonColor": "#95a5a6"
     }
 ]
