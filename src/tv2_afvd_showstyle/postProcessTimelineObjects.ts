@@ -162,26 +162,24 @@ export function postProcessPieceTimelineObjects(
 				}
 
 				const cleanObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-					..._.omit(tlObj, 'content'),
-					...literal<Partial<TSR.TimelineObjAtemME & TimelineBlueprintExt> & Pick<TSR.TimelineObjAtemME, 'content'>>({
-						id: '',
-						layer: AtemLLayer.AtemCleanUSKEffect,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								upstreamKeyers: [
-									{
-										upstreamKeyerId: 0
-									},
-									{
-										upstreamKeyerId: 1,
-										...newProps
-									}
-								]
-							}
+					..._.omit(tlObj, 'content', 'keyframes'),
+					id: '',
+					layer: AtemLLayer.AtemCleanUSKEffect,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							upstreamKeyers: [
+								{
+									upstreamKeyerId: 0
+								},
+								{
+									upstreamKeyerId: 1,
+									...newProps
+								}
+							]
 						}
-					})
+					}
 				})
 				extraObjs.push(cleanObj)
 			}
