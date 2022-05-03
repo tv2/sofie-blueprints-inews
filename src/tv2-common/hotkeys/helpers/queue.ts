@@ -16,7 +16,7 @@ export function MakeQueueTrigger(
 	name: string,
 	hotkey: string | undefined,
 	sourceLayerId: string,
-	isVO: boolean,
+	tags: string[],
 	pick: number
 ) {
 	return literal<IBlueprintTriggeredActions>({
@@ -52,10 +52,7 @@ export function MakeQueueTrigger(
 					literal<IAdLibFilterLink>({
 						object: 'adLib',
 						field: 'tag',
-						value: [
-							AdlibTags.ADLIB_QUEUE_NEXT,
-							isVO ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL
-						]
+						value: [AdlibTags.ADLIB_QUEUE_NEXT, ...tags]
 					}),
 					literal<IAdLibFilterLink>({
 						object: 'adLib',

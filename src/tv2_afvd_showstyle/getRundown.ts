@@ -687,7 +687,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 						sourceLayerId: SourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
-						tags: [AdlibTagCutToBox(box), AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
+						tags: [AdlibTagCutToBox(box)]
 					}
 				})
 			)

@@ -1,4 +1,5 @@
 import { IBlueprintTriggeredActions } from '@tv2media/blueprints-integration'
+import { AdlibTags } from 'tv2-constants'
 import { localSourceFullAudioName, localSourceVoAudioName } from '../helpers'
 import { MakeStudioSourceHotkeys, SourceHotkeyTriggers } from './helpers'
 
@@ -30,7 +31,7 @@ export function MakeLocalSourceHotkeys(
 		getNextRank,
 		localSourceFullAudioName,
 		localSourceFullAudioHotkeyId,
-		false
+		[AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
 	)
 
 	const voAudioKeys = MakeStudioSourceHotkeys(
@@ -41,7 +42,7 @@ export function MakeLocalSourceHotkeys(
 		getNextRank,
 		localSourceVoAudioName,
 		localSourceVoAudioHotkeyId,
-		true
+		[AdlibTags.ADLIB_VO_AUDIO_LEVEL]
 	)
 
 	return [...fullAudioKeys, ...voAudioKeys]
