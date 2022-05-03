@@ -80,8 +80,7 @@ export function EvaluateJingle(
 					},
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 					currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-					nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)],
-					noHotKey: true
+					nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
 				}
 			})
 		)

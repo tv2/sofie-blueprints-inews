@@ -2,6 +2,7 @@ import {
 	BlueprintResultRundown,
 	ExtendedIngestRundown,
 	IngestSegment,
+	IShowStyleUserContext,
 	PlaylistTimingType
 } from '@tv2media/blueprints-integration'
 import { getRundownWithBackTime } from 'inews-mixins'
@@ -16,7 +17,7 @@ const RUNDOWN_NAME = 'Rundown 1'
 const SEGMENT_ID = 'test_segment'
 const PART_ID = 'test_part'
 
-function getMockContext() {
+function getMockContext(): IShowStyleUserContext {
 	return new ShowStyleUserContext(
 		RUNDOWN_NAME,
 		mappingsDefaults,

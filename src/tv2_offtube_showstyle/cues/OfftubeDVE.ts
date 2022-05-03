@@ -134,7 +134,6 @@ export function OfftubeEvaluateDVE(
 					outputLayerId: OfftubeOutputLayers.PGM,
 					label: t(`${partDefinition.storyName}`),
 					tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
-					noHotKey: !adlib,
 					content: literal<SplitsContent>({
 						...pieceContent.content
 					}),

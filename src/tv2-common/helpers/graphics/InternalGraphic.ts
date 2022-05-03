@@ -100,8 +100,7 @@ export class InternalGraphic {
 						sourceLayerId: this.sourceLayerId,
 						outputLayerId: SharedOutputLayers.OVERLAY,
 						tags: [AdlibTags.ADLIB_KOMMENTATOR],
-						content: _.clone(this.content),
-						noHotKey: true
+						content: _.clone(this.content)
 					}
 				})
 			)
@@ -121,8 +120,7 @@ export class InternalGraphic {
 				}),
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				content: _.clone(this.content),
-				noHotKey: true
+				content: _.clone(this.content)
 			})
 			adlibPieces.push(adLibPiece)
 		}

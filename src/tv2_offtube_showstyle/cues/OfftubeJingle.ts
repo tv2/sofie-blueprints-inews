@@ -87,8 +87,7 @@ export function OfftubeEvaluateJingle(
 				},
 				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
 				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-				nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)],
-				noHotKey: true
+				nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
 			}
 		})
 	)
