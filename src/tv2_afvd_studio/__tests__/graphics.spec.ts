@@ -152,7 +152,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -217,7 +217,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -275,7 +275,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -330,7 +330,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]

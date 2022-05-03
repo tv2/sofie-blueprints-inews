@@ -97,10 +97,12 @@ function checkPartExistsWithProperties(segment: BlueprintResultSegment, props: P
 function getTransitionProperties(effekt: ShowStyleConfig['BreakerConfig'][0]): Partial<IBlueprintPart> {
 	const preroll = defaultStudioConfig.CasparPrerollDuration as number
 	return {
-		transitionDuration: TimeFromFrames(Number(effekt.Duration)) + preroll,
-		transitionKeepaliveDuration: TimeFromFrames(Number(effekt.StartAlpha)) + preroll,
-		transitionPrerollDuration:
-			TimeFromFrames(Number(effekt.Duration)) - TimeFromFrames(Number(effekt.EndAlpha)) + preroll
+		inTransition: {
+			blockTakeDuration: TimeFromFrames(Number(effekt.Duration)) + preroll,
+			previousPartKeepaliveDuration: TimeFromFrames(Number(effekt.StartAlpha)) + preroll,
+			partContentDelayDuration:
+				TimeFromFrames(Number(effekt.Duration)) - TimeFromFrames(Number(effekt.EndAlpha)) + preroll
+		}
 	}
 }
 
@@ -176,7 +178,11 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, {
-			transitionKeepaliveDuration: 440
+			inTransition: {
+				previousPartKeepaliveDuration: 440,
+				partContentDelayDuration: 0,
+				blockTakeDuration: 440
+			}
 		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(11)
@@ -229,7 +235,11 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, {
-			transitionKeepaliveDuration: 600
+			inTransition: {
+				previousPartKeepaliveDuration: 600,
+				partContentDelayDuration: 0,
+				blockTakeDuration: 600
+			}
 		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(15)
@@ -282,7 +292,11 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, {
-			transitionKeepaliveDuration: 1000
+			inTransition: {
+				previousPartKeepaliveDuration: 1000,
+				partContentDelayDuration: 0,
+				blockTakeDuration: 1000
+			}
 		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(25)
@@ -301,7 +315,6 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmServer)
 		const atemCutObj = getATEMMEObj(piece)
 
-		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
@@ -336,8 +349,11 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, {
-			prerollDuration: defaultStudioConfig.CasparPrerollDuration as number,
-			transitionKeepaliveDuration: 800
+			inTransition: {
+				previousPartKeepaliveDuration: 800,
+				partContentDelayDuration: 0,
+				blockTakeDuration: 800
+			}
 		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
@@ -356,7 +372,6 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmVoiceOver)
 		const atemCutObj = getATEMMEObj(piece)
 
-		checkPartExistsWithProperties(segment, { prerollDuration: defaultStudioConfig.CasparPrerollDuration as number })
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
@@ -391,8 +406,11 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, {
-			prerollDuration: defaultStudioConfig.CasparPrerollDuration as number,
-			transitionKeepaliveDuration: 800
+			inTransition: {
+				previousPartKeepaliveDuration: 800,
+				partContentDelayDuration: 0,
+				blockTakeDuration: 800
+			}
 		})
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)

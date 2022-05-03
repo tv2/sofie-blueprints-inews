@@ -17,12 +17,12 @@ const SELECTED_ADLIB_LAYERS = [
 	OfftubeSourceLayer.SelectedAdlibJingle
 ]
 
-export function executeActionOfftube(
+export async function executeActionOfftube(
 	context: IActionExecutionContext,
 	actionId: string,
 	userData: ActionUserData
-): void {
-	executeAction(
+): Promise<void> {
+	await executeAction(
 		context,
 		{
 			getConfig,

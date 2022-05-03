@@ -17,8 +17,7 @@ import {
 	PartDefinitionKam,
 	PartMetaData
 } from 'tv2-common'
-import { CueType, PartType, SharedSourceLayers } from 'tv2-constants'
-import * as _ from 'underscore'
+import { CueType, PartType, SharedSourceLayers, TallyTags } from 'tv2-constants'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
 	CueDefinitionUnpairedTarget,
@@ -29,7 +28,6 @@ import {
 	PartDefinitionTelefon,
 	TimeFromINewsField
 } from './inewsConversion'
-import { PieceMetaData } from './onTimelineGenerate'
 import { CreatePartInvalid, ServerPartProps } from './parts'
 
 export interface GetSegmentShowstyleOptions<
@@ -360,9 +358,7 @@ export function getSegmentBase<
 			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
 			// Jingle-only part, do not modify duration
 			!part.pieces.some(
-				p =>
-					p.sourceLayerId === SharedSourceLayers.PgmJingle &&
-					(p.metaData as PieceMetaData)?.transition?.isJingle === true
+				p => p.sourceLayerId === SharedSourceLayers.PgmJingle && p.tags?.some(tag => TallyTags.JINGLE === tag)
 			)
 		) {
 			part.part.expectedDuration = config.studio.DefaultPartDuration

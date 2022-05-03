@@ -56,6 +56,7 @@ import {
 	PartDefinition,
 	PieceMetaData,
 	SisyfosPersistMetaData,
+	TimeFromFrames,
 	TimelineBlueprintExt,
 	TV2AdlibAction,
 	TV2BlueprintConfigBase,
@@ -187,7 +188,7 @@ export interface ActionExecutionSettings<
 	pilotGraphicSettings: PilotGeneratorSettings
 }
 
-export function executeAction<
+export async function executeAction<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -195,66 +196,76 @@ export function executeAction<
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionIdStr: string,
 	userData: ActionUserData
-): void {
-	executeWithContext(coreContext, context => {
-		const existingTransition = getExistingTransition(context, settings, 'next')
+): Promise<void> {
+	await executeWithContext(coreContext, async context => {
+		const existingTransition = await getExistingTransition(context, settings, 'next')
 
 		const actionId = actionIdStr as AdlibActionType
 
 		switch (actionId) {
 			case AdlibActionType.SELECT_SERVER_CLIP:
-				executeActionSelectServerClip(context, settings, actionId, userData as ActionSelectServerClip)
+				await executeActionSelectServerClip(context, settings, actionId, userData as ActionSelectServerClip)
 				break
 			case AdlibActionType.SELECT_DVE:
-				executeActionSelectDVE(context, settings, actionId, userData as ActionSelectDVE)
+				await executeActionSelectDVE(context, settings, actionId, userData as ActionSelectDVE)
 				break
 			case AdlibActionType.SELECT_DVE_LAYOUT:
-				executeActionSelectDVELayout(context, settings, actionId, userData as ActionSelectDVELayout)
+				await executeActionSelectDVELayout(context, settings, actionId, userData as ActionSelectDVELayout)
 				break
 			case AdlibActionType.SELECT_FULL_GRAFIK:
-				executeActionSelectFull(context, settings, actionId, userData as ActionSelectFullGrafik)
+				await executeActionSelectFull(context, settings, actionId, userData as ActionSelectFullGrafik)
 				break
 			case AdlibActionType.SELECT_JINGLE:
-				executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
+				await executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
 				break
 			case AdlibActionType.CLEAR_GRAPHICS:
-				executeActionClearGraphics(context, settings, actionId, userData as ActionClearGraphics)
+				await executeActionClearGraphics(context, settings, actionId, userData as ActionClearGraphics)
 				break
 			case AdlibActionType.CUT_TO_CAMERA:
-				executeActionCutToCamera(context, settings, actionId, userData as ActionCutToCamera)
+				await executeActionCutToCamera(context, settings, actionId, userData as ActionCutToCamera)
 				break
 			case AdlibActionType.CUT_TO_REMOTE:
-				executeActionCutToRemote(context, settings, actionId, userData as ActionCutToRemote)
+				await executeActionCutToRemote(context, settings, actionId, userData as ActionCutToRemote)
 				break
 			case AdlibActionType.CUT_SOURCE_TO_BOX:
-				executeActionCutSourceToBox(context, settings, actionId, userData as ActionCutSourceToBox)
+				await executeActionCutSourceToBox(context, settings, actionId, userData as ActionCutSourceToBox)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_DVE:
-				executeActionCommentatorSelectDVE(context, settings, actionId, userData as ActionCommentatorSelectDVE)
+				await executeActionCommentatorSelectDVE(context, settings, actionId, userData as ActionCommentatorSelectDVE)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_SERVER:
-				executeActionCommentatorSelectServer(context, settings, actionId, userData as ActionCommentatorSelectServer)
+				await executeActionCommentatorSelectServer(
+					context,
+					settings,
+					actionId,
+					userData as ActionCommentatorSelectServer
+				)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_FULL:
-				executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
+				await executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_JINGLE:
-				executeActionCommentatorSelectJingle(context, settings, actionId, userData as ActionCommentatorSelectJingle)
+				await executeActionCommentatorSelectJingle(
+					context,
+					settings,
+					actionId,
+					userData as ActionCommentatorSelectJingle
+				)
 				break
 			case AdlibActionType.TAKE_WITH_TRANSITION:
-				executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
+				await executeActionTakeWithTransition(context, settings, actionId, userData as ActionTakeWithTransition)
 				break
 			case AdlibActionType.RECALL_LAST_LIVE:
-				executeActionRecallLastLive(context, settings, actionId, userData as ActionRecallLastLive)
+				await executeActionRecallLastLive(context, settings, actionId, userData as ActionRecallLastLive)
 				break
 			case AdlibActionType.RECALL_LAST_DVE:
-				executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
+				await executeActionRecallLastDVE(context, settings, actionId, userData as ActionRecallLastDVE)
 				break
 			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
-				executeActionFadeDownPersistedAudioLevels(context, settings)
+				await executeActionFadeDownPersistedAudioLevels(context, settings)
 				break
 			case AdlibActionType.PLAY_GRAPHICS:
-				executeActionPlayGraphics(context, settings, actionId, userData as ActionPlayGraphics)
+				await executeActionPlayGraphics(context, settings, actionId, userData as ActionPlayGraphics)
 				break
 			default:
 				assertUnreachable(actionId)
@@ -263,7 +274,12 @@ export function executeAction<
 
 		if (actionId !== AdlibActionType.TAKE_WITH_TRANSITION) {
 			if (existingTransition) {
-				executeActionTakeWithTransition(context, settings, AdlibActionType.TAKE_WITH_TRANSITION, existingTransition)
+				await executeActionTakeWithTransition(
+					context,
+					settings,
+					AdlibActionType.TAKE_WITH_TRANSITION,
+					existingTransition
+				)
 			}
 		}
 	})
@@ -277,17 +293,17 @@ function sanitizePieceStart(piece: IBlueprintPiece): IBlueprintPiece {
 	return piece
 }
 
-function getExistingTransition<
+async function getExistingTransition<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	part: 'current' | 'next'
-): ActionTakeWithTransition | undefined {
-	const existingTransition = context
+): Promise<ActionTakeWithTransition | undefined> {
+	const existingTransition = await context
 		.getPieceInstances(part)
-		.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt)
+		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt))
 
 	if (!existingTransition) {
 		return
@@ -336,13 +352,13 @@ function sanitizePieceId(piece: IBlueprintPieceDB): IBlueprintPiece {
 	return _.omit(piece, ['_id', 'partId', 'infiniteId', 'playoutDuration'])
 }
 
-export function getPiecesToPreserve(
+export async function getPiecesToPreserve(
 	context: ITV2ActionExecutionContext,
 	adlibLayers: string[],
-	ingoreLayers: string[]
-): IBlueprintPiece[] {
-	const currentPartSegmentId = context.getPartInstance('current')?.segmentId
-	const nextPartSegmentId = context.getPartInstance('next')?.segmentId
+	ignoreLayers: string[]
+): Promise<IBlueprintPiece[]> {
+	const currentPartSegmentId = await context.getPartInstance('current').then(partInstance => partInstance?.segmentId)
+	const nextPartSegmentId = await context.getPartInstance('next').then(partInstance => partInstance?.segmentId)
 
 	if (!currentPartSegmentId || !nextPartSegmentId) {
 		return []
@@ -352,20 +368,21 @@ export function getPiecesToPreserve(
 		return []
 	}
 
-	return context
-		.getPieceInstances('next')
-		.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ingoreLayers.includes(p.piece.sourceLayerId))
-		.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
-		.map<IBlueprintPiece>(p => p.piece)
-		.map(p => sanitizePieceStart(p))
-		.map(p => sanitizePieceId(p as IBlueprintPieceDB))
+	return context.getPieceInstances('next').then(pieceInstances => {
+		return pieceInstances
+			.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ignoreLayers.includes(p.piece.sourceLayerId))
+			.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
+			.map<IBlueprintPiece>(p => p.piece)
+			.map(p => sanitizePieceStart(p))
+			.map(p => sanitizePieceId(p as IBlueprintPieceDB))
+	})
 }
 
 function generateExternalId(context: ITV2ActionExecutionContext, actionId: string, args: string[]): string {
 	return `adlib_action_${actionId}_${context.getHashId(args.join('_'), true)}`
 }
 
-function executeActionSelectServerClip<
+async function executeActionSelectServerClip<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -382,10 +399,12 @@ function executeActionSelectServerClip<
 	const externalId = generateExternalId(context, actionId, [file])
 
 	const currentPiece = settings.SelectedAdlibs
-		? context
+		? await context
 				.getPieceInstances('current')
-				.find(
-					p => p.piece.sourceLayerId === (userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server)
+				.then(pieceInstances =>
+					pieceInstances.find(
+						p => p.piece.sourceLayerId === (userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server)
+					)
 				)
 		: undefined
 
@@ -475,20 +494,21 @@ function executeActionSelectServerClip<
 		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
 	}
 
-	context.queuePart(part, [
+	await context.queuePart(part, [
 		activeServerPiece,
 		serverDataStore,
 		...grafikPieces,
 		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
+			? await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 					settings.SelectedAdlibs.SourceLayer.VO,
 					settings.SelectedAdlibs.SourceLayer.Server
 			  ])
 			: []),
 		...effektPieces
 	])
+
 	if (settings.SelectedAdlibs && !currentPiece) {
-		context.stopPiecesOnLayers([
+		await context.stopPiecesOnLayers([
 			userData.voLayer ? settings.SelectedAdlibs.SourceLayer.VO : settings.SelectedAdlibs.SourceLayer.Server
 		])
 	}
@@ -503,7 +523,7 @@ function dveContainsServer(sources: DVESources) {
 	)
 }
 
-function executeActionSelectDVE<
+async function executeActionSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -570,7 +590,7 @@ function executeActionSelectDVE<
 		content: {
 			...pieceContent.content
 		},
-		adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
+		prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
 		metaData,
 		tags: [
 			GetTagForDVE(userData.segmentExternalId, parsedCue.template, parsedCue.sources),
@@ -579,9 +599,9 @@ function executeActionSelectDVE<
 		]
 	})
 
-	dvePiece = cutServerToBox(context, settings, dvePiece)
+	dvePiece = await cutServerToBox(context, settings, dvePiece)
 
-	startNewDVELayout(
+	await startNewDVELayout(
 		context,
 		config,
 		settings,
@@ -597,14 +617,14 @@ function executeActionSelectDVE<
 	)
 }
 
-function cutServerToBox<
+async function cutServerToBox<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	dvePiece: IBlueprintPiece
-): IBlueprintPiece {
+): Promise<IBlueprintPiece> {
 	// Check if DVE should continue server + copy server properties
 
 	if (!dvePiece.metaData) {
@@ -618,12 +638,15 @@ function cutServerToBox<
 	}
 
 	if (dvePiece.content?.timelineObjects) {
-		const currentPieces = context.getPieceInstances('current')
-		const currentServer = currentPieces.find(
-			p =>
-				p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.Server ||
-				p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.VO
-		)
+		const currentServer = await context
+			.getPieceInstances('current')
+			.then(currentPieces =>
+				currentPieces.find(
+					p =>
+						p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.Server ||
+						p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.VO
+				)
+			)
 
 		if (!currentServer || !currentServer.piece.content?.timelineObjects) {
 			context.notifyUserWarning(`No server is playing, cannot start DVE`)
@@ -676,7 +699,7 @@ function cutServerToBox<
 	return dvePiece
 }
 
-function executeActionSelectDVELayout<
+async function executeActionSelectDVELayout<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -700,14 +723,15 @@ function executeActionSelectDVELayout<
 
 	const externalId = generateExternalId(context, actionId, [userData.config.DVEName])
 
-	const nextPart = context.getPartInstance('next')
+	const nextPart = await context.getPartInstance('next')
 
-	const nextInstances = context.getPieceInstances('next')
-	const nextDVE = nextInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
+	const nextDVE = await context
+		.getPieceInstances('next')
+		.then(nextInstances => nextInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE))
 
 	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
 
-	if (!nextPart || !nextDVE || !meta || nextPart.segmentId !== context.getPartInstance('current')?.segmentId) {
+	if (!nextPart || !nextDVE || !meta || nextPart.segmentId !== (await context.getPartInstance('current'))?.segmentId) {
 		const content = MakeContentDVE2(context, config, userData.config, {}, sources, settings.DVEGeneratorOptions)
 
 		if (!content.valid) {
@@ -747,7 +771,7 @@ function executeActionSelectDVELayout<
 			content: content.content
 		})
 
-		newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
+		newDVEPiece = await cutServerToBox(context, settings, newDVEPiece)
 
 		return startNewDVELayout(
 			context,
@@ -785,9 +809,9 @@ function executeActionSelectDVELayout<
 		]
 	}
 
-	dvePiece = cutServerToBox(context, settings, dvePiece)
+	dvePiece = await cutServerToBox(context, settings, dvePiece)
 
-	startNewDVELayout(
+	await startNewDVELayout(
 		context,
 		config,
 		settings,
@@ -805,7 +829,7 @@ function executeActionSelectDVELayout<
 	)
 }
 
-function startNewDVELayout<
+async function startNewDVELayout<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -857,26 +881,26 @@ function startNewDVELayout<
 			externalId,
 			title: templateName,
 			metaData: {},
-			expectedDuration: 0,
-			prerollDuration: config.studio.CasparPrerollDuration
+			expectedDuration: 0
 		})
 
+		const currentPieceInstances = await context.getPieceInstances('current')
 		// If a DVE is not on air, but a layout is selected, stop the selected layout and replace with the new one.
-		const onAirPiece = context
-			.getPieceInstances('current')
-			.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
+		const onAirPiece = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
+
 		const dataPiece =
 			settings.SelectedAdlibs &&
-			context.getPieceInstances('current').find(p => p.piece.sourceLayerId === settings.SelectedAdlibs!.SourceLayer.DVE)
+			currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SelectedAdlibs!.SourceLayer.DVE)
 
 		if (onAirPiece === undefined && dataPiece !== undefined) {
-			context.stopPieceInstances([dataPiece._id])
+			await context.stopPieceInstances([dataPiece._id])
 		}
-		context.queuePart(newPart, [
+		dvePiece.prerollDuration = config.studio.CasparPrerollDuration
+		await context.queuePart(newPart, [
 			dvePiece,
 			...(dveDataStore ? [dveDataStore] : []),
 			...(settings.SelectedAdlibs
-				? getPiecesToPreserve(
+				? await getPiecesToPreserve(
 						context,
 						settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
 						settings.SelectedAdlibs.SourceLayer.DVE ? [settings.SelectedAdlibs.SourceLayer.DVE] : []
@@ -884,24 +908,24 @@ function startNewDVELayout<
 				: [])
 		])
 		if (settings.SelectedAdlibs.SourceLayer.DVE) {
-			context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.DVE])
+			await context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.DVE])
 		}
 	} else {
 		if (replacePieceInstancesOrQueue.activeDVE) {
-			context.updatePieceInstance(replacePieceInstancesOrQueue.activeDVE, dvePiece)
-			context.updatePartInstance(part, { expectedDuration: 0 })
+			await context.updatePieceInstance(replacePieceInstancesOrQueue.activeDVE, dvePiece)
+			await context.updatePartInstance(part, { expectedDuration: 0 })
 			if (dveDataStore) {
 				if (replacePieceInstancesOrQueue.dataStore) {
-					context.updatePieceInstance(replacePieceInstancesOrQueue.dataStore, dveDataStore)
+					await context.updatePieceInstance(replacePieceInstancesOrQueue.dataStore, dveDataStore)
 				} else {
-					context.insertPiece(part, dveDataStore)
+					await context.insertPiece(part, dveDataStore)
 				}
 			}
 		}
 	}
 }
 
-function executeActionSelectJingle<
+async function executeActionSelectJingle<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -931,7 +955,7 @@ function executeActionSelectJingle<
 		file = jingle.ClipName.toString()
 	}
 
-	const props = GetJinglePartPropertiesFromTableValue(config, jingle)
+	const props = GetJinglePartPropertiesFromTableValue(jingle)
 
 	const pieceContent = settings.createJingleContent(
 		config,
@@ -951,16 +975,13 @@ function executeActionSelectJingle<
 		lifespan: PieceLifespan.WithinPart,
 		outputLayerId: SharedOutputLayers.JINGLE,
 		sourceLayerId: settings.SourceLayers.Effekt,
+		prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
 		content: pieceContent,
-		metaData: literal<PieceMetaData>({
-			transition: {
-				isJingle: true
-			}
-		}),
 		tags: [
 			GetTagForJingle(userData.segmentExternalId, userData.clip),
 			GetTagForJingleNext(userData.segmentExternalId, userData.clip),
-			TallyTags.JINGLE_IS_LIVE
+			TallyTags.JINGLE_IS_LIVE,
+			TallyTags.JINGLE
 		]
 	})
 
@@ -994,11 +1015,11 @@ function executeActionSelectJingle<
 		...props
 	})
 
-	context.queuePart(part, [
+	await context.queuePart(part, [
 		piece,
 		...(jingleDataStore ? [] : []),
 		...(settings.SelectedAdlibs
-			? getPiecesToPreserve(
+			? await getPiecesToPreserve(
 					context,
 					settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS,
 					settings.SelectedAdlibs.SourceLayer.Effekt ? [settings.SelectedAdlibs.SourceLayer.Effekt] : []
@@ -1007,11 +1028,11 @@ function executeActionSelectJingle<
 	])
 
 	if (settings.SelectedAdlibs.SourceLayer.Effekt) {
-		context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Effekt])
+		await context.stopPiecesOnLayers([settings.SelectedAdlibs.SourceLayer.Effekt])
 	}
 }
 
-function executeActionCutToCamera<
+async function executeActionCutToCamera<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1036,7 +1057,7 @@ function executeActionCutToCamera<
 		return
 	}
 
-	const currentPieceInstances = context.getPieceInstances('current')
+	const currentPieceInstances = await context.getPieceInstances('current')
 
 	const serverInCurrentPart = currentPieceInstances.some(
 		p => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
@@ -1067,7 +1088,7 @@ function executeActionCutToCamera<
 		},
 		tags: [GetTagForKam(userData.name)],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
 					enable: { while: '1' },
@@ -1091,14 +1112,15 @@ function executeActionCutToCamera<
 	settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 
 	if (userData.queue || serverInCurrentPart) {
-		context.queuePart(part, [
+		await context.queuePart(part, [
 			kamPiece,
 			...(settings.SelectedAdlibs
-				? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
+				? await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
 				: [])
 		])
+
 		if (serverInCurrentPart && !userData.queue) {
-			context.takeAfterExecuteAction(true)
+			await context.takeAfterExecuteAction(true)
 		}
 	} else if (currentKam) {
 		kamPiece.externalId = currentKam.piece.externalId
@@ -1107,15 +1129,17 @@ function executeActionCutToCamera<
 		const metaData = kamPiece.metaData as PieceMetaData
 		metaData.sisyfosPersistMetaData!.previousPersistMetaDataForCurrentPiece = currentMetaData.sisyfosPersistMetaData
 
-		context.updatePieceInstance(currentKam._id, kamPiece)
+		await context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
-		const currentExternalId = context.getPartInstance('current')?.part.externalId
+		const currentExternalId = await context
+			.getPartInstance('current')
+			.then(currentPartInstance => currentPartInstance?.part.externalId)
 
 		if (currentExternalId) {
 			kamPiece.externalId = currentExternalId
 		}
 
-		context.stopPiecesOnLayers([
+		await context.stopPiecesOnLayers([
 			settings.SourceLayers.DVE,
 			...(settings.SourceLayers.DVEAdLib ? [settings.SourceLayers.DVEAdLib] : []),
 			settings.SourceLayers.Effekt,
@@ -1125,12 +1149,13 @@ function executeActionCutToCamera<
 			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
 			settings.SourceLayers.Continuity
 		])
+
 		kamPiece.enable = { start: 'now' }
-		context.insertPiece('current', kamPiece)
+		await context.insertPiece('current', kamPiece)
 	}
 }
 
-function executeActionCutToRemote<
+async function executeActionCutToRemote<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1183,7 +1208,7 @@ function executeActionCutToRemote<
 		},
 		tags: [GetTagForLive(userData.name)],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
 					enable: { while: '1' },
@@ -1206,13 +1231,15 @@ function executeActionCutToRemote<
 
 	settings.postProcessPieceTimelineObjects(context, config, remotePiece, false)
 
-	context.queuePart(part, [
+	await context.queuePart(part, [
 		remotePiece,
-		...(settings.SelectedAdlibs ? getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, []) : [])
+		...(settings.SelectedAdlibs
+			? await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
+			: [])
 	])
 }
 
-function executeActionCutSourceToBox<
+async function executeActionCutSourceToBox<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1223,8 +1250,8 @@ function executeActionCutSourceToBox<
 ) {
 	const config = settings.getConfig(context)
 
-	const currentPieces = context.getPieceInstances('current')
-	const nextPieces = context.getPieceInstances('next')
+	const currentPieces = await context.getPieceInstances('current')
+	const nextPieces = await context.getPieceInstances('next')
 
 	const currentDVE = currentPieces.find(
 		p =>
@@ -1314,11 +1341,11 @@ function executeActionCutSourceToBox<
 
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
 	if (!(containsServerBefore && containsServerAfter)) {
-		newDVEPiece = cutServerToBox(context, settings, newDVEPiece)
+		newDVEPiece = await cutServerToBox(context, settings, newDVEPiece)
 	}
 
 	if (newPieceContent.valid) {
-		startNewDVELayout(
+		await startNewDVELayout(
 			context,
 			config,
 			settings,
@@ -1373,20 +1400,19 @@ function findPrimaryPieceUsingPriority<
 	return undefined
 }
 
-function applyPrerollToWallGraphics<
+async function applyPrerollToWallGraphics<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	piecesBySourceLayer: PiecesBySourceLayer,
-	partProps: Partial<IBlueprintPart>
+	piecesBySourceLayer: PiecesBySourceLayer
 ) {
 	const wallPieces = piecesBySourceLayer[settings.SourceLayers.Wall]
 	if (!wallPieces) {
 		return
 	}
-	const enable = GetEnableForWall(partProps)
+	const enable = GetEnableForWall()
 	for (const pieceInstance of wallPieces) {
 		if (pieceInstance.piece.content?.timelineObjects && !pieceInstance.infinite?.fromPreviousPart) {
 			const newPieceProps = {
@@ -1401,12 +1427,12 @@ function applyPrerollToWallGraphics<
 			timelineObjectsToUpdate.forEach(timelineObject => {
 				timelineObject.enable = enable
 			})
-			context.updatePieceInstance(pieceInstance._id, newPieceProps)
+			await context.updatePieceInstance(pieceInstance._id, newPieceProps)
 		}
 	}
 }
 
-function executeActionTakeWithTransition<
+async function executeActionTakeWithTransition<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1417,12 +1443,12 @@ function executeActionTakeWithTransition<
 ) {
 	const externalId = generateExternalId(context, actionId, [userData.variant.type])
 
-	const nextPieces = context.getPieceInstances('next')
+	const nextPieces = await context.getPieceInstances('next')
 
 	const nextPiecesBySourceLayer = groupPiecesBySourceLayer(nextPieces)
 	const primaryPiece = findPrimaryPieceUsingPriority(settings, nextPiecesBySourceLayer)
 
-	context.takeAfterExecuteAction(userData.takeNow)
+	await context.takeAfterExecuteAction(userData.takeNow)
 
 	if (
 		!primaryPiece ||
@@ -1451,7 +1477,7 @@ function executeActionTakeWithTransition<
 	const existingEffektPiece = nextPieces.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt)
 
 	if (existingEffektPiece) {
-		context.removePieceInstances('next', [existingEffektPiece._id])
+		await context.removePieceInstances('next', [existingEffektPiece._id])
 	}
 
 	let partProps: Partial<IBlueprintPart> | false = false
@@ -1463,7 +1489,7 @@ function executeActionTakeWithTransition<
 
 				primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
 
-				context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+				await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 				const cutTransitionPiece: IBlueprintPiece = {
 					enable: {
@@ -1483,13 +1509,11 @@ function executeActionTakeWithTransition<
 				}
 
 				partProps = {
-					transitionKeepaliveDuration: undefined,
-					transitionDuration: undefined,
-					transitionPrerollDuration: undefined
+					inTransition: undefined
 				}
 
-				context.insertPiece('next', cutTransitionPiece)
-				context.updatePartInstance('next', partProps)
+				await context.insertPiece('next', cutTransitionPiece)
+				await context.updatePartInstance('next', partProps)
 			}
 			break
 		case 'breaker': {
@@ -1497,7 +1521,7 @@ function executeActionTakeWithTransition<
 
 			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
 
-			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+			await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 			const config = settings.getConfig(context)
 			const pieces: IBlueprintPiece[] = []
@@ -1516,7 +1540,7 @@ function executeActionTakeWithTransition<
 			)
 
 			if (partProps) {
-				context.updatePartInstance('next', partProps)
+				await context.updatePartInstance('next', partProps)
 				pieces.forEach(p => context.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
 			}
 			break
@@ -1532,16 +1556,18 @@ function executeActionTakeWithTransition<
 
 			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
 
-			context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+			await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 			const pieces: IBlueprintPiece[] = []
-			partProps = CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
-				sourceLayer: settings.SourceLayers.Effekt,
-				casparLayer: settings.LLayer.Caspar.Effekt,
-				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
-			})
+			partProps = {
+				...CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
+					sourceLayer: settings.SourceLayers.Effekt,
+					casparLayer: settings.LLayer.Caspar.Effekt,
+					sisyfosLayer: settings.LLayer.Sisyfos.Effekt
+				})
+			}
 
-			context.updatePartInstance('next', partProps)
+			await context.updatePartInstance('next', partProps)
 			pieces.forEach(p => context.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
 
 			break
@@ -1549,16 +1575,17 @@ function executeActionTakeWithTransition<
 	}
 
 	if (partProps) {
-		applyPrerollToWallGraphics(context, settings, nextPiecesBySourceLayer, partProps)
+		await applyPrerollToWallGraphics(context, settings, nextPiecesBySourceLayer)
 	}
 }
 
-function findPieceToRecoverDataFrom(
+async function findPieceToRecoverDataFrom(
 	context: ITV2ActionExecutionContext,
 	dataStoreLayers: string[]
-): { piece: IBlueprintPieceInstance; part: 'current' | 'next' } | undefined {
-	const currentPieces = context.getPieceInstances('current')
-	const nextPieces = context.getPieceInstances('next')
+): Promise<{ piece: IBlueprintPieceInstance; part: 'current' | 'next' } | undefined> {
+	const pieces = await Promise.all([context.getPieceInstances('current'), context.getPieceInstances('next')])
+	const currentPieces = pieces[0]
+	const nextPieces = pieces[1]
 
 	const currentServer = currentPieces.find(p => dataStoreLayers.includes(p.piece.sourceLayerId))
 
@@ -1586,26 +1613,24 @@ function findPieceToRecoverDataFrom(
 	}
 }
 
-function findDataStore<T extends TV2AdlibAction>(
+async function findDataStore<T extends TV2AdlibAction>(
 	context: ITV2ActionExecutionContext,
 	dataStoreLayers: string[]
-): T | undefined {
-	const dataStorePiece = findPieceToRecoverDataFrom(context, dataStoreLayers)
+): Promise<T | undefined> {
+	const dataStorePiece = await findPieceToRecoverDataFrom(context, dataStoreLayers)
 
 	if (!dataStorePiece) {
 		return
 	}
 
-	const data = (dataStorePiece.piece.piece.metaData as any)?.userData as T | undefined
-
-	return data
+	return (dataStorePiece.piece.piece.metaData as any)?.userData as T | undefined
 }
 
-function findMediaPlayerSessions(
+async function findMediaPlayerSessions(
 	context: ITV2ActionExecutionContext,
 	sessionLayers: string[]
-): { session: string | undefined; part: 'current' | 'next' | undefined } {
-	const mediaPlayerSessionPiece = findPieceToRecoverDataFrom(context, sessionLayers)
+): Promise<{ session: string | undefined; part: 'current' | 'next' | undefined }> {
+	const mediaPlayerSessionPiece = await findPieceToRecoverDataFrom(context, sessionLayers)
 
 	if (!mediaPlayerSessionPiece) {
 		return {
@@ -1623,7 +1648,7 @@ function findMediaPlayerSessions(
 	}
 }
 
-function executeActionCommentatorSelectServer<
+async function executeActionCommentatorSelectServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1632,12 +1657,7 @@ function executeActionCommentatorSelectServer<
 	_actionId: string,
 	_userData: ActionCommentatorSelectServer
 ) {
-	const data = findDataStore<ActionSelectServerClip>(context, [
-		settings.SelectedAdlibs.SourceLayer.Server,
-		settings.SelectedAdlibs.SourceLayer.VO
-	])
-
-	const sessions = findMediaPlayerSessions(context, [
+	const data = await findDataStore<ActionSelectServerClip>(context, [
 		settings.SelectedAdlibs.SourceLayer.Server,
 		settings.SelectedAdlibs.SourceLayer.VO
 	])
@@ -1646,15 +1666,20 @@ function executeActionCommentatorSelectServer<
 		return
 	}
 
+	const sessions = await findMediaPlayerSessions(context, [
+		settings.SelectedAdlibs.SourceLayer.Server,
+		settings.SelectedAdlibs.SourceLayer.VO
+	])
+
 	let session: string | undefined
 	if (sessions.session && sessions.part && sessions.part === 'current') {
 		session = sessions.session
 	}
 
-	executeActionSelectServerClip(context, settings, AdlibActionType.SELECT_SERVER_CLIP, data, session)
+	await executeActionSelectServerClip(context, settings, AdlibActionType.SELECT_SERVER_CLIP, data, session)
 }
 
-function executeActionCommentatorSelectDVE<
+async function executeActionCommentatorSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1667,16 +1692,16 @@ function executeActionCommentatorSelectDVE<
 		return
 	}
 
-	const data = findDataStore<ActionSelectDVE>(context, [settings.SelectedAdlibs.SourceLayer.DVE])
+	const data = await findDataStore<ActionSelectDVE>(context, [settings.SelectedAdlibs.SourceLayer.DVE])
 
 	if (!data) {
 		return
 	}
 
-	executeActionSelectDVE(context, settings, AdlibActionType.SELECT_DVE, data)
+	await executeActionSelectDVE(context, settings, AdlibActionType.SELECT_DVE, data)
 }
 
-function executeActionCommentatorSelectFull<
+async function executeActionCommentatorSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1685,16 +1710,16 @@ function executeActionCommentatorSelectFull<
 	_actionId: string,
 	_userData: ActionCommentatorSelectFull
 ) {
-	const data = findDataStore<ActionSelectFullGrafik>(context, [SharedSourceLayers.SelectedAdlibGraphicsFull])
+	const data = await findDataStore<ActionSelectFullGrafik>(context, [SharedSourceLayers.SelectedAdlibGraphicsFull])
 
 	if (!data) {
 		return
 	}
 
-	executeActionSelectFull(context, settings, AdlibActionType.SELECT_FULL_GRAFIK, data)
+	await executeActionSelectFull(context, settings, AdlibActionType.SELECT_FULL_GRAFIK, data)
 }
 
-function executeActionCommentatorSelectJingle<
+async function executeActionCommentatorSelectJingle<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1707,16 +1732,16 @@ function executeActionCommentatorSelectJingle<
 		return
 	}
 
-	const data = findDataStore<ActionSelectJingle>(context, [settings.SelectedAdlibs.SourceLayer.Effekt])
+	const data = await findDataStore<ActionSelectJingle>(context, [settings.SelectedAdlibs.SourceLayer.Effekt])
 
 	if (!data) {
 		return
 	}
 
-	executeActionSelectJingle(context, settings, AdlibActionType.SELECT_JINGLE, data)
+	await executeActionSelectJingle(context, settings, AdlibActionType.SELECT_JINGLE, data)
 }
 
-function executeActionRecallLastLive<
+async function executeActionRecallLastLive<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1725,11 +1750,7 @@ function executeActionRecallLastLive<
 	actionId: string,
 	_userData: ActionRecallLastLive
 ) {
-	const lastLive = context.findLastPieceOnLayer(settings.SourceLayers.Live, {
-		originalOnly: true,
-		excludeCurrentPart: false
-	})
-	const lastIdent = context.findLastPieceOnLayer(settings.SourceLayers.Ident, {
+	const lastLive = await context.findLastPieceOnLayer(settings.SourceLayers.Live, {
 		originalOnly: true,
 		excludeCurrentPart: false
 	})
@@ -1737,6 +1758,11 @@ function executeActionRecallLastLive<
 	if (!lastLive) {
 		return
 	}
+
+	const lastIdent = await context.findLastPieceOnLayer(settings.SourceLayers.Ident, {
+		originalOnly: true,
+		excludeCurrentPart: false
+	})
 
 	const externalId = generateExternalId(context, actionId, [lastLive.piece.name])
 
@@ -1765,10 +1791,10 @@ function executeActionRecallLastLive<
 		})
 	}
 
-	context.queuePart(part, pieces)
+	await context.queuePart(part, pieces)
 }
 
-function executeActionRecallLastDVE<
+async function executeActionRecallLastDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1783,7 +1809,7 @@ function executeActionRecallLastDVE<
 		return
 	}
 
-	const lastPlayedScheduledDVE: IBlueprintPieceInstance | undefined = context.findLastPieceOnLayer(
+	const lastPlayedScheduledDVE: IBlueprintPieceInstance | undefined = await context.findLastPieceOnLayer(
 		settings.SourceLayers.DVE,
 		{
 			originalOnly: true
@@ -1792,17 +1818,17 @@ function executeActionRecallLastDVE<
 	const isLastPlayedAScheduledDVE: boolean = !lastPlayedScheduledDVE?.dynamicallyInserted
 
 	if (lastPlayedScheduledDVE && isLastPlayedAScheduledDVE) {
-		scheduleLastPlayedDVE(context, settings, actionId, lastPlayedScheduledDVE)
+		await scheduleLastPlayedDVE(context, settings, actionId, lastPlayedScheduledDVE)
 	} else {
-		scheduleNextScriptedDVE(context, settings, actionId)
+		await scheduleNextScriptedDVE(context, settings, actionId)
 	}
 }
 
-function executeActionFadeDownPersistedAudioLevels<
+async function executeActionFadeDownPersistedAudioLevels<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(context: ITV2ActionExecutionContext, _settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
-	const fadeSisyfosMetaData = createFadeSisyfosLevelsMetaData(context)
+	const fadeSisyfosMetaData = await createFadeSisyfosLevelsMetaData(context)
 	const resetSisyfosPersistedLevelsPiece: IBlueprintPiece = {
 		externalId: 'fadeSisyfosPersistedLevelsDown',
 		name: FADE_SISYFOS_LEVELS_PIECE_NAME,
@@ -1820,8 +1846,8 @@ function executeActionFadeDownPersistedAudioLevels<
 	context.insertPiece('current', resetSisyfosPersistedLevelsPiece)
 }
 
-function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {
-	const resolvedPieceInstances: IBlueprintResolvedPieceInstance[] = context.getResolvedPieceInstances('current')
+async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {
+	const resolvedPieceInstances: IBlueprintResolvedPieceInstance[] = await context.getResolvedPieceInstances('current')
 	const emptySisyfosMetaData: SisyfosPersistMetaData = {
 		sisyfosLayers: []
 	}
@@ -1846,7 +1872,7 @@ function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {
 	}
 }
 
-function executeActionPlayGraphics<
+async function executeActionPlayGraphics<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1854,18 +1880,18 @@ function executeActionPlayGraphics<
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionPlayGraphics
-) {
+): Promise<void> {
 	if (!IsTargetingOVL(userData.graphic.target)) {
 		return
 	}
 
-	const externalId = context.getPartInstance('current')?.part.externalId ?? generateExternalId(context, actionId, [])
+	const currentPartInstance = await context.getPartInstance('current')
+	const externalId = currentPartInstance?.part.externalId ?? generateExternalId(context, actionId, [])
 
 	const internalGraphic: InternalGraphic = new InternalGraphic(
 		settings.getConfig(context),
 		userData.graphic,
 		true,
-		undefined,
 		externalId,
 		undefined,
 		undefined
@@ -1879,7 +1905,7 @@ function executeActionPlayGraphics<
 	})
 }
 
-function scheduleLastPlayedDVE<
+async function scheduleLastPlayedDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1887,11 +1913,11 @@ function scheduleLastPlayedDVE<
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	lastPlayedDVE: IBlueprintPieceInstance
-): void {
+): Promise<void> {
 	const lastPlayedDVEMeta: DVEPieceMetaData = lastPlayedDVE.piece.metaData as DVEPieceMetaData
 	const externalId: string = generateExternalId(context, actionId, [lastPlayedDVE.piece.name])
 
-	executeActionSelectDVE(
+	await executeActionSelectDVE(
 		context,
 		settings,
 		actionId,
@@ -1904,15 +1930,17 @@ function scheduleLastPlayedDVE<
 	)
 }
 
-function scheduleNextScriptedDVE<
+async function scheduleNextScriptedDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string
-): void {
-	const nextScriptedDVE: IBlueprintPiece | undefined = context.findLastScriptedPieceOnLayer(settings.SourceLayers.DVE)
+): Promise<void> {
+	const nextScriptedDVE: IBlueprintPiece | undefined = await context.findLastScriptedPieceOnLayer(
+		settings.SourceLayers.DVE
+	)
 
 	if (!nextScriptedDVE) {
 		return
@@ -1921,7 +1949,7 @@ function scheduleNextScriptedDVE<
 	const externalId: string = generateExternalId(context, actionId, [nextScriptedDVE.name])
 	const dveMeta: DVEPieceMetaData = nextScriptedDVE.metaData as DVEPieceMetaData
 
-	executeActionSelectDVE(
+	await executeActionSelectDVE(
 		context,
 		settings,
 		actionId,
@@ -1934,7 +1962,7 @@ function scheduleNextScriptedDVE<
 	)
 }
 
-function executeActionSelectFull<
+async function executeActionSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -1952,7 +1980,7 @@ function executeActionSelectFull<
 	const graphicType = config.studio.GraphicsType
 	const prerollDuration =
 		graphicType === 'HTML' ? config.studio.CasparPrerollDuration : config.studio.VizPilotGraphics.OutTransitionDuration
-	const transitionKeepaliveDuration =
+	const previousPartKeepaliveDuration =
 		graphicType === 'HTML'
 			? config.studio.HTMLGraphics.KeepAliveDuration
 			: config.studio.VizPilotGraphics.KeepAliveDuration
@@ -1962,8 +1990,11 @@ function executeActionSelectFull<
 		title: `Full ${template}`,
 		metaData: {},
 		expectedDuration: 0,
-		prerollDuration,
-		transitionKeepaliveDuration
+		inTransition: {
+			previousPartKeepaliveDuration,
+			partContentDelayDuration: 0,
+			blockTakeDuration: 0
+		}
 	})
 
 	const cue = literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -1981,13 +2012,13 @@ function executeActionSelectFull<
 	const fullPiece = CreateFullPiece(
 		config,
 		context,
-		part,
 		externalId,
 		cue,
 		'FULL',
 		settings.pilotGraphicSettings,
 		true,
-		userData.segmentExternalId
+		userData.segmentExternalId,
+		prerollDuration
 	)
 
 	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
@@ -1995,7 +2026,6 @@ function executeActionSelectFull<
 	const fullDataStore = CreateFullDataStore(
 		config,
 		context,
-		part,
 		settings.pilotGraphicSettings,
 		cue,
 		'FULL',
@@ -2004,18 +2034,18 @@ function executeActionSelectFull<
 		userData.segmentExternalId
 	)
 
-	context.queuePart(part, [
+	await context.queuePart(part, [
 		fullPiece,
 		...(fullDataStore ? [fullDataStore] : []),
-		...getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
+		...(await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 			SharedSourceLayers.SelectedAdlibGraphicsFull
-		])
+		]))
 	])
 
-	context.stopPiecesOnLayers([SharedSourceLayers.SelectedAdlibGraphicsFull])
+	await context.stopPiecesOnLayers([SharedSourceLayers.SelectedAdlibGraphicsFull])
 }
 
-function executeActionClearGraphics<
+async function executeActionClearGraphics<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -2026,8 +2056,8 @@ function executeActionClearGraphics<
 ) {
 	const config = settings.getConfig(context)
 
-	context.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
-	context.insertPiece(
+	await context.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
+	await context.insertPiece(
 		'current',
 		literal<IBlueprintPiece>({
 			enable: {

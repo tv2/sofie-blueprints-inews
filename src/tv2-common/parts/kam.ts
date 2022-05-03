@@ -23,7 +23,8 @@ export function CreatePartKamBase<
 		part: {
 			part,
 			pieces: [],
-			adLibPieces: []
+			adLibPieces: [],
+			actions: []
 		},
 		duration: partTime
 	}

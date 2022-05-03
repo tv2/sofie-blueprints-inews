@@ -12,6 +12,7 @@ import {
 export class MockShowstyleMigrationContext implements MigrationContextShowStyle {
 	public variants: IBlueprintShowStyleVariant[]
 	public configs: Map<string, ConfigItemValue> = new Map()
+	public getTriggeredActionId: (triggeredActionId: string) => string
 
 	public getAllVariants(): IBlueprintShowStyleVariant[] {
 		return this.variants

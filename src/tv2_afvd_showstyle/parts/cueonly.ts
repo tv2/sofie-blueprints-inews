@@ -52,8 +52,6 @@ export function CreatePartCueOnly(
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		ApplyFullGraphicPropertiesToPart(config, part)
-	} else if (partDefinition.cues.filter(c => c.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
 	EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {})

@@ -1,4 +1,5 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, ICommonContext, TSR } from '@tv2media/blueprints-integration'
+import { ActionBase } from './actions'
 
 export function literal<T>(o: T) {
 	return o
@@ -85,4 +86,8 @@ export function JoinAssetToNetworkPath(
 	}
 
 	return `${networkPathWithWindowsPaths}\\${folderWithWindowsPaths}\\${assetFileWithWindowsPaths}.${extensionWithoutLeadingDot}`
+}
+
+export function generateExternalId(context: ICommonContext, action: ActionBase): string {
+	return context.getHashId(JSON.stringify(action), false)
 }

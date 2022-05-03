@@ -414,7 +414,7 @@ export function applyMediaPlayersAssignments<
 	)
 	const groupedObjs = _.groupBy(labelledObjs, o => {
 		const sessionId = (o.metaData || {}).mediaPlayerSession
-		if (sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
+		if (sessionId === undefined || sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
 			const piece = resolvedPieces.find(p => p._id === o.pieceInstanceId)
 			return piece?.infinite?.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
 		} else {

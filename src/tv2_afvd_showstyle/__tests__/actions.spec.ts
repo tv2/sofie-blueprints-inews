@@ -362,22 +362,37 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 	partInstanceId: ''
 }
 
-function getCameraPiece(context: ActionExecutionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
-	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmCam)
+async function getCameraPiece(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): Promise<IBlueprintPieceInstance> {
+	const piece = await context
+		.getPieceInstances(part)
+		.then(pieceInstance => pieceInstance.find(p => p.piece.sourceLayerId === SourceLayer.PgmCam))
 	expect(piece).toBeTruthy()
 
 	return piece!
 }
 
-function getEVSPiece(context: ActionExecutionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
-	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmLocal)
+async function getEVSPiece(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): Promise<IBlueprintPieceInstance> {
+	const piece = await context
+		.getPieceInstances(part)
+		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SourceLayer.PgmLocal))
 	expect(piece).toBeTruthy()
 
 	return piece!
 }
 
-function getTransitionPiece(context: ActionExecutionContext, part: 'current' | 'next'): IBlueprintPieceInstance {
-	const piece = context.getPieceInstances(part).find(p => p.piece.sourceLayerId === SourceLayer.PgmJingle)
+async function getTransitionPiece(
+	context: ActionExecutionContext,
+	part: 'current' | 'next'
+): Promise<IBlueprintPieceInstance> {
+	const piece = await context
+		.getPieceInstances(part)
+		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SourceLayer.PgmJingle))
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -485,13 +500,16 @@ function makeMockContext(
 	}
 }
 
-function checkPartExistsWithProperties(
+async function checkPartExistsWithProperties(
 	context: ActionExecutionContext,
 	part: 'current' | 'next',
 	props: Partial<IBlueprintPart>
 ) {
-	const partInstance = context.getPartInstance(part)!
-	expect(partInstance).toBeTruthy()
+	const partInstance = await context.getPartInstance(part)!
+
+	if (partInstance === undefined) {
+		fail('PartInstances must not be undefined')
+	}
 
 	for (const k in props) {
 		if (k in partInstance.part) {
@@ -503,10 +521,10 @@ function checkPartExistsWithProperties(
 }
 
 describe('Take with CUT', () => {
-	it('Sets the take flag', () => {
+	it('Sets the take flag', async () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -519,18 +537,18 @@ describe('Take with CUT', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
 	})
 
-	it('Changes MIX on part to CUT', () => {
+	it('Changes MIX on part to CUT', async () => {
 		const context = makeMockContext('mix', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -543,18 +561,18 @@ describe('Take with CUT', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
 	})
 
-	it('Removes EFFEKT from Next', () => {
+	it('Removes EFFEKT from Next', async () => {
 		const context = makeMockContext('mix', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -567,20 +585,20 @@ describe('Take with CUT', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`CUT`)
 		expectTakeAfterExecute(context)
 	})
 })
 
 describe('Take with MIX', () => {
-	it('Adds MIX to part with CUT as default', () => {
+	it('Adds MIX to part with CUT as default', async () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -594,21 +612,25 @@ describe('Take with MIX', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		checkPartExistsWithProperties(context, 'next', {
-			transitionKeepaliveDuration: 800
+		await checkPartExistsWithProperties(context, 'next', {
+			inTransition: {
+				previousPartKeepaliveDuration: 800,
+				blockTakeDuration: 800,
+				partContentDelayDuration: 0
+			}
 		})
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
 	})
 
-	it('Changes MIX on part with MIX as default', () => {
+	it('Changes MIX on part with MIX as default', async () => {
 		const context = makeMockContext('mix', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -622,18 +644,18 @@ describe('Take with MIX', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
 	})
 
-	it('Removes EFFEKT from Next', () => {
+	it('Removes EFFEKT from Next', async () => {
 		const context = makeMockContext('mix', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -647,20 +669,20 @@ describe('Take with MIX', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToMixOver(camPiece, 20)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`MIX 20`)
 		expectTakeAfterExecute(context)
 	})
 })
 
 describe('Take with EFFEKT', () => {
-	it('Adds EFFEKT to part with CUT as default', () => {
+	it('Adds EFFEKT to part with CUT as default', async () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -674,18 +696,18 @@ describe('Take with EFFEKT', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
 		expectTakeAfterExecute(context)
 	})
 
-	it('Removes MIX from Next', () => {
+	it('Removes MIX from Next', async () => {
 		const context = makeMockContext('mix', 'cam', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -699,18 +721,18 @@ describe('Take with EFFEKT', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
 		expectTakeAfterExecute(context)
 	})
 
-	it('Adds EFFEKT to KAM when on EVS', () => {
+	it('Adds EFFEKT to KAM when on EVS', async () => {
 		const context = makeMockContext('cut', 'evs', 'cam')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -724,18 +746,18 @@ describe('Take with EFFEKT', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
 		expectTakeAfterExecute(context)
 	})
 
-	it('Adds EFFEKT to EVS when on KAM', () => {
+	it('Adds EFFEKT to EVS when on KAM', async () => {
 		const context = makeMockContext('cut', 'cam', 'evs')
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.TAKE_WITH_TRANSITION,
 			literal<ActionTakeWithTransition>({
@@ -749,17 +771,17 @@ describe('Take with EFFEKT', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getEVSPiece(context, 'next')
+		const camPiece = await getEVSPiece(context, 'next')
 		expectATEMToCut(camPiece)
 
-		const transitionPiece = getTransitionPiece(context, 'next')
+		const transitionPiece = await getTransitionPiece(context, 'next')
 		expect(transitionPiece.piece.name).toBe(`EFFEKT 1`)
 		expectTakeAfterExecute(context)
 	})
 })
 
 describe('Camera shortcuts on server', () => {
-	it('It cuts directly to a camera on a server', () => {
+	it('It cuts directly to a camera on a server', async () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
@@ -786,7 +808,7 @@ describe('Camera shortcuts on server', () => {
 		context.nextPart = undefined
 		context.nextPieceInstances = []
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
@@ -797,12 +819,12 @@ describe('Camera shortcuts on server', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(true)
 	})
 
-	it('It queues a camera without taking it', () => {
+	it('It queues a camera without taking it', async () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
@@ -829,7 +851,7 @@ describe('Camera shortcuts on server', () => {
 		context.nextPart = undefined
 		context.nextPieceInstances = []
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
@@ -840,14 +862,14 @@ describe('Camera shortcuts on server', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(false)
 	})
 })
 
 describe('Camera shortcuts on VO', () => {
-	it('It cuts directly to a camera on a VO', () => {
+	it('It cuts directly to a camera on a VO', async () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
@@ -874,7 +896,7 @@ describe('Camera shortcuts on VO', () => {
 		context.nextPart = undefined
 		context.nextPieceInstances = []
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
@@ -885,12 +907,12 @@ describe('Camera shortcuts on VO', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(true)
 	})
 
-	it('It queues a camera without taking it', () => {
+	it('It queues a camera without taking it', async () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
@@ -917,7 +939,7 @@ describe('Camera shortcuts on VO', () => {
 		context.nextPart = undefined
 		context.nextPieceInstances = []
 
-		executeActionAFVD(
+		await executeActionAFVD(
 			context,
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
@@ -928,7 +950,7 @@ describe('Camera shortcuts on VO', () => {
 		)
 
 		expectNoWarningsOrErrors(context)
-		const camPiece = getCameraPiece(context, 'next')
+		const camPiece = await getCameraPiece(context, 'next')
 		expect(camPiece.piece.name).toEqual('KAM 1')
 		expect(context.takeAfterExecute).toEqual(false)
 	})

@@ -70,7 +70,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny>([
+					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
@@ -91,6 +91,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				})
 			})
 		],
-		adLibPieces: []
+		adLibPieces: [],
+		actions: []
 	})
 }

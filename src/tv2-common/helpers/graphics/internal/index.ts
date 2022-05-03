@@ -1,7 +1,6 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext
 } from '@tv2media/blueprints-integration'
@@ -11,7 +10,6 @@ import { InternalGraphic } from '../InternalGraphic'
 export function CreateInternalGraphic(
 	config: TV2BlueprintConfig,
 	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -21,15 +19,7 @@ export function CreateInternalGraphic(
 	partDefinition: PartDefinition,
 	rank?: number
 ) {
-	const internalGraphic: InternalGraphic = new InternalGraphic(
-		config,
-		parsedCue,
-		adlib,
-		part,
-		partId,
-		partDefinition,
-		rank
-	)
+	const internalGraphic: InternalGraphic = new InternalGraphic(config, parsedCue, adlib, partId, partDefinition, rank)
 
 	if (!internalGraphic.mappedTemplate || !internalGraphic.mappedTemplate.length) {
 		context.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)
@@ -37,8 +27,8 @@ export function CreateInternalGraphic(
 	}
 
 	if (adlib) {
-		internalGraphic.createAdlibTargetingOVL(actions, adlibPieces)
-		internalGraphic.createAdlib(actions, adlibPieces)
+		internalGraphic.createAdlibTargetingOVL(context, actions, adlibPieces)
+		internalGraphic.createAdlib(context, actions, adlibPieces)
 	} else {
 		internalGraphic.createPiece(pieces)
 	}

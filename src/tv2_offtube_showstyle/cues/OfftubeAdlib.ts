@@ -12,6 +12,7 @@ import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	literal,
@@ -110,15 +111,17 @@ export function OfftubeEvaluateAdLib(
 
 		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
+		const userData = literal<ActionSelectDVE>({
+			type: AdlibActionType.SELECT_DVE,
+			config: cueDVE,
+			videoId: partDefinition.fields.videoId,
+			segmentExternalId: partDefinition.segmentExternalId
+		})
 		actions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(context, userData),
 				actionId: AdlibActionType.SELECT_DVE,
-				userData: literal<ActionSelectDVE>({
-					type: AdlibActionType.SELECT_DVE,
-					config: cueDVE,
-					videoId: partDefinition.fields.videoId,
-					segmentExternalId: partDefinition.segmentExternalId
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,

@@ -1,8 +1,8 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
+	ICommonContext,
 	PieceLifespan,
 	TSR
 } from '@tv2media/blueprints-integration'
@@ -20,7 +20,7 @@ import { TV2BlueprintConfig } from '../../blueprintConfig'
 import { GetDefaultOut } from '../../cueTiming'
 import { CueDefinitionGraphic, GraphicInternal, IsStickyIdent, PartDefinition } from '../../inewsConversion'
 import { PieceMetaData } from '../../onTimelineGenerate'
-import { literal } from '../../util'
+import { generateExternalId, literal } from '../../util'
 import { t } from '../translation'
 import { GetInternalGraphicContentCaspar } from './caspar'
 import { GetSourceLayerForGraphic } from './layers'
@@ -32,7 +32,6 @@ import { GetInternalGraphicContentVIZ } from './viz'
 export class InternalGraphic {
 	public mappedTemplate: string
 	private readonly config: TV2BlueprintConfig
-	private readonly part?: Readonly<IBlueprintPart>
 	private readonly parsedCue: CueDefinitionGraphic<GraphicInternal>
 	private readonly partDefinition?: PartDefinition
 	private readonly adlib: boolean
@@ -49,7 +48,6 @@ export class InternalGraphic {
 		config: TV2BlueprintConfig,
 		parsedCue: CueDefinitionGraphic<GraphicInternal>,
 		adlib: boolean,
-		part?: Readonly<IBlueprintPart>,
 		partId?: string,
 		partDefinition?: PartDefinition,
 		rank?: number
@@ -65,7 +63,6 @@ export class InternalGraphic {
 			: GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
 
 		this.config = config
-		this.part = part
 		this.parsedCue = parsedCue
 		this.partDefinition = partDefinition
 		this.adlib = adlib
@@ -80,15 +77,21 @@ export class InternalGraphic {
 		this.content = this.getInternalGraphicContent()
 	}
 
-	public createAdlibTargetingOVL(actions: IBlueprintActionManifest[], adlibPieces: IBlueprintAdLibPiece[]): void {
+	public createAdlibTargetingOVL(
+		context: ICommonContext,
+		actions: IBlueprintActionManifest[],
+		adlibPieces: IBlueprintAdLibPiece[]
+	): void {
 		if (IsTargetingOVL(this.engine) && this.isStickyIdent) {
+			const userData = literal<ActionPlayGraphics>({
+				type: AdlibActionType.PLAY_GRAPHICS,
+				graphic: this.parsedCue
+			})
 			actions.push(
 				literal<IBlueprintActionManifest>({
+					externalId: generateExternalId(context, userData),
 					actionId: AdlibActionType.PLAY_GRAPHICS,
-					userData: literal<ActionPlayGraphics>({
-						type: AdlibActionType.PLAY_GRAPHICS,
-						graphic: this.parsedCue
-					}),
+					userData,
 					userDataManifest: {},
 					display: {
 						_rank: this.rank || 0,
@@ -97,8 +100,7 @@ export class InternalGraphic {
 						sourceLayerId: this.sourceLayerId,
 						outputLayerId: SharedOutputLayers.OVERLAY,
 						tags: [AdlibTags.ADLIB_KOMMENTATOR],
-						content: _.clone(this.content),
-						noHotKey: true
+						content: _.clone(this.content)
 					}
 				})
 			)
@@ -118,22 +120,27 @@ export class InternalGraphic {
 				}),
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				content: _.clone(this.content),
-				noHotKey: true
+				content: _.clone(this.content)
 			})
 			adlibPieces.push(adLibPiece)
 		}
 	}
 
-	public createAdlib(actions: IBlueprintActionManifest[], adlibPieces: IBlueprintAdLibPiece[]): void {
+	public createAdlib(
+		context: ICommonContext,
+		actions: IBlueprintActionManifest[],
+		adlibPieces: IBlueprintAdLibPiece[]
+	): void {
 		if (this.isStickyIdent) {
+			const userData = literal<ActionPlayGraphics>({
+				type: AdlibActionType.PLAY_GRAPHICS,
+				graphic: this.parsedCue
+			})
 			actions.push(
 				literal<IBlueprintActionManifest>({
+					externalId: generateExternalId(context, userData),
 					actionId: AdlibActionType.PLAY_GRAPHICS,
-					userData: literal<ActionPlayGraphics>({
-						type: AdlibActionType.PLAY_GRAPHICS,
-						graphic: this.parsedCue
-					}),
+					userData,
 					userDataManifest: {},
 					display: {
 						_rank: this.rank || 0,
@@ -240,7 +247,6 @@ export class InternalGraphic {
 		return this.config.studio.GraphicsType === 'HTML'
 			? GetInternalGraphicContentCaspar(
 					this.config,
-					this.part,
 					this.engine,
 					this.parsedCue,
 					this.isStickyIdent,
@@ -250,7 +256,6 @@ export class InternalGraphic {
 			  )
 			: GetInternalGraphicContentVIZ(
 					this.config,
-					this.part,
 					this.engine,
 					this.parsedCue,
 					this.isStickyIdent,

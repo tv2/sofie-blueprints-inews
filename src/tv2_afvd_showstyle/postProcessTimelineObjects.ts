@@ -122,25 +122,23 @@ export function postProcessPieceTimelineObjects(
 				if (mixMinusSource !== null && mixMinusSource !== -1) {
 					const mixMinusObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 						..._.omit(tlObj, 'content'),
-						...literal<Partial<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>>({
-							id: '',
-							layer: AtemLLayer.AtemAuxVideoMixMinus,
-							priority: tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK') ? 10 : tlObj.priority,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.AUX,
-								aux: {
-									input:
-										mixMinusSource !== undefined && mixMinusSource !== -1
-											? mixMinusSource
-											: config.studio.AtemSource.MixMinusDefault
-								}
-							},
-							metaData: {
-								...tlObj.metaData,
-								context: `Mix-minus for ${tlObj.id}`
+						id: '',
+						layer: AtemLLayer.AtemAuxVideoMixMinus,
+						priority: tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK') ? 10 : tlObj.priority,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
+							aux: {
+								input:
+									mixMinusSource !== undefined && mixMinusSource !== -1
+										? mixMinusSource
+										: config.studio.AtemSource.MixMinusDefault
 							}
-						})
+						},
+						metaData: {
+							...tlObj.metaData,
+							context: `Mix-minus for ${tlObj.id}`
+						}
 					})
 					mixMinusObj.classes = mixMinusObj.classes?.filter(
 						c => !c.match(`studio0_parent_`) && !c.match('PLACEHOLDER_OBJECT_REMOVEME')
@@ -164,26 +162,24 @@ export function postProcessPieceTimelineObjects(
 				}
 
 				const cleanObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-					..._.omit(tlObj, 'content'),
-					...literal<Partial<TSR.TimelineObjAtemME & TimelineBlueprintExt>>({
-						id: '',
-						layer: AtemLLayer.AtemCleanUSKEffect,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								upstreamKeyers: [
-									{
-										upstreamKeyerId: 0
-									},
-									{
-										upstreamKeyerId: 1,
-										...newProps
-									}
-								]
-							}
+					..._.omit(tlObj, 'content', 'keyframes'),
+					id: '',
+					layer: AtemLLayer.AtemCleanUSKEffect,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.ME,
+						me: {
+							upstreamKeyers: [
+								{
+									upstreamKeyerId: 0
+								},
+								{
+									upstreamKeyerId: 1,
+									...newProps
+								}
+							]
 						}
-					})
+					}
 				})
 				extraObjs.push(cleanObj)
 			}

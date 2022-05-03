@@ -2,7 +2,6 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	PieceLifespan,
@@ -13,6 +12,7 @@ import {
 	ActionSelectFullGrafik,
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
+	generateExternalId,
 	GetFullGraphicTemplateNameFromCue,
 	GetInfiniteModeForGraphic,
 	GetPilotGraphicContentViz,
@@ -50,7 +50,6 @@ export interface PilotGeneratorSettings {
 export function CreatePilotGraphic(
 	config: TV2BlueprintConfig,
 	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -80,13 +79,11 @@ export function CreatePilotGraphic(
 	}
 
 	if (!(IsTargetingOVL(engine) && adlib)) {
-		pieces.push(CreateFullPiece(config, context, part, partId, parsedCue, engine, settings, adlib, externalSegmentId))
+		pieces.push(CreateFullPiece(config, context, partId, parsedCue, engine, settings, adlib, externalSegmentId))
 	}
 
 	if (IsTargetingFull(engine)) {
-		pieces.push(
-			CreateFullDataStore(config, context, part, settings, parsedCue, engine, partId, adlib, externalSegmentId)
-		)
+		pieces.push(CreateFullDataStore(config, context, settings, parsedCue, engine, partId, adlib, externalSegmentId))
 	}
 }
 
@@ -104,31 +101,30 @@ function CreatePilotAdLibAction(
 	const sourceLayerId = GetSourceLayer(engine)
 	const outputLayerId = GetOutputLayer(engine)
 
+	const userData = literal<ActionSelectFullGrafik>({
+		type: AdlibActionType.SELECT_FULL_GRAFIK,
+		name: parsedCue.graphic.name,
+		vcpid: parsedCue.graphic.vcpid,
+		segmentExternalId
+	})
 	return literal<IBlueprintActionManifest>({
+		externalId: generateExternalId(context, userData),
 		actionId: AdlibActionType.SELECT_FULL_GRAFIK,
-		userData: literal<ActionSelectFullGrafik>({
-			type: AdlibActionType.SELECT_FULL_GRAFIK,
-			name: parsedCue.graphic.name,
-			vcpid: parsedCue.graphic.vcpid,
-			segmentExternalId
-		}),
+		userData,
 		userDataManifest: {},
 		display: {
 			_rank: adlibRank,
 			label: t(GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			sourceLayerId: SharedSourceLayers.PgmPilot,
 			outputLayerId: SharedOutputLayers.PGM,
-			content: {
-				...CreateFullContent(config, context, undefined, settings, parsedCue, engine, adlib)
-			},
+			content: CreateFullContent(config, context, settings, parsedCue, engine, adlib),
 			uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
 			tags: [
 				AdlibTags.ADLIB_KOMMENTATOR,
 				...(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine) ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])
 			],
 			currentPieceTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid)],
-			nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)],
-			noHotKey: !(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine))
+			nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)]
 		}
 	})
 }
@@ -136,13 +132,13 @@ function CreatePilotAdLibAction(
 export function CreateFullPiece(
 	config: TV2BlueprintConfig,
 	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
 	settings: PilotGeneratorSettings,
 	adlib: boolean,
-	segmentExternalId: string
+	segmentExternalId: string,
+	prerollDuration?: number
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
 		externalId: partId,
@@ -156,14 +152,14 @@ export function CreateFullPiece(
 			  }),
 		outputLayerId: GetOutputLayer(engine),
 		sourceLayerId: GetSourceLayer(engine),
-		adlibPreroll: config.studio.VizPilotGraphics.PrerollDuration,
+		prerollDuration: prerollDuration ?? config.studio.VizPilotGraphics.PrerollDuration,
 		lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue),
 		metaData: literal<PieceMetaData>({
 			sisyfosPersistMetaData: {
 				sisyfosLayers: []
 			}
 		}),
-		content: CreateFullContent(config, context, part, settings, parsedCue, engine, adlib),
+		content: CreateFullContent(config, context, settings, parsedCue, engine, adlib),
 		tags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
 	})
 }
@@ -171,7 +167,6 @@ export function CreateFullPiece(
 export function CreateFullDataStore(
 	config: TV2BlueprintConfig,
 	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
 	settings: PilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
@@ -179,7 +174,7 @@ export function CreateFullDataStore(
 	adlib: boolean,
 	segmentExternalId: string
 ): IBlueprintPiece {
-	const content = CreateFullContent(config, context, part, settings, parsedCue, engine, adlib)
+	const content = CreateFullContent(config, context, settings, parsedCue, engine, adlib)
 	content.timelineObjects = content.timelineObjects.filter(
 		o =>
 			o.content.deviceType !== TSR.DeviceType.ATEM &&
@@ -215,7 +210,6 @@ export function CreateFullDataStore(
 function CreateFullContent(
 	config: TV2BlueprintConfig,
 	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart> | undefined,
 	settings: PilotGeneratorSettings,
 	cue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
@@ -224,7 +218,7 @@ function CreateFullContent(
 	if (config.studio.GraphicsType === 'HTML') {
 		return GetPilotGraphicContentCaspar(config, context, cue, settings.caspar, engine)
 	} else {
-		return GetPilotGraphicContentViz(config, part, context, settings.viz, cue, engine, adlib)
+		return GetPilotGraphicContentViz(config, context, settings.viz, cue, engine, adlib)
 	}
 }
 

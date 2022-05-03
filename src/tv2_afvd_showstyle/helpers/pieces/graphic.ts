@@ -1,7 +1,6 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
@@ -20,7 +19,6 @@ import { EvaluateCueRouting } from './routing'
 export function EvaluateCueGraphic(
 	config: BlueprintConfig,
 	context: ISegmentUserContext,
-	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -35,24 +33,11 @@ export function EvaluateCueGraphic(
 	}
 
 	if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(
-			config,
-			context,
-			part,
-			pieces,
-			adlibPieces,
-			actions,
-			partId,
-			parsedCue,
-			adlib,
-			partDefinition,
-			rank
-		)
+		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
 	} else if (GraphicIsPilot(parsedCue)) {
 		EvaluateCueGraphicPilot(
 			config,
 			context,
-			part,
 			pieces,
 			adlibPieces,
 			actions,

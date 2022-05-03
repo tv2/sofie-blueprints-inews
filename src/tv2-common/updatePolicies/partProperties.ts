@@ -15,10 +15,7 @@ const partPropertiesToOmit = [
 	'externalId',
 	'autoNext',
 	'autoNextOverlap',
-	'prerollDuration',
-	'transitionPrerollDuration',
-	'transitionKeepaliveDuration',
-	'transitionDuration',
+	'inTransition',
 	'disableOutTransition',
 	'shouldNotifyCurrentPlayingPart'
 ] as const
@@ -33,7 +30,9 @@ const clearedMutatablePart: Complete<Omit<IBlueprintMutatablePart, typeof partPr
 	displayDurationGroup: undefined,
 	displayDuration: undefined,
 	identifier: undefined,
-	hackListenToMediaObjectUpdates: undefined
+	hackListenToMediaObjectUpdates: undefined,
+	disableNextInTransition: undefined,
+	outTransition: undefined
 }
 
 export function updatePartProperties(

@@ -39,7 +39,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 					fileName,
 					path,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { start: 0 },
@@ -71,7 +71,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 					fileName,
 					path,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 						literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { start: 0 },

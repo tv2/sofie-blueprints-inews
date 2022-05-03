@@ -9,8 +9,12 @@ import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
-export function executeActionAFVD(context: IActionExecutionContext, actionId: string, userData: ActionUserData): void {
-	executeAction(
+export async function executeActionAFVD(
+	context: IActionExecutionContext,
+	actionId: string,
+	userData: ActionUserData
+): Promise<void> {
+	await executeAction(
 		context,
 		{
 			getConfig,

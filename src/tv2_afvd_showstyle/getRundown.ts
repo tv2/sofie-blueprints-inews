@@ -30,6 +30,7 @@ import {
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	FindDSKJingle,
+	generateExternalId,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForEkstern,
 	GetTransitionAdLibActions,
@@ -110,7 +111,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -140,7 +141,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						})
 					}),
 					...(vo ? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)] : [])
-				])
+				]
 			}
 		})
 
@@ -171,7 +172,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -188,7 +189,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						classes: ['adlib_deparent']
 					}),
 					...eksternSisyfos
-				])
+				]
 			}
 		})
 
@@ -215,7 +216,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			},
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemAUX>({
 						id: '',
 						enable: { while: '1' },
@@ -229,7 +230,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 							}
 						}
 					})
-				])
+				]
 			}
 		})
 
@@ -269,7 +270,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					timelineObjects: [
 						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
@@ -283,7 +284,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								}
 							}
 						})
-					])
+					]
 				}
 			})
 			adlibItems.push({
@@ -296,7 +297,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
 				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
+					timelineObjects: [
 						literal<TSR.TimelineObjAtemAUX>({
 							id: '',
 							enable: { while: '1' },
@@ -310,7 +311,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								}
 							}
 						})
-					])
+					]
 				}
 			})
 		})
@@ -326,7 +327,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_LOAD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjVIZMSELoadAllElements>({
 					id: 'loadAllElements',
 					enable: {
@@ -354,7 +355,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: [
 				literal<TSR.TimelineObjVIZMSEElementContinue>({
 					id: '',
 					enable: {
@@ -370,7 +371,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						reference: SharedGraphicLLayer.GraphicLLayerPilot
 					}
 				})
-			])
+			]
 		}
 	})
 
@@ -447,7 +448,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: [
 				literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { start: 0 },
@@ -459,7 +460,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						resync: true
 					}
 				})
-			])
+			]
 		}
 	})
 
@@ -549,7 +550,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 }
 
 function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: BlueprintConfig): IBlueprintActionManifest[] {
-	const res: IBlueprintActionManifest[] = []
+	const blueprintActions: IBlueprintActionManifest[] = []
 
 	let globalRank = 1000
 
@@ -558,16 +559,19 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 			const feed = type === 'Live' && info.id.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
 			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
 			const layer = type === 'Kamera' ? SourceLayer.PgmCam : SourceLayer.PgmLive
-			res.push(
+
+			const userData = literal<ActionCutSourceToBox>({
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name,
+				port: info.port,
+				sourceType: info.type,
+				box
+			})
+			blueprintActions.push(
 				literal<IBlueprintActionManifest>({
+					externalId: generateExternalId(_context, userData),
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name,
-						port: info.port,
-						sourceType: info.type,
-						box
-					}),
+					userData,
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
@@ -585,17 +589,19 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			const evsId = info.id.replace(/dp/i, '')
-			res.push(
+			const userData = literal<ActionCutSourceToBox>({
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name: `EVS ${evsId}${vo ? ' VO' : ''}`,
+				port: info.port,
+				sourceType: info.type,
+				box,
+				vo
+			})
+			blueprintActions.push(
 				literal<IBlueprintActionManifest>({
+					externalId: generateExternalId(_context, userData),
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS ${evsId}${vo ? ' VO' : ''}`,
-						port: info.port,
-						sourceType: info.type,
-						box,
-						vo
-					}),
+					userData,
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
@@ -612,17 +618,19 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 
 	function makeServerAdlibBoxesActions(rank: number) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			res.push(
+			const userData = literal<ActionCutSourceToBox>({
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name: `SERVER`,
+				port: -1,
+				sourceType: SourceLayerType.VT,
+				box,
+				server: true
+			})
+			blueprintActions.push(
 				literal<IBlueprintActionManifest>({
+					externalId: generateExternalId(_context, userData),
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `SERVER`,
-						port: -1,
-						sourceType: SourceLayerType.VT,
-						box,
-						server: true
-					}),
+					userData,
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
@@ -638,14 +646,16 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 	}
 
 	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
-		res.push(
+		const userData = literal<ActionCutToCamera>({
+			type: AdlibActionType.CUT_TO_CAMERA,
+			queue,
+			name: info.id
+		})
+		blueprintActions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(_context, userData),
 				actionId: AdlibActionType.CUT_TO_CAMERA,
-				userData: literal<ActionCutToCamera>({
-					type: AdlibActionType.CUT_TO_CAMERA,
-					queue,
-					name: info.id
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: rank,
@@ -680,22 +690,28 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
 		})
 
-	res.push(
-		literal<IBlueprintActionManifest>({
-			actionId: AdlibActionType.RECALL_LAST_LIVE,
-			userData: literal<ActionRecallLastLive>({
-				type: AdlibActionType.RECALL_LAST_LIVE
-			}),
-			userDataManifest: {},
-			display: {
-				_rank: 1,
-				label: t('Last Live'),
-				sourceLayerId: SourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM,
-				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
-			}
+	function makeRecallLastLiveAction() {
+		const userData = literal<ActionRecallLastLive>({
+			type: AdlibActionType.RECALL_LAST_LIVE
 		})
-	)
+		blueprintActions.push(
+			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(_context, userData),
+				actionId: AdlibActionType.RECALL_LAST_LIVE,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: 1,
+					label: t('Last Live'),
+					sourceLayerId: SourceLayer.PgmLive,
+					outputLayerId: SharedOutputLayers.PGM,
+					tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
+				}
+			})
+		)
+	}
+
+	makeRecallLastLiveAction()
 
 	config.sources
 		.filter(u => u.type === SourceLayerType.REMOTE)
@@ -714,14 +730,16 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 
 	makeServerAdlibBoxesActions(globalRank++)
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	function makeClearGraphicsAction() {
+		const userData = literal<ActionClearGraphics>({
+			type: AdlibActionType.CLEAR_GRAPHICS,
+			sendCommands: true,
+			label: 'GFX Clear'
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
-			userData: literal<ActionClearGraphics>({
-				type: AdlibActionType.CLEAR_GRAPHICS,
-				sendCommands: true,
-				label: 'GFX Clear'
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 300,
@@ -733,14 +751,19 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				currentPieceTags: [TallyTags.GFX_CLEAR],
 				nextPieceTags: [TallyTags.GFX_CLEAR]
 			}
-		}),
-		literal<IBlueprintActionManifest>({
+		})
+	}
+
+	function makeClearGraphicsAltudAction() {
+		const userData = literal<ActionClearGraphics>({
+			type: AdlibActionType.CLEAR_GRAPHICS,
+			sendCommands: false,
+			label: 'GFX Altud'
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
-			userData: literal<ActionClearGraphics>({
-				type: AdlibActionType.CLEAR_GRAPHICS,
-				sendCommands: false,
-				label: 'GFX Altud'
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 400,
@@ -753,16 +776,20 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
 		})
-	)
+	}
 
-	res.push(...GetTransitionAdLibActions(config, 800))
+	blueprintActions.push(makeClearGraphicsAction(), makeClearGraphicsAltudAction())
 
-	res.push(
+	blueprintActions.push(...GetTransitionAdLibActions(config, 800))
+
+	const recallLastLiveDveUserData = literal<ActionRecallLastDVE>({
+		type: AdlibActionType.RECALL_LAST_DVE
+	})
+	blueprintActions.push(
 		literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, recallLastLiveDveUserData),
 			actionId: AdlibActionType.RECALL_LAST_DVE,
-			userData: literal<ActionRecallLastDVE>({
-				type: AdlibActionType.RECALL_LAST_DVE
-			}),
+			userData: recallLastLiveDveUserData,
 			userDataManifest: {},
 			display: {
 				_rank: 1,
@@ -776,13 +803,15 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
 		// const boxSources = ['', '', '', '']
-		res.push(
+		const userData = literal<ActionSelectDVELayout>({
+			type: AdlibActionType.SELECT_DVE_LAYOUT,
+			config: dveConfig
+		})
+		blueprintActions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(_context, userData),
 				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
-				userData: literal<ActionSelectDVELayout>({
-					type: AdlibActionType.SELECT_DVE_LAYOUT,
-					config: dveConfig
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: 200 + i,
@@ -795,12 +824,14 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		)
 	})
 
-	res.push(
+	const fadeDownPersistedAudioLevelsUserData = literal<ActionFadeDownPersistedAudioLevels>({
+		type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
+	})
+	blueprintActions.push(
 		literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, fadeDownPersistedAudioLevelsUserData),
 			actionId: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
-			userData: literal<ActionFadeDownPersistedAudioLevels>({
-				type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
-			}),
+			userData: fadeDownPersistedAudioLevelsUserData,
 			userDataManifest: {},
 			display: {
 				_rank: 300,
@@ -812,7 +843,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		})
 	)
 
-	return res
+	return blueprintActions
 }
 
 function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {

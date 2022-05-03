@@ -1,7 +1,6 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	TSR
@@ -34,7 +33,6 @@ export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
 	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -48,7 +46,6 @@ export function OfftubeEvaluateGrafikCaspar(
 		CreatePilotGraphic(
 			config,
 			context,
-			part,
 			pieces,
 			adlibPieces,
 			actions,
@@ -60,19 +57,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			partDefinition.segmentExternalId
 		)
 	} else if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(
-			config,
-			context,
-			part,
-			pieces,
-			adlibPieces,
-			actions,
-			partId,
-			parsedCue,
-			adlib,
-			partDefinition,
-			rank
-		)
+		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
 	}
 }
 

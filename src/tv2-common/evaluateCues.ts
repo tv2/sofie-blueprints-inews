@@ -36,7 +36,6 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueGraphic?: (
 		config: TV2BlueprintConfig,
 		context: ISegmentUserContext,
-		part: Readonly<IBlueprintPart>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -114,7 +113,6 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueTelefon?: (
 		config: TV2BlueprintConfig,
 		context: ISegmentUserContext,
-		part: Readonly<IBlueprintPart>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -223,7 +221,6 @@ export function EvaluateCuesBase(
 						showStyleOptions.EvaluateCueGraphic(
 							config,
 							context,
-							part,
 							pieces,
 							adLibPieces,
 							actions,
@@ -301,7 +298,6 @@ export function EvaluateCuesBase(
 						showStyleOptions.EvaluateCueTelefon(
 							config,
 							context,
-							part,
 							pieces,
 							adLibPieces,
 							actions,
