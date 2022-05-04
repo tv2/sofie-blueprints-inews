@@ -229,8 +229,6 @@ export function MakeContentDVE2<
 
 		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
 
-		let usedServer = false
-
 		if (sources) {
 			const prop = sources[fromCue as keyof DVESources]
 			if (prop?.match(/[K|C]AM(?:era)? ?.*/i)) {
@@ -254,16 +252,14 @@ export function MakeContentDVE2<
 			} else if (prop?.match(/DEFAULT/)) {
 				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE` }
 			} else if (prop) {
-				if (videoId && !usedServer) {
+				if (videoId) {
 					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
-					usedServer = true
 				} else {
 					boxMap[targetBox - 1] = { source: prop }
 				}
 			} else {
-				if (videoId && !usedServer) {
+				if (videoId) {
 					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
-					usedServer = true
 				} else {
 					context.notifyUserWarning(`Missing mapping for ${targetBox}`)
 					boxMap[targetBox - 1] = { source: '' }
@@ -450,7 +446,7 @@ export function MakeContentDVE2<
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
 
 	if (keyFile) {
-		keyFile = keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
+		keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
 	}
 
 	if (frameFile) {
