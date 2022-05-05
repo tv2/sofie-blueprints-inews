@@ -30,6 +30,13 @@ export interface TableConfigItemAdLibTransitions {
 	Transition: string
 }
 
+export interface TableConfigSchema {
+	schemaName: string
+	designIdentifier: string
+	vizTemplateName: string
+	casparCgDveBgScene: string
+}
+
 export interface TableConfigGraphicsSetup {
 	INewsCode: string
 	Concept: string
@@ -130,6 +137,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
+	SchemaConfig: TableConfigSchema[]
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

@@ -7,6 +7,7 @@ export interface INewsFields {
 	totalTime?: string // number
 	cumeTime?: string // number
 	backTime?: string // @number (seconds since midnight)
+	layout?: string
 }
 
 export interface INewsMetaData {
