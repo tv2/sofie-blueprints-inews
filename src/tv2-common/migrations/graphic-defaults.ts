@@ -156,10 +156,10 @@ export const DEFAULT_GRAPHICS: TV2ShowstyleBlueprintConfigBase['GFXTemplates'] =
 		INewsName: 'bundright',
 		VizTemplate: 'bund_right',
 		VizDestination: 'OVL1',
-		OutType: 'S',
+		OutType: '',
 		IsDesign: false,
-		SourceLayer: 'studio0_graphicsTema',
-		LayerMapping: 'graphic_overlay_tema'
+		SourceLayer: 'studio0_graphicsLower',
+		LayerMapping: 'graphic_overlay_lower'
 	},
 	{
 		INewsCode: 'KG=',
