@@ -206,7 +206,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Number',
 				name: 'Number',
 				description: 'DSK number, starting from 1',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 1,
 				rank: 0,
@@ -216,7 +216,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Fill',
 				name: 'ATEM Fill',
 				description: 'ATEM vision mixer input for DSK Fill',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 21,
 				rank: 1
@@ -225,7 +225,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Key',
 				name: 'ATEM Key',
 				description: 'ATEM vision mixer input for DSK Key',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 34,
 				rank: 2
