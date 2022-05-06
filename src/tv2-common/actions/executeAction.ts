@@ -536,7 +536,7 @@ async function executeActionSelectDVE<
 
 	const config = settings.getConfig(context)
 
-	const parsedCue = userData.config
+	const parsedCue: CueDefinitionDVE = userData.config
 
 	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
@@ -727,7 +727,7 @@ async function executeActionSelectDVELayout<
 
 	const nextDVE = await context
 		.getPieceInstances('next')
-		.then(nextInstances => nextInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE))
+		.then(nextPieceInstances => nextPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE))
 
 	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
 
@@ -1250,8 +1250,8 @@ async function executeActionCutSourceToBox<
 ) {
 	const config = settings.getConfig(context)
 
-	const currentPieces = await context.getPieceInstances('current')
-	const nextPieces = await context.getPieceInstances('next')
+	const currentPieces: IBlueprintPieceInstance[] = await context.getPieceInstances('current')
+	const nextPieces: IBlueprintPieceInstance[] = await context.getPieceInstances('next')
 
 	const currentDVE = currentPieces.find(
 		p =>
@@ -1274,7 +1274,7 @@ async function executeActionCutSourceToBox<
 	let modifiedPiece: IBlueprintPieceInstance | undefined
 	let modifiedDataStore: IBlueprintPieceInstance | undefined
 
-	if (currentDVE) {
+	if (currentDVE && currentDVE.stoppedPlayback === undefined) {
 		modify = 'current'
 		modifiedPiece = currentDVE
 		modifiedDataStore = currentDataStore
