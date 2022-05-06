@@ -1,6 +1,7 @@
 import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
@@ -178,7 +179,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	),
 
 	/**
-	 * 1.6.11
+	 * 1.7.1
 	 * - Change source layer type for graphics that don't have previews
 	 */
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
@@ -197,5 +198,34 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		{ local: SourceLayer.PgmLocal },
 		GetDefaultStudioSourcesForAFVD,
 		false
+	),
+
+	/**
+	 * 1.7.2
+	 * - Fix bundright configuration
+	 */
+	changeGFXTemplate(
+		'1.7.2',
+		'AFVD',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			OutType: 'S',
+			IsDesign: false,
+			SourceLayer: 'studio0_graphicsTema',
+			LayerMapping: 'graphic_overlay_tema'
+		},
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			OutType: '',
+			IsDesign: false,
+			SourceLayer: 'studio0_graphicsLower',
+			LayerMapping: 'graphic_overlay_lower'
+		}
 	)
 ])
