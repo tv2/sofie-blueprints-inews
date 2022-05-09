@@ -252,11 +252,7 @@ export function MakeContentDVE2<
 			} else if (prop?.match(/DEFAULT/)) {
 				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE` }
 			} else if (prop) {
-				if (videoId) {
-					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
-				} else {
-					boxMap[targetBox - 1] = { source: prop }
-				}
+				boxMap[targetBox - 1] = { source: videoId ? `SERVER ${videoId}` : prop }
 			} else {
 				if (videoId) {
 					boxMap[targetBox - 1] = { source: `SERVER ${videoId}` }
