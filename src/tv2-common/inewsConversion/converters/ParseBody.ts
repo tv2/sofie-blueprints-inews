@@ -66,7 +66,7 @@ export interface PartDefinitionEVS extends PartDefinitionBase {
 	type: PartType.EVS
 	variant: {
 		evs: string
-		isVO: boolean
+		vo?: 'VO' | 'VOV'
 	}
 }
 
@@ -541,17 +541,11 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			type: PartType.EVS,
 			variant: {
 				evs: strippedToken && strippedToken[1] ? strippedToken[1] : '1',
-				isVO: !!strippedToken && !!strippedToken[2]
+				vo: (strippedToken && (strippedToken[2] as 'VO' | 'VOV')) ?? undefined
 			},
 			...definition
 		}
-	} else if (firstToken.match(/VOV?/i)) {
-		return {
-			type: PartType.VO,
-			variant: {},
-			...definition
-		}
-	} else if (firstToken.match(/VOSB/i)) {
+	} else if (firstToken.match(/VOV?/i) || firstToken.match(/VOSB/i)) {
 		return {
 			type: PartType.VO,
 			variant: {},

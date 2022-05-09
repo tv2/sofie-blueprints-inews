@@ -1581,8 +1581,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS 1',
 				variant: {
-					evs: '1',
-					isVO: false
+					evs: '1'
 				},
 				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 				fields,
@@ -1606,7 +1605,7 @@ describe('Body parser', () => {
 				rawType: 'EVS1VOV',
 				variant: {
 					evs: '1',
-					isVO: true
+					vo: 'VOV'
 				},
 				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 				fields,
@@ -2651,8 +2650,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS 1',
 				variant: {
-					evs: '1',
-					isVO: false
+					evs: '1'
 				},
 				effekt: 1,
 				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
