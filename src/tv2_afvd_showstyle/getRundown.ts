@@ -35,9 +35,9 @@ import {
 	GetSisyfosTimelineObjForEkstern,
 	GetTransitionAdLibActions,
 	literal,
+	localSourceName,
 	PieceMetaData,
 	SisyfosPersistMetaData,
-	localSourceName,
 	SourceInfo,
 	t
 } from 'tv2-common'
