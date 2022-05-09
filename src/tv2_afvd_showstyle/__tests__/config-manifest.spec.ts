@@ -14,7 +14,8 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
 	GraphicsINewsCode: '',
-	GraphicsSetups: []
+	GraphicsSetups: [],
+	SchemaConfig: []
 }
 
 describe('Config Manifest', () => {

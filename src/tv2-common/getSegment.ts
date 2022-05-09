@@ -132,7 +132,7 @@ export function getSegmentBase<
 
 	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
-	const parsedParts = ParseBody(
+	const parsedParts: PartDefinition[] = ParseBody(
 		config,
 		ingestSegment.externalId,
 		ingestSegment.name,
@@ -346,10 +346,7 @@ export function getSegmentBase<
 		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
 
-	if (
-		blueprintParts.filter(part => part.part.invalid === true).length === blueprintParts.length &&
-		iNewsStory.cues.length === 0
-	) {
+	if (blueprintParts.every(part => part.part.invalid) && iNewsStory.cues.length === 0) {
 		segment.isHidden = true
 	}
 

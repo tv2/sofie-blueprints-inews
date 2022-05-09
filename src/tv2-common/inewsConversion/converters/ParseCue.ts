@@ -1,4 +1,4 @@
-import { GetInfiniteModeForGraphic, literal, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import { GetInfiniteModeForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, GraphicEngine, PartType } from 'tv2-constants'
 import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
 
@@ -233,6 +233,10 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parsePgmClean(cue)
 	} else if (cue[0].match(/^MINUSKAM\s*=/i)) {
 		return parseMixMinus(cue)
+	} else if (cue[0].match(/^DESIGN_LAYOUT=/i)) {
+		return parseDesignLayout(cue, config)
+	} else if (cue[0].match(/^DESIGN_BG=/i)) {
+		return parseDesignBg(cue, config)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -839,6 +843,46 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 	}
 
 	return retTime
+}
+
+function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefinitionGraphicDesign | undefined {
+	const array = cue[0].split('DESIGN_LAYOUT=')
+	const layout = array[1]
+	const tableConfigSchema = findSchemaConfiguration(config, layout)
+	if (!tableConfigSchema) {
+		return undefined
+	}
+
+	return literal<CueDefinitionGraphicDesign>({
+		type: CueType.GraphicDesign,
+		design: tableConfigSchema.vizTemplateName,
+		iNewsCommand: layout,
+		start: {
+			frames: 1
+		}
+	})
+}
+
+function findSchemaConfiguration(config: TV2BlueprintConfig, designIdentifier: string): TableConfigSchema | undefined {
+	return config.showStyle.SchemaConfig.find(
+		schema => schema.designIdentifier && schema.designIdentifier.toUpperCase() === designIdentifier.toUpperCase()
+	)
+}
+
+function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinitionBackgroundLoop | undefined {
+	const array = cue[0].split('DESIGN_BG=')
+	const layout = array[1]
+	const tableConfigSchema = findSchemaConfiguration(config, layout)
+	if (!tableConfigSchema) {
+		return undefined
+	}
+
+	return literal<CueDefinitionBackgroundLoop>({
+		type: CueType.BackgroundLoop,
+		target: 'DVE',
+		backgroundLoop: tableConfigSchema.casparCgDveBgScene,
+		iNewsCommand: layout
+	})
 }
 
 /**

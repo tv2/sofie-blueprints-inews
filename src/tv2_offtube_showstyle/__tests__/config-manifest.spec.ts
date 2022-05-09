@@ -12,7 +12,8 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	CasparCGLoadingClip: '',
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	MakeAdlibsForFulls: true
+	MakeAdlibsForFulls: true,
+	SchemaConfig: []
 }
 
 describe('Config Manifest', () => {

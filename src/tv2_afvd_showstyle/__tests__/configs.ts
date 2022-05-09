@@ -265,5 +265,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	GraphicsINewsCode: 'SomeProfile',
 	GraphicsSetups: [DEFAULT_GRAPHICS_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
-	ShowstyleTransition: 'CUT'
+	ShowstyleTransition: 'CUT',
+	SchemaConfig: []
 }
