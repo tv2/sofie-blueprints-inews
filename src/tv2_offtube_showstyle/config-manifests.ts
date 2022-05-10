@@ -289,7 +289,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'EffektNumber',
 				name: 'Effekt Number',
 				description: 'The Effect Number',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 0
@@ -307,7 +307,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'Duration',
 				name: 'Effekt Duration',
 				description: 'Duration of the effekt',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 2
@@ -316,7 +316,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'StartAlpha',
 				name: 'Alpha at Start',
 				description: 'Number of frames of alpha at start',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 3
@@ -325,7 +325,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'EndAlpha',
 				name: 'Alpha at End',
 				description: 'Number of frames of alpha at end',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 4
@@ -380,7 +380,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'Duration',
 				name: 'Effekt Duration',
 				description: 'Duration of the effekt',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 2
@@ -389,7 +389,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'StartAlpha',
 				name: 'Alpha at Start',
 				description: 'Number of frames of alpha at start',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 3
@@ -398,7 +398,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'EndAlpha',
 				name: 'Alpha at End',
 				description: 'Number of frames of alpha at end',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 4
@@ -427,7 +427,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		id: 'DefaultTemplateDuration',
 		name: 'Default Template Duration',
 		description: 'Default Template Duration',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 4
 	},
@@ -472,7 +472,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'FadeIn',
 				name: 'Fade In',
 				description: 'ms duration to fade in file',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 1000,
 				rank: 2
@@ -481,7 +481,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'FadeOut',
 				name: 'Fade Out',
 				description: 'ms duration to fade out file',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 1000,
 				rank: 3
