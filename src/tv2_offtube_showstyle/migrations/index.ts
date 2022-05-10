@@ -237,20 +237,32 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 			INewsName: 'bundright',
 			VizTemplate: 'bund_right',
 			VizDestination: 'OVL1',
-			OutType: 'S',
-			IsDesign: false,
-			SourceLayer: 'studio0_graphicsTema',
-			LayerMapping: 'graphic_overlay_tema'
+			OutType: 'S'
 		},
+		{ OutType: '' }
+	),
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
 		{
 			INewsCode: 'KG=',
 			INewsName: 'bundright',
 			VizTemplate: 'bund_right',
 			VizDestination: 'OVL1',
-			OutType: '',
-			IsDesign: false,
-			SourceLayer: 'studio0_graphicsLower',
-			LayerMapping: 'graphic_overlay_lower'
-		}
+			SourceLayer: 'studio0_graphicsTema'
+		},
+		{ SourceLayer: 'studio0_graphicsLower' }
+	),
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			LayerMapping: 'graphic_overlay_tema'
+		},
+		{ LayerMapping: 'graphic_overlay_lower' }
 	)
 ])

@@ -124,37 +124,40 @@ export function AddGraphicToGFXTable(versionStr: string, studio: string, config:
 export function changeGFXTemplate(
 	versionStr: string,
 	studio: string,
-	oldConfig: TableConfigItemGFXTemplates,
-	config: TableConfigItemGFXTemplates
+	oldConfig: Partial<TableConfigItemGFXTemplates>,
+	config: Partial<TableConfigItemGFXTemplates>
 ) {
+	const keysToUpdate = Object.keys(config).join('_')
 	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.gfxConfig.change${config.INewsName}.${studio}`,
+		id: `${versionStr}.gfxConfig.change_${keysToUpdate}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[] | undefined
+			const gfxTemplates = (context.getBaseConfig('GFXTemplates') as unknown) as
+				| TableConfigItemGFXTemplates[]
+				| undefined
 
 			if (!gfxTemplates || !gfxTemplates.length) {
 				return false
 			}
 
-			return gfxTemplates.some(g => compareGfxTemplate(g, oldConfig))
+			return gfxTemplates.some(g => isGfxTemplateSubset(g, oldConfig))
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			let existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[]
 
-			existing = existing.map(g => (compareGfxTemplate(g, oldConfig) ? config : g))
+			existing = existing.map(g => (isGfxTemplateSubset(g, oldConfig) ? { ...g, ...config } : g))
 
 			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
 		}
 	})
 }
 
-function compareGfxTemplate(template1: TableConfigItemGFXTemplates, template2: TableConfigItemGFXTemplates): boolean {
-	return Object.keys(template2).reduce(
-		(acc: boolean, key: keyof TableConfigItemGFXTemplates) => acc && template1[key] === template2[key],
-		true
-	)
+function isGfxTemplateSubset(
+	superset: Partial<TableConfigItemGFXTemplates>,
+	subset: Partial<TableConfigItemGFXTemplates>
+): boolean {
+	return Object.keys(subset).every((key: keyof TableConfigItemGFXTemplates) => superset[key] === subset[key])
 }
 
 export function SetLayerNamesToDefaults(
