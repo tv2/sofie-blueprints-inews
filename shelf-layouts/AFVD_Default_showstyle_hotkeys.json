@@ -453,12 +453,5 @@
         "label": "serv inp 2",
         "sourceLayerType": 2,
         "platformKey": "ctrl+T"
-    },
-    {
-        "_id": "n8nZWWRcHSkrG7GqM",
-        "key": "SHIFT+ctrl+alt+c",
-        "label": "KAM 5",
-        "sourceLayerType": 1,
-        "platformKey": "F5"
     }
 ]
