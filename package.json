@@ -22,7 +22,7 @@
     "prepareChangelog": "standard-version --prerelease",
     "validate": "yarn validate:dependencies",
     "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
-    "license-validate": "license-checker --onlyAllow MIT;Apache-2.0;ISC;BSD;CC0;CC-BY-3.0;CC-BY-4.0;UNLICENSED --summary"
+    "license-validate": "license-checker --onlyAllow \"MIT;Apache-2.0;ISC;BSD;CC0;CC-BY-3.0;CC-BY-4.0;UNLICENSED\" --summary"
   },
   "husky": {
     "hooks": {
