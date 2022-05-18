@@ -100,15 +100,19 @@ export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
 	engineNumber?: number
 }
 
-export interface CueDefinitionBackgroundLoop extends CueDefinitionBase {
+export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromLayout {
 	type: CueType.BackgroundLoop
 	target: 'FULL' | 'DVE'
 	backgroundLoop: string
 }
 
-export interface CueDefinitionGraphicDesign extends CueDefinitionBase {
+export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromLayout {
 	type: CueType.GraphicDesign
 	design: string
+}
+
+export interface CueDefinitionFromLayout {
+	isFromLayout?: boolean
 }
 
 export interface GraphicInternal {
@@ -859,7 +863,8 @@ function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefini
 		iNewsCommand: layout,
 		start: {
 			frames: 1
-		}
+		},
+		isFromLayout: true
 	})
 }
 
@@ -881,7 +886,8 @@ function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinition
 		type: CueType.BackgroundLoop,
 		target: 'DVE',
 		backgroundLoop: tableConfigSchema.casparCgDveBgScene,
-		iNewsCommand: layout
+		iNewsCommand: layout,
+		isFromLayout: true
 	})
 }
 
