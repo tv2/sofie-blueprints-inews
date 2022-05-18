@@ -35,6 +35,7 @@ import {
 	GetSisyfosTimelineObjForEkstern,
 	GetTransitionAdLibActions,
 	literal,
+	localSourceName,
 	PieceMetaData,
 	SisyfosPersistMetaData,
 	SourceInfo,
@@ -95,7 +96,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'delayed',
-			name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
+			name: localSourceName(info.id.replace(/dp/i, ''), vo),
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLocal,
 			outputLayerId: SharedOutputLayers.PGM,
@@ -554,11 +555,11 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 
 	let globalRank = 1000
 
-	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live' | 'Feed', rank: number) {
+	function makeAdlibBoxesActions(info: SourceInfo, type: 'KAM' | 'LIVE' | 'FEED', rank: number) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			const feed = type === 'Live' && info.id.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
-			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
-			const layer = type === 'Kamera' ? SourceLayer.PgmCam : SourceLayer.PgmLive
+			const feed = type === 'LIVE' && info.id.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
+			const name = feed ? `FEED ${feed[1]}` : `${type} ${info.id}`
+			const layer = type === 'KAM' ? SourceLayer.PgmCam : SourceLayer.PgmLive
 
 			const userData = literal<ActionCutSourceToBox>({
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
@@ -575,7 +576,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`${name} to box ${box + 1}`),
+						label: t(`${name} inp ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
@@ -591,7 +592,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 			const evsId = info.id.replace(/dp/i, '')
 			const userData = literal<ActionCutSourceToBox>({
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
-				name: `EVS ${evsId}${vo ? ' VO' : ''}`,
+				name: localSourceName(evsId, vo),
 				port: info.port,
 				sourceType: info.type,
 				box,
@@ -605,7 +606,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`EVS ${evsId}${vo ? ' VO' : ''} to box ${box + 1}`),
+						label: t(`${localSourceName(evsId, vo)} inp ${box + 1}`),
 						sourceLayerId: SourceLayer.PgmLocal,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
@@ -634,7 +635,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`Server to box ${box + 1}`),
+						label: t(`Server inp ${box + 1}`),
 						sourceLayerId: SourceLayer.PgmServer,
 						outputLayerId: SharedOutputLayers.SEC,
 						content: {},
@@ -687,7 +688,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		.filter(u => u.type === SourceLayerType.CAMERA)
 		.slice(0, 5) // the first x cameras to dve actions from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
+			makeAdlibBoxesActions(o, 'KAM', globalRank++)
 		})
 
 	function makeRecallLastLiveAction() {
@@ -717,7 +718,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		.filter(u => u.type === SourceLayerType.REMOTE)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, o.id.match(/^F/) ? 'Feed' : 'Live', globalRank++)
+			makeAdlibBoxesActions(o, o.id.match(/^F/) ? 'FEED' : 'LIVE', globalRank++)
 		})
 
 	config.sources

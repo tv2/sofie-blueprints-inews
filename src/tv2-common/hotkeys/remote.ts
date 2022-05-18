@@ -13,7 +13,7 @@ function feedHotkeyId(showStyleId: string, sourceLayer: string, hotkeyType: stri
 
 function remoteHotkeyName(remote: string) {
 	const feed = remote.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
-	return feed ? `Feed ${feed[1]}` : `LIVE ${remote}`
+	return feed ? `FEED ${feed[1]}` : `LIVE ${remote}`
 }
 
 export function MakeRemoteHotkeys(
