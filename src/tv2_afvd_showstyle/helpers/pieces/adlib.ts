@@ -55,7 +55,7 @@ export function EvaluateAdLib(
 				partDefinition,
 				file,
 				false,
-				false,
+				true,
 				{
 					SourceLayer: {
 						PgmServer: SourceLayer.PgmServer,
@@ -66,7 +66,8 @@ export function EvaluateAdLib(
 					},
 					Sisyfos: {
 						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-						StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
+						StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics,
+						SisyfosPersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
 					},
 					AtemLLayer: {
 						MEPgm: AtemLLayer.AtemMEProgram

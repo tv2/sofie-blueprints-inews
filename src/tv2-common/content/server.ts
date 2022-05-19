@@ -28,6 +28,7 @@ export interface MakeContentServerSourceLayers {
 	Sisyfos: {
 		ClipPending: string
 		StudioMicsGroup: string
+		SisyfosPersistedLevels: string
 	}
 	ATEM: {
 		ServerLookaheadAux?: string
@@ -139,8 +140,7 @@ function GetServerTimeline(
 			content: {
 				deviceType: TSR.DeviceType.SISYFOS,
 				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-				// isPgm: voiceOver ? 2 : 1
-				isPgm: 1
+				isPgm: voLevels ? 2 : 1
 			},
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
@@ -149,24 +149,30 @@ function GetServerTimeline(
 		}),
 
 		...(adLibPix
-			? config.stickyLayers.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+			? [
+					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
 						id: '',
 						enable: {
-							while: serverEnableClass
+							start: 1
 						},
 						priority: 1,
-						layer,
+						layer: sourceLayers.Sisyfos.SisyfosPersistedLevels,
 						content: {
 							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
+							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
+							overridePriority: 1,
+							channels: config.stickyLayers.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
+								return {
+									mappedLayer: layer,
+									isPgm: 0
+								}
+							})
 						},
 						metaData: {
 							sisyfosPersistLevel: true
 						}
 					})
-			  })
+			  ]
 			: []),
 		...(voLevels
 			? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)]
