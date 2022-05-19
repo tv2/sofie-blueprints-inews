@@ -411,7 +411,8 @@ function executeActionSelectServerClip<
 			},
 			Sisyfos: {
 				ClipPending: settings.LLayer.Sisyfos.ClipPending,
-				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
+				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics,
+				SisyfosPersistedLevels: settings.LLayer.Sisyfos.PersistedLevels
 			},
 			ATEM: {
 				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX

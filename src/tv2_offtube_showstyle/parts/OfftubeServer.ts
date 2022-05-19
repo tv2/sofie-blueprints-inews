@@ -31,7 +31,8 @@ export function OfftubeCreatePartServer(
 		},
 		Sisyfos: {
 			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-			StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+			StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
+			SisyfosPersistedLevels: OfftubeSisyfosLLayer.SisyfosPersistedLevels
 		},
 		ATEM: {
 			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
@@ -75,7 +76,8 @@ export function OfftubeCreatePartServer(
 				},
 				Sisyfos: {
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-					StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+					StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
+					SisyfosPersistedLevels: OfftubeSisyfosLLayer.SisyfosPersistedLevels
 				},
 				AtemLLayer: {
 					MEPgm: OfftubeAtemLLayer.AtemMEClean,

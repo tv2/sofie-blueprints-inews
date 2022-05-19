@@ -30,7 +30,8 @@ export function CreatePartServer(
 		},
 		Sisyfos: {
 			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-			StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
+			StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics,
+			SisyfosPersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
 		},
 		ATEM: {}
 	})

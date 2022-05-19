@@ -217,7 +217,8 @@ function getContentServerElement<
 			},
 			Sisyfos: {
 				ClipPending: layers.Sisyfos.ClipPending,
-				StudioMicsGroup: layers.Sisyfos.StudioMicsGroup
+				StudioMicsGroup: layers.Sisyfos.StudioMicsGroup,
+				SisyfosPersistedLevels: layers.Sisyfos.SisyfosPersistedLevels
 			},
 			ATEM: {
 				ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
