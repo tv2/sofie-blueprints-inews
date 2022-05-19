@@ -55,7 +55,7 @@ export function EvaluateAdLib(
 				partDefinition,
 				file,
 				false,
-				false,
+				true,
 				{
 					SourceLayer: {
 						PgmServer: SourceLayer.PgmServer,

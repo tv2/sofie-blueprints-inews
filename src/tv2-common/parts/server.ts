@@ -270,7 +270,7 @@ function getServerSelectionBlueprintPiece<
 			userData: userDataElement,
 			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
 				sisyfosLayers: [],
-				acceptPersistAudio: props.adLibPix && props.voLayer
+				acceptPersistAudio: props.adLibPix && props.voLevels
 			})
 		}),
 		content: contentServerElement,
