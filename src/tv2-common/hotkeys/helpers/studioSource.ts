@@ -23,7 +23,7 @@ export function MakeStudioSourceHotkeys(
 	getNextRank: () => number,
 	nameFunc: (source: string) => string,
 	idFunc: (showStyleId: string, sourceLayer: string, hotkeyType: string, index: number) => string,
-	isVO: boolean = false
+	tags: string[] = []
 ): IBlueprintTriggeredActions[] {
 	const directCutHotkeys: IBlueprintTriggeredActions[] = []
 	const queueHotkeys: IBlueprintTriggeredActions[] = []
@@ -58,7 +58,7 @@ export function MakeStudioSourceHotkeys(
 					name,
 					queueHotkey,
 					sourceLayerId,
-					isVO,
+					tags,
 					currentSourceIndex
 				)
 			)
@@ -74,7 +74,7 @@ export function MakeStudioSourceHotkeys(
 						name + ` inp ${box + 1}`,
 						boxHotkey,
 						sourceLayerId,
-						isVO,
+						tags,
 						currentSourceIndex,
 						box
 					)

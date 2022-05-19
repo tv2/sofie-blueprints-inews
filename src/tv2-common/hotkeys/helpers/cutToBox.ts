@@ -8,7 +8,7 @@ import {
 	TriggerType
 } from '@tv2media/blueprints-integration'
 import { literal, TRIGGER_HOTKEYS_ON_KEYUP } from 'tv2-common'
-import { AdlibTagCutToBox, AdlibTags } from 'tv2-constants'
+import { AdlibTagCutToBox } from 'tv2-constants'
 
 export function MakeCutToBoxTrigger(
 	id: string,
@@ -16,7 +16,7 @@ export function MakeCutToBoxTrigger(
 	name: string,
 	hotkey: string | undefined,
 	sourceLayerId: string,
-	isVO: boolean,
+	tags: string[],
 	pick: number,
 	box: number
 ) {
@@ -53,7 +53,7 @@ export function MakeCutToBoxTrigger(
 					literal<IAdLibFilterLink>({
 						object: 'adLib',
 						field: 'tag',
-						value: [AdlibTagCutToBox(box), isVO ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
+						value: [AdlibTagCutToBox(box), ...tags]
 					}),
 					literal<IAdLibFilterLink>({
 						object: 'adLib',

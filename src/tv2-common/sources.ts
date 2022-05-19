@@ -105,10 +105,7 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 				return _.find(sources, s => s.type === type && s.id === `F${remoteName[1]}`)
 			}
 		case SourceLayerType.LOCAL:
-			const dpName = id
-				.replace(/VO/i, '')
-				.replace(/\s/g, '')
-				.match(/^(?:EVS) ?(.+).*$/i)
+			const dpName = id.match(/^(?:EVS)\s*(\d+).*$/i)
 			if (!dpName) {
 				return undefined
 			}

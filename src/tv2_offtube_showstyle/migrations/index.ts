@@ -1,6 +1,7 @@
 import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
@@ -208,7 +209,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	GetDefaultAdLibTriggers('1.7.0', SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, true),
 
 	/**
-	 * 1.6.11
+	 * 1.7.1
 	 * - Change source layer type for graphics that don't have previews
 	 */
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
@@ -222,5 +223,46 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
+	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false),
+
+	/**
+	 * 1.7.2
+	 * - Fix bundright configuration
+	 */
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			OutType: 'S'
+		},
+		{ OutType: '' }
+	),
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			SourceLayer: 'studio0_graphicsTema'
+		},
+		{ SourceLayer: 'studio0_graphicsLower' }
+	),
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			LayerMapping: 'graphic_overlay_tema'
+		},
+		{ LayerMapping: 'graphic_overlay_lower' }
+	)
 ])

@@ -29,7 +29,7 @@ export function MakeConfigForSources(
 				id: 'AtemSource',
 				name: 'ATEM input',
 				description: `ATEM vision mixer input for ${displayName} input`,
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
 				rank: 1

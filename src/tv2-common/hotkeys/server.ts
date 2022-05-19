@@ -49,7 +49,7 @@ export function MakeServerHotkeys(
 						name + ` inp ${box + 1}`,
 						boxHotkey,
 						sourceLayerId,
-						false,
+						[],
 						currentSourceIndex,
 						box
 					)
