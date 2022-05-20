@@ -139,8 +139,7 @@ function GetServerTimeline(
 			content: {
 				deviceType: TSR.DeviceType.SISYFOS,
 				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-				// isPgm: voiceOver ? 2 : 1
-				isPgm: 1
+				isPgm: voLevels ? 2 : 1
 			},
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
