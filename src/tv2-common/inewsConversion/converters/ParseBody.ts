@@ -1,4 +1,4 @@
-import { PostProcessDefinitions, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import { CueDefinitionFromLayout, PostProcessDefinitions, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { CueDefinition, CueDefinitionUnpairedPilot, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
@@ -118,7 +118,7 @@ export function ParseBody(
 	fields: any,
 	modified: number
 ): PartDefinition[] {
-	const definitions: PartDefinition[] = []
+	let definitions: PartDefinition[] = []
 	let definition: PartDefinition = initDefinition(fields, modified, segmentName)
 
 	// Handle intro segments, they have special behaviour.
@@ -286,6 +286,8 @@ export function ParseBody(
 		// Discard UNKNOWN cues, we won't do anything with them
 		partDefinition.cues = partDefinition.cues.filter(c => c.type !== CueType.UNKNOWN)
 	})
+
+	definitions = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
 
 	return PostProcessDefinitions(definitions, segmentId)
 }
@@ -558,4 +560,30 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			...definition
 		}
 	}
+}
+
+export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {
+	const hasLayoutCue: boolean = partDefinitions.some(definition =>
+		definition.cues.some(cue => {
+			const cueFromLayout = cue as CueDefinitionFromLayout
+			return cueFromLayout.isFromLayout
+		})
+	)
+
+	if (!hasLayoutCue) {
+		return partDefinitions
+	}
+
+	return partDefinitions.map(definition => {
+		const cues = definition.cues.filter(cue => {
+			if (cue.type !== CueType.GraphicDesign && cue.type !== CueType.BackgroundLoop) {
+				return true
+			}
+			return (cue as CueDefinitionFromLayout).isFromLayout
+		})
+		return {
+			...definition,
+			cues
+		}
+	})
 }

@@ -1,5 +1,10 @@
 import { IBlueprintRundownDB, PlaylistTimingType } from '@tv2media/blueprints-integration'
-import { UnparsedCue } from 'tv2-common'
+import {
+	CueDefinitionBackgroundLoop,
+	CueDefinitionGraphicDesign,
+	stripRedundantCuesWhenLayoutCueIsPresent,
+	UnparsedCue
+} from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
@@ -3430,7 +3435,171 @@ describe('Body parser', () => {
 	})
 
 	/** END Merging Cues From Config */
+
+	describe('removeDuplicateDesignCues', () => {
+		it('has no no cues, does nothing', () => {
+			const definitions: PartDefinition[] = [createPartDefinition(), createPartDefinition()]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('has a designCue from layout and a regular design cue, removes the regular design cue', () => {
+			const designFromLayout = 'designFromLayout'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([
+					createDesignCueDefinition(designFromLayout, true),
+					createDesignCueDefinition('regularDesign')
+				])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result[0].cues).toHaveLength(1)
+			const graphicDesignCue: CueDefinitionGraphicDesign = result[0].cues[0] as CueDefinitionGraphicDesign
+			expect(graphicDesignCue.design).toEqual(designFromLayout)
+		})
+
+		it('only have a regular design cue, does nothing', () => {
+			const definitions: PartDefinition[] = [createPartDefinition([createDesignCueDefinition('someDesign')])]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('only have a layout design cue, does nothing', () => {
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createDesignCueDefinition('designFromLayout', true)])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('has a regular design, layout design and two other random cues, only removes the regular design cue', () => {
+			const regularDesign = 'regularDesignCue'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([
+					createDesignCueDefinition('designFromLayout', true),
+					createDesignCueDefinition(regularDesign),
+					createUnknownCueDefinition(),
+					createUnknownCueDefinition()
+				])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			const cues = result[0].cues
+			expect(cues).toHaveLength(3)
+			const regularDesignCue = cues.find(cue => {
+				const designCue = cue as CueDefinitionGraphicDesign
+				if (!designCue.design) {
+					return false
+				}
+				return designCue.design === regularDesign
+			})
+			expect(regularDesignCue).toBeUndefined()
+		})
+
+		it('has a regular design cue in one partDefinition, has a layout cue in another partDefinition, remove the regular designCue', () => {
+			const layoutDesign = 'designFromLayout'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createDesignCueDefinition(layoutDesign, true)]),
+				createPartDefinition([createDesignCueDefinition('regularDesign')])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			const cues: CueDefinition[] = result.flatMap(definition => definition.cues)
+			expect(cues).toHaveLength(1)
+			const graphicCue = cues[0] as CueDefinitionGraphicDesign
+			expect(graphicCue.design).toBe(layoutDesign)
+		})
+
+		it('has layout background cue and regular background cue, remove regular background cue', () => {
+			const layoutBackground = 'layoutBackground'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([
+					createBackgroundLoopCueDefinition(layoutBackground, true),
+					createBackgroundLoopCueDefinition('regularBackground')
+				])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result[0].cues).toHaveLength(1)
+			const backgroundCue: CueDefinitionBackgroundLoop = result[0].cues[0] as CueDefinitionBackgroundLoop
+			expect(backgroundCue.backgroundLoop).toBe(layoutBackground)
+		})
+
+		it('only have a regular background cue, does nothing', () => {
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createBackgroundLoopCueDefinition('regularBackground')])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('only have a layout background cue, does nothing', () => {
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createBackgroundLoopCueDefinition('layoutBackground', true)])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+	})
 })
+
+function createPartDefinition(cues?: CueDefinition[]): PartDefinition {
+	if (!cues) {
+		cues = []
+	}
+	return {
+		externalId: `externalId_${Math.random() * 1000}`,
+		cues,
+		type: PartType.Grafik,
+		variant: {},
+		script: '',
+		fields: {},
+		modified: 123,
+		storyName: 'someName',
+		segmentExternalId: `segmentExternalId_${Math.random() * 1000}`,
+		rawType: ''
+	}
+}
+
+function createDesignCueDefinition(design: string, isFromLayout?: boolean): CueDefinition {
+	return {
+		type: CueType.GraphicDesign,
+		design,
+		iNewsCommand: '',
+		isFromLayout
+	}
+}
+
+function createBackgroundLoopCueDefinition(backgroundLoop: string, isFromLayout?: boolean): CueDefinition {
+	return {
+		type: CueType.BackgroundLoop,
+		target: 'DVE',
+		backgroundLoop,
+		isFromLayout,
+		iNewsCommand: ''
+	}
+}
+
+function createUnknownCueDefinition(): CueDefinition {
+	return {
+		type: CueType.UNKNOWN,
+		iNewsCommand: ''
+	}
+}
 
 export function stripExternalId(definitions: PartDefinition[]) {
 	return definitions.map(def => {
