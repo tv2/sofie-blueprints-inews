@@ -1274,7 +1274,7 @@ async function executeActionCutSourceToBox<
 	let modifiedPiece: IBlueprintPieceInstance | undefined
 	let modifiedDataStore: IBlueprintPieceInstance | undefined
 
-	if (currentDVE && currentDVE.stoppedPlayback === undefined) {
+	if (currentDVE && !currentDVE.stoppedPlayback) {
 		modify = 'current'
 		modifiedPiece = currentDVE
 		modifiedDataStore = currentDataStore
@@ -1287,10 +1287,6 @@ async function executeActionCutSourceToBox<
 	const meta: (DVEPieceMetaData & PieceMetaData) | undefined = modifiedPiece?.piece.metaData as PieceMetaData &
 		DVEPieceMetaData
 
-	meta.sisyfosPersistMetaData = {
-		sisyfosLayers: []
-	}
-
 	if (
 		!modifiedPiece ||
 		!modify ||
@@ -1299,6 +1295,10 @@ async function executeActionCutSourceToBox<
 		!meta
 	) {
 		return
+	}
+
+	meta.sisyfosPersistMetaData = {
+		sisyfosLayers: []
 	}
 
 	const containsServerBefore = dveContainsServer(meta.sources)
