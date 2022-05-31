@@ -80,8 +80,9 @@ export async function CreatePartCueOnly(
 			[cue],
 			partDefinitionWithID,
 			{
-			adlib: true
-		})
+				adlib: true
+			}
+		)
 	}
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions

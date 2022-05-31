@@ -20,6 +20,7 @@ import { AdlibActionType, PartType, SharedOutputLayers, TallyTags } from 'tv2-co
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { GetVTContentProperties } from '../content'
+import { getServerSeek, ServerPosition } from '../helpers'
 import { PartDefinition } from '../inewsConversion'
 import { literal, SanitizeString } from '../util'
 import { CreatePartInvalid } from './invalid'
@@ -36,6 +37,9 @@ export interface ServerPartProps {
 	tapeTime: number
 	adLibPix: boolean
 	session?: string
+	lastServerPosition?: ServerPosition
+	actionTriggerMode?: string
+	seek?: number
 }
 
 export type ServerPartLayers = {
@@ -71,6 +75,7 @@ export async function CreatePartServerBase<
 	const duration = getDuration(mediaObjectDuration, sourceDuration, props)
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
 	const actualDuration = getActualDuration(duration, sanitisedScript, props)
+	props.seek = getServerSeek(props.lastServerPosition, file, mediaObjectDuration, props.actionTriggerMode)
 
 	const displayTitle = getDisplayTitle(partDefinition)
 	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file)
@@ -228,6 +233,7 @@ function getContentServerElement<
 		},
 		props.adLibPix,
 		props.voLevels,
+		props.seek,
 		sourceDuration
 	)
 }
@@ -304,7 +310,7 @@ function getPgmBlueprintPiece<
 			mediaPlayerSessions: [mediaPlayerSession]
 		}),
 		content: {
-			...GetVTContentProperties(config, file, sourceDuration),
+			...GetVTContentProperties(config, file, props.seek, sourceDuration),
 			timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 		},
 		tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.voLayer), TallyTags.SERVER_IS_LIVE],

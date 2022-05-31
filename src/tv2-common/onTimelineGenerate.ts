@@ -17,13 +17,16 @@ import { AbstractLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
-import { ABSourceLayers, assignMediaPlayers } from './helpers'
+import { ABSourceLayers, assignMediaPlayers, getServerPositionForPartInstance, ServerPosition } from './helpers'
 
 export interface PartEndStateExt {
 	sisyfosPersistMetaData: SisyfosPersistMetaData
 	mediaPlayerSessions: { [layer: string]: string[] }
 	isJingle?: boolean
 	fullFileName?: string
+	serverPosition?: ServerPosition
+	segmentId?: string
+	partInstanceId: string
 }
 
 export interface MediaPlayerClaim {
@@ -190,15 +193,15 @@ function isAnyPieceInjectedIntoPart(resolvedPieces: IBlueprintResolvedPieceInsta
 	return resolvedPieces
 		.filter(piece => piece.partInstanceId === context.currentPartInstance?._id)
 		.some(piece => {
-			const metaData = piece.piece.metaData as PieceMetaData
+			const metaData = piece.piece.metaData as PieceMetaData | undefined
 			return metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
 		})
 }
 
 export function getEndStateForPart(
-	_context: IRundownContext,
+	context: IRundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
-	partInstance: IBlueprintPartInstance | undefined,
+	partInstance: IBlueprintPartInstance,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	time: number
 ): PartEndState {
@@ -206,7 +209,9 @@ export function getEndStateForPart(
 		sisyfosPersistMetaData: {
 			sisyfosLayers: []
 		},
-		mediaPlayerSessions: {}
+		mediaPlayerSessions: {},
+		segmentId: partInstance.segmentId,
+		partInstanceId: partInstance._id
 	}
 	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
 
@@ -242,6 +247,8 @@ export function getEndStateForPart(
 			endState.fullFileName = (piece.piece.content as GraphicsContent).fileName
 		}
 	}
+
+	endState.serverPosition = getServerPositionForPartInstance(context, partInstance, resolvedPieces, time)
 
 	return endState
 }
@@ -300,7 +307,7 @@ function findLayersToPersist(
 ): string[] {
 	const sortedPieces = pieces
 		.filter(piece => {
-			const metaData = piece.piece.metaData as PieceMetaData
+			const metaData = piece.piece.metaData as PieceMetaData | undefined
 			return metaData?.sisyfosPersistMetaData
 		})
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)
