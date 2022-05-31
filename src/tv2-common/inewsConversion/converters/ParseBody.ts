@@ -107,7 +107,8 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
 
-const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+(?:VOV?)?|VOV?|VOSB)+\b/gi
+const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+ ?(?:VOV?)?|VOV?|VOSB)+\b/gi
+const EVS_RED_TEXT = /EVS ?(\d+) ?(VOV?)?/i
 
 export function ParseBody(
 	config: TV2BlueprintConfig,
@@ -535,8 +536,8 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			variant: {},
 			...definition
 		}
-	} else if (typeStr.match(/EVS ?\d+(?:VOV?)?/i)) {
-		const strippedToken = typeStr.match(/EVS ?(\d+)(VOV?)?/i)
+	} else if (typeStr.match(EVS_RED_TEXT)) {
+		const strippedToken = typeStr.match(EVS_RED_TEXT)
 		return {
 			type: PartType.EVS,
 			variant: {
