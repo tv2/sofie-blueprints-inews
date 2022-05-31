@@ -35,12 +35,12 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
-export function CreatePartKam(
+export async function CreatePartKam(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
 	let part = partKamBase.part.part
@@ -159,7 +159,7 @@ export function CreatePartKam(
 		)
 	}
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,

@@ -49,7 +49,7 @@ export type ServerPartLayers = {
 	}
 } & MakeContentServerSourceLayers
 
-export function CreatePartServerBase<
+export async function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
@@ -58,14 +58,15 @@ export function CreatePartServerBase<
 	partDefinition: PartDefinition,
 	props: ServerPartProps,
 	layers: ServerPartLayers
-): { part: BlueprintResultPart; file: string; duration: number; invalid?: true } {
+): Promise<{ part: BlueprintResultPart; file: string; duration: number; invalid?: true }> {
 	if (isVideoIdMissing(partDefinition)) {
 		context.notifyUserWarning('Video ID not set!')
 		return { part: CreatePartInvalid(partDefinition), file: '', duration: 0, invalid: true }
 	}
 
 	const file = getVideoId(partDefinition)
-	const mediaObjectDuration = context.hackGetMediaObjectDuration(file)
+	const mediaObjectDurationSec = await context.hackGetMediaObjectDuration(file)
+	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
 	const sourceDuration = getSourceDuration(mediaObjectDuration, config.studio.ServerPostrollDuration)
 	const duration = getDuration(mediaObjectDuration, sourceDuration, props)
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
@@ -128,7 +129,7 @@ function getSourceDuration(
 	mediaObjectDuration: number | undefined,
 	serverPostrollDuration: number
 ): number | undefined {
-	return mediaObjectDuration !== undefined ? mediaObjectDuration * 1000 - serverPostrollDuration : undefined
+	return mediaObjectDuration !== undefined ? mediaObjectDuration - serverPostrollDuration : undefined
 }
 
 function getDuration(

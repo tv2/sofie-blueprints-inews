@@ -24,7 +24,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studi
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
-export function EvaluateAdLib(
+export async function EvaluateAdLib(
 	context: IShowStyleUserContext,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
@@ -44,7 +44,7 @@ export function EvaluateAdLib(
 		}
 
 		const sourceDuration = Math.max(
-			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+			((await context.hackGetMediaObjectDuration(file)) || 0) * 1000 - config.studio.ServerPostrollDuration,
 			0
 		)
 

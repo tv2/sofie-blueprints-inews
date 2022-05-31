@@ -143,7 +143,7 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 		return this.coreContext.getPackageInfo(packageId)
 	}
 
-	public hackGetMediaObjectDuration(mediaId: string): number | undefined {
+	public async hackGetMediaObjectDuration(mediaId: string): Promise<number | undefined> {
 		return this.coreContext.hackGetMediaObjectDuration(mediaId)
 	}
 

@@ -12,12 +12,12 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
-export function CreatePartTeknik(
+export async function CreatePartTeknik(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
@@ -30,7 +30,7 @@ export function CreatePartTeknik(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,
