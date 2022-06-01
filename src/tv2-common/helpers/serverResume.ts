@@ -3,7 +3,6 @@ import {
 	IBlueprintActionTriggerMode,
 	IBlueprintPartInstance,
 	IBlueprintResolvedPieceInstance,
-	ICommonContext,
 	VTContent
 } from '@tv2media/blueprints-integration'
 import { PartEndStateExt, t } from 'tv2-common'
@@ -18,7 +17,7 @@ export interface ServerPosition {
 	fileName: string
 	lastEnd: number
 	isPlaying: boolean
-	fromPartInstanceId: string
+	endedWithPartInstance?: string
 }
 
 export enum ServerSelectMode {
@@ -62,19 +61,13 @@ export async function getServerPosition(
 			? context.getCurrentTime() + replacingCurrentPieceWithOffset
 			: undefined
 
-	return getServerPositionForPartInstance(
-		context,
-		partInstance,
-		await context.getResolvedPieceInstances('current'),
-		pieceEnd
-	)
+	return getServerPositionForPartInstance(partInstance, await context.getResolvedPieceInstances('current'), pieceEnd)
 }
 
 /**
  * Calculate the offsets for clips based on the pieceinstances that have already been played.
  */
 export function getServerPositionForPartInstance(
-	_context: ICommonContext,
 	partInstance: IBlueprintPartInstance,
 	pieceInstances: IBlueprintResolvedPieceInstance[],
 	setCurrentPieceToNow0?: number
@@ -103,21 +96,31 @@ export function getServerPositionForPartInstance(
 			const pieceClipEnd = pieceSeek + (pieceDuration ?? 0)
 			const isPlaying =
 				(previousServerPosition?.fileName === content.fileName && previousServerPosition?.isPlaying) || !pieceDuration
+			const serverEndedWithPartInstance = !pieceInstance.resolvedDuration && setCurrentPieceToNow !== undefined
 			currentServerPosition = {
 				fileName: content.fileName,
 				lastEnd: pieceClipEnd,
 				isPlaying,
-				fromPartInstanceId: partInstance._id
+				endedWithPartInstance: serverEndedWithPartInstance ? partInstance._id : undefined
 			}
 		} else if (pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmDVEAdLib) {
 			const serverPlaybackTiming = (pieceInstance.piece.metaData as DVEPieceMetaData | undefined)?.serverPlaybackTiming
 			if (serverPlaybackTiming) {
 				for (const timing of serverPlaybackTiming) {
-					const start = timing.start ?? pieceInstance.resolvedStart
-					const end = timing.end ?? (pieceDuration ? pieceInstance.resolvedStart + pieceDuration : undefined)
-					if (currentServerPosition && end) {
+					const start =
+						timing.start ??
+						(partInstance.timings?.startedPlayback &&
+							partInstance.timings?.startedPlayback + pieceInstance.resolvedStart)
+					const end =
+						timing.end ??
+						(pieceDuration && partInstance.timings?.startedPlayback
+							? partInstance.timings?.startedPlayback + pieceInstance.resolvedStart + pieceDuration
+							: undefined)
+					const serverEndedWithPartInstance =
+						!pieceInstance.resolvedDuration && setCurrentPieceToNow !== undefined && !timing.end
+					if (currentServerPosition && end && start) {
 						currentServerPosition.lastEnd += end - start
-						currentServerPosition.fromPartInstanceId = partInstance._id
+						currentServerPosition.endedWithPartInstance = serverEndedWithPartInstance ? partInstance._id : undefined
 					}
 				}
 			}
@@ -129,7 +132,7 @@ export function getServerPositionForPartInstance(
 		currentServerPosition &&
 		!currentPiecesWithServer.length &&
 		inTransitionDuration &&
-		currentServerPosition?.fromPartInstanceId === previousPartEndState?.partInstanceId
+		currentServerPosition?.endedWithPartInstance === previousPartEndState?.partInstanceId
 	) {
 		currentServerPosition.lastEnd += inTransitionDuration
 	}

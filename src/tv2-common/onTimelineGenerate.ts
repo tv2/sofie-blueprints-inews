@@ -199,7 +199,7 @@ function isAnyPieceInjectedIntoPart(resolvedPieces: IBlueprintResolvedPieceInsta
 }
 
 export function getEndStateForPart(
-	context: IRundownContext,
+	_context: IRundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
 	partInstance: IBlueprintPartInstance,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
@@ -248,7 +248,7 @@ export function getEndStateForPart(
 		}
 	}
 
-	endState.serverPosition = getServerPositionForPartInstance(context, partInstance, resolvedPieces, time)
+	endState.serverPosition = getServerPositionForPartInstance(partInstance, resolvedPieces, time)
 
 	return endState
 }
