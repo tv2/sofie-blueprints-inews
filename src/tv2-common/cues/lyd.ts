@@ -44,8 +44,9 @@ export function EvaluateLYD(
 	}
 
 	const file = fade ? 'empty' : conf ? conf.FileName.toString() : parsedCue.variant
-	const fadeIn = fade ? Number(fade[1]) : conf ? Number(conf.FadeIn) : undefined
-	const fadeOut = conf ? Number(conf.FadeOut) : undefined
+	const fadeTimeInFrames = fade ? Number(fade[1]) : undefined
+	const fadeIn = fadeTimeInFrames ?? (conf ? Number(conf.FadeIn) : undefined)
+	const fadeOut = fadeTimeInFrames ?? (conf ? Number(conf.FadeOut) : undefined)
 
 	const lydType = stop ? 'stop' : fade ? 'fade' : 'bed'
 	const lifespan = stop || fade || parsedCue.end ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownChange
@@ -64,7 +65,7 @@ export function EvaluateLYD(
 					: fade
 					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
 					: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut)
+				content: LydContent(config, file, lydType, fadeIn, fadeOut, fadeTimeInFrames)
 			})
 		)
 	} else {
@@ -83,16 +84,12 @@ export function EvaluateLYD(
 					  }
 					: CreateTimingEnable(parsedCue)),
 				outputLayerId: SharedOutputLayers.MUSIK,
-				sourceLayerId: GetLYDSourceLayer(file),
+				sourceLayerId: SharedSourceLayers.PgmAudioBed,
 				lifespan,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut)
+				content: LydContent(config, file, lydType, fadeIn, fadeOut, fadeTimeInFrames)
 			})
 		)
 	}
-}
-
-export function GetLYDSourceLayer(_name: string): SharedSourceLayers {
-	return SharedSourceLayers.PgmAudioBed
 }
 
 function LydContent(
@@ -100,7 +97,8 @@ function LydContent(
 	file: string,
 	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,
-	fadeOut?: number
+	fadeOut?: number,
+	fadeTimeInFrames?: number
 ): WithTimeline<BaseContent> {
 	if (lydType === 'stop') {
 		return literal<WithTimeline<BaseContent>>({
@@ -170,7 +168,8 @@ function LydContent(
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: 1
+					isPgm: fadeIn ? 0 : 1,
+					fadeTime: fadeTimeInFrames ? TimeFromFrames(fadeTimeInFrames) : undefined
 				}
 			})
 		])
