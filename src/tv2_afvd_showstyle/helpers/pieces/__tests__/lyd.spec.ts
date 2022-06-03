@@ -5,7 +5,7 @@ import {
 	PieceLifespan
 } from '@tv2media/blueprints-integration'
 import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
-import { NoteType, PartType } from 'tv2-constants'
+import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import {
 	DEFAULT_GRAPHICS_SETUP,
@@ -29,6 +29,20 @@ function makeMockContext() {
 }
 
 const config = getConfig(makeMockContext())
+const mockPart = literal<PartDefinitionKam>({
+	type: PartType.Kam,
+	variant: {
+		name: '1'
+	},
+	externalId: '0001',
+	rawType: 'Kam 1',
+	cues: [],
+	script: '',
+	storyName: '',
+	fields: {},
+	modified: 0,
+	segmentExternalId: ''
+})
 
 describe('lyd', () => {
 	test('Lyd with no out time', () => {
@@ -36,20 +50,6 @@ describe('lyd', () => {
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
-		const mockPart = literal<PartDefinitionKam>({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '0001',
-			rawType: 'Kam 1',
-			cues: [],
-			script: '',
-			storyName: '',
-			fields: {},
-			modified: 0,
-			segmentExternalId: ''
-		})
 
 		EvaluateLYD(
 			makeMockContext(),
@@ -82,20 +82,6 @@ describe('lyd', () => {
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
-		const mockPart = literal<PartDefinitionKam>({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '0001',
-			rawType: 'Kam 1',
-			cues: [],
-			script: '',
-			storyName: '',
-			fields: {},
-			modified: 0,
-			segmentExternalId: ''
-		})
 
 		EvaluateLYD(
 			makeMockContext(),
@@ -129,20 +115,6 @@ describe('lyd', () => {
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
-		const mockPart = literal<PartDefinitionKam>({
-			type: PartType.Kam,
-			variant: {
-				name: '1'
-			},
-			externalId: '0001',
-			rawType: 'Kam 1',
-			cues: [],
-			script: '',
-			storyName: '',
-			fields: {},
-			modified: 0,
-			segmentExternalId: ''
-		})
 
 		const context = makeMockContext()
 
@@ -166,5 +138,71 @@ describe('lyd', () => {
 		expect(pieces.length).toEqual(0)
 		expect(context.getNotes().length).toEqual(1)
 		expect(context.getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
+	})
+
+	test('Lyd not configured', () => {
+		const parsedCue = ParseCue(['LYD=SN_MISSING', ';0.00-0.10'], config) as CueDefinitionLYD
+		const pieces: IBlueprintPiece[] = []
+		const adlibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+
+		const context = makeMockContext()
+
+		EvaluateLYD(
+			context,
+			{
+				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
+				studio: (defaultStudioConfig as unknown) as StudioConfig,
+				sources: [],
+				mediaPlayers: [],
+				dsk: defaultDSKConfig,
+				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
+			},
+			pieces,
+			adlibPieces,
+			actions,
+			parsedCue,
+			mockPart
+		)
+
+		expect(pieces.length).toEqual(0)
+		expect(context.getNotes().length).toEqual(1)
+		expect(context.getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
+	})
+
+	test('Lyd adlib', () => {
+		const parsedCue = ParseCue(['LYD=SN_INTRO', ';x.xx'], config) as CueDefinitionLYD
+		const pieces: IBlueprintPiece[] = []
+		const adlibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+
+		EvaluateLYD(
+			makeMockContext(),
+			{
+				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
+				studio: (defaultStudioConfig as unknown) as StudioConfig,
+				sources: [],
+				mediaPlayers: [],
+				dsk: defaultDSKConfig,
+				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
+			},
+			pieces,
+			adlibPieces,
+			actions,
+			parsedCue,
+			mockPart,
+			true
+		)
+
+		expect(adlibPieces.length).toEqual(1)
+		expect(adlibPieces[0]).toMatchObject(
+			literal<Partial<IBlueprintAdLibPiece>>({
+				name: 'SN_INTRO',
+				outputLayerId: SharedOutputLayers.MUSIK,
+				sourceLayerId: SharedSourceLayers.PgmAudioBed,
+				lifespan: PieceLifespan.OutOnRundownChange,
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
+			})
+		)
 	})
 })
