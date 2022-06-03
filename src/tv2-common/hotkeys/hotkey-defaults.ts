@@ -42,8 +42,7 @@ export const defaultHotkeys: TV2Hotkeys = {
 					SharedSourceLayers.PgmGraphicsHeadline,
 					SharedSourceLayers.PgmGraphicsTema,
 					SharedSourceLayers.PgmGraphicsOverlay,
-					SharedSourceLayers.PgmPilotOverlay,
-					SharedSourceLayers.PgmGraphicsTLF
+					SharedSourceLayers.PgmPilotOverlay
 				],
 				key: 'KeyQ',
 				name: 'overlay ALT UD'

@@ -106,7 +106,7 @@ describe('telefon', () => {
 					start: 0
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
-				sourceLayerId: SourceLayer.PgmGraphicsTLF,
+				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',

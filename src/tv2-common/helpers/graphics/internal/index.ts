@@ -58,9 +58,7 @@ export function CreateInternalGraphic(
 
 	const engine = parsedCue.target
 
-	const sourceLayerId = IsTargetingTLF(engine)
-		? SharedSourceLayers.PgmGraphicsTLF
-		: GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
+	const sourceLayerId = GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
 
 	const outputLayerId = IsTargetingWall(engine) ? SharedOutputLayers.SEC : SharedOutputLayers.OVERLAY
 
