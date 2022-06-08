@@ -70,11 +70,11 @@ export async function getServerPosition(
 export function getServerPositionForPartInstance(
 	partInstance: IBlueprintPartInstance,
 	pieceInstances: IBlueprintResolvedPieceInstance[],
-	setCurrentPieceToNow0?: number
+	setCurrentPieceToNow?: number
 ): ServerPosition | undefined {
-	const setCurrentPieceToNow =
-		setCurrentPieceToNow0 !== undefined && partInstance.timings?.startedPlayback
-			? setCurrentPieceToNow0 - partInstance.timings.startedPlayback
+	setCurrentPieceToNow =
+		setCurrentPieceToNow !== undefined && partInstance.timings?.startedPlayback
+			? setCurrentPieceToNow - partInstance.timings.startedPlayback
 			: undefined
 
 	const previousPartEndState = partInstance.previousPartEndState as Partial<PartEndStateExt> | undefined
@@ -92,41 +92,36 @@ export function getServerPositionForPartInstance(
 
 		const content = pieceInstance.piece.content as VTContent | undefined
 		if (pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmServer && content) {
-			const pieceSeek = content.seek ?? 0
-			const pieceClipEnd = pieceSeek + (pieceDuration ?? 0)
-			const isPlaying =
-				(previousServerPosition?.fileName === content.fileName && previousServerPosition?.isPlaying) || !pieceDuration
-			const serverEndedWithPartInstance = !pieceInstance.resolvedDuration && setCurrentPieceToNow !== undefined
-			currentServerPosition = {
-				fileName: content.fileName,
-				lastEnd: pieceClipEnd,
-				isPlaying,
-				endedWithPartInstance: serverEndedWithPartInstance ? partInstance._id : undefined
-			}
+			currentServerPosition = getCurrentPositionFromServerPiece(
+				content,
+				pieceDuration,
+				previousServerPosition,
+				pieceInstance,
+				setCurrentPieceToNow,
+				partInstance
+			)
 		} else if (pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmDVEAdLib) {
-			const serverPlaybackTiming = (pieceInstance.piece.metaData as DVEPieceMetaData | undefined)?.serverPlaybackTiming
-			if (serverPlaybackTiming) {
-				for (const timing of serverPlaybackTiming) {
-					const start =
-						timing.start ??
-						(partInstance.timings?.startedPlayback &&
-							partInstance.timings?.startedPlayback + pieceInstance.resolvedStart)
-					const end =
-						timing.end ??
-						(pieceDuration && partInstance.timings?.startedPlayback
-							? partInstance.timings?.startedPlayback + pieceInstance.resolvedStart + pieceDuration
-							: undefined)
-					const serverEndedWithPartInstance =
-						!pieceInstance.resolvedDuration && setCurrentPieceToNow !== undefined && !timing.end
-					if (currentServerPosition && end && start) {
-						currentServerPosition.lastEnd += end - start
-						currentServerPosition.endedWithPartInstance = serverEndedWithPartInstance ? partInstance._id : undefined
-					}
-				}
-			}
+			updateServerPositionFromDVEPiece(
+				pieceInstance,
+				partInstance,
+				pieceDuration,
+				setCurrentPieceToNow,
+				currentServerPosition
+			)
 		}
 	}
 
+	updateServerPositionFromTransition(partInstance, currentServerPosition, currentPiecesWithServer, previousPartEndState)
+
+	return currentServerPosition
+}
+
+function updateServerPositionFromTransition(
+	partInstance: IBlueprintPartInstance<unknown>,
+	currentServerPosition: ServerPosition | undefined,
+	currentPiecesWithServer: Array<IBlueprintResolvedPieceInstance<unknown>>,
+	previousPartEndState: Partial<PartEndStateExt> | undefined
+) {
 	const inTransitionDuration = partInstance.part.inTransition?.previousPartKeepaliveDuration
 	if (
 		currentServerPosition &&
@@ -136,8 +131,74 @@ export function getServerPositionForPartInstance(
 	) {
 		currentServerPosition.lastEnd += inTransitionDuration
 	}
+}
 
-	return currentServerPosition
+function updateServerPositionFromDVEPiece(
+	pieceInstance: IBlueprintResolvedPieceInstance<unknown>,
+	partInstance: IBlueprintPartInstance<unknown>,
+	pieceDuration: number | undefined,
+	setCurrentPieceToNow: number | undefined,
+	currentServerPosition: ServerPosition | undefined
+) {
+	const serverPlaybackTiming = (pieceInstance.piece.metaData as DVEPieceMetaData | undefined)?.serverPlaybackTiming
+	if (serverPlaybackTiming) {
+		for (const timing of serverPlaybackTiming) {
+			const start = getStartTimeForServerInDVE(timing, partInstance, pieceInstance)
+			const end = getEndTimeForServerInDVE(timing, pieceDuration, partInstance, pieceInstance)
+			const serverEndedWithPartInstance =
+				!pieceInstance.resolvedDuration && setCurrentPieceToNow !== undefined && !timing.end
+			if (currentServerPosition && end && start) {
+				currentServerPosition.lastEnd += end - start
+				currentServerPosition.endedWithPartInstance = serverEndedWithPartInstance ? partInstance._id : undefined
+			}
+		}
+	}
+}
+
+function getStartTimeForServerInDVE(
+	timing: { start?: number | undefined; end?: number | undefined },
+	partInstance: IBlueprintPartInstance<unknown>,
+	pieceInstance: IBlueprintResolvedPieceInstance<unknown>
+) {
+	return (
+		timing.start ??
+		(partInstance.timings?.startedPlayback && partInstance.timings?.startedPlayback + pieceInstance.resolvedStart)
+	)
+}
+
+function getEndTimeForServerInDVE(
+	timing: { start?: number | undefined; end?: number | undefined },
+	pieceDuration: number | undefined,
+	partInstance: IBlueprintPartInstance<unknown>,
+	pieceInstance: IBlueprintResolvedPieceInstance<unknown>
+) {
+	return (
+		timing.end ??
+		(pieceDuration && partInstance.timings?.startedPlayback
+			? partInstance.timings?.startedPlayback + pieceInstance.resolvedStart + pieceDuration
+			: undefined)
+	)
+}
+
+function getCurrentPositionFromServerPiece(
+	content: VTContent,
+	pieceDuration: number | undefined,
+	previousServerPosition: ServerPosition | undefined,
+	pieceInstance: IBlueprintResolvedPieceInstance<unknown>,
+	setCurrentPieceToNow: number | undefined,
+	partInstance: IBlueprintPartInstance<unknown>
+) {
+	const pieceSeek = content.seek ?? 0
+	const pieceClipEnd = pieceSeek + (pieceDuration ?? 0)
+	const isPlaying =
+		(previousServerPosition?.fileName === content.fileName && previousServerPosition?.isPlaying) || !pieceDuration
+	const serverEndedWithPartInstance = !pieceInstance.resolvedDuration && setCurrentPieceToNow !== undefined
+	return {
+		fileName: content.fileName,
+		lastEnd: pieceClipEnd,
+		isPlaying,
+		endedWithPartInstance: serverEndedWithPartInstance ? partInstance._id : undefined
+	}
 }
 
 export function shouldPreservePosition(pieceInstance: IBlueprintResolvedPieceInstance): boolean {
@@ -147,10 +208,6 @@ export function shouldPreservePosition(pieceInstance: IBlueprintResolvedPieceIns
 			(pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmDVEAdLib &&
 				!!(pieceInstance.piece.metaData as DVEPieceMetaData | undefined)?.serverPlaybackTiming))
 	)
-}
-
-export function hasTransition(pieceInstance: IBlueprintResolvedPieceInstance): boolean {
-	return pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmJingle
 }
 
 export function getServerAdLibTriggerModes(): IBlueprintActionTriggerMode[] {

@@ -652,7 +652,7 @@ async function cutServerToBox<
 
 	if (!containsServer) {
 		if (containedServerBefore) {
-			stopServerMetadata(context, meta)
+			stopServerMetaData(context, meta)
 		}
 		return newDvePiece
 	}
@@ -713,21 +713,21 @@ async function cutServerToBox<
 		;(newDvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 
 		if (!containedServerBefore) {
-			startServerMetadata(context, meta, modifiesCurrent)
+			startServerMetaData(context, meta, modifiesCurrent)
 		}
 	}
 
 	return newDvePiece
 }
 
-function stopServerMetadata(context: ITV2ActionExecutionContext, metaData: DVEPieceMetaData) {
+function stopServerMetaData(context: ITV2ActionExecutionContext, metaData: DVEPieceMetaData) {
 	const length = metaData.serverPlaybackTiming?.length
 	if (metaData.serverPlaybackTiming && length) {
 		metaData.serverPlaybackTiming[length - 1].end = context.getCurrentTime()
 	}
 }
 
-function startServerMetadata(
+function startServerMetaData(
 	context: ITV2ActionExecutionContext,
 	metaData: DVEPieceMetaData,
 	modifiesCurrent?: boolean
