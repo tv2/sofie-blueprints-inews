@@ -12,6 +12,7 @@ import {
 import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
 import {
 	AbstractLLayer,
+	AdlibTags,
 	ControlClasses,
 	SharedCasparLLayer,
 	SharedOutputLayers,
@@ -65,7 +66,8 @@ export function EvaluateLYD(
 					: fade
 					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
 					: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut, fadeTimeInFrames)
+				content: LydContent(config, file, lydType, fadeIn, fadeOut, fadeTimeInFrames),
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
 		)
 	} else {

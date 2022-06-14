@@ -130,13 +130,13 @@ function testNotes(context: SegmentUserContext) {
 }
 
 describe('Primary Cue Transitions Without Config', () => {
-	it('Cuts by default for KAM', () => {
+	it('Cuts by default for KAM', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -146,13 +146,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds effekt to KAM', () => {
+	it('Adds effekt to KAM', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1 EFFEKT 2</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -164,13 +164,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds mix to KAM', () => {
+	it('Adds mix to KAM', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1 Mix 11</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -188,13 +188,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(11)
 	})
 
-	it('Cuts by default for EVS1', () => {
+	it('Cuts by default for EVS1', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -204,13 +204,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds effekt to EVS1', () => {
+	it('Adds effekt to EVS1', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 EFFEKT 1</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -221,13 +221,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds mix to EVS1', () => {
+	it('Adds mix to EVS1', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 Mix 15</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -245,13 +245,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(15)
 	})
 
-	it('Cuts by default for EVS1VO', () => {
+	it('Cuts by default for EVS1VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS1VO</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -261,13 +261,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds effekt to EVS1VO', () => {
+	it('Adds effekt to EVS1VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1VO EFFEKT 1</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -278,13 +278,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds mix to EVS1VO', () => {
+	it('Adds mix to EVS1VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1 VO Mix 25</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -302,13 +302,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(25)
 	})
 
-	it('Cuts by default for SERVER', () => {
+	it('Cuts by default for SERVER', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -318,13 +318,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds effekt to SERVER', () => {
+	it('Adds effekt to SERVER', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER EFFEKT 2</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -335,13 +335,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds mix to SERVER', () => {
+	it('Adds mix to SERVER', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER Mix 20</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -359,13 +359,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
 	})
 
-	it('Cuts by default for VO', () => {
+	it('Cuts by default for VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -375,13 +375,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds effekt to VO', () => {
+	it('Adds effekt to VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO EFFEKT 1</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 
@@ -392,13 +392,13 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 	})
 
-	it('Adds mix to VO', () => {
+	it('Adds mix to VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO Mix 20</pi><p>'
 
 		const context = makeMockContextWithoutTransitionsConfig()
-		const segment = getSegment(context, ingestSegment)
+		const segment = await getSegment(context, ingestSegment)
 
 		testNotes(context)
 

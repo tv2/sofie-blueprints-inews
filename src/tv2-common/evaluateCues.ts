@@ -109,7 +109,7 @@ export interface EvaluateCuesShowstyleOptions {
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
 		rank: number
-	) => void
+	) => Promise<void>
 	EvaluateCueTelefon?: (
 		config: TV2BlueprintConfig,
 		context: ISegmentUserContext,
@@ -187,7 +187,7 @@ export interface EvaluateCuesOptions {
 	adlibsOnly?: boolean
 }
 
-export function EvaluateCuesBase(
+export async function EvaluateCuesBase(
 	showStyleOptions: EvaluateCuesShowstyleOptions,
 	context: ISegmentUserContext,
 	config: TV2BlueprintConfig,
@@ -280,7 +280,7 @@ export function EvaluateCuesBase(
 					break
 				case CueType.AdLib:
 					if (showStyleOptions.EvaluateCueAdLib) {
-						showStyleOptions.EvaluateCueAdLib(
+						await showStyleOptions.EvaluateCueAdLib(
 							context,
 							config,
 							adLibPieces,

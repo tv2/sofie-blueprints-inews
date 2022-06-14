@@ -34,17 +34,17 @@ export interface MakeContentServerSourceLayers {
 	}
 }
 
-export interface VTFields {
-	file: string
-	duration: number
-}
-
 type VTProps = Pick<
 	VTContent,
-	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration'
+	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration' | 'seek'
 >
 
-export function GetVTContentProperties(config: TV2BlueprintConfig, file: string, sourceDuration?: number): VTProps {
+export function GetVTContentProperties(
+	config: TV2BlueprintConfig,
+	file: string,
+	seek?: number,
+	sourceDuration?: number
+): VTProps {
 	return literal<VTProps>({
 		fileName: file,
 		path: JoinAssetToNetworkPath(
@@ -56,7 +56,8 @@ export function GetVTContentProperties(config: TV2BlueprintConfig, file: string,
 		mediaFlowIds: [config.studio.ClipMediaFlowId],
 		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined,
 		postrollDuration: config.studio.ServerPostrollDuration,
-		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus
+		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus,
+		seek
 	})
 }
 
@@ -69,10 +70,11 @@ export function MakeContentServer(
 	sourceLayers: MakeContentServerSourceLayers,
 	adLibPix: boolean,
 	voLevels: boolean,
+	seek?: number,
 	sourceDuration?: number
 ): WithTimeline<VTContent> {
 	return literal<WithTimeline<VTContent>>({
-		...GetVTContentProperties(config, file, sourceDuration),
+		...GetVTContentProperties(config, file, seek, sourceDuration),
 		ignoreMediaObjectStatus: true,
 		timelineObjects: GetServerTimeline(
 			context,
@@ -82,7 +84,8 @@ export function MakeContentServer(
 			config,
 			sourceLayers,
 			adLibPix,
-			voLevels
+			voLevels,
+			seek
 		)
 	})
 }
@@ -95,7 +98,8 @@ function GetServerTimeline(
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	adLibPix?: boolean,
-	voLevels?: boolean
+	voLevels?: boolean,
+	seek?: number
 ) {
 	const serverEnableClass = `.${GetEnableClassForServer(mediaPlayerSessionId)}`
 
@@ -111,7 +115,7 @@ function GetServerTimeline(
 			type: TSR.TimelineContentTypeCasparCg.MEDIA,
 			file,
 			loop: adLibPix,
-			seek: 0,
+			seek,
 			// length: duration,
 			playing: true
 		},

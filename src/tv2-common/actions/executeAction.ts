@@ -72,7 +72,13 @@ import {
 } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
-import { CreateFullDataStore, GetEnableForWall, PilotGeneratorSettings } from '../helpers'
+import {
+	CreateFullDataStore,
+	GetEnableForWall,
+	getServerPosition,
+	PilotGeneratorSettings,
+	ServerSelectMode
+} from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
@@ -195,7 +201,8 @@ export async function executeAction<
 	coreContext: IActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionIdStr: string,
-	userData: ActionUserData
+	userData: ActionUserData,
+	triggerMode?: string
 ): Promise<void> {
 	await executeWithContext(coreContext, async context => {
 		const existingTransition = await getExistingTransition(context, settings, 'next')
@@ -204,7 +211,13 @@ export async function executeAction<
 
 		switch (actionId) {
 			case AdlibActionType.SELECT_SERVER_CLIP:
-				await executeActionSelectServerClip(context, settings, actionId, userData as ActionSelectServerClip)
+				await executeActionSelectServerClip(
+					context,
+					settings,
+					actionId,
+					userData as ActionSelectServerClip,
+					triggerMode as ServerSelectMode | undefined
+				)
 				break
 			case AdlibActionType.SELECT_DVE:
 				await executeActionSelectDVE(context, settings, actionId, userData as ActionSelectDVE)
@@ -390,6 +403,7 @@ async function executeActionSelectServerClip<
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectServerClip,
+	triggerMode?: ServerSelectMode,
 	sessionToContinue?: string
 ) {
 	const file = userData.file
@@ -403,12 +417,15 @@ async function executeActionSelectServerClip<
 				.getPieceInstances('current')
 				.then(pieceInstances =>
 					pieceInstances.find(
-						p => p.piece.sourceLayerId === (userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server)
+						p =>
+							p.piece.sourceLayerId === (userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server) ||
+							(p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib &&
+								dveContainsServer((p.piece.metaData as DVEPieceMetaData).sources))
 					)
 				)
 		: undefined
 
-	const basePart = CreatePartServerBase(
+	const basePart = await CreatePartServerBase(
 		context,
 		config,
 		partDefinition,
@@ -419,7 +436,9 @@ async function executeActionSelectServerClip<
 			totalTime: 0,
 			tapeTime: userData.duration / 1000,
 			session: sessionToContinue ?? externalId,
-			adLibPix: userData.adLibPix
+			adLibPix: userData.adLibPix,
+			lastServerPosition: await getServerPosition(context),
+			actionTriggerMode: triggerMode
 		},
 		{
 			SourceLayer: {
@@ -623,21 +642,28 @@ async function cutServerToBox<
 >(
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	dvePiece: IBlueprintPiece
+	newDvePiece: IBlueprintPiece,
+	containedServerBefore?: boolean,
+	modifiesCurrent?: boolean
 ): Promise<IBlueprintPiece> {
 	// Check if DVE should continue server + copy server properties
 
-	if (!dvePiece.metaData) {
-		return dvePiece
+	if (!newDvePiece.metaData) {
+		return newDvePiece
 	}
 
-	const meta = dvePiece.metaData as DVEPieceMetaData
+	const meta = newDvePiece.metaData as DVEPieceMetaData
 
-	if (!dveContainsServer(meta.sources)) {
-		return dvePiece
+	const containsServer = dveContainsServer(meta.sources)
+
+	if (!containsServer) {
+		if (containedServerBefore) {
+			stopServerMetaData(context, meta)
+		}
+		return newDvePiece
 	}
 
-	if (dvePiece.content?.timelineObjects) {
+	if (newDvePiece.content?.timelineObjects) {
 		const currentServer = await context
 			.getPieceInstances('current')
 			.then(currentPieces =>
@@ -650,7 +676,7 @@ async function cutServerToBox<
 
 		if (!currentServer || !currentServer.piece.content?.timelineObjects) {
 			context.notifyUserWarning(`No server is playing, cannot start DVE`)
-			return dvePiece
+			return newDvePiece
 		}
 
 		// Find existing CasparCG object
@@ -662,8 +688,8 @@ async function cutServerToBox<
 			obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
 		) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
 		// Find SSRC object in DVE piece
-		const ssrcObjIndex = dvePiece.content?.timelineObjects
-			? (dvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+		const ssrcObjIndex = newDvePiece.content?.timelineObjects
+			? (newDvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
 					obj => obj.layer === settings.LLayer.Atem.SSrcDefault
 			  )
 			: -1
@@ -676,27 +702,44 @@ async function cutServerToBox<
 			!existingCasparObj.metaData.mediaPlayerSession
 		) {
 			context.notifyUserWarning(`Failed to start DVE with server`)
-			return dvePiece
+			return newDvePiece
 		}
 
-		const ssrcObj = (dvePiece.content.timelineObjects as Array<TSR.TSRTimelineObj & TimelineBlueprintExt>)[ssrcObjIndex]
+		const ssrcObj = newDvePiece.content.timelineObjects[ssrcObjIndex] as TSR.TSRTimelineObj & TimelineBlueprintExt
 
 		ssrcObj.metaData = {
 			...ssrcObj.metaData,
 			mediaPlayerSession: existingCasparObj.metaData.mediaPlayerSession
 		}
 
-		dvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
-		dvePiece.content.timelineObjects.push(EnableServer(existingCasparObj.metaData.mediaPlayerSession))
+		newDvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
+		newDvePiece.content.timelineObjects.push(EnableServer(existingCasparObj.metaData.mediaPlayerSession))
+		;(newDvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 
-		if (!dvePiece.metaData) {
-			dvePiece.metaData = {}
+		if (!containedServerBefore) {
+			startServerMetaData(context, meta, modifiesCurrent)
 		}
-
-		;(dvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 	}
 
-	return dvePiece
+	return newDvePiece
+}
+
+function stopServerMetaData(context: ITV2ActionExecutionContext, metaData: DVEPieceMetaData) {
+	const length = metaData.serverPlaybackTiming?.length
+	if (metaData.serverPlaybackTiming && length) {
+		metaData.serverPlaybackTiming[length - 1].end = context.getCurrentTime()
+	}
+}
+
+function startServerMetaData(
+	context: ITV2ActionExecutionContext,
+	metaData: DVEPieceMetaData,
+	modifiesCurrent?: boolean
+) {
+	if (!metaData.serverPlaybackTiming) {
+		metaData.serverPlaybackTiming = []
+	}
+	metaData.serverPlaybackTiming.push(modifiesCurrent ? { start: context.getCurrentTime() } : {})
 }
 
 async function executeActionSelectDVELayout<
@@ -1274,7 +1317,7 @@ async function executeActionCutSourceToBox<
 	let modifiedPiece: IBlueprintPieceInstance | undefined
 	let modifiedDataStore: IBlueprintPieceInstance | undefined
 
-	if (currentDVE && currentDVE.stoppedPlayback === undefined) {
+	if (currentDVE && !currentDVE.stoppedPlayback) {
 		modify = 'current'
 		modifiedPiece = currentDVE
 		modifiedDataStore = currentDataStore
@@ -1287,10 +1330,6 @@ async function executeActionCutSourceToBox<
 	const meta: (DVEPieceMetaData & PieceMetaData) | undefined = modifiedPiece?.piece.metaData as PieceMetaData &
 		DVEPieceMetaData
 
-	meta.sisyfosPersistMetaData = {
-		sisyfosLayers: []
-	}
-
 	if (
 		!modifiedPiece ||
 		!modify ||
@@ -1299,6 +1338,10 @@ async function executeActionCutSourceToBox<
 		!meta
 	) {
 		return
+	}
+
+	meta.sisyfosPersistMetaData = {
+		sisyfosLayers: []
 	}
 
 	const containsServerBefore = dveContainsServer(meta.sources)
@@ -1340,8 +1383,8 @@ async function executeActionCutSourceToBox<
 	}
 
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
-	if (!(containsServerBefore && containsServerAfter)) {
-		newDVEPiece = await cutServerToBox(context, settings, newDVEPiece)
+	if (!containsServerBefore || !containsServerAfter) {
+		newDVEPiece = await cutServerToBox(context, settings, newDVEPiece, !!containsServerBefore, modify === 'current')
 	}
 
 	if (newPieceContent.valid) {
@@ -1676,7 +1719,14 @@ async function executeActionCommentatorSelectServer<
 		session = sessions.session
 	}
 
-	await executeActionSelectServerClip(context, settings, AdlibActionType.SELECT_SERVER_CLIP, data, session)
+	await executeActionSelectServerClip(
+		context,
+		settings,
+		AdlibActionType.SELECT_SERVER_CLIP,
+		data,
+		ServerSelectMode.RESET,
+		session
+	)
 }
 
 async function executeActionCommentatorSelectDVE<

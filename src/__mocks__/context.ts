@@ -181,7 +181,7 @@ export class ShowStyleContext extends StudioContext implements IShowStyleContext
 	public getShowStyleConfigRef(_configKey: string): string {
 		return 'test'
 	}
-	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
+	public async hackGetMediaObjectDuration(_mediaId: string): Promise<number | undefined> {
 		return undefined
 	}
 }
@@ -275,7 +275,7 @@ export class SegmentUserContext extends RundownContext implements ISegmentUserCo
 	) {
 		this.pushNote(NoteType.NOTIFY_USER_WARNING, message)
 	}
-	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
+	public async hackGetMediaObjectDuration(_mediaId: string): Promise<number | undefined> {
 		return undefined
 	}
 	public getPackageInfo(_packageId: string): readonly PackageInfo.Any[] {
@@ -578,7 +578,7 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 
 		return take
 	}
-	public hackGetMediaObjectDuration(_mediaId: string): number | undefined {
+	public async hackGetMediaObjectDuration(_mediaId: string): Promise<number | undefined> {
 		return undefined
 	}
 	public getPackageInfo(_packageId: string): PackageInfo.Any[] {

@@ -12,7 +12,8 @@ import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 export async function executeActionAFVD(
 	context: IActionExecutionContext,
 	actionId: string,
-	userData: ActionUserData
+	userData: ActionUserData,
+	triggerMode?: string
 ): Promise<void> {
 	await executeAction(
 		context,
@@ -66,6 +67,7 @@ export async function executeActionAFVD(
 			pilotGraphicSettings: pilotGeneratorSettingsAFVD
 		},
 		actionId,
-		userData
+		userData,
+		triggerMode
 	)
 }

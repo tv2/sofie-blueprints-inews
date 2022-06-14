@@ -20,7 +20,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
-export function CreatePartUnknown(
+export async function CreatePartUnknown(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
@@ -51,7 +51,7 @@ export function CreatePartUnknown(
 		ApplyFullGraphicPropertiesToPart(config, part)
 	}
 
-	OfftubeEvaluateCues(
+	await OfftubeEvaluateCues(
 		context,
 		config,
 		part,

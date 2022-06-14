@@ -109,6 +109,7 @@ export interface DVEPieceMetaData {
 	sources: DVESources
 	userData: ActionSelectDVE
 	mediaPlayerSessions?: string[] // TODO: Should probably move to a ServerPieceMetaData
+	serverPlaybackTiming?: Array<{ start?: number; end?: number }>
 }
 
 export interface DVETimelineObjectGenerators {

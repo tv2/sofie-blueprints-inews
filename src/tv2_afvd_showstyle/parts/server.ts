@@ -11,13 +11,13 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
-export function CreatePartServer(
+export async function CreatePartServer(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps
-): BlueprintResultPart {
-	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
+): Promise<BlueprintResultPart> {
+	const basePartProps = await CreatePartServerBase(context, config, partDefinition, props, {
 		SourceLayer: {
 			PgmServer: props.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: props.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
@@ -52,7 +52,7 @@ export function CreatePartServer(
 	}
 	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,
