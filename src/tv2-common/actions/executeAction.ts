@@ -72,7 +72,13 @@ import {
 } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
-import { CreateFullDataStore, GetEnableForWall, getServerPosition, PilotGeneratorSettings } from '../helpers'
+import {
+	CreateFullDataStore,
+	GetEnableForWall,
+	getServerPosition,
+	PilotGeneratorSettings,
+	ServerSelectMode
+} from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
@@ -210,7 +216,7 @@ export async function executeAction<
 					settings,
 					actionId,
 					userData as ActionSelectServerClip,
-					triggerMode
+					triggerMode as ServerSelectMode | undefined
 				)
 				break
 			case AdlibActionType.SELECT_DVE:
@@ -397,7 +403,7 @@ async function executeActionSelectServerClip<
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectServerClip,
-	triggerMode?: string,
+	triggerMode?: ServerSelectMode,
 	sessionToContinue?: string
 ) {
 	const file = userData.file
@@ -699,9 +705,7 @@ async function cutServerToBox<
 			return newDvePiece
 		}
 
-		const ssrcObj = (newDvePiece.content.timelineObjects as Array<TSR.TSRTimelineObj & TimelineBlueprintExt>)[
-			ssrcObjIndex
-		]
+		const ssrcObj = newDvePiece.content.timelineObjects[ssrcObjIndex] as TSR.TSRTimelineObj & TimelineBlueprintExt
 
 		ssrcObj.metaData = {
 			...ssrcObj.metaData,

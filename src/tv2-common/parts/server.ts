@@ -20,7 +20,7 @@ import { AdlibActionType, PartType, SharedOutputLayers, TallyTags } from 'tv2-co
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { GetVTContentProperties } from '../content'
-import { getServerSeek, ServerPosition } from '../helpers'
+import { getServerSeek, ServerPosition, ServerSelectMode } from '../helpers'
 import { PartDefinition } from '../inewsConversion'
 import { literal, SanitizeString } from '../util'
 import { CreatePartInvalid } from './invalid'
@@ -38,7 +38,7 @@ export interface ServerPartProps {
 	adLibPix: boolean
 	session?: string
 	lastServerPosition?: ServerPosition
-	actionTriggerMode?: string
+	actionTriggerMode?: ServerSelectMode
 	seek?: number
 }
 
