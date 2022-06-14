@@ -27,7 +27,7 @@ import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
-export function OfftubeEvaluateAdLib(
+export async function OfftubeEvaluateAdLib(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
@@ -47,7 +47,7 @@ export function OfftubeEvaluateAdLib(
 		}
 
 		const sourceDuration = Math.max(
-			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+			((await context.hackGetMediaObjectDuration(file)) || 0) * 1000 - config.studio.ServerPostrollDuration,
 			0
 		)
 

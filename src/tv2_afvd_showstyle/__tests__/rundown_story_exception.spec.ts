@@ -35,14 +35,14 @@ describe('Generate rundowns without error', () => {
 		})
 
 		for (const segment of roData.segments) {
-			test(`Rundown segment: ${segment.name} - ${roSpec.ro} - ${roData.externalId}`, () => {
+			test(`Rundown segment: ${segment.name} - ${roSpec.ro} - ${roData.externalId}`, async () => {
 				const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
 				mockContext.studioConfig = roSpec.studioConfig as any
 				mockContext.showStyleConfig = roSpec.showStyleConfig as any
 
 				const iNewsStory: INewsStory | undefined = segment.payload?.iNewsStory
 
-				const res = Blueprints.getSegment(mockContext, segment)
+				const res = await Blueprints.getSegment(mockContext, segment)
 				if (iNewsStory && iNewsStory.fields.pageNumber && iNewsStory.fields.pageNumber.trim()) {
 					expect(res.segment.identifier).toEqual(iNewsStory.fields.pageNumber.trim())
 				}

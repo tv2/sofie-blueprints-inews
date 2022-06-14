@@ -21,12 +21,12 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
-export function CreatePartIntro(
+export async function CreatePartIntro(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 
 	const jingleCue = partDefinition.cues.find(cue => {
@@ -77,7 +77,7 @@ export function CreatePartIntro(
 		...GetJinglePartProperties(context, config, partDefinition)
 	}
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,

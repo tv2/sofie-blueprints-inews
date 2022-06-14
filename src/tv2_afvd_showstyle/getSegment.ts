@@ -26,11 +26,14 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
-export function getSegment(context: ISegmentUserContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+export async function getSegment(
+	context: ISegmentUserContext,
+	ingestSegment: IngestSegment
+): Promise<BlueprintResultSegment> {
 	const config = getConfig(context)
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
 
-	const result: BlueprintResultSegment = getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {
+	const result: BlueprintResultSegment = await getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {
 		getConfig,
 		CreatePartContinuity,
 		CreatePartUnknown,

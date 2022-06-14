@@ -22,10 +22,13 @@ import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
-export function getSegment(context: ISegmentUserContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+export async function getSegment(
+	context: ISegmentUserContext,
+	ingestSegment: IngestSegment
+): Promise<BlueprintResultSegment> {
 	const config = getConfig(context)
 
-	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
+	const result: BlueprintResultSegment = await getSegmentBase(context, ingestSegment, {
 		getConfig,
 		CreatePartContinuity,
 		CreatePartUnknown,

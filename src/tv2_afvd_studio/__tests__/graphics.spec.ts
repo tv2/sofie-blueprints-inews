@@ -49,7 +49,7 @@ function makeMockContext() {
 }
 
 describe('Graphics', () => {
-	it('Throws warning for unpaired target and creates invalid part', () => {
+	it('Throws warning for unpaired target and creates invalid part', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -74,7 +74,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefintion, 0)
+		const result = await CreatePartGrafik(context, config, partDefintion, 0)
 
 		expect(context.getNotes().map(msg => msg.message)).toEqual([`No graphic found after GRAFIK cue`])
 		expect(result.pieces).toHaveLength(0)
@@ -115,7 +115,7 @@ describe('Graphics', () => {
 		expect(context.getNotes().map(msg => msg.message)).toEqual([`Graphic found without target engine`])
 	})
 
-	it('Creates FULL graphic correctly', () => {
+	it('Creates FULL graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -146,7 +146,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
@@ -174,7 +174,7 @@ describe('Graphics', () => {
 		expect(vizObj.classes).toEqual(['full'])
 	})
 
-	it('Creates OVL pilot graphic correctly', () => {
+	it('Creates OVL pilot graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -211,7 +211,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
@@ -238,7 +238,7 @@ describe('Graphics', () => {
 		})
 	})
 
-	it('Creates WALL graphic correctly', () => {
+	it('Creates WALL graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -269,7 +269,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
@@ -293,7 +293,7 @@ describe('Graphics', () => {
 		expect(vizObj.content.outTransition).toEqual(undefined)
 	})
 
-	it('Creates TLF graphic correctly', () => {
+	it('Creates TLF graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -324,7 +324,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
@@ -352,7 +352,7 @@ describe('Graphics', () => {
 		expect(vizObj.classes).toEqual(['full'])
 	})
 
-	it('Routes source to engine', () => {
+	it('Routes source to engine', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -389,7 +389,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(3)
 		const auxPiece = result.pieces.find(p => p.outputLayerId === SharedOutputLayers.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
@@ -404,7 +404,7 @@ describe('Graphics', () => {
 		expect(auxObj?.content.aux.input).toBe(1)
 	})
 
-	it('Creates design element', () => {
+	it('Creates design element', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -429,7 +429,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -439,7 +439,7 @@ describe('Graphics', () => {
 		expect(piece.enable).toEqual({ start: 0 })
 	})
 
-	it('Creates background loop', () => {
+	it('Creates background loop', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -465,7 +465,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -483,7 +483,7 @@ describe('Graphics', () => {
 		expect(tlObj?.content.loop).toBe(true)
 	})
 
-	it('Creates overlay internal graphic', () => {
+	it('Creates overlay internal graphic', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -517,7 +517,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()

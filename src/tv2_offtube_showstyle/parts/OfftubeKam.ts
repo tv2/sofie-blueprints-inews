@@ -35,12 +35,12 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
-export function OfftubeCreatePartKam(
+export async function OfftubeCreatePartKam(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
 	let part = partKamBase.part.part
@@ -154,7 +154,7 @@ export function OfftubeCreatePartKam(
 		)
 	}
 
-	OfftubeEvaluateCues(
+	await OfftubeEvaluateCues(
 		context,
 		config,
 		part,

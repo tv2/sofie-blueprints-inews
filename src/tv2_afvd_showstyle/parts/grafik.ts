@@ -20,12 +20,12 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
-export function CreatePartGrafik(
+export async function CreatePartGrafik(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 	const part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
@@ -42,7 +42,7 @@ export function CreatePartGrafik(
 		ApplyFullGraphicPropertiesToPart(config, part)
 	}
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,

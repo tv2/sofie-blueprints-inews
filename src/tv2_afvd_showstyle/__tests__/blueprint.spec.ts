@@ -66,10 +66,10 @@ function expectAllPartsToBeValid(result: BlueprintResultSegment) {
 }
 
 describe('AFVD Blueprint', () => {
-	it('Accepts KAM CS 3', () => {
+	it('Accepts KAM CS 3', async () => {
 		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS 3</pi>\r\n`)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -82,10 +82,10 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
 	})
 
-	it('Accepts KAM CS3', () => {
+	it('Accepts KAM CS3', async () => {
 		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS3</pi>\r\n`)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -98,7 +98,7 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
 	})
 
-	it('Shows warning for Pilot without destination', () => {
+	it('Shows warning for Pilot without destination', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				[
@@ -112,7 +112,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -126,13 +126,13 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart.actions).toHaveLength(0)
 	})
 
-	it('Creates invalid part for standalone GRAFIK=FULL', () => {
+	it('Creates invalid part for standalone GRAFIK=FULL', async () => {
 		const ingestSegment = makeIngestSegment(
 			[['GRAFIK=FULL']],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -149,7 +149,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.part.invalid).toBe(true)
 	})
 
-	it('Creates graphic for GRAFIK=FULL with Pilot', () => {
+	it('Creates graphic for GRAFIK=FULL with Pilot', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -164,7 +164,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -193,7 +193,7 @@ describe('AFVD Blueprint', () => {
 		)
 	})
 
-	it("Doesn't merge MOSART=L with GRAFIK=FULL", () => {
+	it("Doesn't merge MOSART=L with GRAFIK=FULL", async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -209,7 +209,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -226,7 +226,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.part.invalid).toBe(true)
 	})
 
-	it('Creates full when cues are correct and shows warning when OVL with FULL is disabled', () => {
+	it('Creates full when cues are correct and shows warning when OVL with FULL is disabled', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -249,7 +249,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['Cannot create overlay graphic with FULL'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -278,7 +278,7 @@ describe('AFVD Blueprint', () => {
 		])
 	})
 
-	it('Creates full when cues are correct and creates overlay when allowed', () => {
+	it('Creates full when cues are correct and creates overlay when allowed', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -301,7 +301,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext(false)
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -331,7 +331,7 @@ describe('AFVD Blueprint', () => {
 		])
 	})
 
-	it('Creates graphic for GRAFIK=FULL with Pilot with space', () => {
+	it('Creates graphic for GRAFIK=FULL with Pilot with space', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -347,7 +347,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -377,7 +377,7 @@ describe('AFVD Blueprint', () => {
 		)
 	})
 
-	it("Creates invalid part for GRAFIK=FULL with Pilot with 'notes'", () => {
+	it("Creates invalid part for GRAFIK=FULL with Pilot with 'notes'", async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -393,7 +393,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -413,7 +413,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.actions).toHaveLength(0)
 	})
 
-	it('Creates invalid part for GRAFIK=FULL with Pilot and bund in between', () => {
+	it('Creates invalid part for GRAFIK=FULL with Pilot and bund in between', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -429,7 +429,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -449,7 +449,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.actions).toHaveLength(0)
 	})
 
-	it('Creates invalid part and show warning when GRAFIK=FULL and Pilot in different parts', () => {
+	it('Creates invalid part and show warning when GRAFIK=FULL and Pilot in different parts', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['GRAFIK=FULL'],
@@ -464,7 +464,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<pi>Kam 2</pi>\r\n<p><a idref="1"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(3)
@@ -491,7 +491,7 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart2.actions).toHaveLength(0)
 	})
 
-	it('Creates overlay graphic for MOSART=L', () => {
+	it('Creates overlay graphic for MOSART=L', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				[
@@ -506,7 +506,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -524,7 +524,7 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart.actions).toHaveLength(0)
 	})
 
-	it('Creates wall graphic for MOSART=W', () => {
+	it('Creates wall graphic for MOSART=W', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				[
@@ -539,7 +539,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -557,7 +557,7 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart.actions).toHaveLength(0)
 	})
 
-	it('Creates full graphic for MOSART=F', () => {
+	it('Creates full graphic for MOSART=F', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				[
@@ -572,7 +572,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -601,7 +601,7 @@ describe('AFVD Blueprint', () => {
 		])
 	})
 
-	it('Loads graphic on wall, and loop on wall in next part', () => {
+	it('Loads graphic on wall, and loop on wall in next part', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['SS=SC-STILLS', ';0.00.01'],
@@ -617,7 +617,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -641,7 +641,7 @@ describe('AFVD Blueprint', () => {
 		])
 	})
 
-	it('Shows warning for missing wall graphic', () => {
+	it('Shows warning for missing wall graphic', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['SS=SC-STILLS', ';0.00.01'],
@@ -650,7 +650,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -667,7 +667,7 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
 	})
 
-	it('Shows warning for missing wall graphic with MOSART=L', () => {
+	it('Shows warning for missing wall graphic with MOSART=L', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['SS=SC-STILLS', ';0.00.01'],
@@ -683,7 +683,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -707,7 +707,7 @@ describe('AFVD Blueprint', () => {
 		])
 	})
 
-	it('Shows warning for graphic in wrong place', () => {
+	it('Shows warning for graphic in wrong place', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['SS=SC-STILLS', ';0.00.01'],
@@ -723,7 +723,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(2)
@@ -743,7 +743,7 @@ describe('AFVD Blueprint', () => {
 		])
 	})
 
-	it('Changes design and background loops', () => {
+	it('Changes design and background loops', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
 				['KG=DESIGN_FODBOLD_20', ';0.00.01'],
@@ -753,7 +753,7 @@ describe('AFVD Blueprint', () => {
 			`\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n<p>Some script</p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -771,10 +771,10 @@ describe('AFVD Blueprint', () => {
 		])
 	})
 
-	it('Creates Live1', () => {
+	it('Creates Live1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -786,10 +786,10 @@ describe('AFVD Blueprint', () => {
 		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
 	})
 
-	it('Creates Live 1', () => {
+	it('Creates Live 1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -801,10 +801,10 @@ describe('AFVD Blueprint', () => {
 		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
 	})
 
-	it('Creates Feed1', () => {
+	it('Creates Feed1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=FEED1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -816,10 +816,10 @@ describe('AFVD Blueprint', () => {
 		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
 	})
 
-	it('Creates Feed 1', () => {
+	it('Creates Feed 1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=FEED 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
@@ -831,23 +831,23 @@ describe('AFVD Blueprint', () => {
 		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
 	})
 
-	it('Creates invalid part for EKSTERN=LIVE', () => {
+	it('Creates invalid part for EKSTERN=LIVE', async () => {
 		const ingestSegment = makeIngestSegment(
 			[['EKSTERN=LIVE'], ['#kg direkte ODDER', ';0.00']],
 			`\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No source entered for EKSTERN'])
 		expect(result.segment.isHidden).toBe(false)
 		expect(result.parts).toHaveLength(1)
 		expect(result.parts[0].part.invalid).toBe(true)
 	})
 
-	it('Creates effekt for KAM 1 EFFEKT 1', () => {
+	it('Creates effekt for KAM 1 EFFEKT 1', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 EFFEKT 1</pi></p>\r\n')
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
 		expect(result.segment.isHidden).toBe(false)
@@ -860,10 +860,10 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart1.pieces[0].name).toBe('EFFEKT 1')
 	})
 
-	it('Creates mix for KAM 1 MIX 5', () => {
+	it('Creates mix for KAM 1 MIX 5', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 MIX 5</pi></p>\r\n')
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
 		expect(result.segment.isHidden).toBe(false)
@@ -876,13 +876,13 @@ describe('AFVD Blueprint', () => {
 		expect(kamPart1.pieces[0].name).toBe('MIX 5')
 	})
 
-	it('Creates mix for EKSTERN=LIVE 1 EFFEKT 1', () => {
+	it('Creates mix for EKSTERN=LIVE 1 EFFEKT 1', async () => {
 		const ingestSegment = makeIngestSegment(
 			[['EKSTERN=LIVE 1 EFFEKT 1']],
 			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
 		expect(result.segment.isHidden).toBe(false)
@@ -898,13 +898,13 @@ describe('AFVD Blueprint', () => {
 		expect(livePart1.pieces[0].name).toBe('EFFEKT 1')
 	})
 
-	it('Creates mix for EKSTERN=LIVE 1 MIX 10', () => {
+	it('Creates mix for EKSTERN=LIVE 1 MIX 10', async () => {
 		const ingestSegment = makeIngestSegment(
 			[['EKSTERN=LIVE 1 MIX 10']],
 			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
 		)
 		const context = makeMockContext()
-		const result = getSegment(context, ingestSegment)
+		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
 		expect(result.segment.isHidden).toBe(false)

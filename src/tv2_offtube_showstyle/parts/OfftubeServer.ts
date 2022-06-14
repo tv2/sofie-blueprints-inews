@@ -11,13 +11,13 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
-export function OfftubeCreatePartServer(
+export async function OfftubeCreatePartServer(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	props: ServerPartProps
-): BlueprintResultPart {
-	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
+): Promise<BlueprintResultPart> {
+	const basePartProps = await CreatePartServerBase(context, config, partDefinition, props, {
 		SourceLayer: {
 			PgmServer: props.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: props.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
@@ -53,7 +53,7 @@ export function OfftubeCreatePartServer(
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
 	const sourceDuration = Math.max(
-		(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
+		((await context.hackGetMediaObjectDuration(file)) || 0) * 1000 - config.studio.ServerPostrollDuration,
 		0
 	)
 
@@ -90,7 +90,7 @@ export function OfftubeCreatePartServer(
 		)
 	)
 
-	OfftubeEvaluateCues(
+	await OfftubeEvaluateCues(
 		context,
 		config,
 		part,
