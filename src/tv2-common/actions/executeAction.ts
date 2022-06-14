@@ -1715,7 +1715,14 @@ async function executeActionCommentatorSelectServer<
 		session = sessions.session
 	}
 
-	await executeActionSelectServerClip(context, settings, AdlibActionType.SELECT_SERVER_CLIP, data, undefined, session)
+	await executeActionSelectServerClip(
+		context,
+		settings,
+		AdlibActionType.SELECT_SERVER_CLIP,
+		data,
+		ServerSelectMode.RESET,
+		session
+	)
 }
 
 async function executeActionCommentatorSelectDVE<
