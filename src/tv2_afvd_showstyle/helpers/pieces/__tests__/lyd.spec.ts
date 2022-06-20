@@ -2,7 +2,8 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	PieceLifespan
+	PieceLifespan,
+	TSR
 } from '@tv2media/blueprints-integration'
 import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
 import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
@@ -28,8 +29,8 @@ function makeMockContext() {
 	return mockContext
 }
 
-const config = getConfig(makeMockContext())
-const mockPart = literal<PartDefinitionKam>({
+const CONFIG = getConfig(makeMockContext())
+const MOCK_PART = literal<PartDefinitionKam>({
 	type: PartType.Kam,
 	variant: {
 		name: '1'
@@ -46,7 +47,7 @@ const mockPart = literal<PartDefinitionKam>({
 
 describe('lyd', () => {
 	test('Lyd with no out time', () => {
-		const parsedCue = ParseCue(['LYD=SN_INTRO', ';0.00'], config) as CueDefinitionLYD
+		const parsedCue = ParseCue(['LYD=SN_INTRO', ';0.00'], CONFIG) as CueDefinitionLYD
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
@@ -65,7 +66,7 @@ describe('lyd', () => {
 			adlibPieces,
 			actions,
 			parsedCue,
-			mockPart
+			MOCK_PART
 		)
 
 		expect(pieces[0].enable).toEqual(
@@ -78,7 +79,7 @@ describe('lyd', () => {
 	})
 
 	test('Lyd with out time', () => {
-		const parsedCue = ParseCue(['LYD=SN_INTRO', ';0.00-0.10'], config) as CueDefinitionLYD
+		const parsedCue = ParseCue(['LYD=SN_INTRO', ';0.00-0.10'], CONFIG) as CueDefinitionLYD
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
@@ -97,7 +98,7 @@ describe('lyd', () => {
 			adlibPieces,
 			actions,
 			parsedCue,
-			mockPart
+			MOCK_PART
 		)
 
 		expect(pieces[0].enable).toEqual(
@@ -111,7 +112,7 @@ describe('lyd', () => {
 	})
 
 	test('Lyd not configured', () => {
-		const parsedCue = ParseCue(['LYD=SN_MISSING', ';0.00-0.10'], config) as CueDefinitionLYD
+		const parsedCue = ParseCue(['LYD=SN_MISSING', ';0.00-0.10'], CONFIG) as CueDefinitionLYD
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
@@ -132,7 +133,7 @@ describe('lyd', () => {
 			adlibPieces,
 			actions,
 			parsedCue,
-			mockPart
+			MOCK_PART
 		)
 
 		expect(pieces.length).toEqual(0)
@@ -141,7 +142,7 @@ describe('lyd', () => {
 	})
 
 	test('Lyd not configured', () => {
-		const parsedCue = ParseCue(['LYD=SN_MISSING', ';0.00-0.10'], config) as CueDefinitionLYD
+		const parsedCue = ParseCue(['LYD=SN_MISSING', ';0.00-0.10'], CONFIG) as CueDefinitionLYD
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
@@ -162,7 +163,7 @@ describe('lyd', () => {
 			adlibPieces,
 			actions,
 			parsedCue,
-			mockPart
+			MOCK_PART
 		)
 
 		expect(pieces.length).toEqual(0)
@@ -171,7 +172,7 @@ describe('lyd', () => {
 	})
 
 	test('Lyd adlib', () => {
-		const parsedCue = ParseCue(['LYD=SN_INTRO', ';x.xx'], config) as CueDefinitionLYD
+		const parsedCue = ParseCue(['LYD=SN_INTRO', ';x.xx'], CONFIG) as CueDefinitionLYD
 		const pieces: IBlueprintPiece[] = []
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
@@ -190,7 +191,7 @@ describe('lyd', () => {
 			adlibPieces,
 			actions,
 			parsedCue,
-			mockPart,
+			MOCK_PART,
 			true
 		)
 
@@ -204,5 +205,48 @@ describe('lyd', () => {
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
 		)
+	})
+
+	it("should fade, studio audio bed folder is configured, audio file should evaluate to 'empty'", () => {
+		const parsedCue = ParseCue(['LYD=FADE 100', ';0.00'], CONFIG) as CueDefinitionLYD
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+
+		CONFIG.studio.AudioBedFolder = 'audio'
+
+		EvaluateLYD(makeMockContext(), CONFIG, pieces, adLibPieces, actions, parsedCue, MOCK_PART)
+
+		expect(pieces).toHaveLength(1)
+		const timelineObject: TSR.TimelineObjCCGMedia = pieces[0].content.timelineObjects[0] as TSR.TimelineObjCCGMedia
+		const file = timelineObject.content.file
+		expect(file).toBe('empty')
+	})
+
+	it('should play audio, studio audio bed is configured, audio file should be prepended with the configured audio bed', () => {
+		const iNewsName = 'ATP_soundbed'
+		const parsedCue = ParseCue([`LYD=${iNewsName}`, ';0.00'], CONFIG) as CueDefinitionLYD
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+
+		const audioBedFolder = 'audio'
+		CONFIG.studio.AudioBedFolder = audioBedFolder
+
+		const fileName: string = 'someFileName'
+		CONFIG.showStyle.LYDConfig = [
+			{
+				_id: 'someId',
+				INewsName: iNewsName,
+				FileName: fileName
+			}
+		]
+
+		EvaluateLYD(makeMockContext(), CONFIG, pieces, adLibPieces, actions, parsedCue, MOCK_PART)
+
+		expect(pieces).toHaveLength(1)
+		const timelineObject: TSR.TimelineObjCCGMedia = pieces[0].content.timelineObjects[0] as TSR.TimelineObjCCGMedia
+		const file = timelineObject.content.file
+		expect(file).toBe(`${audioBedFolder}/${fileName}`)
 	})
 })

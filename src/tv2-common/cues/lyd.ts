@@ -9,7 +9,14 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
+import {
+	CreateTimingEnable,
+	CueDefinitionLYD,
+	JoinAssetToFolder,
+	literal,
+	PartDefinition,
+	TimeFromFrames
+} from 'tv2-common'
 import {
 	AbstractLLayer,
 	AdlibTags,
@@ -20,7 +27,6 @@ import {
 	SharedSourceLayers
 } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { JoinAssetToFolder } from '../util'
 
 export function EvaluateLYD(
 	context: IShowStyleUserContext,
@@ -122,7 +128,7 @@ function LydContent(
 		})
 	}
 
-	const filePath = JoinAssetToFolder(config.studio.AudioBedFolder, file)
+	const filePath = lydType === 'fade' ? file : JoinAssetToFolder(config.studio.AudioBedFolder, file)
 
 	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
