@@ -72,7 +72,7 @@ export function EvaluateLYD(
 					: fade
 					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
 					: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut, fadeTimeInFrames),
+				content: LydContent(config, file, lydType, fadeIn, fadeOut),
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
 		)
@@ -94,7 +94,7 @@ export function EvaluateLYD(
 				outputLayerId: SharedOutputLayers.MUSIK,
 				sourceLayerId: SharedSourceLayers.PgmAudioBed,
 				lifespan,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut, fadeTimeInFrames)
+				content: LydContent(config, file, lydType, fadeIn, fadeOut)
 			})
 		)
 	}
@@ -105,8 +105,7 @@ function LydContent(
 	file: string,
 	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,
-	fadeOut?: number,
-	fadeTimeInFrames?: number
+	fadeOut?: number
 ): WithTimeline<BaseContent> {
 	if (lydType === 'stop') {
 		return literal<WithTimeline<BaseContent>>({
@@ -176,8 +175,7 @@ function LydContent(
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: fadeIn ? 0 : 1,
-					fadeTime: fadeTimeInFrames ? TimeFromFrames(fadeTimeInFrames) : undefined
+					isPgm: 1
 				}
 			})
 		])
