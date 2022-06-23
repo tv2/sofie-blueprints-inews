@@ -285,7 +285,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
 
-	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
+	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
 
 	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
 	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
@@ -357,6 +357,15 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	GetMappingDefaultMigrationStepForLayer('1.6.10', OfftubeCasparLLayer.CasparCGLYD, true),
 
 	RenameStudioConfig('1.6.11', 'Offtube', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+
+	/**
+	 * 1.7.3
+	 * - Rename the CasparPlayerJingleLookahead layer
+	 * - Disable previewWhenNotOnAir on CasparPlayerJingle layer
+	 */
+	renameMapping('1.7.3', 'casparcg_player_jingle_looakhead', OfftubeCasparLLayer.CasparPlayerJinglePreload),
+	GetMappingDefaultMigrationStepForLayer('1.7.3', OfftubeCasparLLayer.CasparPlayerJinglePreload, true),
+	GetMappingDefaultMigrationStepForLayer('1.7.3', OfftubeCasparLLayer.CasparPlayerJingle, true),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

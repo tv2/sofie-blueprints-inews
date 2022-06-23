@@ -415,14 +415,7 @@ async function executeActionSelectServerClip<
 	const currentPiece = settings.SelectedAdlibs
 		? await context
 				.getPieceInstances('current')
-				.then(pieceInstances =>
-					pieceInstances.find(
-						p =>
-							p.piece.sourceLayerId === (userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server) ||
-							(p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib &&
-								dveContainsServer((p.piece.metaData as DVEPieceMetaData).sources))
-					)
-				)
+				.then(pieceInstances => pieceInstances.find(p => isServerOnPgm(p, settings, userData.voLayer)))
 		: undefined
 
 	const basePart = await CreatePartServerBase(
@@ -539,6 +532,21 @@ function dveContainsServer(sources: DVESources) {
 		sources.INP2?.match(/SERVER/i) ||
 		sources.INP3?.match(/SERVER/i) ||
 		sources.INP4?.match(/SERVER/i)
+	)
+}
+
+function isServerOnPgm<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	pieceInstance: IBlueprintPieceInstance,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	voLayer: boolean
+) {
+	return (
+		pieceInstance.piece.sourceLayerId === (voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server) ||
+		(pieceInstance.piece.sourceLayerId === settings.SourceLayers.DVEAdLib &&
+			dveContainsServer((pieceInstance.piece.metaData as DVEPieceMetaData).sources))
 	)
 }
 
