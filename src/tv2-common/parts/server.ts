@@ -37,9 +37,18 @@ export interface ServerPartProps {
 	tapeTime: number
 	adLibPix: boolean
 	session?: string
-	lastServerPosition?: ServerPosition
 	actionTriggerMode?: ServerSelectMode
+	lastServerPosition?: ServerPosition
+}
+
+export interface ServerContentProps {
 	seek?: number
+	/** Clip duration from mediaObject or tapeTime */
+	clipDuration?: number
+	/** Clip duration as in `clipDuration` but with postroll subtracted */
+	sourceDuration?: number
+	mediaPlayerSession: string
+	file: string
 }
 
 export type ServerPartLayers = {
@@ -75,22 +84,25 @@ export async function CreatePartServerBase<
 	const duration = getDuration(mediaObjectDuration, sourceDuration, props)
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
 	const actualDuration = getActualDuration(duration, sanitisedScript, props)
-	props.seek = getServerSeek(props.lastServerPosition, file, mediaObjectDuration, props.actionTriggerMode)
+
+	const contentProps: ServerContentProps = {
+		seek: getServerSeek(props.lastServerPosition, file, mediaObjectDuration, props.actionTriggerMode),
+		clipDuration: mediaObjectDuration ?? props.tapeTime * 1000,
+		mediaPlayerSession: SanitizeString(`segment_${props.session ?? partDefinition.segmentExternalId}_${file}`),
+		file
+	}
 
 	const displayTitle = getDisplayTitle(partDefinition)
 	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file)
-	const mediaPlayerSession = SanitizeString(`segment_${props.session ?? partDefinition.segmentExternalId}_${file}`)
 
 	const pieces: IBlueprintPiece[] = []
 
 	const serverSelectionBlueprintPiece = getServerSelectionBlueprintPiece(
 		partDefinition,
-		file,
 		actualDuration,
 		props,
+		contentProps,
 		layers,
-		sourceDuration,
-		mediaPlayerSession,
 		context,
 		config,
 		config.studio.CasparPrerollDuration
@@ -98,11 +110,9 @@ export async function CreatePartServerBase<
 
 	const pgmBlueprintPiece = getPgmBlueprintPiece(
 		partDefinition,
-		file,
 		props,
+		contentProps,
 		layers,
-		sourceDuration,
-		mediaPlayerSession,
 		config,
 		config.studio.CasparPrerollDuration
 	)
@@ -205,18 +215,14 @@ function getContentServerElement<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	partDefinition: PartDefinition,
-	file: string,
 	props: ServerPartProps,
+	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
-	sourceDuration: number | undefined,
-	mediaPlayerSession: string,
 	context: IShowStyleUserContext,
 	config: ShowStyleConfig
 ): WithTimeline<VTContent> {
 	return MakeContentServer(
 		context,
-		file,
-		mediaPlayerSession,
 		partDefinition,
 		config,
 		{
@@ -231,10 +237,8 @@ function getContentServerElement<
 				ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
 			}
 		},
-		props.adLibPix,
-		props.voLevels,
-		props.seek,
-		sourceDuration
+		props,
+		contentProps
 	)
 }
 
@@ -243,37 +247,26 @@ function getServerSelectionBlueprintPiece<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	partDefinition: PartDefinition,
-	file: string,
 	actualDuration: number,
 	props: ServerPartProps,
+	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
-	sourceDuration: number | undefined,
-	mediaPlayerSession: string,
 	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	prerollDuration: number
 ): IBlueprintPiece {
-	const userDataElement = getUserData(partDefinition, file, actualDuration, props)
-	const contentServerElement = getContentServerElement(
-		partDefinition,
-		file,
-		props,
-		layers,
-		sourceDuration,
-		mediaPlayerSession,
-		context,
-		config
-	)
+	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, props)
+	const contentServerElement = getContentServerElement(partDefinition, props, contentProps, layers, context, config)
 
 	return literal<IBlueprintPiece>({
 		externalId: partDefinition.externalId,
-		name: file,
+		name: contentProps.file,
 		enable: { start: 0 },
 		outputLayerId: SharedOutputLayers.SEC,
 		sourceLayerId: layers.SourceLayer.SelectedServer,
 		lifespan: PieceLifespan.OutOnSegmentEnd,
 		metaData: literal<PieceMetaData & PieceMetaDataServer>({
-			mediaPlayerSessions: [mediaPlayerSession],
+			mediaPlayerSessions: [contentProps.mediaPlayerSession],
 			userData: userDataElement,
 			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
 				sisyfosLayers: [],
@@ -281,7 +274,7 @@ function getServerSelectionBlueprintPiece<
 			})
 		}),
 		content: contentServerElement,
-		tags: [GetTagForServerNext(partDefinition.segmentExternalId, file, props.voLayer)],
+		tags: [GetTagForServerNext(partDefinition.segmentExternalId, contentProps.file, props.voLayer)],
 		prerollDuration
 	})
 }
@@ -291,29 +284,30 @@ function getPgmBlueprintPiece<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	partDefinition: PartDefinition,
-	file: string,
 	props: ServerPartProps,
+	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
-	sourceDuration: number | undefined,
-	mediaPlayerSession: string,
 	config: ShowStyleConfig,
 	prerollDuration: number
 ): IBlueprintPiece {
 	return literal<IBlueprintPiece>({
 		externalId: partDefinition.externalId,
-		name: file,
+		name: contentProps.file,
 		enable: { start: 0 },
 		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: layers.SourceLayer.PgmServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: literal<PieceMetaData>({
-			mediaPlayerSessions: [mediaPlayerSession]
+			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		}),
 		content: {
-			...GetVTContentProperties(config, file, props.seek, sourceDuration),
-			timelineObjects: CutToServer(mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
+			...GetVTContentProperties(config, contentProps),
+			timelineObjects: CutToServer(contentProps.mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 		},
-		tags: [GetTagForServer(partDefinition.segmentExternalId, file, props.voLayer), TallyTags.SERVER_IS_LIVE],
+		tags: [
+			GetTagForServer(partDefinition.segmentExternalId, contentProps.file, props.voLayer),
+			TallyTags.SERVER_IS_LIVE
+		],
 		prerollDuration
 	})
 }

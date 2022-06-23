@@ -50,7 +50,10 @@ export function CreateAdlibServer<
 			label: t(`${partDefinition.storyName}`),
 			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
 			outputLayerId: SharedOutputLayers.PGM,
-			content: GetVTContentProperties(config, file, 0, duration),
+			content: GetVTContentProperties(config, {
+				file,
+				sourceDuration: duration
+			}),
 			tags: [
 				tagAsAdlib || voLayer ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,
 				AdlibTags.ADLIB_KOMMENTATOR,
