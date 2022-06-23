@@ -8,7 +8,7 @@ import { JoinAssetToFolder, JoinAssetToNetworkPath, literal } from '../util'
 export interface JingleLayers {
 	Caspar: {
 		PlayerJingle: string
-		PlayerJingleLookahead?: string
+		PlayerJinglePreload?: string
 	}
 	ATEM: {
 		USKCleanEffekt?: string
@@ -63,35 +63,7 @@ export function CreateJingleContentBase<
 	return literal<WithTimeline<VTContent>>({
 		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-				id: '',
-				enable: {
-					start: 0
-				},
-				priority: 1,
-				layer: layers.Caspar.PlayerJingle,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: fileName
-				}
-			}),
-
-			...(loadFirstFrame && layers.Caspar.PlayerJingleLookahead
-				? [
-						literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-							id: '',
-							enable: { start: 0 },
-							priority: 1,
-							layer: layers.Caspar.PlayerJingleLookahead,
-							content: {
-								deviceType: TSR.DeviceType.CASPARCG,
-								type: TSR.TimelineContentTypeCasparCg.MEDIA,
-								file: fileName
-							}
-						})
-				  ]
-				: []),
+			CreateJingleCasparTimelineObject(fileName, loadFirstFrame, layers),
 
 			...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 
@@ -198,4 +170,25 @@ export function CreateJingleContentBase<
 			})
 		])
 	})
+}
+
+function CreateJingleCasparTimelineObject(
+	fileName: string,
+	loadFirstFrame: boolean,
+	layers: JingleLayers
+): TSR.TimelineObjCCGMedia & TimelineBlueprintExt {
+	return {
+		id: '',
+		enable: { start: 0 },
+		priority: 1,
+		layer:
+			loadFirstFrame && layers.Caspar.PlayerJinglePreload
+				? layers.Caspar.PlayerJinglePreload
+				: layers.Caspar.PlayerJingle,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.MEDIA,
+			file: fileName
+		}
+	}
 }
