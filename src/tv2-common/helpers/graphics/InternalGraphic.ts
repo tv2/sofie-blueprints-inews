@@ -58,9 +58,7 @@ export class InternalGraphic {
 
 		const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
-		const sourceLayerId = IsTargetingTLF(engine)
-			? SharedSourceLayers.PgmGraphicsTLF
-			: GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
+		const sourceLayerId = GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
 
 		this.config = config
 		this.parsedCue = parsedCue

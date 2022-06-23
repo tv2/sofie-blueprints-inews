@@ -137,7 +137,7 @@ export function createJingleContentOfftube(
 	return CreateJingleContentBase(config, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
 		Caspar: {
 			PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
-			PlayerJingleLookahead: OfftubeCasparLLayer.CasparPlayerJingleLookahead
+			PlayerJinglePreload: OfftubeCasparLLayer.CasparPlayerJinglePreload
 		},
 		ATEM: {
 			USKJinglePreview: OfftubeAtemLLayer.AtemMENextJingle

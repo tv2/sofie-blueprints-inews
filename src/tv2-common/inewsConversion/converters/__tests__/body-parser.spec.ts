@@ -1622,6 +1622,74 @@ describe('Body parser', () => {
 		])
 	})
 
+	test('test 27c: accepts spaces in EVS VO red text', () => {
+		const body27 =
+			'\r\n<p><pi>EVS 1 VO</pi></p>\r\n<p><pi>EVS 2VO</pi></p>\r\n<p><pi>EVS3VO</pi></p>\r\n<p><pi>EVS4 VO</pi></p>\r\n'
+		const result = ParseBody(config, '00000000001', 'test-segment', body27, [], fields, 0)
+		expect(stripExternalId(result)).toEqual([
+			literal<PartDefinitionEVS>({
+				externalId: '',
+				type: PartType.EVS,
+				rawType: 'EVS 1 VO',
+				variant: {
+					evs: '1',
+					vo: 'VO'
+				},
+				cues: [],
+				fields,
+				modified: 0,
+				script: '',
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionEVS>({
+				externalId: '',
+				type: PartType.EVS,
+				rawType: 'EVS 2VO',
+				variant: {
+					evs: '2',
+					vo: 'VO'
+				},
+				cues: [],
+				fields,
+				modified: 0,
+				script: '',
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionEVS>({
+				externalId: '',
+				type: PartType.EVS,
+				rawType: 'EVS3VO',
+				variant: {
+					evs: '3',
+					vo: 'VO'
+				},
+				cues: [],
+				fields,
+				modified: 0,
+				script: '',
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			}),
+			literal<PartDefinitionEVS>({
+				externalId: '',
+				type: PartType.EVS,
+				rawType: 'EVS4 VO',
+				variant: {
+					evs: '4',
+					vo: 'VO'
+				},
+				cues: [],
+				fields,
+				modified: 0,
+				script: '',
+				storyName: 'test-segment',
+				segmentExternalId: '00000000001'
+			})
+		])
+	})
+
 	test('test 28', () => {
 		const body28 =
 			'\r\n<p><pi>****SERVER****</pi></a></p>\r\n<p><a idref="0"></a><cc>---</cc><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n<p><pi>SLUTORD:... bare mega fedt</pi></p>\r\n<p></p>\r\n<p><cc>Big body of comment text. Big body of comment text. Big body of comment text. Big body of comment text. Big body of comment text. Big body of comment text. Big body of comment text. Big body of comment text. </cc></p>\r\n<p></p>\r\n<p><pi>****LIVE****</pi></p>\r\n<p></p>\r\n<p><a idref="3"></a><a idref="4"></a></p>\r\n<p>Some Script here</p>\r\n<p></p>\r\n'
