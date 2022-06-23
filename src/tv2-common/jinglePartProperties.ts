@@ -32,10 +32,7 @@ export function GetJinglePartPropertiesFromTableValue(
 	realBreaker: TableConfigItemBreakers
 ): Pick<IBlueprintPart, 'autoNext' | 'expectedDuration' | 'autoNextOverlap' | 'disableNextInTransition'> {
 	return {
-		expectedDuration:
-			TimeFromFrames(Number(realBreaker.Duration)) -
-			TimeFromFrames(Number(realBreaker.EndAlpha)) -
-			TimeFromFrames(Number(realBreaker.StartAlpha)),
+		expectedDuration: TimeFromFrames(Number(realBreaker.Duration)) - TimeFromFrames(Number(realBreaker.StartAlpha)),
 		autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
 		autoNext: realBreaker.Autonext === true,
 		disableNextInTransition: false
