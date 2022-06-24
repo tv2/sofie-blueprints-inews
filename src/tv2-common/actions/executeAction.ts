@@ -33,8 +33,8 @@ import {
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
 	CalculateTime,
-	CreateFullPiece,
 	CreatePartServerBase,
+	CreatePilotPiece,
 	CueDefinition,
 	CueDefinitionDVE,
 	CueDefinitionGraphic,
@@ -77,6 +77,7 @@ import {
 	GetEnableForWall,
 	getServerPosition,
 	PilotGeneratorSettings,
+	PilotGraphicProps,
 	ServerSelectMode
 } from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
@@ -2067,30 +2068,25 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	})
 
-	const fullPiece = CreateFullPiece(
+	const graphicProps: PilotGraphicProps = {
 		config,
 		context,
-		externalId,
-		cue,
-		'FULL',
-		settings.pilotGraphicSettings,
-		true,
-		userData.segmentExternalId,
+		partId: externalId,
+		settings: settings.pilotGraphicSettings,
+		parsedCue: cue,
+		engine: 'FULL',
+		segmentExternalId: userData.segmentExternalId,
+		adlib: true
+	}
+
+	const fullPiece = CreatePilotPiece({
+		...graphicProps,
 		prerollDuration
-	)
+	})
 
 	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
-	const fullDataStore = CreateFullDataStore(
-		config,
-		context,
-		settings.pilotGraphicSettings,
-		cue,
-		'FULL',
-		externalId,
-		true,
-		userData.segmentExternalId
-	)
+	const fullDataStore = CreateFullDataStore(graphicProps)
 
 	await context.queuePart(part, [
 		fullPiece,

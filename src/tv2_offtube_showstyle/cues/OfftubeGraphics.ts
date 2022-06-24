@@ -40,10 +40,22 @@ export function OfftubeEvaluateGrafikCaspar(
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	adlib: boolean,
 	partDefinition: PartDefinition,
-	rank?: number
+	adlibRank?: number
 ) {
 	if (GraphicIsPilot(parsedCue)) {
-		CreatePilotGraphic(
+		CreatePilotGraphic(pieces, adlibPieces, actions, {
+			engine: parsedCue.target,
+			config,
+			context,
+			partId,
+			parsedCue,
+			settings: pilotGeneratorSettingsOfftube,
+			adlib,
+			adlibRank,
+			segmentExternalId: partDefinition.segmentExternalId
+		})
+	} else if (GraphicIsInternal(parsedCue)) {
+		CreateInternalGraphic(
 			config,
 			context,
 			pieces,
@@ -51,13 +63,10 @@ export function OfftubeEvaluateGrafikCaspar(
 			actions,
 			partId,
 			parsedCue,
-			pilotGeneratorSettingsOfftube,
 			adlib,
-			rank ?? 0,
-			partDefinition.segmentExternalId
+			partDefinition,
+			adlibRank
 		)
-	} else if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
 	}
 }
 

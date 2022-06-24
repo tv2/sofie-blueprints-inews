@@ -40,19 +40,17 @@ export function EvaluateCueGraphicPilot(
 	segmentExternalId: string,
 	rank?: number
 ) {
-	CreatePilotGraphic(
+	CreatePilotGraphic(pieces, adlibPieces, actions, {
 		config,
 		context,
-		pieces,
-		adlibPieces,
-		actions,
+		engine: parsedCue.target,
 		partId,
 		parsedCue,
-		pilotGeneratorSettingsAFVD,
+		settings: pilotGeneratorSettingsAFVD,
 		adlib,
-		rank ?? 0,
+		adlibRank: rank ?? 0,
 		segmentExternalId
-	)
+	})
 }
 
 function makeStudioTimelineViz(
