@@ -1,6 +1,6 @@
 import { CueDefinitionFromLayout, PostProcessDefinitions, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
-import { CueDefinition, CueDefinitionUnpairedPilot, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
+import { CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
 export interface PartTransition {
 	style: string
@@ -107,7 +107,7 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
 
-const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+ ?(?:VOV?)?|VOV?|VOSB)+\b/gi
+const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+ ?(?:VOV?)?|VOV?|VOSB)+\b/i
 const EVS_RED_TEXT = /EVS ?(\d+) ?(VOV?)?/i
 
 export function ParseBody(
@@ -162,11 +162,11 @@ export function ParseBody(
 				.replace(/<\/tab>/i, '')
 				.trim()
 
-			if (typeStr && !!typeStr.match(ACCEPTED_RED_TEXT)) {
+			if (typeStr && ACCEPTED_RED_TEXT.test(typeStr)) {
 				const inlineCues = line
 					.replace(/<\/?p>/g, '')
 					.split(/<pi>(.*?)<\/pi>/i)
-					.filter(cue => cue !== '' && !cue.match(/<\/a>/))
+					.filter(cue => cue !== '' && !/<\/a>/.test(cue))
 
 				/** Hold any secondary cues in the form: `[] KAM 1` */
 				const secondaryInlineCues: CueDefinition[] = []
@@ -175,7 +175,7 @@ export function ParseBody(
 				let pos = 0
 				let redTextFound = false
 				while (pos < inlineCues.length && !redTextFound) {
-					if (inlineCues[pos].match(ACCEPTED_RED_TEXT)) {
+					if (ACCEPTED_RED_TEXT.test(inlineCues[pos])) {
 						redTextFound = true
 					} else {
 						const parsedCues = getCuesInLine(inlineCues[pos], cues, config)
@@ -183,7 +183,7 @@ export function ParseBody(
 							// Create standalone parts for primary cues.
 							if (
 								isPrimaryCue(cue) &&
-								!(cue.type === CueType.UNPAIRED_TARGET && cue.target === 'FULL' && !!typeStr.match(/GRAFIK/i))
+								!(cue.type === CueType.UNPAIRED_TARGET && cue.target === 'FULL' && /GRAFIK/i.test(typeStr))
 							) {
 								if (shouldPushDefinition(definition)) {
 									definitions.push(definition)
@@ -213,7 +213,7 @@ export function ParseBody(
 				line = line.replace(/<\/a>/g, '')
 
 				const lastCue = definition.cues[definition.cues.length - 1]
-				if (typeStr.match(/GRAFIK/i) && lastCue && lastCue.type === CueType.UNPAIRED_TARGET && !definition.script) {
+				if (/GRAFIK/i.test(typeStr) && lastCue && lastCue.type === CueType.UNPAIRED_TARGET && !definition.script) {
 					definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
 					definition.cues.push(lastCue)
 				} else {
@@ -228,7 +228,7 @@ export function ParseBody(
 				definition.cues.push(...secondaryInlineCues)
 			}
 
-			if (typeStr && typeStr.match(/SLUTORD/i)) {
+			if (typeStr && /SLUTORD/i.test(typeStr)) {
 				if (definition.endWords) {
 					definition.endWords += ` ${typeStr.replace(/^SLUTORD:? ?/i, '')}`
 				} else {
@@ -320,7 +320,7 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	}
 
 	if (nextCue.type === CueType.UNPAIRED_PILOT) {
-		const mosCue = nextCue as CueDefinitionUnpairedPilot
+		const mosCue = nextCue
 		if (targetCue.type === CueType.UNPAIRED_TARGET) {
 			partDefinition.cues[index] = UnpairedPilotToGraphic(mosCue, targetCue.target, targetCue)
 		} else if (targetCue.type === CueType.Telefon) {
@@ -353,7 +353,7 @@ function initDefinition(fields: any, modified: number, segmentName: string): Par
 
 /** Returns true if there is a cue in the given line. */
 function cueInLine(line: string) {
-	return !!line.match(/<a idref=["|'](\d+)["|']>/gi)
+	return /<a idref=["|'](\d+)["|']>/i.test(line)
 }
 
 /** Returns all the cues in a given line as parsed cues. */
@@ -383,8 +383,8 @@ function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2BlueprintCo
 }
 
 function addScript(line: string, definition: PartDefinition) {
-	const script = line.match(/<p>(.*)?<\/p>/i)
-	if (script && script[1] && !script[1].match(/<pi>(.*?)<\/pi>/i)) {
+	const script = line.match(/<p>(.*?)<\/p>/i)
+	if (script && script[1] && !/<pi>.*?<\/pi>/i.test(script[1])) {
 		const trimscript = script[1]
 			.replace(/<.*?>/gi, '')
 			.replace('\n\r', '')
@@ -511,7 +511,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 		.split(' ')
 	const firstToken = tokens[0]
 
-	if (firstToken.match(/KAM|CAM/i)) {
+	if (/[CK]AM/i.test(firstToken)) {
 		const adjacentKamNumber = tokens[0].match(/KAM(\d+)/i)
 		return {
 			type: PartType.Kam,
@@ -520,25 +520,25 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			},
 			...definition
 		}
-	} else if (firstToken.match(/SERVER/i) || firstToken.match(/ATTACK/i)) {
+	} else if (/SERVER|ATTACK/i.test(firstToken)) {
 		return {
 			type: PartType.Server,
 			variant: {},
 			...definition
 		}
-	} else if (firstToken.match(/TEKNIK/i)) {
+	} else if (/TEKNIK/i.test(firstToken)) {
 		return {
 			type: PartType.Teknik,
 			variant: {},
 			...definition
 		}
-	} else if (firstToken.match(/GRAFIK/i)) {
+	} else if (/GRAFIK/i.test(firstToken)) {
 		return {
 			type: PartType.Grafik,
 			variant: {},
 			...definition
 		}
-	} else if (typeStr.match(EVS_RED_TEXT)) {
+	} else if (EVS_RED_TEXT.test(typeStr)) {
 		const strippedToken = typeStr.match(EVS_RED_TEXT)
 		return {
 			type: PartType.EVS,
@@ -548,7 +548,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			},
 			...definition
 		}
-	} else if (firstToken.match(/VOV?/i) || firstToken.match(/VOSB/i)) {
+	} else if (/VOV?|VOSB/i.test(firstToken)) {
 		return {
 			type: PartType.VO,
 			variant: {},
