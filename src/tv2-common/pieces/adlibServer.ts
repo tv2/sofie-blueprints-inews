@@ -1,6 +1,7 @@
-import { IBlueprintActionManifest } from '@tv2media/blueprints-integration'
+import { IBlueprintActionManifest, IShowStyleUserContext } from '@tv2media/blueprints-integration'
 import {
 	ActionSelectServerClip,
+	getSourceDuration,
 	GetTagForServer,
 	GetTagForServerNext,
 	GetVTContentProperties,
@@ -18,10 +19,11 @@ export interface AdlibServerOfftubeOptions {
 	isOfftube: boolean
 }
 
-export function CreateAdlibServer<
+export async function CreateAdlibServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
+	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	rank: number,
 	partDefinition: PartDefinition,
@@ -29,9 +31,12 @@ export function CreateAdlibServer<
 	voLayer: boolean,
 	voLevels: boolean,
 	sourceLayers: ServerPartLayers,
-	duration: number,
 	tagAsAdlib: boolean
-): IBlueprintActionManifest {
+): Promise<IBlueprintActionManifest> {
+	const mediaObjectDurationSec = await context.hackGetMediaObjectDuration(file)
+	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
+	const sourceDuration = getSourceDuration(mediaObjectDuration, config.studio.ServerPostrollDuration)
+
 	return literal<IBlueprintActionManifest>({
 		externalId: partDefinition.externalId + '-adLib-server',
 		actionId: AdlibActionType.SELECT_SERVER_CLIP,
@@ -39,7 +44,7 @@ export function CreateAdlibServer<
 			type: AdlibActionType.SELECT_SERVER_CLIP,
 			file,
 			partDefinition,
-			duration,
+			duration: sourceDuration ?? 0,
 			voLayer,
 			voLevels,
 			adLibPix: tagAsAdlib
@@ -52,7 +57,8 @@ export function CreateAdlibServer<
 			outputLayerId: SharedOutputLayers.PGM,
 			content: GetVTContentProperties(config, {
 				file,
-				sourceDuration: duration
+				clipDuration: mediaObjectDuration,
+				sourceDuration
 			}),
 			tags: [
 				tagAsAdlib || voLayer ? AdlibTags.OFFTUBE_ADLIB_SERVER : AdlibTags.OFFTUBE_100pc_SERVER,

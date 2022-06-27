@@ -53,8 +53,7 @@ export function GetVTContentProperties(
 			config.studio.ClipFileExtension
 		), // full path on the source network storage
 		mediaFlowIds: [config.studio.ClipMediaFlowId],
-		sourceDuration:
-			contentProps.sourceDuration && contentProps.sourceDuration > 0 ? contentProps.sourceDuration : undefined,
+		sourceDuration: contentProps.sourceDuration,
 		postrollDuration: config.studio.ServerPostrollDuration,
 		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus,
 		seek: contentProps.seek
@@ -66,13 +65,13 @@ export function MakeContentServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	props: ServerPartProps,
+	partProps: ServerPartProps,
 	contentProps: ServerContentProps
 ): WithTimeline<VTContent> {
 	return literal<WithTimeline<VTContent>>({
 		...GetVTContentProperties(config, contentProps),
 		ignoreMediaObjectStatus: true,
-		timelineObjects: GetServerTimeline(context, partDefinition, config, sourceLayers, props, contentProps)
+		timelineObjects: GetServerTimeline(context, partDefinition, config, sourceLayers, partProps, contentProps)
 	})
 }
 
@@ -81,7 +80,7 @@ function GetServerTimeline(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	props: ServerPartProps,
+	partProps: ServerPartProps,
 	contentProps: ServerContentProps
 ) {
 	const serverEnableClass = `.${GetEnableClassForServer(contentProps.mediaPlayerSession)}`
@@ -97,7 +96,7 @@ function GetServerTimeline(
 			deviceType: TSR.DeviceType.CASPARCG,
 			type: TSR.TimelineContentTypeCasparCg.MEDIA,
 			file: contentProps.file,
-			loop: props.adLibPix,
+			loop: partProps.adLibPix,
 			seek: contentProps.seek,
 			length: contentProps.clipDuration,
 			playing: true
@@ -106,7 +105,7 @@ function GetServerTimeline(
 			mediaPlayerSession: contentProps.mediaPlayerSession
 		},
 		classes: [
-			...(AddParentClass(config, partDefinition) && !props.adLibPix
+			...(AddParentClass(config, partDefinition) && !partProps.adLibPix
 				? [ServerParentClass('studio0', contentProps.file)]
 				: [])
 		]
@@ -130,14 +129,14 @@ function GetServerTimeline(
 			content: {
 				deviceType: TSR.DeviceType.SISYFOS,
 				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-				isPgm: props.voLevels ? 2 : 1
+				isPgm: partProps.voLevels ? 2 : 1
 			},
 			metaData: {
 				mediaPlayerSession: contentProps.mediaPlayerSession
 			},
 			classes: []
 		}),
-		...(props.voLevels
+		...(partProps.voLevels
 			? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)]
 			: []),
 		...(sourceLayers.ATEM.ServerLookaheadAux
@@ -219,4 +218,11 @@ export function EnableServer(mediaPlayerSessionId: string) {
 		},
 		classes: [GetEnableClassForServer(mediaPlayerSessionId)]
 	})
+}
+
+export function getSourceDuration(
+	mediaObjectDuration: number | undefined,
+	serverPostrollDuration: number
+): number | undefined {
+	return mediaObjectDuration !== undefined ? Math.max(mediaObjectDuration - serverPostrollDuration, 0) : undefined
 }

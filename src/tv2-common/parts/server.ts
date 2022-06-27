@@ -19,7 +19,7 @@ import {
 import { AdlibActionType, PartType, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
-import { GetVTContentProperties } from '../content'
+import { getSourceDuration, GetVTContentProperties } from '../content'
 import { getServerSeek, ServerPosition, ServerSelectMode } from '../helpers'
 import { PartDefinition } from '../inewsConversion'
 import { literal, SanitizeString } from '../util'
@@ -44,9 +44,9 @@ export interface ServerPartProps {
 export interface ServerContentProps {
 	seek?: number
 	/** Clip duration from mediaObject or tapeTime */
-	clipDuration?: number
+	clipDuration: number | undefined
 	/** Clip duration as in `clipDuration` but with postroll subtracted */
-	sourceDuration?: number
+	sourceDuration: number | undefined
 	mediaPlayerSession: string
 	file: string
 }
@@ -69,7 +69,7 @@ export async function CreatePartServerBase<
 	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	partDefinition: PartDefinition,
-	props: ServerPartProps,
+	partProps: ServerPartProps,
 	layers: ServerPartLayers
 ): Promise<{ part: BlueprintResultPart; file: string; duration: number; invalid?: true }> {
 	if (isVideoIdMissing(partDefinition)) {
@@ -81,14 +81,15 @@ export async function CreatePartServerBase<
 	const mediaObjectDurationSec = await context.hackGetMediaObjectDuration(file)
 	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
 	const sourceDuration = getSourceDuration(mediaObjectDuration, config.studio.ServerPostrollDuration)
-	const duration = getDuration(mediaObjectDuration, sourceDuration, props)
+	const duration = getDuration(mediaObjectDuration, sourceDuration, partProps)
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
-	const actualDuration = getActualDuration(duration, sanitisedScript, props)
+	const actualDuration = getActualDuration(duration, sanitisedScript, partProps)
 
 	const contentProps: ServerContentProps = {
-		seek: getServerSeek(props.lastServerPosition, file, mediaObjectDuration, props.actionTriggerMode),
-		clipDuration: mediaObjectDuration ?? props.tapeTime * 1000,
-		mediaPlayerSession: SanitizeString(`segment_${props.session ?? partDefinition.segmentExternalId}_${file}`),
+		seek: getServerSeek(partProps.lastServerPosition, file, mediaObjectDuration, partProps.actionTriggerMode),
+		clipDuration: mediaObjectDuration ?? partProps.tapeTime * 1000,
+		mediaPlayerSession: SanitizeString(`segment_${partProps.session ?? partDefinition.segmentExternalId}_${file}`),
+		sourceDuration,
 		file
 	}
 
@@ -100,7 +101,7 @@ export async function CreatePartServerBase<
 	const serverSelectionBlueprintPiece = getServerSelectionBlueprintPiece(
 		partDefinition,
 		actualDuration,
-		props,
+		partProps,
 		contentProps,
 		layers,
 		context,
@@ -110,7 +111,7 @@ export async function CreatePartServerBase<
 
 	const pgmBlueprintPiece = getPgmBlueprintPiece(
 		partDefinition,
-		props,
+		partProps,
 		contentProps,
 		layers,
 		config,
@@ -140,23 +141,16 @@ function getVideoId(partDefinition: PartDefinition): string {
 	return partDefinition.fields.videoId ? partDefinition.fields.videoId : ''
 }
 
-function getSourceDuration(
-	mediaObjectDuration: number | undefined,
-	serverPostrollDuration: number
-): number | undefined {
-	return mediaObjectDuration !== undefined ? mediaObjectDuration - serverPostrollDuration : undefined
-}
-
 function getDuration(
 	mediaObjectDuration: number | undefined,
 	sourceDuration: number | undefined,
-	props: ServerPartProps
+	partProps: ServerPartProps
 ): number {
 	return (
 		(mediaObjectDuration !== undefined &&
-			((props.voLayer && props.totalWords <= 0) || !props.voLayer) &&
+			((partProps.voLayer && partProps.totalWords <= 0) || !partProps.voLayer) &&
 			sourceDuration) ||
-		props.tapeTime * 1000 ||
+		partProps.tapeTime * 1000 ||
 		0
 	)
 }
@@ -197,16 +191,16 @@ function getUserData(
 	partDefinition: PartDefinition,
 	file: string,
 	actualDuration: number,
-	props: ServerPartProps
+	partProps: ServerPartProps
 ): ActionSelectServerClip {
 	return {
 		type: AdlibActionType.SELECT_SERVER_CLIP,
 		file,
 		partDefinition,
 		duration: actualDuration,
-		voLayer: props.voLayer,
-		voLevels: props.voLevels,
-		adLibPix: props.adLibPix
+		voLayer: partProps.voLayer,
+		voLevels: partProps.voLevels,
+		adLibPix: partProps.adLibPix
 	}
 }
 
@@ -215,7 +209,7 @@ function getContentServerElement<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	partDefinition: PartDefinition,
-	props: ServerPartProps,
+	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
 	context: IShowStyleUserContext,
@@ -237,7 +231,7 @@ function getContentServerElement<
 				ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
 			}
 		},
-		props,
+		partProps,
 		contentProps
 	)
 }
@@ -248,15 +242,15 @@ function getServerSelectionBlueprintPiece<
 >(
 	partDefinition: PartDefinition,
 	actualDuration: number,
-	props: ServerPartProps,
+	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
 	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	prerollDuration: number
 ): IBlueprintPiece {
-	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, props)
-	const contentServerElement = getContentServerElement(partDefinition, props, contentProps, layers, context, config)
+	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, partProps)
+	const contentServerElement = getContentServerElement(partDefinition, partProps, contentProps, layers, context, config)
 
 	return literal<IBlueprintPiece>({
 		externalId: partDefinition.externalId,
@@ -270,11 +264,11 @@ function getServerSelectionBlueprintPiece<
 			userData: userDataElement,
 			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
 				sisyfosLayers: [],
-				acceptPersistAudio: props.adLibPix && props.voLevels
+				acceptPersistAudio: partProps.adLibPix && partProps.voLevels
 			})
 		}),
 		content: contentServerElement,
-		tags: [GetTagForServerNext(partDefinition.segmentExternalId, contentProps.file, props.voLayer)],
+		tags: [GetTagForServerNext(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer)],
 		prerollDuration
 	})
 }
@@ -284,7 +278,7 @@ function getPgmBlueprintPiece<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	partDefinition: PartDefinition,
-	props: ServerPartProps,
+	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
 	config: ShowStyleConfig,
@@ -305,7 +299,7 @@ function getPgmBlueprintPiece<
 			timelineObjects: CutToServer(contentProps.mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
 		},
 		tags: [
-			GetTagForServer(partDefinition.segmentExternalId, contentProps.file, props.voLayer),
+			GetTagForServer(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer),
 			TallyTags.SERVER_IS_LIVE
 		],
 		prerollDuration

@@ -15,12 +15,12 @@ export async function CreatePartServer(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
-	props: ServerPartProps
+	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
-	const basePartProps = await CreatePartServerBase(context, config, partDefinition, props, {
+	const basePartProps = await CreatePartServerBase(context, config, partDefinition, partProps, {
 		SourceLayer: {
-			PgmServer: props.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
-			SelectedServer: props.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
+			PgmServer: partProps.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: partProps.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
 		},
 		AtemLLayer: {
 			MEPgm: AtemLLayer.AtemMEProgram
