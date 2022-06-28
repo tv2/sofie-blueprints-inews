@@ -5,6 +5,7 @@ import {
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
 import {
+	Adlib,
 	CreateInternalGraphic,
 	CueDefinitionGraphic,
 	GraphicInternalOrPilot,
@@ -24,16 +25,15 @@ export function EvaluateCueGraphic(
 	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	adlib: boolean,
 	partDefinition: PartDefinition,
-	rank?: number
+	adlib?: Adlib
 ) {
 	if (parsedCue.routing) {
 		EvaluateCueRouting(config, context, pieces, adlibPieces, actions, partId, parsedCue.routing)
 	}
 
 	if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
+		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, partDefinition, adlib)
 	} else if (GraphicIsPilot(parsedCue)) {
 		EvaluateCueGraphicPilot(
 			config,
@@ -43,9 +43,8 @@ export function EvaluateCueGraphic(
 			actions,
 			partId,
 			parsedCue,
-			adlib,
 			partDefinition.segmentExternalId,
-			rank
+			adlib
 		)
 	}
 }

@@ -6,6 +6,7 @@ import {
 	WithTimeline
 } from '@tv2media/blueprints-integration'
 import {
+	Adlib,
 	CueDefinitionGraphic,
 	findShowId,
 	GetEnableForGraphic,
@@ -71,7 +72,7 @@ export function GetPilotGraphicContentViz(
 	settings: VizPilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
-	adlib: boolean
+	adlib?: Adlib
 ): WithTimeline<GraphicsContent> {
 	return literal<WithTimeline<GraphicsContent>>({
 		fileName: 'PILOT_' + parsedCue.graphic.vcpid.toString(),
@@ -81,7 +82,7 @@ export function GetPilotGraphicContentViz(
 				id: '',
 				enable:
 					IsTargetingOVL(engine) || IsTargetingWall(engine)
-						? GetEnableForGraphic(config, engine, parsedCue, false, undefined, adlib)
+						? GetEnableForGraphic(config, engine, parsedCue, false, undefined, !!adlib)
 						: {
 								start: 0
 						  },
@@ -110,7 +111,7 @@ export function GetPilotGraphicContentViz(
 				},
 				...(IsTargetingFull(engine) ? { classes: ['full'] } : {})
 			}),
-			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context, adlib) : [])
+			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context, !!adlib) : [])
 		]
 	})
 }

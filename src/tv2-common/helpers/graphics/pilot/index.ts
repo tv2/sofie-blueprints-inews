@@ -10,6 +10,7 @@ import {
 } from '@tv2media/blueprints-integration'
 import {
 	ActionSelectFullGrafik,
+	Adlib,
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	generateExternalId,
@@ -54,9 +55,8 @@ export interface PilotGraphicProps {
 	partId: string
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 	settings: PilotGeneratorSettings
-	adlib: boolean
+	adlib?: Adlib
 	segmentExternalId: string
-	adlibRank?: number
 	prerollDuration?: number
 }
 
@@ -81,7 +81,7 @@ export function CreatePilotGraphic(
 		actions.push(CreatePilotAdLibAction(pilotGraphicProps))
 	}
 
-	if (!(IsTargetingOVL(pilotGraphicProps.engine) && adlib)) {
+	if (!(IsTargetingOVL(engine) && adlib)) {
 		pieces.push(CreatePilotPiece(pilotGraphicProps))
 	}
 
@@ -101,7 +101,6 @@ function CreatePilotAdLibAction({
 	engine,
 	settings,
 	adlib,
-	adlibRank,
 	segmentExternalId
 }: PilotGraphicProps) {
 	const name = GraphicDisplayName(config, parsedCue)
@@ -120,7 +119,7 @@ function CreatePilotAdLibAction({
 		userData,
 		userDataManifest: {},
 		display: {
-			_rank: adlibRank,
+			_rank: (adlib && adlib.rank) || 0,
 			label: t(GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 			sourceLayerId: SharedSourceLayers.PgmPilot,
 			outputLayerId: SharedOutputLayers.PGM,
@@ -173,8 +172,8 @@ export function CreatePilotPiece({
 	})
 }
 
-export function CreatePilotAdlibPiece(pieceProps: PilotGraphicProps, rank?: number): IBlueprintAdLibPiece {
-	const pilotPiece = CreatePilotPiece(pieceProps)
+export function CreatePilotAdlibPiece(pilotGraphicProps: PilotGraphicProps, rank?: number): IBlueprintAdLibPiece {
+	const pilotPiece = CreatePilotPiece(pilotGraphicProps)
 	pilotPiece.tags = [...(pilotPiece.tags ?? []), AdlibTags.ADLIB_FLOW_PRODUCER]
 	return {
 		...pilotPiece,
@@ -231,7 +230,7 @@ function CreatePilotContent(
 	settings: PilotGeneratorSettings,
 	cue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
-	adlib: boolean
+	adlib?: Adlib
 ): WithTimeline<GraphicsContent> {
 	if (config.studio.GraphicsType === 'HTML') {
 		return GetPilotGraphicContentCaspar(config, context, cue, settings.caspar, engine)

@@ -1950,9 +1950,8 @@ async function executeActionPlayGraphics<
 	const internalGraphic: InternalGraphic = new InternalGraphic(
 		settings.getConfig(context),
 		userData.graphic,
-		true,
+		{ rank: 0 },
 		externalId,
-		undefined,
 		undefined
 	)
 	const pieces: IBlueprintPiece[] = []
@@ -2076,7 +2075,7 @@ async function executeActionSelectFull<
 		parsedCue: cue,
 		engine: 'FULL',
 		segmentExternalId: userData.segmentExternalId,
-		adlib: true
+		adlib: { rank: 0 }
 	}
 
 	const fullPiece = CreatePilotPiece({
