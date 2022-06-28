@@ -77,19 +77,14 @@ export function CreatePilotGraphic(
 		return
 	}
 
-	if (IsTargetingFull(engine)) {
-		actions.push(CreatePilotAdLibAction(pilotGraphicProps))
-	}
-
-	if (!(IsTargetingOVL(engine) && adlib)) {
+	if (IsTargetingOVL(engine) && adlib) {
+		adlibPieces.push(CreatePilotAdlibPiece(pilotGraphicProps))
+	} else {
 		pieces.push(CreatePilotPiece(pilotGraphicProps))
 	}
 
-	if (IsTargetingOVL(engine) && adlib) {
-		adlibPieces.push(CreatePilotAdlibPiece(pilotGraphicProps))
-	}
-
 	if (IsTargetingFull(engine)) {
+		actions.push(CreatePilotAdLibAction(pilotGraphicProps))
 		pieces.push(CreateFullDataStore(pilotGraphicProps))
 	}
 }
