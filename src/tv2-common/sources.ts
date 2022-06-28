@@ -95,24 +95,38 @@ export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: 
 			const remoteName = id
 				.replace(/VO/i, '')
 				.replace(/\s/g, '')
-				.match(/^(?:LIVE|FEED) ?(.+).*$/i)
+				.match(/^(?:LIVE|FEED) *(.+).*$/i)
 			if (!remoteName) {
 				return undefined
 			}
-			if (id.match(/^LIVE/i)) {
+			if (/^LIVE/i.test(id)) {
 				return _.find(sources, s => s.type === type && s.id === remoteName[1])
 			} else {
 				return _.find(sources, s => s.type === type && s.id === `F${remoteName[1]}`)
 			}
 		case SourceLayerType.LOCAL:
-			const dpName = id.match(/^(?:EVS)\s*(\d+).*$/i)
-			if (!dpName) {
+			const sourceId = getReplaySourceId(id)
+			if (!sourceId) {
 				return undefined
 			}
-			return _.find(sources, s => s.type === SourceLayerType.LOCAL && s.id === `DP${dpName[1]}`)
+			return _.find(sources, s => s.type === SourceLayerType.LOCAL && s.id === sourceId)
 		default:
 			return undefined
 	}
+}
+
+function getReplaySourceId(id: string): string | undefined {
+	return getEvsSourceId(id) ?? getEpsioSourceId(id)
+}
+
+function getEvsSourceId(id: string): string | undefined {
+	const sourceId = id.match(/^EVS *(?<id>\d+).*$/i)?.groups?.id
+	return sourceId ? `DP${sourceId}` : undefined
+}
+
+function getEpsioSourceId(id: string): string | undefined {
+	const sourceId = id.match(/^(?<id>EPSIO)$/i)?.groups?.id
+	return sourceId ? `DP${sourceId}` : undefined
 }
 
 export function FindSourceInfoStrict(

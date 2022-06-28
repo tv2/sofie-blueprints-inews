@@ -244,6 +244,8 @@ export function MakeContentDVE2<
 				const match = prop.match(/EVS ?(\d+)? ?(.*)/i) as RegExpExecArray
 
 				boxMap[targetBox - 1] = { source: `EVS${match[1]} ${match[2]}` }
+			} else if (/EPSIO/.test(prop ?? '')) {
+				boxMap[targetBox - 1] = { source: 'EPSIO' }
 			} else if (prop?.match(/DEFAULT/)) {
 				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE` }
 			} else if (prop) {
@@ -309,7 +311,7 @@ export function MakeContentDVE2<
 			const props = mappingFrom.source.split(' ')
 			const sourceType = props[0]
 			const sourceInput = props[1]
-			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/EVS/i) && !mappingFrom.source.match(/SERVER/)) {
+			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/EVS|EPSIO|SERVER/i)) {
 				context.notifyUserWarning(`Invalid DVE source: ${mappingFrom.source}`)
 				setBoxToBlack(num)
 				return
@@ -327,7 +329,7 @@ export function MakeContentDVE2<
 					},
 					mappingFrom.source
 				)
-			} else if (sourceType.match(/KAM/i)) {
+			} else if (/KAM/i.test(sourceType)) {
 				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
 				if (sourceInfoCam === undefined) {
 					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
@@ -346,7 +348,7 @@ export function MakeContentDVE2<
 						audioEnable
 					)
 				)
-			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i)) {
+			} else if (/LIVE|FEED/i.test(sourceType)) {
 				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
 				if (sourceInfoLive === undefined) {
 					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
@@ -364,7 +366,7 @@ export function MakeContentDVE2<
 						audioEnable
 					)
 				)
-			} else if (sourceType.match(/EVS/i)) {
+			} else if (/EVS|EPSIO/.test(sourceType)) {
 				const sourceInfoDelayedPlayback = FindSourceInfoStrict(
 					context,
 					config.sources,
@@ -380,10 +382,13 @@ export function MakeContentDVE2<
 
 				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
 				dveTimeline.push(
-					GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!mappingFrom.source.match(/VO/i)),
+					GetSisyfosTimelineObjForEVS(
+						sourceInfoDelayedPlayback,
+						/VO/i.test(mappingFrom.source) || /EPSIO/i.test(sourceInfoDelayedPlayback.id)
+					),
 					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
 				)
-			} else if (sourceType.match(/ENGINE/i)) {
+			} else if (/ENGINE/i.test(sourceType)) {
 				if (sourceInput.match(/full/i)) {
 					const sourceInfoFull: SourceInfo = {
 						type: SourceLayerType.GRAPHICS,
@@ -403,7 +408,7 @@ export function MakeContentDVE2<
 					context.notifyUserWarning(`Unsupported engine for DVE: ${sourceInput}`)
 					setBoxToBlack(num)
 				}
-			} else if (sourceType.match(/SERVER/i)) {
+			} else if (/SERVER/i.test(sourceType)) {
 				server = true
 				setBoxSource(
 					num,

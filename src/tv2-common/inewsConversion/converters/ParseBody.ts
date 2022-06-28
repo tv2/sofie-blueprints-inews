@@ -107,7 +107,7 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
 
-const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EVS ?\d+ ?(?:VOV?)?|VOV?|VOSB)+\b/i
+const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|EVS ?\d+ ?(?:VOV?)?|VOV?|VOSB)+\b/i
 const EVS_RED_TEXT = /EVS ?(\d+) ?(VOV?)?/i
 
 export function ParseBody(
@@ -545,6 +545,15 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			variant: {
 				evs: strippedToken && strippedToken[1] ? strippedToken[1] : '1',
 				vo: (strippedToken && (strippedToken[2] as 'VO' | 'VOV')) ?? undefined
+			},
+			...definition
+		}
+	} else if (/EPSIO/i.test(typeStr)) {
+		return {
+			type: PartType.EVS,
+			variant: {
+				evs: 'EPSIO',
+				vo: 'VO'
 			},
 			...definition
 		}
