@@ -34,7 +34,6 @@ import {
 	ActionSelectServerClip,
 	CalculateTime,
 	CreatePartServerBase,
-	CreatePilotPiece,
 	CueDefinition,
 	CueDefinitionDVE,
 	CueDefinitionGraphic,
@@ -73,11 +72,10 @@ import {
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import {
-	CreateFullDataStore,
 	GetEnableForWall,
 	getServerPosition,
 	PilotGeneratorSettings,
-	PilotGraphicProps,
+	PilotGraphicGenerator,
 	ServerSelectMode
 } from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
@@ -2036,8 +2034,6 @@ async function executeActionSelectFull<
 	const externalId = `adlib-action_${context.getHashId(`cut_to_full_${template}`)}`
 
 	const graphicType = config.studio.GraphicsType
-	const prerollDuration =
-		graphicType === 'HTML' ? config.studio.CasparPrerollDuration : config.studio.VizPilotGraphics.OutTransitionDuration
 	const previousPartKeepaliveDuration =
 		graphicType === 'HTML'
 			? config.studio.HTMLGraphics.KeepAliveDuration
@@ -2067,7 +2063,7 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	})
 
-	const graphicProps: PilotGraphicProps = {
+	const generator = new PilotGraphicGenerator({
 		config,
 		context,
 		partId: externalId,
@@ -2076,20 +2072,17 @@ async function executeActionSelectFull<
 		engine: 'FULL',
 		segmentExternalId: userData.segmentExternalId,
 		adlib: { rank: 0 }
-	}
-
-	const fullPiece = CreatePilotPiece({
-		...graphicProps,
-		prerollDuration
 	})
+
+	const fullPiece = generator.createPiece()
 
 	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
-	const fullDataStore = CreateFullDataStore(graphicProps)
+	const fullDataStore = generator.createFullDataStore()
 
 	await context.queuePart(part, [
 		fullPiece,
-		...(fullDataStore ? [fullDataStore] : []),
+		fullDataStore,
 		...(await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 			SharedSourceLayers.SelectedAdlibGraphicsFull
 		]))
