@@ -384,7 +384,7 @@ export function MakeContentDVE2<
 				dveTimeline.push(
 					GetSisyfosTimelineObjForEVS(
 						sourceInfoDelayedPlayback,
-						/VO/i.test(mappingFrom.source) || /EPSIO/i.test(sourceInfoDelayedPlayback.id)
+						/VO|EPSIO/i.test(mappingFrom.source)
 					),
 					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
 				)

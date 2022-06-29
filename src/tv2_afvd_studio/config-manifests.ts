@@ -210,6 +210,13 @@ export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedP
 		AtemSource: 23,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2],
 		StudioMics: true
+	},
+	{
+		_id: '',
+		SourceName: 'EPSIO',
+		AtemSource: 30,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
+		StudioMics: true
 	}
 ])
 

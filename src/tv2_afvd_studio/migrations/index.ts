@@ -1,6 +1,7 @@
 import { MigrationStepStudio, TSR } from '@tv2media/blueprints-integration'
 import {
 	AddKeepAudio,
+	addSourceToSourcesConfig,
 	literal,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
@@ -182,6 +183,13 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
 	RemoveConfig('1.6.2', 'AFVD', 'SourcesSkype'),
+
+	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', {
+		SourceName: 'EPSIO',
+		AtemSource: 30,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
+		StudioMics: true
+	}),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
