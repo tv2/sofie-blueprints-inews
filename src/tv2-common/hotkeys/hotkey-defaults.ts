@@ -102,8 +102,8 @@ export const defaultHotkeys: TV2Hotkeys = {
 			},
 			voAudio: {
 				directCut: [],
-				queue: ['KeyE', 'KeyU'],
-				cutToBox: [['Shift+KeyE', 'Shift+KeyU'], ['Ctrl+KeyE', 'Ctrl+KeyU'], ['Alt+Shift+KeyE', 'Alt+Shift+KeyU'], []],
+				queue: ['KeyE', 'KeyU', 'KeyP'],
+				cutToBox: [['Shift+KeyE', 'Shift+KeyU', 'Shift+KeyP'], ['Ctrl+KeyE', 'Ctrl+KeyU', 'Ctrl+KeyP'], ['Alt+Shift+KeyE', 'Alt+Shift+KeyU', 'Alt+Shift+KeyP'], []],
 				routeToGraphicsEngine: [],
 				routeToStudioScreen: []
 			}

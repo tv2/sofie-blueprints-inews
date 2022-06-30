@@ -188,18 +188,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
 
-	// Fill in any layers that did not exist before
-	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	GetDefaultAdLibTriggers(
-		VERSION,
-		SHOW_STYLE_ID,
-		{ local: SourceLayer.PgmLocal },
-		GetDefaultStudioSourcesForAFVD,
-		false
-	),
-
 	/**
 	 * 1.7.2
 	 * - Fix bundright configuration
@@ -239,5 +227,16 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 			LayerMapping: 'graphic_overlay_tema'
 		},
 		{ LayerMapping: 'graphic_overlay_lower' }
+	),
+	// Fill in any layers that did not exist before
+	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
+	...getSourceLayerDefaultsMigrationSteps(VERSION),
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(
+		VERSION,
+		SHOW_STYLE_ID,
+		{ local: SourceLayer.PgmLocal },
+		GetDefaultStudioSourcesForAFVD,
+		false
 	)
 ])

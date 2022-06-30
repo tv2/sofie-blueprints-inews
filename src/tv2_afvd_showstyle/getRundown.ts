@@ -259,7 +259,9 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 	config.sources
 		.filter(u => u.type === SourceLayerType.LOCAL)
 		.forEach(o => {
-			adlibItems.push(...makeEVSAdLibs(o, globalRank++, false))
+			if (!/EPSIO/i.test(o.id)) {
+				adlibItems.push(...makeEVSAdLibs(o, globalRank++, false))
+			}
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
 			adlibItems.push({
 				externalId: 'delayedaux',
@@ -587,7 +589,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		}
 	}
 
-	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
+	function makeAdlibBoxesActionsReplay(info: SourceInfo, rank: number, vo: boolean) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			const evsId = info.id.replace(/dp/i, '')
 			const userData = literal<ActionCutSourceToBox>({
@@ -725,8 +727,10 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		.filter(u => u.type === SourceLayerType.LOCAL)
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)
-			makeAdlibBoxesActionsDirectPlayback(o, true, globalRank++)
+			if (!/EPSIO/i.test(o.id)) {
+				makeAdlibBoxesActionsReplay(o, globalRank++, false)
+			}
+			makeAdlibBoxesActionsReplay(o, globalRank++, true)
 		})
 
 	makeServerAdlibBoxesActions(globalRank++)
