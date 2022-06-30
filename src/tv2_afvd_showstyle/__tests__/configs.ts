@@ -105,7 +105,8 @@ export const defaultStudioConfig: StudioConfig = {
 		SplitArtF: 30,
 		SplitArtK: 32,
 		Default: 2001,
-		Continuity: 2002
+		Continuity: 2002,
+		Dip: 2002
 	},
 	SofieHostURL: '',
 	ABMediaPlayers: [

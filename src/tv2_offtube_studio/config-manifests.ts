@@ -189,6 +189,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: AtemSourceIndex.Col2
 	},
 	{
+		id: 'AtemSource.Dip',
+		name: 'ATEM Dip Source',
+		description: 'ATEM input for the Dip - should match the desired input in the ATEM',
+		type: ConfigManifestEntryType.INT,
+		required: true,
+		defaultVal: AtemSourceIndex.Col2
+	},
+	{
 		id: 'AudioBedSettings.fadeIn',
 		name: 'Bed Fade In',
 		description: 'Default fade in duration for audio beds',
