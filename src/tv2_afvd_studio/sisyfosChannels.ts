@@ -102,5 +102,5 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	},
 	[SisyfosLLAyer.SisyfosSourceEpsio]: {
 		isPgm: 0
-	},
+	}
 }
