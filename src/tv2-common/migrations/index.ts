@@ -121,23 +121,28 @@ export function AddGraphicToGFXTable(versionStr: string, studio: string, config:
 	})
 }
 
-export function addSourceToSourcesConfig(versionStr: string, studio: string, configId: string, source: TableConfigItemSourceMappingWithSisyfos) {
+export function addSourceToSourcesConfig(
+	versionStr: string,
+	studio: string,
+	configId: string,
+	source: TableConfigItemSourceMappingWithSisyfos
+) {
 	return literal<MigrationStepStudio>({
 		id: `${versionStr}.studioConfig.addReplaySource.${source.SourceName}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
-			const config = context.getConfig(configId) as unknown as TableConfigItemSourceMappingWithSisyfos[]
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
 
 			if (!config) {
 				return false
 			}
-			return !config.find((s) => s.SourceName === source.SourceName)
+			return !config.find(s => s.SourceName === source.SourceName)
 		},
 		migrate: (context: MigrationContextStudio) => {
-			const config = context.getConfig(configId) as unknown as TableConfigItemSourceMappingWithSisyfos[]
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
 			config.push(source)
-			context.setConfig(configId, config as unknown as ConfigItemValue)
+			context.setConfig(configId, (config as unknown) as ConfigItemValue)
 		}
 	})
 }

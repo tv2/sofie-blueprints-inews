@@ -40,7 +40,9 @@ export async function CreatePartEVS(
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
-	const title = /EPSIO/i.test(partDefinition.variant.evs) ? partDefinition.variant.evs : `EVS ${partDefinition.variant.evs} ${partDefinition.variant.vo ?? ''}`
+	const title = /EPSIO/i.test(partDefinition.variant.evs)
+		? partDefinition.variant.evs
+		: `EVS ${partDefinition.variant.evs} ${partDefinition.variant.vo ?? ''}`
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
