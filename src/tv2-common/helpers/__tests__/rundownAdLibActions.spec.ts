@@ -1,107 +1,76 @@
-import {
-	ActionTakeWithTransition,
-	ActionTakeWithTransitionVariantBreaker,
-	ActionTakeWithTransitionVariantMix,
-	literal,
-	ParseTransitionSetting
-} from 'tv2-common'
-import { AdlibActionType } from 'tv2-constants'
+import { ActionTakeWithTransitionVariantDip, ParseTransitionString } from 'tv2-common'
 
-describe('Parse Transition Setting', () => {
-	it('Parses Mix', () => {
-		let result = ParseTransitionSetting('MIX 12', true)
-
-		expect(result).toEqual(
-			literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: literal<ActionTakeWithTransitionVariantMix>({
-					type: 'mix',
-					frames: 12
-				}),
-				takeNow: true
+describe('rundownAdLibActions', () => {
+	describe('ParseTransitionString', () => {
+		it('should parses Mix 12', () => {
+			const result = ParseTransitionString('MIX 12')
+			expect(result).toEqual({
+				type: 'mix',
+				frames: 12
 			})
-		)
+		})
 
-		result = ParseTransitionSetting('mix9', false)
-
-		expect(result).toEqual(
-			literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: literal<ActionTakeWithTransitionVariantMix>({
-					type: 'mix',
-					frames: 9
-				}),
-				takeNow: false
+		it('should parse Mix 9', () => {
+			const result = ParseTransitionString('mix9')
+			expect(result).toEqual({
+				type: 'mix',
+				frames: 9
 			})
-		)
-	})
+		})
 
-	it('Parses EFFEKT', () => {
-		let result = ParseTransitionSetting('EFFEKT 1', true)
-
-		expect(result).toEqual(
-			literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: literal<ActionTakeWithTransitionVariantBreaker>({
-					type: 'breaker',
-					breaker: '1'
-				}),
-				takeNow: true
+		it('should parse EFFEKT 1', () => {
+			const result = ParseTransitionString('EFFEKT 1')
+			expect(result).toEqual({
+				type: 'breaker',
+				breaker: '1'
 			})
-		)
+		})
 
-		result = ParseTransitionSetting('effekt2', false)
-
-		expect(result).toEqual(
-			literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: literal<ActionTakeWithTransitionVariantBreaker>({
-					type: 'breaker',
-					breaker: '2'
-				}),
-				takeNow: false
+		it('should parse effekt2', () => {
+			const result = ParseTransitionString('effekt2')
+			expect(result).toEqual({
+				type: 'breaker',
+				breaker: '2'
 			})
-		)
+		})
 
-		result = ParseTransitionSetting('13', false)
-
-		expect(result).toEqual(
-			literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: literal<ActionTakeWithTransitionVariantBreaker>({
-					type: 'breaker',
-					breaker: '13'
-				}),
-				takeNow: false
+		it('should parse 13 as breaker', () => {
+			const result = ParseTransitionString('13')
+			expect(result).toEqual({
+				type: 'breaker',
+				breaker: '13'
 			})
-		)
-	})
+		})
 
-	it('Parses Transition', () => {
-		let result = ParseTransitionSetting('INTRO_19', true)
-
-		expect(result).toEqual(
-			literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: literal<ActionTakeWithTransitionVariantBreaker>({
-					type: 'breaker',
-					breaker: 'INTRO_19'
-				}),
-				takeNow: true
+		it('should parse INTRO_19', () => {
+			const result = ParseTransitionString('INTRO_19')
+			expect(result).toEqual({
+				type: 'breaker',
+				breaker: 'INTRO_19'
 			})
-		)
+		})
 
-		result = ParseTransitionSetting('/ Branded Transition', false)
-
-		expect(result).toEqual(
-			literal<ActionTakeWithTransition>({
-				type: AdlibActionType.TAKE_WITH_TRANSITION,
-				variant: literal<ActionTakeWithTransitionVariantBreaker>({
-					type: 'breaker',
-					breaker: '/ Branded Transition'
-				}),
-				takeNow: false
+		it('should parse / Branded Transition', () => {
+			const result = ParseTransitionString('/ Branded Transition')
+			expect(result).toEqual({
+				type: 'breaker',
+				breaker: '/ Branded Transition'
 			})
-		)
+		})
+
+		it('should return Dip when transitionSetting is Dip', () => {
+			const result = ParseTransitionString('dip 1')
+			expect(result.type).toEqual('dip')
+		})
+
+		it('should return a dip with 4 frames when transitionSetting is dip 4', () => {
+			const result = ParseTransitionString('dip 4')
+			expect((result as ActionTakeWithTransitionVariantDip).frames).toEqual(4)
+		})
+
+		it('should return a dip with 15 frames when transitionSetting is dip 15', () => {
+			const result = ParseTransitionString('dip 15')
+			expect((result as ActionTakeWithTransitionVariantDip).frames).toEqual(15)
+		})
 	})
 })

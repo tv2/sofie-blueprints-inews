@@ -203,7 +203,7 @@ export function CutToServer(
 					transition: partDefinition.transition
 						? TransitionFromString(partDefinition.transition.style)
 						: TSR.AtemTransitionStyle.CUT,
-					transitionSettings: TransitionSettings(partDefinition)
+					transitionSettings: TransitionSettings(config, partDefinition)
 				}
 			},
 			metaData: {

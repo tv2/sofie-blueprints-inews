@@ -87,6 +87,7 @@ export interface TV2StudioConfigBase {
 		SplitArtF: number
 		SplitArtK: number
 		DSK: TableConfigItemDSK[]
+		Dip: number
 	}
 	AtemSettings: {}
 	StudioMics: string[]

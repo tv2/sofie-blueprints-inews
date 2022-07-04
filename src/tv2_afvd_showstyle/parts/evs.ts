@@ -138,7 +138,7 @@ function makeContentEVS(
 						transition: partDefinition.transition
 							? TransitionFromString(partDefinition.transition.style)
 							: TSR.AtemTransitionStyle.CUT,
-						transitionSettings: TransitionSettings(partDefinition)
+						transitionSettings: TransitionSettings(config, partDefinition)
 					}
 				},
 				classes: [EVSParentClass('studio0', partDefinition.variant.evs)]

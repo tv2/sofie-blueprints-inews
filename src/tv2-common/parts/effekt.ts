@@ -10,6 +10,7 @@ import {
 	WithTimeline
 } from '@tv2media/blueprints-integration'
 import {
+	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
 	EnableDSK,
 	GetTagForTransition,
@@ -51,15 +52,34 @@ export function CreateEffektForPartBase(
 		)
 
 		return ret ?? {}
-	} else if (transition !== undefined && transition.duration !== undefined) {
-		if (transition.style.match(/mix/i)) {
-			return CreateMixForPartInner(pieces, partDefinition.externalId, transition.duration, layers) ?? {}
-		} else {
-			return {}
-		}
-	} else {
+	}
+
+	if (transition === undefined || transition.duration === undefined) {
 		return {}
 	}
+
+	if (transition.style.match(/mix/i)) {
+		return (
+			CreateMixEffectBlueprintPieceForPart(
+				pieces,
+				partDefinition.externalId,
+				transition.duration,
+				layers.sourceLayer
+			) ?? {}
+		)
+	}
+	if (transition.style.match(/dip/i)) {
+		return (
+			CreateDipEffectBlueprintPieceForPart(
+				pieces,
+				partDefinition.externalId,
+				transition.duration,
+				layers.sourceLayer
+			) ?? {}
+		)
+	}
+
+	return {}
 }
 
 export function CreateEffektForPartInner<
@@ -172,16 +192,33 @@ export function CreateEffektForPartInner<
 	}
 }
 
-export function CreateMixForPartInner(
+export function CreateMixEffectBlueprintPieceForPart(
 	pieces: IBlueprintPiece[],
 	externalId: string,
 	durationInFrames: number,
-	layers: {
-		sourceLayer: string
-		casparLayer: string
-		sisyfosLayer: string
-	}
+	sourceLayer: string
 ): Pick<IBlueprintPart, 'inTransition'> {
+	const tags = [
+		GetTagForTransition(
+			literal<ActionTakeWithTransitionVariantMix>({
+				type: 'mix',
+				frames: durationInFrames
+			})
+		)
+	]
+	const effectName: string = 'mix'
+	addEffectBlueprintPiece(pieces, durationInFrames, externalId, effectName, sourceLayer, tags)
+	return createInTransitionForEffect(durationInFrames)
+}
+
+function addEffectBlueprintPiece(
+	pieces: IBlueprintPiece[],
+	durationInFrames: number,
+	externalId: string,
+	name: string,
+	sourceLayer: string,
+	tags: string[]
+): void {
 	pieces.push(
 		literal<IBlueprintPiece>({
 			enable: {
@@ -189,27 +226,21 @@ export function CreateMixForPartInner(
 				duration: Math.max(TimeFromFrames(durationInFrames), 1000)
 			},
 			externalId,
-			name: `MIX ${durationInFrames}`,
-			sourceLayerId: layers.sourceLayer,
+			name: `${name.toUpperCase()} ${durationInFrames}`,
+			sourceLayerId: sourceLayer,
 			outputLayerId: SharedOutputLayers.JINGLE,
 			lifespan: PieceLifespan.WithinPart,
-			tags: [
-				GetTagForTransition(
-					literal<ActionTakeWithTransitionVariantMix>({
-						type: 'mix',
-						frames: durationInFrames
-					})
-				)
-			],
+			tags,
 			content: {
 				timelineObjects: [],
 				ignoreMediaObjectStatus: true
 			}
 		})
 	)
+}
 
+function createInTransitionForEffect(durationInFrames: number): Pick<IBlueprintPart, 'inTransition'> {
 	const transitionDuration = TimeFromFrames(durationInFrames)
-
 	return {
 		inTransition: {
 			previousPartKeepaliveDuration: transitionDuration,
@@ -217,4 +248,23 @@ export function CreateMixForPartInner(
 			partContentDelayDuration: 0
 		}
 	}
+}
+
+export function CreateDipEffectBlueprintPieceForPart(
+	pieces: IBlueprintPiece[],
+	externalId: string,
+	durationInFrames: number,
+	sourceLayer: string
+): Pick<IBlueprintPart, 'inTransition'> {
+	const tags = [
+		GetTagForTransition(
+			literal<ActionTakeWithTransitionVariantDip>({
+				type: 'dip',
+				frames: durationInFrames
+			})
+		)
+	]
+	const effectName: string = 'dip'
+	addEffectBlueprintPiece(pieces, durationInFrames, externalId, effectName, sourceLayer, tags)
+	return createInTransitionForEffect(durationInFrames)
 }
