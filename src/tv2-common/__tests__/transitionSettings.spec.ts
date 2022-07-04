@@ -15,7 +15,7 @@ describe('transitionsSettingsSuite', () => {
 	let mockConfig: TV2BlueprintConfig
 
 	beforeEach(() => {
-		mockConfig = ({} as any) as TV2BlueprintConfig
+		mockConfig = ({} as unknown) as TV2BlueprintConfig
 	})
 
 	describe('TransitionSettings', () => {
