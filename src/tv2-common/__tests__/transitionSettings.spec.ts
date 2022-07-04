@@ -1,4 +1,4 @@
-import { AtemTransitionSettings } from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types/src'
+import { TSR } from '@tv2media/blueprints-integration'
 import { PartType } from '../../tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
@@ -46,7 +46,7 @@ describe('transitionsSettingsSuite', () => {
 			const partDefinition: PartDefinition = createPartDefinition(transition)
 
 			const result = TransitionSettings(mockConfig, partDefinition)
-			const expectedResult: AtemTransitionSettings = {
+			const expectedResult: TSR.AtemTransitionSettings = {
 				wipe: {
 					rate: DURATION
 				}
@@ -62,7 +62,7 @@ describe('transitionsSettingsSuite', () => {
 			const partDefinition: PartDefinition = createPartDefinition(transition)
 
 			const result = TransitionSettings(mockConfig, partDefinition)
-			const expectedResult: AtemTransitionSettings = {
+			const expectedResult: TSR.AtemTransitionSettings = {
 				mix: {
 					rate: DURATION
 				}
@@ -78,7 +78,7 @@ describe('transitionsSettingsSuite', () => {
 			const partDefinition: PartDefinition = createPartDefinition(transition)
 
 			const result = TransitionSettings(mockConfig, partDefinition)
-			const expectedResult: AtemTransitionSettings = {
+			const expectedResult: TSR.AtemTransitionSettings = {
 				dip: {
 					rate: DURATION,
 					input: AtemSourceIndex.Col2
@@ -112,7 +112,7 @@ describe('transitionsSettingsSuite', () => {
 			const partDefinition: PartDefinition = createPartDefinition(transition)
 
 			const result = TransitionSettings(mockConfig, partDefinition)
-			const expectedResult: AtemTransitionSettings = {
+			const expectedResult: TSR.AtemTransitionSettings = {
 				dip: {
 					rate: DURATION,
 					input: AtemSourceIndex.Col2
@@ -153,7 +153,7 @@ function assertDipInputValueFromConfig(
 	const partDefinition: PartDefinition = createPartDefinition(transition)
 
 	const result = TransitionSettings(mockConfig, partDefinition)
-	const expectedResult: AtemTransitionSettings = {
+	const expectedResult: TSR.AtemTransitionSettings = {
 		dip: {
 			rate: DURATION,
 			input: dipInputSource
