@@ -22,7 +22,6 @@ import {
 	PartDefinition,
 	PartToParentClass,
 	SisyfosPersistMetaData,
-	TransitionFromString,
 	TransitionSettings,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -112,9 +111,7 @@ export function EvaluateEksternBase<
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: atemInput,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							},
@@ -169,9 +166,7 @@ export function EvaluateEksternBase<
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: atemInput,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							},

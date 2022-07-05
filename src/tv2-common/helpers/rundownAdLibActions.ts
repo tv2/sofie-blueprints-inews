@@ -155,7 +155,7 @@ function makeTransitionAction(
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
 			content:
-				isEffekt || !!label.match(/^MIX ?\d+$/i) || !!label.match(/^CUT$/i) || !!label.match(/^DIP ?\d+$/i)
+				isEffekt || !!/^MIX ?\d+$/i.test(label) || !!/^CUT$/i.test(label) || !!/^DIP ?\d+$/i.test(label)
 					? {}
 					: CreateJingleExpectedMedia(config, jingle, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
 		}

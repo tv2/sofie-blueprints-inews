@@ -1,9 +1,16 @@
-import { CueDefinitionFromLayout, PostProcessDefinitions, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import { TSR } from '@tv2media/blueprints-integration'
+import {
+	AtemTransitionStyleFromString,
+	CueDefinitionFromLayout,
+	PostProcessDefinitions,
+	TV2BlueprintConfig,
+	UnparsedCue
+} from 'tv2-common'
 import { CueType, PartType } from 'tv2-constants'
 import { CueDefinition, CueDefinitionUnpairedPilot, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
 export interface PartTransition {
-	style: string
+	style: TSR.AtemTransitionStyle
 	duration?: number
 }
 
@@ -495,7 +502,7 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 
 	if (transitionMatch) {
 		definition.transition = {
-			style: transitionMatch[1].toUpperCase(),
+			style: AtemTransitionStyleFromString(transitionMatch[1].toUpperCase()),
 			duration: transitionMatch[2] ? Number(transitionMatch[2]) : undefined
 		}
 	}

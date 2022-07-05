@@ -33,8 +33,9 @@ import {
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
 	CalculateTime,
-	CreateDipEffectBlueprintPieceForPart,
+	CreateDipTransitionBlueprintPieceForPart,
 	CreateFullPiece,
+	CreateInTransitionForAtemTransitionStyle,
 	CreatePartServerBase,
 	CueDefinition,
 	CueDefinitionDVE,
@@ -84,7 +85,7 @@ import {
 } from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
-import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixEffectBlueprintPieceForPart } from '../parts'
+import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixTransitionBlueprintPieceForPart } from '../parts'
 import {
 	GetTagForDVE,
 	GetTagForDVENext,
@@ -1526,7 +1527,7 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
-	const indexOfTimelineObject = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+	const timelineObjectIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
 		obj =>
 			obj.layer === (settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
@@ -1534,9 +1535,9 @@ async function executeActionTakeWithTransition<
 	)
 
 	const timelineObject =
-		indexOfTimelineObject > -1
+		timelineObjectIndex > -1
 			? ((primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[
-					indexOfTimelineObject
+					timelineObjectIndex
 			  ] as TSR.TimelineObjAtemME)
 			: undefined
 
@@ -1557,7 +1558,7 @@ async function executeActionTakeWithTransition<
 			{
 				timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
 
-				primaryPiece.piece.content.timelineObjects[indexOfTimelineObject] = timelineObject
+				primaryPiece.piece.content.timelineObjects[timelineObjectIndex] = timelineObject
 
 				await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
@@ -1589,7 +1590,7 @@ async function executeActionTakeWithTransition<
 		case 'breaker': {
 			timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
 
-			primaryPiece.piece.content.timelineObjects[indexOfTimelineObject] = timelineObject
+			primaryPiece.piece.content.timelineObjects[timelineObjectIndex] = timelineObject
 
 			await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
@@ -1622,21 +1623,18 @@ async function executeActionTakeWithTransition<
 				TSR.AtemTransitionStyle.MIX,
 				MixTransitionSettings(userData.variant.frames),
 				primaryPiece,
-				indexOfTimelineObject
+				timelineObjectIndex
 			)
 
-			const pieces: IBlueprintPiece[] = []
-			partProps = {
-				...CreateMixEffectBlueprintPieceForPart(
-					pieces,
-					externalId,
-					userData.variant.frames,
-					settings.SourceLayers.Effekt
-				)
-			}
+			const blueprintPiece: IBlueprintPiece = CreateMixTransitionBlueprintPieceForPart(
+				externalId,
+				userData.variant.frames,
+				settings.SourceLayers.Effekt
+			)
 
+			partProps = CreateInTransitionForAtemTransitionStyle(userData.variant.frames)
 			await context.updatePartInstance('next', partProps)
-			pieces.forEach(p => context.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
+			await context.insertPiece('next', { ...blueprintPiece, tags: [GetTagForTransition(userData.variant)] })
 
 			break
 		}
@@ -1648,21 +1646,17 @@ async function executeActionTakeWithTransition<
 				TSR.AtemTransitionStyle.DIP,
 				DipTransitionSettings(config, userData.variant.frames),
 				primaryPiece,
-				indexOfTimelineObject
+				timelineObjectIndex
+			)
+			const blueprintPiece: IBlueprintPiece = CreateDipTransitionBlueprintPieceForPart(
+				externalId,
+				userData.variant.frames,
+				settings.SourceLayers.Effekt
 			)
 
-			const pieces: IBlueprintPiece[] = []
-			partProps = {
-				...CreateDipEffectBlueprintPieceForPart(
-					pieces,
-					externalId,
-					userData.variant.frames,
-					settings.SourceLayers.Effekt
-				)
-			}
-
+			partProps = CreateInTransitionForAtemTransitionStyle(userData.variant.frames)
 			await context.updatePartInstance('next', partProps)
-			pieces.forEach(p => context.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
+			await context.insertPiece('next', { ...blueprintPiece, tags: [GetTagForTransition(userData.variant)] })
 			break
 		}
 	}

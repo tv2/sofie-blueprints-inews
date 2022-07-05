@@ -25,7 +25,6 @@ import {
 	literal,
 	PartDefinitionKam,
 	SisyfosPersistMetaData,
-	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers, TallyTags } from 'tv2-constants'
@@ -80,9 +79,7 @@ export async function OfftubeCreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: jingleDSK.Fill,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							}
@@ -131,9 +128,7 @@ export async function OfftubeCreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: Number(atemInput),
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							},
