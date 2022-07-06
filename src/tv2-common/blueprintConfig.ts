@@ -38,10 +38,11 @@ export interface TableConfigSchema {
 }
 
 export interface TableConfigGraphicsSetup {
-	INewsCode: string
-	Concept: string
+	Name: string
+	VcpConcept: string
 	OvlShowId: string
 	FullShowId: string
+	DveLayoutFolder: string
 }
 
 export interface TV2StudioConfigBase {

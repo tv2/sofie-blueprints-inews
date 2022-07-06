@@ -126,7 +126,7 @@ function insertSpecialPieces(
 		config.showStyle.GraphicsSetups.forEach(graphicsSetup => {
 			allShows.add(graphicsSetup.FullShowId)
 			allShows.add(graphicsSetup.OvlShowId)
-			if (graphicsSetupsToInitialize.includes(graphicsSetup.INewsCode)) {
+			if (graphicsSetupsToInitialize.includes(graphicsSetup.Name)) {
 				showsToInitialize.add(graphicsSetup.FullShowId)
 				showsToInitialize.add(graphicsSetup.OvlShowId)
 			}
