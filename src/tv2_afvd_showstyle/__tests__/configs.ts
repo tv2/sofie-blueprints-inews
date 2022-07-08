@@ -1,4 +1,4 @@
-import { literal, parseMapStr } from 'tv2-common'
+import { literal, parseMapStr, TableConfigGraphicsSetup } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
@@ -44,11 +44,12 @@ function prepareConfig(
 
 export const OVL_SHOW_ID = 'ovl-show-id'
 export const FULL_SHOW_ID = 'full-show-id'
-export const DEFAULT_GRAPHICS_SETUP = {
-	INewsCode: 'SomeProfile',
-	Concept: 'SomeConcept',
+export const DEFAULT_GRAPHICS_SETUP: TableConfigGraphicsSetup = {
+	Name: 'SomeProfile',
+	VcpConcept: 'SomeConcept',
 	OvlShowId: OVL_SHOW_ID,
-	FullShowId: FULL_SHOW_ID
+	FullShowId: FULL_SHOW_ID,
+	DveLayoutFolder: 'folder/path'
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
@@ -263,7 +264,7 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			FadeOut: 0
 		}
 	],
-	GraphicsINewsCode: 'SomeProfile',
+	SelectedGraphicsSetupName: 'SomeProfile',
 	GraphicsSetups: [DEFAULT_GRAPHICS_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',

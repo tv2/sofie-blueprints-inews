@@ -38,16 +38,17 @@ export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 	WipesConfig: TableConfigItemValue
 }
 
-export function findGraphicsSetup(
+function findGraphicsSetup(
 	_context: ICommonContext,
 	_config: TV2ShowstyleBlueprintConfigBase
 ): TableConfigGraphicsSetup {
 	// just for type compatibility, not really supported in offtube
 	return {
-		INewsCode: '',
-		Concept: '',
+		Name: '',
+		VcpConcept: '',
 		OvlShowId: '',
-		FullShowId: ''
+		FullShowId: '',
+		DveLayoutFolder: ''
 	}
 }
 
