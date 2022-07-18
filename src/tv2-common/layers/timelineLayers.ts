@@ -3,13 +3,6 @@ import { literal } from 'tv2-common'
 import { ATEMModel } from '../../types/atem'
 import { GetDSKCount } from '../helpers'
 
-export function SisyfosEVSSource(i: number | string) {
-	if (i.toString().toLowerCase() === 'epsio') {
-		return 'sisyfos_source_epsio'
-	}
-	return `sisyfos_source_evs_${i}`
-}
-
 export function AbstractLLayerServerEnable(i: number) {
 	return `server_enable_${i}`
 }

@@ -7,7 +7,7 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CueDefinitionMixMinus, FindSourceByName, literal, PartDefinition } from 'tv2-common'
+import { CueDefinitionMixMinus, FindSourceInfoByName, literal, PartDefinition } from 'tv2-common'
 import { ControlClasses, SharedATEMLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 
@@ -18,7 +18,7 @@ export function EvaluateCueMixMinus(
 	part: PartDefinition,
 	parsedCue: CueDefinitionMixMinus
 ) {
-	const sourceInfoMixMinus = FindSourceByName(context, config.sources, parsedCue.source)
+	const sourceInfoMixMinus = FindSourceInfoByName(config.sources, parsedCue.source)
 	if (sourceInfoMixMinus === undefined) {
 		context.notifyUserWarning(`${parsedCue.source} does not exist in this studio (MINUSKAM)`)
 		return

@@ -15,7 +15,7 @@ import {
 	manifestAFVDDownstreamKeyers,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDSourcesCam,
-	manifestAFVDSourcesDelayedPlayback,
+	manifestAFVDSourcesReplay,
 	manifestAFVDSourcesRM,
 	manifestAFVDStudioMics
 } from '../config-manifests'
@@ -63,11 +63,11 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesDelayedPlayback',
-		manifestAFVDSourcesDelayedPlayback.defaultVal,
+		manifestAFVDSourcesReplay.defaultVal,
 		'text',
 		'Studio config: Delayed Playback mappings',
 		'Enter the delayed playback input mapping',
-		manifestAFVDSourcesDelayedPlayback.defaultVal
+		manifestAFVDSourcesReplay.defaultVal
 	),
 
 	ensureStudioConfig(
@@ -184,7 +184,8 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
 	RemoveConfig('1.6.2', 'AFVD', 'SourcesSkype'),
 
-	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', {
+	RenameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
+	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesReplay', {
 		SourceName: 'EPSIO',
 		AtemSource: 30,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],

@@ -5,11 +5,10 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CalculateTime, CueDefinitionRouting, FindSourceInfoStrict, literal, TV2BlueprintConfig } from 'tv2-common'
+import { CalculateTime, CueDefinitionRouting, FindSourceInfoByName, literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
@@ -30,10 +29,7 @@ export function EvaluateCueRouting(
 		if (!source || !source.length) {
 			context.notifyUserWarning(`No input provided for viz engine aux`)
 		} else {
-			let sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, source)
-			if (!sourceInfo) {
-				sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, source)
-			}
+			const sourceInfo = FindSourceInfoByName(config.sources, source)
 
 			if (!sourceInfo) {
 				context.notifyUserWarning(`Could not find source ${source}`)

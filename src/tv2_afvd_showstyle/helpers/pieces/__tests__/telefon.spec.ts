@@ -16,7 +16,7 @@ import {
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
-import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import {
 	DEFAULT_GRAPHICS_SETUP,
@@ -41,8 +41,12 @@ mockContext.showStyleConfig = defaultShowStyleConfig as any
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
-	variant: {
-		name: '1'
+	sourceDefinition: {
+		sourceType: SourceType.Kam,
+		id: '1',
+		raw: 'Kam 1',
+		minusMic: false,
+		name: 'KAM 2'
 	},
 	externalId: '0001',
 	rawType: 'Kam 1',
@@ -83,7 +87,12 @@ describe('telefon', () => {
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
+				sources: {
+					cameras: [],
+					lives: [],
+					feeds: [],
+					replays: []
+				},
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP

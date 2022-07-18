@@ -1,7 +1,14 @@
-import { SourceLayerType } from '@tv2media/blueprints-integration'
 import { AdlibActionType } from 'tv2-constants'
 import { DVEConfigInput } from '../helpers'
-import { CueDefinitionDVE, CueDefinitionGraphic, GraphicInternal, PartDefinition } from '../inewsConversion'
+import {
+	CueDefinitionDVE,
+	CueDefinitionGraphic,
+	GraphicInternal,
+	PartDefinition,
+	SourceDefinition,
+	SourceDefinitionEkstern,
+	SourceDefinitionKam
+} from '../inewsConversion'
 
 export interface ActionBase {
 	type: AdlibActionType
@@ -45,23 +52,19 @@ export interface ActionSelectJingle extends ActionBase {
 export interface ActionCutToCamera extends ActionBase {
 	type: AdlibActionType.CUT_TO_CAMERA
 	queue: boolean
-	name: string
+	sourceDefinition: SourceDefinitionKam
 }
 
 export interface ActionCutToRemote extends ActionBase {
 	type: AdlibActionType.CUT_TO_REMOTE
-	name: string
-	port: number
+	sourceDefinition: SourceDefinitionEkstern
 }
 
 export interface ActionCutSourceToBox extends ActionBase {
 	type: AdlibActionType.CUT_SOURCE_TO_BOX
-	sourceType: SourceLayerType
 	name: string
-	port: number
 	box: number
-	vo?: boolean
-	server?: boolean
+	sourceDefinition: SourceDefinition
 }
 
 export interface ActionCommentatorSelectServer extends ActionBase {

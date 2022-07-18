@@ -63,7 +63,6 @@ describe('Graphics', () => {
 
 		const partDefintion: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -99,7 +98,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -135,7 +133,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -152,7 +149,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		// expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -200,7 +197,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -258,7 +254,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -313,7 +308,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -378,7 +372,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -418,7 +411,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -454,7 +446,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -506,7 +497,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',

@@ -1,8 +1,17 @@
 import { IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
-import { CueType } from 'tv2-constants'
+import { CueType, SourceType } from 'tv2-constants'
 import { CreateTiming } from '../cueTiming'
+import { SourceDefinitionEkstern } from '../inewsConversion'
 import { CueDefinitionEkstern } from '../inewsConversion/converters/ParseCue'
 import { literal } from '../util'
+
+const EKSTERN_SOURCE: SourceDefinitionEkstern = {
+	sourceType: SourceType.REMOTE,
+	variant: 'LIVE',
+	id: '1',
+	raw: 'Live 1',
+	name: 'LIVE 1'
+}
 
 describe('CreateTiming', () => {
 	test('Start only (seconds)', () => {
@@ -12,7 +21,7 @@ describe('CreateTiming', () => {
 				seconds: 1
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -33,7 +42,7 @@ describe('CreateTiming', () => {
 				frames: 1
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -55,7 +64,7 @@ describe('CreateTiming', () => {
 				frames: 1
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -76,7 +85,7 @@ describe('CreateTiming', () => {
 				seconds: 1
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -97,7 +106,7 @@ describe('CreateTiming', () => {
 				frames: 1
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -119,7 +128,7 @@ describe('CreateTiming', () => {
 				frames: 1
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -140,7 +149,7 @@ describe('CreateTiming', () => {
 				infiniteMode: 'B'
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -160,7 +169,7 @@ describe('CreateTiming', () => {
 				infiniteMode: 'S'
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -180,7 +189,7 @@ describe('CreateTiming', () => {
 				infiniteMode: 'O'
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -203,7 +212,7 @@ describe('CreateTiming', () => {
 				seconds: 1
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(
@@ -227,7 +236,7 @@ describe('CreateTiming', () => {
 				infiniteMode: 'B'
 			},
 			iNewsCommand: '',
-			source: ''
+			sourceDefinition: EKSTERN_SOURCE
 		}
 		const result = CreateTiming(time, 4000)
 		expect(result).toEqual(

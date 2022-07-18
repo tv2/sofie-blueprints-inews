@@ -15,9 +15,11 @@ import {
 	ActionSelectServerClip,
 	ActionTakeWithTransition,
 	literal,
-	PartDefinitionUnknown
+	PartDefinitionUnknown,
+	SourceDefinitionEkstern,
+	SourceDefinitionKam
 } from 'tv2-common'
-import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers } from 'tv2-constants'
+import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers, SourceType } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
@@ -36,6 +38,21 @@ const CURRENT_PART_EXTERNAL_ID = `${CURRENT_PART_ID}_EXTERNAL`
 const SERVER_DURATION_A = 12000
 const VO_DURATION_A = 20000
 const FULL_KEEPALIVE = 1000
+
+const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
+	sourceType: SourceType.Kam,
+	id: '1',
+	raw: 'KAM 1',
+	minusMic: false,
+	name: 'KAM 1'
+}
+const SOURCE_DEFINITION_LIVE_2: SourceDefinitionEkstern = {
+	sourceType: SourceType.REMOTE,
+	variant: 'LIVE',
+	id: '1',
+	name: 'LIVE 1',
+	raw: 'Live 1'
+}
 
 const currentPartMock: IBlueprintPartInstance = {
 	_id: CURRENT_PART_ID,
@@ -131,7 +148,6 @@ const selectServerClipAction = literal<ActionSelectServerClip>({
 	partDefinition: literal<PartDefinitionUnknown>({
 		type: PartType.Unknown,
 		externalId: CURRENT_PART_EXTERNAL_ID,
-		variant: {},
 		rawType: '',
 		cues: [],
 		script: '',
@@ -155,7 +171,6 @@ const selectVOClipAction = literal<ActionSelectServerClip>({
 	partDefinition: literal<PartDefinitionUnknown>({
 		type: PartType.Unknown,
 		externalId: CURRENT_PART_EXTERNAL_ID,
-		variant: {},
 		rawType: '',
 		cues: [],
 		script: '',
@@ -176,8 +191,8 @@ const selectDVEActionMorbarn = literal<ActionSelectDVE>({
 		type: CueType.DVE,
 		template: 'morbarn',
 		sources: {
-			INP1: 'Kam 1',
-			INP2: 'Live 2'
+			INP1: SOURCE_DEFINITION_KAM_1,
+			INP2: SOURCE_DEFINITION_LIVE_2
 		},
 		labels: ['Live'],
 		iNewsCommand: 'DVE=MORBARN'
@@ -192,8 +207,8 @@ const selectDVEActionBarnmor = literal<ActionSelectDVE>({
 		type: CueType.DVE,
 		template: 'barnmor',
 		sources: {
-			INP1: 'Kam 1',
-			INP2: 'Live 2'
+			INP1: SOURCE_DEFINITION_KAM_1,
+			INP2: SOURCE_DEFINITION_LIVE_2
 		},
 		labels: ['Live'],
 		iNewsCommand: 'DVE=BARNMOR'
@@ -208,14 +223,13 @@ const commentatorSelectDVE = literal<ActionCommentatorSelectDVE>({
 
 const selectCameraAction = literal<ActionCutToCamera>({
 	type: AdlibActionType.CUT_TO_CAMERA,
-	name: '1',
+	sourceDefinition: SOURCE_DEFINITION_KAM_1,
 	queue: true
 })
 
 const selectLiveAction = literal<ActionCutToRemote>({
 	type: AdlibActionType.CUT_TO_REMOTE,
-	name: '2',
-	port: 3
+	sourceDefinition: SOURCE_DEFINITION_LIVE_2
 })
 
 const selectFullGrafikAction = literal<ActionSelectFullGrafik>({

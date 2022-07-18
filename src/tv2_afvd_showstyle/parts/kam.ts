@@ -6,7 +6,6 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
@@ -19,7 +18,7 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfoStrict,
+	FindSourceInfoByDefinition,
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
@@ -97,7 +96,7 @@ export async function CreatePartKam(
 		)
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
-		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		const sourceInfoCam = FindSourceInfoByDefinition(config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			context.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
@@ -143,14 +142,13 @@ export async function CreatePartKam(
 								}
 							},
 							...(AddParentClass(config, partDefinition)
-								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
+								? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
 								: {})
 						}),
-
-						GetSisyfosTimelineObjForCamera(
-							context,
+						...GetSisyfosTimelineObjForCamera(
 							config,
-							partDefinition.rawType,
+							sourceInfoCam,
+							partDefinition.sourceDefinition.minusMic,
 							SisyfosLLAyer.SisyfosGroupStudioMics
 						)
 					])

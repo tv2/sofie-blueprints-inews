@@ -91,7 +91,6 @@ export async function CreatePartServerBase<
 		layers,
 		sourceDuration,
 		mediaPlayerSession,
-		context,
 		config,
 		config.studio.CasparPrerollDuration
 	)
@@ -210,11 +209,9 @@ function getContentServerElement<
 	layers: ServerPartLayers,
 	sourceDuration: number | undefined,
 	mediaPlayerSession: string,
-	context: IShowStyleUserContext,
 	config: ShowStyleConfig
 ): WithTimeline<VTContent> {
 	return MakeContentServer(
-		context,
 		file,
 		mediaPlayerSession,
 		partDefinition,
@@ -249,7 +246,6 @@ function getServerSelectionBlueprintPiece<
 	layers: ServerPartLayers,
 	sourceDuration: number | undefined,
 	mediaPlayerSession: string,
-	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	prerollDuration: number
 ): IBlueprintPiece {
@@ -261,7 +257,6 @@ function getServerSelectionBlueprintPiece<
 		layers,
 		sourceDuration,
 		mediaPlayerSession,
-		context,
 		config
 	)
 

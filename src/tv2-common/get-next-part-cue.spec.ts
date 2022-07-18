@@ -6,17 +6,29 @@ import {
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
-import { CueDefinitionGraphic, GraphicInternal } from './inewsConversion'
+import { CueType, PartType, SourceType } from 'tv2-constants'
+import { CueDefinitionGraphic, GraphicInternal, SourceDefinitionKam } from './inewsConversion'
 import { GetNextPartCue } from './nextPartCue'
 
+const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
+	sourceType: SourceType.Kam,
+	id: '1',
+	raw: 'Kam 1',
+	minusMic: false,
+	name: 'KAM 1'
+}
+const SOURCE_DEFINITION_KAM_2: SourceDefinitionKam = {
+	sourceType: SourceType.Kam,
+	id: '2',
+	raw: 'Kam 2',
+	minusMic: false,
+	name: 'KAM 2'
+}
 const partDefinitionTest1: PartDefinitionKam = {
 	type: PartType.Kam,
 	externalId: 'test-part',
 	rawType: 'KAM 1',
-	variant: {
-		name: '1'
-	},
+	sourceDefinition: SOURCE_DEFINITION_KAM_1,
 	fields: {},
 	script: '',
 	modified: 0,
@@ -35,7 +47,13 @@ const partDefinitionTest1: PartDefinitionKam = {
 		// Ekstern 1 - (index 1)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1',
+			sourceDefinition: {
+				sourceType: SourceType.REMOTE,
+				variant: 'LIVE',
+				id: '1',
+				raw: 'Live 1',
+				name: 'LIVE 1'
+			},
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -63,7 +81,13 @@ const partDefinitionTest1: PartDefinitionKam = {
 		// Ekstern 2 - (index 4)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '2',
+			sourceDefinition: {
+				sourceType: SourceType.REMOTE,
+				variant: 'LIVE',
+				id: '2',
+				raw: 'Live 2',
+				name: 'LIVE 2'
+			},
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -98,8 +122,8 @@ const partDefinitionTest1: PartDefinitionKam = {
 			type: CueType.DVE,
 			template: 'MORBARN',
 			sources: {
-				INP1: 'Kam 1',
-				INP2: 'Kam 2'
+				INP1: SOURCE_DEFINITION_KAM_1,
+				INP2: SOURCE_DEFINITION_KAM_2
 			},
 			labels: [],
 			iNewsCommand: 'DVE'
@@ -146,9 +170,7 @@ const partDefinitionTest2: PartDefinitionKam = {
 	type: PartType.Kam,
 	externalId: 'test-part',
 	rawType: 'KAM 1',
-	variant: {
-		name: '1'
-	},
+	sourceDefinition: SOURCE_DEFINITION_KAM_1,
 	fields: {},
 	script: '',
 	modified: 0,
@@ -158,8 +180,8 @@ const partDefinitionTest2: PartDefinitionKam = {
 			type: CueType.DVE,
 			template: 'MORBARN',
 			sources: {
-				INP1: 'Kam 1',
-				INP2: 'Kam 2'
+				INP1: SOURCE_DEFINITION_KAM_1,
+				INP2: SOURCE_DEFINITION_KAM_2
 			},
 			labels: [],
 			iNewsCommand: 'DVE'
@@ -167,7 +189,13 @@ const partDefinitionTest2: PartDefinitionKam = {
 		// Ekstern 1 - (index 1)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1',
+			sourceDefinition: {
+				sourceType: SourceType.REMOTE,
+				variant: 'LIVE',
+				id: '1',
+				raw: 'Live 1',
+				name: 'LIVE 1'
+			},
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -208,8 +236,8 @@ const partDefinitionTest2: PartDefinitionKam = {
 			type: CueType.DVE,
 			template: 'MORBARN',
 			sources: {
-				INP1: 'Kam 1',
-				INP2: 'Kam 2'
+				INP1: SOURCE_DEFINITION_KAM_1,
+				INP2: SOURCE_DEFINITION_KAM_2
 			},
 			labels: [],
 			iNewsCommand: 'DVE'
@@ -217,7 +245,13 @@ const partDefinitionTest2: PartDefinitionKam = {
 		// Ekstern 2 - (index 6)
 		literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: '1',
+			sourceDefinition: {
+				sourceType: SourceType.REMOTE,
+				variant: 'LIVE',
+				id: '1',
+				raw: 'Live 1',
+				name: 'LIVE 1'
+			},
 			iNewsCommand: 'EKSTERN'
 		}),
 		literal<CueDefinitionGraphic<GraphicInternal>>({

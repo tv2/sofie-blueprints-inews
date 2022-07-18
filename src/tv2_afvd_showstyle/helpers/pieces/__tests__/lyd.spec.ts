@@ -6,12 +6,13 @@ import {
 	TSR
 } from '@tv2media/blueprints-integration'
 import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
-import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import {
 	DEFAULT_GRAPHICS_SETUP,
 	defaultShowStyleConfig,
-	defaultStudioConfig
+	defaultStudioConfig,
+	EMPTY_SOURCE_CONFIG
 } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import {
 	defaultDSKConfig,
@@ -32,9 +33,7 @@ function makeMockContext() {
 const CONFIG = getConfig(makeMockContext())
 const MOCK_PART = literal<PartDefinitionKam>({
 	type: PartType.Kam,
-	variant: {
-		name: '1'
-	},
+	sourceDefinition: { sourceType: SourceType.Kam, id: '1', raw: 'Kam 1', minusMic: false, name: 'KAM 1' },
 	externalId: '0001',
 	rawType: 'Kam 1',
 	cues: [],
@@ -57,7 +56,7 @@ describe('lyd', () => {
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
+				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
@@ -89,7 +88,7 @@ describe('lyd', () => {
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
+				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
@@ -124,7 +123,7 @@ describe('lyd', () => {
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
+				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
@@ -154,7 +153,7 @@ describe('lyd', () => {
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
+				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
@@ -182,7 +181,7 @@ describe('lyd', () => {
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
+				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
 				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP

@@ -196,7 +196,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 
 export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, false, [])
 
-export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedPlayback', 'EVS', false, false, [
+export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay', false, false, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -284,7 +284,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesFeed,
-	manifestAFVDSourcesDelayedPlayback,
+	manifestAFVDSourcesReplay,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDStudioMics,
 	manifestAFVDDownstreamKeyers,

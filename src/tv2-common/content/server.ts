@@ -1,13 +1,7 @@
-import {
-	IShowStyleUserContext,
-	TimelineObjectCoreExt,
-	TSR,
-	VTContent,
-	WithTimeline
-} from '@tv2media/blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
-	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForServer,
 	literal,
 	PartDefinition,
 	ServerParentClass,
@@ -62,7 +56,6 @@ export function GetVTContentProperties(
 }
 
 export function MakeContentServer(
-	context: IShowStyleUserContext,
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
@@ -77,7 +70,6 @@ export function MakeContentServer(
 		...GetVTContentProperties(config, file, seek, sourceDuration),
 		ignoreMediaObjectStatus: true,
 		timelineObjects: GetServerTimeline(
-			context,
 			file,
 			mediaPlayerSessionId,
 			partDefinition,
@@ -91,7 +83,6 @@ export function MakeContentServer(
 }
 
 function GetServerTimeline(
-	context: IShowStyleUserContext,
 	file: string,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
@@ -129,30 +120,20 @@ function GetServerTimeline(
 	mediaOffObj.enable = { while: `!${serverEnableClass}` }
 	mediaOffObj.content.playing = false
 
+	const audioEnable = {
+		while: serverEnableClass
+	}
 	return literal<TimelineObjectCoreExt[]>([
 		mediaObj,
 		mediaOffObj,
-
-		literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-			id: '',
-			enable: {
-				while: serverEnableClass
-			},
-			priority: 1,
-			layer: sourceLayers.Sisyfos.ClipPending,
-			content: {
-				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-				isPgm: voLevels ? 2 : 1
-			},
-			metaData: {
-				mediaPlayerSession: mediaPlayerSessionId
-			},
-			classes: []
-		}),
-		...(voLevels
-			? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)]
-			: []),
+		...GetSisyfosTimelineObjForServer(
+			config,
+			!!voLevels,
+			sourceLayers.Sisyfos.ClipPending,
+			mediaPlayerSessionId,
+			sourceLayers.Sisyfos.StudioMicsGroup,
+			audioEnable
+		),
 		...(sourceLayers.ATEM.ServerLookaheadAux
 			? [
 					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({

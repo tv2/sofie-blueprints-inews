@@ -1,5 +1,11 @@
-import { CueDefinitionFromLayout, PostProcessDefinitions, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
+import {
+	CueDefinitionFromLayout,
+	isMinusMic,
+	PostProcessDefinitions,
+	TV2BlueprintConfig,
+	UnparsedCue
+} from 'tv2-common'
+import { CueType, PartType, SourceType } from 'tv2-constants'
 import { CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
 export interface PartTransition {
@@ -7,11 +13,65 @@ export interface PartTransition {
 	duration?: number
 }
 
+export interface SourceDefinitionBase {
+	sourceType: SourceType
+}
+export interface SourceDefinitionWithRaw {
+	raw: string
+}
+
+export interface SourceDefinitionKam extends SourceDefinitionWithRaw {
+	sourceType: SourceType.Kam
+	/** name that appears in the Camera Mappings table (e.g. "1", "CS 3") */
+	id: string
+	/** full name for display/logging purposes e.g. "KAM 1" */
+	name: string
+	minusMic: boolean
+}
+
+export interface SourceDefinitionEVS extends SourceDefinitionWithRaw {
+	sourceType: SourceType.EVS
+	/** id that appears in the Replay Mappings table (e.g. "EVS 1", "EPSIO") */
+	id: string
+	/** full name for display/logging purposes e.g. "EVS 1 VO" */
+	name: string
+	vo: boolean
+}
+
+export interface SourceDefinitionEkstern extends SourceDefinitionWithRaw {
+	sourceType: SourceType.REMOTE
+	variant: 'LIVE' | 'FEED'
+	/** name that appears in the Remote Mappings table (e.g. "1", "2") */
+	id: string
+	/** full name for display/logging purposes e.g. "LIVE 1" */
+	name: string
+}
+
+export interface SourceDefinitionServer extends SourceDefinitionBase {
+	sourceType: SourceType.Server
+}
+
+export interface SourceDefinitionGrafik extends SourceDefinitionWithRaw {
+	sourceType: SourceType.Grafik
+	name: string
+}
+
+export interface SourceDefinitionDefault extends SourceDefinitionBase {
+	sourceType: SourceType.DEFAULT
+}
+
+export type SourceDefinition =
+	| SourceDefinitionKam
+	| SourceDefinitionEVS
+	| SourceDefinitionEkstern
+	| SourceDefinitionServer
+	| SourceDefinitionGrafik
+	| SourceDefinitionDefault
+
 export interface PartDefinitionBase {
 	externalId: string
 	type: PartType
 	rawType: string
-	variant: {}
 	effekt?: number
 	cues: CueDefinition[]
 	script: string
@@ -27,47 +87,33 @@ export interface PartDefinitionBase {
 
 export interface PartDefinitionUnknown extends PartDefinitionBase {
 	type: PartType.Unknown
-	variant: {}
 }
-
 export interface PartDefinitionKam extends PartDefinitionBase {
 	type: PartType.Kam
-	variant: {
-		name: string
-	}
+	sourceDefinition: SourceDefinitionKam
 }
-
 export interface PartDefinitionServer extends PartDefinitionBase {
 	type: PartType.Server
-	variant: {}
 }
 
 export interface PartDefinitionTeknik extends PartDefinitionBase {
 	type: PartType.Teknik
-	variant: {}
 }
 
 export interface PartDefinitionGrafik extends PartDefinitionBase {
 	type: PartType.Grafik
-	variant: {}
 }
 
 export interface PartDefinitionVO extends PartDefinitionBase {
 	type: PartType.VO
-	variant: {}
 }
 
 export interface PartDefinitionIntro extends PartDefinitionBase {
 	type: PartType.INTRO
-	variant: {}
 }
-
 export interface PartDefinitionEVS extends PartDefinitionBase {
 	type: PartType.EVS
-	variant: {
-		evs: string
-		vo?: 'VO' | 'VOV'
-	}
+	sourceDefinition: SourceDefinitionEVS
 }
 
 export interface PartDefinitionDVE extends PartDefinitionBase {
@@ -75,7 +121,7 @@ export interface PartDefinitionDVE extends PartDefinitionBase {
 }
 
 export interface PartDefinitionEkstern extends PartDefinitionBase {
-	type: PartType.Ekstern
+	type: PartType.REMOTE
 }
 
 export interface PartDefinitionTelefon extends PartDefinitionBase {
@@ -95,20 +141,23 @@ export type PartDefinition =
 	| PartDefinitionEkstern
 	| PartDefinitionTelefon
 export type PartdefinitionTypes =
-	| Pick<PartDefinitionUnknown, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionKam, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionServer, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionTeknik, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionGrafik, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionVO, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionIntro, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionEVS, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionDVE, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionEkstern, 'type' | 'variant' | 'effekt' | 'transition'>
-	| Pick<PartDefinitionTelefon, 'type' | 'variant' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionUnknown, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionKam, 'type' | 'sourceDefinition' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionServer, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionTeknik, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionGrafik, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionVO, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionIntro, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionEVS, 'type' | 'sourceDefinition' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionDVE, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionEkstern, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionTelefon, 'type' | 'effekt' | 'transition'>
 
-const ACCEPTED_RED_TEXT = /\b(KAM(?:\d+)?|CAM(?:\d+)?|KAMERA(?:\d+)?|CAMERA(?:\d+)?|SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|EVS ?\d+ ?(?:VOV?)?|VOV?|VOSB)+\b/i
-const EVS_RED_TEXT = /EVS ?(\d+) ?(VOV?)?/i
+const CAMERA_RED_TEXT = /\b[KC]AM(?:ERA)? ?(\S+)\b/i
+const EVS_RED_TEXT = /\bEVS ?(\d+) ?(VOV?)?\b/i
+const ACCEPTED_RED_TEXT = [/\b(SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|VOV?|VOSB)+\b/i, CAMERA_RED_TEXT, EVS_RED_TEXT]
+const REMOTE_CUE = /^(LIVE|FEED) ?([^\s]+)(?: (.+))?$/i
+const ENGINE_CUE = /ENGINE ?([^\s]+)/i
 
 export function ParseBody(
 	config: TV2BlueprintConfig,
@@ -162,7 +211,7 @@ export function ParseBody(
 				.replace(/<\/tab>/i, '')
 				.trim()
 
-			if (typeStr && ACCEPTED_RED_TEXT.test(typeStr)) {
+			if (typeStr && ACCEPTED_RED_TEXT.some(r => r.test(typeStr))) {
 				const inlineCues = line
 					.replace(/<\/?p>/g, '')
 					.split(/<pi>(.*?)<\/pi>/i)
@@ -175,7 +224,7 @@ export function ParseBody(
 				let pos = 0
 				let redTextFound = false
 				while (pos < inlineCues.length && !redTextFound) {
-					if (ACCEPTED_RED_TEXT.test(inlineCues[pos])) {
+					if (ACCEPTED_RED_TEXT.some(r => r.test(inlineCues[pos]))) {
 						redTextFound = true
 					} else {
 						const parsedCues = getCuesInLine(inlineCues[pos], cues, config)
@@ -341,7 +390,6 @@ function initDefinition(fields: any, modified: number, segmentName: string): Par
 		externalId: '',
 		type: PartType.Unknown,
 		rawType: '',
-		variant: {},
 		cues: [],
 		script: '',
 		fields,
@@ -428,7 +476,7 @@ function makeDefinitionPrimaryCue(
 	switch (cue.type) {
 		case CueType.Ekstern:
 			definition = { ...definition, ...cue.transition }
-			definition.type = PartType.Ekstern
+			definition.type = PartType.REMOTE
 			break
 		case CueType.DVE:
 			definition.type = PartType.DVE
@@ -504,72 +552,120 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 }
 
 function extractTypeProperties(typeStr: string): PartdefinitionTypes {
-	const definition: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(typeStr)
+	const transitionAndEffekt: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(typeStr)
+
+	const sourceDefinition = getSourceDefinition(typeStr)
+	switch (sourceDefinition?.sourceType) {
+		case SourceType.Kam:
+			return {
+				type: PartType.Kam,
+				sourceDefinition,
+				...transitionAndEffekt
+			}
+		case SourceType.EVS:
+			return {
+				type: PartType.EVS,
+				sourceDefinition,
+				...transitionAndEffekt
+			}
+		default:
+			break
+	}
+
 	const tokens = stripTransitionProperties(typeStr)
 		.replace(/100%/g, '')
 		.trim()
 		.split(' ')
 	const firstToken = tokens[0]
 
-	if (/[CK]AM/i.test(firstToken)) {
-		const adjacentKamNumber = tokens[0].match(/KAM(\d+)/i)
-		return {
-			type: PartType.Kam,
-			variant: {
-				name: adjacentKamNumber ? adjacentKamNumber[1] : tokens[1]
-			},
-			...definition
-		}
-	} else if (/SERVER|ATTACK/i.test(firstToken)) {
+	if (/SERVER|ATTACK/i.test(firstToken)) {
 		return {
 			type: PartType.Server,
-			variant: {},
-			...definition
+			...transitionAndEffekt
 		}
 	} else if (/TEKNIK/i.test(firstToken)) {
 		return {
 			type: PartType.Teknik,
-			variant: {},
-			...definition
+			...transitionAndEffekt
 		}
 	} else if (/GRAFIK/i.test(firstToken)) {
 		return {
 			type: PartType.Grafik,
-			variant: {},
-			...definition
-		}
-	} else if (EVS_RED_TEXT.test(typeStr)) {
-		const strippedToken = typeStr.match(EVS_RED_TEXT)
-		return {
-			type: PartType.EVS,
-			variant: {
-				evs: strippedToken && strippedToken[1] ? strippedToken[1] : '1',
-				vo: (strippedToken && (strippedToken[2] as 'VO' | 'VOV')) ?? undefined
-			},
-			...definition
-		}
-	} else if (/EPSIO/i.test(typeStr)) {
-		return {
-			type: PartType.EVS,
-			variant: {
-				evs: 'EPSIO',
-				vo: 'VO'
-			},
-			...definition
+			...transitionAndEffekt
 		}
 	} else if (/VOV?|VOSB/i.test(firstToken)) {
 		return {
 			type: PartType.VO,
-			variant: {},
-			...definition
+			...transitionAndEffekt
 		}
 	} else {
 		return {
 			type: PartType.Unknown,
-			variant: {},
-			...definition
+			...transitionAndEffekt
 		}
 	}
+}
+
+export function getSourceDefinition(typeStr: string): SourceDefinition | undefined {
+	const strippedTypeStr = stripTransitionProperties(typeStr)
+		.replace(/100%/g, '')
+		.trim()
+	if (CAMERA_RED_TEXT.test(strippedTypeStr)) {
+		const id = strippedTypeStr.match(CAMERA_RED_TEXT)![1]
+		return {
+			sourceType: SourceType.Kam,
+			id,
+			minusMic: isMinusMic(typeStr),
+			raw: strippedTypeStr,
+			name: `KAM ${id}`
+		}
+	} else if (REMOTE_CUE.test(typeStr)) {
+		const remoteNumber = typeStr.match(REMOTE_CUE)
+		const variant = remoteNumber![1].toUpperCase() as 'LIVE' | 'FEED'
+		const id = remoteNumber![2]
+		return {
+			sourceType: SourceType.REMOTE,
+			variant,
+			id,
+			raw: strippedTypeStr,
+			name: `${variant} ${id}`
+		}
+	} else if (EVS_RED_TEXT.test(typeStr)) {
+		const strippedToken = typeStr.match(EVS_RED_TEXT)
+		const id = `EVS ${strippedToken![1].toUpperCase()}`
+		const vo = strippedToken![2]
+		return {
+			sourceType: SourceType.EVS,
+			id,
+			vo: !!vo,
+			raw: strippedToken![0].trim(),
+			name: `${id}${vo ? ' ' + vo : ''}`
+		}
+	} else if (/EPSIO/i.test(typeStr)) {
+		return {
+			sourceType: SourceType.EVS,
+			id: 'EPSIO',
+			vo: true,
+			raw: typeStr,
+			name: 'EPSIO'
+		}
+	} else if (ENGINE_CUE.test(typeStr)) {
+		const strippedToken = typeStr.match(ENGINE_CUE)
+		return {
+			sourceType: SourceType.Grafik,
+			name: strippedToken![1].toUpperCase(),
+			raw: typeStr
+		}
+	} else if (/DEFAULT/i.test(typeStr)) {
+		return {
+			sourceType: SourceType.DEFAULT
+		}
+	} else if (/SERVER/i.test(typeStr)) {
+		return {
+			sourceType: SourceType.Server
+		}
+	}
+	return undefined
 }
 
 export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {

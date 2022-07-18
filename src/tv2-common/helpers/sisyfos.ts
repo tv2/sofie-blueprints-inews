@@ -1,119 +1,160 @@
-import { IStudioUserContext, SourceLayerType, Timeline, TSR } from '@tv2media/blueprints-integration'
-import { FindSourceInfoStrict, SisyfosEVSSource, SourceInfo } from 'tv2-common'
+import { Timeline, TSR } from '@tv2media/blueprints-integration'
+import { SourceInfo, TimelineBlueprintExt } from 'tv2-common'
+import { TV2BlueprintConfig } from '../blueprintConfig'
 import { literal } from '../util'
 
-export function GetSisyfosTimelineObjForEkstern(
-	context: IStudioUserContext,
-	sources: SourceInfo[],
-	sourceType: string,
+export function GetSisyfosTimelineObjForCamera(
+	config: TV2BlueprintConfig,
+	sourceInfo: SourceInfo,
+	minusMic: boolean,
+	studioMicsLayer: string,
+	enable?: Timeline.TimelineEnable
+) {
+	return GetSisyfosTimelineObjForSource(config, sourceInfo, false, minusMic, studioMicsLayer, enable)
+}
+
+export function GetSisyfosTimelineObjForRemote(
+	config: TV2BlueprintConfig,
+	sourceInfo: SourceInfo,
+	studioMicsLayer: string,
+	enable?: Timeline.TimelineEnable
+) {
+	return GetSisyfosTimelineObjForSource(config, sourceInfo, false, false, studioMicsLayer, enable)
+}
+
+export function GetSisyfosTimelineObjForReplay(
+	config: TV2BlueprintConfig,
+	sourceInfo: SourceInfo,
+	vo: boolean,
+	studioMicsLayer: string
+) {
+	return GetSisyfosTimelineObjForSource(config, sourceInfo, vo, true, studioMicsLayer)
+}
+
+export function GetSisyfosTimelineObjForServer(
+	config: TV2BlueprintConfig,
+	vo: boolean,
+	clipPendingLayer: string,
+	mediaPlayerSession: string,
+	studioMicsLayer: string,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
-	if (!enable) {
-		enable = { start: 0 }
+	const timelineEnable = getFallbackEnable(enable)
+	const result: TSR.TimelineObjSisyfosAny[] = [
+		literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+			id: '',
+			enable: timelineEnable,
+			priority: 1,
+			layer: clipPendingLayer,
+			content: {
+				deviceType: TSR.DeviceType.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+				isPgm: vo ? 2 : 1
+			},
+			metaData: {
+				mediaPlayerSession
+			},
+			classes: []
+		})
+	]
+	if (vo) {
+		result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
 	}
+	return result
+}
 
-	const audioTimeline: TSR.TimelineObjSisyfosAny[] = []
-	const layers = GetLayersForEkstern(context, sources, sourceType)
+export function GetSisyfosTimelineObjForFull(
+	config: TV2BlueprintConfig,
+	studioMicsLayer: string,
+	enable?: Timeline.TimelineEnable
+): TSR.TimelineObjSisyfosAny[] {
+	const result: TSR.TimelineObjSisyfosAny[] = []
+	const timelineEnable = getFallbackEnable(enable)
+	result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
+	return result
+}
 
-	if (!layers || !layers.length) {
-		context.notifyUserWarning(`Could not set audio levels for ${sourceType}`)
-		return audioTimeline
-	}
+export function GetSisyfosTimelineObjForTelefon(
+	config: TV2BlueprintConfig,
+	telefonLayer: string,
+	studioMicsLayer: string,
+	enable?: Timeline.TimelineEnable
+): TSR.TimelineObjSisyfosAny[] {
+	const timelineEnable = getFallbackEnable(enable)
+	const result: TSR.TimelineObjSisyfosAny[] = [
+		literal<TSR.TimelineObjSisyfosChannel>({
+			id: '',
+			enable: timelineEnable,
+			priority: 1,
+			layer: telefonLayer,
+			content: {
+				deviceType: TSR.DeviceType.SISYFOS,
+				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+				isPgm: 1
+			}
+		})
+	]
+	result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
+	return result
+}
 
-	layers.forEach(layer => {
-		audioTimeline.push(
+function GetSisyfosTimelineObjForSource(
+	config: TV2BlueprintConfig,
+	sourceInfo: SourceInfo,
+	vo: boolean,
+	enableStudioMicsOnlyForVo: boolean,
+	studioMicsLayer: string,
+	enable?: Timeline.TimelineEnable
+): TSR.TimelineObjSisyfosAny[] {
+	const result: TSR.TimelineObjSisyfosAny[] = []
+	const timelineEnable = getFallbackEnable(enable)
+	sourceInfo.sisyfosLayers?.forEach(layer => {
+		result.push(
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
-				enable: enable!,
+				enable: timelineEnable,
 				priority: 1,
 				layer,
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-					isPgm: 1
+					isPgm: vo ? 2 : 1
 				}
 			})
 		)
 	})
-	return audioTimeline
-}
-
-export function GetLayersForEkstern(context: IStudioUserContext, sources: SourceInfo[], sourceType: string) {
-	const eksternProps = sourceType.match(/^(?:LIVE|FEED) ?([^\s]+)(?: (.+))?$/i)
-	const eksternLayers: string[] = []
-	if (eksternProps) {
-		const sourceInfo = FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, sourceType)
-		if (sourceInfo && sourceInfo.sisyfosLayers) {
-			eksternLayers.push(...sourceInfo.sisyfosLayers)
-		}
+	if (sourceInfo.useStudioMics && (!enableStudioMicsOnlyForVo || vo)) {
+		result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
 	}
-	return eksternLayers
+	return result
 }
 
-export function GetSisyfosTimelineObjForCamera(
-	context: IStudioUserContext,
-	config: { sources: SourceInfo[]; studio: { StudioMics: string[] } },
-	sourceType: string,
-	channelLayer: string,
-	enable?: Timeline.TimelineEnable
+function getStudioMicsTimelineObj(
+	config: TV2BlueprintConfig,
+	timelineEnable: Timeline.TimelineEnable,
+	studioMicsLayer: string
 ): TSR.TimelineObjSisyfosChannels {
-	if (!enable) {
-		enable = { start: 0 }
-	}
-
-	const useMic = !sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+) minus mic(.*)$/i)
-	const camName = sourceType.match(/^(?:KAM|CAM)(?:ERA)? (.+)$/i)
-	const nonCam = !!sourceType.match(/server|telefon|full|evs/i)
-	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
-	if ((useMic && camName) || nonCam) {
-		const camLayers: string[] = []
-		if (useMic && camName) {
-			const sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, sourceType)
-			if (sourceInfo) {
-				if (sourceInfo.sisyfosLayers) {
-					camLayers.push(...sourceInfo.sisyfosLayers)
-				}
-				if (sourceInfo.useStudioMics) {
-					camLayers.push(...config.studio.StudioMics)
-				}
-			}
-		} else if (nonCam) {
-			camLayers.push(...config.studio.StudioMics)
-		}
-		camLayers.forEach(layer => {
-			mappedChannels.push({
-				mappedLayer: layer,
-				isPgm: 1
-			})
+	const studioMicsChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
+	config.studio.StudioMics.forEach(layer => {
+		studioMicsChannels.push({
+			mappedLayer: layer,
+			isPgm: 1
 		})
-	}
-
-	return literal<TSR.TimelineObjSisyfosChannels>({
+	})
+	return {
 		id: '',
-		enable: enable ? enable : { start: 0 },
-		priority: mappedChannels.length ? 2 : 0,
-		layer: channelLayer,
+		enable: timelineEnable,
+		priority: studioMicsChannels.length ? 2 : 0,
+		layer: studioMicsLayer,
 		content: {
 			deviceType: TSR.DeviceType.SISYFOS,
 			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-			channels: mappedChannels,
+			channels: studioMicsChannels,
 			overridePriority: 2
 		}
-	})
+	}
 }
 
-export function GetSisyfosTimelineObjForEVS(sourceInfo: SourceInfo, vo: boolean) {
-	return literal<TSR.TimelineObjSisyfosChannel>({
-		id: '',
-		enable: {
-			start: 0
-		},
-		priority: 1,
-		layer: SisyfosEVSSource(sourceInfo.id.replace(/^DP/i, '')),
-		content: {
-			deviceType: TSR.DeviceType.SISYFOS,
-			type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-			isPgm: vo ? 2 : 1
-		}
-	})
+function getFallbackEnable(timelineEnable: Timeline.TimelineEnable | undefined): Timeline.TimelineEnable {
+	return timelineEnable ?? { start: 0 }
 }

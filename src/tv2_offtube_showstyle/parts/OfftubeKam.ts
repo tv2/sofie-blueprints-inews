@@ -6,7 +6,6 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
@@ -19,12 +18,13 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfoStrict,
+	FindSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	GetTagForKam,
 	literal,
 	PartDefinitionKam,
 	SisyfosPersistMetaData,
+	SourceInfoType,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
@@ -92,7 +92,7 @@ export async function OfftubeCreatePartKam(
 			})
 		)
 	} else {
-		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		const sourceInfoCam = FindSourceInfo(config.sources, SourceInfoType.KAM, partDefinition.rawType)
 		if (sourceInfoCam === undefined) {
 			return CreatePartInvalid(partDefinition)
 		}
@@ -138,14 +138,14 @@ export async function OfftubeCreatePartKam(
 								}
 							},
 							...(AddParentClass(config, partDefinition)
-								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
+								? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
 								: {})
 						}),
 
-						GetSisyfosTimelineObjForCamera(
-							context,
+						...GetSisyfosTimelineObjForCamera(
 							config,
-							partDefinition.rawType,
+							sourceInfoCam,
+							partDefinition.sourceDefinition.minusMic,
 							OfftubeSisyfosLLayer.SisyfosGroupStudioMics
 						)
 					])

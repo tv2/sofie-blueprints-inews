@@ -45,8 +45,19 @@ export const enum PartType {
 	INTRO = 'INTRO',
 	EVS = 'EVS',
 	DVE = 'DVE',
-	Ekstern = 'Ekstern',
+	REMOTE = 'Ekstern',
 	Telefon = 'Telefon'
+}
+
+export const enum SourceType {
+	Kam = 'Kam',
+	Server = 'Server',
+	VO = 'VO',
+	Teknik = 'Teknik',
+	Grafik = 'Grafik',
+	EVS = 'EVS',
+	REMOTE = 'Ekstern',
+	DEFAULT = 'Default'
 }
 
 export enum Enablers {

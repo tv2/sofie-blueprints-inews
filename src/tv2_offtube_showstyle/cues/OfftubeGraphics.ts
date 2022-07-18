@@ -10,7 +10,7 @@ import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
 	FindDSKFullGFX,
-	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForFull,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
@@ -63,7 +63,7 @@ export function OfftubeEvaluateGrafikCaspar(
 
 function createPilotTimeline(
 	config: OfftubeShowstyleBlueprintConfig,
-	context: IShowStyleUserContext
+	_context: IShowStyleUserContext
 ): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
@@ -91,6 +91,6 @@ function createPilotTimeline(
 				}
 			}
 		}),
-		GetSisyfosTimelineObjForCamera(context, config, 'full', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
+		...GetSisyfosTimelineObjForFull(config, OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
 	]
 }

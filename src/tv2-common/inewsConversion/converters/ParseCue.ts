@@ -1,6 +1,14 @@
 import { GetInfiniteModeForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
-import { CueType, GraphicEngine, PartType } from 'tv2-constants'
-import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
+import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
+import {
+	getSourceDefinition,
+	getTransitionProperties,
+	PartDefinition,
+	PartdefinitionTypes,
+	SourceDefinition,
+	SourceDefinitionEkstern,
+	stripTransitionProperties
+} from './ParseBody'
 
 export interface CueTime {
 	frames?: number
@@ -22,15 +30,15 @@ export interface CueDefinitionUnknown extends CueDefinitionBase {
 
 export interface CueDefinitionEkstern extends CueDefinitionBase {
 	type: CueType.Ekstern
-	source: string
+	sourceDefinition: SourceDefinitionEkstern
 	transition?: Pick<PartdefinitionTypes, 'effekt' | 'transition'>
 }
 
 export interface DVESources {
-	INP1?: string
-	INP2?: string
-	INP3?: string
-	INP4?: string
+	INP1?: SourceDefinition
+	INP2?: SourceDefinition
+	INP3?: SourceDefinition
+	INP4?: SourceDefinition
 }
 
 export interface CueDefinitionDVE extends CueDefinitionBase {
@@ -420,13 +428,16 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
 	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
 	if (eksternSource) {
-		const transitionProperties = getTransitionProperties(cue[0])
-		return literal<CueDefinitionEkstern>({
-			type: CueType.Ekstern,
-			source: eksternSource[1].replace(/\s+/i, ' ').trim(),
-			iNewsCommand: 'EKSTERN',
-			transition: transitionProperties
-		})
+		const sourceDefinition = getSourceDefinition(eksternSource[1])
+		if (sourceDefinition?.sourceType === SourceType.REMOTE) {
+			const transitionProperties = getTransitionProperties(cue[0])
+			return literal<CueDefinitionEkstern>({
+				type: CueType.Ekstern,
+				iNewsCommand: 'EKSTERN',
+				transition: transitionProperties,
+				sourceDefinition
+			})
+		}
 	}
 
 	return undefined
@@ -450,7 +461,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 		} else if (c.match(/^INP\d+=/i)) {
 			const input = c.match(/^(INP\d)+=(.+)$/i)
 			if (input && input[1] && input[2]) {
-				dvecue.sources[input[1].toUpperCase() as keyof DVESources] = input[2]
+				dvecue.sources[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
 			}
 		} else if (c.match(/^BYNAVN=/i)) {
 			const labels = c.match(/^BYNAVN=(.+)$/i)
@@ -563,7 +574,7 @@ function parseAdLib(cue: string[]) {
 	for (let i = 0; i < cue.length; i++) {
 		const input = cue[i].match(/^(INP\d)+=(.+)$/i)
 		if (input && input[1] && input[2] && adlib.inputs !== undefined) {
-			adlib.inputs[input[1].toString().toUpperCase() as keyof DVESources] = input[2]
+			adlib.inputs[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
 		}
 
 		const bynavn = cue[i].match(/^BYNAVN=(.+)$/i)
@@ -899,7 +910,7 @@ function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinition
 export function PartToParentClass(studio: string, partDefinition: PartDefinition): string | undefined {
 	switch (partDefinition.type) {
 		case PartType.Kam:
-			return CameraParentClass(studio, partDefinition.variant.name)
+			return CameraParentClass(studio, partDefinition.sourceDefinition.id)
 		case PartType.Server:
 		case PartType.VO:
 			const clip = partDefinition.fields.videoId
@@ -910,7 +921,7 @@ export function PartToParentClass(studio: string, partDefinition: PartDefinition
 				return
 			}
 		case PartType.EVS:
-			return EVSParentClass(studio, partDefinition.variant.evs)
+			return EVSParentClass(studio, partDefinition.sourceDefinition.id)
 		default:
 			return UnknownPartParentClass(studio, partDefinition)
 	}
@@ -951,7 +962,7 @@ export function UnknownPartParentClass(studio: string, partDefinition: PartDefin
 		case CueType.DVE:
 			return DVEParentClass(studio, firstCue.template)
 		case CueType.Ekstern:
-			return EksternParentClass(studio, firstCue.source)
+			return EksternParentClass(studio, `${firstCue.sourceDefinition.variant} ${firstCue.sourceDefinition.id}`)
 		case CueType.Telefon:
 			return TLFParentClass(studio, firstCue.source)
 		default:

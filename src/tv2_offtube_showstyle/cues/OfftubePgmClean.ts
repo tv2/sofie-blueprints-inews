@@ -3,12 +3,11 @@ import {
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CueDefinitionPgmClean, FindSourceInfoStrict, literal, SourceInfo, SourceInfoType } from 'tv2-common'
+import { CueDefinitionPgmClean, FindSourceInfoByName, literal, SourceInfo } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -26,21 +25,7 @@ export function OfftubeEvaluatePgmClean(
 		return
 	}
 
-	let sourceType: SourceInfoType | undefined
-	if (parsedCue.source.match(/live|feed/i)) {
-		sourceType = SourceLayerType.REMOTE
-	} else if (parsedCue.source.match(/[k|c]am/i)) {
-		sourceType = SourceLayerType.CAMERA
-	} else if (parsedCue.source.match(/evs/i)) {
-		sourceType = SourceLayerType.LOCAL
-	}
-
-	if (!sourceType) {
-		context.notifyUserWarning(`Invalid source for clean output: ${parsedCue.source}`)
-		return
-	}
-
-	sourceInfo = FindSourceInfoStrict(context, config.sources, sourceType, parsedCue.source)
+	sourceInfo = FindSourceInfoByName(config.sources, parsedCue.source)
 
 	if (!sourceInfo) {
 		context.notifyUserWarning(`Invalid source for clean output: ${parsedCue.source}`)

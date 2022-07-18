@@ -13,7 +13,6 @@ import {
 	IBlueprintResolvedPieceInstance,
 	IShowStyleUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	SplitsContent,
 	TSR,
 	VTContent,
@@ -43,11 +42,8 @@ import {
 	DVESources,
 	EvaluateCuesOptions,
 	executeWithContext,
-	FindSourceInfoStrict,
 	GetDVETemplate,
 	GetFullGrafikTemplateName,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
 	IsTargetingOVL,
 	ITV2ActionExecutionContext,
@@ -68,6 +64,7 @@ import {
 	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SharedSourceLayers,
+	SourceType,
 	TallyTags
 } from 'tv2-constants'
 import _ = require('underscore')
@@ -76,6 +73,8 @@ import {
 	CreateFullDataStore,
 	GetEnableForWall,
 	getServerPosition,
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForRemote,
 	PilotGeneratorSettings,
 	ServerSelectMode
 } from '../helpers'
@@ -91,6 +90,7 @@ import {
 	GetTagForLive,
 	GetTagForTransition
 } from '../pieces'
+import { FindSourceInfoByDefinition } from '../sources'
 import { assertUnreachable } from '../util'
 import {
 	ActionCommentatorSelectJingle,
@@ -528,10 +528,10 @@ async function executeActionSelectServerClip<
 
 function dveContainsServer(sources: DVESources) {
 	return (
-		sources.INP1?.match(/SERVER/i) ||
-		sources.INP2?.match(/SERVER/i) ||
-		sources.INP3?.match(/SERVER/i) ||
-		sources.INP4?.match(/SERVER/i)
+		sources.INP1?.sourceType === SourceType.Server ||
+		sources.INP2?.sourceType === SourceType.Server ||
+		sources.INP3?.sourceType === SourceType.Server ||
+		sources.INP4?.sourceType === SourceType.Server
 	)
 }
 
@@ -766,10 +766,10 @@ async function executeActionSelectDVELayout<
 	}
 
 	const sources: DVESources = {
-		INP1: 'DEFAULT',
-		INP2: 'DEFAULT',
-		INP3: 'DEFAULT',
-		INP4: 'DEFAULT'
+		INP1: { sourceType: SourceType.DEFAULT },
+		INP2: { sourceType: SourceType.DEFAULT },
+		INP3: { sourceType: SourceType.DEFAULT },
+		INP4: { sourceType: SourceType.DEFAULT }
 	}
 
 	const externalId = generateExternalId(context, actionId, [userData.config.DVEName])
@@ -1094,16 +1094,16 @@ async function executeActionCutToCamera<
 ) {
 	const config = settings.getConfig(context)
 
-	const externalId = generateExternalId(context, actionId, [userData.name])
+	const externalId = generateExternalId(context, actionId, [userData.sourceDefinition.name])
 
 	const part = literal<IBlueprintPart>({
 		externalId,
-		title: `KAM ${userData.name}`,
+		title: userData.sourceDefinition.name,
 		metaData: {},
 		expectedDuration: 0
 	})
 
-	const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, `Kam ${userData.name}`)
+	const sourceInfoCam = FindSourceInfoByDefinition(config.sources, userData.sourceDefinition)
 	if (sourceInfoCam === undefined) {
 		return
 	}
@@ -1116,12 +1116,7 @@ async function executeActionCutToCamera<
 
 	const currentKam = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Cam)
 
-	const camSisyfos = GetSisyfosTimelineObjForCamera(
-		context,
-		config,
-		`KAM ${userData.name}`,
-		settings.LLayer.Sisyfos.StudioMics
-	)
+	const camSisyfos = GetSisyfosTimelineObjForCamera(config, sourceInfoCam, false, settings.LLayer.Sisyfos.StudioMics)
 
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
@@ -1137,7 +1132,7 @@ async function executeActionCutToCamera<
 				isPieceInjectedInPart: true
 			})
 		},
-		tags: [GetTagForKam(userData.name)],
+		tags: [GetTagForKam(userData.sourceDefinition.name)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
@@ -1155,7 +1150,7 @@ async function executeActionCutToCamera<
 					},
 					classes: ['adlib_deparent']
 				}),
-				camSisyfos
+				...camSisyfos
 			])
 		}
 	})
@@ -1217,10 +1212,9 @@ async function executeActionCutToRemote<
 ) {
 	const config = settings.getConfig(context)
 
-	const externalId = generateExternalId(context, actionId, [userData.name])
+	const externalId = generateExternalId(context, actionId, [userData.sourceDefinition.name])
 
-	const feed = userData.name.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
-	const title = feed ? `FEED ${feed[1]}` : `LIVE ${userData.name}`
+	const title = userData.sourceDefinition.name
 
 	const part = literal<IBlueprintPart>({
 		externalId,
@@ -1229,12 +1223,18 @@ async function executeActionCutToRemote<
 		expectedDuration: 0
 	})
 
-	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
-		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`),
-		GetSisyfosTimelineObjForCamera(context, config, 'telefon', settings.LLayer.Sisyfos.StudioMics)
-	]
+	const sourceInfo = FindSourceInfoByDefinition(config.sources, userData.sourceDefinition)
+	if (sourceInfo === undefined) {
+		context.notifyUserWarning(`Invalid source: ${userData.sourceDefinition.name}`)
+		return
+	}
 
-	const sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, `Live ${userData.name}`)
+	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = GetSisyfosTimelineObjForRemote(
+		config,
+		sourceInfo,
+		settings.LLayer.Sisyfos.StudioMics
+	)
+
 	const sisyfosPersistMetaData: SisyfosPersistMetaData =
 		sourceInfo !== undefined
 			? {
@@ -1257,7 +1257,7 @@ async function executeActionCutToRemote<
 		metaData: {
 			sisyfosPersistMetaData
 		},
-		tags: [GetTagForLive(userData.name)],
+		tags: [GetTagForLive(userData.sourceDefinition)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
@@ -1269,7 +1269,7 @@ async function executeActionCutToRemote<
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
 						me: {
-							input: userData.port,
+							input: sourceInfo.port,
 							transition: TSR.AtemTransitionStyle.CUT
 						}
 					},
@@ -1354,10 +1354,7 @@ async function executeActionCutSourceToBox<
 
 	const containsServerBefore = dveContainsServer(meta.sources)
 
-	// ADD 'VO' to VO sources
-	const name = `${userData.name}${userData.vo && !userData.name.match(/VO/i) ? 'VO' : ''}`
-
-	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = name
+	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.sourceDefinition
 
 	const containsServerAfter = dveContainsServer(meta.sources)
 
@@ -1381,14 +1378,6 @@ async function executeActionCutSourceToBox<
 		undefined,
 		mediaPlayerSession
 	)
-	if (userData.vo) {
-		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs', settings.LLayer.Sisyfos.StudioMics)
-		// Replace any existing instances of studio mics with VO values
-		newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
-			obj => studioMics.layer !== obj.layer
-		)
-		newPieceContent.content.timelineObjects.push(studioMics)
-	}
 
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
 	if (!containsServerBefore || !containsServerAfter) {
