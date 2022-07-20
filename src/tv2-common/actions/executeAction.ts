@@ -34,7 +34,6 @@ import {
 	ActionSelectServerClip,
 	CalculateTime,
 	CreateDipEffectBlueprintPieceForPart,
-	CreateFullPiece,
 	CreatePartServerBase,
 	CueDefinition,
 	CueDefinitionDVE,
@@ -76,10 +75,10 @@ import {
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import {
-	CreateFullDataStore,
 	GetEnableForWall,
 	getServerPosition,
 	PilotGeneratorSettings,
+	PilotGraphicGenerator,
 	ServerSelectMode
 } from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
@@ -2006,9 +2005,8 @@ async function executeActionPlayGraphics<
 	const internalGraphic: InternalGraphic = new InternalGraphic(
 		settings.getConfig(context),
 		userData.graphic,
-		true,
+		{ rank: 0 },
 		externalId,
-		undefined,
 		undefined
 	)
 	const pieces: IBlueprintPiece[] = []
@@ -2093,8 +2091,6 @@ async function executeActionSelectFull<
 	const externalId = `adlib-action_${context.getHashId(`cut_to_full_${template}`)}`
 
 	const graphicType = config.studio.GraphicsType
-	const prerollDuration =
-		graphicType === 'HTML' ? config.studio.CasparPrerollDuration : config.studio.VizPilotGraphics.OutTransitionDuration
 	const previousPartKeepaliveDuration =
 		graphicType === 'HTML'
 			? config.studio.HTMLGraphics.KeepAliveDuration
@@ -2124,34 +2120,26 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	})
 
-	const fullPiece = CreateFullPiece(
+	const generator = new PilotGraphicGenerator({
 		config,
 		context,
-		externalId,
-		cue,
-		'FULL',
-		settings.pilotGraphicSettings,
-		true,
-		userData.segmentExternalId,
-		prerollDuration
-	)
+		partId: externalId,
+		settings: settings.pilotGraphicSettings,
+		parsedCue: cue,
+		engine: 'FULL',
+		segmentExternalId: userData.segmentExternalId,
+		adlib: { rank: 0 }
+	})
+
+	const fullPiece = generator.createPiece()
 
 	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
-	const fullDataStore = CreateFullDataStore(
-		config,
-		context,
-		settings.pilotGraphicSettings,
-		cue,
-		'FULL',
-		externalId,
-		true,
-		userData.segmentExternalId
-	)
+	const fullDataStore = generator.createFullDataStore()
 
 	await context.queuePart(part, [
 		fullPiece,
-		...(fullDataStore ? [fullDataStore] : []),
+		fullDataStore,
 		...(await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 			SharedSourceLayers.SelectedAdlibGraphicsFull
 		]))

@@ -6,6 +6,7 @@ import {
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
+	Adlib,
 	CreateInternalGraphic,
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
@@ -38,26 +39,22 @@ export function OfftubeEvaluateGrafikCaspar(
 	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	adlib: boolean,
 	partDefinition: PartDefinition,
-	rank?: number
+	adlib?: Adlib
 ) {
 	if (GraphicIsPilot(parsedCue)) {
-		CreatePilotGraphic(
+		CreatePilotGraphic(pieces, adlibPieces, actions, {
+			engine: parsedCue.target,
 			config,
 			context,
-			pieces,
-			adlibPieces,
-			actions,
 			partId,
 			parsedCue,
-			pilotGeneratorSettingsOfftube,
+			settings: pilotGeneratorSettingsOfftube,
 			adlib,
-			rank ?? 0,
-			partDefinition.segmentExternalId
-		)
+			segmentExternalId: partDefinition.segmentExternalId
+		})
 	} else if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, partDefinition, rank)
+		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, partDefinition, adlib)
 	}
 }
 
