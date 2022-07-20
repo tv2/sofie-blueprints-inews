@@ -35,7 +35,8 @@ const blankStudioConfig: OfftubeStudioConfig = {
 		Default: 0,
 		Continuity: 0,
 		SplitBackground: 0,
-		Loop: 0
+		Loop: 0,
+		Dip: 0
 	},
 	AtemSettings: {},
 	AudioBedSettings: {

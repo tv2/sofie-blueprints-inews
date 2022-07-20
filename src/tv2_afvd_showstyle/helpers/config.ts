@@ -14,21 +14,22 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	GraphicsINewsCode: string
+	SelectedGraphicsSetupName: string
 	GraphicsSetups: TableConfigGraphicsSetup[]
 }
 
-export function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): TableConfigGraphicsSetup {
+function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): TableConfigGraphicsSetup {
 	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
-		tableConfigGraphicsSetup => tableConfigGraphicsSetup.INewsCode === config.GraphicsINewsCode
+		tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === config.SelectedGraphicsSetupName
 	)
 	if (!foundTableConfigGraphicsSetup) {
-		context.logWarning(`No graphics setup found for profile ${config.GraphicsINewsCode})`)
+		context.logWarning(`No graphics setup found for profile: ${config.SelectedGraphicsSetupName}`)
 		return {
-			INewsCode: '',
-			Concept: '',
+			Name: '',
+			VcpConcept: '',
 			OvlShowId: '',
-			FullShowId: ''
+			FullShowId: '',
+			DveLayoutFolder: ''
 		}
 	}
 	return foundTableConfigGraphicsSetup

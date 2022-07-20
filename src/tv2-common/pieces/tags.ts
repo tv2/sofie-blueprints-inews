@@ -9,6 +9,7 @@ export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
 			tag += variant.breaker
 			break
 		case 'mix':
+		case 'dip':
 			tag += variant.frames
 			break
 		default:
