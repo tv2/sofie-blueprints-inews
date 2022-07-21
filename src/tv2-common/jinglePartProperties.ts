@@ -31,9 +31,11 @@ export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase
 export function GetJinglePartPropertiesFromTableValue(
 	realBreaker: TableConfigItemBreakers
 ): Pick<IBlueprintPart, 'autoNext' | 'expectedDuration' | 'autoNextOverlap' | 'disableNextInTransition'> {
+	const expectedDuration = Math.max(0, TimeFromFrames(Number(realBreaker.Duration) - Number(realBreaker.StartAlpha)))
+	const autoNextOverlap = Math.min(expectedDuration, TimeFromFrames(Number(realBreaker.EndAlpha)))
 	return {
-		expectedDuration: TimeFromFrames(Number(realBreaker.Duration)) - TimeFromFrames(Number(realBreaker.StartAlpha)),
-		autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
+		expectedDuration,
+		autoNextOverlap,
 		autoNext: realBreaker.Autonext === true,
 		disableNextInTransition: false
 	}

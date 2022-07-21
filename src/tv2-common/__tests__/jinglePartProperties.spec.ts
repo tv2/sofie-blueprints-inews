@@ -1,21 +1,64 @@
 import { GetJinglePartPropertiesFromTableValue } from 'tv2-common'
 
+const BREAKER = {
+	BreakerName: 'intro',
+	ClipName: 'intro',
+	LoadFirstFrame: false,
+	Autonext: true,
+	Duration: 200,
+	StartAlpha: 50,
+	EndAlpha: 100
+}
+
 describe('GetJinglePartPropertiesFromTableValue', () => {
-	it('Calculates values correctly', () => {
+	it('Subtracts StartAlpha from Duration', () => {
 		const properties = GetJinglePartPropertiesFromTableValue({
-			BreakerName: 'intro',
-			ClipName: 'intro',
+			...BREAKER,
 			Duration: 200,
 			StartAlpha: 50,
-			EndAlpha: 100,
-			Autonext: true,
-			LoadFirstFrame: false
+			EndAlpha: 100
 		})
-		expect(properties).toEqual({
-			expectedDuration: 6000,
-			autoNextOverlap: 4000,
-			autoNext: true,
-			disableNextInTransition: false
+		expect(properties.expectedDuration).toBe(6000)
+	})
+	it('Clamps Duration when StartAlpha > Duration', () => {
+		const properties = GetJinglePartPropertiesFromTableValue({
+			...BREAKER,
+			Duration: 50,
+			StartAlpha: 100,
+			EndAlpha: 50
 		})
+		expect(properties.expectedDuration).toBe(0)
+	})
+	it('Calculates autoNextOverlap from EndAlpha', () => {
+		const properties = GetJinglePartPropertiesFromTableValue({
+			...BREAKER,
+			Duration: 100,
+			StartAlpha: 20,
+			EndAlpha: 50
+		})
+		expect(properties.autoNextOverlap).toBe(2000)
+	})
+	it('Clamps autoNextOverlap when EndAlpha > Duration - StartAlpha', () => {
+		const properties = GetJinglePartPropertiesFromTableValue({
+			...BREAKER,
+			Duration: 100,
+			StartAlpha: 75,
+			EndAlpha: 50
+		})
+		expect(properties.autoNextOverlap).toBe(1000)
+	})
+	it('Disables autoNext when Autonext is false', () => {
+		const properties = GetJinglePartPropertiesFromTableValue({
+			...BREAKER,
+			Autonext: false
+		})
+		expect(properties.autoNext).toBe(false)
+	})
+	it('Enables autoNext when Autonext is true', () => {
+		const properties = GetJinglePartPropertiesFromTableValue({
+			...BREAKER,
+			Autonext: true
+		})
+		expect(properties.autoNext).toBe(true)
 	})
 })
