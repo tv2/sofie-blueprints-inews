@@ -1,6 +1,6 @@
 {
   "name": "tv2-sofie-blueprints-inews",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "repository": "https://github.com/olzzon/tv2-sofie-blueprints-inews",
   "license": "MIT",
   "private": true,
@@ -60,7 +60,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@tv2media/blueprints-integration": "1.42.6",
+    "@tv2media/blueprints-integration": "1.42.7",
     "underscore": "^1.12.1"
   },
   "resolutions": {

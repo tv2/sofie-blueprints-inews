@@ -6,6 +6,7 @@ import {
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
+	Adlib,
 	CueDefinitionTelefon,
 	GetSisyfosTimelineObjForCamera,
 	GraphicDisplayName,
@@ -25,22 +26,10 @@ export function EvaluateTelefon(
 	partId: string,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTelefon,
-	adlib?: boolean,
-	rank?: number
+	adlib?: Adlib
 ) {
 	if (parsedCue.graphic) {
-		EvaluateCueGraphic(
-			config,
-			context,
-			pieces,
-			adlibPieces,
-			actions,
-			partId,
-			parsedCue.graphic,
-			!!adlib,
-			partDefinition,
-			rank
-		)
+		EvaluateCueGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue.graphic, partDefinition, adlib)
 
 		if ((!adlib && pieces.length) || (adlib && adlibPieces.length)) {
 			if (!adlib) {

@@ -6,6 +6,7 @@ import {
 	PieceLifespan,
 	TSR
 } from '@tv2media/blueprints-integration'
+import { Adlib } from 'tv2-common'
 import _ = require('underscore')
 import {
 	AbstractLLayer,
@@ -34,7 +35,7 @@ export class InternalGraphic {
 	private readonly config: TV2BlueprintConfig
 	private readonly parsedCue: CueDefinitionGraphic<GraphicInternal>
 	private readonly partDefinition?: PartDefinition
-	private readonly adlib: boolean
+	private readonly adlib?: Adlib
 	private readonly isStickyIdent: boolean
 	private readonly engine: GraphicEngine
 	private readonly name: string
@@ -47,10 +48,9 @@ export class InternalGraphic {
 	public constructor(
 		config: TV2BlueprintConfig,
 		parsedCue: CueDefinitionGraphic<GraphicInternal>,
-		adlib: boolean,
+		adlib?: Adlib,
 		partId?: string,
-		partDefinition?: PartDefinition,
-		rank?: number
+		partDefinition?: PartDefinition
 	) {
 		const isStickyIdent = IsStickyIdent(parsedCue)
 
@@ -58,9 +58,7 @@ export class InternalGraphic {
 
 		const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
-		const sourceLayerId = IsTargetingTLF(engine)
-			? SharedSourceLayers.PgmGraphicsTLF
-			: GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
+		const sourceLayerId = GetSourceLayerForGraphic(config, mappedTemplate, isStickyIdent)
 
 		this.config = config
 		this.parsedCue = parsedCue
@@ -73,7 +71,6 @@ export class InternalGraphic {
 		this.sourceLayerId = sourceLayerId
 		this.outputLayerId = IsTargetingWall(engine) ? SharedOutputLayers.SEC : SharedOutputLayers.OVERLAY
 		this.partId = partId
-		this.rank = rank
 		this.content = this.getInternalGraphicContent()
 	}
 
@@ -252,7 +249,7 @@ export class InternalGraphic {
 					this.isStickyIdent,
 					this.partDefinition,
 					this.mappedTemplate,
-					this.adlib
+					!!this.adlib
 			  )
 			: GetInternalGraphicContentVIZ(
 					this.config,
@@ -261,7 +258,7 @@ export class InternalGraphic {
 					this.isStickyIdent,
 					this.partDefinition,
 					this.mappedTemplate,
-					this.adlib
+					!!this.adlib
 			  )
 	}
 }

@@ -32,6 +32,9 @@ import {
 	GraphicIsPilot
 } from './inewsConversion'
 
+export interface Adlib {
+	rank: number
+}
 export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueGraphic?: (
 		config: TV2BlueprintConfig,
@@ -41,9 +44,8 @@ export interface EvaluateCuesShowstyleOptions {
 		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-		adlib: boolean,
 		partDefinition: PartDefinition,
-		rank?: number
+		adlib?: Adlib
 	) => void
 	EvaluateCueBackgroundLoop?: (
 		config: TV2BlueprintConfig,
@@ -119,8 +121,7 @@ export interface EvaluateCuesShowstyleOptions {
 		partId: string,
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTelefon,
-		adlib?: boolean,
-		rank?: number
+		adlib?: Adlib
 	) => void
 	EvaluateCueJingle?: (
 		context: ISegmentUserContext,
@@ -205,6 +206,7 @@ export async function EvaluateCuesBase(
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
 			const shouldAdlib = /* config.showStyle.IsOfftube || */ options.adlib ? true : cue.adlib ? true : false
+			const adlib = shouldAdlib ? { rank: adLibRank } : undefined
 
 			switch (cue.type) {
 				case CueType.Graphic:
@@ -226,9 +228,8 @@ export async function EvaluateCuesBase(
 							actions,
 							partDefinition.externalId,
 							cue,
-							shouldAdlib,
 							partDefinition,
-							adLibRank
+							adlib
 						)
 					}
 					break
@@ -304,8 +305,7 @@ export async function EvaluateCuesBase(
 							partDefinition.externalId,
 							partDefinition,
 							cue,
-							shouldAdlib,
-							adLibRank
+							adlib
 						)
 					}
 					break

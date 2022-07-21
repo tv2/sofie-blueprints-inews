@@ -269,12 +269,12 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 		lookahead: LookaheadMode.PRELOAD,
 		channel: 3,
 		layer: 110,
-		previewWhenNotOnAir: true
+		previewWhenNotOnAir: false
 	}),
-	[OfftubeCasparLLayer.CasparPlayerJingleLookahead]: literal<TSR.MappingCasparCG & BlueprintMapping>({
+	[OfftubeCasparLLayer.CasparPlayerJinglePreload]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
-		layerName: 'Jingle Lookahead',
+		layerName: 'Jingle (Preloading First Frame)',
 		lookahead: LookaheadMode.PRELOAD,
 		lookaheadMaxSearchDistance: 1,
 		channel: 3,

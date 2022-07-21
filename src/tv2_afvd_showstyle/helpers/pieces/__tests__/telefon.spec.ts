@@ -104,7 +104,7 @@ describe('telefon', () => {
 					start: 0
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
-				sourceLayerId: SourceLayer.PgmGraphicsTLF,
+				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: literal<PieceMetaData>({
 					sisyfosPersistMetaData: {

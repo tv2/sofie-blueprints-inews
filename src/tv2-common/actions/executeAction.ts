@@ -33,11 +33,12 @@ import {
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
 	CalculateTime,
-	CreateFullPiece,
+	CreateDipEffectBlueprintPieceForPart,
 	CreatePartServerBase,
 	CueDefinition,
 	CueDefinitionDVE,
 	CueDefinitionGraphic,
+	DipTransitionSettings,
 	DVEOptions,
 	DVEPieceMetaData,
 	DVESources,
@@ -53,6 +54,7 @@ import {
 	ITV2ActionExecutionContext,
 	literal,
 	MakeContentDVE2,
+	MixTransitionSettings,
 	PartDefinition,
 	PieceMetaData,
 	SisyfosPersistMetaData,
@@ -73,15 +75,15 @@ import {
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import {
-	CreateFullDataStore,
 	GetEnableForWall,
 	getServerPosition,
 	PilotGeneratorSettings,
+	PilotGraphicGenerator,
 	ServerSelectMode
 } from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
-import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixForPartInner } from '../parts'
+import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixEffectBlueprintPieceForPart } from '../parts'
 import {
 	GetTagForDVE,
 	GetTagForDVENext,
@@ -325,7 +327,7 @@ async function getExistingTransition<
 	const transition = existingTransition.piece.name
 
 	// Case sensitive! Blueprints will set these names correctly.
-	const transitionProps = transition.match(/CUT|MIX (\d+)|EFFEKT (\d+)/)
+	const transitionProps = transition.match(/CUT|MIX (\d+)|DIP (\d+)|EFFEKT (\d+)/)
 	if (!transitionProps || !transitionProps[0]) {
 		return
 	}
@@ -338,7 +340,9 @@ async function getExistingTransition<
 			},
 			takeNow: false
 		})
-	} else if (transitionProps[0].match(/MIX/) && transitionProps[1] !== undefined) {
+	}
+
+	if (transitionProps[0].match(/MIX/) && transitionProps[1] !== undefined) {
 		return literal<ActionTakeWithTransition>({
 			type: AdlibActionType.TAKE_WITH_TRANSITION,
 			variant: {
@@ -347,7 +351,20 @@ async function getExistingTransition<
 			},
 			takeNow: false
 		})
-	} else if (transitionProps[0].match(/EFFEKT/) && transitionProps[1] !== undefined) {
+	}
+
+	if (transitionProps[0].match(/DIP/) && transitionProps[1] !== undefined) {
+		return literal<ActionTakeWithTransition>({
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: {
+				type: 'dip',
+				frames: Number(transitionProps[1])
+			},
+			takeNow: false
+		})
+	}
+
+	if (transitionProps[0].match(/EFFEKT/) && transitionProps[1] !== undefined) {
 		return literal<ActionTakeWithTransition>({
 			type: AdlibActionType.TAKE_WITH_TRANSITION,
 			variant: {
@@ -356,9 +373,8 @@ async function getExistingTransition<
 			},
 			takeNow: false
 		})
-	} else {
-		return
 	}
+	return
 }
 
 function sanitizePieceId(piece: IBlueprintPieceDB): IBlueprintPiece {
@@ -415,14 +431,7 @@ async function executeActionSelectServerClip<
 	const currentPiece = settings.SelectedAdlibs
 		? await context
 				.getPieceInstances('current')
-				.then(pieceInstances =>
-					pieceInstances.find(
-						p =>
-							p.piece.sourceLayerId === (userData.voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server) ||
-							(p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib &&
-								dveContainsServer((p.piece.metaData as DVEPieceMetaData).sources))
-					)
-				)
+				.then(pieceInstances => pieceInstances.find(p => isServerOnPgm(p, settings, userData.voLayer)))
 		: undefined
 
 	const basePart = await CreatePartServerBase(
@@ -539,6 +548,21 @@ function dveContainsServer(sources: DVESources) {
 		sources.INP2?.match(/SERVER/i) ||
 		sources.INP3?.match(/SERVER/i) ||
 		sources.INP4?.match(/SERVER/i)
+	)
+}
+
+function isServerOnPgm<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	pieceInstance: IBlueprintPieceInstance,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	voLayer: boolean
+) {
+	return (
+		pieceInstance.piece.sourceLayerId === (voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server) ||
+		(pieceInstance.piece.sourceLayerId === settings.SourceLayers.DVEAdLib &&
+			dveContainsServer((pieceInstance.piece.metaData as DVEPieceMetaData).sources))
 	)
 }
 
@@ -1486,7 +1510,7 @@ async function executeActionTakeWithTransition<
 ) {
 	const externalId = generateExternalId(context, actionId, [userData.variant.type])
 
-	const nextPieces = await context.getPieceInstances('next')
+	const nextPieces: IBlueprintPieceInstance[] = await context.getPieceInstances('next')
 
 	const nextPiecesBySourceLayer = groupPiecesBySourceLayer(nextPieces)
 	const primaryPiece = findPrimaryPieceUsingPriority(settings, nextPiecesBySourceLayer)
@@ -1501,19 +1525,21 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
-	const tlObjIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+	const indexOfTimelineObject = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
 		obj =>
 			obj.layer === (settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	)
 
-	const tlObj =
-		tlObjIndex > -1
-			? ((primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[tlObjIndex] as TSR.TimelineObjAtemME)
+	const timelineObject =
+		indexOfTimelineObject > -1
+			? ((primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[
+					indexOfTimelineObject
+			  ] as TSR.TimelineObjAtemME)
 			: undefined
 
-	if (!tlObj) {
+	if (!timelineObject) {
 		return
 	}
 
@@ -1528,9 +1554,9 @@ async function executeActionTakeWithTransition<
 	switch (userData.variant.type) {
 		case 'cut':
 			{
-				tlObj.content.me.transition = TSR.AtemTransitionStyle.CUT
+				timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
 
-				primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
+				primaryPiece.piece.content.timelineObjects[indexOfTimelineObject] = timelineObject
 
 				await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
@@ -1560,9 +1586,9 @@ async function executeActionTakeWithTransition<
 			}
 			break
 		case 'breaker': {
-			tlObj.content.me.transition = TSR.AtemTransitionStyle.CUT
+			timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
 
-			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
+			primaryPiece.piece.content.timelineObjects[indexOfTimelineObject] = timelineObject
 
 			await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
@@ -1589,25 +1615,23 @@ async function executeActionTakeWithTransition<
 			break
 		}
 		case 'mix': {
-			tlObj.content.me.transition = TSR.AtemTransitionStyle.MIX
-			tlObj.content.me.transitionSettings = {
-				...tlObj.content.me.transitionSettings,
-				mix: {
-					rate: userData.variant.frames
-				}
-			}
-
-			primaryPiece.piece.content.timelineObjects[tlObjIndex] = tlObj
-
-			await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
+			await updateTimelineObjectMeTransition(
+				context,
+				timelineObject,
+				TSR.AtemTransitionStyle.MIX,
+				MixTransitionSettings(userData.variant.frames),
+				primaryPiece,
+				indexOfTimelineObject
+			)
 
 			const pieces: IBlueprintPiece[] = []
 			partProps = {
-				...CreateMixForPartInner(pieces, externalId, userData.variant.frames, {
-					sourceLayer: settings.SourceLayers.Effekt,
-					casparLayer: settings.LLayer.Caspar.Effekt,
-					sisyfosLayer: settings.LLayer.Sisyfos.Effekt
-				})
+				...CreateMixEffectBlueprintPieceForPart(
+					pieces,
+					externalId,
+					userData.variant.frames,
+					settings.SourceLayers.Effekt
+				)
 			}
 
 			await context.updatePartInstance('next', partProps)
@@ -1615,11 +1639,51 @@ async function executeActionTakeWithTransition<
 
 			break
 		}
+		case 'dip': {
+			const config = settings.getConfig(context)
+			await updateTimelineObjectMeTransition(
+				context,
+				timelineObject,
+				TSR.AtemTransitionStyle.DIP,
+				DipTransitionSettings(config, userData.variant.frames),
+				primaryPiece,
+				indexOfTimelineObject
+			)
+
+			const pieces: IBlueprintPiece[] = []
+			partProps = {
+				...CreateDipEffectBlueprintPieceForPart(
+					pieces,
+					externalId,
+					userData.variant.frames,
+					settings.SourceLayers.Effekt
+				)
+			}
+
+			await context.updatePartInstance('next', partProps)
+			pieces.forEach(p => context.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
+			break
+		}
 	}
 
 	if (partProps) {
 		await applyPrerollToWallGraphics(context, settings, nextPiecesBySourceLayer)
 	}
+}
+
+async function updateTimelineObjectMeTransition(
+	context: ITV2ActionExecutionContext,
+	timelineObject: TSR.TimelineObjAtemME,
+	transitionStyle: TSR.AtemTransitionStyle,
+	transitionSettings: TSR.AtemTransitionSettings,
+	pieceInstance: IBlueprintPieceInstance,
+	indexOfTimelineObject: number
+): Promise<void> {
+	timelineObject.content.me.transition = transitionStyle
+	timelineObject.content.me.transitionSettings = transitionSettings
+
+	pieceInstance.piece.content.timelineObjects[indexOfTimelineObject] = timelineObject
+	await context.updatePieceInstance(pieceInstance._id, pieceInstance.piece)
 }
 
 async function findPieceToRecoverDataFrom(
@@ -1941,9 +2005,8 @@ async function executeActionPlayGraphics<
 	const internalGraphic: InternalGraphic = new InternalGraphic(
 		settings.getConfig(context),
 		userData.graphic,
-		true,
+		{ rank: 0 },
 		externalId,
-		undefined,
 		undefined
 	)
 	const pieces: IBlueprintPiece[] = []
@@ -2028,8 +2091,6 @@ async function executeActionSelectFull<
 	const externalId = `adlib-action_${context.getHashId(`cut_to_full_${template}`)}`
 
 	const graphicType = config.studio.GraphicsType
-	const prerollDuration =
-		graphicType === 'HTML' ? config.studio.CasparPrerollDuration : config.studio.VizPilotGraphics.OutTransitionDuration
 	const previousPartKeepaliveDuration =
 		graphicType === 'HTML'
 			? config.studio.HTMLGraphics.KeepAliveDuration
@@ -2059,34 +2120,26 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	})
 
-	const fullPiece = CreateFullPiece(
+	const generator = new PilotGraphicGenerator({
 		config,
 		context,
-		externalId,
-		cue,
-		'FULL',
-		settings.pilotGraphicSettings,
-		true,
-		userData.segmentExternalId,
-		prerollDuration
-	)
+		partId: externalId,
+		settings: settings.pilotGraphicSettings,
+		parsedCue: cue,
+		engine: 'FULL',
+		segmentExternalId: userData.segmentExternalId,
+		adlib: { rank: 0 }
+	})
+
+	const fullPiece = generator.createPiece()
 
 	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
-	const fullDataStore = CreateFullDataStore(
-		config,
-		context,
-		settings.pilotGraphicSettings,
-		cue,
-		'FULL',
-		externalId,
-		true,
-		userData.segmentExternalId
-	)
+	const fullDataStore = generator.createFullDataStore()
 
 	await context.queuePart(part, [
 		fullPiece,
-		...(fullDataStore ? [fullDataStore] : []),
+		fullDataStore,
 		...(await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 			SharedSourceLayers.SelectedAdlibGraphicsFull
 		]))
