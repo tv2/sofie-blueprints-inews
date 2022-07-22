@@ -49,7 +49,8 @@
       "assignHotKeys": true,
       "tags": [
         "flow_producer"
-      ]
+      ],
+      "toggleOnSingleClick": true
     },
     {
       "_id": "ibMYwgJfn8TB52vhb",
@@ -61,7 +62,8 @@
       "rundownBaseline": "only",
       "default": false,
       "hide": true,
-      "assignHotKeys": true
+      "assignHotKeys": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "tGynaBdafH5dZnttN",

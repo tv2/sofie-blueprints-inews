@@ -40,7 +40,8 @@
       ],
       "tags": [
         "flow_producer"
-      ]
+      ],
+      "toggleOnSingleClick": true
     },
     {
       "_id": "s4KkTnsERPNcrkqeD",
@@ -81,7 +82,8 @@
         "studio0_adlib_graphic_cmd"
       ],
       "buttonWidthScale": 1.7,
-      "buttonHeightScale": 1.7
+      "buttonHeightScale": 1.7,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
@@ -98,7 +100,8 @@
       "x": -1,
       "includeClearInRundownBaseline": true,
       "assignHotKeys": true,
-      "hide": true
+      "hide": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "j54rMBuuTvufKJ8yp",
@@ -121,7 +124,8 @@
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "showAsTimeline": true,
-      "includeClearInRundownBaseline": true
+      "includeClearInRundownBaseline": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "nmNfZ8azaAAHD7jjT",
@@ -144,7 +148,8 @@
       "width": 58,
       "height": 5,
       "showAsTimeline": true,
-      "includeClearInRundownBaseline": true
+      "includeClearInRundownBaseline": true,
+      "toggleOnSingleClick": true
     }
   ],
   "type": "dashboard_layout",

@@ -27,7 +27,8 @@
 			],
 			"tags": [
 				"flow_producer"
-			]
+			],
+			"toggleOnSingleClick": true
 		}
 	]
 }
