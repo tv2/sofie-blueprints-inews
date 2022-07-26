@@ -20,7 +20,7 @@ export interface ITV2ActionExecutionContext extends IActionExecutionContext {
 
 class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 	public studioId: string
-	public isTV2Context: true
+	public isTV2Context: true = true
 
 	private coreContext: IActionExecutionContext
 
