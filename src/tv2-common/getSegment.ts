@@ -59,7 +59,7 @@ export interface GetSegmentShowstyleOptions<
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
-		props: ServerPartProps
+		partProps: ServerPartProps
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTeknik?: (
 		context: IShowStyleUserContext,

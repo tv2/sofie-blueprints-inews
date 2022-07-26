@@ -86,7 +86,7 @@ export async function CreatePartKam(
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
 										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
+									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							}
 						})
@@ -138,7 +138,7 @@ export async function CreatePartKam(
 									transition: partDefinition.transition
 										? TransitionFromString(partDefinition.transition.style)
 										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
+									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							},
 							...(AddParentClass(config, partDefinition)

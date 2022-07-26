@@ -4,7 +4,13 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import { CueDefinitionTelefon, GetSisyfosTimelineObjForTelefon, GraphicDisplayName, PartDefinition } from 'tv2-common'
+import {
+	Adlib,
+	CueDefinitionTelefon,
+	GetSisyfosTimelineObjForTelefon,
+	GraphicDisplayName,
+	PartDefinition
+} from 'tv2-common'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 import { EvaluateCueGraphic } from './graphic'
@@ -18,22 +24,10 @@ export function EvaluateTelefon(
 	partId: string,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTelefon,
-	adlib?: boolean,
-	rank?: number
+	adlib?: Adlib
 ) {
 	if (parsedCue.graphic) {
-		EvaluateCueGraphic(
-			config,
-			context,
-			pieces,
-			adlibPieces,
-			actions,
-			partId,
-			parsedCue.graphic,
-			!!adlib,
-			partDefinition,
-			rank
-		)
+		EvaluateCueGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue.graphic, partDefinition, adlib)
 
 		if ((!adlib && pieces.length) || (adlib && adlibPieces.length)) {
 			if (!adlib) {

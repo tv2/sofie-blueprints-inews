@@ -1181,7 +1181,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
-					concept: config.selectedGraphicsSetup.Concept
+					concept: config.selectedGraphicsSetup.VcpConcept
 				}
 			})
 		]

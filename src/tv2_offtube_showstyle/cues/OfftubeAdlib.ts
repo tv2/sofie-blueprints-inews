@@ -46,13 +46,9 @@ export async function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = Math.max(
-			((await context.hackGetMediaObjectDuration(file)) || 0) * 1000 - config.studio.ServerPostrollDuration,
-			0
-		)
-
 		actions.push(
-			CreateAdlibServer(
+			await CreateAdlibServer(
+				context,
 				config,
 				rank,
 				partDefinition,
@@ -77,7 +73,6 @@ export async function OfftubeEvaluateAdLib(
 						ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 					}
 				},
-				sourceDuration,
 				true
 			)
 		)

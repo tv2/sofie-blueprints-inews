@@ -36,6 +36,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 		Default: number
 		MixMinusDefault: number
 		Continuity: number
+		Dip: number
 	}
 
 	AtemSettings: {

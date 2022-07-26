@@ -337,6 +337,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: AtemSourceIndex.Col2
 	},
 	{
+		id: 'AtemSource.Dip',
+		name: 'ATEM Dip Source',
+		description: 'ATEM input for the Dip - should match the desired input in the ATEM',
+		type: ConfigManifestEntryType.INT,
+		required: true,
+		defaultVal: AtemSourceIndex.Col2
+	},
+	{
 		id: 'AtemSettings.MP1Baseline.Clip',
 		name: 'ATEM MP1 baseline clip number',
 		description: 'Number of the clip to play on MP1 (counting from 1)',

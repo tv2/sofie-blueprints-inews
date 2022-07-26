@@ -43,13 +43,9 @@ export async function EvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = Math.max(
-			((await context.hackGetMediaObjectDuration(file)) || 0) * 1000 - config.studio.ServerPostrollDuration,
-			0
-		)
-
 		actions.push(
-			CreateAdlibServer(
+			await CreateAdlibServer(
+				context,
 				config,
 				rank,
 				partDefinition,
@@ -72,7 +68,6 @@ export async function EvaluateAdLib(
 					},
 					ATEM: {}
 				},
-				sourceDuration,
 				true
 			)
 		)

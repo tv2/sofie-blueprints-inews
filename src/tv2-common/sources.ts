@@ -6,9 +6,9 @@ import { SourceMapping } from './blueprintConfig'
 import {
 	RemoteType,
 	SourceDefinition,
-	SourceDefinitionReplay,
 	SourceDefinitionKam,
-	SourceDefinitionRemote
+	SourceDefinitionRemote,
+	SourceDefinitionReplay
 } from './inewsConversion'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
 import { assertUnreachable } from './util'

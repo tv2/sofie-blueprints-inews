@@ -112,9 +112,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -186,9 +185,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -302,9 +300,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -418,9 +415,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -497,9 +493,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -572,9 +567,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -676,9 +670,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -750,9 +743,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -864,9 +856,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		const piece = pieces[0]
 		expect(piece).toBeTruthy()

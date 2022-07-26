@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	IShowStyleUserContext
 } from '@tv2media/blueprints-integration'
-import { CueDefinitionGraphic, GraphicInternal, PartDefinition, TV2BlueprintConfig } from 'tv2-common'
+import { Adlib, CueDefinitionGraphic, GraphicInternal, PartDefinition, TV2BlueprintConfig } from 'tv2-common'
 import { InternalGraphic } from '../InternalGraphic'
 
 export function CreateInternalGraphic(
@@ -15,11 +15,10 @@ export function CreateInternalGraphic(
 	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	adlib: boolean,
 	partDefinition: PartDefinition,
-	rank?: number
+	adlib?: Adlib
 ) {
-	const internalGraphic: InternalGraphic = new InternalGraphic(config, parsedCue, adlib, partId, partDefinition, rank)
+	const internalGraphic: InternalGraphic = new InternalGraphic(config, parsedCue, adlib, partId, partDefinition)
 
 	if (!internalGraphic.mappedTemplate || !internalGraphic.mappedTemplate.length) {
 		context.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)

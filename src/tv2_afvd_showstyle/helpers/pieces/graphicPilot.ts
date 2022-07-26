@@ -7,6 +7,7 @@ import {
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
+	Adlib,
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
 	EnableDSK,
@@ -33,23 +34,19 @@ export function EvaluateCueGraphicPilot(
 	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	adlib: boolean,
 	segmentExternalId: string,
-	rank?: number
+	adlib?: Adlib
 ) {
-	CreatePilotGraphic(
+	CreatePilotGraphic(pieces, adlibPieces, actions, {
 		config,
 		context,
-		pieces,
-		adlibPieces,
-		actions,
+		engine: parsedCue.target,
 		partId,
 		parsedCue,
-		pilotGeneratorSettingsAFVD,
+		settings: pilotGeneratorSettingsAFVD,
 		adlib,
-		rank ?? 0,
 		segmentExternalId
-	)
+	})
 }
 
 function makeStudioTimelineViz(

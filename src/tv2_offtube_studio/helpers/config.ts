@@ -32,6 +32,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 		Default: number
 		Continuity: number
+		Dip: number
 	}
 
 	AtemSettings: {}

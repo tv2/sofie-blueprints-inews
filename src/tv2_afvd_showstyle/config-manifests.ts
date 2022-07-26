@@ -142,18 +142,18 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
-const graphicProfileSetup: ConfigManifestEntry[] = [
+const graphicsSetups: ConfigManifestEntry[] = [
 	{
 		id: 'GraphicsSetups',
 		name: 'Graphics Setups',
-		description: 'Possible graphic profile setup',
+		description: 'Possible graphics setups',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [],
 		columns: [
 			{
-				id: 'INewsCode',
-				name: 'iNews Command (*)',
+				id: 'Name',
+				name: 'Name',
 				description: 'The code as it will appear in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
@@ -161,8 +161,8 @@ const graphicProfileSetup: ConfigManifestEntry[] = [
 				rank: 0
 			},
 			{
-				id: 'Concept',
-				name: 'Concept',
+				id: 'VcpConcept',
+				name: 'VCP Concept',
 				rank: 1,
 				required: true,
 				defaultVal: '',
@@ -172,7 +172,7 @@ const graphicProfileSetup: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'OvlShowId',
-				name: 'OVL Show ID',
+				name: 'Overlay Show-ID',
 				rank: 2,
 				required: true,
 				defaultVal: '',
@@ -182,21 +182,31 @@ const graphicProfileSetup: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'FullShowId',
-				name: 'FULL Show ID',
+				name: 'Fullscreen Show-ID',
 				rank: 3,
 				required: true,
 				defaultVal: '',
 				hint: '',
 				description: 'UUID of the show used for FULL and WALL channels',
 				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'DveLayoutFolder',
+				name: 'DVE layout folder',
+				rank: 4,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'Path to the folder containing the layouts for DVEs',
+				type: ConfigManifestEntryType.STRING
 			}
 		],
 		hint: ''
 	},
 	{
-		id: 'GraphicsINewsCode',
-		name: 'Graphics Profile cue',
-		description: 'GRAPHICS_PROFILE cue from iNews',
+		id: 'SelectedGraphicsSetupName',
+		name: 'Graphic Setup name',
+		description: 'Name of the Graphic Setup that should be used',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: ''
@@ -373,7 +383,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
-	...graphicProfileSetup,
+	...graphicsSetups,
 	...schemaConfigManifest,
 	{
 		/*
