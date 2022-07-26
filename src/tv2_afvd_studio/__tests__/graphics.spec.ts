@@ -9,9 +9,10 @@ import {
 	GraphicInternal,
 	GraphicPilot,
 	literal,
-	PartDefinition
+	PartDefinition,
+	RemoteType
 } from 'tv2-common'
-import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { getConfig, parseConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
@@ -153,7 +154,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(20)
+		expect(timeline).toHaveLength(5)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -328,7 +329,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(20)
+		expect(timeline).toHaveLength(5)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -357,7 +358,7 @@ describe('Graphics', () => {
 				routing: {
 					type: CueType.Routing,
 					target: 'TLF',
-					INP1: 'LIVE 1',
+					INP1: { sourceType: SourceType.REMOTE, id: '1', name: 'LIVE 1', raw: 'LIVE 1', remoteType: RemoteType.LIVE },
 					iNewsCommand: ''
 				},
 				graphic: {

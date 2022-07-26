@@ -41,11 +41,7 @@ export function EvaluateTelefon(
 				const graphicPiece = pieces[graphicPieceIndex]
 				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
 					graphicPiece.content.timelineObjects.push(
-						...GetSisyfosTimelineObjForTelefon(
-							config,
-							SisyfosLLAyer.SisyfosSourceTLF,
-							SisyfosLLAyer.SisyfosGroupStudioMics
-						)
+						...GetSisyfosTimelineObjForTelefon(config, SisyfosLLAyer.SisyfosSourceTLF)
 					)
 					graphicPiece.name = `${parsedCue.source}`
 					pieces[graphicPieceIndex] = graphicPiece

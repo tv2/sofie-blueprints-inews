@@ -1,6 +1,6 @@
 import { literal } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
-import { PartDefinitionEkstern } from '../ParseBody'
+import { PartDefinitionEkstern, RemoteType } from '../ParseBody'
 import { CueDefinitionEkstern, PartToParentClass } from '../ParseCue'
 
 describe('PartToParentClass', () => {
@@ -14,7 +14,7 @@ describe('PartToParentClass', () => {
 					type: CueType.Ekstern,
 					sourceDefinition: {
 						sourceType: SourceType.REMOTE,
-						variant: 'LIVE',
+						remoteType: RemoteType.LIVE,
 						id: '1',
 						raw: 'Live 1',
 						name: 'LIVE 1'

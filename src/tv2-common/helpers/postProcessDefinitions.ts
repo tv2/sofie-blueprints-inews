@@ -27,7 +27,7 @@ function setPartTitle(partDefinition: PartDefinition) {
 	) {
 		switch (firstCue.type) {
 			case CueType.Ekstern:
-				partDefinition.title = `${firstCue.sourceDefinition.variant} ${firstCue.sourceDefinition.id}`
+				partDefinition.title = firstCue.sourceDefinition.name
 				break
 			case CueType.DVE:
 				partDefinition.title = firstCue.template
@@ -52,7 +52,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 	switch (partDefinition.type) {
 		case PartType.EVS:
 			// Common pattern to see EV1 and EVS1VO in the same story. Changing from EVS1 to EVS1VO would mean a new part
-			id += `-${partDefinition.sourceDefinition.id}-${!!partDefinition.sourceDefinition.vo}`
+			id += `-${partDefinition.sourceDefinition.id}-${partDefinition.sourceDefinition.vo}`
 			break
 		case PartType.INTRO:
 			// Intro must have a jingle cue, if it doesn't then padId will handle
@@ -103,7 +103,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 						break
 					case CueType.Ekstern:
 						// Identify based on live source. Changing live source will result in a new part
-						id += `-${firstCue.sourceDefinition.variant}-${firstCue.sourceDefinition.id}`
+						id += `-${firstCue.sourceDefinition.name}`
 						break
 					case CueType.Jingle:
 						// Changing the jingle clip will result in a new part

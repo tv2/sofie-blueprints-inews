@@ -16,8 +16,9 @@ import {
 	ActionTakeWithTransition,
 	literal,
 	PartDefinitionUnknown,
-	SourceDefinitionEkstern,
-	SourceDefinitionKam
+	RemoteType,
+	SourceDefinitionKam,
+	SourceDefinitionRemote
 } from 'tv2-common'
 import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers, SourceType } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
@@ -40,15 +41,15 @@ const VO_DURATION_A = 20000
 const FULL_KEEPALIVE = 1000
 
 const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
-	sourceType: SourceType.Kam,
+	sourceType: SourceType.KAM,
 	id: '1',
 	raw: 'KAM 1',
 	minusMic: false,
 	name: 'KAM 1'
 }
-const SOURCE_DEFINITION_LIVE_2: SourceDefinitionEkstern = {
+const SOURCE_DEFINITION_LIVE_2: SourceDefinitionRemote = {
 	sourceType: SourceType.REMOTE,
-	variant: 'LIVE',
+	remoteType: RemoteType.LIVE,
 	id: '1',
 	name: 'LIVE 1',
 	raw: 'Live 1'

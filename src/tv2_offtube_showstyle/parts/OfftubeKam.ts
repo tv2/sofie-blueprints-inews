@@ -18,18 +18,17 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfo,
+	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	GetTagForKam,
 	literal,
 	PartDefinitionKam,
 	SisyfosPersistMetaData,
-	SourceInfoType,
 	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers, TallyTags } from 'tv2-constants'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -53,7 +52,7 @@ export async function OfftubeCreatePartKam(
 
 	const jingleDSK = FindDSKJingle(config)
 
-	if (partDefinition.rawType.match(/kam cs ?3/i)) {
+	if (/cs ?3/i.test(partDefinition.sourceDefinition.id)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,
@@ -62,7 +61,7 @@ export async function OfftubeCreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
-				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
+				tags: [GetTagForKam(partDefinition.sourceDefinition), TallyTags.JINGLE_IS_LIVE],
 				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
@@ -92,7 +91,7 @@ export async function OfftubeCreatePartKam(
 			})
 		)
 	} else {
-		const sourceInfoCam = FindSourceInfo(config.sources, SourceInfoType.KAM, partDefinition.rawType)
+		const sourceInfoCam = findSourceInfo(config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			return CreatePartInvalid(partDefinition)
 		}
@@ -114,7 +113,7 @@ export async function OfftubeCreatePartKam(
 						acceptPersistAudio: sourceInfoCam.acceptPersistAudio
 					})
 				},
-				tags: [GetTagForKam(sourceInfoCam.id)],
+				tags: [GetTagForKam(partDefinition.sourceDefinition)],
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -142,12 +141,7 @@ export async function OfftubeCreatePartKam(
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForCamera(
-							config,
-							sourceInfoCam,
-							partDefinition.sourceDefinition.minusMic,
-							OfftubeSisyfosLLayer.SisyfosGroupStudioMics
-						)
+						...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 					])
 				}
 			})

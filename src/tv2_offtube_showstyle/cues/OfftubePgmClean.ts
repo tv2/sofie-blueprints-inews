@@ -7,8 +7,8 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CueDefinitionPgmClean, FindSourceInfoByName, literal, SourceInfo } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { CueDefinitionPgmClean, findSourceInfo, literal, SourceInfo } from 'tv2-common'
+import { SharedOutputLayers, SourceType } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
@@ -21,21 +21,23 @@ export function OfftubeEvaluatePgmClean(
 	parsedCue: CueDefinitionPgmClean
 ) {
 	let sourceInfo: SourceInfo | undefined
-	if (parsedCue.source.match(/PGM/i)) {
+	if (parsedCue.sourceDefinition.sourceType === SourceType.PGM) {
 		return
 	}
 
-	sourceInfo = FindSourceInfoByName(config.sources, parsedCue.source)
+	sourceInfo = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+
+	const name = parsedCue.sourceDefinition.name || parsedCue.sourceDefinition.sourceType
 
 	if (!sourceInfo) {
-		context.notifyUserWarning(`Invalid source for clean output: ${parsedCue.source}`)
+		context.notifyUserWarning(`Invalid source for clean output: ${name}`)
 		return
 	}
 
 	pieces.push(
 		literal<IBlueprintPiece>({
 			externalId: partId,
-			name: parsedCue.source,
+			name,
 			enable: {
 				start: 0
 			},

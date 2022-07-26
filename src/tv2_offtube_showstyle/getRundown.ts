@@ -35,8 +35,8 @@ import {
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	literal,
-	SourceDefinitionEkstern,
 	SourceDefinitionKam,
+	SourceDefinitionRemote,
 	SourceInfo,
 	SourceInfoToSourceDefinition,
 	SourceInfoType,
@@ -277,15 +277,15 @@ function getGlobalAdlibActionsOfftube(
 					outputLayerId: SharedOutputLayers.PGM,
 					content: {},
 					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT],
-					currentPieceTags: [GetTagForKam(info.id)],
-					nextPieceTags: [GetTagForKam(info.id)]
+					currentPieceTags: [GetTagForKam(sourceDefinition)],
+					nextPieceTags: [GetTagForKam(sourceDefinition)]
 				}
 			})
 		)
 	}
 
 	function makeRemoteAction(sourceInfo: SourceInfo, rank: number) {
-		const sourceDefinition = SourceInfoToSourceDefinition(sourceInfo) as SourceDefinitionEkstern
+		const sourceDefinition = SourceInfoToSourceDefinition(sourceInfo) as SourceDefinitionRemote
 		const userData = literal<ActionCutToRemote>({
 			type: AdlibActionType.CUT_TO_REMOTE,
 			sourceDefinition
@@ -349,7 +349,7 @@ function getGlobalAdlibActionsOfftube(
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name: `SERVER`,
 				box,
-				sourceDefinition: { sourceType: SourceType.Server }
+				sourceDefinition: { sourceType: SourceType.SERVER }
 			})
 			blueprintActions.push(
 				literal<IBlueprintActionManifest>({

@@ -1,10 +1,4 @@
-import {
-	CueDefinitionFromLayout,
-	isMinusMic,
-	PostProcessDefinitions,
-	TV2BlueprintConfig,
-	UnparsedCue
-} from 'tv2-common'
+import { CueDefinitionFromLayout, PostProcessDefinitions, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
 import { CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
@@ -15,13 +9,14 @@ export interface PartTransition {
 
 export interface SourceDefinitionBase {
 	sourceType: SourceType
+	name?: string
 }
 export interface SourceDefinitionWithRaw {
 	raw: string
 }
 
 export interface SourceDefinitionKam extends SourceDefinitionWithRaw {
-	sourceType: SourceType.Kam
+	sourceType: SourceType.KAM
 	/** name that appears in the Camera Mappings table (e.g. "1", "CS 3") */
 	id: string
 	/** full name for display/logging purposes e.g. "KAM 1" */
@@ -29,8 +24,8 @@ export interface SourceDefinitionKam extends SourceDefinitionWithRaw {
 	minusMic: boolean
 }
 
-export interface SourceDefinitionEVS extends SourceDefinitionWithRaw {
-	sourceType: SourceType.EVS
+export interface SourceDefinitionReplay extends SourceDefinitionWithRaw {
+	sourceType: SourceType.REPLAY
 	/** id that appears in the Replay Mappings table (e.g. "EVS 1", "EPSIO") */
 	id: string
 	/** full name for display/logging purposes e.g. "EVS 1 VO" */
@@ -38,21 +33,30 @@ export interface SourceDefinitionEVS extends SourceDefinitionWithRaw {
 	vo: boolean
 }
 
-export interface SourceDefinitionEkstern extends SourceDefinitionWithRaw {
+export enum RemoteType {
+	LIVE = 'LIVE',
+	FEED = 'FEED'
+}
+export interface SourceDefinitionRemote extends SourceDefinitionWithRaw {
 	sourceType: SourceType.REMOTE
-	variant: 'LIVE' | 'FEED'
+	remoteType: RemoteType
 	/** name that appears in the Remote Mappings table (e.g. "1", "2") */
 	id: string
 	/** full name for display/logging purposes e.g. "LIVE 1" */
 	name: string
 }
+export interface SourceDefinitionInvalid extends SourceDefinitionWithRaw {
+	sourceType: SourceType.INVALID
+	/** full name for display/logging purposes */
+	name: string
+}
 
 export interface SourceDefinitionServer extends SourceDefinitionBase {
-	sourceType: SourceType.Server
+	sourceType: SourceType.SERVER
 }
 
 export interface SourceDefinitionGrafik extends SourceDefinitionWithRaw {
-	sourceType: SourceType.Grafik
+	sourceType: SourceType.GRAFIK
 	name: string
 }
 
@@ -60,13 +64,19 @@ export interface SourceDefinitionDefault extends SourceDefinitionBase {
 	sourceType: SourceType.DEFAULT
 }
 
+export interface SourceDefinitionPGM extends SourceDefinitionBase {
+	sourceType: SourceType.PGM
+}
+
 export type SourceDefinition =
 	| SourceDefinitionKam
-	| SourceDefinitionEVS
-	| SourceDefinitionEkstern
+	| SourceDefinitionReplay
+	| SourceDefinitionRemote
 	| SourceDefinitionServer
 	| SourceDefinitionGrafik
 	| SourceDefinitionDefault
+	| SourceDefinitionPGM
+	| SourceDefinitionInvalid
 
 export interface PartDefinitionBase {
 	externalId: string
@@ -90,6 +100,7 @@ export interface PartDefinitionUnknown extends PartDefinitionBase {
 }
 export interface PartDefinitionKam extends PartDefinitionBase {
 	type: PartType.Kam
+	/** Definition of the primary source */
 	sourceDefinition: SourceDefinitionKam
 }
 export interface PartDefinitionServer extends PartDefinitionBase {
@@ -113,7 +124,8 @@ export interface PartDefinitionIntro extends PartDefinitionBase {
 }
 export interface PartDefinitionEVS extends PartDefinitionBase {
 	type: PartType.EVS
-	sourceDefinition: SourceDefinitionEVS
+	/** Definition of the primary source */
+	sourceDefinition: SourceDefinitionReplay
 }
 
 export interface PartDefinitionDVE extends PartDefinitionBase {
@@ -556,13 +568,13 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 
 	const sourceDefinition = getSourceDefinition(typeStr)
 	switch (sourceDefinition?.sourceType) {
-		case SourceType.Kam:
+		case SourceType.KAM:
 			return {
 				type: PartType.Kam,
 				sourceDefinition,
 				...transitionAndEffekt
 			}
-		case SourceType.EVS:
+		case SourceType.REPLAY:
 			return {
 				type: PartType.EVS,
 				sourceDefinition,
@@ -611,9 +623,9 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		.replace(/100%/g, '')
 		.trim()
 	if (CAMERA_RED_TEXT.test(strippedTypeStr)) {
-		const id = strippedTypeStr.match(CAMERA_RED_TEXT)![1]
+		const id = strippedTypeStr.match(CAMERA_RED_TEXT)![1].toUpperCase()
 		return {
-			sourceType: SourceType.Kam,
+			sourceType: SourceType.KAM,
 			id,
 			minusMic: isMinusMic(typeStr),
 			raw: strippedTypeStr,
@@ -621,11 +633,11 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		}
 	} else if (REMOTE_CUE.test(typeStr)) {
 		const remoteNumber = typeStr.match(REMOTE_CUE)
-		const variant = remoteNumber![1].toUpperCase() as 'LIVE' | 'FEED'
+		const variant = remoteNumber![1].toUpperCase() as RemoteType
 		const id = remoteNumber![2]
 		return {
 			sourceType: SourceType.REMOTE,
-			variant,
+			remoteType: variant,
 			id,
 			raw: strippedTypeStr,
 			name: `${variant} ${id}`
@@ -635,7 +647,7 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		const id = `EVS ${strippedToken![1].toUpperCase()}`
 		const vo = strippedToken![2]
 		return {
-			sourceType: SourceType.EVS,
+			sourceType: SourceType.REPLAY,
 			id,
 			vo: !!vo,
 			raw: strippedToken![0].trim(),
@@ -643,7 +655,7 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		}
 	} else if (/EPSIO/i.test(typeStr)) {
 		return {
-			sourceType: SourceType.EVS,
+			sourceType: SourceType.REPLAY,
 			id: 'EPSIO',
 			vo: true,
 			raw: typeStr,
@@ -652,7 +664,7 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 	} else if (ENGINE_CUE.test(typeStr)) {
 		const strippedToken = typeStr.match(ENGINE_CUE)
 		return {
-			sourceType: SourceType.Grafik,
+			sourceType: SourceType.GRAFIK,
 			name: strippedToken![1].toUpperCase(),
 			raw: typeStr
 		}
@@ -662,10 +674,18 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		}
 	} else if (/SERVER/i.test(typeStr)) {
 		return {
-			sourceType: SourceType.Server
+			sourceType: SourceType.SERVER
+		}
+	} else if (/PGM/i.test(typeStr)) {
+		return {
+			sourceType: SourceType.PGM
 		}
 	}
 	return undefined
+}
+
+export function isMinusMic(inputName: string): boolean {
+	return /minus mic/i.test(inputName)
 }
 
 export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {

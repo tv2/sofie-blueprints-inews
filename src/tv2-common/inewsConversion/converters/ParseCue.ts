@@ -6,7 +6,8 @@ import {
 	PartDefinition,
 	PartdefinitionTypes,
 	SourceDefinition,
-	SourceDefinitionEkstern,
+	SourceDefinitionInvalid,
+	SourceDefinitionRemote,
 	stripTransitionProperties
 } from './ParseBody'
 
@@ -30,7 +31,8 @@ export interface CueDefinitionUnknown extends CueDefinitionBase {
 
 export interface CueDefinitionEkstern extends CueDefinitionBase {
 	type: CueType.Ekstern
-	sourceDefinition: SourceDefinitionEkstern
+	/** Definition of the primary source */
+	sourceDefinition: SourceDefinitionRemote | SourceDefinitionInvalid
 	transition?: Pick<PartdefinitionTypes, 'effekt' | 'transition'>
 }
 
@@ -89,7 +91,7 @@ export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 
 export interface CueDefinitionMixMinus extends CueDefinitionBase {
 	type: CueType.MixMinus
-	source: string
+	sourceDefinition: SourceDefinition
 }
 
 // If unpaired when evaluated, throw warning. If target === 'FULL' create invalid part.
@@ -150,13 +152,13 @@ export interface CueDefinitionGraphic<T extends GraphicInternalOrPilot> extends 
 export interface CueDefinitionRouting extends CueDefinitionBase {
 	type: CueType.Routing
 	target: GraphicEngine
-	INP?: string
-	INP1?: string
+	INP?: SourceDefinition
+	INP1?: SourceDefinition
 }
 
 export interface CueDefinitionPgmClean extends CueDefinitionBase {
 	type: CueType.PgmClean
-	source: 'PGM' | string
+	sourceDefinition: SourceDefinition
 }
 
 export type CueDefinition =
@@ -428,16 +430,21 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
 	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
 	if (eksternSource) {
-		const sourceDefinition = getSourceDefinition(eksternSource[1])
-		if (sourceDefinition?.sourceType === SourceType.REMOTE) {
-			const transitionProperties = getTransitionProperties(cue[0])
-			return literal<CueDefinitionEkstern>({
-				type: CueType.Ekstern,
-				iNewsCommand: 'EKSTERN',
-				transition: transitionProperties,
-				sourceDefinition
-			})
+		let sourceDefinition = getSourceDefinition(eksternSource[1])
+		if (sourceDefinition?.sourceType !== SourceType.REMOTE) {
+			sourceDefinition = {
+				sourceType: SourceType.INVALID,
+				name: eksternSource[1],
+				raw: eksternSource[1]
+			}
 		}
+		const transitionProperties = getTransitionProperties(cue[0])
+		return literal<CueDefinitionEkstern>({
+			type: CueType.Ekstern,
+			iNewsCommand: 'EKSTERN',
+			transition: transitionProperties,
+			sourceDefinition
+		})
 	}
 
 	return undefined
@@ -676,7 +683,7 @@ function parseTargetEngine(
 		target: engineCue.target,
 		iNewsCommand: ''
 	}
-
+	let hasInputs = false
 	for (let i = 1; i < cue.length; i++) {
 		if (isTime(cue[i])) {
 			engineCue = { ...engineCue, ...parseTime(cue[i]) }
@@ -684,16 +691,18 @@ function parseTargetEngine(
 			const c = cue[i].split('=')
 			const input = c[0].toString().toUpperCase()
 			if (input === 'INP') {
-				routing.INP = c[1]
+				routing.INP = getSourceDefinition(c[1])
+				hasInputs = true
 			}
 
 			if (input === 'INP1') {
-				routing.INP1 = c[1]
+				routing.INP1 = getSourceDefinition(c[1])
+				hasInputs = true
 			}
 		}
 	}
 
-	if (routing.INP1 !== undefined || routing.INP !== undefined) {
+	if (hasInputs) {
 		engineCue.routing = routing
 	}
 
@@ -764,14 +773,17 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 }
 
 export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
+	const pgmSource = cue[0].match(/^PGMCLEAN=(.+)$/i)
 	const pgmCleanCue: CueDefinitionPgmClean = {
 		type: CueType.PgmClean,
-		source: 'PGM',
-		iNewsCommand: 'PGMCLEAN'
+		iNewsCommand: 'PGMCLEAN',
+		sourceDefinition: { sourceType: SourceType.PGM }
 	}
-	const pgmSource = cue[0].match(/^PGMCLEAN=(.+)$/i)
 	if (pgmSource && pgmSource[1]) {
-		pgmCleanCue.source = pgmSource[1].toString().toUpperCase()
+		const sourceDefinition = getSourceDefinition(pgmSource[1])
+		if (sourceDefinition) {
+			pgmCleanCue.sourceDefinition = sourceDefinition
+		}
 	}
 	return pgmCleanCue
 }
@@ -781,9 +793,13 @@ export function parseMixMinus(cue: string[]): CueDefinitionMixMinus | undefined 
 	if (sourceMatch === null) {
 		return undefined
 	}
+	const sourceDefinition = getSourceDefinition(sourceMatch.groups!.source)
+	if (sourceDefinition === undefined) {
+		return undefined
+	}
 	return literal<CueDefinitionMixMinus>({
 		type: CueType.MixMinus,
-		source: sourceMatch.groups!.source.toUpperCase(),
+		sourceDefinition,
 		iNewsCommand: 'MINUSKAM'
 	})
 }
@@ -962,7 +978,7 @@ export function UnknownPartParentClass(studio: string, partDefinition: PartDefin
 		case CueType.DVE:
 			return DVEParentClass(studio, firstCue.template)
 		case CueType.Ekstern:
-			return EksternParentClass(studio, `${firstCue.sourceDefinition.variant} ${firstCue.sourceDefinition.id}`)
+			return EksternParentClass(studio, firstCue.sourceDefinition.name)
 		case CueType.Telefon:
 			return TLFParentClass(studio, firstCue.source)
 		default:

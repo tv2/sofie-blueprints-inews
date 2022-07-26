@@ -1,5 +1,6 @@
 import { Timeline, TSR } from '@tv2media/blueprints-integration'
 import { SourceInfo, TimelineBlueprintExt } from 'tv2-common'
+import { SharedSisyfosLLayer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { literal } from '../util'
 
@@ -7,28 +8,21 @@ export function GetSisyfosTimelineObjForCamera(
 	config: TV2BlueprintConfig,
 	sourceInfo: SourceInfo,
 	minusMic: boolean,
-	studioMicsLayer: string,
 	enable?: Timeline.TimelineEnable
 ) {
-	return GetSisyfosTimelineObjForSource(config, sourceInfo, false, minusMic, studioMicsLayer, enable)
+	return GetSisyfosTimelineObjForSource(config, sourceInfo, false, minusMic, enable)
 }
 
 export function GetSisyfosTimelineObjForRemote(
 	config: TV2BlueprintConfig,
 	sourceInfo: SourceInfo,
-	studioMicsLayer: string,
 	enable?: Timeline.TimelineEnable
 ) {
-	return GetSisyfosTimelineObjForSource(config, sourceInfo, false, false, studioMicsLayer, enable)
+	return GetSisyfosTimelineObjForSource(config, sourceInfo, false, false, enable)
 }
 
-export function GetSisyfosTimelineObjForReplay(
-	config: TV2BlueprintConfig,
-	sourceInfo: SourceInfo,
-	vo: boolean,
-	studioMicsLayer: string
-) {
-	return GetSisyfosTimelineObjForSource(config, sourceInfo, vo, true, studioMicsLayer)
+export function GetSisyfosTimelineObjForReplay(config: TV2BlueprintConfig, sourceInfo: SourceInfo, vo: boolean) {
+	return GetSisyfosTimelineObjForSource(config, sourceInfo, vo, true)
 }
 
 export function GetSisyfosTimelineObjForServer(
@@ -36,7 +30,6 @@ export function GetSisyfosTimelineObjForServer(
 	vo: boolean,
 	clipPendingLayer: string,
 	mediaPlayerSession: string,
-	studioMicsLayer: string,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	const timelineEnable = getFallbackEnable(enable)
@@ -58,26 +51,24 @@ export function GetSisyfosTimelineObjForServer(
 		})
 	]
 	if (vo) {
-		result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
+		result.push(getStudioMicsTimelineObj(config, timelineEnable))
 	}
 	return result
 }
 
 export function GetSisyfosTimelineObjForFull(
 	config: TV2BlueprintConfig,
-	studioMicsLayer: string,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	const result: TSR.TimelineObjSisyfosAny[] = []
 	const timelineEnable = getFallbackEnable(enable)
-	result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
+	result.push(getStudioMicsTimelineObj(config, timelineEnable))
 	return result
 }
 
 export function GetSisyfosTimelineObjForTelefon(
 	config: TV2BlueprintConfig,
 	telefonLayer: string,
-	studioMicsLayer: string,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	const timelineEnable = getFallbackEnable(enable)
@@ -94,7 +85,7 @@ export function GetSisyfosTimelineObjForTelefon(
 			}
 		})
 	]
-	result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
+	result.push(getStudioMicsTimelineObj(config, timelineEnable))
 	return result
 }
 
@@ -103,7 +94,6 @@ function GetSisyfosTimelineObjForSource(
 	sourceInfo: SourceInfo,
 	vo: boolean,
 	enableStudioMicsOnlyForVo: boolean,
-	studioMicsLayer: string,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	const result: TSR.TimelineObjSisyfosAny[] = []
@@ -124,15 +114,14 @@ function GetSisyfosTimelineObjForSource(
 		)
 	})
 	if (sourceInfo.useStudioMics && (!enableStudioMicsOnlyForVo || vo)) {
-		result.push(getStudioMicsTimelineObj(config, timelineEnable, studioMicsLayer))
+		result.push(getStudioMicsTimelineObj(config, timelineEnable))
 	}
 	return result
 }
 
 function getStudioMicsTimelineObj(
 	config: TV2BlueprintConfig,
-	timelineEnable: Timeline.TimelineEnable,
-	studioMicsLayer: string
+	timelineEnable: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosChannels {
 	const studioMicsChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
 	config.studio.StudioMics.forEach(layer => {
@@ -145,7 +134,7 @@ function getStudioMicsTimelineObj(
 		id: '',
 		enable: timelineEnable,
 		priority: studioMicsChannels.length ? 2 : 0,
-		layer: studioMicsLayer,
+		layer: SharedSisyfosLLayer.SisyfosGroupStudioMics,
 		content: {
 			deviceType: TSR.DeviceType.SISYFOS,
 			type: TSR.TimelineContentTypeSisyfos.CHANNELS,

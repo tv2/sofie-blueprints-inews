@@ -29,8 +29,7 @@ export async function CreatePartServer(
 			ClipPending: CasparLLayer.CasparPlayerClipPending
 		},
 		Sisyfos: {
-			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-			StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
+			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
 		},
 		ATEM: {}
 	})

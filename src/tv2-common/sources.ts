@@ -3,7 +3,13 @@ import * as _ from 'underscore'
 import { IStudioContext, SourceLayerType } from '@tv2media/blueprints-integration'
 import { SourceType } from 'tv2-constants'
 import { SourceMapping } from './blueprintConfig'
-import { SourceDefinition, SourceDefinitionEkstern, SourceDefinitionEVS, SourceDefinitionKam } from './inewsConversion'
+import {
+	RemoteType,
+	SourceDefinition,
+	SourceDefinitionReplay,
+	SourceDefinitionKam,
+	SourceDefinitionRemote
+} from './inewsConversion'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
 import { assertUnreachable } from './util'
 
@@ -88,69 +94,16 @@ export interface SourceInfo {
 	acceptPersistAudio?: boolean
 }
 
-export function FindSourceInfo(sources: SourceMapping, type: SourceInfoType, id: string): SourceInfo | undefined {
-	id = id.replace(/\s+/i, ' ').trim()
-	switch (type) {
-		case SourceInfoType.KAM:
-			return _.find(sources.cameras, s => s.id === id.replace(/minus mic/i, '').trim())
-		case SourceInfoType.LIVE:
-		case SourceInfoType.FEED:
-			const remoteName = id
-				.replace(/VO/i, '')
-				.replace(/\s/g, '')
-				.match(/^(?:LIVE|FEED) *(.+).*$/i)
-			if (!remoteName) {
-				return undefined
-			}
-			if (/^LIVE/i.test(id)) {
-				return _.find(sources.lives, s => s.id === remoteName[1])
-			} else {
-				return _.find(sources.feeds, s => s.id === remoteName[1])
-			}
-		case SourceInfoType.REPLAY:
-			return _.find(sources.replays, s => s.id === id)
-		default:
-			return undefined
-	}
-}
-
-export function isMinusMic(inputName: string): boolean {
-	return /minus mic/i.test(inputName)
-}
-
-export function FindSourceInfoByName(sources: SourceMapping, name: string): SourceInfo | undefined {
-	name = name.toLowerCase()
-
-	let sourceType: SourceInfoType | undefined
-	if (name.match(/live/i)) {
-		sourceType = SourceInfoType.LIVE
-	} else if (name.match(/feed/i)) {
-		sourceType = SourceInfoType.FEED
-	} else if (name.match(/[k|c]am/i)) {
-		sourceType = SourceInfoType.KAM
-	} else if (name.match(/evs/i)) {
-		sourceType = SourceInfoType.REPLAY
-	}
-	if (sourceType === undefined) {
-		return undefined
-	}
-
-	return FindSourceInfo(sources, sourceType, name)
-}
-
-export function FindSourceInfoByDefinition(
-	sources: SourceMapping,
-	sourceDefinition: SourceDefinition
-): SourceInfo | undefined {
+export function findSourceInfo(sources: SourceMapping, sourceDefinition: SourceDefinition): SourceInfo | undefined {
 	let arrayToSearchIn: SourceInfo[]
 	switch (sourceDefinition.sourceType) {
-		case SourceType.Kam:
+		case SourceType.KAM:
 			arrayToSearchIn = sources.cameras
 			break
 		case SourceType.REMOTE:
-			arrayToSearchIn = sourceDefinition.variant === 'LIVE' ? sources.lives : sources.feeds
+			arrayToSearchIn = sourceDefinition.remoteType === RemoteType.LIVE ? sources.lives : sources.feeds
 			break
-		case SourceType.EVS:
+		case SourceType.REPLAY:
 			arrayToSearchIn = sources.replays
 			break
 		default:
@@ -161,12 +114,12 @@ export function FindSourceInfoByDefinition(
 
 export function SourceInfoToSourceDefinition(
 	sourceInfo: SourceInfo
-): SourceDefinitionKam | SourceDefinitionEkstern | SourceDefinitionEVS {
+): SourceDefinitionKam | SourceDefinitionRemote | SourceDefinitionReplay {
 	switch (sourceInfo.type) {
 		case SourceInfoType.KAM: {
 			const name = `KAM ${sourceInfo.id}`
 			return {
-				sourceType: SourceType.Kam,
+				sourceType: SourceType.KAM,
 				id: sourceInfo.id,
 				raw: name,
 				minusMic: false,
@@ -177,7 +130,7 @@ export function SourceInfoToSourceDefinition(
 			const name = `LIVE ${sourceInfo.id}`
 			return {
 				sourceType: SourceType.REMOTE,
-				variant: 'LIVE',
+				remoteType: RemoteType.LIVE,
 				id: sourceInfo.id,
 				raw: name,
 				name
@@ -187,7 +140,7 @@ export function SourceInfoToSourceDefinition(
 			const name = `FEED ${sourceInfo.id}`
 			return {
 				sourceType: SourceType.REMOTE,
-				variant: 'FEED',
+				remoteType: RemoteType.FEED,
 				id: sourceInfo.id,
 				raw: name,
 				name
@@ -195,7 +148,7 @@ export function SourceInfoToSourceDefinition(
 		}
 		case SourceInfoType.REPLAY:
 			return {
-				sourceType: SourceType.EVS,
+				sourceType: SourceType.REPLAY,
 				id: sourceInfo.id,
 				raw: sourceInfo.id,
 				name: sourceInfo.id,

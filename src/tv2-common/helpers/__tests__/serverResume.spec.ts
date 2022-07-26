@@ -6,13 +6,13 @@ import {
 	VTContent,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { DVEPieceMetaData, literal, SourceDefinitionEkstern } from 'tv2-common'
+import { DVEPieceMetaData, literal, RemoteType, SourceDefinitionRemote } from 'tv2-common'
 import { SharedSourceLayers, SourceType } from 'tv2-constants'
 import { getServerPositionForPartInstance } from '../serverResume'
 
-const EKSTERN_SOURCE: SourceDefinitionEkstern = {
+const EKSTERN_SOURCE: SourceDefinitionRemote = {
 	sourceType: SourceType.REMOTE,
-	variant: 'LIVE',
+	remoteType: RemoteType.LIVE,
 	id: '1',
 	raw: 'Live 1',
 	name: 'LIVE 1'
@@ -124,7 +124,7 @@ describe('Server Resume', () => {
 						}),
 						metaData: literal<Partial<DVEPieceMetaData>>({
 							sources: {
-								INP1: { sourceType: SourceType.Server },
+								INP1: { sourceType: SourceType.SERVER },
 								INP2: EKSTERN_SOURCE
 							},
 							serverPlaybackTiming: [{}]
@@ -170,7 +170,7 @@ describe('Server Resume', () => {
 						}),
 						metaData: literal<Partial<DVEPieceMetaData>>({
 							sources: {
-								INP1: { sourceType: SourceType.Server },
+								INP1: { sourceType: SourceType.SERVER },
 								INP2: EKSTERN_SOURCE
 							},
 							serverPlaybackTiming: [{ end: 13000 }, { start: 14000, end: 15000 }, { start: 16000 }]

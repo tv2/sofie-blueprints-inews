@@ -90,7 +90,7 @@ import {
 	GetTagForLive,
 	GetTagForTransition
 } from '../pieces'
-import { FindSourceInfoByDefinition } from '../sources'
+import { findSourceInfo } from '../sources'
 import { assertUnreachable } from '../util'
 import {
 	ActionCommentatorSelectJingle,
@@ -448,8 +448,7 @@ async function executeActionSelectServerClip<
 				ClipPending: settings.LLayer.Caspar.ClipPending
 			},
 			Sisyfos: {
-				ClipPending: settings.LLayer.Sisyfos.ClipPending,
-				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
+				ClipPending: settings.LLayer.Sisyfos.ClipPending
 			},
 			ATEM: {
 				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
@@ -528,10 +527,10 @@ async function executeActionSelectServerClip<
 
 function dveContainsServer(sources: DVESources) {
 	return (
-		sources.INP1?.sourceType === SourceType.Server ||
-		sources.INP2?.sourceType === SourceType.Server ||
-		sources.INP3?.sourceType === SourceType.Server ||
-		sources.INP4?.sourceType === SourceType.Server
+		sources.INP1?.sourceType === SourceType.SERVER ||
+		sources.INP2?.sourceType === SourceType.SERVER ||
+		sources.INP3?.sourceType === SourceType.SERVER ||
+		sources.INP4?.sourceType === SourceType.SERVER
 	)
 }
 
@@ -1103,7 +1102,7 @@ async function executeActionCutToCamera<
 		expectedDuration: 0
 	})
 
-	const sourceInfoCam = FindSourceInfoByDefinition(config.sources, userData.sourceDefinition)
+	const sourceInfoCam = findSourceInfo(config.sources, userData.sourceDefinition)
 	if (sourceInfoCam === undefined) {
 		return
 	}
@@ -1116,7 +1115,7 @@ async function executeActionCutToCamera<
 
 	const currentKam = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Cam)
 
-	const camSisyfos = GetSisyfosTimelineObjForCamera(config, sourceInfoCam, false, settings.LLayer.Sisyfos.StudioMics)
+	const camSisyfos = GetSisyfosTimelineObjForCamera(config, sourceInfoCam, false)
 
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
@@ -1132,7 +1131,7 @@ async function executeActionCutToCamera<
 				isPieceInjectedInPart: true
 			})
 		},
-		tags: [GetTagForKam(userData.sourceDefinition.name)],
+		tags: [GetTagForKam(userData.sourceDefinition)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
@@ -1223,17 +1222,13 @@ async function executeActionCutToRemote<
 		expectedDuration: 0
 	})
 
-	const sourceInfo = FindSourceInfoByDefinition(config.sources, userData.sourceDefinition)
+	const sourceInfo = findSourceInfo(config.sources, userData.sourceDefinition)
 	if (sourceInfo === undefined) {
 		context.notifyUserWarning(`Invalid source: ${userData.sourceDefinition.name}`)
 		return
 	}
 
-	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = GetSisyfosTimelineObjForRemote(
-		config,
-		sourceInfo,
-		settings.LLayer.Sisyfos.StudioMics
-	)
+	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = GetSisyfosTimelineObjForRemote(config, sourceInfo)
 
 	const sisyfosPersistMetaData: SisyfosPersistMetaData =
 		sourceInfo !== undefined

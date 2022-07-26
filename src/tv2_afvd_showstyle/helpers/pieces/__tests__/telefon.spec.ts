@@ -42,7 +42,7 @@ mockContext.showStyleConfig = defaultShowStyleConfig as any
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
 	sourceDefinition: {
-		sourceType: SourceType.Kam,
+		sourceType: SourceType.KAM,
 		id: '1',
 		raw: 'Kam 1',
 		minusMic: false,

@@ -26,8 +26,9 @@ import {
 	PartDefinitionTelefon,
 	PartDefinitionUnknown,
 	PartDefinitionVO,
-	SourceDefinitionEkstern,
-	SourceDefinitionKam
+	RemoteType,
+	SourceDefinitionKam,
+	SourceDefinitionRemote
 } from '../ParseBody'
 import {
 	CueDefinition,
@@ -91,9 +92,9 @@ const cueGrafik3: CueDefinitionGraphic<GraphicInternal> = {
 
 const unparsedGrafik3 = ['kg bund 3']
 
-const SOURCE_DEFINITION_LIVE_1: SourceDefinitionEkstern = {
+const SOURCE_DEFINITION_LIVE_1: SourceDefinitionRemote = {
 	sourceType: SourceType.REMOTE,
-	variant: 'LIVE',
+	remoteType: RemoteType.LIVE,
 	id: '1',
 	name: 'LIVE 1',
 	raw: 'LIVE 1'
@@ -106,9 +107,9 @@ const cueEkstern1: CueDefinitionEkstern = {
 
 const unparsedEkstern1 = ['EKSTERN=LIVE 1']
 
-const SOURCE_DEFINITION_LIVE_2: SourceDefinitionEkstern = {
+const SOURCE_DEFINITION_LIVE_2: SourceDefinitionRemote = {
 	sourceType: SourceType.REMOTE,
-	variant: 'LIVE',
+	remoteType: RemoteType.LIVE,
 	id: '2',
 	name: 'LIVE 2',
 	raw: 'LIVE 2'
@@ -162,21 +163,21 @@ const cueTelefon2: CueDefinitionTelefon = {
 const unparsedTelefon2 = ['TELEFON=TLF 2']
 
 const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
-	sourceType: SourceType.Kam,
+	sourceType: SourceType.KAM,
 	id: '1',
 	raw: 'KAM 1',
 	minusMic: false,
 	name: 'KAM 1'
 }
 const SOURCE_DEFINITION_KAM_2: SourceDefinitionKam = {
-	sourceType: SourceType.Kam,
+	sourceType: SourceType.KAM,
 	id: '2',
 	raw: 'KAM 2',
 	minusMic: false,
 	name: 'KAM 2'
 }
 const SOURCE_DEFINITION_KAM_3: SourceDefinitionKam = {
-	sourceType: SourceType.Kam,
+	sourceType: SourceType.KAM,
 	id: '3',
 	raw: 'KAM 3',
 	minusMic: false,
@@ -373,7 +374,7 @@ describe('Body parser', () => {
 					rawType: 'KAM AR',
 					cues: [cueJingle3],
 					script: 'Lots more script\n',
-					sourceDefinition: { sourceType: SourceType.Kam, id: 'AR', raw: 'KAM AR', minusMic: false, name: 'KAM AR' },
+					sourceDefinition: { sourceType: SourceType.KAM, id: 'AR', raw: 'KAM AR', minusMic: false, name: 'KAM AR' },
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -432,7 +433,7 @@ describe('Body parser', () => {
 					rawType: 'CAMERA 1',
 					cues: [],
 					script: 'Her står em masse tekst\n',
-					sourceDefinition: { sourceType: SourceType.Kam, id: '1', raw: 'CAMERA 1', minusMic: false, name: 'KAM 1' },
+					sourceDefinition: { sourceType: SourceType.KAM, id: '1', raw: 'CAMERA 1', minusMic: false, name: 'KAM 1' },
 					externalId: '',
 					fields,
 					modified: 0,
@@ -537,7 +538,7 @@ describe('Body parser', () => {
 					cues: [],
 					script:
 						'Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script.\n',
-					sourceDefinition: { sourceType: SourceType.Kam, id: '4', raw: 'KAM 4', minusMic: false, name: 'KAM 4' },
+					sourceDefinition: { sourceType: SourceType.KAM, id: '4', raw: 'KAM 4', minusMic: false, name: 'KAM 4' },
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -1539,7 +1540,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS 1',
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: 'EVS 1',
 					name: 'EVS 1',
 					raw: 'EVS 1',
@@ -1566,7 +1567,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS1VOV',
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: 'EVS 1',
 					name: 'EVS 1 VOV',
 					raw: 'EVS1VOV',
@@ -1592,7 +1593,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS 1 VO',
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: 'EVS 1',
 					name: 'EVS 1 VO',
 					raw: 'EVS 1 VO',
@@ -1610,7 +1611,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS 2VO',
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: 'EVS 2',
 					name: 'EVS 2 VO',
 					raw: 'EVS 2VO',
@@ -1628,7 +1629,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS3VO',
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: 'EVS 3',
 					name: 'EVS 3 VO',
 					raw: 'EVS3VO',
@@ -1646,7 +1647,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS4 VO',
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: 'EVS 4',
 					name: 'EVS 4 VO',
 					raw: 'EVS4 VO',
@@ -2172,7 +2173,7 @@ describe('Body parser', () => {
 						routing: {
 							type: CueType.Routing,
 							target: 'OVL',
-							INP: 'LIVE 2',
+							INP: SOURCE_DEFINITION_LIVE_2,
 							iNewsCommand: ''
 						},
 						start: {
@@ -2452,8 +2453,8 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'FULL',
-								INP: '',
-								INP1: '',
+								INP: undefined,
+								INP1: undefined,
 								iNewsCommand: ''
 							},
 							engineNumber: 4,
@@ -2517,7 +2518,7 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'FULL',
-								INP1: '',
+								INP1: undefined,
 								iNewsCommand: ''
 							},
 							iNewsCommand: 'GRAFIK',
@@ -2550,7 +2551,7 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'FULL',
-								INP1: '',
+								INP1: undefined,
 								iNewsCommand: ''
 							},
 							iNewsCommand: 'GRAFIK',
@@ -2590,7 +2591,7 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'WALL',
-								INP1: 'EVS 1',
+								INP1: { sourceType: SourceType.REPLAY, name: 'EVS 1', id: 'EVS 1', raw: 'EVS 1', vo: false },
 								iNewsCommand: ''
 							},
 							graphic: {
@@ -2628,7 +2629,7 @@ describe('Body parser', () => {
 				type: PartType.EVS,
 				rawType: 'EVS 1',
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: 'EVS 1',
 					name: 'EVS 1',
 					raw: 'EVS 1',

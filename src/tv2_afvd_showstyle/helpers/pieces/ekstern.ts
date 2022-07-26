@@ -6,7 +6,7 @@ import {
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition, TV2BlueprintConfig } from 'tv2-common'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
@@ -37,9 +37,6 @@ export function EvaluateEkstern(
 			},
 			ATEM: {
 				MEProgram: AtemLLayer.AtemMEProgram
-			},
-			Sisyfos: {
-				StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
 			}
 		},
 		adlib,

@@ -65,8 +65,7 @@ export async function EvaluateAdLib(
 						ClipPending: CasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-						StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
+						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
 					},
 					AtemLLayer: {
 						MEPgm: AtemLLayer.AtemMEProgram

@@ -7,18 +7,18 @@ import {
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
-import { CueDefinitionGraphic, GraphicInternal, SourceDefinitionKam } from './inewsConversion'
+import { CueDefinitionGraphic, GraphicInternal, RemoteType, SourceDefinitionKam } from './inewsConversion'
 import { GetNextPartCue } from './nextPartCue'
 
 const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
-	sourceType: SourceType.Kam,
+	sourceType: SourceType.KAM,
 	id: '1',
 	raw: 'Kam 1',
 	minusMic: false,
 	name: 'KAM 1'
 }
 const SOURCE_DEFINITION_KAM_2: SourceDefinitionKam = {
-	sourceType: SourceType.Kam,
+	sourceType: SourceType.KAM,
 	id: '2',
 	raw: 'Kam 2',
 	minusMic: false,
@@ -49,7 +49,7 @@ const partDefinitionTest1: PartDefinitionKam = {
 			type: CueType.Ekstern,
 			sourceDefinition: {
 				sourceType: SourceType.REMOTE,
-				variant: 'LIVE',
+				remoteType: RemoteType.LIVE,
 				id: '1',
 				raw: 'Live 1',
 				name: 'LIVE 1'
@@ -83,7 +83,7 @@ const partDefinitionTest1: PartDefinitionKam = {
 			type: CueType.Ekstern,
 			sourceDefinition: {
 				sourceType: SourceType.REMOTE,
-				variant: 'LIVE',
+				remoteType: RemoteType.LIVE,
 				id: '2',
 				raw: 'Live 2',
 				name: 'LIVE 2'
@@ -191,7 +191,7 @@ const partDefinitionTest2: PartDefinitionKam = {
 			type: CueType.Ekstern,
 			sourceDefinition: {
 				sourceType: SourceType.REMOTE,
-				variant: 'LIVE',
+				remoteType: RemoteType.LIVE,
 				id: '1',
 				raw: 'Live 1',
 				name: 'LIVE 1'
@@ -247,7 +247,7 @@ const partDefinitionTest2: PartDefinitionKam = {
 			type: CueType.Ekstern,
 			sourceDefinition: {
 				sourceType: SourceType.REMOTE,
-				variant: 'LIVE',
+				remoteType: RemoteType.LIVE,
 				id: '1',
 				raw: 'Live 1',
 				name: 'LIVE 1'

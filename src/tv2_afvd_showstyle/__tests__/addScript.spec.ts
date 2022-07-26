@@ -9,7 +9,7 @@ describe('addScript', () => {
 			externalId: '00000000001-0',
 			type: PartType.Kam,
 			sourceDefinition: {
-				sourceType: SourceType.Kam,
+				sourceType: SourceType.KAM,
 				id: '2',
 				raw: 'KAM 2',
 				name: 'KAM 2',

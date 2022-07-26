@@ -50,14 +50,16 @@ export const enum PartType {
 }
 
 export const enum SourceType {
-	Kam = 'Kam',
-	Server = 'Server',
+	KAM = 'KAM',
+	SERVER = 'SERVER',
 	VO = 'VO',
-	Teknik = 'Teknik',
-	Grafik = 'Grafik',
-	EVS = 'EVS',
-	REMOTE = 'Ekstern',
-	DEFAULT = 'Default'
+	TEKNIK = 'TEKNIK',
+	GRAFIK = 'GRAFIK',
+	REPLAY = 'REPLAY',
+	REMOTE = 'REMOTE',
+	DEFAULT = 'DEFAULT',
+	PGM = 'PGM',
+	INVALID = 'INVALID'
 }
 
 export enum Enablers {
@@ -207,7 +209,8 @@ export enum SharedCasparLLayer {
 
 export enum SharedSisyfosLLayer {
 	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
-	SisyfosResync = 'sisyfos_resync'
+	SisyfosResync = 'sisyfos_resync',
+	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics'
 }
 
 export enum SharedOutputLayers {

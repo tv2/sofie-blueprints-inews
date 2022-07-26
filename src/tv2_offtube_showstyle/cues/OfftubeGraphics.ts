@@ -18,7 +18,7 @@ import {
 	PartDefinition,
 	PilotGeneratorSettings
 } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
@@ -91,6 +91,6 @@ function createPilotTimeline(
 				}
 			}
 		}),
-		...GetSisyfosTimelineObjForFull(config, OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
+		...GetSisyfosTimelineObjForFull(config)
 	]
 }

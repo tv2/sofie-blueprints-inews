@@ -45,7 +45,7 @@ const config = getConfig(makeMockContext())
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
-	sourceDefinition: { sourceType: SourceType.Kam, id: '1', raw: 'Kam 1', minusMic: false, name: 'KAM 1' },
+	sourceDefinition: { sourceType: SourceType.KAM, id: '1', raw: 'Kam 1', minusMic: false, name: 'KAM 1' },
 	externalId: '0001',
 	rawType: 'Kam 1',
 	cues: [],

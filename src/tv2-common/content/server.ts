@@ -21,7 +21,6 @@ export interface MakeContentServerSourceLayers {
 	}
 	Sisyfos: {
 		ClipPending: string
-		StudioMicsGroup: string
 	}
 	ATEM: {
 		ServerLookaheadAux?: string
@@ -131,7 +130,6 @@ function GetServerTimeline(
 			!!voLevels,
 			sourceLayers.Sisyfos.ClipPending,
 			mediaPlayerSessionId,
-			sourceLayers.Sisyfos.StudioMicsGroup,
 			audioEnable
 		),
 		...(sourceLayers.ATEM.ServerLookaheadAux

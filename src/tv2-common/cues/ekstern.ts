@@ -23,10 +23,10 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, SharedOutputLayers } from 'tv2-constants'
+import { ControlClasses, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { GetSisyfosTimelineObjForRemote } from '../helpers'
 import { GetTagForLive } from '../pieces'
-import { FindSourceInfoByDefinition } from '../sources'
+import { findSourceInfo } from '../sources'
 
 interface EksternLayers {
 	SourceLayer: {
@@ -34,9 +34,6 @@ interface EksternLayers {
 	}
 	ATEM: {
 		MEProgram: string
-	}
-	Sisyfos: {
-		StudioMics: string
 	}
 }
 
@@ -56,9 +53,9 @@ export function EvaluateEksternBase<
 	adlib?: boolean,
 	rank?: number
 ) {
-	const sourceInfoEkstern = FindSourceInfoByDefinition(config.sources, parsedCue.sourceDefinition)
-	if (sourceInfoEkstern === undefined) {
-		context.notifyUserWarning(`${parsedCue.sourceDefinition.raw} does not exist in this studio`)
+	const sourceInfoEkstern = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+	if (parsedCue.sourceDefinition.sourceType !== SourceType.REMOTE || sourceInfoEkstern === undefined) {
+		context.notifyUserWarning(`EKSTERN source is not valid: "${parsedCue.sourceDefinition.raw}"`)
 		part.invalid = true
 		return
 	}
@@ -106,7 +103,7 @@ export function EvaluateEksternBase<
 							classes: [ControlClasses.LiveSourceOnAir]
 						}),
 
-						...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern, layersEkstern.Sisyfos.StudioMics)
+						...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
 					])
 				})
 			})
@@ -164,7 +161,7 @@ export function EvaluateEksternBase<
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern, layersEkstern.Sisyfos.StudioMics)
+						...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
 					])
 				})
 			})

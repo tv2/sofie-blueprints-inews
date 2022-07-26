@@ -17,7 +17,7 @@ import {
 	DVEParentClass,
 	DVESources,
 	FindDSKFullGFX,
-	FindSourceInfoByDefinition,
+	findSourceInfo,
 	JoinAssetToFolder,
 	literal,
 	PartDefinition,
@@ -218,7 +218,7 @@ export function MakeContentDVE2<
 		if (sources) {
 			const prop = sources[fromCue as keyof DVESources]
 			if (prop) {
-				boxMap[targetBox - 1] = prop.sourceType !== SourceType.Server || videoId ? prop : undefined
+				boxMap[targetBox - 1] = prop.sourceType !== SourceType.SERVER || videoId ? prop : undefined
 			} else {
 				context.notifyUserWarning(`Missing mapping for ${targetBox}`)
 				boxMap[targetBox - 1] = undefined
@@ -279,8 +279,8 @@ export function MakeContentDVE2<
 						port: config.studio.AtemSource.Default
 					})
 					break
-				case SourceType.Kam:
-					const sourceInfoCam = FindSourceInfoByDefinition(config.sources, mappingFrom)
+				case SourceType.KAM:
+					const sourceInfoCam = findSourceInfo(config.sources, mappingFrom)
 					if (sourceInfoCam === undefined) {
 						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
 						setBoxToBlack(num)
@@ -289,18 +289,10 @@ export function MakeContentDVE2<
 					}
 
 					setBoxSource(num, sourceInfoCam)
-					dveTimeline.push(
-						...GetSisyfosTimelineObjForCamera(
-							config,
-							sourceInfoCam,
-							mappingFrom.minusMic,
-							dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics,
-							audioEnable
-						)
-					)
+					dveTimeline.push(...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, mappingFrom.minusMic, audioEnable))
 					break
 				case SourceType.REMOTE:
-					const sourceInfoLive = FindSourceInfoByDefinition(config.sources, mappingFrom)
+					const sourceInfoLive = findSourceInfo(config.sources, mappingFrom)
 					if (sourceInfoLive === undefined) {
 						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
 						setBoxToBlack(num)
@@ -309,17 +301,10 @@ export function MakeContentDVE2<
 					}
 
 					setBoxSource(num, sourceInfoLive)
-					dveTimeline.push(
-						...GetSisyfosTimelineObjForRemote(
-							config,
-							sourceInfoLive,
-							dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics,
-							audioEnable
-						)
-					)
+					dveTimeline.push(...GetSisyfosTimelineObjForRemote(config, sourceInfoLive, audioEnable))
 					break
-				case SourceType.EVS:
-					const sourceInfoReplay = FindSourceInfoByDefinition(config.sources, mappingFrom)
+				case SourceType.REPLAY:
+					const sourceInfoReplay = findSourceInfo(config.sources, mappingFrom)
 					if (sourceInfoReplay === undefined) {
 						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
 						setBoxToBlack(num)
@@ -328,30 +313,21 @@ export function MakeContentDVE2<
 					}
 
 					setBoxSource(num, sourceInfoReplay)
-					dveTimeline.push(
-						...GetSisyfosTimelineObjForReplay(
-							config,
-							sourceInfoReplay,
-							!!mappingFrom.vo,
-							dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics
-						)
-					)
+					dveTimeline.push(...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, mappingFrom.vo))
 					break
-				case SourceType.Grafik:
+				case SourceType.GRAFIK:
 					if (mappingFrom.name === 'FULL') {
 						setBoxSource(num, {
 							sourceLayerType: SourceLayerType.GRAPHICS,
 							port: FindDSKFullGFX(config).Fill
 						})
-						dveTimeline.push(
-							...GetSisyfosTimelineObjForFull(config, dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
-						)
+						dveTimeline.push(...GetSisyfosTimelineObjForFull(config))
 					} else {
 						context.notifyUserWarning(`Unsupported engine for DVE: ${mappingFrom.name}`)
 						setBoxToBlack(num)
 					}
 					break
-				case SourceType.Server:
+				case SourceType.SERVER:
 					server = true
 					setBoxSource(num, {
 						sourceLayerType: SourceLayerType.VT,

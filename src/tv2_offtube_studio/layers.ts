@@ -31,7 +31,6 @@ export enum OfftubeAbstractLLayer {
 
 enum SisyfosLLayer {
 	SisyfosConfig = 'sisyfos_config',
-	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
 	SisyfosGroupServer = 'sisyfos_group_server',
 	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',

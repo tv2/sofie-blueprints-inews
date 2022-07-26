@@ -1,13 +1,13 @@
 import { IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
 import { CueType, SourceType } from 'tv2-constants'
 import { CreateTiming } from '../cueTiming'
-import { SourceDefinitionEkstern } from '../inewsConversion'
+import { RemoteType, SourceDefinitionRemote } from '../inewsConversion'
 import { CueDefinitionEkstern } from '../inewsConversion/converters/ParseCue'
 import { literal } from '../util'
 
-const EKSTERN_SOURCE: SourceDefinitionEkstern = {
+const EKSTERN_SOURCE: SourceDefinitionRemote = {
 	sourceType: SourceType.REMOTE,
-	variant: 'LIVE',
+	remoteType: RemoteType.LIVE,
 	id: '1',
 	raw: 'Live 1',
 	name: 'LIVE 1'

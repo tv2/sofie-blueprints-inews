@@ -1,6 +1,6 @@
 import { ActionTakeWithTransitionVariant, CueDefinitionDVE, SanitizeString } from 'tv2-common'
 import { TallyTags } from 'tv2-constants'
-import { SourceDefinitionEkstern } from '../inewsConversion'
+import { SourceDefinitionKam, SourceDefinitionRemote } from '../inewsConversion'
 
 export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
 	let tag = `${TallyTags.TAKE_WITH_TRANSITION}_${variant.type.toUpperCase()}`
@@ -19,11 +19,11 @@ export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
 	return tag
 }
 
-export function GetTagForKam(name: string) {
-	return `${TallyTags.KAM}_${SanitizeString(name)}`
+export function GetTagForKam(sourceDefinition: SourceDefinitionKam) {
+	return `${TallyTags.KAM}_${SanitizeString(sourceDefinition.name)}`
 }
 
-export function GetTagForLive(sourceDefinition: SourceDefinitionEkstern) {
+export function GetTagForLive(sourceDefinition: SourceDefinitionRemote) {
 	return `${TallyTags.LIVE}_${SanitizeString(sourceDefinition.name)}`
 }
 

@@ -68,8 +68,7 @@ export async function OfftubeEvaluateAdLib(
 						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-						StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 					},
 					AtemLLayer: {
 						MEPgm: OfftubeAtemLLayer.AtemMEClean

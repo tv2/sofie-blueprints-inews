@@ -8,7 +8,7 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CalculateTime, CueDefinitionRouting, FindSourceInfoByName, literal, TV2BlueprintConfig } from 'tv2-common'
+import { CalculateTime, CueDefinitionRouting, findSourceInfo, literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
@@ -24,48 +24,49 @@ export function EvaluateCueRouting(
 	parsedCue: CueDefinitionRouting
 ) {
 	const time = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
-	if (parsedCue.INP1 !== undefined || parsedCue.INP !== undefined) {
-		const source = parsedCue.INP1 ?? parsedCue.INP
-		if (!source || !source.length) {
-			context.notifyUserWarning(`No input provided for viz engine aux`)
-		} else {
-			const sourceInfo = FindSourceInfoByName(config.sources, source)
-
-			if (!sourceInfo) {
-				context.notifyUserWarning(`Could not find source ${source}`)
-			} else {
-				pieces.push(
-					literal<IBlueprintPiece>({
-						externalId: partId,
-						enable: {
-							start: time
-						},
-						name: source,
-						outputLayerId: SharedOutputLayers.AUX,
-						sourceLayerId: SourceLayer.VizFullIn1,
-						lifespan: PieceLifespan.WithinPart,
-						content: literal<WithTimeline<CameraContent>>({
-							studioLabel: '',
-							switcherInput: sourceInfo.port,
-							timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-								literal<TSR.TimelineObjAtemAUX>({
-									id: '',
-									enable: { start: 0 },
-									priority: 100,
-									layer: AtemLLayer.AtemAuxVizOvlIn1,
-									content: {
-										deviceType: TSR.DeviceType.ATEM,
-										type: TSR.TimelineContentTypeAtem.AUX,
-										aux: {
-											input: sourceInfo.port
-										}
-									}
-								})
-							])
-						})
-					})
-				)
-			}
-		}
+	const sourceDefinition = parsedCue.INP1 ?? parsedCue.INP
+	if (!sourceDefinition) {
+		context.notifyUserWarning(`No input provided for viz engine aux`)
+		return
 	}
+
+	const sourceInfo = findSourceInfo(config.sources, sourceDefinition)
+	const name = sourceDefinition.name || sourceDefinition.sourceType
+	if (!sourceInfo) {
+		context.notifyUserWarning(`Could not find source ${name}`)
+		return
+	}
+
+	pieces.push(
+		literal<IBlueprintPiece>({
+			externalId: partId,
+			enable: {
+				start: time
+			},
+			name,
+			outputLayerId: SharedOutputLayers.AUX,
+			sourceLayerId: SourceLayer.VizFullIn1,
+			lifespan: PieceLifespan.WithinPart,
+			content: literal<WithTimeline<CameraContent>>({
+				studioLabel: '',
+				switcherInput: sourceInfo.port,
+				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+					literal<TSR.TimelineObjAtemAUX>({
+						id: '',
+						enable: { start: 0 },
+						priority: 100,
+						layer: AtemLLayer.AtemAuxVizOvlIn1,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
+							aux: {
+								input: sourceInfo.port
+							}
+						}
+					})
+				])
+			})
+		})
+	)
+
 }

@@ -221,8 +221,7 @@ function getContentServerElement<
 				ClipPending: layers.Caspar.ClipPending
 			},
 			Sisyfos: {
-				ClipPending: layers.Sisyfos.ClipPending,
-				StudioMicsGroup: layers.Sisyfos.StudioMicsGroup
+				ClipPending: layers.Sisyfos.ClipPending
 			},
 			ATEM: {
 				ServerLookaheadAux: layers.ATEM.ServerLookaheadAux

@@ -131,7 +131,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						},
 						classes: ['adlib_deparent']
 					}),
-					...GetSisyfosTimelineObjForReplay(config, info, vo, SisyfosLLAyer.SisyfosGroupStudioMics)
+					...GetSisyfosTimelineObjForReplay(config, info, vo)
 				]
 			}
 		})
@@ -141,7 +141,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 
 	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
 		const res: IBlueprintAdLibPiece[] = []
-		const eksternSisyfos = GetSisyfosTimelineObjForRemote(config, info, SisyfosLLAyer.SisyfosGroupStudioMics)
+		const eksternSisyfos = GetSisyfosTimelineObjForRemote(config, info)
 		res.push({
 			externalId: 'live',
 			name: `LIVE ${info.id}`,
@@ -578,7 +578,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				name,
 				box,
 				sourceDefinition: {
-					sourceType: SourceType.EVS,
+					sourceType: SourceType.REPLAY,
 					id: info.id,
 					vo,
 					raw: '',
@@ -610,7 +610,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name: `SERVER`,
 				box,
-				sourceDefinition: { sourceType: SourceType.Server }
+				sourceDefinition: { sourceType: SourceType.SERVER }
 			})
 			blueprintActions.push(
 				literal<IBlueprintActionManifest>({

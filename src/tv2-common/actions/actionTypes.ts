@@ -6,8 +6,8 @@ import {
 	GraphicInternal,
 	PartDefinition,
 	SourceDefinition,
-	SourceDefinitionEkstern,
-	SourceDefinitionKam
+	SourceDefinitionKam,
+	SourceDefinitionRemote
 } from '../inewsConversion'
 
 export interface ActionBase {
@@ -57,7 +57,7 @@ export interface ActionCutToCamera extends ActionBase {
 
 export interface ActionCutToRemote extends ActionBase {
 	type: AdlibActionType.CUT_TO_REMOTE
-	sourceDefinition: SourceDefinitionEkstern
+	sourceDefinition: SourceDefinitionRemote
 }
 
 export interface ActionCutSourceToBox extends ActionBase {

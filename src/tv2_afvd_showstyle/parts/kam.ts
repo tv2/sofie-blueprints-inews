@@ -18,7 +18,7 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfoByDefinition,
+	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
@@ -28,7 +28,7 @@ import {
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -96,7 +96,7 @@ export async function CreatePartKam(
 		)
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
-		const sourceInfoCam = FindSourceInfoByDefinition(config.sources, partDefinition.sourceDefinition)
+		const sourceInfoCam = findSourceInfo(config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			context.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
@@ -145,12 +145,7 @@ export async function CreatePartKam(
 								? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
 								: {})
 						}),
-						...GetSisyfosTimelineObjForCamera(
-							config,
-							sourceInfoCam,
-							partDefinition.sourceDefinition.minusMic,
-							SisyfosLLAyer.SisyfosGroupStudioMics
-						)
+						...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 					])
 				}
 			})

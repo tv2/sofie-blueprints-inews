@@ -17,7 +17,7 @@ import {
 	PilotGeneratorSettings,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
@@ -95,7 +95,7 @@ function makeStudioTimelineViz(
 		}),
 		// Assume DSK is off by default (config table)
 		...EnableDSK(config, 'FULL'),
-		...GetSisyfosTimelineObjForFull(config, SisyfosLLAyer.SisyfosGroupStudioMics)
+		...GetSisyfosTimelineObjForFull(config)
 	]
 }
 
@@ -126,6 +126,6 @@ function makeStudioTimelineCaspar(config: BlueprintConfig, _context: IStudioUser
 				}
 			}
 		}),
-		...GetSisyfosTimelineObjForFull(config, SisyfosLLAyer.SisyfosGroupStudioMics)
+		...GetSisyfosTimelineObjForFull(config)
 	]
 }
