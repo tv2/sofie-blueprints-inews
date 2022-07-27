@@ -44,7 +44,8 @@
         "kommentator"
       ],
       "showThumbnailsInList": true,
-      "hideDuplicates": false
+      "hideDuplicates": false,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
@@ -77,7 +78,8 @@
         "offtube_adlib_100pc_server",
         "kommentator"
       ],
-      "showThumbnailsInList": true
+      "showThumbnailsInList": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "zHX89zpASjzyn7GTz",
@@ -104,7 +106,8 @@
         "studio0_clip",
         "studio0_voiceover"
       ],
-      "showThumbnailsInList": true
+      "showThumbnailsInList": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "YC7RNPTbkXd5wnagp",
@@ -130,7 +133,8 @@
         "kommentator"
       ],
       "hideDuplicates": true,
-      "lineBreak": "\n - "
+      "lineBreak": "\n - ",
+      "toggleOnSingleClick": true
     },
     {
       "_id": "icuekg6wiJxejsYsZ",
@@ -153,7 +157,8 @@
       "tags": [
         "kommentator"
       ],
-      "showThumbnailsInList": true
+      "showThumbnailsInList": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "LiFso7gPYn2SPwHwg",
