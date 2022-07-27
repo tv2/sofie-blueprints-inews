@@ -34,7 +34,7 @@ import {
 	GetSisyfosTimelineObjForReplay,
 	GetTransitionAdLibActions,
 	literal,
-	localSourceName,
+	replaySourceName,
 	PieceMetaData,
 	SisyfosPersistMetaData,
 	SourceDefinitionKam,
@@ -99,7 +99,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		const res: IBlueprintAdLibPiece[] = []
 		res.push({
 			externalId: 'delayed',
-			name: localSourceName(info.id.replace(/R/i, ''), vo),
+			name: replaySourceName(info.id, vo),
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLocal,
 			outputLayerId: SharedOutputLayers.PGM,
@@ -572,7 +572,7 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 
 	function makeAdlibBoxesActionsReplay(info: SourceInfo, rank: number, vo: boolean) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			const name = localSourceName(info.id, vo)
+			const name = replaySourceName(info.id, vo)
 			const userData = literal<ActionCutSourceToBox>({
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name,
