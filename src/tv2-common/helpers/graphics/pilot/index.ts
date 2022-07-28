@@ -105,6 +105,7 @@ export class PilotGraphicGenerator {
 		this.context = graphicProps.context
 		this.engine = graphicProps.engine
 		this.parsedCue = graphicProps.parsedCue
+		this.partId = graphicProps.partId
 		this.settings = graphicProps.settings
 		this.adlib = graphicProps.adlib
 		this.segmentExternalId = graphicProps.segmentExternalId

@@ -27,6 +27,7 @@ import {
 	OmitId,
 	PackageInfo,
 	PieceLifespan,
+	PlaylistTimingType,
 	Time
 } from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
@@ -121,7 +122,7 @@ export class UserNotesContext extends CommonContext implements IUserNotesContext
 
 // tslint:disable-next-line: max-classes-per-file
 export class StudioContext extends CommonContext implements IStudioContext {
-	public studioId: string
+	public studioId: string = 'studio0'
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
 	public showStyleConfig: { [key: string]: ConfigItemValue } = {}
 
@@ -217,7 +218,7 @@ export class GetRundownContext extends ShowStyleUserContext implements IGetRundo
 
 // tslint:disable-next-line: max-classes-per-file
 export class RundownContext extends ShowStyleContext implements IRundownContext {
-	public readonly rundownId: string
+	public readonly rundownId: string = 'rundown0'
 	public readonly rundown: Readonly<IBlueprintRundownDB>
 
 	constructor(
@@ -230,6 +231,16 @@ export class RundownContext extends ShowStyleContext implements IRundownContext 
 		partId?: string
 	) {
 		super(contextName, mappingsDefaults, parseStudioConfig, parseShowStyleConfig, rundownId, segmentId, partId)
+		this.rundownId = rundownId ?? this.rundownId
+		this.rundown = {
+			_id: this.rundownId,
+			externalId: this.rundownId,
+			name: this.rundownId,
+			timing: {
+				type: PlaylistTimingType.None
+			},
+			showStyleVariantId: 'variant0'
+		}
 	}
 }
 
@@ -300,7 +311,7 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
 		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
-		rundownId?: string,
+		rundownId: string,
 		segmentId?: string,
 		partId?: string
 	) {
@@ -397,9 +408,6 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 
 	public takeAfterExecute: boolean = false
 
-	/** Get the mappings for the studio */
-	public getStudioMappings: () => Readonly<BlueprintMappings>
-
 	constructor(
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
@@ -419,6 +427,11 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 		this.currentPieceInstances = currentPieceInstances
 		this.nextPart = nextPart
 		this.nextPieceInstances = nextPieceInstances
+	}
+
+	/** Get the mappings for the studio */
+	public getStudioMappings = () => {
+		throw new Error(`Function not implemented in mock: 'getStudioMappings'`)
 	}
 
 	/** Get a PartInstance which can be modified */
