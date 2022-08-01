@@ -11,7 +11,7 @@ import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
 	FindDSKFullGFX,
-	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForFull,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
@@ -19,7 +19,7 @@ import {
 	PartDefinition,
 	PilotGeneratorSettings
 } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
@@ -60,7 +60,7 @@ export function OfftubeEvaluateGrafikCaspar(
 
 function createPilotTimeline(
 	config: OfftubeShowstyleBlueprintConfig,
-	context: IShowStyleUserContext
+	_context: IShowStyleUserContext
 ): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
@@ -88,6 +88,6 @@ function createPilotTimeline(
 				}
 			}
 		}),
-		GetSisyfosTimelineObjForCamera(context, config, 'full', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
+		...GetSisyfosTimelineObjForFull(config)
 	]
 }

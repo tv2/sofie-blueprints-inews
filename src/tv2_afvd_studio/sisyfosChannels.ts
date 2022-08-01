@@ -1,4 +1,3 @@
-import { SisyfosEVSSource } from 'tv2-common'
 import { SisyfosLLAyer } from './layers'
 
 export interface SisyfosChannel {
@@ -86,10 +85,10 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	[SisyfosLLAyer.SisyfosSourceServerB]: {
 		isPgm: 0
 	},
-	[SisyfosEVSSource('1')]: {
+	[SisyfosLLAyer.SisyfosSourceEVS_1]: {
 		isPgm: 0
 	},
-	[SisyfosEVSSource('2')]: {
+	[SisyfosLLAyer.SisyfosSourceEVS_2]: {
 		isPgm: 0
 	},
 	[SisyfosLLAyer.SisyfosSourceJingle]: {
@@ -99,6 +98,9 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 		isPgm: 0
 	},
 	[SisyfosLLAyer.SisyfosSourceTLF]: {
+		isPgm: 0
+	},
+	[SisyfosLLAyer.SisyfosSourceEpsio]: {
 		isPgm: 0
 	}
 }

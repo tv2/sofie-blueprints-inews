@@ -32,6 +32,10 @@ import {
 } from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import { NoteType } from 'tv2-constants'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../tv2_afvd_showstyle/__tests__/configs'
+import { parseConfig as parseShowStyleConfigAFVD } from '../tv2_afvd_showstyle/helpers/config'
+import { parseConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
+import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
 
 export function getHash(str: string): string {
 	const hash = crypto.createHash('sha1')
@@ -620,4 +624,17 @@ export interface PartNote {
 		pieceId?: string
 	}
 	message: string
+}
+
+export function makeMockAFVDContext(studioConfigOverrides?: Partial<StudioConfig>) {
+	const mockContext = new SegmentUserContext(
+		'test',
+		mappingsDefaultsAFVD,
+		parseStudioConfigAFVD,
+		parseShowStyleConfigAFVD
+	)
+	mockContext.studioConfig = { ...defaultStudioConfig, ...studioConfigOverrides } as any
+	mockContext.showStyleConfig = defaultShowStyleConfig as any
+
+	return mockContext
 }

@@ -11,7 +11,6 @@ import {
 	IStudioUserContext,
 	PieceLifespan,
 	PlaylistTimingType,
-	SourceLayerType,
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
@@ -36,7 +35,11 @@ import {
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	literal,
+	SourceDefinitionKam,
+	SourceDefinitionRemote,
 	SourceInfo,
+	SourceInfoToSourceDefinition,
+	SourceInfoType,
 	t,
 	TimeFromINewsField
 } from 'tv2-common'
@@ -48,6 +51,7 @@ import {
 	SharedOutputLayers,
 	SharedSisyfosLLayer,
 	SharedSourceLayers,
+	SourceType,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -254,10 +258,11 @@ function getGlobalAdlibActionsOfftube(
 	let globalRank = 2000
 
 	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
+		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionKam
 		const userData = literal<ActionCutToCamera>({
 			type: AdlibActionType.CUT_TO_CAMERA,
 			queue,
-			name: info.id
+			sourceDefinition
 		})
 		blueprintActions.push(
 			literal<IBlueprintActionManifest>({
@@ -267,23 +272,23 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: t(`KAM ${info.id}`),
+					label: t(sourceDefinition.name),
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: SharedOutputLayers.PGM,
 					content: {},
 					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT],
-					currentPieceTags: [GetTagForKam(info.id)],
-					nextPieceTags: [GetTagForKam(info.id)]
+					currentPieceTags: [GetTagForKam(sourceDefinition)],
+					nextPieceTags: [GetTagForKam(sourceDefinition)]
 				}
 			})
 		)
 	}
 
-	function makeRemoteAction(name: string, type: 'Live' | 'Feed', port: number, rank: number) {
+	function makeRemoteAction(sourceInfo: SourceInfo, rank: number) {
+		const sourceDefinition = SourceInfoToSourceDefinition(sourceInfo) as SourceDefinitionRemote
 		const userData = literal<ActionCutToRemote>({
 			type: AdlibActionType.CUT_TO_REMOTE,
-			name,
-			port
+			sourceDefinition
 		})
 		blueprintActions.push(
 			literal<IBlueprintActionManifest>({
@@ -293,29 +298,31 @@ function getGlobalAdlibActionsOfftube(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: t(`${type} ${name}`),
+					label: t(`${sourceDefinition.name}`),
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
 					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT, AdlibTags.ADLIB_QUEUE_NEXT],
-					currentPieceTags: [GetTagForLive(name)],
-					nextPieceTags: [GetTagForLive(name)]
+					currentPieceTags: [GetTagForLive(sourceDefinition)],
+					nextPieceTags: [GetTagForLive(sourceDefinition)]
 				}
 			})
 		)
 	}
 
-	function makeAdlibBoxesActions(info: SourceInfo, type: 'KAM' | 'LIVE', rank: number) {
+	function makeAdlibBoxesActions(
+		info: SourceInfo,
+		type: SourceInfoType.KAM | SourceInfoType.LIVE | SourceInfoType.FEED,
+		rank: number
+	) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			const feed = type === 'LIVE' && info.id.match(/^F(.+).*$/)
-			const name = feed ? `FEED ${feed[1]}` : `${type} ${info.id}`
-			const layer = type === 'KAM' ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
+			const sourceDefinition = SourceInfoToSourceDefinition(info)
+			const layer = type === SourceInfoType.KAM ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
 			const userData = literal<ActionCutSourceToBox>({
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
-				name,
-				port: info.port,
-				sourceType: info.type,
-				box
+				name: sourceDefinition.name,
+				box,
+				sourceDefinition
 			})
 			blueprintActions.push(
 				literal<IBlueprintActionManifest>({
@@ -325,7 +332,7 @@ function getGlobalAdlibActionsOfftube(
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`${name} inp ${box + 1}`),
+						label: t(`${sourceDefinition.name} inp ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
 						content: {},
@@ -341,10 +348,8 @@ function getGlobalAdlibActionsOfftube(
 			const userData = literal<ActionCutSourceToBox>({
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name: `SERVER`,
-				port: -1,
-				sourceType: SourceLayerType.VT,
 				box,
-				server: true
+				sourceDefinition: { sourceType: SourceType.SERVER }
 			})
 			blueprintActions.push(
 				literal<IBlueprintActionManifest>({
@@ -508,25 +513,22 @@ function getGlobalAdlibActionsOfftube(
 		)
 	})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
 			makeCutCameraActions(o, false, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			makeCutCameraActions(o, true, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'KAM', globalRank++)
+			makeAdlibBoxesActions(o, SourceInfoType.KAM, globalRank++)
 		})
 
 	function makeRecallLastLiveAction() {
@@ -550,18 +552,28 @@ function getGlobalAdlibActionsOfftube(
 
 	blueprintActions.push(makeRecallLastLiveAction())
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, 10) // the first x cameras to create live-adlibs from
+	config.sources.feeds
+		.slice(0, 10) // the first x sources to create feed-adlibs from
 		.forEach(o => {
-			makeRemoteAction(o.id, o.id.match(/^F/) ? 'Feed' : 'Live', o.port, globalRank++)
+			makeRemoteAction(o, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+	config.sources.lives
+		.slice(0, 10) // the first x sources to create live-adlibs from
+		.forEach(o => {
+			makeRemoteAction(o, globalRank++)
+		})
+
+	config.sources.feeds
+		.slice(0, 10) // the first x remote to create INP1/2/3 feed-adlibs from
+		.forEach(o => {
+			makeAdlibBoxesActions(o, SourceInfoType.FEED, globalRank++)
+		})
+
+	config.sources.lives
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'LIVE', globalRank++)
+			makeAdlibBoxesActions(o, SourceInfoType.LIVE, globalRank++)
 		})
 
 	makeServerAdlibBoxesActions(globalRank++)

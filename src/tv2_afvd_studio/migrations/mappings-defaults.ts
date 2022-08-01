@@ -330,6 +330,15 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		mappingType: TSR.MappingSisyfosType.CHANNEL,
 		setLabelToLayerName: true
 	}),
+	[SisyfosLLAyer.SisyfosSourceEpsio]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		layerName: 'EPSIO',
+		channel: 29,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
+	}),
 	[SisyfosLLAyer.SisyfosResync]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',

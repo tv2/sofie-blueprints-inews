@@ -127,8 +127,7 @@ function createPartDefinition(transition?: PartTransition): PartDefinition {
 	return {
 		externalId: `externalId_${Math.random() * 1000}`,
 		cues: [],
-		type: PartType.Ekstern,
-		variant: {},
+		type: PartType.REMOTE,
 		script: '',
 		fields: {},
 		modified: 123,

@@ -7,8 +7,8 @@ import {
 	PieceLifespan,
 	TSR
 } from '@tv2media/blueprints-integration'
-import { ActionCutToCamera, ActionTakeWithTransition, literal } from 'tv2-common'
-import { AdlibActionType, NoteType, SharedOutputLayers } from 'tv2-constants'
+import { ActionCutToCamera, ActionTakeWithTransition, literal, SourceDefinitionKam } from 'tv2-common'
+import { AdlibActionType, NoteType, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
 import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
@@ -25,6 +25,13 @@ const CURRENT_PART_ID = 'MOCK_PART_CURRENT'
 const CURRENT_PART_EXTERNAL_ID = `${CURRENT_PART_ID}_EXTERNAL`
 const NEXT_PART_ID = 'MOCK_PART_CURRENT'
 const NEXT_PART_EXTERNAL_ID = `${CURRENT_PART_ID}_EXTERNAL`
+const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
+	sourceType: SourceType.KAM,
+	id: '1',
+	raw: 'Kam 1',
+	minusMic: false,
+	name: 'KAM 1'
+}
 
 const currentPartMock: IBlueprintPartInstance = {
 	_id: CURRENT_PART_ID,
@@ -814,7 +821,7 @@ describe('Camera shortcuts on server', () => {
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
 				queue: false,
-				name: '1'
+				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)
 
@@ -857,7 +864,7 @@ describe('Camera shortcuts on server', () => {
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
 				queue: true,
-				name: '1'
+				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)
 
@@ -902,7 +909,7 @@ describe('Camera shortcuts on VO', () => {
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
 				queue: false,
-				name: '1'
+				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)
 
@@ -945,7 +952,7 @@ describe('Camera shortcuts on VO', () => {
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
 				queue: true,
-				name: '1'
+				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)
 

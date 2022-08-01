@@ -7,7 +7,7 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import { TableConfigItemGFXTemplates } from 'tv2-common'
+import { TableConfigItemGFXTemplates, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
 
@@ -117,6 +117,32 @@ export function AddGraphicToGFXTable(versionStr: string, studio: string, config:
 			existing.push(config)
 
 			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
+		}
+	})
+}
+
+export function addSourceToSourcesConfig(
+	versionStr: string,
+	studio: string,
+	configId: string,
+	source: TableConfigItemSourceMappingWithSisyfos
+) {
+	return literal<MigrationStepStudio>({
+		id: `${versionStr}.studioConfig.addReplaySource.${source.SourceName}.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+
+			if (!config) {
+				return false
+			}
+			return !config.find(s => s.SourceName === source.SourceName)
+		},
+		migrate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+			config.push(source)
+			context.setConfig(configId, (config as unknown) as ConfigItemValue)
 		}
 	})
 }

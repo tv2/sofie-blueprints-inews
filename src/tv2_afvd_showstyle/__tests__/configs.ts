@@ -12,7 +12,7 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 		case 'SourcesFeed':
 			return ['sisyfos_source_live_' + id]
 		case 'SourcesDelayedPlayback':
-			return ['sisyfos_source_evs_' + id]
+			return ['sisyfos_source_' + id.toLowerCase().replace(' ', '_')]
 	}
 
 	return []
@@ -91,7 +91,7 @@ export const defaultStudioConfig: StudioConfig = {
 	// TODO: prepareConfig is legacy code, refactor when refactoring FindSourceInfo
 	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false, true),
 	SourcesFeed: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesFeed', false, true),
-	SourcesDelayedPlayback: prepareConfig('1:5,2:5', 'SourcesDelayedPlayback', false),
+	SourcesReplay: prepareConfig('EVS 1:5,EVS 2:5,EPSIO:5', 'SourcesDelayedPlayback', false),
 	StudioMics: [
 		'sisyfos_source_Host_1_st_a',
 		'sisyfos_source_Host_2_st_a',
@@ -269,4 +269,11 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
 	SchemaConfig: []
+}
+
+export const EMPTY_SOURCE_CONFIG = {
+	cameras: [],
+	lives: [],
+	feeds: [],
+	replays: []
 }

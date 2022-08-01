@@ -1,8 +1,17 @@
 import * as _ from 'underscore'
 
 import { IStudioContext, SourceLayerType } from '@tv2media/blueprints-integration'
-import { literal } from 'tv2-common'
+import { SourceType } from 'tv2-constants'
+import { SourceMapping } from './blueprintConfig'
+import {
+	RemoteType,
+	SourceDefinition,
+	SourceDefinitionKam,
+	SourceDefinitionRemote,
+	SourceDefinitionReplay
+} from './inewsConversion'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
+import { assertUnreachable } from './util'
 
 // TODO: BEGONE!
 export function parseMapStr(
@@ -49,29 +58,33 @@ export function parseMapStr(
 export function ParseMappingTable(
 	studioConfig: TableConfigItemSourceMappingWithSisyfos[],
 	type: SourceInfoType,
-	idPrefix?: string
+	sourceLayerType: SourceLayerType
 ): SourceInfo[] {
 	return studioConfig.map(conf => ({
 		type,
-		id: `${idPrefix || ''}${conf.SourceName}`,
+		id: conf.SourceName,
 		port: conf.AtemSource,
 		sisyfosLayers: conf.SisyfosLayers,
 		useStudioMics: conf.StudioMics,
 		wantsToPersistAudio: conf.WantsToPersistAudio,
-		acceptPersistAudio: conf.AcceptPersistAudio
+		acceptPersistAudio: conf.AcceptPersistAudio,
+		sourceLayerType
 	}))
 }
+/**
+ * Types of sources in the mappings
+ * Note: these values are used for display purposes as well
+ */
+export enum SourceInfoType {
+	KAM = 'KAM',
+	FEED = 'FEED',
+	LIVE = 'LIVE',
+	REPLAY = 'REPLAY'
+}
 
-export type SourceInfoType =
-	| SourceLayerType.CAMERA
-	| SourceLayerType.REMOTE
-	| SourceLayerType.AUDIO
-	| SourceLayerType.VT
-	| SourceLayerType.GRAPHICS
-	| SourceLayerType.UNKNOWN
-	| SourceLayerType.LOCAL
 export interface SourceInfo {
 	type: SourceInfoType
+	sourceLayerType: SourceLayerType
 	id: string
 	port: number
 	ptzDevice?: string
@@ -81,72 +94,67 @@ export interface SourceInfo {
 	acceptPersistAudio?: boolean
 }
 
-export function FindSourceInfo(sources: SourceInfo[], type: SourceInfoType, id: string): SourceInfo | undefined {
-	id = id.replace(/\s+/i, ' ').trim()
-	switch (type) {
-		case SourceLayerType.CAMERA:
-			const cameraName = id.match(/^(?:KAM|CAM)(?:ERA)? ?(.+)$/i)
-			if (cameraName === undefined || cameraName === null) {
-				return undefined
-			}
-
-			return _.find(sources, s => s.type === type && s.id === cameraName[1].replace(/minus mic/i, '').trim())
-		case SourceLayerType.REMOTE:
-			const remoteName = id
-				.replace(/VO/i, '')
-				.replace(/\s/g, '')
-				.match(/^(?:LIVE|FEED) ?(.+).*$/i)
-			if (!remoteName) {
-				return undefined
-			}
-			if (id.match(/^LIVE/i)) {
-				return _.find(sources, s => s.type === type && s.id === remoteName[1])
-			} else {
-				return _.find(sources, s => s.type === type && s.id === `F${remoteName[1]}`)
-			}
-		case SourceLayerType.LOCAL:
-			const dpName = id.match(/^(?:EVS)\s*(\d+).*$/i)
-			if (!dpName) {
-				return undefined
-			}
-			return _.find(sources, s => s.type === SourceLayerType.LOCAL && s.id === `DP${dpName[1]}`)
+export function findSourceInfo(sources: SourceMapping, sourceDefinition: SourceDefinition): SourceInfo | undefined {
+	let arrayToSearchIn: SourceInfo[]
+	switch (sourceDefinition.sourceType) {
+		case SourceType.KAM:
+			arrayToSearchIn = sources.cameras
+			break
+		case SourceType.REMOTE:
+			arrayToSearchIn = sourceDefinition.remoteType === RemoteType.LIVE ? sources.lives : sources.feeds
+			break
+		case SourceType.REPLAY:
+			arrayToSearchIn = sources.replays
+			break
 		default:
 			return undefined
 	}
+	return _.find(arrayToSearchIn, s => s.id === sourceDefinition.id)
 }
 
-export function FindSourceInfoStrict(
-	_context: IStudioContext,
-	sources: SourceInfo[],
-	type: SourceInfoType,
-	id: string
-): SourceInfo | undefined {
-	return FindSourceInfo(sources, type, id)
-}
-
-export function FindSourceByName(context: IStudioContext, sources: SourceInfo[], name: string): SourceInfo | undefined {
-	name = (name + '').toLowerCase()
-
-	if (name.indexOf('k') === 0 || name.indexOf('c') === 0) {
-		return FindSourceInfoStrict(context, sources, SourceLayerType.CAMERA, name)
+export function SourceInfoToSourceDefinition(
+	sourceInfo: SourceInfo
+): SourceDefinitionKam | SourceDefinitionRemote | SourceDefinitionReplay {
+	switch (sourceInfo.type) {
+		case SourceInfoType.KAM: {
+			const name = `KAM ${sourceInfo.id}`
+			return {
+				sourceType: SourceType.KAM,
+				id: sourceInfo.id,
+				raw: name,
+				minusMic: false,
+				name
+			}
+		}
+		case SourceInfoType.LIVE: {
+			const name = `LIVE ${sourceInfo.id}`
+			return {
+				sourceType: SourceType.REMOTE,
+				remoteType: RemoteType.LIVE,
+				id: sourceInfo.id,
+				raw: name,
+				name
+			}
+		}
+		case SourceInfoType.FEED: {
+			const name = `FEED ${sourceInfo.id}`
+			return {
+				sourceType: SourceType.REMOTE,
+				remoteType: RemoteType.FEED,
+				id: sourceInfo.id,
+				raw: name,
+				name
+			}
+		}
+		case SourceInfoType.REPLAY:
+			return {
+				sourceType: SourceType.REPLAY,
+				id: sourceInfo.id,
+				raw: sourceInfo.id,
+				name: sourceInfo.id,
+				vo: false
+			}
+		default:
+			assertUnreachable(sourceInfo.type)
 	}
-
-	// TODO: This will be different for TV 2
-	if (name.indexOf('r') === 0) {
-		return FindSourceInfoStrict(context, sources, SourceLayerType.REMOTE, name)
-	}
-
-	// R35: context.notifyUserWarning(`Invalid source name "${name}"`)
-	return undefined
-}
-
-export function GetInputValue(context: IStudioContext, sources: SourceInfo[], name: string): number {
-	let input = 1000
-	const source = FindSourceByName(context, sources, name)
-
-	if (source !== undefined) {
-		input = literal<SourceInfo>(source).port
-	}
-
-	return input
 }

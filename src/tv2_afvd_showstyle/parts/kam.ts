@@ -6,7 +6,6 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
@@ -19,7 +18,7 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfoStrict,
+	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
@@ -29,7 +28,7 @@ import {
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -97,7 +96,7 @@ export async function CreatePartKam(
 		)
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
-		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		const sourceInfoCam = findSourceInfo(config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			context.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
@@ -143,16 +142,10 @@ export async function CreatePartKam(
 								}
 							},
 							...(AddParentClass(config, partDefinition)
-								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
+								? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
 								: {})
 						}),
-
-						GetSisyfosTimelineObjForCamera(
-							context,
-							config,
-							partDefinition.rawType,
-							SisyfosLLAyer.SisyfosGroupStudioMics
-						)
+						...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 					])
 				}
 			})
