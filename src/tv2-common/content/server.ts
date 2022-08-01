@@ -11,7 +11,6 @@ import {
 	literal,
 	PartDefinition,
 	ServerParentClass,
-	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
@@ -173,9 +172,7 @@ export function CutToServer(
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					input: -1,
-					transition: partDefinition.transition
-						? TransitionFromString(partDefinition.transition.style)
-						: TSR.AtemTransitionStyle.CUT,
+					transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 					transitionSettings: TransitionSettings(config, partDefinition)
 				}
 			},

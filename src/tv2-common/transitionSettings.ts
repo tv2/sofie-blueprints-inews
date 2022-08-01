@@ -7,10 +7,11 @@ export function TransitionSettings(config: TV2BlueprintConfig, part: PartDefinit
 		return {}
 	}
 
-	if (part.transition.style.match(/WIPE/i)) {
+	if (part.transition.style === TSR.AtemTransitionStyle.WIPE) {
 		return WipeTransitionSettings(part.transition.duration)
 	}
-	if (part.transition.style.match(/DIP/i)) {
+
+	if (part.transition.style === TSR.AtemTransitionStyle.DIP) {
 		return DipTransitionSettings(config, part.transition.duration)
 	}
 	return MixTransitionSettings(part.transition.duration)

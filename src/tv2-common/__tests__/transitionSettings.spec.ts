@@ -7,10 +7,6 @@ import { TransitionSettings } from '../transitionSettings'
 
 const DURATION: number = 50
 
-const WIPE_STYLE: string = 'WIPE'
-const MIX_STYLE: string = 'MIX'
-const DIP_STYLE: string = 'DIP'
-
 describe('transitionsSettingsSuite', () => {
 	let mockConfig: TV2BlueprintConfig
 
@@ -30,7 +26,7 @@ describe('transitionsSettingsSuite', () => {
 		it('should return empty when no duration on transition', () => {
 			const transition: PartTransition = {
 				duration: undefined,
-				style: 'randomStyle'
+				style: TSR.AtemTransitionStyle.DUMMY
 			}
 			const partDefinition: PartDefinition = createPartDefinition(transition)
 			const result = TransitionSettings(mockConfig, partDefinition)
@@ -40,7 +36,7 @@ describe('transitionsSettingsSuite', () => {
 
 		it('should return Wipe when transition is style Wip', () => {
 			const transition: PartTransition = {
-				style: WIPE_STYLE.toString(),
+				style: TSR.AtemTransitionStyle.WIPE,
 				duration: DURATION
 			}
 			const partDefinition: PartDefinition = createPartDefinition(transition)
@@ -56,7 +52,7 @@ describe('transitionsSettingsSuite', () => {
 
 		it('should return Mix when transition is style Mix', () => {
 			const transition: PartTransition = {
-				style: MIX_STYLE,
+				style: TSR.AtemTransitionStyle.MIX,
 				duration: DURATION
 			}
 			const partDefinition: PartDefinition = createPartDefinition(transition)
@@ -72,7 +68,7 @@ describe('transitionsSettingsSuite', () => {
 
 		it('should return Dip when style is Dip', () => {
 			const transition: PartTransition = {
-				style: DIP_STYLE,
+				style: TSR.AtemTransitionStyle.DIP,
 				duration: DURATION
 			}
 			const partDefinition: PartDefinition = createPartDefinition(transition)
@@ -106,7 +102,7 @@ describe('transitionsSettingsSuite', () => {
 	describe('DipTransitionSettings', () => {
 		it('should return AtemSourceIndex.Col2 when no AtemSource.Dip is configured', () => {
 			const transition: PartTransition = {
-				style: DIP_STYLE,
+				style: TSR.AtemTransitionStyle.DIP,
 				duration: DURATION
 			}
 			const partDefinition: PartDefinition = createPartDefinition(transition)
@@ -146,7 +142,7 @@ function assertDipInputValueFromConfig(
 		AtemSource: createAtemSourceConfig(dipInputSource)
 	} as any) as TV2StudioConfigBase
 	const transition: PartTransition = {
-		style: DIP_STYLE,
+		style: TSR.AtemTransitionStyle.DIP,
 		duration: DURATION
 	}
 	const partDefinition: PartDefinition = createPartDefinition(transition)

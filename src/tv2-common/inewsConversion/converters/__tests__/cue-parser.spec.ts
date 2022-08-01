@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PlaylistTimingType } from '@tv2media/blueprints-integration'
+import { IBlueprintRundownDB, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
 import { RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
 import { CueType, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
@@ -1075,7 +1075,7 @@ describe('Cue parser', () => {
 				iNewsCommand: 'EKSTERN',
 				transition: {
 					transition: {
-						style: 'MIX',
+						style: TSR.AtemTransitionStyle.MIX,
 						duration: 10
 					}
 				}

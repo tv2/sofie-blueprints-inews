@@ -21,7 +21,6 @@ import {
 	PartTime,
 	PieceMetaData,
 	SourceInfo,
-	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
@@ -128,9 +127,7 @@ function makeContentEVS(
 					type: TSR.TimelineContentTypeAtem.ME,
 					me: {
 						input: atemInput,
-						transition: partDefinition.transition
-							? TransitionFromString(partDefinition.transition.style)
-							: TSR.AtemTransitionStyle.CUT,
+						transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 						transitionSettings: TransitionSettings(config, partDefinition)
 					}
 				},

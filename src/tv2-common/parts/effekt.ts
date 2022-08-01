@@ -58,25 +58,19 @@ export function CreateEffektForPartBase(
 		return {}
 	}
 
-	if (transition.style.match(/mix/i)) {
-		return (
-			CreateMixEffectBlueprintPieceForPart(
-				pieces,
-				partDefinition.externalId,
-				transition.duration,
-				layers.sourceLayer
-			) ?? {}
-		)
+	if (transition.style === TSR.AtemTransitionStyle.MIX) {
+		const blueprintPiece: IBlueprintPiece =
+			CreateMixTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
+
+		pieces.push(blueprintPiece)
+		return CreateInTransitionForAtemTransitionStyle(transition.duration)
 	}
-	if (transition.style.match(/dip/i)) {
-		return (
-			CreateDipEffectBlueprintPieceForPart(
-				pieces,
-				partDefinition.externalId,
-				transition.duration,
-				layers.sourceLayer
-			) ?? {}
-		)
+
+	if (transition.style === TSR.AtemTransitionStyle.DIP) {
+		const blueprintPiece: IBlueprintPiece =
+			CreateDipTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
+		pieces.push(blueprintPiece)
+		return CreateInTransitionForAtemTransitionStyle(transition.duration)
 	}
 
 	return {}
@@ -192,12 +186,11 @@ export function CreateEffektForPartInner<
 	}
 }
 
-export function CreateMixEffectBlueprintPieceForPart(
-	pieces: IBlueprintPiece[],
+export function CreateMixTransitionBlueprintPieceForPart(
 	externalId: string,
 	durationInFrames: number,
 	sourceLayer: string
-): Pick<IBlueprintPart, 'inTransition'> {
+): IBlueprintPiece {
 	const tags = [
 		GetTagForTransition(
 			literal<ActionTakeWithTransitionVariantMix>({
@@ -207,39 +200,37 @@ export function CreateMixEffectBlueprintPieceForPart(
 		)
 	]
 	const effectName: string = 'mix'
-	addEffectBlueprintPiece(pieces, durationInFrames, externalId, effectName, sourceLayer, tags)
-	return createInTransitionForEffect(durationInFrames)
+	return createEffectBlueprintPiece(durationInFrames, externalId, effectName, sourceLayer, tags)
 }
 
-function addEffectBlueprintPiece(
-	pieces: IBlueprintPiece[],
+function createEffectBlueprintPiece(
 	durationInFrames: number,
 	externalId: string,
 	name: string,
 	sourceLayer: string,
 	tags: string[]
-): void {
-	pieces.push(
-		literal<IBlueprintPiece>({
-			enable: {
-				start: 0,
-				duration: Math.max(TimeFromFrames(durationInFrames), 1000)
-			},
-			externalId,
-			name: `${name.toUpperCase()} ${durationInFrames}`,
-			sourceLayerId: sourceLayer,
-			outputLayerId: SharedOutputLayers.JINGLE,
-			lifespan: PieceLifespan.WithinPart,
-			tags,
-			content: {
-				timelineObjects: [],
-				ignoreMediaObjectStatus: true
-			}
-		})
-	)
+): IBlueprintPiece {
+	return literal<IBlueprintPiece>({
+		enable: {
+			start: 0,
+			duration: Math.max(TimeFromFrames(durationInFrames), 1000)
+		},
+		externalId,
+		name: `${name.toUpperCase()} ${durationInFrames}`,
+		sourceLayerId: sourceLayer,
+		outputLayerId: SharedOutputLayers.JINGLE,
+		lifespan: PieceLifespan.WithinPart,
+		tags,
+		content: {
+			timelineObjects: [],
+			ignoreMediaObjectStatus: true
+		}
+	})
 }
 
-function createInTransitionForEffect(durationInFrames: number): Pick<IBlueprintPart, 'inTransition'> {
+export function CreateInTransitionForAtemTransitionStyle(
+	durationInFrames: number
+): Pick<IBlueprintPart, 'inTransition'> {
 	const transitionDuration = TimeFromFrames(durationInFrames)
 	return {
 		inTransition: {
@@ -250,12 +241,11 @@ function createInTransitionForEffect(durationInFrames: number): Pick<IBlueprintP
 	}
 }
 
-export function CreateDipEffectBlueprintPieceForPart(
-	pieces: IBlueprintPiece[],
+export function CreateDipTransitionBlueprintPieceForPart(
 	externalId: string,
 	durationInFrames: number,
 	sourceLayer: string
-): Pick<IBlueprintPart, 'inTransition'> {
+): IBlueprintPiece {
 	const tags = [
 		GetTagForTransition(
 			literal<ActionTakeWithTransitionVariantDip>({
@@ -265,6 +255,5 @@ export function CreateDipEffectBlueprintPieceForPart(
 		)
 	]
 	const effectName: string = 'dip'
-	addEffectBlueprintPiece(pieces, durationInFrames, externalId, effectName, sourceLayer, tags)
-	return createInTransitionForEffect(durationInFrames)
+	return createEffectBlueprintPiece(durationInFrames, externalId, effectName, sourceLayer, tags)
 }

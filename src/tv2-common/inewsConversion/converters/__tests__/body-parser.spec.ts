@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PlaylistTimingType } from '@tv2media/blueprints-integration'
+import { IBlueprintRundownDB, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionBackgroundLoop,
 	CueDefinitionGraphicDesign,
@@ -1313,7 +1313,7 @@ describe('Body parser', () => {
 					type: PartType.Kam,
 					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					transition: {
-						style: 'MIX',
+						style: TSR.AtemTransitionStyle.MIX,
 						duration: 200
 					},
 					rawType: 'KAM 1',

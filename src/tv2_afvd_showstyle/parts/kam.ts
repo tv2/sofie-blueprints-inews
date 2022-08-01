@@ -24,7 +24,6 @@ import {
 	PartDefinitionKam,
 	PieceMetaData,
 	TimeFromINewsField,
-	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
@@ -83,9 +82,7 @@ export async function CreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: jingleDSK.Fill,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							}
@@ -135,9 +132,7 @@ export async function CreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: Number(atemInput),
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							},
