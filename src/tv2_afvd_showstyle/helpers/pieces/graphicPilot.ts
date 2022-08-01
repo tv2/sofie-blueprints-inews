@@ -4,23 +4,21 @@ import {
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	IStudioUserContext,
-	SourceLayerType,
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
+	Adlib,
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
 	EnableDSK,
 	FindDSKFullGFX,
-	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForFull,
 	GraphicPilot,
 	literal,
 	PilotGeneratorSettings,
-	SisyfosEVSSource,
-	SourceInfo,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
@@ -36,28 +34,24 @@ export function EvaluateCueGraphicPilot(
 	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	adlib: boolean,
 	segmentExternalId: string,
-	rank?: number
+	adlib?: Adlib
 ) {
-	CreatePilotGraphic(
+	CreatePilotGraphic(pieces, adlibPieces, actions, {
 		config,
 		context,
-		pieces,
-		adlibPieces,
-		actions,
+		engine: parsedCue.target,
 		partId,
 		parsedCue,
-		pilotGeneratorSettingsAFVD,
+		settings: pilotGeneratorSettingsAFVD,
 		adlib,
-		rank ?? 0,
 		segmentExternalId
-	)
+	})
 }
 
 function makeStudioTimelineViz(
 	config: BlueprintConfig,
-	context: IStudioUserContext,
+	_context: IStudioUserContext,
 	adlib: boolean
 ): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
@@ -98,12 +92,11 @@ function makeStudioTimelineViz(
 		}),
 		// Assume DSK is off by default (config table)
 		...EnableDSK(config, 'FULL'),
-		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
-		...muteSisyfosChannels(config.sources)
+		...GetSisyfosTimelineObjForFull(config)
 	]
 }
 
-function makeStudioTimelineCaspar(config: BlueprintConfig, context: IStudioUserContext) {
+function makeStudioTimelineCaspar(config: BlueprintConfig, _context: IStudioUserContext) {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({
@@ -130,44 +123,6 @@ function makeStudioTimelineCaspar(config: BlueprintConfig, context: IStudioUserC
 				}
 			}
 		}),
-		GetSisyfosTimelineObjForCamera(context, config, 'full', SisyfosLLAyer.SisyfosGroupStudioMics),
-		...muteSisyfosChannels(config.sources)
+		...GetSisyfosTimelineObjForFull(config)
 	]
-}
-
-function muteSisyfosChannels(sources: SourceInfo[]): TSR.TimelineObjSisyfosChannel[] {
-	return [
-		SisyfosLLAyer.SisyfosSourceServerA,
-		SisyfosLLAyer.SisyfosSourceServerB,
-		SisyfosLLAyer.SisyfosSourceLive_1,
-		SisyfosLLAyer.SisyfosSourceLive_2,
-		SisyfosLLAyer.SisyfosSourceLive_3,
-		SisyfosLLAyer.SisyfosSourceLive_4,
-		SisyfosLLAyer.SisyfosSourceLive_5,
-		SisyfosLLAyer.SisyfosSourceLive_6,
-		SisyfosLLAyer.SisyfosSourceLive_7,
-		SisyfosLLAyer.SisyfosSourceLive_8,
-		SisyfosLLAyer.SisyfosSourceLive_9,
-		SisyfosLLAyer.SisyfosSourceLive_10,
-		SisyfosLLAyer.SisyfosSourceTLF,
-		...[
-			...(sources
-				.filter(s => s.type === SourceLayerType.LOCAL)
-				.map(s => SisyfosEVSSource(s.id.replace(/^DP/i, '') as SisyfosLLAyer)) as SisyfosLLAyer[])
-		]
-	].map<TSR.TimelineObjSisyfosChannel>(layer => {
-		return literal<TSR.TimelineObjSisyfosChannel>({
-			id: '',
-			enable: {
-				start: 0
-			},
-			priority: 2,
-			layer,
-			content: {
-				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-				isPgm: 0
-			}
-		})
-	})
 }

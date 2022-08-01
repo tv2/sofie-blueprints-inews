@@ -1,5 +1,6 @@
 import { IBlueprintRundownDB, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
-import { CueType } from 'tv2-constants'
+import { RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
+import { CueType, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { getConfig, parseConfig as parseShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
@@ -32,6 +33,35 @@ import {
 } from '../ParseCue'
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
+
+const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
+	sourceType: SourceType.KAM,
+	id: '1',
+	raw: 'KAM 1',
+	minusMic: false,
+	name: 'KAM 1'
+}
+const SOURCE_DEFINITION_KAM_2: SourceDefinitionKam = {
+	sourceType: SourceType.KAM,
+	id: '2',
+	raw: 'KAM 2',
+	minusMic: false,
+	name: 'KAM 2'
+}
+const SOURCE_DEFINITION_LIVE_1: SourceDefinitionRemote = {
+	sourceType: SourceType.REMOTE,
+	remoteType: RemoteType.LIVE,
+	id: '1',
+	name: 'LIVE 1',
+	raw: 'LIVE 1'
+}
+const SOURCE_DEFINITION_LIVE_2: SourceDefinitionRemote = {
+	sourceType: SourceType.REMOTE,
+	remoteType: RemoteType.LIVE,
+	id: '2',
+	name: 'LIVE 2',
+	raw: 'LIVE 2'
+}
 
 function makeMockContext() {
 	const rundown = literal<IBlueprintRundownDB>({
@@ -905,8 +935,8 @@ describe('Cue parser', () => {
 				routing: {
 					type: CueType.Routing,
 					target: 'FULL',
-					INP1: '',
-					INP: '',
+					INP1: undefined,
+					INP: undefined,
 					iNewsCommand: ''
 				},
 				iNewsCommand: 'GRAFIK',
@@ -1013,7 +1043,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionEkstern>({
 				type: CueType.Ekstern,
-				source: 'LIVE 1',
+				sourceDefinition: SOURCE_DEFINITION_LIVE_1,
 				iNewsCommand: 'EKSTERN',
 				transition: {}
 			})
@@ -1026,7 +1056,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionEkstern>({
 				type: CueType.Ekstern,
-				source: 'LIVE 1',
+				sourceDefinition: SOURCE_DEFINITION_LIVE_1,
 				iNewsCommand: 'EKSTERN',
 				transition: {
 					effekt: 1
@@ -1041,7 +1071,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionEkstern>({
 				type: CueType.Ekstern,
-				source: 'LIVE 1',
+				sourceDefinition: SOURCE_DEFINITION_LIVE_1,
 				iNewsCommand: 'EKSTERN',
 				transition: {
 					transition: {
@@ -1060,7 +1090,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
 				template: 'sommerfugl',
-				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
+				sources: { INP1: SOURCE_DEFINITION_KAM_1, INP2: SOURCE_DEFINITION_LIVE_1 },
 				labels: ['Odense', 'København'],
 				iNewsCommand: 'DVE'
 			})
@@ -1074,7 +1104,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
 				template: 'sommerfugl',
-				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
+				sources: { INP1: SOURCE_DEFINITION_KAM_1, INP2: SOURCE_DEFINITION_LIVE_1 },
 				labels: ['Odense', 'København'],
 				iNewsCommand: 'DVE'
 			})
@@ -1088,7 +1118,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionDVE>({
 				type: CueType.DVE,
 				template: 'sommerfugl',
-				sources: { INP1: 'KAM 1', INP2: 'LIVE 1' },
+				sources: { INP1: SOURCE_DEFINITION_KAM_1, INP2: SOURCE_DEFINITION_LIVE_1 },
 				labels: ['Odense', 'København'],
 				iNewsCommand: 'DVE'
 			})
@@ -1287,7 +1317,7 @@ describe('Cue parser', () => {
 			literal<CueDefinitionAdLib>({
 				type: CueType.AdLib,
 				variant: 'MORBARN',
-				inputs: { INP1: 'LIVE 1', INP2: 'KAM 1' },
+				inputs: { INP1: SOURCE_DEFINITION_LIVE_1, INP2: SOURCE_DEFINITION_KAM_1 },
 				iNewsCommand: 'ADLIBPIX'
 			})
 		)
@@ -1454,7 +1484,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionPgmClean>({
 				type: CueType.PgmClean,
-				source: 'LIVE 1',
+				sourceDefinition: { ...SOURCE_DEFINITION_LIVE_1, raw: 'Live 1' },
 				iNewsCommand: 'PGMCLEAN'
 			})
 		)
@@ -1490,7 +1520,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'KAM 1',
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1502,7 +1532,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'KAM 2',
+				sourceDefinition: SOURCE_DEFINITION_KAM_2,
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1514,7 +1544,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'KAMERA 1',
+				sourceDefinition: { ...SOURCE_DEFINITION_KAM_1, raw: 'KAMERA 1' },
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1526,7 +1556,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'KAMERA 2',
+				sourceDefinition: { ...SOURCE_DEFINITION_KAM_2, raw: 'KAMERA 2' },
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1538,7 +1568,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'LIVE 1',
+				sourceDefinition: SOURCE_DEFINITION_LIVE_1,
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1550,7 +1580,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'LIVE 2',
+				sourceDefinition: SOURCE_DEFINITION_LIVE_2,
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1562,7 +1592,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'SERVER',
+				sourceDefinition: { sourceType: SourceType.SERVER },
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1574,7 +1604,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'SERVER',
+				sourceDefinition: { sourceType: SourceType.SERVER },
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1586,7 +1616,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'LIVE 1',
+				sourceDefinition: SOURCE_DEFINITION_LIVE_1,
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1598,7 +1628,7 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'LIVE 2',
+				sourceDefinition: SOURCE_DEFINITION_LIVE_2,
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
@@ -1616,19 +1646,19 @@ describe('Cue parser', () => {
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'KAM 2',
+				sourceDefinition: { ...SOURCE_DEFINITION_KAM_2, raw: 'Kam 2' },
 				iNewsCommand: 'MINUSKAM'
 			})
 		)
 	})
 
-	test('minuskam = Kam 3 ', () => {
-		const minusKamCue = ['minuskam = Kam 3 ']
+	test('minuskam = Kam 2 ', () => {
+		const minusKamCue = ['minuskam = Kam 2 ']
 		const result = ParseCue(minusKamCue, config)
 		expect(result).toEqual(
 			literal<CueDefinitionMixMinus>({
 				type: CueType.MixMinus,
-				source: 'KAM 3',
+				sourceDefinition: { ...SOURCE_DEFINITION_KAM_2, raw: 'Kam 2' },
 				iNewsCommand: 'MINUSKAM'
 			})
 		)

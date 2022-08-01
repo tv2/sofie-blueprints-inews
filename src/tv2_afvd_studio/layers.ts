@@ -89,9 +89,8 @@ export const GraphicLLayer = {
 
 export type GraphicLLayer = AFVDGraphicLLayer | SharedGraphicLLayer
 
-enum AFVDSisyfosLLAyer {
+enum AFVDSisyfosLLayer {
 	SisyfosConfig = 'sisyfos_config',
-	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
 	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
@@ -122,13 +121,14 @@ enum AFVDSisyfosLLAyer {
 	SisyfosSourceServerB = 'sisyfos_source_server_b',
 	// SisyfosSourceServerC = 'sisyfos_source_server_c',
 	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
-	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2'
+	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2',
+	SisyfosSourceEpsio = 'sisyfos_source_epsio'
 }
 
 // tslint:disable-next-line: variable-name
 export const SisyfosLLAyer = {
 	...SharedSisyfosLLayer,
-	...AFVDSisyfosLLAyer
+	...AFVDSisyfosLLayer
 }
 
-export type SisyfosLLAyer = SharedSisyfosLLayer | AFVDSisyfosLLAyer
+export type SisyfosLLAyer = SharedSisyfosLLayer | AFVDSisyfosLLayer

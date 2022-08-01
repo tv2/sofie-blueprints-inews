@@ -1,6 +1,15 @@
 import { GetInfiniteModeForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
-import { CueType, GraphicEngine, PartType } from 'tv2-constants'
-import { getTransitionProperties, PartDefinition, PartdefinitionTypes, stripTransitionProperties } from './ParseBody'
+import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
+import {
+	getSourceDefinition,
+	getTransitionProperties,
+	PartDefinition,
+	PartdefinitionTypes,
+	SourceDefinition,
+	SourceDefinitionInvalid,
+	SourceDefinitionRemote,
+	stripTransitionProperties
+} from './ParseBody'
 
 export interface CueTime {
 	frames?: number
@@ -22,15 +31,16 @@ export interface CueDefinitionUnknown extends CueDefinitionBase {
 
 export interface CueDefinitionEkstern extends CueDefinitionBase {
 	type: CueType.Ekstern
-	source: string
+	/** Definition of the primary source */
+	sourceDefinition: SourceDefinitionRemote | SourceDefinitionInvalid
 	transition?: Pick<PartdefinitionTypes, 'effekt' | 'transition'>
 }
 
 export interface DVESources {
-	INP1?: string
-	INP2?: string
-	INP3?: string
-	INP4?: string
+	INP1?: SourceDefinition
+	INP2?: SourceDefinition
+	INP3?: SourceDefinition
+	INP4?: SourceDefinition
 }
 
 export interface CueDefinitionDVE extends CueDefinitionBase {
@@ -81,7 +91,7 @@ export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
 
 export interface CueDefinitionMixMinus extends CueDefinitionBase {
 	type: CueType.MixMinus
-	source: string
+	sourceDefinition: SourceDefinition
 }
 
 // If unpaired when evaluated, throw warning. If target === 'FULL' create invalid part.
@@ -142,13 +152,13 @@ export interface CueDefinitionGraphic<T extends GraphicInternalOrPilot> extends 
 export interface CueDefinitionRouting extends CueDefinitionBase {
 	type: CueType.Routing
 	target: GraphicEngine
-	INP?: string
-	INP1?: string
+	INP?: SourceDefinition
+	INP1?: SourceDefinition
 }
 
 export interface CueDefinitionPgmClean extends CueDefinitionBase {
 	type: CueType.PgmClean
-	source: 'PGM' | string
+	sourceDefinition: SourceDefinition
 }
 
 export type CueDefinition =
@@ -420,12 +430,20 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
 	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
 	if (eksternSource) {
+		let sourceDefinition = getSourceDefinition(eksternSource[1])
+		if (sourceDefinition?.sourceType !== SourceType.REMOTE) {
+			sourceDefinition = {
+				sourceType: SourceType.INVALID,
+				name: eksternSource[1],
+				raw: eksternSource[1]
+			}
+		}
 		const transitionProperties = getTransitionProperties(cue[0])
 		return literal<CueDefinitionEkstern>({
 			type: CueType.Ekstern,
-			source: eksternSource[1].replace(/\s+/i, ' ').trim(),
 			iNewsCommand: 'EKSTERN',
-			transition: transitionProperties
+			transition: transitionProperties,
+			sourceDefinition
 		})
 	}
 
@@ -450,7 +468,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 		} else if (c.match(/^INP\d+=/i)) {
 			const input = c.match(/^(INP\d)+=(.+)$/i)
 			if (input && input[1] && input[2]) {
-				dvecue.sources[input[1].toUpperCase() as keyof DVESources] = input[2]
+				dvecue.sources[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
 			}
 		} else if (c.match(/^BYNAVN=/i)) {
 			const labels = c.match(/^BYNAVN=(.+)$/i)
@@ -563,7 +581,7 @@ function parseAdLib(cue: string[]) {
 	for (let i = 0; i < cue.length; i++) {
 		const input = cue[i].match(/^(INP\d)+=(.+)$/i)
 		if (input && input[1] && input[2] && adlib.inputs !== undefined) {
-			adlib.inputs[input[1].toString().toUpperCase() as keyof DVESources] = input[2]
+			adlib.inputs[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
 		}
 
 		const bynavn = cue[i].match(/^BYNAVN=(.+)$/i)
@@ -665,7 +683,7 @@ function parseTargetEngine(
 		target: engineCue.target,
 		iNewsCommand: ''
 	}
-
+	let hasInputs = false
 	for (let i = 1; i < cue.length; i++) {
 		if (isTime(cue[i])) {
 			engineCue = { ...engineCue, ...parseTime(cue[i]) }
@@ -673,16 +691,18 @@ function parseTargetEngine(
 			const c = cue[i].split('=')
 			const input = c[0].toString().toUpperCase()
 			if (input === 'INP') {
-				routing.INP = c[1]
+				routing.INP = getSourceDefinition(c[1])
+				hasInputs = true
 			}
 
 			if (input === 'INP1') {
-				routing.INP1 = c[1]
+				routing.INP1 = getSourceDefinition(c[1])
+				hasInputs = true
 			}
 		}
 	}
 
-	if (routing.INP1 !== undefined || routing.INP !== undefined) {
+	if (hasInputs) {
 		engineCue.routing = routing
 	}
 
@@ -753,14 +773,17 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 }
 
 export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
+	const pgmSource = cue[0].match(/^PGMCLEAN=(.+)$/i)
 	const pgmCleanCue: CueDefinitionPgmClean = {
 		type: CueType.PgmClean,
-		source: 'PGM',
-		iNewsCommand: 'PGMCLEAN'
+		iNewsCommand: 'PGMCLEAN',
+		sourceDefinition: { sourceType: SourceType.PGM }
 	}
-	const pgmSource = cue[0].match(/^PGMCLEAN=(.+)$/i)
 	if (pgmSource && pgmSource[1]) {
-		pgmCleanCue.source = pgmSource[1].toString().toUpperCase()
+		const sourceDefinition = getSourceDefinition(pgmSource[1])
+		if (sourceDefinition) {
+			pgmCleanCue.sourceDefinition = sourceDefinition
+		}
 	}
 	return pgmCleanCue
 }
@@ -770,9 +793,13 @@ export function parseMixMinus(cue: string[]): CueDefinitionMixMinus | undefined 
 	if (sourceMatch === null) {
 		return undefined
 	}
+	const sourceDefinition = getSourceDefinition(sourceMatch.groups!.source)
+	if (sourceDefinition === undefined) {
+		return undefined
+	}
 	return literal<CueDefinitionMixMinus>({
 		type: CueType.MixMinus,
-		source: sourceMatch.groups!.source.toUpperCase(),
+		sourceDefinition,
 		iNewsCommand: 'MINUSKAM'
 	})
 }
@@ -899,7 +926,7 @@ function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinition
 export function PartToParentClass(studio: string, partDefinition: PartDefinition): string | undefined {
 	switch (partDefinition.type) {
 		case PartType.Kam:
-			return CameraParentClass(studio, partDefinition.variant.name)
+			return CameraParentClass(studio, partDefinition.sourceDefinition.id)
 		case PartType.Server:
 		case PartType.VO:
 			const clip = partDefinition.fields.videoId
@@ -910,7 +937,7 @@ export function PartToParentClass(studio: string, partDefinition: PartDefinition
 				return
 			}
 		case PartType.EVS:
-			return EVSParentClass(studio, partDefinition.variant.evs)
+			return EVSParentClass(studio, partDefinition.sourceDefinition.id)
 		default:
 			return UnknownPartParentClass(studio, partDefinition)
 	}
@@ -951,7 +978,7 @@ export function UnknownPartParentClass(studio: string, partDefinition: PartDefin
 		case CueType.DVE:
 			return DVEParentClass(studio, firstCue.template)
 		case CueType.Ekstern:
-			return EksternParentClass(studio, firstCue.source)
+			return EksternParentClass(studio, firstCue.sourceDefinition.name)
 		case CueType.Telefon:
 			return TLFParentClass(studio, firstCue.source)
 		default:

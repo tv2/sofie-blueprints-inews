@@ -7,7 +7,6 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR
 } from '@tv2media/blueprints-integration'
@@ -15,9 +14,8 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	EVSParentClass,
-	FindSourceInfoStrict,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEVS,
+	findSourceInfo,
+	GetSisyfosTimelineObjForReplay,
 	literal,
 	PartDefinitionEVS,
 	PartTime,
@@ -26,7 +24,7 @@ import {
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -39,10 +37,11 @@ export async function CreatePartEVS(
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const title = partDefinition.sourceDefinition.name
 
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
-		title: `EVS ${partDefinition.variant.evs} ${partDefinition.variant.vo ?? ''}`,
+		title,
 		metaData: {},
 		expectedDuration: partTime > 0 ? partTime : 0
 	})
@@ -54,16 +53,11 @@ export async function CreatePartEVS(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const sourceInfoDelayedPlayback = FindSourceInfoStrict(
-		context,
-		config.sources,
-		SourceLayerType.LOCAL,
-		partDefinition.rawType.replace(/ ?VO/i, '')
-	)
-	if (sourceInfoDelayedPlayback === undefined) {
+	const sourceInfoReplay = findSourceInfo(config.sources, partDefinition.sourceDefinition)
+	if (sourceInfoReplay === undefined) {
 		return CreatePartInvalid(partDefinition)
 	}
-	const atemInput = sourceInfoDelayedPlayback.port
+	const atemInput = sourceInfoReplay.port
 
 	pieces.push(
 		literal<IBlueprintPiece>({
@@ -78,7 +72,7 @@ export async function CreatePartEVS(
 					sisyfosLayers: []
 				}
 			}),
-			content: makeContentEVS(context, config, atemInput, partDefinition, sourceInfoDelayedPlayback)
+			content: makeContentEVS(config, atemInput, partDefinition, sourceInfoReplay)
 		})
 	)
 
@@ -111,11 +105,10 @@ export async function CreatePartEVS(
 }
 
 function makeContentEVS(
-	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	atemInput: number,
 	partDefinition: PartDefinitionEVS,
-	sourceInfoDelayedPlayback: SourceInfo
+	sourceInfoReplay: SourceInfo
 ): IBlueprintPiece['content'] {
 	return {
 		studioLabel: '',
@@ -138,12 +131,9 @@ function makeContentEVS(
 						transitionSettings: TransitionSettings(config, partDefinition)
 					}
 				},
-				classes: [EVSParentClass('studio0', partDefinition.variant.evs)]
+				classes: [EVSParentClass('studio0', partDefinition.sourceDefinition.id)]
 			}),
-			GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!partDefinition.variant.vo),
-			...(partDefinition.variant.vo
-				? [GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)]
-				: [])
+			...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
 		])
 	}
 }

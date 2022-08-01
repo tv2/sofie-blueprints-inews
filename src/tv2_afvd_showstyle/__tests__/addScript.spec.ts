@@ -1,6 +1,6 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from '@tv2media/blueprints-integration'
 import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
-import { PartType, SharedOutputLayers } from 'tv2-constants'
+import { PartType, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
@@ -8,8 +8,12 @@ describe('addScript', () => {
 		const part = literal<PartDefinitionKam>({
 			externalId: '00000000001-0',
 			type: PartType.Kam,
-			variant: {
-				name: '2'
+			sourceDefinition: {
+				sourceType: SourceType.KAM,
+				id: '2',
+				raw: 'KAM 2',
+				name: 'KAM 2',
+				minusMic: false
 			},
 			rawType: 'KAM 2',
 			cues: [],

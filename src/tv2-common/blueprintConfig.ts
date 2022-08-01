@@ -38,10 +38,11 @@ export interface TableConfigSchema {
 }
 
 export interface TableConfigGraphicsSetup {
-	INewsCode: string
-	Concept: string
+	Name: string
+	VcpConcept: string
 	OvlShowId: string
 	FullShowId: string
+	DveLayoutFolder: string
 }
 
 export interface TV2StudioConfigBase {
@@ -121,9 +122,16 @@ export interface TV2StudioConfigBase {
 	}
 }
 
+export interface SourceMapping {
+	cameras: SourceInfo[]
+	lives: SourceInfo[]
+	feeds: SourceInfo[]
+	replays: SourceInfo[]
+}
+
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
 	studio: StudioConfig
-	sources: SourceInfo[]
+	sources: SourceMapping
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	dsk: TableConfigItemDSK[]
 }

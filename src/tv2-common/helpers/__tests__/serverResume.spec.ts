@@ -6,9 +6,17 @@ import {
 	VTContent,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { DVEPieceMetaData, literal } from 'tv2-common'
-import { SharedSourceLayers } from 'tv2-constants'
+import { DVEPieceMetaData, literal, RemoteType, SourceDefinitionRemote } from 'tv2-common'
+import { SharedSourceLayers, SourceType } from 'tv2-constants'
 import { getServerPositionForPartInstance } from '../serverResume'
+
+const EKSTERN_SOURCE: SourceDefinitionRemote = {
+	sourceType: SourceType.REMOTE,
+	remoteType: RemoteType.LIVE,
+	id: '1',
+	raw: 'Live 1',
+	name: 'LIVE 1'
+}
 
 function getMockPartInstance(partInstance: Partial<IBlueprintPartInstance>): IBlueprintPartInstance {
 	return {
@@ -116,8 +124,8 @@ describe('Server Resume', () => {
 						}),
 						metaData: literal<Partial<DVEPieceMetaData>>({
 							sources: {
-								INP1: 'SERVER',
-								INP2: 'LIVE 1'
+								INP1: { sourceType: SourceType.SERVER },
+								INP2: EKSTERN_SOURCE
 							},
 							serverPlaybackTiming: [{}]
 						})
@@ -162,8 +170,8 @@ describe('Server Resume', () => {
 						}),
 						metaData: literal<Partial<DVEPieceMetaData>>({
 							sources: {
-								INP1: 'SERVER',
-								INP2: 'LIVE 1'
+								INP1: { sourceType: SourceType.SERVER },
+								INP2: EKSTERN_SOURCE
 							},
 							serverPlaybackTiming: [{ end: 13000 }, { start: 14000, end: 15000 }, { start: 16000 }]
 						})

@@ -27,10 +27,15 @@ import {
 	OmitId,
 	PackageInfo,
 	PieceLifespan,
+	PlaylistTimingType,
 	Time
 } from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import { NoteType } from 'tv2-constants'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../tv2_afvd_showstyle/__tests__/configs'
+import { parseConfig as parseShowStyleConfigAFVD } from '../tv2_afvd_showstyle/helpers/config'
+import { parseConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
+import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
 
 export function getHash(str: string): string {
 	const hash = crypto.createHash('sha1')
@@ -121,7 +126,7 @@ export class UserNotesContext extends CommonContext implements IUserNotesContext
 
 // tslint:disable-next-line: max-classes-per-file
 export class StudioContext extends CommonContext implements IStudioContext {
-	public studioId: string
+	public studioId: string = 'studio0'
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
 	public showStyleConfig: { [key: string]: ConfigItemValue } = {}
 
@@ -217,7 +222,7 @@ export class GetRundownContext extends ShowStyleUserContext implements IGetRundo
 
 // tslint:disable-next-line: max-classes-per-file
 export class RundownContext extends ShowStyleContext implements IRundownContext {
-	public readonly rundownId: string
+	public readonly rundownId: string = 'rundown0'
 	public readonly rundown: Readonly<IBlueprintRundownDB>
 
 	constructor(
@@ -230,6 +235,16 @@ export class RundownContext extends ShowStyleContext implements IRundownContext 
 		partId?: string
 	) {
 		super(contextName, mappingsDefaults, parseStudioConfig, parseShowStyleConfig, rundownId, segmentId, partId)
+		this.rundownId = rundownId ?? this.rundownId
+		this.rundown = {
+			_id: this.rundownId,
+			externalId: this.rundownId,
+			name: this.rundownId,
+			timing: {
+				type: PlaylistTimingType.None
+			},
+			showStyleVariantId: 'variant0'
+		}
 	}
 }
 
@@ -300,7 +315,7 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
 		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
-		rundownId?: string,
+		rundownId: string,
 		segmentId?: string,
 		partId?: string
 	) {
@@ -397,9 +412,6 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 
 	public takeAfterExecute: boolean = false
 
-	/** Get the mappings for the studio */
-	public getStudioMappings: () => Readonly<BlueprintMappings>
-
 	constructor(
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
@@ -419,6 +431,11 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 		this.currentPieceInstances = currentPieceInstances
 		this.nextPart = nextPart
 		this.nextPieceInstances = nextPieceInstances
+	}
+
+	/** Get the mappings for the studio */
+	public getStudioMappings = () => {
+		throw new Error(`Function not implemented in mock: 'getStudioMappings'`)
 	}
 
 	/** Get a PartInstance which can be modified */
@@ -607,4 +624,17 @@ export interface PartNote {
 		pieceId?: string
 	}
 	message: string
+}
+
+export function makeMockAFVDContext(studioConfigOverrides?: Partial<StudioConfig>) {
+	const mockContext = new SegmentUserContext(
+		'test',
+		mappingsDefaultsAFVD,
+		parseStudioConfigAFVD,
+		parseShowStyleConfigAFVD
+	)
+	mockContext.studioConfig = { ...defaultStudioConfig, ...studioConfigOverrides } as any
+	mockContext.showStyleConfig = defaultShowStyleConfig as any
+
+	return mockContext
 }

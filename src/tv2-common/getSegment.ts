@@ -59,7 +59,7 @@ export interface GetSegmentShowstyleOptions<
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
-		props: ServerPartProps
+		partProps: ServerPartProps
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTeknik?: (
 		context: IShowStyleUserContext,
@@ -237,7 +237,7 @@ export async function getSegmentBase<
 					blueprintParts.push(await showStyleOptions.CreatePartDVE(context, config, part, totalWords))
 				}
 				break
-			case PartType.Ekstern:
+			case PartType.REMOTE:
 				if (showStyleOptions.CreatePartEkstern) {
 					blueprintParts.push(await showStyleOptions.CreatePartEkstern(context, config, part, totalWords))
 				}

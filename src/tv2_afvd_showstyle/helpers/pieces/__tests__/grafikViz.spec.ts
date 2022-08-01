@@ -16,7 +16,15 @@ import {
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
-import { AbstractLLayer, AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import {
+	AbstractLLayer,
+	AdlibTags,
+	CueType,
+	PartType,
+	SharedGraphicLLayer,
+	SharedOutputLayers,
+	SourceType
+} from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -37,9 +45,7 @@ const config = getConfig(makeMockContext())
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
-	variant: {
-		name: '1'
-	},
+	sourceDefinition: { sourceType: SourceType.KAM, id: '1', raw: 'Kam 1', minusMic: false, name: 'KAM 1' },
 	externalId: '0001',
 	rawType: 'Kam 1',
 	cues: [],
@@ -106,9 +112,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -180,9 +185,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -296,9 +300,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -412,9 +415,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -491,9 +493,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -566,9 +567,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -670,9 +670,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -744,9 +743,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -858,9 +856,8 @@ describe('grafik piece', () => {
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		const piece = pieces[0]
 		expect(piece).toBeTruthy()

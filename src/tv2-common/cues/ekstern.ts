@@ -5,7 +5,6 @@ import {
 	IShowStyleUserContext,
 	PieceLifespan,
 	RemoteContent,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
@@ -15,9 +14,6 @@ import {
 	createEmptyObject,
 	CueDefinitionEkstern,
 	EksternParentClass,
-	FindSourceInfoStrict,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
 	literal,
 	PartDefinition,
 	PartToParentClass,
@@ -26,8 +22,10 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, SharedOutputLayers } from 'tv2-constants'
+import { ControlClasses, SharedOutputLayers, SourceType } from 'tv2-constants'
+import { GetSisyfosTimelineObjForRemote } from '../helpers'
 import { GetTagForLive } from '../pieces'
+import { findSourceInfo } from '../sources'
 
 interface EksternLayers {
 	SourceLayer: {
@@ -35,9 +33,6 @@ interface EksternLayers {
 	}
 	ATEM: {
 		MEProgram: string
-	}
-	Sisyfos: {
-		StudioMics: string
 	}
 }
 
@@ -57,22 +52,9 @@ export function EvaluateEksternBase<
 	adlib?: boolean,
 	rank?: number
 ) {
-	const matchesEksternSource = /^(?:LIVE|FEED) ?([^\s]+)(?: (.+))?$/i
-	const eksternProps = parsedCue.source.match(matchesEksternSource)
-	if (!eksternProps) {
-		context.notifyUserWarning(`No source entered for EKSTERN`)
-		part.invalid = true
-		return
-	}
-	const source = eksternProps[1]
-	if (!source) {
-		context.notifyUserWarning(`Could not find live source for ${parsedCue.source}`)
-		part.invalid = true
-		return
-	}
-	const sourceInfoEkstern = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
-	if (sourceInfoEkstern === undefined) {
-		context.notifyUserWarning(`${parsedCue.source} does not exist in this studio`)
+	const sourceInfoEkstern = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+	if (parsedCue.sourceDefinition.sourceType !== SourceType.REMOTE || sourceInfoEkstern === undefined) {
+		context.notifyUserWarning(`EKSTERN source is not valid: "${parsedCue.sourceDefinition.raw}"`)
 		part.invalid = true
 		return
 	}
@@ -83,7 +65,7 @@ export function EvaluateEksternBase<
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank || 0,
 				externalId: partId,
-				name: eksternProps[0],
+				name: parsedCue.sourceDefinition.name,
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 				toBeQueued: true,
@@ -118,8 +100,7 @@ export function EvaluateEksternBase<
 							classes: [ControlClasses.LiveSourceOnAir]
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
-						GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
+						...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
 					])
 				})
 			})
@@ -128,7 +109,7 @@ export function EvaluateEksternBase<
 		pieces.push(
 			literal<IBlueprintPiece>({
 				externalId: partId,
-				name: eksternProps[0],
+				name: parsedCue.sourceDefinition.name,
 				enable: {
 					start: 0
 				},
@@ -143,7 +124,7 @@ export function EvaluateEksternBase<
 						acceptPersistAudio: sourceInfoEkstern.acceptPersistAudio
 					})
 				},
-				tags: [GetTagForLive(sourceInfoEkstern.id)],
+				tags: [GetTagForLive(parsedCue.sourceDefinition)],
 				content: literal<WithTimeline<RemoteContent>>({
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -171,12 +152,11 @@ export function EvaluateEksternBase<
 								}
 							},
 							...(AddParentClass(config, partDefinition)
-								? { classes: [EksternParentClass('studio0', parsedCue.source)] }
+								? { classes: [EksternParentClass('studio0', parsedCue.sourceDefinition.name)] }
 								: {})
 						}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source),
-						GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
+						...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
 					])
 				})
 			})

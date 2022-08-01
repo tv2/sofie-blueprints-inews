@@ -1,7 +1,7 @@
 import { IBlueprintConfig, ICommonContext } from '@tv2media/blueprints-integration'
 import {
 	MediaPlayerConfig,
-	SourceInfo,
+	SourceMapping,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TV2StudioConfigBase
@@ -12,7 +12,7 @@ import { parseMediaPlayers, parseSources } from './sources'
 
 export interface OfftubeStudioBlueprintConfig {
 	studio: OfftubeStudioConfig
-	sources: SourceInfo[]
+	sources: SourceMapping
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	dsk: TableConfigItemDSK[]
 }
@@ -53,13 +53,10 @@ export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfi
 	const config: OfftubeStudioBlueprintConfig = {
 		studio: rawConfig as any,
 		// showStyle: {} as any,
-		sources: [],
-		mediaPlayers: [],
+		sources: parseSources(studioConfig),
+		mediaPlayers: parseMediaPlayers(studioConfig),
 		dsk: studioConfig.AtemSource.DSK
 	}
-	config.sources = parseSources(studioConfig)
-	config.mediaPlayers = parseMediaPlayers(studioConfig)
-
 	return config
 }
 

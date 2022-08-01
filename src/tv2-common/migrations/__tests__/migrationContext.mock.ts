@@ -10,9 +10,8 @@ import {
 } from '@tv2media/blueprints-integration'
 
 export class MockShowstyleMigrationContext implements MigrationContextShowStyle {
-	public variants: IBlueprintShowStyleVariant[]
+	public variants: IBlueprintShowStyleVariant[] = []
 	public configs: Map<string, ConfigItemValue> = new Map()
-	public getTriggeredActionId: (triggeredActionId: string) => string
 
 	public getAllVariants(): IBlueprintShowStyleVariant[] {
 		return this.variants
@@ -96,5 +95,8 @@ export class MockShowstyleMigrationContext implements MigrationContextShowStyle 
 	}
 	public removeTriggeredAction(triggeredActionsId: string): void {
 		throw new Error(`Function not implemented in mock: 'removeTriggeredAction' args: ${triggeredActionsId}`)
+	}
+	public getTriggeredActionId(triggeredActionId: string): string {
+		throw new Error(`Function not implemented in mock: 'getTriggeredActionId' args: ${triggeredActionId}`)
 	}
 }

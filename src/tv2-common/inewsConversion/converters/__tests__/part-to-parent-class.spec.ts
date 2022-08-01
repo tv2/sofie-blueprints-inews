@@ -1,19 +1,24 @@
 import { literal } from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
-import { PartDefinitionEkstern } from '../ParseBody'
+import { CueType, PartType, SourceType } from 'tv2-constants'
+import { PartDefinitionEkstern, RemoteType } from '../ParseBody'
 import { CueDefinitionEkstern, PartToParentClass } from '../ParseCue'
 
 describe('PartToParentClass', () => {
 	it('Creates class for Ekstern', () => {
 		const partDefinition = literal<PartDefinitionEkstern>({
-			type: PartType.Ekstern,
-			variant: '',
+			type: PartType.REMOTE,
 			externalId: '',
 			rawType: '',
 			cues: [
 				literal<CueDefinitionEkstern>({
 					type: CueType.Ekstern,
-					source: 'Live 1',
+					sourceDefinition: {
+						sourceType: SourceType.REMOTE,
+						remoteType: RemoteType.LIVE,
+						id: '1',
+						raw: 'Live 1',
+						name: 'LIVE 1'
+					},
 					iNewsCommand: 'EKSTERN'
 				})
 			],

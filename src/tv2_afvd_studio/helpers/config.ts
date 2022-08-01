@@ -1,7 +1,7 @@
 import { IBlueprintConfig, ICommonContext, IStudioContext } from '@tv2media/blueprints-integration'
 import {
 	MediaPlayerConfig,
-	SourceInfo,
+	SourceMapping,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos,
@@ -14,7 +14,7 @@ import { parseMediaPlayers, parseSources } from './sources'
 
 export interface BlueprintConfig {
 	studio: StudioConfig
-	sources: SourceInfo[]
+	sources: SourceMapping
 	showStyle: ShowStyleConfig
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	dsk: TableConfigItemDSK[]
@@ -24,7 +24,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	// Injected by core
 	SofieHostURL: string
 
-	SourcesDelayedPlayback: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesReplay: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	StudioMics: string[]
@@ -53,13 +53,10 @@ export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfi
 	const config: BlueprintConfig = {
 		studio: studioConfig,
 		showStyle: {} as any,
-		sources: [],
-		mediaPlayers: [],
+		sources: parseSources(studioConfig),
+		mediaPlayers: parseMediaPlayers(studioConfig),
 		dsk: studioConfig.AtemSource.DSK
 	}
-
-	config.sources = parseSources(studioConfig)
-	config.mediaPlayers = parseMediaPlayers(studioConfig)
 
 	return config
 }

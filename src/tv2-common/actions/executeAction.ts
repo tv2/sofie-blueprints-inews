@@ -13,7 +13,6 @@ import {
 	IBlueprintResolvedPieceInstance,
 	IShowStyleUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	SplitsContent,
 	TSR,
 	VTContent,
@@ -34,7 +33,6 @@ import {
 	ActionSelectServerClip,
 	CalculateTime,
 	CreateDipTransitionBlueprintPieceForPart,
-	CreateFullPiece,
 	CreateInTransitionForAtemTransitionStyle,
 	CreatePartServerBase,
 	CueDefinition,
@@ -46,11 +44,8 @@ import {
 	DVESources,
 	EvaluateCuesOptions,
 	executeWithContext,
-	FindSourceInfoStrict,
 	GetDVETemplate,
 	GetFullGrafikTemplateName,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
 	GraphicPilot,
 	IsTargetingOVL,
 	ITV2ActionExecutionContext,
@@ -72,15 +67,18 @@ import {
 	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SharedSourceLayers,
+	SourceType,
 	TallyTags
 } from 'tv2-constants'
 import _ = require('underscore')
 import { EnableServer } from '../content'
 import {
-	CreateFullDataStore,
 	GetEnableForWall,
 	getServerPosition,
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForRemote,
 	PilotGeneratorSettings,
+	PilotGraphicGenerator,
 	ServerSelectMode
 } from '../helpers'
 import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
@@ -95,6 +93,7 @@ import {
 	GetTagForLive,
 	GetTagForTransition
 } from '../pieces'
+import { findSourceInfo } from '../sources'
 import { assertUnreachable } from '../util'
 import {
 	ActionCommentatorSelectJingle,
@@ -466,8 +465,7 @@ async function executeActionSelectServerClip<
 				ClipPending: settings.LLayer.Caspar.ClipPending
 			},
 			Sisyfos: {
-				ClipPending: settings.LLayer.Sisyfos.ClipPending,
-				StudioMicsGroup: settings.LLayer.Sisyfos.StudioMics
+				ClipPending: settings.LLayer.Sisyfos.ClipPending
 			},
 			ATEM: {
 				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
@@ -546,10 +544,10 @@ async function executeActionSelectServerClip<
 
 function dveContainsServer(sources: DVESources) {
 	return (
-		sources.INP1?.match(/SERVER/i) ||
-		sources.INP2?.match(/SERVER/i) ||
-		sources.INP3?.match(/SERVER/i) ||
-		sources.INP4?.match(/SERVER/i)
+		sources.INP1?.sourceType === SourceType.SERVER ||
+		sources.INP2?.sourceType === SourceType.SERVER ||
+		sources.INP3?.sourceType === SourceType.SERVER ||
+		sources.INP4?.sourceType === SourceType.SERVER
 	)
 }
 
@@ -784,10 +782,10 @@ async function executeActionSelectDVELayout<
 	}
 
 	const sources: DVESources = {
-		INP1: 'DEFAULT',
-		INP2: 'DEFAULT',
-		INP3: 'DEFAULT',
-		INP4: 'DEFAULT'
+		INP1: { sourceType: SourceType.DEFAULT },
+		INP2: { sourceType: SourceType.DEFAULT },
+		INP3: { sourceType: SourceType.DEFAULT },
+		INP4: { sourceType: SourceType.DEFAULT }
 	}
 
 	const externalId = generateExternalId(context, actionId, [userData.config.DVEName])
@@ -1112,16 +1110,16 @@ async function executeActionCutToCamera<
 ) {
 	const config = settings.getConfig(context)
 
-	const externalId = generateExternalId(context, actionId, [userData.name])
+	const externalId = generateExternalId(context, actionId, [userData.sourceDefinition.name])
 
 	const part = literal<IBlueprintPart>({
 		externalId,
-		title: `KAM ${userData.name}`,
+		title: userData.sourceDefinition.name,
 		metaData: {},
 		expectedDuration: 0
 	})
 
-	const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, `Kam ${userData.name}`)
+	const sourceInfoCam = findSourceInfo(config.sources, userData.sourceDefinition)
 	if (sourceInfoCam === undefined) {
 		return
 	}
@@ -1134,12 +1132,7 @@ async function executeActionCutToCamera<
 
 	const currentKam = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Cam)
 
-	const camSisyfos = GetSisyfosTimelineObjForCamera(
-		context,
-		config,
-		`KAM ${userData.name}`,
-		settings.LLayer.Sisyfos.StudioMics
-	)
+	const camSisyfos = GetSisyfosTimelineObjForCamera(config, sourceInfoCam, false)
 
 	const kamPiece = literal<IBlueprintPiece>({
 		externalId,
@@ -1155,7 +1148,7 @@ async function executeActionCutToCamera<
 				isPieceInjectedInPart: true
 			})
 		},
-		tags: [GetTagForKam(userData.name)],
+		tags: [GetTagForKam(userData.sourceDefinition)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
@@ -1173,7 +1166,7 @@ async function executeActionCutToCamera<
 					},
 					classes: ['adlib_deparent']
 				}),
-				camSisyfos
+				...camSisyfos
 			])
 		}
 	})
@@ -1235,10 +1228,9 @@ async function executeActionCutToRemote<
 ) {
 	const config = settings.getConfig(context)
 
-	const externalId = generateExternalId(context, actionId, [userData.name])
+	const externalId = generateExternalId(context, actionId, [userData.sourceDefinition.name])
 
-	const feed = userData.name.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
-	const title = feed ? `FEED ${feed[1]}` : `LIVE ${userData.name}`
+	const title = userData.sourceDefinition.name
 
 	const part = literal<IBlueprintPart>({
 		externalId,
@@ -1247,12 +1239,14 @@ async function executeActionCutToRemote<
 		expectedDuration: 0
 	})
 
-	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = [
-		...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${userData.name}`),
-		GetSisyfosTimelineObjForCamera(context, config, 'telefon', settings.LLayer.Sisyfos.StudioMics)
-	]
+	const sourceInfo = findSourceInfo(config.sources, userData.sourceDefinition)
+	if (sourceInfo === undefined) {
+		context.notifyUserWarning(`Invalid source: ${userData.sourceDefinition.name}`)
+		return
+	}
 
-	const sourceInfo = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, `Live ${userData.name}`)
+	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = GetSisyfosTimelineObjForRemote(config, sourceInfo)
+
 	const sisyfosPersistMetaData: SisyfosPersistMetaData =
 		sourceInfo !== undefined
 			? {
@@ -1275,7 +1269,7 @@ async function executeActionCutToRemote<
 		metaData: {
 			sisyfosPersistMetaData
 		},
-		tags: [GetTagForLive(userData.name)],
+		tags: [GetTagForLive(userData.sourceDefinition)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjAtemME>({
@@ -1287,7 +1281,7 @@ async function executeActionCutToRemote<
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
 						me: {
-							input: userData.port,
+							input: sourceInfo.port,
 							transition: TSR.AtemTransitionStyle.CUT
 						}
 					},
@@ -1372,10 +1366,7 @@ async function executeActionCutSourceToBox<
 
 	const containsServerBefore = dveContainsServer(meta.sources)
 
-	// ADD 'VO' to VO sources
-	const name = `${userData.name}${userData.vo && !userData.name.match(/VO/i) ? 'VO' : ''}`
-
-	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = name
+	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.sourceDefinition
 
 	const containsServerAfter = dveContainsServer(meta.sources)
 
@@ -1399,14 +1390,6 @@ async function executeActionCutSourceToBox<
 		undefined,
 		mediaPlayerSession
 	)
-	if (userData.vo) {
-		const studioMics = GetSisyfosTimelineObjForCamera(context, config, 'evs', settings.LLayer.Sisyfos.StudioMics)
-		// Replace any existing instances of studio mics with VO values
-		newPieceContent.content.timelineObjects = newPieceContent.content.timelineObjects.filter(
-			obj => studioMics.layer !== obj.layer
-		)
-		newPieceContent.content.timelineObjects.push(studioMics)
-	}
 
 	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
 	if (!containsServerBefore || !containsServerAfter) {
@@ -2000,9 +1983,8 @@ async function executeActionPlayGraphics<
 	const internalGraphic: InternalGraphic = new InternalGraphic(
 		settings.getConfig(context),
 		userData.graphic,
-		true,
+		{ rank: 0 },
 		externalId,
-		undefined,
 		undefined
 	)
 	const pieces: IBlueprintPiece[] = []
@@ -2087,8 +2069,6 @@ async function executeActionSelectFull<
 	const externalId = `adlib-action_${context.getHashId(`cut_to_full_${template}`)}`
 
 	const graphicType = config.studio.GraphicsType
-	const prerollDuration =
-		graphicType === 'HTML' ? config.studio.CasparPrerollDuration : config.studio.VizPilotGraphics.OutTransitionDuration
 	const previousPartKeepaliveDuration =
 		graphicType === 'HTML'
 			? config.studio.HTMLGraphics.KeepAliveDuration
@@ -2118,34 +2098,26 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	})
 
-	const fullPiece = CreateFullPiece(
+	const generator = new PilotGraphicGenerator({
 		config,
 		context,
-		externalId,
-		cue,
-		'FULL',
-		settings.pilotGraphicSettings,
-		true,
-		userData.segmentExternalId,
-		prerollDuration
-	)
+		partId: externalId,
+		settings: settings.pilotGraphicSettings,
+		parsedCue: cue,
+		engine: 'FULL',
+		segmentExternalId: userData.segmentExternalId,
+		adlib: { rank: 0 }
+	})
+
+	const fullPiece = generator.createPiece()
 
 	settings.postProcessPieceTimelineObjects(context, config, fullPiece, false)
 
-	const fullDataStore = CreateFullDataStore(
-		config,
-		context,
-		settings.pilotGraphicSettings,
-		cue,
-		'FULL',
-		externalId,
-		true,
-		userData.segmentExternalId
-	)
+	const fullDataStore = generator.createFullDataStore()
 
 	await context.queuePart(part, [
 		fullPiece,
-		...(fullDataStore ? [fullDataStore] : []),
+		fullDataStore,
 		...(await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
 			SharedSourceLayers.SelectedAdlibGraphicsFull
 		]))
