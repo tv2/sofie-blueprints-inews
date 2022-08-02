@@ -246,7 +246,7 @@ function getServerSelectionBlueprintPiece<
 	layers: ServerPartLayers,
 	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
-	prerollDuration: number
+	_prerollDuration: number
 ): IBlueprintPiece {
 	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, partProps)
 	const contentServerElement = getContentServerElement(partDefinition, partProps, contentProps, layers, context, config)
@@ -267,8 +267,7 @@ function getServerSelectionBlueprintPiece<
 			})
 		}),
 		content: contentServerElement,
-		tags: [GetTagForServerNext(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer)],
-		prerollDuration
+		tags: [GetTagForServerNext(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer)]
 	})
 }
 
