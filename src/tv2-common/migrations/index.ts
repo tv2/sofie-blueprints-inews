@@ -341,7 +341,7 @@ export function PrefixEvsWithEvs(
 ): MigrationStepStudio {
 	return literal<MigrationStepStudio>({
 		id: `${versionStr}.prefixEvs${evsSourceNumber}WithEvs.${studio}`,
-		version: '1.7.4',
+		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
 			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
