@@ -14,12 +14,12 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
-export function CreatePartLive(
+export async function CreatePartLive(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 	let part = literal<IBlueprintPart>({
 		externalId: partDefinition.externalId,
@@ -35,7 +35,7 @@ export function CreatePartLive(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,

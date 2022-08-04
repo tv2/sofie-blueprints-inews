@@ -8,12 +8,7 @@ export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase
 	_context: IShowStyleUserContext,
 	config: TV2BlueprintConfigBase<StudioConfig>,
 	part: PartDefinition
-):
-	| Pick<
-			IBlueprintPart,
-			'autoNext' | 'expectedDuration' | 'prerollDuration' | 'autoNextOverlap' | 'disableOutTransition'
-	  >
-	| {} {
+): Pick<IBlueprintPart, 'autoNext' | 'expectedDuration' | 'autoNextOverlap' | 'disableNextInTransition'> | {} {
 	if (part.cues) {
 		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
 		if (cue) {
@@ -26,28 +21,22 @@ export function GetJinglePartProperties<StudioConfig extends TV2StudioConfigBase
 			})
 
 			if (realBreaker) {
-				return GetJinglePartPropertiesFromTableValue(config, realBreaker)
+				return GetJinglePartPropertiesFromTableValue(realBreaker)
 			}
 		}
 	}
 	return {}
 }
 
-export function GetJinglePartPropertiesFromTableValue<StudioConfig extends TV2StudioConfigBase>(
-	config: TV2BlueprintConfigBase<StudioConfig>,
+export function GetJinglePartPropertiesFromTableValue(
 	realBreaker: TableConfigItemBreakers
-): Pick<
-	IBlueprintPart,
-	'autoNext' | 'expectedDuration' | 'prerollDuration' | 'autoNextOverlap' | 'disableOutTransition'
-> {
+): Pick<IBlueprintPart, 'autoNext' | 'expectedDuration' | 'autoNextOverlap' | 'disableNextInTransition'> {
+	const expectedDuration = Math.max(0, TimeFromFrames(Number(realBreaker.Duration) - Number(realBreaker.StartAlpha)))
+	const autoNextOverlap = Math.min(expectedDuration, TimeFromFrames(Number(realBreaker.EndAlpha)))
 	return {
-		expectedDuration:
-			TimeFromFrames(Number(realBreaker.Duration)) -
-			TimeFromFrames(Number(realBreaker.EndAlpha)) -
-			TimeFromFrames(Number(realBreaker.StartAlpha)),
-		prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(realBreaker.StartAlpha)),
-		autoNextOverlap: TimeFromFrames(Number(realBreaker.EndAlpha)),
-		disableOutTransition: false,
-		autoNext: realBreaker.Autonext === true
+		expectedDuration,
+		autoNextOverlap,
+		autoNext: realBreaker.Autonext === true,
+		disableNextInTransition: false
 	}
 }

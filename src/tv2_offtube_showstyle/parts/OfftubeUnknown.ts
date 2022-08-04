@@ -20,7 +20,7 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
-export function CreatePartUnknown(
+export async function CreatePartUnknown(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
@@ -49,11 +49,9 @@ export function CreatePartUnknown(
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		ApplyFullGraphicPropertiesToPart(config, part)
-	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
-	OfftubeEvaluateCues(
+	await OfftubeEvaluateCues(
 		context,
 		config,
 		part,

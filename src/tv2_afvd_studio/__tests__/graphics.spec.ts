@@ -9,9 +9,10 @@ import {
 	GraphicInternal,
 	GraphicPilot,
 	literal,
-	PartDefinition
+	PartDefinition,
+	RemoteType
 } from 'tv2-common'
-import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { getConfig, parseConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
@@ -49,7 +50,7 @@ function makeMockContext() {
 }
 
 describe('Graphics', () => {
-	it('Throws warning for unpaired target and creates invalid part', () => {
+	it('Throws warning for unpaired target and creates invalid part', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -63,7 +64,6 @@ describe('Graphics', () => {
 
 		const partDefintion: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -74,7 +74,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefintion, 0)
+		const result = await CreatePartGrafik(context, config, partDefintion, 0)
 
 		expect(context.getNotes().map(msg => msg.message)).toEqual([`No graphic found after GRAFIK cue`])
 		expect(result.pieces).toHaveLength(0)
@@ -99,7 +99,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -115,7 +114,7 @@ describe('Graphics', () => {
 		expect(context.getNotes().map(msg => msg.message)).toEqual([`Graphic found without target engine`])
 	})
 
-	it('Creates FULL graphic correctly', () => {
+	it('Creates FULL graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -135,7 +134,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -146,23 +144,23 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		// expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(20)
+		expect(timeline).toHaveLength(5)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerPilot)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilot)
 		expect(vizObj.content.channelName).toBe('FULL1') // TODO: FULL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -174,7 +172,7 @@ describe('Graphics', () => {
 		expect(vizObj.classes).toEqual(['full'])
 	})
 
-	it('Creates OVL pilot graphic correctly', () => {
+	it('Creates OVL pilot graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -200,7 +198,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -211,13 +208,13 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -227,7 +224,7 @@ describe('Graphics', () => {
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '!.full' })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerPilotOverlay)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilotOverlay)
 		expect(vizObj.content.channelName).toBe('OVL1') // TODO: OVL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -238,7 +235,7 @@ describe('Graphics', () => {
 		})
 	})
 
-	it('Creates WALL graphic correctly', () => {
+	it('Creates WALL graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -258,7 +255,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -269,13 +265,13 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -285,7 +281,7 @@ describe('Graphics', () => {
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '1' })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerWall)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerWall)
 		expect(vizObj.content.channelName).toBe('WALL1') // TODO: OVL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -293,7 +289,7 @@ describe('Graphics', () => {
 		expect(vizObj.content.outTransition).toEqual(undefined)
 	})
 
-	it('Creates TLF graphic correctly', () => {
+	it('Creates TLF graphic correctly', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -313,7 +309,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -324,23 +319,23 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.adlibPreroll).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(20)
+		expect(timeline).toHaveLength(5)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
-		expect(vizObj.layer).toEqual(GraphicLLayer.GraphicLLayerPilot)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilot)
 		expect(vizObj.content.channelName).toBe('FULL1') // TODO: FULL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)
@@ -352,7 +347,7 @@ describe('Graphics', () => {
 		expect(vizObj.classes).toEqual(['full'])
 	})
 
-	it('Routes source to engine', () => {
+	it('Routes source to engine', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -363,7 +358,7 @@ describe('Graphics', () => {
 				routing: {
 					type: CueType.Routing,
 					target: 'TLF',
-					INP1: 'LIVE 1',
+					INP1: { sourceType: SourceType.REMOTE, id: '1', name: 'LIVE 1', raw: 'LIVE 1', remoteType: RemoteType.LIVE },
 					iNewsCommand: ''
 				},
 				graphic: {
@@ -378,7 +373,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Grafik,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -389,7 +383,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(3)
 		const auxPiece = result.pieces.find(p => p.outputLayerId === SharedOutputLayers.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
@@ -404,7 +398,7 @@ describe('Graphics', () => {
 		expect(auxObj?.content.aux.input).toBe(1)
 	})
 
-	it('Creates design element', () => {
+	it('Creates design element', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -418,7 +412,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -429,7 +422,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -439,7 +432,7 @@ describe('Graphics', () => {
 		expect(piece.enable).toEqual({ start: 0 })
 	})
 
-	it('Creates background loop', () => {
+	it('Creates background loop', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -454,7 +447,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -465,7 +457,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -483,7 +475,7 @@ describe('Graphics', () => {
 		expect(tlObj?.content.loop).toBe(true)
 	})
 
-	it('Creates overlay internal graphic', () => {
+	it('Creates overlay internal graphic', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
 
@@ -506,7 +498,6 @@ describe('Graphics', () => {
 
 		const partDefinition: PartDefinition = literal<PartDefinition>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '',
 			segmentExternalId: SEGMENT_EXTERNAL_ID,
 			rawType: '',
@@ -517,7 +508,7 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, config, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -531,7 +522,7 @@ describe('Graphics', () => {
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined
 		expect(tlObj).toBeTruthy()
-		expect(tlObj?.layer).toBe(GraphicLLayer.GraphicLLayerOverlayLower)
+		expect(tlObj?.layer).toBe(SharedGraphicLLayer.GraphicLLayerOverlayLower)
 		expect(tlObj?.content.templateName).toBe('bund')
 		expect(tlObj?.content.templateData).toStrictEqual(['Some Person', 'Some Info'])
 		expect(tlObj?.content.channelName).toBe('OVL1')

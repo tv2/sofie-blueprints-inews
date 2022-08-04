@@ -22,10 +22,13 @@ import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
-export function getSegment(context: ISegmentUserContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+export async function getSegment(
+	context: ISegmentUserContext,
+	ingestSegment: IngestSegment
+): Promise<BlueprintResultSegment> {
 	const config = getConfig(context)
 
-	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
+	const result: BlueprintResultSegment = await getSegmentBase(context, ingestSegment, {
 		getConfig,
 		CreatePartContinuity,
 		CreatePartUnknown,
@@ -70,7 +73,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny>([
+					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
@@ -91,6 +94,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				})
 			})
 		],
-		adLibPieces: []
+		adLibPieces: [],
+		actions: []
 	})
 }

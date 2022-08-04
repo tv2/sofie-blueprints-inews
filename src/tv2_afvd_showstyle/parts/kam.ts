@@ -6,7 +6,6 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
@@ -19,29 +18,27 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfoStrict,
-	GetCameraMetaData,
-	GetLayersForCamera,
+	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
+	PieceMetaData,
 	TimeFromINewsField,
-	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
-export function CreatePartKam(
+export async function CreatePartKam(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
 	let part = partKamBase.part.part
@@ -63,6 +60,11 @@ export function CreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
@@ -80,10 +82,8 @@ export function CreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: jingleDSK.Fill,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							}
 						})
@@ -93,7 +93,7 @@ export function CreatePartKam(
 		)
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
-		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		const sourceInfoCam = findSourceInfo(config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			context.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
@@ -110,7 +110,12 @@ export function CreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: SourceLayer.PgmCam,
 				lifespan: PieceLifespan.WithinPart,
-				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
+						acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+					}
+				}),
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -127,30 +132,22 @@ export function CreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: Number(atemInput),
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							},
 							...(AddParentClass(config, partDefinition)
-								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
+								? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
 								: {})
 						}),
-
-						GetSisyfosTimelineObjForCamera(
-							context,
-							config,
-							partDefinition.rawType,
-							SisyfosLLAyer.SisyfosGroupStudioMics
-						)
+						...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 					])
 				}
 			})
 		)
 	}
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,

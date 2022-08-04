@@ -1,14 +1,9 @@
-import {
-	BlueprintRemoveOrphanedPartInstance,
-	IRemoveOrphanedPartInstanceContext
-} from '@tv2media/blueprints-integration'
+import { BlueprintRemoveOrphanedPartInstance, IRundownUserContext } from '@tv2media/blueprints-integration'
 import { PartMetaData } from 'tv2-common'
 
 export function shouldRemoveOrphanedPartInstance(
-	context: IRemoveOrphanedPartInstanceContext,
+	_context: IRundownUserContext,
 	partInstance: BlueprintRemoveOrphanedPartInstance
-) {
-	if (!(partInstance.partInstance.part.metaData as PartMetaData).dirty) {
-		context.removePartInstance()
-	}
+): boolean {
+	return !(partInstance.partInstance.part.metaData as PartMetaData).dirty
 }

@@ -1,13 +1,5 @@
 import { ISegmentUserContext, SplitsContent, WithTimeline } from '@tv2media/blueprints-integration'
-import {
-	CueDefinitionDVE,
-	DVEConfigInput,
-	DVEOptions,
-	GetLayersForEkstern,
-	GetSisyfosTimelineObjForEkstern,
-	MakeContentDVEBase,
-	PartDefinition
-} from 'tv2-common'
+import { CueDefinitionDVE, DVEConfigInput, DVEOptions, MakeContentDVEBase, PartDefinition } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
@@ -33,20 +25,14 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		},
 		SisyfosLLayer: {
 			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-			StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
-			PersistedLevels: OfftubeSisyfosLLayer.SisyfosPersistedLevels
+			StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
 		},
 		CasparLLayer: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		}
 	},
-	dveTimelineGenerators: {
-		GetSisyfosTimelineObjForEkstern,
-		GetLayersForEkstern
-	},
 	boxMappings,
-	AUDIO_LAYERS: [], // TODO
-	EXCLUDED_LAYERS: [] // TODO
+	AUDIO_LAYERS: [] // TODO
 }
 
 export function OfftubeMakeContentDVE(
@@ -57,7 +43,7 @@ export function OfftubeMakeContentDVE(
 	dveConfig: DVEConfigInput | undefined,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	return MakeContentDVEBase(
 		context,
 		config,

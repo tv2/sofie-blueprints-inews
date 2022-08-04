@@ -5,7 +5,7 @@
     "target": "es6",
     "noImplicitAny": true,
     "moduleResolution": "node",
-    "sourceMap": false,
+    "sourceMap": true,
     "outDir": "../dist",
     "baseUrl": "../",
     "paths": {
@@ -19,7 +19,7 @@
     "traceResolution": false,
     "pretty": true,
     "lib": [
-      "es6"
+      "ES2019"
     ],
     "types": [
       "node",

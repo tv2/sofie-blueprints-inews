@@ -11,7 +11,6 @@ import {
 	IStudioUserContext,
 	PieceLifespan,
 	PlaylistTimingType,
-	SourceLayerType,
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
@@ -31,11 +30,16 @@ import {
 	CreateDSKBaselineAdlibs,
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
+	generateExternalId,
 	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	literal,
+	SourceDefinitionKam,
+	SourceDefinitionRemote,
 	SourceInfo,
+	SourceInfoToSourceDefinition,
+	SourceInfoType,
 	t,
 	TimeFromINewsField
 } from 'tv2-common'
@@ -47,6 +51,7 @@ import {
 	SharedOutputLayers,
 	SharedSisyfosLLayer,
 	SharedSourceLayers,
+	SourceType,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -195,7 +200,7 @@ function getGlobalAdLibPiecesOfftube(
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { start: 0 },
@@ -248,77 +253,86 @@ function getGlobalAdlibActionsOfftube(
 	_context: IStudioUserContext,
 	config: OfftubeShowstyleBlueprintConfig
 ): IBlueprintActionManifest[] {
-	const res: IBlueprintActionManifest[] = []
+	const blueprintActions: IBlueprintActionManifest[] = []
 
 	let globalRank = 2000
 
 	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
-		res.push(
+		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionKam
+		const userData = literal<ActionCutToCamera>({
+			type: AdlibActionType.CUT_TO_CAMERA,
+			queue,
+			sourceDefinition
+		})
+		blueprintActions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(_context, userData),
 				actionId: AdlibActionType.CUT_TO_CAMERA,
-				userData: literal<ActionCutToCamera>({
-					type: AdlibActionType.CUT_TO_CAMERA,
-					queue,
-					name: info.id
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: t(`KAM ${info.id}`),
+					label: t(sourceDefinition.name),
 					sourceLayerId: OfftubeSourceLayer.PgmCam,
 					outputLayerId: SharedOutputLayers.PGM,
 					content: {},
 					tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT],
-					currentPieceTags: [GetTagForKam(info.id)],
-					nextPieceTags: [GetTagForKam(info.id)]
+					currentPieceTags: [GetTagForKam(sourceDefinition)],
+					nextPieceTags: [GetTagForKam(sourceDefinition)]
 				}
 			})
 		)
 	}
 
-	function makeRemoteAction(name: string, type: 'Live' | 'Feed', port: number, rank: number) {
-		res.push(
+	function makeRemoteAction(sourceInfo: SourceInfo, rank: number) {
+		const sourceDefinition = SourceInfoToSourceDefinition(sourceInfo) as SourceDefinitionRemote
+		const userData = literal<ActionCutToRemote>({
+			type: AdlibActionType.CUT_TO_REMOTE,
+			sourceDefinition
+		})
+		blueprintActions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(_context, userData),
 				actionId: AdlibActionType.CUT_TO_REMOTE,
-				userData: literal<ActionCutToRemote>({
-					type: AdlibActionType.CUT_TO_REMOTE,
-					name,
-					port
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					label: t(`${type} ${name}`),
+					label: t(`${sourceDefinition.name}`),
 					sourceLayerId: OfftubeSourceLayer.PgmLive,
 					outputLayerId: OfftubeOutputLayers.PGM,
 					content: {},
 					tags: [AdlibTags.OFFTUBE_SET_REMOTE_NEXT, AdlibTags.ADLIB_QUEUE_NEXT],
-					currentPieceTags: [GetTagForLive(name)],
-					nextPieceTags: [GetTagForLive(name)]
+					currentPieceTags: [GetTagForLive(sourceDefinition)],
+					nextPieceTags: [GetTagForLive(sourceDefinition)]
 				}
 			})
 		)
 	}
 
-	function makeAdlibBoxesActions(info: SourceInfo, type: 'KAM' | 'LIVE', rank: number) {
+	function makeAdlibBoxesActions(
+		info: SourceInfo,
+		type: SourceInfoType.KAM | SourceInfoType.LIVE | SourceInfoType.FEED,
+		rank: number
+	) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			const feed = type === 'LIVE' && info.id.match(/^F(.+).*$/)
-			const name = feed ? `FEED ${feed[1]}` : `${type} ${info.id}`
-			const layer = type === 'KAM' ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
-			res.push(
+			const sourceDefinition = SourceInfoToSourceDefinition(info)
+			const layer = type === SourceInfoType.KAM ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
+			const userData = literal<ActionCutSourceToBox>({
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name: sourceDefinition.name,
+				box,
+				sourceDefinition
+			})
+			blueprintActions.push(
 				literal<IBlueprintActionManifest>({
+					externalId: generateExternalId(_context, userData),
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name,
-						port: info.port,
-						sourceType: info.type,
-						box
-					}),
+					userData,
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
-						label: t(`${name} inp ${box + 1}`),
+						label: t(`${sourceDefinition.name} inp ${box + 1}`),
 						sourceLayerId: layer,
 						outputLayerId: OfftubeOutputLayers.PGM,
 						content: {},
@@ -331,17 +345,17 @@ function getGlobalAdlibActionsOfftube(
 
 	function makeServerAdlibBoxesActions(rank: number) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			res.push(
+			const userData = literal<ActionCutSourceToBox>({
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name: `SERVER`,
+				box,
+				sourceDefinition: { sourceType: SourceType.SERVER }
+			})
+			blueprintActions.push(
 				literal<IBlueprintActionManifest>({
+					externalId: generateExternalId(_context, userData),
 					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `SERVER`,
-						port: -1,
-						sourceType: SourceLayerType.VT,
-						box,
-						server: true
-					}),
+					userData,
 					userDataManifest: {},
 					display: {
 						_rank: rank + 0.1 * box,
@@ -356,12 +370,14 @@ function getGlobalAdlibActionsOfftube(
 		}
 	}
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	function makeCommentatorSelectServerAction() {
+		const userData = literal<ActionCommentatorSelectServer>({
+			type: AdlibActionType.COMMENTATOR_SELECT_SERVER
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_SERVER,
-			userData: literal<ActionCommentatorSelectServer>({
-				type: AdlibActionType.COMMENTATOR_SELECT_SERVER
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
@@ -374,14 +390,18 @@ function getGlobalAdlibActionsOfftube(
 				nextPieceTags: [TallyTags.SERVER_IS_LIVE]
 			}
 		})
-	)
+	}
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	blueprintActions.push(makeCommentatorSelectServerAction())
+
+	function makeCommentatorSelectDveAction() {
+		const userData = literal<ActionCommentatorSelectDVE>({
+			type: AdlibActionType.COMMENTATOR_SELECT_DVE
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_DVE,
-			userData: literal<ActionCommentatorSelectDVE>({
-				type: AdlibActionType.COMMENTATOR_SELECT_DVE
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
@@ -394,14 +414,18 @@ function getGlobalAdlibActionsOfftube(
 				nextPieceTags: [TallyTags.DVE_IS_LIVE]
 			}
 		})
-	)
+	}
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	blueprintActions.push(makeCommentatorSelectDveAction())
+
+	function makeCommentatorSelectFullAction() {
+		const userData = literal<ActionCommentatorSelectFull>({
+			type: AdlibActionType.COMMENTATOR_SELECT_FULL
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_FULL,
-			userData: literal<ActionCommentatorSelectFull>({
-				type: AdlibActionType.COMMENTATOR_SELECT_FULL
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
@@ -414,16 +438,20 @@ function getGlobalAdlibActionsOfftube(
 				nextPieceTags: [TallyTags.FULL_IS_LIVE]
 			}
 		})
-	)
+	}
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	blueprintActions.push(makeCommentatorSelectFullAction())
+
+	function makeClearGraphicsAltudAction() {
+		const userData = literal<ActionClearGraphics>({
+			type: AdlibActionType.CLEAR_GRAPHICS,
+			sendCommands: false,
+			label: 'GFX Altud'
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
-			userData: literal<ActionClearGraphics>({
-				type: AdlibActionType.CLEAR_GRAPHICS,
-				sendCommands: false,
-				label: 'GFX Altud'
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 400,
@@ -436,16 +464,20 @@ function getGlobalAdlibActionsOfftube(
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
 		})
-	)
+	}
 
-	res.push(...GetTransitionAdLibActions(config, 800))
+	blueprintActions.push(makeClearGraphicsAltudAction())
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	blueprintActions.push(...GetTransitionAdLibActions(config, 800))
+
+	function makeRecallLastDveAction() {
+		const userData = literal<ActionRecallLastDVE>({
+			type: AdlibActionType.RECALL_LAST_DVE
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.RECALL_LAST_DVE,
-			userData: literal<ActionRecallLastDVE>({
-				type: AdlibActionType.RECALL_LAST_DVE
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 1,
@@ -455,16 +487,20 @@ function getGlobalAdlibActionsOfftube(
 				tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
 			}
 		})
-	)
+	}
+
+	blueprintActions.push(makeRecallLastDveAction())
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		res.push(
+		const userData = literal<ActionSelectDVELayout>({
+			type: AdlibActionType.SELECT_DVE_LAYOUT,
+			config: dveConfig
+		})
+		blueprintActions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(_context, userData),
 				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
-				userData: literal<ActionSelectDVELayout>({
-					type: AdlibActionType.SELECT_DVE_LAYOUT,
-					config: dveConfig
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: 200 + i,
@@ -477,33 +513,32 @@ function getGlobalAdlibActionsOfftube(
 		)
 	})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
 			makeCutCameraActions(o, false, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			makeCutCameraActions(o, true, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'KAM', globalRank++)
+			makeAdlibBoxesActions(o, SourceInfoType.KAM, globalRank++)
 		})
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	function makeRecallLastLiveAction() {
+		const userData = literal<ActionRecallLastLive>({
+			type: AdlibActionType.RECALL_LAST_LIVE
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.RECALL_LAST_LIVE,
-			userData: literal<ActionRecallLastLive>({
-				type: AdlibActionType.RECALL_LAST_LIVE
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 1,
@@ -513,30 +548,44 @@ function getGlobalAdlibActionsOfftube(
 				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		})
-	)
+	}
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, 10) // the first x cameras to create live-adlibs from
+	blueprintActions.push(makeRecallLastLiveAction())
+
+	config.sources.feeds
+		.slice(0, 10) // the first x sources to create feed-adlibs from
 		.forEach(o => {
-			makeRemoteAction(o.id, o.id.match(/^F/) ? 'Feed' : 'Live', o.port, globalRank++)
+			makeRemoteAction(o, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+	config.sources.lives
+		.slice(0, 10) // the first x sources to create live-adlibs from
+		.forEach(o => {
+			makeRemoteAction(o, globalRank++)
+		})
+
+	config.sources.feeds
+		.slice(0, 10) // the first x remote to create INP1/2/3 feed-adlibs from
+		.forEach(o => {
+			makeAdlibBoxesActions(o, SourceInfoType.FEED, globalRank++)
+		})
+
+	config.sources.lives
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'LIVE', globalRank++)
+			makeAdlibBoxesActions(o, SourceInfoType.LIVE, globalRank++)
 		})
 
 	makeServerAdlibBoxesActions(globalRank++)
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	function makeCommentatorSelectJingleAction() {
+		const userData = literal<ActionCommentatorSelectJingle>({
+			type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
+		})
+		return literal<IBlueprintActionManifest>({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_JINGLE,
-			userData: literal<ActionCommentatorSelectJingle>({
-				type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: globalRank++,
@@ -549,9 +598,11 @@ function getGlobalAdlibActionsOfftube(
 				nextPieceTags: [TallyTags.JINGLE_IS_LIVE]
 			}
 		})
-	)
+	}
 
-	return res
+	blueprintActions.push(makeCommentatorSelectJingleAction())
+
+	return blueprintActions
 }
 
 function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBaseline {

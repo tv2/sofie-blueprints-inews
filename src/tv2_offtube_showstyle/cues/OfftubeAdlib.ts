@@ -12,6 +12,7 @@ import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	literal,
@@ -26,7 +27,7 @@ import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
-export function OfftubeEvaluateAdLib(
+export async function OfftubeEvaluateAdLib(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
@@ -45,13 +46,9 @@ export function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = Math.max(
-			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
-			0
-		)
-
 		actions.push(
-			CreateAdlibServer(
+			await CreateAdlibServer(
+				context,
 				config,
 				rank,
 				partDefinition,
@@ -67,9 +64,7 @@ export function OfftubeEvaluateAdLib(
 						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-						StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
-						SisyfosPersistedLevels: OfftubeSisyfosLLayer.SisyfosPersistedLevels
+						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 					},
 					AtemLLayer: {
 						MEPgm: OfftubeAtemLLayer.AtemMEClean
@@ -78,7 +73,6 @@ export function OfftubeEvaluateAdLib(
 						ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 					}
 				},
-				sourceDuration,
 				true
 			)
 		)
@@ -111,27 +105,17 @@ export function OfftubeEvaluateAdLib(
 
 		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
-		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
-
-		adlibContent.stickyLayers.forEach(layer => {
-			sticky = {
-				...sticky,
-				[layer]: {
-					value: 1,
-					followsPrevious: false
-				}
-			}
+		const userData = literal<ActionSelectDVE>({
+			type: AdlibActionType.SELECT_DVE,
+			config: cueDVE,
+			videoId: partDefinition.fields.videoId,
+			segmentExternalId: partDefinition.segmentExternalId
 		})
-
 		actions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(context, userData),
 				actionId: AdlibActionType.SELECT_DVE,
-				userData: literal<ActionSelectDVE>({
-					type: AdlibActionType.SELECT_DVE,
-					config: cueDVE,
-					videoId: partDefinition.fields.videoId,
-					segmentExternalId: partDefinition.segmentExternalId
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					sourceLayerId: OfftubeSourceLayer.PgmDVE,

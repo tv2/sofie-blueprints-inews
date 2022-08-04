@@ -1,6 +1,11 @@
-import { IBlueprintRundownDB, PlaylistTimingType } from '@tv2media/blueprints-integration'
-import { UnparsedCue } from 'tv2-common'
-import { CueType, PartType } from 'tv2-constants'
+import { IBlueprintRundownDB, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
+import {
+	CueDefinitionBackgroundLoop,
+	CueDefinitionGraphicDesign,
+	stripRedundantCuesWhenLayoutCueIsPresent,
+	UnparsedCue
+} from 'tv2-common'
+import { CueType, PartType, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { getConfig, parseConfig as parseShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
@@ -20,7 +25,10 @@ import {
 	PartDefinitionTeknik,
 	PartDefinitionTelefon,
 	PartDefinitionUnknown,
-	PartDefinitionVO
+	PartDefinitionVO,
+	RemoteType,
+	SourceDefinitionKam,
+	SourceDefinitionRemote
 } from '../ParseBody'
 import {
 	CueDefinition,
@@ -84,21 +92,35 @@ const cueGrafik3: CueDefinitionGraphic<GraphicInternal> = {
 
 const unparsedGrafik3 = ['kg bund 3']
 
+const SOURCE_DEFINITION_LIVE_1: SourceDefinitionRemote = {
+	sourceType: SourceType.REMOTE,
+	remoteType: RemoteType.LIVE,
+	id: '1',
+	name: 'LIVE 1',
+	raw: 'LIVE 1'
+}
 const cueEkstern1: CueDefinitionEkstern = {
 	type: CueType.Ekstern,
-	source: 'Live 1',
+	sourceDefinition: SOURCE_DEFINITION_LIVE_1,
 	iNewsCommand: 'EKSTERN'
 }
 
-const unparsedEkstern1 = ['EKSTERN=Live 1']
+const unparsedEkstern1 = ['EKSTERN=LIVE 1']
 
+const SOURCE_DEFINITION_LIVE_2: SourceDefinitionRemote = {
+	sourceType: SourceType.REMOTE,
+	remoteType: RemoteType.LIVE,
+	id: '2',
+	name: 'LIVE 2',
+	raw: 'LIVE 2'
+}
 const cueEkstern2: CueDefinitionEkstern = {
 	type: CueType.Ekstern,
-	source: 'Live 2',
+	sourceDefinition: SOURCE_DEFINITION_LIVE_2,
 	iNewsCommand: 'EKSTERN'
 }
 
-const unparsedEkstern2 = ['EKSTERN=Live 2']
+const unparsedEkstern2 = ['EKSTERN=LIVE 2']
 
 const cueJingle1: CueDefinitionJingle = {
 	type: CueType.Jingle,
@@ -139,6 +161,28 @@ const cueTelefon2: CueDefinitionTelefon = {
 }
 
 const unparsedTelefon2 = ['TELEFON=TLF 2']
+
+const SOURCE_DEFINITION_KAM_1: SourceDefinitionKam = {
+	sourceType: SourceType.KAM,
+	id: '1',
+	raw: 'KAM 1',
+	minusMic: false,
+	name: 'KAM 1'
+}
+const SOURCE_DEFINITION_KAM_2: SourceDefinitionKam = {
+	sourceType: SourceType.KAM,
+	id: '2',
+	raw: 'KAM 2',
+	minusMic: false,
+	name: 'KAM 2'
+}
+const SOURCE_DEFINITION_KAM_3: SourceDefinitionKam = {
+	sourceType: SourceType.KAM,
+	id: '3',
+	raw: 'KAM 3',
+	minusMic: false,
+	name: 'KAM 3'
+}
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 
@@ -190,7 +234,6 @@ describe('Body parser', () => {
 					type: PartType.Teknik,
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
-					variant: {},
 					externalId: '',
 					rawType: 'TEKNIK',
 					fields: {},
@@ -199,12 +242,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -212,12 +254,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2, cueJingle3],
-					title: 'Live 2',
+					title: 'LIVE 2',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -240,7 +281,6 @@ describe('Body parser', () => {
 					type: PartType.Unknown,
 					cues: [cueGrafik1],
 					script: 'Thid id thr trext for the next DVE\n',
-					variant: {},
 					externalId: '',
 					rawType: '',
 					fields: {},
@@ -249,12 +289,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: 'Script here\n',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -280,8 +319,8 @@ describe('Body parser', () => {
 							type: CueType.DVE,
 							template: 'MORBARN',
 							sources: {
-								INP1: 'Kam 1',
-								INP2: 'Kam 2'
+								INP1: { ...SOURCE_DEFINITION_KAM_1, raw: 'Kam 1' },
+								INP2: { ...SOURCE_DEFINITION_KAM_2, raw: 'Kam 2' }
 							},
 							labels: ['Live', 'Odense'],
 							iNewsCommand: 'DVE'
@@ -289,7 +328,6 @@ describe('Body parser', () => {
 					],
 					title: 'MORBARN',
 					script: 'Thid id thr trext for the next DVE\n',
-					variant: {},
 					externalId: '',
 					rawType: '',
 					fields: {},
@@ -298,12 +336,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1, cueGrafik1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: 'Script here\n',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -337,9 +374,7 @@ describe('Body parser', () => {
 					rawType: 'KAM AR',
 					cues: [cueJingle3],
 					script: 'Lots more script\n',
-					variant: {
-						name: 'AR'
-					},
+					sourceDefinition: { sourceType: SourceType.KAM, id: 'AR', raw: 'KAM AR', minusMic: false, name: 'KAM AR' },
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -351,7 +386,6 @@ describe('Body parser', () => {
 					rawType: 'SERVER',
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -359,12 +393,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -372,12 +405,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern2, cueJingle1, cueJingle2],
-					title: 'Live 2',
+					title: 'LIVE 2',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -401,9 +433,7 @@ describe('Body parser', () => {
 					rawType: 'CAMERA 1',
 					cues: [],
 					script: 'Her står em masse tekst\n',
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: { sourceType: SourceType.KAM, id: '1', raw: 'CAMERA 1', minusMic: false, name: 'KAM 1' },
 					externalId: '',
 					fields,
 					modified: 0,
@@ -426,9 +456,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 1',
 					cues: [],
 					script: '',
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -440,7 +468,6 @@ describe('Body parser', () => {
 					rawType: '100%GRAFIK',
 					cues: [cueGrafik1],
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -448,12 +475,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1, cueGrafik3],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -476,9 +502,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 1',
 					cues: [],
 					script: '',
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -501,7 +525,6 @@ describe('Body parser', () => {
 					rawType: 'ATTACK',
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -515,9 +538,7 @@ describe('Body parser', () => {
 					cues: [],
 					script:
 						'Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script. Long script.\n',
-					variant: {
-						name: '4'
-					},
+					sourceDefinition: { sourceType: SourceType.KAM, id: '4', raw: 'KAM 4', minusMic: false, name: 'KAM 4' },
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -540,9 +561,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 2',
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: 'Some script\n',
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -550,12 +569,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -578,9 +596,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 2',
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: 'Some script.\nSome more script with "a quote"\nYet more script, this time it\'s a question?\n',
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -588,12 +604,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -616,9 +631,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 2',
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: 'Question?\n',
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -626,12 +639,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -654,9 +666,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 1',
 					cues: [],
 					script: 'Some script.\n',
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -668,7 +678,6 @@ describe('Body parser', () => {
 					rawType: 'VO',
 					cues: [cueGrafik1, cueGrafik2],
 					script: 'More script.\nEven more\nMore script again.\n',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -691,9 +700,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 1',
 					cues: [],
 					script: 'Some script.\n',
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -705,7 +712,6 @@ describe('Body parser', () => {
 					rawType: 'VOV',
 					cues: [cueGrafik1, cueGrafik2],
 					script: 'More script.\nEven more\nMore script again.\n',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -728,9 +734,7 @@ describe('Body parser', () => {
 					rawType: 'KAM 3',
 					cues: [cueGrafik1, cueGrafik2],
 					script: "Here is our correspondant.\nWhat's going on over there?\n.\n",
-					variant: {
-						name: '3'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_3,
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -768,7 +772,6 @@ describe('Body parser', () => {
 					rawType: '',
 					cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 					script: "What's going on over there?\n",
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -776,12 +779,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -789,12 +791,11 @@ describe('Body parser', () => {
 					segmentExternalId: '00000000001'
 				}),
 				literal<PartDefinitionEkstern>({
-					type: PartType.Ekstern,
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern2],
-					title: 'Live 2',
+					title: 'LIVE 2',
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -817,7 +818,6 @@ describe('Body parser', () => {
 					rawType: 'INTRO',
 					cues: [cueGrafik1],
 					script: '',
-					variant: {},
 					externalId: '',
 					fields: {},
 					modified: 0,
@@ -848,9 +848,7 @@ describe('Body parser', () => {
 					type: PartType.Kam,
 					rawType: 'KAM 2',
 					script: 'Hallo, I wnat to tell you......\n',
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					cues: [cueGrafik1],
 					fields,
 					modified: 0,
@@ -862,7 +860,6 @@ describe('Body parser', () => {
 					type: PartType.Server,
 					rawType: 'SERVER',
 					script: '',
-					variant: {},
 					cues: [cueGrafik2, cueGrafik3, cueJingle1, cueJingle2, cueJingle3],
 					fields,
 					modified: 0,
@@ -874,9 +871,7 @@ describe('Body parser', () => {
 					type: PartType.Kam,
 					rawType: 'KAM 2',
 					script: '',
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					cues: [],
 					fields,
 					modified: 0,
@@ -889,9 +884,7 @@ describe('Body parser', () => {
 					type: PartType.Kam,
 					rawType: 'KAM 2',
 					script: '',
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					cues: [],
 					fields,
 					modified: 0,
@@ -923,11 +916,10 @@ describe('Body parser', () => {
 			literal<PartDefinition[]>([
 				literal<PartDefinitionEkstern>({
 					externalId: '',
-					type: PartType.Ekstern,
-					variant: {},
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
 					fields,
 					modified: 0,
@@ -936,11 +928,10 @@ describe('Body parser', () => {
 				}),
 				literal<PartDefinitionEkstern>({
 					externalId: '',
-					type: PartType.Ekstern,
-					variant: {},
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern2],
-					title: 'Live 2',
+					title: 'LIVE 2',
 					script: '',
 					fields,
 					modified: 0,
@@ -950,9 +941,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					rawType: 'KAM 1',
 					cues: [],
 					script: 'Single line of script\n',
@@ -964,7 +953,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionServer>({
 					externalId: '',
 					type: PartType.Server,
-					variant: {},
 					rawType: 'SERVER',
 					cues: [cueGrafik2, cueGrafik3, cueJingle1, cueJingle2, cueJingle3],
 					script: '',
@@ -976,7 +964,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionTelefon>({
 					externalId: '',
 					type: PartType.Telefon,
-					variant: {},
 					rawType: '',
 					cues: [cueTelefon1],
 					script: '',
@@ -988,7 +975,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionTelefon>({
 					externalId: '',
 					type: PartType.Telefon,
-					variant: {},
 					rawType: '',
 					cues: [cueTelefon2],
 					script: '',
@@ -1001,9 +987,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					rawType: 'KAM 2',
 					cues: [],
 					script: 'And some script.\n',
@@ -1026,7 +1010,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionVO>({
 					externalId: '',
 					type: PartType.VO,
-					variant: {},
 					effekt: 0,
 					rawType: 'VO',
 					cues: [cueGrafik1],
@@ -1050,9 +1033,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					effekt: 1,
 					rawType: 'KAM 1',
 					cues: [],
@@ -1065,7 +1046,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionServer>({
 					externalId: '',
 					type: PartType.Server,
-					variant: {},
 					rawType: 'SERVER',
 					cues: [cueGrafik1, cueGrafik2],
 					script: 'STORT BILLEDE AF STUDIE\n',
@@ -1088,7 +1068,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionUnknown>({
 					externalId: '',
 					type: PartType.Unknown,
-					variant: {},
 					rawType: '',
 					cues: [cueJingle1],
 					title: '1',
@@ -1120,9 +1099,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					rawType: 'KAM 2',
 					cues: [],
 					script: 'Hallo, I wnat to tell you......\nHEREEEELLLLOOOK\nYES\n',
@@ -1134,7 +1111,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionServer>({
 					externalId: '',
 					type: PartType.Server,
-					variant: {},
 					rawType: 'SERVER',
 					cues: literal<CueDefinition[]>([
 						literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -1191,9 +1167,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					rawType: 'KAM 1',
 					cues: [],
 					script: '',
@@ -1205,9 +1179,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					rawType: 'KAM 1',
 					cues: [],
 					script: '',
@@ -1220,9 +1192,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					rawType: 'KAM 1',
 					cues: [],
 					script: '',
@@ -1249,9 +1219,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					rawType: 'KAM 1',
 					cues: [],
 					script: 'Skriv spib her\n',
@@ -1263,7 +1231,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionTelefon>({
 					externalId: '',
 					type: PartType.Telefon,
-					variant: {},
 					rawType: '',
 					cues: [
 						literal<CueDefinitionTelefon>({
@@ -1344,11 +1311,9 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					transition: {
-						style: 'MIX',
+						style: TSR.AtemTransitionStyle.MIX,
 						duration: 200
 					},
 					rawType: 'KAM 1',
@@ -1362,7 +1327,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionTelefon>({
 					externalId: '',
 					type: PartType.Telefon,
-					variant: {},
 					rawType: '',
 					cues: [
 						literal<CueDefinitionTelefon>({
@@ -1439,7 +1403,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionVO>({
 					externalId: '',
 					type: PartType.VO,
-					variant: {},
 					effekt: 0,
 					rawType: 'VOSB',
 					cues: [cueGrafik1],
@@ -1463,7 +1426,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionVO>({
 					externalId: '',
 					type: PartType.VO,
-					variant: {},
 					effekt: 0,
 					rawType: 'VOSB',
 					cues: [cueGrafik1],
@@ -1499,9 +1461,7 @@ describe('Body parser', () => {
 			literal<PartDefinitionKam>({
 				externalId: '',
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				rawType: 'KAM 1',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -1528,7 +1488,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionGrafik>({
 				externalId: '',
 				type: PartType.Grafik,
-				variant: {},
 				rawType: '100%GRAFIK',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -1580,8 +1539,12 @@ describe('Body parser', () => {
 				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS 1',
-				variant: {
-					evs: '1'
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: 'EVS 1',
+					name: 'EVS 1',
+					raw: 'EVS 1',
+					vo: false
 				},
 				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 				fields,
@@ -1603,9 +1566,12 @@ describe('Body parser', () => {
 				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS1VOV',
-				variant: {
-					evs: '1',
-					vo: 'VOV'
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: 'EVS 1',
+					name: 'EVS 1 VOV',
+					raw: 'EVS1VOV',
+					vo: true
 				},
 				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
 				fields,
@@ -1626,9 +1592,12 @@ describe('Body parser', () => {
 				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS 1 VO',
-				variant: {
-					evs: '1',
-					vo: 'VO'
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: 'EVS 1',
+					name: 'EVS 1 VO',
+					raw: 'EVS 1 VO',
+					vo: true
 				},
 				cues: [],
 				fields,
@@ -1641,9 +1610,12 @@ describe('Body parser', () => {
 				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS 2VO',
-				variant: {
-					evs: '2',
-					vo: 'VO'
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: 'EVS 2',
+					name: 'EVS 2 VO',
+					raw: 'EVS 2VO',
+					vo: true
 				},
 				cues: [],
 				fields,
@@ -1656,9 +1628,12 @@ describe('Body parser', () => {
 				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS3VO',
-				variant: {
-					evs: '3',
-					vo: 'VO'
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: 'EVS 3',
+					name: 'EVS 3 VO',
+					raw: 'EVS3VO',
+					vo: true
 				},
 				cues: [],
 				fields,
@@ -1671,9 +1646,12 @@ describe('Body parser', () => {
 				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS4 VO',
-				variant: {
-					evs: '4',
-					vo: 'VO'
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: 'EVS 4',
+					name: 'EVS 4 VO',
+					raw: 'EVS4 VO',
+					vo: true
 				},
 				cues: [],
 				fields,
@@ -1700,7 +1678,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionServer>({
 				externalId: '',
 				type: PartType.Server,
-				variant: {},
 				rawType: 'SERVER',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -1743,15 +1720,14 @@ describe('Body parser', () => {
 			literal<PartDefinitionDVE>({
 				externalId: '',
 				type: PartType.DVE,
-				variant: {},
 				rawType: '',
 				cues: [
 					literal<CueDefinitionDVE>({
 						type: CueType.DVE,
 						template: 'SOMMERFUGL',
 						sources: {
-							INP1: 'KAM 1',
-							INP2: 'LIVE 2'
+							INP1: SOURCE_DEFINITION_KAM_1,
+							INP2: SOURCE_DEFINITION_LIVE_2
 						},
 						labels: ['Rodovre'],
 						iNewsCommand: 'DVE'
@@ -1766,16 +1742,9 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionEkstern>({
 				externalId: '',
-				type: PartType.Ekstern,
-				variant: {},
+				type: PartType.REMOTE,
 				rawType: '',
-				cues: [
-					literal<CueDefinitionEkstern>({
-						type: CueType.Ekstern,
-						source: 'LIVE 2',
-						iNewsCommand: 'EKSTERN'
-					})
-				],
+				cues: [cueEkstern2],
 				title: 'LIVE 2',
 				script: 'Some Script here\n',
 				fields,
@@ -1807,11 +1776,10 @@ describe('Body parser', () => {
 			literal<PartDefinition[]>([
 				literal<PartDefinitionEkstern>({
 					externalId: '',
-					type: PartType.Ekstern,
-					variant: {},
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern1],
-					title: 'Live 1',
+					title: 'LIVE 1',
 					script: '',
 					fields,
 					modified: 0,
@@ -1820,11 +1788,10 @@ describe('Body parser', () => {
 				}),
 				literal<PartDefinitionEkstern>({
 					externalId: '',
-					type: PartType.Ekstern,
-					variant: {},
+					type: PartType.REMOTE,
 					rawType: '',
 					cues: [cueEkstern2],
-					title: 'Live 2',
+					title: 'LIVE 2',
 					script: '',
 					fields,
 					modified: 0,
@@ -1834,9 +1801,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '1'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					rawType: 'KAM 1',
 					cues: [],
 					script: 'Some script.\n',
@@ -1848,7 +1813,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionServer>({
 					externalId: '',
 					type: PartType.Server,
-					variant: {},
 					rawType: 'SERVER',
 					cues: [cueGrafik2, cueGrafik3, cueJingle1, cueJingle2, cueJingle3],
 					script: '',
@@ -1860,7 +1824,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionTelefon>({
 					externalId: '',
 					type: PartType.Telefon,
-					variant: {},
 					rawType: '',
 					cues: [cueTelefon1],
 					script: '',
@@ -1872,7 +1835,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionTelefon>({
 					externalId: '',
 					type: PartType.Telefon,
-					variant: {},
 					rawType: '',
 					cues: [cueTelefon2],
 					script: '',
@@ -1885,9 +1847,7 @@ describe('Body parser', () => {
 				literal<PartDefinitionKam>({
 					externalId: '',
 					type: PartType.Kam,
-					variant: {
-						name: '2'
-					},
+					sourceDefinition: SOURCE_DEFINITION_KAM_2,
 					rawType: 'KAM 2',
 					cues: [],
 					script: 'Some script.\n',
@@ -1915,15 +1875,14 @@ describe('Body parser', () => {
 			literal<PartDefinitionDVE>({
 				externalId: '',
 				type: PartType.DVE,
-				variant: {},
 				rawType: '',
 				cues: [
 					literal<CueDefinitionDVE>({
 						type: CueType.DVE,
 						template: 'SOMMERFUGL',
 						sources: {
-							INP1: 'KAM 1',
-							INP2: 'LIVE 2'
+							INP1: SOURCE_DEFINITION_KAM_1,
+							INP2: SOURCE_DEFINITION_LIVE_2
 						},
 						labels: ['Rodovre'],
 						iNewsCommand: 'DVE'
@@ -1938,16 +1897,9 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionEkstern>({
 				externalId: '',
-				type: PartType.Ekstern,
-				variant: {},
+				type: PartType.REMOTE,
 				rawType: '',
-				cues: [
-					literal<CueDefinitionEkstern>({
-						type: CueType.Ekstern,
-						source: 'LIVE 2',
-						iNewsCommand: 'EKSTERN'
-					})
-				],
+				cues: [cueEkstern2],
 				title: 'LIVE 2',
 				script: 'And some script\n',
 				fields,
@@ -1958,7 +1910,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionServer>({
 				externalId: '',
 				type: PartType.Server,
-				variant: {},
 				rawType: 'SERVER',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -2016,7 +1967,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionUnknown>({
 				externalId: '',
 				type: PartType.Unknown,
-				variant: {},
 				rawType: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -2060,15 +2010,14 @@ describe('Body parser', () => {
 			literal<PartDefinitionDVE>({
 				externalId: '',
 				type: PartType.DVE,
-				variant: {},
 				rawType: '',
 				cues: [
 					literal<CueDefinitionDVE>({
 						type: CueType.DVE,
 						template: 'SOMMERFUGL',
 						sources: {
-							INP1: 'KAM 1',
-							INP2: 'LIVE 2'
+							INP1: SOURCE_DEFINITION_KAM_1,
+							INP2: SOURCE_DEFINITION_LIVE_2
 						},
 						labels: ['Rodovre'],
 						iNewsCommand: 'DVE'
@@ -2083,16 +2032,9 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionEkstern>({
 				externalId: '',
-				type: PartType.Ekstern,
-				variant: {},
+				type: PartType.REMOTE,
 				rawType: '',
-				cues: [
-					literal<CueDefinitionEkstern>({
-						type: CueType.Ekstern,
-						source: 'LIVE 2',
-						iNewsCommand: 'EKSTERN'
-					})
-				],
+				cues: [cueEkstern2],
 				script: 'Some script\n',
 				title: 'LIVE 2',
 				fields,
@@ -2103,7 +2045,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionServer>({
 				externalId: '',
 				type: PartType.Server,
-				variant: {},
 				rawType: 'SERVER',
 				cues: [],
 				script: '',
@@ -2123,9 +2064,7 @@ describe('Body parser', () => {
 			literal<PartDefinitionKam>({
 				externalId: '',
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: { ...SOURCE_DEFINITION_KAM_1, raw: 'KAM1' },
 				rawType: 'KAM1',
 				cues: [],
 				script: '',
@@ -2156,7 +2095,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionUnknown>({
 				externalId: '',
 				type: PartType.Unknown,
-				variant: {},
 				rawType: '',
 				cues: [
 					literal<CueDefinitionJingle>({
@@ -2225,9 +2163,7 @@ describe('Body parser', () => {
 			literal<PartDefinitionKam>({
 				externalId: '',
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: { ...SOURCE_DEFINITION_KAM_1, raw: 'Kam 1' },
 				rawType: 'Kam 1',
 				cues: [
 					literal<CueDefinitionUnpairedTarget>({
@@ -2237,7 +2173,7 @@ describe('Body parser', () => {
 						routing: {
 							type: CueType.Routing,
 							target: 'OVL',
-							INP: 'LIVE 2',
+							INP: SOURCE_DEFINITION_LIVE_2,
 							iNewsCommand: ''
 						},
 						start: {
@@ -2291,7 +2227,6 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionGrafik>({
 				type: PartType.Grafik,
-				variant: {},
 				externalId: '',
 				rawType: '100% GRAFIK',
 				cues: [
@@ -2328,9 +2263,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				rawType: 'KAM 1',
 				cues: [],
@@ -2342,7 +2275,6 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionServer>({
 				type: PartType.Server,
-				variant: {},
 				externalId: '',
 				rawType: 'SERVER',
 				cues: [],
@@ -2354,9 +2286,7 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '2'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_2,
 				externalId: '',
 				rawType: 'KAM 2',
 				cues: [],
@@ -2377,9 +2307,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				rawType: 'KAM 1',
 				cues: [],
@@ -2391,17 +2319,10 @@ describe('Body parser', () => {
 				segmentExternalId: '00000000001'
 			}),
 			literal<PartDefinitionEkstern>({
-				type: PartType.Ekstern,
-				variant: {},
+				type: PartType.REMOTE,
 				externalId: '',
 				rawType: '',
-				cues: [
-					literal<CueDefinitionEkstern>({
-						type: CueType.Ekstern,
-						source: 'LIVE 1',
-						iNewsCommand: 'EKSTERN'
-					})
-				],
+				cues: [cueEkstern1],
 				title: 'LIVE 1',
 				script: '',
 				fields: {},
@@ -2411,9 +2332,7 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '2'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_2,
 				externalId: '',
 				rawType: 'KAM 2',
 				cues: [],
@@ -2452,9 +2371,7 @@ describe('Body parser', () => {
 			literal<PartDefinitionKam>({
 				externalId: '',
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				rawType: 'KAM 1',
 				fields,
 				modified: 0,
@@ -2482,9 +2399,7 @@ describe('Body parser', () => {
 			literal<PartDefinitionKam>({
 				externalId: '',
 				type: PartType.Kam,
-				variant: {
-					name: '2'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_2,
 				rawType: 'KAM 2',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -2524,7 +2439,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionUnknown>({
 					externalId: '',
 					type: PartType.Unknown,
-					variant: {},
 					rawType: '',
 					cues: [
 						literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -2539,8 +2453,8 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'FULL',
-								INP: '',
-								INP1: '',
+								INP: undefined,
+								INP1: undefined,
 								iNewsCommand: ''
 							},
 							engineNumber: 4,
@@ -2590,7 +2504,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionUnknown>({
 					externalId: '',
 					type: PartType.Unknown,
-					variant: {},
 					rawType: '',
 					cues: [
 						literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -2605,7 +2518,7 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'FULL',
-								INP1: '',
+								INP1: undefined,
 								iNewsCommand: ''
 							},
 							iNewsCommand: 'GRAFIK',
@@ -2624,7 +2537,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionUnknown>({
 					externalId: '',
 					type: PartType.Unknown,
-					variant: {},
 					rawType: '',
 					cues: [
 						literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -2639,7 +2551,7 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'FULL',
-								INP1: '',
+								INP1: undefined,
 								iNewsCommand: ''
 							},
 							iNewsCommand: 'GRAFIK',
@@ -2671,7 +2583,6 @@ describe('Body parser', () => {
 				literal<PartDefinitionUnknown>({
 					externalId: '',
 					type: PartType.Unknown,
-					variant: {},
 					rawType: '',
 					cues: [
 						literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -2680,7 +2591,7 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'WALL',
-								INP1: 'EVS 1',
+								INP1: { sourceType: SourceType.REPLAY, name: 'EVS 1', id: 'EVS 1', raw: 'EVS 1', vo: false },
 								iNewsCommand: ''
 							},
 							graphic: {
@@ -2717,8 +2628,12 @@ describe('Body parser', () => {
 				externalId: '',
 				type: PartType.EVS,
 				rawType: 'EVS 1',
-				variant: {
-					evs: '1'
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: 'EVS 1',
+					name: 'EVS 1',
+					raw: 'EVS 1',
+					vo: false
 				},
 				effekt: 1,
 				cues: [cueGrafik1, cueGrafik2, cueGrafik3],
@@ -2738,18 +2653,11 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionEkstern>({
 				externalId: '',
-				type: PartType.Ekstern,
+				type: PartType.REMOTE,
 				title: 'LIVE 1',
 				rawType: '',
-				variant: {},
 				effekt: 1,
-				cues: [
-					literal<CueDefinitionEkstern>({
-						type: CueType.Ekstern,
-						source: 'LIVE 1',
-						iNewsCommand: 'EKSTERN'
-					})
-				],
+				cues: [cueEkstern1],
 				fields,
 				modified: 0,
 				script: '',
@@ -2778,9 +2686,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -2825,9 +2731,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -2879,9 +2783,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [
 					literal<CueDefinitionUnpairedTarget>({
@@ -2927,9 +2829,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [],
 				rawType: 'KAM 1',
@@ -2942,7 +2842,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				externalId: '',
-				variant: {},
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
 						type: CueType.Graphic,
@@ -2988,9 +2887,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [],
 				rawType: 'KAM 1',
@@ -3003,7 +2900,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionGrafik>({
 				type: PartType.Grafik,
 				externalId: '',
-				variant: {},
 				title: 'LgfxWeb/-ETKAEM_07-05-2019_17:55:42',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -3049,9 +2945,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [],
 				rawType: 'KAM 1',
@@ -3064,7 +2958,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
 				externalId: '',
-				variant: {},
 				cues: [
 					literal<CueDefinitionUnpairedTarget>({
 						type: CueType.UNPAIRED_TARGET,
@@ -3083,7 +2976,6 @@ describe('Body parser', () => {
 			literal<PartDefinitionGrafik>({
 				type: PartType.Grafik,
 				externalId: '',
-				variant: {},
 				cues: [
 					literal<CueDefinitionUnpairedPilot>({
 						type: CueType.UNPAIRED_PILOT,
@@ -3123,9 +3015,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -3170,9 +3060,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -3217,9 +3105,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [],
 				rawType: 'KAM 1',
@@ -3231,7 +3117,6 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
-				variant: {},
 				externalId: '',
 				cues: [
 					literal<CueDefinitionUnpairedTarget>({
@@ -3285,9 +3170,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [],
 				rawType: 'KAM 1',
@@ -3299,7 +3182,6 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
-				variant: {},
 				externalId: '',
 				cues: [
 					literal<CueDefinitionUnpairedTarget>({
@@ -3353,9 +3235,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [],
 				rawType: 'KAM 1',
@@ -3367,7 +3247,6 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
-				variant: {},
 				externalId: '',
 				cues: [
 					literal<CueDefinitionUnpairedTarget>({
@@ -3386,7 +3265,6 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionUnknown>({
 				type: PartType.Unknown,
-				variant: {},
 				externalId: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -3438,9 +3316,7 @@ describe('Body parser', () => {
 		expect(stripExternalId(result)).toEqual([
 			literal<PartDefinitionKam>({
 				type: PartType.Kam,
-				variant: {
-					name: '1'
-				},
+				sourceDefinition: SOURCE_DEFINITION_KAM_1,
 				externalId: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -3468,7 +3344,6 @@ describe('Body parser', () => {
 			}),
 			literal<PartDefinitionVO>({
 				type: PartType.VO,
-				variant: {},
 				externalId: '',
 				cues: [
 					literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -3498,7 +3373,170 @@ describe('Body parser', () => {
 	})
 
 	/** END Merging Cues From Config */
+
+	describe('removeDuplicateDesignCues', () => {
+		it('has no no cues, does nothing', () => {
+			const definitions: PartDefinition[] = [createPartDefinition(), createPartDefinition()]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('has a designCue from layout and a regular design cue, removes the regular design cue', () => {
+			const designFromLayout = 'designFromLayout'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([
+					createDesignCueDefinition(designFromLayout, true),
+					createDesignCueDefinition('regularDesign')
+				])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result[0].cues).toHaveLength(1)
+			const graphicDesignCue: CueDefinitionGraphicDesign = result[0].cues[0] as CueDefinitionGraphicDesign
+			expect(graphicDesignCue.design).toEqual(designFromLayout)
+		})
+
+		it('only have a regular design cue, does nothing', () => {
+			const definitions: PartDefinition[] = [createPartDefinition([createDesignCueDefinition('someDesign')])]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('only have a layout design cue, does nothing', () => {
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createDesignCueDefinition('designFromLayout', true)])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('has a regular design, layout design and two other random cues, only removes the regular design cue', () => {
+			const regularDesign = 'regularDesignCue'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([
+					createDesignCueDefinition('designFromLayout', true),
+					createDesignCueDefinition(regularDesign),
+					createUnknownCueDefinition(),
+					createUnknownCueDefinition()
+				])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			const cues = result[0].cues
+			expect(cues).toHaveLength(3)
+			const regularDesignCue = cues.find(cue => {
+				const designCue = cue as CueDefinitionGraphicDesign
+				if (!designCue.design) {
+					return false
+				}
+				return designCue.design === regularDesign
+			})
+			expect(regularDesignCue).toBeUndefined()
+		})
+
+		it('has a regular design cue in one partDefinition, has a layout cue in another partDefinition, remove the regular designCue', () => {
+			const layoutDesign = 'designFromLayout'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createDesignCueDefinition(layoutDesign, true)]),
+				createPartDefinition([createDesignCueDefinition('regularDesign')])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			const cues: CueDefinition[] = result.flatMap(definition => definition.cues)
+			expect(cues).toHaveLength(1)
+			const graphicCue = cues[0] as CueDefinitionGraphicDesign
+			expect(graphicCue.design).toBe(layoutDesign)
+		})
+
+		it('has layout background cue and regular background cue, remove regular background cue', () => {
+			const layoutBackground = 'layoutBackground'
+			const definitions: PartDefinition[] = [
+				createPartDefinition([
+					createBackgroundLoopCueDefinition(layoutBackground, true),
+					createBackgroundLoopCueDefinition('regularBackground')
+				])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result[0].cues).toHaveLength(1)
+			const backgroundCue: CueDefinitionBackgroundLoop = result[0].cues[0] as CueDefinitionBackgroundLoop
+			expect(backgroundCue.backgroundLoop).toBe(layoutBackground)
+		})
+
+		it('only have a regular background cue, does nothing', () => {
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createBackgroundLoopCueDefinition('regularBackground')])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+
+		it('only have a layout background cue, does nothing', () => {
+			const definitions: PartDefinition[] = [
+				createPartDefinition([createBackgroundLoopCueDefinition('layoutBackground', true)])
+			]
+
+			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result).toEqual(definitions)
+		})
+	})
 })
+
+function createPartDefinition(cues?: CueDefinition[]): PartDefinition {
+	if (!cues) {
+		cues = []
+	}
+	return {
+		externalId: `externalId_${Math.random() * 1000}`,
+		cues,
+		type: PartType.Grafik,
+		script: '',
+		fields: {},
+		modified: 123,
+		storyName: 'someName',
+		segmentExternalId: `segmentExternalId_${Math.random() * 1000}`,
+		rawType: ''
+	}
+}
+
+function createDesignCueDefinition(design: string, isFromLayout?: boolean): CueDefinition {
+	return {
+		type: CueType.GraphicDesign,
+		design,
+		iNewsCommand: '',
+		isFromLayout
+	}
+}
+
+function createBackgroundLoopCueDefinition(backgroundLoop: string, isFromLayout?: boolean): CueDefinition {
+	return {
+		type: CueType.BackgroundLoop,
+		target: 'DVE',
+		backgroundLoop,
+		isFromLayout,
+		iNewsCommand: ''
+	}
+}
+
+function createUnknownCueDefinition(): CueDefinition {
+	return {
+		type: CueType.UNKNOWN,
+		iNewsCommand: ''
+	}
+}
 
 export function stripExternalId(definitions: PartDefinition[]) {
 	return definitions.map(def => {

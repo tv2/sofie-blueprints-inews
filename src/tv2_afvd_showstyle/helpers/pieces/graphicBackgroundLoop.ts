@@ -7,12 +7,13 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CalculateTime, CueDefinitionBackgroundLoop, literal } from 'tv2-common'
-import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { CalculateTime, CueDefinitionBackgroundLoop, literal, TV2BlueprintConfig } from 'tv2-common'
+import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueBackgroundLoop(
+	config: TV2BlueprintConfig,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -78,7 +79,7 @@ export function EvaluateCueBackgroundLoop(
 						fileName: parsedCue.backgroundLoop,
 						path: parsedCue.backgroundLoop,
 						ignoreMediaObjectStatus: true,
-						timelineObjects: fullLoopTimeline(parsedCue)
+						timelineObjects: fullLoopTimeline(config, parsedCue)
 					})
 				})
 			)
@@ -97,7 +98,7 @@ export function EvaluateCueBackgroundLoop(
 						fileName: parsedCue.backgroundLoop,
 						path: parsedCue.backgroundLoop,
 						ignoreMediaObjectStatus: true,
-						timelineObjects: fullLoopTimeline(parsedCue)
+						timelineObjects: fullLoopTimeline(config, parsedCue)
 					})
 				})
 			)
@@ -122,18 +123,19 @@ function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
 	]
 }
 
-function fullLoopTimeline(parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
+function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjVIZMSEElementInternal>({
 			id: '',
 			enable: { start: 0 },
 			priority: 1,
-			layer: GraphicLLayer.GraphicLLayerFullLoop,
+			layer: SharedGraphicLLayer.GraphicLLayerFullLoop,
 			content: {
 				deviceType: TSR.DeviceType.VIZMSE,
 				type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 				templateName: parsedCue.backgroundLoop,
-				templateData: []
+				templateData: [],
+				showId: config.selectedGraphicsSetup.FullShowId
 			}
 		})
 	]

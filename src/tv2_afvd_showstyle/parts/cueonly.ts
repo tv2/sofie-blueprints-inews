@@ -21,7 +21,7 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
-export function CreatePartCueOnly(
+export async function CreatePartCueOnly(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
@@ -52,17 +52,37 @@ export function CreatePartCueOnly(
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		ApplyFullGraphicPropertiesToPart(config, part)
-	} else if (partDefinition.cues.filter(c => c.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
-	EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {})
+	await EvaluateCues(
+		context,
+		config,
+		part,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		[cue],
+		partDefinitionWithID,
+		{}
+	)
 	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {
-			adlib: true
-		})
+		await EvaluateCues(
+			context,
+			config,
+			part,
+			pieces,
+			adLibPieces,
+			actions,
+			mediaSubscriptions,
+			[cue],
+			partDefinitionWithID,
+			{
+				adlib: true
+			}
+		)
 	}
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions

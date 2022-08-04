@@ -12,7 +12,6 @@ import {
 	MakeConfigWithMediaFlow,
 	TableConfigItemSourceMapping
 } from 'tv2-common'
-import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { defaultDSKConfig } from './helpers/config'
 import { OfftubeSisyfosLLayer } from './layers'
@@ -25,7 +24,7 @@ const DEFAULT_STUDIO_MICS_LAYERS = [
 	OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
 ]
 
-export const manifestOfftubeSourcesCam = MakeConfigForSources('Cam', 'Cameras', false, [
+export const manifestOfftubeSourcesCam = MakeConfigForSources('Cam', 'Cameras', false, true, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -35,25 +34,26 @@ export const manifestOfftubeSourcesCam = MakeConfigForSources('Cam', 'Cameras', 
 	}
 ])
 
-export const manifestOfftubeSourcesRM = MakeConfigForSources('RM', 'Live', true, [
+export const manifestOfftubeSourcesRM = MakeConfigForSources('RM', 'Live', true, true, [
 	{
 		_id: '',
 		SourceName: '1',
 		AtemSource: 3,
 		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
 		StudioMics: true,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	}
 ])
 
-export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, [
+export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, true, [
 	{
 		_id: '',
 		SourceName: '1',
 		AtemSource: 1,
 		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo, OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround],
 		StudioMics: true,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: false
 	},
 	{
 		_id: '',
@@ -61,11 +61,9 @@ export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', t
 		AtemSource: 2,
 		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo],
 		StudioMics: true,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: false
 	}
 ])
-
-export const manifestOfftubeSourcesSkype = MakeConfigForSources('Skype', 'Skype', false, [])
 
 export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	id: 'ABMediaPlayers',
@@ -131,7 +129,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
 	manifestOfftubeSourcesFeed,
-	manifestOfftubeSourcesSkype,
 	manifestOfftubeSourcesABMediaPlayers,
 	manifestOfftubeStudioMics,
 	manifestOfftubeDownstreamKeyers,
@@ -187,6 +184,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSource.Continuity',
 		name: 'ATEM continuity source',
 		description: 'ATEM input for continuity',
+		type: ConfigManifestEntryType.INT,
+		required: true,
+		defaultVal: AtemSourceIndex.Col2
+	},
+	{
+		id: 'AtemSource.Dip',
+		name: 'ATEM Dip Source',
+		description: 'ATEM input for the Dip - should match the desired input in the ATEM',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2

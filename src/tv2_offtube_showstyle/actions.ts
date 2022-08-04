@@ -17,12 +17,12 @@ const SELECTED_ADLIB_LAYERS = [
 	OfftubeSourceLayer.SelectedAdlibJingle
 ]
 
-export function executeActionOfftube(
+export async function executeActionOfftube(
 	context: IActionExecutionContext,
 	actionId: string,
 	userData: ActionUserData
-): void {
-	executeAction(
+): Promise<void> {
+	await executeAction(
 		context,
 		{
 			getConfig,
@@ -49,8 +49,7 @@ export function executeActionOfftube(
 				Sisyfos: {
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
 					Effekt: OfftubeSisyfosLLayer.SisyfosSourceJingle,
-					StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics,
-					PersistedLevels: OfftubeSisyfosLLayer.SisyfosPersistedLevels
+					StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
 				},
 				Atem: {
 					MEProgram: OfftubeAtemLLayer.AtemMEProgram,
@@ -71,11 +70,6 @@ export function executeActionOfftube(
 				OutputLayer: { SelectedAdLib: OfftubeOutputLayers.SELECTED_ADLIB },
 				SELECTED_ADLIB_LAYERS
 			},
-			ServerAudioLayers: [
-				OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-				OfftubeSisyfosLLayer.SisyfosSourceServerA,
-				OfftubeSisyfosLLayer.SisyfosSourceServerB
-			],
 			createJingleContent: createJingleContentOfftube,
 			pilotGraphicSettings: pilotGeneratorSettingsOfftube
 		},

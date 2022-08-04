@@ -28,7 +28,7 @@ const DEFAULT_STUDIO_MICS_LAYERS = [
 	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
 ]
 
-export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', false, [
+export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', false, true, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -101,14 +101,15 @@ export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', fals
 	}
 ])
 
-export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
+export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, true, [
 	{
 		_id: '',
 		SourceName: '1',
 		AtemSource: 1,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
-		StudioMics: false,
-		KeepAudioInStudio: true
+		StudioMics: true,
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -116,7 +117,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 2,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudion: false
 	},
 	{
 		_id: '',
@@ -124,7 +126,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 3,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -132,7 +135,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 4,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -140,7 +144,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 5,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -148,7 +153,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 6,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -156,7 +162,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 7,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -164,7 +171,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 8,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -172,7 +180,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 9,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -180,13 +189,14 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 10,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	}
 ])
 
-export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, [])
+export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, false, [])
 
-export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedPlayback', 'EVS', false, [
+export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay', false, false, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -200,79 +210,13 @@ export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedP
 		AtemSource: 23,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2],
 		StudioMics: true
-	}
-])
-
-export const manifestAFVDSourcesSkype = MakeConfigForSources('Skype', 'Skype', false, [
-	{
-		_id: '',
-		SourceName: '1',
-		AtemSource: 1,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
-		StudioMics: false
 	},
 	{
 		_id: '',
-		SourceName: '2',
-		AtemSource: 2,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '3',
-		AtemSource: 3,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '4',
-		AtemSource: 4,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '5',
-		AtemSource: 5,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '6',
-		AtemSource: 6,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '7',
-		AtemSource: 7,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '8',
-		AtemSource: 8,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '9',
-		AtemSource: 9,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '10',
-		AtemSource: 10,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
-		StudioMics: false
+		SourceName: 'EPSIO',
+		AtemSource: 30,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
+		StudioMics: true
 	}
 ])
 
@@ -340,8 +284,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesFeed,
-	manifestAFVDSourcesDelayedPlayback,
-	manifestAFVDSourcesSkype,
+	manifestAFVDSourcesReplay,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDStudioMics,
 	manifestAFVDDownstreamKeyers,
@@ -389,6 +332,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSource.Continuity',
 		name: 'ATEM continuity source',
 		description: 'ATEM input for continuity',
+		type: ConfigManifestEntryType.INT,
+		required: true,
+		defaultVal: AtemSourceIndex.Col2
+	},
+	{
+		id: 'AtemSource.Dip',
+		name: 'ATEM Dip Source',
+		description: 'ATEM input for the Dip - should match the desired input in the ATEM',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2

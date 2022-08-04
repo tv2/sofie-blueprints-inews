@@ -1,9 +1,7 @@
 import { IBlueprintConfig, ICommonContext, IStudioContext } from '@tv2media/blueprints-integration'
 import {
-	getLiveAudioLayers,
-	getStickyLayers,
 	MediaPlayerConfig,
-	SourceInfo,
+	SourceMapping,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos,
@@ -16,11 +14,9 @@ import { parseMediaPlayers, parseSources } from './sources'
 
 export interface BlueprintConfig {
 	studio: StudioConfig
-	sources: SourceInfo[]
+	sources: SourceMapping
 	showStyle: ShowStyleConfig
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
-	liveAudio: string[]
-	stickyLayers: string[]
 	dsk: TableConfigItemDSK[]
 }
 
@@ -28,7 +24,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	// Injected by core
 	SofieHostURL: string
 
-	SourcesDelayedPlayback: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesReplay: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	StudioMics: string[]
@@ -40,6 +36,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 		Default: number
 		MixMinusDefault: number
 		Continuity: number
+		Dip: number
 	}
 
 	AtemSettings: {
@@ -56,17 +53,10 @@ export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfi
 	const config: BlueprintConfig = {
 		studio: studioConfig,
 		showStyle: {} as any,
-		sources: [],
-		mediaPlayers: [],
-		liveAudio: [],
-		stickyLayers: [],
+		sources: parseSources(studioConfig),
+		mediaPlayers: parseMediaPlayers(studioConfig),
 		dsk: studioConfig.AtemSource.DSK
 	}
-
-	config.sources = parseSources(studioConfig)
-	config.mediaPlayers = parseMediaPlayers(studioConfig)
-	config.liveAudio = getLiveAudioLayers(studioConfig)
-	config.stickyLayers = getStickyLayers(studioConfig, config.liveAudio)
 
 	return config
 }

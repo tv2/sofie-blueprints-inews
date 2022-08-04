@@ -68,8 +68,6 @@ module.exports = env => {
 		},
 		target: 'node',
 		externals: {
-			underscore: '_',
-			moment: 'moment'
 		},
 		plugins: [
 			new webpack.DefinePlugin({

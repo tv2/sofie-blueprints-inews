@@ -24,7 +24,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studi
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
-export function EvaluateAdLib(
+export async function EvaluateAdLib(
 	context: IShowStyleUserContext,
 	config: BlueprintConfig,
 	adLibPieces: IBlueprintAdLibPiece[],
@@ -43,13 +43,9 @@ export function EvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = Math.max(
-			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
-			0
-		)
-
 		actions.push(
-			CreateAdlibServer(
+			await CreateAdlibServer(
+				context,
 				config,
 				rank,
 				partDefinition,
@@ -65,16 +61,13 @@ export function EvaluateAdLib(
 						ClipPending: CasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-						StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics,
-						SisyfosPersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
+						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
 					},
 					AtemLLayer: {
 						MEPgm: AtemLLayer.AtemMEProgram
 					},
 					ATEM: {}
 				},
-				sourceDuration,
 				true
 			)
 		)
@@ -107,18 +100,6 @@ export function EvaluateAdLib(
 
 		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
-		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
-
-		content.stickyLayers.forEach(layer => {
-			sticky = {
-				...sticky,
-				[layer]: {
-					value: 1,
-					followsPrevious: false
-				}
-			}
-		})
-
 		adLibPieces.push(
 			literal<IBlueprintAdLibPiece>({
 				_rank: rank,
@@ -132,7 +113,6 @@ export function EvaluateAdLib(
 				invalid: !content.valid,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: literal<PieceMetaData & DVEPieceMetaData>({
-					stickySisyfosLevels: sticky,
 					sources: cueDVE.sources,
 					config: rawTemplate,
 					userData: literal<ActionSelectDVE>({
@@ -140,7 +120,10 @@ export function EvaluateAdLib(
 						config: cueDVE,
 						videoId: partDefinition.fields.videoId,
 						segmentExternalId: partDefinition.segmentExternalId
-					})
+					}),
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
 				}),
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})

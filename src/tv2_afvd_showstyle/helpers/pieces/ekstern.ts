@@ -5,14 +5,13 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition } from 'tv2-common'
-import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition, TV2BlueprintConfig } from 'tv2-common'
+import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
 	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	config: TV2BlueprintConfig,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
@@ -38,9 +37,6 @@ export function EvaluateEkstern(
 			},
 			ATEM: {
 				MEProgram: AtemLLayer.AtemMEProgram
-			},
-			Sisyfos: {
-				StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
 			}
 		},
 		adlib,

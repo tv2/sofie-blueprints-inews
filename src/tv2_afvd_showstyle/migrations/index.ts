@@ -14,7 +14,7 @@ import {
 	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { SharedGraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
@@ -84,7 +84,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	AddGraphicToGFXTable('1.5.4', 'AFVD', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
-		LayerMapping: GraphicLLayer.GraphicLLayerLocators,
+		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
 		INewsCode: '',
 		INewsName: 'locators',
 		VizDestination: '',
@@ -188,18 +188,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
 
-	// Fill in any layers that did not exist before
-	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	GetDefaultAdLibTriggers(
-		VERSION,
-		SHOW_STYLE_ID,
-		{ local: SourceLayer.PgmLocal },
-		GetDefaultStudioSourcesForAFVD,
-		false
-	),
-
 	/**
 	 * 1.7.2
 	 * - Fix bundright configuration
@@ -239,5 +227,16 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 			LayerMapping: 'graphic_overlay_tema'
 		},
 		{ LayerMapping: 'graphic_overlay_lower' }
+	),
+	// Fill in any layers that did not exist before
+	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
+	...getSourceLayerDefaultsMigrationSteps(VERSION),
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(
+		VERSION,
+		SHOW_STYLE_ID,
+		{ local: SourceLayer.PgmLocal },
+		GetDefaultStudioSourcesForAFVD,
+		false
 	)
 ])

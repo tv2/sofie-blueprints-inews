@@ -6,7 +6,6 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
@@ -19,29 +18,27 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfoStrict,
-	GetCameraMetaData,
-	GetLayersForCamera,
+	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	GetTagForKam,
 	literal,
 	PartDefinitionKam,
-	TransitionFromString,
+	SisyfosPersistMetaData,
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers, TallyTags } from 'tv2-constants'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
-export function OfftubeCreatePartKam(
+export async function OfftubeCreatePartKam(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
 	let part = partKamBase.part.part
@@ -54,7 +51,7 @@ export function OfftubeCreatePartKam(
 
 	const jingleDSK = FindDSKJingle(config)
 
-	if (partDefinition.rawType.match(/kam cs ?3/i)) {
+	if (/cs ?3/i.test(partDefinition.sourceDefinition.id)) {
 		pieces.push(
 			literal<IBlueprintPiece>({
 				externalId: partDefinition.externalId,
@@ -63,7 +60,7 @@ export function OfftubeCreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: OfftubeSourceLayer.PgmJingle,
 				lifespan: PieceLifespan.WithinPart,
-				tags: [GetTagForKam('JINGLE'), TallyTags.JINGLE_IS_LIVE],
+				tags: [GetTagForKam(partDefinition.sourceDefinition), TallyTags.JINGLE_IS_LIVE],
 				content: literal<WithTimeline<VTContent>>({
 					ignoreMediaObjectStatus: true,
 					fileName: '',
@@ -81,10 +78,8 @@ export function OfftubeCreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: jingleDSK.Fill,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							}
 						})
@@ -93,7 +88,7 @@ export function OfftubeCreatePartKam(
 			})
 		)
 	} else {
-		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		const sourceInfoCam = findSourceInfo(config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			return CreatePartInvalid(partDefinition)
 		}
@@ -109,8 +104,13 @@ export function OfftubeCreatePartKam(
 				outputLayerId: SharedOutputLayers.PGM,
 				sourceLayerId: OfftubeSourceLayer.PgmCam,
 				lifespan: PieceLifespan.WithinPart,
-				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
-				tags: [GetTagForKam(sourceInfoCam.id)],
+				metaData: {
+					sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+						sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
+						acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+					})
+				},
+				tags: [GetTagForKam(partDefinition.sourceDefinition)],
 				content: {
 					studioLabel: '',
 					switcherInput: atemInput,
@@ -127,30 +127,23 @@ export function OfftubeCreatePartKam(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									input: Number(atemInput),
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
+									transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+									transitionSettings: TransitionSettings(config, partDefinition)
 								}
 							},
 							...(AddParentClass(config, partDefinition)
-								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
+								? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
 								: {})
 						}),
 
-						GetSisyfosTimelineObjForCamera(
-							context,
-							config,
-							partDefinition.rawType,
-							OfftubeSisyfosLLayer.SisyfosGroupStudioMics
-						)
+						...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 					])
 				}
 			})
 		)
 	}
 
-	OfftubeEvaluateCues(
+	await OfftubeEvaluateCues(
 		context,
 		config,
 		part,
@@ -174,6 +167,7 @@ export function OfftubeCreatePartKam(
 	return {
 		part,
 		adLibPieces,
-		pieces
+		pieces,
+		actions
 	}
 }

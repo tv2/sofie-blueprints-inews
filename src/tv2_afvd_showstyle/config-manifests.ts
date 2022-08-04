@@ -142,18 +142,18 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
-const graphicProfileSetup: ConfigManifestEntry[] = [
+const graphicsSetups: ConfigManifestEntry[] = [
 	{
-		id: 'GraphicSetups',
-		name: 'Graphic Setups',
-		description: 'Possible graphic profile setup',
+		id: 'GraphicsSetups',
+		name: 'Graphics Setups',
+		description: 'Possible graphics setups',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [],
 		columns: [
 			{
-				id: 'INewsCode',
-				name: 'iNews Command (*)',
+				id: 'Name',
+				name: 'Name',
 				description: 'The code as it will appear in iNews',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
@@ -161,25 +161,104 @@ const graphicProfileSetup: ConfigManifestEntry[] = [
 				rank: 0
 			},
 			{
-				id: 'Concept',
-				name: 'Concept',
+				id: 'VcpConcept',
+				name: 'VCP Concept',
 				rank: 1,
 				required: true,
 				defaultVal: '',
 				hint: '',
 				description: '',
 				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'OvlShowId',
+				name: 'Overlay Show-ID',
+				rank: 2,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'UUID of the show used for OVL channel',
+				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'FullShowId',
+				name: 'Fullscreen Show-ID',
+				rank: 3,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'UUID of the show used for FULL and WALL channels',
+				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'DveLayoutFolder',
+				name: 'DVE layout folder',
+				rank: 4,
+				required: true,
+				defaultVal: '',
+				hint: '',
+				description: 'Path to the folder containing the layouts for DVEs',
+				type: ConfigManifestEntryType.STRING
 			}
 		],
 		hint: ''
 	},
 	{
-		id: 'GraphicINewsCode',
-		name: 'Graphic Profile cue',
-		description: 'GRAPHIC_PROFILE cue from iNews',
+		id: 'SelectedGraphicsSetupName',
+		name: 'Graphic Setup name',
+		description: 'Name of the Graphic Setup that should be used',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: ''
+	}
+]
+
+export const schemaConfigManifest: ConfigManifestEntry[] = [
+	{
+		id: 'SchemaConfig',
+		name: 'Skema',
+		description: 'The values for the Skema and Design combinations',
+		type: ConfigManifestEntryType.TABLE,
+		required: false,
+		defaultVal: [],
+		columns: [
+			{
+				id: 'schemaName',
+				name: 'Skema',
+				description: 'The name of the Skema',
+				rank: 0,
+				required: true,
+				defaultVal: '',
+				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'designIdentifier',
+				name: 'Design',
+				description: 'The identifier of the Design',
+				rank: 1,
+				required: true,
+				defaultVal: '',
+				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'vizTemplateName',
+				name: 'Viz Template Name',
+				description: 'The name of the Viz template',
+				rank: 2,
+				required: true,
+				defaultVal: '',
+				type: ConfigManifestEntryType.STRING
+			},
+			{
+				id: 'casparCgDveBgScene',
+				name: 'CasparCG DVE Bg Scene',
+				description: 'The dveBgScene',
+				defaultVal: '',
+				rank: 3,
+				required: true,
+				type: ConfigManifestEntryType.STRING
+			}
+		]
 	}
 ]
 
@@ -304,7 +383,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
-	...graphicProfileSetup,
+	...graphicsSetups,
+	...schemaConfigManifest,
 	{
 		/*
 		Wipes Config

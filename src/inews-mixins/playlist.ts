@@ -3,8 +3,9 @@ import {
 	BlueprintResultRundown,
 	BlueprintResultRundownPlaylist,
 	ExtendedIngestRundown,
+	IBlueprintResultRundownPlaylist,
 	IBlueprintRundownDB,
-	IBlueprintRundownPlaylistInfo,
+	IGetRundownContext,
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
@@ -114,8 +115,14 @@ type GetRundownPlaylistInfoMixin = (
 ) => BlueprintResultRundownPlaylist
 
 export function GetRundownWithMixins(getRundown: ShowStyleBlueprintManifest['getRundown'], mixins: GetRundownMixin[]) {
-	return (context: IShowStyleUserContext, ingestRundown: ExtendedIngestRundown) => {
-		let result = getRundown(context, ingestRundown)
+	return async (
+		context: IGetRundownContext,
+		ingestRundown: ExtendedIngestRundown
+	): Promise<BlueprintResultRundown | null> => {
+		let result = await getRundown(context, ingestRundown)
+		if (result === null) {
+			return result
+		}
 
 		for (const mixin of mixins) {
 			result = mixin(context, ingestRundown, result)
@@ -146,9 +153,9 @@ export function GetRundownPlaylistInfoWithMixins(
 			}
 		}
 		let result =
-			(getRundownPlaylistInfo ? getRundownPlaylistInfo(context, rundowns) : undefined) ??
+			(getRundownPlaylistInfo ? getRundownPlaylistInfo(context, rundowns, '') : undefined) ??
 			literal<BlueprintResultRundownPlaylist>({
-				playlist: literal<IBlueprintRundownPlaylistInfo>({
+				playlist: literal<IBlueprintResultRundownPlaylist>({
 					name: (rundowns[0] ?? { name: '' }).name,
 					timing
 				}),

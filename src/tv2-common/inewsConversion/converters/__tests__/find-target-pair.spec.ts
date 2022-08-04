@@ -13,7 +13,6 @@ describe('Find target pair', () => {
 	test('TargetEngine + Pilot', () => {
 		const part = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '00001',
 			script: '',
 			rawType: '',
@@ -43,7 +42,6 @@ describe('Find target pair', () => {
 		})
 		const expectedResult = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '00001',
 			script: '',
 			rawType: '',
@@ -78,7 +76,6 @@ describe('Find target pair', () => {
 	test('TLF + Pilot', () => {
 		const part = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '00001',
 			script: '',
 			rawType: '',
@@ -107,7 +104,6 @@ describe('Find target pair', () => {
 		})
 		const expectedResult = literal<PartDefinitionUnknown>({
 			type: PartType.Unknown,
-			variant: {},
 			externalId: '00001',
 			script: '',
 			rawType: '',

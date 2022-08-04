@@ -9,9 +9,17 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { CreateTimingEnable, CueDefinitionLYD, literal, PartDefinition, TimeFromFrames } from 'tv2-common'
+import {
+	CreateTimingEnable,
+	CueDefinitionLYD,
+	JoinAssetToFolder,
+	literal,
+	PartDefinition,
+	TimeFromFrames
+} from 'tv2-common'
 import {
 	AbstractLLayer,
+	AdlibTags,
 	ControlClasses,
 	SharedCasparLLayer,
 	SharedOutputLayers,
@@ -19,7 +27,6 @@ import {
 	SharedSourceLayers
 } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { JoinAssetToFolder } from '../util'
 
 export function EvaluateLYD(
 	context: IShowStyleUserContext,
@@ -44,8 +51,9 @@ export function EvaluateLYD(
 	}
 
 	const file = fade ? 'empty' : conf ? conf.FileName.toString() : parsedCue.variant
-	const fadeIn = fade ? Number(fade[1]) : conf ? Number(conf.FadeIn) : undefined
-	const fadeOut = conf ? Number(conf.FadeOut) : undefined
+	const fadeTimeInFrames = fade ? Number(fade[1]) : undefined
+	const fadeIn = fadeTimeInFrames ?? (conf ? Number(conf.FadeIn) : undefined)
+	const fadeOut = fadeTimeInFrames ?? (conf ? Number(conf.FadeOut) : undefined)
 
 	const lydType = stop ? 'stop' : fade ? 'fade' : 'bed'
 	const lifespan = stop || fade || parsedCue.end ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownChange
@@ -64,7 +72,8 @@ export function EvaluateLYD(
 					: fade
 					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
 					: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut)
+				content: LydContent(config, file, lydType, fadeIn, fadeOut),
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
 		)
 	} else {
@@ -83,16 +92,12 @@ export function EvaluateLYD(
 					  }
 					: CreateTimingEnable(parsedCue)),
 				outputLayerId: SharedOutputLayers.MUSIK,
-				sourceLayerId: GetLYDSourceLayer(file),
+				sourceLayerId: SharedSourceLayers.PgmAudioBed,
 				lifespan,
 				content: LydContent(config, file, lydType, fadeIn, fadeOut)
 			})
 		)
 	}
-}
-
-export function GetLYDSourceLayer(_name: string): SharedSourceLayers {
-	return SharedSourceLayers.PgmAudioBed
 }
 
 function LydContent(
@@ -122,7 +127,7 @@ function LydContent(
 		})
 	}
 
-	const filePath = JoinAssetToFolder(config.studio.AudioBedFolder, file)
+	const filePath = lydType === 'fade' ? file : JoinAssetToFolder(config.studio.AudioBedFolder, file)
 
 	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([

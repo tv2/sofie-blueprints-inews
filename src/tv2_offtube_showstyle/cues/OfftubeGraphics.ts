@@ -1,17 +1,17 @@
 import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	TSR
 } from '@tv2media/blueprints-integration'
 import {
+	Adlib,
 	CreateInternalGraphic,
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
 	FindDSKFullGFX,
-	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForFull,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
@@ -19,7 +19,7 @@ import {
 	PartDefinition,
 	PilotGeneratorSettings
 } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
@@ -34,51 +34,33 @@ export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
 export function OfftubeEvaluateGrafikCaspar(
 	config: OfftubeShowstyleBlueprintConfig,
 	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	adlib: boolean,
 	partDefinition: PartDefinition,
-	rank?: number
+	adlib?: Adlib
 ) {
 	if (GraphicIsPilot(parsedCue)) {
-		CreatePilotGraphic(
+		CreatePilotGraphic(pieces, adlibPieces, actions, {
+			engine: parsedCue.target,
 			config,
 			context,
-			part,
-			pieces,
-			adlibPieces,
-			actions,
 			partId,
 			parsedCue,
-			pilotGeneratorSettingsOfftube,
+			settings: pilotGeneratorSettingsOfftube,
 			adlib,
-			rank ?? 0,
-			partDefinition.segmentExternalId
-		)
+			segmentExternalId: partDefinition.segmentExternalId
+		})
 	} else if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(
-			config,
-			context,
-			part,
-			pieces,
-			adlibPieces,
-			actions,
-			partId,
-			parsedCue,
-			adlib,
-			partDefinition,
-			rank
-		)
+		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, partDefinition, adlib)
 	}
 }
 
 function createPilotTimeline(
 	config: OfftubeShowstyleBlueprintConfig,
-	context: IShowStyleUserContext
+	_context: IShowStyleUserContext
 ): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
@@ -106,6 +88,6 @@ function createPilotTimeline(
 				}
 			}
 		}),
-		GetSisyfosTimelineObjForCamera(context, config, 'full', OfftubeSisyfosLLayer.SisyfosGroupStudioMics)
+		...GetSisyfosTimelineObjForFull(config)
 	]
 }

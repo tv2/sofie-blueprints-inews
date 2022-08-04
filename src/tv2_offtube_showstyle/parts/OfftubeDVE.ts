@@ -8,17 +8,16 @@ import {
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
 import { AddScript, literal, PartDefinitionDVE, PartTime } from 'tv2-common'
-import { CueType } from 'tv2-constants'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
-export function OfftubeCreatePartDVE(
+export async function OfftubeCreatePartDVE(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinitionDVE,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 
 	const part = literal<IBlueprintPart>({
@@ -32,11 +31,7 @@ export function OfftubeCreatePartDVE(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
-	}
-
-	OfftubeEvaluateCues(
+	await OfftubeEvaluateCues(
 		context,
 		config,
 		part,

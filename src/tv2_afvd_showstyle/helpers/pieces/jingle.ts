@@ -9,14 +9,15 @@ import {
 	ActionSelectJingle,
 	CreateJingleContentBase,
 	CueDefinitionJingle,
+	generateExternalId,
 	GetTagForJingle,
 	GetTagForJingleNext,
 	literal,
 	PartDefinition,
-	PieceMetaData,
-	t
+	t,
+	TimeFromFrames
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
@@ -51,14 +52,16 @@ export function EvaluateJingle(
 	}
 
 	if (adlib) {
+		const userData = literal<ActionSelectJingle>({
+			type: AdlibActionType.SELECT_JINGLE,
+			clip: parsedCue.clip,
+			segmentExternalId: part.segmentExternalId
+		})
 		actions.push(
 			literal<IBlueprintActionManifest>({
+				externalId: generateExternalId(context, userData),
 				actionId: AdlibActionType.SELECT_JINGLE,
-				userData: literal<ActionSelectJingle>({
-					type: AdlibActionType.SELECT_JINGLE,
-					clip: parsedCue.clip,
-					segmentExternalId: part.segmentExternalId
-				}),
+				userData,
 				userDataManifest: {},
 				display: {
 					_rank: rank ?? 0,
@@ -77,8 +80,7 @@ export function EvaluateJingle(
 					},
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 					currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-					nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)],
-					noHotKey: true
+					nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
 				}
 			})
 		)
@@ -93,12 +95,8 @@ export function EvaluateJingle(
 				lifespan: PieceLifespan.WithinPart,
 				outputLayerId: SharedOutputLayers.JINGLE,
 				sourceLayerId: SourceLayer.PgmJingle,
-				metaData: literal<PieceMetaData>({
-					transition: {
-						isJingle: !effekt,
-						isEffekt: !!effekt
-					}
-				}),
+				prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
+				tags: [!effekt ? TallyTags.JINGLE : ''],
 				content: createJingleContentAFVD(
 					config,
 					file,

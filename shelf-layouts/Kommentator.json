@@ -44,7 +44,8 @@
         "kommentator"
       ],
       "showThumbnailsInList": true,
-      "hideDuplicates": false
+      "hideDuplicates": false,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
@@ -77,7 +78,8 @@
         "offtube_adlib_100pc_server",
         "kommentator"
       ],
-      "showThumbnailsInList": true
+      "showThumbnailsInList": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "zHX89zpASjzyn7GTz",
@@ -104,7 +106,8 @@
         "studio0_clip",
         "studio0_voiceover"
       ],
-      "showThumbnailsInList": true
+      "showThumbnailsInList": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "YC7RNPTbkXd5wnagp",
@@ -122,6 +125,7 @@
       "displayTakeButtons": true,
       "sourceLayerIds": [
         "studio0_graphicsIdent",
+        "studio0_graphicsIdent_persistent",
         "studio0_graphicsTop",
         "studio0_graphicsLower"
       ],
@@ -129,7 +133,8 @@
         "kommentator"
       ],
       "hideDuplicates": true,
-      "lineBreak": "\n - "
+      "lineBreak": "\n - ",
+      "toggleOnSingleClick": true
     },
     {
       "_id": "icuekg6wiJxejsYsZ",
@@ -152,7 +157,24 @@
       "tags": [
         "kommentator"
       ],
-      "showThumbnailsInList": true
+      "showThumbnailsInList": true,
+      "toggleOnSingleClick": true
+    },
+    {
+      "_id": "LiFso7gPYn2SPwHwg",
+      "type": "external_frame",
+      "name": "Sisyfos",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "default": false,
+      "x": 0,
+      "y": 0,
+      "width": 22,
+      "height": 7,
+      "url": "https://sisyfos.sofsrv04-od.tv2.local?minimonitor=1",
+      "scale": 0.85
     },
     {
       "_id": "6GDpdq547HjjZL9YK",
@@ -392,6 +414,25 @@
       "width": 22,
       "scale": 0.8,
       "showPartTitle": true
+    },
+    {
+      "_id" : "jLzHen2LoGEMxE68N",
+      "type" : "mini_rundown",
+      "name" : "Mini rundown",
+      "currentSegment" : false,
+      "displayStyle" : "buttons",
+      "rank" : 0,
+      "rundownBaseline" : false,
+      "showThumbnailsInList" : false,
+      "hideDuplicates" : false,
+      "default" : false,
+      "nextInCurrentPart" : false,
+      "oneNextPerSourceLayer" : false,
+      "x" : 7,
+      "y" : 0,
+      "width" : 14,
+      "height" : 7,
+      "scale" : 1
     }
   ],
   "type": "dashboard_layout",
@@ -428,7 +469,6 @@
     }
   ],
   "exposeAsStandalone": true,
-  "regionId": "shelf_layouts",
   "exposeAsShelf": true,
   "iconColor": "#8e44ad",
   "icon": {

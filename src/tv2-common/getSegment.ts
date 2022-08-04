@@ -8,7 +8,7 @@ import {
 import {
 	assertUnreachable,
 	GetNextPartCue,
-	INewsStory,
+	INewsPayload,
 	IsTargetingFull,
 	literal,
 	ParseBody,
@@ -17,8 +17,7 @@ import {
 	PartDefinitionKam,
 	PartMetaData
 } from 'tv2-common'
-import { CueType, PartType, SharedSourceLayers } from 'tv2-constants'
-import * as _ from 'underscore'
+import { CueType, PartType, SharedSourceLayers, TallyTags } from 'tv2-constants'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 import {
 	CueDefinitionUnpairedTarget,
@@ -29,7 +28,6 @@ import {
 	PartDefinitionTelefon,
 	TimeFromINewsField
 } from './inewsConversion'
-import { PieceMetaData } from './onTimelineGenerate'
 import { CreatePartInvalid, ServerPartProps } from './parts'
 
 export interface GetSegmentShowstyleOptions<
@@ -44,72 +42,73 @@ export interface GetSegmentShowstyleOptions<
 		partDefinition: PartDefinition,
 		totalWords: number,
 		asAdlibs?: boolean
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartIntro?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartKam?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionKam,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartServer?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinition,
-		props: ServerPartProps
-	) => BlueprintResultPart
+		partProps: ServerPartProps
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTeknik?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTeknik,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartGrafik?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionGrafik,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartEkstern?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEkstern,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTelefon?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionTelefon,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartDVE?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionDVE,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartEVS?: (
 		context: IShowStyleUserContext,
 		config: ShowStyleConfig,
 		partDefinition: PartDefinitionEVS,
 		totalWords: number
-	) => BlueprintResultPart
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
 }
 
-export function getSegmentBase<
+export async function getSegmentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: IShowStyleUserContext,
 	ingestSegment: IngestSegment,
 	showStyleOptions: GetSegmentShowstyleOptions<StudioConfig, ShowStyleConfig>
-): BlueprintResultSegment {
-	const iNewsStory: INewsStory | undefined = ingestSegment.payload?.iNewsStory
+): Promise<BlueprintResultSegment> {
+	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
+	const iNewsStory = segmentPayload?.iNewsStory
 	const segment = literal<IBlueprintSegment>({
 		name: ingestSegment.name || '',
 		metaData: {},
@@ -121,7 +120,7 @@ export function getSegmentBase<
 	})
 	const config = showStyleOptions.getConfig(context)
 
-	if (!iNewsStory || iNewsStory.meta.float === 'float' || !iNewsStory.body) {
+	if (!segmentPayload || !iNewsStory || iNewsStory.meta.float === 'float' || !iNewsStory.body) {
 		segment.isHidden = true
 		return {
 			segment,
@@ -133,7 +132,7 @@ export function getSegmentBase<
 
 	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
-	const parsedParts = ParseBody(
+	const parsedParts: PartDefinition[] = ParseBody(
 		config,
 		ingestSegment.externalId,
 		ingestSegment.name,
@@ -169,7 +168,7 @@ export function getSegmentBase<
 			part.type === PartType.Unknown &&
 			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
-			blueprintParts.push(showStyleOptions.CreatePartUnknown(context, config, part, totalWords, true))
+			blueprintParts.push(await showStyleOptions.CreatePartUnknown(context, config, part, totalWords, true))
 			continue
 		}
 
@@ -187,18 +186,18 @@ export function getSegmentBase<
 		switch (part.type) {
 			case PartType.INTRO:
 				if (showStyleOptions.CreatePartIntro) {
-					blueprintParts.push(showStyleOptions.CreatePartIntro(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartIntro(context, config, part, totalWords))
 				}
 				break
 			case PartType.Kam:
 				if (showStyleOptions.CreatePartKam) {
-					blueprintParts.push(showStyleOptions.CreatePartKam(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartKam(context, config, part, totalWords))
 				}
 				break
 			case PartType.Server:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						showStyleOptions.CreatePartServer(context, config, part, {
+						await showStyleOptions.CreatePartServer(context, config, part, {
 							voLayer: false,
 							voLevels: false,
 							totalTime,
@@ -211,18 +210,18 @@ export function getSegmentBase<
 				break
 			case PartType.Teknik:
 				if (showStyleOptions.CreatePartTeknik) {
-					blueprintParts.push(showStyleOptions.CreatePartTeknik(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartTeknik(context, config, part, totalWords))
 				}
 				break
 			case PartType.Grafik:
 				if (showStyleOptions.CreatePartGrafik) {
-					blueprintParts.push(showStyleOptions.CreatePartGrafik(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartGrafik(context, config, part, totalWords))
 				}
 				break
 			case PartType.VO:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						showStyleOptions.CreatePartServer(context, config, part, {
+						await showStyleOptions.CreatePartServer(context, config, part, {
 							voLayer: true,
 							voLevels: true,
 							totalTime,
@@ -235,27 +234,27 @@ export function getSegmentBase<
 				break
 			case PartType.DVE:
 				if (showStyleOptions.CreatePartDVE) {
-					blueprintParts.push(showStyleOptions.CreatePartDVE(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartDVE(context, config, part, totalWords))
 				}
 				break
-			case PartType.Ekstern:
+			case PartType.REMOTE:
 				if (showStyleOptions.CreatePartEkstern) {
-					blueprintParts.push(showStyleOptions.CreatePartEkstern(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartEkstern(context, config, part, totalWords))
 				}
 				break
 			case PartType.Telefon:
 				if (showStyleOptions.CreatePartTelefon) {
-					blueprintParts.push(showStyleOptions.CreatePartTelefon(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartTelefon(context, config, part, totalWords))
 				}
 				break
 			case PartType.Unknown:
 				if (part.cues.length) {
-					blueprintParts.push(showStyleOptions.CreatePartUnknown(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartUnknown(context, config, part, totalWords))
 				}
 				break
 			case PartType.EVS:
 				if (showStyleOptions.CreatePartEVS) {
-					blueprintParts.push(showStyleOptions.CreatePartEVS(context, config, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartEVS(context, config, part, totalWords))
 				}
 				break
 			default:
@@ -347,10 +346,7 @@ export function getSegmentBase<
 		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
 
-	if (
-		blueprintParts.filter(part => part.part.invalid === true).length === blueprintParts.length &&
-		iNewsStory.cues.length === 0
-	) {
+	if (blueprintParts.every(part => part.part.invalid) && iNewsStory.cues.length === 0) {
 		segment.isHidden = true
 	}
 
@@ -359,9 +355,7 @@ export function getSegmentBase<
 			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
 			// Jingle-only part, do not modify duration
 			!part.pieces.some(
-				p =>
-					p.sourceLayerId === SharedSourceLayers.PgmJingle &&
-					(p.metaData as PieceMetaData)?.transition?.isJingle === true
+				p => p.sourceLayerId === SharedSourceLayers.PgmJingle && p.tags?.some(tag => TallyTags.JINGLE === tag)
 			)
 		) {
 			part.part.expectedDuration = config.studio.DefaultPartDuration
@@ -383,7 +377,7 @@ export function getSegmentBase<
 			actualPart.invalid = false
 		}
 
-		if (ingestSegment.payload?.untimed) {
+		if (segmentPayload?.untimed) {
 			actualPart.untimed = true
 		}
 

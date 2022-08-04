@@ -1,6 +1,7 @@
 import { MigrationStepStudio, TSR } from '@tv2media/blueprints-integration'
 import {
 	AddKeepAudio,
+	addSourceToSourcesConfig,
 	literal,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
@@ -9,15 +10,13 @@ import {
 	SetConfigTo,
 	SetLayerNamesToDefaults
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
+import { SharedGraphicLLayer } from 'tv2-constants'
 import {
 	manifestAFVDDownstreamKeyers,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDSourcesCam,
-	manifestAFVDSourcesDelayedPlayback,
+	manifestAFVDSourcesReplay,
 	manifestAFVDSourcesRM,
-	manifestAFVDSourcesSkype,
 	manifestAFVDStudioMics
 } from '../config-manifests'
 import { CasparLLayer, SisyfosLLAyer } from '../layers'
@@ -64,21 +63,11 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesDelayedPlayback',
-		manifestAFVDSourcesDelayedPlayback.defaultVal,
+		manifestAFVDSourcesReplay.defaultVal,
 		'text',
 		'Studio config: Delayed Playback mappings',
 		'Enter the delayed playback input mapping',
-		manifestAFVDSourcesDelayedPlayback.defaultVal
-	),
-
-	ensureStudioConfig(
-		'0.1.0',
-		'SourcesSkype',
-		manifestAFVDSourcesSkype.defaultVal,
-		'text',
-		'Studio config: Skype mappings',
-		'Enter the Skype input mapping',
-		manifestAFVDSourcesSkype.defaultVal
+		manifestAFVDSourcesReplay.defaultVal
 	),
 
 	ensureStudioConfig(
@@ -105,7 +94,6 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	MoveSourcesToTable('0.1.0', 'SourcesCam', true, GetSisyfosLayersForTableMigrationAFVD, true),
 	MoveSourcesToTable('0.1.0', 'SourcesRM', true, GetSisyfosLayersForTableMigrationAFVD, false),
 	MoveSourcesToTable('0.1.0', 'SourcesDelayedPlayback', true, GetSisyfosLayersForTableMigrationAFVD, true),
-	MoveSourcesToTable('0.1.0', 'SourcesSkype', true, GetSisyfosLayersForTableMigrationAFVD, false),
 	MoveSourcesToTable('0.1.0', 'ABMediaPlayers', true, GetSisyfosLayersForTableMigrationAFVD),
 	...[
 		'viz_layer_adlibs',
@@ -174,7 +162,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 
 	renameMapping('1.5.1', 'studio0_adlib_viz_cmd', 'studio0_adlib_graphic_cmd'),
 
-	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
+	renameMapping('1.5.4', 'casparcg_cg_dve_template', SharedGraphicLLayer.GraphicLLayerLocators),
 
 	...SetLayerNamesToDefaults('1.5.5', 'AFVD', MappingsDefaults),
 
@@ -192,6 +180,17 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.CCGGain'),
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
 	removeMapping('1.6.1', 'atem_dsk_efect'),
+
+	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+	RemoveConfig('1.6.2', 'AFVD', 'SourcesSkype'),
+
+	RenameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
+	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesReplay', {
+		SourceName: 'EPSIO',
+		AtemSource: 30,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
+		StudioMics: true
+	}),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

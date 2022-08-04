@@ -2,7 +2,6 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR,
@@ -14,15 +13,24 @@ import {
 	GraphicInternal,
 	GraphicPilot,
 	literal,
-	PartDefinitionKam
+	PartDefinitionKam,
+	PieceMetaData
 } from 'tv2-common'
-import { AbstractLLayer, AdlibTags, CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import {
+	AbstractLLayer,
+	AdlibTags,
+	CueType,
+	PartType,
+	SharedGraphicLLayer,
+	SharedOutputLayers,
+	SourceType
+} from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
-import { BlueprintConfig, parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
+import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../__tests__/configs'
+import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_ID } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
-import { getConfig, parseConfig as parseShowStyleConfig } from '../../config'
+import { BlueprintConfig, getConfig, parseConfig as parseShowStyleConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
 
 function makeMockContext() {
@@ -37,9 +45,7 @@ const config = getConfig(makeMockContext())
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
-	variant: {
-		name: '1'
-	},
+	sourceDefinition: { sourceType: SourceType.KAM, id: '1', raw: 'Kam 1', minusMic: false, name: 'KAM 1' },
 	externalId: '0001',
 	rawType: 'Kam 1',
 	cues: [],
@@ -49,11 +55,6 @@ const dummyPart = literal<PartDefinitionKam>({
 	modified: 0,
 	segmentExternalId: ''
 })
-
-const dummyBlueprintPart: IBlueprintPart = {
-	title: 'Kam 1',
-	externalId: '0001'
-}
 
 const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 	id: '',
@@ -106,15 +107,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -125,6 +124,11 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -138,13 +142,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -175,15 +180,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -191,12 +194,16 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				expectedDuration: 5000,
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
-				noHotKey: true,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
@@ -208,13 +215,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -226,6 +234,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
@@ -242,13 +255,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -281,15 +295,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			newConfig,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -297,12 +309,16 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
 				expectedDuration: 5000,
-				noHotKey: true,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
@@ -314,13 +330,14 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -332,6 +349,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
@@ -348,13 +370,14 @@ describe('grafik piece', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -387,15 +410,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -406,6 +427,11 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -419,13 +445,14 @@ describe('grafik piece', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -461,15 +488,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -479,6 +504,11 @@ describe('grafik piece', () => {
 					start: 10000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -492,13 +522,14 @@ describe('grafik piece', () => {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -531,15 +562,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -549,6 +578,11 @@ describe('grafik piece', () => {
 					start: 0
 				},
 				lifespan: PieceLifespan.OutOnSegmentEnd,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdentPersistent,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -562,13 +596,14 @@ describe('grafik piece', () => {
 								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'direkte',
 								templateData: ['KØBENHAVN'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -582,6 +617,11 @@ describe('grafik piece', () => {
 					start: 0
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: {
@@ -625,15 +665,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece>({
@@ -644,6 +682,11 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -657,13 +700,14 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayIdent,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'arkiv',
 								templateData: ['unnamed org'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -694,15 +738,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(adLibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
@@ -710,12 +752,16 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'tlftoptlive - Line 1\n - Line 2',
 				lifespan: PieceLifespan.WithinPart,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				expectedDuration: 5000,
 				tags: ['kommentator'],
 				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_commentator',
-				noHotKey: true,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'tlftoptlive',
 					path: 'tlftoptlive',
@@ -727,13 +773,14 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayTopt,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -745,6 +792,11 @@ describe('grafik piece', () => {
 				externalId: partId,
 				name: 'tlftoptlive - Line 1\n - Line 2',
 				lifespan: PieceLifespan.OutOnSegmentEnd,
+				metaData: literal<PieceMetaData>({
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				expectedDuration: 4000,
@@ -761,13 +813,14 @@ describe('grafik piece', () => {
 								while: `!.full`
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayTopt,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayTopt,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						dskEnableObj
@@ -777,12 +830,7 @@ describe('grafik piece', () => {
 		])
 	})
 
-	it('Applies delay to WALL graphics when part has prerollDuration', () => {
-		const partWithPreroll: IBlueprintPart = {
-			title: 'Server',
-			externalId: '0001',
-			prerollDuration: 1000
-		}
+	it('WALL graphics have enable equal while 1', () => {
 		const cue: CueDefinitionGraphic<GraphicPilot> = {
 			type: CueType.Graphic,
 			target: 'WALL',
@@ -803,15 +851,13 @@ describe('grafik piece', () => {
 		EvaluateCueGraphic(
 			config,
 			makeMockContext(),
-			partWithPreroll,
 			pieces,
 			adLibPieces,
 			actions,
 			partId,
 			cue,
-			cue.adlib ? cue.adlib : false,
 			dummyPart,
-			0
+			cue.adlib ? { rank: 0 } : undefined
 		)
 		const piece = pieces[0]
 		expect(piece).toBeTruthy()
@@ -821,53 +867,6 @@ describe('grafik piece', () => {
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined
 		expect(tlObj).toBeTruthy()
-		expect(tlObj?.enable).toEqual({ start: 1000 })
-	})
-
-	it('Applies delay to WALL graphics when part has transitionPrerollDuration', () => {
-		const partWithPreroll: IBlueprintPart = {
-			title: 'Kam 1',
-			externalId: '0001',
-			transitionPrerollDuration: 2000
-		}
-		const cue: CueDefinitionGraphic<GraphicPilot> = {
-			type: CueType.Graphic,
-			target: 'WALL',
-			graphic: {
-				type: 'pilot',
-				name: '',
-				vcpid: 1234567890,
-				continueCount: -1
-			},
-			iNewsCommand: 'GRAFIK'
-		}
-
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
-		const partId = '0000000001'
-
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			partWithPreroll,
-			pieces,
-			adLibPieces,
-			actions,
-			partId,
-			cue,
-			cue.adlib ? cue.adlib : false,
-			dummyPart,
-			0
-		)
-		const piece = pieces[0]
-		expect(piece).toBeTruthy()
-		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
-				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
-				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
-		) as TSR.TimelineObjVIZMSEElementInternal | undefined
-		expect(tlObj).toBeTruthy()
-		expect(tlObj?.enable).toEqual({ start: 2000 })
+		expect(tlObj?.enable).toEqual({ while: '1' })
 	})
 })
