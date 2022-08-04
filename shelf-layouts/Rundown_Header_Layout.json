@@ -192,8 +192,8 @@
 			"iconColor": "#000000",
 			"x": 37,
 			"width": 27,
-			"height": 1,
-			"y": -1.1,
+			"height": 1.1,
+			"y": 0,
 			"xUnit": "%",
 			"widthUnit": "%"
 		},
