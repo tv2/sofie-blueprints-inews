@@ -214,7 +214,7 @@ export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay'
 	{
 		_id: '',
 		SourceName: 'EPSIO',
-		AtemSource: 30,
+		AtemSource: 25,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
 		StudioMics: true
 	}

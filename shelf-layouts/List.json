@@ -3,5 +3,6 @@
   "name": "List",
   "showStyleBaseId": "show0",
   "filters": [],
-  "type": "dashboard_layout"
+  "type": "dashboard_layout",
+  "regionId": "shelf_layouts"
 }
