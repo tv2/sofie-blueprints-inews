@@ -709,11 +709,12 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 			makeAdlibBoxesActions(o, globalRank++)
 		})
 
-	config.sources.replays
-		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
-		.forEach(o => {
-			makeAdlibBoxesActionsReplay(o, globalRank++, true)
-		})
+	config.sources.replays.forEach(o => {
+		if (!/EPSIO/i.test(o.id)) {
+			makeAdlibBoxesActionsReplay(o, globalRank++, false)
+		}
+		makeAdlibBoxesActionsReplay(o, globalRank++, true)
+	})
 
 	makeServerAdlibBoxesActions(globalRank++)
 
