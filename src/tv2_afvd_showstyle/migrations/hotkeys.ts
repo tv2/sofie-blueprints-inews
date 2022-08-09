@@ -26,13 +26,13 @@ export function GetDefaultStudioSourcesForAFVD(context: MigrationContextShowStyl
 	const camera = manifestAFVDSourcesCam.defaultVal.map(source => source.SourceName) as string[]
 	const remote = manifestAFVDSourcesRM.defaultVal.map(source => source.SourceName) as string[]
 	const feed = manifestAFVDSourcesFeed.defaultVal.map(source => source.SourceName) as string[]
-	const local = manifestAFVDSourcesReplay.defaultVal.map(source => source.SourceName) as string[]
+	const replay = manifestAFVDSourcesReplay.defaultVal.map(source => source.SourceName) as string[]
 
 	return {
 		camera,
 		remote,
 		feed,
-		local,
+		local: replay,
 		dveLayouts
 	}
 }

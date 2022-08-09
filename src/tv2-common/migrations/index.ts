@@ -332,3 +332,37 @@ export function StripFolderFromShowStyleConfig(
 		}
 	})
 }
+
+export function PrefixEvsWithEvs(
+	versionStr: string,
+	studio: string,
+	configId: string,
+	evsSourceNumber: string
+): MigrationStepStudio {
+	return literal<MigrationStepStudio>({
+		id: `${versionStr}.prefixEvs${evsSourceNumber}WithEvs.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+
+			if (!config || config.find(value => value.SourceName === `EVS ${evsSourceNumber}`) !== undefined) {
+				return false
+			}
+
+			return config.find(value => value.SourceName === evsSourceNumber) !== undefined
+		},
+		migrate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+			const index: number = config.findIndex(value => value.SourceName === evsSourceNumber)
+			if (index === -1) {
+				return
+			}
+			const evsSource = config[index]
+
+			evsSource.SourceName = `EVS ${evsSource.SourceName}`
+			config[index] = evsSource
+			context.setConfig(configId, (config as unknown) as ConfigItemValue)
+		}
+	})
+}
