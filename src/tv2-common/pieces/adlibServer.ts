@@ -12,7 +12,7 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
-import { t } from '../helpers'
+import { getServerAdLibTriggerModes, t } from '../helpers'
 
 export interface AdlibServerOfftubeOptions {
 	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
@@ -68,7 +68,7 @@ export async function CreateAdlibServer<
 			currentPieceTags: [GetTagForServer(partDefinition.segmentExternalId, file, !!voLayer)],
 			nextPieceTags: [GetTagForServerNext(partDefinition.segmentExternalId, file, !!voLayer)],
 			uniquenessId: `${voLayer ? 'vo' : 'server'}_${partDefinition.storyName}_${file}`
-		}
-		// triggerModes: getServerAdLibTriggerModes() /** @todo: uncomment for Server Resume */
+		},
+		triggerModes: getServerAdLibTriggerModes()
 	})
 }
