@@ -166,7 +166,6 @@ export function MakeContentDVEBase<
 		dveGeneratorOptions,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
-		partDefinition.fields.videoId,
 		partDefinition.segmentExternalId
 	)
 }
@@ -183,7 +182,6 @@ export function MakeContentDVE2<
 	dveGeneratorOptions: DVEOptions,
 	className?: string,
 	adlib?: boolean,
-	_videoId?: string,
 	mediaPlayerSessionId?: string
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	let template: DVEConfig
@@ -203,20 +201,22 @@ export function MakeContentDVE2<
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
-	const boxMap: Array<SourceDefinition | undefined> = []
 
 	const classes: string[] = []
 
-	makeBoxMap(inputs, context, classes, dveGeneratorOptions, sources, boxMap)
+	const boxAssigments = makeBoxAssignments(inputs, context, classes, dveGeneratorOptions, sources)
 
-	const boxes: BoxConfig[] = _.map(template.boxes, box => ({ ...box, source: config.studio.AtemSource.Default }))
+	const boxes: BoxConfig[] = Object.entries(template.boxes).map(([_num, box]) => ({
+		...box,
+		source: config.studio.AtemSource.Default
+	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: BoxSources = []
 
 	let valid = true
 	let server = false
 
-	boxMap.forEach((mappingFrom, num) => {
+	boxAssigments.forEach((mappingFrom, num) => {
 		const box = boxes[num]
 		if (mappingFrom === undefined) {
 			if (sources) {
@@ -467,14 +467,14 @@ const setBoxToBlack = (boxConfig: BoxConfig, boxSources: BoxSources) => {
 	})
 }
 
-function makeBoxMap(
+function makeBoxAssignments(
 	inputs: string[],
 	context: IShowStyleUserContext,
 	classes: string[],
 	dveGeneratorOptions: DVEOptions,
-	sources: DVESources | undefined,
-	boxMap: Array<SourceDefinition | undefined>
+	sources: DVESources | undefined
 ) {
+	const boxAssignments: Array<SourceDefinition | undefined> = []
 	inputs.forEach(source => {
 		const sourceProps = source.split(':')
 		const fromCue = sourceProps[1]
@@ -486,19 +486,22 @@ function makeBoxMap(
 
 		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
 
-		if (sources) {
-			const prop = sources[fromCue as keyof DVESources]
-			if (prop) {
-				boxMap[targetBox - 1] = prop
-			} else {
-				context.notifyUserWarning(`Missing mapping for ${targetBox}`)
-				boxMap[targetBox - 1] = undefined
-			}
-		} else {
+		if (!sources) {
 			// Need something to keep the layout etc
-			boxMap[targetBox - 1] = undefined
+			boxAssignments[targetBox - 1] = undefined
+			return
 		}
+
+		const prop = sources[fromCue as keyof DVESources]
+		if (prop) {
+			boxAssignments[targetBox - 1] = prop
+			return
+		}
+
+		context.notifyUserWarning(`Missing mapping for ${targetBox}`)
+		boxAssignments[targetBox - 1] = undefined
 	})
+	return boxAssignments
 }
 
 function boxSource(info: {
