@@ -121,6 +121,9 @@ export interface DVEOptions {
 	AUDIO_LAYERS: string[]
 }
 
+type BoxConfig = DVEConfigBox & { source: number }
+type BoxSources = Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) & SplitsContentBoxProperties>
+
 export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -163,7 +166,6 @@ export function MakeContentDVEBase<
 		dveGeneratorOptions,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
-		partDefinition.fields.videoId,
 		partDefinition.segmentExternalId
 	)
 }
@@ -180,7 +182,6 @@ export function MakeContentDVE2<
 	dveGeneratorOptions: DVEOptions,
 	className?: string,
 	adlib?: boolean,
-	videoId?: string,
 	mediaPlayerSessionId?: string
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	let template: DVEConfig
@@ -200,72 +201,29 @@ export function MakeContentDVE2<
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
-	const boxMap: Array<SourceDefinition | undefined> = []
 
 	const classes: string[] = []
 
-	inputs.forEach(source => {
-		const sourceProps = source.split(':')
-		const fromCue = sourceProps[1]
-		const targetBox = Number(sourceProps[0])
-		if (!fromCue || !targetBox || isNaN(targetBox)) {
-			context.notifyUserWarning(`Invalid DVE mapping: ${sourceProps}`)
-			return
-		}
+	const boxAssigments = makeBoxAssignments(inputs, context, classes, dveGeneratorOptions, sources)
 
-		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
-
-		if (sources) {
-			const prop = sources[fromCue as keyof DVESources]
-			if (prop) {
-				boxMap[targetBox - 1] = prop.sourceType !== SourceType.SERVER || videoId ? prop : undefined
-			} else {
-				context.notifyUserWarning(`Missing mapping for ${targetBox}`)
-				boxMap[targetBox - 1] = undefined
-			}
-		} else {
-			// Need something to keep the layout etc
-			boxMap[targetBox - 1] = undefined
-		}
-	})
-
-	const boxes = _.map(template.boxes, box => ({ ...box, source: config.studio.AtemSource.Default }))
+	const boxes: BoxConfig[] = Object.entries(template.boxes).map(([_num, box]) => ({
+		...box,
+		source: config.studio.AtemSource.Default
+	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
-	const boxSources: Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) &
-		SplitsContentBoxProperties> = []
-
-	const setBoxSource = (num: number, sourceInfo: { port: number; sourceLayerType: SourceLayerType }) => {
-		if (boxes[num]) {
-			boxes[num].source = sourceInfo.port
-
-			boxSources.push({
-				// TODO - draw box geometry
-				...boxSource(sourceInfo),
-				...literal<CameraContent | RemoteContent>({
-					studioLabel: '',
-					switcherInput: sourceInfo.port
-				})
-			})
-		}
-	}
-
-	const setBoxToBlack = (num: number) => {
-		setBoxSource(num, {
-			port: AtemSourceIndex.Blk,
-			sourceLayerType: SourceLayerType.UNKNOWN
-		})
-	}
+	const boxSources: BoxSources = []
 
 	let valid = true
 	let server = false
 
-	boxMap.forEach((mappingFrom, num) => {
+	boxAssigments.forEach((mappingFrom, num) => {
+		const box = boxes[num]
 		if (mappingFrom === undefined) {
 			if (sources) {
 				// If it is intentional there are no sources, then ignore
 				// TODO - should this warn?
 				context.notifyUserWarning(`Missing source type for DVE box: ${num + 1}`)
-				setBoxToBlack(num)
+				setBoxToBlack(box, boxSources)
 				valid = false
 			}
 		} else {
@@ -274,7 +232,7 @@ export function MakeContentDVE2<
 			}
 			switch (mappingFrom.sourceType) {
 				case SourceType.DEFAULT:
-					setBoxSource(num, {
+					setBoxSource(box, boxSources, {
 						sourceLayerType: SourceLayerType.UNKNOWN,
 						port: config.studio.AtemSource.Default
 					})
@@ -283,53 +241,53 @@ export function MakeContentDVE2<
 					const sourceInfoCam = findSourceInfo(config.sources, mappingFrom)
 					if (sourceInfoCam === undefined) {
 						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
-						setBoxToBlack(num)
+						setBoxToBlack(box, boxSources)
 						valid = false
 						return
 					}
 
-					setBoxSource(num, sourceInfoCam)
+					setBoxSource(box, boxSources, sourceInfoCam)
 					dveTimeline.push(...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, mappingFrom.minusMic, audioEnable))
 					break
 				case SourceType.REMOTE:
 					const sourceInfoLive = findSourceInfo(config.sources, mappingFrom)
 					if (sourceInfoLive === undefined) {
 						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
-						setBoxToBlack(num)
+						setBoxToBlack(box, boxSources)
 						valid = false
 						return
 					}
 
-					setBoxSource(num, sourceInfoLive)
+					setBoxSource(box, boxSources, sourceInfoLive)
 					dveTimeline.push(...GetSisyfosTimelineObjForRemote(config, sourceInfoLive, audioEnable))
 					break
 				case SourceType.REPLAY:
 					const sourceInfoReplay = findSourceInfo(config.sources, mappingFrom)
 					if (sourceInfoReplay === undefined) {
 						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
-						setBoxToBlack(num)
+						setBoxToBlack(box, boxSources)
 						valid = false
 						return
 					}
 
-					setBoxSource(num, sourceInfoReplay)
+					setBoxSource(box, boxSources, sourceInfoReplay)
 					dveTimeline.push(...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, mappingFrom.vo))
 					break
 				case SourceType.GRAFIK:
 					if (mappingFrom.name === 'FULL') {
-						setBoxSource(num, {
+						setBoxSource(box, boxSources, {
 							sourceLayerType: SourceLayerType.GRAPHICS,
 							port: FindDSKFullGFX(config).Fill
 						})
 						dveTimeline.push(...GetSisyfosTimelineObjForFull(config))
 					} else {
 						context.notifyUserWarning(`Unsupported engine for DVE: ${mappingFrom.name}`)
-						setBoxToBlack(num)
+						setBoxToBlack(box, boxSources)
 					}
 					break
 				case SourceType.SERVER:
 					server = true
-					setBoxSource(num, {
+					setBoxSource(box, boxSources, {
 						sourceLayerType: SourceLayerType.VT,
 						port: -1
 					})
@@ -481,6 +439,69 @@ export function MakeContentDVE2<
 			])
 		})
 	}
+}
+
+const setBoxSource = (
+	boxConfig: BoxConfig,
+	boxSources: BoxSources,
+	sourceInfo: { port: number; sourceLayerType: SourceLayerType }
+) => {
+	if (boxConfig) {
+		boxConfig.source = sourceInfo.port
+
+		boxSources.push({
+			// TODO - draw box geometry
+			...boxSource(sourceInfo),
+			...literal<CameraContent | RemoteContent>({
+				studioLabel: '',
+				switcherInput: sourceInfo.port
+			})
+		})
+	}
+}
+
+const setBoxToBlack = (boxConfig: BoxConfig, boxSources: BoxSources) => {
+	setBoxSource(boxConfig, boxSources, {
+		port: AtemSourceIndex.Blk,
+		sourceLayerType: SourceLayerType.UNKNOWN
+	})
+}
+
+function makeBoxAssignments(
+	inputs: string[],
+	context: IShowStyleUserContext,
+	classes: string[],
+	dveGeneratorOptions: DVEOptions,
+	sources: DVESources | undefined
+) {
+	const boxAssignments: Array<SourceDefinition | undefined> = []
+	inputs.forEach(source => {
+		const sourceProps = source.split(':')
+		const fromCue = sourceProps[1]
+		const targetBox = Number(sourceProps[0])
+		if (!fromCue || !targetBox || isNaN(targetBox)) {
+			context.notifyUserWarning(`Invalid DVE mapping: ${sourceProps}`)
+			return
+		}
+
+		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
+
+		if (!sources) {
+			// Need something to keep the layout etc
+			boxAssignments[targetBox - 1] = undefined
+			return
+		}
+
+		const prop = sources[fromCue as keyof DVESources]
+		if (prop) {
+			boxAssignments[targetBox - 1] = prop
+			return
+		}
+
+		context.notifyUserWarning(`Missing mapping for ${targetBox}`)
+		boxAssignments[targetBox - 1] = undefined
+	})
+	return boxAssignments
 }
 
 function boxSource(info: {

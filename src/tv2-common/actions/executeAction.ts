@@ -602,7 +602,6 @@ async function executeActionSelectDVE<
 		settings.DVEGeneratorOptions,
 		undefined,
 		false,
-		userData.videoId,
 		externalId
 	)
 
@@ -1386,7 +1385,6 @@ async function executeActionCutSourceToBox<
 		graphicsTemplateContent,
 		meta.sources,
 		settings.DVEGeneratorOptions,
-		undefined,
 		undefined,
 		undefined,
 		mediaPlayerSession
