@@ -5,6 +5,7 @@ import {
 	literal,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
+	PrefixEvsWithEvs,
 	RemoveConfig,
 	RenameStudioConfig,
 	SetConfigTo,
@@ -187,10 +188,13 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
 	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesReplay', {
 		SourceName: 'EPSIO',
-		AtemSource: 30,
+		AtemSource: 25,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
 		StudioMics: true
 	}),
+
+	PrefixEvsWithEvs('1.7.4', 'AFVD', 'SourcesReplay', '1'),
+	PrefixEvsWithEvs('1.7.4', 'AFVD', 'SourcesReplay', '2'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

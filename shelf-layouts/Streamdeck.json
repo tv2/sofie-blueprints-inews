@@ -46,5 +46,6 @@
       ]
     }
   ],
-  "type": "dashboard_layout"
+  "type": "dashboard_layout",
+  "regionId": "shelf_layouts"
 }
