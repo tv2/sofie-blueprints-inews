@@ -42,6 +42,7 @@ export function CreateJingleExpectedMedia(
 		ignoreBlackFrames: true,
 		ignoreFreezeFrame: true,
 		sourceDuration: TimeFromFrames(Number(duration) - Number(alphaAtEnd)),
+		postrollDuration: TimeFromFrames(Number(alphaAtEnd)),
 		timelineObjects: []
 	})
 }
