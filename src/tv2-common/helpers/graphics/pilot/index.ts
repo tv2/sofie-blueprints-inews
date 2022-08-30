@@ -15,7 +15,7 @@ import {
 	CueDefinitionGraphic,
 	generateExternalId,
 	GetFullGraphicTemplateNameFromCue,
-	GetInfiniteModeForGraphic,
+	GetPieceLifespanForGraphic,
 	GetPilotGraphicContentViz,
 	GetTagForFull,
 	GetTagForFullNext,
@@ -160,7 +160,7 @@ export class PilotGraphicGenerator {
 			outputLayerId: this.getOutputLayer(),
 			sourceLayerId: this.getSourceLayer(),
 			prerollDuration: this.getPrerollDuration(),
-			lifespan: GetInfiniteModeForGraphic(this.engine, this.config, this.parsedCue),
+			lifespan: GetPieceLifespanForGraphic(this.engine, this.config, this.parsedCue),
 			metaData: literal<PieceMetaData>({
 				sisyfosPersistMetaData: {
 					sisyfosLayers: []

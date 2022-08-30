@@ -10,26 +10,27 @@ import {
 	LifeSpan,
 	PartDefinition,
 	PartToParentClass,
+	TableConfigItemGFXTemplates,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { ControlClasses, GraphicEngine } from 'tv2-constants'
+import { GraphicEngine } from 'tv2-constants'
 import { GetFullGraphicTemplateNameFromCue, IsTargetingTLF, IsTargetingWall } from '.'
 
-export function GetInfiniteModeForGraphic(
+export function GetPieceLifespanForGraphic(
 	engine: GraphicEngine,
 	config: TV2BlueprintConfig,
-	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	isStickyIdent?: boolean
+	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): PieceLifespan {
-	return IsTargetingWall(engine)
-		? PieceLifespan.OutOnShowStyleEnd
-		: IsTargetingTLF(engine)
-		? PieceLifespan.WithinPart
-		: isStickyIdent
-		? PieceLifespan.OutOnSegmentEnd
-		: parsedCue.end && parsedCue.end.infiniteMode
-		? LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
-		: FindInfiniteModeFromConfig(config, parsedCue)
+	if (IsTargetingWall(engine)) {
+		return PieceLifespan.OutOnShowStyleEnd
+	}
+	if (IsTargetingTLF(engine)) {
+		return PieceLifespan.WithinPart
+	}
+	if (parsedCue.end && parsedCue.end.infiniteMode) {
+		return LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
+	}
+	return FindInfiniteModeFromConfig(config, parsedCue)
 }
 
 export function FindInfiniteModeFromConfig(
@@ -68,46 +69,27 @@ export function FindInfiniteModeFromConfig(
 
 export function GetGraphicDuration(
 	config: TV2BlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	defaultTime: boolean
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): number | undefined {
 	if (config.showStyle.GFXTemplates) {
-		if (GraphicIsInternal(cue)) {
-			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName ? templ.INewsName.toString().toUpperCase() === cue.graphic.template.toUpperCase() : false
-			)
-			if (template) {
-				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return undefined
-				}
-			}
-		} else if (GraphicIsPilot(cue)) {
-			const template = config.showStyle.GFXTemplates.find(templ =>
-				templ.INewsName
-					? templ.INewsName.toString().toUpperCase() === cue.graphic.vcpid.toString().toUpperCase()
-					: false
-			)
-			if (template) {
-				if (template.OutType && !template.OutType.toString().match(/default/i)) {
-					return undefined
-				}
-			}
+		const template = findGFXTemplate(config, cue)
+		if (template && template.OutType && !template.OutType.toString().match(/default/i)) {
+			return undefined
 		}
 	}
 
-	return defaultTime ? GetDefaultOut(config) : undefined
+	return GetDefaultOut(config)
 }
 
 export function CreateTimingGraphic(
 	config: TV2BlueprintConfig,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	defaultTime: boolean = true
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): { start: number; duration?: number } {
 	const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
 	const start = cue.start ? CalculateTime(cue.start) : 0
 	start !== undefined ? (ret.start = start) : (ret.start = 0)
 
-	const duration = GetGraphicDuration(config, cue, defaultTime)
+	const duration = GetGraphicDuration(config, cue)
 	const end = cue.end
 		? cue.end.infiniteMode
 			? undefined
@@ -126,11 +108,27 @@ export function GetEnableForWall(): TSR.TSRTimelineObj['enable'] {
 	}
 }
 
+export function findGFXTemplate(
+	config: TV2BlueprintConfig,
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
+): TableConfigItemGFXTemplates | undefined {
+	let graphicId: string | undefined
+	if (GraphicIsInternal(cue)) {
+		graphicId = cue.graphic.template
+	} else if (GraphicIsPilot(cue)) {
+		graphicId = cue.graphic.vcpid.toString()
+	}
+	if (graphicId === undefined) {
+		return undefined
+	}
+	return config.showStyle.GFXTemplates.find(templ =>
+		templ.INewsName ? templ.INewsName.toString().toUpperCase() === graphicId?.toUpperCase() : false
+	)
+}
 export function GetEnableForGraphic(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	isStickyIdent: boolean,
 	partDefinition?: PartDefinition,
 	adlib?: boolean
 ): TSR.TSRTimelineObj['enable'] {
@@ -139,18 +137,11 @@ export function GetEnableForGraphic(
 	}
 
 	if (
-		((cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') ||
-			GetInfiniteModeForGraphic(engine, config, cue, isStickyIdent) === PieceLifespan.OutOnSegmentEnd) &&
 		partDefinition &&
+		(endsOnPartEnd(config, cue) || GetPieceLifespanForGraphic(engine, config, cue) === PieceLifespan.OutOnSegmentEnd) &&
 		!adlib
 	) {
 		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
-	}
-
-	if (isStickyIdent) {
-		return {
-			while: `.${ControlClasses.ShowIdentGraphic} & !.full`
-		}
 	}
 
 	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
@@ -168,4 +159,9 @@ export function GetEnableForGraphic(
 			start: 0
 		}
 	}
+}
+function endsOnPartEnd(config: TV2BlueprintConfig, cue: CueDefinitionGraphic<GraphicInternalOrPilot>) {
+	return (
+		(cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') || findGFXTemplate(config, cue)?.OutType === 'B'
+	)
 }

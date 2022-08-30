@@ -56,6 +56,7 @@ export interface PieceMetaData {
 	mediaPlayerSessions?: string[]
 	mediaPlayerOptional?: boolean
 	modifiedByAction?: boolean
+	belongsToRemotePart?: boolean // used to find last idents in Lives
 }
 
 export interface SisyfosPersistMetaData {

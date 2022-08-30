@@ -133,7 +133,7 @@ export function EvaluateEksternBase<
 							// Only want the ident for original versions (or clones)
 							enable: { start: 0 },
 							layer: 'ekstern_enable_ident',
-							classes: [ControlClasses.ShowIdentGraphic, PartToParentClass('studio0', partDefinition) ?? '']
+							classes: [PartToParentClass('studio0', partDefinition) ?? '']
 						}),
 						literal<TSR.TimelineObjAtemME>({
 							id: '',

@@ -25,7 +25,6 @@ export function EvaluateClearGrafiks(
 
 	;[
 		SourceLayer.PgmGraphicsIdent,
-		SourceLayer.PgmGraphicsIdentPersistent,
 		SourceLayer.PgmGraphicsTop,
 		SourceLayer.PgmGraphicsLower,
 		SourceLayer.PgmGraphicsHeadline,

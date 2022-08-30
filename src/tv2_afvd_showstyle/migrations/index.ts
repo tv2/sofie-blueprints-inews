@@ -119,7 +119,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	// OVERLAY group
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsIdent, 'GFX Ident'),
-	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
+	SetSourceLayerName('1.6.9', 'studio0_graphicsIdent_persistent', 'GFX Ident Persistent (hidden)'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsTop, 'GFX Top'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
@@ -183,7 +183,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Change source layer type for graphics that don't have previews
 	 */
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
-	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsIdentPersistent, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', 'studio0_graphicsIdent_persistent', { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsTop, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
@@ -228,6 +228,13 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		},
 		{ LayerMapping: 'graphic_overlay_lower' }
 	),
+
+	/**
+	 * 1.7.5
+	 * - Remove persistent idents
+	 */
+	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
+
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),

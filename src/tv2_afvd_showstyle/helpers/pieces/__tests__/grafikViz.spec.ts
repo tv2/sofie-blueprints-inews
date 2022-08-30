@@ -16,15 +16,7 @@ import {
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
-import {
-	AbstractLLayer,
-	AdlibTags,
-	CueType,
-	PartType,
-	SharedGraphicLLayer,
-	SharedOutputLayers,
-	SourceType
-} from 'tv2-constants'
+import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -127,7 +119,8 @@ describe('grafik piece', () => {
 				metaData: literal<PieceMetaData>({
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
-					}
+					},
+					belongsToRemotePart: false
 				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -430,7 +423,8 @@ describe('grafik piece', () => {
 				metaData: literal<PieceMetaData>({
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
-					}
+					},
+					belongsToRemotePart: false
 				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -507,7 +501,8 @@ describe('grafik piece', () => {
 				metaData: literal<PieceMetaData>({
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
-					}
+					},
+					belongsToRemotePart: false
 				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -577,14 +572,15 @@ describe('grafik piece', () => {
 				enable: {
 					start: 0
 				},
-				lifespan: PieceLifespan.OutOnSegmentEnd,
+				lifespan: PieceLifespan.WithinPart,
 				metaData: literal<PieceMetaData>({
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
-					}
+					},
+					belongsToRemotePart: false
 				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
-				sourceLayerId: SourceLayer.PgmGraphicsIdentPersistent,
+				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'direkte',
 					path: 'direkte',
@@ -609,35 +605,6 @@ describe('grafik piece', () => {
 						dskEnableObj
 					])
 				})
-			}),
-			literal<IBlueprintPiece>({
-				externalId: partId,
-				name: 'direkte - KØBENHAVN',
-				enable: {
-					start: 0
-				},
-				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData>({
-					sisyfosPersistMetaData: {
-						sisyfosLayers: []
-					}
-				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
-				sourceLayerId: SourceLayer.PgmGraphicsIdent,
-				content: {
-					timelineObjects: [
-						literal<TSR.TimelineObjAbstractAny>({
-							id: '',
-							enable: {
-								while: '1'
-							},
-							layer: AbstractLLayer.IdentMarker,
-							content: {
-								deviceType: TSR.DeviceType.ABSTRACT
-							}
-						})
-					]
-				}
 			})
 		])
 	})
@@ -685,7 +652,8 @@ describe('grafik piece', () => {
 				metaData: literal<PieceMetaData>({
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
-					}
+					},
+					belongsToRemotePart: false
 				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
@@ -799,7 +767,6 @@ describe('grafik piece', () => {
 				}),
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
-				expectedDuration: 4000,
 				tags: ['flow_producer'],
 				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_flow',
 				content: literal<WithTimeline<GraphicsContent>>({

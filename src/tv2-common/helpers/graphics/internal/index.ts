@@ -1,9 +1,4 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	IShowStyleUserContext
-} from '@tv2media/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext } from '@tv2media/blueprints-integration'
 import { Adlib, CueDefinitionGraphic, GraphicInternal, PartDefinition, TV2BlueprintConfig } from 'tv2-common'
 import { InternalGraphic } from '../InternalGraphic'
 
@@ -12,7 +7,6 @@ export function CreateInternalGraphic(
 	context: IShowStyleUserContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
-	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	partDefinition: PartDefinition,
@@ -26,8 +20,8 @@ export function CreateInternalGraphic(
 	}
 
 	if (adlib) {
-		internalGraphic.createAdlibTargetingOVL(context, actions, adlibPieces)
-		internalGraphic.createAdlib(context, actions, adlibPieces)
+		internalGraphic.createCommentatorAdlib(adlibPieces)
+		internalGraphic.createAdlib(adlibPieces)
 	} else {
 		internalGraphic.createPiece(pieces)
 	}

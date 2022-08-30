@@ -26,7 +26,6 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
-	ActionPlayGraphics,
 	ActionSelectDVE,
 	ActionSelectDVELayout,
 	ActionSelectFullGrafik,
@@ -47,7 +46,6 @@ import {
 	GetDVETemplate,
 	GetFullGrafikTemplateName,
 	GraphicPilot,
-	IsTargetingOVL,
 	ITV2ActionExecutionContext,
 	literal,
 	MakeContentDVE2,
@@ -81,7 +79,6 @@ import {
 	PilotGraphicGenerator,
 	ServerSelectMode
 } from '../helpers'
-import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixTransitionBlueprintPieceForPart } from '../parts'
 import {
@@ -105,7 +102,6 @@ import {
 
 const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayers.PgmGraphicsIdent,
-	SharedSourceLayers.PgmGraphicsIdentPersistent,
 	SharedSourceLayers.PgmGraphicsTop,
 	SharedSourceLayers.PgmGraphicsLower,
 	SharedSourceLayers.PgmGraphicsHeadline,
@@ -279,9 +275,6 @@ export async function executeAction<
 				break
 			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
 				await executeActionFadeDownPersistedAudioLevels(context, settings)
-				break
-			case AdlibActionType.PLAY_GRAPHICS:
-				await executeActionPlayGraphics(context, settings, actionId, userData as ActionPlayGraphics)
 				break
 			default:
 				assertUnreachable(actionId)
@@ -1191,6 +1184,8 @@ async function executeActionCutToCamera<
 		const metaData = kamPiece.metaData as PieceMetaData
 		metaData.sisyfosPersistMetaData!.previousPersistMetaDataForCurrentPiece = currentMetaData.sisyfosPersistMetaData
 
+		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
+
 		await context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
 		const currentExternalId = await context
@@ -1211,10 +1206,30 @@ async function executeActionCutToCamera<
 			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
 			settings.SourceLayers.Continuity
 		])
+		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
 
 		kamPiece.enable = { start: 'now' }
 		await context.insertPiece('current', kamPiece)
 	}
+}
+
+async function stopGraphicPiecesThatShouldEndWithPart(
+	context: ITV2ActionExecutionContext,
+	currentPieceInstances: Array<IBlueprintPieceInstance<unknown>>
+) {
+	await context.stopPieceInstances(
+		currentPieceInstances
+			.filter(pieceInstance => isGraphicThatShouldEndWithPart(pieceInstance))
+			.map(pieceInstance => pieceInstance._id)
+	)
+}
+
+function isGraphicThatShouldEndWithPart(pieceInstance: IBlueprintPieceInstance<unknown>): unknown {
+	return (
+		pieceInstance.piece.lifespan === PieceLifespan.WithinPart &&
+		!pieceInstance.stoppedPlayback &&
+		(STOPPABLE_GRAPHICS_LAYERS as string[]).includes(pieceInstance.piece.sourceLayerId)
+	)
 }
 
 async function executeActionCutToRemote<
@@ -1852,7 +1867,10 @@ async function executeActionRecallLastLive<
 
 	const lastIdent = await context.findLastPieceOnLayer(settings.SourceLayers.Ident, {
 		originalOnly: true,
-		excludeCurrentPart: false
+		excludeCurrentPart: false,
+		pieceMetaDataFilter: {
+			belongsToRemotePart: true
+		}
 	})
 
 	const externalId = generateExternalId(context, actionId, [lastLive.piece.name])
@@ -1872,12 +1890,10 @@ async function executeActionRecallLastLive<
 		lifespan: PieceLifespan.WithinPart
 	})
 
-	// externalId should be replaced with something more concrete like partInstanceId
-	if (lastIdent && lastIdent.piece.externalId === lastLive.piece.externalId) {
+	if (lastIdent) {
 		pieces.push({
 			...lastIdent.piece,
 			externalId,
-			enable: { ...lastIdent.piece.enable, start: 0 },
 			lifespan: PieceLifespan.WithinPart
 		})
 	}
@@ -1961,38 +1977,6 @@ async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionConte
 		wantsToPersistAudio: latestPieceMetaData.sisyfosPersistMetaData.wantsToPersistAudio,
 		acceptPersistAudio: false
 	}
-}
-
-async function executeActionPlayGraphics<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ITV2ActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	actionId: string,
-	userData: ActionPlayGraphics
-): Promise<void> {
-	if (!IsTargetingOVL(userData.graphic.target)) {
-		return
-	}
-
-	const currentPartInstance = await context.getPartInstance('current')
-	const externalId = currentPartInstance?.part.externalId ?? generateExternalId(context, actionId, [])
-
-	const internalGraphic: InternalGraphic = new InternalGraphic(
-		settings.getConfig(context),
-		userData.graphic,
-		{ rank: 0 },
-		externalId,
-		undefined
-	)
-	const pieces: IBlueprintPiece[] = []
-
-	internalGraphic.createPiece(pieces)
-
-	pieces.forEach((piece: IBlueprintPiece) => {
-		context.insertPiece('current', piece)
-	})
 }
 
 async function scheduleLastPlayedDVE<

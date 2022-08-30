@@ -155,7 +155,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	// OVERLAY group
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsIdent, 'GFX Ident'),
-	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
+	SetSourceLayerName('1.6.9', 'studio0_graphicsIdent_persistent', 'GFX Ident Persistent (hidden)'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsTop, 'GFX Top'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
@@ -213,17 +213,13 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Change source layer type for graphics that don't have previews
 	 */
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
-	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsIdentPersistent, {
+	SetSourceLayerProperties('1.7.1', 'studio0_graphicsIdent_persistent', {
 		type: SourceLayerType.LOWER_THIRD
 	}),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsTop, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsTLF, { type: SourceLayerType.LOWER_THIRD }),
-
-	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false),
 
 	/**
 	 * 1.7.2
@@ -264,5 +260,15 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 			LayerMapping: 'graphic_overlay_tema'
 		},
 		{ LayerMapping: 'graphic_overlay_lower' }
-	)
+	),
+
+	/**
+	 * 1.7.5
+	 * - Remove persistent idents
+	 */
+	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
+
+	...getSourceLayerDefaultsMigrationSteps(VERSION),
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
 ])

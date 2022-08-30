@@ -1,4 +1,4 @@
-import { GetInfiniteModeForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import { GetPieceLifespanForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -996,15 +996,8 @@ export function AddParentClass(config: TV2BlueprintConfig, partDefinition: PartD
 	}
 
 	return partDefinition.cues.some(
-		c =>
-			c.type === CueType.Graphic &&
-			GraphicIsInternal(c) &&
-			GetInfiniteModeForGraphic(c.target, config, c, IsStickyIdent(c))
+		c => c.type === CueType.Graphic && GraphicIsInternal(c) && GetPieceLifespanForGraphic(c.target, config, c)
 	)
-}
-
-export function IsStickyIdent(cue: CueDefinitionGraphic<GraphicInternal>) {
-	return !!cue.graphic.template.match(/direkte/i)
 }
 
 export function UnpairedPilotToGraphic(

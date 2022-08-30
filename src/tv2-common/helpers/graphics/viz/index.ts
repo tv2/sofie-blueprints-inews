@@ -36,7 +36,6 @@ export function GetInternalGraphicContentVIZ(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGraphic: boolean,
 	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
@@ -48,7 +47,7 @@ export function GetInternalGraphicContentVIZ(
 		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
-				enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
+				enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
 				priority: 1,
 				layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				content: {
@@ -82,7 +81,7 @@ export function GetPilotGraphicContentViz(
 				id: '',
 				enable:
 					IsTargetingOVL(engine) || IsTargetingWall(engine)
-						? GetEnableForGraphic(config, engine, parsedCue, false, undefined, !!adlib)
+						? GetEnableForGraphic(config, engine, parsedCue, undefined, !!adlib)
 						: {
 								start: 0
 						  },

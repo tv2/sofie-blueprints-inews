@@ -116,6 +116,7 @@ describe('telefon', () => {
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: literal<PieceMetaData>({
+					belongsToRemotePart: false,
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					}
