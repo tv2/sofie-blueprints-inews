@@ -95,7 +95,7 @@ function GetServerTimeline(
 			file: contentProps.file,
 			loop: partProps.adLibPix,
 			seek: contentProps.seek,
-			length: contentProps.clipDuration,
+			length: contentProps.seek ? contentProps.clipDuration : undefined,
 			playing: true
 		},
 		metaData: {
