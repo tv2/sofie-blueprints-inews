@@ -11,6 +11,7 @@ import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,
 	GraphicInternal,
+	GraphicPieceMetaData,
 	GraphicPilot,
 	literal,
 	PartDefinitionKam,
@@ -108,7 +109,7 @@ describe('grafik piece', () => {
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
-			literal<IBlueprintPiece>({
+			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				enable: {
@@ -116,12 +117,12 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData>({
+				metaData: {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
 					belongsToRemotePart: false
-				}),
+				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -412,7 +413,7 @@ describe('grafik piece', () => {
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
-			literal<IBlueprintPiece>({
+			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				enable: {
@@ -420,12 +421,12 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData>({
+				metaData: {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
 					belongsToRemotePart: false
-				}),
+				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -491,19 +492,19 @@ describe('grafik piece', () => {
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
-			literal<IBlueprintPiece>({
+			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
 				enable: {
 					start: 10000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData>({
+				metaData: {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
 					belongsToRemotePart: false
-				}),
+				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -566,19 +567,19 @@ describe('grafik piece', () => {
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
-			literal<IBlueprintPiece>({
+			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'direkte - KØBENHAVN',
 				enable: {
 					start: 0
 				},
 				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData>({
+				metaData: {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
 					belongsToRemotePart: false
-				}),
+				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -641,7 +642,7 @@ describe('grafik piece', () => {
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(pieces).toEqual([
-			literal<IBlueprintPiece>({
+			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'arkiv - unnamed org',
 				enable: {
@@ -649,12 +650,12 @@ describe('grafik piece', () => {
 					duration: 4000
 				},
 				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData>({
+				metaData: {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
 					belongsToRemotePart: false
-				}),
+				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({

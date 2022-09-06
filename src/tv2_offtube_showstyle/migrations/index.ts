@@ -4,7 +4,6 @@ import {
 	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	literal,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
@@ -16,7 +15,6 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
-import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 import { GetDefaultStudioSourcesForOfftube } from './hotkeys'
@@ -71,7 +69,7 @@ const SHOW_STYLE_ID = 'tv2_offtube_showstyle'
  * 0.1.0: Core 0.24.0
  */
 
-export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationStepShowStyle[]>([
+export const showStyleMigrations: MigrationStepShowStyle[] = [
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getCreateVariantMigrationSteps(),
@@ -271,4 +269,4 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
 	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
-])
+]

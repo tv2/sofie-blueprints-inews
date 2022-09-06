@@ -7,7 +7,7 @@ import {
 	TimelineObjHoldMode,
 	TSR
 } from '@tv2media/blueprints-integration'
-import { literal, TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
+import { TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
@@ -60,7 +60,7 @@ export function postProcessPieceTimelineObjects(
 				) {
 					if (tlObj.classes?.includes(ControlClasses.AbstractLookahead)) {
 						// Create a lookahead-lookahead object for this me-program
-						const lookaheadObj = literal<TSR.TimelineObjAbstractAny & TimelineBlueprintExt>({
+						const lookaheadObj: TSR.TimelineObjAbstractAny & TimelineBlueprintExt = {
 							id: '',
 							enable: { start: 0 },
 							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
@@ -74,11 +74,11 @@ export function postProcessPieceTimelineObjects(
 								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession
 							},
 							classes: ['ab_on_preview']
-						})
+						}
 						extraObjs.push(lookaheadObj)
 					} else {
 						// Create a lookahead-lookahead object for this me-program
-						const lookaheadObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+						const lookaheadObj: TSR.TimelineObjAtemME & TimelineBlueprintExt = {
 							id: '',
 							enable: { start: 0 },
 							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
@@ -97,7 +97,7 @@ export function postProcessPieceTimelineObjects(
 								mediaPlayerSession: tlObj.metaData?.mediaPlayerSession
 							},
 							classes: ['ab_on_preview']
-						})
+						}
 						extraObjs.push(lookaheadObj)
 					}
 				}

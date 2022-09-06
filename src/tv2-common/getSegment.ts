@@ -109,7 +109,7 @@ export async function getSegmentBase<
 ): Promise<BlueprintResultSegment> {
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
 	const iNewsStory = segmentPayload?.iNewsStory
-	const segment = literal<IBlueprintSegment>({
+	const segment: IBlueprintSegment = {
 		name: ingestSegment.name || '',
 		metaData: {},
 		showShelf: false,
@@ -117,7 +117,7 @@ export async function getSegmentBase<
 			iNewsStory && iNewsStory.fields.pageNumber && iNewsStory.fields.pageNumber.trim()
 				? iNewsStory.fields.pageNumber.trim()
 				: undefined
-	})
+	}
 	const config = showStyleOptions.getConfig(context)
 
 	if (!segmentPayload || !iNewsStory || iNewsStory.meta.float === 'float' || !iNewsStory.body) {
@@ -292,11 +292,11 @@ export async function getSegmentBase<
 		if (!part.part.expectedDuration && totalTimeMs > 0) {
 			part.part.expectedDuration = (totalTimeMs - allocatedTime || 0) / partsWithoutExpectedDuration
 
-			if (part.part.expectedDuration! < 0) {
+			if (part.part.expectedDuration < 0) {
 				part.part.expectedDuration = 0
 			}
 
-			if (part.part.expectedDuration! > config.studio.MaximumPartDuration) {
+			if (part.part.expectedDuration > config.studio.MaximumPartDuration) {
 				part.part.expectedDuration = config.studio.MaximumPartDuration
 			}
 		}

@@ -1,5 +1,4 @@
 import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
-import { literal } from 'tv2-common'
 import _ = require('underscore')
 
 export function forceSourceLayerToDefaultsBase(
@@ -9,7 +8,7 @@ export function forceSourceLayerToDefaultsBase(
 	layer: string,
 	overrideSteps?: string[]
 ): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
+	return {
 		id: `${versionStr}.${showStyleId}.sourcelayer.defaults.${layer}.forced`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -43,5 +42,5 @@ export function forceSourceLayerToDefaultsBase(
 				context.insertSourceLayer(layer, defaultVal)
 			}
 		}
-	})
+	}
 }

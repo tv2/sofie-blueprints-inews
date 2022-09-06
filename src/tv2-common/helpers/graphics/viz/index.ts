@@ -1,10 +1,4 @@
-import {
-	GraphicsContent,
-	IBlueprintPiece,
-	IShowStyleUserContext,
-	TSR,
-	WithTimeline
-} from '@tv2media/blueprints-integration'
+import { GraphicsContent, IShowStyleUserContext, TSR, WithTimeline } from '@tv2media/blueprints-integration'
 import {
 	Adlib,
 	CueDefinitionGraphic,
@@ -39,8 +33,8 @@ export function GetInternalGraphicContentVIZ(
 	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
-): IBlueprintPiece['content'] {
-	return literal<WithTimeline<GraphicsContent>>({
+): WithTimeline<GraphicsContent> {
+	return {
 		fileName: parsedCue.graphic.template,
 		path: parsedCue.graphic.template,
 		ignoreMediaObjectStatus: true,
@@ -62,7 +56,7 @@ export function GetInternalGraphicContentVIZ(
 			// Assume DSK is off by default (config table)
 			...EnableDSK(config, 'OVL')
 		])
-	})
+	}
 }
 
 export function GetPilotGraphicContentViz(
@@ -73,7 +67,7 @@ export function GetPilotGraphicContentViz(
 	engine: GraphicEngine,
 	adlib?: Adlib
 ): WithTimeline<GraphicsContent> {
-	return literal<WithTimeline<GraphicsContent>>({
+	return {
 		fileName: 'PILOT_' + parsedCue.graphic.vcpid.toString(),
 		path: parsedCue.graphic.vcpid.toString(),
 		timelineObjects: [
@@ -112,5 +106,5 @@ export function GetPilotGraphicContentViz(
 			}),
 			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context, !!adlib) : [])
 		]
-	})
+	}
 }

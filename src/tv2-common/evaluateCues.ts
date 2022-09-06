@@ -181,7 +181,7 @@ export interface EvaluateCuesOptions {
 	/** Whether the parent part is a graphic part. */
 	isGrafikPart?: boolean
 	/** Passing this arguments sets the types of cues to evaluate. */
-	selectedCueTypes?: CueType[] | undefined
+	selectedCueTypes?: CueType[]
 	/** Don't evaluate adlibs. */
 	excludeAdlibs?: boolean
 	/** Only evaluate adlibs. */

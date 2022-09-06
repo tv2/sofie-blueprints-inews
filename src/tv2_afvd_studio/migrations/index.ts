@@ -2,7 +2,6 @@ import { MigrationStepStudio, TSR } from '@tv2media/blueprints-integration'
 import {
 	AddKeepAudio,
 	addSourceToSourcesConfig,
-	literal,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
 	PrefixEvsWithEvs,
@@ -40,7 +39,7 @@ declare const VERSION: string // Injected by webpack
  * 0.1.0: Core 0.24.0
  */
 
-export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStudio[]>([
+export const studioMigrations: MigrationStepStudio[] = [
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesCam',
@@ -199,4 +198,4 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)
-])
+]

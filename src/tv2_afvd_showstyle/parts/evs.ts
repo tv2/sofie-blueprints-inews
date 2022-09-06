@@ -39,15 +39,15 @@ export async function CreatePartEVS(
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 	const title = partDefinition.sourceDefinition.name
 
-	let part = literal<IBlueprintPart>({
+	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title,
 		metaData: {},
 		expectedDuration: partTime > 0 ? partTime : 0
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	const pieces: IBlueprintPiece[] = []
+	const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
@@ -59,22 +59,20 @@ export async function CreatePartEVS(
 	}
 	const atemInput = sourceInfoReplay.port
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: partDefinition.externalId,
-			name: part.title,
-			enable: { start: 0 },
-			outputLayerId: SharedOutputLayers.PGM,
-			sourceLayerId: SourceLayer.PgmLocal,
-			lifespan: PieceLifespan.WithinPart,
-			metaData: literal<PieceMetaData>({
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
-			}),
-			content: makeContentEVS(config, atemInput, partDefinition, sourceInfoReplay)
-		})
-	)
+	pieces.push({
+		externalId: partDefinition.externalId,
+		name: part.title,
+		enable: { start: 0 },
+		outputLayerId: SharedOutputLayers.PGM,
+		sourceLayerId: SourceLayer.PgmLocal,
+		lifespan: PieceLifespan.WithinPart,
+		metaData: {
+			sisyfosPersistMetaData: {
+				sisyfosLayers: []
+			}
+		},
+		content: makeContentEVS(config, atemInput, partDefinition, sourceInfoReplay)
+	})
 
 	await EvaluateCues(
 		context,

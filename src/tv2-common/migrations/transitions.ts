@@ -3,7 +3,7 @@ import { literal } from 'tv2-common'
 import { TableConfigItemAdLibTransitions } from '../blueprintConfig'
 
 export function SetShowstyleTransitionMigrationStep(versionStr: string, newValue: string): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
+	return {
 		id: `${versionStr}.setShowstyleTransition`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -19,7 +19,7 @@ export function SetShowstyleTransitionMigrationStep(versionStr: string, newValue
 		migrate: (context: MigrationContextShowStyle) => {
 			context.setBaseConfig('ShowstyleTransition', newValue)
 		}
-	})
+	}
 }
 
 type TransitionsTableValue = TableConfigItemAdLibTransitions & { _id: string; [key: string]: string }
@@ -31,49 +31,47 @@ export function UpsertValuesIntoTransitionTable(
 	const steps: MigrationStepShowStyle[] = []
 
 	values.forEach(val => {
-		steps.push(
-			literal<MigrationStepShowStyle>({
-				id: `${versionStr}.insertTransition.${val.Transition.replace(/[\s\W]/g, '_')}`,
-				version: versionStr,
-				canBeRunAutomatically: true,
-				validate: (context: MigrationContextShowStyle) => {
-					const table = (context.getBaseConfig('Transitions') as unknown) as TransitionsTableValue[] | undefined
+		steps.push({
+			id: `${versionStr}.insertTransition.${val.Transition.replace(/[\s\W]/g, '_')}`,
+			version: versionStr,
+			canBeRunAutomatically: true,
+			validate: (context: MigrationContextShowStyle) => {
+				const table = (context.getBaseConfig('Transitions') as unknown) as TransitionsTableValue[] | undefined
 
-					if (!table) {
-						return `Transitions table does not exists`
-					}
-
-					const existingVal = table.find(v => v.Transition === val.Transition)
-
-					if (!existingVal) {
-						return `Transition "${val.Transition}" does not exist`
-					}
-
-					return existingVal.Transition !== val.Transition
-				},
-				migrate: (context: MigrationContextShowStyle) => {
-					const table = (context.getBaseConfig('Transitions') as unknown) as TransitionsTableValue[] | undefined
-
-					if (!table) {
-						context.setBaseConfig('Transitions', [
-							literal<TransitionsTableValue>({
-								_id: val.Transition.replace(/\W\s/g, '_'),
-								Transition: val.Transition
-							})
-						])
-					} else {
-						table.push(
-							literal<TransitionsTableValue>({
-								_id: val.Transition.replace(/\W\s/g, '_'),
-								Transition: val.Transition
-							})
-						)
-
-						context.setBaseConfig('Transitions', table)
-					}
+				if (!table) {
+					return `Transitions table does not exists`
 				}
-			})
-		)
+
+				const existingVal = table.find(v => v.Transition === val.Transition)
+
+				if (!existingVal) {
+					return `Transition "${val.Transition}" does not exist`
+				}
+
+				return existingVal.Transition !== val.Transition
+			},
+			migrate: (context: MigrationContextShowStyle) => {
+				const table = (context.getBaseConfig('Transitions') as unknown) as TransitionsTableValue[] | undefined
+
+				if (!table) {
+					context.setBaseConfig('Transitions', [
+						literal<TransitionsTableValue>({
+							_id: val.Transition.replace(/\W\s/g, '_'),
+							Transition: val.Transition
+						})
+					])
+				} else {
+					table.push(
+						literal<TransitionsTableValue>({
+							_id: val.Transition.replace(/\W\s/g, '_'),
+							Transition: val.Transition
+						})
+					)
+
+					context.setBaseConfig('Transitions', table)
+				}
+			}
+		})
 	})
 
 	return steps

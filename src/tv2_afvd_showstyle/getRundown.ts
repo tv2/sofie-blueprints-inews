@@ -4,7 +4,6 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintRundown,
 	IBlueprintShowStyleVariant,
 	IngestRundown,
 	IShowStyleUserContext,
@@ -36,7 +35,6 @@ import {
 	literal,
 	PieceMetaData,
 	replaySourceName,
-	SisyfosPersistMetaData,
 	SourceDefinitionKam,
 	SourceInfo,
 	SourceInfoToSourceDefinition,
@@ -81,13 +79,13 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 	const config = getShowStyleConfig(context)
 
 	return {
-		rundown: literal<IBlueprintRundown>({
+		rundown: {
 			externalId: ingestRundown.externalId,
 			name: ingestRundown.name,
 			timing: {
 				type: PlaylistTimingType.None
 			}
-		}),
+		},
 		globalAdLibPieces: getGlobalAdLibPiecesAFVD(context, config),
 		globalActions: getGlobalAdlibActionsAFVD(context, config),
 		baseline: getBaseline(config)
@@ -95,8 +93,8 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 }
 
 function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
-	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
+	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): Array<IBlueprintAdLibPiece<PieceMetaData>> {
+		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
 		res.push({
 			externalId: 'delayed',
 			name: replaySourceName(info.id, vo),
@@ -106,12 +104,12 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
-			metaData: literal<PieceMetaData>({
+			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					acceptPersistAudio: vo
 				}
-			}),
+			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
@@ -135,12 +133,11 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 				]
 			}
 		})
-
 		return res
 	}
 
-	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
+	function makeRemoteAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
+		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
 		const eksternSisyfos = GetSisyfosTimelineObjForRemote(config, info)
 		res.push({
 			externalId: 'live',
@@ -152,11 +149,11 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
 			metaData: {
-				sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					wantsToPersistAudio: info.wantsToPersistAudio,
 					acceptPersistAudio: info.acceptPersistAudio
-				})
+				}
 			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
@@ -185,8 +182,8 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 	}
 
 	// aux adlibs
-	function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
+	function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
+		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
 		res.push({
 			externalId: 'auxstudio',
 			name: info.id + '',
@@ -196,11 +193,11 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			metaData: {
-				sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					wantsToPersistAudio: info.wantsToPersistAudio,
 					acceptPersistAudio: info.acceptPersistAudio
-				})
+				}
 			},
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
@@ -545,35 +542,33 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 			const name = `${info.type} ${info.id}`
 			const layer = info.type === SourceInfoType.KAM ? SourceLayer.PgmCam : SourceLayer.PgmLive
 
-			const userData = literal<ActionCutSourceToBox>({
+			const userData: ActionCutSourceToBox = {
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name,
 				box,
 				sourceDefinition: SourceInfoToSourceDefinition(info)
+			}
+			blueprintActions.push({
+				externalId: generateExternalId(_context, userData),
+				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: rank + 0.1 * box,
+					label: t(`${name} inp ${box + 1}`),
+					sourceLayerId: layer,
+					outputLayerId: SharedOutputLayers.SEC,
+					content: {},
+					tags: [AdlibTagCutToBox(box)]
+				}
 			})
-			blueprintActions.push(
-				literal<IBlueprintActionManifest>({
-					externalId: generateExternalId(_context, userData),
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData,
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: t(`${name} inp ${box + 1}`),
-						sourceLayerId: layer,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: [AdlibTagCutToBox(box)]
-					}
-				})
-			)
 		}
 	}
 
 	function makeAdlibBoxesActionsReplay(info: SourceInfo, rank: number, vo: boolean) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
 			const name = replaySourceName(info.id, vo)
-			const userData = literal<ActionCutSourceToBox>({
+			const userData: ActionCutSourceToBox = {
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name,
 				box,
@@ -584,76 +579,70 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 					raw: '',
 					name
 				}
+			}
+			blueprintActions.push({
+				externalId: generateExternalId(_context, userData),
+				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: rank + 0.1 * box,
+					label: t(`${name} inp ${box + 1}`),
+					sourceLayerId: SourceLayer.PgmLocal,
+					outputLayerId: SharedOutputLayers.SEC,
+					content: {},
+					tags: [AdlibTagCutToBox(box), vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
+				}
 			})
-			blueprintActions.push(
-				literal<IBlueprintActionManifest>({
-					externalId: generateExternalId(_context, userData),
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData,
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: t(`${name} inp ${box + 1}`),
-						sourceLayerId: SourceLayer.PgmLocal,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: [AdlibTagCutToBox(box), vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
-					}
-				})
-			)
 		}
 	}
 
 	function makeServerAdlibBoxesActions(rank: number) {
 		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
-			const userData = literal<ActionCutSourceToBox>({
+			const userData: ActionCutSourceToBox = {
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name: `SERVER`,
 				box,
 				sourceDefinition: { sourceType: SourceType.SERVER }
+			}
+			blueprintActions.push({
+				externalId: generateExternalId(_context, userData),
+				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: rank + 0.1 * box,
+					label: t(`Server inp ${box + 1}`),
+					sourceLayerId: SourceLayer.PgmServer,
+					outputLayerId: SharedOutputLayers.SEC,
+					content: {},
+					tags: [AdlibTagCutToBox(box)]
+				}
 			})
-			blueprintActions.push(
-				literal<IBlueprintActionManifest>({
-					externalId: generateExternalId(_context, userData),
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData,
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: t(`Server inp ${box + 1}`),
-						sourceLayerId: SourceLayer.PgmServer,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: [AdlibTagCutToBox(box)]
-					}
-				})
-			)
 		}
 	}
 
 	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
 		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionKam
-		const userData = literal<ActionCutToCamera>({
+		const userData: ActionCutToCamera = {
 			type: AdlibActionType.CUT_TO_CAMERA,
 			queue,
 			sourceDefinition
+		}
+		blueprintActions.push({
+			externalId: generateExternalId(_context, userData),
+			actionId: AdlibActionType.CUT_TO_CAMERA,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: rank,
+				label: t(sourceDefinition.name),
+				sourceLayerId: SourceLayer.PgmCam,
+				outputLayerId: SharedOutputLayers.PGM,
+				content: {},
+				tags: queue ? [AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT]
+			}
 		})
-		blueprintActions.push(
-			literal<IBlueprintActionManifest>({
-				externalId: generateExternalId(_context, userData),
-				actionId: AdlibActionType.CUT_TO_CAMERA,
-				userData,
-				userDataManifest: {},
-				display: {
-					_rank: rank,
-					label: t(sourceDefinition.name),
-					sourceLayerId: SourceLayer.PgmCam,
-					outputLayerId: SharedOutputLayers.PGM,
-					content: {},
-					tags: queue ? [AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT]
-				}
-			})
-		)
 	}
 
 	config.sources.cameras
@@ -675,24 +664,22 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		})
 
 	function makeRecallLastLiveAction() {
-		const userData = literal<ActionRecallLastLive>({
+		const userData: ActionRecallLastLive = {
 			type: AdlibActionType.RECALL_LAST_LIVE
+		}
+		blueprintActions.push({
+			externalId: generateExternalId(_context, userData),
+			actionId: AdlibActionType.RECALL_LAST_LIVE,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: 1,
+				label: t('Last Live'),
+				sourceLayerId: SourceLayer.PgmLive,
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
+			}
 		})
-		blueprintActions.push(
-			literal<IBlueprintActionManifest>({
-				externalId: generateExternalId(_context, userData),
-				actionId: AdlibActionType.RECALL_LAST_LIVE,
-				userData,
-				userDataManifest: {},
-				display: {
-					_rank: 1,
-					label: t('Last Live'),
-					sourceLayerId: SourceLayer.PgmLive,
-					outputLayerId: SharedOutputLayers.PGM,
-					tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
-				}
-			})
-		)
 	}
 
 	makeRecallLastLiveAction()
@@ -718,13 +705,13 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 
 	makeServerAdlibBoxesActions(globalRank++)
 
-	function makeClearGraphicsAction() {
-		const userData = literal<ActionClearGraphics>({
+	function makeClearGraphicsAction(): IBlueprintActionManifest {
+		const userData: ActionClearGraphics = {
 			type: AdlibActionType.CLEAR_GRAPHICS,
 			sendCommands: true,
 			label: 'GFX Clear'
-		})
-		return literal<IBlueprintActionManifest>({
+		}
+		return {
 			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
 			userData,
@@ -739,16 +726,16 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				currentPieceTags: [TallyTags.GFX_CLEAR],
 				nextPieceTags: [TallyTags.GFX_CLEAR]
 			}
-		})
+		}
 	}
 
-	function makeClearGraphicsAltudAction() {
-		const userData = literal<ActionClearGraphics>({
+	function makeClearGraphicsAltudAction(): IBlueprintActionManifest {
+		const userData: ActionClearGraphics = {
 			type: AdlibActionType.CLEAR_GRAPHICS,
 			sendCommands: false,
 			label: 'GFX Altud'
-		})
-		return literal<IBlueprintActionManifest>({
+		}
+		return {
 			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
 			userData,
@@ -763,73 +750,66 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
-		})
+		}
 	}
 
 	blueprintActions.push(makeClearGraphicsAction(), makeClearGraphicsAltudAction())
 
 	blueprintActions.push(...GetTransitionAdLibActions(config, 800))
 
-	const recallLastLiveDveUserData = literal<ActionRecallLastDVE>({
+	const recallLastLiveDveUserData: ActionRecallLastDVE = {
 		type: AdlibActionType.RECALL_LAST_DVE
+	}
+	blueprintActions.push({
+		externalId: generateExternalId(_context, recallLastLiveDveUserData),
+		actionId: AdlibActionType.RECALL_LAST_DVE,
+		userData: recallLastLiveDveUserData,
+		userDataManifest: {},
+		display: {
+			_rank: 1,
+			label: t('Last DVE'),
+			sourceLayerId: SourceLayer.PgmDVEAdLib,
+			outputLayerId: 'pgm',
+			tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
+		}
 	})
-	blueprintActions.push(
-		literal<IBlueprintActionManifest>({
-			externalId: generateExternalId(_context, recallLastLiveDveUserData),
-			actionId: AdlibActionType.RECALL_LAST_DVE,
-			userData: recallLastLiveDveUserData,
-			userDataManifest: {},
-			display: {
-				_rank: 1,
-				label: t('Last DVE'),
-				sourceLayerId: SourceLayer.PgmDVEAdLib,
-				outputLayerId: 'pgm',
-				tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
-			}
-		})
-	)
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		// const boxSources = ['', '', '', '']
-		const userData = literal<ActionSelectDVELayout>({
+		const userData: ActionSelectDVELayout = {
 			type: AdlibActionType.SELECT_DVE_LAYOUT,
 			config: dveConfig
-		})
-		blueprintActions.push(
-			literal<IBlueprintActionManifest>({
-				externalId: generateExternalId(_context, userData),
-				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
-				userData,
-				userDataManifest: {},
-				display: {
-					_rank: 200 + i,
-					label: t(dveConfig.DVEName),
-					sourceLayerId: SourceLayer.PgmDVEAdLib,
-					outputLayerId: SharedOutputLayers.PGM,
-					tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
-				}
-			})
-		)
-	})
-
-	const fadeDownPersistedAudioLevelsUserData = literal<ActionFadeDownPersistedAudioLevels>({
-		type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
-	})
-	blueprintActions.push(
-		literal<IBlueprintActionManifest>({
-			externalId: generateExternalId(_context, fadeDownPersistedAudioLevelsUserData),
-			actionId: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
-			userData: fadeDownPersistedAudioLevelsUserData,
+		}
+		blueprintActions.push({
+			externalId: generateExternalId(_context, userData),
+			actionId: AdlibActionType.SELECT_DVE_LAYOUT,
+			userData,
 			userDataManifest: {},
 			display: {
-				_rank: 300,
-				label: t('Fade down persisted audio levels'),
-				sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-				outputLayerId: SharedOutputLayers.SEC,
-				tags: [AdlibTags.ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS]
+				_rank: 200 + i,
+				label: t(dveConfig.DVEName),
+				sourceLayerId: SourceLayer.PgmDVEAdLib,
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
 			}
 		})
-	)
+	})
+
+	const fadeDownPersistedAudioLevelsUserData: ActionFadeDownPersistedAudioLevels = {
+		type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
+	}
+	blueprintActions.push({
+		externalId: generateExternalId(_context, fadeDownPersistedAudioLevelsUserData),
+		actionId: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
+		userData: fadeDownPersistedAudioLevelsUserData,
+		userDataManifest: {},
+		display: {
+			_rank: 300,
+			label: t('Fade down persisted audio levels'),
+			sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
+			outputLayerId: SharedOutputLayers.SEC,
+			tags: [AdlibTags.ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS]
+		}
+	})
 
 	return blueprintActions
 }

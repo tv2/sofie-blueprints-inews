@@ -16,6 +16,7 @@ import {
 	GetTagForTransition,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	TimeFromFrames,
 	TimelineBlueprintExt,
 	TV2BlueprintConfigBase,
@@ -117,60 +118,58 @@ export function CreateEffektForPartInner<
 
 	const fileName = JoinAssetToFolder(config.studio.JingleFolder, file)
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId,
-			name: label,
-			enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
-			outputLayerId: SharedOutputLayers.JINGLE,
-			sourceLayerId: layers.sourceLayer,
-			lifespan: PieceLifespan.WithinPart,
-			pieceType: IBlueprintPieceType.InTransition,
-			content: literal<WithTimeline<VTContent>>({
-				fileName,
-				path: JoinAssetToNetworkPath(
-					config.studio.JingleNetworkBasePath,
-					config.studio.JingleFolder,
-					file,
-					config.studio.JingleFileExtension
-				), // full path on the source network storage
-				mediaFlowIds: [config.studio.JingleMediaFlowId],
-				previewFrame: Number(effektConfig.StartAlpha),
-				ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
-				ignoreBlackFrames: true,
-				ignoreFreezeFrame: true,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: layers.casparLayer,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: fileName
-						}
-					}),
-					...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
-					literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: layers.sisyfosLayer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 1
-						}
-					})
-				])
-			})
+	pieces.push({
+		externalId,
+		name: label,
+		enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
+		outputLayerId: SharedOutputLayers.JINGLE,
+		sourceLayerId: layers.sourceLayer,
+		lifespan: PieceLifespan.WithinPart,
+		pieceType: IBlueprintPieceType.InTransition,
+		content: literal<WithTimeline<VTContent>>({
+			fileName,
+			path: JoinAssetToNetworkPath(
+				config.studio.JingleNetworkBasePath,
+				config.studio.JingleFolder,
+				file,
+				config.studio.JingleFileExtension
+			), // full path on the source network storage
+			mediaFlowIds: [config.studio.JingleMediaFlowId],
+			previewFrame: Number(effektConfig.StartAlpha),
+			ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
+			ignoreBlackFrames: true,
+			ignoreFreezeFrame: true,
+			timelineObjects: literal<TimelineObjectCoreExt[]>([
+				literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+					id: '',
+					enable: {
+						start: 0
+					},
+					priority: 1,
+					layer: layers.casparLayer,
+					content: {
+						deviceType: TSR.DeviceType.CASPARCG,
+						type: TSR.TimelineContentTypeCasparCg.MEDIA,
+						file: fileName
+					}
+				}),
+				...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
+				literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+					id: '',
+					enable: {
+						start: 0
+					},
+					priority: 1,
+					layer: layers.sisyfosLayer,
+					content: {
+						deviceType: TSR.DeviceType.SISYFOS,
+						type: TSR.TimelineContentTypeSisyfos.CHANNEL,
+						isPgm: 1
+					}
+				})
+			])
 		})
-	)
+	})
 
 	return {
 		inTransition: {
@@ -190,7 +189,7 @@ export function CreateMixTransitionBlueprintPieceForPart(
 	externalId: string,
 	durationInFrames: number,
 	sourceLayer: string
-): IBlueprintPiece {
+): IBlueprintPiece<PieceMetaData> {
 	const tags = [
 		GetTagForTransition(
 			literal<ActionTakeWithTransitionVariantMix>({
@@ -209,8 +208,8 @@ function createEffectBlueprintPiece(
 	name: string,
 	sourceLayer: string,
 	tags: string[]
-): IBlueprintPiece {
-	return literal<IBlueprintPiece>({
+): IBlueprintPiece<PieceMetaData> {
+	return {
 		enable: {
 			start: 0,
 			duration: Math.max(TimeFromFrames(durationInFrames), 1000)
@@ -225,7 +224,7 @@ function createEffectBlueprintPiece(
 			timelineObjects: [],
 			ignoreMediaObjectStatus: true
 		}
-	})
+	}
 }
 
 export function CreateInTransitionForAtemTransitionStyle(
@@ -245,7 +244,7 @@ export function CreateDipTransitionBlueprintPieceForPart(
 	externalId: string,
 	durationInFrames: number,
 	sourceLayer: string
-): IBlueprintPiece {
+): IBlueprintPiece<PieceMetaData> {
 	const tags = [
 		GetTagForTransition(
 			literal<ActionTakeWithTransitionVariantDip>({

@@ -48,34 +48,32 @@ export function EvaluateClearGrafiks(
 		})
 	})
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: partId,
-			name: 'CLEAR',
-			...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
-			outputLayerId: SharedOutputLayers.SEC,
-			sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
-			lifespan: PieceLifespan.WithinPart,
-			content: {
-				timelineObjects: config.studio.HTMLGraphics
-					? [
-							literal<TSR.TimelineObjVIZMSEClearAllElements>({
-								id: '',
-								enable: {
-									start: 0,
-									duration: 1000
-								},
-								priority: 100,
-								layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
-								content: {
-									deviceType: TSR.DeviceType.VIZMSE,
-									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-									showId: config.selectedGraphicsSetup.OvlShowId
-								}
-							})
-					  ]
-					: []
-			}
-		})
-	)
+	pieces.push({
+		externalId: partId,
+		name: 'CLEAR',
+		...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
+		outputLayerId: SharedOutputLayers.SEC,
+		sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: config.studio.HTMLGraphics
+				? [
+						literal<TSR.TimelineObjVIZMSEClearAllElements>({
+							id: '',
+							enable: {
+								start: 0,
+								duration: 1000
+							},
+							priority: 100,
+							layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+								showId: config.selectedGraphicsSetup.OvlShowId
+							}
+						})
+				  ]
+				: []
+		}
+	})
 }

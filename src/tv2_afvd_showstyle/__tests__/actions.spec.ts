@@ -406,7 +406,7 @@ async function getTransitionPiece(
 }
 
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
-	const atemObj = (piece.piece.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
+	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 		obj =>
 			obj.layer === AtemLLayer.AtemMEProgram &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
@@ -792,9 +792,9 @@ describe('Camera shortcuts on server', () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
+			{
 				_id: 'serverPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
+				piece: {
 					_id: 'Server Current',
 					enable: {
 						start: 0
@@ -807,9 +807,9 @@ describe('Camera shortcuts on server', () => {
 					content: {
 						timelineObjects: []
 					}
-				}),
+				},
 				partInstanceId: ''
-			})
+			}
 		]
 
 		context.nextPart = undefined
@@ -835,9 +835,9 @@ describe('Camera shortcuts on server', () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
+			{
 				_id: 'serverPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
+				piece: {
 					_id: 'Server Current',
 					enable: {
 						start: 0
@@ -850,9 +850,9 @@ describe('Camera shortcuts on server', () => {
 					content: {
 						timelineObjects: []
 					}
-				}),
+				},
 				partInstanceId: ''
-			})
+			}
 		]
 
 		context.nextPart = undefined
@@ -880,9 +880,9 @@ describe('Camera shortcuts on VO', () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
+			{
 				_id: 'voPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
+				piece: {
 					_id: 'VO Current',
 					enable: {
 						start: 0
@@ -895,9 +895,9 @@ describe('Camera shortcuts on VO', () => {
 					content: {
 						timelineObjects: []
 					}
-				}),
+				},
 				partInstanceId: ''
-			})
+			}
 		]
 
 		context.nextPart = undefined
@@ -923,9 +923,9 @@ describe('Camera shortcuts on VO', () => {
 		const context = makeMockContext('cut', 'cam', 'cam')
 
 		context.currentPieceInstances = [
-			literal<IBlueprintPieceInstance>({
+			{
 				_id: 'voPieceInstance',
-				piece: literal<IBlueprintPieceDB>({
+				piece: {
 					_id: 'VO Current',
 					enable: {
 						start: 0
@@ -938,9 +938,9 @@ describe('Camera shortcuts on VO', () => {
 					content: {
 						timelineObjects: []
 					}
-				}),
+				},
 				partInstanceId: ''
-			})
+			}
 		]
 
 		context.nextPart = undefined

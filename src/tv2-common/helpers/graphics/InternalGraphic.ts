@@ -4,12 +4,11 @@ import _ = require('underscore')
 import { AdlibTags, GraphicEngine, PartType, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
 import { TV2BlueprintConfig } from '../../blueprintConfig'
 import { CueDefinitionGraphic, GraphicInternal, PartDefinition } from '../../inewsConversion'
-import { PieceMetaData } from '../../onTimelineGenerate'
-import { literal } from '../../util'
+import { GraphicPieceMetaData, PieceMetaData } from '../../onTimelineGenerate'
 import { GetInternalGraphicContentCaspar } from './caspar'
 import { GetSourceLayerForGraphic } from './layers'
 import { GetFullGraphicTemplateNameFromCue, GraphicDisplayName } from './name'
-import { IsTargetingOVL, IsTargetingTLF, IsTargetingWall } from './target'
+import { IsTargetingTLF, IsTargetingWall } from './target'
 import { CreateTimingGraphic, GetPieceLifespanForGraphic } from './timing'
 import { GetInternalGraphicContentVIZ } from './viz'
 
@@ -51,11 +50,8 @@ export class InternalGraphic {
 		this.content = this.getInternalGraphicContent()
 	}
 
-	public createCommentatorAdlib(adlibPieces: IBlueprintAdLibPiece[]): void {
-		if (!IsTargetingOVL(this.engine)) {
-			return
-		}
-		const adLibPiece = literal<IBlueprintAdLibPiece>({
+	public createCommentatorAdlib(): IBlueprintAdLibPiece<PieceMetaData> {
+		return {
 			_rank: this.rank || 0,
 			externalId: this.partId ?? '',
 			name: this.name,
@@ -63,46 +59,43 @@ export class InternalGraphic {
 			sourceLayerId: this.sourceLayerId,
 			outputLayerId: SharedOutputLayers.OVERLAY,
 			lifespan: PieceLifespan.WithinPart,
-			metaData: literal<PieceMetaData>({
+			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: []
 				}
-			}),
+			},
 			expectedDuration: 5000,
 			tags: [AdlibTags.ADLIB_KOMMENTATOR],
 			content: _.clone(this.content)
-		})
-		adlibPieces.push(adLibPiece)
+		}
 	}
 
-	public createAdlib(adlibPieces: IBlueprintAdLibPiece[]): void {
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: this.rank || 0,
-				externalId: this.partId ?? '',
-				name: this.name,
-				uniquenessId: `gfx_${this.name}_${this.sourceLayerId}_${this.outputLayerId}_flow`,
-				sourceLayerId: this.sourceLayerId,
-				outputLayerId: this.outputLayerId,
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				...(IsTargetingTLF(this.engine) || (this.parsedCue.end && this.parsedCue.end.infiniteMode)
-					? {}
-					: {
-							expectedDuration: CreateTimingGraphic(this.config, this.parsedCue).duration
-					  }),
-				lifespan: GetPieceLifespanForGraphic(this.engine, this.config, this.parsedCue),
-				metaData: literal<PieceMetaData>({
-					sisyfosPersistMetaData: {
-						sisyfosLayers: []
-					}
-				}),
-				content: _.clone(this.content)
-			})
-		)
+	public createAdlib(): IBlueprintAdLibPiece<PieceMetaData> {
+		return {
+			_rank: this.rank || 0,
+			externalId: this.partId ?? '',
+			name: this.name,
+			uniquenessId: `gfx_${this.name}_${this.sourceLayerId}_${this.outputLayerId}_flow`,
+			sourceLayerId: this.sourceLayerId,
+			outputLayerId: this.outputLayerId,
+			tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+			...(IsTargetingTLF(this.engine) || (this.parsedCue.end && this.parsedCue.end.infiniteMode)
+				? {}
+				: {
+						expectedDuration: CreateTimingGraphic(this.config, this.parsedCue).duration
+				  }),
+			lifespan: GetPieceLifespanForGraphic(this.engine, this.config, this.parsedCue),
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			},
+			content: _.clone(this.content)
+		}
 	}
 
-	public createPiece(pieces: IBlueprintPiece[]): void {
-		const piece = literal<IBlueprintPiece>({
+	public createPiece(): IBlueprintPiece<GraphicPieceMetaData> {
+		return {
 			externalId: this.partId ?? '',
 			name: this.name,
 			...(IsTargetingTLF(this.engine) || IsTargetingWall(this.engine)
@@ -115,15 +108,14 @@ export class InternalGraphic {
 			outputLayerId: this.outputLayerId,
 			sourceLayerId: this.sourceLayerId,
 			lifespan: GetPieceLifespanForGraphic(this.engine, this.config, this.parsedCue),
-			metaData: literal<PieceMetaData>({
+			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: []
 				},
 				belongsToRemotePart: this.partDefinition?.type === PartType.REMOTE
-			}),
+			},
 			content: _.clone(this.content)
-		})
-		pieces.push(piece)
+		}
 	}
 
 	private getInternalGraphicContent(): IBlueprintPiece['content'] {

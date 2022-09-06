@@ -47,7 +47,7 @@ export function GetPilotGraphicContentCaspar(
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	settings: CasparPilotGeneratorSettings,
 	engine: GraphicEngine
-) {
+): WithTimeline<GraphicsContent> {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
 	const fileName = JoinAssetToFolder(config.studio.GraphicFolder, parsedCue.graphic.name)
 	const templateData = {
@@ -65,7 +65,7 @@ export function GetPilotGraphicContentCaspar(
 			}
 		}
 	}
-	return literal<WithTimeline<GraphicsContent>>({
+	return {
 		fileName,
 		path: JoinAssetToNetworkPath(
 			config.studio.GraphicNetworkBasePath,
@@ -100,7 +100,7 @@ export function GetPilotGraphicContentCaspar(
 			}),
 			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context) : [])
 		]
-	})
+	}
 }
 
 function CasparOverlayTimeline(

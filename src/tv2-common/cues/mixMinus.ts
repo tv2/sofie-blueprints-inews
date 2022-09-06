@@ -28,23 +28,21 @@ export function EvaluateCueMixMinus(
 	}
 	const atemInput = sourceInfo.port
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: part.externalId,
-			name: `MixMinus: ${name}`,
-			enable: {
-				start: 0
-			},
-			lifespan: PieceLifespan.OutOnShowStyleEnd,
-			sourceLayerId: SharedSourceLayers.AuxMixMinus,
-			outputLayerId: SharedOutputLayers.AUX,
-			content: MixMinusContent(atemInput)
-		})
-	)
+	pieces.push({
+		externalId: part.externalId,
+		name: `MixMinus: ${name}`,
+		enable: {
+			start: 0
+		},
+		lifespan: PieceLifespan.OutOnShowStyleEnd,
+		sourceLayerId: SharedSourceLayers.AuxMixMinus,
+		outputLayerId: SharedOutputLayers.AUX,
+		content: MixMinusContent(atemInput)
+	})
 }
 
 function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
-	return literal<WithTimeline<BaseContent>>({
+	return {
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjAtemAUX>({
 				content: {
@@ -62,5 +60,5 @@ function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
 				priority: 1
 			})
 		])
-	})
+	}
 }

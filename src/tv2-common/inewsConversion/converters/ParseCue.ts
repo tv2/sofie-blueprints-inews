@@ -578,13 +578,13 @@ function parseAdLib(cue: string[]) {
 	}
 
 	// tslint:disable-next-line: prefer-for-of
-	for (let i = 0; i < cue.length; i++) {
-		const input = cue[i].match(/^(INP\d)+=(.+)$/i)
+	for (const element of cue) {
+		const input = element.match(/^(INP\d)+=(.+)$/i)
 		if (input && input[1] && input[2] && adlib.inputs !== undefined) {
 			adlib.inputs[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
 		}
 
-		const bynavn = cue[i].match(/^BYNAVN=(.+)$/i)
+		const bynavn = element.match(/^BYNAVN=(.+)$/i)
 		if (bynavn) {
 			adlib.bynavn = bynavn[1].split(/\/|\\/i)
 		}

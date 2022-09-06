@@ -37,34 +37,30 @@ export function FindInfiniteModeFromConfig(
 	config: TV2BlueprintConfig,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): PieceLifespan {
-	if (config.showStyle.GFXTemplates) {
-		const template = GetFullGraphicTemplateNameFromCue(config, parsedCue)
-		const iNewsName = GraphicIsInternal(parsedCue) ? parsedCue.graphic.template : undefined
-		const conf = config.showStyle.GFXTemplates.find(cnf =>
-			cnf.VizTemplate
-				? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() &&
-				  (iNewsName ? cnf.INewsName.toUpperCase() === iNewsName.toUpperCase() : true)
-				: false
-		)
+	const template = GetFullGraphicTemplateNameFromCue(config, parsedCue)
+	const iNewsName = GraphicIsInternal(parsedCue) ? parsedCue.graphic.template : undefined
+	const conf = config.showStyle.GFXTemplates.find(cnf =>
+		cnf.VizTemplate
+			? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() &&
+			  (iNewsName ? cnf.INewsName.toUpperCase() === iNewsName.toUpperCase() : true)
+			: false
+	)
 
-		if (!conf) {
-			return PieceLifespan.WithinPart
-		}
-
-		if (!conf.OutType || !conf.OutType.toString().length) {
-			return PieceLifespan.WithinPart
-		}
-
-		const type = conf.OutType.toString().toUpperCase()
-
-		if (type !== 'B' && type !== 'S' && type !== 'O') {
-			return PieceLifespan.WithinPart
-		}
-
-		return LifeSpan(type, PieceLifespan.WithinPart)
+	if (!conf) {
+		return PieceLifespan.WithinPart
 	}
 
-	return PieceLifespan.WithinPart
+	if (!conf.OutType || !conf.OutType.toString().length) {
+		return PieceLifespan.WithinPart
+	}
+
+	const type = conf.OutType.toString().toUpperCase()
+
+	if (type !== 'B' && type !== 'S' && type !== 'O') {
+		return PieceLifespan.WithinPart
+	}
+
+	return LifeSpan(type, PieceLifespan.WithinPart)
 }
 
 export function GetGraphicDuration(

@@ -13,7 +13,7 @@ export type WithValuesOfTypes<T, Q> = { [P in keyof T as T[P] extends Q | undefi
 export type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
 export type EmptyBaseObj = OptionalExceptFor<Omit<TSR.TimelineObjEmpty, 'content'>, 'layer' | 'enable' | 'classes'>
 export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
-	return literal<TSR.TimelineObjEmpty>({
+	return {
 		id: '',
 		priority: 0,
 		...obj,
@@ -21,7 +21,7 @@ export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
 			deviceType: TSR.DeviceType.ABSTRACT,
 			type: 'empty'
 		}
-	})
+	}
 }
 
 /**

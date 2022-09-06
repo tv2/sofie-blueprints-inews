@@ -13,6 +13,7 @@ import {
 	Adlib,
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
+	FullPieceMetaData,
 	generateExternalId,
 	GetFullGraphicTemplateNameFromCue,
 	GetPieceLifespanForGraphic,
@@ -111,18 +112,18 @@ export class PilotGraphicGenerator {
 		this.segmentExternalId = graphicProps.segmentExternalId
 	}
 
-	public createPilotAdLibAction() {
+	public createPilotAdLibAction(): IBlueprintActionManifest {
 		const name = GraphicDisplayName(this.config, this.parsedCue)
 		const sourceLayerId = this.getSourceLayer()
 		const outputLayerId = this.getOutputLayer()
 
-		const userData = literal<ActionSelectFullGrafik>({
+		const userData: ActionSelectFullGrafik = {
 			type: AdlibActionType.SELECT_FULL_GRAFIK,
 			name: this.parsedCue.graphic.name,
 			vcpid: this.parsedCue.graphic.vcpid,
 			segmentExternalId: this.segmentExternalId
-		})
-		return literal<IBlueprintActionManifest>({
+		}
+		return {
 			externalId: generateExternalId(this.context, userData),
 			actionId: AdlibActionType.SELECT_FULL_GRAFIK,
 			userData,
@@ -143,11 +144,11 @@ export class PilotGraphicGenerator {
 				currentPieceTags: [GetTagForFull(this.segmentExternalId, this.parsedCue.graphic.vcpid)],
 				nextPieceTags: [GetTagForFullNext(this.segmentExternalId, this.parsedCue.graphic.vcpid)]
 			}
-		})
+		}
 	}
 
-	public createPiece(): IBlueprintPiece {
-		return literal<IBlueprintPiece>({
+	public createPiece(): IBlueprintPiece<PieceMetaData> {
+		return {
 			externalId: this.partId,
 			name: GraphicDisplayName(this.config, this.parsedCue),
 			...(IsTargetingFull(this.engine) || IsTargetingWall(this.engine)
@@ -161,16 +162,16 @@ export class PilotGraphicGenerator {
 			sourceLayerId: this.getSourceLayer(),
 			prerollDuration: this.getPrerollDuration(),
 			lifespan: GetPieceLifespanForGraphic(this.engine, this.config, this.parsedCue),
-			metaData: literal<PieceMetaData>({
+			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: []
 				}
-			}),
+			},
 			content: this.createContent(),
 			tags: IsTargetingFull(this.engine)
 				? [GetTagForFull(this.segmentExternalId, this.parsedCue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
 				: []
-		})
+		}
 	}
 
 	public createAdlibPiece(rank?: number): IBlueprintAdLibPiece {
@@ -182,7 +183,7 @@ export class PilotGraphicGenerator {
 		}
 	}
 
-	public createFullDataStore(): IBlueprintPiece {
+	public createFullDataStore(): IBlueprintPiece<FullPieceMetaData> {
 		const content = this.createContent()
 		content.timelineObjects = content.timelineObjects.filter(
 			o =>
@@ -191,7 +192,7 @@ export class PilotGraphicGenerator {
 				o.content.deviceType !== TSR.DeviceType.VIZMSE &&
 				o.content.deviceType !== TSR.DeviceType.CASPARCG
 		)
-		return literal<IBlueprintPiece>({
+		return {
 			externalId: this.partId,
 			name: GraphicDisplayName(this.config, this.parsedCue),
 			enable: {
@@ -201,19 +202,19 @@ export class PilotGraphicGenerator {
 			sourceLayerId: SharedSourceLayers.SelectedAdlibGraphicsFull,
 			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: {
-				userData: literal<ActionSelectFullGrafik>({
+				userData: {
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
 					name: this.parsedCue.graphic.name,
 					vcpid: this.parsedCue.graphic.vcpid,
 					segmentExternalId: this.segmentExternalId
-				}),
+				},
 				sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
 					sisyfosLayers: []
 				})
 			},
 			content,
 			tags: [GetTagForFullNext(this.segmentExternalId, this.parsedCue.graphic.vcpid)]
-		})
+		}
 	}
 
 	private createContent(): WithTimeline<GraphicsContent> {

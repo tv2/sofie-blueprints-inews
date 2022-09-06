@@ -4,7 +4,6 @@ import {
 	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	literal,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	SetShowstyleTransitionMigrationStep,
@@ -15,7 +14,6 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { ATEMModel } from '../../types/atem'
@@ -38,7 +36,7 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
  * 0.1.0: Core 0.24.0
  */
 
-export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationStepShowStyle[]>([
+export const showStyleMigrations: MigrationStepShowStyle[] = [
 	...getCreateVariantMigrationSteps(),
 	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
@@ -246,4 +244,4 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		GetDefaultStudioSourcesForAFVD,
 		false
 	)
-])
+]

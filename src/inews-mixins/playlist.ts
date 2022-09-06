@@ -93,13 +93,13 @@ function getRundownPlaylistInfoINewsPlaylist(
 	resultPlaylist: BlueprintResultRundownPlaylist
 ): BlueprintResultRundownPlaylist {
 	const result: BlueprintResultOrderedRundowns = {}
-	return literal<BlueprintResultRundownPlaylist>({
+	return {
 		...resultPlaylist,
 		order: rundowns.reduce((prev, curr) => {
 			prev[curr.externalId] = (curr.metaData as RundownMetaData).rank
 			return prev
 		}, result)
-	})
+	}
 }
 
 type GetRundownMixin = (
@@ -152,15 +152,15 @@ export function GetRundownPlaylistInfoWithMixins(
 				expectedStart: lastRundownTiming.expectedStart
 			}
 		}
-		let result =
-			(getRundownPlaylistInfo ? getRundownPlaylistInfo(context, rundowns, '') : undefined) ??
-			literal<BlueprintResultRundownPlaylist>({
-				playlist: literal<IBlueprintResultRundownPlaylist>({
-					name: (rundowns[0] ?? { name: '' }).name,
-					timing
-				}),
-				order: null
-			})
+		let result: BlueprintResultRundownPlaylist = (getRundownPlaylistInfo
+			? getRundownPlaylistInfo(context, rundowns, '')
+			: undefined) ?? {
+			playlist: literal<IBlueprintResultRundownPlaylist>({
+				name: (rundowns[0] ?? { name: '' }).name,
+				timing
+			}),
+			order: null
+		}
 
 		for (const mixin of mixins) {
 			result = mixin(context, rundowns, result)

@@ -11,11 +11,42 @@ import {
 	PackageInfo,
 	Time
 } from '@tv2media/blueprints-integration'
-import { literal, PartMetaData } from 'tv2-common'
+import { literal, PartMetaData, PieceMetaData } from 'tv2-common'
 
 export interface ITV2ActionExecutionContext extends IActionExecutionContext {
 	/** To prompt type errors for wrong context type */
 	isTV2Context: true
+
+	getPieceInstances(part: 'current' | 'next'): Promise<Array<IBlueprintPieceInstance<PieceMetaData>>>
+	getResolvedPieceInstances(part: 'current' | 'next'): Promise<Array<IBlueprintResolvedPieceInstance<PieceMetaData>>>
+
+	findLastPieceOnLayer(
+		sourceLayerId: string | string[],
+		options?: {
+			excludeCurrentPart?: boolean
+			originalOnly?: boolean
+			pieceMetaDataFilter?: any
+		}
+	): Promise<IBlueprintPieceInstance<PieceMetaData> | undefined>
+	findLastScriptedPieceOnLayer(
+		sourceLayerId: string | string[],
+		options?: {
+			excludeCurrentPart?: boolean
+			pieceMetaDataFilter?: any
+		}
+	): Promise<IBlueprintPiece<PieceMetaData> | undefined>
+	getPartInstanceForPreviousPiece(piece: IBlueprintPieceInstance): Promise<IBlueprintPartInstance>
+	getPartForPreviousPiece(piece: IBlueprintPieceDB): Promise<IBlueprintPart | undefined>
+	insertPiece(
+		part: 'current' | 'next',
+		piece: IBlueprintPiece<PieceMetaData>
+	): Promise<IBlueprintPieceInstance<PieceMetaData>>
+	updatePieceInstance(
+		pieceInstanceId: string,
+		piece: Partial<IBlueprintPiece<PieceMetaData>>
+	): Promise<IBlueprintPieceInstance<PieceMetaData>>
+	queuePart(part: IBlueprintPart, pieces: Array<IBlueprintPiece<PieceMetaData>>): Promise<IBlueprintPartInstance>
+	updatePartInstance(part: 'current' | 'next', props: Partial<IBlueprintMutatablePart>): Promise<IBlueprintPartInstance>
 }
 
 class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
@@ -35,42 +66,48 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 		return this.coreContext.getPartInstance(part)
 	}
 
-	public async getPieceInstances(part: 'current' | 'next'): Promise<Array<IBlueprintPieceInstance<unknown>>> {
-		return this.coreContext.getPieceInstances(part)
+	public async getPieceInstances(part: 'current' | 'next'): Promise<Array<IBlueprintPieceInstance<PieceMetaData>>> {
+		return this.coreContext.getPieceInstances(part) as Promise<Array<IBlueprintPieceInstance<PieceMetaData>>>
 	}
 
 	public async getResolvedPieceInstances(
 		part: 'current' | 'next'
-	): Promise<Array<IBlueprintResolvedPieceInstance<unknown>>> {
-		return this.coreContext.getResolvedPieceInstances(part)
+	): Promise<Array<IBlueprintResolvedPieceInstance<PieceMetaData>>> {
+		return this.coreContext.getResolvedPieceInstances(part) as Promise<
+			Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
+		>
 	}
 
 	public async findLastPieceOnLayer(
 		sourceLayerId: string | string[],
 		options?: {
-			excludeCurrentPart?: boolean | undefined
-			originalOnly?: boolean | undefined
+			excludeCurrentPart?: boolean
+			originalOnly?: boolean
 			pieceMetaDataFilter?: any
 		}
-	): Promise<IBlueprintPieceInstance<unknown> | undefined> {
-		return this.coreContext.findLastPieceOnLayer(sourceLayerId, options)
+	): Promise<IBlueprintPieceInstance<PieceMetaData> | undefined> {
+		return this.coreContext.findLastPieceOnLayer(sourceLayerId, options) as Promise<
+			IBlueprintPieceInstance<PieceMetaData> | undefined
+		>
 	}
 
 	public async findLastScriptedPieceOnLayer(
 		sourceLayerId: string | string[],
-		options?: { excludeCurrentPart?: boolean | undefined; pieceMetaDataFilter?: any }
-	): Promise<IBlueprintPiece<unknown> | undefined> {
-		return this.coreContext.findLastScriptedPieceOnLayer(sourceLayerId, options)
+		options?: { excludeCurrentPart?: boolean; pieceMetaDataFilter?: any }
+	): Promise<IBlueprintPiece<PieceMetaData> | undefined> {
+		return this.coreContext.findLastScriptedPieceOnLayer(sourceLayerId, options) as Promise<
+			IBlueprintPiece<PieceMetaData> | undefined
+		>
 	}
 
 	public async getPartInstanceForPreviousPiece(
-		piece: IBlueprintPieceInstance<unknown>
+		piece: IBlueprintPieceInstance<PieceMetaData>
 	): Promise<IBlueprintPartInstance<unknown>> {
 		return this.coreContext.getPartInstanceForPreviousPiece(piece)
 	}
 
 	public async getPartForPreviousPiece(
-		piece: IBlueprintPieceDB<unknown>
+		piece: IBlueprintPieceDB<PieceMetaData>
 	): Promise<IBlueprintPart<unknown> | undefined> {
 		return this.coreContext.getPartForPreviousPiece(piece)
 	}
@@ -157,7 +194,10 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 		return this.coreContext.moveNextPart(partDelta, segmentDelta)
 	}
 
-	public async queuePart(rawPart: IBlueprintPart, rawPieces: IBlueprintPiece[]): Promise<IBlueprintPartInstance> {
+	public async queuePart(
+		rawPart: IBlueprintPart,
+		rawPieces: Array<IBlueprintPiece<PieceMetaData>>
+	): Promise<IBlueprintPartInstance> {
 		this.modifiedParts.add('next')
 
 		return this.coreContext.queuePart(rawPart, rawPieces)
@@ -169,9 +209,12 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 		return this.coreContext.removePieceInstances(part, pieceInstanceIds)
 	}
 
-	public async insertPiece(part: 'current' | 'next', piece: IBlueprintPiece): Promise<IBlueprintPieceInstance> {
+	public async insertPiece(
+		part: 'current' | 'next',
+		piece: IBlueprintPiece<PieceMetaData>
+	): Promise<IBlueprintPieceInstance<PieceMetaData>> {
 		this.modifiedParts.add(part)
-		return this.coreContext.insertPiece(part, piece)
+		return this.coreContext.insertPiece(part, piece) as Promise<IBlueprintPieceInstance<PieceMetaData>>
 	}
 
 	public async updatePartInstance(
@@ -184,8 +227,8 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 
 	public async updatePieceInstance(
 		pieceInstanceId: string,
-		piece: Partial<IBlueprintPiece>
-	): Promise<IBlueprintPieceInstance> {
+		piece: Partial<IBlueprintPiece<PieceMetaData>>
+	): Promise<IBlueprintPieceInstance<PieceMetaData>> {
 		const currentPieceInstances = await this.coreContext.getPieceInstances('current')
 		if (currentPieceInstances.map(p => p._id).includes(pieceInstanceId)) {
 			this.modifiedParts.add('current')
@@ -197,7 +240,9 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 		}
 
 		// Regardless of above, let core handle errors
-		return this.coreContext.updatePieceInstance(pieceInstanceId, piece)
+		return this.coreContext.updatePieceInstance(pieceInstanceId, piece) as Promise<
+			IBlueprintPieceInstance<PieceMetaData>
+		>
 	}
 
 	/**
