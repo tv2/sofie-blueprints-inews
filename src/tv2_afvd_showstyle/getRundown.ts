@@ -15,6 +15,7 @@ import {
 	TSR,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
+import { RundownMetaData } from 'inews-mixins'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
@@ -81,11 +82,16 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 	const config = getShowStyleConfig(context)
 
 	return {
-		rundown: literal<IBlueprintRundown>({
+		rundown: literal<IBlueprintRundown<RundownMetaData>>({
 			externalId: ingestRundown.externalId,
 			name: ingestRundown.name,
 			timing: {
 				type: PlaylistTimingType.None
+			},
+			metaData: {
+				rank: 0,
+				backTime: undefined,
+				showStyleVariant: ingestRundown.payload?.showstyleVariant?.trim().toLowerCase() || ''
 			}
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesAFVD(context, config),

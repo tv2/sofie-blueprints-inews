@@ -17,8 +17,9 @@ import {
 import { assertUnreachable, literal, TimeFromINewsField } from 'tv2-common'
 import { getRundownDuration } from './rundownDuration'
 
-interface RundownMetaData {
+export interface RundownMetaData {
 	rank: number
+	showStyleVariant: string
 	backTime: string | undefined
 }
 
