@@ -2,7 +2,7 @@ import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import { SourceLayer } from '../layers'
+import { AFVDSourceLayer, SourceLayer } from '../layers'
 
 // OVERLAY group
 const OVERLAY: ISourceLayer[] = [
@@ -525,6 +525,23 @@ const SEC: ISourceLayer[] = [
 		name: 'GFX Wall',
 		abbreviation: '',
 		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+
+		isSticky: false,
+
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
+	{
+		_id: AFVDSourceLayer.Telemetrics,
+		_rank: 70,
+		name: 'Telemetrics',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
