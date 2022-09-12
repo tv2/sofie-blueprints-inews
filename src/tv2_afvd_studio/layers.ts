@@ -23,6 +23,8 @@ export function RealLLayers(): string[] {
 			.concat(_.values(GraphicLLayer))
 			// @ts-ignore
 			.concat(_.values(VirtualAbstractLLayer))
+			// @ts-ignore
+			.concat(_.values(RobotCameraLayer))
 	)
 }
 
@@ -132,3 +134,7 @@ export const SisyfosLLAyer = {
 }
 
 export type SisyfosLLAyer = SharedSisyfosLLayer | AFVDSisyfosLLayer
+
+export enum RobotCameraLayer {
+	TELEMETRICS = 'telemetrics_layer'
+}

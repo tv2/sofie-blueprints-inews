@@ -10,7 +10,7 @@ import {
 import { AbstractLLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { BlueprintConfig } from '../helpers/config'
-import { AtemLLayer, CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
+import { AtemLLayer, CasparLLayer, GraphicLLayer, RobotCameraLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -713,12 +713,21 @@ export const MAPPINGS_ATEM: BlueprintMappings = {
 	})
 }
 
+export const MAPPINGS_TELEMETRICS: BlueprintMappings = {
+	[RobotCameraLayer.TELEMETRICS]: literal<TSR.Mapping & BlueprintMapping>({
+		device: TSR.DeviceType.TELEMETRICS,
+		deviceId: 'telemetrics0',
+		lookahead: LookaheadMode.NONE
+	})
+}
+
 export default literal<BlueprintMappings>({
 	...MAPPINGS_ABSTRACT,
 	...MAPPINGS_SISYFOS,
 	...MAPPINGS_CASPAR,
 	...MAPPINGS_GRAPHICS,
-	...MAPPINGS_ATEM
+	...MAPPINGS_ATEM,
+	...MAPPINGS_TELEMETRICS
 })
 
 export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlayers']) {

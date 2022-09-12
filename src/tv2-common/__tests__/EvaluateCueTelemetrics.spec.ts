@@ -8,8 +8,9 @@ import {
 	TimelineObjTelemetrics
 } from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types'
 import { TimelineEnable } from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types/dist/superfly-timeline'
-import { CueType, RobotCameraLayer, SharedOutputLayers } from '../../tv2-constants'
+import { CueType, SharedOutputLayers } from '../../tv2-constants'
 import { AFVDSourceLayer } from '../../tv2_afvd_showstyle/layers'
+import { RobotCameraLayer } from '../../tv2_afvd_studio/layers'
 import { EvaluateCueTelemetrics } from '../cues/EvaluateCueTelemetrics'
 import { CueDefinitionTelemetrics } from '../inewsConversion'
 

@@ -1,6 +1,7 @@
 import { IBlueprintPiece, IShowStyleUserContext, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
-import { RobotCameraLayer, SharedOutputLayers } from '../../tv2-constants'
+import { SharedOutputLayers } from '../../tv2-constants'
 import { AFVDSourceLayer } from '../../tv2_afvd_showstyle/layers'
+import { RobotCameraLayer } from '../../tv2_afvd_studio/layers'
 import { CalculateTime } from '../cueTiming'
 import { CueDefinitionTelemetrics } from '../inewsConversion'
 import { literal } from '../util'

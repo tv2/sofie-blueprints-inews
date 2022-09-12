@@ -201,9 +201,6 @@ export enum AbstractLLayer {
 export enum SharedATEMLLayer {
 	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus'
 }
-export enum RobotCameraLayer {
-	TELEMETRICS = 'telemetrics_layer'
-}
 
 export enum SharedCasparLLayer {
 	CasparCGLYD = 'casparcg_audio_lyd',
