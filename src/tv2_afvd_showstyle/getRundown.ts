@@ -5,7 +5,6 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintRundown,
-	IBlueprintShowStyleVariant,
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
@@ -61,21 +60,6 @@ import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/conf
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
-
-export function getShowStyleVariantId(
-	_context: IStudioUserContext,
-	showStyleVariants: IBlueprintShowStyleVariant[],
-	ingestRundown: IngestRundown
-): string | null {
-	const showstyleVariant = ingestRundown.payload?.showstyleVariant?.trim().toLowerCase()
-	const variant =
-		showStyleVariants.find(v => v.name.trim().toLowerCase() === showstyleVariant) ?? _.first(showStyleVariants)
-
-	if (variant) {
-		return variant._id
-	}
-	return null
-}
 
 export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const config = getShowStyleConfig(context)
