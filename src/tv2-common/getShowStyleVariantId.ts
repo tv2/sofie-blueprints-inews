@@ -1,8 +1,4 @@
-import {
-	IBlueprintShowStyleVariant,
-	IngestRundown,
-	IStudioUserContext
-} from '../../../tv-automation-server-core/packages/blueprints-integration'
+import { IBlueprintShowStyleVariant, IngestRundown, IStudioUserContext } from '@tv2media/blueprints-integration'
 
 const DEFAULT_VARIANT_NAME = 'default'
 

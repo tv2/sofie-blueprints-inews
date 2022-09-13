@@ -1,8 +1,4 @@
-import {
-	IBlueprintShowStyleVariant,
-	IngestRundown,
-	IStudioUserContext
-} from '../../../../tv-automation-server-core/packages/blueprints-integration'
+import { IBlueprintShowStyleVariant, IngestRundown, IStudioUserContext } from '@tv2media/blueprints-integration'
 import { makeMockAFVDContext } from '../../__mocks__/context'
 import { getShowStyleVariantId } from '../getShowStyleVariantId'
 
