@@ -67,4 +67,23 @@ describe('getShowStyleVariantId', () => {
 
 		expect(result).toBeNull()
 	})
+
+	it('does not have variant, default is not first in variant array, selects default', () => {
+		const variantName = 'randomVariantName'
+		const ingestRundown: IngestRundown = getIngestRundown('nonExistentVariantName')
+
+		const showStyleVariants: IBlueprintShowStyleVariant[] = [
+			{
+				_id: 'someVariant',
+				name: 'someVariant',
+				blueprintConfig: {}
+			},
+			...getShowStyleVariants([variantName])
+		]
+
+		expect(showStyleVariants[0]._id).not.toBe('default')
+		const result = getShowStyleVariantId(getMockContext(), showStyleVariants, ingestRundown)
+
+		expect(result).toBe('default')
+	})
 })
