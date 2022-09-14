@@ -163,24 +163,24 @@ describe('EvaluateCueTelemetrics', () => {
 		expect(result.enable.duration).toEqual(1000)
 	})
 
-	it('already has a telemetrics piece with another externalId, creates a new piece', () => {
+	it('already has a piece with another sourceLayer, creates a new piece', () => {
 		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
-		const pieces: IBlueprintPiece[] = [createTelemetricsBlueprintPiece('someExternalId')]
+		const pieces: IBlueprintPiece[] = [createTelemetricsBlueprintPiece(AFVDSourceLayer.PgmDVEBackground)]
 
 		EvaluateCueTelemetrics(context, cueDefinition, pieces, 'someOtherExternalId')
 
 		expect(pieces.length).toEqual(2)
 	})
 
-	function createTelemetricsBlueprintPiece(externalId: string, startTimeInMs?: number): IBlueprintPiece {
+	function createTelemetricsBlueprintPiece(sourceLayer: AFVDSourceLayer, startTimeInMs?: number): IBlueprintPiece {
 		return {
-			externalId,
-			name: `Robot`,
+			externalId: '',
+			name: 'Robot',
 			enable: {
 				start: startTimeInMs ?? 0
 			},
 			lifespan: PieceLifespan.WithinPart,
-			sourceLayerId: '',
+			sourceLayerId: sourceLayer,
 			outputLayerId: '',
 			content: {
 				timelineObjects: []
@@ -188,16 +188,15 @@ describe('EvaluateCueTelemetrics', () => {
 		}
 	}
 
-	describe('already has a telemetrics piece with same externalId', () => {
+	describe('already has a piece with same externalId', () => {
 		it('has another start time, creates another blueprint piece', () => {
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1, 20)
-			const externalId: string = 'randomExternalId'
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(externalId, 10000)
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(AFVDSourceLayer.Telemetrics, 10000)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(2))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, externalId)
+			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
 
 			expect(pieces).toHaveLength(2)
 		})
@@ -219,13 +218,15 @@ describe('EvaluateCueTelemetrics', () => {
 		it('has a blueprint piece with the same start time, no new timeline object is created', () => {
 			const startTime: number = 20
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1, startTime)
-			const externalId: string = 'randomExternalId'
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(externalId, startTime * 1000)
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(
+				AFVDSourceLayer.Telemetrics,
+				startTime * 1000
+			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject())
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, externalId)
+			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
 
 			expect(pieces[0].content.timelineObjects).toHaveLength(1)
 		})
@@ -233,13 +234,15 @@ describe('EvaluateCueTelemetrics', () => {
 		it('has a blueprint piece with the same start time, existing blueprint piece gets presetShotIdentifier added to timeline object', () => {
 			const startTime: number = 20
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(2, startTime)
-			const externalId: string = 'randomExternalId'
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(externalId, startTime * 1000)
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(
+				AFVDSourceLayer.Telemetrics,
+				startTime * 1000
+			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, externalId)
+			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
 
 			const timelineObject: TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TimelineObjTelemetrics
 			expect(timelineObject.content.presetShotIdentifiers).toEqual([1, 2])
@@ -247,14 +250,13 @@ describe('EvaluateCueTelemetrics', () => {
 
 		it('has a blueprint piece with same start time, name is updated to reflect presets in the piece', () => {
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(2)
-			const externalId: string = 'randomExternalId'
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(externalId)
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(AFVDSourceLayer.Telemetrics)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, externalId)
+			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
 
 			expect(existingPiece.name).toEqual('Robot[1,2]')
 		})

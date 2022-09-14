@@ -14,9 +14,9 @@ export function EvaluateCueTelemetrics(
 	pieces: IBlueprintPiece[],
 	externalId: string
 ): void {
-	const startTime: number = cueDefinition.start ? CalculateTime(cueDefinition.start) ?? 1 : 1
+	const startTime: number = cueDefinition.start ? CalculateTime(cueDefinition.start) ?? 0 : 0
 
-	const existingPiece = findExistingPieceForExternalIdAndStartTime(pieces, externalId, startTime)
+	const existingPiece = findExistingPieceForExternalIdAndStartTime(pieces, startTime)
 	if (existingPiece) {
 		addPresetIdentifierToTimelineObject(existingPiece, cueDefinition.presetIdentifier)
 		addPresetIdentifierToPieceName(existingPiece, cueDefinition.presetIdentifier)
@@ -27,10 +27,10 @@ export function EvaluateCueTelemetrics(
 	pieces.push(newPiece)
 }
 
-function findExistingPieceForExternalIdAndStartTime(pieces: IBlueprintPiece[], externalId: string, startTime: number) {
+function findExistingPieceForExternalIdAndStartTime(pieces: IBlueprintPiece[], startTime: number) {
 	return pieces.find(
 		piece =>
-			piece.externalId === externalId &&
+			piece.sourceLayerId === AFVDSourceLayer.Telemetrics &&
 			piece.name.startsWith(TELEMETRICS_NAME_PREFIX) &&
 			piece.enable.start === startTime
 	)
