@@ -423,7 +423,6 @@ async function executeActionSelectServerClip<
 	triggerMode?: ServerSelectMode,
 	sessionToContinue?: string
 ) {
-	triggerMode = ServerSelectMode.RESET /** @todo: remove for Server Resume */
 	const file = userData.file
 	const partDefinition = userData.partDefinition
 	const config = settings.getConfig(context)
