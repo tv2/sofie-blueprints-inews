@@ -8,9 +8,7 @@ import {
 	TimelineObjTelemetrics
 } from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types'
 import { TimelineEnable } from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types/dist/superfly-timeline'
-import { CueType, SharedOutputLayers } from '../../tv2-constants'
-import { AFVDSourceLayer } from '../../tv2_afvd_showstyle/layers'
-import { RobotCameraLayer } from '../../tv2_afvd_studio/layers'
+import { CueType, RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
 import { EvaluateCueTelemetrics } from '../cues/EvaluateCueTelemetrics'
 import { CueDefinitionTelemetrics } from '../inewsConversion'
 
@@ -87,7 +85,7 @@ describe('EvaluateCueTelemetrics', () => {
 
 		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
 
-		expect(pieces[0].sourceLayerId).toEqual(AFVDSourceLayer.Telemetrics)
+		expect(pieces[0].sourceLayerId).toEqual(SharedSourceLayers.Telemetrics)
 	})
 
 	it('has SEC for output layer', () => {
@@ -165,14 +163,14 @@ describe('EvaluateCueTelemetrics', () => {
 
 	it('already has a piece with another sourceLayer, creates a new piece', () => {
 		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
-		const pieces: IBlueprintPiece[] = [createTelemetricsBlueprintPiece(AFVDSourceLayer.PgmDVEBackground)]
+		const pieces: IBlueprintPiece[] = [createTelemetricsBlueprintPiece(SharedSourceLayers.PgmDesign)]
 
 		EvaluateCueTelemetrics(context, cueDefinition, pieces, 'someOtherExternalId')
 
 		expect(pieces.length).toEqual(2)
 	})
 
-	function createTelemetricsBlueprintPiece(sourceLayer: AFVDSourceLayer, startTimeInMs?: number): IBlueprintPiece {
+	function createTelemetricsBlueprintPiece(sourceLayer: SharedSourceLayers, startTimeInMs?: number): IBlueprintPiece {
 		return {
 			externalId: '',
 			name: 'Robot',
@@ -192,7 +190,7 @@ describe('EvaluateCueTelemetrics', () => {
 		it('has another start time, creates another blueprint piece', () => {
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1, 20)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(AFVDSourceLayer.Telemetrics, 10000)
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics, 10000)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(2))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
@@ -220,7 +218,7 @@ describe('EvaluateCueTelemetrics', () => {
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1, startTime)
 
 			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(
-				AFVDSourceLayer.Telemetrics,
+				SharedSourceLayers.Telemetrics,
 				startTime * 1000
 			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject())
@@ -236,7 +234,7 @@ describe('EvaluateCueTelemetrics', () => {
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(2, startTime)
 
 			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(
-				AFVDSourceLayer.Telemetrics,
+				SharedSourceLayers.Telemetrics,
 				startTime * 1000
 			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
@@ -251,7 +249,7 @@ describe('EvaluateCueTelemetrics', () => {
 		it('has a blueprint piece with same start time, name is updated to reflect presets in the piece', () => {
 			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(2)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(AFVDSourceLayer.Telemetrics)
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]

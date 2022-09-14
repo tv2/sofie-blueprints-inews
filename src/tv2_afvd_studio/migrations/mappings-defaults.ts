@@ -7,10 +7,10 @@ import {
 	literal,
 	SisyfosPlayerClip
 } from 'tv2-common'
-import { AbstractLLayer } from 'tv2-constants'
+import { AbstractLLayer, RobotCameraLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { BlueprintConfig } from '../helpers/config'
-import { AtemLLayer, CasparLLayer, GraphicLLayer, RobotCameraLayer, SisyfosLLAyer } from '../layers'
+import { AtemLLayer, CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({

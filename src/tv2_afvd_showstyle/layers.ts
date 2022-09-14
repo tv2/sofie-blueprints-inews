@@ -11,10 +11,7 @@ export enum AFVDSourceLayer {
 	GraphicsShowLifecycle = 'studio0_graphic_show_lifecycle',
 
 	// Wall
-	WallGraphics = 'studio0_wall_graphics',
-
-	// Telemetrics
-	Telemetrics = 'studio0_telemetrics'
+	WallGraphics = 'studio0_wall_graphics'
 }
 
 // tslint:disable-next-line: variable-name

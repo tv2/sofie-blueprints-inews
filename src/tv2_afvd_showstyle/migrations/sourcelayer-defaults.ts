@@ -2,7 +2,7 @@ import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import { AFVDSourceLayer, SourceLayer } from '../layers'
+import { SourceLayer } from '../layers'
 
 // OVERLAY group
 const OVERLAY: ISourceLayer[] = [
@@ -537,7 +537,7 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: AFVDSourceLayer.Telemetrics,
+		_id: SharedSourceLayers.Telemetrics,
 		_rank: 70,
 		name: 'Telemetrics',
 		abbreviation: '',

@@ -214,6 +214,10 @@ export enum SharedSisyfosLLayer {
 	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics'
 }
 
+export enum RobotCameraLayer {
+	TELEMETRICS = 'telemetrics_layer'
+}
+
 export enum SharedOutputLayers {
 	OVERLAY = 'overlay',
 	SEC = 'sec',
@@ -267,7 +271,10 @@ export enum SharedSourceLayers {
 	PgmAudioBed = 'studio0_audio_bed',
 
 	// AUX
-	AuxMixMinus = 'studio0_aux_mix_minus'
+	AuxMixMinus = 'studio0_aux_mix_minus',
+
+	// Telemetrics
+	Telemetrics = 'studio0_telemetrics'
 }
 
 export enum DSKRoles {

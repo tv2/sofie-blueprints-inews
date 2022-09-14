@@ -1,7 +1,5 @@
 import { IBlueprintPiece, IShowStyleUserContext, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
-import { SharedOutputLayers } from '../../tv2-constants'
-import { AFVDSourceLayer } from '../../tv2_afvd_showstyle/layers'
-import { RobotCameraLayer } from '../../tv2_afvd_studio/layers'
+import { RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
 import { CalculateTime } from '../cueTiming'
 import { CueDefinitionTelemetrics } from '../inewsConversion'
 import { literal } from '../util'
@@ -30,7 +28,7 @@ export function EvaluateCueTelemetrics(
 function findExistingPieceForExternalIdAndStartTime(pieces: IBlueprintPiece[], startTime: number) {
 	return pieces.find(
 		piece =>
-			piece.sourceLayerId === AFVDSourceLayer.Telemetrics &&
+			piece.sourceLayerId === SharedSourceLayers.Telemetrics &&
 			piece.name.startsWith(TELEMETRICS_NAME_PREFIX) &&
 			piece.enable.start === startTime
 	)
@@ -73,7 +71,7 @@ function createTelemetricsPiece(
 			duration: 1000
 		},
 		lifespan: PieceLifespan.WithinPart,
-		sourceLayerId: AFVDSourceLayer.Telemetrics,
+		sourceLayerId: SharedSourceLayers.Telemetrics,
 		outputLayerId: SharedOutputLayers.SEC,
 		content: {
 			timelineObjects: [createTelemetricsTimelineObject(cueDefinition)]

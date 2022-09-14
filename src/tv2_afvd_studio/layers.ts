@@ -1,5 +1,6 @@
 import {
 	AbstractLLayer,
+	RobotCameraLayer,
 	SharedATEMLLayer,
 	SharedCasparLLayer,
 	SharedGraphicLLayer,
@@ -134,7 +135,3 @@ export const SisyfosLLAyer = {
 }
 
 export type SisyfosLLAyer = SharedSisyfosLLayer | AFVDSisyfosLLayer
-
-export enum RobotCameraLayer {
-	TELEMETRICS = 'telemetrics_layer'
-}
