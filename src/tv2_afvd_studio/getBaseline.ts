@@ -11,7 +11,7 @@ import { SharedGraphicLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
 import { getStudioConfig } from './helpers/config'
 import { AtemLLayer, SisyfosLLAyer } from './layers'
-import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
+import { sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -48,7 +48,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
 	for (const id in sisyfosMappings) {
 		if (sisyfosMappings[id]) {
-			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer] as SisyfosChannel | undefined
+			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer]
 			if (sisyfosChannel) {
 				mappedChannels.push({
 					mappedLayer: id,

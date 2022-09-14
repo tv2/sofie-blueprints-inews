@@ -12,7 +12,6 @@ import {
 	MakeConfigWithMediaFlow,
 	TableConfigItemSourceMapping
 } from 'tv2-common'
-import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { defaultDSKConfig } from './helpers/config'
 import { SisyfosLLAyer } from './layers'

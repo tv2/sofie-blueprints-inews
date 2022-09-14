@@ -12,7 +12,6 @@ import {
 	CreatePartInvalid,
 	CueDefinitionJingle,
 	GetJinglePartProperties,
-	literal,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -61,11 +60,11 @@ export async function CreatePartIntro(
 		return CreatePartInvalid(partDefinition)
 	}
 
-	let part = literal<IBlueprintPart>({
+	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {}
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []

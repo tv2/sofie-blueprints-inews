@@ -6,7 +6,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import { AddScript, ApplyFullGraphicPropertiesToPart, literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, ApplyFullGraphicPropertiesToPart, PartDefinition, PartTime } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -20,13 +20,13 @@ export async function OfftubeCreatePartGrafik(
 ) {
 	const partTime = PartTime(config, partDefinition, totalWords)
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.title || partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
 		autoNext: false,
 		expectedDuration: partTime
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []

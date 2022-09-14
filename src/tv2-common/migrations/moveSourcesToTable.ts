@@ -10,7 +10,7 @@ export function MoveSourcesToTable(
 	getSisyfosLayersForMigration: (configName: string, val: string) => string[],
 	studioMics?: boolean
 ): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.studioConfig.moveToTable.${configName}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -52,13 +52,11 @@ export function MoveSourcesToTable(
 				context.setConfig(configName, table)
 			}
 		}
-	})
-
-	return res
+	}
 }
 
 export function MoveClipSourcePath(versionStr: string, studio: string): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.studioConfig.moveClipSourcePath.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -76,7 +74,5 @@ export function MoveClipSourcePath(versionStr: string, studio: string): Migratio
 				context.removeConfig('ClipSourcePath')
 			}
 		}
-	})
-
-	return res
+	}
 }

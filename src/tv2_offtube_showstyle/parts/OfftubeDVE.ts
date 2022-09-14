@@ -7,7 +7,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import { AddScript, literal, PartDefinitionDVE, PartTime } from 'tv2-common'
+import { AddScript, PartDefinitionDVE, PartTime } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -20,12 +20,12 @@ export async function OfftubeCreatePartDVE(
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.title || `DVE`,
 		autoNext: false,
 		expectedDuration: partTime
-	})
+	}
 	const pieces: IBlueprintPiece[] = []
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const actions: IBlueprintActionManifest[] = []

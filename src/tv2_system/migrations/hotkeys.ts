@@ -6,12 +6,11 @@ import {
 	PlayoutActions,
 	TriggerType
 } from '@tv2media/blueprints-integration'
-import { literal } from 'tv2-common'
 
-export function RemoveDefaultCoreShortcuts(versionStr: string) {
+export function RemoveDefaultCoreShortcuts(versionStr: string): MigrationStepSystem {
 	const defaultTriggerIds = DEFAULT_CORE_TRIGGERS.map(trigger => trigger._id)
 
-	return literal<MigrationStepSystem>({
+	return {
 		id: `${versionStr}.disableCoreDefaultTriggers`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -34,7 +33,7 @@ export function RemoveDefaultCoreShortcuts(versionStr: string) {
 				}
 			}
 		}
-	})
+	}
 }
 
 // copy-pasted from core migrations

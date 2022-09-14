@@ -43,7 +43,7 @@ export function GetDefaultAdLibTriggers(
 				sourceLayers
 			)
 
-			const needsMigration = shortcutsDefaults.some(defaultShortcut => {
+			return shortcutsDefaults.some(defaultShortcut => {
 				const existingShortcut = context.getTriggeredAction(defaultShortcut._id)
 
 				if (!existingShortcut) {
@@ -52,7 +52,6 @@ export function GetDefaultAdLibTriggers(
 
 				return forceToDefaults && shortcutsAreDifferent(defaultShortcut, existingShortcut)
 			})
-			return needsMigration
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			const shortcutsDefaults = MakeAllAdLibsTriggers(
@@ -79,7 +78,7 @@ export function RemoveOldShortcuts(
 	showStyleId: string,
 	sourceLayerDefaults: ISourceLayer[]
 ): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
+	return {
 		id: `${versionStr}.migrateShortcutsToAdLibTriggers.${showStyleId}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -88,15 +87,13 @@ export function RemoveOldShortcuts(
 				ISourceLayerWithHotKeys | undefined
 			>
 
-			const oldHotKeysExist = sourceLayers.some(
+			return sourceLayers.some(
 				sourceLayer =>
 					!!sourceLayer?.clearKeyboardHotkey ||
 					!!sourceLayer?.activateKeyboardHotkeys ||
 					!!sourceLayer?.activateStickyKeyboardHotkey ||
 					sourceLayer?.assignHotkeysToGlobalAdlibs !== undefined
 			)
-
-			return oldHotKeysExist
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			for (const sourceLayer of sourceLayerDefaults) {
@@ -113,5 +110,5 @@ export function RemoveOldShortcuts(
 				context.updateSourceLayer(sourceLayer._id, coreSourceLayer)
 			}
 		}
-	})
+	}
 }

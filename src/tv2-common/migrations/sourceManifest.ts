@@ -8,7 +8,7 @@ export function MakeConfigForSources(
 	acceptPersistAudio: boolean,
 	defaultVal: ConfigManifestEntryTable['defaultVal']
 ): ConfigManifestEntryTable {
-	return literal<ConfigManifestEntryTable>({
+	return {
 		id: `Sources${name}`,
 		name: `${displayName} Mapping`,
 		description: `${displayName} number to ATEM input and Sisyfos layer`,
@@ -85,5 +85,5 @@ export function MakeConfigForSources(
 				  ]
 				: [])
 		]
-	})
+	}
 }

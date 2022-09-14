@@ -34,33 +34,31 @@ export function OfftubeEvaluatePgmClean(
 		return
 	}
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: partId,
-			name,
-			enable: {
-				start: 0
-			},
-			outputLayerId: SharedOutputLayers.AUX,
-			sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
-			lifespan: PieceLifespan.OutOnShowStyleEnd,
-			content: literal<WithTimeline<BaseContent>>({
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemAUX>({
-						id: '',
-						enable: { while: '1' },
-						priority: 0,
-						layer: OfftubeAtemLLayer.AtemAuxClean,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.AUX,
-							aux: {
-								input: sourceInfo.port
-							}
+	pieces.push({
+		externalId: partId,
+		name,
+		enable: {
+			start: 0
+		},
+		outputLayerId: SharedOutputLayers.AUX,
+		sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
+		lifespan: PieceLifespan.OutOnShowStyleEnd,
+		content: literal<WithTimeline<BaseContent>>({
+			timelineObjects: literal<TimelineObjectCoreExt[]>([
+				literal<TSR.TimelineObjAtemAUX>({
+					id: '',
+					enable: { while: '1' },
+					priority: 0,
+					layer: OfftubeAtemLLayer.AtemAuxClean,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.AUX,
+						aux: {
+							input: sourceInfo.port
 						}
-					})
-				])
-			})
+					}
+				})
+			])
 		})
-	)
+	})
 }

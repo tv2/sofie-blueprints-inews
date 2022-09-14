@@ -140,36 +140,6 @@ describe('lyd', () => {
 		expect(context.getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
 	})
 
-	test('Lyd not configured', () => {
-		const parsedCue = ParseCue(['LYD=SN_MISSING', ';0.00-0.10'], CONFIG) as CueDefinitionLYD
-		const pieces: IBlueprintPiece[] = []
-		const adlibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
-
-		const context = makeMockContext()
-
-		EvaluateLYD(
-			context,
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: EMPTY_SOURCE_CONFIG,
-				mediaPlayers: [],
-				dsk: defaultDSKConfig,
-				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
-			},
-			pieces,
-			adlibPieces,
-			actions,
-			parsedCue,
-			MOCK_PART
-		)
-
-		expect(pieces.length).toEqual(0)
-		expect(context.getNotes().length).toEqual(1)
-		expect(context.getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
-	})
-
 	test('Lyd adlib', () => {
 		const parsedCue = ParseCue(['LYD=SN_INTRO', ';x.xx'], CONFIG) as CueDefinitionLYD
 		const pieces: IBlueprintPiece[] = []

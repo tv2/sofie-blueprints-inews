@@ -1,10 +1,4 @@
-import {
-	GraphicsContent,
-	IBlueprintPiece,
-	IShowStyleUserContext,
-	TSR,
-	WithTimeline
-} from '@tv2media/blueprints-integration'
+import { GraphicsContent, IShowStyleUserContext, TSR, WithTimeline } from '@tv2media/blueprints-integration'
 import {
 	Adlib,
 	CueDefinitionGraphic,
@@ -36,19 +30,18 @@ export function GetInternalGraphicContentVIZ(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGraphic: boolean,
 	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
-): IBlueprintPiece['content'] {
-	return literal<WithTimeline<GraphicsContent>>({
+): WithTimeline<GraphicsContent> {
+	return {
 		fileName: parsedCue.graphic.template,
 		path: parsedCue.graphic.template,
 		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
-				enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
+				enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
 				priority: 1,
 				layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				content: {
@@ -63,7 +56,7 @@ export function GetInternalGraphicContentVIZ(
 			// Assume DSK is off by default (config table)
 			...EnableDSK(config, 'OVL')
 		])
-	})
+	}
 }
 
 export function GetPilotGraphicContentViz(
@@ -74,7 +67,7 @@ export function GetPilotGraphicContentViz(
 	engine: GraphicEngine,
 	adlib?: Adlib
 ): WithTimeline<GraphicsContent> {
-	return literal<WithTimeline<GraphicsContent>>({
+	return {
 		fileName: 'PILOT_' + parsedCue.graphic.vcpid.toString(),
 		path: parsedCue.graphic.vcpid.toString(),
 		timelineObjects: [
@@ -82,7 +75,7 @@ export function GetPilotGraphicContentViz(
 				id: '',
 				enable:
 					IsTargetingOVL(engine) || IsTargetingWall(engine)
-						? GetEnableForGraphic(config, engine, parsedCue, false, undefined, !!adlib)
+						? GetEnableForGraphic(config, engine, parsedCue, undefined, !!adlib)
 						: {
 								start: 0
 						  },
@@ -113,5 +106,5 @@ export function GetPilotGraphicContentViz(
 			}),
 			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context, !!adlib) : [])
 		]
-	})
+	}
 }
