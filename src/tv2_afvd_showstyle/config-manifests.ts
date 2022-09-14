@@ -262,6 +262,47 @@ export const schemaConfigManifest: ConfigManifestEntry[] = [
 	}
 ]
 
+export const gfxDesignTemplates: ConfigManifestEntry[] = [
+	{
+		id: 'GFXDesignTemplates',
+		name: 'GFX Design Templates',
+		description: '"',
+		type: ConfigManifestEntryType.TABLE,
+		required: true,
+		defaultVal: [],
+		columns: [
+			{
+				id: 'INewsName',
+				name: 'iNews Name (*)',
+				description: 'The name after the code',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 0
+			},
+			{
+				id: 'INewsStyleColumn',
+				name: 'iNews Style Column',
+				description: '',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 1
+
+			},
+			{
+				id: 'VizTemplate',
+				name: 'Viz Template Name (**)',
+				description: 'The name of the Viz Template',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 2
+			}
+		]
+	}
+]
+
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'MakeAdlibsForFulls',
@@ -383,6 +424,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
+	...gfxDesignTemplates,
 	...graphicsSetups,
 	...schemaConfigManifest,
 	{

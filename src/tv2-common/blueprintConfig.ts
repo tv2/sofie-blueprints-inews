@@ -26,6 +26,12 @@ export interface TableConfigItemGFXTemplates {
 	IsDesign: boolean
 }
 
+export interface TableConfigItemGFXDesignTemplates {
+	INewsName: string
+	INewsStyleColumn?: string
+	VizTemplate: string
+}
+
 export interface TableConfigItemAdLibTransitions {
 	Transition: string
 }

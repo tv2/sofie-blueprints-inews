@@ -5,6 +5,8 @@ import {
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	literal,
+	mapGFXTemplateToDesignTemplate,
+	removeDesignChangesFromGFXTemplate,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	SetShowstyleTransitionMigrationStep,
@@ -228,6 +230,20 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		},
 		{ LayerMapping: 'graphic_overlay_lower' }
 	),
+
+	mapGFXTemplateToDesignTemplate(
+		'1.7.5',
+		'AFVD', 
+		'GFXTemplates',
+		'GFXDesignTemplates'
+	),
+
+	removeDesignChangesFromGFXTemplate(
+		'1.7.5',
+		'AFVD',
+		'GFXTemplates'
+	),
+
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
