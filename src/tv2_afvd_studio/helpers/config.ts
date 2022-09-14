@@ -8,7 +8,6 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { DSKRoles } from 'tv2-constants'
-import * as _ from 'underscore'
 import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { parseMediaPlayers, parseSources } from './sources'
 

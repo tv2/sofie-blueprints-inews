@@ -37,35 +37,33 @@ export function EvaluateCueRouting(
 		return
 	}
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: partId,
-			enable: {
-				start: time
-			},
-			name,
-			outputLayerId: SharedOutputLayers.AUX,
-			sourceLayerId: SourceLayer.VizFullIn1,
-			lifespan: PieceLifespan.WithinPart,
-			content: literal<WithTimeline<CameraContent>>({
-				studioLabel: '',
-				switcherInput: sourceInfo.port,
-				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-					literal<TSR.TimelineObjAtemAUX>({
-						id: '',
-						enable: { start: 0 },
-						priority: 100,
-						layer: AtemLLayer.AtemAuxVizOvlIn1,
-						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.AUX,
-							aux: {
-								input: sourceInfo.port
-							}
+	pieces.push({
+		externalId: partId,
+		enable: {
+			start: time
+		},
+		name,
+		outputLayerId: SharedOutputLayers.AUX,
+		sourceLayerId: SourceLayer.VizFullIn1,
+		lifespan: PieceLifespan.WithinPart,
+		content: literal<WithTimeline<CameraContent>>({
+			studioLabel: '',
+			switcherInput: sourceInfo.port,
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+				literal<TSR.TimelineObjAtemAUX>({
+					id: '',
+					enable: { start: 0 },
+					priority: 100,
+					layer: AtemLLayer.AtemAuxVizOvlIn1,
+					content: {
+						deviceType: TSR.DeviceType.ATEM,
+						type: TSR.TimelineContentTypeAtem.AUX,
+						aux: {
+							input: sourceInfo.port
 						}
-					})
-				])
-			})
+					}
+				})
+			])
 		})
-	)
+	})
 }

@@ -4,7 +4,6 @@ import {
 	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	literal,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
@@ -16,7 +15,6 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
-import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 import { GetDefaultStudioSourcesForOfftube } from './hotkeys'
@@ -71,7 +69,7 @@ const SHOW_STYLE_ID = 'tv2_offtube_showstyle'
  * 0.1.0: Core 0.24.0
  */
 
-export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationStepShowStyle[]>([
+export const showStyleMigrations: MigrationStepShowStyle[] = [
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getCreateVariantMigrationSteps(),
@@ -155,7 +153,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	// OVERLAY group
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsIdent, 'GFX Ident'),
-	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
+	SetSourceLayerName('1.6.9', 'studio0_graphicsIdent_persistent', 'GFX Ident Persistent (hidden)'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsTop, 'GFX Top'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
@@ -213,17 +211,13 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Change source layer type for graphics that don't have previews
 	 */
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
-	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsIdentPersistent, {
+	SetSourceLayerProperties('1.7.1', 'studio0_graphicsIdent_persistent', {
 		type: SourceLayerType.LOWER_THIRD
 	}),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsTop, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsTLF, { type: SourceLayerType.LOWER_THIRD }),
-
-	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false),
 
 	/**
 	 * 1.7.2
@@ -264,5 +258,15 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 			LayerMapping: 'graphic_overlay_tema'
 		},
 		{ LayerMapping: 'graphic_overlay_lower' }
-	)
-])
+	),
+
+	/**
+	 * 1.7.5
+	 * - Remove persistent idents
+	 */
+	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
+
+	...getSourceLayerDefaultsMigrationSteps(VERSION),
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
+]

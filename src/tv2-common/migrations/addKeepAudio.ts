@@ -1,9 +1,8 @@
 import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue } from '@tv2media/blueprints-integration'
 import * as _ from 'underscore'
-import { literal } from '../util'
 
 export function AddKeepAudio(versionStr: string, configName: string): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
+	const res: MigrationStepStudio = {
 		id: `${versionStr}.studioConfig.addKeepAudio.${configName}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -29,7 +28,7 @@ export function AddKeepAudio(versionStr: string, configName: string): MigrationS
 				context.setConfig(configName, configVal)
 			}
 		}
-	})
+	}
 
 	return res
 }

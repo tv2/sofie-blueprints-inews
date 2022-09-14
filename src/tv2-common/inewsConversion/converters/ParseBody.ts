@@ -192,7 +192,13 @@ export function ParseBody(
 
 	// Handle intro segments, they have special behaviour.
 	if (segmentName === 'INTRO') {
-		;((definition as unknown) as PartDefinitionIntro).type = PartType.INTRO
+		definition = {
+			...definition,
+			type: PartType.INTRO,
+			rawType: 'INTRO',
+			externalId: `${segmentId}-${definitions.length}`,
+			segmentExternalId: segmentId
+		}
 		cues.forEach(cue => {
 			if (cue !== null) {
 				const parsedCue = ParseCue(cue, config)
@@ -202,9 +208,6 @@ export function ParseBody(
 				}
 			}
 		})
-		definition.rawType = 'INTRO'
-		definition.externalId = `${segmentId}-${definitions.length}`
-		definition.segmentExternalId = segmentId
 		definitions.push(definition)
 		definition = initDefinition(fields, modified, segmentName)
 		return definitions

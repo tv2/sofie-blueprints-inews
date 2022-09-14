@@ -33,7 +33,7 @@ export function EvaluateCueGraphic(
 	}
 
 	if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue, partDefinition, adlib)
+		CreateInternalGraphic(config, context, pieces, adlibPieces, partId, parsedCue, partDefinition, adlib)
 	} else if (GraphicIsPilot(parsedCue)) {
 		EvaluateCueGraphicPilot(
 			config,

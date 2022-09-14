@@ -1,7 +1,7 @@
 import { TV2BlueprintConfig } from 'tv2-common'
 import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 
-export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: string, isStickyIdent?: boolean) {
+export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: string) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
@@ -19,10 +19,6 @@ export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: strin
 			}
 			return SharedSourceLayers.PgmGraphicsHeadline
 		case SharedSourceLayers.PgmGraphicsIdent:
-			if (isStickyIdent) {
-				return SharedSourceLayers.PgmGraphicsIdentPersistent
-			}
-
 			return SharedSourceLayers.PgmGraphicsIdent
 		case SharedSourceLayers.PgmGraphicsLower:
 			return SharedSourceLayers.PgmGraphicsLower

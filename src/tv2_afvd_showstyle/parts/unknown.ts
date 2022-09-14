@@ -11,7 +11,6 @@ import {
 	ApplyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
-	literal,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -30,13 +29,13 @@ export async function CreatePartUnknown(
 ) {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 
-	let part = literal<IBlueprintPart>({
+	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
 		autoNext: false,
 		expectedDuration: partTime
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []

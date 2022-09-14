@@ -34,13 +34,11 @@ export function GetFullGraphicTemplateNameFromCue(
 }
 
 export function GetFullGrafikTemplateName(config: TV2BlueprintConfig, iNewsTempalateName: string): string {
-	if (config.showStyle.GFXTemplates) {
-		const template = config.showStyle.GFXTemplates.find(templ =>
-			templ.INewsName ? templ.INewsName.toString().toUpperCase() === iNewsTempalateName.toUpperCase() : false
-		)
-		if (template && template.VizTemplate.toString().length) {
-			return template.VizTemplate.toString()
-		}
+	const template = config.showStyle.GFXTemplates.find(templ =>
+		templ.INewsName ? templ.INewsName.toString().toUpperCase() === iNewsTempalateName.toUpperCase() : false
+	)
+	if (template && template.VizTemplate.toString().length) {
+		return template.VizTemplate.toString()
 	}
 
 	// This means unconfigured templates will still be supported, with default out.

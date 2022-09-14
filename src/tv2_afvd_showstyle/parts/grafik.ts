@@ -7,14 +7,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import {
-	AddScript,
-	ApplyFullGraphicPropertiesToPart,
-	GraphicIsPilot,
-	literal,
-	PartDefinition,
-	PartTime
-} from 'tv2-common'
+import { AddScript, ApplyFullGraphicPropertiesToPart, GraphicIsPilot, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -27,11 +20,11 @@ export async function CreatePartGrafik(
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {}
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []

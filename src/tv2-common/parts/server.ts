@@ -14,7 +14,7 @@ import {
 	MakeContentServer,
 	MakeContentServerSourceLayers,
 	PieceMetaData,
-	SisyfosPersistMetaData
+	ServerPieceMetaData
 } from 'tv2-common'
 import { AdlibActionType, PartType, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { ActionSelectServerClip } from '../actions'
@@ -22,12 +22,8 @@ import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { getSourceDuration, GetVTContentProperties } from '../content'
 import { getServerSeek, ServerPosition, ServerSelectMode } from '../helpers'
 import { PartDefinition } from '../inewsConversion'
-import { literal, SanitizeString } from '../util'
+import { SanitizeString } from '../util'
 import { CreatePartInvalid } from './invalid'
-
-interface PieceMetaDataServer {
-	userData: ActionSelectServerClip
-}
 
 export interface ServerPartProps {
 	voLayer: boolean
@@ -96,7 +92,7 @@ export async function CreatePartServerBase<
 	const displayTitle = getDisplayTitle(partDefinition)
 	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file)
 
-	const pieces: IBlueprintPiece[] = []
+	const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 
 	const serverSelectionBlueprintPiece = getServerSelectionBlueprintPiece(
 		partDefinition,
@@ -247,29 +243,29 @@ function getServerSelectionBlueprintPiece<
 	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	prerollDuration: number
-): IBlueprintPiece {
+): IBlueprintPiece<ServerPieceMetaData> {
 	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, partProps)
 	const contentServerElement = getContentServerElement(partDefinition, partProps, contentProps, layers, context, config)
 
-	return literal<IBlueprintPiece>({
+	return {
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
 		enable: { start: 0 },
 		outputLayerId: SharedOutputLayers.SEC,
 		sourceLayerId: layers.SourceLayer.SelectedServer,
 		lifespan: PieceLifespan.OutOnSegmentEnd,
-		metaData: literal<PieceMetaData & PieceMetaDataServer>({
+		metaData: {
 			mediaPlayerSessions: [contentProps.mediaPlayerSession],
 			userData: userDataElement,
-			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+			sisyfosPersistMetaData: {
 				sisyfosLayers: [],
 				acceptPersistAudio: partProps.adLibPix && partProps.voLevels
-			})
-		}),
+			}
+		},
 		content: contentServerElement,
 		tags: [GetTagForServerNext(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer)],
 		prerollDuration
-	})
+	}
 }
 
 function getPgmBlueprintPiece<
@@ -282,17 +278,17 @@ function getPgmBlueprintPiece<
 	layers: ServerPartLayers,
 	config: ShowStyleConfig,
 	prerollDuration: number
-): IBlueprintPiece {
-	return literal<IBlueprintPiece>({
+): IBlueprintPiece<PieceMetaData> {
+	return {
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
 		enable: { start: 0 },
 		outputLayerId: SharedOutputLayers.PGM,
 		sourceLayerId: layers.SourceLayer.PgmServer,
 		lifespan: PieceLifespan.WithinPart,
-		metaData: literal<PieceMetaData>({
+		metaData: {
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
-		}),
+		},
 		content: {
 			...GetVTContentProperties(config, contentProps),
 			timelineObjects: CutToServer(contentProps.mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
@@ -302,5 +298,5 @@ function getPgmBlueprintPiece<
 			TallyTags.SERVER_IS_LIVE
 		],
 		prerollDuration
-	})
+	}
 }

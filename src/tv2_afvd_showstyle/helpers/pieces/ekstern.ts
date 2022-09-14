@@ -5,7 +5,13 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition, TV2BlueprintConfig } from 'tv2-common'
+import {
+	CueDefinitionEkstern,
+	EvaluateEksternBase,
+	PartDefinition,
+	PieceMetaData,
+	TV2BlueprintConfig
+} from 'tv2-common'
 import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
@@ -13,8 +19,8 @@ export function EvaluateEkstern(
 	context: ISegmentUserContext,
 	config: TV2BlueprintConfig,
 	part: IBlueprintPart,
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
+	pieces: Array<IBlueprintPiece<PieceMetaData>>,
+	adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
 	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,

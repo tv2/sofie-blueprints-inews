@@ -27,7 +27,7 @@ import { MakeContentDVE } from '../content/dve'
 export async function EvaluateAdLib(
 	context: IShowStyleUserContext,
 	config: BlueprintConfig,
-	adLibPieces: IBlueprintAdLibPiece[],
+	adLibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	partId: string,
@@ -100,33 +100,31 @@ export async function EvaluateAdLib(
 
 		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
-		adLibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank,
-				externalId: partId,
-				name: `DVE: ${parsedCue.variant}`,
-				sourceLayerId: SourceLayer.PgmDVE,
-				outputLayerId: SharedOutputLayers.PGM,
-				uniquenessId: getUniquenessIdDVE(cueDVE),
-				toBeQueued: true,
-				content: content.content,
-				invalid: !content.valid,
-				lifespan: PieceLifespan.WithinPart,
-				metaData: literal<PieceMetaData & DVEPieceMetaData>({
-					sources: cueDVE.sources,
-					config: rawTemplate,
-					userData: literal<ActionSelectDVE>({
-						type: AdlibActionType.SELECT_DVE,
-						config: cueDVE,
-						videoId: partDefinition.fields.videoId,
-						segmentExternalId: partDefinition.segmentExternalId
-					}),
-					sisyfosPersistMetaData: {
-						sisyfosLayers: []
-					}
+		adLibPieces.push({
+			_rank: rank,
+			externalId: partId,
+			name: `DVE: ${parsedCue.variant}`,
+			sourceLayerId: SourceLayer.PgmDVE,
+			outputLayerId: SharedOutputLayers.PGM,
+			uniquenessId: getUniquenessIdDVE(cueDVE),
+			toBeQueued: true,
+			content: content.content,
+			invalid: !content.valid,
+			lifespan: PieceLifespan.WithinPart,
+			metaData: literal<DVEPieceMetaData>({
+				sources: cueDVE.sources,
+				config: rawTemplate,
+				userData: literal<ActionSelectDVE>({
+					type: AdlibActionType.SELECT_DVE,
+					config: cueDVE,
+					videoId: partDefinition.fields.videoId,
+					segmentExternalId: partDefinition.segmentExternalId
 				}),
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
-			})
-		)
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			}),
+			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
+		})
 	}
 }

@@ -1,4 +1,4 @@
-import { GetInfiniteModeForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import { GetPieceLifespanForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -578,13 +578,13 @@ function parseAdLib(cue: string[]) {
 	}
 
 	// tslint:disable-next-line: prefer-for-of
-	for (let i = 0; i < cue.length; i++) {
-		const input = cue[i].match(/^(INP\d)+=(.+)$/i)
+	for (const element of cue) {
+		const input = element.match(/^(INP\d)+=(.+)$/i)
 		if (input && input[1] && input[2] && adlib.inputs !== undefined) {
 			adlib.inputs[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
 		}
 
-		const bynavn = cue[i].match(/^BYNAVN=(.+)$/i)
+		const bynavn = element.match(/^BYNAVN=(.+)$/i)
 		if (bynavn) {
 			adlib.bynavn = bynavn[1].split(/\/|\\/i)
 		}
@@ -996,15 +996,8 @@ export function AddParentClass(config: TV2BlueprintConfig, partDefinition: PartD
 	}
 
 	return partDefinition.cues.some(
-		c =>
-			c.type === CueType.Graphic &&
-			GraphicIsInternal(c) &&
-			GetInfiniteModeForGraphic(c.target, config, c, IsStickyIdent(c))
+		c => c.type === CueType.Graphic && GraphicIsInternal(c) && GetPieceLifespanForGraphic(c.target, config, c)
 	)
-}
-
-export function IsStickyIdent(cue: CueDefinitionGraphic<GraphicInternal>) {
-	return !!cue.graphic.template.match(/direkte/i)
 }
 
 export function UnpairedPilotToGraphic(

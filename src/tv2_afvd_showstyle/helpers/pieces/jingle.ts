@@ -12,7 +12,6 @@ import {
 	generateExternalId,
 	GetTagForJingle,
 	GetTagForJingleNext,
-	literal,
 	PartDefinition,
 	t,
 	TimeFromFrames
@@ -52,61 +51,57 @@ export function EvaluateJingle(
 	}
 
 	if (adlib) {
-		const userData = literal<ActionSelectJingle>({
+		const userData: ActionSelectJingle = {
 			type: AdlibActionType.SELECT_JINGLE,
 			clip: parsedCue.clip,
 			segmentExternalId: part.segmentExternalId
-		})
-		actions.push(
-			literal<IBlueprintActionManifest>({
-				externalId: generateExternalId(context, userData),
-				actionId: AdlibActionType.SELECT_JINGLE,
-				userData,
-				userDataManifest: {},
-				display: {
-					_rank: rank ?? 0,
-					label: t(effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip),
-					sourceLayerId: SourceLayer.PgmJingle,
-					outputLayerId: SharedOutputLayers.JINGLE,
-					content: {
-						...createJingleContentAFVD(
-							config,
-							file,
-							jingle.StartAlpha,
-							jingle.LoadFirstFrame,
-							jingle.Duration,
-							jingle.EndAlpha
-						)
-					},
-					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-					currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-					nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
-				}
-			})
-		)
-	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: `${part.externalId}-JINGLE`,
-				name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
-				enable: {
-					start: 0
-				},
-				lifespan: PieceLifespan.WithinPart,
-				outputLayerId: SharedOutputLayers.JINGLE,
+		}
+		actions.push({
+			externalId: generateExternalId(context, userData),
+			actionId: AdlibActionType.SELECT_JINGLE,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: rank ?? 0,
+				label: t(effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip),
 				sourceLayerId: SourceLayer.PgmJingle,
-				prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
-				tags: [!effekt ? TallyTags.JINGLE : ''],
-				content: createJingleContentAFVD(
-					config,
-					file,
-					jingle.StartAlpha,
-					jingle.LoadFirstFrame,
-					jingle.Duration,
-					jingle.EndAlpha
-				)
-			})
-		)
+				outputLayerId: SharedOutputLayers.JINGLE,
+				content: {
+					...createJingleContentAFVD(
+						config,
+						file,
+						jingle.StartAlpha,
+						jingle.LoadFirstFrame,
+						jingle.Duration,
+						jingle.EndAlpha
+					)
+				},
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
+				nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
+			}
+		})
+	} else {
+		pieces.push({
+			externalId: `${part.externalId}-JINGLE`,
+			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
+			enable: {
+				start: 0
+			},
+			lifespan: PieceLifespan.WithinPart,
+			outputLayerId: SharedOutputLayers.JINGLE,
+			sourceLayerId: SourceLayer.PgmJingle,
+			prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
+			tags: [!effekt ? TallyTags.JINGLE : ''],
+			content: createJingleContentAFVD(
+				config,
+				file,
+				jingle.StartAlpha,
+				jingle.LoadFirstFrame,
+				jingle.Duration,
+				jingle.EndAlpha
+			)
+		})
 	}
 }
 
@@ -118,7 +113,7 @@ export function createJingleContentAFVD(
 	duration: number,
 	alphaAtEnd: number
 ) {
-	const content = CreateJingleContentBase(config, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
+	return CreateJingleContentBase(config, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
 		Caspar: {
 			PlayerJingle: CasparLLayer.CasparPlayerJingle
 		},
@@ -129,6 +124,4 @@ export function createJingleContentAFVD(
 			PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
 		}
 	})
-
-	return content
 }

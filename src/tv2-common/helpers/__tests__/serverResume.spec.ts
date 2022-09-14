@@ -6,7 +6,7 @@ import {
 	VTContent,
 	WithTimeline
 } from '@tv2media/blueprints-integration'
-import { DVEPieceMetaData, literal, RemoteType, SourceDefinitionRemote } from 'tv2-common'
+import { DVEPieceMetaData, literal, PieceMetaData, RemoteType, SourceDefinitionRemote } from 'tv2-common'
 import { SharedSourceLayers, SourceType } from 'tv2-constants'
 import { getServerPositionForPartInstance } from '../serverResume'
 
@@ -36,7 +36,7 @@ function getMockPartInstance(partInstance: Partial<IBlueprintPartInstance>): IBl
 describe('Server Resume', () => {
 	it('Returns server position from server part with resolved duration', () => {
 		const position = getServerPositionForPartInstance(getMockPartInstance({ _id: 'mock_1' }), [
-			literal<IBlueprintResolvedPieceInstance>({
+			literal<IBlueprintResolvedPieceInstance<PieceMetaData>>({
 				_id: '',
 				partInstanceId: 'mock_1',
 				resolvedStart: 1000,
@@ -64,7 +64,7 @@ describe('Server Resume', () => {
 		const position = getServerPositionForPartInstance(
 			getMockPartInstance({ _id: 'mock_1', timings: { startedPlayback: 1000 } }),
 			[
-				literal<IBlueprintResolvedPieceInstance>({
+				literal<IBlueprintResolvedPieceInstance<PieceMetaData>>({
 					_id: '',
 					partInstanceId: 'mock_1',
 					startedPlayback: 1000,
@@ -105,7 +105,7 @@ describe('Server Resume', () => {
 				timings: { startedPlayback: 11000 }
 			}),
 			[
-				literal<IBlueprintResolvedPieceInstance>({
+				literal<IBlueprintResolvedPieceInstance<PieceMetaData>>({
 					_id: '',
 					partInstanceId: 'mock_1',
 					resolvedStart: 1000,
@@ -151,7 +151,7 @@ describe('Server Resume', () => {
 				timings: { startedPlayback: 11000 }
 			}),
 			[
-				literal<IBlueprintResolvedPieceInstance>({
+				literal<IBlueprintResolvedPieceInstance<PieceMetaData>>({
 					_id: '',
 					partInstanceId: 'mock_1',
 					resolvedStart: 1000,
