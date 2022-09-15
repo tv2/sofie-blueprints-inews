@@ -96,6 +96,7 @@ function GetServerTimeline(
 			loop: partProps.adLibPix,
 			seek: contentProps.seek,
 			length: contentProps.seek ? contentProps.clipDuration : undefined,
+			inPoint: contentProps.seek ? 0 : undefined,
 			playing: true
 		},
 		metaData: {
@@ -111,6 +112,7 @@ function GetServerTimeline(
 	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
 	mediaOffObj.enable = { while: `!${serverEnableClass}` }
 	mediaOffObj.content.playing = false
+	mediaOffObj.content.noStarttime = true
 
 	const audioEnable = {
 		while: serverEnableClass
