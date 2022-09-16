@@ -15,7 +15,6 @@ import {
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
-	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, SharedOutputLayers } from 'tv2-constants'
@@ -62,7 +61,7 @@ export function EvaluateDVE(
 	if (content.valid) {
 		if (adlib) {
 			adlibPieces.push(
-				literal<IBlueprintAdLibPiece>({
+				literal<IBlueprintAdLibPiece<DVEPieceMetaData>>({
 					_rank: rank || 0,
 					externalId: partDefinition.externalId,
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
@@ -73,7 +72,7 @@ export function EvaluateDVE(
 					toBeQueued: true,
 					content: content.content,
 					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: literal<DVEPieceMetaData & PieceMetaData>({
+					metaData: {
 						sources: parsedCue.sources,
 						config: rawTemplate,
 						userData: literal<ActionSelectDVE>({
@@ -85,7 +84,7 @@ export function EvaluateDVE(
 						sisyfosPersistMetaData: {
 							sisyfosLayers: []
 						}
-					})
+					}
 				})
 			)
 		} else {
@@ -93,7 +92,7 @@ export function EvaluateDVE(
 			start = start ? start : 0
 			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 			pieces.push(
-				literal<IBlueprintPiece>({
+				literal<IBlueprintPiece<DVEPieceMetaData>>({
 					externalId: partDefinition.externalId,
 					name: `DVE: ${parsedCue.template}`,
 					enable: {
@@ -106,20 +105,20 @@ export function EvaluateDVE(
 					toBeQueued: true,
 					content: content.content,
 					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					metaData: {
 						mediaPlayerSessions: [partDefinition.segmentExternalId],
 						sources: parsedCue.sources,
 						config: rawTemplate,
-						userData: literal<ActionSelectDVE>({
+						userData: {
 							type: AdlibActionType.SELECT_DVE,
 							config: parsedCue,
 							videoId: partDefinition.fields.videoId,
 							segmentExternalId: partDefinition.segmentExternalId
-						}),
+						},
 						sisyfosPersistMetaData: {
 							sisyfosLayers: []
 						}
-					})
+					}
 				})
 			)
 		}

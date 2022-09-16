@@ -14,7 +14,7 @@ import SourcelayerDefaults from './sourcelayer-defaults'
 export function getSourceLayerDefaultsMigrationSteps(versionStr: string, force?: boolean): MigrationStepShowStyle[] {
 	return _.compact(
 		_.map(SourcelayerDefaults, (defaultVal: ISourceLayer): MigrationStepShowStyle | null => {
-			return literal<MigrationStepShowStyle>({
+			return {
 				id: `${versionStr}.sourcelayer.defaults${force ? '.forced' : ''}.${defaultVal._id}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
@@ -39,13 +39,13 @@ export function getSourceLayerDefaultsMigrationSteps(versionStr: string, force?:
 						context.insertSourceLayer(defaultVal._id, defaultVal)
 					}
 				}
-			})
+			}
 		})
 	)
 }
 
 export function forceSettingToDefaults(versionStr: string, setting: string): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
+	return {
 		id: `${versionStr}.sourcelayer.defaults.${setting}.forced`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -78,13 +78,13 @@ export function forceSettingToDefaults(versionStr: string, setting: string): Mig
 				context.setBaseConfig(setting, defaultVal.defaultVal)
 			}
 		}
-	})
+	}
 }
 
 export function getOutputLayerDefaultsMigrationSteps(versionStr: string): MigrationStepShowStyle[] {
 	return _.compact(
 		_.map(OutputlayerDefaults, (defaultVal: IOutputLayer): MigrationStepShowStyle | null => {
-			return literal<MigrationStepShowStyle>({
+			return {
 				id: `${versionStr}.outputlayer.defaults.${defaultVal._id}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
@@ -99,7 +99,7 @@ export function getOutputLayerDefaultsMigrationSteps(versionStr: string): Migrat
 						context.insertOutputLayer(defaultVal._id, defaultVal)
 					}
 				}
-			})
+			}
 		})
 	)
 }
@@ -112,7 +112,7 @@ function remapTableColumnValuesInner(
 ): { changed: number; table: TableConfigItemValue } {
 	let changed = 0
 
-	table.map(row => {
+	table.forEach(row => {
 		const val = row[columnId]
 
 		if (val) {
@@ -123,8 +123,6 @@ function remapTableColumnValuesInner(
 				changed++
 			}
 		}
-
-		return row
 	})
 
 	return { changed, table }

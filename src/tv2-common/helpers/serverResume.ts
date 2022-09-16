@@ -5,7 +5,7 @@ import {
 	IBlueprintResolvedPieceInstance,
 	VTContent
 } from '@tv2media/blueprints-integration'
-import { PartEndStateExt, t } from 'tv2-common'
+import { PartEndStateExt, PieceMetaData, t } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { DVEPieceMetaData } from '../content'
@@ -61,7 +61,11 @@ export async function getServerPosition(
 			? context.getCurrentTime() + replacingCurrentPieceWithOffset
 			: undefined
 
-	return getServerPositionForPartInstance(partInstance, await context.getResolvedPieceInstances('current'), pieceEnd)
+	const pieceInstances = (await context.getResolvedPieceInstances('current')) as Array<
+		IBlueprintResolvedPieceInstance<PieceMetaData>
+	>
+
+	return getServerPositionForPartInstance(partInstance, pieceInstances, pieceEnd)
 }
 
 /**
@@ -69,7 +73,7 @@ export async function getServerPosition(
  */
 export function getServerPositionForPartInstance(
 	partInstance: IBlueprintPartInstance,
-	pieceInstances: IBlueprintResolvedPieceInstance[],
+	pieceInstances: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	currentPieceEnd?: number
 ): ServerPosition | undefined {
 	currentPieceEnd =
@@ -102,7 +106,7 @@ export function getServerPositionForPartInstance(
 			)
 		} else if (pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmDVEAdLib) {
 			updateServerPositionFromDVEPiece(
-				pieceInstance,
+				pieceInstance as IBlueprintResolvedPieceInstance<DVEPieceMetaData>,
 				partInstance,
 				pieceDuration,
 				currentPieceEnd,
@@ -119,7 +123,7 @@ export function getServerPositionForPartInstance(
 function updateServerPositionFromTransition(
 	partInstance: IBlueprintPartInstance<unknown>,
 	currentServerPosition: ServerPosition | undefined,
-	currentPiecesWithServer: Array<IBlueprintResolvedPieceInstance<unknown>>,
+	currentPiecesWithServer: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	previousPartEndState: Partial<PartEndStateExt> | undefined
 ) {
 	const inTransitionDuration = partInstance.part.inTransition?.previousPartKeepaliveDuration
@@ -134,13 +138,13 @@ function updateServerPositionFromTransition(
 }
 
 function updateServerPositionFromDVEPiece(
-	pieceInstance: IBlueprintResolvedPieceInstance<unknown>,
+	pieceInstance: IBlueprintResolvedPieceInstance<DVEPieceMetaData>,
 	partInstance: IBlueprintPartInstance<unknown>,
 	pieceDuration: number | undefined,
 	currentPieceEnd: number | undefined,
 	currentServerPosition: ServerPosition | undefined
 ) {
-	const serverPlaybackTiming = (pieceInstance.piece.metaData as DVEPieceMetaData | undefined)?.serverPlaybackTiming
+	const serverPlaybackTiming = pieceInstance.piece.metaData?.serverPlaybackTiming
 	if (serverPlaybackTiming) {
 		for (const timing of serverPlaybackTiming) {
 			const start = getStartTimeForServerInDVE(timing, partInstance, pieceInstance)
@@ -156,7 +160,7 @@ function updateServerPositionFromDVEPiece(
 }
 
 function getStartTimeForServerInDVE(
-	timing: { start?: number | undefined; end?: number | undefined },
+	timing: { start?: number; end?: number },
 	partInstance: IBlueprintPartInstance<unknown>,
 	pieceInstance: IBlueprintResolvedPieceInstance<unknown>
 ) {
@@ -167,7 +171,7 @@ function getStartTimeForServerInDVE(
 }
 
 function getEndTimeForServerInDVE(
-	timing: { start?: number | undefined; end?: number | undefined },
+	timing: { start?: number; end?: number },
 	pieceDuration: number | undefined,
 	partInstance: IBlueprintPartInstance<unknown>,
 	pieceInstance: IBlueprintResolvedPieceInstance<unknown>

@@ -22,21 +22,6 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: OfftubeSourceLayer.PgmGraphicsIdentPersistent,
-		_rank: 10,
-		name: 'GFX Ident Persistent (hidden)',
-		abbreviation: 'G',
-		type: SourceLayerType.LOWER_THIRD,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		isSticky: false,
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
 		_id: OfftubeSourceLayer.PgmGraphicsTop,
 		_rank: 20,
 		name: 'GFX Top',

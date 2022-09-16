@@ -9,7 +9,7 @@ import {
 	TimelineObjHoldMode,
 	TSR
 } from '@tv2media/blueprints-integration'
-import { AtemLLayerDSK, FindDSKJingle, literal, TimelineBlueprintExt } from 'tv2-common'
+import { AtemLLayerDSK, FindDSKJingle, TimelineBlueprintExt } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { BlueprintConfig } from './helpers/config'
@@ -72,7 +72,7 @@ export function postProcessPieceTimelineObjects(
 					(tlObj.content.me.input !== -1 || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					// Create a lookahead-lookahead object for this me-program
-					const lookaheadObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+					const lookaheadObj: TSR.TimelineObjAtemAUX & TimelineBlueprintExt = {
 						id: '',
 						enable: { start: 0 },
 						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
@@ -92,7 +92,7 @@ export function postProcessPieceTimelineObjects(
 							context: `Lookahead-lookahead for ${tlObj.id}`,
 							mediaPlayerSession: tlObj.metaData?.mediaPlayerSession // TODO - does this work the same?
 						}
-					})
+					}
 					extraObjs.push(lookaheadObj)
 				}
 
@@ -120,7 +120,7 @@ export function postProcessPieceTimelineObjects(
 					mixMinusSource = kamSources.length === 1 ? Number(kamSources[0].switcherInput) : null
 				}
 				if (mixMinusSource !== null && mixMinusSource !== -1) {
-					const mixMinusObj = literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+					const mixMinusObj: TSR.TimelineObjAtemAUX & TimelineBlueprintExt = {
 						..._.omit(tlObj, 'content'),
 						id: '',
 						layer: AtemLLayer.AtemAuxVideoMixMinus,
@@ -139,7 +139,7 @@ export function postProcessPieceTimelineObjects(
 							...tlObj.metaData,
 							context: `Mix-minus for ${tlObj.id}`
 						}
-					})
+					}
 					mixMinusObj.classes = mixMinusObj.classes?.filter(
 						c => !c.match(`studio0_parent_`) && !c.match('PLACEHOLDER_OBJECT_REMOVEME')
 					)
@@ -161,7 +161,7 @@ export function postProcessPieceTimelineObjects(
 					context.notifyUserWarning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
 				}
 
-				const cleanObj = literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+				const cleanObj: TSR.TimelineObjAtemME & TimelineBlueprintExt = {
 					..._.omit(tlObj, 'content', 'keyframes'),
 					id: '',
 					layer: AtemLLayer.AtemCleanUSKEffect,
@@ -180,7 +180,7 @@ export function postProcessPieceTimelineObjects(
 							]
 						}
 					}
-				})
+				}
 				extraObjs.push(cleanObj)
 			}
 		})

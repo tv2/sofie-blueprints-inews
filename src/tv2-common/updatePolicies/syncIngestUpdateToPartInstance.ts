@@ -22,7 +22,6 @@ export function syncIngestUpdateToPartInstanceBase(
 					...freelyEditableLayers,
 					SharedSourceLayers.PgmGraphicsHeadline,
 					SharedSourceLayers.PgmGraphicsIdent,
-					SharedSourceLayers.PgmGraphicsIdentPersistent,
 					SharedSourceLayers.PgmGraphicsLower,
 					SharedSourceLayers.PgmGraphicsOverlay,
 					SharedSourceLayers.PgmGraphicsTLF,

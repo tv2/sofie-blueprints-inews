@@ -29,41 +29,37 @@ export function EvaluateDesignBase(
 	}
 
 	if (adlib) {
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partId,
-				name: parsedCue.design,
-				outputLayerId: SharedOutputLayers.SEC,
-				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
-				content: literal<WithTimeline<GraphicsContent>>({
-					fileName: parsedCue.design,
-					path: parsedCue.design,
-					ignoreMediaObjectStatus: true,
-					timelineObjects: designTimeline(config, parsedCue)
-				})
+		adlibPieces.push({
+			_rank: rank || 0,
+			externalId: partId,
+			name: parsedCue.design,
+			outputLayerId: SharedOutputLayers.SEC,
+			sourceLayerId: SharedSourceLayers.PgmDesign,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			content: literal<WithTimeline<GraphicsContent>>({
+				fileName: parsedCue.design,
+				path: parsedCue.design,
+				ignoreMediaObjectStatus: true,
+				timelineObjects: designTimeline(config, parsedCue)
 			})
-		)
+		})
 	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: partId,
-				name: parsedCue.design,
-				enable: {
-					start
-				},
-				outputLayerId: SharedOutputLayers.SEC,
-				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
-				content: literal<WithTimeline<GraphicsContent>>({
-					fileName: parsedCue.design,
-					path: parsedCue.design,
-					ignoreMediaObjectStatus: true,
-					timelineObjects: designTimeline(config, parsedCue)
-				})
+		pieces.push({
+			externalId: partId,
+			name: parsedCue.design,
+			enable: {
+				start
+			},
+			outputLayerId: SharedOutputLayers.SEC,
+			sourceLayerId: SharedSourceLayers.PgmDesign,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			content: literal<WithTimeline<GraphicsContent>>({
+				fileName: parsedCue.design,
+				path: parsedCue.design,
+				ignoreMediaObjectStatus: true,
+				timelineObjects: designTimeline(config, parsedCue)
 			})
-		)
+		})
 	}
 }
 

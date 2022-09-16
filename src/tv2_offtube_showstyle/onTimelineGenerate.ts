@@ -7,7 +7,13 @@ import {
 	TimelinePersistentState,
 	TSR
 } from '@tv2media/blueprints-integration'
-import { disablePilotWipeAfterJingle, onTimelineGenerate, PartEndStateExt, TimelineBlueprintExt } from 'tv2-common'
+import {
+	disablePilotWipeAfterJingle,
+	onTimelineGenerate,
+	PartEndStateExt,
+	PieceMetaData,
+	TimelineBlueprintExt
+} from 'tv2-common'
 import { SharedGraphicLLayer, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { getConfig } from './helpers/config'
@@ -17,7 +23,7 @@ export function onTimelineGenerateOfftube(
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintResolvedPieceInstance[]
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	disablePilotWipeAfterJingle(timeline, previousPartEndState2, resolvedPieces)

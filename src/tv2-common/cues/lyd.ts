@@ -59,44 +59,40 @@ export function EvaluateLYD(
 	const lifespan = stop || fade || parsedCue.end ? PieceLifespan.WithinPart : PieceLifespan.OutOnRundownChange
 
 	if (adlib) {
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: part.externalId,
-				name: parsedCue.variant,
-				outputLayerId: SharedOutputLayers.MUSIK,
-				sourceLayerId: SharedSourceLayers.PgmAudioBed,
-				lifespan,
-				expectedDuration: stop
-					? 2000
-					: fade
-					? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
-					: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut),
-				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
-			})
-		)
+		adlibPieces.push({
+			_rank: rank || 0,
+			externalId: part.externalId,
+			name: parsedCue.variant,
+			outputLayerId: SharedOutputLayers.MUSIK,
+			sourceLayerId: SharedSourceLayers.PgmAudioBed,
+			lifespan,
+			expectedDuration: stop
+				? 2000
+				: fade
+				? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
+				: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
+			content: LydContent(config, file, lydType, fadeIn, fadeOut),
+			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
+		})
 	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: part.externalId,
-				name: parsedCue.variant,
-				...(stop
-					? { enable: { start: CreateTimingEnable(parsedCue).enable.start, duration: 2000 } }
-					: fade
-					? {
-							enable: {
-								start: CreateTimingEnable(parsedCue).enable.start,
-								duration: Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
-							}
-					  }
-					: CreateTimingEnable(parsedCue)),
-				outputLayerId: SharedOutputLayers.MUSIK,
-				sourceLayerId: SharedSourceLayers.PgmAudioBed,
-				lifespan,
-				content: LydContent(config, file, lydType, fadeIn, fadeOut)
-			})
-		)
+		pieces.push({
+			externalId: part.externalId,
+			name: parsedCue.variant,
+			...(stop
+				? { enable: { start: CreateTimingEnable(parsedCue).enable.start, duration: 2000 } }
+				: fade
+				? {
+						enable: {
+							start: CreateTimingEnable(parsedCue).enable.start,
+							duration: Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
+						}
+				  }
+				: CreateTimingEnable(parsedCue)),
+			outputLayerId: SharedOutputLayers.MUSIK,
+			sourceLayerId: SharedSourceLayers.PgmAudioBed,
+			lifespan,
+			content: LydContent(config, file, lydType, fadeIn, fadeOut)
+		})
 	}
 }
 

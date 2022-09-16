@@ -32,21 +32,12 @@ export function GetInternalGraphicContentCaspar(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGraphic: boolean,
 	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): IBlueprintPiece['content'] {
 	return {
-		timelineObjects: CasparOverlayTimeline(
-			config,
-			engine,
-			parsedCue,
-			isIdentGraphic,
-			partDefinition,
-			mappedTemplate,
-			adlib
-		)
+		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, partDefinition, mappedTemplate, adlib)
 	}
 }
 
@@ -56,7 +47,7 @@ export function GetPilotGraphicContentCaspar(
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	settings: CasparPilotGeneratorSettings,
 	engine: GraphicEngine
-) {
+): WithTimeline<GraphicsContent> {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
 	const fileName = JoinAssetToFolder(config.studio.GraphicFolder, parsedCue.graphic.name)
 	const templateData = {
@@ -74,7 +65,7 @@ export function GetPilotGraphicContentCaspar(
 			}
 		}
 	}
-	return literal<WithTimeline<GraphicsContent>>({
+	return {
 		fileName,
 		path: JoinAssetToNetworkPath(
 			config.studio.GraphicNetworkBasePath,
@@ -109,14 +100,13 @@ export function GetPilotGraphicContentCaspar(
 			}),
 			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context) : [])
 		]
-	})
+	}
 }
 
 function CasparOverlayTimeline(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGrafik: boolean,
 	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
@@ -124,7 +114,7 @@ function CasparOverlayTimeline(
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGraphic(config, engine, parsedCue, isIdentGrafik, partDefinition, adlib),
+			enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })

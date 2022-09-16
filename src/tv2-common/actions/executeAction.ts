@@ -10,7 +10,6 @@ import {
 	IBlueprintPieceDB,
 	IBlueprintPieceGeneric,
 	IBlueprintPieceInstance,
-	IBlueprintResolvedPieceInstance,
 	IShowStyleUserContext,
 	PieceLifespan,
 	SplitsContent,
@@ -26,7 +25,6 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
-	ActionPlayGraphics,
 	ActionSelectDVE,
 	ActionSelectDVELayout,
 	ActionSelectFullGrafik,
@@ -47,7 +45,6 @@ import {
 	GetDVETemplate,
 	GetFullGrafikTemplateName,
 	GraphicPilot,
-	IsTargetingOVL,
 	ITV2ActionExecutionContext,
 	literal,
 	MakeContentDVE2,
@@ -81,7 +78,6 @@ import {
 	PilotGraphicGenerator,
 	ServerSelectMode
 } from '../helpers'
-import { InternalGraphic } from '../helpers/graphics/InternalGraphic'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixTransitionBlueprintPieceForPart } from '../parts'
 import {
@@ -105,7 +101,6 @@ import {
 
 const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayers.PgmGraphicsIdent,
-	SharedSourceLayers.PgmGraphicsIdentPersistent,
 	SharedSourceLayers.PgmGraphicsTop,
 	SharedSourceLayers.PgmGraphicsLower,
 	SharedSourceLayers.PgmGraphicsHeadline,
@@ -280,9 +275,6 @@ export async function executeAction<
 			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
 				await executeActionFadeDownPersistedAudioLevels(context, settings)
 				break
-			case AdlibActionType.PLAY_GRAPHICS:
-				await executeActionPlayGraphics(context, settings, actionId, userData as ActionPlayGraphics)
-				break
 			default:
 				assertUnreachable(actionId)
 				break
@@ -378,7 +370,7 @@ async function getExistingTransition<
 	return
 }
 
-function sanitizePieceId(piece: IBlueprintPieceDB): IBlueprintPiece {
+function sanitizePieceId(piece: IBlueprintPieceDB<PieceMetaData>): IBlueprintPiece<PieceMetaData> {
 	return _.omit(piece, ['_id', 'partId', 'infiniteId', 'playoutDuration'])
 }
 
@@ -386,7 +378,7 @@ export async function getPiecesToPreserve(
 	context: ITV2ActionExecutionContext,
 	adlibLayers: string[],
 	ignoreLayers: string[]
-): Promise<IBlueprintPiece[]> {
+): Promise<Array<IBlueprintPiece<PieceMetaData>>> {
 	const currentPartSegmentId = await context.getPartInstance('current').then(partInstance => partInstance?.segmentId)
 	const nextPartSegmentId = await context.getPartInstance('next').then(partInstance => partInstance?.segmentId)
 
@@ -402,9 +394,9 @@ export async function getPiecesToPreserve(
 		return pieceInstances
 			.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ignoreLayers.includes(p.piece.sourceLayerId))
 			.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
-			.map<IBlueprintPiece>(p => p.piece)
+			.map<IBlueprintPiece<PieceMetaData>>(p => p.piece)
 			.map(p => sanitizePieceStart(p))
-			.map(p => sanitizePieceId(p as IBlueprintPieceDB))
+			.map(p => sanitizePieceId(p as IBlueprintPieceDB<PieceMetaData>))
 	})
 }
 
@@ -485,8 +477,8 @@ async function executeActionSelectServerClip<
 
 	let part = basePart.part.part
 
-	const grafikPieces: IBlueprintPiece[] = []
-	const effektPieces: IBlueprintPiece[] = []
+	const grafikPieces: Array<IBlueprintPiece<PieceMetaData>> = []
+	const effektPieces: Array<IBlueprintPiece<PieceMetaData>> = []
 
 	part = {
 		...part,
@@ -523,8 +515,8 @@ async function executeActionSelectServerClip<
 	}
 
 	await context.queuePart(part, [
-		activeServerPiece,
-		serverDataStore,
+		activeServerPiece as IBlueprintPiece<PieceMetaData>, // @todo: get rid of these casts
+		serverDataStore as IBlueprintPiece<PieceMetaData>,
 		...grafikPieces,
 		...(settings.SelectedAdlibs
 			? await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [
@@ -608,7 +600,7 @@ async function executeActionSelectDVE<
 	start = start ? start : 0
 	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 
-	const metaData = literal<PieceMetaData & DVEPieceMetaData>({
+	const metaData: DVEPieceMetaData = {
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
@@ -616,9 +608,9 @@ async function executeActionSelectDVE<
 			sisyfosLayers: []
 		},
 		userData
-	})
+	}
 
-	let dvePiece = literal<IBlueprintPiece>({
+	let dvePiece: IBlueprintPiece<DVEPieceMetaData> = {
 		externalId,
 		name: `${parsedCue.template}`,
 		enable: {
@@ -639,7 +631,7 @@ async function executeActionSelectDVE<
 			GetTagForDVENext(userData.segmentExternalId, parsedCue.template, parsedCue.sources),
 			TallyTags.DVE_IS_LIVE
 		]
-	})
+	}
 
 	dvePiece = await cutServerToBox(context, settings, dvePiece)
 
@@ -665,17 +657,17 @@ async function cutServerToBox<
 >(
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	newDvePiece: IBlueprintPiece,
+	newDvePiece: IBlueprintPiece<DVEPieceMetaData>,
 	containedServerBefore?: boolean,
 	modifiesCurrent?: boolean
-): Promise<IBlueprintPiece> {
+): Promise<IBlueprintPiece<DVEPieceMetaData>> {
 	// Check if DVE should continue server + copy server properties
 
 	if (!newDvePiece.metaData) {
 		return newDvePiece
 	}
 
-	const meta = newDvePiece.metaData as DVEPieceMetaData
+	const meta = newDvePiece.metaData
 
 	const containsServer = dveContainsServer(meta.sources)
 
@@ -737,7 +729,7 @@ async function cutServerToBox<
 
 		newDvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
 		newDvePiece.content.timelineObjects.push(EnableServer(existingCasparObj.metaData.mediaPlayerSession))
-		;(newDvePiece.metaData as any).mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
+		newDvePiece.metaData.mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 
 		if (!containedServerBefore) {
 			startServerMetaData(context, meta, modifiesCurrent)
@@ -791,11 +783,13 @@ async function executeActionSelectDVELayout<
 
 	const nextPart = await context.getPartInstance('next')
 
-	const nextDVE = await context
+	const nextDVE = (await context
 		.getPieceInstances('next')
-		.then(nextPieceInstances => nextPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE))
+		.then(nextPieceInstances => nextPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE))) as
+		| IBlueprintPieceInstance<DVEPieceMetaData>
+		| undefined
 
-	const meta = nextDVE?.piece.metaData as DVEPieceMetaData
+	const meta = nextDVE?.piece.metaData
 
 	if (!nextPart || !nextDVE || !meta || nextPart.segmentId !== (await context.getPartInstance('current'))?.segmentId) {
 		const content = MakeContentDVE2(context, config, userData.config, {}, sources, settings.DVEGeneratorOptions)
@@ -804,27 +798,27 @@ async function executeActionSelectDVELayout<
 			return
 		}
 
-		const newMetaData = literal<DVEPieceMetaData & PieceMetaData>({
+		const newMetaData: DVEPieceMetaData = {
 			sources,
 			config: userData.config,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: []
 			},
-			userData: literal<ActionSelectDVE>({
+			userData: {
 				type: AdlibActionType.SELECT_DVE,
-				config: literal<CueDefinitionDVE>({
+				config: {
 					type: CueType.DVE,
 					template: userData.config.DVEName,
 					sources,
 					labels: [],
 					iNewsCommand: `DVE=${userData.config.DVEName}`
-				}),
+				},
 				videoId: undefined,
 				segmentExternalId: ''
-			})
-		})
+			}
+		}
 
-		let newDVEPiece = literal<IBlueprintPiece>({
+		let newDVEPiece: IBlueprintPiece<DVEPieceMetaData> = {
 			externalId,
 			enable: {
 				start: 0
@@ -835,7 +829,7 @@ async function executeActionSelectDVELayout<
 			outputLayerId: SharedOutputLayers.PGM,
 			metaData: newMetaData,
 			content: content.content
-		})
+		}
 
 		newDVEPiece = await cutServerToBox(context, settings, newDVEPiece)
 
@@ -855,16 +849,16 @@ async function executeActionSelectDVELayout<
 		)
 	}
 
-	const newMetaData2 = literal<PieceMetaData & DVEPieceMetaData>({
+	const newMetaData2: DVEPieceMetaData = {
 		...meta,
 		config: userData.config,
 		sisyfosPersistMetaData: {
 			sisyfosLayers: []
 		}
-	})
+	}
 
 	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
-	let dvePiece: IBlueprintPiece = {
+	let dvePiece: IBlueprintPiece<DVEPieceMetaData> = {
 		...nextDVE.piece,
 		content: pieceContent.content,
 		metaData: newMetaData2,
@@ -902,9 +896,9 @@ async function startNewDVELayout<
 	context: ITV2ActionExecutionContext,
 	config: ShowStyleConfig,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	dvePiece: IBlueprintPiece,
+	dvePiece: IBlueprintPiece<PieceMetaData>,
 	pieceContent: WithTimeline<SplitsContent>,
-	meta: PieceMetaData & DVEPieceMetaData,
+	metaData: DVEPieceMetaData,
 	templateName: string,
 	_sources: CueDefinitionDVE['sources'],
 	externalId: string,
@@ -914,8 +908,8 @@ async function startNewDVELayout<
 ) {
 	settings.postProcessPieceTimelineObjects(context, config, dvePiece, false)
 
-	const dveDataStore = settings.SelectedAdlibs.SourceLayer.DVE
-		? literal<IBlueprintPiece>({
+	const dveDataStore: IBlueprintPiece<PieceMetaData> | undefined = settings.SelectedAdlibs.SourceLayer.DVE
+		? {
 				externalId,
 				name: templateName,
 				enable: {
@@ -924,7 +918,7 @@ async function startNewDVELayout<
 				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
 				lifespan: PieceLifespan.OutOnSegmentEnd,
-				metaData: meta,
+				metaData,
 				tags: [nextTag],
 				content: {
 					...pieceContent,
@@ -939,16 +933,16 @@ async function startNewDVELayout<
 						)
 						.map(obj => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
 				}
-		  })
+		  }
 		: undefined
 
 	if (replacePieceInstancesOrQueue === 'queue') {
-		const newPart = literal<IBlueprintPart>({
+		const newPart: IBlueprintPart = {
 			externalId,
 			title: templateName,
 			metaData: {},
 			expectedDuration: 0
-		})
+		}
 
 		const currentPieceInstances = await context.getPieceInstances('current')
 		// If a DVE is not on air, but a layout is selected, stop the selected layout and replace with the new one.
@@ -956,7 +950,7 @@ async function startNewDVELayout<
 
 		const dataPiece =
 			settings.SelectedAdlibs &&
-			currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SelectedAdlibs!.SourceLayer.DVE)
+			currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE)
 
 		if (onAirPiece === undefined && dataPiece !== undefined) {
 			await context.stopPieceInstances([dataPiece._id])
@@ -1032,7 +1026,7 @@ async function executeActionSelectJingle<
 		jingle.EndAlpha
 	)
 
-	const piece = literal<IBlueprintPiece>({
+	const piece: IBlueprintPiece<PieceMetaData> = {
 		externalId: `${externalId}-JINGLE`,
 		name: userData.clip,
 		enable: {
@@ -1049,41 +1043,19 @@ async function executeActionSelectJingle<
 			TallyTags.JINGLE_IS_LIVE,
 			TallyTags.JINGLE
 		]
-	})
-
-	const jingleDataStore = settings.SelectedAdlibs.SourceLayer.Effekt
-		? literal<IBlueprintPiece>({
-				externalId,
-				name: userData.clip,
-				enable: {
-					start: 0
-				},
-				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
-				sourceLayerId: settings.SelectedAdlibs.SourceLayer.Effekt,
-				lifespan: PieceLifespan.WithinPart,
-				metaData: {
-					userData
-				},
-				content: {
-					...pieceContent,
-					timelineObjects: []
-				},
-				tags: [GetTagForJingleNext(userData.segmentExternalId, userData.clip)]
-		  })
-		: undefined
+	}
 
 	settings.postProcessPieceTimelineObjects(context, config, piece, false)
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId,
 		title: `JINGLE ${userData.clip}`,
 		metaData: {},
 		...props
-	})
+	}
 
 	await context.queuePart(part, [
 		piece,
-		...(jingleDataStore ? [] : []),
 		...(settings.SelectedAdlibs
 			? await getPiecesToPreserve(
 					context,
@@ -1111,12 +1083,12 @@ async function executeActionCutToCamera<
 
 	const externalId = generateExternalId(context, actionId, [userData.sourceDefinition.name])
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId,
 		title: userData.sourceDefinition.name,
 		metaData: {},
 		expectedDuration: 0
-	})
+	}
 
 	const sourceInfoCam = findSourceInfo(config.sources, userData.sourceDefinition)
 	if (sourceInfoCam === undefined) {
@@ -1133,7 +1105,7 @@ async function executeActionCutToCamera<
 
 	const camSisyfos = GetSisyfosTimelineObjForCamera(config, sourceInfoCam, false)
 
-	const kamPiece = literal<IBlueprintPiece>({
+	const kamPiece: IBlueprintPiece<PieceMetaData> = {
 		externalId,
 		name: part.title,
 		enable: { start: 0 },
@@ -1141,11 +1113,11 @@ async function executeActionCutToCamera<
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
-			sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+			sisyfosPersistMetaData: {
 				sisyfosLayers: [],
 				acceptPersistAudio: sourceInfoCam.acceptPersistAudio,
 				isPieceInjectedInPart: true
-			})
+			}
 		},
 		tags: [GetTagForKam(userData.sourceDefinition)],
 		content: {
@@ -1168,7 +1140,7 @@ async function executeActionCutToCamera<
 				...camSisyfos
 			])
 		}
-	})
+	}
 
 	settings.postProcessPieceTimelineObjects(context, config, kamPiece, false)
 
@@ -1186,9 +1158,11 @@ async function executeActionCutToCamera<
 	} else if (currentKam) {
 		kamPiece.externalId = currentKam.piece.externalId
 		kamPiece.enable = currentKam.piece.enable
-		const currentMetaData = currentKam.piece.metaData as PieceMetaData
-		const metaData = kamPiece.metaData as PieceMetaData
+		const currentMetaData = currentKam.piece.metaData!
+		const metaData = kamPiece.metaData!
 		metaData.sisyfosPersistMetaData!.previousPersistMetaDataForCurrentPiece = currentMetaData.sisyfosPersistMetaData
+
+		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
 
 		await context.updatePieceInstance(currentKam._id, kamPiece)
 	} else {
@@ -1210,10 +1184,30 @@ async function executeActionCutToCamera<
 			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
 			settings.SourceLayers.Continuity
 		])
+		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
 
 		kamPiece.enable = { start: 'now' }
 		await context.insertPiece('current', kamPiece)
 	}
+}
+
+async function stopGraphicPiecesThatShouldEndWithPart(
+	context: ITV2ActionExecutionContext,
+	currentPieceInstances: Array<IBlueprintPieceInstance<unknown>>
+) {
+	await context.stopPieceInstances(
+		currentPieceInstances
+			.filter(pieceInstance => isGraphicThatShouldEndWithPart(pieceInstance))
+			.map(pieceInstance => pieceInstance._id)
+	)
+}
+
+function isGraphicThatShouldEndWithPart(pieceInstance: IBlueprintPieceInstance<unknown>): boolean {
+	return (
+		pieceInstance.piece.lifespan === PieceLifespan.WithinPart &&
+		!pieceInstance.stoppedPlayback &&
+		(STOPPABLE_GRAPHICS_LAYERS as string[]).includes(pieceInstance.piece.sourceLayerId)
+	)
 }
 
 async function executeActionCutToRemote<
@@ -1231,12 +1225,12 @@ async function executeActionCutToRemote<
 
 	const title = userData.sourceDefinition.name
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId,
 		title,
 		metaData: {},
 		expectedDuration: 0
-	})
+	}
 
 	const sourceInfo = findSourceInfo(config.sources, userData.sourceDefinition)
 	if (sourceInfo === undefined) {
@@ -1255,7 +1249,7 @@ async function executeActionCutToRemote<
 			  }
 			: { sisyfosLayers: [] }
 
-	const remotePiece = literal<IBlueprintPiece>({
+	const remotePiece: IBlueprintPiece<PieceMetaData> = {
 		externalId,
 		name: title,
 		enable: {
@@ -1289,7 +1283,7 @@ async function executeActionCutToRemote<
 				...eksternSisyfos
 			])
 		}
-	})
+	}
 
 	settings.postProcessPieceTimelineObjects(context, config, remotePiece, false)
 
@@ -1333,21 +1327,20 @@ async function executeActionCutSourceToBox<
 	)
 
 	let modify: undefined | 'current' | 'next'
-	let modifiedPiece: IBlueprintPieceInstance | undefined
+	let modifiedPiece: IBlueprintPieceInstance<DVEPieceMetaData> | undefined
 	let modifiedDataStore: IBlueprintPieceInstance | undefined
 
 	if (currentDVE && !currentDVE.stoppedPlayback) {
 		modify = 'current'
-		modifiedPiece = currentDVE
+		modifiedPiece = currentDVE as IBlueprintPieceInstance<DVEPieceMetaData>
 		modifiedDataStore = currentDataStore
 	} else if (nextDVE) {
 		modify = 'next'
-		modifiedPiece = nextDVE
+		modifiedPiece = nextDVE as IBlueprintPieceInstance<DVEPieceMetaData>
 		modifiedDataStore = nextDataStore
 	}
 
-	const meta: (DVEPieceMetaData & PieceMetaData) | undefined = modifiedPiece?.piece.metaData as PieceMetaData &
-		DVEPieceMetaData
+	const meta = modifiedPiece?.piece.metaData
 
 	if (
 		!modifiedPiece ||
@@ -1389,7 +1382,11 @@ async function executeActionCutSourceToBox<
 		mediaPlayerSession
 	)
 
-	let newDVEPiece: IBlueprintPiece = { ...modifiedPiece.piece, content: newPieceContent.content, metaData: meta }
+	let newDVEPiece: IBlueprintPiece<DVEPieceMetaData> = {
+		...modifiedPiece.piece,
+		content: newPieceContent.content,
+		metaData: meta
+	}
 	if (!containsServerBefore || !containsServerAfter) {
 		newDVEPiece = await cutServerToBox(context, settings, newDVEPiece, !!containsServerBefore, modify === 'current')
 	}
@@ -1413,10 +1410,10 @@ async function executeActionCutSourceToBox<
 }
 
 interface PiecesBySourceLayer {
-	[key: string]: IBlueprintPieceInstance[]
+	[key: string]: Array<IBlueprintPieceInstance<PieceMetaData>>
 }
 
-function groupPiecesBySourceLayer(pieceInstances: IBlueprintPieceInstance[]): PiecesBySourceLayer {
+function groupPiecesBySourceLayer(pieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>): PiecesBySourceLayer {
 	const piecesBySourceLayer: PiecesBySourceLayer = {}
 	pieceInstances.forEach(piece => {
 		if (!piecesBySourceLayer[piece.piece.sourceLayerId]) {
@@ -1493,7 +1490,7 @@ async function executeActionTakeWithTransition<
 ) {
 	const externalId = generateExternalId(context, actionId, [userData.variant.type])
 
-	const nextPieces: IBlueprintPieceInstance[] = await context.getPieceInstances('next')
+	const nextPieces = await context.getPieceInstances('next')
 
 	const nextPiecesBySourceLayer = groupPiecesBySourceLayer(nextPieces)
 	const primaryPiece = findPrimaryPieceUsingPriority(settings, nextPiecesBySourceLayer)
@@ -1543,7 +1540,7 @@ async function executeActionTakeWithTransition<
 
 				await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
-				const cutTransitionPiece: IBlueprintPiece = {
+				const cutTransitionPiece: IBlueprintPiece<PieceMetaData> = {
 					enable: {
 						start: 0,
 						duration: 1000
@@ -1576,7 +1573,7 @@ async function executeActionTakeWithTransition<
 			await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
 			const config = settings.getConfig(context)
-			const pieces: IBlueprintPiece[] = []
+			const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 			partProps = CreateEffektForPartInner(
 				context,
 				config,
@@ -1607,7 +1604,7 @@ async function executeActionTakeWithTransition<
 				timelineObjectIndex
 			)
 
-			const blueprintPiece: IBlueprintPiece = CreateMixTransitionBlueprintPieceForPart(
+			const blueprintPiece = CreateMixTransitionBlueprintPieceForPart(
 				externalId,
 				userData.variant.frames,
 				settings.SourceLayers.Effekt
@@ -1629,7 +1626,7 @@ async function executeActionTakeWithTransition<
 				primaryPiece,
 				timelineObjectIndex
 			)
-			const blueprintPiece: IBlueprintPiece = CreateDipTransitionBlueprintPieceForPart(
+			const blueprintPiece = CreateDipTransitionBlueprintPieceForPart(
 				externalId,
 				userData.variant.frames,
 				settings.SourceLayers.Effekt
@@ -1652,7 +1649,7 @@ async function updateTimelineObjectMeTransition(
 	timelineObject: TSR.TimelineObjAtemME,
 	transitionStyle: TSR.AtemTransitionStyle,
 	transitionSettings: TSR.AtemTransitionSettings,
-	pieceInstance: IBlueprintPieceInstance,
+	pieceInstance: IBlueprintPieceInstance<PieceMetaData>,
 	indexOfTimelineObject: number
 ): Promise<void> {
 	timelineObject.content.me.transition = transitionStyle
@@ -1665,7 +1662,7 @@ async function updateTimelineObjectMeTransition(
 async function findPieceToRecoverDataFrom(
 	context: ITV2ActionExecutionContext,
 	dataStoreLayers: string[]
-): Promise<{ piece: IBlueprintPieceInstance; part: 'current' | 'next' } | undefined> {
+): Promise<{ piece: IBlueprintPieceInstance<PieceMetaData>; part: 'current' | 'next' } | undefined> {
 	const pieces = await Promise.all([context.getPieceInstances('current'), context.getPieceInstances('next')])
 	const currentPieces = pieces[0]
 	const nextPieces = pieces[1]
@@ -1674,7 +1671,7 @@ async function findPieceToRecoverDataFrom(
 
 	const nextServer = nextPieces.find(p => dataStoreLayers.includes(p.piece.sourceLayerId))
 
-	let pieceToRecoverDataFrom: IBlueprintPieceInstance | undefined
+	let pieceToRecoverDataFrom: IBlueprintPieceInstance<PieceMetaData> | undefined
 
 	let part: 'current' | 'next' = 'current'
 
@@ -1682,7 +1679,6 @@ async function findPieceToRecoverDataFrom(
 		part = 'next'
 		pieceToRecoverDataFrom = nextServer
 	} else if (currentServer) {
-		part = 'current'
 		pieceToRecoverDataFrom = currentServer
 	}
 
@@ -1722,7 +1718,7 @@ async function findMediaPlayerSessions(
 		}
 	}
 
-	const sessions = (mediaPlayerSessionPiece.piece.piece.metaData as any)?.mediaPlayerSessions
+	const sessions = mediaPlayerSessionPiece.piece.piece.metaData?.mediaPlayerSessions
 
 	return {
 		// Assume there will be only one session
@@ -1851,17 +1847,20 @@ async function executeActionRecallLastLive<
 
 	const lastIdent = await context.findLastPieceOnLayer(settings.SourceLayers.Ident, {
 		originalOnly: true,
-		excludeCurrentPart: false
+		excludeCurrentPart: false,
+		pieceMetaDataFilter: {
+			belongsToRemotePart: true
+		}
 	})
 
 	const externalId = generateExternalId(context, actionId, [lastLive.piece.name])
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId,
 		title: lastLive.piece.name
-	})
+	}
 
-	const pieces: IBlueprintPiece[] = []
+	const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 	pieces.push({
 		...lastLive.piece,
 		externalId,
@@ -1871,12 +1870,10 @@ async function executeActionRecallLastLive<
 		lifespan: PieceLifespan.WithinPart
 	})
 
-	// externalId should be replaced with something more concrete like partInstanceId
-	if (lastIdent && lastIdent.piece.externalId === lastLive.piece.externalId) {
+	if (lastIdent) {
 		pieces.push({
 			...lastIdent.piece,
 			externalId,
-			enable: { ...lastIdent.piece.enable, start: 0 },
 			lifespan: PieceLifespan.WithinPart
 		})
 	}
@@ -1899,12 +1896,9 @@ async function executeActionRecallLastDVE<
 		return
 	}
 
-	const lastPlayedScheduledDVE: IBlueprintPieceInstance | undefined = await context.findLastPieceOnLayer(
-		settings.SourceLayers.DVE,
-		{
-			originalOnly: true
-		}
-	)
+	const lastPlayedScheduledDVE = (await context.findLastPieceOnLayer(settings.SourceLayers.DVE, {
+		originalOnly: true
+	})) as IBlueprintPieceInstance<DVEPieceMetaData> | undefined
 	const isLastPlayedAScheduledDVE: boolean = !lastPlayedScheduledDVE?.dynamicallyInserted
 
 	if (lastPlayedScheduledDVE && isLastPlayedAScheduledDVE) {
@@ -1919,16 +1913,16 @@ async function executeActionFadeDownPersistedAudioLevels<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(context: ITV2ActionExecutionContext, _settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
 	const fadeSisyfosMetaData = await createFadeSisyfosLevelsMetaData(context)
-	const resetSisyfosPersistedLevelsPiece: IBlueprintPiece = {
+	const resetSisyfosPersistedLevelsPiece: IBlueprintPiece<PieceMetaData> = {
 		externalId: 'fadeSisyfosPersistedLevelsDown',
 		name: FADE_SISYFOS_LEVELS_PIECE_NAME,
 		outputLayerId: '',
 		sourceLayerId: '',
 		enable: { start: 'now' },
 		lifespan: PieceLifespan.WithinPart,
-		metaData: literal<PieceMetaData>({
+		metaData: {
 			sisyfosPersistMetaData: fadeSisyfosMetaData
-		}),
+		},
 		content: {
 			timelineObjects: []
 		}
@@ -1937,7 +1931,7 @@ async function executeActionFadeDownPersistedAudioLevels<
 }
 
 async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {
-	const resolvedPieceInstances: IBlueprintResolvedPieceInstance[] = await context.getResolvedPieceInstances('current')
+	const resolvedPieceInstances = await context.getResolvedPieceInstances('current')
 	const emptySisyfosMetaData: SisyfosPersistMetaData = {
 		sisyfosLayers: []
 	}
@@ -1945,11 +1939,11 @@ async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionConte
 		return emptySisyfosMetaData
 	}
 
-	const latestPiece: IBlueprintResolvedPieceInstance = resolvedPieceInstances
+	const latestPiece = resolvedPieceInstances
 		.filter(piece => piece.piece.name !== FADE_SISYFOS_LEVELS_PIECE_NAME)
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)[0]
 
-	const latestPieceMetaData = latestPiece.piece.metaData as PieceMetaData
+	const latestPieceMetaData = latestPiece.piece.metaData
 
 	if (!latestPieceMetaData || !latestPieceMetaData.sisyfosPersistMetaData) {
 		return emptySisyfosMetaData
@@ -1962,38 +1956,6 @@ async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionConte
 	}
 }
 
-async function executeActionPlayGraphics<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ITV2ActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	actionId: string,
-	userData: ActionPlayGraphics
-): Promise<void> {
-	if (!IsTargetingOVL(userData.graphic.target)) {
-		return
-	}
-
-	const currentPartInstance = await context.getPartInstance('current')
-	const externalId = currentPartInstance?.part.externalId ?? generateExternalId(context, actionId, [])
-
-	const internalGraphic: InternalGraphic = new InternalGraphic(
-		settings.getConfig(context),
-		userData.graphic,
-		{ rank: 0 },
-		externalId,
-		undefined
-	)
-	const pieces: IBlueprintPiece[] = []
-
-	internalGraphic.createPiece(pieces)
-
-	pieces.forEach((piece: IBlueprintPiece) => {
-		context.insertPiece('current', piece)
-	})
-}
-
 async function scheduleLastPlayedDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -2001,22 +1963,17 @@ async function scheduleLastPlayedDVE<
 	context: ITV2ActionExecutionContext,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionId: string,
-	lastPlayedDVE: IBlueprintPieceInstance
+	lastPlayedDVE: IBlueprintPieceInstance<DVEPieceMetaData>
 ): Promise<void> {
-	const lastPlayedDVEMeta: DVEPieceMetaData = lastPlayedDVE.piece.metaData as DVEPieceMetaData
+	const lastPlayedDVEMeta: DVEPieceMetaData = lastPlayedDVE.piece.metaData!
 	const externalId: string = generateExternalId(context, actionId, [lastPlayedDVE.piece.name])
 
-	await executeActionSelectDVE(
-		context,
-		settings,
-		actionId,
-		literal<ActionSelectDVE>({
-			type: AdlibActionType.SELECT_DVE,
-			config: lastPlayedDVEMeta.userData.config,
-			segmentExternalId: externalId,
-			videoId: lastPlayedDVEMeta.userData.videoId
-		})
-	)
+	await executeActionSelectDVE(context, settings, actionId, {
+		type: AdlibActionType.SELECT_DVE,
+		config: lastPlayedDVEMeta.userData.config,
+		segmentExternalId: externalId,
+		videoId: lastPlayedDVEMeta.userData.videoId
+	})
 }
 
 async function scheduleNextScriptedDVE<
@@ -2038,17 +1995,12 @@ async function scheduleNextScriptedDVE<
 	const externalId: string = generateExternalId(context, actionId, [nextScriptedDVE.name])
 	const dveMeta: DVEPieceMetaData = nextScriptedDVE.metaData as DVEPieceMetaData
 
-	await executeActionSelectDVE(
-		context,
-		settings,
-		actionId,
-		literal<ActionSelectDVE>({
-			type: AdlibActionType.SELECT_DVE,
-			config: dveMeta.userData.config,
-			segmentExternalId: externalId,
-			videoId: dveMeta.userData.videoId
-		})
-	)
+	await executeActionSelectDVE(context, settings, actionId, {
+		type: AdlibActionType.SELECT_DVE,
+		config: dveMeta.userData.config,
+		segmentExternalId: externalId,
+		videoId: dveMeta.userData.videoId
+	})
 }
 
 async function executeActionSelectFull<
@@ -2064,7 +2016,8 @@ async function executeActionSelectFull<
 
 	const template = GetFullGrafikTemplateName(config, userData.name)
 
-	const externalId = `adlib-action_${context.getHashId(`cut_to_full_${template}`)}`
+	const hash = context.getHashId(`cut_to_full_${template}`)
+	const externalId = `adlib-action_${hash}`
 
 	const graphicType = config.studio.GraphicsType
 	const previousPartKeepaliveDuration =
@@ -2072,7 +2025,7 @@ async function executeActionSelectFull<
 			? config.studio.HTMLGraphics.KeepAliveDuration
 			: config.studio.VizPilotGraphics.KeepAliveDuration
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId,
 		title: `Full ${template}`,
 		metaData: {},
@@ -2082,9 +2035,9 @@ async function executeActionSelectFull<
 			partContentDelayDuration: 0,
 			blockTakeDuration: 0
 		}
-	})
+	}
 
-	const cue = literal<CueDefinitionGraphic<GraphicPilot>>({
+	const cue: CueDefinitionGraphic<GraphicPilot> = {
 		type: CueType.Graphic,
 		target: 'FULL',
 		graphic: {
@@ -2094,7 +2047,7 @@ async function executeActionSelectFull<
 			continueCount: -1
 		},
 		iNewsCommand: ''
-	})
+	}
 
 	const generator = new PilotGraphicGenerator({
 		config,
@@ -2136,54 +2089,51 @@ async function executeActionClearGraphics<
 	const config = settings.getConfig(context)
 
 	await context.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
-	await context.insertPiece(
-		'current',
-		literal<IBlueprintPiece>({
-			enable: {
-				start: 'now',
-				duration: 3000
-			},
-			externalId: 'clearAllGFX',
-			name: userData.label,
-			sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
-			outputLayerId: SharedOutputLayers.SEC,
-			lifespan: PieceLifespan.WithinPart,
-			content:
-				config.studio.GraphicsType === 'HTML'
-					? {
-							timelineObjects: [
-								literal<TSR.TimelineObjAbstractAny>({
-									id: '',
-									enable: {
-										start: 0
-									},
-									priority: 1,
-									layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
-									content: {
-										deviceType: TSR.DeviceType.ABSTRACT
-									}
-								})
-							]
-					  }
-					: {
-							timelineObjects: [
-								literal<TSR.TimelineObjVIZMSEClearAllElements>({
-									id: '',
-									enable: {
-										start: 0
-									},
-									priority: 100,
-									layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
-									content: {
-										deviceType: TSR.DeviceType.VIZMSE,
-										type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-										channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined,
-										showId: config.selectedGraphicsSetup.OvlShowId
-									}
-								})
-							]
-					  },
-			tags: userData.sendCommands ? [TallyTags.GFX_CLEAR] : [TallyTags.GFX_ALTUD]
-		})
-	)
+	await context.insertPiece('current', {
+		enable: {
+			start: 'now',
+			duration: 3000
+		},
+		externalId: 'clearAllGFX',
+		name: userData.label,
+		sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
+		outputLayerId: SharedOutputLayers.SEC,
+		lifespan: PieceLifespan.WithinPart,
+		content:
+			config.studio.GraphicsType === 'HTML'
+				? {
+						timelineObjects: [
+							literal<TSR.TimelineObjAbstractAny>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+								content: {
+									deviceType: TSR.DeviceType.ABSTRACT
+								}
+							})
+						]
+				  }
+				: {
+						timelineObjects: [
+							literal<TSR.TimelineObjVIZMSEClearAllElements>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 100,
+								layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+								content: {
+									deviceType: TSR.DeviceType.VIZMSE,
+									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+									channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined,
+									showId: config.selectedGraphicsSetup.OvlShowId
+								}
+							})
+						]
+				  },
+		tags: userData.sendCommands ? [TallyTags.GFX_CLEAR] : [TallyTags.GFX_ALTUD]
+	})
 }

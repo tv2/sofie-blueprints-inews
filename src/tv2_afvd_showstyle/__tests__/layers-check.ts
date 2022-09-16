@@ -8,7 +8,7 @@ import {
 	TSR
 } from '@tv2media/blueprints-integration'
 
-import { GetDSKSourceLayerNames, literal } from 'tv2-common'
+import { GetDSKSourceLayerNames } from 'tv2-common'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { ATEMModel } from '../../types/atem'
 import { getConfig } from '../helpers/config'
@@ -33,10 +33,10 @@ export function checkAllLayers(
 		.sort()
 	const allOutputLayers = _.map(OutputlayerDefaults, m => m._id)
 
-	const allMappings = literal<BlueprintMappings>({
+	const allMappings: BlueprintMappings = {
 		...mappingsDefaults,
 		...getMediaPlayerMappings(config.mediaPlayers)
-	})
+	}
 
 	const validateObject = (obj: TimelineObjectCoreExt) => {
 		const isAbstract = obj.content.deviceType === TSR.DeviceType.ABSTRACT

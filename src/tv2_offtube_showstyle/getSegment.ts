@@ -2,7 +2,6 @@ import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	CameraContent,
-	IBlueprintPiece,
 	IngestSegment,
 	ISegmentUserContext,
 	PieceLifespan,
@@ -53,15 +52,18 @@ export async function getSegment(
 	}
 }
 
-function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSegment: IngestSegment) {
-	return literal<BlueprintResultPart>({
+function CreatePartContinuity(
+	config: OfftubeShowstyleBlueprintConfig,
+	ingestSegment: IngestSegment
+): BlueprintResultPart {
+	return {
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
 			title: 'CONTINUITY',
 			untimed: true
 		},
 		pieces: [
-			literal<IBlueprintPiece>({
+			{
 				externalId: `${ingestSegment.externalId}-CONTINUITY`,
 				enable: {
 					start: 0
@@ -92,9 +94,9 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 						})
 					])
 				})
-			})
+			}
 		],
 		adLibPieces: [],
 		actions: []
-	})
+	}
 }

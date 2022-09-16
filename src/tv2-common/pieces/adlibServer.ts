@@ -37,7 +37,7 @@ export async function CreateAdlibServer<
 	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
 	const sourceDuration = getSourceDuration(mediaObjectDuration, config.studio.ServerPostrollDuration)
 
-	return literal<IBlueprintActionManifest>({
+	return {
 		externalId: partDefinition.externalId + '-adLib-server',
 		actionId: AdlibActionType.SELECT_SERVER_CLIP,
 		userData: literal<ActionSelectServerClip>({
@@ -70,5 +70,5 @@ export async function CreateAdlibServer<
 			uniquenessId: `${voLayer ? 'vo' : 'server'}_${partDefinition.storyName}_${file}`
 		},
 		triggerModes: getServerAdLibTriggerModes()
-	})
+	}
 }

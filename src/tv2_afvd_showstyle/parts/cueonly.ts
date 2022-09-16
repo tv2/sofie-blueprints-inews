@@ -12,7 +12,6 @@ import {
 	CueDefinition,
 	GetJinglePartProperties,
 	GraphicIsPilot,
-	literal,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -34,11 +33,11 @@ export async function CreatePartCueOnly(
 	const partDefinitionWithID = { ...partDefinition, ...{ externalId: id } }
 	const partTime = PartTime(config, partDefinitionWithID, totalWords, false)
 
-	let part = literal<IBlueprintPart>({
+	let part: IBlueprintPart = {
 		externalId: id,
 		title,
 		metaData: {}
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []

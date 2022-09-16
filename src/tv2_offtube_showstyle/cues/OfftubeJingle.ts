@@ -13,7 +13,6 @@ import {
 	GetJinglePartProperties,
 	GetTagForJingle,
 	GetTagForJingleNext,
-	literal,
 	PartDefinition,
 	PieceMetaData,
 	t,
@@ -27,7 +26,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 export function OfftubeEvaluateJingle(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
-	pieces: IBlueprintPiece[],
+	pieces: Array<IBlueprintPiece<PieceMetaData>>,
 	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
@@ -60,70 +59,66 @@ export function OfftubeEvaluateJingle(
 		return
 	}
 
-	const userData = literal<ActionSelectJingle>({
+	const userData: ActionSelectJingle = {
 		type: AdlibActionType.SELECT_JINGLE,
 		clip: parsedCue.clip,
 		segmentExternalId: part.segmentExternalId
-	})
-	actions.push(
-		literal<IBlueprintActionManifest>({
-			externalId: generateExternalId(context, userData),
-			actionId: AdlibActionType.SELECT_JINGLE,
-			userData,
-			userDataManifest: {},
-			display: {
-				label: t(effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip),
-				sourceLayerId: OfftubeSourceLayer.PgmJingle,
-				outputLayerId: OfftubeOutputLayers.JINGLE,
-				content: {
-					...createJingleContentOfftube(
-						config,
-						file,
-						jingle.StartAlpha,
-						jingle.LoadFirstFrame,
-						jingle.Duration,
-						jingle.EndAlpha
-					)
-				},
-				tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
-				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-				nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
-			}
-		})
-	)
-
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: `${part.externalId}-JINGLE`,
-			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
-			enable: {
-				start: 0
-			},
-			lifespan: PieceLifespan.WithinPart,
-			outputLayerId: SharedOutputLayers.JINGLE,
+	}
+	actions.push({
+		externalId: generateExternalId(context, userData),
+		actionId: AdlibActionType.SELECT_JINGLE,
+		userData,
+		userDataManifest: {},
+		display: {
+			label: t(effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip),
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
-			metaData: literal<PieceMetaData>({
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
-			}),
-			prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
-			content: createJingleContentOfftube(
-				config,
-				file,
-				jingle.StartAlpha,
-				jingle.LoadFirstFrame,
-				jingle.Duration,
-				jingle.EndAlpha
-			),
-			tags: [
-				GetTagForJingle(part.segmentExternalId, parsedCue.clip),
-				GetTagForJingleNext(part.segmentExternalId, parsedCue.clip),
-				TallyTags.JINGLE_IS_LIVE,
-				!effekt ? TallyTags.JINGLE : ''
-			]
-		})
-	)
+			outputLayerId: OfftubeOutputLayers.JINGLE,
+			content: {
+				...createJingleContentOfftube(
+					config,
+					file,
+					jingle.StartAlpha,
+					jingle.LoadFirstFrame,
+					jingle.Duration,
+					jingle.EndAlpha
+				)
+			},
+			tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
+			currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
+			nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
+		}
+	})
+
+	pieces.push({
+		externalId: `${part.externalId}-JINGLE`,
+		name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
+		enable: {
+			start: 0
+		},
+		lifespan: PieceLifespan.WithinPart,
+		outputLayerId: SharedOutputLayers.JINGLE,
+		sourceLayerId: OfftubeSourceLayer.PgmJingle,
+		metaData: {
+			sisyfosPersistMetaData: {
+				sisyfosLayers: []
+			}
+		},
+		prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
+		content: createJingleContentOfftube(
+			config,
+			file,
+			jingle.StartAlpha,
+			jingle.LoadFirstFrame,
+			jingle.Duration,
+			jingle.EndAlpha
+		),
+		tags: [
+			GetTagForJingle(part.segmentExternalId, parsedCue.clip),
+			GetTagForJingleNext(part.segmentExternalId, parsedCue.clip),
+			TallyTags.JINGLE_IS_LIVE,
+			!effekt ? TallyTags.JINGLE : ''
+		]
+	})
 }
 
 export function createJingleContentOfftube(
