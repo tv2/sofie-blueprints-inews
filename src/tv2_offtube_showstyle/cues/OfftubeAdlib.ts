@@ -108,6 +108,7 @@ export async function OfftubeEvaluateAdLib(
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
 			config: cueDVE,
+			name: `DVE: ${cueDVE.template}`,
 			videoId: partDefinition.fields.videoId,
 			segmentExternalId: partDefinition.segmentExternalId
 		}
