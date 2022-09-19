@@ -1,6 +1,5 @@
 import {
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
@@ -30,7 +29,6 @@ export function OfftubeEvaluateDVE(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,

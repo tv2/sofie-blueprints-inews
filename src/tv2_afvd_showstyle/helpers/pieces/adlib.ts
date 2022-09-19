@@ -1,7 +1,6 @@
 import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	IShowStyleUserContext
 } from '@tv2media/blueprints-integration'
 import {
@@ -13,7 +12,6 @@ import {
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	PartDefinition,
-	PieceMetaData,
 	t,
 	TemplateIsValid
 } from 'tv2-common'
@@ -26,10 +24,8 @@ import { MakeContentDVE } from '../content/dve'
 export async function EvaluateAdLib(
 	context: IShowStyleUserContext,
 	config: BlueprintConfig,
-	_adLibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
-	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
 	rank: number

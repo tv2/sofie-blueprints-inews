@@ -1,6 +1,5 @@
 import {
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan
@@ -28,7 +27,6 @@ export function EvaluateDVE(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
@@ -88,7 +86,7 @@ export function EvaluateDVE(
 			let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
 			start = start ? start : 0
 			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
-			const pieceName =  `DVE: ${parsedCue.template}`
+			const pieceName = `DVE: ${parsedCue.template}`
 			pieces.push(
 				literal<IBlueprintPiece<DVEPieceMetaData>>({
 					externalId: partDefinition.externalId,

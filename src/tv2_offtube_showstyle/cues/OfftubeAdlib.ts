@@ -1,7 +1,6 @@
 import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	ISegmentUserContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
@@ -30,10 +29,8 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 export async function OfftubeEvaluateAdLib(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
-	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
-	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
 	rank: number
