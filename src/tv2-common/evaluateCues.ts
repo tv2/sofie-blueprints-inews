@@ -94,7 +94,6 @@ export interface EvaluateCuesShowstyleOptions {
 		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionDVE,
@@ -104,10 +103,8 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueAdLib?: (
 		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
-		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
 		mediaSubscriptions: HackPartMediaObjectSubscription[],
-		partId: string,
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
 		rank: number
@@ -256,7 +253,6 @@ export async function EvaluateCuesBase(
 							context,
 							config,
 							pieces,
-							adLibPieces,
 							actions,
 							partDefinition,
 							cue,
@@ -265,17 +261,7 @@ export async function EvaluateCuesBase(
 						)
 						// Always make an adlib for DVEs
 						if (!shouldAdlib) {
-							showStyleOptions.EvaluateCueDVE(
-								context,
-								config,
-								pieces,
-								adLibPieces,
-								actions,
-								partDefinition,
-								cue,
-								true,
-								adLibRank
-							)
+							showStyleOptions.EvaluateCueDVE(context, config, pieces, actions, partDefinition, cue, true, adLibRank)
 						}
 					}
 					break
@@ -284,10 +270,8 @@ export async function EvaluateCuesBase(
 						await showStyleOptions.EvaluateCueAdLib(
 							context,
 							config,
-							adLibPieces,
 							actions,
 							mediaSubscriptions,
-							partDefinition.externalId,
 							cue,
 							partDefinition,
 							adLibRank

@@ -1,6 +1,5 @@
 import {
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
@@ -30,7 +29,6 @@ export function OfftubeEvaluateDVE(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
@@ -78,7 +76,7 @@ export function OfftubeEvaluateDVE(
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 		pieces.push({
 			externalId: partDefinition.externalId,
-			name: `${parsedCue.template}`,
+			name: parsedCue.template,
 			enable: {
 				start,
 				...(end ? { duration: end - start } : {})
@@ -99,6 +97,7 @@ export function OfftubeEvaluateDVE(
 				userData: {
 					type: AdlibActionType.SELECT_DVE,
 					config: parsedCue,
+					name: parsedCue.template,
 					videoId: partDefinition.fields.videoId,
 					segmentExternalId: partDefinition.segmentExternalId
 				},
@@ -116,6 +115,7 @@ export function OfftubeEvaluateDVE(
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
 			config: parsedCue,
+			name: `DVE: ${parsedCue.template}`,
 			videoId: partDefinition.fields.videoId,
 			segmentExternalId: partDefinition.segmentExternalId
 		}
