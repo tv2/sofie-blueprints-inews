@@ -612,7 +612,7 @@ async function executeActionSelectDVE<
 
 	let dvePiece: IBlueprintPiece<DVEPieceMetaData> = {
 		externalId,
-		name: `${parsedCue.template}`,
+		name: userData.name,
 		enable: {
 			start,
 			...(end ? { duration: end - start } : {})
@@ -813,6 +813,7 @@ async function executeActionSelectDVELayout<
 					labels: [],
 					iNewsCommand: `DVE=${userData.config.DVEName}`
 				},
+				name: userData.config.DVEName,
 				videoId: undefined,
 				segmentExternalId: ''
 			}
@@ -1971,6 +1972,7 @@ async function scheduleLastPlayedDVE<
 	await executeActionSelectDVE(context, settings, actionId, {
 		type: AdlibActionType.SELECT_DVE,
 		config: lastPlayedDVEMeta.userData.config,
+		name: lastPlayedDVE.piece.name,
 		segmentExternalId: externalId,
 		videoId: lastPlayedDVEMeta.userData.videoId
 	})
@@ -1998,6 +2000,7 @@ async function scheduleNextScriptedDVE<
 	await executeActionSelectDVE(context, settings, actionId, {
 		type: AdlibActionType.SELECT_DVE,
 		config: dveMeta.userData.config,
+		name: nextScriptedDVE.name,
 		segmentExternalId: externalId,
 		videoId: dveMeta.userData.videoId
 	})

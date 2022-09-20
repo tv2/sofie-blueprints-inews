@@ -32,6 +32,7 @@ export interface ActionSelectFullGrafik extends ActionBase {
 export interface ActionSelectDVE extends ActionBase {
 	type: AdlibActionType.SELECT_DVE
 	config: CueDefinitionDVE
+	name: string
 	videoId: string | undefined
 	segmentExternalId: string
 }
