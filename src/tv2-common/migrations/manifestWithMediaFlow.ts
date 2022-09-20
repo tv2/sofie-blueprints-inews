@@ -1,4 +1,4 @@
-import { ConfigManifestEntry, ConfigManifestEntryType } from '@sofie-automation/blueprints-integration'
+import { ConfigManifestEntry, ConfigManifestEntryType } from '@tv2media/blueprints-integration'
 
 export function MakeConfigWithMediaFlow(
 	name: string,

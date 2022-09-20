@@ -5,19 +5,19 @@ import {
 	ISegmentUserContext,
 	PieceLifespan,
 	SplitsContent
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectDVE,
 	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
+	generateExternalId,
 	GetDVETemplate,
 	GetTagForDVE,
 	GetTagForDVENext,
 	literal,
 	PartDefinition,
-	PieceMetaData,
 	t,
 	TemplateIsValid
 } from 'tv2-common'
@@ -76,66 +76,66 @@ export function OfftubeEvaluateDVE(
 		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
 		start = start ? start : 0
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: partDefinition.externalId,
-				name: `${parsedCue.template}`,
-				enable: {
-					start,
-					...(end ? { duration: end - start } : {})
-				},
-				outputLayerId: SharedOutputLayers.PGM,
-				sourceLayerId: OfftubeSourceLayer.PgmDVE,
-				lifespan: PieceLifespan.WithinPart,
-				toBeQueued: true,
-				content: {
-					...pieceContent.content,
-					timelineObjects: [...pieceContent.content.timelineObjects]
-				},
-				adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-				metaData: literal<PieceMetaData & DVEPieceMetaData>({
-					mediaPlayerSessions: [partDefinition.segmentExternalId],
-					sources: parsedCue.sources,
-					config: rawTemplate,
-					userData: literal<ActionSelectDVE>({
-						type: AdlibActionType.SELECT_DVE,
-						config: parsedCue,
-						videoId: partDefinition.fields.videoId,
-						segmentExternalId: partDefinition.segmentExternalId
-					})
-				}),
-				tags: [
-					GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources),
-					GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources),
-					TallyTags.DVE_IS_LIVE
-				]
-			})
-		)
-
-		actions.push(
-			literal<IBlueprintActionManifest>({
-				actionId: AdlibActionType.SELECT_DVE,
-				userData: literal<ActionSelectDVE>({
+		pieces.push({
+			externalId: partDefinition.externalId,
+			name: `${parsedCue.template}`,
+			enable: {
+				start,
+				...(end ? { duration: end - start } : {})
+			},
+			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: OfftubeSourceLayer.PgmDVE,
+			lifespan: PieceLifespan.WithinPart,
+			toBeQueued: true,
+			content: {
+				...pieceContent.content,
+				timelineObjects: [...pieceContent.content.timelineObjects]
+			},
+			prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
+			metaData: literal<DVEPieceMetaData>({
+				mediaPlayerSessions: [partDefinition.segmentExternalId],
+				sources: parsedCue.sources,
+				config: rawTemplate,
+				userData: {
 					type: AdlibActionType.SELECT_DVE,
 					config: parsedCue,
 					videoId: partDefinition.fields.videoId,
 					segmentExternalId: partDefinition.segmentExternalId
-				}),
-				userDataManifest: {},
-				display: {
-					_rank: rank,
-					sourceLayerId: OfftubeSourceLayer.PgmDVE,
-					outputLayerId: OfftubeOutputLayers.PGM,
-					label: t(`${partDefinition.storyName}`),
-					tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
-					noHotKey: !adlib,
-					content: literal<SplitsContent>({
-						...pieceContent.content
-					}),
-					currentPieceTags: [GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)],
-					nextPieceTags: [GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)]
+				},
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
 				}
-			})
-		)
+			}),
+			tags: [
+				GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources),
+				GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources),
+				TallyTags.DVE_IS_LIVE
+			]
+		})
+
+		const userData: ActionSelectDVE = {
+			type: AdlibActionType.SELECT_DVE,
+			config: parsedCue,
+			videoId: partDefinition.fields.videoId,
+			segmentExternalId: partDefinition.segmentExternalId
+		}
+		actions.push({
+			externalId: generateExternalId(context, userData),
+			actionId: AdlibActionType.SELECT_DVE,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: rank,
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				label: t(`${partDefinition.storyName}`),
+				tags: [AdlibTags.ADLIB_KOMMENTATOR, ...(adlib ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])],
+				content: literal<SplitsContent>({
+					...pieceContent.content
+				}),
+				currentPieceTags: [GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)],
+				nextPieceTags: [GetTagForDVENext(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources)]
+			}
+		})
 	}
 }

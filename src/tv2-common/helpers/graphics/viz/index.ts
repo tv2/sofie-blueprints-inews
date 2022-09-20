@@ -1,13 +1,8 @@
+import { GraphicsContent, IShowStyleUserContext, TSR, WithTimeline } from '@tv2media/blueprints-integration'
 import {
-	GraphicsContent,
-	IBlueprintPart,
-	IBlueprintPiece,
-	IShowStyleUserContext,
-	TSR,
-	WithTimeline
-} from '@sofie-automation/blueprints-integration'
-import {
+	Adlib,
 	CueDefinitionGraphic,
+	findShowId,
 	GetEnableForGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetTimelineLayerForGraphic,
@@ -20,7 +15,7 @@ import {
 	PartDefinition,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
+import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
 import { EnableDSK } from '../../dsk'
 
 export interface VizPilotGeneratorSettings {
@@ -33,22 +28,20 @@ export interface VizPilotGeneratorSettings {
 
 export function GetInternalGraphicContentVIZ(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGraphic: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
-): IBlueprintPiece['content'] {
-	return literal<WithTimeline<GraphicsContent>>({
+): WithTimeline<GraphicsContent> {
+	return {
 		fileName: parsedCue.graphic.template,
 		path: parsedCue.graphic.template,
 		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
-				enable: GetEnableForGraphic(config, part, engine, parsedCue, isIdentGraphic, partDefinition, adlib),
+				enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
 				priority: 1,
 				layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				content: {
@@ -56,25 +49,25 @@ export function GetInternalGraphicContentVIZ(
 					type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 					templateName: mappedTemplate,
 					templateData: parsedCue.graphic.textFields,
-					channelName: engine === 'WALL' ? 'WALL1' : 'OVL1' // TODO: TranslateEngine
+					channelName: engine === 'WALL' ? 'WALL1' : 'OVL1', // TODO: TranslateEngine
+					showId: findShowId(config, engine)
 				}
 			}),
 			// Assume DSK is off by default (config table)
 			...EnableDSK(config, 'OVL')
 		])
-	})
+	}
 }
 
 export function GetPilotGraphicContentViz(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart> | undefined,
 	context: IShowStyleUserContext,
 	settings: VizPilotGeneratorSettings,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	engine: GraphicEngine,
-	adlib: boolean
+	adlib?: Adlib
 ): WithTimeline<GraphicsContent> {
-	return literal<WithTimeline<GraphicsContent>>({
+	return {
 		fileName: 'PILOT_' + parsedCue.graphic.vcpid.toString(),
 		path: parsedCue.graphic.vcpid.toString(),
 		timelineObjects: [
@@ -82,16 +75,16 @@ export function GetPilotGraphicContentViz(
 				id: '',
 				enable:
 					IsTargetingOVL(engine) || IsTargetingWall(engine)
-						? GetEnableForGraphic(config, part, engine, parsedCue, false, undefined, adlib)
+						? GetEnableForGraphic(config, engine, parsedCue, undefined, !!adlib)
 						: {
 								start: 0
 						  },
 				priority: 1,
 				layer: IsTargetingWall(engine)
-					? GraphicLLayer.GraphicLLayerWall
+					? SharedGraphicLLayer.GraphicLLayerWall
 					: IsTargetingOVL(engine)
-					? GraphicLLayer.GraphicLLayerPilotOverlay
-					: GraphicLLayer.GraphicLLayerPilot,
+					? SharedGraphicLLayer.GraphicLLayerPilotOverlay
+					: SharedGraphicLLayer.GraphicLLayerPilot,
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT,
@@ -111,7 +104,7 @@ export function GetPilotGraphicContentViz(
 				},
 				...(IsTargetingFull(engine) ? { classes: ['full'] } : {})
 			}),
-			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context, adlib) : [])
+			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context, !!adlib) : [])
 		]
-	})
+	}
 }

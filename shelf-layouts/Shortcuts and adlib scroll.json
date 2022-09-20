@@ -14,7 +14,7 @@
       "default": false,
       "x": 1,
       "y": 7,
-      "width": 58,
+      "width": 64.5,
       "height": 5,
       "overflowHorizontally": true,
       "showAsTimeline": true,
@@ -31,6 +31,7 @@
         "studio0_audio_bed",
         "studio0_graphicsTop",
         "studio0_graphicsIdent",
+        "studio0_graphicsIdent_persistent",
         "studio0_graphicsTema",
         "studio0_graphicsHeadline",
         "studio0_overlay",
@@ -39,7 +40,8 @@
       ],
       "tags": [
         "flow_producer"
-      ]
+      ],
+      "toggleOnSingleClick": true
     },
     {
       "_id": "s4KkTnsERPNcrkqeD",
@@ -51,10 +53,10 @@
       "rundownBaseline": false,
       "default": false,
       "url": "http://10.201.76.12:8005/keyboardmap",
-      "x": 1,
-      "y": 21,
-      "width": 76,
-      "height": -1,
+      "x": 1.2,
+      "y": 18,
+      "width": 54.3,
+      "height": 18.5,
       "scale": 0.79
     },
     {
@@ -68,8 +70,8 @@
       "default": false,
       "x": -1,
       "y": 0,
-      "width": 21,
-      "height": -1,
+      "width": 15.7,
+      "height": 15.5,
       "includeClearInRundownBaseline": false,
       "assignHotKeys": false,
       "hide": false,
@@ -80,7 +82,9 @@
         "studio0_adlib_graphic_cmd"
       ],
       "buttonWidthScale": 1.7,
-      "buttonHeightScale": 1.7
+      "buttonHeightScale": 1.7,
+      "toggleOnSingleClick": true,
+      "scale": 0.6
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
@@ -97,7 +101,8 @@
       "x": -1,
       "includeClearInRundownBaseline": true,
       "assignHotKeys": true,
-      "hide": true
+      "hide": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "j54rMBuuTvufKJ8yp",
@@ -115,12 +120,13 @@
       "sourceLayerIds": [
         "studio0_dve"
       ],
-      "width": 58,
+      "width": 64.5,
       "height": 5,
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "showAsTimeline": true,
-      "includeClearInRundownBaseline": true
+      "includeClearInRundownBaseline": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "nmNfZ8azaAAHD7jjT",
@@ -140,10 +146,11 @@
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "y": 0,
-      "width": 58,
+      "width": 64.5,
       "height": 5,
       "showAsTimeline": true,
-      "includeClearInRundownBaseline": true
+      "includeClearInRundownBaseline": true,
+      "toggleOnSingleClick": true
     }
   ],
   "type": "dashboard_layout",

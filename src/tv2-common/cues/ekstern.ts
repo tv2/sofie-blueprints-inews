@@ -5,31 +5,27 @@ import {
 	IShowStyleUserContext,
 	PieceLifespan,
 	RemoteContent,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
 	createEmptyObject,
 	CueDefinitionEkstern,
 	EksternParentClass,
-	FindSourceInfoStrict,
-	GetEksternMetaData,
-	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
 	literal,
 	PartDefinition,
 	PartToParentClass,
-	TransitionFromString,
+	PieceMetaData,
 	TransitionSettings,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, SharedOutputLayers } from 'tv2-constants'
+import { ControlClasses, SharedOutputLayers, SourceType } from 'tv2-constants'
+import { GetSisyfosTimelineObjForRemote } from '../helpers'
 import { GetTagForLive } from '../pieces'
+import { findSourceInfo } from '../sources'
 
 interface EksternLayers {
 	SourceLayer: {
@@ -37,9 +33,6 @@ interface EksternLayers {
 	}
 	ATEM: {
 		MEProgram: string
-	}
-	Sisyfos: {
-		StudioMics: string
 	}
 }
 
@@ -50,8 +43,8 @@ export function EvaluateEksternBase<
 	context: IShowStyleUserContext,
 	config: ShowStyleConfig,
 	part: IBlueprintPart,
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
+	pieces: Array<IBlueprintPiece<PieceMetaData>>,
+	adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
@@ -59,123 +52,110 @@ export function EvaluateEksternBase<
 	adlib?: boolean,
 	rank?: number
 ) {
-	const matchesEksternSource = /^(?:LIVE|SKYPE|FEED) ?([^\s]+)(?: (.+))?$/i
-	const eksternProps = parsedCue.source.match(matchesEksternSource)
-	if (!eksternProps) {
-		context.notifyUserWarning(`No source entered for EKSTERN`)
-		part.invalid = true
-		return
-	}
-	const source = eksternProps[1]
-	if (!source) {
-		context.notifyUserWarning(`Could not find live source for ${parsedCue.source}`)
-		part.invalid = true
-		return
-	}
-	const sourceInfoEkstern = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, parsedCue.source)
-	if (sourceInfoEkstern === undefined) {
-		context.notifyUserWarning(`${parsedCue.source} does not exist in this studio`)
+	const sourceInfoEkstern = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+	if (parsedCue.sourceDefinition.sourceType !== SourceType.REMOTE || sourceInfoEkstern === undefined) {
+		context.notifyUserWarning(`EKSTERN source is not valid: "${parsedCue.sourceDefinition.raw}"`)
 		part.invalid = true
 		return
 	}
 	const atemInput = sourceInfoEkstern.port
 
-	const layers = GetLayersForEkstern(context, config.sources, parsedCue.source)
-
 	if (adlib) {
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partId,
-				name: eksternProps[0],
-				outputLayerId: SharedOutputLayers.PGM,
-				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
-				toBeQueued: true,
-				lifespan: PieceLifespan.WithinPart,
-				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
-				content: literal<WithTimeline<RemoteContent>>({
-					studioLabel: '',
-					switcherInput: atemInput,
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TSR.TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: layersEkstern.ATEM.MEProgram,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: atemInput,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
-								}
-							},
-							classes: [ControlClasses.LiveSourceOnAir]
-						}),
+		adlibPieces.push({
+			_rank: rank || 0,
+			externalId: partId,
+			name: parsedCue.sourceDefinition.name,
+			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: layersEkstern.SourceLayer.PgmLive,
+			toBeQueued: true,
+			lifespan: PieceLifespan.WithinPart,
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
+					wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,
+					acceptPersistAudio: sourceInfoEkstern.acceptPersistAudio
+				}
+			},
+			content: literal<WithTimeline<RemoteContent>>({
+				studioLabel: '',
+				switcherInput: atemInput,
+				timelineObjects: literal<TimelineObjectCoreExt[]>([
+					literal<TSR.TimelineObjAtemME>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: layersEkstern.ATEM.MEProgram,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								input: atemInput,
+								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+								transitionSettings: TransitionSettings(config, partDefinition)
+							}
+						},
+						classes: [ControlClasses.LiveSourceOnAir]
+					}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
-						GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
-					])
-				})
+					...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
+				])
 			})
-		)
+		})
 	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: partId,
-				name: eksternProps[0],
-				enable: {
-					start: 0
-				},
-				outputLayerId: SharedOutputLayers.PGM,
-				sourceLayerId: layersEkstern.SourceLayer.PgmLive,
-				lifespan: PieceLifespan.WithinPart,
-				toBeQueued: true,
-				metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, layers),
-				tags: [GetTagForLive(sourceInfoEkstern.id)],
-				content: literal<WithTimeline<RemoteContent>>({
-					studioLabel: '',
-					switcherInput: atemInput,
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						createEmptyObject({
-							// Only want the ident for original versions (or clones)
-							enable: { start: 0 },
-							layer: 'ekstern_enable_ident',
-							classes: [ControlClasses.ShowIdentGraphic, PartToParentClass('studio0', partDefinition) ?? '']
-						}),
-						literal<TSR.TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: layersEkstern.ATEM.MEProgram,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: atemInput,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
-								}
-							},
-							...(AddParentClass(config, partDefinition)
-								? { classes: [EksternParentClass('studio0', parsedCue.source)] }
-								: {})
-						}),
+		pieces.push({
+			externalId: partId,
+			name: parsedCue.sourceDefinition.name,
+			enable: {
+				start: 0
+			},
+			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: layersEkstern.SourceLayer.PgmLive,
+			lifespan: PieceLifespan.WithinPart,
+			toBeQueued: true,
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
+					wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,
+					acceptPersistAudio: sourceInfoEkstern.acceptPersistAudio
+				}
+			},
+			tags: [GetTagForLive(parsedCue.sourceDefinition)],
+			content: literal<WithTimeline<RemoteContent>>({
+				studioLabel: '',
+				switcherInput: atemInput,
+				timelineObjects: literal<TimelineObjectCoreExt[]>([
+					createEmptyObject({
+						// Only want the ident for original versions (or clones)
+						enable: { start: 0 },
+						layer: 'ekstern_enable_ident',
+						classes: [PartToParentClass('studio0', partDefinition) ?? '']
+					}),
+					literal<TSR.TimelineObjAtemME>({
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: layersEkstern.ATEM.MEProgram,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								input: atemInput,
+								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+								transitionSettings: TransitionSettings(config, partDefinition)
+							}
+						},
+						...(AddParentClass(config, partDefinition)
+							? { classes: [EksternParentClass('studio0', parsedCue.sourceDefinition.name)] }
+							: {})
+					}),
 
-						...GetSisyfosTimelineObjForEkstern(context, config.sources, parsedCue.source, GetLayersForEkstern),
-						GetSisyfosTimelineObjForCamera(context, config, 'telefon', layersEkstern.Sisyfos.StudioMics)
-					])
-				})
+					...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
+				])
 			})
-		)
+		})
 	}
 }

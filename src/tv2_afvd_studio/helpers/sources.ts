@@ -1,7 +1,7 @@
 import * as _ from 'underscore'
 
-import { SourceLayerType } from '@sofie-automation/blueprints-integration'
-import { ParseMappingTable, SourceInfo } from 'tv2-common'
+import { SourceLayerType } from '@tv2media/blueprints-integration'
+import { ParseMappingTable, SourceInfoType, SourceMapping } from 'tv2-common'
 import { StudioConfig } from './config'
 
 export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: string; val: string }> {
@@ -11,12 +11,11 @@ export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: strin
 	}))
 }
 
-export function parseSources(studioConfig: StudioConfig): SourceInfo[] {
-	return [
-		...ParseMappingTable(studioConfig.SourcesFeed, SourceLayerType.REMOTE, 'F'),
-		...ParseMappingTable(studioConfig.SourcesRM, SourceLayerType.REMOTE),
-		...ParseMappingTable(studioConfig.SourcesCam, SourceLayerType.CAMERA),
-		...ParseMappingTable(studioConfig.SourcesSkype, SourceLayerType.REMOTE, 'S'),
-		...ParseMappingTable(studioConfig.SourcesDelayedPlayback, SourceLayerType.LOCAL, 'DP')
-	]
+export function parseSources(studioConfig: StudioConfig): SourceMapping {
+	return {
+		cameras: ParseMappingTable(studioConfig.SourcesCam, SourceInfoType.KAM, SourceLayerType.CAMERA),
+		feeds: ParseMappingTable(studioConfig.SourcesFeed, SourceInfoType.FEED, SourceLayerType.REMOTE),
+		lives: ParseMappingTable(studioConfig.SourcesRM, SourceInfoType.LIVE, SourceLayerType.REMOTE),
+		replays: ParseMappingTable(studioConfig.SourcesReplay, SourceInfoType.REPLAY, SourceLayerType.LOCAL)
+	}
 }

@@ -4,21 +4,20 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintRundown,
-	IBlueprintShowStyleVariant,
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
 	PieceLifespan,
 	PlaylistTimingType,
-	SourceLayerType,
+	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
+	ActionFadeDownPersistedAudioLevels,
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
@@ -28,72 +27,77 @@ import {
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	FindDSKJingle,
-	GetEksternMetaData,
-	GetLayersForEkstern,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEkstern,
+	generateExternalId,
+	GetSisyfosTimelineObjForRemote,
+	GetSisyfosTimelineObjForReplay,
 	GetTransitionAdLibActions,
 	literal,
+	PieceMetaData,
+	replaySourceName,
+	SourceDefinitionKam,
 	SourceInfo,
-	t,
-	TimelineBlueprintExt
+	SourceInfoToSourceDefinition,
+	SourceInfoType,
+	t
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CONSTANTS, GraphicLLayer, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import {
+	AdlibActionType,
+	AdlibTagCutToBox,
+	AdlibTags,
+	CONSTANTS,
+	SharedGraphicLLayer,
+	SharedOutputLayers,
+	SourceType,
+	TallyTags
+} from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
 import { BlueprintConfig, getConfig as getShowStyleConfig } from './helpers/config'
-import { boxLayers } from './helpers/content/dve'
+import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
-
-export function getShowStyleVariantId(
-	_context: IStudioUserContext,
-	showStyleVariants: IBlueprintShowStyleVariant[],
-	_ingestRundown: IngestRundown
-): string | null {
-	const variant = _.first(showStyleVariants)
-
-	if (variant) {
-		return variant._id
-	}
-	return null
-}
 
 export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const config = getShowStyleConfig(context)
 
 	return {
-		rundown: literal<IBlueprintRundown>({
+		rundown: {
 			externalId: ingestRundown.externalId,
 			name: ingestRundown.name,
 			timing: {
 				type: PlaylistTimingType.None
 			}
-		}),
-		globalAdLibPieces: getGlobalAdLibPiecesAFKD(context, config),
+		},
+		globalAdLibPieces: getGlobalAdLibPiecesAFVD(context, config),
 		globalActions: getGlobalAdlibActionsAFVD(context, config),
 		baseline: getBaseline(config)
 	}
 }
 
-function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
-	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
+function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: BlueprintConfig): IBlueprintAdLibPiece[] {
+	function makeEVSAdLibs(info: SourceInfo, rank: number, vo: boolean): Array<IBlueprintAdLibPiece<PieceMetaData>> {
+		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
 		res.push({
 			externalId: 'delayed',
-			name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
+			name: replaySourceName(info.id, vo),
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLocal,
 			outputLayerId: SharedOutputLayers.PGM,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(config.stickyLayers, config.studio.StudioMics, info.sisyfosLayers),
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: info.sisyfosLayers ?? [],
+					acceptPersistAudio: vo
+				}
+			},
+			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -109,57 +113,16 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 						},
 						classes: ['adlib_deparent']
 					}),
-					...(info.sisyfosLayers || []).map(l => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: { while: '1' },
-							priority: 1,
-							layer: l,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: vo ? 2 : 1
-							}
-						})
-					}),
-					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: SisyfosLLAyer.SisyfosPersistedLevels,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							overridePriority: 1,
-							channels: config.stickyLayers
-								.filter(layer => !info.sisyfosLayers || !info.sisyfosLayers.includes(layer))
-								.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-									return {
-										mappedLayer: layer,
-										isPgm: 0
-									}
-								})
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					}),
-					GetSisyfosTimelineObjForCamera(context, config, 'evs', SisyfosLLAyer.SisyfosGroupStudioMics)
-				])
+					...GetSisyfosTimelineObjForReplay(config, info, vo)
+				]
 			}
 		})
-
 		return res
 	}
 
-	function makeRemoteAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
-		const eksternSisyfos = [
-			...GetSisyfosTimelineObjForEkstern(context, config.sources, `Live ${info.id}`, GetLayersForEkstern),
-			GetSisyfosTimelineObjForCamera(context, config, 'telefon', SisyfosLLAyer.SisyfosGroupStudioMics)
-		]
+	function makeRemoteAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
+		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
+		const eksternSisyfos = GetSisyfosTimelineObjForRemote(config, info)
 		res.push({
 			externalId: 'live',
 			name: `LIVE ${info.id}`,
@@ -169,13 +132,16 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
-			metaData: GetEksternMetaData(
-				config.stickyLayers,
-				config.studio.StudioMics,
-				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
-			),
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: info.sisyfosLayers ?? [],
+					wantsToPersistAudio: info.wantsToPersistAudio,
+					acceptPersistAudio: info.acceptPersistAudio
+				}
+			},
+			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: { while: '1' },
@@ -191,53 +157,8 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 						},
 						classes: ['adlib_deparent']
 					}),
-					...eksternSisyfos,
-					literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: SisyfosLLAyer.SisyfosPersistedLevels,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-							overridePriority: 1,
-							channels: config.stickyLayers
-								.filter(layer => eksternSisyfos.map(obj => obj.layer).indexOf(layer) === -1)
-								.filter(layer => config.liveAudio.indexOf(layer) === -1)
-								.map(layer => {
-									return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
-										mappedLayer: layer,
-										isPgm: 0
-									})
-								})
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					}),
-					// Force server to be muted (for adlibbing over DVE)
-					...[
-						SisyfosLLAyer.SisyfosSourceClipPending,
-						SisyfosLLAyer.SisyfosSourceServerA,
-						SisyfosLLAyer.SisyfosSourceServerB
-					].map<TSR.TimelineObjSisyfosChannel>(layer => {
-						return literal<TSR.TimelineObjSisyfosChannel>({
-							id: '',
-							enable: {
-								start: 0
-							},
-							priority: 2,
-							layer,
-							content: {
-								deviceType: TSR.DeviceType.SISYFOS,
-								type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-								isPgm: 0
-							}
-						})
-					})
-				])
+					...eksternSisyfos
+				]
 			}
 		})
 
@@ -245,8 +166,8 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 	}
 
 	// aux adlibs
-	function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): IBlueprintAdLibPiece[] {
-		const res: IBlueprintAdLibPiece[] = []
+	function makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
+		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
 		res.push({
 			externalId: 'auxstudio',
 			name: info.id + '',
@@ -255,13 +176,16 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 			outputLayerId: SharedOutputLayers.AUX,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
-			metaData: GetEksternMetaData(
-				config.stickyLayers,
-				config.studio.StudioMics,
-				GetLayersForEkstern(context, config.sources, `Live ${info.id}`)
-			),
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: info.sisyfosLayers ?? [],
+					wantsToPersistAudio: info.wantsToPersistAudio,
+					acceptPersistAudio: info.acceptPersistAudio
+				}
+			},
+			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
+				timelineObjects: [
 					literal<TSR.TimelineObjAtemAUX>({
 						id: '',
 						enable: { while: '1' },
@@ -275,7 +199,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 							}
 						}
 					})
-				])
+				]
 			}
 		})
 
@@ -286,78 +210,78 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 
 	let globalRank = 1000
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
-		.slice(0, 10) // the first x cameras to create live-adlibs from
+	config.sources.lives
+		.slice(0, 10) // the first x lives to create live-adlibs from
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAdLibs(o, globalRank++))
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+	config.sources.lives
 		.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
 		.forEach(o => {
 			adlibItems.push(...makeRemoteAuxStudioAdLibs(o, globalRank++))
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.LOCAL)
-		.forEach(o => {
+	config.sources.replays.forEach(o => {
+		if (!/EPSIO/i.test(o.id)) {
 			adlibItems.push(...makeEVSAdLibs(o, globalRank++, false))
-			adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
-			adlibItems.push({
-				externalId: 'delayedaux',
-				name: `EVS in studio aux`,
-				_rank: globalRank++,
-				sourceLayerId: SourceLayer.AuxStudioScreen,
-				outputLayerId: SharedOutputLayers.AUX,
-				expectedDuration: 0,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
-				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
-						literal<TSR.TimelineObjAtemAUX>({
-							id: '',
-							enable: { while: '1' },
-							priority: 1,
-							layer: AtemLLayer.AtemAuxAR,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.AUX,
-								aux: {
-									input: o.port
-								}
+		}
+		adlibItems.push(...makeEVSAdLibs(o, globalRank++, true))
+		adlibItems.push({
+			externalId: 'delayedaux',
+			name: `EVS in studio aux`,
+			_rank: globalRank++,
+			sourceLayerId: SourceLayer.AuxStudioScreen,
+			outputLayerId: SharedOutputLayers.AUX,
+			expectedDuration: 0,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
+			content: {
+				timelineObjects: [
+					literal<TSR.TimelineObjAtemAUX>({
+						id: '',
+						enable: { while: '1' },
+						priority: 1,
+						layer: AtemLLayer.AtemAuxAR,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
+							aux: {
+								input: o.port
 							}
-						})
-					])
-				}
-			})
-			adlibItems.push({
-				externalId: 'delayedaux',
-				name: `EVS in viz aux`,
-				_rank: globalRank++,
-				sourceLayerId: SourceLayer.VizFullIn1,
-				outputLayerId: SharedOutputLayers.AUX,
-				expectedDuration: 0,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
-				content: {
-					timelineObjects: _.compact<TSR.TSRTimelineObj>([
-						literal<TSR.TimelineObjAtemAUX>({
-							id: '',
-							enable: { while: '1' },
-							priority: 1,
-							layer: AtemLLayer.AtemAuxVizOvlIn1,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.AUX,
-								aux: {
-									input: o.port
-								}
-							}
-						})
-					])
-				}
-			})
+						}
+					})
+				]
+			}
 		})
+		adlibItems.push({
+			externalId: 'delayedaux',
+			name: `EVS in viz aux`,
+			_rank: globalRank++,
+			sourceLayerId: SourceLayer.VizFullIn1,
+			outputLayerId: SharedOutputLayers.AUX,
+			expectedDuration: 0,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
+			content: {
+				timelineObjects: [
+					literal<TSR.TimelineObjAtemAUX>({
+						id: '',
+						enable: { while: '1' },
+						priority: 1,
+						layer: AtemLLayer.AtemAuxVizOvlIn1,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.AUX,
+							aux: {
+								input: o.port
+							}
+						}
+					})
+				]
+			}
+		})
+	})
 
 	// the rank (order) of adlibs on SourceLayer.PgmAdlibVizCmd is important, to ensure keyboard shortcuts
 	adlibItems.push({
@@ -368,9 +292,9 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_LOAD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjVIZMSELoadAllElements>({
 					id: 'loadAllElements',
 					enable: {
@@ -378,7 +302,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 						duration: 1000
 					},
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerAdLibs,
+					layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.LOAD_ALL_ELEMENTS
@@ -396,9 +320,9 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		outputLayerId: SharedOutputLayers.SEC,
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: [
 				literal<TSR.TimelineObjVIZMSEElementContinue>({
 					id: '',
 					enable: {
@@ -406,15 +330,15 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 						duration: 1000
 					},
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerAdLibs,
+					layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.CONTINUE,
 						direction: 1,
-						reference: GraphicLLayer.GraphicLLayerPilot
+						reference: SharedGraphicLLayer.GraphicLLayerPilot
 					}
 				})
-			])
+			]
 		}
 	})
 
@@ -428,7 +352,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_UP],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -458,7 +382,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_DOWN],
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
@@ -488,10 +412,10 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
 		outputLayerId: SharedOutputLayers.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: [
 				literal<TSR.TimelineObjSisyfosChannel>({
 					id: '',
 					enable: { start: 0 },
@@ -503,52 +427,61 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 						resync: true
 					}
 				})
-			])
+			]
 		}
 	})
 
 	// viz styles and dve backgrounds
-	adlibItems.push(
-		literal<IBlueprintAdLibPiece>({
+	function makeDesignAdLib(): IBlueprintAdLibPiece {
+		const timelineObjects: TimelineObjectCoreExt[] = [
+			literal<TSR.TimelineObjCCGMedia>({
+				id: '',
+				enable: { start: 0 },
+				priority: 110,
+				layer: CasparLLayer.CasparCGDVELoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: 'dve/BG_LOADER_SC',
+					loop: true
+				}
+			})
+		]
+		if (config.studio.GraphicsType === 'VIZ') {
+			timelineObjects.push(
+				literal<TSR.TimelineObjVIZMSEElementInternal>({
+					id: '',
+					enable: { start: 0 },
+					priority: 110,
+					layer: SharedGraphicLLayer.GraphicLLayerDesign,
+					content: {
+						deviceType: TSR.DeviceType.VIZMSE,
+						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+						templateName: 'BG_LOADER_SC',
+						templateData: [],
+						showId: config.selectedGraphicsSetup.OvlShowId
+					}
+				})
+			)
+		}
+		const adLibPiece: IBlueprintAdLibPiece = {
 			_rank: 301,
 			externalId: 'dve-design-sc',
 			name: 'DVE Design SC',
 			outputLayerId: SharedOutputLayers.SEC,
 			sourceLayerId: SourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			tags: [AdlibTags.ADLIB_DESIGN_STYLE_SC],
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: 'BG_LOADER_SC',
 				path: 'BG_LOADER_SC',
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj>([
-					literal<TSR.TimelineObjVIZMSEElementInternal>({
-						id: '',
-						enable: { start: 0 },
-						priority: 110,
-						layer: GraphicLLayer.GraphicLLayerDesign,
-						content: {
-							deviceType: TSR.DeviceType.VIZMSE,
-							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-							templateName: 'BG_LOADER_SC',
-							templateData: []
-						}
-					}),
-					literal<TSR.TimelineObjCCGMedia>({
-						id: '',
-						enable: { start: 0 },
-						priority: 110,
-						layer: CasparLLayer.CasparCGDVELoop,
-						content: {
-							deviceType: TSR.DeviceType.CASPARCG,
-							type: TSR.TimelineContentTypeCasparCg.MEDIA,
-							file: 'dve/BG_LOADER_SC',
-							loop: true
-						}
-					})
-				])
+				timelineObjects
 			})
-		})
-	)
+		}
+		return adLibPiece
+	}
+	adlibItems.push(makeDesignAdLib())
 
 	adlibItems.push({
 		externalId: 'stopAudioBed',
@@ -558,6 +491,7 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 		outputLayerId: 'musik',
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
+		tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjEmpty>({
@@ -583,175 +517,188 @@ function getGlobalAdLibPiecesAFKD(context: IStudioUserContext, config: Blueprint
 }
 
 function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: BlueprintConfig): IBlueprintActionManifest[] {
-	const res: IBlueprintActionManifest[] = []
+	const blueprintActions: IBlueprintActionManifest[] = []
 
 	let globalRank = 1000
 
-	function makeAdlibBoxesActions(info: SourceInfo, type: 'Kamera' | 'Live' | 'Feed', rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
-			const feed = type === 'Live' && info.id.match(/^F(.+).*$/) // TODO: fix when refactoring FindSourceInfo
-			const name = feed ? `Feed ${feed[1]}` : `${type} ${info.id}`
-			res.push(
-				literal<IBlueprintActionManifest>({
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name,
-						port: info.port,
-						sourceType: info.type,
-						box
-					}),
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: t(`${name} to box ${box + 1}`),
-						sourceLayerId: layer,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: []
-					}
-				})
-			)
-		})
+	function makeAdlibBoxesActions(info: SourceInfo, rank: number) {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
+			const name = `${info.type} ${info.id}`
+			const layer = info.type === SourceInfoType.KAM ? SourceLayer.PgmCam : SourceLayer.PgmLive
+
+			const userData: ActionCutSourceToBox = {
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name,
+				box,
+				sourceDefinition: SourceInfoToSourceDefinition(info)
+			}
+			blueprintActions.push({
+				externalId: generateExternalId(_context, userData),
+				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: rank + 0.1 * box,
+					label: t(`${name} inp ${box + 1}`),
+					sourceLayerId: layer,
+					outputLayerId: SharedOutputLayers.SEC,
+					content: {},
+					tags: [AdlibTagCutToBox(box)]
+				}
+			})
+		}
 	}
 
-	function makeAdlibBoxesActionsDirectPlayback(info: SourceInfo, vo: boolean, rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
-			res.push(
-				literal<IBlueprintActionManifest>({
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''}`,
-						port: info.port,
-						sourceType: info.type,
-						box,
-						vo
-					}),
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: t(`EVS ${info.id.replace(/dp/i, '')}${vo ? ' VO' : ''} to box ${box + 1}`),
-						sourceLayerId: layer,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: []
-					}
-				})
-			)
-		})
+	function makeAdlibBoxesActionsReplay(info: SourceInfo, rank: number, vo: boolean) {
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
+			const name = replaySourceName(info.id, vo)
+			const userData: ActionCutSourceToBox = {
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name,
+				box,
+				sourceDefinition: {
+					sourceType: SourceType.REPLAY,
+					id: info.id,
+					vo,
+					raw: '',
+					name
+				}
+			}
+			blueprintActions.push({
+				externalId: generateExternalId(_context, userData),
+				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: rank + 0.1 * box,
+					label: t(`${name} inp ${box + 1}`),
+					sourceLayerId: SourceLayer.PgmLocal,
+					outputLayerId: SharedOutputLayers.SEC,
+					content: {},
+					tags: [AdlibTagCutToBox(box), vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
+				}
+			})
+		}
 	}
 
 	function makeServerAdlibBoxesActions(rank: number) {
-		Object.values(boxLayers).forEach((layer, box) => {
-			res.push(
-				literal<IBlueprintActionManifest>({
-					actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
-					userData: literal<ActionCutSourceToBox>({
-						type: AdlibActionType.CUT_SOURCE_TO_BOX,
-						name: `SERVER`,
-						port: -1,
-						sourceType: SourceLayerType.VT,
-						box,
-						server: true
-					}),
-					userDataManifest: {},
-					display: {
-						_rank: rank + 0.1 * box,
-						label: t(`Server to box ${box + 1}`),
-						sourceLayerId: layer,
-						outputLayerId: SharedOutputLayers.SEC,
-						content: {},
-						tags: []
-					}
-				})
-			)
-		})
+		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
+			const userData: ActionCutSourceToBox = {
+				type: AdlibActionType.CUT_SOURCE_TO_BOX,
+				name: `SERVER`,
+				box,
+				sourceDefinition: { sourceType: SourceType.SERVER }
+			}
+			blueprintActions.push({
+				externalId: generateExternalId(_context, userData),
+				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: rank + 0.1 * box,
+					label: t(`Server inp ${box + 1}`),
+					sourceLayerId: SourceLayer.PgmServer,
+					outputLayerId: SharedOutputLayers.SEC,
+					content: {},
+					tags: [AdlibTagCutToBox(box)]
+				}
+			})
+		}
 	}
 
 	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
-		res.push(
-			literal<IBlueprintActionManifest>({
-				actionId: AdlibActionType.CUT_TO_CAMERA,
-				userData: literal<ActionCutToCamera>({
-					type: AdlibActionType.CUT_TO_CAMERA,
-					queue,
-					name: info.id
-				}),
-				userDataManifest: {},
-				display: {
-					_rank: rank,
-					label: t(`KAM ${info.id}`),
-					sourceLayerId: SourceLayer.PgmCam,
-					outputLayerId: SharedOutputLayers.PGM,
-					content: {}
-				}
-			})
-		)
+		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionKam
+		const userData: ActionCutToCamera = {
+			type: AdlibActionType.CUT_TO_CAMERA,
+			queue,
+			sourceDefinition
+		}
+		blueprintActions.push({
+			externalId: generateExternalId(_context, userData),
+			actionId: AdlibActionType.CUT_TO_CAMERA,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: rank,
+				label: t(sourceDefinition.name),
+				sourceLayerId: SourceLayer.PgmCam,
+				outputLayerId: SharedOutputLayers.PGM,
+				content: {},
+				tags: queue ? [AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT]
+			}
+		})
 	}
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 		.forEach(o => {
 			makeCutCameraActions(o, false, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
 		.forEach(o => {
 			makeCutCameraActions(o, true, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.CAMERA)
+	config.sources.cameras
 		.slice(0, 5) // the first x cameras to dve actions from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, 'Kamera', globalRank++)
+			makeAdlibBoxesActions(o, globalRank++)
 		})
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	function makeRecallLastLiveAction() {
+		const userData: ActionRecallLastLive = {
+			type: AdlibActionType.RECALL_LAST_LIVE
+		}
+		blueprintActions.push({
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.RECALL_LAST_LIVE,
-			userData: literal<ActionRecallLastLive>({
-				type: AdlibActionType.RECALL_LAST_LIVE
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 1,
 				label: t('Last Live'),
 				sourceLayerId: SourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		})
-	)
+	}
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.REMOTE)
+	makeRecallLastLiveAction()
+
+	config.sources.lives
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActions(o, o.id.match(/^F/) ? 'Feed' : 'Live', globalRank++)
+			makeAdlibBoxesActions(o, globalRank++)
 		})
 
-	config.sources
-		.filter(u => u.type === SourceLayerType.LOCAL)
+	config.sources.feeds
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 		.forEach(o => {
-			makeAdlibBoxesActionsDirectPlayback(o, false, globalRank++)
-			makeAdlibBoxesActionsDirectPlayback(o, true, globalRank++)
+			makeAdlibBoxesActions(o, globalRank++)
 		})
+
+	config.sources.replays.forEach(o => {
+		if (!/EPSIO/i.test(o.id)) {
+			makeAdlibBoxesActionsReplay(o, globalRank++, false)
+		}
+		makeAdlibBoxesActionsReplay(o, globalRank++, true)
+	})
 
 	makeServerAdlibBoxesActions(globalRank++)
 
-	res.push(
-		literal<IBlueprintActionManifest>({
+	function makeClearGraphicsAction(): IBlueprintActionManifest {
+		const userData: ActionClearGraphics = {
+			type: AdlibActionType.CLEAR_GRAPHICS,
+			sendCommands: true,
+			label: 'GFX Clear'
+		}
+		return {
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
-			userData: literal<ActionClearGraphics>({
-				type: AdlibActionType.CLEAR_GRAPHICS,
-				sendCommands: true,
-				label: 'GFX Clear'
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 300,
@@ -763,14 +710,19 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				currentPieceTags: [TallyTags.GFX_CLEAR],
 				nextPieceTags: [TallyTags.GFX_CLEAR]
 			}
-		}),
-		literal<IBlueprintActionManifest>({
+		}
+	}
+
+	function makeClearGraphicsAltudAction(): IBlueprintActionManifest {
+		const userData: ActionClearGraphics = {
+			type: AdlibActionType.CLEAR_GRAPHICS,
+			sendCommands: false,
+			label: 'GFX Altud'
+		}
+		return {
+			externalId: generateExternalId(_context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
-			userData: literal<ActionClearGraphics>({
-				type: AdlibActionType.CLEAR_GRAPHICS,
-				sendCommands: false,
-				label: 'GFX Altud'
-			}),
+			userData,
 			userDataManifest: {},
 			display: {
 				_rank: 400,
@@ -778,52 +730,72 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 				outputLayerId: SharedOutputLayers.SEC,
 				content: {},
-				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
 			}
-		})
-	)
+		}
+	}
 
-	res.push(...GetTransitionAdLibActions(config, 800))
+	blueprintActions.push(makeClearGraphicsAction(), makeClearGraphicsAltudAction())
 
-	res.push(
-		literal<IBlueprintActionManifest>({
-			actionId: AdlibActionType.RECALL_LAST_DVE,
-			userData: literal<ActionRecallLastDVE>({
-				type: AdlibActionType.RECALL_LAST_DVE
-			}),
-			userDataManifest: {},
-			display: {
-				_rank: 1,
-				label: t('Last DVE'),
-				sourceLayerId: SourceLayer.PgmDVEAdLib,
-				outputLayerId: 'pgm'
-			}
-		})
-	)
+	blueprintActions.push(...GetTransitionAdLibActions(config, 800))
 
-	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
-		// const boxSources = ['', '', '', '']
-		res.push(
-			literal<IBlueprintActionManifest>({
-				actionId: AdlibActionType.SELECT_DVE_LAYOUT,
-				userData: literal<ActionSelectDVELayout>({
-					type: AdlibActionType.SELECT_DVE_LAYOUT,
-					config: dveConfig
-				}),
-				userDataManifest: {},
-				display: {
-					_rank: 200 + i,
-					label: t(dveConfig.DVEName),
-					sourceLayerId: SourceLayer.PgmDVEAdLib,
-					outputLayerId: SharedOutputLayers.PGM
-				}
-			})
-		)
+	const recallLastLiveDveUserData: ActionRecallLastDVE = {
+		type: AdlibActionType.RECALL_LAST_DVE
+	}
+	blueprintActions.push({
+		externalId: generateExternalId(_context, recallLastLiveDveUserData),
+		actionId: AdlibActionType.RECALL_LAST_DVE,
+		userData: recallLastLiveDveUserData,
+		userDataManifest: {},
+		display: {
+			_rank: 1,
+			label: t('Last DVE'),
+			sourceLayerId: SourceLayer.PgmDVEAdLib,
+			outputLayerId: 'pgm',
+			tags: [AdlibTags.ADLIB_RECALL_LAST_DVE]
+		}
 	})
 
-	return res
+	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
+		const userData: ActionSelectDVELayout = {
+			type: AdlibActionType.SELECT_DVE_LAYOUT,
+			config: dveConfig
+		}
+		blueprintActions.push({
+			externalId: generateExternalId(_context, userData),
+			actionId: AdlibActionType.SELECT_DVE_LAYOUT,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: 200 + i,
+				label: t(dveConfig.DVEName),
+				sourceLayerId: SourceLayer.PgmDVEAdLib,
+				outputLayerId: SharedOutputLayers.PGM,
+				tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
+			}
+		})
+	})
+
+	const fadeDownPersistedAudioLevelsUserData: ActionFadeDownPersistedAudioLevels = {
+		type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
+	}
+	blueprintActions.push({
+		externalId: generateExternalId(_context, fadeDownPersistedAudioLevelsUserData),
+		actionId: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
+		userData: fadeDownPersistedAudioLevelsUserData,
+		userDataManifest: {},
+		display: {
+			_rank: 300,
+			label: t('Fade down persisted audio levels'),
+			sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
+			outputLayerId: SharedOutputLayers.SEC,
+			tags: [AdlibTags.ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS]
+		}
+	})
+
+	return blueprintActions
 }
 
 function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
@@ -1106,7 +1078,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 							id: '',
 							enable: { start: 0 },
 							priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
-							layer: GraphicLLayer.GraphicLLayerFullLoop,
+							layer: SharedGraphicLLayer.GraphicLLayerFullLoop,
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.ROUTE,
@@ -1165,7 +1137,18 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 							}
 						})
 				  })
-				: [])
+				: []),
+
+			literal<TSR.TimelineObjVIZMSEConcept>({
+				id: '',
+				enable: { while: '1' },
+				layer: SharedGraphicLLayer.GraphicLLayerConcept,
+				content: {
+					deviceType: TSR.DeviceType.VIZMSE,
+					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
+					concept: config.selectedGraphicsSetup.VcpConcept
+				}
+			})
 		]
 	}
 }

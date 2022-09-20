@@ -4,9 +4,9 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
-import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+} from '@tv2media/blueprints-integration'
+import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition, PieceMetaData } from 'tv2-common'
+import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -14,8 +14,8 @@ export function OfftubeEvaluateEkstern(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	part: IBlueprintPart,
-	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
+	pieces: Array<IBlueprintPiece<PieceMetaData>>,
+	_adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
 	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
@@ -38,9 +38,6 @@ export function OfftubeEvaluateEkstern(
 			},
 			ATEM: {
 				MEProgram: OfftubeAtemLLayer.AtemMEClean
-			},
-			Sisyfos: {
-				StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
 			}
 		},
 		adlib,

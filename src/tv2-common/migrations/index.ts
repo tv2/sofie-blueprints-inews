@@ -6,22 +6,23 @@ import {
 	MigrationStepShowStyle,
 	MigrationStepStudio,
 	TableConfigItemValue
-} from '@sofie-automation/blueprints-integration'
-import { TableConfigItemGFXTemplates } from 'tv2-common'
+} from '@tv2media/blueprints-integration'
+import { TableConfigItemGFXTemplates, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
 
 export * from './moveSourcesToTable'
 export * from './addKeepAudio'
-export * from './shortcuts'
 export * from './transitions'
 export * from './graphic-defaults'
 export * from './manifestWithMediaFlow'
 export * from './sourceManifest'
+export * from './sourceLayers'
 export * from './forceSourceLayerToDefaultsBase'
+export * from './hotkeys'
 
 export function RenameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
-	return literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.studioConfig.rename.${from}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -40,7 +41,7 @@ export function RenameStudioConfig(versionStr: string, studio: string, from: str
 
 			context.removeConfig(from)
 		}
-	})
+	}
 }
 
 export function renameSourceLayer(
@@ -49,7 +50,7 @@ export function renameSourceLayer(
 	from: string,
 	to: string
 ): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
+	return {
 		id: `${versionStr}.renameSourceLayer.${studioId}.${from}.${to}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -68,12 +69,12 @@ export function renameSourceLayer(
 			context.insertSourceLayer(to, existing)
 			context.removeSourceLayer(from)
 		}
-	})
+	}
 }
 
-export function removeSourceLayer(versionStr: string, studioId: string, layer: string) {
+export function removeSourceLayer(versionStr: string, studioId: string, layer: string): MigrationStepShowStyle {
 	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.renameSourceLayer.${studioId}.${layer}`,
+		id: `${versionStr}.removeSourceLayer.${studioId}.${layer}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -93,8 +94,12 @@ export function removeSourceLayer(versionStr: string, studioId: string, layer: s
 	})
 }
 
-export function AddGraphicToGFXTable(versionStr: string, studio: string, config: TableConfigItemGFXTemplates) {
-	return literal<MigrationStepShowStyle>({
+export function AddGraphicToGFXTable(
+	versionStr: string,
+	studio: string,
+	config: TableConfigItemGFXTemplates
+): MigrationStepShowStyle {
+	return {
 		id: `${versionStr}.gfxConfig.add${config.INewsName}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -117,7 +122,72 @@ export function AddGraphicToGFXTable(versionStr: string, studio: string, config:
 
 			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
 		}
-	})
+	}
+}
+
+export function addSourceToSourcesConfig(
+	versionStr: string,
+	studio: string,
+	configId: string,
+	source: TableConfigItemSourceMappingWithSisyfos
+): MigrationStepStudio {
+	return {
+		id: `${versionStr}.studioConfig.addReplaySource.${source.SourceName}.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+
+			if (!config) {
+				return false
+			}
+			return !config.find(s => s.SourceName === source.SourceName)
+		},
+		migrate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+			config.push(source)
+			context.setConfig(configId, (config as unknown) as ConfigItemValue)
+		}
+	}
+}
+
+export function changeGFXTemplate(
+	versionStr: string,
+	studio: string,
+	oldConfig: Partial<TableConfigItemGFXTemplates>,
+	config: Partial<TableConfigItemGFXTemplates>
+): MigrationStepShowStyle {
+	const keysToUpdate = Object.keys(config).join('_')
+	return {
+		id: `${versionStr}.gfxConfig.change_${keysToUpdate}.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const gfxTemplates = (context.getBaseConfig('GFXTemplates') as unknown) as
+				| TableConfigItemGFXTemplates[]
+				| undefined
+
+			if (!gfxTemplates || !gfxTemplates.length) {
+				return false
+			}
+
+			return gfxTemplates.some(g => isGfxTemplateSubset(g, oldConfig))
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			let existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[]
+
+			existing = existing.map(g => (isGfxTemplateSubset(g, oldConfig) ? { ...g, ...config } : g))
+
+			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
+		}
+	}
+}
+
+function isGfxTemplateSubset(
+	superset: Partial<TableConfigItemGFXTemplates>,
+	subset: Partial<TableConfigItemGFXTemplates>
+): boolean {
+	return Object.keys(subset).every((key: keyof TableConfigItemGFXTemplates) => superset[key] === subset[key])
 }
 
 export function SetLayerNamesToDefaults(
@@ -128,40 +198,38 @@ export function SetLayerNamesToDefaults(
 	const migrations: MigrationStepStudio[] = []
 
 	for (const [layerId, mapping] of Object.entries(mappings)) {
-		migrations.push(
-			literal<MigrationStepStudio>({
-				id: `${versionStr}.studioConfig.setLayerName.${layerId}.${studio}`,
-				version: versionStr,
-				canBeRunAutomatically: true,
-				validate: (context: MigrationContextStudio) => {
-					const configVal = context.getMapping(layerId)
+		migrations.push({
+			id: `${versionStr}.studioConfig.setLayerName.${layerId}.${studio}`,
+			version: versionStr,
+			canBeRunAutomatically: true,
+			validate: (context: MigrationContextStudio) => {
+				const configVal = context.getMapping(layerId)
 
-					if (!configVal) {
-						return false
-					}
-
-					return configVal.layerName !== mapping.layerName
-				},
-				migrate: (context: MigrationContextStudio) => {
-					const configVal = context.getMapping(layerId)
-
-					if (!configVal) {
-						return
-					}
-
-					configVal.layerName = mapping.layerName
-					context.removeMapping(layerId)
-					context.insertMapping(layerId, configVal)
+				if (!configVal) {
+					return false
 				}
-			})
-		)
+
+				return configVal.layerName !== mapping.layerName
+			},
+			migrate: (context: MigrationContextStudio) => {
+				const configVal = context.getMapping(layerId)
+
+				if (!configVal) {
+					return
+				}
+
+				configVal.layerName = mapping.layerName
+				context.removeMapping(layerId)
+				context.insertMapping(layerId, configVal)
+			}
+		})
 	}
 
 	return migrations
 }
 
-export function SetConfigTo(versionStr: string, studio: string, id: string, value: any) {
-	return literal<MigrationStepStudio>({
+export function SetConfigTo(versionStr: string, studio: string, id: string, value: any): MigrationStepStudio {
+	return {
 		id: `${versionStr}.config.valueSet.${studio}.${id}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -178,11 +246,11 @@ export function SetConfigTo(versionStr: string, studio: string, id: string, valu
 		migrate: (context: MigrationContextStudio) => {
 			context.setConfig(id, value)
 		}
-	})
+	}
 }
 
-export function RemoveConfig(versionStr: string, studio: string, id: string) {
-	return literal<MigrationStepStudio>({
+export function RemoveConfig(versionStr: string, studio: string, id: string): MigrationStepStudio {
+	return {
 		id: `${versionStr}.config.valueSet.${studio}.${id}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -192,7 +260,7 @@ export function RemoveConfig(versionStr: string, studio: string, id: string) {
 		migrate: (context: MigrationContextStudio) => {
 			context.removeConfig(id)
 		}
-	})
+	}
 }
 
 const SOUNDBED_REGEX = /^audio\/(.*)/i
@@ -222,7 +290,7 @@ export function StripFolderFromShowStyleConfig(
 	configFields: string[],
 	regex: RegExp
 ): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
+	return {
 		id: `${versionStr}.normalizeFolders.${studio}.${configId}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -264,5 +332,39 @@ export function StripFolderFromShowStyleConfig(
 
 			context.setBaseConfig(configId, configTableValue)
 		}
-	})
+	}
+}
+
+export function PrefixEvsWithEvs(
+	versionStr: string,
+	studio: string,
+	configId: string,
+	evsSourceNumber: string
+): MigrationStepStudio {
+	return {
+		id: `${versionStr}.prefixEvs${evsSourceNumber}WithEvs.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+
+			if (!config || config.find(value => value.SourceName === `EVS ${evsSourceNumber}`) !== undefined) {
+				return false
+			}
+
+			return config.find(value => value.SourceName === evsSourceNumber) !== undefined
+		},
+		migrate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+			const index: number = config.findIndex(value => value.SourceName === evsSourceNumber)
+			if (index === -1) {
+				return
+			}
+			const evsSource = config[index]
+
+			evsSource.SourceName = `EVS ${evsSource.SourceName}`
+			config[index] = evsSource
+			context.setConfig(configId, (config as unknown) as ConfigItemValue)
+		}
+	}
 }

@@ -2,7 +2,6 @@ import {
 	CameraContent,
 	GraphicsContent,
 	IShowStyleUserContext,
-	IStudioUserContext,
 	RemoteContent,
 	SourceLayerType,
 	SplitsContent,
@@ -10,7 +9,7 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	createEmptyObject,
 	CueDefinitionDVE,
@@ -18,23 +17,27 @@ import {
 	DVEParentClass,
 	DVESources,
 	FindDSKFullGFX,
-	FindSourceInfoStrict,
-	GetSisyfosTimelineObjForCamera,
-	GetSisyfosTimelineObjForEVS,
+	findSourceInfo,
 	JoinAssetToFolder,
 	literal,
 	PartDefinition,
-	SourceInfo,
-	SourceInfoType,
+	PieceMetaData,
 	TimelineBlueprintExt,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, GraphicLLayer, MEDIA_PLAYER_AUTO } from 'tv2-constants'
+import { ControlClasses, MEDIA_PLAYER_AUTO, SharedGraphicLLayer, SourceType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
-import { CreateHTMLRendererContent } from '../helpers'
+import {
+	CreateHTMLRendererContent,
+	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForFull,
+	GetSisyfosTimelineObjForRemote,
+	GetSisyfosTimelineObjForReplay
+} from '../helpers'
+import { SourceDefinition } from '../inewsConversion'
 import { EnableServer } from './server'
 
 export interface DVEConfigBox {
@@ -94,7 +97,6 @@ export interface DVELayers {
 	SisyfosLLayer: {
 		ClipPending: string
 		StudioMics: string
-		PersistedLevels: string
 	}
 	CasparLLayer: {
 		ClipPending: string
@@ -105,39 +107,23 @@ export interface DVEMetaData {
 	mediaPlayerSession?: string
 }
 
-export interface DVEPieceMetaData {
+export interface DVEPieceMetaData extends PieceMetaData {
 	config: DVEConfigInput
 	sources: DVESources
 	userData: ActionSelectDVE
 	mediaPlayerSessions?: string[] // TODO: Should probably move to a ServerPieceMetaData
-}
-
-export interface DVETimelineObjectGenerators {
-	GetSisyfosTimelineObjForEkstern: (
-		context: IStudioUserContext,
-		sources: SourceInfo[],
-		sourceType: string,
-		getLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[],
-		enable?: TSR.Timeline.TimelineEnable
-	) => TSR.TSRTimelineObj[]
-	GetLayersForEkstern: (context: IStudioUserContext, sources: SourceInfo[], sourceType: string) => string[]
+	serverPlaybackTiming?: Array<{ start?: number; end?: number }>
 }
 
 export interface DVEOptions {
 	dveLayers: DVELayers
-	dveTimelineGenerators: DVETimelineObjectGenerators
 	boxMappings: [string, string, string, string]
-	boxLayers: {
-		INP1: string
-		INP2: string
-		INP3: string
-		INP4: string
-	}
 	/** All audio layers */
 	AUDIO_LAYERS: string[]
-	/** Layers to exclude from filter */
-	EXCLUDED_LAYERS: string[]
 }
+
+type BoxConfig = DVEConfigBox & { source: number }
+type BoxSources = Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) & SplitsContentBoxProperties>
 
 export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
@@ -151,7 +137,7 @@ export function MakeContentDVEBase<
 	dveGeneratorOptions: DVEOptions,
 	addClass?: boolean,
 	adlib?: boolean
-): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	if (!dveConfig) {
 		context.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
 		return {
@@ -159,14 +145,9 @@ export function MakeContentDVEBase<
 			content: {
 				boxSourceConfiguration: [],
 				timelineObjects: []
-			},
-			stickyLayers: []
+			}
 		}
 	}
-
-	// console.log('boxmap1', boxMap)
-	// boxMap = boxMap.filter(map => map !== '')
-	// console.log('boxmap2', boxMap)
 
 	const graphicsTemplateContent: { [key: string]: string } = {}
 	parsedCue.labels.forEach((label, i) => {
@@ -182,7 +163,6 @@ export function MakeContentDVEBase<
 		dveGeneratorOptions,
 		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
 		adlib,
-		partDefinition.fields.videoId,
 		partDefinition.segmentExternalId
 	)
 }
@@ -199,9 +179,8 @@ export function MakeContentDVE2<
 	dveGeneratorOptions: DVEOptions,
 	className?: string,
 	adlib?: boolean,
-	videoId?: string,
 	mediaPlayerSessionId?: string
-): { content: WithTimeline<SplitsContent>; valid: boolean; stickyLayers: string[] } {
+): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	let template: DVEConfig
 	try {
 		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
@@ -212,234 +191,104 @@ export function MakeContentDVE2<
 			content: {
 				boxSourceConfiguration: [],
 				timelineObjects: []
-			},
-			stickyLayers: []
+			}
 		}
 	}
 
 	const inputs = dveConfig.DVEInputs
 		? dveConfig.DVEInputs.toString().split(';')
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
-	const boxMap: Array<{ source: string; sourceLayer: string }> = []
 
 	const classes: string[] = []
 
-	inputs.forEach(source => {
-		const sourceProps = source.split(':')
-		const fromCue = sourceProps[1]
-		const targetBox = Number(sourceProps[0])
-		if (!fromCue || !targetBox || isNaN(targetBox)) {
-			context.notifyUserWarning(`Invalid DVE mapping: ${sourceProps}`)
-			return
-		}
+	const boxAssigments = makeBoxAssignments(inputs, context, classes, dveGeneratorOptions, sources)
 
-		const sourceLayer = dveGeneratorOptions.boxLayers[fromCue as keyof DVESources] as string
-		classes.push(`${sourceLayer}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
-
-		let usedServer = false
-
-		if (sources) {
-			const prop = sources[fromCue as keyof DVESources]
-			if (prop?.match(/[K|C]AM(?:era)? ?.*/i)) {
-				const match = prop.match(/[K|C]AM(?:era)? ?(.*)/i) as RegExpExecArray
-
-				boxMap[targetBox - 1] = { source: `KAM ${match[1]}`, sourceLayer }
-			} else if (prop?.match(/LIVE ?.*/i)) {
-				const match = prop.match(/LIVE ?(.*)/i) as RegExpExecArray
-
-				boxMap[targetBox - 1] = { source: `LIVE ${match[1]}`, sourceLayer }
-			} else if (prop?.match(/FEED ?.*/i)) {
-				const match = prop.match(/FEED ?(.*)/i) as RegExpExecArray
-
-				boxMap[targetBox - 1] = { source: `FEED ${match[1]}`, sourceLayer }
-			} else if (prop?.match(/full/i)) {
-				boxMap[targetBox - 1] = { source: `ENGINE FULL`, sourceLayer }
-			} else if (prop?.match(/EVS ?(?:\d+)? ?.*/i)) {
-				const match = prop.match(/EVS ?(\d+)? ?(.*)/i) as RegExpExecArray
-
-				boxMap[targetBox - 1] = { source: `EVS${match[1]} ${match[2]}`, sourceLayer }
-			} else if (prop?.match(/DEFAULT/)) {
-				boxMap[targetBox - 1] = { source: `DEFAULT SOURCE`, sourceLayer }
-			} else if (prop) {
-				if (videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
-					usedServer = true
-				} else {
-					boxMap[targetBox - 1] = { source: prop, sourceLayer }
-				}
-			} else {
-				if (videoId && !usedServer) {
-					boxMap[targetBox - 1] = { source: `SERVER ${videoId}`, sourceLayer }
-					usedServer = true
-				} else {
-					context.notifyUserWarning(`Missing mapping for ${targetBox}`)
-					boxMap[targetBox - 1] = { source: '', sourceLayer }
-				}
-			}
-		} else {
-			// Need something to keep the layout etc
-			boxMap[targetBox - 1] = { source: '', sourceLayer }
-		}
-	})
-
-	const boxes = _.map(template.boxes, box => ({ ...box, source: config.studio.AtemSource.Default }))
+	const boxes: BoxConfig[] = Object.entries(template.boxes).map(([_num, box]) => ({
+		...box,
+		source: config.studio.AtemSource.Default
+	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
-	const boxSources: Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) &
-		SplitsContentBoxProperties> = []
-
-	const setBoxSource = (num: number, sourceInfo: SourceInfo, label: string) => {
-		if (boxes[num]) {
-			boxes[num].source = Number(sourceInfo.port)
-
-			boxSources.push({
-				// TODO - draw box geometry
-				...boxSource(sourceInfo, label),
-				...literal<CameraContent | RemoteContent>({
-					studioLabel: '',
-					switcherInput: Number(sourceInfo.port)
-				})
-			})
-		}
-	}
-
-	const setBoxToBlack = (num: number) => {
-		setBoxSource(
-			num,
-			literal<SourceInfo>({
-				type: SourceLayerType.UNKNOWN,
-				id: 'black',
-				port: AtemSourceIndex.Blk
-			}),
-			'Black'
-		)
-	}
+	const boxSources: BoxSources = []
 
 	let valid = true
 	let server = false
 
-	boxMap.forEach((mappingFrom, num) => {
-		if (mappingFrom === undefined || mappingFrom.source === '') {
+	boxAssigments.forEach((mappingFrom, num) => {
+		const box = boxes[num]
+		if (mappingFrom === undefined) {
 			if (sources) {
 				// If it is intentional there are no sources, then ignore
 				// TODO - should this warn?
 				context.notifyUserWarning(`Missing source type for DVE box: ${num + 1}`)
+				setBoxToBlack(box, boxSources)
 				valid = false
 			}
 		} else {
-			const props = mappingFrom.source.split(' ')
-			const sourceType = props[0]
-			const sourceInput = props[1]
-			if ((!sourceType || !sourceInput) && !mappingFrom.source.match(/EVS/i) && !mappingFrom.source.match(/SERVER/)) {
-				context.notifyUserWarning(`Invalid DVE source: ${mappingFrom.source}`)
-				setBoxToBlack(num)
-				return
-			}
 			const audioEnable: TSR.Timeline.TimelineEnable = {
 				while: `1`
 			}
-			if (sourceType.match(/DEFAULT/)) {
-				setBoxSource(
-					num,
-					{
-						type: SourceLayerType.UNKNOWN,
-						id: 'DEFAULT',
+			switch (mappingFrom.sourceType) {
+				case SourceType.DEFAULT:
+					setBoxSource(box, boxSources, {
+						sourceLayerType: SourceLayerType.UNKNOWN,
 						port: config.studio.AtemSource.Default
-					},
-					mappingFrom.source
-				)
-			} else if (sourceType.match(/KAM/i)) {
-				const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, mappingFrom.source)
-				if (sourceInfoCam === undefined) {
-					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
-					setBoxToBlack(num)
-					valid = false
-					return
-				}
-
-				setBoxSource(num, sourceInfoCam, mappingFrom.source)
-				dveTimeline.push(
-					GetSisyfosTimelineObjForCamera(
-						context,
-						config,
-						mappingFrom.source,
-						dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics,
-						audioEnable
-					)
-				)
-			} else if (sourceType.match(/LIVE/i) || sourceType.match(/FEED/i) || sourceType.match(/SKYPE/i)) {
-				const sourceInfoLive = FindSourceInfoStrict(context, config.sources, SourceLayerType.REMOTE, mappingFrom.source)
-				if (sourceInfoLive === undefined) {
-					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
-					setBoxToBlack(num)
-					valid = false
-					return
-				}
-
-				setBoxSource(num, sourceInfoLive, mappingFrom.source)
-				dveTimeline.push(
-					...dveGeneratorOptions.dveTimelineGenerators.GetSisyfosTimelineObjForEkstern(
-						context,
-						config.sources,
-						mappingFrom.source,
-						dveGeneratorOptions.dveTimelineGenerators.GetLayersForEkstern,
-						audioEnable
-					)
-				)
-			} else if (sourceType.match(/EVS/i)) {
-				const sourceInfoDelayedPlayback = FindSourceInfoStrict(
-					context,
-					config.sources,
-					SourceLayerType.LOCAL,
-					mappingFrom.source
-				)
-				if (sourceInfoDelayedPlayback === undefined) {
-					context.notifyUserWarning(`Invalid source: ${mappingFrom.source}`)
-					setBoxToBlack(num)
-					valid = false
-					return
-				}
-
-				setBoxSource(num, sourceInfoDelayedPlayback, mappingFrom.source)
-				dveTimeline.push(
-					GetSisyfosTimelineObjForEVS(sourceInfoDelayedPlayback, !!mappingFrom.source.match(/VO/i)),
-					GetSisyfosTimelineObjForCamera(context, config, 'evs', dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics)
-				)
-			} else if (sourceType.match(/ENGINE/i)) {
-				if (sourceInput.match(/full/i)) {
-					const sourceInfoFull: SourceInfo = {
-						type: SourceLayerType.GRAPHICS,
-						id: 'full',
-						port: FindDSKFullGFX(config).Fill
+					})
+					break
+				case SourceType.KAM:
+					const sourceInfoCam = findSourceInfo(config.sources, mappingFrom)
+					if (sourceInfoCam === undefined) {
+						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
+						setBoxToBlack(box, boxSources)
+						valid = false
+						return
 					}
-					setBoxSource(num, sourceInfoFull, mappingFrom.source)
-					dveTimeline.push(
-						GetSisyfosTimelineObjForCamera(
-							context,
-							config,
-							'full',
-							dveGeneratorOptions.dveLayers.SisyfosLLayer.StudioMics
-						)
-					)
-				} else {
-					context.notifyUserWarning(`Unsupported engine for DVE: ${sourceInput}`)
-					setBoxToBlack(num)
-				}
-			} else if (sourceType.match(/SERVER/i)) {
-				server = true
-				setBoxSource(
-					num,
-					{
-						type: SourceLayerType.VT,
-						id: 'SERVER',
+
+					setBoxSource(box, boxSources, sourceInfoCam)
+					dveTimeline.push(...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, mappingFrom.minusMic, audioEnable))
+					break
+				case SourceType.REMOTE:
+					const sourceInfoLive = findSourceInfo(config.sources, mappingFrom)
+					if (sourceInfoLive === undefined) {
+						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
+						setBoxToBlack(box, boxSources)
+						valid = false
+						return
+					}
+
+					setBoxSource(box, boxSources, sourceInfoLive)
+					dveTimeline.push(...GetSisyfosTimelineObjForRemote(config, sourceInfoLive, audioEnable))
+					break
+				case SourceType.REPLAY:
+					const sourceInfoReplay = findSourceInfo(config.sources, mappingFrom)
+					if (sourceInfoReplay === undefined) {
+						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
+						setBoxToBlack(box, boxSources)
+						valid = false
+						return
+					}
+
+					setBoxSource(box, boxSources, sourceInfoReplay)
+					dveTimeline.push(...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, mappingFrom.vo))
+					break
+				case SourceType.GRAFIK:
+					if (mappingFrom.name === 'FULL') {
+						setBoxSource(box, boxSources, {
+							sourceLayerType: SourceLayerType.GRAPHICS,
+							port: FindDSKFullGFX(config).Fill
+						})
+						dveTimeline.push(...GetSisyfosTimelineObjForFull(config))
+					} else {
+						context.notifyUserWarning(`Unsupported engine for DVE: ${mappingFrom.name}`)
+						setBoxToBlack(box, boxSources)
+					}
+					break
+				case SourceType.SERVER:
+					server = true
+					setBoxSource(box, boxSources, {
+						sourceLayerType: SourceLayerType.VT,
 						port: -1
-					},
-					mappingFrom.source
-				)
-				return
-			} else {
-				context.notifyUserWarning(`Unknown source type for DVE: ${mappingFrom.source}`)
-				setBoxToBlack(num)
-				valid = false
+					})
+					break
 			}
 		}
 	})
@@ -457,46 +306,18 @@ export function MakeContentDVE2<
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
 
 	if (keyFile) {
-		keyFile = keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
+		keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
 	}
 
 	if (frameFile) {
 		frameFile = JoinAssetToFolder(config.studio.DVEFolder, frameFile)
 	}
 
-	if (adlib) {
-		dveTimeline.push(
-			literal<TSR.TimelineObjSisyfosChannels & TimelineBlueprintExt>({
-				id: '',
-				enable: getDVEEnable(),
-				priority: 1,
-				layer: dveGeneratorOptions.dveLayers.SisyfosLLayer.PersistedLevels,
-				content: {
-					deviceType: TSR.DeviceType.SISYFOS,
-					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-					overridePriority: 1,
-					channels: config.stickyLayers
-						.filter(layer => dveTimeline.map(obj => obj.layer).indexOf(layer) === -1)
-						.filter(layer => config.liveAudio.indexOf(layer) === -1)
-						.map<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>(layer => {
-							return {
-								mappedLayer: layer,
-								isPgm: 0
-							}
-						})
-				},
-				metaData: {
-					sisyfosPersistLevel: true
-				}
-			})
-		)
-	}
-
 	return {
 		valid,
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
-			timelineObjects: _.compact<TSR.TSRTimelineObj>([
+			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				// Setup classes for adlibs to be able to override boxes
 				createEmptyObject({
 					enable: getDVEEnable(),
@@ -569,7 +390,7 @@ export function MakeContentDVE2<
 					id: '',
 					enable: getDVEEnable(),
 					priority: 1,
-					layer: GraphicLLayer.GraphicLLayerLocators,
+					layer: SharedGraphicLLayer.GraphicLLayerLocators,
 					content: CreateHTMLRendererContent(config, 'locators', {
 						...graphicsTemplateContent,
 						style: graphicsTemplateStyle ?? {}
@@ -613,29 +434,83 @@ export function MakeContentDVE2<
 				...(server && mediaPlayerSessionId ? [EnableServer(mediaPlayerSessionId)] : []),
 				...dveTimeline
 			])
-		}),
-		stickyLayers: [
-			...dveTimeline
-				.filter(obj => obj.content.deviceType === TSR.DeviceType.SISYFOS)
-				.filter(obj => dveGeneratorOptions.AUDIO_LAYERS.includes(obj.layer.toString()))
-				.filter(obj => !dveGeneratorOptions.EXCLUDED_LAYERS.includes(obj.layer.toString()))
-				.map<string>(obj => obj.layer.toString())
-		]
+		})
 	}
 }
 
-function boxSource(
-	info: SourceInfo,
-	label: string
-): {
-	studioLabel: string
+const setBoxSource = (
+	boxConfig: BoxConfig,
+	boxSources: BoxSources,
+	sourceInfo: { port: number; sourceLayerType: SourceLayerType }
+) => {
+	if (boxConfig) {
+		boxConfig.source = sourceInfo.port
+
+		boxSources.push({
+			// TODO - draw box geometry
+			...boxSource(sourceInfo),
+			...literal<CameraContent | RemoteContent>({
+				studioLabel: '',
+				switcherInput: sourceInfo.port
+			})
+		})
+	}
+}
+
+const setBoxToBlack = (boxConfig: BoxConfig, boxSources: BoxSources) => {
+	setBoxSource(boxConfig, boxSources, {
+		port: AtemSourceIndex.Blk,
+		sourceLayerType: SourceLayerType.UNKNOWN
+	})
+}
+
+function makeBoxAssignments(
+	inputs: string[],
+	context: IShowStyleUserContext,
+	classes: string[],
+	dveGeneratorOptions: DVEOptions,
+	sources: DVESources | undefined
+) {
+	const boxAssignments: Array<SourceDefinition | undefined> = []
+	inputs.forEach(source => {
+		const sourceProps = source.split(':')
+		const fromCue = sourceProps[1]
+		const targetBox = Number(sourceProps[0])
+		if (!fromCue || !targetBox || isNaN(targetBox)) {
+			context.notifyUserWarning(`Invalid DVE mapping: ${sourceProps}`)
+			return
+		}
+
+		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
+
+		if (!sources) {
+			// Need something to keep the layout etc
+			boxAssignments[targetBox - 1] = undefined
+			return
+		}
+
+		const prop = sources[fromCue as keyof DVESources]
+		if (prop) {
+			boxAssignments[targetBox - 1] = prop
+			return
+		}
+
+		context.notifyUserWarning(`Missing mapping for ${targetBox}`)
+		boxAssignments[targetBox - 1] = undefined
+	})
+	return boxAssignments
+}
+
+function boxSource(info: {
+	port: number
+	sourceLayerType: SourceLayerType
+}): {
 	switcherInput: number
-	type: SourceInfoType
+	type: SourceLayerType
 } {
 	return {
-		studioLabel: label,
 		switcherInput: info.port,
-		type: info.type
+		type: info.sourceLayerType
 	}
 }
 

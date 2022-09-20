@@ -1,4 +1,4 @@
-import { ISourceLayer, SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
@@ -11,36 +11,16 @@ const OVERLAY: ISourceLayer[] = [
 		_rank: 10,
 		name: 'GFX Ident',
 		abbreviation: 'G',
-		type: SourceLayerType.GRAPHICS,
+		type: SourceLayerType.LOWER_THIRD,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',q,ctrl+shift+a',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmGraphicsIdentPersistent,
-		_rank: 10,
-		name: 'GFX Ident Persistent (hidden)',
-		abbreviation: 'G',
-		type: SourceLayerType.GRAPHICS,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',q,ctrl+shift+a',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false
 	},
@@ -49,15 +29,14 @@ const OVERLAY: ISourceLayer[] = [
 		_rank: 20,
 		name: 'GFX Top',
 		abbreviation: 'G',
-		type: SourceLayerType.GRAPHICS,
+		type: SourceLayerType.LOWER_THIRD,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',q,ctrl+shift+s',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: true,
@@ -68,15 +47,14 @@ const OVERLAY: ISourceLayer[] = [
 		_rank: 30,
 		name: 'GFX Lowerthirds',
 		abbreviation: 'G',
-		type: SourceLayerType.GRAPHICS,
+		type: SourceLayerType.LOWER_THIRD,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'a,s,d,f,g',
-		clearKeyboardHotkey: ',q,ctrl+shift+d',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: true,
@@ -87,15 +65,14 @@ const OVERLAY: ISourceLayer[] = [
 		_rank: 40,
 		name: 'GFX Headline',
 		abbreviation: 'G',
-		type: SourceLayerType.GRAPHICS,
+		type: SourceLayerType.LOWER_THIRD,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',q,ctrl+shift+f',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: true,
@@ -110,11 +87,10 @@ const OVERLAY: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',q,ctrl+shift+g',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: true,
@@ -129,11 +105,10 @@ const OVERLAY: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',q',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: true,
@@ -148,13 +123,30 @@ const OVERLAY: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',q',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
+		allowDisable: true,
+		onPresenterScreen: false
+	},
+	{
+		_id: SourceLayer.GraphicsShowLifecycle,
+		_rank: 60,
+		name: 'GFX Show Lifecycle',
+		abbreviation: '',
+		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		isClearable: false,
+
+		isSticky: false,
+
+		isQueueable: false,
+		isHidden: true,
 		allowDisable: true,
 		onPresenterScreen: false
 	}
@@ -171,15 +163,14 @@ const JINGLE: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
-		onPresenterScreen: false
+		onPresenterScreen: true
 	}
 ]
 
@@ -194,12 +185,8 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys:
-			'f1,f2,f3,f4,ctrl+shift+alt+c,shift+ctrl+f1,shift+ctrl+f2,shift+ctrl+f3,shift+ctrl+f4,shift+ctrl+f5',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -214,12 +201,10 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: true,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'ctrl+shift+alt+b,1,2,3,4,5,6,7,8,9,0',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
+
 		isSticky: false,
 		stickyOriginalOnly: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -234,11 +219,9 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'r,e,i,u',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -253,12 +236,10 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
 		stickyOriginalOnly: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -273,94 +254,13 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'f10,m,comma,.,n,c,b,v',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: true
-	},
-	{
-		_id: SourceLayer.PgmDVEBox1,
-		_rank: 0,
-		name: 'DVE Inp 1',
-		abbreviation: 'DB1',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys:
-			'shift+f1,shift+f2,shift+f3,shift+f4,shift+f5,shift+1,shift+2,shift+3,shift+4,shift+5,shift+6,shift+7,shift+8,shift+9,shift+0,shift+e,shift+d,shift+i,shift+u,shift+t',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmDVEBox2,
-		_rank: 0,
-		name: 'DVE Inp 2',
-		abbreviation: 'DB2',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys:
-			'ctrl+f1,ctrl+f2,ctrl+f3,ctrl+shift+alt+a,ctrl+f5,ctrl+1,ctrl+2,ctrl+3,ctrl+4,ctrl+5,ctrl+6,ctrl+7,ctrl+8,ctrl+9,ctrl+0,ctrl+e,ctrl+d,ctrl+i,ctrl+shift+alt+i,ctrl+alt+shift+g',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmDVEBox3,
-		_rank: 0,
-		name: 'DVE Inp 3',
-		abbreviation: 'DB3',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys:
-			'alt+shift+f1,alt+shift+f2,alt+shift+f3,alt+shift+f4,alt+shift+f5,alt+shift+1,alt+shift+2,alt+shift+3,alt+shift+4,alt+shift+5,alt+shift+6,alt+shift+7,alt+shift+8,alt+shift+9,alt+shift+0,alt+shift+e,alt+shift+d,alt+shift+g',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
-	},
-	{
-		_id: SourceLayer.PgmDVEBox4,
-		_rank: 0,
-		name: 'DVE Inp 4',
-		abbreviation: 'DB4',
-		type: SourceLayerType.UNKNOWN,
-		exclusiveGroup: '',
-		isRemoteInput: false,
-		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
-		isSticky: false,
-		activateStickyKeyboardHotkey: '',
-		isQueueable: false,
-		isHidden: true,
-		allowDisable: false,
-		onPresenterScreen: false
 	},
 	{
 		_id: SourceLayer.PgmServer,
@@ -371,11 +271,9 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -390,11 +288,10 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -409,11 +306,9 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -428,11 +323,10 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'i',
-		clearKeyboardHotkey: ',q',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: true,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -447,11 +341,9 @@ const PGM: ISourceLayer[] = [
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -470,11 +362,10 @@ const MUSIK: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',minus',
-		assignHotkeysToGlobalAdlibs: false,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -493,11 +384,9 @@ const MANUS: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -516,11 +405,10 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'NumpadDivide,NumpadSubtract,NumpadAdd',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -535,11 +423,9 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: ',space,,q',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -555,11 +441,9 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'shift+a',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,
@@ -574,11 +458,9 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,
@@ -593,11 +475,9 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,
@@ -612,11 +492,10 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'ctrl+shift+alt+e,ctrl+shift+alt+d',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -631,11 +510,9 @@ const SEC: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -654,11 +531,10 @@ const AUX: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: 'ctrl+shift+alt+f',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,
@@ -673,12 +549,10 @@ const AUX: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys:
-			'shift+ctrl+1,shift+ctrl+2,shift+ctrl+3,shift+ctrl+4,shift+ctrl+5,shift+ctrl+6,shift+ctrl+7,shift+ctrl+8,shift+ctrl+9,shift+ctrl+0,shift+ctrl+e',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
+		isClearable: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,
@@ -693,11 +567,9 @@ const AUX: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: true,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,
@@ -716,11 +588,9 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		exclusiveGroup: 'server',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: true,
 		isHidden: true,
 		allowDisable: false,
@@ -735,11 +605,9 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		exclusiveGroup: 'server',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: true,
 		isHidden: true,
 		allowDisable: false,
@@ -754,11 +622,9 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: '',
-		assignHotkeysToGlobalAdlibs: false,
+
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
+
 		isQueueable: true,
 		isHidden: true,
 		allowDisable: false,

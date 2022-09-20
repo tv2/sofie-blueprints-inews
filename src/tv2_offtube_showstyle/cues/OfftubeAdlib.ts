@@ -6,12 +6,13 @@ import {
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	literal,
@@ -26,7 +27,7 @@ import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
-export function OfftubeEvaluateAdLib(
+export async function OfftubeEvaluateAdLib(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	_adLibPieces: IBlueprintAdLibPiece[],
@@ -45,13 +46,9 @@ export function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const sourceDuration = Math.max(
-			(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
-			0
-		)
-
 		actions.push(
-			CreateAdlibServer(
+			await CreateAdlibServer(
+				context,
 				config,
 				rank,
 				partDefinition,
@@ -67,8 +64,7 @@ export function OfftubeEvaluateAdLib(
 						ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 					},
 					Sisyfos: {
-						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-						StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 					},
 					AtemLLayer: {
 						MEPgm: OfftubeAtemLLayer.AtemMEClean
@@ -77,7 +73,6 @@ export function OfftubeEvaluateAdLib(
 						ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 					}
 				},
-				sourceDuration,
 				true
 			)
 		)
@@ -95,7 +90,7 @@ export function OfftubeEvaluateAdLib(
 			return
 		}
 
-		if (!TemplateIsValid(rawTemplate.DVEJSON as string)) {
+		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
@@ -110,40 +105,28 @@ export function OfftubeEvaluateAdLib(
 
 		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
-		let sticky: { [key: string]: { value: number; followsPrevious: boolean } } = {}
-
-		adlibContent.stickyLayers.forEach(layer => {
-			sticky = {
-				...sticky,
-				[layer]: {
-					value: 1,
-					followsPrevious: false
-				}
+		const userData: ActionSelectDVE = {
+			type: AdlibActionType.SELECT_DVE,
+			config: cueDVE,
+			videoId: partDefinition.fields.videoId,
+			segmentExternalId: partDefinition.segmentExternalId
+		}
+		actions.push({
+			externalId: generateExternalId(context, userData),
+			actionId: AdlibActionType.SELECT_DVE,
+			userData,
+			userDataManifest: {},
+			display: {
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				uniquenessId: getUniquenessIdDVE(cueDVE),
+				label: t(`${partDefinition.storyName}`),
+				tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
+				content: literal<SplitsContent>({
+					...adlibContent.content
+				})
 			}
 		})
-
-		actions.push(
-			literal<IBlueprintActionManifest>({
-				actionId: AdlibActionType.SELECT_DVE,
-				userData: literal<ActionSelectDVE>({
-					type: AdlibActionType.SELECT_DVE,
-					config: cueDVE,
-					videoId: partDefinition.fields.videoId,
-					segmentExternalId: partDefinition.segmentExternalId
-				}),
-				userDataManifest: {},
-				display: {
-					sourceLayerId: OfftubeSourceLayer.PgmDVE,
-					outputLayerId: OfftubeOutputLayers.PGM,
-					uniquenessId: getUniquenessIdDVE(cueDVE),
-					label: t(`${partDefinition.storyName}`),
-					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					content: literal<SplitsContent>({
-						...adlibContent.content
-					})
-				}
-			})
-		)
 	}
 }
 

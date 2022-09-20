@@ -1,4 +1,4 @@
-import { literal, parseMapStr } from 'tv2-common'
+import { literal, parseMapStr, TableConfigGraphicsSetup } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
@@ -10,10 +10,9 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 			return []
 		case 'SourcesRM':
 		case 'SourcesFeed':
-		case 'SourcesSkype':
 			return ['sisyfos_source_live_' + id]
 		case 'SourcesDelayedPlayback':
-			return ['sisyfos_source_evs_' + id]
+			return ['sisyfos_source_' + id.toLowerCase().replace(' ', '_')]
 	}
 
 	return []
@@ -24,13 +23,13 @@ function prepareConfig(
 	conf: string,
 	configName: string,
 	studioMics: boolean,
-	keepAudioInStudio?: boolean
+	wantsToPersistAudio?: boolean
 ): Array<{
 	SourceName: string
 	AtemSource: number
 	SisyfosLayers: string[]
 	StudioMics: boolean
-	KeepAudioInStudio: boolean
+	wantsToPersistAudio: boolean
 }> {
 	return parseMapStr(undefined, conf, true).map(c => {
 		return {
@@ -38,9 +37,19 @@ function prepareConfig(
 			AtemSource: c.val,
 			SisyfosLayers: getSisyfosLayers(configName, c.id),
 			StudioMics: studioMics,
-			KeepAudioInStudio: keepAudioInStudio ?? false
+			wantsToPersistAudio: wantsToPersistAudio ?? false
 		}
 	})
+}
+
+export const OVL_SHOW_ID = 'ovl-show-id'
+export const FULL_SHOW_ID = 'full-show-id'
+export const DEFAULT_GRAPHICS_SETUP: TableConfigGraphicsSetup = {
+	Name: 'SomeProfile',
+	VcpConcept: 'SomeConcept',
+	OvlShowId: OVL_SHOW_ID,
+	FullShowId: FULL_SHOW_ID,
+	DveLayoutFolder: 'folder/path'
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
@@ -80,10 +89,9 @@ export const defaultStudioConfig: StudioConfig = {
 		true
 	),
 	// TODO: prepareConfig is legacy code, refactor when refactoring FindSourceInfo
-	SourcesSkype: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7', 'SourcesSkype', false),
 	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false, true),
 	SourcesFeed: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesFeed', false, true),
-	SourcesDelayedPlayback: prepareConfig('1:5,2:5', 'SourcesDelayedPlayback', false),
+	SourcesReplay: prepareConfig('EVS 1:5,EVS 2:5,EPSIO:5', 'SourcesDelayedPlayback', false),
 	StudioMics: [
 		'sisyfos_source_Host_1_st_a',
 		'sisyfos_source_Host_2_st_a',
@@ -98,7 +106,8 @@ export const defaultStudioConfig: StudioConfig = {
 		SplitArtF: 30,
 		SplitArtK: 32,
 		Default: 2001,
-		Continuity: 2002
+		Continuity: 2002,
+		Dip: 2002
 	},
 	SofieHostURL: '',
 	ABMediaPlayers: [
@@ -255,6 +264,16 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			FadeOut: 0
 		}
 	],
+	SelectedGraphicsSetupName: 'SomeProfile',
+	GraphicsSetups: [DEFAULT_GRAPHICS_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
-	ShowstyleTransition: 'CUT'
+	ShowstyleTransition: 'CUT',
+	SchemaConfig: []
+}
+
+export const EMPTY_SOURCE_CONFIG = {
+	cameras: [],
+	lives: [],
+	feeds: [],
+	replays: []
 }

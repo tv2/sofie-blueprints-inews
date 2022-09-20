@@ -1,9 +1,5 @@
-import { TableConfigItemValue } from '@sofie-automation/blueprints-integration'
-import {
-	TableConfigItemDSK,
-	TableConfigItemSourceMappingWithSisyfos,
-	TableConfigItemSourceMappingWithSisyfosAndKeepAudio
-} from 'tv2-common'
+import { TableConfigItemValue } from '@tv2media/blueprints-integration'
+import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
 
@@ -32,6 +28,21 @@ export interface TableConfigItemGFXTemplates {
 
 export interface TableConfigItemAdLibTransitions {
 	Transition: string
+}
+
+export interface TableConfigSchema {
+	schemaName: string
+	designIdentifier: string
+	vizTemplateName: string
+	casparCgDveBgScene: string
+}
+
+export interface TableConfigGraphicsSetup {
+	Name: string
+	VcpConcept: string
+	OvlShowId: string
+	FullShowId: string
+	DveLayoutFolder: string
 }
 
 export interface TV2StudioConfigBase {
@@ -77,12 +88,12 @@ export interface TV2StudioConfigBase {
 		SplitArtF: number
 		SplitArtK: number
 		DSK: TableConfigItemDSK[]
+		Dip: number
 	}
 	AtemSettings: {}
 	StudioMics: string[]
-	SourcesRM: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
-	SourcesFeed: TableConfigItemSourceMappingWithSisyfosAndKeepAudio[]
-	SourcesSkype: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
+	SourcesFeed: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
 	PreventOverlayWithFull?: boolean
 	ServerPostrollDuration: number
@@ -111,12 +122,17 @@ export interface TV2StudioConfigBase {
 	}
 }
 
+export interface SourceMapping {
+	cameras: SourceInfo[]
+	lives: SourceInfo[]
+	feeds: SourceInfo[]
+	replays: SourceInfo[]
+}
+
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
 	studio: StudioConfig
-	sources: SourceInfo[]
+	sources: SourceMapping
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
-	liveAudio: string[]
-	stickyLayers: string[]
 	dsk: TableConfigItemDSK[]
 }
 
@@ -130,11 +146,13 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
+	SchemaConfig: TableConfigSchema[]
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
+	selectedGraphicsSetup: TableConfigGraphicsSetup
 }
 
 export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>

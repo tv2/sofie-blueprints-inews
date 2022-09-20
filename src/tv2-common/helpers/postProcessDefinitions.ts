@@ -23,11 +23,11 @@ function setPartTitle(partDefinition: PartDefinition) {
 	const firstCue = partDefinition.cues[0]
 	if (
 		firstCue &&
-		[PartType.Grafik, PartType.DVE, PartType.Ekstern, PartType.Telefon, PartType.Unknown].includes(partDefinition.type)
+		[PartType.Grafik, PartType.DVE, PartType.REMOTE, PartType.Telefon, PartType.Unknown].includes(partDefinition.type)
 	) {
 		switch (firstCue.type) {
 			case CueType.Ekstern:
-				partDefinition.title = firstCue.source
+				partDefinition.title = firstCue.sourceDefinition.name
 				break
 			case CueType.DVE:
 				partDefinition.title = firstCue.template
@@ -52,7 +52,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 	switch (partDefinition.type) {
 		case PartType.EVS:
 			// Common pattern to see EV1 and EVS1VO in the same story. Changing from EVS1 to EVS1VO would mean a new part
-			id += `-${partDefinition.variant.evs}-${partDefinition.variant.isVO}`
+			id += `-${partDefinition.sourceDefinition.id}-${partDefinition.sourceDefinition.vo}`
 			break
 		case PartType.INTRO:
 			// Intro must have a jingle cue, if it doesn't then padId will handle
@@ -63,7 +63,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			break
 		case PartType.Kam:
 			// No way of uniquely identifying, add some entropy from cues
-			id += `-${partDefinition.rawType}-${partDefinition.variant.name}-${partDefinition.cues.length}`
+			id += `-${partDefinition.rawType}-${partDefinition.sourceDefinition.id}-${partDefinition.cues.length}`
 			break
 		case PartType.VO:
 		case PartType.Server:
@@ -77,7 +77,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			break
 		case PartType.Grafik:
 		case PartType.DVE:
-		case PartType.Ekstern:
+		case PartType.REMOTE:
 		case PartType.Telefon:
 		case PartType.Unknown:
 			// Special cases based on cues
@@ -103,7 +103,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 						break
 					case CueType.Ekstern:
 						// Identify based on live source. Changing live source will result in a new part
-						id += `-${firstCue.source}`
+						id += `-${firstCue.sourceDefinition.name}`
 						break
 					case CueType.Jingle:
 						// Changing the jingle clip will result in a new part

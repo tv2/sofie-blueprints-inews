@@ -3,10 +3,9 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddKeepAudio,
-	literal,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
 	RemoveConfig,
@@ -14,14 +13,13 @@ import {
 	SetConfigTo,
 	SetLayerNamesToDefaults
 } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { SharedGraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { EnsureSisyfosMappingHasType } from '../../tv2_afvd_studio/migrations/util'
 import {
 	manifestOfftubeDownstreamKeyers,
 	manifestOfftubeSourcesABMediaPlayers,
 	manifestOfftubeSourcesCam,
-	manifestOfftubeSourcesRM,
 	manifestOfftubeStudioMics
 } from '../config-manifests'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../layers'
@@ -42,7 +40,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 	const steps: MigrationStepStudio[] = []
 	for (const layer in renaming) {
 		if (layer in renaming) {
-			const res = literal<MigrationStepStudio>({
+			const res: MigrationStepStudio = {
 				id: `${versionStr}.studioConfig.renameAudioSources.${layer}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
@@ -65,7 +63,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 						}
 					}
 				}
-			})
+			}
 
 			steps.push(res)
 		}
@@ -75,7 +73,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 }
 
 function ensureMappingDeleted(versionStr: string, mapping: string): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.studioConfig.ensureMappingDeleted.${mapping}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -93,9 +91,7 @@ function ensureMappingDeleted(versionStr: string, mapping: string): MigrationSte
 				context.removeMapping(mapping)
 			}
 		}
-	})
-
-	return res
+	}
 }
 
 function remapTableColumnValuesInner(
@@ -106,7 +102,7 @@ function remapTableColumnValuesInner(
 ): { changed: number; table: TableConfigItemValue } {
 	let changed = 0
 
-	table.map(row => {
+	table.forEach(row => {
 		const val = row[columnId]
 
 		if (val) {
@@ -128,8 +124,6 @@ function remapTableColumnValuesInner(
 				}
 			}
 		}
-
-		return row
 	})
 
 	return { changed, table }
@@ -143,7 +137,7 @@ function remapTableColumnValues(
 	remapping: Map<string, string>
 ): MigrationStepStudio[] {
 	return [
-		literal<MigrationStepStudio>({
+		{
 			id: `${versionStr}.remapTableColumnValue.${tableId}.${columnId}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
@@ -180,7 +174,7 @@ function remapTableColumnValues(
 
 				context.setConfig(tableId, ret.table)
 			}
-		})
+		}
 	]
 }
 
@@ -191,7 +185,7 @@ const audioSourceRenaming: Map<string, string> = new Map([
 	['sisyfos_source_world_feed_surround', OfftubeSisyfosLLayer.SisyfosSourceLive_3]
 ])
 
-export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStudio[]>([
+export const studioMigrations: MigrationStepStudio[] = [
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesCam',
@@ -205,11 +199,29 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesRM',
-		manifestOfftubeSourcesRM.defaultVal,
+		[
+			{
+				_id: '',
+				SourceName: '1',
+				AtemSource: 3,
+				SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
+				StudioMics: true,
+				KeepAudioInStudio: true
+			}
+		],
 		'text',
 		'Studio config: Remote mappings',
 		'Enter the remote input mapping',
-		manifestOfftubeSourcesRM.defaultVal
+		[
+			{
+				_id: '',
+				SourceName: '1',
+				AtemSource: 3,
+				SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
+				StudioMics: true,
+				KeepAudioInStudio: true
+			}
+		]
 	),
 
 	ensureStudioConfig(
@@ -268,7 +280,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
 
-	GetMappingDefaultMigrationStepForLayer('1.4.8', OfftubeCasparLLayer.CasparPlayerJingleLookahead, true),
+	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
 
 	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
 	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
@@ -291,25 +303,34 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	removeMapping('1.5.0', 'casparcg_studio_screen_loop'),
 	removeMapping('1.5.0', 'casparcg_graphics_overlay'),
 
-	GetMappingDefaultMigrationStepForLayer('1.5.1', GraphicLLayer.GraphicLLayerAdLibs, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerWall, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilot, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerPilotOverlay, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', GraphicLLayer.GraphicLLayerFullLoop, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.1', SharedGraphicLLayer.GraphicLLayerAdLibs, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerWall, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerPilot, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerPilotOverlay, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerFullLoop, true),
 	SetConfigTo('1.5.3', 'Offtube', 'AtemSource.GFXFull', 12),
 
-	renameMapping('1.5.4', 'casparcg_cg_dve_template', GraphicLLayer.GraphicLLayerLocators),
+	renameMapping('1.5.4', 'casparcg_cg_dve_template', SharedGraphicLLayer.GraphicLLayerLocators),
 
 	...SetLayerNamesToDefaults('1.5.5', 'AFVD', MappingsDefaults),
 
-	GetMappingDefaultMigrationStepForLayer('1.6.0', GraphicLLayer.GraphicLLayerPilot, true),
+	GetMappingDefaultMigrationStepForLayer('1.6.0', SharedGraphicLLayer.GraphicLLayerPilot, true),
 
 	/**
 	 * 1.6.1
 	 * - Split RM config into FEED and RM configs
 	 * - Add concept of roles to DSK config table (and cleanup configs replaced by table)
 	 */
-	SetConfigTo('1.6.1', 'Offtube', 'SourcesRM', manifestOfftubeSourcesRM.defaultVal),
+	SetConfigTo('1.6.1', 'Offtube', 'SourcesRM', [
+		{
+			_id: '',
+			SourceName: '1',
+			AtemSource: 3,
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
+			StudioMics: true,
+			KeepAudioInStudio: true
+		}
+	]),
 	SetConfigTo('1.6.1', 'Offtube', 'AtemSource.DSK', manifestOfftubeDownstreamKeyers.defaultVal),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleFill'),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleKey'),
@@ -322,7 +343,7 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	 * 1.6.2
 	 * - Set headline layer to abstract (for potential Viz route set compatibility)
 	 */
-	GetMappingDefaultMigrationStepForLayer('1.6.2', GraphicLLayer.GraphicLLayerOverlayHeadline, true),
+	GetMappingDefaultMigrationStepForLayer('1.6.2', SharedGraphicLLayer.GraphicLLayerOverlayHeadline, true),
 
 	/**
 	 * 1.6.10
@@ -330,7 +351,18 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	 */
 	GetMappingDefaultMigrationStepForLayer('1.6.10', OfftubeCasparLLayer.CasparCGLYD, true),
 
+	RenameStudioConfig('1.6.11', 'Offtube', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+
+	/**
+	 * 1.7.3
+	 * - Rename the CasparPlayerJingleLookahead layer
+	 * - Disable previewWhenNotOnAir on CasparPlayerJingle layer
+	 */
+	renameMapping('1.7.3', 'casparcg_player_jingle_looakhead', OfftubeCasparLLayer.CasparPlayerJinglePreload),
+	GetMappingDefaultMigrationStepForLayer('1.7.3', OfftubeCasparLLayer.CasparPlayerJinglePreload, true),
+	GetMappingDefaultMigrationStepForLayer('1.7.3', OfftubeCasparLLayer.CasparPlayerJingle, true),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)
-])
+]

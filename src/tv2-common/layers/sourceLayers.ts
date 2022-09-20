@@ -1,7 +1,6 @@
-import { ISourceLayer, SourceLayerType } from '@sofie-automation/blueprints-integration'
+import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
 import { ATEMModel } from '../../types/atem'
 import { GetDSKCount } from '../helpers'
-import { literal } from '../util'
 
 /**
  * Get the sourcelayer name for a given DSK.
@@ -12,7 +11,7 @@ export function SourceLayerAtemDSK(i: number): string {
 }
 
 function GetSourceLayerDefaultsForDSK(i: number): ISourceLayer {
-	return literal<ISourceLayer>({
+	return {
 		_id: SourceLayerAtemDSK(i),
 		_rank: 22,
 		name: `DSK${i + 1} off`,
@@ -21,16 +20,13 @@ function GetSourceLayerDefaultsForDSK(i: number): ISourceLayer {
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
-		activateKeyboardHotkeys: '',
-		clearKeyboardHotkey: ',',
-		assignHotkeysToGlobalAdlibs: true,
+		isClearable: true,
 		isSticky: false,
-		activateStickyKeyboardHotkey: '',
 		isQueueable: false,
 		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false
-	})
+	}
 }
 
 export function GetDSKSourceLayerNames(atemModel: ATEMModel): string[] {

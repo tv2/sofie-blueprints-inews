@@ -3,7 +3,7 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -11,16 +11,16 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
-export function OfftubeCreatePartServer(
+export async function OfftubeCreatePartServer(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
-	props: ServerPartProps
-): BlueprintResultPart {
-	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
+	partProps: ServerPartProps
+): Promise<BlueprintResultPart> {
+	const basePartProps = await CreatePartServerBase(context, config, partDefinition, partProps, {
 		SourceLayer: {
-			PgmServer: props.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
-			SelectedServer: props.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
+			PgmServer: partProps.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: partProps.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
 		},
 		AtemLLayer: {
 			MEPgm: OfftubeAtemLLayer.AtemMEClean,
@@ -30,8 +30,7 @@ export function OfftubeCreatePartServer(
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		},
 		Sisyfos: {
-			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-			StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 		},
 		ATEM: {
 			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
@@ -52,30 +51,25 @@ export function OfftubeCreatePartServer(
 
 	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-	const sourceDuration = Math.max(
-		(context.hackGetMediaObjectDuration(file) || 0) * 1000 - config.studio.ServerPostrollDuration,
-		0
-	)
-
 	actions.push(
-		CreateAdlibServer(
+		await CreateAdlibServer(
+			context,
 			config,
 			0,
 			partDefinition,
 			file,
-			props.voLayer,
-			props.voLevels,
+			partProps.voLayer,
+			partProps.voLevels,
 			{
 				SourceLayer: {
-					PgmServer: props.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
-					SelectedServer: props.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
+					PgmServer: partProps.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
+					SelectedServer: partProps.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
 				},
 				Caspar: {
 					ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 				},
 				Sisyfos: {
-					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-					StudioMicsGroup: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
+					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 				},
 				AtemLLayer: {
 					MEPgm: OfftubeAtemLLayer.AtemMEClean,
@@ -85,12 +79,11 @@ export function OfftubeCreatePartServer(
 					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 				}
 			},
-			sourceDuration,
 			false
 		)
 	)
 
-	OfftubeEvaluateCues(
+	await OfftubeEvaluateCues(
 		context,
 		config,
 		part,

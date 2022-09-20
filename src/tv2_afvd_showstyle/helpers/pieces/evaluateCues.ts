@@ -5,7 +5,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	CueDefinition,
 	EvaluateCueMixMinus,
@@ -26,7 +26,7 @@ import { EvaluateJingle } from './jingle'
 import { EvaluateCueRouting } from './routing'
 import { EvaluateTelefon } from './telefon'
 
-export function EvaluateCues(
+export async function EvaluateCues(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	part: IBlueprintPart,
@@ -38,7 +38,7 @@ export function EvaluateCues(
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
 ) {
-	EvaluateCuesBase(
+	await EvaluateCuesBase(
 		{
 			EvaluateCueAdLib: EvaluateAdLib,
 			EvaluateCueClearGrafiks: EvaluateClearGrafiks,

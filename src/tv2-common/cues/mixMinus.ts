@@ -6,8 +6,8 @@ import {
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
-import { CueDefinitionMixMinus, FindSourceByName, literal, PartDefinition } from 'tv2-common'
+} from '@tv2media/blueprints-integration'
+import { CueDefinitionMixMinus, findSourceInfo, literal, PartDefinition } from 'tv2-common'
 import { ControlClasses, SharedATEMLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 
@@ -18,30 +18,31 @@ export function EvaluateCueMixMinus(
 	part: PartDefinition,
 	parsedCue: CueDefinitionMixMinus
 ) {
-	const sourceInfoMixMinus = FindSourceByName(context, config.sources, parsedCue.source)
-	if (sourceInfoMixMinus === undefined) {
-		context.notifyUserWarning(`${parsedCue.source} does not exist in this studio (MINUSKAM)`)
+	const sourceInfo = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+
+	const name = parsedCue.sourceDefinition.name || parsedCue.sourceDefinition.sourceType
+
+	if (sourceInfo === undefined) {
+		context.notifyUserWarning(`${name} does not exist in this studio (MINUSKAM)`)
 		return
 	}
-	const atemInput = sourceInfoMixMinus.port
+	const atemInput = sourceInfo.port
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: part.externalId,
-			name: `MixMinus: ${parsedCue.source}`,
-			enable: {
-				start: 0
-			},
-			lifespan: PieceLifespan.OutOnShowStyleEnd,
-			sourceLayerId: SharedSourceLayers.AuxMixMinus,
-			outputLayerId: SharedOutputLayers.AUX,
-			content: MixMinusContent(atemInput)
-		})
-	)
+	pieces.push({
+		externalId: part.externalId,
+		name: `MixMinus: ${name}`,
+		enable: {
+			start: 0
+		},
+		lifespan: PieceLifespan.OutOnShowStyleEnd,
+		sourceLayerId: SharedSourceLayers.AuxMixMinus,
+		outputLayerId: SharedOutputLayers.AUX,
+		content: MixMinusContent(atemInput)
+	})
 }
 
 function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
-	return literal<WithTimeline<BaseContent>>({
+	return {
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjAtemAUX>({
 				content: {
@@ -59,5 +60,5 @@ function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
 				priority: 1
 			})
 		])
-	})
+	}
 }

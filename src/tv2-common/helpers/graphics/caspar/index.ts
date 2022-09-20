@@ -2,12 +2,11 @@ export * from './slotMappings'
 
 import {
 	GraphicsContent,
-	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GraphicInternal,
@@ -19,7 +18,7 @@ import {
 	TimelineBlueprintExt,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine, GraphicLLayer } from 'tv2-constants'
+import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
 import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
 import { EnableDSK } from '../../dsk'
 import { IsTargetingFull, IsTargetingWall } from '../target'
@@ -31,25 +30,14 @@ export interface CasparPilotGeneratorSettings {
 
 export function GetInternalGraphicContentCaspar(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGraphic: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): IBlueprintPiece['content'] {
 	return {
-		timelineObjects: CasparOverlayTimeline(
-			config,
-			part,
-			engine,
-			parsedCue,
-			isIdentGraphic,
-			partDefinition,
-			mappedTemplate,
-			adlib
-		)
+		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, partDefinition, mappedTemplate, adlib)
 	}
 }
 
@@ -59,7 +47,7 @@ export function GetPilotGraphicContentCaspar(
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	settings: CasparPilotGeneratorSettings,
 	engine: GraphicEngine
-) {
+): WithTimeline<GraphicsContent> {
 	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
 	const fileName = JoinAssetToFolder(config.studio.GraphicFolder, parsedCue.graphic.name)
 	const templateData = {
@@ -77,7 +65,7 @@ export function GetPilotGraphicContentCaspar(
 			}
 		}
 	}
-	return literal<WithTimeline<GraphicsContent>>({
+	return {
 		fileName,
 		path: JoinAssetToNetworkPath(
 			config.studio.GraphicNetworkBasePath,
@@ -96,7 +84,7 @@ export function GetPilotGraphicContentCaspar(
 					while: '1'
 				},
 				priority: 100,
-				layer: IsTargetingWall(engine) ? GraphicLLayer.GraphicLLayerWall : GraphicLLayer.GraphicLLayerPilot,
+				layer: IsTargetingWall(engine) ? SharedGraphicLLayer.GraphicLLayerWall : SharedGraphicLLayer.GraphicLLayerPilot,
 				metaData: { templateData, fileName },
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
@@ -112,23 +100,21 @@ export function GetPilotGraphicContentCaspar(
 			}),
 			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context) : [])
 		]
-	})
+	}
 }
 
 function CasparOverlayTimeline(
 	config: TV2BlueprintConfig,
-	part: Readonly<IBlueprintPart>,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	isIdentGrafik: boolean,
-	partDefinition: PartDefinition,
+	partDefinition: PartDefinition | undefined,
 	mappedTemplate: string,
 	adlib: boolean
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGraphic(config, part, engine, parsedCue, isIdentGrafik, partDefinition, adlib),
+			enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })

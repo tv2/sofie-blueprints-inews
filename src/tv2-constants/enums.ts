@@ -45,8 +45,21 @@ export const enum PartType {
 	INTRO = 'INTRO',
 	EVS = 'EVS',
 	DVE = 'DVE',
-	Ekstern = 'Ekstern',
+	REMOTE = 'Ekstern',
 	Telefon = 'Telefon'
+}
+
+export const enum SourceType {
+	KAM = 'KAM',
+	SERVER = 'SERVER',
+	VO = 'VO',
+	TEKNIK = 'TEKNIK',
+	GRAFIK = 'GRAFIK',
+	REPLAY = 'REPLAY',
+	REMOTE = 'REMOTE',
+	DEFAULT = 'DEFAULT',
+	PGM = 'PGM',
+	INVALID = 'INVALID'
 }
 
 export enum Enablers {
@@ -66,11 +79,43 @@ export enum AdlibTags {
 	ADLIB_FLOW_PRODUCER = 'flow_producer',
 	ADLIB_STATIC_BUTTON = 'static_button',
 	ADLIB_KOMMENTATOR = 'kommentator',
-	ADLIB_NO_NEXT_HIGHLIGHT = 'no_next_highlight'
+	ADLIB_NO_NEXT_HIGHLIGHT = 'no_next_highlight',
+	ADLIB_CUT_DIRECT = 'cut_direct',
+	ADLIB_QUEUE_NEXT = 'queue_next',
+	ADLIB_VO_AUDIO_LEVEL = 'vo_audio_level',
+	ADLIB_FULL_AUDIO_LEVEL = 'full_audio_level',
+	ADLIB_TO_STUDIO_SCREEN_AUX = 'to_studio_screen_aux',
+	ADLIB_TO_GRAPHICS_ENGINE_AUX = 'to_graphics_engine_aux',
+	ADLIB_CUT_TO_BOX_1 = 'cut_to_box_1',
+	ADLIB_CUT_TO_BOX_2 = 'cut_to_box_2',
+	ADLIB_CUT_TO_BOX_3 = 'cut_to_box_3',
+	ADLIB_CUT_TO_BOX_4 = 'cut_to_box_4',
+	ADLIB_GFX_ALTUD = 'gfx_altud',
+	ADLIB_GFX_LOAD = 'gfx_load',
+	ADLIB_GFX_CONTINUE_FORWARD = 'gfx_continue_forward',
+	ADLIB_DSK_ON = 'dsk_on',
+	ADLIB_DSK_OFF = 'dsk_off',
+	ADLIB_MICS_UP = 'mics_up',
+	ADLIB_MICS_DOWN = 'mics_down',
+	ADLIBS_RESYNC_SISYFOS = 'resync_sisyfos',
+	ADLIB_DESIGN_STYLE_SC = 'design_style_sc',
+	ADLIB_STOP_AUDIO_BED = 'stop_audio_bed',
+	ADLIB_RECALL_LAST_LIVE = 'recall_last_live',
+	ADLIB_RECALL_LAST_DVE = 'recall_last_dve',
+	ADLIB_SELECT_DVE_LAYOUT = 'select_dve_layout',
+	ADLIB_TAKE_WITH_TRANSITION = 'take_with_transition',
+	ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
+}
+
+/**
+ * Generates a tag for a 'cut to box' adlib
+ * @param box Box number (0-indexed)
+ */
+export function AdlibTagCutToBox(box: number): AdlibTags {
+	return `cut_to_box_${box + 1}` as AdlibTags
 }
 
 export enum ControlClasses {
-	ShowIdentGraphic = 'show_ident_graphic',
 	/** Indicates that a DVE is currently on air */
 	DVEOnAir = 'dve_on_air',
 	ServerOnAir = 'server_on_air',
@@ -101,7 +146,8 @@ export enum AdlibActionType {
 	CLEAR_GRAPHICS = 'clear_graphics',
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
-	RECALL_LAST_DVE = 'recall_last_dve'
+	RECALL_LAST_DVE = 'recall_last_dve',
+	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
 }
 
 export enum TallyTags {
@@ -125,7 +171,7 @@ export enum TallyTags {
 	JINGLE_IS_LIVE = 'JINGLE_IS_LIVE'
 }
 
-export enum GraphicLLayer {
+export enum SharedGraphicLLayer {
 	GraphicLLayerOverlay = 'graphic_overlay', // <= viz_layer_overlay
 	GraphicLLayerOverlayIdent = 'graphic_overlay_ident', // <= viz_layer_overlay_ident
 	GraphicLLayerOverlayTopt = 'graphic_overlay_topt', // <= viz_layer_overlay_topt
@@ -138,7 +184,8 @@ export enum GraphicLLayer {
 	GraphicLLayerFullLoop = 'graphic_full_loop',
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall', // <= viz_layer_wall
-	GraphicLLayerLocators = 'graphic_locators'
+	GraphicLLayerLocators = 'graphic_locators',
+	GraphicLLayerConcept = 'graphic_concept'
 }
 
 export enum AbstractLLayer {
@@ -160,7 +207,8 @@ export enum SharedCasparLLayer {
 
 export enum SharedSisyfosLLayer {
 	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
-	SisyfosResync = 'sisyfos_resync'
+	SisyfosResync = 'sisyfos_resync',
+	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics'
 }
 
 export enum SharedOutputLayers {
@@ -187,7 +235,6 @@ export enum SharedSourceLayers {
 
 	// Graphics
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
-	PgmGraphicsIdentPersistent = 'studio0_graphicsIdent_persistent',
 	PgmGraphicsTop = 'studio0_graphicsTop',
 	PgmGraphicsLower = 'studio0_graphicsLower',
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',
@@ -205,11 +252,6 @@ export enum SharedSourceLayers {
 
 	PgmAdlibGraphicCmd = 'studio0_adlib_graphic_cmd', // shortcuts
 	PgmAdlibJingle = 'studio0_adlib_jingle',
-
-	PgmDVEBox1 = 'studio0_dve_box1',
-	PgmDVEBox2 = 'studio0_dve_box2',
-	PgmDVEBox3 = 'studio0_dve_box3',
-	PgmDVEBox4 = 'studio0_dve_box4',
 
 	// Selected Sources
 	SelectedServer = 'studio0_selected_clip',

@@ -1,4 +1,10 @@
-import { AbstractLLayer, GraphicLLayer, SharedATEMLLayer, SharedCasparLLayer, SharedSisyfosLLayer } from 'tv2-constants'
+import {
+	AbstractLLayer,
+	SharedATEMLLayer,
+	SharedCasparLLayer,
+	SharedGraphicLLayer,
+	SharedSisyfosLLayer
+} from 'tv2-constants'
 import * as _ from 'underscore'
 
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
@@ -14,7 +20,7 @@ export function RealLLayers(): string[] {
 			// @ts-ignore
 			.concat(_.values(AbstractLLayer))
 			// @ts-ignore
-			.concat(_.values(GraphicLLayer))
+			.concat(_.values(SharedGraphicLLayer))
 	)
 }
 
@@ -25,7 +31,6 @@ export enum OfftubeAbstractLLayer {
 
 enum SisyfosLLayer {
 	SisyfosConfig = 'sisyfos_config',
-	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
 	SisyfosGroupServer = 'sisyfos_group_server',
 	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
@@ -70,7 +75,8 @@ export const OfftubeAtemLLayer = {
 export type OfftubeAtemLLayer = AtemLLayer | SharedATEMLLayer
 
 enum CasparLLayer {
-	CasparPlayerJingleLookahead = 'casparcg_player_jingle_looakhead',
+	/** Maps to the same Caspar layer as CasparPlayerJingle but its lookahead preloads the first frame */
+	CasparPlayerJinglePreload = 'casparcg_player_jingle_preload',
 	CasparGraphicsFullLoop = 'casparcg_graphics_full_loop',
 	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGDVEKeyedLoop = 'casparcg_dve_keyed_loop',
@@ -93,3 +99,9 @@ export const OfftubeSisyfosLLayer = {
 }
 
 export type OfftubeSisyfosLLayer = SharedSisyfosLLayer | SisyfosLLayer
+
+// tslint:disable-next-line: variable-name
+export const OfftubeGraphicLLayer = {
+	...SharedGraphicLLayer
+}
+export type OfftubeGraphicLLayer = SharedGraphicLLayer

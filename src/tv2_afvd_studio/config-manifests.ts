@@ -4,7 +4,7 @@ import {
 	ConfigManifestEntryType,
 	TableConfigItemValue,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	DSKConfigManifest,
 	literal,
@@ -12,7 +12,6 @@ import {
 	MakeConfigWithMediaFlow,
 	TableConfigItemSourceMapping
 } from 'tv2-common'
-import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { defaultDSKConfig } from './helpers/config'
 import { SisyfosLLAyer } from './layers'
@@ -28,7 +27,7 @@ const DEFAULT_STUDIO_MICS_LAYERS = [
 	SisyfosLLAyer.SisyfosSourceGuest_4_ST_A
 ]
 
-export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', false, [
+export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', false, true, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -101,14 +100,15 @@ export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', fals
 	}
 ])
 
-export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
+export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, true, [
 	{
 		_id: '',
 		SourceName: '1',
 		AtemSource: 1,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
-		StudioMics: false,
-		KeepAudioInStudio: true
+		StudioMics: true,
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -116,7 +116,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 2,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudion: false
 	},
 	{
 		_id: '',
@@ -124,7 +125,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 3,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -132,7 +134,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 4,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -140,7 +143,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 5,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -148,7 +152,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 6,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -156,7 +161,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 7,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -164,7 +170,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 8,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -172,7 +179,8 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 9,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	},
 	{
 		_id: '',
@@ -180,13 +188,14 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, [
 		AtemSource: 10,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
 		StudioMics: false,
-		KeepAudioInStudio: true
+		WantsToPersistAudio: true,
+		AcceptPersistAudio: false
 	}
 ])
 
-export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, [])
+export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, false, [])
 
-export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedPlayback', 'EVS', false, [
+export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay', false, false, [
 	{
 		_id: '',
 		SourceName: '1',
@@ -200,79 +209,13 @@ export const manifestAFVDSourcesDelayedPlayback = MakeConfigForSources('DelayedP
 		AtemSource: 23,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2],
 		StudioMics: true
-	}
-])
-
-export const manifestAFVDSourcesSkype = MakeConfigForSources('Skype', 'Skype', false, [
-	{
-		_id: '',
-		SourceName: '1',
-		AtemSource: 1,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
-		StudioMics: false
 	},
 	{
 		_id: '',
-		SourceName: '2',
-		AtemSource: 2,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '3',
-		AtemSource: 3,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '4',
-		AtemSource: 4,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '5',
-		AtemSource: 5,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '6',
-		AtemSource: 6,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '7',
-		AtemSource: 7,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '8',
-		AtemSource: 8,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '9',
-		AtemSource: 9,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
-		StudioMics: false
-	},
-	{
-		_id: '',
-		SourceName: '10',
-		AtemSource: 10,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
-		StudioMics: false
+		SourceName: 'EPSIO',
+		AtemSource: 25,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
+		StudioMics: true
 	}
 ])
 
@@ -308,7 +251,7 @@ export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
 			id: 'AtemSource',
 			name: 'ATEM input',
 			description: 'ATEM vision mixer input for Media player',
-			type: ConfigManifestEntryType.NUMBER,
+			type: ConfigManifestEntryType.INT,
 			required: true,
 			defaultVal: 0,
 			rank: 1
@@ -340,8 +283,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesFeed,
-	manifestAFVDSourcesDelayedPlayback,
-	manifestAFVDSourcesSkype,
+	manifestAFVDSourcesReplay,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDStudioMics,
 	manifestAFVDDownstreamKeyers,
@@ -357,7 +299,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSource.SplitArtF',
 		name: 'ATEM Split Screen Art Fill',
 		description: 'ATEM vision mixer input for Split Screen Art Fill',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 30
 	},
@@ -365,7 +307,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSource.SplitArtK',
 		name: 'ATEM Split Screen Art Key',
 		description: 'ATEM vision mixer input for Split Screen Art Key',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 32
 	},
@@ -373,7 +315,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSource.Default',
 		name: 'ATEM Default source',
 		description: 'ATEM vision mixer default source',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col1
 	},
@@ -381,7 +323,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSource.MixMinusDefault',
 		name: 'ATEM Mix-minus default source',
 		description: 'ATEM vision mixer default source for mix-minus',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col1
 	},
@@ -389,7 +331,15 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSource.Continuity',
 		name: 'ATEM continuity source',
 		description: 'ATEM input for continuity',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
+		required: true,
+		defaultVal: AtemSourceIndex.Col2
+	},
+	{
+		id: 'AtemSource.Dip',
+		name: 'ATEM Dip Source',
+		description: 'ATEM input for the Dip - should match the desired input in the ATEM',
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2
 	},
@@ -397,7 +347,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSettings.MP1Baseline.Clip',
 		name: 'ATEM MP1 baseline clip number',
 		description: 'Number of the clip to play on MP1 (counting from 1)',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 1
 	},
@@ -421,7 +371,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AudioBedSettings.fadeIn',
 		name: 'Bed Fade In',
 		description: 'Default fade in duration for audio beds',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 25
 	},
@@ -429,7 +379,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AudioBedSettings.volume',
 		name: 'Bed Volume',
 		description: 'Volume (0 - 100)',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 80
 	},
@@ -437,7 +387,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AudioBedSettings.fadeOut',
 		name: 'Bed Fade Out',
 		description: 'Default fade out duration for audio beds',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 25
 	},
@@ -445,7 +395,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'CasparPrerollDuration',
 		name: 'Caspar preroll duration',
 		description: 'ms of preroll before switching to caspar',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 200 // 5 frames
 	},
@@ -453,7 +403,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'MaximumPartDuration',
 		name: 'Maximum Part Duration',
 		description: 'Maximum duration (ms) to give parts in UI',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 10000
 	},
@@ -461,7 +411,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'DefaultPartDuration',
 		name: 'Default Part Duration',
 		description: 'Duration to give parts by default',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 4000
 	},
@@ -469,7 +419,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'ServerPostrollDuration',
 		name: 'Server Postroll Duration',
 		description: 'ms of postroll at the end of Server and VO clips',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 0
 	},
@@ -496,7 +446,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'HTMLGraphics.KeepAliveDuration',
 		name: 'Full Keep Alive Duration (HTML)',
 		description: 'How long to keep the old part alive when going to a full',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 1000
 	},
@@ -504,7 +454,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'HTMLGraphics.TransitionSettings.borderSoftness',
 		name: 'Full graphic wipe softness (HTML)',
 		description: 'Border softness of full graphic background wipe',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 7500
 	},
@@ -512,7 +462,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'HTMLGraphics.TransitionSettings.loopOutTransitionDuration',
 		name: 'Full graphic background loop out transition duration',
 		description: 'Duration (ms) that the background loop behind a full takes to transition out',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 120
 	},
@@ -520,7 +470,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'HTMLGraphics.TransitionSettings.wipeRate',
 		name: 'Full graphic background loop wipe duration (HTML)',
 		description: 'Frames (max 250) over which to wipe background loop behind Full',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 10
 	},
@@ -528,7 +478,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'VizPilotGraphics.CutToMediaPlayer',
 		name: 'Pilot media Player Cut Point',
 		description: 'ms from start of grafik before switching to background source',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 500
 	},
@@ -536,7 +486,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'VizPilotGraphics.FullGraphicBackground',
 		name: 'Full frame grafik background source',
 		description: 'ATEM source for mos full-frame grafik background source',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 36
 	},
@@ -544,7 +494,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'VizPilotGraphics.KeepAliveDuration',
 		name: 'Pilot Keepalive Duration',
 		description: 'ms to keep old part alive before switching to Pilot elements',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 2000
 	},
@@ -552,7 +502,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'VizPilotGraphics.OutTransitionDuration',
 		name: 'Pilot Out Transition Duration',
 		description: 'ms to keep pilot elements alive before transition to next part',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 1000
 	},
@@ -560,7 +510,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'VizPilotGraphics.PrerollDuration',
 		name: 'Pilot Preroll Duration',
 		description: 'ms of preroll before switching to Pilot elements',
-		type: ConfigManifestEntryType.NUMBER,
+		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 2000
 	},

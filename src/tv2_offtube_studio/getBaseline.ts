@@ -4,13 +4,13 @@ import {
 	BlueprintResultBaseline,
 	IStudioContext,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
 import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from './layers'
-import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
+import { sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -30,14 +30,14 @@ function filterMappings(
 
 export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 	const mappings = context.getStudioMappings()
-	const config = (context.getStudioConfig() as unknown) as OfftubeStudioBlueprintConfig
+	const config = context.getStudioConfig() as OfftubeStudioBlueprintConfig
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
 	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
 	for (const id in sisyfosMappings) {
 		if (sisyfosMappings[id]) {
-			const sisyfosChannel = sisyfosChannels[id as OfftubeSisyfosLLayer] as SisyfosChannel | undefined
+			const sisyfosChannel = sisyfosChannels[id as OfftubeSisyfosLLayer]
 			if (sisyfosChannel) {
 				mappedChannels.push({
 					mappedLayer: id,

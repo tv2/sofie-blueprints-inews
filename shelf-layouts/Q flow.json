@@ -33,6 +33,7 @@
         "studio0_offtube_graphicsFull",
         "studio0_offtube_aux_studio_screen",
         "studio0_graphicsIdent",
+        "studio0_graphicsIdent_persistent",
         "studio0_graphicsTop",
         "studio0_graphicsLower",
         "studio0_graphicsHeadline",
@@ -48,7 +49,8 @@
       "assignHotKeys": true,
       "tags": [
         "flow_producer"
-      ]
+      ],
+      "toggleOnSingleClick": true
     },
     {
       "_id": "ibMYwgJfn8TB52vhb",
@@ -60,7 +62,8 @@
       "rundownBaseline": "only",
       "default": false,
       "hide": true,
-      "assignHotKeys": true
+      "assignHotKeys": true,
+      "toggleOnSingleClick": true
     },
     {
       "_id": "tGynaBdafH5dZnttN",

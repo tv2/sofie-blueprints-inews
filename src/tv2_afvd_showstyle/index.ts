@@ -1,4 +1,5 @@
-import { BlueprintManifestType, ShowStyleBlueprintManifest } from '@sofie-automation/blueprints-integration'
+import { BlueprintManifestType, ShowStyleBlueprintManifest } from '@tv2media/blueprints-integration'
+import { getShowStyleVariantId } from '../tv2-common/getShowStyleVariantId'
 import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'
 
@@ -6,7 +7,7 @@ import { GetShowStyleManifestWithMixins, ShowStyleManifestMixinINews } from 'ine
 import { getEndStateForPart, shouldRemoveOrphanedPartInstance } from 'tv2-common'
 import { onTimelineGenerateAFVD } from '../tv2_afvd_studio/onTimelineGenerate'
 import { executeActionAFVD } from './actions'
-import { getRundown, getShowStyleVariantId } from './getRundown'
+import { getRundown } from './getRundown'
 import { getSegment } from './getSegment'
 import { parseConfig } from './helpers/config'
 import { syncIngestUpdateToPartInstance } from './syncIngestUpdateToPartInstance'

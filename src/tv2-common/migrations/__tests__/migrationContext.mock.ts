@@ -1,15 +1,16 @@
 import {
 	ConfigItemValue,
 	IBlueprintShowStyleVariant,
+	IBlueprintTriggeredActions,
 	IOutputLayer,
 	ISourceLayer,
 	MigrationContextShowStyle,
 	OmitId,
 	ShowStyleVariantPart
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 
 export class MockShowstyleMigrationContext implements MigrationContextShowStyle {
-	public variants: IBlueprintShowStyleVariant[]
+	public variants: IBlueprintShowStyleVariant[] = []
 	public configs: Map<string, ConfigItemValue> = new Map()
 
 	public getAllVariants(): IBlueprintShowStyleVariant[] {
@@ -81,5 +82,21 @@ export class MockShowstyleMigrationContext implements MigrationContextShowStyle 
 	}
 	public removeVariantConfig(variantId: string, configId: string): void {
 		throw new Error(`Function not implemented in mock: 'removeVariantConfig' args: ${variantId}, '${configId}}`)
+	}
+
+	public getAllTriggeredActions(): IBlueprintTriggeredActions[] {
+		throw new Error(`Function not implemented in mock: 'getAllTriggeredActions'`)
+	}
+	public getTriggeredAction(triggeredActionsId: string): IBlueprintTriggeredActions | undefined {
+		throw new Error(`Function not implemented in mock: 'getTriggeredAction' args: ${triggeredActionsId}`)
+	}
+	public setTriggeredAction(triggeredActions: IBlueprintTriggeredActions): void {
+		throw new Error(`Function not implemented in mock: 'setTriggeredAction' args: ${triggeredActions}`)
+	}
+	public removeTriggeredAction(triggeredActionsId: string): void {
+		throw new Error(`Function not implemented in mock: 'removeTriggeredAction' args: ${triggeredActionsId}`)
+	}
+	public getTriggeredActionId(triggeredActionId: string): string {
+		throw new Error(`Function not implemented in mock: 'getTriggeredActionId' args: ${triggeredActionId}`)
 	}
 }

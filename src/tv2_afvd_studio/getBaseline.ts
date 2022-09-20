@@ -4,13 +4,14 @@ import {
 	BlueprintResultBaseline,
 	IStudioContext,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
+import { SharedGraphicLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
 import { getStudioConfig } from './helpers/config'
 import { AtemLLayer, SisyfosLLAyer } from './layers'
-import { SisyfosChannel, sisyfosChannels } from './sisyfosChannels'
+import { sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -47,7 +48,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
 	for (const id in sisyfosMappings) {
 		if (sisyfosMappings[id]) {
-			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer] as SisyfosChannel | undefined
+			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer]
 			if (sisyfosChannel) {
 				mappedChannels.push({
 					mappedLayer: id,
@@ -156,6 +157,16 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 						atBeginning: false,
 						clipFrame: 0
 					}
+				}
+			}),
+			literal<TSR.TimelineObjVIZMSEConcept>({
+				id: '',
+				enable: { while: '1' },
+				layer: SharedGraphicLLayer.GraphicLLayerConcept,
+				content: {
+					deviceType: TSR.DeviceType.VIZMSE,
+					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
+					concept: ''
 				}
 			})
 		]

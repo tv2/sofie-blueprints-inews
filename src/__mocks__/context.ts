@@ -4,7 +4,6 @@ import * as _ from 'underscore'
 import {
 	BlueprintMappings,
 	ConfigItemValue,
-	IActionExecutionContext,
 	IBlueprintConfig,
 	IBlueprintMutatablePart,
 	IBlueprintPart,
@@ -13,7 +12,9 @@ import {
 	IBlueprintPieceInstance,
 	IBlueprintResolvedPieceInstance,
 	IBlueprintRundownDB,
+	IBlueprintRundownPlaylist,
 	ICommonContext,
+	IGetRundownContext,
 	IPackageInfoContext,
 	IRundownContext,
 	IRundownUserContext,
@@ -24,10 +25,16 @@ import {
 	IUserNotesContext,
 	OmitId,
 	PackageInfo,
-	PieceLifespan
-} from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+	PieceLifespan,
+	PlaylistTimingType,
+	Time
+} from '@tv2media/blueprints-integration'
+import { ITV2ActionExecutionContext, PieceMetaData } from 'tv2-common'
 import { NoteType } from 'tv2-constants'
+import { defaultShowStyleConfig, defaultStudioConfig } from '../tv2_afvd_showstyle/__tests__/configs'
+import { parseConfig as parseShowStyleConfigAFVD } from '../tv2_afvd_showstyle/helpers/config'
+import { parseConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
+import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
 
 export function getHash(str: string): string {
 	const hash = crypto.createHash('sha1')
@@ -74,7 +81,6 @@ export class CommonContext implements ICommonContext {
 		id = getHash(this.contextName + '_' + str.toString())
 		this.hashed[id] = str
 		return id
-		// return Random.id()
 	}
 	public unhashId(hash: string): string {
 		return this.hashed[hash] || hash
@@ -110,11 +116,15 @@ export class UserNotesContext extends CommonContext implements IUserNotesContext
 	public notifyUserWarning(message: string, _params?: { [key: string]: any }): void {
 		this.pushNote(NoteType.NOTIFY_USER_WARNING, message)
 	}
+
+	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
+		// Do nothing
+	}
 }
 
 // tslint:disable-next-line: max-classes-per-file
 export class StudioContext extends CommonContext implements IStudioContext {
-	public studioId: string
+	public studioId: string = 'studio0'
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
 	public showStyleConfig: { [key: string]: ConfigItemValue } = {}
 
@@ -174,7 +184,7 @@ export class ShowStyleContext extends StudioContext implements IShowStyleContext
 	public getShowStyleConfigRef(_configKey: string): string {
 		return 'test'
 	}
-	public hackGetMediaObjectDuration(_mediaId: string) {
+	public async hackGetMediaObjectDuration(_mediaId: string): Promise<number | undefined> {
 		return undefined
 	}
 }
@@ -187,11 +197,30 @@ export class ShowStyleUserContext extends ShowStyleContext implements IUserNotes
 	public notifyUserWarning(message: string, _params?: { [key: string]: any }): void {
 		this.pushNote(NoteType.NOTIFY_USER_WARNING, message)
 	}
+
+	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
+		// Do nothing
+	}
+}
+
+// tslint:disable-next-line: max-classes-per-file
+export class GetRundownContext extends ShowStyleUserContext implements IGetRundownContext {
+	public async getCurrentPlaylist(): Promise<Readonly<IBlueprintRundownPlaylist> | undefined> {
+		return undefined
+	}
+
+	public async getPlaylists(): Promise<Readonly<IBlueprintRundownPlaylist[]>> {
+		return []
+	}
+
+	public getRandomId(): string {
+		return ''
+	}
 }
 
 // tslint:disable-next-line: max-classes-per-file
 export class RundownContext extends ShowStyleContext implements IRundownContext {
-	public readonly rundownId: string
+	public readonly rundownId: string = 'rundown0'
 	public readonly rundown: Readonly<IBlueprintRundownDB>
 
 	constructor(
@@ -204,6 +233,16 @@ export class RundownContext extends ShowStyleContext implements IRundownContext 
 		partId?: string
 	) {
 		super(contextName, mappingsDefaults, parseStudioConfig, parseShowStyleConfig, rundownId, segmentId, partId)
+		this.rundownId = rundownId ?? this.rundownId
+		this.rundown = {
+			_id: this.rundownId,
+			externalId: this.rundownId,
+			name: this.rundownId,
+			timing: {
+				type: PlaylistTimingType.None
+			},
+			showStyleVariantId: 'variant0'
+		}
 	}
 }
 
@@ -214,6 +253,10 @@ export class RundownUserContext extends RundownContext implements IRundownUserCo
 	}
 	public notifyUserWarning(message: string, _params?: { [key: string]: any }): void {
 		this.pushNote(NoteType.NOTIFY_USER_WARNING, message)
+	}
+
+	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
+		// Do nothing
 	}
 }
 
@@ -245,11 +288,15 @@ export class SegmentUserContext extends RundownContext implements ISegmentUserCo
 	) {
 		this.pushNote(NoteType.NOTIFY_USER_WARNING, message)
 	}
-	public hackGetMediaObjectDuration(_mediaId: string) {
+	public async hackGetMediaObjectDuration(_mediaId: string): Promise<number | undefined> {
 		return undefined
 	}
 	public getPackageInfo(_packageId: string): readonly PackageInfo.Any[] {
 		return []
+	}
+
+	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
+		// Do nothing
 	}
 }
 
@@ -266,7 +313,7 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
 		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
-		rundownId?: string,
+		rundownId: string,
 		segmentId?: string,
 		partId?: string
 	) {
@@ -278,7 +325,7 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 		mutatedPiece?: Omit<IBlueprintPiece<unknown>, 'lifespan'>
 	): IBlueprintPieceInstance<unknown> {
 		this.syncedPieceInstances.push(pieceInstanceId)
-		return literal<IBlueprintPieceInstance>({
+		return {
 			_id: pieceInstanceId,
 			piece: {
 				_id: '',
@@ -294,24 +341,24 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 				content: mutatedPiece?.content ?? { timelineObjects: [] }
 			},
 			partInstanceId: ''
-		})
+		}
 	}
 	public insertPieceInstance(piece: IBlueprintPiece<unknown>): IBlueprintPieceInstance<unknown> {
-		return literal<IBlueprintPieceInstance>({
+		return {
 			_id: '',
 			piece: {
 				_id: '',
 				...piece
 			},
 			partInstanceId: ''
-		})
+		}
 	}
 	public updatePieceInstance(
 		pieceInstanceId: string,
 		piece: Partial<IBlueprintPiece<unknown>>
 	): IBlueprintPieceInstance<unknown> {
 		this.updatedPieceInstances.push(pieceInstanceId)
-		return literal<IBlueprintPieceInstance>({
+		return {
 			_id: pieceInstanceId,
 			piece: {
 				_id: '',
@@ -327,14 +374,14 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 				content: piece.content ?? { timelineObjects: [] }
 			},
 			partInstanceId: ''
-		})
+		}
 	}
 	public removePieceInstances(...pieceInstanceIds: string[]): string[] {
 		this.removedPieceInstances.push(...pieceInstanceIds)
 		return pieceInstanceIds
 	}
 	public updatePartInstance(props: Partial<IBlueprintMutatablePart<unknown>>): IBlueprintPartInstance<unknown> {
-		this.updatedPartInstance = literal<IBlueprintPartInstance>({
+		this.updatedPartInstance = {
 			_id: '',
 			segmentId: '',
 			part: {
@@ -345,22 +392,24 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 				...props
 			},
 			rehearsal: false
-		})
+		}
 		return this.updatedPartInstance
+	}
+
+	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
+		// Do nothing
 	}
 }
 
 // tslint:disable-next-line: max-classes-per-file
-export class ActionExecutionContext extends ShowStyleUserContext implements IActionExecutionContext {
+export class ActionExecutionContext extends ShowStyleUserContext implements ITV2ActionExecutionContext {
 	public currentPart: IBlueprintPartInstance
-	public currentPieceInstances: IBlueprintPieceInstance[]
+	public currentPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>
 	public nextPart: IBlueprintPartInstance | undefined
-	public nextPieceInstances: IBlueprintPieceInstance[] | undefined
+	public nextPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>> | undefined
 
 	public takeAfterExecute: boolean = false
-
-	/** Get the mappings for the studio */
-	public getStudioMappings: () => Readonly<BlueprintMappings>
+	public isTV2Context: true = true
 
 	constructor(
 		contextName: string,
@@ -371,9 +420,9 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 		segmentId: string,
 		partId: string,
 		currentPart: IBlueprintPartInstance,
-		currentPieceInstances: IBlueprintPieceInstance[],
+		currentPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>,
 		nextPart?: IBlueprintPartInstance,
-		nextPieceInstances?: IBlueprintPieceInstance[]
+		nextPieceInstances?: Array<IBlueprintPieceInstance<PieceMetaData>>
 	) {
 		super(contextName, mappingsDefaults, parseStudioConfig, parseShowStyleConfig, rundownId, segmentId, partId)
 
@@ -383,15 +432,20 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 		this.nextPieceInstances = nextPieceInstances
 	}
 
+	/** Get the mappings for the studio */
+	public getStudioMappings = () => {
+		throw new Error(`Function not implemented in mock: 'getStudioMappings'`)
+	}
+
 	/** Get a PartInstance which can be modified */
-	public getPartInstance(part: 'current' | 'next'): IBlueprintPartInstance | undefined {
+	public async getPartInstance(part: 'current' | 'next'): Promise<IBlueprintPartInstance | undefined> {
 		if (part === 'current') {
 			return this.currentPart
 		}
 		return this.nextPart
 	}
 	/** Get the PieceInstances for a modifiable PartInstance */
-	public getPieceInstances(part: 'current' | 'next'): IBlueprintPieceInstance[] {
+	public async getPieceInstances(part: 'current' | 'next'): Promise<Array<IBlueprintPieceInstance<PieceMetaData>>> {
 		if (part === 'current') {
 			return this.currentPieceInstances
 		}
@@ -399,31 +453,33 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 		return this.nextPieceInstances || []
 	}
 	/** Get the resolved PieceInstances for a modifiable PartInstance */
-	public getResolvedPieceInstances(_part: 'current' | 'next'): IBlueprintResolvedPieceInstance[] {
+	public async getResolvedPieceInstances(
+		_part: 'current' | 'next'
+	): Promise<Array<IBlueprintResolvedPieceInstance<PieceMetaData>>> {
 		return []
 	}
 	/** Get the last active piece on given layer */
-	public findLastPieceOnLayer(
+	public async findLastPieceOnLayer(
 		_sourceLayerId: string,
 		_options?: {
 			excludeCurrentPart?: boolean
 			originalOnly?: boolean
 			pieceMetaDataFilter?: any
 		}
-	): IBlueprintPieceInstance | undefined {
+	): Promise<IBlueprintPieceInstance<PieceMetaData> | undefined> {
 		return undefined
 	}
-	public findLastScriptedPieceOnLayer(
+	public async findLastScriptedPieceOnLayer(
 		_sourceLayerId: string,
 		_options?: {
 			excludeCurrentPart?: boolean
 			pieceMetaDataFilter?: any
 		}
-	): IBlueprintPiece | undefined {
+	): Promise<IBlueprintPiece<PieceMetaData> | undefined> {
 		return undefined
 	}
-	public getPartInstanceForPreviousPiece(_piece: IBlueprintPieceInstance): IBlueprintPartInstance {
-		return literal<IBlueprintPartInstance>({
+	public async getPartInstanceForPreviousPiece(_piece: IBlueprintPieceInstance): Promise<IBlueprintPartInstance> {
+		return {
 			_id: '',
 			segmentId: '',
 			part: {
@@ -433,15 +489,18 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 				title: ''
 			},
 			rehearsal: false
-		})
+		}
 	}
-	public getPartForPreviousPiece(_piece: { _id: string }): IBlueprintPart | undefined {
-		return
+	public async getPartForPreviousPiece(_piece: { _id: string }): Promise<IBlueprintPart | undefined> {
+		return undefined
 	}
 	/** Creative actions */
 	/** Insert a piece. Returns id of new PieceInstance. Any timelineObjects will have their ids changed, so are not safe to reference from another piece */
-	public insertPiece(part: 'current' | 'next', piece: IBlueprintPiece): IBlueprintPieceInstance {
-		const pieceInstance: IBlueprintPieceInstance = {
+	public async insertPiece(
+		part: 'current' | 'next',
+		piece: IBlueprintPiece<PieceMetaData>
+	): Promise<IBlueprintPieceInstance<PieceMetaData>> {
+		const pieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 			_id: '',
 			piece: {
 				_id: '',
@@ -459,22 +518,25 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 		return pieceInstance
 	}
 	/** Update a pieceInstance */
-	public updatePieceInstance(
+	public async updatePieceInstance(
 		_pieceInstanceId: string,
 		piece: Partial<OmitId<IBlueprintPiece>>
-	): IBlueprintPieceInstance {
+	): Promise<IBlueprintPieceInstance<PieceMetaData>> {
 		return {
 			_id: '',
 			piece: {
 				_id: '',
-				...(piece as IBlueprintPiece)
+				...(piece as IBlueprintPiece<PieceMetaData>)
 			},
 			partInstanceId: ''
 		}
 	}
 	/** Insert a queued part to follow the current part */
-	public queuePart(part: IBlueprintPart, pieces: IBlueprintPiece[]): IBlueprintPartInstance {
-		const instance = literal<IBlueprintPartInstance>({
+	public async queuePart(
+		part: IBlueprintPart,
+		pieces: Array<IBlueprintPiece<PieceMetaData>>
+	): Promise<IBlueprintPartInstance> {
+		const instance: IBlueprintPartInstance = {
 			_id: '',
 			segmentId: this.notesSegmentId || '',
 			part: {
@@ -483,10 +545,10 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 				segmentId: this.notesSegmentId || ''
 			},
 			rehearsal: false
-		})
+		}
 
 		this.nextPart = instance
-		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance>(p => ({
+		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance<PieceMetaData>>(p => ({
 			_id: (Date.now() * Math.random()).toString(),
 			piece: {
 				_id: '',
@@ -498,7 +560,10 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 		return instance
 	}
 	/** Update a partInstance */
-	public updatePartInstance(part: 'current' | 'next', props: Partial<IBlueprintMutatablePart>): IBlueprintPartInstance {
+	public async updatePartInstance(
+		part: 'current' | 'next',
+		props: Partial<IBlueprintMutatablePart>
+	): Promise<IBlueprintPartInstance> {
 		if (part === 'current') {
 			this.currentPart.part = { ...this.currentPart.part, ...props }
 			return this.currentPart
@@ -511,15 +576,15 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 	}
 	/** Destructive actions */
 	/** Stop any piecesInstances on the specified sourceLayers. Returns ids of piecesInstances that were affected */
-	public stopPiecesOnLayers(_sourceLayerIds: string[], _timeOffset?: number): string[] {
+	public async stopPiecesOnLayers(_sourceLayerIds: string[], _timeOffset?: number): Promise<string[]> {
 		return []
 	}
 	/** Stop piecesInstances by id. Returns ids of piecesInstances that were removed */
-	public stopPieceInstances(_pieceInstanceIds: string[], _timeOffset?: number): string[] {
+	public async stopPieceInstances(_pieceInstanceIds: string[], _timeOffset?: number): Promise<string[]> {
 		return []
 	}
 	/** Remove piecesInstances by id. Returns ids of piecesInstances that were removed */
-	public removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): string[] {
+	public async removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): Promise<string[]> {
 		if (part === 'current') {
 			this.currentPieceInstances = this.currentPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
 		} else if (this.nextPieceInstances) {
@@ -528,16 +593,16 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 
 		return pieceInstanceIds
 	}
-	public moveNextPart(_partDelta: number, _segmentDelta: number): void {
+	public async moveNextPart(_partDelta: number, _segmentDelta: number): Promise<void> {
 		throw new Error('Method not implemented.')
 	}
 	/** Set flag to perform take after executing the current action. Returns state of the flag after each call. */
-	public takeAfterExecuteAction(take: boolean): boolean {
+	public async takeAfterExecuteAction(take: boolean): Promise<boolean> {
 		this.takeAfterExecute = take
 
 		return take
 	}
-	public hackGetMediaObjectDuration(_mediaId: string) {
+	public async hackGetMediaObjectDuration(_mediaId: string): Promise<number | undefined> {
 		return undefined
 	}
 	public getPackageInfo(_packageId: string): PackageInfo.Any[] {
@@ -545,6 +610,14 @@ export class ActionExecutionContext extends ShowStyleUserContext implements IAct
 	}
 	public getCurrentTime(): number {
 		throw new Error('Method not implemented.')
+	}
+
+	public async blockTakeUntil(_time: Time | null): Promise<void> {
+		return undefined
+	}
+
+	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
+		// Do nothing
 	}
 }
 
@@ -558,4 +631,17 @@ export interface PartNote {
 		pieceId?: string
 	}
 	message: string
+}
+
+export function makeMockAFVDContext(studioConfigOverrides?: Partial<StudioConfig>) {
+	const mockContext = new SegmentUserContext(
+		'test',
+		mappingsDefaultsAFVD,
+		parseStudioConfigAFVD,
+		parseShowStyleConfigAFVD
+	)
+	mockContext.studioConfig = { ...defaultStudioConfig, ...studioConfigOverrides } as any
+	mockContext.showStyleConfig = defaultShowStyleConfig as any
+
+	return mockContext
 }

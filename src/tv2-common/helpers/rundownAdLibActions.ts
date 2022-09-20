@@ -1,9 +1,10 @@
-import { IBlueprintActionManifest } from '@sofie-automation/blueprints-integration'
+import { IBlueprintActionManifest } from '@tv2media/blueprints-integration'
 import {
 	ActionTakeWithTransition,
 	ActionTakeWithTransitionVariant,
 	ActionTakeWithTransitionVariantBreaker,
 	ActionTakeWithTransitionVariantCut,
+	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
 	GetTagForTransition,
 	literal,
@@ -19,12 +20,16 @@ export function GetTransitionAdLibActions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(config: ShowStyleConfig, startingRank: number): IBlueprintActionManifest[] {
-	const res: IBlueprintActionManifest[] = []
+	const blueprintActionManifests: IBlueprintActionManifest[] = []
 
 	if (config.showStyle.ShowstyleTransition && config.showStyle.ShowstyleTransition.length) {
 		const defaultTransition = config.showStyle.ShowstyleTransition
 
-		const userData = ParseTransitionSetting(defaultTransition, true)
+		const userData: ActionTakeWithTransition = {
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: ParseTransitionString(defaultTransition),
+			takeNow: true
+		}
 
 		const jingleConfig = config.showStyle.BreakerConfig.find(
 			j => j.BreakerName === config.showStyle.ShowstyleTransition
@@ -39,7 +44,7 @@ export function GetTransitionAdLibActions<
 			alphaAtEnd = jingleConfig.EndAlpha
 		}
 
-		res.push(
+		blueprintActionManifests.push(
 			makeTransitionAction(
 				config,
 				userData,
@@ -58,7 +63,11 @@ export function GetTransitionAdLibActions<
 	if (config.showStyle.Transitions) {
 		config.showStyle.Transitions.forEach((transition, i) => {
 			if (transition.Transition && transition.Transition.length) {
-				const userData = ParseTransitionSetting(transition.Transition, true)
+				const userData: ActionTakeWithTransition = {
+					type: AdlibActionType.TAKE_WITH_TRANSITION,
+					variant: ParseTransitionString(transition.Transition),
+					takeNow: true
+				}
 
 				const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition.Transition)
 				let alphaAtStart: number | undefined
@@ -71,7 +80,7 @@ export function GetTransitionAdLibActions<
 					alphaAtEnd = jingleConfig.EndAlpha
 				}
 
-				res.push(
+				blueprintActionManifests.push(
 					makeTransitionAction(
 						config,
 						userData,
@@ -87,33 +96,35 @@ export function GetTransitionAdLibActions<
 		})
 	}
 
-	return res
+	return blueprintActionManifests
 }
 
-export function ParseTransitionSetting(transitionSetting: string, takeNow: boolean): ActionTakeWithTransition {
-	let variant: ActionTakeWithTransitionVariant = literal<ActionTakeWithTransitionVariantCut>({
-		type: 'cut'
-	})
-
-	if (transitionSetting.match(/mix ?(\d+)/i)) {
-		const props = transitionSetting.match(/mix ?(\d+)/i)
-		variant = literal<ActionTakeWithTransitionVariantMix>({
+export function ParseTransitionString(transitionString: string): ActionTakeWithTransitionVariant {
+	if (transitionString.match(/mix ?(\d+)/i)) {
+		const props = transitionString.match(/mix ?(\d+)/i)
+		return literal<ActionTakeWithTransitionVariantMix>({
 			type: 'mix',
 			frames: Number(props![1])
 		})
-	} else if (transitionSetting.match(/cut/i)) {
-		// Variant already setup
-	} else {
-		variant = literal<ActionTakeWithTransitionVariantBreaker>({
-			type: 'breaker',
-			breaker: transitionSetting.toString().replace(/effekt ?/i, '')
+	}
+
+	if (transitionString.match(/dip ?(\d+)/i)) {
+		const props = transitionString.match(/dip ?(\d+)/i)
+		return literal<ActionTakeWithTransitionVariantDip>({
+			type: 'dip',
+			frames: Number(props![1])
 		})
 	}
 
-	return literal<ActionTakeWithTransition>({
-		type: AdlibActionType.TAKE_WITH_TRANSITION,
-		variant,
-		takeNow
+	if (transitionString.match(/cut/i)) {
+		return literal<ActionTakeWithTransitionVariantCut>({
+			type: 'cut'
+		})
+	}
+
+	return literal<ActionTakeWithTransitionVariantBreaker>({
+		type: 'breaker',
+		breaker: transitionString.toString().replace(/effekt ?/i, '')
 	})
 }
 
@@ -130,7 +141,8 @@ function makeTransitionAction(
 	const tag = GetTagForTransition(userData.variant)
 	const isEffekt = !!label.match(/^\d+$/)
 
-	return literal<IBlueprintActionManifest>({
+	return {
+		externalId: `${JSON.stringify(userData)}_${AdlibActionType.TAKE_WITH_TRANSITION}_${rank}`,
 		actionId: AdlibActionType.TAKE_WITH_TRANSITION,
 		userData,
 		userDataManifest: {},
@@ -139,13 +151,13 @@ function makeTransitionAction(
 			label: t(isEffekt ? `EFFEKT ${label}` : label),
 			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
 			outputLayerId: SharedOutputLayers.PGM,
-			tags: [AdlibTags.ADLIB_STATIC_BUTTON],
+			tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_TAKE_WITH_TRANSITION],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
 			content:
-				isEffekt || !!label.match(/^MIX ?\d+$/i) || !!label.match(/^CUT$/i)
+				isEffekt || !!/^MIX ?\d+$/i.test(label) || !!/^CUT$/i.test(label) || !!/^DIP ?\d+$/i.test(label)
 					? {}
 					: CreateJingleExpectedMedia(config, jingle, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
 		}
-	})
+	}
 }

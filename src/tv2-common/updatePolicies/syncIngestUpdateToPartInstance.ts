@@ -2,7 +2,7 @@ import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { SharedSourceLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { stopOrReplaceEditablePieces, updateAdLibInstances } from './index'
@@ -22,7 +22,6 @@ export function syncIngestUpdateToPartInstanceBase(
 					...freelyEditableLayers,
 					SharedSourceLayers.PgmGraphicsHeadline,
 					SharedSourceLayers.PgmGraphicsIdent,
-					SharedSourceLayers.PgmGraphicsIdentPersistent,
 					SharedSourceLayers.PgmGraphicsLower,
 					SharedSourceLayers.PgmGraphicsOverlay,
 					SharedSourceLayers.PgmGraphicsTLF,

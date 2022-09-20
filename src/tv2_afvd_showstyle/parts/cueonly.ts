@@ -5,14 +5,13 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddScript,
 	ApplyFullGraphicPropertiesToPart,
 	CueDefinition,
 	GetJinglePartProperties,
 	GraphicIsPilot,
-	literal,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -21,7 +20,7 @@ import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
-export function CreatePartCueOnly(
+export async function CreatePartCueOnly(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
@@ -34,11 +33,11 @@ export function CreatePartCueOnly(
 	const partDefinitionWithID = { ...partDefinition, ...{ externalId: id } }
 	const partTime = PartTime(config, partDefinitionWithID, totalWords, false)
 
-	let part = literal<IBlueprintPart>({
+	let part: IBlueprintPart = {
 		externalId: id,
 		title,
 		metaData: {}
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
@@ -52,17 +51,37 @@ export function CreatePartCueOnly(
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		ApplyFullGraphicPropertiesToPart(config, part)
-	} else if (partDefinition.cues.filter(c => c.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
-	EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {})
+	await EvaluateCues(
+		context,
+		config,
+		part,
+		pieces,
+		adLibPieces,
+		actions,
+		mediaSubscriptions,
+		[cue],
+		partDefinitionWithID,
+		{}
+	)
 	AddScript(partDefinitionWithID, pieces, partTime, SourceLayer.PgmScript)
 
 	if (makeAdlibs) {
-		EvaluateCues(context, config, part, pieces, adLibPieces, actions, mediaSubscriptions, [cue], partDefinitionWithID, {
-			adlib: true
-		})
+		await EvaluateCues(
+			context,
+			config,
+			part,
+			pieces,
+			adLibPieces,
+			actions,
+			mediaSubscriptions,
+			[cue],
+			partDefinitionWithID,
+			{
+				adlib: true
+			}
+		)
 	}
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions

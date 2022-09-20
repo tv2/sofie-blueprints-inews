@@ -1,19 +1,15 @@
-import {
-	ISourceLayer,
-	MigrationContextShowStyle,
-	MigrationStepShowStyle
-} from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
 import _ = require('underscore')
 
 export function forceSourceLayerToDefaultsBase(
 	sourcelayerDefaults: ISourceLayer[],
 	versionStr: string,
+	showStyleId: string,
 	layer: string,
 	overrideSteps?: string[]
 ): MigrationStepShowStyle {
-	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.sourcelayer.defaults.${layer}.forced`,
+	return {
+		id: `${versionStr}.${showStyleId}.sourcelayer.defaults.${layer}.forced`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		overrideSteps,
@@ -46,5 +42,5 @@ export function forceSourceLayerToDefaultsBase(
 				context.insertSourceLayer(layer, defaultVal)
 			}
 		}
-	})
+	}
 }

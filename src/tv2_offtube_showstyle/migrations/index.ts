@@ -1,21 +1,24 @@
-import { MigrationStepShowStyle } from '@sofie-automation/blueprints-integration'
+import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
 	AddGraphicToGFXTable,
+	changeGFXTemplate,
+	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	literal,
+	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
-	SetShortcutListMigrationStep,
 	SetShowstyleTransitionMigrationStep,
+	SetSourceLayerName,
+	SetSourceLayerProperties,
 	StripFolderFromAudioBedConfig,
 	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
-import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
-import * as _ from 'underscore'
-import { SetSourceLayerNameMigrationStep } from '../../tv2-common/migrations/shortcuts'
+import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
+import { GetDefaultStudioSourcesForOfftube } from './hotkeys'
+import sourcelayerDefaults from './sourcelayer-defaults'
 import {
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
@@ -44,35 +47,29 @@ enum VizLLayer {
 }
 
 export const remapVizLLayer: Map<string, string> = new Map([
-	[VizLLayer.VizLLayerOverlay, GraphicLLayer.GraphicLLayerOverlay],
-	[VizLLayer.VizLLayerOverlayIdent, GraphicLLayer.GraphicLLayerOverlayIdent],
-	[VizLLayer.VizLLayerOverlayTopt, GraphicLLayer.GraphicLLayerOverlayIdent],
-	[VizLLayer.VizLLayerOverlayLower, GraphicLLayer.GraphicLLayerOverlayLower],
-	[VizLLayer.VizLLayerOverlayHeadline, GraphicLLayer.GraphicLLayerOverlayHeadline],
-	[VizLLayer.VizLLayerOverlayTema, GraphicLLayer.GraphicLLayerOverlayTema],
-	[VizLLayer.VizLLayerPilot, GraphicLLayer.GraphicLLayerPilot],
-	[VizLLayer.VizLLayerPilotOverlay, GraphicLLayer.GraphicLLayerPilotOverlay],
-	[VizLLayer.VizLLayerDesign, GraphicLLayer.GraphicLLayerDesign],
-	[VizLLayer.VizLLayerAdLibs, GraphicLLayer.GraphicLLayerAdLibs],
-	[VizLLayer.VizLLayerWall, GraphicLLayer.GraphicLLayerWall]
+	[VizLLayer.VizLLayerOverlay, SharedGraphicLLayer.GraphicLLayerOverlay],
+	[VizLLayer.VizLLayerOverlayIdent, SharedGraphicLLayer.GraphicLLayerOverlayIdent],
+	[VizLLayer.VizLLayerOverlayTopt, SharedGraphicLLayer.GraphicLLayerOverlayIdent],
+	[VizLLayer.VizLLayerOverlayLower, SharedGraphicLLayer.GraphicLLayerOverlayLower],
+	[VizLLayer.VizLLayerOverlayHeadline, SharedGraphicLLayer.GraphicLLayerOverlayHeadline],
+	[VizLLayer.VizLLayerOverlayTema, SharedGraphicLLayer.GraphicLLayerOverlayTema],
+	[VizLLayer.VizLLayerPilot, SharedGraphicLLayer.GraphicLLayerPilot],
+	[VizLLayer.VizLLayerPilotOverlay, SharedGraphicLLayer.GraphicLLayerPilotOverlay],
+	[VizLLayer.VizLLayerDesign, SharedGraphicLLayer.GraphicLLayerDesign],
+	[VizLLayer.VizLLayerAdLibs, SharedGraphicLLayer.GraphicLLayerAdLibs],
+	[VizLLayer.VizLLayerWall, SharedGraphicLLayer.GraphicLLayerWall]
 ])
 
 export const remapVizDOvl: Map<string, string> = new Map([['viz-d-ovl', 'OVL1']])
 
-/** Migrations overriden later */
-// 1.3.1
-const jingle131 = SetShortcutListMigrationStep(
-	'1.3.1',
-	OfftubeSourceLayer.PgmJingle,
-	'NumpadDivide,NumpadSubtract,NumpadAdd'
-)
+const SHOW_STYLE_ID = 'tv2_offtube_showstyle'
 
 /**
  * Versions:
  * 0.1.0: Core 0.24.0
  */
 
-export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationStepShowStyle[]>([
+export const showStyleMigrations: MigrationStepShowStyle[] = [
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getCreateVariantMigrationSteps(),
@@ -81,19 +78,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 
 	/**
 	 * 1.3.1
-	 * - Shortcuts for Jingle layer (transition buttons)
 	 * - Set default transition
 	 * - Populate transition table
 	 */
-	jingle131,
 	SetShowstyleTransitionMigrationStep('1.3.1', '/ NBA WIPE'),
 	...UpsertValuesIntoTransitionTable('1.3.1', [{ Transition: 'MIX8' }, { Transition: 'MIX25' }]),
-
-	/**
-	 * 1.3.3
-	 * - Shortcuts for DVE Box 1
-	 */
-	SetShortcutListMigrationStep('1.3.3', OfftubeSourceLayer.PgmDVEBox1, 'shift+f1,shift+1,shift+2,shift+3,shift+t'),
 
 	/**
 	 * 1.3.8
@@ -106,7 +95,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Create Design layer
 	 */
 	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmDesign),
-	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmJingle, [jingle131.id]),
+	forceSourceLayerToDefaults('1.3.9', OfftubeSourceLayer.PgmJingle),
 
 	/**
 	 * 1.4.6
@@ -129,7 +118,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	AddGraphicToGFXTable('1.5.4', 'Offtube', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
-		LayerMapping: GraphicLLayer.GraphicLLayerLocators,
+		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
 		INewsCode: '',
 		INewsName: 'locators',
 		VizDestination: '',
@@ -163,53 +152,121 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Renaming source layers
 	 */
 	// OVERLAY group
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsIdent, 'GFX Ident'),
-	SetSourceLayerNameMigrationStep(
-		'1.6.9',
-		OfftubeSourceLayer.PgmGraphicsIdentPersistent,
-		'GFX Ident Persistent (hidden)'
-	),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTop, 'GFX Top'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmGraphicsTema, 'GFX Tema'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.WallGraphics, 'GFX Wall'),
-	SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(shared)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsIdent, 'GFX Ident'),
+	SetSourceLayerName('1.6.9', 'studio0_graphicsIdent_persistent', 'GFX Ident Persistent (hidden)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsTop, 'GFX Top'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsOverlay, 'GFX Overlay (fallback)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsTema, 'GFX Tema'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.WallGraphics, 'GFX Wall'),
+	SetSourceLayerName('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(shared)'),
 	// PGM group
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmCam, 'Camera'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmVoiceOver, 'VO'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmPilot, 'GFX FULL (VCP)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmContinuity, 'Continuity'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox1, 'DVE Inp 1'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox2, 'DVE Inp 2'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox3, 'DVE Inp 3'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmDVEBox4, 'DVE Inp 4'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmCam, 'Camera'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmVoiceOver, 'VO'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmPilot, 'GFX FULL (VCP)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmContinuity, 'Continuity'),
 	// MUSIK group
-	SetSourceLayerNameMigrationStep('1.6.9', SharedSourceLayers.PgmAudioBed, 'Audiobed (shared)'),
+	SetSourceLayerName('1.6.9', SharedSourceLayers.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmAdlibJingle, 'Effect (adlib)'),
 	// SELECTED_ADLIB group
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdLibDVE, 'DVE (selected)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedServer, 'Server (selected)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedVoiceOver, 'VO (selected)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdlibGraphicsFull, 'GFX Full (selected)'),
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.SelectedAdlibJingle, 'Jingle (selected)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.SelectedAdLibDVE, 'DVE (selected)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.SelectedServer, 'Server (selected)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.SelectedVoiceOver, 'VO (selected)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.SelectedAdlibGraphicsFull, 'GFX Full (selected)'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.SelectedAdlibJingle, 'Jingle (selected)'),
 	// AUX group
-	SetSourceLayerNameMigrationStep('1.6.9', OfftubeSourceLayer.AuxStudioScreen, 'AUX studio screen'),
+	SetSourceLayerName('1.6.9', OfftubeSourceLayer.AuxStudioScreen, 'AUX studio screen'),
 
 	/**
 	 * 1.6.10
 	 * - Remove 'audio/' from soundbed configs
 	 * - Remove 'dve/' from DVE frame/key configs
+	 * - Add PgmJingle to presenter screen
 	 */
 	StripFolderFromAudioBedConfig('1.6.10', 'AFVD'),
 	StripFolderFromDVEConfig('1.6.10', 'AFVD'),
+	forceSourceLayerToDefaults('1.6.10', OfftubeSourceLayer.PgmJingle),
+
+	/**
+	 * 1.7.0
+	 * - Remove DVE box layers (no longer needed due to triggers)
+	 * - Remove old shortcuts
+	 * - Migrate shortcuts to Action Triggers
+	 */
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box1'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box2'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box3'),
+	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box4'),
+	RemoveOldShortcuts('1.7.0', SHOW_STYLE_ID, sourcelayerDefaults),
+	GetDefaultAdLibTriggers('1.7.0', SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, true),
+
+	/**
+	 * 1.7.1
+	 * - Change source layer type for graphics that don't have previews
+	 */
+	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', 'studio0_graphicsIdent_persistent', {
+		type: SourceLayerType.LOWER_THIRD
+	}),
+	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsTop, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', OfftubeSourceLayer.PgmGraphicsTLF, { type: SourceLayerType.LOWER_THIRD }),
+
+	/**
+	 * 1.7.2
+	 * - Fix bundright configuration
+	 */
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			OutType: 'S'
+		},
+		{ OutType: '' }
+	),
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			SourceLayer: 'studio0_graphicsTema'
+		},
+		{ SourceLayer: 'studio0_graphicsLower' }
+	),
+	changeGFXTemplate(
+		'1.7.2',
+		'QBOX',
+		{
+			INewsCode: 'KG=',
+			INewsName: 'bundright',
+			VizTemplate: 'bund_right',
+			VizDestination: 'OVL1',
+			LayerMapping: 'graphic_overlay_tema'
+		},
+		{ LayerMapping: 'graphic_overlay_lower' }
+	),
+
+	/**
+	 * 1.7.5
+	 * - Remove persistent idents
+	 */
+	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION)
-])
+	...getOutputLayerDefaultsMigrationSteps(VERSION),
+	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
+]

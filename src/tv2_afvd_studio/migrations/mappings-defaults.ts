@@ -1,4 +1,4 @@
-import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@sofie-automation/blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@tv2media/blueprints-integration'
 import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,
@@ -7,11 +7,10 @@ import {
 	literal,
 	SisyfosPlayerClip
 } from 'tv2-common'
-import { AbstractLLayer, GraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
+import { AbstractLLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { BlueprintConfig } from '../helpers/config'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../layers'
+import { AtemLLayer, CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -331,6 +330,15 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		mappingType: TSR.MappingSisyfosType.CHANNEL,
 		setLabelToLayerName: true
 	}),
+	[SisyfosLLAyer.SisyfosSourceEpsio]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		layerName: 'EPSIO',
+		channel: 29,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
+	}),
 	[SisyfosLLAyer.SisyfosResync]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
@@ -535,6 +543,24 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		device: TSR.DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		layerName: 'GFX Full Loop',
+		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerConcept]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		layerName: 'Override Concept',
+		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerInitialize]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		layerName: 'GFX Show Initialization',
+		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerCleanup]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		layerName: 'GFX Show Cleanup',
 		lookahead: LookaheadMode.NONE
 	})
 }

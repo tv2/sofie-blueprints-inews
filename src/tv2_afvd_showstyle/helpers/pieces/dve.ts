@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectDVE,
 	AddParentClass,
@@ -15,11 +15,9 @@ import {
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
-	PieceMetaData,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, SharedOutputLayers } from 'tv2-constants'
-import * as _ from 'underscore'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
@@ -63,7 +61,7 @@ export function EvaluateDVE(
 	if (content.valid) {
 		if (adlib) {
 			adlibPieces.push(
-				literal<IBlueprintAdLibPiece>({
+				literal<IBlueprintAdLibPiece<DVEPieceMetaData>>({
 					_rank: rank || 0,
 					externalId: partDefinition.externalId,
 					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
@@ -73,8 +71,8 @@ export function EvaluateDVE(
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: literal<DVEPieceMetaData>({
+					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
+					metaData: {
 						sources: parsedCue.sources,
 						config: rawTemplate,
 						userData: literal<ActionSelectDVE>({
@@ -82,8 +80,11 @@ export function EvaluateDVE(
 							config: parsedCue,
 							videoId: partDefinition.fields.videoId,
 							segmentExternalId: partDefinition.segmentExternalId
-						})
-					})
+						}),
+						sisyfosPersistMetaData: {
+							sisyfosLayers: []
+						}
+					}
 				})
 			)
 		} else {
@@ -91,7 +92,7 @@ export function EvaluateDVE(
 			start = start ? start : 0
 			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 			pieces.push(
-				literal<IBlueprintPiece>({
+				literal<IBlueprintPiece<DVEPieceMetaData>>({
 					externalId: partDefinition.externalId,
 					name: `DVE: ${parsedCue.template}`,
 					enable: {
@@ -103,18 +104,21 @@ export function EvaluateDVE(
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
-					adlibPreroll: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: literal<PieceMetaData & DVEPieceMetaData>({
+					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
+					metaData: {
 						mediaPlayerSessions: [partDefinition.segmentExternalId],
 						sources: parsedCue.sources,
 						config: rawTemplate,
-						userData: literal<ActionSelectDVE>({
+						userData: {
 							type: AdlibActionType.SELECT_DVE,
 							config: parsedCue,
 							videoId: partDefinition.fields.videoId,
 							segmentExternalId: partDefinition.segmentExternalId
-						})
-					})
+						},
+						sisyfosPersistMetaData: {
+							sisyfosLayers: []
+						}
+					}
 				})
 			)
 		}

@@ -1,6 +1,6 @@
-import { IBlueprintPart, TSR } from '@sofie-automation/blueprints-integration'
+import { IBlueprintPart, TSR } from '@tv2media/blueprints-integration'
 import { layerToHTMLGraphicSlot, literal, TV2BlueprintConfig } from 'tv2-common'
-import { GraphicLLayer } from 'tv2-constants'
+import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
 
 export * from './name'
 export * from './timing'
@@ -13,14 +13,19 @@ export * from './viz'
 export * from './design'
 
 export function ApplyFullGraphicPropertiesToPart(config: TV2BlueprintConfig, part: IBlueprintPart) {
-	part.prerollDuration =
-		config.studio.GraphicsType === 'HTML'
-			? config.studio.CasparPrerollDuration
-			: config.studio.VizPilotGraphics.PrerollDuration
-	part.transitionKeepaliveDuration =
+	const keepAliveDuration =
 		config.studio.GraphicsType === 'HTML'
 			? config.studio.HTMLGraphics.KeepAliveDuration
 			: config.studio.VizPilotGraphics.KeepAliveDuration
+	if (part.inTransition === undefined) {
+		part.inTransition = {
+			partContentDelayDuration: 0,
+			blockTakeDuration: 0,
+			previousPartKeepaliveDuration: keepAliveDuration
+		}
+	} else {
+		part.inTransition.previousPartKeepaliveDuration = keepAliveDuration
+	}
 }
 
 export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimelineObj[] {
@@ -29,11 +34,11 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 	} else {
 		const slotBaselineObjects: TSR.TSRTimelineObj[] = []
 		;[
-			GraphicLLayer.GraphicLLayerOverlayIdent,
-			GraphicLLayer.GraphicLLayerOverlayLower,
-			GraphicLLayer.GraphicLLayerOverlayTema,
-			GraphicLLayer.GraphicLLayerOverlayTopt,
-			GraphicLLayer.GraphicLLayerLocators
+			SharedGraphicLLayer.GraphicLLayerOverlayIdent,
+			SharedGraphicLLayer.GraphicLLayerOverlayLower,
+			SharedGraphicLLayer.GraphicLLayerOverlayTema,
+			SharedGraphicLLayer.GraphicLLayerOverlayTopt,
+			SharedGraphicLLayer.GraphicLLayerLocators
 		].forEach(layer => {
 			if (layerToHTMLGraphicSlot[layer]) {
 				slotBaselineObjects.push(
@@ -74,7 +79,7 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					while: '1'
 				},
 				priority: 0,
-				layer: GraphicLLayer.GraphicLLayerOverlay,
+				layer: SharedGraphicLLayer.GraphicLLayerOverlay,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -83,11 +88,11 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					data: {
 						display: 'program',
 						slots: [
-							GraphicLLayer.GraphicLLayerOverlayIdent,
-							GraphicLLayer.GraphicLLayerOverlayLower,
-							GraphicLLayer.GraphicLLayerOverlayTema,
-							GraphicLLayer.GraphicLLayerOverlayTopt,
-							GraphicLLayer.GraphicLLayerLocators
+							SharedGraphicLLayer.GraphicLLayerOverlayIdent,
+							SharedGraphicLLayer.GraphicLLayerOverlayLower,
+							SharedGraphicLLayer.GraphicLLayerOverlayTema,
+							SharedGraphicLLayer.GraphicLLayerOverlayTopt,
+							SharedGraphicLLayer.GraphicLLayerLocators
 						].reduce((obj: Record<string, any>, layer) => {
 							if (layerToHTMLGraphicSlot[layer]) {
 								obj[layerToHTMLGraphicSlot[layer]] = {
@@ -108,7 +113,7 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					while: '1'
 				},
 				priority: 0,
-				layer: GraphicLLayer.GraphicLLayerDesign,
+				layer: SharedGraphicLLayer.GraphicLLayerDesign,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -128,7 +133,7 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					while: '1'
 				},
 				priority: 0,
-				layer: GraphicLLayer.GraphicLLayerPilot,
+				layer: SharedGraphicLLayer.GraphicLLayerPilot,
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -137,7 +142,7 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 					data: {
 						display: 'program',
 						slots: {
-							[layerToHTMLGraphicSlot[GraphicLLayer.GraphicLLayerPilot]]: {
+							[layerToHTMLGraphicSlot[SharedGraphicLLayer.GraphicLLayerPilot]]: {
 								payload: {},
 								display: 'hidden'
 							}
@@ -147,5 +152,17 @@ export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimeli
 				}
 			})
 		]
+	}
+}
+
+export function findShowId(config: TV2BlueprintConfig, engine: GraphicEngine): string {
+	const graphicsSetup = config.selectedGraphicsSetup
+	switch (engine) {
+		case 'FULL':
+		case 'WALL':
+			return graphicsSetup.FullShowId
+		case 'TLF':
+		case 'OVL':
+			return graphicsSetup.OvlShowId
 	}
 }

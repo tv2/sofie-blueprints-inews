@@ -2,23 +2,28 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,
 	CueDefinitionTelefon,
 	GraphicInternal,
+	GraphicPieceMetaData,
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
-import { CueType, GraphicLLayer, PartType, SharedOutputLayers } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import {
+	DEFAULT_GRAPHICS_SETUP,
+	defaultShowStyleConfig,
+	defaultStudioConfig,
+	OVL_SHOW_ID
+} from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import {
 	defaultDSKConfig,
@@ -36,8 +41,12 @@ mockContext.showStyleConfig = defaultShowStyleConfig as any
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
-	variant: {
-		name: '1'
+	sourceDefinition: {
+		sourceType: SourceType.KAM,
+		id: '1',
+		raw: 'Kam 1',
+		minusMic: false,
+		name: 'KAM 2'
 	},
 	externalId: '0001',
 	rawType: 'Kam 1',
@@ -48,11 +57,6 @@ const dummyPart = literal<PartDefinitionKam>({
 	modified: 0,
 	segmentExternalId: ''
 })
-
-const dummyBlueprintPart: IBlueprintPart = {
-	title: 'Kam 1',
-	externalId: '0001'
-}
 
 describe('telefon', () => {
 	test('telefon with vizObj', () => {
@@ -83,14 +87,17 @@ describe('telefon', () => {
 			{
 				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
 				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: [],
+				sources: {
+					cameras: [],
+					lives: [],
+					feeds: [],
+					replays: []
+				},
 				mediaPlayers: [],
-				stickyLayers: [],
-				liveAudio: [],
-				dsk: defaultDSKConfig
+				dsk: defaultDSKConfig,
+				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
 			},
 			mockContext,
-			dummyBlueprintPart,
 			pieces,
 			adLibPieces,
 			actions,
@@ -99,15 +106,21 @@ describe('telefon', () => {
 			cue
 		)
 		expect(pieces).toEqual([
-			literal<IBlueprintPiece>({
+			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'TLF 1',
 				enable: {
 					start: 0
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
-				sourceLayerId: SourceLayer.PgmGraphicsTLF,
+				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
+				metaData: {
+					belongsToRemotePart: false,
+					sisyfosPersistMetaData: {
+						sisyfosLayers: []
+					}
+				},
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
@@ -119,13 +132,14 @@ describe('telefon', () => {
 								while: '!.full'
 							},
 							priority: 1,
-							layer: GraphicLLayer.GraphicLLayerOverlayLower,
+							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1'
+								channelName: 'OVL1',
+								showId: OVL_SHOW_ID
 							}
 						}),
 						literal<TSR.TimelineObjAtemDSK>({

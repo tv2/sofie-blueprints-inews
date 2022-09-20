@@ -1,6 +1,6 @@
 import { CueDefinition, CueDefinitionBase, CueTime } from './inewsConversion/converters/ParseCue'
 
-import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@sofie-automation/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 const FRAME_TIME = 1000 / 25 // TODO: This should be pulled from config.
@@ -38,22 +38,14 @@ export function CreateTimingEnable(
 		lifespan: PieceLifespan.WithinPart
 	}
 
-	if (cue.start) {
-		;(result.enable as any).start = CalculateTime(cue.start)
-	} else {
-		;(result.enable as any).start = 0
-	}
+	result.enable.start = (cue.start && CalculateTime(cue.start)) ?? 0
 
 	if (cue.end) {
 		if (cue.end.infiniteMode) {
 			result.lifespan = LifeSpan(cue.end.infiniteMode, PieceLifespan.WithinPart)
 		} else {
 			const end = CalculateTime(cue.end)
-			;(result.enable as any).duration = end
-				? result.enable.start
-					? end - Number(result.enable.start)
-					: end
-				: undefined
+			result.enable.duration = end ? end - result.enable.start : undefined
 		}
 	} else if (defaultOut !== undefined) {
 		result.enable.duration = defaultOut

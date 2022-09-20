@@ -1,5 +1,5 @@
-import { BlueprintResultPart, IBlueprintPart, IShowStyleUserContext } from '@sofie-automation/blueprints-integration'
-import { literal, PartDefinition, PartTime, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
+import { BlueprintResultPart, IBlueprintPart, IShowStyleUserContext } from '@tv2media/blueprints-integration'
+import { PartDefinition, PartTime, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 export function CreatePartKamBase<
 	StudioConfig extends TV2StudioConfigBase,
@@ -12,18 +12,19 @@ export function CreatePartKamBase<
 ): { part: BlueprintResultPart; duration: number; invalid?: true } {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 
-	const part = literal<IBlueprintPart>({
+	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.rawType,
 		metaData: {},
 		expectedDuration: partTime > 0 ? partTime : 0
-	})
+	}
 
 	return {
 		part: {
 			part,
 			pieces: [],
-			adLibPieces: []
+			adLibPieces: [],
+			actions: []
 		},
 		duration: partTime
 	}

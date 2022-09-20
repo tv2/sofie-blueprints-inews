@@ -1,7 +1,7 @@
 import { TV2BlueprintConfig } from 'tv2-common'
-import { GraphicLLayer, SharedSourceLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 
-export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: string, isStickyIdent?: boolean) {
+export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: string) {
 	const conf = config.showStyle.GFXTemplates
 		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
 		: undefined
@@ -19,10 +19,6 @@ export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: strin
 			}
 			return SharedSourceLayers.PgmGraphicsHeadline
 		case SharedSourceLayers.PgmGraphicsIdent:
-			if (isStickyIdent) {
-				return SharedSourceLayers.PgmGraphicsIdentPersistent
-			}
-
 			return SharedSourceLayers.PgmGraphicsIdent
 		case SharedSourceLayers.PgmGraphicsLower:
 			return SharedSourceLayers.PgmGraphicsLower
@@ -47,29 +43,29 @@ export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: str
 		: undefined
 
 	if (!conf) {
-		return GraphicLLayer.GraphicLLayerOverlay
+		return SharedGraphicLLayer.GraphicLLayerOverlay
 	}
 
 	switch (conf.LayerMapping) {
 		// TODO: When adding more output layers
-		case GraphicLLayer.GraphicLLayerOverlayIdent:
-			return GraphicLLayer.GraphicLLayerOverlayIdent
-		case GraphicLLayer.GraphicLLayerOverlayTopt:
-			return GraphicLLayer.GraphicLLayerOverlayTopt
-		case GraphicLLayer.GraphicLLayerOverlayLower:
-			return GraphicLLayer.GraphicLLayerOverlayLower
-		case GraphicLLayer.GraphicLLayerOverlayHeadline:
+		case SharedGraphicLLayer.GraphicLLayerOverlayIdent:
+			return SharedGraphicLLayer.GraphicLLayerOverlayIdent
+		case SharedGraphicLLayer.GraphicLLayerOverlayTopt:
+			return SharedGraphicLLayer.GraphicLLayerOverlayTopt
+		case SharedGraphicLLayer.GraphicLLayerOverlayLower:
+			return SharedGraphicLLayer.GraphicLLayerOverlayLower
+		case SharedGraphicLLayer.GraphicLLayerOverlayHeadline:
 			if (config.studio.GraphicsType === 'HTML') {
-				return GraphicLLayer.GraphicLLayerOverlayLower
+				return SharedGraphicLLayer.GraphicLLayerOverlayLower
 			}
-			return GraphicLLayer.GraphicLLayerOverlayHeadline
-		case GraphicLLayer.GraphicLLayerOverlayTema:
-			return GraphicLLayer.GraphicLLayerOverlayTema
-		case GraphicLLayer.GraphicLLayerWall:
-			return GraphicLLayer.GraphicLLayerWall
-		case GraphicLLayer.GraphicLLayerLocators:
-			return GraphicLLayer.GraphicLLayerLocators
+			return SharedGraphicLLayer.GraphicLLayerOverlayHeadline
+		case SharedGraphicLLayer.GraphicLLayerOverlayTema:
+			return SharedGraphicLLayer.GraphicLLayerOverlayTema
+		case SharedGraphicLLayer.GraphicLLayerWall:
+			return SharedGraphicLLayer.GraphicLLayerWall
+		case SharedGraphicLLayer.GraphicLLayerLocators:
+			return SharedGraphicLLayer.GraphicLLayerLocators
 		default:
-			return GraphicLLayer.GraphicLLayerOverlay
+			return SharedGraphicLLayer.GraphicLLayerOverlay
 	}
 }

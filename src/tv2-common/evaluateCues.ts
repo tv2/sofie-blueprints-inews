@@ -6,7 +6,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,
@@ -32,21 +32,23 @@ import {
 	GraphicIsPilot
 } from './inewsConversion'
 
+export interface Adlib {
+	rank: number
+}
 export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueGraphic?: (
 		config: TV2BlueprintConfig,
 		context: ISegmentUserContext,
-		part: Readonly<IBlueprintPart>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-		adlib: boolean,
 		partDefinition: PartDefinition,
-		rank?: number
+		adlib?: Adlib
 	) => void
 	EvaluateCueBackgroundLoop?: (
+		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -109,19 +111,17 @@ export interface EvaluateCuesShowstyleOptions {
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
 		rank: number
-	) => void
+	) => Promise<void>
 	EvaluateCueTelefon?: (
 		config: TV2BlueprintConfig,
 		context: ISegmentUserContext,
-		part: Readonly<IBlueprintPart>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
 		partId: string,
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTelefon,
-		adlib?: boolean,
-		rank?: number
+		adlib?: Adlib
 	) => void
 	EvaluateCueJingle?: (
 		context: ISegmentUserContext,
@@ -181,14 +181,14 @@ export interface EvaluateCuesOptions {
 	/** Whether the parent part is a graphic part. */
 	isGrafikPart?: boolean
 	/** Passing this arguments sets the types of cues to evaluate. */
-	selectedCueTypes?: CueType[] | undefined
+	selectedCueTypes?: CueType[]
 	/** Don't evaluate adlibs. */
 	excludeAdlibs?: boolean
 	/** Only evaluate adlibs. */
 	adlibsOnly?: boolean
 }
 
-export function EvaluateCuesBase(
+export async function EvaluateCuesBase(
 	showStyleOptions: EvaluateCuesShowstyleOptions,
 	context: ISegmentUserContext,
 	config: TV2BlueprintConfig,
@@ -206,6 +206,7 @@ export function EvaluateCuesBase(
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
 			const shouldAdlib = /* config.showStyle.IsOfftube || */ options.adlib ? true : cue.adlib ? true : false
+			const adlib = shouldAdlib ? { rank: adLibRank } : undefined
 
 			switch (cue.type) {
 				case CueType.Graphic:
@@ -222,15 +223,13 @@ export function EvaluateCuesBase(
 						showStyleOptions.EvaluateCueGraphic(
 							config,
 							context,
-							part,
 							pieces,
 							adLibPieces,
 							actions,
 							partDefinition.externalId,
 							cue,
-							shouldAdlib,
 							partDefinition,
-							adLibRank
+							adlib
 						)
 					}
 					break
@@ -282,7 +281,7 @@ export function EvaluateCuesBase(
 					break
 				case CueType.AdLib:
 					if (showStyleOptions.EvaluateCueAdLib) {
-						showStyleOptions.EvaluateCueAdLib(
+						await showStyleOptions.EvaluateCueAdLib(
 							context,
 							config,
 							adLibPieces,
@@ -300,15 +299,13 @@ export function EvaluateCuesBase(
 						showStyleOptions.EvaluateCueTelefon(
 							config,
 							context,
-							part,
 							pieces,
 							adLibPieces,
 							actions,
 							partDefinition.externalId,
 							partDefinition,
 							cue,
-							shouldAdlib,
-							adLibRank
+							adlib
 						)
 					}
 					break
@@ -373,6 +370,7 @@ export function EvaluateCuesBase(
 				case CueType.BackgroundLoop:
 					if (showStyleOptions.EvaluateCueBackgroundLoop) {
 						showStyleOptions.EvaluateCueBackgroundLoop(
+							config,
 							pieces,
 							adLibPieces,
 							actions,
@@ -444,9 +442,8 @@ export function EvaluateCuesBase(
 								content: {
 									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
-									channelName: o.content.channelName
-									// R35: rundownId: context.rundownId,
-									// R35: playlistId: ''
+									channel: o.content.channelName,
+									showId: o.content.showId
 								}
 							})
 						}
@@ -456,10 +453,8 @@ export function EvaluateCuesBase(
 							piece.expectedPlayoutItems.push({
 								deviceSubType: TSR.DeviceType.VIZMSE,
 								content: {
-									templateName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
-									channelName: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
-									// R35: rundownId: context.rundownId,
-									// R35: playlistId: ''
+									vcpid: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
+									channel: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
 								}
 							})
 						}
@@ -468,10 +463,9 @@ export function EvaluateCuesBase(
 							deviceSubType: TSR.DeviceType.VIZMSE,
 							content: {
 								templateName: 'altud',
-								channelName: 'OVL1',
-								templateData: []
-								// R35: rundownId: context.rundownId,
-								// R35: playlistId: ''
+								channel: 'OVL1',
+								templateData: [],
+								showId: config.selectedGraphicsSetup.OvlShowId
 							}
 						})
 					}

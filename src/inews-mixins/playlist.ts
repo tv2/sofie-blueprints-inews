@@ -3,8 +3,9 @@ import {
 	BlueprintResultRundown,
 	BlueprintResultRundownPlaylist,
 	ExtendedIngestRundown,
+	IBlueprintResultRundownPlaylist,
 	IBlueprintRundownDB,
-	IBlueprintRundownPlaylistInfo,
+	IGetRundownContext,
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
@@ -12,7 +13,7 @@ import {
 	RundownPlaylistTiming,
 	ShowStyleBlueprintManifest,
 	StudioBlueprintManifest
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { assertUnreachable, literal, TimeFromINewsField } from 'tv2-common'
 import { getRundownDuration } from './rundownDuration'
 
@@ -35,16 +36,14 @@ function getRundownWithINewsPlaylist(
 	return manifest
 }
 
-function getRundownWithBackTime(
+export function getRundownWithBackTime(
 	_context: IShowStyleUserContext,
 	ingestRundown: ExtendedIngestRundown,
 	manifest: BlueprintResultRundown
 ): BlueprintResultRundown {
 	const sortedSegments = ingestRundown.segments.sort((a, b) => a.rank - b.rank)
-	const backTimeStory = sortedSegments.find(
-		segment => segment.name.match(/^\s*continuity\s*$/i) && segment.payload.iNewsStory.fields.backTime
-	)
-	const backTime = backTimeStory ? backTimeStory.payload.iNewsStory.fields.backTime : undefined
+	const firstContinuityStory = sortedSegments.find(segment => segment.name.match(/^\s*continuity\s*$/i))
+	const backTime = firstContinuityStory ? firstContinuityStory.payload.iNewsStory.fields.backTime : undefined
 
 	let expectedEnd: number | undefined
 	const expectedDuration = getRundownDuration(ingestRundown.segments)
@@ -94,13 +93,13 @@ function getRundownPlaylistInfoINewsPlaylist(
 	resultPlaylist: BlueprintResultRundownPlaylist
 ): BlueprintResultRundownPlaylist {
 	const result: BlueprintResultOrderedRundowns = {}
-	return literal<BlueprintResultRundownPlaylist>({
+	return {
 		...resultPlaylist,
 		order: rundowns.reduce((prev, curr) => {
 			prev[curr.externalId] = (curr.metaData as RundownMetaData).rank
 			return prev
 		}, result)
-	})
+	}
 }
 
 type GetRundownMixin = (
@@ -116,8 +115,14 @@ type GetRundownPlaylistInfoMixin = (
 ) => BlueprintResultRundownPlaylist
 
 export function GetRundownWithMixins(getRundown: ShowStyleBlueprintManifest['getRundown'], mixins: GetRundownMixin[]) {
-	return (context: IShowStyleUserContext, ingestRundown: ExtendedIngestRundown) => {
-		let result = getRundown(context, ingestRundown)
+	return async (
+		context: IGetRundownContext,
+		ingestRundown: ExtendedIngestRundown
+	): Promise<BlueprintResultRundown | null> => {
+		let result = await getRundown(context, ingestRundown)
+		if (result === null) {
+			return result
+		}
 
 		for (const mixin of mixins) {
 			result = mixin(context, ingestRundown, result)
@@ -147,15 +152,15 @@ export function GetRundownPlaylistInfoWithMixins(
 				expectedStart: lastRundownTiming.expectedStart
 			}
 		}
-		let result =
-			(getRundownPlaylistInfo ? getRundownPlaylistInfo(context, rundowns) : undefined) ??
-			literal<BlueprintResultRundownPlaylist>({
-				playlist: literal<IBlueprintRundownPlaylistInfo>({
-					name: (rundowns[0] ?? { name: '' }).name,
-					timing
-				}),
-				order: null
-			})
+		let result: BlueprintResultRundownPlaylist = (getRundownPlaylistInfo
+			? getRundownPlaylistInfo(context, rundowns, '')
+			: undefined) ?? {
+			playlist: literal<IBlueprintResultRundownPlaylist>({
+				name: (rundowns[0] ?? { name: '' }).name,
+				timing
+			}),
+			order: null
+		}
 
 		for (const mixin of mixins) {
 			result = mixin(context, rundowns, result)

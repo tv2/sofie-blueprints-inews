@@ -192,8 +192,8 @@
 			"iconColor": "#000000",
 			"x": 37,
 			"width": 27,
-			"height": 1,
-			"y": -1.1,
+			"height": 2,
+			"y": 0,
 			"xUnit": "%",
 			"widthUnit": "%"
 		},
@@ -215,7 +215,7 @@
 				""
 			],
 			"timingType": "count_down",
-			"y": -1.25,
+			"y": -1.35,
 			"x": 37.5,
 			"hideLabel": true,
 			"requiredLayerIds": [

@@ -2,13 +2,12 @@ import {
 	BlueprintResultPart,
 	BlueprintResultSegment,
 	CameraContent,
-	IBlueprintPiece,
 	IngestSegment,
 	ISegmentUserContext,
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { getSegmentBase, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -22,10 +21,13 @@ import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
-export function getSegment(context: ISegmentUserContext, ingestSegment: IngestSegment): BlueprintResultSegment {
+export async function getSegment(
+	context: ISegmentUserContext,
+	ingestSegment: IngestSegment
+): Promise<BlueprintResultSegment> {
 	const config = getConfig(context)
 
-	const result: BlueprintResultSegment = getSegmentBase(context, ingestSegment, {
+	const result: BlueprintResultSegment = await getSegmentBase(context, ingestSegment, {
 		getConfig,
 		CreatePartContinuity,
 		CreatePartUnknown,
@@ -50,15 +52,18 @@ export function getSegment(context: ISegmentUserContext, ingestSegment: IngestSe
 	}
 }
 
-function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSegment: IngestSegment) {
-	return literal<BlueprintResultPart>({
+function CreatePartContinuity(
+	config: OfftubeShowstyleBlueprintConfig,
+	ingestSegment: IngestSegment
+): BlueprintResultPart {
+	return {
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
 			title: 'CONTINUITY',
 			untimed: true
 		},
 		pieces: [
-			literal<IBlueprintPiece>({
+			{
 				externalId: `${ingestSegment.externalId}-CONTINUITY`,
 				enable: {
 					start: 0
@@ -70,7 +75,7 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny>([
+					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
 							enable: {
@@ -89,8 +94,9 @@ function CreatePartContinuity(config: OfftubeShowstyleBlueprintConfig, ingestSeg
 						})
 					])
 				})
-			})
+			}
 		],
-		adLibPieces: []
-	})
+		adLibPieces: [],
+		actions: []
+	}
 }

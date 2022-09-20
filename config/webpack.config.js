@@ -20,15 +20,15 @@ module.exports = env => {
 		versionStr = () => JSON.stringify(pkg.version + '+dev-' + moment().format('YYYYMMDD-HHmm'))
 	}
 
-	let versionIntegration = pkg.dependencies['@sofie-automation/blueprints-integration']
+	let versionIntegration = pkg.dependencies['@tv2media/blueprints-integration']
 
-	if (!versionIntegration) throw Error('@sofie-automation/blueprints-integration version missing!')
+	if (!versionIntegration) throw Error('@tv2media/blueprints-integration version missing!')
 
 	// versionTSRTypes = versionTSRTypes.replace(/[^\d.]/g, '') || '0.0.0'
 	// versionIntegration = versionIntegration.replace(/[^\d.]/g, '') || '0.0.0'
 
 	versionTSRTypes = '1.3.0'
-	versionIntegration = '1.37.0'
+	versionIntegration = '42.0.0'
 
 	const entrypoints = env.bundle ? GetEntrypointsForBundle(env.bundle) : BlueprintEntrypoints
 
@@ -68,8 +68,6 @@ module.exports = env => {
 		},
 		target: 'node',
 		externals: {
-			underscore: '_',
-			moment: 'moment'
 		},
 		plugins: [
 			new webpack.DefinePlugin({

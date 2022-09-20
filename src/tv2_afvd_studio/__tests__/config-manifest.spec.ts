@@ -33,8 +33,7 @@ const blankStudioConfig: StudioConfig = {
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesFeed: [],
-	SourcesSkype: [],
-	SourcesDelayedPlayback: [],
+	SourcesReplay: [],
 	ABMediaPlayers: [],
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,
@@ -45,7 +44,8 @@ const blankStudioConfig: StudioConfig = {
 		SplitArtK: 0,
 		Default: 0,
 		MixMinusDefault: 0,
-		Continuity: 0
+		Continuity: 0,
+		Dip: 0
 	},
 	AtemSettings: {
 		MP1Baseline: {

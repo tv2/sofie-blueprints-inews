@@ -6,12 +6,11 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	SourceLayerType,
 	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
 	AddScript,
@@ -19,81 +18,80 @@ import {
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
-	FindSourceInfoStrict,
-	GetCameraMetaData,
-	GetLayersForCamera,
+	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
+	PieceMetaData,
 	TimeFromINewsField,
-	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
-import { AtemLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
-export function CreatePartKam(
+export async function CreatePartKam(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
-): BlueprintResultPart {
+): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
 
 	let part = partKamBase.part.part
 	const partTime = partKamBase.duration
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
-	const pieces: IBlueprintPiece[] = []
+	const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	const jingleDSK = FindDSKJingle(config)
 
 	if (partDefinition.rawType.match(/kam cs ?3/i)) {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: partDefinition.externalId,
-				name: 'CS 3 (JINGLE)',
-				enable: { start: 0 },
-				outputLayerId: SharedOutputLayers.PGM,
-				sourceLayerId: SourceLayer.PgmJingle,
-				lifespan: PieceLifespan.WithinPart,
-				content: literal<WithTimeline<VTContent>>({
-					ignoreMediaObjectStatus: true,
-					fileName: '',
-					path: '',
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TSR.TimelineObjAtemME>({
-							id: ``,
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: AtemLLayer.AtemMEProgram,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: jingleDSK.Fill,
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
-								}
+		pieces.push({
+			externalId: partDefinition.externalId,
+			name: 'CS 3 (JINGLE)',
+			enable: { start: 0 },
+			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: SourceLayer.PgmJingle,
+			lifespan: PieceLifespan.WithinPart,
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			},
+			content: literal<WithTimeline<VTContent>>({
+				ignoreMediaObjectStatus: true,
+				fileName: '',
+				path: '',
+				timelineObjects: literal<TimelineObjectCoreExt[]>([
+					literal<TSR.TimelineObjAtemME>({
+						id: ``,
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: AtemLLayer.AtemMEProgram,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								input: jingleDSK.Fill,
+								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+								transitionSettings: TransitionSettings(config, partDefinition)
 							}
-						})
-					])
-				})
+						}
+					})
+				])
 			})
-		)
+		})
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
-		const sourceInfoCam = FindSourceInfoStrict(context, config.sources, SourceLayerType.CAMERA, partDefinition.rawType)
+		const sourceInfoCam = findSourceInfo(config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			context.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
@@ -102,55 +100,50 @@ export function CreatePartKam(
 
 		part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
 
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: partDefinition.externalId,
-				name: part.title,
-				enable: { start: 0 },
-				outputLayerId: SharedOutputLayers.PGM,
-				sourceLayerId: SourceLayer.PgmCam,
-				lifespan: PieceLifespan.WithinPart,
-				metaData: GetCameraMetaData(config, GetLayersForCamera(config, sourceInfoCam)),
-				content: {
-					studioLabel: '',
-					switcherInput: atemInput,
-					timelineObjects: literal<TimelineObjectCoreExt[]>([
-						literal<TSR.TimelineObjAtemME>({
-							id: ``,
-							enable: {
-								start: 0
-							},
-							priority: 1,
-							layer: AtemLLayer.AtemMEProgram,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: Number(atemInput),
-									transition: partDefinition.transition
-										? TransitionFromString(partDefinition.transition.style)
-										: TSR.AtemTransitionStyle.CUT,
-									transitionSettings: TransitionSettings(partDefinition)
-								}
-							},
-							...(AddParentClass(config, partDefinition)
-								? { classes: [CameraParentClass('studio0', partDefinition.variant.name)] }
-								: {})
-						}),
-
-						GetSisyfosTimelineObjForCamera(
-							context,
-							config,
-							partDefinition.rawType,
-							SisyfosLLAyer.SisyfosGroupStudioMics
-						)
-					])
+		pieces.push({
+			externalId: partDefinition.externalId,
+			name: part.title,
+			enable: { start: 0 },
+			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: SourceLayer.PgmCam,
+			lifespan: PieceLifespan.WithinPart,
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
+					acceptPersistAudio: sourceInfoCam.acceptPersistAudio
 				}
-			})
-		)
+			},
+			content: {
+				studioLabel: '',
+				switcherInput: atemInput,
+				timelineObjects: literal<TimelineObjectCoreExt[]>([
+					literal<TSR.TimelineObjAtemME>({
+						id: ``,
+						enable: {
+							start: 0
+						},
+						priority: 1,
+						layer: AtemLLayer.AtemMEProgram,
+						content: {
+							deviceType: TSR.DeviceType.ATEM,
+							type: TSR.TimelineContentTypeAtem.ME,
+							me: {
+								input: Number(atemInput),
+								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+								transitionSettings: TransitionSettings(config, partDefinition)
+							}
+						},
+						...(AddParentClass(config, partDefinition)
+							? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
+							: {})
+					}),
+					...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
+				])
+			}
+		})
 	}
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,

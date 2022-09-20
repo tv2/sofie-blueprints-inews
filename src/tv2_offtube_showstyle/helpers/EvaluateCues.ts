@@ -5,7 +5,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
@@ -17,7 +17,7 @@ import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { OfftubeEvaluatePgmClean } from '../cues/OfftubePgmClean'
 import { OfftubeShowstyleBlueprintConfig } from './config'
 
-export function OfftubeEvaluateCues(
+export async function OfftubeEvaluateCues(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	part: IBlueprintPart,
@@ -29,7 +29,7 @@ export function OfftubeEvaluateCues(
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
 ) {
-	EvaluateCuesBase(
+	await EvaluateCuesBase(
 		{
 			EvaluateCueDVE: OfftubeEvaluateDVE,
 			EvaluateCueJingle: OfftubeEvaluateJingle,

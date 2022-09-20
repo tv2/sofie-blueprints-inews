@@ -1,4 +1,4 @@
-import { ActionUserData, IActionExecutionContext } from '@sofie-automation/blueprints-integration'
+import { ActionUserData, IActionExecutionContext } from '@tv2media/blueprints-integration'
 import { executeAction } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'
@@ -9,8 +9,13 @@ import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
-export function executeActionAFVD(context: IActionExecutionContext, actionId: string, userData: ActionUserData): void {
-	executeAction(
+export async function executeActionAFVD(
+	context: IActionExecutionContext,
+	actionId: string,
+	userData: ActionUserData,
+	triggerMode?: string
+): Promise<void> {
+	await executeAction(
 		context,
 		{
 			getConfig,
@@ -38,8 +43,7 @@ export function executeActionAFVD(context: IActionExecutionContext, actionId: st
 				Sisyfos: {
 					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
 					Effekt: SisyfosLLAyer.SisyfosSourceJingle,
-					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics,
-					PersistedLevels: SisyfosLLAyer.SisyfosPersistedLevels
+					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
 				},
 				Atem: {
 					MEProgram: AtemLLayer.AtemMEProgram,
@@ -59,15 +63,11 @@ export function executeActionAFVD(context: IActionExecutionContext, actionId: st
 				},
 				SELECTED_ADLIB_LAYERS: [SourceLayer.SelectedServer, SourceLayer.SelectedVoiceOver]
 			},
-			ServerAudioLayers: [
-				SisyfosLLAyer.SisyfosSourceClipPending,
-				SisyfosLLAyer.SisyfosSourceServerA,
-				SisyfosLLAyer.SisyfosSourceServerB
-			],
 			createJingleContent: createJingleContentAFVD,
 			pilotGraphicSettings: pilotGeneratorSettingsAFVD
 		},
 		actionId,
-		userData
+		userData,
+		triggerMode
 	)
 }

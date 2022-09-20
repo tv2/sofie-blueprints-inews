@@ -7,9 +7,9 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CalculateTime, CueDefinitionGraphicDesign, literal, TV2BlueprintConfig } from 'tv2-common'
-import { GraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 
 export function EvaluateDesignBase(
 	config: TV2BlueprintConfig,
@@ -29,41 +29,37 @@ export function EvaluateDesignBase(
 	}
 
 	if (adlib) {
-		adlibPieces.push(
-			literal<IBlueprintAdLibPiece>({
-				_rank: rank || 0,
-				externalId: partId,
-				name: parsedCue.design,
-				outputLayerId: SharedOutputLayers.SEC,
-				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
-				content: literal<WithTimeline<GraphicsContent>>({
-					fileName: parsedCue.design,
-					path: parsedCue.design,
-					ignoreMediaObjectStatus: true,
-					timelineObjects: designTimeline(config, parsedCue)
-				})
+		adlibPieces.push({
+			_rank: rank || 0,
+			externalId: partId,
+			name: parsedCue.design,
+			outputLayerId: SharedOutputLayers.SEC,
+			sourceLayerId: SharedSourceLayers.PgmDesign,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			content: literal<WithTimeline<GraphicsContent>>({
+				fileName: parsedCue.design,
+				path: parsedCue.design,
+				ignoreMediaObjectStatus: true,
+				timelineObjects: designTimeline(config, parsedCue)
 			})
-		)
+		})
 	} else {
-		pieces.push(
-			literal<IBlueprintPiece>({
-				externalId: partId,
-				name: parsedCue.design,
-				enable: {
-					start
-				},
-				outputLayerId: SharedOutputLayers.SEC,
-				sourceLayerId: SharedSourceLayers.PgmDesign,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
-				content: literal<WithTimeline<GraphicsContent>>({
-					fileName: parsedCue.design,
-					path: parsedCue.design,
-					ignoreMediaObjectStatus: true,
-					timelineObjects: designTimeline(config, parsedCue)
-				})
+		pieces.push({
+			externalId: partId,
+			name: parsedCue.design,
+			enable: {
+				start
+			},
+			outputLayerId: SharedOutputLayers.SEC,
+			sourceLayerId: SharedSourceLayers.PgmDesign,
+			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			content: literal<WithTimeline<GraphicsContent>>({
+				fileName: parsedCue.design,
+				path: parsedCue.design,
+				ignoreMediaObjectStatus: true,
+				timelineObjects: designTimeline(config, parsedCue)
 			})
-		)
+		})
 	}
 }
 
@@ -77,7 +73,7 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 						start: 0
 					},
 					priority: 1,
-					layer: GraphicLLayer.GraphicLLayerDesign,
+					layer: SharedGraphicLLayer.GraphicLLayerDesign,
 					content: {
 						deviceType: TSR.DeviceType.CASPARCG,
 						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -98,12 +94,13 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 					id: '',
 					enable: { start: 0 },
 					priority: 100,
-					layer: GraphicLLayer.GraphicLLayerDesign,
+					layer: SharedGraphicLLayer.GraphicLLayerDesign,
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: parsedCue.design,
-						templateData: []
+						templateData: [],
+						showId: config.selectedGraphicsSetup.OvlShowId
 					}
 				})
 			]

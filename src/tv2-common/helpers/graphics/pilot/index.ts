@@ -2,19 +2,21 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	ActionSelectFullGrafik,
+	Adlib,
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
+	FullPieceMetaData,
+	generateExternalId,
 	GetFullGraphicTemplateNameFromCue,
-	GetInfiniteModeForGraphic,
+	GetPieceLifespanForGraphic,
 	GetPilotGraphicContentViz,
 	GetTagForFull,
 	GetTagForFullNext,
@@ -25,6 +27,8 @@ import {
 	IsTargetingTLF,
 	IsTargetingWall,
 	literal,
+	PieceMetaData,
+	SisyfosPersistMetaData,
 	TV2BlueprintConfig
 } from 'tv2-common'
 import {
@@ -45,20 +49,24 @@ export interface PilotGeneratorSettings {
 	viz: VizPilotGeneratorSettings
 }
 
+export interface PilotGraphicProps {
+	config: TV2BlueprintConfig
+	context: IShowStyleUserContext
+	engine: GraphicEngine
+	partId: string
+	parsedCue: CueDefinitionGraphic<GraphicPilot>
+	settings: PilotGeneratorSettings
+	adlib?: Adlib
+	segmentExternalId: string
+}
+
 export function CreatePilotGraphic(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
+	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
-	partId: string,
-	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	settings: PilotGeneratorSettings,
-	adlib: boolean,
-	adlibRank: number,
-	externalSegmentId: string
+	pilotGraphicProps: PilotGraphicProps
 ) {
+	const { context, engine, adlib, parsedCue } = pilotGraphicProps
 	if (
 		parsedCue.graphic.vcpid === undefined ||
 		parsedCue.graphic.vcpid === null ||
@@ -69,171 +77,186 @@ export function CreatePilotGraphic(
 		return
 	}
 
-	const engine = parsedCue.target
+	const generator = new PilotGraphicGenerator(pilotGraphicProps)
 
-	if (IsTargetingFull(engine)) {
-		actions.push(
-			CreatePilotAdLibAction(config, context, parsedCue, engine, settings, adlib, adlibRank, externalSegmentId)
-		)
-	}
-
-	if (!(IsTargetingOVL(engine) && adlib)) {
-		pieces.push(CreateFullPiece(config, context, part, partId, parsedCue, engine, settings, adlib, externalSegmentId))
-	}
-
-	if (IsTargetingFull(engine)) {
-		pieces.push(
-			CreateFullDataStore(config, context, part, settings, parsedCue, engine, partId, adlib, externalSegmentId)
-		)
-	}
-}
-
-function CreatePilotAdLibAction(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
-	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	engine: GraphicEngine,
-	settings: PilotGeneratorSettings,
-	adlib: boolean,
-	adlibRank: number,
-	segmentExternalId: string
-) {
-	const name = GraphicDisplayName(config, parsedCue)
-	const sourceLayerId = GetSourceLayer(engine)
-	const outputLayerId = GetOutputLayer(engine)
-
-	return literal<IBlueprintActionManifest>({
-		actionId: AdlibActionType.SELECT_FULL_GRAFIK,
-		userData: literal<ActionSelectFullGrafik>({
-			type: AdlibActionType.SELECT_FULL_GRAFIK,
-			name: parsedCue.graphic.name,
-			vcpid: parsedCue.graphic.vcpid,
-			segmentExternalId
-		}),
-		userDataManifest: {},
-		display: {
-			_rank: adlibRank,
-			label: t(GetFullGraphicTemplateNameFromCue(config, parsedCue)),
-			sourceLayerId: SharedSourceLayers.PgmPilot,
-			outputLayerId: SharedOutputLayers.PGM,
-			content: {
-				...CreateFullContent(config, context, undefined, settings, parsedCue, engine, adlib)
-			},
-			uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
-			tags: [
-				AdlibTags.ADLIB_KOMMENTATOR,
-				...(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine) ? [AdlibTags.ADLIB_FLOW_PRODUCER] : [])
-			],
-			currentPieceTags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid)],
-			nextPieceTags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)],
-			noHotKey: !(config.showStyle.MakeAdlibsForFulls && IsTargetingFull(engine))
-		}
-	})
-}
-
-export function CreateFullPiece(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
-	partId: string,
-	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	engine: GraphicEngine,
-	settings: PilotGeneratorSettings,
-	adlib: boolean,
-	segmentExternalId: string
-): IBlueprintPiece {
-	return literal<IBlueprintPiece>({
-		externalId: partId,
-		name: GraphicDisplayName(config, parsedCue),
-		...(IsTargetingFull(engine) || IsTargetingWall(engine)
-			? { enable: { start: 0 } }
-			: {
-					enable: {
-						...CreateTimingGraphic(config, parsedCue)
-					}
-			  }),
-		outputLayerId: GetOutputLayer(engine),
-		sourceLayerId: GetSourceLayer(engine),
-		adlibPreroll: config.studio.VizPilotGraphics.PrerollDuration,
-		lifespan: GetInfiniteModeForGraphic(engine, config, parsedCue),
-		content: CreateFullContent(config, context, part, settings, parsedCue, engine, adlib),
-		tags: [GetTagForFull(segmentExternalId, parsedCue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
-	})
-}
-
-export function CreateFullDataStore(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart>,
-	settings: PilotGeneratorSettings,
-	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	engine: GraphicEngine,
-	partId: string,
-	adlib: boolean,
-	segmentExternalId: string
-): IBlueprintPiece {
-	const content = CreateFullContent(config, context, part, settings, parsedCue, engine, adlib)
-	content.timelineObjects = content.timelineObjects.filter(
-		o =>
-			o.content.deviceType !== TSR.DeviceType.ATEM &&
-			o.content.deviceType !== TSR.DeviceType.SISYFOS &&
-			o.content.deviceType !== TSR.DeviceType.VIZMSE &&
-			o.content.deviceType !== TSR.DeviceType.CASPARCG
-	)
-	return literal<IBlueprintPiece>({
-		externalId: partId,
-		name: GraphicDisplayName(config, parsedCue),
-		enable: {
-			start: 0
-		},
-		outputLayerId: SharedOutputLayers.SELECTED_ADLIB,
-		sourceLayerId: SharedSourceLayers.SelectedAdlibGraphicsFull,
-		lifespan: PieceLifespan.OutOnSegmentEnd,
-		metaData: {
-			userData: literal<ActionSelectFullGrafik>({
-				type: AdlibActionType.SELECT_FULL_GRAFIK,
-				name: parsedCue.graphic.name,
-				vcpid: parsedCue.graphic.vcpid,
-				segmentExternalId
-			})
-		},
-		content,
-		tags: [GetTagForFullNext(segmentExternalId, parsedCue.graphic.vcpid)]
-	})
-}
-
-function CreateFullContent(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
-	part: Readonly<IBlueprintPart> | undefined,
-	settings: PilotGeneratorSettings,
-	cue: CueDefinitionGraphic<GraphicPilot>,
-	engine: GraphicEngine,
-	adlib: boolean
-): WithTimeline<GraphicsContent> {
-	if (config.studio.GraphicsType === 'HTML') {
-		return GetPilotGraphicContentCaspar(config, context, cue, settings.caspar, engine)
+	if (IsTargetingOVL(engine) && adlib) {
+		adlibPieces.push(generator.createAdlibPiece())
 	} else {
-		return GetPilotGraphicContentViz(config, part, context, settings.viz, cue, engine, adlib)
+		pieces.push(generator.createPiece())
+	}
+
+	if (IsTargetingFull(engine)) {
+		actions.push(generator.createPilotAdLibAction())
+		pieces.push(generator.createFullDataStore())
 	}
 }
 
-function GetSourceLayer(engine: GraphicEngine): SharedSourceLayers {
-	return IsTargetingWall(engine)
-		? SharedSourceLayers.WallGraphics
-		: IsTargetingTLF(engine)
-		? SharedSourceLayers.PgmGraphicsTLF
-		: IsTargetingOVL(engine)
-		? SharedSourceLayers.PgmPilotOverlay
-		: SharedSourceLayers.PgmPilot
-}
+export class PilotGraphicGenerator {
+	private readonly config: TV2BlueprintConfig
+	private readonly context: IShowStyleUserContext
+	private readonly engine: GraphicEngine
+	private readonly partId: string
+	private readonly parsedCue: CueDefinitionGraphic<GraphicPilot>
+	private readonly settings: PilotGeneratorSettings
+	private readonly adlib?: Adlib
+	private readonly segmentExternalId: string
 
-function GetOutputLayer(engine: GraphicEngine) {
-	return IsTargetingWall(engine)
-		? SharedOutputLayers.SEC
-		: IsTargetingOVL(engine)
-		? SharedOutputLayers.OVERLAY
-		: IsTargetingFull(engine)
-		? SharedOutputLayers.PGM
-		: SharedOutputLayers.OVERLAY
+	constructor(graphicProps: PilotGraphicProps) {
+		this.config = graphicProps.config
+		this.context = graphicProps.context
+		this.engine = graphicProps.engine
+		this.parsedCue = graphicProps.parsedCue
+		this.partId = graphicProps.partId
+		this.settings = graphicProps.settings
+		this.adlib = graphicProps.adlib
+		this.segmentExternalId = graphicProps.segmentExternalId
+	}
+
+	public createPilotAdLibAction(): IBlueprintActionManifest {
+		const name = GraphicDisplayName(this.config, this.parsedCue)
+		const sourceLayerId = this.getSourceLayer()
+		const outputLayerId = this.getOutputLayer()
+
+		const userData: ActionSelectFullGrafik = {
+			type: AdlibActionType.SELECT_FULL_GRAFIK,
+			name: this.parsedCue.graphic.name,
+			vcpid: this.parsedCue.graphic.vcpid,
+			segmentExternalId: this.segmentExternalId
+		}
+		return {
+			externalId: generateExternalId(this.context, userData),
+			actionId: AdlibActionType.SELECT_FULL_GRAFIK,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: (this.adlib && this.adlib.rank) || 0,
+				label: t(GetFullGraphicTemplateNameFromCue(this.config, this.parsedCue)),
+				sourceLayerId: SharedSourceLayers.PgmPilot,
+				outputLayerId: SharedOutputLayers.PGM,
+				content: this.createContent(),
+				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
+				tags: [
+					AdlibTags.ADLIB_KOMMENTATOR,
+					...(this.config.showStyle.MakeAdlibsForFulls && IsTargetingFull(this.engine)
+						? [AdlibTags.ADLIB_FLOW_PRODUCER]
+						: [])
+				],
+				currentPieceTags: [GetTagForFull(this.segmentExternalId, this.parsedCue.graphic.vcpid)],
+				nextPieceTags: [GetTagForFullNext(this.segmentExternalId, this.parsedCue.graphic.vcpid)]
+			}
+		}
+	}
+
+	public createPiece(): IBlueprintPiece<PieceMetaData> {
+		return {
+			externalId: this.partId,
+			name: GraphicDisplayName(this.config, this.parsedCue),
+			...(IsTargetingFull(this.engine) || IsTargetingWall(this.engine)
+				? { enable: { start: 0 } }
+				: {
+						enable: {
+							...CreateTimingGraphic(this.config, this.parsedCue)
+						}
+				  }),
+			outputLayerId: this.getOutputLayer(),
+			sourceLayerId: this.getSourceLayer(),
+			prerollDuration: this.getPrerollDuration(),
+			lifespan: GetPieceLifespanForGraphic(this.engine, this.config, this.parsedCue),
+			metaData: {
+				sisyfosPersistMetaData: {
+					sisyfosLayers: []
+				}
+			},
+			content: this.createContent(),
+			tags: IsTargetingFull(this.engine)
+				? [GetTagForFull(this.segmentExternalId, this.parsedCue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
+				: []
+		}
+	}
+
+	public createAdlibPiece(rank?: number): IBlueprintAdLibPiece {
+		const pilotPiece = this.createPiece()
+		pilotPiece.tags = [...(pilotPiece.tags ?? []), AdlibTags.ADLIB_FLOW_PRODUCER]
+		return {
+			...pilotPiece,
+			_rank: rank ?? 0
+		}
+	}
+
+	public createFullDataStore(): IBlueprintPiece<FullPieceMetaData> {
+		const content = this.createContent()
+		content.timelineObjects = content.timelineObjects.filter(
+			o =>
+				o.content.deviceType !== TSR.DeviceType.ATEM &&
+				o.content.deviceType !== TSR.DeviceType.SISYFOS &&
+				o.content.deviceType !== TSR.DeviceType.VIZMSE &&
+				o.content.deviceType !== TSR.DeviceType.CASPARCG
+		)
+		return {
+			externalId: this.partId,
+			name: GraphicDisplayName(this.config, this.parsedCue),
+			enable: {
+				start: 0
+			},
+			outputLayerId: SharedOutputLayers.SELECTED_ADLIB,
+			sourceLayerId: SharedSourceLayers.SelectedAdlibGraphicsFull,
+			lifespan: PieceLifespan.OutOnSegmentEnd,
+			metaData: {
+				userData: {
+					type: AdlibActionType.SELECT_FULL_GRAFIK,
+					name: this.parsedCue.graphic.name,
+					vcpid: this.parsedCue.graphic.vcpid,
+					segmentExternalId: this.segmentExternalId
+				},
+				sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
+					sisyfosLayers: []
+				})
+			},
+			content,
+			tags: [GetTagForFullNext(this.segmentExternalId, this.parsedCue.graphic.vcpid)]
+		}
+	}
+
+	private createContent(): WithTimeline<GraphicsContent> {
+		if (this.config.studio.GraphicsType === 'HTML') {
+			return GetPilotGraphicContentCaspar(this.config, this.context, this.parsedCue, this.settings.caspar, this.engine)
+		} else {
+			return GetPilotGraphicContentViz(
+				this.config,
+				this.context,
+				this.settings.viz,
+				this.parsedCue,
+				this.engine,
+				this.adlib
+			)
+		}
+	}
+
+	private getPrerollDuration(): number {
+		return this.config.studio.GraphicsType === 'HTML'
+			? this.config.studio.CasparPrerollDuration
+			: this.config.studio.VizPilotGraphics.PrerollDuration
+	}
+
+	private getSourceLayer(): SharedSourceLayers {
+		const engine = this.engine
+		return IsTargetingWall(engine)
+			? SharedSourceLayers.WallGraphics
+			: IsTargetingTLF(engine)
+			? SharedSourceLayers.PgmGraphicsTLF
+			: IsTargetingOVL(engine)
+			? SharedSourceLayers.PgmPilotOverlay
+			: SharedSourceLayers.PgmPilot
+	}
+
+	private getOutputLayer() {
+		const engine = this.engine
+		return IsTargetingWall(engine)
+			? SharedOutputLayers.SEC
+			: IsTargetingOVL(engine)
+			? SharedOutputLayers.OVERLAY
+			: IsTargetingFull(engine)
+			? SharedOutputLayers.PGM
+			: SharedOutputLayers.OVERLAY
+	}
 }

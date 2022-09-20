@@ -4,19 +4,19 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddParentClass,
-	GetSisyfosTimelineObjForCamera,
+	GetSisyfosTimelineObjForServer,
 	literal,
 	PartDefinition,
 	ServerParentClass,
-	TransitionFromString,
 	TransitionSettings
 } from 'tv2-common'
 import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
+import { ServerContentProps, ServerPartProps } from '../parts'
 import { AdlibServerOfftubeOptions } from '../pieces'
 import { JoinAssetToNetworkPath } from '../util'
 
@@ -27,79 +27,62 @@ export interface MakeContentServerSourceLayers {
 	}
 	Sisyfos: {
 		ClipPending: string
-		StudioMicsGroup: string
 	}
 	ATEM: {
 		ServerLookaheadAux?: string
 	}
 }
 
-export interface VTFields {
-	file: string
-	duration: number
-}
-
 type VTProps = Pick<
 	VTContent,
-	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration'
+	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration' | 'seek'
 >
 
-export function GetVTContentProperties(config: TV2BlueprintConfig, file: string, sourceDuration?: number): VTProps {
+export function GetVTContentProperties(
+	config: TV2BlueprintConfig,
+	contentProps: Omit<ServerContentProps, 'mediaPlayerSession'>
+): VTProps {
 	return literal<VTProps>({
-		fileName: file,
+		fileName: contentProps.file,
 		path: JoinAssetToNetworkPath(
 			config.studio.ClipNetworkBasePath,
 			config.studio.ClipFolder,
-			file,
+			contentProps.file,
 			config.studio.ClipFileExtension
 		), // full path on the source network storage
 		mediaFlowIds: [config.studio.ClipMediaFlowId],
-		sourceDuration: sourceDuration && sourceDuration > 0 ? sourceDuration : undefined,
+		sourceDuration: contentProps.sourceDuration,
 		postrollDuration: config.studio.ServerPostrollDuration,
-		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus
+		ignoreMediaObjectStatus: config.studio.ClipIgnoreStatus,
+		seek: contentProps.seek
 	})
 }
 
 export function MakeContentServer(
-	context: IShowStyleUserContext,
-	file: string,
-	mediaPlayerSessionId: string,
+	_context: IShowStyleUserContext,
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	adLibPix: boolean,
-	voLevels: boolean,
-	sourceDuration?: number
+	partProps: ServerPartProps,
+	contentProps: ServerContentProps
 ): WithTimeline<VTContent> {
 	return literal<WithTimeline<VTContent>>({
-		...GetVTContentProperties(config, file, sourceDuration),
+		...GetVTContentProperties(config, contentProps),
 		ignoreMediaObjectStatus: true,
-		timelineObjects: GetServerTimeline(
-			context,
-			file,
-			mediaPlayerSessionId,
-			partDefinition,
-			config,
-			sourceLayers,
-			adLibPix,
-			voLevels
-		)
+		timelineObjects: GetServerTimeline(partDefinition, config, sourceLayers, partProps, contentProps)
 	})
 }
 
 function GetServerTimeline(
-	context: IShowStyleUserContext,
-	file: string,
-	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
-	adLibPix?: boolean,
-	voLevels?: boolean
-) {
-	const serverEnableClass = `.${GetEnableClassForServer(mediaPlayerSessionId)}`
+	partProps: ServerPartProps,
+	contentProps: ServerContentProps
+): TimelineObjectCoreExt[] {
+	const serverEnableClass = `.${GetEnableClassForServer(contentProps.mediaPlayerSession)}`
 
-	const mediaObj = literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+	const mediaObj: TSR.TimelineObjCCGMedia & TimelineBlueprintExt = {
 		id: '',
 		enable: {
 			while: serverEnableClass
@@ -109,68 +92,41 @@ function GetServerTimeline(
 		content: {
 			deviceType: TSR.DeviceType.CASPARCG,
 			type: TSR.TimelineContentTypeCasparCg.MEDIA,
-			file,
-			loop: adLibPix,
-			seek: 0,
-			// length: duration,
+			file: contentProps.file,
+			loop: partProps.adLibPix,
+			seek: contentProps.seek,
+			length: contentProps.seek ? contentProps.clipDuration : undefined,
+			inPoint: contentProps.seek ? 0 : undefined,
 			playing: true
 		},
 		metaData: {
-			mediaPlayerSession: mediaPlayerSessionId
+			mediaPlayerSession: contentProps.mediaPlayerSession
 		},
-		classes: [...(AddParentClass(config, partDefinition) && !adLibPix ? [ServerParentClass('studio0', file)] : [])]
-	})
+		classes: [
+			...(AddParentClass(config, partDefinition) && !partProps.adLibPix
+				? [ServerParentClass('studio0', contentProps.file)]
+				: [])
+		]
+	}
 
 	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
 	mediaOffObj.enable = { while: `!${serverEnableClass}` }
 	mediaOffObj.content.playing = false
+	mediaOffObj.content.noStarttime = true
 
-	return literal<TimelineObjectCoreExt[]>([
+	const audioEnable = {
+		while: serverEnableClass
+	}
+	return [
 		mediaObj,
 		mediaOffObj,
-
-		literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-			id: '',
-			enable: {
-				while: serverEnableClass
-			},
-			priority: 1,
-			layer: sourceLayers.Sisyfos.ClipPending,
-			content: {
-				deviceType: TSR.DeviceType.SISYFOS,
-				type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-				// isPgm: voiceOver ? 2 : 1
-				isPgm: 1
-			},
-			metaData: {
-				mediaPlayerSession: mediaPlayerSessionId
-			},
-			classes: []
-		}),
-
-		...(adLibPix
-			? config.stickyLayers.map<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>(layer => {
-					return literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							while: serverEnableClass
-						},
-						priority: 1,
-						layer,
-						content: {
-							deviceType: TSR.DeviceType.SISYFOS,
-							type: TSR.TimelineContentTypeSisyfos.CHANNEL,
-							isPgm: 0
-						},
-						metaData: {
-							sisyfosPersistLevel: true
-						}
-					})
-			  })
-			: []),
-		...(voLevels
-			? [GetSisyfosTimelineObjForCamera(context, config, 'server', sourceLayers.Sisyfos.StudioMicsGroup)]
-			: []),
+		...GetSisyfosTimelineObjForServer(
+			config,
+			partProps.voLevels,
+			sourceLayers.Sisyfos.ClipPending,
+			contentProps.mediaPlayerSession,
+			audioEnable
+		),
 		...(sourceLayers.ATEM.ServerLookaheadAux
 			? [
 					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
@@ -188,12 +144,12 @@ function GetServerTimeline(
 							}
 						},
 						metaData: {
-							mediaPlayerSession: mediaPlayerSessionId
+							mediaPlayerSession: contentProps.mediaPlayerSession
 						}
 					})
 			  ]
 			: [])
-	])
+	]
 }
 
 export function CutToServer(
@@ -218,10 +174,8 @@ export function CutToServer(
 				type: TSR.TimelineContentTypeAtem.ME,
 				me: {
 					input: -1,
-					transition: partDefinition.transition
-						? TransitionFromString(partDefinition.transition.style)
-						: TSR.AtemTransitionStyle.CUT,
-					transitionSettings: TransitionSettings(partDefinition)
+					transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
+					transitionSettings: TransitionSettings(config, partDefinition)
 				}
 			},
 			metaData: {
@@ -250,4 +204,11 @@ export function EnableServer(mediaPlayerSessionId: string) {
 		},
 		classes: [GetEnableClassForServer(mediaPlayerSessionId)]
 	})
+}
+
+export function getSourceDuration(
+	mediaObjectDuration: number | undefined,
+	serverPostrollDuration: number
+): number | undefined {
+	return mediaObjectDuration !== undefined ? Math.max(mediaObjectDuration - serverPostrollDuration, 0) : undefined
 }

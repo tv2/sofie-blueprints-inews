@@ -5,13 +5,12 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import {
 	AddScript,
 	ApplyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
-	literal,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -21,7 +20,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
-export function CreatePartUnknown(
+export async function CreatePartUnknown(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
@@ -30,13 +29,13 @@ export function CreatePartUnknown(
 ) {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
 
-	let part = literal<IBlueprintPart>({
+	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
 		autoNext: false,
 		expectedDuration: partTime
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []
@@ -51,11 +50,9 @@ export function CreatePartUnknown(
 		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
 	) {
 		ApplyFullGraphicPropertiesToPart(config, part)
-	} else if (partDefinition.cues.filter(cue => cue.type === CueType.DVE).length) {
-		part.prerollDuration = config.studio.CasparPrerollDuration
 	}
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,

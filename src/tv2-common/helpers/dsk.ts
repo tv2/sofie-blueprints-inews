@@ -5,7 +5,7 @@ import {
 	PieceLifespan,
 	TableConfigItemValue,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { AtemLLayerDSK, literal, SourceLayerAtemDSK } from 'tv2-common'
 import { AdlibTags, DSKRoles, SharedOutputLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
@@ -94,7 +94,7 @@ export function CreateDSKBaselineAdlibs(
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownChange,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_OFF],
 					invertOnAirState: true,
 					content: {
 						timelineObjects: [
@@ -122,7 +122,7 @@ export function CreateDSKBaselineAdlibs(
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
 					outputLayerId: SharedOutputLayers.SEC,
 					lifespan: PieceLifespan.OutOnRundownChange,
-					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT],
+					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_ON],
 					content: {
 						timelineObjects: [
 							literal<TSR.TimelineObjAtemDSK>({
@@ -206,7 +206,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Number',
 				name: 'Number',
 				description: 'DSK number, starting from 1',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 1,
 				rank: 0,
@@ -216,7 +216,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Fill',
 				name: 'ATEM Fill',
 				description: 'ATEM vision mixer input for DSK Fill',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 21,
 				rank: 1
@@ -225,7 +225,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Key',
 				name: 'ATEM Key',
 				description: 'ATEM vision mixer input for DSK Key',
-				type: ConfigManifestEntryType.NUMBER,
+				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 34,
 				rank: 2

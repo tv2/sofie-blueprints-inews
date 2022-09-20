@@ -4,11 +4,11 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { CreateTimingEnable, CueDefinitionClearGrafiks, GetDefaultOut, literal } from 'tv2-common'
-import { GraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { BlueprintConfig } from '../../../tv2_afvd_studio/helpers/config'
 
 export function EvaluateClearGrafiks(
 	config: BlueprintConfig,
@@ -25,13 +25,11 @@ export function EvaluateClearGrafiks(
 
 	;[
 		SourceLayer.PgmGraphicsIdent,
-		SourceLayer.PgmGraphicsIdentPersistent,
 		SourceLayer.PgmGraphicsTop,
 		SourceLayer.PgmGraphicsLower,
 		SourceLayer.PgmGraphicsHeadline,
 		SourceLayer.PgmGraphicsTema,
-		SourceLayer.PgmGraphicsOverlay,
-		SourceLayer.PgmGraphicsTLF
+		SourceLayer.PgmGraphicsOverlay
 	].forEach(sourceLayerId => {
 		pieces.push({
 			externalId: partId,
@@ -50,33 +48,32 @@ export function EvaluateClearGrafiks(
 		})
 	})
 
-	pieces.push(
-		literal<IBlueprintPiece>({
-			externalId: partId,
-			name: 'CLEAR',
-			...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
-			outputLayerId: SharedOutputLayers.SEC,
-			sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
-			lifespan: PieceLifespan.WithinPart,
-			content: {
-				timelineObjects: config.studio.HTMLGraphics
-					? [
-							literal<TSR.TimelineObjVIZMSEClearAllElements>({
-								id: '',
-								enable: {
-									start: 0,
-									duration: 1000
-								},
-								priority: 100,
-								layer: GraphicLLayer.GraphicLLayerAdLibs,
-								content: {
-									deviceType: TSR.DeviceType.VIZMSE,
-									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS
-								}
-							})
-					  ]
-					: []
-			}
-		})
-	)
+	pieces.push({
+		externalId: partId,
+		name: 'CLEAR',
+		...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
+		outputLayerId: SharedOutputLayers.SEC,
+		sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects: config.studio.HTMLGraphics
+				? [
+						literal<TSR.TimelineObjVIZMSEClearAllElements>({
+							id: '',
+							enable: {
+								start: 0,
+								duration: 1000
+							},
+							priority: 100,
+							layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+							content: {
+								deviceType: TSR.DeviceType.VIZMSE,
+								type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+								showId: config.selectedGraphicsSetup.OvlShowId
+							}
+						})
+				  ]
+				: []
+		}
+	})
 }

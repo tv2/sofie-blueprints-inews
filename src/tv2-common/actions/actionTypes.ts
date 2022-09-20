@@ -1,9 +1,14 @@
-import { SourceLayerType } from '@sofie-automation/blueprints-integration'
 import { AdlibActionType } from 'tv2-constants'
 import { DVEConfigInput } from '../helpers'
-import { CueDefinitionDVE, PartDefinition } from '../inewsConversion'
+import {
+	CueDefinitionDVE,
+	PartDefinition,
+	SourceDefinition,
+	SourceDefinitionKam,
+	SourceDefinitionRemote
+} from '../inewsConversion'
 
-interface ActionBase {
+export interface ActionBase {
 	type: AdlibActionType
 }
 
@@ -45,23 +50,19 @@ export interface ActionSelectJingle extends ActionBase {
 export interface ActionCutToCamera extends ActionBase {
 	type: AdlibActionType.CUT_TO_CAMERA
 	queue: boolean
-	name: string
+	sourceDefinition: SourceDefinitionKam
 }
 
 export interface ActionCutToRemote extends ActionBase {
 	type: AdlibActionType.CUT_TO_REMOTE
-	name: string
-	port: number
+	sourceDefinition: SourceDefinitionRemote
 }
 
 export interface ActionCutSourceToBox extends ActionBase {
 	type: AdlibActionType.CUT_SOURCE_TO_BOX
-	sourceType: SourceLayerType
 	name: string
-	port: number
 	box: number
-	vo?: boolean
-	server?: boolean
+	sourceDefinition: SourceDefinition
 }
 
 export interface ActionCommentatorSelectServer extends ActionBase {
@@ -87,7 +88,7 @@ export interface ActionClearGraphics extends ActionBase {
 }
 
 export interface ActionTakeWithTransitionVariantBase {
-	type: 'cut' | 'mix' | 'breaker'
+	type: 'cut' | 'mix' | 'breaker' | 'dip'
 }
 
 export interface ActionTakeWithTransitionVariantCut extends ActionTakeWithTransitionVariantBase {
@@ -104,10 +105,16 @@ export interface ActionTakeWithTransitionVariantBreaker extends ActionTakeWithTr
 	breaker: string
 }
 
+export interface ActionTakeWithTransitionVariantDip extends ActionTakeWithTransitionVariantBase {
+	type: 'dip'
+	frames: number
+}
+
 export type ActionTakeWithTransitionVariant =
 	| ActionTakeWithTransitionVariantCut
 	| ActionTakeWithTransitionVariantMix
 	| ActionTakeWithTransitionVariantBreaker
+	| ActionTakeWithTransitionVariantDip
 
 export interface ActionTakeWithTransition extends ActionBase {
 	type: AdlibActionType.TAKE_WITH_TRANSITION
@@ -122,6 +129,10 @@ export interface ActionRecallLastLive extends ActionBase {
 
 export interface ActionRecallLastDVE extends ActionBase {
 	type: AdlibActionType.RECALL_LAST_DVE
+}
+
+export interface ActionFadeDownPersistedAudioLevels extends ActionBase {
+	type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
 }
 
 export type TV2AdlibAction =
@@ -140,3 +151,4 @@ export type TV2AdlibAction =
 	| ActionTakeWithTransition
 	| ActionRecallLastLive
 	| ActionRecallLastDVE
+	| ActionFadeDownPersistedAudioLevels

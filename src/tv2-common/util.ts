@@ -1,4 +1,5 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, TSR } from '@sofie-automation/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, ICommonContext, TSR } from '@tv2media/blueprints-integration'
+import { ActionBase } from './actions'
 
 export function literal<T>(o: T) {
 	return o
@@ -7,10 +8,12 @@ export function assertUnreachable(_never: never): never {
 	throw new Error('Switch validation failed, look for assertUnreachable(...)')
 }
 
+// tslint:disable-next-line: prettier
+export type WithValuesOfTypes<T, Q> = { [P in keyof T as T[P] extends Q | undefined ? P : never]: T[P] }
 export type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
 export type EmptyBaseObj = OptionalExceptFor<Omit<TSR.TimelineObjEmpty, 'content'>, 'layer' | 'enable' | 'classes'>
 export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
-	return literal<TSR.TimelineObjEmpty>({
+	return {
 		id: '',
 		priority: 0,
 		...obj,
@@ -18,7 +21,7 @@ export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
 			deviceType: TSR.DeviceType.ABSTRACT,
 			type: 'empty'
 		}
-	})
+	}
 }
 
 /**
@@ -83,4 +86,8 @@ export function JoinAssetToNetworkPath(
 	}
 
 	return `${networkPathWithWindowsPaths}\\${folderWithWindowsPaths}\\${assetFileWithWindowsPaths}.${extensionWithoutLeadingDot}`
+}
+
+export function generateExternalId(context: ICommonContext, action: ActionBase): string {
+	return context.getHashId(JSON.stringify(action), false)
 }

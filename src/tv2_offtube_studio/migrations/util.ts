@@ -5,8 +5,7 @@ import {
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
 	MigrationStepStudio
-} from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+} from '@tv2media/blueprints-integration'
 import * as _ from 'underscore'
 import { OfftubeSisyfosLLayer } from '../layers'
 import MappingsDefaults from './mappings-defaults'
@@ -131,9 +130,9 @@ export function removeMapping(version: string, oldMappingName: string): Migratio
 }
 
 export function getMappingsDefaultsMigrationSteps(versionStr: string): MigrationStepStudio[] {
-	const res = _.compact(
+	return _.compact(
 		_.map(MappingsDefaults, (defaultVal: BlueprintMapping, id: string): MigrationStepStudio | null => {
-			return literal<MigrationStepStudio>({
+			return {
 				id: `${versionStr}.mappings.defaults.${id}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
@@ -150,11 +149,9 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 						context.insertMapping(id, defaultVal)
 					}
 				}
-			})
+			}
 		})
 	)
-
-	return res
 }
 
 export function GetMappingDefaultMigrationStepForLayer(
@@ -162,7 +159,7 @@ export function GetMappingDefaultMigrationStepForLayer(
 	layer: string,
 	force?: boolean
 ): MigrationStepStudio {
-	return literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.mappings.defaults.manualEnsure${layer}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -189,7 +186,7 @@ export function GetMappingDefaultMigrationStepForLayer(
 				context.insertMapping(layer, MappingsDefaults[layer])
 			}
 		}
-	})
+	}
 }
 
 export function GetSisyfosLayersForTableMigrationOfftube(configName: string, val: string): string[] {

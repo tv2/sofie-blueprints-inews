@@ -1,8 +1,4 @@
-import {
-	MigrationContextStudio,
-	MigrationStepStudio,
-	TableConfigItemValue
-} from '@sofie-automation/blueprints-integration'
+import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue } from '@tv2media/blueprints-integration'
 import { parseMapStr, TableConfigItemSourceMapping, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import * as _ from 'underscore'
 import { literal } from '../util'
@@ -14,7 +10,7 @@ export function MoveSourcesToTable(
 	getSisyfosLayersForMigration: (configName: string, val: string) => string[],
 	studioMics?: boolean
 ): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.studioConfig.moveToTable.${configName}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -56,13 +52,11 @@ export function MoveSourcesToTable(
 				context.setConfig(configName, table)
 			}
 		}
-	})
-
-	return res
+	}
 }
 
 export function MoveClipSourcePath(versionStr: string, studio: string): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.studioConfig.moveClipSourcePath.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -80,7 +74,5 @@ export function MoveClipSourcePath(versionStr: string, studio: string): Migratio
 				context.removeConfig('ClipSourcePath')
 			}
 		}
-	})
-
-	return res
+	}
 }

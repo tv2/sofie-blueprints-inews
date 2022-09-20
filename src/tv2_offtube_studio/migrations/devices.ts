@@ -4,8 +4,7 @@ import {
 	MigrationStepInputFilteredResult,
 	MigrationStepStudio,
 	TSR
-} from '@sofie-automation/blueprints-integration'
-import { literal } from 'tv2-common'
+} from '@tv2media/blueprints-integration'
 import * as _ from 'underscore'
 
 declare const VERSION: string // Injected by webpack
@@ -218,10 +217,10 @@ const devices: DeviceEntry[] = [
 	}
 ]
 
-export const deviceMigrations = literal<MigrationStepStudio[]>([
+export const deviceMigrations: MigrationStepStudio[] = [
 	// create all devices
 	..._.map(devices, createDevice),
 
 	// ensure all devices still look valid
 	..._.map(devices, validateDevice)
-])
+]

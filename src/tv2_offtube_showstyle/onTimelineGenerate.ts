@@ -6,9 +6,15 @@ import {
 	PartEndState,
 	TimelinePersistentState,
 	TSR
-} from '@sofie-automation/blueprints-integration'
-import { disablePilotWipeAfterJingle, onTimelineGenerate, PartEndStateExt, TimelineBlueprintExt } from 'tv2-common'
-import { GraphicLLayer, TallyTags } from 'tv2-constants'
+} from '@tv2media/blueprints-integration'
+import {
+	disablePilotWipeAfterJingle,
+	onTimelineGenerate,
+	PartEndStateExt,
+	PieceMetaData,
+	TimelineBlueprintExt
+} from 'tv2-common'
+import { SharedGraphicLLayer, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { getConfig } from './helpers/config'
 
@@ -17,7 +23,7 @@ export function onTimelineGenerateOfftube(
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintResolvedPieceInstance[]
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	disablePilotWipeAfterJingle(timeline, previousPartEndState2, resolvedPieces)
@@ -54,7 +60,7 @@ export function disableFirstPilotGFXAnimation(
 	const isFull = resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))
 	for (const obj of timeline) {
 		if (
-			obj.layer === GraphicLLayer.GraphicLLayerPilot &&
+			obj.layer === SharedGraphicLLayer.GraphicLLayerPilot &&
 			obj.content.deviceType === TSR.DeviceType.CASPARCG &&
 			(obj.isLookahead ||
 				(isFull && !previousPartEndState?.fullFileName) ||

@@ -3,7 +3,7 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	ISegmentUserContext
-} from '@sofie-automation/blueprints-integration'
+} from '@tv2media/blueprints-integration'
 import { AddScript, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../helpers/config'
@@ -11,16 +11,16 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
-export function CreatePartServer(
+export async function CreatePartServer(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
-	props: ServerPartProps
-): BlueprintResultPart {
-	const basePartProps = CreatePartServerBase(context, config, partDefinition, props, {
+	partProps: ServerPartProps
+): Promise<BlueprintResultPart> {
+	const basePartProps = await CreatePartServerBase(context, config, partDefinition, partProps, {
 		SourceLayer: {
-			PgmServer: props.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
-			SelectedServer: props.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
+			PgmServer: partProps.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: partProps.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
 		},
 		AtemLLayer: {
 			MEPgm: AtemLLayer.AtemMEProgram
@@ -29,8 +29,7 @@ export function CreatePartServer(
 			ClipPending: CasparLLayer.CasparPlayerClipPending
 		},
 		Sisyfos: {
-			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-			StudioMicsGroup: SisyfosLLAyer.SisyfosGroupStudioMics
+			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
 		},
 		ATEM: {}
 	})
@@ -52,7 +51,7 @@ export function CreatePartServer(
 	}
 	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
 
-	EvaluateCues(
+	await EvaluateCues(
 		context,
 		config,
 		part,
