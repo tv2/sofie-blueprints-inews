@@ -161,22 +161,6 @@
       "toggleOnSingleClick": true
     },
     {
-      "_id": "LiFso7gPYn2SPwHwg",
-      "type": "external_frame",
-      "name": "Mic tally",
-      "currentSegment": false,
-      "displayStyle": "buttons",
-      "rank": 0,
-      "rundownBaseline": false,
-      "default": false,
-      "x": 0,
-      "y": 0,
-      "width": 22,
-      "height": 7,
-      "url": "https://sisyfos.sofsrv04-od.tv2.local?view=mic-tally",
-      "scale": 0
-    },
-    {
       "_id": "6GDpdq547HjjZL9YK",
       "type": "adlib_region",
       "name": "Preview",
@@ -416,23 +400,46 @@
       "showPartTitle": true
     },
     {
-      "_id" : "jLzHen2LoGEMxE68N",
-      "type" : "mini_rundown",
-      "name" : "Mini rundown",
-      "currentSegment" : false,
-      "displayStyle" : "buttons",
-      "rank" : 0,
-      "rundownBaseline" : false,
-      "showThumbnailsInList" : false,
-      "hideDuplicates" : false,
-      "default" : false,
-      "nextInCurrentPart" : false,
-      "oneNextPerSourceLayer" : false,
-      "x" : 7,
-      "y" : 0,
-      "width" : 14,
-      "height" : 7,
-      "scale" : 0
+      "_id": "h9xDp3HvzLaSo4yJi",
+      "type": "mini_rundown",
+      "name": "Mini rundown",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "showThumbnailsInList": false,
+      "hideDuplicates": false,
+      "default": false,
+      "nextInCurrentPart": false,
+      "oneNextPerSourceLayer": false,
+      "x": 3,
+      "y": 3.8,
+      "width": 16,
+      "height": 3,
+      "scale": 0
+    },
+    {
+      "_id": "dkKTHZAwF98aKkD47",
+      "type": "external_frame",
+      "name": "Mic tally",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": false,
+      "showThumbnailsInList": false,
+      "hideDuplicates": false,
+      "default": false,
+      "nextInCurrentPart": false,
+      "oneNextPerSourceLayer": false,
+      "url": "http://sofqb06-od:1176/?view=mic-tally",
+      "x": 3,
+      "y": 0,
+      "width": 16,
+      "height": 5,
+      "customClasses": [
+        ""
+      ],
+      "scale": 0
     }
   ],
   "type": "dashboard_layout",
@@ -440,7 +447,7 @@
     {
       "_id": "PTJBfPjrxPMwY4cqW",
       "label": "Activate",
-      "type": "ready_on_air",
+      "type": "klar_on_air",
       "x": -1,
       "y": 0,
       "width": 14,
@@ -449,26 +456,27 @@
     },
     {
       "_id": "m4ouEduSAvNXm6WZh",
-      "label": "▲ Previous Segment",
+      "label": "▲",
       "type": "move_previous_segment",
       "x": 0,
-      "y": 0,
-      "width": 6,
+      "y": 4,
+      "width": 2,
       "height": 1,
       "labelToggled": ""
     },
     {
       "_id": "FgyddcqkKFhSQeMBS",
-      "label": "▼ Next Segment",
+      "label": "▼",
       "type": "move_next_segment",
       "x": 0,
-      "y": 2,
-      "width": 6,
+      "y": 6,
+      "width": 2,
       "height": 1,
       "labelToggled": ""
     }
   ],
   "exposeAsStandalone": true,
+  "regionId": "shelf_layouts",
   "exposeAsShelf": true,
   "iconColor": "#8e44ad",
   "icon": {
@@ -484,6 +492,5 @@
   },
   "openByDefault": true,
   "startingHeight": 80,
-  "disableContextMenu": true,
-  "regionId": "shelf_layouts"
+  "disableContextMenu": true
 }
