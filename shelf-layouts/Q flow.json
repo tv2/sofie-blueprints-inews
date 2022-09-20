@@ -107,10 +107,7 @@
         "studio0_sisyfos_adlibs",
         "studio0_jingle",
         "studio0_dsk_cmd",
-        "studio0_dsk_2_cmd",
-        "studio0_dsk_3_cmd",
-        "studio0_dsk_4_cmd",
-        "studio0_adlib_jingle"
+        "studio0_dsk_1_cmd"
       ],
       "tags": [
         "static_button"
