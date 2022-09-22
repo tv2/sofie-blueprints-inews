@@ -1,9 +1,4 @@
-import {
-	MigrationContextStudio,
-	MigrationStepStudio,
-	TableConfigItemValue,
-	TSR
-} from '@tv2media/blueprints-integration'
+import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue, TSR } from 'blueprints-integration'
 import {
 	AddKeepAudio,
 	MoveClipSourcePath,

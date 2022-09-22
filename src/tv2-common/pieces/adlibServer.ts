@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest, IShowStyleUserContext } from '@tv2media/blueprints-integration'
+import { IBlueprintActionManifest, IShowStyleUserContext } from 'blueprints-integration'
 import {
 	ActionSelectServerClip,
 	getSourceDuration,

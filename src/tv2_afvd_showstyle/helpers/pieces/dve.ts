@@ -1,9 +1,4 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintPiece,
-	ISegmentUserContext,
-	PieceLifespan
-} from '@tv2media/blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, ISegmentUserContext, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	AddParentClass,

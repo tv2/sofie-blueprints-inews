@@ -1,4 +1,4 @@
-import { PieceLifespan, TSR } from '@tv2media/blueprints-integration'
+import { PieceLifespan, TSR } from 'blueprints-integration'
 import {
 	CalculateTime,
 	CreateTimingEnable,

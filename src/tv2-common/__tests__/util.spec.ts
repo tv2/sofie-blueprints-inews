@@ -1,4 +1,4 @@
-import { PieceLifespan } from '@tv2media/blueprints-integration'
+import { PieceLifespan } from 'blueprints-integration'
 import { SharedOutputLayers } from 'tv2-constants'
 import { assertUnreachable, isAdLibPiece, JoinAssetToFolder, JoinAssetToNetworkPath } from '../util'
 

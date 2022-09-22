@@ -1,4 +1,4 @@
-import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
+import { ISourceLayer, SourceLayerType } from 'blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'

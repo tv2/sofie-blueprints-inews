@@ -8,7 +8,7 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,

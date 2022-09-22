@@ -1,4 +1,4 @@
-import { BlueprintRemoveOrphanedPartInstance, IRundownUserContext } from '@tv2media/blueprints-integration'
+import { BlueprintRemoveOrphanedPartInstance, IRundownUserContext } from 'blueprints-integration'
 import { PartMetaData } from 'tv2-common'
 
 export function shouldRemoveOrphanedPartInstance(

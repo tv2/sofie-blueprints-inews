@@ -1,4 +1,4 @@
-import { IOutputLayer } from '@tv2media/blueprints-integration'
+import { IOutputLayer } from 'blueprints-integration'
 import { literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 

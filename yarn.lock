@@ -560,12 +560,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@tootallnate/once@1":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
-  integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
-
-"@tv2media/blueprints-integration@1.42.7":
+"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@1.42.7":
   version "1.42.7"
   resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-1.42.7.tgz#b88bc4becb27d0b5e828562286bd01cbbb1ee422"
   integrity sha512-GAalonu3u6v4bjkM+v0IFDBdKksfMsch7GpsR7Yef7HMpFhEqQvl2rXqd9j3NyQhJKKmywG9Oh081HsvHCfOKg==
@@ -574,6 +569,11 @@
     timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@2.1.3"
     tslib "^2.3.1"
     type-fest "^2.11.1"
+
+"@tootallnate/once@1":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
+  integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.19"

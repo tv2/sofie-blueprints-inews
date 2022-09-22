@@ -5,7 +5,7 @@ import {
 	MigrationStepSystem,
 	PlayoutActions,
 	TriggerType
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 
 export function RemoveDefaultCoreShortcuts(versionStr: string): MigrationStepSystem {
 	const defaultTriggerIds = DEFAULT_CORE_TRIGGERS.map(trigger => trigger._id)

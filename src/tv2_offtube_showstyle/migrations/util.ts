@@ -4,7 +4,7 @@ import {
 	MigrationContextShowStyle,
 	MigrationStepShowStyle,
 	TableConfigItemValue
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { forceSourceLayerToDefaultsBase, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'

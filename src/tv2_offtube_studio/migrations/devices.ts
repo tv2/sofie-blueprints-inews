@@ -4,7 +4,7 @@ import {
 	MigrationStepInputFilteredResult,
 	MigrationStepStudio,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import * as _ from 'underscore'
 
 declare const VERSION: string // Injected by webpack

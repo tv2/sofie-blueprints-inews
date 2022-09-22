@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import { Adlib } from 'tv2-common'
 import _ = require('underscore')
 import { AdlibTags, GraphicEngine, PartType, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'

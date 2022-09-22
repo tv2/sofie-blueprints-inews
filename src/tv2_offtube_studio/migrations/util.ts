@@ -5,7 +5,7 @@ import {
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
 	MigrationStepStudio
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import * as _ from 'underscore'
 import { OfftubeSisyfosLLayer } from '../layers'
 import MappingsDefaults from './mappings-defaults'

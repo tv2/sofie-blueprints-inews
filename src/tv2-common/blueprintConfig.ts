@@ -1,4 +1,4 @@
-import { TableConfigItemValue } from '@tv2media/blueprints-integration'
+import { TableConfigItemValue } from 'blueprints-integration'
 import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'

@@ -1,4 +1,4 @@
-import { BlueprintResultPart, IBlueprintPart } from '@tv2media/blueprints-integration'
+import { BlueprintResultPart, IBlueprintPart } from 'blueprints-integration'
 import { PartDefinition } from 'tv2-common'
 
 export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?: string): BlueprintResultPart {

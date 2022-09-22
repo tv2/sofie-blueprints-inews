@@ -1,4 +1,4 @@
-import { TSR } from '@tv2media/blueprints-integration'
+import { TSR } from 'blueprints-integration'
 import { PartType } from '../../tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'

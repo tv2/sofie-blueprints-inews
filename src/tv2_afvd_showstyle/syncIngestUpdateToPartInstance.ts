@@ -2,7 +2,7 @@ import {
 	BlueprintSyncIngestNewData,
 	BlueprintSyncIngestPartInstance,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { syncIngestUpdateToPartInstanceBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { SourceLayer } from './layers'

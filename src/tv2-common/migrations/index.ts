@@ -6,7 +6,7 @@ import {
 	MigrationStepShowStyle,
 	MigrationStepStudio,
 	TableConfigItemValue
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { TableConfigItemGFXTemplates, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'

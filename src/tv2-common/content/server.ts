@@ -1,10 +1,4 @@
-import {
-	IShowStyleUserContext,
-	TimelineObjectCoreExt,
-	TSR,
-	VTContent,
-	WithTimeline
-} from '@tv2media/blueprints-integration'
+import { IShowStyleUserContext, TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
 import {
 	AddParentClass,
 	GetSisyfosTimelineObjForServer,

@@ -1,4 +1,4 @@
-import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
+import { MigrationStepShowStyle, SourceLayerType } from 'blueprints-integration'
 import {
 	AddGraphicToGFXTable,
 	changeGFXTemplate,

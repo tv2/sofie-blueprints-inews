@@ -4,7 +4,7 @@ import {
 	IShowStyleContext,
 	IStudioContext,
 	TableConfigItemValue
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'

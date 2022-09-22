@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, ICommonContext, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, ICommonContext, TSR } from 'blueprints-integration'
 import { ActionBase } from './actions'
 
 export function literal<T>(o: T) {

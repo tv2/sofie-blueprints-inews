@@ -1,4 +1,4 @@
-import { BlueprintResultPart, IBlueprintPart, IShowStyleUserContext } from '@tv2media/blueprints-integration'
+import { BlueprintResultPart, IBlueprintPart, IShowStyleUserContext } from 'blueprints-integration'
 import { PartDefinition, PartTime, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 export function CreatePartKamBase<

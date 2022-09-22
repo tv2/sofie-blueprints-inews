@@ -1,4 +1,4 @@
-import { IBlueprintPart, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintPart, TSR } from 'blueprints-integration'
 import { layerToHTMLGraphicSlot, literal, TV2BlueprintConfig } from 'tv2-common'
 import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
 

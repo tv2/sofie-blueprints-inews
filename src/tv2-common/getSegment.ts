@@ -4,7 +4,7 @@ import {
 	IBlueprintSegment,
 	IngestSegment,
 	IShowStyleUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	assertUnreachable,
 	GetNextPartCue,

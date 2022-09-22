@@ -1,4 +1,4 @@
-import { IBlueprintShowStyleBase, IngestRundown, IStudioContext } from '@tv2media/blueprints-integration'
+import { IBlueprintShowStyleBase, IngestRundown, IStudioContext } from 'blueprints-integration'
 import * as _ from 'underscore'
 
 export function getShowStyleId(

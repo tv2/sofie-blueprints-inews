@@ -1,12 +1,6 @@
 export * from './slotMappings'
 
-import {
-	GraphicsContent,
-	IBlueprintPiece,
-	IShowStyleUserContext,
-	TSR,
-	WithTimeline
-} from '@tv2media/blueprints-integration'
+import { GraphicsContent, IBlueprintPiece, IShowStyleUserContext, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GraphicInternal,

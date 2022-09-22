@@ -1,9 +1,4 @@
-import {
-	IBlueprintConfig,
-	ICommonContext,
-	IShowStyleContext,
-	TableConfigItemValue
-} from '@tv2media/blueprints-integration'
+import { IBlueprintConfig, ICommonContext, IShowStyleContext, TableConfigItemValue } from 'blueprints-integration'
 import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 

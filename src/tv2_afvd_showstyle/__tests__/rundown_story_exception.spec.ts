@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { ExtendedIngestRundown, IBlueprintPieceGeneric } from '@tv2media/blueprints-integration'
+import { ExtendedIngestRundown, IBlueprintPieceGeneric } from 'blueprints-integration'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
 import { checkAllLayers } from './layers-check'
 

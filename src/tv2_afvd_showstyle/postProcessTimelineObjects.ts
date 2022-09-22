@@ -8,7 +8,7 @@ import {
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { AtemLLayerDSK, FindDSKJingle, TimelineBlueprintExt } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'

@@ -4,7 +4,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition, PieceMetaData } from 'tv2-common'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'

@@ -1,4 +1,4 @@
-import { TSR } from '@tv2media/blueprints-integration'
+import { TSR } from 'blueprints-integration'
 import { AtemTransitionStyleFromString } from '../atemTransitionStyleFromString'
 
 describe('Transition From String', () => {

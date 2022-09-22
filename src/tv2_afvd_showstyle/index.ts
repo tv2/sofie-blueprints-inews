@@ -1,4 +1,4 @@
-import { BlueprintManifestType, ShowStyleBlueprintManifest } from '@tv2media/blueprints-integration'
+import { BlueprintManifestType, ShowStyleBlueprintManifest } from 'blueprints-integration'
 import { getShowStyleVariantId } from '../tv2-common/getShowStyleVariantId'
 import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'

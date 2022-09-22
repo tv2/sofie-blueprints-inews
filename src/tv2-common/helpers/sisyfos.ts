@@ -1,4 +1,4 @@
-import { Timeline, TSR } from '@tv2media/blueprints-integration'
+import { Timeline, TSR } from 'blueprints-integration'
 import { SourceInfo, TimelineBlueprintExt } from 'tv2-common'
 import { SharedSisyfosLLayer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
