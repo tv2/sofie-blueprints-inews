@@ -8,13 +8,13 @@
       "type": "filter",
       "name": "ADLIB BUTTONS",
       "currentSegment": false,
-      "displayStyle": "list",
+      "displayStyle": "buttons",
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
       "x": 0,
       "y": 0,
-      "width": -1,
+      "width": -12,
       "height": 6,
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
@@ -28,12 +28,11 @@
         "studio0_offtube_graphicsHeadline",
         "studio0_offtube_jingle",
         "studio0_offtube_dve",
-        "studio0_selected_clip",
-        "studio0_selected_voiceover",
+        "studio0_offtube_clip",
+        "studio0_offtube_voiceover",
         "studio0_offtube_graphicsFull",
         "studio0_offtube_aux_studio_screen",
         "studio0_graphicsIdent",
-        "studio0_graphicsIdent_persistent",
         "studio0_graphicsTop",
         "studio0_graphicsLower",
         "studio0_graphicsHeadline",
@@ -44,7 +43,13 @@
         "studio0_dve",
         "studio0_clip",
         "studio0_voiceover",
-        "studio0_full"
+        "studio0_full",
+        "studio0_jingle",
+        "studio0_dve_adlib",
+        "studio0_audio_bed",
+        "studio0_pilotOverlay",
+        "studio0_pilot",
+        "studio0_selected_graphicsFull"
       ],
       "assignHotKeys": true,
       "tags": [
@@ -68,14 +73,45 @@
     {
       "_id": "tGynaBdafH5dZnttN",
       "type": "keyboard_preview",
-      "name": "New Panel",
+      "name": "Keyboard Panel",
       "currentSegment": false,
       "displayStyle": "list",
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
       "y": 9,
-      "x": 0
+      "x": 0,
+      "width": -13.5,
+      "scale": 0.6,
+      "height": 20
+    },
+    {
+      "_id": "CaGXs2ZdPtFMRM47S",
+      "type": "filter",
+      "name": "Static Buttons",
+      "currentSegment": false,
+      "displayStyle": "buttons",
+      "rank": 0,
+      "rundownBaseline": "only",
+      "showThumbnailsInList": false,
+      "hideDuplicates": false,
+      "default": false,
+      "x": -1,
+      "y": 0,
+      "width": 10,
+      "height": 22,
+      "buttonWidthScale": 1.5,
+      "buttonHeightScale": 1.5,
+      "sourceLayerIds": [
+        "studio0_adlib_graphic_cmd",
+        "studio0_sisyfos_adlibs",
+        "studio0_jingle",
+        "studio0_dsk_cmd",
+        "studio0_dsk_1_cmd"
+      ],
+      "tags": [
+        "static_button"
+      ]
     }
   ],
   "type": "dashboard_layout",
@@ -92,5 +128,6 @@
       "M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM224 416H64V160h160v256zm224 0H288V160h160v256z"
     ]
   },
-  "iconColor": "#14c942"
+  "iconColor": "#14c942",
+  "regionId": "shelf_layouts"
 }
