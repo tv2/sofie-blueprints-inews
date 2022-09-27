@@ -26,6 +26,12 @@ export interface TableConfigItemGFXTemplates {
 	IsDesign: boolean
 }
 
+export interface TableConfigItemOverlayShowMapping {
+	Design: string
+	GraphicsSetup: string[]
+	Schema: string[]
+}
+
 export interface TableConfigItemAdLibTransitions {
 	Transition: string
 }

@@ -142,9 +142,11 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
+const GRAPHICS_SETUPS_TABLE_ID = 'GraphicsSetups'
+const GRAPHICS_SETUPS_NAME_COLUMN_ID = 'Name'
 const graphicsSetups: ConfigManifestEntry[] = [
 	{
-		id: 'GraphicsSetups',
+		id: GRAPHICS_SETUPS_TABLE_ID,
 		name: 'Graphics Setups',
 		description: 'Possible graphics setups',
 		type: ConfigManifestEntryType.TABLE,
@@ -152,7 +154,7 @@ const graphicsSetups: ConfigManifestEntry[] = [
 		defaultVal: [],
 		columns: [
 			{
-				id: 'Name',
+				id: GRAPHICS_SETUPS_NAME_COLUMN_ID,
 				name: 'Name',
 				description: 'The code as it will appear in iNews',
 				type: ConfigManifestEntryType.STRING,
@@ -207,15 +209,20 @@ const graphicsSetups: ConfigManifestEntry[] = [
 		id: 'SelectedGraphicsSetupName',
 		name: 'Graphic Setup name',
 		description: 'Name of the Graphic Setup that should be used',
-		type: ConfigManifestEntryType.STRING,
+		type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+		tableId: GRAPHICS_SETUPS_TABLE_ID,
+		columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
+		multiple: false,
 		required: false,
 		defaultVal: ''
 	}
 ]
 
+const SCHEMA_TABLE_ID = 'SchemaConfig'
+const SCHEMA_NAME_COLUMN_ID = 'schemaName'
 export const schemaConfigManifest: ConfigManifestEntry[] = [
 	{
-		id: 'SchemaConfig',
+		id: SCHEMA_TABLE_ID,
 		name: 'Skema',
 		description: 'The values for the Skema and Design combinations',
 		type: ConfigManifestEntryType.TABLE,
@@ -261,6 +268,57 @@ export const schemaConfigManifest: ConfigManifestEntry[] = [
 		]
 	}
 ]
+
+// @todo: use these with SOF-1092:
+const DESIGN_TABLE_ID = 'GFXDesignTemplates'
+const DESIGN_NAME_COLUMN_ID = 'INewsName'
+
+export const overlayShowMapping: ConfigManifestEntry = {
+	id: 'OverlayShowMapping',
+	name: 'Overlay Show mapping',
+	description: 'Maps Overlay Shows to the variety of Skemas and Designs',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: [],
+	columns: [
+		{
+			id: 'Design',
+			name: 'Design',
+			rank: 0,
+			description: 'Name of the Design from the GFX Design table',
+			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+			tableId: DESIGN_TABLE_ID,
+			columnId: DESIGN_NAME_COLUMN_ID,
+			multiple: false,
+			required: false,
+			defaultVal: ''
+		},
+		{
+			id: 'GraphicsSetup',
+			name: 'Graphics Setup',
+			rank: 1,
+			description: 'Names of the Graphics Setups',
+			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+			tableId: GRAPHICS_SETUPS_TABLE_ID,
+			columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
+			multiple: true,
+			required: false,
+			defaultVal: []
+		},
+		{
+			id: 'Skema',
+			name: 'Schema',
+			rank: 2,
+			description: 'Names of the Skemas',
+			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+			tableId: SCHEMA_TABLE_ID,
+			columnId: SCHEMA_NAME_COLUMN_ID,
+			multiple: true,
+			required: false,
+			defaultVal: []
+		}
+	]
+}
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
@@ -385,6 +443,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	},
 	...graphicsSetups,
 	...schemaConfigManifest,
+	overlayShowMapping,
 	{
 		/*
 		Wipes Config

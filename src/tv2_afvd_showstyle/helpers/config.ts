@@ -1,5 +1,9 @@
 import { IBlueprintConfig, ICommonContext, IShowStyleContext, TableConfigItemValue } from 'blueprints-integration'
-import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import {
+	TableConfigGraphicsSetup,
+	TableConfigItemOverlayShowMapping,
+	TV2ShowstyleBlueprintConfigBase
+} from 'tv2-common'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 
 export interface BlueprintConfig extends BlueprintConfigBase {
@@ -11,6 +15,7 @@ export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
 	SelectedGraphicsSetupName: string
 	GraphicsSetups: TableConfigGraphicsSetup[]
+	OverlayShowMapping: TableConfigItemOverlayShowMapping[]
 }
 
 function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): TableConfigGraphicsSetup {
