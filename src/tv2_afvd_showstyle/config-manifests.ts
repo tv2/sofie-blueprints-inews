@@ -266,7 +266,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 	{
 		id: 'GFXDesignTemplates',
 		name: 'GFX Design Templates',
-		description: '"',
+		description: '',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
 		defaultVal: [],
@@ -287,8 +287,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: '',
-				rank: 1
-
+				rank: 1			
 			},
 			{
 				id: 'VizTemplate',

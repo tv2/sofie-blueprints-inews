@@ -336,10 +336,14 @@ function parsekg(
 		  )
 		: undefined
 
-	if (graphicConfig && graphicConfig.IsDesign) {
+	const graphicDesignConfig = code
+		? config.showStyle.GFXDesignTemplates.find(tmpl => tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase())
+		: undefined
+
+	if (!graphicConfig && graphicDesignConfig) {
 		return literal<CueDefinitionGraphicDesign>({
 			type: CueType.GraphicDesign,
-			design: graphicConfig.VizTemplate,
+			design: graphicDesignConfig.VizTemplate,
 			iNewsCommand: kgCue.iNewsCommand,
 			start: kgCue.start,
 			end: kgCue.end,

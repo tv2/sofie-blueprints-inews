@@ -148,6 +148,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
+	GFXDesignTemplates: TableConfigItemGFXDesignTemplates[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean

@@ -127,7 +127,6 @@ export function mapGFXTemplateToDesignTemplate(versionStr: string, studio: strin
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			
 			const gfxTemplates = (context.getBaseConfig(from) as unknown) as
 				| TableConfigItemGFXTemplates[]
 				| undefined
@@ -163,7 +162,6 @@ export function removeDesignChangesFromGFXTemplate(versionStr: string, studio: s
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			
 			const gfxTemplates = (context.getBaseConfig(configId) as unknown) as
 				| TableConfigItemGFXTemplates[]
 				| undefined

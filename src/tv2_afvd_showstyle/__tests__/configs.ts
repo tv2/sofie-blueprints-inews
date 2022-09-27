@@ -231,6 +231,7 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			}
 		])
 	],
+	GFXDesignTemplates: [],
 	LYDConfig: [
 		{
 			_id: '',
