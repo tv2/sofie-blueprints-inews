@@ -143,7 +143,7 @@ export function mapGFXTemplateToDesignTemplate(versionStr: string, studio: strin
 				return false
 			}
 
-			if (!designTemplates || !designTemplates.length) {
+			if (designTemplates && designTemplates.length) {
 				return false
 			}
 
