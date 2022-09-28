@@ -5,6 +5,7 @@ import { OfftubeShowStyleConfig } from '../helpers/config'
 const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	DVEStyles: [],
 	GFXTemplates: [],
+	GFXDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,

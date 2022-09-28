@@ -287,7 +287,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: '',
-				rank: 1			
+				rank: 1
 			},
 			{
 				id: 'VizTemplate',

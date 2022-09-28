@@ -1,4 +1,11 @@
-import { GetInfiniteModeForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import {
+	GetInfiniteModeForGraphic,
+	literal,
+	TableConfigItemGFXDesignTemplates,
+	TableConfigSchema,
+	TV2BlueprintConfig,
+	UnparsedCue
+} from 'tv2-common'
 import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -883,20 +890,31 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefinitionGraphicDesign | undefined {
 	const array = cue[0].split('DESIGN_LAYOUT=')
 	const layout = array[1]
-	const tableConfigSchema = findSchemaConfiguration(config, layout)
-	if (!tableConfigSchema) {
+
+	const designConfig = findGraphicDesignConfiguration(config, layout)
+
+	if (!designConfig) {
 		return undefined
 	}
 
 	return literal<CueDefinitionGraphicDesign>({
 		type: CueType.GraphicDesign,
-		design: tableConfigSchema.vizTemplateName,
+		design: designConfig.VizTemplate,
 		iNewsCommand: layout,
 		start: {
 			frames: 1
 		},
 		isFromLayout: true
 	})
+}
+
+function findGraphicDesignConfiguration(
+	config: TV2BlueprintConfig,
+	layout: string
+): TableConfigItemGFXDesignTemplates | undefined {
+	return config.showStyle.GFXDesignTemplates.find(
+		tmpl => tmpl.INewsStyleColumn && tmpl.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
+	)
 }
 
 function findSchemaConfiguration(config: TV2BlueprintConfig, designIdentifier: string): TableConfigSchema | undefined {

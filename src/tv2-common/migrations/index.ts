@@ -7,7 +7,11 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import { TableConfigItemGFXTemplates, TableConfigItemSourceMappingWithSisyfos, TableConfigItemGFXDesignTemplates} from 'tv2-common'
+import {
+	TableConfigItemGFXDesignTemplates,
+	TableConfigItemGFXTemplates,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
 
@@ -127,13 +131,9 @@ export function mapGFXTemplateToDesignTemplate(versionStr: string, studio: strin
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(from) as unknown) as
-				| TableConfigItemGFXTemplates[]
-				| undefined
+			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[] | undefined
 
-			const designTemplates = (context.getBaseConfig(to) as unknown) as
-				| TableConfigItemGFXDesignTemplates[]
-				| undefined
+			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGFXDesignTemplates[] | undefined
 
 			if (!gfxTemplates || !gfxTemplates.length) {
 				return false
@@ -162,19 +162,17 @@ export function removeDesignChangesFromGFXTemplate(versionStr: string, studio: s
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(configId) as unknown) as
-				| TableConfigItemGFXTemplates[]
-				| undefined
+			const gfxTemplates = (context.getBaseConfig(configId) as unknown) as TableConfigItemGFXTemplates[] | undefined
 
 			if (!gfxTemplates || !gfxTemplates.length) {
 				return false
 			}
-			
+
 			return gfxTemplates.some(g => g.IsDesign)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			const gfxTemplates = (context.getBaseConfig(configId) as unknown) as TableConfigItemGFXTemplates[]
-			
+
 			const newGFXTemplate = gfxTemplates.filter(g => !g.IsDesign)
 
 			context.setBaseConfig(configId, (newGFXTemplate as unknown) as ConfigItemValue)
