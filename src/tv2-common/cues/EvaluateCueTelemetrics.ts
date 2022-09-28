@@ -15,14 +15,15 @@ export function EvaluateCueTelemetrics(
 	const startTime: number = cueDefinition.start ? CalculateTime(cueDefinition.start) ?? 0 : 0
 
 	const existingPiece = findExistingPieceForExternalIdAndStartTime(pieces, startTime)
-	if (existingPiece) {
-		addPresetIdentifierToTimelineObject(existingPiece, cueDefinition.presetIdentifier)
-		addPresetIdentifierToPieceName(existingPiece, cueDefinition.presetIdentifier)
+	if (!existingPiece) {
+		const newPiece = createTelemetricsPiece(externalId, cueDefinition, startTime)
+		pieces.push(newPiece)
 		return
 	}
-
-	const newPiece = createTelemetricsPiece(externalId, cueDefinition, startTime)
-	pieces.push(newPiece)
+	if (!containsPresetIdentifier(existingPiece, cueDefinition.presetIdentifier)) {
+		addPresetIdentifierToTimelineObject(existingPiece, cueDefinition.presetIdentifier)
+		addPresetIdentifierToPieceName(existingPiece, cueDefinition.presetIdentifier)
+	}
 }
 
 function findExistingPieceForExternalIdAndStartTime(pieces: IBlueprintPiece[], startTime: number) {
@@ -32,6 +33,12 @@ function findExistingPieceForExternalIdAndStartTime(pieces: IBlueprintPiece[], s
 			piece.name.startsWith(TELEMETRICS_NAME_PREFIX) &&
 			piece.enable.start === startTime
 	)
+}
+
+function containsPresetIdentifier(piece: IBlueprintPiece, presetIdentifier: number): boolean {
+	const existingTimelineObject = piece.content.timelineObjects[0]
+	const timelineObject: TSR.TimelineObjTelemetrics = existingTimelineObject as TSR.TimelineObjTelemetrics
+	return timelineObject.content.presetShotIdentifiers.includes(presetIdentifier)
 }
 
 function addPresetIdentifierToTimelineObject(piece: IBlueprintPiece, presetIdentifier: number) {
@@ -46,7 +53,7 @@ function addPresetIdentifierToPieceName(piece: IBlueprintPiece, presetIdentifier
 
 function createTelemetricsTimelineObject(cueDefinition: CueDefinitionTelemetrics): TSR.TimelineObjTelemetrics {
 	return literal<TSR.TimelineObjTelemetrics>({
-		id: `telemetrics_preset_${cueDefinition.presetIdentifier}`,
+		id: `telemetrics_preset_${cueDefinition.presetIdentifier}_${Math.random() * 1000}`,
 		enable: {
 			start: 0
 		},
@@ -68,7 +75,7 @@ function createTelemetricsPiece(
 		name: `${TELEMETRICS_NAME_PREFIX}[${cueDefinition.presetIdentifier}]`,
 		enable: {
 			start: startTime,
-			duration: 1000
+			duration: 100
 		},
 		lifespan: PieceLifespan.WithinPart,
 		sourceLayerId: SharedSourceLayers.Telemetrics,

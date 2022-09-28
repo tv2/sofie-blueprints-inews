@@ -158,7 +158,7 @@ describe('EvaluateCueTelemetrics', () => {
 		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
 
 		const result: IBlueprintPiece = pieces[0]
-		expect(result.enable.duration).toEqual(1000)
+		expect(result.enable.duration).toEqual(100)
 	})
 
 	it('already has a piece with another sourceLayer, creates a new piece', () => {
@@ -244,6 +244,33 @@ describe('EvaluateCueTelemetrics', () => {
 
 			const timelineObject: TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TimelineObjTelemetrics
 			expect(timelineObject.content.presetShotIdentifiers).toEqual([1, 2])
+		})
+
+		it('has a blueprint piece with same start time and same presetIdentifier, no presetIdentifier is added', () => {
+			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1)
+
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics)
+			existingPiece.name = 'Robot[1]'
+			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
+			const pieces: IBlueprintPiece[] = [existingPiece]
+
+			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+
+			const timelineObject: TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TimelineObjTelemetrics
+			expect(timelineObject.content.presetShotIdentifiers).toEqual([1])
+		})
+
+		it('has a blueprint piece with same start time and same presetIdentifier, no new timeline object is created', () => {
+			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1)
+
+			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics)
+			existingPiece.name = 'Robot[1]'
+			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
+			const pieces: IBlueprintPiece[] = [existingPiece]
+
+			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+
+			expect(pieces).toHaveLength(1)
 		})
 
 		it('has a blueprint piece with same start time, name is updated to reflect presets in the piece', () => {
