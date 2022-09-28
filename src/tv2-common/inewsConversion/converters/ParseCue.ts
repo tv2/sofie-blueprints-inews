@@ -1,10 +1,10 @@
-import { 
-	GetPieceLifespanForGraphic, 
-	literal, 
-	TableConfigSchema, 
+import {
+	GetPieceLifespanForGraphic,
+	literal,
 	TableConfigItemGFXDesignTemplates,
-	TV2BlueprintConfig, 
-	UnparsedCue 
+	TableConfigSchema,
+	TV2BlueprintConfig,
+	UnparsedCue
 } from 'tv2-common'
 import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
 import {
