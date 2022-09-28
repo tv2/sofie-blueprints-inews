@@ -116,7 +116,6 @@ export function AdlibTagCutToBox(box: number): AdlibTags {
 }
 
 export enum ControlClasses {
-	ShowIdentGraphic = 'show_ident_graphic',
 	/** Indicates that a DVE is currently on air */
 	DVEOnAir = 'dve_on_air',
 	ServerOnAir = 'server_on_air',
@@ -148,8 +147,7 @@ export enum AdlibActionType {
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
 	RECALL_LAST_DVE = 'recall_last_dve',
-	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
-	PLAY_GRAPHICS = 'play_graphics'
+	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
 }
 
 export enum TallyTags {
@@ -237,7 +235,6 @@ export enum SharedSourceLayers {
 
 	// Graphics
 	PgmGraphicsIdent = 'studio0_graphicsIdent',
-	PgmGraphicsIdentPersistent = 'studio0_graphicsIdent_persistent',
 	PgmGraphicsTop = 'studio0_graphicsTop',
 	PgmGraphicsLower = 'studio0_graphicsLower',
 	PgmGraphicsHeadline = 'studio0_graphicsHeadline',

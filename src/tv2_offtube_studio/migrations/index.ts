@@ -6,7 +6,6 @@ import {
 } from '@tv2media/blueprints-integration'
 import {
 	AddKeepAudio,
-	literal,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
 	RemoveConfig,
@@ -41,7 +40,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 	const steps: MigrationStepStudio[] = []
 	for (const layer in renaming) {
 		if (layer in renaming) {
-			const res = literal<MigrationStepStudio>({
+			const res: MigrationStepStudio = {
 				id: `${versionStr}.studioConfig.renameAudioSources.${layer}`,
 				version: versionStr,
 				canBeRunAutomatically: true,
@@ -64,7 +63,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 						}
 					}
 				}
-			})
+			}
 
 			steps.push(res)
 		}
@@ -74,7 +73,7 @@ function renameAudioSources(versionStr: string, renaming: Map<string, string>): 
 }
 
 function ensureMappingDeleted(versionStr: string, mapping: string): MigrationStepStudio {
-	const res = literal<MigrationStepStudio>({
+	return {
 		id: `${versionStr}.studioConfig.ensureMappingDeleted.${mapping}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
@@ -92,9 +91,7 @@ function ensureMappingDeleted(versionStr: string, mapping: string): MigrationSte
 				context.removeMapping(mapping)
 			}
 		}
-	})
-
-	return res
+	}
 }
 
 function remapTableColumnValuesInner(
@@ -105,7 +102,7 @@ function remapTableColumnValuesInner(
 ): { changed: number; table: TableConfigItemValue } {
 	let changed = 0
 
-	table.map(row => {
+	table.forEach(row => {
 		const val = row[columnId]
 
 		if (val) {
@@ -127,8 +124,6 @@ function remapTableColumnValuesInner(
 				}
 			}
 		}
-
-		return row
 	})
 
 	return { changed, table }
@@ -142,7 +137,7 @@ function remapTableColumnValues(
 	remapping: Map<string, string>
 ): MigrationStepStudio[] {
 	return [
-		literal<MigrationStepStudio>({
+		{
 			id: `${versionStr}.remapTableColumnValue.${tableId}.${columnId}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
@@ -179,7 +174,7 @@ function remapTableColumnValues(
 
 				context.setConfig(tableId, ret.table)
 			}
-		})
+		}
 	]
 }
 
@@ -190,7 +185,7 @@ const audioSourceRenaming: Map<string, string> = new Map([
 	['sisyfos_source_world_feed_surround', OfftubeSisyfosLLayer.SisyfosSourceLive_3]
 ])
 
-export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStudio[]>([
+export const studioMigrations: MigrationStepStudio[] = [
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesCam',
@@ -370,4 +365,4 @@ export const studioMigrations: MigrationStepStudio[] = literal<MigrationStepStud
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)
-])
+]

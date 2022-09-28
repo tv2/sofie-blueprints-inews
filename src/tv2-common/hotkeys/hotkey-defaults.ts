@@ -36,7 +36,6 @@ export const defaultHotkeys: TV2Hotkeys = {
 			{
 				sourceLayers: [
 					SharedSourceLayers.PgmGraphicsIdent,
-					SharedSourceLayers.PgmGraphicsIdentPersistent,
 					SharedSourceLayers.PgmGraphicsTop,
 					SharedSourceLayers.PgmGraphicsLower,
 					SharedSourceLayers.PgmGraphicsHeadline,
@@ -48,7 +47,7 @@ export const defaultHotkeys: TV2Hotkeys = {
 				name: 'overlay ALT UD'
 			},
 			{
-				sourceLayers: [SharedSourceLayers.PgmGraphicsIdent, SharedSourceLayers.PgmGraphicsIdentPersistent],
+				sourceLayers: [SharedSourceLayers.PgmGraphicsIdent],
 				key: 'Ctrl+Shift+KeyA',
 				name: 'ovl: ident OUT'
 			},

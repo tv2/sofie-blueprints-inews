@@ -1,7 +1,6 @@
 import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	ISegmentUserContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
@@ -30,10 +29,8 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 export async function OfftubeEvaluateAdLib(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
-	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
-	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
 	rank: number
@@ -90,7 +87,7 @@ export async function OfftubeEvaluateAdLib(
 			return
 		}
 
-		if (!TemplateIsValid(rawTemplate.DVEJSON as string)) {
+		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
 			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
@@ -105,30 +102,29 @@ export async function OfftubeEvaluateAdLib(
 
 		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
 
-		const userData = literal<ActionSelectDVE>({
+		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
 			config: cueDVE,
+			name: `DVE: ${cueDVE.template}`,
 			videoId: partDefinition.fields.videoId,
 			segmentExternalId: partDefinition.segmentExternalId
+		}
+		actions.push({
+			externalId: generateExternalId(context, userData),
+			actionId: AdlibActionType.SELECT_DVE,
+			userData,
+			userDataManifest: {},
+			display: {
+				sourceLayerId: OfftubeSourceLayer.PgmDVE,
+				outputLayerId: OfftubeOutputLayers.PGM,
+				uniquenessId: getUniquenessIdDVE(cueDVE),
+				label: t(`${partDefinition.storyName}`),
+				tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
+				content: literal<SplitsContent>({
+					...adlibContent.content
+				})
+			}
 		})
-		actions.push(
-			literal<IBlueprintActionManifest>({
-				externalId: generateExternalId(context, userData),
-				actionId: AdlibActionType.SELECT_DVE,
-				userData,
-				userDataManifest: {},
-				display: {
-					sourceLayerId: OfftubeSourceLayer.PgmDVE,
-					outputLayerId: OfftubeOutputLayers.PGM,
-					uniquenessId: getUniquenessIdDVE(cueDVE),
-					label: t(`${partDefinition.storyName}`),
-					tags: [AdlibTags.ADLIB_KOMMENTATOR, AdlibTags.ADLIB_FLOW_PRODUCER],
-					content: literal<SplitsContent>({
-						...adlibContent.content
-					})
-				}
-			})
-		)
 	}
 }
 

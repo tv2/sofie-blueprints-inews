@@ -72,20 +72,19 @@ interface SessionTime {
 }
 function calculateSessionTimeRanges(
 	_context: ITimelineEventContext,
-	resolvedPieces: IBlueprintResolvedPieceInstance[]
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ) {
 	const piecesWantingMediaPlayers = _.filter(resolvedPieces, p => {
 		if (!p.piece.metaData) {
 			return false
 		}
-		const metadata = p.piece.metaData as PieceMetaData
-		return (metadata.mediaPlayerSessions || []).length > 0
+		return (p.piece.metaData.mediaPlayerSessions || []).length > 0
 	})
 
 	const sessionRequests: { [sessionId: string]: SessionTime | undefined } = {}
 	_.each(piecesWantingMediaPlayers, p => {
-		const metadata = p.piece.metaData as PieceMetaData
-		const start = p.resolvedStart as number
+		const metadata = p.piece.metaData!
+		const start = p.resolvedStart
 		const duration = p.resolvedDuration
 		const end = duration !== undefined ? start + duration : undefined
 
@@ -205,7 +204,7 @@ export function resolveMediaPlayerAssignments<
 	context: ITimelineEventContext,
 	config: ShowStyleConfig,
 	previousAssignmentRev: SessionToPlayerMap,
-	resolvedPieces: IBlueprintResolvedPieceInstance[]
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ) {
 	const debugLog = config.studio.ABPlaybackDebugLogging
 	const sessionRequests = calculateSessionTimeRanges(context, resolvedPieces)
@@ -370,7 +369,7 @@ export function assignMediaPlayers<
 	config: ShowStyleConfig,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
-	resolvedPieces: IBlueprintResolvedPieceInstance[],
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	sourceLayers: ABSourceLayers
 ): TimelinePersistentStateExt['activeMediaPlayers'] {
 	const previousAssignmentRev = reversePreviousAssignment(previousAssignment, timelineObjs)

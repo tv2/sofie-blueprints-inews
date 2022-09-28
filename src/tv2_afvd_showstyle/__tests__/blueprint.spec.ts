@@ -1,6 +1,5 @@
 import {
 	BlueprintResultSegment,
-	IBlueprintActionManifest,
 	IBlueprintActionManifestDisplayContent,
 	IngestSegment
 } from '@tv2media/blueprints-integration'
@@ -172,7 +171,7 @@ describe('AFVD Blueprint', () => {
 		])
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(1)
-		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayers.PgmPilot
@@ -253,7 +252,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.pieces).toHaveLength(2)
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(1)
-		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayers.PgmPilot
@@ -305,7 +304,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.pieces).toHaveLength(3)
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(1)
-		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayers.PgmPilot
@@ -356,7 +355,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(1)
 		expect(fullPart.actions).toHaveLength(1)
-		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayers.PgmPilot
@@ -576,7 +575,7 @@ describe('AFVD Blueprint', () => {
 		expect(fullPart.pieces).toHaveLength(2)
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(1)
-		const fullAdlibAction = fullPart.actions![0] as IBlueprintActionManifest
+		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayers.PgmPilot

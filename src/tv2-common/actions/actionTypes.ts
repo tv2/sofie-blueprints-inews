@@ -2,8 +2,6 @@ import { AdlibActionType } from 'tv2-constants'
 import { DVEConfigInput } from '../helpers'
 import {
 	CueDefinitionDVE,
-	CueDefinitionGraphic,
-	GraphicInternal,
 	PartDefinition,
 	SourceDefinition,
 	SourceDefinitionKam,
@@ -34,6 +32,7 @@ export interface ActionSelectFullGrafik extends ActionBase {
 export interface ActionSelectDVE extends ActionBase {
 	type: AdlibActionType.SELECT_DVE
 	config: CueDefinitionDVE
+	name: string
 	videoId: string | undefined
 	segmentExternalId: string
 }
@@ -137,11 +136,6 @@ export interface ActionFadeDownPersistedAudioLevels extends ActionBase {
 	type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
 }
 
-export interface ActionPlayGraphics extends ActionBase {
-	type: AdlibActionType.PLAY_GRAPHICS
-	graphic: CueDefinitionGraphic<GraphicInternal>
-}
-
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -159,4 +153,3 @@ export type TV2AdlibAction =
 	| ActionRecallLastLive
 	| ActionRecallLastDVE
 	| ActionFadeDownPersistedAudioLevels
-	| ActionPlayGraphics

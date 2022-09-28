@@ -79,10 +79,10 @@ function GetServerTimeline(
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
-) {
+): TimelineObjectCoreExt[] {
 	const serverEnableClass = `.${GetEnableClassForServer(contentProps.mediaPlayerSession)}`
 
-	const mediaObj = literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+	const mediaObj: TSR.TimelineObjCCGMedia & TimelineBlueprintExt = {
 		id: '',
 		enable: {
 			while: serverEnableClass
@@ -96,6 +96,7 @@ function GetServerTimeline(
 			loop: partProps.adLibPix,
 			seek: contentProps.seek,
 			length: contentProps.seek ? contentProps.clipDuration : undefined,
+			inPoint: contentProps.seek ? 0 : undefined,
 			playing: true
 		},
 		metaData: {
@@ -106,16 +107,17 @@ function GetServerTimeline(
 				? [ServerParentClass('studio0', contentProps.file)]
 				: [])
 		]
-	})
+	}
 
 	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
 	mediaOffObj.enable = { while: `!${serverEnableClass}` }
 	mediaOffObj.content.playing = false
+	mediaOffObj.content.noStarttime = true
 
 	const audioEnable = {
 		while: serverEnableClass
 	}
-	return literal<TimelineObjectCoreExt[]>([
+	return [
 		mediaObj,
 		mediaOffObj,
 		...GetSisyfosTimelineObjForServer(
@@ -147,7 +149,7 @@ function GetServerTimeline(
 					})
 			  ]
 			: [])
-	])
+	]
 }
 
 export function CutToServer(

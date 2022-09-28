@@ -25,11 +25,11 @@ export function GetTransitionAdLibActions<
 	if (config.showStyle.ShowstyleTransition && config.showStyle.ShowstyleTransition.length) {
 		const defaultTransition = config.showStyle.ShowstyleTransition
 
-		const userData = literal<ActionTakeWithTransition>({
+		const userData: ActionTakeWithTransition = {
 			type: AdlibActionType.TAKE_WITH_TRANSITION,
 			variant: ParseTransitionString(defaultTransition),
 			takeNow: true
-		})
+		}
 
 		const jingleConfig = config.showStyle.BreakerConfig.find(
 			j => j.BreakerName === config.showStyle.ShowstyleTransition
@@ -63,11 +63,11 @@ export function GetTransitionAdLibActions<
 	if (config.showStyle.Transitions) {
 		config.showStyle.Transitions.forEach((transition, i) => {
 			if (transition.Transition && transition.Transition.length) {
-				const userData = literal<ActionTakeWithTransition>({
+				const userData: ActionTakeWithTransition = {
 					type: AdlibActionType.TAKE_WITH_TRANSITION,
 					variant: ParseTransitionString(transition.Transition),
 					takeNow: true
-				})
+				}
 
 				const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition.Transition)
 				let alphaAtStart: number | undefined
@@ -141,7 +141,7 @@ function makeTransitionAction(
 	const tag = GetTagForTransition(userData.variant)
 	const isEffekt = !!label.match(/^\d+$/)
 
-	return literal<IBlueprintActionManifest>({
+	return {
 		externalId: `${JSON.stringify(userData)}_${AdlibActionType.TAKE_WITH_TRANSITION}_${rank}`,
 		actionId: AdlibActionType.TAKE_WITH_TRANSITION,
 		userData,
@@ -159,5 +159,5 @@ function makeTransitionAction(
 					? {}
 					: CreateJingleExpectedMedia(config, jingle, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
 		}
-	})
+	}
 }

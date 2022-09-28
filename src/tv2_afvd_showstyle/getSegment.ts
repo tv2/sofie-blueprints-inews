@@ -62,8 +62,8 @@ export async function getSegment(
 	}
 }
 
-export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: IngestSegment) {
-	return literal<BlueprintResultPart>({
+export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: IngestSegment): BlueprintResultPart {
+	return {
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
 			title: 'CONTINUITY',
@@ -105,7 +105,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 		],
 		adLibPieces: [],
 		actions: []
-	})
+	}
 }
 
 function insertSpecialPieces(

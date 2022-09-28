@@ -12,7 +12,7 @@ import {
 	TimelinePersistentState,
 	TSR
 } from '@tv2media/blueprints-integration'
-import { CasparPlayerClip, literal } from 'tv2-common'
+import { ActionSelectFullGrafik, ActionSelectJingle, ActionSelectServerClip, CasparPlayerClip } from 'tv2-common'
 import { AbstractLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
@@ -58,6 +58,22 @@ export interface PieceMetaData {
 	modifiedByAction?: boolean
 }
 
+export interface GraphicPieceMetaData extends PieceMetaData {
+	belongsToRemotePart?: boolean
+}
+
+export interface JinglePieceMetaData extends PieceMetaData {
+	userData: ActionSelectJingle
+}
+
+export interface FullPieceMetaData extends PieceMetaData {
+	userData: ActionSelectFullGrafik
+}
+
+export interface ServerPieceMetaData extends PieceMetaData {
+	userData: ActionSelectServerClip
+}
+
 export interface SisyfosPersistMetaData {
 	sisyfosLayers: string[]
 	wantsToPersistAudio?: boolean
@@ -80,7 +96,7 @@ export function onTimelineGenerate<
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
-	resolvedPieces: IBlueprintResolvedPieceInstance[],
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	getConfig: (context: IShowStyleContext) => ShowStyleConfig,
 	sourceLayers: ABSourceLayers,
 	_casparLayerClipPending: string,
@@ -144,9 +160,7 @@ function processServerLookaheads(
 		return (
 			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)].includes(layer) &&
 			!obj.isLookahead &&
-			resolvedPieces.some(
-				p => p._id === obj.pieceInstanceId && (p as any).partInstanceId === context.currentPartInstance?._id
-			)
+			resolvedPieces.some(p => p._id === obj.pieceInstanceId && p.partInstanceId === context.currentPartInstance?._id)
 		)
 	})
 
@@ -189,12 +203,14 @@ function processServerLookaheads(
 	})
 }
 
-function isAnyPieceInjectedIntoPart(resolvedPieces: IBlueprintResolvedPieceInstance[], context: ITimelineEventContext) {
+function isAnyPieceInjectedIntoPart(
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
+	context: ITimelineEventContext
+) {
 	return resolvedPieces
 		.filter(piece => piece.partInstanceId === context.currentPartInstance?._id)
 		.some(piece => {
-			const metaData = piece.piece.metaData as PieceMetaData | undefined
-			return metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
+			return piece.piece.metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
 		})
 }
 
@@ -202,7 +218,7 @@ export function getEndStateForPart(
 	_context: IRundownContext,
 	_previousPersistentState: TimelinePersistentState | undefined,
 	partInstance: IBlueprintPartInstance,
-	resolvedPieces: IBlueprintResolvedPieceInstance[],
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	time: number
 ): PartEndState {
 	const endState: PartEndStateExt = {
@@ -219,8 +235,8 @@ export function getEndStateForPart(
 		p =>
 			_.isNumber(p.piece.enable.start) &&
 			p.piece.enable &&
-			(p.piece.enable.start as number) <= time &&
-			(!p.piece.enable.duration || p.piece.enable.start + (p.piece.enable.duration as number) >= time)
+			p.piece.enable.start <= time &&
+			(!p.piece.enable.duration || p.piece.enable.start + p.piece.enable.duration >= time)
 	)
 
 	const previousPersistentState: TimelinePersistentStateExt = _previousPersistentState as TimelinePersistentStateExt
@@ -233,7 +249,7 @@ export function getEndStateForPart(
 
 	for (const piece of activePieces) {
 		if (piece.piece.metaData) {
-			const meta = (piece.piece.metaData as PieceMetaData).mediaPlayerSessions
+			const meta = piece.piece.metaData.mediaPlayerSessions
 			if (meta && meta.length) {
 				endState.mediaPlayerSessions[piece.piece.sourceLayerId] = meta
 			}
@@ -277,11 +293,11 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 }
 
 export function createSisyfosPersistedLevelsTimelineObject(
-	resolvedPieces: IBlueprintResolvedPieceInstance[],
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	previousSisyfosLayersThatWantsToBePersisted: SisyfosPersistMetaData['sisyfosLayers']
 ): TSR.TimelineObjSisyfosChannels {
 	const layersToPersist = findLayersToPersist(resolvedPieces, previousSisyfosLayersThatWantsToBePersisted)
-	return literal<TSR.TimelineObjSisyfosChannels>({
+	return {
 		id: 'sisyfosPersistenceObject',
 		enable: {
 			start: 0
@@ -298,25 +314,22 @@ export function createSisyfosPersistedLevelsTimelineObject(
 				}
 			})
 		}
-	})
+	}
 }
 
 function findLayersToPersist(
-	pieces: IBlueprintResolvedPieceInstance[],
+	pieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	sisyfosLayersThatWantsToBePersisted: string[]
 ): string[] {
 	const sortedPieces = pieces
-		.filter(piece => {
-			const metaData = piece.piece.metaData as PieceMetaData | undefined
-			return metaData?.sisyfosPersistMetaData
-		})
+		.filter(piece => piece.piece.metaData?.sisyfosPersistMetaData)
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)
 
 	if (sortedPieces.length === 0) {
 		return []
 	}
 
-	const firstPieceMetaData = sortedPieces[0].piece.metaData as PieceMetaData
+	const firstPieceMetaData = sortedPieces[0].piece.metaData!
 	if (!firstPieceMetaData.sisyfosPersistMetaData!.acceptPersistAudio) {
 		return firstPieceMetaData.sisyfosPersistMetaData!.wantsToPersistAudio
 			? firstPieceMetaData.sisyfosPersistMetaData!.sisyfosLayers
@@ -325,8 +338,8 @@ function findLayersToPersist(
 
 	const layersToPersist: string[] = []
 	for (let i = 0; i < sortedPieces.length; i++) {
-		const pieceMetaData = sortedPieces[i].piece.metaData as PieceMetaData
-		const sisyfosPersistMetaData: SisyfosPersistMetaData = pieceMetaData!.sisyfosPersistMetaData!
+		const pieceMetaData = sortedPieces[i].piece.metaData!
+		const sisyfosPersistMetaData: SisyfosPersistMetaData = pieceMetaData.sisyfosPersistMetaData!
 		if (sisyfosPersistMetaData.wantsToPersistAudio) {
 			layersToPersist.push(...sisyfosPersistMetaData.sisyfosLayers)
 		}

@@ -4,7 +4,6 @@ import {
 	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	literal,
 	mapGFXTemplateToDesignTemplate,
 	removeDesignChangesFromGFXTemplate,
 	RemoveOldShortcuts,
@@ -17,7 +16,6 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
-import * as _ from 'underscore'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { ATEMModel } from '../../types/atem'
@@ -40,7 +38,7 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
  * 0.1.0: Core 0.24.0
  */
 
-export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationStepShowStyle[]>([
+export const showStyleMigrations: MigrationStepShowStyle[] = [
 	...getCreateVariantMigrationSteps(),
 	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
@@ -121,7 +119,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 */
 	// OVERLAY group
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsIdent, 'GFX Ident'),
-	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsIdentPersistent, 'GFX Ident Persistent (hidden)'),
+	SetSourceLayerName('1.6.9', 'studio0_graphicsIdent_persistent', 'GFX Ident Persistent (hidden)'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsTop, 'GFX Top'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsLower, 'GFX Lowerthirds'),
 	SetSourceLayerName('1.6.9', SourceLayer.PgmGraphicsHeadline, 'GFX Headline'),
@@ -185,7 +183,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 	 * - Change source layer type for graphics that don't have previews
 	 */
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsIdent, { type: SourceLayerType.LOWER_THIRD }),
-	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsIdentPersistent, { type: SourceLayerType.LOWER_THIRD }),
+	SetSourceLayerProperties('1.7.1', 'studio0_graphicsIdent_persistent', { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsTop, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsLower, { type: SourceLayerType.LOWER_THIRD }),
 	SetSourceLayerProperties('1.7.1', SourceLayer.PgmGraphicsHeadline, { type: SourceLayerType.LOWER_THIRD }),
@@ -231,6 +229,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		{ LayerMapping: 'graphic_overlay_lower' }
 	),
 
+	/**
+	 * 1.7.5
+	 * - Remove persistent idents
+	 */
+	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
+
 	mapGFXTemplateToDesignTemplate('1.7.5', 'AFVD', 'GFXTemplates', 'GFXDesignTemplates'),
 
 	removeDesignChangesFromGFXTemplate('1.7.5', 'AFVD', 'GFXTemplates'),
@@ -246,4 +250,4 @@ export const showStyleMigrations: MigrationStepShowStyle[] = literal<MigrationSt
 		GetDefaultStudioSourcesForAFVD,
 		false
 	)
-])
+]

@@ -360,26 +360,6 @@ describe('Cue parser', () => {
 		)
 	})
 
-	test('Grafik (kg) - Inline first text field, blank time', () => {
-		const cueGrafik = ['kg bund TEXT MORETEXT', 'some@email.fakeTLD', ';x.xx']
-		const result = ParseCue(cueGrafik, config)
-		expect(result).toEqual(
-			literal<CueDefinitionGraphic<GraphicInternal>>({
-				type: CueType.Graphic,
-				target: 'OVL',
-
-				graphic: {
-					type: 'internal',
-					template: 'bund',
-					cue: 'kg',
-					textFields: ['TEXT MORETEXT', 'some@email.fakeTLD']
-				},
-				adlib: true,
-				iNewsCommand: 'kg'
-			})
-		)
-	})
-
 	test('Grafik (kg) - Multiline text fields', () => {
 		const cueGrafik = ['kg bund', 'TEXT MORETEXT', 'some@email.fakeTLD', ';0.02']
 		const result = ParseCue(cueGrafik, config)

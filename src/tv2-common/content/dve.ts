@@ -21,6 +21,7 @@ import {
 	JoinAssetToFolder,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	TimelineBlueprintExt,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -106,7 +107,7 @@ export interface DVEMetaData {
 	mediaPlayerSession?: string
 }
 
-export interface DVEPieceMetaData {
+export interface DVEPieceMetaData extends PieceMetaData {
 	config: DVEConfigInput
 	sources: DVESources
 	userData: ActionSelectDVE
@@ -147,10 +148,6 @@ export function MakeContentDVEBase<
 			}
 		}
 	}
-
-	// console.log('boxmap1', boxMap)
-	// boxMap = boxMap.filter(map => map !== '')
-	// console.log('boxmap2', boxMap)
 
 	const graphicsTemplateContent: { [key: string]: string } = {}
 	parsedCue.labels.forEach((label, i) => {

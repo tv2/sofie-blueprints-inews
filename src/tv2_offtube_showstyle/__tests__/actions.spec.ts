@@ -1,7 +1,6 @@
 import {
 	IBlueprintPartDB,
 	IBlueprintPartInstance,
-	IBlueprintPieceDB,
 	IBlueprintPieceInstance,
 	PieceLifespan,
 	TSR
@@ -16,6 +15,7 @@ import {
 	ActionTakeWithTransition,
 	literal,
 	PartDefinitionUnknown,
+	PieceMetaData,
 	RemoteType,
 	SourceDefinitionKam,
 	SourceDefinitionRemote
@@ -67,9 +67,9 @@ const currentPartMock: IBlueprintPartInstance = {
 	rehearsal: false
 }
 
-const kamPieceInstance: IBlueprintPieceInstance = {
+const kamPieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 	_id: '',
-	piece: literal<IBlueprintPieceDB>({
+	piece: {
 		_id: 'KAM 1',
 		enable: {
 			start: 0
@@ -98,13 +98,13 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 				})
 			]
 		}
-	}),
+	},
 	partInstanceId: ''
 }
 
-const playingServerPieceInstance: IBlueprintPieceInstance = {
+const playingServerPieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 	_id: '',
-	piece: literal<IBlueprintPieceDB>({
+	piece: {
 		_id: 'Playing Server',
 		enable: {
 			start: 0
@@ -117,13 +117,13 @@ const playingServerPieceInstance: IBlueprintPieceInstance = {
 		content: {
 			timelineObjects: []
 		}
-	}),
+	},
 	partInstanceId: ''
 }
 
-const selectedServerPieceInstance: IBlueprintPieceInstance = {
+const selectedServerPieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 	_id: '',
-	piece: literal<IBlueprintPieceDB>({
+	piece: {
 		_id: 'Selected Server',
 		enable: {
 			start: 0
@@ -136,7 +136,7 @@ const selectedServerPieceInstance: IBlueprintPieceInstance = {
 		content: {
 			timelineObjects: []
 		}
-	}),
+	},
 	partInstanceId: ''
 }
 
@@ -198,6 +198,7 @@ const selectDVEActionMorbarn = literal<ActionSelectDVE>({
 		labels: ['Live'],
 		iNewsCommand: 'DVE=MORBARN'
 	},
+	name: 'morbarn',
 	videoId: undefined,
 	segmentExternalId: SEGMENT_ID_EXTERNAL
 })
@@ -214,6 +215,7 @@ const selectDVEActionBarnmor = literal<ActionSelectDVE>({
 		labels: ['Live'],
 		iNewsCommand: 'DVE=BARNMOR'
 	},
+	name: 'barnmor',
 	videoId: undefined,
 	segmentExternalId: SEGMENT_ID_EXTERNAL
 })
@@ -371,7 +373,7 @@ function validateNextPartExistsWithPreviousPartKeepaliveDuration(context: Action
 }
 
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
-	const atemObj = (piece.piece.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
+	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 		obj =>
 			obj.layer === OfftubeAtemLLayer.AtemMEClean &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
@@ -554,39 +556,6 @@ describe('Combination Actions', () => {
 		validateSelectionRemoved(serverPieces)
 		validateSourcePiecesExistWithPrerollDuration(voPieces)
 		expect(voPieces.dataStore?.piece.name).toEqual('VOVOA')
-	})
-
-	it('Server -> DVE', async () => {
-		const context = new ActionExecutionContext(
-			'test',
-			mappingsDefaults,
-			parseStudioConfig,
-			parseShowStyleConfig,
-			RUNDOWN_ID,
-			SEGMENT_ID,
-			currentPartMock._id,
-			currentPartMock,
-			[kamPieceInstance]
-		)
-		context.studioConfig = defaultStudioConfig as any
-		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
-
-		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
-
-		let serverPieces = await getActiveServerPieces(context, 'next')
-
-		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
-		validateSourcePiecesExistWithPrerollDuration(serverPieces)
-
-		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
-
-		serverPieces = await getActiveServerPieces(context, 'next')
-		const dvePieces = await getDVEPieces(context, 'next')
-
-		validateNextPartExistsWithDuration(context, 0)
-		validateOnlySelectionIsPreserved(serverPieces)
-		validateSourcePiecesExistWithPrerollDuration(dvePieces)
 	})
 
 	it('Server -> CAM', async () => {

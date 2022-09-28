@@ -7,7 +7,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext
 } from '@tv2media/blueprints-integration'
-import { AddScript, CueDefinitionEkstern, literal, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, CueDefinitionEkstern, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -21,12 +21,12 @@ export async function CreatePartLive(
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(config, partDefinition, totalWords, false)
-	let part = literal<IBlueprintPart>({
+	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.title || 'Ekstern',
 		metaData: {},
 		expectedDuration: partTime > 0 ? partTime : 0
-	})
+	}
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
 	const pieces: IBlueprintPiece[] = []

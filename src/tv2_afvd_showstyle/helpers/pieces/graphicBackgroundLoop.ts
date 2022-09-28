@@ -28,80 +28,72 @@ export function EvaluateCueBackgroundLoop(
 		const fileName = parsedCue.backgroundLoop
 		const path = `dve/${fileName}`
 		if (adlib) {
-			adlibPieces.push(
-				literal<IBlueprintAdLibPiece>({
-					_rank: rank || 0,
-					externalId: partId,
-					name: fileName,
-					outputLayerId: SharedOutputLayers.SEC,
-					sourceLayerId: SourceLayer.PgmDVEBackground,
-					lifespan: PieceLifespan.OutOnShowStyleEnd,
-					content: literal<WithTimeline<GraphicsContent>>({
-						fileName,
-						path,
-						ignoreMediaObjectStatus: true,
-						timelineObjects: dveLoopTimeline(path)
-					})
+			adlibPieces.push({
+				_rank: rank || 0,
+				externalId: partId,
+				name: fileName,
+				outputLayerId: SharedOutputLayers.SEC,
+				sourceLayerId: SourceLayer.PgmDVEBackground,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				content: literal<WithTimeline<GraphicsContent>>({
+					fileName,
+					path,
+					ignoreMediaObjectStatus: true,
+					timelineObjects: dveLoopTimeline(path)
 				})
-			)
+			})
 		} else {
-			pieces.push(
-				literal<IBlueprintPiece>({
-					externalId: partId,
-					name: fileName,
-					enable: {
-						start
-					},
-					outputLayerId: SharedOutputLayers.SEC,
-					sourceLayerId: SourceLayer.PgmDVEBackground,
-					lifespan: PieceLifespan.OutOnShowStyleEnd,
-					content: literal<WithTimeline<GraphicsContent>>({
-						fileName,
-						path,
-						ignoreMediaObjectStatus: true,
-						timelineObjects: dveLoopTimeline(path)
-					})
+			pieces.push({
+				externalId: partId,
+				name: fileName,
+				enable: {
+					start
+				},
+				outputLayerId: SharedOutputLayers.SEC,
+				sourceLayerId: SourceLayer.PgmDVEBackground,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				content: literal<WithTimeline<GraphicsContent>>({
+					fileName,
+					path,
+					ignoreMediaObjectStatus: true,
+					timelineObjects: dveLoopTimeline(path)
 				})
-			)
+			})
 		}
 	} else {
 		// Full
 		if (adlib) {
-			adlibPieces.push(
-				literal<IBlueprintAdLibPiece>({
-					_rank: rank || 0,
-					externalId: partId,
-					name: parsedCue.backgroundLoop,
-					outputLayerId: SharedOutputLayers.SEC,
-					sourceLayerId: SourceLayer.PgmFullBackground,
-					lifespan: PieceLifespan.OutOnShowStyleEnd,
-					content: literal<WithTimeline<GraphicsContent>>({
-						fileName: parsedCue.backgroundLoop,
-						path: parsedCue.backgroundLoop,
-						ignoreMediaObjectStatus: true,
-						timelineObjects: fullLoopTimeline(config, parsedCue)
-					})
+			adlibPieces.push({
+				_rank: rank || 0,
+				externalId: partId,
+				name: parsedCue.backgroundLoop,
+				outputLayerId: SharedOutputLayers.SEC,
+				sourceLayerId: SourceLayer.PgmFullBackground,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				content: literal<WithTimeline<GraphicsContent>>({
+					fileName: parsedCue.backgroundLoop,
+					path: parsedCue.backgroundLoop,
+					ignoreMediaObjectStatus: true,
+					timelineObjects: fullLoopTimeline(config, parsedCue)
 				})
-			)
+			})
 		} else {
-			pieces.push(
-				literal<IBlueprintPiece>({
-					externalId: partId,
-					name: parsedCue.backgroundLoop,
-					enable: {
-						start
-					},
-					outputLayerId: SharedOutputLayers.SEC,
-					sourceLayerId: SourceLayer.PgmFullBackground,
-					lifespan: PieceLifespan.OutOnShowStyleEnd,
-					content: literal<WithTimeline<GraphicsContent>>({
-						fileName: parsedCue.backgroundLoop,
-						path: parsedCue.backgroundLoop,
-						ignoreMediaObjectStatus: true,
-						timelineObjects: fullLoopTimeline(config, parsedCue)
-					})
+			pieces.push({
+				externalId: partId,
+				name: parsedCue.backgroundLoop,
+				enable: {
+					start
+				},
+				outputLayerId: SharedOutputLayers.SEC,
+				sourceLayerId: SourceLayer.PgmFullBackground,
+				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				content: literal<WithTimeline<GraphicsContent>>({
+					fileName: parsedCue.backgroundLoop,
+					path: parsedCue.backgroundLoop,
+					ignoreMediaObjectStatus: true,
+					timelineObjects: fullLoopTimeline(config, parsedCue)
 				})
-			)
+			})
 		}
 	}
 }
