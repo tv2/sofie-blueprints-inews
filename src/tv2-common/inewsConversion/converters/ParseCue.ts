@@ -1,7 +1,7 @@
 import {
 	GetPieceLifespanForGraphic,
 	literal,
-	TableConfigItemGFXDesignTemplates,
+	TableConfigItemGfxDesignTemplate,
 	TableConfigSchema,
 	TV2BlueprintConfig,
 	UnparsedCue
@@ -344,7 +344,7 @@ function parsekg(
 		: undefined
 
 	const graphicDesignConfig = code
-		? config.showStyle.GFXDesignTemplates.find(tmpl => tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase())
+		? config.showStyle.GfxDesignTemplates.find(tmpl => tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase())
 		: undefined
 
 	if (!graphicConfig && graphicDesignConfig) {
@@ -911,8 +911,8 @@ function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefini
 function findGraphicDesignConfiguration(
 	config: TV2BlueprintConfig,
 	layout: string
-): TableConfigItemGFXDesignTemplates | undefined {
-	return config.showStyle.GFXDesignTemplates.find(
+): TableConfigItemGfxDesignTemplate | undefined {
+	return config.showStyle.GfxDesignTemplates.find(
 		tmpl => tmpl.INewsStyleColumn && tmpl.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
 	)
 }

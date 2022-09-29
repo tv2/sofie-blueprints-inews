@@ -231,7 +231,7 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			}
 		])
 	],
-	GFXDesignTemplates: [
+	GfxDesignTemplates: [
 		{
 			INewsName: 'DESIGN_FODBOLD_22',
 			INewsStyleColumn: '',

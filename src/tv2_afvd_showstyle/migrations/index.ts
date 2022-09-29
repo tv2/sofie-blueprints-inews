@@ -4,8 +4,8 @@ import {
 	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	mapGFXTemplateToDesignTemplate,
-	removeDesignChangesFromGFXTemplate,
+	mapGFXTemplateToDesignTemplateAndDeleteOriginals,
+	// removeDesignChangesFromGFXTemplate,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	SetShowstyleTransitionMigrationStep,
@@ -235,9 +235,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
 
-	mapGFXTemplateToDesignTemplate('1.7.5', 'AFVD', 'GFXTemplates', 'GFXDesignTemplates'),
-
-	removeDesignChangesFromGFXTemplate('1.7.5', 'AFVD', 'GFXTemplates'),
+	mapGFXTemplateToDesignTemplateAndDeleteOriginals('1.7.5', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

@@ -729,7 +729,6 @@ describe('AFVD Blueprint', () => {
 	})
 
 	it('Changes design and background loops', async () => {
-		// Changed to use the made up "DESIGN_FODBOLD_22" so as to avoid finding a non-transferred design in GFXTemplate
 		const ingestSegment = makeIngestSegment(
 			[
 				['KG=DESIGN_FODBOLD_22', ';0.00.01'],

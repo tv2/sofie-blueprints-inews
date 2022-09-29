@@ -264,7 +264,7 @@ export const schemaConfigManifest: ConfigManifestEntry[] = [
 
 export const gfxDesignTemplates: ConfigManifestEntry[] = [
 	{
-		id: 'GFXDesignTemplates',
+		id: 'GfxDesignTemplates',
 		name: 'GFX Design Templates',
 		description: '',
 		type: ConfigManifestEntryType.TABLE,

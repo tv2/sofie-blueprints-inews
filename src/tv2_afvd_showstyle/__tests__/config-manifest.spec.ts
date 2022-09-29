@@ -6,7 +6,7 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	DVEStyles: [],
 	GFXTemplates: [],
-	GFXDesignTemplates: [],
+	GfxDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,

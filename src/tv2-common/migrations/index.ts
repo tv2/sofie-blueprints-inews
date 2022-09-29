@@ -8,7 +8,7 @@ import {
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
 import {
-	TableConfigItemGFXDesignTemplates,
+	TableConfigItemGfxDesignTemplate,
 	TableConfigItemGFXTemplates,
 	TableConfigItemSourceMappingWithSisyfos
 } from 'tv2-common'
@@ -129,15 +129,20 @@ export function AddGraphicToGFXTable(
 	}
 }
 
-export function mapGFXTemplateToDesignTemplate(versionStr: string, studio: string, from: string, to: string) {
+export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
+	versionStr: string,
+	studio: string,
+	from: string,
+	to: string
+) {
 	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.mapGFXTemplateToDesignTemplate.${from}.${studio}`,
+		id: `${versionStr}.mapGFXTemplateToDesignTemplateAndDeleteOriginals.${from}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
 			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[] | undefined
 
-			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGFXDesignTemplates[] | undefined
+			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[] | undefined
 
 			if (!gfxTemplates || !gfxTemplates.length) {
 				return false
@@ -151,35 +156,14 @@ export function mapGFXTemplateToDesignTemplate(versionStr: string, studio: strin
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[]
-			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGFXDesignTemplates[]
+			const designTemplates = ((context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[]) ?? []
 
 			gfxTemplates.filter(g => g.IsDesign).map(g => designTemplates.push(g))
 
+			const newGFXTemplates = gfxTemplates.filter(g => !g.IsDesign)
+
+			context.setBaseConfig(from, (newGFXTemplates as unknown) as ConfigItemValue)
 			context.setBaseConfig(to, (designTemplates as unknown) as ConfigItemValue)
-		}
-	})
-}
-
-export function removeDesignChangesFromGFXTemplate(versionStr: string, studio: string, configId: string) {
-	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.removeDesignChangesFromGFXTemplate.${configId}.${studio}`,
-		version: versionStr,
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(configId) as unknown) as TableConfigItemGFXTemplates[] | undefined
-
-			if (!gfxTemplates || !gfxTemplates.length) {
-				return false
-			}
-
-			return gfxTemplates.some(g => g.IsDesign)
-		},
-		migrate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(configId) as unknown) as TableConfigItemGFXTemplates[]
-
-			const newGFXTemplate = gfxTemplates.filter(g => !g.IsDesign)
-
-			context.setBaseConfig(configId, (newGFXTemplate as unknown) as ConfigItemValue)
 		}
 	})
 }

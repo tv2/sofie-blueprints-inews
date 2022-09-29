@@ -644,8 +644,7 @@ describe('Cue parser', () => {
 		)
 	})
 
-	test('KG=DESIGN_FODBOLD', () => {
-		// Now tests to find made up "DESIGN_FODBOLD_22" to avoid finding non-transferred value in GFX Template
+	test('Find KG=DESIGN_FODBOLD in design templates', () => {
 		const cueGrafik = ['KG=DESIGN_FODBOLD_22', ';0.00.01']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(

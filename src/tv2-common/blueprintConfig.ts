@@ -26,7 +26,7 @@ export interface TableConfigItemGFXTemplates {
 	IsDesign: boolean
 }
 
-export interface TableConfigItemGFXDesignTemplates {
+export interface TableConfigItemGfxDesignTemplate {
 	INewsName: string
 	INewsStyleColumn?: string
 	VizTemplate: string
@@ -148,7 +148,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGFXTemplates[]
-	GFXDesignTemplates: TableConfigItemGFXDesignTemplates[]
+	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
