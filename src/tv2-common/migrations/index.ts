@@ -386,7 +386,7 @@ export function renameTableColumn(
 				return false
 			}
 
-			return config.find(row => 'oldColumnId' in row) !== undefined
+			return config.find(row => oldColumnId in row) !== undefined
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			let config = (context.getBaseConfig(tableId) as unknown) as TableConfigItemValue
