@@ -306,8 +306,8 @@ export const overlayShowMapping: ConfigManifestEntry = {
 			defaultVal: []
 		},
 		{
-			id: 'Skema',
-			name: 'Schema',
+			id: 'Schema',
+			name: 'Skema',
 			rank: 2,
 			description: 'Names of the Skemas',
 			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
