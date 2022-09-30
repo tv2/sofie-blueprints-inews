@@ -153,8 +153,8 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 		columns: [
 			{
 				id: 'INewsName',
-				name: 'iNews Name (*)',
-				description: 'The name after the code',
+				name: 'iNews Name',
+				description: 'The name of the design',
 				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: '',
@@ -163,7 +163,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 			{
 				id: 'INewsStyleColumn',
 				name: 'iNews Style Column',
-				description: '',
+				description: 'The selected style',
 				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: '',
@@ -171,7 +171,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'VizTemplate',
-				name: 'Viz Template Name (**)',
+				name: 'Viz Template Name',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,

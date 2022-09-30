@@ -235,7 +235,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
 
-	mapGFXTemplateToDesignTemplateAndDeleteOriginals('1.7.5', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
+	/**
+	 * 1.7.6
+	 * - Map designs from GFXTemplates to GfxDesignTemplates and delete them from GFXTemplates
+	 */
+	mapGFXTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

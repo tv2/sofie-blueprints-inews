@@ -335,19 +335,13 @@ function parsekg(
 
 	kgCue.graphic = graphic
 
-	const graphicConfig = code
-		? config.showStyle.GFXTemplates.find(
-				tmpl =>
-					tmpl.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
-					tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase()
+	const graphicDesignConfig = code
+		? config.showStyle.GfxDesignTemplates.find(
+				template => template.INewsName.toUpperCase() === graphic.template.toUpperCase()
 		  )
 		: undefined
 
-	const graphicDesignConfig = code
-		? config.showStyle.GfxDesignTemplates.find(tmpl => tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase())
-		: undefined
-
-	if (!graphicConfig && graphicDesignConfig) {
+	if (graphicDesignConfig) {
 		return literal<CueDefinitionGraphicDesign>({
 			type: CueType.GraphicDesign,
 			design: graphicDesignConfig.VizTemplate,
@@ -356,7 +350,17 @@ function parsekg(
 			end: kgCue.end,
 			adlib: kgCue.adlib
 		})
-	} else if (graphicConfig && !!graphicConfig.VizTemplate.match(/^VCP$/i)) {
+	}
+
+	const graphicConfig = code
+		? config.showStyle.GFXTemplates.find(
+				template =>
+					template.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
+					template.INewsName.toUpperCase() === graphic.template.toUpperCase()
+		  )
+		: undefined
+
+	if (graphicConfig && !!graphicConfig.VizTemplate.match(/^VCP$/i)) {
 		return literal<CueDefinitionUnpairedTarget>({
 			type: CueType.UNPAIRED_TARGET,
 			target: graphicConfig.VizDestination.match(/OVL/i)

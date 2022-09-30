@@ -28,7 +28,7 @@ export interface TableConfigItemGFXTemplates {
 
 export interface TableConfigItemGfxDesignTemplate {
 	INewsName: string
-	INewsStyleColumn?: string
+	INewsStyleColumn: string
 	VizTemplate: string
 }
 

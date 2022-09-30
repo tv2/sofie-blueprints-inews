@@ -152,15 +152,19 @@ export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
 				return false
 			}
 
-			return gfxTemplates.some(g => g.IsDesign)
+			return gfxTemplates.some(template => template.IsDesign)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[]
 			const designTemplates = ((context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[]) ?? []
 
-			gfxTemplates.filter(g => g.IsDesign).map(g => designTemplates.push(g))
+			gfxTemplates
+				.filter(template => template.IsDesign)
+				.map(template => {
+					designTemplates.push({ ...template, INewsStyleColumn: '' })
+				})
 
-			const newGFXTemplates = gfxTemplates.filter(g => !g.IsDesign)
+			const newGFXTemplates = gfxTemplates.filter(template => !template.IsDesign)
 
 			context.setBaseConfig(from, (newGFXTemplates as unknown) as ConfigItemValue)
 			context.setBaseConfig(to, (designTemplates as unknown) as ConfigItemValue)
