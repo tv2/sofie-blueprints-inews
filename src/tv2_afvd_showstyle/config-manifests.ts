@@ -1,5 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from '@tv2media/blueprints-integration'
-import { DEFAULT_GRAPHICS } from 'tv2-common'
+import { DEFAULT_GRAPHICS, getGraphicsSetupsEntries } from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -142,76 +142,28 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
-const graphicsSetups: ConfigManifestEntry[] = [
+const graphicsSetups = getGraphicsSetupsEntries([
 	{
-		id: 'GraphicsSetups',
-		name: 'Graphics Setups',
-		description: 'Possible graphics setups',
-		type: ConfigManifestEntryType.TABLE,
-		required: false,
-		defaultVal: [],
-		columns: [
-			{
-				id: 'Name',
-				name: 'Name',
-				description: 'The code as it will appear in iNews',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: '',
-				rank: 0
-			},
-			{
-				id: 'VcpConcept',
-				name: 'VCP Concept',
-				rank: 1,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: '',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'OvlShowId',
-				name: 'Overlay Show-ID',
-				rank: 2,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'UUID of the show used for OVL channel',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'FullShowId',
-				name: 'Fullscreen Show-ID',
-				rank: 3,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'UUID of the show used for FULL and WALL channels',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'DveLayoutFolder',
-				name: 'DVE layout folder',
-				rank: 4,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'Path to the folder containing the layouts for DVEs',
-				type: ConfigManifestEntryType.STRING
-			}
-		],
-		hint: ''
+		id: 'VcpConcept',
+		name: 'VCP Concept',
+		rank: 0.5,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: '',
+		type: ConfigManifestEntryType.STRING
 	},
 	{
-		id: 'SelectedGraphicsSetupName',
-		name: 'Graphic Setup name',
-		description: 'Name of the Graphic Setup that should be used',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: ''
+		id: 'FullShowName',
+		name: 'Fullscreen Show Name',
+		rank: 2,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: 'Name of the show used for FULL and WALL channels',
+		type: ConfigManifestEntryType.STRING
 	}
-]
+])
 
 export const schemaConfigManifest: ConfigManifestEntry[] = [
 	{

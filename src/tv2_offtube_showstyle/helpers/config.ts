@@ -36,20 +36,21 @@ export interface DVEConfigInput {
 
 export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
+	GraphicsSetups: TableConfigGraphicsSetup[]
 }
 
-function findGraphicsSetup(
-	_context: ICommonContext,
-	_config: TV2ShowstyleBlueprintConfigBase
-): TableConfigGraphicsSetup {
-	// just for type compatibility, not really supported in offtube
-	return {
-		Name: '',
-		VcpConcept: '',
-		OvlShowId: '',
-		FullShowId: '',
-		DveLayoutFolder: ''
+function findGraphicsSetup(context: ICommonContext, config: OfftubeShowStyleConfig): TableConfigGraphicsSetup {
+	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
+		tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === config.SelectedGraphicsSetupName
+	)
+	if (!foundTableConfigGraphicsSetup) {
+		context.logWarning(`No graphics setup found for profile: ${config.SelectedGraphicsSetupName}`)
+		return {
+			Name: '',
+			OvlShowName: ''
+		}
 	}
+	return foundTableConfigGraphicsSetup
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {

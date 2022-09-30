@@ -7,19 +7,23 @@ import {
 import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 
+export interface GalleryTableConfigGraphicsSetup extends TableConfigGraphicsSetup {
+	VcpConcept: string
+	FullShowName: string
+}
+
 export interface BlueprintConfig extends BlueprintConfigBase {
 	showStyle: ShowStyleConfig
-	selectedGraphicsSetup: TableConfigGraphicsSetup
+	selectedGraphicsSetup: GalleryTableConfigGraphicsSetup
 }
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	SelectedGraphicsSetupName: string
-	GraphicsSetups: TableConfigGraphicsSetup[]
+	GraphicsSetups: GalleryTableConfigGraphicsSetup[]
 }
 
-function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): TableConfigGraphicsSetup {
-	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
+function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): GalleryTableConfigGraphicsSetup {
+	const foundTableConfigGraphicsSetup: GalleryTableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
 		tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === config.SelectedGraphicsSetupName
 	)
 	if (!foundTableConfigGraphicsSetup) {
@@ -27,9 +31,8 @@ function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): Ta
 		return {
 			Name: '',
 			VcpConcept: '',
-			OvlShowId: '',
-			FullShowId: '',
-			DveLayoutFolder: ''
+			OvlShowName: '',
+			FullShowName: ''
 		}
 	}
 	return foundTableConfigGraphicsSetup

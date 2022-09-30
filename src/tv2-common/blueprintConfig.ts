@@ -39,10 +39,8 @@ export interface TableConfigSchema {
 
 export interface TableConfigGraphicsSetup {
 	Name: string
-	VcpConcept: string
-	OvlShowId: string
-	FullShowId: string
-	DveLayoutFolder: string
+	OvlShowName: string
+	FullShowName?: string
 }
 
 export interface TV2StudioConfigBase {
@@ -147,6 +145,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
 	SchemaConfig: TableConfigSchema[]
+	SelectedGraphicsSetupName: string
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

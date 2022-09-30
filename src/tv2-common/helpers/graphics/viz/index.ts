@@ -2,7 +2,6 @@ import { GraphicsContent, IShowStyleUserContext, TSR, WithTimeline } from '@tv2m
 import {
 	Adlib,
 	CueDefinitionGraphic,
-	findShowId,
 	GetEnableForGraphic,
 	GetFullGraphicTemplateNameFromCue,
 	GetTimelineLayerForGraphic,
@@ -28,6 +27,7 @@ export interface VizPilotGeneratorSettings {
 
 export function GetInternalGraphicContentVIZ(
 	config: TV2BlueprintConfig,
+	context: IShowStyleUserContext,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	partDefinition: PartDefinition | undefined,
@@ -50,12 +50,32 @@ export function GetInternalGraphicContentVIZ(
 					templateName: mappedTemplate,
 					templateData: parsedCue.graphic.textFields,
 					channelName: engine === 'WALL' ? 'WALL1' : 'OVL1', // TODO: TranslateEngine
-					showId: findShowId(config, engine)
+					showId: findShowName(config, context, engine)
 				}
 			}),
 			// Assume DSK is off by default (config table)
 			...EnableDSK(config, 'OVL')
 		])
+	}
+}
+
+export function findShowName(
+	config: TV2BlueprintConfig,
+	context: IShowStyleUserContext,
+	engine: GraphicEngine
+): string {
+	const graphicsSetup = config.selectedGraphicsSetup
+	switch (engine) {
+		case 'FULL':
+		case 'WALL':
+			if (graphicsSetup.FullShowName === undefined) {
+				context.logWarning("You're using Viz graphics with an incompatible ShowStyle")
+				return ''
+			}
+			return graphicsSetup.FullShowName
+		case 'TLF':
+		case 'OVL':
+			return graphicsSetup.OvlShowName
 	}
 }
 

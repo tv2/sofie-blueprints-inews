@@ -6,6 +6,7 @@ import {
 	GetDSKSourceLayerNames,
 	RemoveOldShortcuts,
 	removeSourceLayer,
+	renameTableColumn,
 	SetShowstyleTransitionMigrationStep,
 	SetSourceLayerName,
 	SetSourceLayerProperties,
@@ -38,9 +39,9 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
 
 export const showStyleMigrations: MigrationStepShowStyle[] = [
 	...getCreateVariantMigrationSteps(),
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
+	remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
+	remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
 	// Update all defaults for 1.3.0
 	...getSourceLayerDefaultsMigrationSteps('1.3.0', true),
 
@@ -232,6 +233,13 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * - Remove persistent idents
 	 */
 	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
+
+	/**
+	 * 1.7.6
+	 * - Rename columns in Graphics Setups table
+	 */
+	renameTableColumn('1.7.6', 'GraphicsSetups', 'OvlShowName', 'OvlShowName'),
+	renameTableColumn('1.7.6', 'GraphicsSetups', 'FullShowName', 'FullShowName'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

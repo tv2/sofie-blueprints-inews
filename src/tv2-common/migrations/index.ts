@@ -368,3 +368,35 @@ export function PrefixEvsWithEvs(
 		}
 	}
 }
+
+export function renameTableColumn(
+	versionStr: string,
+	tableId: string,
+	oldColumnId: string,
+	newColumnId: string
+): MigrationStepShowStyle {
+	return {
+		id: `${versionStr}.renameTableColumn.${tableId}.${oldColumnId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const config = (context.getBaseConfig(tableId) as unknown) as TableConfigItemValue
+
+			if (!config || !Array.isArray(config)) {
+				return false
+			}
+
+			return config.find(row => 'oldColumnId' in row) !== undefined
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			let config = (context.getBaseConfig(tableId) as unknown) as TableConfigItemValue
+			config = config.map(row => {
+				const value = row[oldColumnId]
+				delete row[oldColumnId]
+				row[newColumnId] = value
+				return row
+			})
+			context.setBaseConfig(tableId, (config as unknown) as ConfigItemValue)
+		}
+	}
+}

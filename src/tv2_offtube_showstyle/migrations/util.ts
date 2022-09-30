@@ -5,7 +5,7 @@ import {
 	MigrationStepShowStyle,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import { forceSourceLayerToDefaultsBase, literal } from 'tv2-common'
+import { forceSourceLayerToDefaultsBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'
 import OutputlayerDefaults from './outputlayer-defaults'
@@ -142,41 +142,39 @@ export function remapTableColumnValues(
 	columnId: string,
 	/** Map values [from, to] */
 	remapping: Map<string, string>
-): MigrationStepShowStyle[] {
-	return [
-		literal<MigrationStepShowStyle>({
-			id: `${versionStr}.remapTableColumnValue.${tableId}.${columnId}`,
-			version: versionStr,
-			canBeRunAutomatically: true,
-			validate: (context: MigrationContextShowStyle) => {
-				const table = context.getBaseConfig(tableId) as TableConfigItemValue | undefined
+): MigrationStepShowStyle {
+	return {
+		id: `${versionStr}.remapTableColumnValue.${tableId}.${columnId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const table = context.getBaseConfig(tableId) as TableConfigItemValue | undefined
 
-				if (!table || !table.length) {
-					// No table or no values, nothing to remap
-					return false
-				}
-
-				const first = table[0]
-
-				if (!Object.keys(first).includes(columnId)) {
-					return `Column "${columnId}" does not exist in table "${tableId}"`
-				}
-
-				const ret = remapTableColumnValuesInner(table, columnId, remapping)
-
-				if (typeof ret === 'string' || typeof ret === 'boolean') {
-					return ret
-				}
-
-				return ret.changed !== 0
-			},
-			migrate: (context: MigrationContextShowStyle) => {
-				const table = context.getBaseConfig(tableId) as TableConfigItemValue
-
-				const ret = remapTableColumnValuesInner(table, columnId, remapping)
-
-				context.setBaseConfig(tableId, ret.table)
+			if (!table || !table.length) {
+				// No table or no values, nothing to remap
+				return false
 			}
-		})
-	]
+
+			const first = table[0]
+
+			if (!Object.keys(first).includes(columnId)) {
+				return `Column "${columnId}" does not exist in table "${tableId}"`
+			}
+
+			const ret = remapTableColumnValuesInner(table, columnId, remapping)
+
+			if (typeof ret === 'string' || typeof ret === 'boolean') {
+				return ret
+			}
+
+			return ret.changed !== 0
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const table = context.getBaseConfig(tableId) as TableConfigItemValue
+
+			const ret = remapTableColumnValuesInner(table, columnId, remapping)
+
+			context.setBaseConfig(tableId, ret.table)
+		}
+	}
 }

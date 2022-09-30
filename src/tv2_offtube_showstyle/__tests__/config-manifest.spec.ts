@@ -13,7 +13,9 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
 	MakeAdlibsForFulls: true,
-	SchemaConfig: []
+	SchemaConfig: [],
+	GraphicsSetups: [],
+	SelectedGraphicsSetupName: ''
 }
 
 describe('Config Manifest', () => {
