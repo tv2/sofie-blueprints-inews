@@ -4,6 +4,7 @@
 	"type": "dashboard_layout",
 	"icon": "",
 	"iconColor": "#ffffff",
+	"isDefaultLayout": true,
 	"regionId": "rundown_header_layouts",
 	"actionButtons": [],
 	"filters": [
