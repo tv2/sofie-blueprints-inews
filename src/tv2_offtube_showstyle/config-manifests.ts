@@ -168,15 +168,6 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 				required: false,
 				defaultVal: '',
 				rank: 1
-			},
-			{
-				id: 'VizTemplate',
-				name: 'Viz Template Name',
-				description: 'The name of the Viz Template',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: '',
-				rank: 2
 			}
 		]
 	}

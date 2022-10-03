@@ -5,7 +5,6 @@ import {
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	mapGFXTemplateToDesignTemplateAndDeleteOriginals,
-	// removeDesignChangesFromGFXTemplate,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	SetShowstyleTransitionMigrationStep,

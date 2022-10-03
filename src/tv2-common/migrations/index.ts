@@ -164,9 +164,9 @@ export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
 					designTemplates.push({ ...template, INewsStyleColumn: '' })
 				})
 
-			const newGFXTemplates = gfxTemplates.filter(template => !template.IsDesign)
+			const newGfxTemplates = gfxTemplates.filter(template => !template.IsDesign)
 
-			context.setBaseConfig(from, (newGFXTemplates as unknown) as ConfigItemValue)
+			context.setBaseConfig(from, (newGfxTemplates as unknown) as ConfigItemValue)
 			context.setBaseConfig(to, (designTemplates as unknown) as ConfigItemValue)
 		}
 	})

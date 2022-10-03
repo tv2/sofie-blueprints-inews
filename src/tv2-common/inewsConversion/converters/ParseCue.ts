@@ -917,7 +917,7 @@ function findGraphicDesignConfiguration(
 	layout: string
 ): TableConfigItemGfxDesignTemplate | undefined {
 	return config.showStyle.GfxDesignTemplates.find(
-		tmpl => tmpl.INewsStyleColumn && tmpl.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
+		template => template.INewsStyleColumn && template.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
 	)
 }
 
