@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { findGraphicsSetup, TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
 
@@ -39,23 +39,12 @@ export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 	GraphicsSetups: TableConfigGraphicsSetup[]
 }
 
-function findGraphicsSetup(context: ICommonContext, config: OfftubeShowStyleConfig): TableConfigGraphicsSetup {
-	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
-		tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === config.SelectedGraphicsSetupName
-	)
-	if (!foundTableConfigGraphicsSetup) {
-		context.logWarning(`No graphics setup found for profile: ${config.SelectedGraphicsSetupName}`)
-		return {
-			Name: '',
-			OvlShowName: ''
-		}
-	}
-	return foundTableConfigGraphicsSetup
-}
-
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
-	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig)
+	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig, {
+		Name: '',
+		OvlShowName: ''
+	})
 	return {
 		showStyle: showstyleConfig,
 		selectedGraphicsSetup

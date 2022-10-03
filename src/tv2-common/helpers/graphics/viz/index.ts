@@ -59,11 +59,7 @@ export function GetInternalGraphicContentVIZ(
 	}
 }
 
-export function findShowName(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
-	engine: GraphicEngine
-): string {
+function findShowName(config: TV2BlueprintConfig, context: IShowStyleUserContext, engine: GraphicEngine): string {
 	const graphicsSetup = config.selectedGraphicsSetup
 	switch (engine) {
 		case 'FULL':

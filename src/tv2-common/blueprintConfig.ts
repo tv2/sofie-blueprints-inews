@@ -145,6 +145,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
 	SchemaConfig: TableConfigSchema[]
+	GraphicsSetups: TableConfigGraphicsSetup[]
 	SelectedGraphicsSetupName: string
 }
 
