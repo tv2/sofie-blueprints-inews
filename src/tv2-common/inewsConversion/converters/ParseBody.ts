@@ -178,6 +178,8 @@ const ACCEPTED_RED_TEXT = [/\b(SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|VOV?|VOSB)+\b/i
 const REMOTE_CUE = /^(LIVE|FEED) ?([^\s]+)(?: (.+))?$/i
 const ENGINE_CUE = /ENGINE ?([^\s]+)/i
 
+const MAX_ALLOWED_TRANSITION_FRAMES = 250
+
 export function ParseBody(
 	config: TV2BlueprintConfig,
 	segmentId: string,
@@ -566,11 +568,16 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 	if (transitionMatch) {
 		definition.transition = {
 			style: AtemTransitionStyleFromString(transitionMatch[1].toUpperCase()),
-			duration: transitionMatch[2] ? Number(transitionMatch[2]) : undefined
+			duration: transitionMatch[2] ? getTimeForTransition(transitionMatch[2]) : undefined
 		}
 	}
 
 	return definition
+}
+
+function getTimeForTransition(timeString: string): number {
+	const time = Number(timeString)
+	return time > MAX_ALLOWED_TRANSITION_FRAMES ? MAX_ALLOWED_TRANSITION_FRAMES : time
 }
 
 function extractTypeProperties(typeStr: string): PartdefinitionTypes {
