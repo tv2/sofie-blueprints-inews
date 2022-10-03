@@ -1,13 +1,4 @@
-import {
-	IBlueprintPiece,
-	IShowStyleUserContext,
-	PieceLifespan
-} from '../../../../tv-automation-server-core/packages/blueprints-integration'
-import {
-	DeviceType,
-	TimelineObjTelemetrics
-} from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types'
-import { TimelineEnable } from '../../../../tv-automation-state-timeline-resolver/packages/timeline-state-resolver-types/dist/superfly-timeline'
+import { IBlueprintPiece, IShowStyleUserContext, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
 import { CueType, RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
 import { EvaluateCueTelemetrics } from '../cues/EvaluateCueTelemetrics'
 import { CueDefinitionTelemetrics } from '../inewsConversion'
@@ -67,7 +58,7 @@ describe('EvaluateCueTelemetrics', () => {
 		expect(pieces[0].content.timelineObjects).toHaveLength(1)
 		const result = pieces[0].content.timelineObjects[0]
 		expect(result.layer).toEqual(RobotCameraLayer.TELEMETRICS)
-		expect(result.content.deviceType).toEqual(DeviceType.TELEMETRICS)
+		expect(result.content.deviceType).toEqual(TSR.DeviceType.TELEMETRICS)
 	})
 
 	it('timeline object has start time 0', () => {
@@ -76,7 +67,7 @@ describe('EvaluateCueTelemetrics', () => {
 
 		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
 
-		expect((pieces[0].content.timelineObjects[0].enable as TimelineEnable).start).toEqual(0)
+		expect((pieces[0].content.timelineObjects[0].enable as { start: number }).start).toEqual(0)
 	})
 
 	it('has Telemetrics source layer', () => {
@@ -125,7 +116,7 @@ describe('EvaluateCueTelemetrics', () => {
 
 		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
 
-		const result: TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TimelineObjTelemetrics
+		const result: TSR.TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TSR.TimelineObjTelemetrics
 		expect(result.content.presetShotIdentifiers).toEqual([presetShot])
 	}
 
@@ -199,7 +190,7 @@ describe('EvaluateCueTelemetrics', () => {
 			expect(pieces).toHaveLength(2)
 		})
 
-		function createTelemetricsTimelineObject(presetShot?: number): TimelineObjTelemetrics {
+		function createTelemetricsTimelineObject(presetShot?: number): TSR.TimelineObjTelemetrics {
 			return {
 				id: '',
 				enable: {
@@ -207,7 +198,7 @@ describe('EvaluateCueTelemetrics', () => {
 				},
 				layer: RobotCameraLayer.TELEMETRICS,
 				content: {
-					deviceType: DeviceType.TELEMETRICS,
+					deviceType: TSR.DeviceType.TELEMETRICS,
 					presetShotIdentifiers: presetShot ? [presetShot] : []
 				}
 			}
@@ -242,7 +233,8 @@ describe('EvaluateCueTelemetrics', () => {
 
 			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
 
-			const timelineObject: TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TimelineObjTelemetrics
+			const timelineObject: TSR.TimelineObjTelemetrics = pieces[0].content
+				.timelineObjects[0] as TSR.TimelineObjTelemetrics
 			expect(timelineObject.content.presetShotIdentifiers).toEqual([1, 2])
 		})
 
@@ -256,7 +248,8 @@ describe('EvaluateCueTelemetrics', () => {
 
 			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
 
-			const timelineObject: TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TimelineObjTelemetrics
+			const timelineObject: TSR.TimelineObjTelemetrics = pieces[0].content
+				.timelineObjects[0] as TSR.TimelineObjTelemetrics
 			expect(timelineObject.content.presetShotIdentifiers).toEqual([1])
 		})
 
