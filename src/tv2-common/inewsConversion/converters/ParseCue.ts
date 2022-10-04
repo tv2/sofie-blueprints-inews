@@ -722,18 +722,23 @@ function parseTargetEngine(
 	}
 
 	const graphicConfig = config.showStyle.GFXTemplates.find(
-		tmpl =>
-			tmpl.INewsCode.toUpperCase() === code?.toUpperCase() && tmpl.INewsName.toUpperCase() === iNewsName.toUpperCase()
+		template =>
+			template.INewsCode.toUpperCase() === code?.toUpperCase() &&
+			template.INewsName.toUpperCase() === iNewsName.toUpperCase()
 	)
+
+	const graphicDesignConfig = code
+		? config.showStyle.GfxDesignTemplates.find(template => template.INewsName.toUpperCase() === code?.toUpperCase())
+		: undefined
 
 	if (graphicConfig) {
 		if (!!graphicConfig.VizTemplate.toUpperCase().match(/^VCP$/i)) {
 			engineCue.mergeable = true
 		} else {
-			if (graphicConfig.IsDesign) {
+			if (graphicDesignConfig) {
 				return literal<CueDefinitionGraphicDesign>({
 					type: CueType.GraphicDesign,
-					design: graphicConfig.VizTemplate,
+					design: graphicDesignConfig.VizTemplate,
 					iNewsCommand: code,
 					start: engineCue.start,
 					end: engineCue.end,

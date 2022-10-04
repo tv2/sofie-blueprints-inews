@@ -39,9 +39,9 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
 
 export const showStyleMigrations: MigrationStepShowStyle[] = [
 	...getCreateVariantMigrationSteps(),
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
+	...remapTableColumnValues('0.1.0', 'GfxTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
+	...remapTableColumnValues('0.1.0', 'GfxTemplates', 'VizDestination', remapVizDOvl),
 	// Update all defaults for 1.3.0
 	...getSourceLayerDefaultsMigrationSteps('1.3.0', true),
 

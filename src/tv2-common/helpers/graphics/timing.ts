@@ -10,7 +10,7 @@ import {
 	LifeSpan,
 	PartDefinition,
 	PartToParentClass,
-	TableConfigItemGFXTemplates,
+	TableConfigItemGfxTemplates,
 	TV2BlueprintConfig
 } from 'tv2-common'
 import { GraphicEngine } from 'tv2-constants'
@@ -107,7 +107,7 @@ export function GetEnableForWall(): TSR.TSRTimelineObj['enable'] {
 export function findGFXTemplate(
 	config: TV2BlueprintConfig,
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
-): TableConfigItemGFXTemplates | undefined {
+): TableConfigItemGfxTemplates | undefined {
 	let graphicId: string | undefined
 	if (GraphicIsInternal(cue)) {
 		graphicId = cue.graphic.template

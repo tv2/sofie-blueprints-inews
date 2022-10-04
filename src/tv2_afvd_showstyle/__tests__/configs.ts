@@ -195,7 +195,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'VCP',
 				VizDestination: 'WALL1',
 				OutType: 'O',
-				IsDesign: false,
 				SourceLayer: 'studio0_wall_graphics',
 				LayerMapping: 'graphic_wall'
 			},
@@ -205,7 +204,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'VCP',
 				VizDestination: 'OVL1',
 				OutType: 'O',
-				IsDesign: false,
 				SourceLayer: 'studio0_overlay',
 				LayerMapping: 'graphic_overlay'
 			},
@@ -215,7 +213,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'VCP',
 				VizDestination: 'OVL1',
 				OutType: 'O',
-				IsDesign: false,
 				SourceLayer: 'studio0_overlay',
 				LayerMapping: 'graphic_overlay'
 			},
@@ -225,7 +222,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'tlftoptlive',
 				VizDestination: 'OVL1',
 				OutType: 'S',
-				IsDesign: false,
 				SourceLayer: 'studio0_graphicsTop',
 				LayerMapping: 'graphic_overlay_topt'
 			}

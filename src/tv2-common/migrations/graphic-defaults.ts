@@ -1,6 +1,15 @@
-import { TV2ShowstyleBlueprintConfigBase } from '../blueprintConfig'
+export interface PriorDefaultTableConfigItemGfxTemplates {
+	VizTemplate: string
+	SourceLayer: string
+	LayerMapping: string
+	INewsCode: string
+	INewsName: string
+	VizDestination: string
+	OutType: string
+	IsDesign: boolean
+}
 
-export const DEFAULT_GRAPHICS: TV2ShowstyleBlueprintConfigBase['GFXTemplates'] = [
+export const DEFAULT_GRAPHICS: PriorDefaultTableConfigItemGfxTemplates[] = [
 	{
 		INewsCode: '#kg',
 		INewsName: 'arkiv',
