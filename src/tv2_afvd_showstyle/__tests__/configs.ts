@@ -231,6 +231,13 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			}
 		])
 	],
+	GfxDesignTemplates: [
+		{
+			INewsName: 'DESIGN_FODBOLD_22',
+			INewsStyleColumn: '',
+			VizTemplate: 'DESIGN_FODBOLD_22'
+		}
+	],
 	LYDConfig: [
 		{
 			_id: '',
