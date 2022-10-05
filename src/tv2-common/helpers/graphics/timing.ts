@@ -68,7 +68,7 @@ export function GetGraphicDuration(
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): number | undefined {
 	if (config.showStyle.GFXTemplates) {
-		const template = findGFXTemplate(config, cue)
+		const template = findGfxTemplate(config, cue)
 		if (template && template.OutType && !template.OutType.toString().match(/default/i)) {
 			return undefined
 		}
@@ -104,7 +104,7 @@ export function GetEnableForWall(): TSR.TSRTimelineObj['enable'] {
 	}
 }
 
-export function findGFXTemplate(
+export function findGfxTemplate(
 	config: TV2BlueprintConfig,
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): TableConfigItemGfxTemplates | undefined {
@@ -158,6 +158,6 @@ export function GetEnableForGraphic(
 }
 function endsOnPartEnd(config: TV2BlueprintConfig, cue: CueDefinitionGraphic<GraphicInternalOrPilot>) {
 	return (
-		(cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') || findGFXTemplate(config, cue)?.OutType === 'B'
+		(cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') || findGfxTemplate(config, cue)?.OutType === 'B'
 	)
 }

@@ -1,10 +1,10 @@
 import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
-	AddGraphicToGFXTable,
-	changeGFXTemplate,
+	AddGraphicToGfxTable,
+	changeGfxTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	mapGFXTemplateToDesignTemplateAndDeleteOriginals,
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	SetShowstyleTransitionMigrationStep,
@@ -39,9 +39,9 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
 
 export const showStyleMigrations: MigrationStepShowStyle[] = [
 	...getCreateVariantMigrationSteps(),
-	...remapTableColumnValues('0.1.0', 'GfxTemplates', 'LayerMapping', remapVizLLayer),
+	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
-	...remapTableColumnValues('0.1.0', 'GfxTemplates', 'VizDestination', remapVizDOvl),
+	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
 	// Update all defaults for 1.3.0
 	...getSourceLayerDefaultsMigrationSteps('1.3.0', true),
 
@@ -80,7 +80,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle),
 
-	AddGraphicToGFXTable('1.5.4', 'AFVD', {
+	AddGraphicToGfxTable('1.5.4', 'AFVD', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
 		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
@@ -191,7 +191,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.7.2
 	 * - Fix bundright configuration
 	 */
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'AFVD',
 		{
@@ -203,7 +203,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ OutType: '' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'AFVD',
 		{
@@ -215,7 +215,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ SourceLayer: 'studio0_graphicsLower' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'AFVD',
 		{
@@ -238,7 +238,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.7.6
 	 * - Map designs from GFXTemplates to GfxDesignTemplates and delete them from GFXTemplates
 	 */
-	mapGFXTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

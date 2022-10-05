@@ -95,7 +95,7 @@ export function removeSourceLayer(versionStr: string, studioId: string, layer: s
 	})
 }
 
-export function AddGraphicToGFXTable(
+export function AddGraphicToGfxTable(
 	versionStr: string,
 	studio: string,
 	config: PriorDefaultTableConfigItemGfxTemplates
@@ -128,7 +128,7 @@ export function AddGraphicToGFXTable(
 	}
 }
 
-export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
+export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 	versionStr: string,
 	studio: string,
 	from: string,
@@ -199,7 +199,7 @@ export function addSourceToSourcesConfig(
 	}
 }
 
-export function changeGFXTemplate(
+export function changeGfxTemplate(
 	versionStr: string,
 	studio: string,
 	oldConfig: Partial<PriorDefaultTableConfigItemGfxTemplates>,

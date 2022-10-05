@@ -1,7 +1,7 @@
 import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
-	AddGraphicToGFXTable,
-	changeGFXTemplate,
+	AddGraphicToGfxTable,
+	changeGfxTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	RemoveOldShortcuts,
@@ -115,7 +115,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	forceSourceLayerToDefaults('1.5.2', OfftubeSourceLayer.PgmJingle),
 
-	AddGraphicToGFXTable('1.5.4', 'Offtube', {
+	AddGraphicToGfxTable('1.5.4', 'Offtube', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
 		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
@@ -223,7 +223,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.7.2
 	 * - Fix bundright configuration
 	 */
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'QBOX',
 		{
@@ -235,7 +235,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ OutType: '' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'QBOX',
 		{
@@ -247,7 +247,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ SourceLayer: 'studio0_graphicsLower' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'QBOX',
 		{
