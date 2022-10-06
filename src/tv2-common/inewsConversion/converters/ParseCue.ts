@@ -1,4 +1,11 @@
-import { GetPieceLifespanForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import {
+	GetPieceLifespanForGraphic,
+	literal,
+	TableConfigItemGfxDesignTemplate,
+	TableConfigSchema,
+	TV2BlueprintConfig,
+	UnparsedCue
+} from 'tv2-common'
 import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -328,24 +335,32 @@ function parsekg(
 
 	kgCue.graphic = graphic
 
-	const graphicConfig = code
-		? config.showStyle.GFXTemplates.find(
-				tmpl =>
-					tmpl.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
-					tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase()
+	const graphicDesignConfig = code
+		? config.showStyle.GfxDesignTemplates.find(
+				template => template.INewsName.toUpperCase() === graphic.template.toUpperCase()
 		  )
 		: undefined
 
-	if (graphicConfig && graphicConfig.IsDesign) {
+	if (graphicDesignConfig) {
 		return literal<CueDefinitionGraphicDesign>({
 			type: CueType.GraphicDesign,
-			design: graphicConfig.VizTemplate,
+			design: graphicDesignConfig.VizTemplate,
 			iNewsCommand: kgCue.iNewsCommand,
 			start: kgCue.start,
 			end: kgCue.end,
 			adlib: kgCue.adlib
 		})
-	} else if (graphicConfig && !!graphicConfig.VizTemplate.match(/^VCP$/i)) {
+	}
+
+	const graphicConfig = code
+		? config.showStyle.GFXTemplates.find(
+				template =>
+					template.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
+					template.INewsName.toUpperCase() === graphic.template.toUpperCase()
+		  )
+		: undefined
+
+	if (graphicConfig && !!graphicConfig.VizTemplate.match(/^VCP$/i)) {
 		return literal<CueDefinitionUnpairedTarget>({
 			type: CueType.UNPAIRED_TARGET,
 			target: graphicConfig.VizDestination.match(/OVL/i)
@@ -879,20 +894,31 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefinitionGraphicDesign | undefined {
 	const array = cue[0].split('DESIGN_LAYOUT=')
 	const layout = array[1]
-	const tableConfigSchema = findSchemaConfiguration(config, layout)
-	if (!tableConfigSchema) {
+
+	const designConfig = findGraphicDesignConfiguration(config, layout)
+
+	if (!designConfig) {
 		return undefined
 	}
 
 	return literal<CueDefinitionGraphicDesign>({
 		type: CueType.GraphicDesign,
-		design: tableConfigSchema.vizTemplateName,
+		design: designConfig.VizTemplate,
 		iNewsCommand: layout,
 		start: {
 			frames: 1
 		},
 		isFromLayout: true
 	})
+}
+
+function findGraphicDesignConfiguration(
+	config: TV2BlueprintConfig,
+	layout: string
+): TableConfigItemGfxDesignTemplate | undefined {
+	return config.showStyle.GfxDesignTemplates.find(
+		template => template.INewsStyleColumn && template.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
+	)
 }
 
 function findSchemaConfiguration(config: TV2BlueprintConfig, designIdentifier: string): TableConfigSchema | undefined {

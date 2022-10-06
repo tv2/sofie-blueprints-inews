@@ -644,13 +644,13 @@ describe('Cue parser', () => {
 		)
 	})
 
-	test('KG=DESIGN_FODBOLD', () => {
-		const cueGrafik = ['KG=DESIGN_FODBOLD_20', ';0.00.01']
+	test('Find KG=DESIGN_FODBOLD in design templates', () => {
+		const cueGrafik = ['KG=DESIGN_FODBOLD_22', ';0.00.01']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
 			literal<CueDefinitionGraphicDesign>({
 				type: CueType.GraphicDesign,
-				design: 'DESIGN_FODBOLD_20',
+				design: 'DESIGN_FODBOLD_22',
 				start: {
 					frames: 1,
 					seconds: 0

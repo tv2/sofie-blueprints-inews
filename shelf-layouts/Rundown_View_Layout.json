@@ -5,6 +5,7 @@
 	"type": "rundown_view_layout",
 	"icon": "",
 	"iconColor": "#ffffff",
+	"isDefaultLayout": true,
 	"openByDefault": false,
 	"showBuckets": true,
 	"disableContextMenu": false,

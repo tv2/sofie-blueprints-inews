@@ -4,6 +4,7 @@ import {
 	changeGFXTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
+	mapGFXTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameTableColumn,
@@ -237,9 +238,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	/**
 	 * 1.7.6
 	 * - Rename columns in Graphics Setups table
+	 * - Map designs from GFXTemplates to GfxDesignTemplates and delete them from GFXTemplates
 	 */
 	renameTableColumn('1.7.6', 'GraphicsSetups', 'OvlShowId', 'OvlShowName'),
 	renameTableColumn('1.7.6', 'GraphicsSetups', 'FullShowId', 'FullShowName'),
+	mapGFXTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

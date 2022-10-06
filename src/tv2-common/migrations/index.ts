@@ -7,7 +7,11 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import { TableConfigItemGFXTemplates, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import {
+	TableConfigItemGfxDesignTemplate,
+	TableConfigItemGFXTemplates,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
 
@@ -123,6 +127,49 @@ export function AddGraphicToGFXTable(
 			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
 		}
 	}
+}
+
+export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
+	versionStr: string,
+	studio: string,
+	from: string,
+	to: string
+) {
+	return literal<MigrationStepShowStyle>({
+		id: `${versionStr}.mapGFXTemplateToDesignTemplateAndDeleteOriginals.${from}.${studio}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[] | undefined
+
+			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[] | undefined
+
+			if (!gfxTemplates || !gfxTemplates.length) {
+				return false
+			}
+
+			if (designTemplates && designTemplates.length) {
+				return false
+			}
+
+			return gfxTemplates.some(template => template.IsDesign)
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[]
+			const designTemplates = ((context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[]) ?? []
+
+			gfxTemplates
+				.filter(template => template.IsDesign)
+				.map(template => {
+					designTemplates.push({ ...template, INewsStyleColumn: '' })
+				})
+
+			const newGfxTemplates = gfxTemplates.filter(template => !template.IsDesign)
+
+			context.setBaseConfig(from, (newGfxTemplates as unknown) as ConfigItemValue)
+			context.setBaseConfig(to, (designTemplates as unknown) as ConfigItemValue)
+		}
+	})
 }
 
 export function addSourceToSourcesConfig(
