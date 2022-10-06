@@ -449,7 +449,7 @@ export async function EvaluateCuesBase(
 								templateName: 'altud',
 								channel: 'OVL1',
 								templateData: [],
-								showId: config.selectedGraphicsSetup.OvlShowId
+								showId: config.selectedGraphicsSetup.OvlShowName
 							}
 						})
 					}

@@ -22,7 +22,7 @@ import {
 	DEFAULT_GRAPHICS_SETUP,
 	defaultShowStyleConfig,
 	defaultStudioConfig,
-	OVL_SHOW_ID
+	OVL_SHOW_NAME
 } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import {
@@ -139,7 +139,7 @@ describe('telefon', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						literal<TSR.TimelineObjAtemDSK>({

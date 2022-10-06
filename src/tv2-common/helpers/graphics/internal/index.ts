@@ -19,7 +19,14 @@ export function CreateInternalGraphic(
 	partDefinition: PartDefinition,
 	adlib?: Adlib
 ) {
-	const internalGraphic: InternalGraphic = new InternalGraphic(config, parsedCue, adlib, partId, partDefinition)
+	const internalGraphic: InternalGraphic = new InternalGraphic(
+		config,
+		context,
+		parsedCue,
+		adlib,
+		partId,
+		partDefinition
+	)
 
 	if (!internalGraphic.mappedTemplate || !internalGraphic.mappedTemplate.length) {
 		context.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)

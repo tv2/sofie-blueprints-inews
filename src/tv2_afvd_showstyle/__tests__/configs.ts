@@ -1,6 +1,6 @@
-import { literal, parseMapStr, TableConfigGraphicsSetup } from 'tv2-common'
+import { literal, parseMapStr } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { ShowStyleConfig } from '../helpers/config'
+import { GalleryTableConfigGraphicsSetup, ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -42,14 +42,13 @@ function prepareConfig(
 	})
 }
 
-export const OVL_SHOW_ID = 'ovl-show-id'
-export const FULL_SHOW_ID = 'full-show-id'
-export const DEFAULT_GRAPHICS_SETUP: TableConfigGraphicsSetup = {
+export const OVL_SHOW_NAME = 'ovl-show-id'
+export const FULL_SHOW_NAME = 'full-show-id'
+export const DEFAULT_GRAPHICS_SETUP: GalleryTableConfigGraphicsSetup = {
 	Name: 'SomeProfile',
 	VcpConcept: 'SomeConcept',
-	OvlShowId: OVL_SHOW_ID,
-	FullShowId: FULL_SHOW_ID,
-	DveLayoutFolder: 'folder/path'
+	OvlShowName: OVL_SHOW_NAME,
+	FullShowName: FULL_SHOW_NAME
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests

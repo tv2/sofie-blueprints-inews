@@ -459,7 +459,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: 'BG_LOADER_SC',
 						templateData: [],
-						showId: config.selectedGraphicsSetup.OvlShowId
+						showId: config.selectedGraphicsSetup.OvlShowName
 					}
 				})
 			)
