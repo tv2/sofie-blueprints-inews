@@ -15,7 +15,7 @@ export interface TableConfigItemBreakers {
 	LoadFirstFrame: boolean
 }
 
-export interface TableConfigItemGfxTemplates {
+export interface TableConfigItemGfxTemplate {
 	VizTemplate: string
 	SourceLayer: string
 	LayerMapping: string
@@ -146,7 +146,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
-	GFXTemplates: TableConfigItemGfxTemplates[]
+	GFXTemplates: TableConfigItemGfxTemplate[]
 	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string

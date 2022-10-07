@@ -10,7 +10,7 @@ import {
 import { TableConfigItemGfxDesignTemplate, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
-import { PriorDefaultTableConfigItemGfxTemplates } from './graphic-defaults'
+import { PriorDefaultTableConfigItemGfxTemplate } from './graphic-defaults'
 
 export * from './moveSourcesToTable'
 export * from './addKeepAudio'
@@ -98,7 +98,7 @@ export function removeSourceLayer(versionStr: string, studioId: string, layer: s
 export function AddGraphicToGfxTable(
 	versionStr: string,
 	studio: string,
-	config: PriorDefaultTableConfigItemGfxTemplates
+	config: PriorDefaultTableConfigItemGfxTemplate
 ): MigrationStepShowStyle {
 	return {
 		id: `${versionStr}.gfxConfig.add${config.INewsName}.${studio}`,
@@ -106,7 +106,7 @@ export function AddGraphicToGfxTable(
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
 			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as
-				| PriorDefaultTableConfigItemGfxTemplates[]
+				| PriorDefaultTableConfigItemGfxTemplate[]
 				| undefined
 
 			if (!existing || !existing.length) {
@@ -119,7 +119,7 @@ export function AddGraphicToGfxTable(
 			)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as PriorDefaultTableConfigItemGfxTemplates[]
+			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as PriorDefaultTableConfigItemGfxTemplate[]
 
 			existing.push(config)
 
@@ -140,7 +140,7 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
 			const gfxTemplates = (context.getBaseConfig(from) as unknown) as
-				| PriorDefaultTableConfigItemGfxTemplates[]
+				| PriorDefaultTableConfigItemGfxTemplate[]
 				| undefined
 
 			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[] | undefined
@@ -156,7 +156,7 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 			return gfxTemplates.some(template => template.IsDesign)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(from) as unknown) as PriorDefaultTableConfigItemGfxTemplates[]
+			const gfxTemplates = (context.getBaseConfig(from) as unknown) as PriorDefaultTableConfigItemGfxTemplate[]
 			const designTemplates = ((context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[]) ?? []
 
 			gfxTemplates
@@ -202,8 +202,8 @@ export function addSourceToSourcesConfig(
 export function changeGfxTemplate(
 	versionStr: string,
 	studio: string,
-	oldConfig: Partial<PriorDefaultTableConfigItemGfxTemplates>,
-	config: Partial<PriorDefaultTableConfigItemGfxTemplates>
+	oldConfig: Partial<PriorDefaultTableConfigItemGfxTemplate>,
+	config: Partial<PriorDefaultTableConfigItemGfxTemplate>
 ): MigrationStepShowStyle {
 	const keysToUpdate = Object.keys(config).join('_')
 	return {
@@ -212,7 +212,7 @@ export function changeGfxTemplate(
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
 			const gfxTemplates = (context.getBaseConfig('GFXTemplates') as unknown) as
-				| PriorDefaultTableConfigItemGfxTemplates[]
+				| PriorDefaultTableConfigItemGfxTemplate[]
 				| undefined
 
 			if (!gfxTemplates || !gfxTemplates.length) {
@@ -222,7 +222,7 @@ export function changeGfxTemplate(
 			return gfxTemplates.some(g => isGfxTemplateSubset(g, oldConfig))
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			let existing = (context.getBaseConfig('GFXTemplates') as unknown) as PriorDefaultTableConfigItemGfxTemplates[]
+			let existing = (context.getBaseConfig('GFXTemplates') as unknown) as PriorDefaultTableConfigItemGfxTemplate[]
 
 			existing = existing.map(g => (isGfxTemplateSubset(g, oldConfig) ? { ...g, ...config } : g))
 
@@ -232,12 +232,10 @@ export function changeGfxTemplate(
 }
 
 function isGfxTemplateSubset(
-	superset: Partial<PriorDefaultTableConfigItemGfxTemplates>,
-	subset: Partial<PriorDefaultTableConfigItemGfxTemplates>
+	superset: Partial<PriorDefaultTableConfigItemGfxTemplate>,
+	subset: Partial<PriorDefaultTableConfigItemGfxTemplate>
 ): boolean {
-	return Object.keys(subset).every(
-		(key: keyof PriorDefaultTableConfigItemGfxTemplates) => superset[key] === subset[key]
-	)
+	return Object.keys(subset).every((key: keyof PriorDefaultTableConfigItemGfxTemplate) => superset[key] === subset[key])
 }
 
 export function SetLayerNamesToDefaults(
