@@ -14,7 +14,7 @@ export function EvaluateCueTelemetrics(
 ): void {
 	const startTime: number = cueDefinition.start ? CalculateTime(cueDefinition.start) ?? 0 : 0
 
-	const existingPiece = findExistingPieceForExternalIdAndStartTime(pieces, startTime)
+	const existingPiece = findExistingPieceForTelemetricsLayerAndStartTime(pieces, startTime)
 	if (!existingPiece) {
 		const newPiece = createTelemetricsPiece(externalId, cueDefinition, startTime)
 		pieces.push(newPiece)
@@ -26,7 +26,10 @@ export function EvaluateCueTelemetrics(
 	}
 }
 
-function findExistingPieceForExternalIdAndStartTime(pieces: IBlueprintPiece[], startTime: number) {
+function findExistingPieceForTelemetricsLayerAndStartTime(
+	pieces: IBlueprintPiece[],
+	startTime: number
+): IBlueprintPiece | undefined {
 	return pieces.find(
 		piece =>
 			piece.sourceLayerId === SharedSourceLayers.Telemetrics &&
@@ -41,13 +44,13 @@ function containsPresetIdentifier(piece: IBlueprintPiece, presetIdentifier: numb
 	return timelineObject.content.presetShotIdentifiers.includes(presetIdentifier)
 }
 
-function addPresetIdentifierToTimelineObject(piece: IBlueprintPiece, presetIdentifier: number) {
+function addPresetIdentifierToTimelineObject(piece: IBlueprintPiece, presetIdentifier: number): void {
 	const existingTimelineObject = piece.content.timelineObjects[0]
 	const timelineObject: TSR.TimelineObjTelemetrics = existingTimelineObject as TSR.TimelineObjTelemetrics
 	timelineObject.content.presetShotIdentifiers.push(presetIdentifier)
 }
 
-function addPresetIdentifierToPieceName(piece: IBlueprintPiece, presetIdentifier: number) {
+function addPresetIdentifierToPieceName(piece: IBlueprintPiece, presetIdentifier: number): void {
 	piece.name = `${piece.name.split(']')[0]},${presetIdentifier}]`
 }
 
