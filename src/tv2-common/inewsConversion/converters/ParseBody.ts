@@ -577,7 +577,7 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 
 function getTimeForTransition(timeString: string): number {
 	const time = Number(timeString)
-	return time > MAX_ALLOWED_TRANSITION_FRAMES ? MAX_ALLOWED_TRANSITION_FRAMES : time
+	return Math.min(time, MAX_ALLOWED_TRANSITION_FRAMES)
 }
 
 function extractTypeProperties(typeStr: string): PartdefinitionTypes {
