@@ -168,6 +168,11 @@ export interface CueDefinitionPgmClean extends CueDefinitionBase {
 	sourceDefinition: SourceDefinition
 }
 
+export interface CueDefinitionTelemetrics extends CueDefinitionBase {
+	type: CueType.Telemetrics
+	presetIdentifier: number
+}
+
 export type CueDefinition =
 	| CueDefinitionUnknown
 	| CueDefinitionEkstern
@@ -187,6 +192,7 @@ export type CueDefinition =
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
 	| CueDefinitionMixMinus
+	| CueDefinitionTelemetrics
 
 export function GraphicIsInternal(
 	o: CueDefinitionGraphic<GraphicInternalOrPilot>
@@ -213,51 +219,53 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return undefined
 	}
 
-	if (cue[0].match(/^[#* ]?kg[= ]ovl-all-out$/i) || cue[0].match(/^[#* ]?kg[= ]altud$/i)) {
+	if (/^[#* ]?kg[= ]ovl-all-out$/i.test(cue[0]) || /^[#* ]?kg[= ]altud$/i.test(cue[0])) {
 		// All out
 		return parseAllOut(cue)
-	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
+	} else if (/(?:^[*|#]?kg[ |=])|(?:^digi)/i.test(cue[0])) {
 		// kg (Grafik)
 		return parsekg(cue, config)
-	} else if (cue[0].match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i)) {
+	} else if (/^]] [a-z]\d\.\d [a-z] \d \[\[$/i.test(cue[0])) {
 		// MOS
 		return parsePilot(cue)
-	} else if (cue[0].match(/[#|*]?cg\d+[ -]pilotdata/i)) {
+	} else if (/[#|*]?cg\d+[ -]pilotdata/i.test(cue[0])) {
 		return parsePilot(cue)
-	} else if (cue[0].match(/^EKSTERN=/i)) {
+	} else if (/^EKSTERN=/i.test(cue[0])) {
 		// EKSTERN
 		return parseEkstern(cue)
-	} else if (cue[0].match(/^DVE=/i)) {
+	} else if (/^DVE=/i.test(cue[0])) {
 		// DVE
 		return parseDVE(cue)
-	} else if (cue[0].match(/^TELEFON=/i)) {
+	} else if (/^TELEFON=/i.test(cue[0])) {
 		// Telefon
 		return parseTelefon(cue, config)
-	} else if (cue[0].match(/^(?:SS|GRAFIK)=(?:.*)(?:$| )/i)) {
+	} else if (/^(?:SS|GRAFIK)=(?:.*)(?:$| )/i.test(cue[0])) {
 		// Target engine
 		return parseTargetEngine(cue, config)
-	} else if (cue[0].match(/^(?:SS|GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
+	} else if (/^(?:SS|GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i.test(cue[0])) {
 		return parseTargetEngine(cue, config)
-	} else if (cue[0].match(/^VIZ=/i)) {
+	} else if (/^VIZ=/i.test(cue[0])) {
 		return parseVIZCues(cue)
-	} else if (cue[0].match(/^STUDIE=MIC ON OFF$/i)) {
+	} else if (/^STUDIE=MIC ON OFF$/i.test(cue[0])) {
 		return parseMic(cue)
-	} else if (cue[0].match(/^ADLIBPI?X=/i)) {
+	} else if (/^ADLIBPI?X=/i.test(cue[0])) {
 		return parseAdLib(cue)
-	} else if (cue[0].match(/^KOMMANDO=/i)) {
+	} else if (/^KOMMANDO=/i.test(cue[0])) {
 		return parseKommando(cue)
-	} else if (cue[0].match(/^LYD=/i)) {
+	} else if (/^LYD=/i.test(cue[0])) {
 		return parseLYD(cue)
-	} else if (cue[0].match(/^JINGLE\d+=/i)) {
+	} else if (/^JINGLE\d+=/i.test(cue[0])) {
 		return parseJingle(cue)
-	} else if (cue[0].match(/^PGMCLEAN=/i)) {
+	} else if (/^PGMCLEAN=/i.test(cue[0])) {
 		return parsePgmClean(cue)
-	} else if (cue[0].match(/^MINUSKAM\s*=/i)) {
+	} else if (/^MINUSKAM\s*=/i.test(cue[0])) {
 		return parseMixMinus(cue)
-	} else if (cue[0].match(/^DESIGN_LAYOUT=/i)) {
+	} else if (/^DESIGN_LAYOUT=/i.test(cue[0])) {
 		return parseDesignLayout(cue, config)
-	} else if (cue[0].match(/^DESIGN_BG=/i)) {
+	} else if (/^DESIGN_BG=/i.test(cue[0])) {
 		return parseDesignBg(cue, config)
+	} else if (/^ROBOT\s*=/i.test(cue[0])) {
+		return parseTelemetricsCue(cue)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -942,6 +950,17 @@ function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinition
 		iNewsCommand: layout,
 		isFromLayout: true
 	})
+}
+
+function parseTelemetricsCue(cue: string[]): CueDefinitionTelemetrics {
+	const presetIdentifier: number = Number(cue[0].match(/\d+/))
+	const time: Pick<CueDefinitionBase, 'start' | 'end'> = cue[1] ? parseTime(cue[1]) : { start: { seconds: 0 } }
+	return {
+		type: CueType.Telemetrics,
+		iNewsCommand: 'Telemetrics',
+		presetIdentifier,
+		...time
+	}
 }
 
 /**

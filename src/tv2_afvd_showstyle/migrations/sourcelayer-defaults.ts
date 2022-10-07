@@ -517,6 +517,23 @@ const SEC: ISourceLayer[] = [
 		isHidden: false,
 		allowDisable: false,
 		onPresenterScreen: false
+	},
+	{
+		_id: SharedSourceLayers.Telemetrics,
+		_rank: 70,
+		name: 'Telemetrics',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+
+		isSticky: false,
+
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
 	}
 ]
 
