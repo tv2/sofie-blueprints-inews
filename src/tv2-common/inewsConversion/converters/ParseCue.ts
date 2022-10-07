@@ -721,31 +721,31 @@ function parseTargetEngine(
 		engineCue.routing = routing
 	}
 
+	const graphicDesignConfig = code
+		? config.showStyle.GfxDesignTemplates.find(template => template.INewsName.toUpperCase() === iNewsName.toUpperCase())
+		: undefined
+
+	if (graphicDesignConfig) {
+		return literal<CueDefinitionGraphicDesign>({
+			type: CueType.GraphicDesign,
+			design: graphicDesignConfig.VizTemplate,
+			iNewsCommand: code,
+			start: engineCue.start,
+			end: engineCue.end,
+			adlib: engineCue.adlib
+		})
+	}
+
 	const graphicConfig = config.showStyle.GFXTemplates.find(
 		template =>
 			template.INewsCode.toUpperCase() === code?.toUpperCase() &&
 			template.INewsName.toUpperCase() === iNewsName.toUpperCase()
 	)
 
-	const graphicDesignConfig = code
-		? config.showStyle.GfxDesignTemplates.find(template => template.INewsName.toUpperCase() === code?.toUpperCase())
-		: undefined
-
 	if (graphicConfig) {
 		if (!!graphicConfig.VizTemplate.toUpperCase().match(/^VCP$/i)) {
 			engineCue.mergeable = true
 		} else {
-			if (graphicDesignConfig) {
-				return literal<CueDefinitionGraphicDesign>({
-					type: CueType.GraphicDesign,
-					design: graphicDesignConfig.VizTemplate,
-					iNewsCommand: code,
-					start: engineCue.start,
-					end: engineCue.end,
-					adlib: engineCue.adlib
-				})
-			}
-
 			return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
 				type: CueType.Graphic,
 				target: engineCue.target,
