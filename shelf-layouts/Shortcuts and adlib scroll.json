@@ -14,7 +14,7 @@
       "default": false,
       "x": 1,
       "y": 7,
-      "width": 64.5,
+      "width": 65.5,
       "height": 5,
       "overflowHorizontally": true,
       "showAsTimeline": true,
@@ -41,7 +41,8 @@
       "tags": [
         "flow_producer"
       ],
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "scale": 0
     },
     {
       "_id": "s4KkTnsERPNcrkqeD",
@@ -55,8 +56,8 @@
       "url": "http://10.201.76.12:8005/keyboardmap",
       "x": 1.2,
       "y": 18,
-      "width": 54.3,
-      "height": 18.5,
+      "width": 55.1,
+      "height": 18,
       "scale": 0.79
     },
     {
@@ -71,7 +72,7 @@
       "x": -1,
       "y": 0,
       "width": 15.7,
-      "height": 15.5,
+      "height": 15,
       "includeClearInRundownBaseline": false,
       "assignHotKeys": false,
       "hide": false,
@@ -120,7 +121,7 @@
       "sourceLayerIds": [
         "studio0_dve"
       ],
-      "width": 64.5,
+      "width": 65.5,
       "height": 5,
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
@@ -146,7 +147,7 @@
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "y": 0,
-      "width": 64.5,
+      "width": 65.5,
       "height": 5,
       "showAsTimeline": true,
       "includeClearInRundownBaseline": true,
