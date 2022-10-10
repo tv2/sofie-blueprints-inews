@@ -167,6 +167,16 @@ function getHtmlTemplateContent(config: TV2BlueprintConfig, graphicTemplate: str
 }
 
 export function getHtmlGraphicBaseline(config: TV2BlueprintConfig) {
+	const templateName = getHtmlTemplateName(config)
+	return [
+		...getSlotBaselineTimelineObjects(templateName),
+		getCompoundSlotBaselineTimelineObject(templateName),
+		getDesignBaselineTimelineObject(templateName),
+		getPilotBaselineTimelineObject(templateName),
+	]
+}
+
+function getSlotBaselineTimelineObjects(templateName: string): TSR.TSRTimelineObj[] {
 	const slotBaselineObjects: TSR.TSRTimelineObj[] = []
 	;[
 		SharedGraphicLLayer.GraphicLLayerOverlayIdent,
@@ -188,7 +198,7 @@ export function getHtmlGraphicBaseline(config: TV2BlueprintConfig) {
 						deviceType: TSR.DeviceType.CASPARCG,
 						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 						templateType: 'html',
-						name: getHtmlTemplateName(config),
+						name: templateName,
 						data: {
 							display: 'program',
 							slots: {
@@ -205,88 +215,94 @@ export function getHtmlGraphicBaseline(config: TV2BlueprintConfig) {
 			)
 		}
 	})
+	return slotBaselineObjects
+}
 
-	return [
-		...slotBaselineObjects,
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 0,
-			layer: SharedGraphicLLayer.GraphicLLayerOverlay,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: getHtmlTemplateName(config),
-				data: {
-					display: 'program',
-					slots: [
-						SharedGraphicLLayer.GraphicLLayerOverlayIdent,
-						SharedGraphicLLayer.GraphicLLayerOverlayLower,
-						SharedGraphicLLayer.GraphicLLayerOverlayTema,
-						SharedGraphicLLayer.GraphicLLayerOverlayTopt,
-						SharedGraphicLLayer.GraphicLLayerLocators
-					].reduce((obj: Record<string, any>, layer) => {
-						if (layerToHTMLGraphicSlot[layer]) {
-							obj[layerToHTMLGraphicSlot[layer]] = {
-								payload: {},
-								display: 'hidden'
-							}
-						}
-						return obj
-					}, {}),
-					partialUpdate: true
-				},
-				useStopCommand: false
-			}
-		}),
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 0,
-			layer: SharedGraphicLLayer.GraphicLLayerDesign,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: getHtmlTemplateName(config),
-				data: {
-					display: 'program',
-					design: '',
-					partialUpdate: true
-				},
-				useStopCommand: false
-			}
-		}),
-		literal<TSR.TimelineObjCCGTemplate>({
-			id: '',
-			enable: {
-				while: '1'
-			},
-			priority: 0,
-			layer: SharedGraphicLLayer.GraphicLLayerPilot,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-				templateType: 'html',
-				name: getHtmlTemplateName(config),
-				data: {
-					display: 'program',
-					slots: {
-						[layerToHTMLGraphicSlot[SharedGraphicLLayer.GraphicLLayerPilot]]: {
+function getCompoundSlotBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+	return {
+		id: '',
+		enable: {
+			while: '1'
+		},
+		priority: 0,
+		layer: SharedGraphicLLayer.GraphicLLayerOverlay,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+			templateType: 'html',
+			name: templateName,
+			data: {
+				display: 'program',
+				slots: [
+					SharedGraphicLLayer.GraphicLLayerOverlayIdent,
+					SharedGraphicLLayer.GraphicLLayerOverlayLower,
+					SharedGraphicLLayer.GraphicLLayerOverlayTema,
+					SharedGraphicLLayer.GraphicLLayerOverlayTopt,
+					SharedGraphicLLayer.GraphicLLayerLocators
+				].reduce((obj: Record<string, any>, layer) => {
+					if (layerToHTMLGraphicSlot[layer]) {
+						obj[layerToHTMLGraphicSlot[layer]] = {
 							payload: {},
 							display: 'hidden'
 						}
 					}
-				},
-				useStopCommand: false
-			}
-		})
-	]
+					return obj
+				}, {}),
+				partialUpdate: true
+			},
+			useStopCommand: false
+		}
+	}
+}
+
+function getDesignBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+	return {
+		id: '',
+		enable: {
+			while: '1'
+		},
+		priority: 0,
+		layer: SharedGraphicLLayer.GraphicLLayerDesign,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+			templateType: 'html',
+			name: templateName,
+			data: {
+				display: 'program',
+				design: '',
+				partialUpdate: true
+			},
+			useStopCommand: false
+		}
+	}
+}
+
+function getPilotBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+	return {
+		id: '',
+		enable: {
+			while: '1'
+		},
+		priority: 0,
+		layer: SharedGraphicLLayer.GraphicLLayerPilot,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+			templateType: 'html',
+			name: templateName,
+			data: {
+				display: 'program',
+				slots: {
+					[layerToHTMLGraphicSlot[SharedGraphicLLayer.GraphicLLayerPilot]]: {
+						payload: {},
+						display: 'hidden'
+					}
+				}
+			},
+			useStopCommand: false
+		}
+	}
 }
 
 export function getHtmlTemplateName(config: TV2BlueprintConfig) {
