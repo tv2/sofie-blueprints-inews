@@ -1,4 +1,4 @@
-export interface PriorDefaultTableConfigItemGfxTemplate {
+export interface TableConfigItemGfxTemplateWithDesign {
 	VizTemplate: string
 	SourceLayer: string
 	LayerMapping: string
@@ -9,7 +9,7 @@ export interface PriorDefaultTableConfigItemGfxTemplate {
 	IsDesign: boolean
 }
 
-export const DEFAULT_GRAPHICS: PriorDefaultTableConfigItemGfxTemplate[] = [
+export const DEFAULT_GRAPHICS: TableConfigItemGfxTemplateWithDesign[] = [
 	{
 		INewsCode: '#kg',
 		INewsName: 'arkiv',
