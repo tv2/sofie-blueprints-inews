@@ -100,7 +100,7 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: parsedCue.design,
 						templateData: [],
-						showId: config.selectedGraphicsSetup.OvlShowId
+						showId: config.selectedGraphicsSetup.OvlShowName
 					}
 				})
 			]

@@ -7,6 +7,7 @@ import {
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
 	removeSourceLayer,
+	renameTableColumn,
 	SetShowstyleTransitionMigrationStep,
 	SetSourceLayerName,
 	SetSourceLayerProperties,
@@ -39,9 +40,9 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
 
 export const showStyleMigrations: MigrationStepShowStyle[] = [
 	...getCreateVariantMigrationSteps(),
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
+	remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
+	remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
 	// Update all defaults for 1.3.0
 	...getSourceLayerDefaultsMigrationSteps('1.3.0', true),
 
@@ -236,8 +237,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 
 	/**
 	 * 1.7.6
+	 * - Rename columns in Graphics Setups table
 	 * - Map designs from GFXTemplates to GfxDesignTemplates and delete them from GFXTemplates
 	 */
+	renameTableColumn('1.7.6', 'GraphicsSetups', 'OvlShowId', 'OvlShowName'),
+	renameTableColumn('1.7.6', 'GraphicsSetups', 'FullShowId', 'FullShowName'),
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
 
 	// Fill in any layers that did not exist before

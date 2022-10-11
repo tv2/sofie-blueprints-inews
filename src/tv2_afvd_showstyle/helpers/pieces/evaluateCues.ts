@@ -14,6 +14,7 @@ import {
 	EvaluateLYD,
 	PartDefinition
 } from 'tv2-common'
+import { EvaluateCueTelemetrics } from '../../../tv2-common/cues/EvaluateCueTelemetrics'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
@@ -51,7 +52,8 @@ export async function EvaluateCues(
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
 			EvaluateCueRouting,
-			EvaluateCueMixMinus
+			EvaluateCueMixMinus,
+			EvaluateCueTelemetrics
 		},
 		context,
 		config,
