@@ -7,13 +7,10 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue
 } from '@tv2media/blueprints-integration'
-import {
-	TableConfigItemGfxDesignTemplate,
-	TableConfigItemGFXTemplates,
-	TableConfigItemSourceMappingWithSisyfos
-} from 'tv2-common'
+import { TableConfigItemGfxDesignTemplate, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
+import { TableConfigItemGfxTemplateWithDesign } from './graphic-defaults'
 
 export * from './moveSourcesToTable'
 export * from './addKeepAudio'
@@ -98,17 +95,19 @@ export function removeSourceLayer(versionStr: string, studioId: string, layer: s
 	})
 }
 
-export function AddGraphicToGFXTable(
+export function AddGraphicToGfxTable(
 	versionStr: string,
 	studio: string,
-	config: TableConfigItemGFXTemplates
+	config: TableConfigItemGfxTemplateWithDesign
 ): MigrationStepShowStyle {
 	return {
 		id: `${versionStr}.gfxConfig.add${config.INewsName}.${studio}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[] | undefined
+			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as
+				| TableConfigItemGfxTemplateWithDesign[]
+				| undefined
 
 			if (!existing || !existing.length) {
 				return false
@@ -120,7 +119,7 @@ export function AddGraphicToGFXTable(
 			)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[]
+			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGfxTemplateWithDesign[]
 
 			existing.push(config)
 
@@ -129,7 +128,7 @@ export function AddGraphicToGFXTable(
 	}
 }
 
-export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
+export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 	versionStr: string,
 	studio: string,
 	from: string,
@@ -140,7 +139,9 @@ export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[] | undefined
+			const gfxTemplates = (context.getBaseConfig(from) as unknown) as
+				| TableConfigItemGfxTemplateWithDesign[]
+				| undefined
 
 			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[] | undefined
 
@@ -155,7 +156,7 @@ export function mapGFXTemplateToDesignTemplateAndDeleteOriginals(
 			return gfxTemplates.some(template => template.IsDesign)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGFXTemplates[]
+			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGfxTemplateWithDesign[]
 			const designTemplates = ((context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[]) ?? []
 
 			gfxTemplates
@@ -198,11 +199,11 @@ export function addSourceToSourcesConfig(
 	}
 }
 
-export function changeGFXTemplate(
+export function changeGfxTemplate(
 	versionStr: string,
 	studio: string,
-	oldConfig: Partial<TableConfigItemGFXTemplates>,
-	config: Partial<TableConfigItemGFXTemplates>
+	oldConfig: Partial<TableConfigItemGfxTemplateWithDesign>,
+	config: Partial<TableConfigItemGfxTemplateWithDesign>
 ): MigrationStepShowStyle {
 	const keysToUpdate = Object.keys(config).join('_')
 	return {
@@ -211,7 +212,7 @@ export function changeGFXTemplate(
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
 			const gfxTemplates = (context.getBaseConfig('GFXTemplates') as unknown) as
-				| TableConfigItemGFXTemplates[]
+				| TableConfigItemGfxTemplateWithDesign[]
 				| undefined
 
 			if (!gfxTemplates || !gfxTemplates.length) {
@@ -221,7 +222,7 @@ export function changeGFXTemplate(
 			return gfxTemplates.some(g => isGfxTemplateSubset(g, oldConfig))
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			let existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGFXTemplates[]
+			let existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGfxTemplateWithDesign[]
 
 			existing = existing.map(g => (isGfxTemplateSubset(g, oldConfig) ? { ...g, ...config } : g))
 
@@ -231,10 +232,10 @@ export function changeGFXTemplate(
 }
 
 function isGfxTemplateSubset(
-	superset: Partial<TableConfigItemGFXTemplates>,
-	subset: Partial<TableConfigItemGFXTemplates>
+	superset: Partial<TableConfigItemGfxTemplateWithDesign>,
+	subset: Partial<TableConfigItemGfxTemplateWithDesign>
 ): boolean {
-	return Object.keys(subset).every((key: keyof TableConfigItemGFXTemplates) => superset[key] === subset[key])
+	return Object.keys(subset).every((key: keyof TableConfigItemGfxTemplateWithDesign) => superset[key] === subset[key])
 }
 
 export function SetLayerNamesToDefaults(

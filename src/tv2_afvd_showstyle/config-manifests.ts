@@ -341,15 +341,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 4
 			},
 			{
-				id: 'IsDesign',
-				name: 'Changes Design',
-				description: 'Whether this cue changes the design',
-				type: ConfigManifestEntryType.BOOLEAN,
-				required: false,
-				defaultVal: false,
-				rank: 5
-			},
-			{
 				id: 'SourceLayer',
 				name: 'Source layer (**)',
 				description: 'The ID of the source layer to place the piece on in Sofie UI',

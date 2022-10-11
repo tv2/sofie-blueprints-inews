@@ -9,7 +9,7 @@ import { findGraphicsSetup, TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfi
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
 
-export interface TableConfigItemGFXTemplates {
+export interface TableConfigItemGfxTemplates {
 	VizTemplate: string
 	SourceLayer: string
 	LayerMapping: string

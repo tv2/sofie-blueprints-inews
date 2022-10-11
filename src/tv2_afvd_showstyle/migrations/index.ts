@@ -1,10 +1,10 @@
 import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
 import {
-	AddGraphicToGFXTable,
-	changeGFXTemplate,
+	AddGraphicToGfxTable,
+	changeGfxTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
-	mapGFXTemplateToDesignTemplateAndDeleteOriginals,
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameTableColumn,
@@ -81,7 +81,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	forceSourceLayerToDefaults('1.5.2', SourceLayer.PgmJingle),
 
-	AddGraphicToGFXTable('1.5.4', 'AFVD', {
+	AddGraphicToGfxTable('1.5.4', 'AFVD', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
 		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
@@ -192,7 +192,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.7.2
 	 * - Fix bundright configuration
 	 */
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'AFVD',
 		{
@@ -204,7 +204,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ OutType: '' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'AFVD',
 		{
@@ -216,7 +216,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ SourceLayer: 'studio0_graphicsLower' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'AFVD',
 		{
@@ -242,7 +242,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	renameTableColumn('1.7.6', 'GraphicsSetups', 'OvlShowId', 'OvlShowName'),
 	renameTableColumn('1.7.6', 'GraphicsSetups', 'FullShowId', 'FullShowName'),
-	mapGFXTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
