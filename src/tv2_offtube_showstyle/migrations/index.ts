@@ -266,6 +266,14 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
 
+	/**
+	 * 1.7.7
+	 * - Update SourceLayerType for Continuity
+	 * - Update SourceLayerType for DveBackground
+	 */
+	forceSourceLayerToDefaults('1.7.7', OfftubeSourceLayer.PgmContinuity),
+	forceSourceLayerToDefaults('1.7.7', OfftubeSourceLayer.PgmDVEBackground),
+
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),
 	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)

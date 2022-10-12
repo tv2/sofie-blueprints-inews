@@ -399,6 +399,10 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
 		// Do nothing
 	}
+
+	public removePartInstance(): void {
+		// Do nothing
+	}
 }
 
 // tslint:disable-next-line: max-classes-per-file
