@@ -10,7 +10,7 @@ import * as _ from 'underscore'
 import { SharedGraphicLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
 import { getStudioConfig } from './helpers/config'
-import { AtemLLayer, SisyfosLLAyer } from './layers'
+import { AtemLLayer, GraphicLLayer, SisyfosLLAyer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
@@ -167,6 +167,17 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
 					concept: ''
+				}
+			}),
+			literal<TSR.TimelineObjVIZMSECleanupShows>({
+				id: '',
+				enable: { while: '1' },
+				layer: GraphicLLayer.GraphicLLayerCleanup,
+				content: {
+					deviceType: TSR.DeviceType.VIZMSE,
+					type: TSR.TimelineContentTypeVizMSE.CLEANUP_SHOWS,
+					showIds: [],
+					cleanupAllShows: true
 				}
 			})
 		]
