@@ -89,6 +89,7 @@ import {
 	GetTagForLive,
 	GetTagForTransition
 } from '../pieces'
+import { createTelemetricsPiece } from '../pieces/telemetric'
 import { findSourceInfo } from '../sources'
 import { assertUnreachable } from '../util'
 import {
@@ -275,6 +276,15 @@ export async function executeAction<
 			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
 				await executeActionFadeDownPersistedAudioLevels(context, settings)
 				break
+			case AdlibActionType.SELECT_ROBOT_PRESET: {
+				if (Number.isNaN(Number(triggerMode))) {
+					context.notifyUserWarning(`Calling Robot preset ignored. '${triggerMode}' is not a number`)
+					break
+				}
+				const preset = Number(triggerMode)
+				await executeActionSelectRobotPreset(context, preset)
+				break
+			}
 			default:
 				assertUnreachable(actionId)
 				break
@@ -1928,7 +1938,16 @@ async function executeActionFadeDownPersistedAudioLevels<
 			timelineObjects: []
 		}
 	}
-	context.insertPiece('current', resetSisyfosPersistedLevelsPiece)
+	await context.insertPiece('current', resetSisyfosPersistedLevelsPiece)
+}
+
+async function executeActionSelectRobotPreset(context: ITV2ActionExecutionContext, preset: number): Promise<void> {
+	const telemetricsPiece: IBlueprintPiece<PieceMetaData> = createTelemetricsPiece(
+		`selectRobotPreset${preset}`,
+		preset,
+		'now'
+	) as IBlueprintPiece<PieceMetaData>
+	await context.insertPiece('current', telemetricsPiece)
 }
 
 async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {

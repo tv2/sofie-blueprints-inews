@@ -137,6 +137,7 @@ export enum AdlibActionType {
 	SELECT_DVE_LAYOUT = 'select_dve_layout',
 	SELECT_FULL_GRAFIK = 'select_full_grafik',
 	SELECT_JINGLE = 'select_jingle',
+	SELECT_ROBOT_PRESET = 'select_robot_preset',
 	CUT_TO_CAMERA = 'cut_to_camera',
 	CUT_TO_REMOTE = 'cut_to_remote',
 	CUT_SOURCE_TO_BOX = 'cut_source_to_box',

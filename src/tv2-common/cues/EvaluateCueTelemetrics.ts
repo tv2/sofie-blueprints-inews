@@ -1,10 +1,8 @@
-import { IBlueprintPiece, IShowStyleUserContext, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
-import { RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
+import { IBlueprintPiece, IShowStyleUserContext, TSR } from '@tv2media/blueprints-integration'
+import { SharedSourceLayers } from '../../tv2-constants'
 import { CalculateTime } from '../cueTiming'
 import { CueDefinitionTelemetrics } from '../inewsConversion'
-import { literal } from '../util'
-
-const TELEMETRICS_NAME_PREFIX: string = 'Robot'
+import { createTelemetricsPiece, TELEMETRICS_NAME_PREFIX } from '../pieces/telemetric'
 
 export function EvaluateCueTelemetrics(
 	_context: IShowStyleUserContext,
@@ -16,7 +14,7 @@ export function EvaluateCueTelemetrics(
 
 	const existingPiece = findExistingPieceForTelemetricsLayerAndStartTime(pieces, startTime)
 	if (!existingPiece) {
-		const newPiece = createTelemetricsPiece(externalId, cueDefinition, startTime)
+		const newPiece = createTelemetricsPiece(externalId, cueDefinition.presetIdentifier, startTime)
 		pieces.push(newPiece)
 		return
 	}
@@ -52,39 +50,4 @@ function addPresetIdentifierToTimelineObject(piece: IBlueprintPiece, presetIdent
 
 function addPresetIdentifierToPieceName(piece: IBlueprintPiece, presetIdentifier: number): void {
 	piece.name = `${piece.name.split(']')[0]},${presetIdentifier}]`
-}
-
-function createTelemetricsTimelineObject(cueDefinition: CueDefinitionTelemetrics): TSR.TimelineObjTelemetrics {
-	return literal<TSR.TimelineObjTelemetrics>({
-		id: `telemetrics_preset_${cueDefinition.presetIdentifier}_${Math.random() * 1000}`,
-		enable: {
-			start: 0
-		},
-		layer: RobotCameraLayer.TELEMETRICS,
-		content: {
-			deviceType: TSR.DeviceType.TELEMETRICS,
-			presetShotIdentifiers: [cueDefinition.presetIdentifier]
-		}
-	})
-}
-
-function createTelemetricsPiece(
-	externalId: string,
-	cueDefinition: CueDefinitionTelemetrics,
-	startTime: number
-): IBlueprintPiece {
-	return {
-		externalId,
-		name: `${TELEMETRICS_NAME_PREFIX}[${cueDefinition.presetIdentifier}]`,
-		enable: {
-			start: startTime,
-			duration: 100
-		},
-		lifespan: PieceLifespan.WithinPart,
-		sourceLayerId: SharedSourceLayers.Telemetrics,
-		outputLayerId: SharedOutputLayers.SEC,
-		content: {
-			timelineObjects: [createTelemetricsTimelineObject(cueDefinition)]
-		}
-	}
 }

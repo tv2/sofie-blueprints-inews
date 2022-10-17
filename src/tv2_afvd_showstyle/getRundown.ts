@@ -4,6 +4,7 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	ICommonContext,
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
@@ -21,6 +22,7 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
+	ActionSelectRobotPreset,
 	CasparPlayerClipLoadingLoop,
 	CreateDSKBaseline,
 	CreateDSKBaselineAdlibs,
@@ -795,7 +797,28 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		}
 	})
 
+	blueprintActions.push(createRobotPresetAction(_context))
+
 	return blueprintActions
+}
+
+function createRobotPresetAction(context: ICommonContext): IBlueprintActionManifest {
+	const selectRobotPresetAction: ActionSelectRobotPreset = {
+		type: AdlibActionType.SELECT_ROBOT_PRESET
+	}
+	return {
+		externalId: generateExternalId(context, selectRobotPresetAction),
+		actionId: AdlibActionType.SELECT_ROBOT_PRESET,
+		userData: selectRobotPresetAction,
+		userDataManifest: {},
+		display: {
+			_rank: 400,
+			label: t(`Select Robot preset`),
+			sourceLayerId: SourceLayer.Telemetrics,
+			outputLayerId: SharedOutputLayers.SEC,
+			tags: []
+		}
+	}
 }
 
 function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
