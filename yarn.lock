@@ -560,10 +560,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sofie-automation/shared-lib@46.0.0":
-  version "1.47.0-nightly-release47-20221012-150626-b39067d.0"
-  resolved "https://registry.yarnpkg.com/@sofie-automation/shared-lib/-/shared-lib-1.47.0-nightly-release47-20221012-150626-b39067d.0.tgz#bb4bd41563ba51a7ae222db3bf5db904ddc08b87"
-  integrity sha512-5fDtRSeA/NVBiv/CKQ+dimu7DFQIHWKSSjNqZ8Fly6SWy1OtmBQWlLGgypT4a5bRQSiLc3ydinmCIHjJjtlIxQ==
+"@sofie-automation/shared-lib@npm:@tv2media/shared-lib@46.0.0":
+  version "46.0.0"
+  resolved "https://registry.yarnpkg.com/@tv2media/shared-lib/-/shared-lib-46.0.0.tgz#27ce22985d205b99dd5c06321dd68e0cd80536e4"
+  integrity sha512-TYWB37qMCScqm8a12b2Uq3h4ZewUtLnIMEnThymkXMViMywGgzRTk44j7gAulFr1u8aPuIE6cJchbw9KeRZcYg==
   dependencies:
     tslib "^2.4.0"
     type-fest "^2.19.0"
@@ -573,12 +573,12 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@tv2media/blueprints-integration@46.0.0":
-  version "46.0.0"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.0.0.tgz#cee4a9999e7869c1c3d7f5d3aacd1d82ceba688e"
-  integrity sha512-AI1I4Q3dcqydvYuoy6GJ3JIit3UC7cIOjm1J31K/3Hd3XRC5AOsH4IH25zi/WWwR+2pQKTkeRlREchlhyUUOBQ==
+"@tv2media/blueprints-integration@46.0.1":
+  version "46.0.1"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.0.1.tgz#e344f31e3fcc48d582914ebc33378a626cebd0e6"
+  integrity sha512-y0ITMUH0JrDligG9X+mWsvVnnGYmZJTrx5iE2XVsHiQ1xQTeBrqDyoxOag2lpbUIF8HI7mXCQkGfk7AYvQLopQ==
   dependencies:
-    "@sofie-automation/shared-lib" "46.0.0"
+    "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.0.0"
     timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@2.2.2"
     tslib "^2.4.0"
     type-fest "^2.19.0"
