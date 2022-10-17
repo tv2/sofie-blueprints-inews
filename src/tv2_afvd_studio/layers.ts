@@ -1,5 +1,6 @@
 import {
 	AbstractLLayer,
+	RobotCameraLayer,
 	SharedATEMLLayer,
 	SharedCasparLLayer,
 	SharedGraphicLLayer,
@@ -23,6 +24,8 @@ export function RealLLayers(): string[] {
 			.concat(_.values(GraphicLLayer))
 			// @ts-ignore
 			.concat(_.values(VirtualAbstractLLayer))
+			// @ts-ignore
+			.concat(_.values(RobotCameraLayer))
 	)
 }
 

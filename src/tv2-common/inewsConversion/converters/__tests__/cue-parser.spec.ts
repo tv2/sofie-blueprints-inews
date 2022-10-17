@@ -1,5 +1,5 @@
 import { IBlueprintRundownDB, PlaylistTimingType, TSR } from 'blueprints-integration'
-import { RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
+import { CueDefinitionTelemetrics, RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
 import { CueType, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
@@ -644,13 +644,13 @@ describe('Cue parser', () => {
 		)
 	})
 
-	test('KG=DESIGN_FODBOLD', () => {
-		const cueGrafik = ['KG=DESIGN_FODBOLD_20', ';0.00.01']
+	test('Find KG=DESIGN_FODBOLD in design templates', () => {
+		const cueGrafik = ['KG=DESIGN_FODBOLD_22', ';0.00.01']
 		const result = ParseCue(cueGrafik, config)
 		expect(result).toEqual(
 			literal<CueDefinitionGraphicDesign>({
 				type: CueType.GraphicDesign,
-				design: 'DESIGN_FODBOLD_20',
+				design: 'DESIGN_FODBOLD_22',
 				start: {
 					frames: 1,
 					seconds: 0
@@ -1644,209 +1644,241 @@ describe('Cue parser', () => {
 		)
 	})
 
-	/** All-out cues */
-	/** These tests are also used to catch case sensitivity / cue start symbols */
-	test('All out', () => {
-		const cueViz = ['KG=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: 'KG'
-			})
-		)
+	describe('All-out cues', () => {
+		/** These tests are also used to catch case sensitivity / cue start symbols */
+		test('All out', () => {
+			const cueViz = ['KG=ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: 'KG'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['KG ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: 'KG'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['kg=ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: 'kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['kg ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: 'kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['#KG=ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: '#KG'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['#KG ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: '#KG'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['#kg=ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: '#kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['#kg ovl-all-out', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: '#kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['kg altud', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: 'kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['kg=altud', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: 'kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['kg   	altud', ';0.00.01']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					start: {
+						frames: 1,
+						seconds: 0
+					},
+					iNewsCommand: 'kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['kg altud', ';0.0x']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					adlib: true,
+					iNewsCommand: 'kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['kg altud', ';x.xx']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionClearGrafiks>({
+					type: CueType.ClearGrafiks,
+					adlib: true,
+					iNewsCommand: 'kg'
+				})
+			)
+		})
+
+		test('All out', () => {
+			const cueViz = ['LYD=SN_intro', ';0.0x']
+			const result = ParseCue(cueViz, config)
+			expect(result).toEqual(
+				literal<CueDefinitionLYD>({
+					type: CueType.LYD,
+					adlib: true,
+					variant: 'SN_intro',
+					iNewsCommand: 'LYD'
+				})
+			)
+		})
 	})
 
-	test('All out', () => {
-		const cueViz = ['KG ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: 'KG'
-			})
-		)
-	})
+	describe('Telemetrics cue', () => {
+		it("receives 'ROBOT', returns a cue with type Telemetrics", () => {
+			const cue = ['ROBOT=s2']
+			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			expect(result.type).toBe(CueType.Telemetrics)
+		})
 
-	test('All out', () => {
-		const cueViz = ['kg=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: 'kg'
-			})
-		)
-	})
+		it("receives 'ROBOT=s2', preset is 2", () => {
+			const cue = ['ROBOT=s2']
+			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			expect(result!.presetIdentifier).toBe(2)
+		})
 
-	test('All out', () => {
-		const cueViz = ['kg ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: 'kg'
-			})
-		)
-	})
+		it("receives 'ROBOT=s5', preset is 5", () => {
+			const cue = ['ROBOT=s5']
+			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			expect(result!.presetIdentifier).toBe(5)
+		})
 
-	test('All out', () => {
-		const cueViz = ['#KG=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: '#KG'
-			})
-		)
-	})
+		it("receives 'ROBOT=11', preset is 11", () => {
+			const cue = ['ROBOT=11']
+			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			expect(result!.presetIdentifier).toBe(11)
+		})
 
-	test('All out', () => {
-		const cueViz = ['#KG ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: '#KG'
-			})
-		)
+		it('receives time code ;0.24.10, start is 24 seconds and 10 frames', () => {
+			const cue = ['ROBOT=11', '0.24.10']
+			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			expect(result!.start!.seconds).toBe(24)
+			expect(result!.start!.frames).toBe(10)
+		})
 	})
-
-	test('All out', () => {
-		const cueViz = ['#kg=ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: '#kg'
-			})
-		)
-	})
-
-	test('All out', () => {
-		const cueViz = ['#kg ovl-all-out', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: '#kg'
-			})
-		)
-	})
-
-	test('All out', () => {
-		const cueViz = ['kg altud', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: 'kg'
-			})
-		)
-	})
-
-	test('All out', () => {
-		const cueViz = ['kg=altud', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: 'kg'
-			})
-		)
-	})
-
-	test('All out', () => {
-		const cueViz = ['kg   	altud', ';0.00.01']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				start: {
-					frames: 1,
-					seconds: 0
-				},
-				iNewsCommand: 'kg'
-			})
-		)
-	})
-
-	test('All out', () => {
-		const cueViz = ['kg altud', ';0.0x']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				adlib: true,
-				iNewsCommand: 'kg'
-			})
-		)
-	})
-
-	test('All out', () => {
-		const cueViz = ['kg altud', ';x.xx']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionClearGrafiks>({
-				type: CueType.ClearGrafiks,
-				adlib: true,
-				iNewsCommand: 'kg'
-			})
-		)
-	})
-
-	test('All out', () => {
-		const cueViz = ['LYD=SN_intro', ';0.0x']
-		const result = ParseCue(cueViz, config)
-		expect(result).toEqual(
-			literal<CueDefinitionLYD>({
-				type: CueType.LYD,
-				adlib: true,
-				variant: 'SN_intro',
-				iNewsCommand: 'LYD'
-			})
-		)
-	})
-
-	/** End of all-out cues */
 })

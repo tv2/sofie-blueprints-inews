@@ -1,5 +1,10 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import { DEFAULT_GRAPHICS } from 'tv2-common'
+import {
+	DEFAULT_GRAPHICS,
+	getGraphicsSetupsEntries,
+	GRAPHICS_SETUPS_NAME_COLUMN_ID,
+	GRAPHICS_SETUPS_TABLE_ID
+} from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -142,81 +147,28 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
-const GRAPHICS_SETUPS_TABLE_ID = 'GraphicsSetups'
-const GRAPHICS_SETUPS_NAME_COLUMN_ID = 'Name'
-const graphicsSetups: ConfigManifestEntry[] = [
+const graphicsSetups = getGraphicsSetupsEntries([
 	{
-		id: GRAPHICS_SETUPS_TABLE_ID,
-		name: 'Graphics Setups',
-		description: 'Possible graphics setups',
-		type: ConfigManifestEntryType.TABLE,
-		required: false,
-		defaultVal: [],
-		columns: [
-			{
-				id: GRAPHICS_SETUPS_NAME_COLUMN_ID,
-				name: 'Name',
-				description: 'The code as it will appear in iNews',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: '',
-				rank: 0
-			},
-			{
-				id: 'VcpConcept',
-				name: 'VCP Concept',
-				rank: 1,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: '',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'OvlShowId',
-				name: 'Overlay Show-ID',
-				rank: 2,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'UUID of the show used for OVL channel',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'FullShowId',
-				name: 'Fullscreen Show-ID',
-				rank: 3,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'UUID of the show used for FULL and WALL channels',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'DveLayoutFolder',
-				name: 'DVE layout folder',
-				rank: 4,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'Path to the folder containing the layouts for DVEs',
-				type: ConfigManifestEntryType.STRING
-			}
-		],
-		hint: ''
+		id: 'VcpConcept',
+		name: 'VCP Concept',
+		rank: 0.5,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: '',
+		type: ConfigManifestEntryType.STRING
 	},
 	{
-		id: 'SelectedGraphicsSetupName',
-		name: 'Graphic Setup name',
-		description: 'Name of the Graphic Setup that should be used',
-		type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
-		tableId: GRAPHICS_SETUPS_TABLE_ID,
-		columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
-		multiple: false,
-		required: false,
-		defaultVal: ''
+		id: 'FullShowName',
+		name: 'Fullscreen Show Name',
+		rank: 2,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: 'Name of the show used for FULL and WALL channels',
+		type: ConfigManifestEntryType.STRING
 	}
-]
+])
 
 const SCHEMA_TABLE_ID = 'SchemaConfig'
 const SCHEMA_NAME_COLUMN_ID = 'schemaName'
@@ -269,9 +221,48 @@ export const schemaConfigManifest: ConfigManifestEntry[] = [
 	}
 ]
 
-// @todo: use these with SOF-1092:
-const DESIGN_TABLE_ID = 'GFXDesignTemplates'
+const DESIGN_TABLE_ID = 'GfxDesignTemplates'
 const DESIGN_NAME_COLUMN_ID = 'INewsName'
+
+export const gfxDesignTemplates: ConfigManifestEntry[] = [
+	{
+		id: DESIGN_TABLE_ID,
+		name: 'GFX Design Templates',
+		description: '',
+		type: ConfigManifestEntryType.TABLE,
+		required: true,
+		defaultVal: [],
+		columns: [
+			{
+				id: DESIGN_NAME_COLUMN_ID,
+				name: 'iNews Name',
+				description: 'The name of the design',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 0
+			},
+			{
+				id: 'INewsStyleColumn',
+				name: 'iNews Style Column',
+				description: 'The selected style',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 1
+			},
+			{
+				id: 'VizTemplate',
+				name: 'Viz Template Name',
+				description: 'The name of the Viz Template',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 2
+			}
+		]
+	}
+]
 
 export const overlayShowMapping: ConfigManifestEntry = {
 	id: 'OverlayShowMapping',
@@ -407,15 +398,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 4
 			},
 			{
-				id: 'IsDesign',
-				name: 'Changes Design',
-				description: 'Whether this cue changes the design',
-				type: ConfigManifestEntryType.BOOLEAN,
-				required: false,
-				defaultVal: false,
-				rank: 5
-			},
-			{
 				id: 'SourceLayer',
 				name: 'Source layer (**)',
 				description: 'The ID of the source layer to place the piece on in Sofie UI',
@@ -441,6 +423,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
+	...gfxDesignTemplates,
 	...graphicsSetups,
 	...schemaConfigManifest,
 	overlayShowMapping,

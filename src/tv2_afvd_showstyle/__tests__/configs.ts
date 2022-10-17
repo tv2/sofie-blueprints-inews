@@ -1,6 +1,6 @@
-import { literal, parseMapStr, TableConfigGraphicsSetup } from 'tv2-common'
+import { literal, parseMapStr } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { ShowStyleConfig } from '../helpers/config'
+import { GalleryTableConfigGraphicsSetup, ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -42,14 +42,13 @@ function prepareConfig(
 	})
 }
 
-export const OVL_SHOW_ID = 'ovl-show-id'
-export const FULL_SHOW_ID = 'full-show-id'
-export const DEFAULT_GRAPHICS_SETUP: TableConfigGraphicsSetup = {
+export const OVL_SHOW_NAME = 'ovl-show-id'
+export const FULL_SHOW_NAME = 'full-show-id'
+export const DEFAULT_GRAPHICS_SETUP: GalleryTableConfigGraphicsSetup = {
 	Name: 'SomeProfile',
 	VcpConcept: 'SomeConcept',
-	OvlShowId: OVL_SHOW_ID,
-	FullShowId: FULL_SHOW_ID,
-	DveLayoutFolder: 'folder/path'
+	OvlShowName: OVL_SHOW_NAME,
+	FullShowName: FULL_SHOW_NAME
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
@@ -195,7 +194,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'VCP',
 				VizDestination: 'WALL1',
 				OutType: 'O',
-				IsDesign: false,
 				SourceLayer: 'studio0_wall_graphics',
 				LayerMapping: 'graphic_wall'
 			},
@@ -205,7 +203,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'VCP',
 				VizDestination: 'OVL1',
 				OutType: 'O',
-				IsDesign: false,
 				SourceLayer: 'studio0_overlay',
 				LayerMapping: 'graphic_overlay'
 			},
@@ -215,7 +212,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'VCP',
 				VizDestination: 'OVL1',
 				OutType: 'O',
-				IsDesign: false,
 				SourceLayer: 'studio0_overlay',
 				LayerMapping: 'graphic_overlay'
 			},
@@ -225,11 +221,17 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 				VizTemplate: 'tlftoptlive',
 				VizDestination: 'OVL1',
 				OutType: 'S',
-				IsDesign: false,
 				SourceLayer: 'studio0_graphicsTop',
 				LayerMapping: 'graphic_overlay_topt'
 			}
 		])
+	],
+	GfxDesignTemplates: [
+		{
+			INewsName: 'DESIGN_FODBOLD_22',
+			INewsStyleColumn: '',
+			VizTemplate: 'DESIGN_FODBOLD_22'
+		}
 	],
 	LYDConfig: [
 		{
@@ -268,7 +270,8 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	GraphicsSetups: [DEFAULT_GRAPHICS_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	SchemaConfig: []
+	SchemaConfig: [],
+	OverlayShowMapping: []
 }
 
 export const EMPTY_SOURCE_CONFIG = {

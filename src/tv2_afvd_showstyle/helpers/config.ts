@@ -1,43 +1,37 @@
 import { IBlueprintConfig, ICommonContext, IShowStyleContext, TableConfigItemValue } from 'blueprints-integration'
 import {
+	findGraphicsSetup,
 	TableConfigGraphicsSetup,
 	TableConfigItemOverlayShowMapping,
 	TV2ShowstyleBlueprintConfigBase
 } from 'tv2-common'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 
+export interface GalleryTableConfigGraphicsSetup extends TableConfigGraphicsSetup {
+	VcpConcept: string
+	FullShowName: string
+}
+
 export interface BlueprintConfig extends BlueprintConfigBase {
 	showStyle: ShowStyleConfig
-	selectedGraphicsSetup: TableConfigGraphicsSetup
+	selectedGraphicsSetup: GalleryTableConfigGraphicsSetup
 }
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
 	SelectedGraphicsSetupName: string
-	GraphicsSetups: TableConfigGraphicsSetup[]
+	GraphicsSetups: GalleryTableConfigGraphicsSetup[]
 	OverlayShowMapping: TableConfigItemOverlayShowMapping[]
-}
-
-function findGraphicsSetup(context: ICommonContext, config: ShowStyleConfig): TableConfigGraphicsSetup {
-	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
-		tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === config.SelectedGraphicsSetupName
-	)
-	if (!foundTableConfigGraphicsSetup) {
-		context.logWarning(`No graphics setup found for profile: ${config.SelectedGraphicsSetupName}`)
-		return {
-			Name: '',
-			VcpConcept: '',
-			OvlShowId: '',
-			FullShowId: '',
-			DveLayoutFolder: ''
-		}
-	}
-	return foundTableConfigGraphicsSetup
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const showstyleConfig = (rawConfig as unknown) as ShowStyleConfig
-	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig)
+	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig, {
+		Name: '',
+		VcpConcept: '',
+		OvlShowName: '',
+		FullShowName: ''
+	})
 	return {
 		showStyle: showstyleConfig,
 		selectedGraphicsSetup

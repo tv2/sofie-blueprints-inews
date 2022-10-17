@@ -69,7 +69,7 @@ export function EvaluateClearGrafiks(
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-								showId: config.selectedGraphicsSetup.OvlShowId
+								showId: config.selectedGraphicsSetup.OvlShowName
 							}
 						})
 				  ]

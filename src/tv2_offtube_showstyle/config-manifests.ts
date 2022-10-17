@@ -1,5 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import { DEFAULT_GRAPHICS } from 'tv2-common'
+import { DEFAULT_GRAPHICS, getGraphicsSetupsEntries } from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -142,6 +142,37 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
+export const gfxDesignTemplates: ConfigManifestEntry[] = [
+	{
+		id: 'GfxDesignTemplates',
+		name: 'GFX Design Templates',
+		description: '',
+		type: ConfigManifestEntryType.TABLE,
+		required: true,
+		defaultVal: [],
+		columns: [
+			{
+				id: 'INewsName',
+				name: 'iNews Name',
+				description: 'The name of the design',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 0
+			},
+			{
+				id: 'INewsStyleColumn',
+				name: 'iNews Style Column',
+				description: 'The selected style',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 1
+			}
+		]
+	}
+]
+
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'MakeAdlibsForFulls',
@@ -227,15 +258,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 4
 			},
 			{
-				id: 'IsDesign',
-				name: 'Changes Design',
-				description: 'Whether this cue changes the design',
-				type: ConfigManifestEntryType.BOOLEAN,
-				required: false,
-				defaultVal: false,
-				rank: 5
-			},
-			{
 				id: 'SourceLayer',
 				name: 'Source layer (**)',
 				description: 'The ID of the source layer to place the piece on in Sofie UI',
@@ -261,6 +283,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
+	...gfxDesignTemplates,
 	{
 		/*
 		Wipes Config
@@ -561,5 +584,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.STRING
 			}
 		]
-	}
+	},
+	...getGraphicsSetupsEntries([])
 ]

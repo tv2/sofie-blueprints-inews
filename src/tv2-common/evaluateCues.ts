@@ -5,6 +5,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext,
+	IShowStyleUserContext,
 	TSR
 } from 'blueprints-integration'
 import {
@@ -17,6 +18,7 @@ import {
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionTelefon,
+	CueDefinitionTelemetrics,
 	PartDefinition
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -170,6 +172,12 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueProfile?: () => void
 	/** TODO: Mic -> For the future */
 	EvaluateCueMic?: () => void
+	EvaluateCueTelemetrics?: (
+		context: IShowStyleUserContext,
+		cueDefinition: CueDefinitionTelemetrics,
+		pieces: IBlueprintPiece[],
+		partId: string
+	) => void
 }
 
 export interface EvaluateCuesOptions {
@@ -394,6 +402,11 @@ export async function EvaluateCuesBase(
 				case CueType.UNPAIRED_PILOT:
 					context.notifyUserWarning(`Graphic found without target engine`)
 					break
+				case CueType.Telemetrics:
+					if (showStyleOptions.EvaluateCueTelemetrics) {
+						showStyleOptions.EvaluateCueTelemetrics(context, cue, pieces, partDefinition.externalId)
+					}
+					break
 				default:
 					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
@@ -449,7 +462,7 @@ export async function EvaluateCuesBase(
 								templateName: 'altud',
 								channel: 'OVL1',
 								templateData: [],
-								showId: config.selectedGraphicsSetup.OvlShowId
+								showId: config.selectedGraphicsSetup.OvlShowName
 							}
 						})
 					}

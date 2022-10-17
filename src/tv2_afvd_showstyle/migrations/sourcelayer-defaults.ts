@@ -337,7 +337,7 @@ const PGM: ISourceLayer[] = [
 		_rank: 0,
 		name: 'Continuity',
 		abbreviation: 'CONTINUITY',
-		type: SourceLayerType.METADATA,
+		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,
@@ -507,6 +507,23 @@ const SEC: ISourceLayer[] = [
 		name: 'GFX Wall',
 		abbreviation: '',
 		type: SourceLayerType.GRAPHICS,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+
+		isSticky: false,
+
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
+	{
+		_id: SharedSourceLayers.Telemetrics,
+		_rank: 70,
+		name: 'Telemetrics',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,

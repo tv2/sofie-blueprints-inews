@@ -2,6 +2,8 @@ import { IBlueprintRundownDB, PlaylistTimingType, TSR } from 'blueprints-integra
 import {
 	CueDefinitionBackgroundLoop,
 	CueDefinitionGraphicDesign,
+	getTransitionProperties,
+	PartdefinitionTypes,
 	stripRedundantCuesWhenLayoutCueIsPresent,
 	UnparsedCue
 } from 'tv2-common'
@@ -3491,6 +3493,32 @@ describe('Body parser', () => {
 			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
 
 			expect(result).toEqual(definitions)
+		})
+	})
+
+	describe('getTransitionProperties', () => {
+		it('has a Dip transition lasting 4 frames, transition.duration is 4', () => {
+			const iNewsCue = 'SOME PART DIP 4'
+
+			const result: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(iNewsCue)
+
+			expect(result.transition!.duration).toBe(4)
+		})
+
+		it('has a Dip transition lasting 10 frames, transition.duration is 10', () => {
+			const iNewsCue = 'SOME PART DIP 10'
+
+			const result: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(iNewsCue)
+
+			expect(result.transition!.duration).toBe(10)
+		})
+
+		it('has a Dip transition lasting more than the max allowed 250 frames, transition.duration is 250', () => {
+			const iNewsCue = 'SOME PART DIP 231342143'
+
+			const result: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(iNewsCue)
+
+			expect(result.transition!.duration).toBe(250)
 		})
 	})
 })
