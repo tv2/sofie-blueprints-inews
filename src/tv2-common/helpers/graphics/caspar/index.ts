@@ -172,50 +172,44 @@ export function getHtmlGraphicBaseline(config: TV2BlueprintConfig) {
 		...getSlotBaselineTimelineObjects(templateName),
 		getCompoundSlotBaselineTimelineObject(templateName),
 		getDesignBaselineTimelineObject(templateName),
-		getPilotBaselineTimelineObject(templateName),
+		getPilotBaselineTimelineObject(templateName)
 	]
 }
 
 function getSlotBaselineTimelineObjects(templateName: string): TSR.TSRTimelineObj[] {
-	const slotBaselineObjects: TSR.TSRTimelineObj[] = []
-	;[
+	return [
 		SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 		SharedGraphicLLayer.GraphicLLayerOverlayLower,
 		SharedGraphicLLayer.GraphicLLayerOverlayTema,
 		SharedGraphicLLayer.GraphicLLayerOverlayTopt,
 		SharedGraphicLLayer.GraphicLLayerLocators
-	].forEach(layer => {
-		if (layerToHTMLGraphicSlot[layer]) {
-			slotBaselineObjects.push(
-				literal<TSR.TimelineObjCCGTemplate>({
-					id: '',
-					enable: {
-						while: '1'
+	]
+		.filter(layer => layerToHTMLGraphicSlot[layer])
+		.map<TSR.TimelineObjCCGTemplate>(layer => ({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			priority: 0,
+			layer,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: templateName,
+				data: {
+					display: 'program',
+					slots: {
+						[layerToHTMLGraphicSlot[layer]]: {
+							payload: {},
+							display: 'hidden'
+						}
 					},
-					priority: 0,
-					layer,
-					content: {
-						deviceType: TSR.DeviceType.CASPARCG,
-						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-						templateType: 'html',
-						name: templateName,
-						data: {
-							display: 'program',
-							slots: {
-								[layerToHTMLGraphicSlot[layer]]: {
-									payload: {},
-									display: 'hidden'
-								}
-							},
-							partialUpdate: true
-						},
-						useStopCommand: false
-					}
-				})
-			)
-		}
-	})
-	return slotBaselineObjects
+					partialUpdate: true
+				},
+				useStopCommand: false
+			}
+		}))
 }
 
 function getCompoundSlotBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
