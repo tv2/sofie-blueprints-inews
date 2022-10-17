@@ -12,7 +12,7 @@ import {
 import {
 	CreateTimingEnable,
 	CueDefinitionLYD,
-	JoinAssetToFolder,
+	joinAssetToFolder,
 	literal,
 	PartDefinition,
 	TimeFromFrames
@@ -123,7 +123,7 @@ function LydContent(
 		})
 	}
 
-	const filePath = lydType === 'fade' ? file : JoinAssetToFolder(config.studio.AudioBedFolder, file)
+	const filePath = lydType === 'fade' ? file : joinAssetToFolder(config.studio.AudioBedFolder, file)
 
 	return literal<WithTimeline<BaseContent>>({
 		timelineObjects: literal<TimelineObjectCoreExt[]>([

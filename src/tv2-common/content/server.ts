@@ -18,7 +18,7 @@ import { TV2BlueprintConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { ServerContentProps, ServerPartProps } from '../parts'
 import { AdlibServerOfftubeOptions } from '../pieces'
-import { JoinAssetToNetworkPath } from '../util'
+import { joinAssetToNetworkPath } from '../util'
 
 // TODO: These are TSR layers, not sourcelayers
 export interface MakeContentServerSourceLayers {
@@ -44,7 +44,7 @@ export function GetVTContentProperties(
 ): VTProps {
 	return literal<VTProps>({
 		fileName: contentProps.file,
-		path: JoinAssetToNetworkPath(
+		path: joinAssetToNetworkPath(
 			config.studio.ClipNetworkBasePath,
 			config.studio.ClipFolder,
 			contentProps.file,
