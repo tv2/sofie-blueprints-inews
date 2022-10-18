@@ -8,7 +8,7 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CalculateTime, CueDefinitionGraphicDesign, literal, TV2BlueprintConfig } from 'tv2-common'
+import { CalculateTime, CueDefinitionGraphicDesign, getHtmlTemplateName, literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 
 export function EvaluateDesignBase(
@@ -78,7 +78,7 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 						deviceType: TSR.DeviceType.CASPARCG,
 						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 						templateType: 'html',
-						name: 'sport-overlay/index',
+						name: getHtmlTemplateName(config),
 						data: {
 							display: 'program',
 							design: parsedCue.design,

@@ -1,6 +1,6 @@
 import { PieceLifespan } from 'blueprints-integration'
 import { SharedOutputLayers } from 'tv2-constants'
-import { assertUnreachable, isAdLibPiece, JoinAssetToFolder, JoinAssetToNetworkPath } from '../util'
+import { assertUnreachable, isAdLibPiece, joinAssetToFolder, joinAssetToNetworkPath } from '../util'
 
 const JOIN_ASSET_FOLDER_TESTS: Array<{
 	name: string
@@ -192,13 +192,13 @@ describe('util', () => {
 
 	for (const test of JOIN_ASSET_FOLDER_TESTS) {
 		it(test.name, () => {
-			expect(JoinAssetToFolder(test.folder, test.assetFile)).toBe(test.result)
+			expect(joinAssetToFolder(test.folder, test.assetFile)).toBe(test.result)
 		})
 	}
 
 	for (const test of JOIN_ASSET_NETWORK_PATH_TESTS) {
 		it(test.name, () => {
-			expect(JoinAssetToNetworkPath(test.networkPath, test.folder, test.assetFile, test.extensiton)).toBe(test.result)
+			expect(joinAssetToNetworkPath(test.networkPath, test.folder, test.assetFile, test.extensiton)).toBe(test.result)
 		})
 	}
 })

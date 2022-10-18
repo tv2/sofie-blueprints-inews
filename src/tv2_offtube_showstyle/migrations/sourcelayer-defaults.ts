@@ -411,9 +411,9 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: SharedSourceLayers.Telemetrics,
+		_id: SharedSourceLayers.RobotCamera,
 		_rank: 70,
-		name: 'Telemetrics',
+		name: 'Robot Camera',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',

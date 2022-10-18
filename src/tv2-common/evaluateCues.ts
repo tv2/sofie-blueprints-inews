@@ -17,8 +17,8 @@ import {
 	CueDefinitionEkstern,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
+	CueDefinitionRobotCamera,
 	CueDefinitionTelefon,
-	CueDefinitionTelemetrics,
 	PartDefinition
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -172,9 +172,9 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueProfile?: () => void
 	/** TODO: Mic -> For the future */
 	EvaluateCueMic?: () => void
-	EvaluateCueTelemetrics?: (
+	EvaluateCueRobotCamera?: (
 		context: IShowStyleUserContext,
-		cueDefinition: CueDefinitionTelemetrics,
+		cueDefinition: CueDefinitionRobotCamera,
 		pieces: IBlueprintPiece[],
 		partId: string
 	) => void
@@ -402,9 +402,9 @@ export async function EvaluateCuesBase(
 				case CueType.UNPAIRED_PILOT:
 					context.notifyUserWarning(`Graphic found without target engine`)
 					break
-				case CueType.Telemetrics:
-					if (showStyleOptions.EvaluateCueTelemetrics) {
-						showStyleOptions.EvaluateCueTelemetrics(context, cue, pieces, partDefinition.externalId)
+				case CueType.RobotCamera:
+					if (showStyleOptions.EvaluateCueRobotCamera) {
+						showStyleOptions.EvaluateCueRobotCamera(context, cue, pieces, partDefinition.externalId)
 					}
 					break
 				default:
