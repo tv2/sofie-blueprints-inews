@@ -337,7 +337,7 @@ const PGM: ISourceLayer[] = [
 		_rank: 0,
 		name: 'Continuity',
 		abbreviation: 'CONTINUITY',
-		type: SourceLayerType.METADATA,
+		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: 'me1',
 		isRemoteInput: false,
 		isGuestInput: false,

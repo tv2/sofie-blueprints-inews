@@ -244,6 +244,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	renameTableColumn('1.7.6', 'GraphicsSetups', 'FullShowId', 'FullShowName'),
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'AFVD', 'GFXTemplates', 'GfxDesignTemplates'),
 
+	/**
+	 * 1.7.7
+	 * - Update SourceLayerType for Continuity
+	 */
+	forceSourceLayerToDefaults('1.7.7', SourceLayer.PgmContinuity),
+
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
