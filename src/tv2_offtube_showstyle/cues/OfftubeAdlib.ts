@@ -5,7 +5,7 @@ import {
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,

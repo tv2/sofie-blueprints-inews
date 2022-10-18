@@ -4,7 +4,7 @@ import {
 	BlueprintResultBaseline,
 	IStudioContext,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'

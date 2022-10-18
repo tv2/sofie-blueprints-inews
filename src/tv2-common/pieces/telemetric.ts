@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
 import { RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
 import { literal } from '../util'
 

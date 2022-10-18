@@ -1,4 +1,4 @@
-import { IBlueprintTriggeredActions } from '@tv2media/blueprints-integration'
+import { IBlueprintTriggeredActions } from 'blueprints-integration'
 import { MakeRouteToGraphicsEngineTrigger } from './auxGraphics'
 import { MakeRouteToStudioScreenTrigger } from './auxStudioScreen'
 import { MakeCutToBoxTrigger } from './cutToBox'

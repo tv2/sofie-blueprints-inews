@@ -1,9 +1,4 @@
-import {
-	IOutputLayer,
-	ISourceLayer,
-	MigrationContextShowStyle,
-	MigrationStepShowStyle
-} from '@tv2media/blueprints-integration'
+import { IOutputLayer, ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from 'blueprints-integration'
 import { forceSourceLayerToDefaultsBase, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'

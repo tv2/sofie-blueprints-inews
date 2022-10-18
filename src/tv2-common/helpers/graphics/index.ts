@@ -1,4 +1,4 @@
-import { IBlueprintPart, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintPart, TSR } from 'blueprints-integration'
 import { getHtmlGraphicBaseline, TV2BlueprintConfig } from 'tv2-common'
 
 export * from './name'

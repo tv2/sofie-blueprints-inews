@@ -4,7 +4,7 @@ import {
 	ISegmentUserContext,
 	PieceLifespan,
 	SplitsContent
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	AddParentClass,

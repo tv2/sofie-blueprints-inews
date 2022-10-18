@@ -1,4 +1,4 @@
-import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
+import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from 'blueprints-integration'
 import { WithValuesOfTypes } from 'tv2-common'
 import _ = require('underscore')
 

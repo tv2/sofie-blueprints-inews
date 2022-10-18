@@ -1,4 +1,4 @@
-import { IShowStyleUserContext, SplitsContent, WithTimeline } from '@tv2media/blueprints-integration'
+import { IShowStyleUserContext, SplitsContent, WithTimeline } from 'blueprints-integration'
 import { CueDefinitionDVE, DVEConfigInput, DVEOptions, MakeContentDVEBase, PartDefinition } from 'tv2-common'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'

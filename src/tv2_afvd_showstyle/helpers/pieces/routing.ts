@@ -7,7 +7,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { CalculateTime, CueDefinitionRouting, findSourceInfo, literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')

@@ -1,4 +1,4 @@
-import { IBlueprintPiece, IShowStyleUserContext, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintPiece, IShowStyleUserContext, TSR } from 'blueprints-integration'
 import { SharedSourceLayers } from '../../tv2-constants'
 import { CalculateTime } from '../cueTiming'
 import { CueDefinitionRobotCamera } from '../inewsConversion'

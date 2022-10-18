@@ -6,7 +6,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { AddScript, ApplyFullGraphicPropertiesToPart, GraphicIsPilot, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../helpers/config'

@@ -1,4 +1,4 @@
-import { ISourceLayer } from '@tv2media/blueprints-integration'
+import { ISourceLayer } from 'blueprints-integration'
 import {
 	GlobalHotkeySourceLayers,
 	GlobalHotkeySources,

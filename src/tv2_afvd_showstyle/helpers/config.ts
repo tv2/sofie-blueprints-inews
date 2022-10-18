@@ -1,10 +1,10 @@
+import { IBlueprintConfig, ICommonContext, IShowStyleContext, TableConfigItemValue } from 'blueprints-integration'
 import {
-	IBlueprintConfig,
-	ICommonContext,
-	IShowStyleContext,
-	TableConfigItemValue
-} from '@tv2media/blueprints-integration'
-import { findGraphicsSetup, TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+	findGraphicsSetup,
+	TableConfigGraphicsSetup,
+	TableConfigItemOverlayShowMapping,
+	TV2ShowstyleBlueprintConfigBase
+} from 'tv2-common'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 
 export interface GalleryTableConfigGraphicsSetup extends TableConfigGraphicsSetup {
@@ -19,7 +19,9 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
+	SelectedGraphicsSetupName: string
 	GraphicsSetups: GalleryTableConfigGraphicsSetup[]
+	OverlayShowMapping: TableConfigItemOverlayShowMapping[]
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {

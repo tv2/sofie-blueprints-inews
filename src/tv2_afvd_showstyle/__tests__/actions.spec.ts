@@ -6,7 +6,7 @@ import {
 	IBlueprintPieceInstance,
 	PieceLifespan,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { ActionCutToCamera, ActionTakeWithTransition, literal, SourceDefinitionKam } from 'tv2-common'
 import { AdlibActionType, NoteType, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'

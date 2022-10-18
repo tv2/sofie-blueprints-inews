@@ -4,7 +4,7 @@ import {
 	ConfigManifestEntryType,
 	TableConfigItemValue,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	DSKConfigManifest,
 	literal,

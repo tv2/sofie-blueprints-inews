@@ -7,7 +7,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { getSegmentBase, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'

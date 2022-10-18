@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintRundownDB, PlaylistTimingType, TSR } from 'blueprints-integration'
 import { CueDefinitionRobotCamera, RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
 import { CueType, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'

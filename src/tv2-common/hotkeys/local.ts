@@ -1,4 +1,4 @@
-import { IBlueprintTriggeredActions } from '@tv2media/blueprints-integration'
+import { IBlueprintTriggeredActions } from 'blueprints-integration'
 import { AdlibTags } from 'tv2-constants'
 import { replaySourceFullAudioName, replaySourceVoAudioName } from '../helpers'
 import { MakeStudioSourceHotkeys, SourceHotkeyTriggers } from './helpers'

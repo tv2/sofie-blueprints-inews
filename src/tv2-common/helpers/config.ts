@@ -1,4 +1,4 @@
-import { ICommonContext } from '@tv2media/blueprints-integration'
+import { ICommonContext } from 'blueprints-integration'
 import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 
 export interface DVEConfigInput {

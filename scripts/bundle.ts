@@ -1,7 +1,7 @@
-import { BlueprintManifestSet } from '@tv2media/blueprints-integration'
 import * as fs from 'fs'
 import * as _ from 'underscore'
 import * as util from 'util'
+import { BlueprintManifestSet } from '../src/types/blueprints-integration'
 const { BlueprintBundles } = require('./blueprint-map')
 
 const readFile = util.promisify(fs.readFile)

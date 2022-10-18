@@ -7,7 +7,7 @@ import {
 	ISegmentUserContext,
 	IShowStyleUserContext,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,

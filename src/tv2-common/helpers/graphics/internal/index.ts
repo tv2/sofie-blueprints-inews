@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext } from '@tv2media/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext } from 'blueprints-integration'
 import {
 	Adlib,
 	CueDefinitionGraphic,

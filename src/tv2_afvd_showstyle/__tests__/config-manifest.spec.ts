@@ -16,7 +16,8 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	ShowstyleTransition: 'CUT',
 	SelectedGraphicsSetupName: '',
 	GraphicsSetups: [],
-	SchemaConfig: []
+	SchemaConfig: [],
+	OverlayShowMapping: []
 }
 
 describe('Config Manifest', () => {

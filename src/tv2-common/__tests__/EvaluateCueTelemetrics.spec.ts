@@ -1,4 +1,4 @@
-import { IBlueprintPiece, IShowStyleUserContext, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintPiece, IShowStyleUserContext, PieceLifespan, TSR } from 'blueprints-integration'
 import { CueType, RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
 import { EvaluateCueRobotCamera } from '../cues/EvaluateCueRobotCamera'
 import { CueDefinitionRobotCamera } from '../inewsConversion'

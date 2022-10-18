@@ -6,7 +6,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { CueDefinitionPgmClean, findSourceInfo, literal, SourceInfo } from 'tv2-common'
 import { SharedOutputLayers, SourceType } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
