@@ -1,4 +1,4 @@
-import { GraphicsContent, IShowStyleUserContext, TSR, WithTimeline } from '@tv2media/blueprints-integration'
+import { GraphicsContent, IShowStyleUserContext, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	Adlib,
 	CueDefinitionGraphic,

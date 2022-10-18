@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { SourceLayerType } from '@tv2media/blueprints-integration'
+import { SourceLayerType } from 'blueprints-integration'
 import { ParseMappingTable, SourceInfoType, SourceMapping } from 'tv2-common'
 import { StudioConfig } from './config'
 

@@ -7,7 +7,7 @@ import {
 	MigrationContextShowStyle,
 	OmitId,
 	ShowStyleVariantPart
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 
 export class MockShowstyleMigrationContext implements MigrationContextShowStyle {
 	public variants: IBlueprintShowStyleVariant[] = []

@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,

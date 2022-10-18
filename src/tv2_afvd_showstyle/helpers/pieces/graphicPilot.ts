@@ -5,7 +5,7 @@ import {
 	IShowStyleUserContext,
 	IStudioUserContext,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	Adlib,
 	CreatePilotGraphic,

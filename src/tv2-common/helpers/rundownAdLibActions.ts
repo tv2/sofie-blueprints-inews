@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest } from '@tv2media/blueprints-integration'
+import { IBlueprintActionManifest } from 'blueprints-integration'
 import {
 	ActionTakeWithTransition,
 	ActionTakeWithTransitionVariant,

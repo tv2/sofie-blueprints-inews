@@ -10,7 +10,7 @@ import {
 	PieceLifespan,
 	PlaylistTimingType,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,

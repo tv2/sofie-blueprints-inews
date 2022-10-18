@@ -7,7 +7,7 @@ global.VERSION_TSR = 'test'
 // @ts-ignore
 global.VERSION_INTEGRATION = 'test'
 
-import { ExtendedIngestRundown, IGetRundownContext, TSR } from '@tv2media/blueprints-integration'
+import { ExtendedIngestRundown, IGetRundownContext, TSR } from 'blueprints-integration'
 import { GetRundownContext } from '../../__mocks__/context'
 import { SharedGraphicLLayer } from '../../tv2-constants'
 import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'

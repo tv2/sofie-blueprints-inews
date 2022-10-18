@@ -1,4 +1,4 @@
-import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
+import { ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from 'blueprints-integration'
 import _ = require('underscore')
 
 export function forceSourceLayerToDefaultsBase(

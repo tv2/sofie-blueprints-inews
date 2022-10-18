@@ -1,8 +1,4 @@
-import {
-	BlueprintResultSegment,
-	IBlueprintActionManifestDisplayContent,
-	IngestSegment
-} from '@tv2media/blueprints-integration'
+import { BlueprintResultSegment, IBlueprintActionManifestDisplayContent, IngestSegment } from 'blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { makeMockAFVDContext, SegmentUserContext } from '../../__mocks__/context'

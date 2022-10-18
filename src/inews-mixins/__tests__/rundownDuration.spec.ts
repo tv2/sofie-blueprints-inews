@@ -1,4 +1,4 @@
-import { IngestSegment } from '@tv2media/blueprints-integration'
+import { IngestSegment } from 'blueprints-integration'
 import { literal } from 'tv2-common'
 import { getRundownDuration } from '../rundownDuration'
 

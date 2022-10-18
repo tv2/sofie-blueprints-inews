@@ -2,7 +2,7 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IShowStyleUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,

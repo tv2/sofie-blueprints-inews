@@ -6,7 +6,7 @@ import {
 	IShowStyleUserContext,
 	TimelineObjectCoreExt,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 
 import { GetDSKSourceLayerNames } from 'tv2-common'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'

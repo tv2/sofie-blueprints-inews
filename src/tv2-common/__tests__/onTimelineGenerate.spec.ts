@@ -1,4 +1,4 @@
-import { IBlueprintPieceDB, IBlueprintResolvedPieceInstance, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintPieceDB, IBlueprintResolvedPieceInstance, TSR } from 'blueprints-integration'
 import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import {
 	createSisyfosPersistedLevelsTimelineObject,

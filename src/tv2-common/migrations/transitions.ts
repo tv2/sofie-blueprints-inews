@@ -1,4 +1,4 @@
-import { MigrationContextShowStyle, MigrationStepShowStyle } from '@tv2media/blueprints-integration'
+import { MigrationContextShowStyle, MigrationStepShowStyle } from 'blueprints-integration'
 import { literal } from 'tv2-common'
 import { TableConfigItemAdLibTransitions } from '../blueprintConfig'
 

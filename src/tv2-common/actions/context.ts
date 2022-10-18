@@ -10,7 +10,7 @@ import {
 	IBlueprintResolvedPieceInstance,
 	PackageInfo,
 	Time
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { literal, PartMetaData, PieceMetaData } from 'tv2-common'
 
 export interface ITV2ActionExecutionContext extends IActionExecutionContext {

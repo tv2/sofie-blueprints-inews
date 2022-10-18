@@ -6,7 +6,7 @@ import {
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')

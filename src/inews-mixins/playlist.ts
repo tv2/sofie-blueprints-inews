@@ -13,7 +13,7 @@ import {
 	RundownPlaylistTiming,
 	ShowStyleBlueprintManifest,
 	StudioBlueprintManifest
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { assertUnreachable, literal, TimeFromINewsField } from 'tv2-common'
 import { getRundownDuration } from './rundownDuration'
 

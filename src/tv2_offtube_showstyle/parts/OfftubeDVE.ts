@@ -6,7 +6,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { AddScript, PartDefinitionDVE, PartTime } from 'tv2-common'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'

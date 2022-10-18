@@ -11,7 +11,7 @@ import {
 	TimelineObjectCoreExt,
 	TimelinePersistentState,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { ActionSelectFullGrafik, ActionSelectJingle, ActionSelectServerClip, CasparPlayerClip } from 'tv2-common'
 import { AbstractLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'

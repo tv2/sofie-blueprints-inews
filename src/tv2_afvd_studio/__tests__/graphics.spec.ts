@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from 'blueprints-integration'
 import {
 	CueDefinition,
 	CueDefinitionBackgroundLoop,

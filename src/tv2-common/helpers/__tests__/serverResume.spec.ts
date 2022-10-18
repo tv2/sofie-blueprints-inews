@@ -5,7 +5,7 @@ import {
 	SplitsContent,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { DVEPieceMetaData, literal, PieceMetaData, RemoteType, SourceDefinitionRemote } from 'tv2-common'
 import { SharedSourceLayers, SourceType } from 'tv2-constants'
 import { getServerPositionForPartInstance } from '../serverResume'

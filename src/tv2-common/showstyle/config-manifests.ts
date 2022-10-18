@@ -1,13 +1,12 @@
-import {
-	ConfigManifestEntry,
-	ConfigManifestEntryTable,
-	ConfigManifestEntryType
-} from '@tv2media/blueprints-integration'
+import { ConfigManifestEntry, ConfigManifestEntryTable, ConfigManifestEntryType } from 'blueprints-integration'
+
+export const GRAPHICS_SETUPS_TABLE_ID = 'GraphicsSetups'
+export const GRAPHICS_SETUPS_NAME_COLUMN_ID = 'Name'
 
 export const getGraphicsSetupsEntries = (columns: ConfigManifestEntryTable['columns']): ConfigManifestEntry[] => [
 	{
-		id: 'GraphicsSetups',
-		name: 'Graphics Setups',
+		id: GRAPHICS_SETUPS_TABLE_ID,
+		name: GRAPHICS_SETUPS_NAME_COLUMN_ID,
 		description: 'Possible graphics setups',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
@@ -40,7 +39,10 @@ export const getGraphicsSetupsEntries = (columns: ConfigManifestEntryTable['colu
 		id: 'SelectedGraphicsSetupName',
 		name: 'Graphic Setup name',
 		description: 'Name of the Graphic Setup that should be used',
-		type: ConfigManifestEntryType.STRING,
+		type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+		tableId: GRAPHICS_SETUPS_TABLE_ID,
+		columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
+		multiple: false,
 		required: false,
 		defaultVal: ''
 	}

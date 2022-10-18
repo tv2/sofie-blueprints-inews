@@ -1,4 +1,4 @@
-import { IBlueprintPiece, IShowStyleUserContext } from '@tv2media/blueprints-integration'
+import { IBlueprintPiece, IShowStyleUserContext } from 'blueprints-integration'
 import { CreateEffektForPartBase, PartDefinition } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'

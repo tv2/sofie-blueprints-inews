@@ -6,7 +6,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { AddScript, CueDefinitionEkstern, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
