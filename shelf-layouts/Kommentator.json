@@ -178,6 +178,8 @@
       "scale": 0,
       "thumbnailPriorityNextPieces": true,
       "hideThumbnailsForActivePieces": true,
+      "thumbnailPriorityNextPieces": true,
+      "hideThumbnailsForActivePieces": true,
       "thumbnailSourceLayerIds": [
         "studio0_full",
         "studio0_jingle"
