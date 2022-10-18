@@ -137,7 +137,6 @@ export enum AdlibActionType {
 	SELECT_DVE_LAYOUT = 'select_dve_layout',
 	SELECT_FULL_GRAFIK = 'select_full_grafik',
 	SELECT_JINGLE = 'select_jingle',
-	SELECT_ROBOT_PRESET = 'select_robot_preset',
 	CUT_TO_CAMERA = 'cut_to_camera',
 	CUT_TO_REMOTE = 'cut_to_remote',
 	CUT_SOURCE_TO_BOX = 'cut_source_to_box',
@@ -149,7 +148,8 @@ export enum AdlibActionType {
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
 	RECALL_LAST_DVE = 'recall_last_dve',
-	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
+	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
+	CALL_ROBOT_PRESET = 'call_robot_preset'
 }
 
 export enum TallyTags {

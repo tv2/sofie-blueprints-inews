@@ -48,8 +48,8 @@ export interface ActionSelectJingle extends ActionBase {
 	clip: string
 }
 
-export interface ActionSelectRobotPreset extends ActionBase {
-	type: AdlibActionType.SELECT_ROBOT_PRESET
+export interface ActionCallRobotPreset extends ActionBase {
+	type: AdlibActionType.CALL_ROBOT_PRESET
 }
 
 export interface ActionCutToCamera extends ActionBase {
@@ -146,7 +146,7 @@ export type TV2AdlibAction =
 	| ActionSelectDVELayout
 	| ActionSelectFullGrafik
 	| ActionSelectJingle
-	| ActionSelectRobotPreset
+	| ActionCallRobotPreset
 	| ActionCutToCamera
 	| ActionCutToRemote
 	| ActionCommentatorSelectServer

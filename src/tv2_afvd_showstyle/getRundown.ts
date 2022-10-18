@@ -15,6 +15,7 @@ import {
 	WithTimeline
 } from '@tv2media/blueprints-integration'
 import {
+	ActionCallRobotPreset,
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
@@ -22,7 +23,6 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
-	ActionSelectRobotPreset,
 	CasparPlayerClipLoadingLoop,
 	CreateDSKBaseline,
 	CreateDSKBaselineAdlibs,
@@ -803,17 +803,17 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 }
 
 function createRobotPresetAction(context: ICommonContext): IBlueprintActionManifest {
-	const selectRobotPresetAction: ActionSelectRobotPreset = {
-		type: AdlibActionType.SELECT_ROBOT_PRESET
+	const callRobotPresetAction: ActionCallRobotPreset = {
+		type: AdlibActionType.CALL_ROBOT_PRESET
 	}
 	return {
-		externalId: generateExternalId(context, selectRobotPresetAction),
-		actionId: AdlibActionType.SELECT_ROBOT_PRESET,
-		userData: selectRobotPresetAction,
+		externalId: generateExternalId(context, callRobotPresetAction),
+		actionId: AdlibActionType.CALL_ROBOT_PRESET,
+		userData: callRobotPresetAction,
 		userDataManifest: {},
 		display: {
 			_rank: 400,
-			label: t(`Select Robot preset`),
+			label: t(`Call Robot preset`),
 			sourceLayerId: SourceLayer.Telemetrics,
 			outputLayerId: SharedOutputLayers.SEC,
 			tags: []
