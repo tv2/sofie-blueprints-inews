@@ -1,5 +1,5 @@
 import { IBlueprintRundownDB, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
-import { CueDefinitionTelemetrics, RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
+import { CueDefinitionRobotCamera, RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
 import { CueType, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
@@ -1849,34 +1849,34 @@ describe('Cue parser', () => {
 		})
 	})
 
-	describe('Telemetrics cue', () => {
-		it("receives 'ROBOT', returns a cue with type Telemetrics", () => {
+	describe('Robot cue', () => {
+		it("receives 'ROBOT', returns a cue with type RobotCamera", () => {
 			const cue = ['ROBOT=s2']
-			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
-			expect(result.type).toBe(CueType.Telemetrics)
+			const result = ParseCue(cue, config) as CueDefinitionRobotCamera
+			expect(result.type).toBe(CueType.RobotCamera)
 		})
 
 		it("receives 'ROBOT=s2', preset is 2", () => {
 			const cue = ['ROBOT=s2']
-			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			const result = ParseCue(cue, config) as CueDefinitionRobotCamera
 			expect(result!.presetIdentifier).toBe(2)
 		})
 
 		it("receives 'ROBOT=s5', preset is 5", () => {
 			const cue = ['ROBOT=s5']
-			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			const result = ParseCue(cue, config) as CueDefinitionRobotCamera
 			expect(result!.presetIdentifier).toBe(5)
 		})
 
 		it("receives 'ROBOT=11', preset is 11", () => {
 			const cue = ['ROBOT=11']
-			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			const result = ParseCue(cue, config) as CueDefinitionRobotCamera
 			expect(result!.presetIdentifier).toBe(11)
 		})
 
 		it('receives time code ;0.24.10, start is 24 seconds and 10 frames', () => {
 			const cue = ['ROBOT=11', '0.24.10']
-			const result = ParseCue(cue, config) as CueDefinitionTelemetrics
+			const result = ParseCue(cue, config) as CueDefinitionRobotCamera
 			expect(result!.start!.seconds).toBe(24)
 			expect(result!.start!.frames).toBe(10)
 		})

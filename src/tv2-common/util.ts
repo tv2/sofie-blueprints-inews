@@ -36,7 +36,7 @@ export function SanitizeString(str: string) {
 	return str.replace(/\W/g, '_')
 }
 
-export function JoinAssetToFolder(folder: string | undefined, assetFile: string) {
+export function joinAssetToFolder(folder: string | undefined, assetFile: string) {
 	if (!folder) {
 		return assetFile
 	}
@@ -52,7 +52,7 @@ export function JoinAssetToFolder(folder: string | undefined, assetFile: string)
 	return `${folderWithoutTrailingSlashes}/${assetFileWithoutLeadingSlashes}`
 }
 
-export function JoinAssetToNetworkPath(
+export function joinAssetToNetworkPath(
 	networkPath: string,
 	folder: string | undefined,
 	assetFile: string,

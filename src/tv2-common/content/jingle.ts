@@ -3,7 +3,7 @@ import { TimeFromFrames } from 'tv2-common'
 import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { EnableDSK, FindDSKJingle } from '../helpers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
-import { JoinAssetToFolder, JoinAssetToNetworkPath, literal } from '../util'
+import { joinAssetToFolder, joinAssetToNetworkPath, literal } from '../util'
 
 export interface JingleLayers {
 	Caspar: {
@@ -26,11 +26,11 @@ export function CreateJingleExpectedMedia(
 	duration: number,
 	alphaAtEnd: number
 ) {
-	const fileName = JoinAssetToFolder(config.studio.JingleFolder, jingle)
+	const fileName = joinAssetToFolder(config.studio.JingleFolder, jingle)
 
 	return literal<WithTimeline<VTContent>>({
 		fileName,
-		path: JoinAssetToNetworkPath(
+		path: joinAssetToNetworkPath(
 			config.studio.JingleNetworkBasePath,
 			config.studio.JingleFolder,
 			jingle,
@@ -59,7 +59,7 @@ export function CreateJingleContentBase<
 	alphaAtEnd: number,
 	layers: JingleLayers
 ) {
-	const fileName = JoinAssetToFolder(config.studio.JingleFolder, file)
+	const fileName = joinAssetToFolder(config.studio.JingleFolder, file)
 	const jingleDSK = FindDSKJingle(config)
 	return literal<WithTimeline<VTContent>>({
 		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
