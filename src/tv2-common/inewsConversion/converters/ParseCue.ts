@@ -168,8 +168,8 @@ export interface CueDefinitionPgmClean extends CueDefinitionBase {
 	sourceDefinition: SourceDefinition
 }
 
-export interface CueDefinitionTelemetrics extends CueDefinitionBase {
-	type: CueType.Telemetrics
+export interface CueDefinitionRobotCamera extends CueDefinitionBase {
+	type: CueType.RobotCamera
 	presetIdentifier: number
 }
 
@@ -192,7 +192,7 @@ export type CueDefinition =
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
 	| CueDefinitionMixMinus
-	| CueDefinitionTelemetrics
+	| CueDefinitionRobotCamera
 
 export function GraphicIsInternal(
 	o: CueDefinitionGraphic<GraphicInternalOrPilot>
@@ -265,7 +265,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 	} else if (/^DESIGN_BG=/i.test(cue[0])) {
 		return parseDesignBg(cue, config)
 	} else if (/^ROBOT\s*=/i.test(cue[0])) {
-		return parseTelemetricsCue(cue)
+		return parseRobotCue(cue)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -957,12 +957,12 @@ function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinition
 	})
 }
 
-function parseTelemetricsCue(cue: string[]): CueDefinitionTelemetrics {
+function parseRobotCue(cue: string[]): CueDefinitionRobotCamera {
 	const presetIdentifier: number = Number(cue[0].match(/\d+/))
 	const time: Pick<CueDefinitionBase, 'start' | 'end'> = cue[1] ? parseTime(cue[1]) : { start: { seconds: 0 } }
 	return {
-		type: CueType.Telemetrics,
-		iNewsCommand: 'Telemetrics',
+		type: CueType.RobotCamera,
+		iNewsCommand: 'RobotCamera',
 		presetIdentifier,
 		...time
 	}

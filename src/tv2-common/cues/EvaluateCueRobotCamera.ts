@@ -1,20 +1,20 @@
 import { IBlueprintPiece, IShowStyleUserContext, TSR } from '@tv2media/blueprints-integration'
 import { SharedSourceLayers } from '../../tv2-constants'
 import { CalculateTime } from '../cueTiming'
-import { CueDefinitionTelemetrics } from '../inewsConversion'
-import { createTelemetricsPiece, TELEMETRICS_NAME_PREFIX } from '../pieces/telemetric'
+import { CueDefinitionRobotCamera } from '../inewsConversion'
+import { createTelemetricsPieceForRobotCamera, ROBOT_CAMERA_NAME_PREFIX } from '../pieces/telemetric'
 
-export function EvaluateCueTelemetrics(
+export function EvaluateCueRobotCamera(
 	_context: IShowStyleUserContext,
-	cueDefinition: CueDefinitionTelemetrics,
+	cueDefinition: CueDefinitionRobotCamera,
 	pieces: IBlueprintPiece[],
 	externalId: string
 ): void {
 	const startTime: number = cueDefinition.start ? CalculateTime(cueDefinition.start) ?? 0 : 0
 
-	const existingPiece = findExistingPieceForTelemetricsLayerAndStartTime(pieces, startTime)
+	const existingPiece = findExistingPieceForRobotCameraLayerAndStartTime(pieces, startTime)
 	if (!existingPiece) {
-		const newPiece = createTelemetricsPiece(externalId, cueDefinition.presetIdentifier, startTime)
+		const newPiece = createTelemetricsPieceForRobotCamera(externalId, cueDefinition.presetIdentifier, startTime)
 		pieces.push(newPiece)
 		return
 	}
@@ -24,14 +24,14 @@ export function EvaluateCueTelemetrics(
 	}
 }
 
-function findExistingPieceForTelemetricsLayerAndStartTime(
+function findExistingPieceForRobotCameraLayerAndStartTime(
 	pieces: IBlueprintPiece[],
 	startTime: number
 ): IBlueprintPiece | undefined {
 	return pieces.find(
 		piece =>
-			piece.sourceLayerId === SharedSourceLayers.Telemetrics &&
-			piece.name.startsWith(TELEMETRICS_NAME_PREFIX) &&
+			piece.sourceLayerId === SharedSourceLayers.RobotCamera &&
+			piece.name.startsWith(ROBOT_CAMERA_NAME_PREFIX) &&
 			piece.enable.start === startTime
 	)
 }

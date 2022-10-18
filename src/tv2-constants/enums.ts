@@ -33,7 +33,7 @@ export enum CueType {
 	Routing,
 	PgmClean,
 	MixMinus,
-	Telemetrics
+	RobotCamera
 }
 
 export const enum PartType {
@@ -271,8 +271,7 @@ export enum SharedSourceLayers {
 	// AUX
 	AuxMixMinus = 'studio0_aux_mix_minus',
 
-	// Telemetrics
-	Telemetrics = 'studio0_telemetrics'
+	RobotCamera = 'studio0_robot_camera'
 }
 
 export enum DSKRoles {

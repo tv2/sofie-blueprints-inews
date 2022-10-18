@@ -814,7 +814,7 @@ function createRobotPresetAction(context: ICommonContext): IBlueprintActionManif
 		display: {
 			_rank: 400,
 			label: t(`Call Robot preset`),
-			sourceLayerId: SourceLayer.Telemetrics,
+			sourceLayerId: SourceLayer.RobotCamera,
 			outputLayerId: SharedOutputLayers.SEC,
 			tags: []
 		}

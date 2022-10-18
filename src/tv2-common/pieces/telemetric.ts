@@ -2,18 +2,22 @@ import { IBlueprintPiece, PieceLifespan, TSR } from '@tv2media/blueprints-integr
 import { RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
 import { literal } from '../util'
 
-export const TELEMETRICS_NAME_PREFIX: string = 'Robot'
+export const ROBOT_CAMERA_NAME_PREFIX: string = 'Robot'
 
-export function createTelemetricsPiece(externalId: string, preset: number, startTime: number | 'now'): IBlueprintPiece {
+export function createTelemetricsPieceForRobotCamera(
+	externalId: string,
+	preset: number,
+	startTime: number | 'now'
+): IBlueprintPiece {
 	return {
 		externalId,
-		name: `${TELEMETRICS_NAME_PREFIX}[${preset}]`,
+		name: `${ROBOT_CAMERA_NAME_PREFIX}[${preset}]`,
 		enable: {
 			start: startTime,
 			duration: 100
 		},
 		lifespan: PieceLifespan.WithinPart,
-		sourceLayerId: SharedSourceLayers.Telemetrics,
+		sourceLayerId: SharedSourceLayers.RobotCamera,
 		outputLayerId: SharedOutputLayers.SEC,
 		content: {
 			timelineObjects: [createTelemetricsTimelineObject(preset)]

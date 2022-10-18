@@ -1,27 +1,27 @@
 import { IBlueprintPiece, IShowStyleUserContext, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
 import { CueType, RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
-import { EvaluateCueTelemetrics } from '../cues/EvaluateCueTelemetrics'
-import { CueDefinitionTelemetrics } from '../inewsConversion'
+import { EvaluateCueRobotCamera } from '../cues/EvaluateCueRobotCamera'
+import { CueDefinitionRobotCamera } from '../inewsConversion'
 
-describe('EvaluateCueTelemetrics', () => {
+describe('EvaluateCueRobotCamera', () => {
 	let context: IShowStyleUserContext
 
 	beforeEach(() => {
 		context = ({} as unknown) as IShowStyleUserContext
 	})
 
-	it('adds a Telemetrics piece', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
+	it('adds a Robot Camera piece', () => {
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		expect(pieces).toHaveLength(1)
 	})
 
-	function createTelemetricsCueDefinition(presetShot?: number, startTimeInSeconds?: number): CueDefinitionTelemetrics {
+	function createRobotCameraCueDefinition(presetShot?: number, startTimeInSeconds?: number): CueDefinitionRobotCamera {
 		return {
-			type: CueType.Telemetrics,
+			type: CueType.RobotCamera,
 			presetIdentifier: presetShot ?? 1,
 			iNewsCommand: '',
 			start: {
@@ -31,29 +31,29 @@ describe('EvaluateCueTelemetrics', () => {
 	}
 
 	it('parse the externalId to the piece', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
 		const externalId: string = 'someExternalId'
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, externalId)
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, externalId)
 
 		expect(pieces[0].externalId).toEqual(externalId)
 	})
 
 	it('has lifeSpan withinPart', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		expect(pieces[0].lifespan).toEqual(PieceLifespan.WithinPart)
 	})
 
 	it('creates a telemetrics timeline object', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		expect(pieces[0].content.timelineObjects).toHaveLength(1)
 		const result = pieces[0].content.timelineObjects[0]
@@ -62,28 +62,28 @@ describe('EvaluateCueTelemetrics', () => {
 	})
 
 	it('timeline object has start time 0', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		expect((pieces[0].content.timelineObjects[0].enable as { start: number }).start).toEqual(0)
 	})
 
-	it('has Telemetrics source layer', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
+	it('has Robot Camera source layer', () => {
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
-		expect(pieces[0].sourceLayerId).toEqual(SharedSourceLayers.Telemetrics)
+		expect(pieces[0].sourceLayerId).toEqual(SharedSourceLayers.RobotCamera)
 	})
 
 	it('has SEC for output layer', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		expect(pieces[0].outputLayerId).toEqual(SharedOutputLayers.SEC)
 	})
@@ -93,10 +93,10 @@ describe('EvaluateCueTelemetrics', () => {
 	})
 
 	function assertCorrectName(preset: number): void {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(preset)
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(preset)
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		const result: IBlueprintPiece = pieces[0]
 		expect(result.name).toEqual(`Robot[${preset}]`)
@@ -111,10 +111,10 @@ describe('EvaluateCueTelemetrics', () => {
 	})
 
 	function assertCorrectShotPreset(presetShot: number): void {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(presetShot)
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(presetShot)
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		const result: TSR.TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TSR.TimelineObjTelemetrics
 		expect(result.content.presetShotIdentifiers).toEqual([presetShot])
@@ -129,10 +129,10 @@ describe('EvaluateCueTelemetrics', () => {
 	})
 
 	function assertStartTime(startTimeInSeconds: number): void {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1, startTimeInSeconds)
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1, startTimeInSeconds)
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		const result: IBlueprintPiece = pieces[0]
 		expect(result.enable.start).toEqual(startTimeInSeconds * 1000)
@@ -143,25 +143,25 @@ describe('EvaluateCueTelemetrics', () => {
 	})
 
 	it('has duration of one second', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1)
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1)
 		const pieces: IBlueprintPiece[] = []
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, '')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
 		const result: IBlueprintPiece = pieces[0]
 		expect(result.enable.duration).toEqual(100)
 	})
 
 	it('already has a piece with another sourceLayer, creates a new piece', () => {
-		const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition()
-		const pieces: IBlueprintPiece[] = [createTelemetricsBlueprintPiece(SharedSourceLayers.PgmDesign)]
+		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
+		const pieces: IBlueprintPiece[] = [createRobotCameraBlueprintPiece(SharedSourceLayers.PgmDesign)]
 
-		EvaluateCueTelemetrics(context, cueDefinition, pieces, 'someOtherExternalId')
+		EvaluateCueRobotCamera(context, cueDefinition, pieces, 'someOtherExternalId')
 
 		expect(pieces.length).toEqual(2)
 	})
 
-	function createTelemetricsBlueprintPiece(sourceLayer: SharedSourceLayers, startTimeInMs?: number): IBlueprintPiece {
+	function createRobotCameraBlueprintPiece(sourceLayer: SharedSourceLayers, startTimeInMs?: number): IBlueprintPiece {
 		return {
 			externalId: '',
 			name: 'Robot',
@@ -179,13 +179,13 @@ describe('EvaluateCueTelemetrics', () => {
 
 	describe('already has a piece with same externalId', () => {
 		it('has another start time, creates another blueprint piece', () => {
-			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1, 20)
+			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1, 20)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics, 10000)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera, 10000)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(2))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
 			expect(pieces).toHaveLength(2)
 		})
@@ -206,32 +206,32 @@ describe('EvaluateCueTelemetrics', () => {
 
 		it('has a blueprint piece with the same start time, no new timeline object is created', () => {
 			const startTime: number = 20
-			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1, startTime)
+			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1, startTime)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(
-				SharedSourceLayers.Telemetrics,
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(
+				SharedSourceLayers.RobotCamera,
 				startTime * 1000
 			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject())
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
 			expect(pieces[0].content.timelineObjects).toHaveLength(1)
 		})
 
 		it('has a blueprint piece with the same start time, existing blueprint piece gets presetShotIdentifier added to timeline object', () => {
 			const startTime: number = 20
-			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(2, startTime)
+			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(2, startTime)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(
-				SharedSourceLayers.Telemetrics,
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(
+				SharedSourceLayers.RobotCamera,
 				startTime * 1000
 			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
 			const timelineObject: TSR.TimelineObjTelemetrics = pieces[0].content
 				.timelineObjects[0] as TSR.TimelineObjTelemetrics
@@ -239,14 +239,14 @@ describe('EvaluateCueTelemetrics', () => {
 		})
 
 		it('has a blueprint piece with same start time and same presetIdentifier, no presetIdentifier is added', () => {
-			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1)
+			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
 			const timelineObject: TSR.TimelineObjTelemetrics = pieces[0].content
 				.timelineObjects[0] as TSR.TimelineObjTelemetrics
@@ -254,27 +254,27 @@ describe('EvaluateCueTelemetrics', () => {
 		})
 
 		it('has a blueprint piece with same start time and same presetIdentifier, no new timeline object is created', () => {
-			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(1)
+			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
 			expect(pieces).toHaveLength(1)
 		})
 
 		it('has a blueprint piece with same start time, name is updated to reflect presets in the piece', () => {
-			const cueDefinition: CueDefinitionTelemetrics = createTelemetricsCueDefinition(2)
+			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(2)
 
-			const existingPiece: IBlueprintPiece = createTelemetricsBlueprintPiece(SharedSourceLayers.Telemetrics)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
-			EvaluateCueTelemetrics(context, cueDefinition, pieces, 'randomExternalId')
+			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
 			expect(existingPiece.name).toEqual('Robot[1,2]')
 		})
