@@ -573,13 +573,13 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@tv2media/blueprints-integration@46.0.1":
-  version "46.0.1"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.0.1.tgz#e344f31e3fcc48d582914ebc33378a626cebd0e6"
-  integrity sha512-y0ITMUH0JrDligG9X+mWsvVnnGYmZJTrx5iE2XVsHiQ1xQTeBrqDyoxOag2lpbUIF8HI7mXCQkGfk7AYvQLopQ==
+"@tv2media/blueprints-integration@46.0.2":
+  version "46.0.2"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.0.2.tgz#bd428e66b3d1c94a7c77c885c14817ceec687e0e"
+  integrity sha512-PvZ1QeyDgS1uAuqt2CucD/zMexrZI2JeiFkIU9jzDLAKJpK9QWgwpVgoMc5vDy3UaPmVE2mZNM4aZUyWWfY+GQ==
   dependencies:
     "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.0.0"
-    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@2.2.2"
+    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@2.2.3"
     tslib "^2.4.0"
     type-fest "^2.19.0"
 
@@ -5956,10 +5956,10 @@ through@2, "through@>=2.2.7 <3":
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-2.2.2.tgz#10c11881673efc1bfa1ef6ba88dee7364dd2f42a"
-  integrity sha512-/sxyHUr+wmIp9FiI+CGKnr+isc0p3vFJOzZZW8Pq8iqM3QPo+kR26U7hybIlO+tO32PN95eUANx4fFjZBkKaiA==
+"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-2.2.3.tgz#4b40293b564d1c774e98dab193e719ba0cf3854c"
+  integrity sha512-Dj+hXIYrl6OCozBfK5ZkRQkyXPwmZKjRY+wwLw04+sJdnCqTT2W+42ZvH+pVu3MKd/GFGeF9N+7aWa02ITaDRg==
   dependencies:
     tslib "^2.3.1"
 

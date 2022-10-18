@@ -41,8 +41,7 @@ export function CreateShowLifecyclePieces(
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.CLEANUP_SHOWS,
-							showIds: cleanupShowIds,
-							cleanupAllShows: false
+							showIds: cleanupShowIds
 						}
 					})
 				]

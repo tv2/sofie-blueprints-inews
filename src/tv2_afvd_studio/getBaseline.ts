@@ -176,8 +176,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.CLEANUP_SHOWS,
-					showIds: [],
-					cleanupAllShows: true
+					showIds: 'all'
 				}
 			})
 		]
