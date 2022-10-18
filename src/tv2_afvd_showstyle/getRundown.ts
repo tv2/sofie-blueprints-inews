@@ -4,6 +4,7 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	ICommonContext,
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
@@ -14,6 +15,7 @@ import {
 	WithTimeline
 } from '@tv2media/blueprints-integration'
 import {
+	ActionCallRobotPreset,
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
@@ -795,7 +797,28 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		}
 	})
 
+	blueprintActions.push(createRobotPresetAction(_context))
+
 	return blueprintActions
+}
+
+function createRobotPresetAction(context: ICommonContext): IBlueprintActionManifest {
+	const callRobotPresetAction: ActionCallRobotPreset = {
+		type: AdlibActionType.CALL_ROBOT_PRESET
+	}
+	return {
+		externalId: generateExternalId(context, callRobotPresetAction),
+		actionId: AdlibActionType.CALL_ROBOT_PRESET,
+		userData: callRobotPresetAction,
+		userDataManifest: {},
+		display: {
+			_rank: 400,
+			label: t(`Call Robot preset`),
+			sourceLayerId: SourceLayer.RobotCamera,
+			outputLayerId: SharedOutputLayers.SEC,
+			tags: []
+		}
+	}
 }
 
 function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
