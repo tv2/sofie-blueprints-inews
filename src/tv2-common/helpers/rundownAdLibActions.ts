@@ -136,7 +136,7 @@ function makeTransitionAction(
 	adlibTag: AdlibTags
 ): IBlueprintActionManifest {
 	const tag = GetTagForTransition(userData.variant)
-	const isEffekt = !!transitionValues.label.match(/^\d+$/)
+	const isEffekt = /^\d+$/.test(transitionValues.label)
 
 	return {
 		externalId: `${JSON.stringify(userData)}_${AdlibActionType.TAKE_WITH_TRANSITION}_${transitionValues.rank}`,
@@ -145,7 +145,7 @@ function makeTransitionAction(
 		userDataManifest: {},
 		display: {
 			_rank: transitionValues.rank,
-			label: t(isEffekt ? `EFFEKT ${transitionValues.label}` : transitionValues.label),
+			label: t(`${isEffekt ? 'EFFEKT ' : ''}${transitionValues.label}`),
 			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
 			outputLayerId: SharedOutputLayers.PGM,
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON, adlibTag],
@@ -153,9 +153,9 @@ function makeTransitionAction(
 			nextPieceTags: [tag],
 			content:
 				isEffekt ||
-				!!/^MIX ?\d+$/i.test(transitionValues.label) ||
-				!!/^CUT$/i.test(transitionValues.label) ||
-				!!/^DIP ?\d+$/i.test(transitionValues.label)
+				/^MIX ?\d+$/i.test(transitionValues.label) ||
+				/^CUT$/i.test(transitionValues.label) ||
+				/^DIP ?\d+$/i.test(transitionValues.label)
 					? {}
 					: CreateJingleExpectedMedia(
 							config,
