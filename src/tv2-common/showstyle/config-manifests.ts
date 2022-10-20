@@ -6,7 +6,7 @@ export const GRAPHICS_SETUPS_NAME_COLUMN_ID = 'Name'
 export const getGraphicsSetupsEntries = (columns: ConfigManifestEntryTable['columns']): ConfigManifestEntry[] => [
 	{
 		id: GRAPHICS_SETUPS_TABLE_ID,
-		name: GRAPHICS_SETUPS_NAME_COLUMN_ID,
+		name: 'Graphics Setups',
 		description: 'Possible graphics setups',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
