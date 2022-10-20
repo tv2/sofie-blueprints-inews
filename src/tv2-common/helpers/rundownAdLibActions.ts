@@ -16,6 +16,15 @@ import { TV2BlueprintConfig } from '../blueprintConfig'
 import { CreateJingleExpectedMedia } from '../content'
 import { t } from './translation'
 
+interface TransitionValues {
+	rank: number
+	label: string
+	jingle: string
+	alphaAtStart?: number
+	duration?: number
+	alphaAtEnd?: number
+}
+
 export function GetTransitionAdLibActions<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -23,80 +32,46 @@ export function GetTransitionAdLibActions<
 	const blueprintActionManifests: IBlueprintActionManifest[] = []
 
 	if (config.showStyle.ShowstyleTransition && config.showStyle.ShowstyleTransition.length) {
-		const defaultTransition = config.showStyle.ShowstyleTransition
-
-		const userData: ActionTakeWithTransition = {
-			type: AdlibActionType.TAKE_WITH_TRANSITION,
-			variant: ParseTransitionString(defaultTransition),
-			takeNow: true
-		}
-
-		const jingleConfig = config.showStyle.BreakerConfig.find(
-			j => j.BreakerName === config.showStyle.ShowstyleTransition
-		)
-		let alphaAtStart: number | undefined
-		let duration: number | undefined
-		let alphaAtEnd: number | undefined
-
-		if (jingleConfig) {
-			alphaAtStart = jingleConfig.StartAlpha
-			duration = jingleConfig.Duration
-			alphaAtEnd = jingleConfig.EndAlpha
-		}
-
 		blueprintActionManifests.push(
-			makeTransitionAction(
-				config,
-				userData,
-				startingRank,
-				config.showStyle.ShowstyleTransition,
-				jingleConfig?.ClipName ?? config.showStyle.ShowstyleTransition,
-				alphaAtStart,
-				duration,
-				alphaAtEnd
-			)
+			...createActionsForTransition(config, config.showStyle.ShowstyleTransition, startingRank)
 		)
 	}
 
 	startingRank++
 
 	if (config.showStyle.Transitions) {
-		config.showStyle.Transitions.forEach((transition, i) => {
-			if (transition.Transition && transition.Transition.length) {
-				const userData: ActionTakeWithTransition = {
-					type: AdlibActionType.TAKE_WITH_TRANSITION,
-					variant: ParseTransitionString(transition.Transition),
-					takeNow: true
-				}
-
-				const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition.Transition)
-				let alphaAtStart: number | undefined
-				let duration: number | undefined
-				let alphaAtEnd: number | undefined
-
-				if (jingleConfig) {
-					alphaAtStart = jingleConfig.StartAlpha
-					duration = jingleConfig.Duration
-					alphaAtEnd = jingleConfig.EndAlpha
-				}
-
-				blueprintActionManifests.push(
-					makeTransitionAction(
-						config,
-						userData,
-						startingRank + 0.01 * i,
-						transition.Transition,
-						jingleConfig?.ClipName ?? transition.Transition,
-						alphaAtStart,
-						duration,
-						alphaAtEnd
-					)
-				)
-			}
-		})
+		const transitionActions: IBlueprintActionManifest[] = config.showStyle.Transitions.filter(
+			transition => transition.Transition && transition.Transition.length
+		).flatMap((transition, i) => createActionsForTransition(config, transition.Transition, startingRank + 0.01 * i))
+		blueprintActionManifests.push(...transitionActions)
 	}
 
 	return blueprintActionManifests
+}
+
+function createActionsForTransition(
+	config: TV2BlueprintConfig,
+	transition: string,
+	rank: number
+): IBlueprintActionManifest[] {
+	const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition)
+	const transitionValues: TransitionValues = {
+		rank,
+		label: transition,
+		jingle: jingleConfig?.ClipName ?? transition
+	}
+
+	if (jingleConfig) {
+		transitionValues.alphaAtStart = jingleConfig.StartAlpha
+		transitionValues.duration = jingleConfig.Duration
+		transitionValues.alphaAtEnd = jingleConfig.EndAlpha
+	}
+
+	const variant: ActionTakeWithTransitionVariant = ParseTransitionString(transition)
+	return [
+		makeTransitionOnTakeAction(config, variant, transitionValues),
+		makeTransitionOnNextTakeAction(config, variant, transitionValues)
+	]
 }
 
 export function ParseTransitionString(transitionString: string): ActionTakeWithTransitionVariant {
@@ -128,36 +103,67 @@ export function ParseTransitionString(transitionString: string): ActionTakeWithT
 	})
 }
 
+function makeTransitionOnTakeAction(
+	config: TV2BlueprintConfig,
+	variant: ActionTakeWithTransitionVariant,
+	transitionValues: TransitionValues
+): IBlueprintActionManifest {
+	const userData: ActionTakeWithTransition = {
+		type: AdlibActionType.TAKE_WITH_TRANSITION,
+		variant,
+		takeNow: true
+	}
+	return makeTransitionAction(config, userData, transitionValues, AdlibTags.ADLIB_TAKE_WITH_TRANSITION)
+}
+
+function makeTransitionOnNextTakeAction(
+	config: TV2BlueprintConfig,
+	variant: ActionTakeWithTransitionVariant,
+	transitionValues: TransitionValues
+): IBlueprintActionManifest {
+	const userData: ActionTakeWithTransition = {
+		type: AdlibActionType.TAKE_WITH_TRANSITION,
+		variant,
+		takeNow: false
+	}
+	return makeTransitionAction(config, userData, transitionValues, AdlibTags.ADLIB_NEXT_TAKE_WITH_TRANSITION)
+}
+
 function makeTransitionAction(
 	config: TV2BlueprintConfig,
 	userData: ActionTakeWithTransition,
-	rank: number,
-	label: string,
-	jingle: string,
-	alphaAtStart: number | undefined,
-	duration: number | undefined,
-	alphaAtEnd: number | undefined
+	transitionValues: TransitionValues,
+	adlibTag: AdlibTags
 ): IBlueprintActionManifest {
 	const tag = GetTagForTransition(userData.variant)
-	const isEffekt = !!label.match(/^\d+$/)
+	const isEffekt = /^\d+$/.test(transitionValues.label)
 
 	return {
-		externalId: `${JSON.stringify(userData)}_${AdlibActionType.TAKE_WITH_TRANSITION}_${rank}`,
+		externalId: `${JSON.stringify(userData)}_${AdlibActionType.TAKE_WITH_TRANSITION}_${transitionValues.rank}`,
 		actionId: AdlibActionType.TAKE_WITH_TRANSITION,
 		userData,
 		userDataManifest: {},
 		display: {
-			_rank: rank,
-			label: t(isEffekt ? `EFFEKT ${label}` : label),
+			_rank: transitionValues.rank,
+			label: t(`${isEffekt ? 'EFFEKT ' : ''}${transitionValues.label}`),
 			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
 			outputLayerId: SharedOutputLayers.PGM,
-			tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_TAKE_WITH_TRANSITION],
+			tags: [AdlibTags.ADLIB_STATIC_BUTTON, adlibTag],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
 			content:
-				isEffekt || !!/^MIX ?\d+$/i.test(label) || !!/^CUT$/i.test(label) || !!/^DIP ?\d+$/i.test(label)
+				isEffekt ||
+				/^MIX ?\d+$/i.test(transitionValues.label) ||
+				/^CUT$/i.test(transitionValues.label) ||
+				/^DIP ?\d+$/i.test(transitionValues.label)
 					? {}
-					: CreateJingleExpectedMedia(config, jingle, alphaAtStart ?? 0, duration ?? 0, alphaAtEnd ?? 0)
+					: CreateJingleExpectedMedia(
+							config,
+							transitionValues.jingle,
+							transitionValues.alphaAtStart ?? 0,
+							transitionValues.duration ?? 0,
+							transitionValues.alphaAtEnd ?? 0
+					  )
 		}
 	}
 }
