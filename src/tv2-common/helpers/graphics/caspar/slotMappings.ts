@@ -12,7 +12,7 @@ export const layerToHTMLGraphicSlot: { [slot: string]: string } = {
 	[SharedGraphicLLayer.GraphicLLayerOverlayTema]: '',
 	[SharedGraphicLLayer.GraphicLLayerOverlayTopt]: '660_topt',
 	[SharedGraphicLLayer.GraphicLLayerPilot]: '250_full',
-	[SharedGraphicLLayer.GraphicLLayerPilotOverlay]: '250_full',
+	[SharedGraphicLLayer.GraphicLLayerOverlayPilot]: '260_overlay',
 	[SharedGraphicLLayer.GraphicLLayerLocators]: '850_dve'
 }
 

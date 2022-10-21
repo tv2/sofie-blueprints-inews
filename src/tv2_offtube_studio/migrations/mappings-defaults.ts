@@ -419,18 +419,17 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		deviceId: 'caspar01',
 		layerName: 'GFX Pilot (Full)',
 		lookahead: LookaheadMode.WHEN_CLEAR,
+		previewWhenNotOnAir: true,
 		channel: 6,
-		layer: 108,
-		previewWhenNotOnAir: true
+		layer: 108
 	}),
-	/** TODO: Revisit these */
-	[OfftubeGraphicLLayer.GraphicLLayerPilotOverlay]: literal<TSR.MappingCasparCG & BlueprintMapping>({
+	[OfftubeGraphicLLayer.GraphicLLayerOverlayPilot]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
 		deviceId: 'caspar01',
 		layerName: 'GFX Pilot (Overlay)',
-		lookahead: LookaheadMode.PRELOAD,
-		previewWhenNotOnAir: true,
-		channel: 6,
+		lookahead: LookaheadMode.NONE,
+		previewWhenNotOnAir: false,
+		channel: 3,
 		layer: 111
 	}),
 	// Full loop and DVE loop are the same channel in Q2.

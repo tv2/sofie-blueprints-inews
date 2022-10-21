@@ -2071,13 +2071,12 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	}
 
-	const generator = new PilotGraphicGenerator({
+	const generator = PilotGraphicGenerator.createPilotGraphicGenerator({
 		config,
 		context,
 		partId: externalId,
 		settings: settings.pilotGraphicSettings,
 		parsedCue: cue,
-		engine: 'FULL',
 		segmentExternalId: userData.segmentExternalId,
 		adlib: { rank: 0 }
 	})
