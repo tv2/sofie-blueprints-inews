@@ -51,7 +51,7 @@ export async function CreatePartKam(
 
 	const jingleDSK = FindDSKJingle(config)
 
-	if (partDefinition.rawType.match(/kam cs ?3/i)) {
+	if (/\bcs *\d*/i.test(partDefinition.sourceDefinition.id)) {
 		pieces.push({
 			externalId: partDefinition.externalId,
 			name: 'CS 3 (JINGLE)',
