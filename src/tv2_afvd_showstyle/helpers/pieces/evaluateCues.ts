@@ -5,7 +5,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	CueDefinition,
 	EvaluateCueMixMinus,
@@ -14,6 +14,7 @@ import {
 	EvaluateLYD,
 	PartDefinition
 } from 'tv2-common'
+import { EvaluateCueRobotCamera } from '../../../tv2-common/cues/EvaluateCueRobotCamera'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
@@ -51,7 +52,8 @@ export async function EvaluateCues(
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
 			EvaluateCueRouting,
-			EvaluateCueMixMinus
+			EvaluateCueMixMinus,
+			EvaluateCueRobotCamera
 		},
 		context,
 		config,

@@ -3,7 +3,7 @@ import {
 	BlueprintSyncIngestPartInstance,
 	IBlueprintPieceInstance,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 
 function groupPieceInstances(pieceInstances: Array<IBlueprintPieceInstance<unknown>>) {
 	return pieceInstances.reduce<{

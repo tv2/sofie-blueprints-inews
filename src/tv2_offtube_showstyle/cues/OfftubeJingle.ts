@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,

@@ -8,7 +8,7 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
@@ -24,7 +24,7 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
-import { JoinAssetToFolder, JoinAssetToNetworkPath } from '../util'
+import { joinAssetToFolder, joinAssetToNetworkPath } from '../util'
 
 /** Has to be executed before calling EvaluateCues, as some cues may depend on it */
 export function CreateEffektForPartBase(
@@ -116,7 +116,7 @@ export function CreateEffektForPartInner<
 		return false
 	}
 
-	const fileName = JoinAssetToFolder(config.studio.JingleFolder, file)
+	const fileName = joinAssetToFolder(config.studio.JingleFolder, file)
 
 	pieces.push({
 		externalId,
@@ -128,7 +128,7 @@ export function CreateEffektForPartInner<
 		pieceType: IBlueprintPieceType.InTransition,
 		content: literal<WithTimeline<VTContent>>({
 			fileName,
-			path: JoinAssetToNetworkPath(
+			path: joinAssetToNetworkPath(
 				config.studio.JingleNetworkBasePath,
 				config.studio.JingleFolder,
 				file,

@@ -1,4 +1,4 @@
-import { MigrationStepStudio, TSR } from '@tv2media/blueprints-integration'
+import { MigrationStepStudio, TSR } from 'blueprints-integration'
 import {
 	AddKeepAudio,
 	addSourceToSourcesConfig,

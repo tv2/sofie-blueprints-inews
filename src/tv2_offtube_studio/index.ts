@@ -1,4 +1,4 @@
-import { BlueprintManifestType, StudioBlueprintManifest } from '@tv2media/blueprints-integration'
+import { BlueprintManifestType, StudioBlueprintManifest } from 'blueprints-integration'
 import { GetStudioManifestWithMixins, StudioManifestMixinINews } from 'inews-mixins'
 import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'

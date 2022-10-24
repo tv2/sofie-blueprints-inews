@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
+import { IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import { CueType, SourceType } from 'tv2-constants'
 import { CreateTiming } from '../cueTiming'
 import { RemoteType, SourceDefinitionRemote } from '../inewsConversion'

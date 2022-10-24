@@ -6,6 +6,8 @@ const pkg = require('../package.json')
 const { GetEntrypointsForBundle, BlueprintEntrypoints } = require('../scripts/blueprint-map')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
+const BLUEPRINTS_INTEGRATION_PACKAGE = '@sofie-automation/blueprints-integration'
+
 module.exports = env => {
 	if (!env) env = {}
 
@@ -20,9 +22,9 @@ module.exports = env => {
 		versionStr = () => JSON.stringify(pkg.version + '+dev-' + moment().format('YYYYMMDD-HHmm'))
 	}
 
-	let versionIntegration = pkg.dependencies['@tv2media/blueprints-integration']
+	let versionIntegration = pkg.dependencies[BLUEPRINTS_INTEGRATION_PACKAGE]
 
-	if (!versionIntegration) throw Error('@tv2media/blueprints-integration version missing!')
+	if (!versionIntegration) throw Error(`${BLUEPRINTS_INTEGRATION_PACKAGE} version missing!`)
 
 	// versionTSRTypes = versionTSRTypes.replace(/[^\d.]/g, '') || '0.0.0'
 	// versionIntegration = versionIntegration.replace(/[^\d.]/g, '') || '0.0.0'

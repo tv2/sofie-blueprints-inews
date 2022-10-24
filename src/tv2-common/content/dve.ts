@@ -9,7 +9,7 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	createEmptyObject,
 	CueDefinitionDVE,
@@ -18,7 +18,7 @@ import {
 	DVESources,
 	FindDSKFullGFX,
 	findSourceInfo,
-	JoinAssetToFolder,
+	joinAssetToFolder,
 	literal,
 	PartDefinition,
 	PieceMetaData,
@@ -306,11 +306,11 @@ export function MakeContentDVE2<
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
 
 	if (keyFile) {
-		keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
+		keyFile = joinAssetToFolder(config.studio.DVEFolder, keyFile)
 	}
 
 	if (frameFile) {
-		frameFile = JoinAssetToFolder(config.studio.DVEFolder, frameFile)
+		frameFile = joinAssetToFolder(config.studio.DVEFolder, frameFile)
 	}
 
 	return {

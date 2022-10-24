@@ -4,7 +4,7 @@ import {
 	IBlueprintPieceInstance,
 	PieceLifespan,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionCommentatorSelectDVE,
 	ActionCutToCamera,

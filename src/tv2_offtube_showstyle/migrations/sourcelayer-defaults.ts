@@ -1,4 +1,4 @@
-import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
+import { ISourceLayer, SourceLayerType } from 'blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
@@ -279,7 +279,7 @@ const PGM: ISourceLayer[] = [
 		_rank: 50,
 		name: 'DVE Background',
 		abbreviation: '',
-		type: SourceLayerType.METADATA,
+		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
@@ -294,7 +294,7 @@ const PGM: ISourceLayer[] = [
 		_rank: 50,
 		name: 'Continuity',
 		abbreviation: 'CONTINUITY',
-		type: SourceLayerType.METADATA,
+		type: SourceLayerType.UNKNOWN,
 		exclusiveGroup: '',
 		isRemoteInput: false,
 		isGuestInput: false,
@@ -405,6 +405,23 @@ const SEC: ISourceLayer[] = [
 		isGuestInput: false,
 		isClearable: true,
 		isSticky: false,
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: false
+	},
+	{
+		_id: SharedSourceLayers.RobotCamera,
+		_rank: 70,
+		name: 'Robot Camera',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+
+		isSticky: false,
+
 		isQueueable: false,
 		isHidden: false,
 		allowDisable: false,

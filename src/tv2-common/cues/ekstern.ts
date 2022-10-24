@@ -8,7 +8,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	AddParentClass,
 	createEmptyObject,

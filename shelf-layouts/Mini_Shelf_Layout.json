@@ -3,6 +3,7 @@
 	"type": "dashboard_layout",
 	"icon": "",
 	"iconColor": "#ffffff",
+	"isDefaultLayout": true,
 	"regionId": "mini_shelf_layouts",
 	"filters": [
 		{

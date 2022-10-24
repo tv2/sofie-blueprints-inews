@@ -1,4 +1,4 @@
-import { SourceLayerType, TSR } from '@tv2media/blueprints-integration'
+import { SourceLayerType, TSR } from 'blueprints-integration'
 import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForRemote,

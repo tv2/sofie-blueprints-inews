@@ -17,6 +17,9 @@
       ],
       "inews-mixins": [
         "src/inews-mixins/index.ts"
+      ],
+      "blueprints-integration": [
+        "src/types/blueprints-integration/index.ts"
       ]
     },
     "experimentalDecorators": true

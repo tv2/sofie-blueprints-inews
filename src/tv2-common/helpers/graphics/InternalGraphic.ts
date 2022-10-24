@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext, PieceLifespan } from 'blueprints-integration'
 import { Adlib } from 'tv2-common'
 import _ = require('underscore')
 import { AdlibTags, GraphicEngine, PartType, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
@@ -15,6 +15,7 @@ import { GetInternalGraphicContentVIZ } from './viz'
 export class InternalGraphic {
 	public mappedTemplate: string
 	private readonly config: TV2BlueprintConfig
+	private readonly context: IShowStyleUserContext
 	private readonly parsedCue: CueDefinitionGraphic<GraphicInternal>
 	private readonly partDefinition?: PartDefinition
 	private readonly adlib?: Adlib
@@ -28,6 +29,7 @@ export class InternalGraphic {
 
 	public constructor(
 		config: TV2BlueprintConfig,
+		context: IShowStyleUserContext,
 		parsedCue: CueDefinitionGraphic<GraphicInternal>,
 		adlib?: Adlib,
 		partId?: string,
@@ -38,6 +40,7 @@ export class InternalGraphic {
 		const sourceLayerId = GetSourceLayerForGraphic(config, mappedTemplate)
 
 		this.config = config
+		this.context = context
 		this.parsedCue = parsedCue
 		this.partDefinition = partDefinition
 		this.adlib = adlib
@@ -130,6 +133,7 @@ export class InternalGraphic {
 			  )
 			: GetInternalGraphicContentVIZ(
 					this.config,
+					this.context,
 					this.engine,
 					this.parsedCue,
 					this.partDefinition,

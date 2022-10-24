@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { IStudioContext, SourceLayerType } from '@tv2media/blueprints-integration'
+import { IStudioContext, SourceLayerType } from 'blueprints-integration'
 import { SourceType } from 'tv2-constants'
 import { SourceMapping } from './blueprintConfig'
 import {

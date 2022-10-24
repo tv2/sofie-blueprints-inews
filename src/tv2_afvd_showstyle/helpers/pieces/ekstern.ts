@@ -4,7 +4,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	CueDefinitionEkstern,
 	EvaluateEksternBase,

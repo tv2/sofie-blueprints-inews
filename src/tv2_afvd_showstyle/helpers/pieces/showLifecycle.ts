@@ -1,4 +1,4 @@
-import { BlueprintResultPart, PieceLifespan, TSR } from '@tv2media/blueprints-integration'
+import { BlueprintResultPart, PieceLifespan, TSR } from 'blueprints-integration'
 import { literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { GraphicLLayer } from '../../../tv2_afvd_studio/layers'

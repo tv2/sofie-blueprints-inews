@@ -28,7 +28,7 @@ import {
 	PieceLifespan,
 	PlaylistTimingType,
 	Time
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { ITV2ActionExecutionContext, PieceMetaData } from 'tv2-common'
 import { NoteType } from 'tv2-constants'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../tv2_afvd_showstyle/__tests__/configs'
@@ -397,6 +397,10 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 	}
 
 	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
+		// Do nothing
+	}
+
+	public removePartInstance(): void {
 		// Do nothing
 	}
 }

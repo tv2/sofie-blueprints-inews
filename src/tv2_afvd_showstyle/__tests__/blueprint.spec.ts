@@ -1,8 +1,4 @@
-import {
-	BlueprintResultSegment,
-	IBlueprintActionManifestDisplayContent,
-	IngestSegment
-} from '@tv2media/blueprints-integration'
+import { BlueprintResultSegment, IBlueprintActionManifestDisplayContent, IngestSegment } from 'blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import { makeMockAFVDContext, SegmentUserContext } from '../../__mocks__/context'
@@ -731,7 +727,7 @@ describe('AFVD Blueprint', () => {
 	it('Changes design and background loops', async () => {
 		const ingestSegment = makeIngestSegment(
 			[
-				['KG=DESIGN_FODBOLD_20', ';0.00.01'],
+				['KG=DESIGN_FODBOLD_22', ';0.00.01'],
 				['VIZ=dve-triopage', 'GRAFIK=BG_LOADER_FODBOLD_20', ';0.00'],
 				['VIZ=full-triopage', 'GRAFIK=BG_LOADER_FODBOLD_20', ';0.00.01']
 			],

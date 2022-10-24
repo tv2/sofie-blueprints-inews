@@ -1,8 +1,4 @@
-import {
-	ConfigManifestEntryTable,
-	MigrationContextShowStyle,
-	TableConfigItemValue
-} from '@tv2media/blueprints-integration'
+import { ConfigManifestEntryTable, MigrationContextShowStyle, TableConfigItemValue } from 'blueprints-integration'
 import { GlobalHotkeySources } from 'tv2-common'
 import {
 	manifestOfftubeSourcesCam,

@@ -1,4 +1,11 @@
-import { GetPieceLifespanForGraphic, literal, TableConfigSchema, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import {
+	GetPieceLifespanForGraphic,
+	literal,
+	TableConfigItemGfxDesignTemplate,
+	TableConfigSchema,
+	TV2BlueprintConfig,
+	UnparsedCue
+} from 'tv2-common'
 import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -161,6 +168,11 @@ export interface CueDefinitionPgmClean extends CueDefinitionBase {
 	sourceDefinition: SourceDefinition
 }
 
+export interface CueDefinitionRobotCamera extends CueDefinitionBase {
+	type: CueType.RobotCamera
+	presetIdentifier: number
+}
+
 export type CueDefinition =
 	| CueDefinitionUnknown
 	| CueDefinitionEkstern
@@ -180,6 +192,7 @@ export type CueDefinition =
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
 	| CueDefinitionMixMinus
+	| CueDefinitionRobotCamera
 
 export function GraphicIsInternal(
 	o: CueDefinitionGraphic<GraphicInternalOrPilot>
@@ -206,51 +219,53 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return undefined
 	}
 
-	if (cue[0].match(/^[#* ]?kg[= ]ovl-all-out$/i) || cue[0].match(/^[#* ]?kg[= ]altud$/i)) {
+	if (/^[#* ]?kg[= ]ovl-all-out$/i.test(cue[0]) || /^[#* ]?kg[= ]altud$/i.test(cue[0])) {
 		// All out
 		return parseAllOut(cue)
-	} else if (cue[0].match(/(?:^[*|#]?kg[ |=])|(?:^digi)/i)) {
+	} else if (/(?:^[*|#]?kg[ |=])|(?:^digi)/i.test(cue[0])) {
 		// kg (Grafik)
 		return parsekg(cue, config)
-	} else if (cue[0].match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i)) {
+	} else if (/^]] [a-z]\d\.\d [a-z] \d \[\[$/i.test(cue[0])) {
 		// MOS
 		return parsePilot(cue)
-	} else if (cue[0].match(/[#|*]?cg\d+[ -]pilotdata/i)) {
+	} else if (/[#|*]?cg\d+[ -]pilotdata/i.test(cue[0])) {
 		return parsePilot(cue)
-	} else if (cue[0].match(/^EKSTERN=/i)) {
+	} else if (/^EKSTERN=/i.test(cue[0])) {
 		// EKSTERN
 		return parseEkstern(cue)
-	} else if (cue[0].match(/^DVE=/i)) {
+	} else if (/^DVE=/i.test(cue[0])) {
 		// DVE
 		return parseDVE(cue)
-	} else if (cue[0].match(/^TELEFON=/i)) {
+	} else if (/^TELEFON=/i.test(cue[0])) {
 		// Telefon
 		return parseTelefon(cue, config)
-	} else if (cue[0].match(/^(?:SS|GRAFIK)=(?:.*)(?:$| )/i)) {
+	} else if (/^(?:SS|GRAFIK)=(?:.*)(?:$| )/i.test(cue[0])) {
 		// Target engine
 		return parseTargetEngine(cue, config)
-	} else if (cue[0].match(/^(?:SS|GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i)) {
+	} else if (/^(?:SS|GRAFIK|VIZ)=(?:full|ovl|wall)(?:$| )/i.test(cue[0])) {
 		return parseTargetEngine(cue, config)
-	} else if (cue[0].match(/^VIZ=/i)) {
+	} else if (/^VIZ=/i.test(cue[0])) {
 		return parseVIZCues(cue)
-	} else if (cue[0].match(/^STUDIE=MIC ON OFF$/i)) {
+	} else if (/^STUDIE=MIC ON OFF$/i.test(cue[0])) {
 		return parseMic(cue)
-	} else if (cue[0].match(/^ADLIBPI?X=/i)) {
+	} else if (/^ADLIBPI?X=/i.test(cue[0])) {
 		return parseAdLib(cue)
-	} else if (cue[0].match(/^KOMMANDO=/i)) {
+	} else if (/^KOMMANDO=/i.test(cue[0])) {
 		return parseKommando(cue)
-	} else if (cue[0].match(/^LYD=/i)) {
+	} else if (/^LYD=/i.test(cue[0])) {
 		return parseLYD(cue)
-	} else if (cue[0].match(/^JINGLE\d+=/i)) {
+	} else if (/^JINGLE\d+=/i.test(cue[0])) {
 		return parseJingle(cue)
-	} else if (cue[0].match(/^PGMCLEAN=/i)) {
+	} else if (/^PGMCLEAN=/i.test(cue[0])) {
 		return parsePgmClean(cue)
-	} else if (cue[0].match(/^MINUSKAM\s*=/i)) {
+	} else if (/^MINUSKAM\s*=/i.test(cue[0])) {
 		return parseMixMinus(cue)
-	} else if (cue[0].match(/^DESIGN_LAYOUT=/i)) {
+	} else if (/^DESIGN_LAYOUT=/i.test(cue[0])) {
 		return parseDesignLayout(cue, config)
-	} else if (cue[0].match(/^DESIGN_BG=/i)) {
+	} else if (/^DESIGN_BG=/i.test(cue[0])) {
 		return parseDesignBg(cue, config)
+	} else if (/^ROBOT\s*=/i.test(cue[0])) {
+		return parseRobotCue(cue)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -328,24 +343,32 @@ function parsekg(
 
 	kgCue.graphic = graphic
 
-	const graphicConfig = code
-		? config.showStyle.GFXTemplates.find(
-				tmpl =>
-					tmpl.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
-					tmpl.INewsName.toUpperCase() === graphic.template.toUpperCase()
+	const graphicDesignConfig = code
+		? config.showStyle.GfxDesignTemplates.find(
+				template => template.INewsName.toUpperCase() === graphic.template.toUpperCase()
 		  )
 		: undefined
 
-	if (graphicConfig && graphicConfig.IsDesign) {
+	if (graphicDesignConfig) {
 		return literal<CueDefinitionGraphicDesign>({
 			type: CueType.GraphicDesign,
-			design: graphicConfig.VizTemplate,
+			design: graphicDesignConfig.VizTemplate,
 			iNewsCommand: kgCue.iNewsCommand,
 			start: kgCue.start,
 			end: kgCue.end,
 			adlib: kgCue.adlib
 		})
-	} else if (graphicConfig && !!graphicConfig.VizTemplate.match(/^VCP$/i)) {
+	}
+
+	const graphicConfig = code
+		? config.showStyle.GFXTemplates.find(
+				template =>
+					template.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
+					template.INewsName.toUpperCase() === graphic.template.toUpperCase()
+		  )
+		: undefined
+
+	if (graphicConfig && !!graphicConfig.VizTemplate.match(/^VCP$/i)) {
 		return literal<CueDefinitionUnpairedTarget>({
 			type: CueType.UNPAIRED_TARGET,
 			target: graphicConfig.VizDestination.match(/OVL/i)
@@ -706,26 +729,31 @@ function parseTargetEngine(
 		engineCue.routing = routing
 	}
 
+	const graphicDesignConfig = code
+		? config.showStyle.GfxDesignTemplates.find(template => template.INewsName.toUpperCase() === iNewsName.toUpperCase())
+		: undefined
+
+	if (graphicDesignConfig) {
+		return literal<CueDefinitionGraphicDesign>({
+			type: CueType.GraphicDesign,
+			design: graphicDesignConfig.VizTemplate,
+			iNewsCommand: code,
+			start: engineCue.start,
+			end: engineCue.end,
+			adlib: engineCue.adlib
+		})
+	}
+
 	const graphicConfig = config.showStyle.GFXTemplates.find(
-		tmpl =>
-			tmpl.INewsCode.toUpperCase() === code?.toUpperCase() && tmpl.INewsName.toUpperCase() === iNewsName.toUpperCase()
+		template =>
+			template.INewsCode.toUpperCase() === code?.toUpperCase() &&
+			template.INewsName.toUpperCase() === iNewsName.toUpperCase()
 	)
 
 	if (graphicConfig) {
 		if (!!graphicConfig.VizTemplate.toUpperCase().match(/^VCP$/i)) {
 			engineCue.mergeable = true
 		} else {
-			if (graphicConfig.IsDesign) {
-				return literal<CueDefinitionGraphicDesign>({
-					type: CueType.GraphicDesign,
-					design: graphicConfig.VizTemplate,
-					iNewsCommand: code,
-					start: engineCue.start,
-					end: engineCue.end,
-					adlib: engineCue.adlib
-				})
-			}
-
 			return literal<CueDefinitionGraphic<GraphicInternalOrPilot>>({
 				type: CueType.Graphic,
 				target: engineCue.target,
@@ -879,20 +907,31 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefinitionGraphicDesign | undefined {
 	const array = cue[0].split('DESIGN_LAYOUT=')
 	const layout = array[1]
-	const tableConfigSchema = findSchemaConfiguration(config, layout)
-	if (!tableConfigSchema) {
+
+	const designConfig = findGraphicDesignConfiguration(config, layout)
+
+	if (!designConfig) {
 		return undefined
 	}
 
 	return literal<CueDefinitionGraphicDesign>({
 		type: CueType.GraphicDesign,
-		design: tableConfigSchema.vizTemplateName,
+		design: designConfig.VizTemplate,
 		iNewsCommand: layout,
 		start: {
 			frames: 1
 		},
 		isFromLayout: true
 	})
+}
+
+function findGraphicDesignConfiguration(
+	config: TV2BlueprintConfig,
+	layout: string
+): TableConfigItemGfxDesignTemplate | undefined {
+	return config.showStyle.GfxDesignTemplates.find(
+		template => template.INewsStyleColumn && template.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
+	)
 }
 
 function findSchemaConfiguration(config: TV2BlueprintConfig, designIdentifier: string): TableConfigSchema | undefined {
@@ -916,6 +955,17 @@ function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinition
 		iNewsCommand: layout,
 		isFromLayout: true
 	})
+}
+
+function parseRobotCue(cue: string[]): CueDefinitionRobotCamera {
+	const presetIdentifier: number = Number(cue[0].match(/\d+/))
+	const time: Pick<CueDefinitionBase, 'start' | 'end'> = cue[1] ? parseTime(cue[1]) : { start: { seconds: 0 } }
+	return {
+		type: CueType.RobotCamera,
+		iNewsCommand: 'RobotCamera',
+		presetIdentifier,
+		...time
+	}
 }
 
 /**

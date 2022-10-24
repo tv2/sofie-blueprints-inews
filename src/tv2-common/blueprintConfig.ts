@@ -1,4 +1,4 @@
-import { TableConfigItemValue } from '@tv2media/blueprints-integration'
+import { TableConfigItemValue } from 'blueprints-integration'
 import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
@@ -15,7 +15,7 @@ export interface TableConfigItemBreakers {
 	LoadFirstFrame: boolean
 }
 
-export interface TableConfigItemGFXTemplates {
+export interface TableConfigItemGfxTemplate {
 	VizTemplate: string
 	SourceLayer: string
 	LayerMapping: string
@@ -23,7 +23,18 @@ export interface TableConfigItemGFXTemplates {
 	INewsName: string
 	VizDestination: string
 	OutType: string
-	IsDesign: boolean
+}
+
+export interface TableConfigItemGfxDesignTemplate {
+	INewsName: string
+	INewsStyleColumn: string
+	VizTemplate: string
+}
+
+export interface TableConfigItemOverlayShowMapping {
+	Design: string
+	GraphicsSetup: string[]
+	Schema: string[]
 }
 
 export interface TableConfigItemAdLibTransitions {
@@ -39,10 +50,8 @@ export interface TableConfigSchema {
 
 export interface TableConfigGraphicsSetup {
 	Name: string
-	VcpConcept: string
-	OvlShowId: string
-	FullShowId: string
-	DveLayoutFolder: string
+	OvlShowName: string
+	FullShowName?: string
 }
 
 export interface TV2StudioConfigBase {
@@ -141,12 +150,15 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
-	GFXTemplates: TableConfigItemGFXTemplates[]
+	GFXTemplates: TableConfigItemGfxTemplate[]
+	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
 	SchemaConfig: TableConfigSchema[]
+	GraphicsSetups: TableConfigGraphicsSetup[]
+	SelectedGraphicsSetupName: string
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

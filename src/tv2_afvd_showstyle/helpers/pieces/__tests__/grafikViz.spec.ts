@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,
@@ -21,7 +21,7 @@ import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, 
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_ID } from '../../../__tests__/configs'
+import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
 import { BlueprintConfig, getConfig, parseConfig as parseShowStyleConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
@@ -143,7 +143,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -216,7 +216,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -256,7 +256,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -331,7 +331,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -371,7 +371,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -447,7 +447,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -525,7 +525,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -600,7 +600,7 @@ describe('grafik piece', () => {
 								templateName: 'direkte',
 								templateData: ['KØBENHAVN'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -676,7 +676,7 @@ describe('grafik piece', () => {
 								templateName: 'arkiv',
 								templateData: ['unnamed org'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -749,7 +749,7 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -788,7 +788,7 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj

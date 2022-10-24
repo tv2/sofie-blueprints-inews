@@ -5,8 +5,9 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext,
+	IShowStyleUserContext,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,
@@ -16,6 +17,7 @@ import {
 	CueDefinitionEkstern,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
+	CueDefinitionRobotCamera,
 	CueDefinitionTelefon,
 	PartDefinition
 } from 'tv2-common'
@@ -170,6 +172,12 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueProfile?: () => void
 	/** TODO: Mic -> For the future */
 	EvaluateCueMic?: () => void
+	EvaluateCueRobotCamera?: (
+		context: IShowStyleUserContext,
+		cueDefinition: CueDefinitionRobotCamera,
+		pieces: IBlueprintPiece[],
+		partId: string
+	) => void
 }
 
 export interface EvaluateCuesOptions {
@@ -394,6 +402,11 @@ export async function EvaluateCuesBase(
 				case CueType.UNPAIRED_PILOT:
 					context.notifyUserWarning(`Graphic found without target engine`)
 					break
+				case CueType.RobotCamera:
+					if (showStyleOptions.EvaluateCueRobotCamera) {
+						showStyleOptions.EvaluateCueRobotCamera(context, cue, pieces, partDefinition.externalId)
+					}
+					break
 				default:
 					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
@@ -449,7 +462,7 @@ export async function EvaluateCuesBase(
 								templateName: 'altud',
 								channel: 'OVL1',
 								templateData: [],
-								showId: config.selectedGraphicsSetup.OvlShowId
+								showId: config.selectedGraphicsSetup.OvlShowName
 							}
 						})
 					}

@@ -1,4 +1,4 @@
-import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue } from '@tv2media/blueprints-integration'
+import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue } from 'blueprints-integration'
 import * as _ from 'underscore'
 
 export function AddKeepAudio(versionStr: string, configName: string): MigrationStepStudio {

@@ -1,4 +1,4 @@
-import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@tv2media/blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from 'blueprints-integration'
 import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,

@@ -4,7 +4,7 @@ import {
 	IngestSegment,
 	IShowStyleUserContext,
 	PlaylistTimingType
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { getRundownWithBackTime } from 'inews-mixins'
 import { ShowStyleUserContext } from '../../__mocks__/context'
 import { parseConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
