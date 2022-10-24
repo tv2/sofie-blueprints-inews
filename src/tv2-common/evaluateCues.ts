@@ -212,7 +212,7 @@ export async function EvaluateCuesBase(
 
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
-			const shouldAdlib = options.adlib || cue.adlib ? true : false
+			const shouldAdlib = !!(options.adlib || cue.adlib)
 			const adlib = shouldAdlib ? { rank: adLibRank } : undefined
 
 			switch (cue.type) {
