@@ -515,7 +515,7 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		layerName: 'GFX Pilot (Full)',
 		lookahead: LookaheadMode.NONE
 	}),
-	[GraphicLLayer.GraphicLLayerPilotOverlay]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+	[GraphicLLayer.GraphicLLayerOverlayPilot]: literal<TSR.MappingVizMSE & BlueprintMapping>({
 		device: TSR.DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		layerName: 'GFX Pilot (Overlay)',

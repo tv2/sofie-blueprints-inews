@@ -9,12 +9,12 @@ import {
 import {
 	CueDefinition,
 	EvaluateCueMixMinus,
+	EvaluateCueRobotCamera,
 	EvaluateCuesBase,
 	EvaluateCuesOptions,
 	EvaluateLYD,
 	PartDefinition
 } from 'tv2-common'
-import { EvaluateCueRobotCamera } from '../../../tv2-common/cues/EvaluateCueRobotCamera'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'

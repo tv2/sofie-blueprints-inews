@@ -195,6 +195,12 @@ export const studioMigrations: MigrationStepStudio[] = [
 	PrefixEvsWithEvs('1.7.4', 'AFVD', 'SourcesReplay', '1'),
 	PrefixEvsWithEvs('1.7.4', 'AFVD', 'SourcesReplay', '2'),
 
+	/**
+	 * 1.7.8
+	 * - Rename the GraphicLLayerPilotOverlay, because alphabetical order matters for deeply extending the Caspar Objects targeting the same channel:layer
+	 */
+	renameMapping('1.7.8', 'graphic_pilot_overlay', 'graphic_overlay_pilot'),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

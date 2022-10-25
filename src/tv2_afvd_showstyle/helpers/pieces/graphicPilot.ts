@@ -22,8 +22,8 @@ import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
-	caspar: { createPilotTimelineForStudio: makeStudioTimelineCaspar },
-	viz: { createPilotTimelineForStudio: makeStudioTimelineViz }
+	caspar: { createFullPilotTimelineForStudio: makeStudioTimelineCaspar },
+	viz: { createFullPilotTimelineForStudio: makeStudioTimelineViz }
 }
 
 export function EvaluateCueGraphicPilot(
@@ -40,7 +40,6 @@ export function EvaluateCueGraphicPilot(
 	CreatePilotGraphic(pieces, adlibPieces, actions, {
 		config,
 		context,
-		engine: parsedCue.target,
 		partId,
 		parsedCue,
 		settings: pilotGeneratorSettingsAFVD,

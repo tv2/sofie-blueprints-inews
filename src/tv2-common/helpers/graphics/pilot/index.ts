@@ -11,37 +11,38 @@ import {
 import {
 	ActionSelectFullGrafik,
 	Adlib,
+	assertUnreachable,
+	CasparPilotGeneratorSettings,
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	FullPieceMetaData,
 	generateExternalId,
 	GetFullGraphicTemplateNameFromCue,
 	GetPieceLifespanForGraphic,
-	GetPilotGraphicContentViz,
 	GetTagForFull,
 	GetTagForFullNext,
 	GraphicDisplayName,
 	GraphicPilot,
+	HtmlPilotGraphicGenerator,
 	IsTargetingFull,
-	IsTargetingOVL,
-	IsTargetingTLF,
 	IsTargetingWall,
 	literal,
 	PieceMetaData,
 	SisyfosPersistMetaData,
-	TV2BlueprintConfig
+	t,
+	TV2BlueprintConfig,
+	VizPilotGeneratorSettings,
+	VizPilotGraphicGenerator
 } from 'tv2-common'
 import {
 	AdlibActionType,
 	AdlibTags,
 	GraphicEngine,
+	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SharedSourceLayers,
 	TallyTags
 } from 'tv2-constants'
-import { t } from '../../translation'
-import { CasparPilotGeneratorSettings, GetPilotGraphicContentCaspar } from '../caspar'
-import { VizPilotGeneratorSettings } from '../viz'
 
 // Work needed, this should be more generic than expecting showstyles to define how to display pilot graphics
 export interface PilotGeneratorSettings {
@@ -52,7 +53,6 @@ export interface PilotGeneratorSettings {
 export interface PilotGraphicProps {
 	config: TV2BlueprintConfig
 	context: IShowStyleUserContext
-	engine: GraphicEngine
 	partId: string
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 	settings: PilotGeneratorSettings
@@ -60,51 +60,26 @@ export interface PilotGraphicProps {
 	segmentExternalId: string
 }
 
-export function CreatePilotGraphic(
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	actions: IBlueprintActionManifest[],
-	pilotGraphicProps: PilotGraphicProps
-) {
-	const { context, engine, adlib, parsedCue } = pilotGraphicProps
-	if (
-		parsedCue.graphic.vcpid === undefined ||
-		parsedCue.graphic.vcpid === null ||
-		parsedCue.graphic.vcpid.toString() === '' ||
-		parsedCue.graphic.vcpid.toString().length === 0
-	) {
-		context.notifyUserWarning('No valid VCPID provided')
-		return
+export abstract class PilotGraphicGenerator {
+	public static createPilotGraphicGenerator(graphicProps: PilotGraphicProps): PilotGraphicGenerator {
+		if (graphicProps.config.studio.GraphicsType === 'HTML') {
+			return new HtmlPilotGraphicGenerator(graphicProps)
+		}
+		return new VizPilotGraphicGenerator(graphicProps)
 	}
+	protected readonly config: TV2BlueprintConfig
+	protected readonly context: IShowStyleUserContext
+	protected readonly engine: GraphicEngine
+	protected readonly partId: string
+	protected readonly parsedCue: CueDefinitionGraphic<GraphicPilot>
+	protected readonly settings: PilotGeneratorSettings
+	protected readonly adlib?: Adlib
+	protected readonly segmentExternalId: string
 
-	const generator = new PilotGraphicGenerator(pilotGraphicProps)
-
-	if (IsTargetingOVL(engine) && adlib) {
-		adlibPieces.push(generator.createAdlibPiece())
-	} else {
-		pieces.push(generator.createPiece())
-	}
-
-	if (IsTargetingFull(engine)) {
-		actions.push(generator.createPilotAdLibAction())
-		pieces.push(generator.createFullDataStore())
-	}
-}
-
-export class PilotGraphicGenerator {
-	private readonly config: TV2BlueprintConfig
-	private readonly context: IShowStyleUserContext
-	private readonly engine: GraphicEngine
-	private readonly partId: string
-	private readonly parsedCue: CueDefinitionGraphic<GraphicPilot>
-	private readonly settings: PilotGeneratorSettings
-	private readonly adlib?: Adlib
-	private readonly segmentExternalId: string
-
-	constructor(graphicProps: PilotGraphicProps) {
+	protected constructor(graphicProps: PilotGraphicProps) {
 		this.config = graphicProps.config
 		this.context = graphicProps.context
-		this.engine = graphicProps.engine
+		this.engine = graphicProps.parsedCue.target
 		this.parsedCue = graphicProps.parsedCue
 		this.partId = graphicProps.partId
 		this.settings = graphicProps.settings
@@ -112,7 +87,9 @@ export class PilotGraphicGenerator {
 		this.segmentExternalId = graphicProps.segmentExternalId
 	}
 
-	public createPilotAdLibAction(): IBlueprintActionManifest {
+	public abstract getContent(): WithTimeline<GraphicsContent>
+
+	public createFullPilotAdLibAction(): IBlueprintActionManifest {
 		const name = GraphicDisplayName(this.config, this.parsedCue)
 		const sourceLayerId = this.getSourceLayer()
 		const outputLayerId = this.getOutputLayer()
@@ -133,7 +110,7 @@ export class PilotGraphicGenerator {
 				label: t(GetFullGraphicTemplateNameFromCue(this.config, this.parsedCue)),
 				sourceLayerId: SharedSourceLayers.PgmPilot,
 				outputLayerId: SharedOutputLayers.PGM,
-				content: this.createContent(),
+				content: this.getContent(),
 				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
 				tags: [
 					AdlibTags.ADLIB_KOMMENTATOR,
@@ -167,7 +144,7 @@ export class PilotGraphicGenerator {
 					sisyfosLayers: []
 				}
 			},
-			content: this.createContent(),
+			content: this.getContent(),
 			tags: IsTargetingFull(this.engine)
 				? [GetTagForFull(this.segmentExternalId, this.parsedCue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
 				: []
@@ -184,7 +161,7 @@ export class PilotGraphicGenerator {
 	}
 
 	public createFullDataStore(): IBlueprintPiece<FullPieceMetaData> {
-		const content = this.createContent()
+		const content = this.getContent()
 		content.timelineObjects = content.timelineObjects.filter(
 			o =>
 				o.content.deviceType !== TSR.DeviceType.ATEM &&
@@ -217,46 +194,52 @@ export class PilotGraphicGenerator {
 		}
 	}
 
-	private createContent(): WithTimeline<GraphicsContent> {
-		if (this.config.studio.GraphicsType === 'HTML') {
-			return GetPilotGraphicContentCaspar(this.config, this.context, this.parsedCue, this.settings.caspar, this.engine)
-		} else {
-			return GetPilotGraphicContentViz(
-				this.config,
-				this.context,
-				this.settings.viz,
-				this.parsedCue,
-				this.engine,
-				this.adlib
-			)
-		}
-	}
-
-	private getPrerollDuration(): number {
+	protected getPrerollDuration(): number {
 		return this.config.studio.GraphicsType === 'HTML'
 			? this.config.studio.CasparPrerollDuration
 			: this.config.studio.VizPilotGraphics.PrerollDuration
 	}
 
-	private getSourceLayer(): SharedSourceLayers {
-		const engine = this.engine
-		return IsTargetingWall(engine)
-			? SharedSourceLayers.WallGraphics
-			: IsTargetingTLF(engine)
-			? SharedSourceLayers.PgmGraphicsTLF
-			: IsTargetingOVL(engine)
-			? SharedSourceLayers.PgmPilotOverlay
-			: SharedSourceLayers.PgmPilot
+	protected getSourceLayer(): SharedSourceLayers {
+		switch (this.engine) {
+			case 'WALL':
+				return SharedSourceLayers.WallGraphics
+			case 'TLF':
+				return SharedSourceLayers.PgmGraphicsTLF
+			case 'OVL':
+				return SharedSourceLayers.PgmPilotOverlay
+			case 'FULL':
+				return SharedSourceLayers.PgmPilot
+			default:
+				assertUnreachable(this.engine)
+		}
 	}
 
-	private getOutputLayer() {
-		const engine = this.engine
-		return IsTargetingWall(engine)
-			? SharedOutputLayers.SEC
-			: IsTargetingOVL(engine)
-			? SharedOutputLayers.OVERLAY
-			: IsTargetingFull(engine)
-			? SharedOutputLayers.PGM
-			: SharedOutputLayers.OVERLAY
+	protected getOutputLayer(): SharedOutputLayers {
+		switch (this.engine) {
+			case 'WALL':
+				return SharedOutputLayers.SEC
+			case 'OVL':
+				return SharedOutputLayers.OVERLAY
+			case 'FULL':
+			case 'TLF':
+				return SharedOutputLayers.PGM
+			default:
+				assertUnreachable(this.engine)
+		}
+	}
+
+	protected getLayerMappingName(): SharedGraphicLLayer {
+		switch (this.engine) {
+			case 'WALL':
+				return SharedGraphicLLayer.GraphicLLayerWall
+			case 'OVL':
+				return SharedGraphicLLayer.GraphicLLayerOverlayPilot
+			case 'FULL':
+			case 'TLF':
+				return SharedGraphicLLayer.GraphicLLayerPilot
+			default:
+				assertUnreachable(this.engine)
+		}
 	}
 }

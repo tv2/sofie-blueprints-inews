@@ -1,15 +1,15 @@
-import { IBlueprintPart, TSR } from 'blueprints-integration'
-import { getHtmlGraphicBaseline, TV2BlueprintConfig } from 'tv2-common'
-
+export * from './pilot'
+export * from './pilot/create'
+export * from './caspar'
+export * from './viz'
 export * from './name'
 export * from './timing'
 export * from './target'
 export * from './layers'
 export * from './internal'
-export * from './pilot'
-export * from './caspar'
-export * from './viz'
 export * from './design'
+import { IBlueprintPart, TSR } from 'blueprints-integration'
+import { getHtmlGraphicBaseline, TV2BlueprintConfig } from 'tv2-common'
 
 export function ApplyFullGraphicPropertiesToPart(config: TV2BlueprintConfig, part: IBlueprintPart) {
 	const keepAliveDuration =
