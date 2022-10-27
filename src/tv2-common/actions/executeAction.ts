@@ -61,6 +61,7 @@ import {
 import {
 	AdlibActionType,
 	CueType,
+	PartType,
 	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SharedSourceLayers,
@@ -1860,7 +1861,8 @@ async function executeActionRecallLastLive<
 		originalOnly: true,
 		excludeCurrentPart: false,
 		pieceMetaDataFilter: {
-			belongsToRemotePart: true
+			partType: PartType.REMOTE,
+			pieceExternalId: lastLive.piece.externalId
 		}
 	})
 
