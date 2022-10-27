@@ -16,6 +16,7 @@ export interface TableConfigItemBreakers {
 }
 
 export interface TableConfigItemGfxTemplate {
+	/** Name of the Viz Template. For HTML graphics it's the Graphic name. */
 	VizTemplate: string
 	SourceLayer: string
 	LayerMapping: string
@@ -28,6 +29,7 @@ export interface TableConfigItemGfxTemplate {
 export interface TableConfigItemGfxDesignTemplate {
 	INewsName: string
 	INewsStyleColumn: string
+	/** Name of the Viz template trigering design change. For HTML graphics it coresponds to a CSS class. */
 	VizTemplate: string
 }
 
