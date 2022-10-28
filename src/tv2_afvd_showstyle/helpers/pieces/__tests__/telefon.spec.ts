@@ -116,10 +116,11 @@ describe('telefon', () => {
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
-					belongsToRemotePart: false,
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
-					}
+					},
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',

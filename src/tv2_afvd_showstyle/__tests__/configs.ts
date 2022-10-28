@@ -64,12 +64,12 @@ export const defaultStudioConfig: StudioConfig = {
 	AudioBedFileExtension: '.wav',
 	DVEFileExtension: '.png',
 	ClipNetworkBasePath: '/',
-	GraphicNetworkBasePath: '/',
+	GraphicNetworkBasePath: 'networkshare/somefolder',
 	JingleNetworkBasePath: '/',
 	AudioBedNetworkBasePath: '/',
 	DVENetworkBasePath: '/',
 	ClipFolder: '',
-	GraphicFolder: '',
+	GraphicFolder: 'pilot-images',
 	JingleFolder: '',
 	AudioBedFolder: '',
 	DVEFolder: '',
@@ -136,7 +136,7 @@ export const defaultStudioConfig: StudioConfig = {
 		FullGraphicBackground: 36
 	},
 	HTMLGraphics: {
-		GraphicURL: '',
+		GraphicURL: 'E:/somepath',
 		KeepAliveDuration: 1000,
 		TransitionSettings: {
 			wipeRate: 20,

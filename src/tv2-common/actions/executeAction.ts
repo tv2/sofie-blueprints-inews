@@ -61,6 +61,7 @@ import {
 import {
 	AdlibActionType,
 	CueType,
+	PartType,
 	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SharedSourceLayers,
@@ -1860,7 +1861,8 @@ async function executeActionRecallLastLive<
 		originalOnly: true,
 		excludeCurrentPart: false,
 		pieceMetaDataFilter: {
-			belongsToRemotePart: true
+			partType: PartType.REMOTE,
+			pieceExternalId: lastLive.piece.externalId
 		}
 	})
 
@@ -1914,9 +1916,29 @@ async function executeActionRecallLastDVE<
 
 	if (lastPlayedScheduledDVE && isLastPlayedAScheduledDVE) {
 		await scheduleLastPlayedDVE(context, settings, actionId, lastPlayedScheduledDVE)
-	} else {
-		await scheduleNextScriptedDVE(context, settings, actionId)
+		await addLatestPieceOnLayerForDve(context, settings.SourceLayers.Ident, lastPlayedScheduledDVE.piece)
 	}
+}
+
+async function addLatestPieceOnLayerForDve(
+	context: IActionExecutionContext,
+	layer: string,
+	dvePiece: IBlueprintPiece
+): Promise<void> {
+	const lastIdent = await context.findLastPieceOnLayer(layer, {
+		originalOnly: true,
+		excludeCurrentPart: false,
+		pieceMetaDataFilter: {
+			partType: PartType.DVE,
+			pieceExternalId: dvePiece.externalId
+		}
+	})
+
+	if (!lastIdent) {
+		return
+	}
+
+	await context.insertPiece('next', lastIdent.piece)
 }
 
 async function executeActionFadeDownPersistedAudioLevels<
@@ -1997,34 +2019,6 @@ async function scheduleLastPlayedDVE<
 	})
 }
 
-async function scheduleNextScriptedDVE<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ITV2ActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	actionId: string
-): Promise<void> {
-	const nextScriptedDVE: IBlueprintPiece | undefined = await context.findLastScriptedPieceOnLayer(
-		settings.SourceLayers.DVE
-	)
-
-	if (!nextScriptedDVE) {
-		return
-	}
-
-	const externalId: string = generateExternalId(context, actionId, [nextScriptedDVE.name])
-	const dveMeta: DVEPieceMetaData = nextScriptedDVE.metaData as DVEPieceMetaData
-
-	await executeActionSelectDVE(context, settings, actionId, {
-		type: AdlibActionType.SELECT_DVE,
-		config: dveMeta.userData.config,
-		name: nextScriptedDVE.name,
-		segmentExternalId: externalId,
-		videoId: dveMeta.userData.videoId
-	})
-}
-
 async function executeActionSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -2071,13 +2065,12 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	}
 
-	const generator = new PilotGraphicGenerator({
+	const generator = PilotGraphicGenerator.createPilotGraphicGenerator({
 		config,
 		context,
 		partId: externalId,
 		settings: settings.pilotGraphicSettings,
 		parsedCue: cue,
-		engine: 'FULL',
 		segmentExternalId: userData.segmentExternalId,
 		adlib: { rank: 0 }
 	})

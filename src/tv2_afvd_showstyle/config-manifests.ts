@@ -201,7 +201,7 @@ export const schemaConfigManifest: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'vizTemplateName',
-				name: 'Viz Template Name',
+				name: 'GFX Template Name',
 				description: 'The name of the Viz template',
 				rank: 2,
 				required: true,
@@ -253,7 +253,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'VizTemplate',
-				name: 'Viz Template Name',
+				name: 'GFX Template Name',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
@@ -345,7 +345,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		id: 'GFXTemplates',
 		name: 'GFX Templates',
 		description:
-			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are aslo required. VizTemplate is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNes i.e. "ident_nyhederne"',
+			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are also required. GFX Template Name is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNews i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
 		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })),
@@ -370,7 +370,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'VizTemplate',
-				name: 'Viz Template Name (**)',
+				name: 'GFX Template Name (**)',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,

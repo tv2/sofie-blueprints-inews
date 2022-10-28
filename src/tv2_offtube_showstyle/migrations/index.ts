@@ -54,7 +54,7 @@ export const remapVizLLayer: Map<string, string> = new Map([
 	[VizLLayer.VizLLayerOverlayHeadline, SharedGraphicLLayer.GraphicLLayerOverlayHeadline],
 	[VizLLayer.VizLLayerOverlayTema, SharedGraphicLLayer.GraphicLLayerOverlayTema],
 	[VizLLayer.VizLLayerPilot, SharedGraphicLLayer.GraphicLLayerPilot],
-	[VizLLayer.VizLLayerPilotOverlay, SharedGraphicLLayer.GraphicLLayerPilotOverlay],
+	[VizLLayer.VizLLayerPilotOverlay, SharedGraphicLLayer.GraphicLLayerOverlayPilot],
 	[VizLLayer.VizLLayerDesign, SharedGraphicLLayer.GraphicLLayerDesign],
 	[VizLLayer.VizLLayerAdLibs, SharedGraphicLLayer.GraphicLLayerAdLibs],
 	[VizLLayer.VizLLayerWall, SharedGraphicLLayer.GraphicLLayerWall]

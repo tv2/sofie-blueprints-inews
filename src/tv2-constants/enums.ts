@@ -181,8 +181,8 @@ export enum SharedGraphicLLayer {
 	GraphicLLayerOverlayLower = 'graphic_overlay_lower', // <= viz_layer_overlay_lower
 	GraphicLLayerOverlayHeadline = 'graphic_overlay_headline', // <= viz_layer_overlay_headline
 	GraphicLLayerOverlayTema = 'graphic_overlay_tema', // <= viz_layer_overlay_tema
+	GraphicLLayerOverlayPilot = 'graphic_overlay_pilot', // <= viz_layer_pilot_overlay
 	GraphicLLayerPilot = 'graphic_pilot', // <= viz_layer_pilot
-	GraphicLLayerPilotOverlay = 'graphic_pilot_overlay', // <= viz_layer_pilot_overlay
 	GraphicLLayerDesign = 'graphic_design', // <= viz_layer_design
 	GraphicLLayerFullLoop = 'graphic_full_loop',
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs

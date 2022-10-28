@@ -121,7 +121,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -425,7 +426,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -503,7 +505,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -578,7 +581,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
@@ -654,7 +658,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,

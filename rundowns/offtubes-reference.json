@@ -230,6 +230,50 @@
             "parts": []
         },
         {
+            "externalId": "00000000:00000000:00000099",
+            "name": "VCP OVL",
+            "rank": 2,
+            "payload": {
+                "rundownId": "NYHEDERNE-TEST.SOFIE.OFF-TUBES",
+                "iNewsStory": {
+                    "fields" : {
+                        "pageNumber" : "03",
+                        "title" : "VCP OVL",
+                        "audioTime" : "0",
+                        "totalTime" : "0",
+                        "modifyDate" : "1582890240",
+                        "modifyBy" : "bede",
+                        "ready" : "KLAR",
+                        "runsTime" : "0",
+                        "typecode" : "spx",
+                        "programtitle" : " "
+                    },
+                    "meta" : {
+                        "rate" : "165"
+                    },
+                    "cues" : [
+                        [
+                            "#cg4 pilotdata",
+                            "LgfxWeb/WEB_HEN_FORMEL1_10AUGT12346_JACH/Mosart=L|00:00|S",
+                            "VCPID=2598145",
+                            "ContinueCount=-1",
+                            "LgfxWeb/WEB_HEN_FORMEL1_10AUGT12346_JACH/Mosart=L|00:00|S"
+                        ]
+                    ],
+                    "id" : "00000000:00000000:00000099",
+                    "body" : "\r\n<pi>KAM 1</pi>\r\n<p><a idref=\"0\"></a></p>\r\n",
+                    "fileId" : "00000000:00000000:00000099",
+                    "identifier" : "00000099"
+                },
+                "modified": "2019-10-11T06:38:00.000Z",
+                "externalId": "00000000:00000000:00000099",
+                "rank": 2,
+                "name": "VCP OVL",
+                "float": false
+            },
+            "parts": []
+        },
+        {
             "externalId": "00000000:00000000:00000003",
             "name": "JINGLE1",
             "rank": 3,

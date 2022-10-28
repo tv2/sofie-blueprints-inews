@@ -19,6 +19,8 @@ import {
 	CueDefinitionLYD,
 	CueDefinitionRobotCamera,
 	CueDefinitionTelefon,
+	IsTargetingFull,
+	IsTargetingOVL,
 	PartDefinition
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -210,7 +212,7 @@ export async function EvaluateCuesBase(
 
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
-			const shouldAdlib = /* config.showStyle.IsOfftube || */ options.adlib ? true : cue.adlib ? true : false
+			const shouldAdlib = !!(options.adlib || cue.adlib)
 			const adlib = shouldAdlib ? { rank: adLibRank } : undefined
 
 			switch (cue.type) {
@@ -219,8 +221,8 @@ export async function EvaluateCuesBase(
 						if (
 							config.studio.PreventOverlayWithFull &&
 							GraphicIsPilot(cue) &&
-							cue.target === 'OVL' &&
-							cues.some(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL')
+							IsTargetingOVL(cue.target) &&
+							cues.some(c => c.type === CueType.Graphic && GraphicIsPilot(c) && IsTargetingFull(c.target))
 						) {
 							context.notifyUserWarning(`Cannot create overlay graphic with FULL`)
 							break

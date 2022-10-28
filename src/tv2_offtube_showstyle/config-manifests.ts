@@ -168,6 +168,15 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 				required: false,
 				defaultVal: '',
 				rank: 1
+			},
+			{
+				id: 'VizTemplate',
+				name: 'GFX Template Name',
+				description: 'The name of the design in the HTML package',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 2
 			}
 		]
 	}
@@ -207,7 +216,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		id: 'GFXTemplates',
 		name: 'GFX Templates',
 		description:
-			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are aslo required. VizTemplate is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNes i.e. "ident_nyhederne"',
+			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are also required. GFX Template Name is what the graphic is called in the HTML package. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNews i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })),
@@ -232,8 +241,8 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'VizTemplate',
-				name: 'Viz Template Name (**)',
-				description: 'The name of the Viz Template',
+				name: 'GFX Template Name (**)',
+				description: 'The name of the Graphic in the HTML package',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',

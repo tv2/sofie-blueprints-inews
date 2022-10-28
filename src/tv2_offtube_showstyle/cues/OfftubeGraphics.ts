@@ -24,10 +24,10 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
 	caspar: {
-		createPilotTimelineForStudio: createPilotTimeline
+		createFullPilotTimelineForStudio: createPilotTimeline
 	},
 	viz: {
-		createPilotTimelineForStudio: () => []
+		createFullPilotTimelineForStudio: () => []
 	}
 }
 
@@ -44,7 +44,6 @@ export function OfftubeEvaluateGrafikCaspar(
 ) {
 	if (GraphicIsPilot(parsedCue)) {
 		CreatePilotGraphic(pieces, adlibPieces, actions, {
-			engine: parsedCue.target,
 			config,
 			context,
 			partId,
