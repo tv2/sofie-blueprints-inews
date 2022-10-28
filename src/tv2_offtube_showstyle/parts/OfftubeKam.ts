@@ -12,9 +12,7 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	AddParentClass,
 	AddScript,
-	CameraParentClass,
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
@@ -127,10 +125,7 @@ export async function OfftubeCreatePartKam(
 								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 								transitionSettings: TransitionSettings(config, partDefinition)
 							}
-						},
-						...(AddParentClass(config, partDefinition)
-							? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
-							: {})
+						}
 					}),
 
 					...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)

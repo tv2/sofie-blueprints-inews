@@ -601,8 +601,6 @@ async function executeActionSelectDVE<
 		graphicsTemplateContent,
 		parsedCue.sources,
 		settings.DVEGeneratorOptions,
-		undefined,
-		false,
 		externalId
 	)
 
@@ -1145,8 +1143,7 @@ async function executeActionCutToCamera<
 							input: sourceInfoCam.port,
 							transition: TSR.AtemTransitionStyle.CUT
 						}
-					},
-					classes: ['adlib_deparent']
+					}
 				}),
 				...camSisyfos
 			])
@@ -1288,8 +1285,7 @@ async function executeActionCutToRemote<
 							input: sourceInfo.port,
 							transition: TSR.AtemTransitionStyle.CUT
 						}
-					},
-					classes: ['adlib_deparent']
+					}
 				}),
 				...eksternSisyfos
 			])
@@ -1388,8 +1384,6 @@ async function executeActionCutSourceToBox<
 		graphicsTemplateContent,
 		meta.sources,
 		settings.DVEGeneratorOptions,
-		undefined,
-		undefined,
 		mediaPlayerSession
 	)
 

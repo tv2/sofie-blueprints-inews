@@ -1,16 +1,14 @@
 import {
-	GetPieceLifespanForGraphic,
 	literal,
 	TableConfigItemGfxDesignTemplate,
 	TableConfigSchema,
 	TV2BlueprintConfig,
 	UnparsedCue
 } from 'tv2-common'
-import { CueType, GraphicEngine, PartType, SourceType } from 'tv2-constants'
+import { CueType, GraphicEngine, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
 	getTransitionProperties,
-	PartDefinition,
 	PartdefinitionTypes,
 	SourceDefinition,
 	SourceDefinitionInvalid,
@@ -966,88 +964,6 @@ function parseRobotCue(cue: string[]): CueDefinitionRobotCamera {
 		presetIdentifier,
 		...time
 	}
-}
-
-/**
- * Creates a parent class for a part, for keeping children of the parent alive when the parent is alive.
- * @param studio Studio name that the part belongs to.
- * @param partDefinition Part to create parent string for.
- */
-export function PartToParentClass(studio: string, partDefinition: PartDefinition): string | undefined {
-	switch (partDefinition.type) {
-		case PartType.Kam:
-			return CameraParentClass(studio, partDefinition.sourceDefinition.id)
-		case PartType.Server:
-		case PartType.VO:
-			const clip = partDefinition.fields.videoId
-
-			if (clip) {
-				return ServerParentClass(studio, clip)
-			} else {
-				return
-			}
-		case PartType.EVS:
-			return EVSParentClass(studio, partDefinition.sourceDefinition.id)
-		default:
-			return UnknownPartParentClass(studio, partDefinition)
-	}
-}
-
-export function CameraParentClass(studio: string, cameraName: string) {
-	return `${studio.toLowerCase()}_parent_camera_${cameraName.toLowerCase().replace(/\W/, '_')}`
-}
-
-export function EksternParentClass(studio: string, source: string) {
-	return `${studio.toLowerCase()}_parent_ekstern_${source.toLowerCase().replace(/\W/, '_')}`
-}
-
-export function ServerParentClass(studio: string, clip: string) {
-	return `${studio.toLowerCase()}_parent_server_${clip.toLowerCase().replace(/\W/, '_')}`
-}
-
-export function EVSParentClass(studio: string, evs: string) {
-	return `${studio.toLowerCase()}_parent_evs_${evs.toLowerCase().replace(/\W/, '_')}`
-}
-
-export function DVEParentClass(studio: string, dve: string) {
-	return `${studio.toLowerCase()}_parent_dve_${dve.toLowerCase().replace(/\W/, '_')}`
-}
-
-export function TLFParentClass(studio: string, source: string) {
-	return `${studio.toLowerCase()}_parent_tlf_${source.toLowerCase().replace(/\W/, '_')}`
-}
-
-export function UnknownPartParentClass(studio: string, partDefinition: PartDefinition): string | undefined {
-	const firstCue = partDefinition.cues.find(c => [CueType.DVE, CueType.Ekstern, CueType.Telefon].includes(c.type))
-
-	if (!firstCue) {
-		return
-	}
-
-	switch (firstCue.type) {
-		case CueType.DVE:
-			return DVEParentClass(studio, firstCue.template)
-		case CueType.Ekstern:
-			return EksternParentClass(studio, firstCue.sourceDefinition.name)
-		case CueType.Telefon:
-			return TLFParentClass(studio, firstCue.source)
-		default:
-			return
-	}
-}
-
-export function AddParentClass(config: TV2BlueprintConfig, partDefinition: PartDefinition) {
-	if (
-		partDefinition.cues.some(
-			cue => cue.start === CueType.Graphic && cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B'
-		)
-	) {
-		return true
-	}
-
-	return partDefinition.cues.some(
-		c => c.type === CueType.Graphic && GraphicIsInternal(c) && GetPieceLifespanForGraphic(c.target, config, c)
-	)
 }
 
 export function UnpairedPilotToGraphic(
