@@ -49,7 +49,7 @@ export async function OfftubeCreatePartKam(
 
 	const jingleDSK = FindDSKJingle(config)
 
-	if (/cs ?3/i.test(partDefinition.sourceDefinition.id)) {
+	if (/\bcs *\d*/i.test(partDefinition.sourceDefinition.id)) {
 		pieces.push({
 			externalId: partDefinition.externalId,
 			name: 'CS 3 (JINGLE)',

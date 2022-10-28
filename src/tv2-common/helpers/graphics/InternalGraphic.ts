@@ -1,6 +1,6 @@
 import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext, PieceLifespan } from 'blueprints-integration'
 import _ = require('underscore')
-import { AdlibTags, GraphicEngine, PartType, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
+import { AdlibTags, GraphicEngine, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
 import { TV2BlueprintConfig } from '../../blueprintConfig'
 import { CueDefinitionGraphic, GraphicInternal, PartDefinition } from '../../inewsConversion'
 import { GraphicPieceMetaData, PieceMetaData } from '../../onTimelineGenerate'
@@ -111,7 +111,8 @@ export class InternalGraphic {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: []
 				},
-				belongsToRemotePart: this.partDefinition?.type === PartType.REMOTE
+				partType: this.partDefinition?.type,
+				pieceExternalId: this.partDefinition?.externalId
 			},
 			content: _.clone(this.content)
 		}

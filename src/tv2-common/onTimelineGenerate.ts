@@ -13,7 +13,7 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { ActionSelectFullGrafik, ActionSelectJingle, ActionSelectServerClip, CasparPlayerClip } from 'tv2-common'
-import { AbstractLLayer, TallyTags } from 'tv2-constants'
+import { AbstractLLayer, PartType, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
@@ -59,7 +59,8 @@ export interface PieceMetaData {
 }
 
 export interface GraphicPieceMetaData extends PieceMetaData {
-	belongsToRemotePart?: boolean
+	partType?: PartType
+	pieceExternalId?: string
 }
 
 export interface JinglePieceMetaData extends PieceMetaData {
