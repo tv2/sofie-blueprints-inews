@@ -151,7 +151,7 @@ const graphicsSetups = getGraphicsSetupsEntries([
 	{
 		id: 'VcpConcept',
 		name: 'VCP Concept',
-		rank: 0.5,
+		rank: 1,
 		required: true,
 		defaultVal: '',
 		hint: '',
@@ -159,9 +159,19 @@ const graphicsSetups = getGraphicsSetupsEntries([
 		type: ConfigManifestEntryType.STRING
 	},
 	{
+		id: 'OvlShowName',
+		name: 'Overlay Show Name',
+		rank: 2,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: 'Name of the show used for OVL channel',
+		type: ConfigManifestEntryType.STRING
+	},
+	{
 		id: 'FullShowName',
 		name: 'Fullscreen Show Name',
-		rank: 2,
+		rank: 3,
 		required: true,
 		defaultVal: '',
 		hint: '',

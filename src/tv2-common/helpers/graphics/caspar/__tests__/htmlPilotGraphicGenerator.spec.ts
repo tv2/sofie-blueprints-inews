@@ -98,7 +98,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			expect(timelineObjects[0].content).toMatchObject(
 				literal<Partial<TSR.TimelineObjCCGTemplate['content']>>({
 					templateType: 'html',
-					name: 'ovl-show-id/index',
+					name: 'html-package-folder/index',
 					data: {
 						display: 'program',
 						slots: {
@@ -168,7 +168,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			expect(timelineObjects[0].content).toMatchObject(
 				literal<Partial<TSR.TimelineObjCCGTemplate['content']>>({
 					templateType: 'html',
-					name: 'ovl-show-id/index',
+					name: 'html-package-folder/index',
 					data: {
 						display: 'program',
 						slots: {

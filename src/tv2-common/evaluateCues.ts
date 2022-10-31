@@ -458,13 +458,14 @@ export async function EvaluateCuesBase(
 							})
 						}
 					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS) {
+						const o = obj as TSR.TimelineObjVIZMSEClearAllElements
 						piece.expectedPlayoutItems.push({
 							deviceSubType: TSR.DeviceType.VIZMSE,
 							content: {
 								templateName: 'altud',
 								channel: 'OVL1',
 								templateData: [],
-								showId: config.selectedGraphicsSetup.OvlShowName
+								showId: o.content.showId
 							}
 						})
 					}
