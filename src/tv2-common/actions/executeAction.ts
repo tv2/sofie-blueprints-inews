@@ -1916,13 +1916,14 @@ async function executeActionRecallLastDVE<
 
 	if (lastPlayedScheduledDVE && isLastPlayedAScheduledDVE) {
 		await scheduleLastPlayedDVE(context, settings, actionId, lastPlayedScheduledDVE)
-		await addLatestPieceOnLayerForDve(context, settings.SourceLayers.Ident, lastPlayedScheduledDVE.piece)
+		await addLatestPieceOnLayerForDve(context, settings.SourceLayers.Ident, actionId, lastPlayedScheduledDVE.piece)
 	}
 }
 
 async function addLatestPieceOnLayerForDve(
-	context: IActionExecutionContext,
+	context: ITV2ActionExecutionContext,
 	layer: string,
+	actionId: string,
 	dvePiece: IBlueprintPiece
 ): Promise<void> {
 	const lastIdent = await context.findLastPieceOnLayer(layer, {
@@ -1938,7 +1939,14 @@ async function addLatestPieceOnLayerForDve(
 		return
 	}
 
-	await context.insertPiece('next', lastIdent.piece)
+	const externalId = generateExternalId(context, actionId, [dvePiece.name])
+	const newIdentPiece: IBlueprintPiece<PieceMetaData> = {
+		...lastIdent.piece,
+		externalId,
+		lifespan: PieceLifespan.WithinPart
+	}
+
+	await context.insertPiece('next', newIdentPiece)
 }
 
 async function executeActionFadeDownPersistedAudioLevels<
