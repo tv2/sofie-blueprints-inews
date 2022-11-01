@@ -231,7 +231,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 		description: '',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => template.IsDesign === true),
+		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => template.IsDesign),
 		columns: [
 			{
 				id: DESIGN_NAME_COLUMN_ID,
@@ -348,7 +348,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are also required. GFX Template Name is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNews i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => template.IsDesign === false),
+		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => !template.IsDesign),
 		columns: [
 			{
 				id: 'INewsCode',
