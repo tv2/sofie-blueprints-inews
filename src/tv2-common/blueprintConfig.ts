@@ -52,7 +52,8 @@ export interface TableConfigSchema {
 
 export interface TableConfigGraphicsSetup {
 	Name: string
-	OvlShowName: string
+	HtmlPackageFolder: string
+	OvlShowName?: string
 	FullShowName?: string
 }
 

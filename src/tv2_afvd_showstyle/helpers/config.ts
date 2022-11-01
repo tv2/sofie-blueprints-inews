@@ -10,6 +10,7 @@ import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/he
 export interface GalleryTableConfigGraphicsSetup extends TableConfigGraphicsSetup {
 	VcpConcept: string
 	FullShowName: string
+	OvlShowName: string
 }
 
 export interface BlueprintConfig extends BlueprintConfigBase {
@@ -30,7 +31,8 @@ export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig
 		Name: '',
 		VcpConcept: '',
 		OvlShowName: '',
-		FullShowName: ''
+		FullShowName: '',
+		HtmlPackageFolder: ''
 	})
 	return {
 		showStyle: showstyleConfig,

@@ -22,13 +22,13 @@ export const getGraphicsSetupsEntries = (columns: ConfigManifestEntryTable['colu
 				rank: 0
 			},
 			{
-				id: 'OvlShowName',
-				name: 'Overlay Show Name',
-				rank: 1,
+				id: 'HtmlPackageFolder',
+				name: 'HTML Package Folder',
+				rank: 4,
 				required: true,
 				defaultVal: '',
-				hint: '',
-				description: 'Name of the show used for OVL channel',
+				description:
+					'Name of the folder containing the HTML graphics template package, relative to the template-path in CasparCG, e.g. sport-overlay',
 				type: ConfigManifestEntryType.STRING
 			},
 			...columns

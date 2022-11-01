@@ -43,7 +43,7 @@ export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig
 	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
 	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig, {
 		Name: '',
-		OvlShowName: ''
+		HtmlPackageFolder: ''
 	})
 	return {
 		showStyle: showstyleConfig,

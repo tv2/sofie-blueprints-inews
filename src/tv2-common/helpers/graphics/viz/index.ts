@@ -139,6 +139,10 @@ function findShowName(config: TV2BlueprintConfig, context: IShowStyleUserContext
 			return graphicsSetup.FullShowName
 		case 'TLF':
 		case 'OVL':
+			if (graphicsSetup.OvlShowName === undefined) {
+				context.logWarning("You're using Viz graphics with an incompatible ShowStyle")
+				return ''
+			}
 			return graphicsSetup.OvlShowName
 	}
 }
