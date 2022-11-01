@@ -204,7 +204,6 @@ function getContentServerElement<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	partDefinition: PartDefinition,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
@@ -213,7 +212,6 @@ function getContentServerElement<
 ): WithTimeline<VTContent> {
 	return MakeContentServer(
 		context,
-		partDefinition,
 		config,
 		{
 			Caspar: {
@@ -245,7 +243,7 @@ function getServerSelectionBlueprintPiece<
 	prerollDuration: number
 ): IBlueprintPiece<ServerPieceMetaData> {
 	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, partProps)
-	const contentServerElement = getContentServerElement(partDefinition, partProps, contentProps, layers, context, config)
+	const contentServerElement = getContentServerElement(partProps, contentProps, layers, context, config)
 
 	return {
 		externalId: partDefinition.externalId,

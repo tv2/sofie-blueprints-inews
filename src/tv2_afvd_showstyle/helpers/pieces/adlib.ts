@@ -93,7 +93,7 @@ export async function EvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
+		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
 
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,

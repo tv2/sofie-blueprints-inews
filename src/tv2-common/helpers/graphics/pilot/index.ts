@@ -153,7 +153,7 @@ export abstract class PilotGraphicGenerator {
 
 	public createAdlibPiece(rank?: number): IBlueprintAdLibPiece {
 		const pilotPiece = this.createPiece()
-		pilotPiece.tags = [...(pilotPiece.tags ?? []), AdlibTags.ADLIB_FLOW_PRODUCER]
+		pilotPiece.tags = [...(pilotPiece.tags ?? []), AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR]
 		return {
 			...pilotPiece,
 			_rank: rank ?? 0

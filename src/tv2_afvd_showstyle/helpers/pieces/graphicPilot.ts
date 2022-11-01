@@ -3,7 +3,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	IShowStyleUserContext,
-	IStudioUserContext,
 	TSR
 } from 'blueprints-integration'
 import {
@@ -48,11 +47,7 @@ export function EvaluateCueGraphicPilot(
 	})
 }
 
-function makeStudioTimelineViz(
-	config: BlueprintConfig,
-	_context: IStudioUserContext,
-	adlib: boolean
-): TSR.TSRTimelineObj[] {
+function makeStudioTimelineViz(config: BlueprintConfig): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 
 	return [
@@ -70,8 +65,7 @@ function makeStudioTimelineViz(
 					input: config.studio.VizPilotGraphics.FullGraphicBackground,
 					transition: TSR.AtemTransitionStyle.CUT
 				}
-			},
-			...(adlib ? { classes: ['adlib_deparent'] } : {})
+			}
 		}),
 		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
@@ -95,7 +89,7 @@ function makeStudioTimelineViz(
 	]
 }
 
-function makeStudioTimelineCaspar(config: BlueprintConfig, _context: IStudioUserContext) {
+function makeStudioTimelineCaspar(config: BlueprintConfig) {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({

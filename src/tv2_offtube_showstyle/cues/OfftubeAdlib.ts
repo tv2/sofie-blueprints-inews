@@ -100,7 +100,7 @@ export async function OfftubeEvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
+		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
 
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,

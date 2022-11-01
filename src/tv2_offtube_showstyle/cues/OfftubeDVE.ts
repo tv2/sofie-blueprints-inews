@@ -7,7 +7,6 @@ import {
 } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
-	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
@@ -50,25 +49,9 @@ export function OfftubeEvaluateDVE(
 		return
 	}
 
-	const adlibContent = OfftubeMakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(config, partDefinition),
-		true
-	)
+	const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
 
-	const pieceContent = OfftubeMakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(config, partDefinition),
-		false
-	)
+	const pieceContent = OfftubeMakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
 
 	if (adlibContent.valid && pieceContent.valid) {
 		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
