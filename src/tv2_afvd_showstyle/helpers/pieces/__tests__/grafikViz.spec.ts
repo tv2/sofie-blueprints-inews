@@ -10,6 +10,7 @@ import {
 import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,
+	CueTime,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	GraphicPilot,
@@ -48,6 +49,26 @@ const dummyPart = literal<PartDefinitionKam>({
 	modified: 0,
 	segmentExternalId: ''
 })
+
+function makeTestBundCue(infiniteMode: CueTime['infiniteMode']): CueDefinitionGraphic<GraphicInternal> {
+	return {
+		type: CueType.Graphic,
+		target: 'OVL',
+		graphic: {
+			type: 'internal',
+			template: 'bund',
+			cue: 'kg',
+			textFields: ['Odense', 'Copenhagen']
+		},
+		start: {
+			seconds: 10
+		},
+		end: {
+			infiniteMode
+		},
+		iNewsCommand: 'kg'
+	}
+}
 
 const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 	id: '',
@@ -459,24 +480,8 @@ describe('grafik piece', () => {
 		])
 	})
 
-	test('kg bund infinite', () => {
-		const cue: CueDefinitionGraphic<GraphicInternal> = {
-			type: CueType.Graphic,
-			target: 'OVL',
-			graphic: {
-				type: 'internal',
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['Odense', 'Copenhagen']
-			},
-			start: {
-				seconds: 10
-			},
-			end: {
-				infiniteMode: 'B'
-			},
-			iNewsCommand: 'kg'
-		}
+	test('kg bund infinite (B) has piece and object timing', () => {
+		const cue = makeTestBundCue('B')
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
@@ -493,49 +498,89 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces).toEqual([
-			literal<IBlueprintPiece<GraphicPieceMetaData>>({
-				externalId: partId,
-				name: 'bund - Odense\n - Copenhagen',
-				enable: {
-					start: 10000
-				},
-				lifespan: PieceLifespan.WithinPart,
-				metaData: {
-					sisyfosPersistMetaData: {
-						sisyfosLayers: []
-					},
-					partType: PartType.Kam,
-					pieceExternalId: dummyPart.externalId
-				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
-				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				content: literal<WithTimeline<GraphicsContent>>({
-					fileName: 'bund',
-					path: 'bund',
-					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
-							id: '',
-							enable: {
-								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
-							},
-							priority: 1,
-							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
-							content: {
-								deviceType: TSR.DeviceType.VIZMSE,
-								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: 'bund',
-								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
-							}
-						}),
-						dskEnableObj
-					])
-				})
-			})
-		])
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 10000
+			},
+			lifespan: PieceLifespan.WithinPart
+		})
+		expect(
+			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+		).toMatchObject({
+			enable: {
+				while: `!.full`
+			}
+		})
+	})
+
+	test('kg bund infinite (S) has piece and object timing', () => {
+		const cue = makeTestBundCue('S')
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 10000
+			},
+			lifespan: PieceLifespan.OutOnSegmentEnd
+		})
+		expect(
+			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+		).toMatchObject({
+			enable: {
+				while: `!.full`
+			}
+		})
+	})
+
+	test('kg bund infinite (O)', () => {
+		const cue = makeTestBundCue('O')
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 10000
+			},
+			lifespan: PieceLifespan.OutOnShowStyleEnd
+		})
+		expect(
+			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+		).toMatchObject({
+			enable: {
+				while: `!.full`
+			}
+		})
 	})
 
 	test('kg direkte', () => {
@@ -594,7 +639,7 @@ describe('grafik piece', () => {
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
-								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
+								while: `!.full`
 							},
 							priority: 1,
 							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
@@ -801,6 +846,92 @@ describe('grafik piece', () => {
 				})
 			})
 		])
+	})
+
+	test('kg tlftoptlive: timecode has priority over OutType column', () => {
+		const cue = literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'tlftoptlive',
+				cue: 'kg',
+				textFields: ['Line 1', 'Line 2']
+			},
+			start: {
+				seconds: 5
+			},
+			end: {
+				seconds: 10
+			},
+			iNewsCommand: 'kg'
+		})
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 5000,
+				duration: 5000
+			},
+			lifespan: PieceLifespan.WithinPart
+		})
+	})
+
+	test('kg tlftoptlive adilb: timecode has priority over OutType column', () => {
+		const cue = literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'tlftoptlive',
+				cue: 'kg',
+				textFields: ['Line 1', 'Line 2']
+			},
+			end: {
+				seconds: 10
+			},
+			adlib: true,
+			iNewsCommand: 'kg'
+		})
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+
+		const adlibPiece = adLibPieces.find(piece => piece.tags?.includes('flow_producer'))
+		expect(adlibPiece).toBeDefined()
+		expect(adlibPiece).toMatchObject({
+			expectedDuration: 10000,
+			lifespan: PieceLifespan.WithinPart
+		})
 	})
 
 	it('WALL graphics have enable equal while 1', () => {

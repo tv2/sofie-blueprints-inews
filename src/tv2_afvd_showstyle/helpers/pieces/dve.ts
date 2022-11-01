@@ -1,7 +1,6 @@
 import { IBlueprintActionManifest, IBlueprintPiece, ISegmentUserContext, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
-	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
@@ -43,15 +42,7 @@ export function EvaluateDVE(
 		return
 	}
 
-	const content = MakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(config, partDefinition),
-		adlib
-	)
+	const content = MakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
 
 	if (content.valid) {
 		if (adlib) {

@@ -1,12 +1,5 @@
 import { IShowStyleUserContext, TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import {
-	AddParentClass,
-	GetSisyfosTimelineObjForServer,
-	literal,
-	PartDefinition,
-	ServerParentClass,
-	TransitionSettings
-} from 'tv2-common'
+import { GetSisyfosTimelineObjForServer, literal, PartDefinition, TransitionSettings } from 'tv2-common'
 import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
@@ -54,7 +47,6 @@ export function GetVTContentProperties(
 
 export function MakeContentServer(
 	_context: IShowStyleUserContext,
-	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
@@ -63,12 +55,11 @@ export function MakeContentServer(
 	return literal<WithTimeline<VTContent>>({
 		...GetVTContentProperties(config, contentProps),
 		ignoreMediaObjectStatus: true,
-		timelineObjects: GetServerTimeline(partDefinition, config, sourceLayers, partProps, contentProps)
+		timelineObjects: GetServerTimeline(config, sourceLayers, partProps, contentProps)
 	})
 }
 
 function GetServerTimeline(
-	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
@@ -95,12 +86,7 @@ function GetServerTimeline(
 		},
 		metaData: {
 			mediaPlayerSession: contentProps.mediaPlayerSession
-		},
-		classes: [
-			...(AddParentClass(config, partDefinition) && !partProps.adLibPix
-				? [ServerParentClass('studio0', contentProps.file)]
-				: [])
-		]
+		}
 	}
 
 	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
@@ -151,7 +137,6 @@ export function CutToServer(
 	partDefinition: PartDefinition,
 	config: TV2BlueprintConfig,
 	atemLLayerMEPGM: string,
-	adLib?: boolean,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ) {
 	return [
@@ -175,10 +160,7 @@ export function CutToServer(
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
 			},
-			classes: [
-				...(adLib && !offtubeOptions?.isOfftube ? ['adlib_deparent'] : []),
-				...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])
-			]
+			classes: [...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])]
 		})
 	]
 }

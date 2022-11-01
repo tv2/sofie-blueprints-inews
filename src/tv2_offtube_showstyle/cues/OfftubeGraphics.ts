@@ -57,10 +57,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	}
 }
 
-function createPilotTimeline(
-	config: OfftubeShowstyleBlueprintConfig,
-	_context: IShowStyleUserContext
-): TSR.TSRTimelineObj[] {
+function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({

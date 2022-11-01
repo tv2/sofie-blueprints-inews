@@ -8,8 +8,6 @@ import {
 	GraphicIsInternal,
 	GraphicIsPilot,
 	LifeSpan,
-	PartDefinition,
-	PartToParentClass,
 	TableConfigItemGfxTemplate,
 	TV2BlueprintConfig
 } from 'tv2-common'
@@ -27,8 +25,11 @@ export function GetPieceLifespanForGraphic(
 	if (IsTargetingTLF(engine)) {
 		return PieceLifespan.WithinPart
 	}
-	if (parsedCue.end && parsedCue.end.infiniteMode) {
-		return LifeSpan(parsedCue.end.infiniteMode, PieceLifespan.WithinPart)
+	if (parsedCue.end?.infiniteMode) {
+		return LifeSpan(parsedCue.end.infiniteMode)
+	}
+	if (parsedCue.end && CalculateTime(parsedCue.end)) {
+		return PieceLifespan.WithinPart
 	}
 	return FindInfiniteModeFromConfig(config, parsedCue)
 }
@@ -60,7 +61,7 @@ export function FindInfiniteModeFromConfig(
 		return PieceLifespan.WithinPart
 	}
 
-	return LifeSpan(type, PieceLifespan.WithinPart)
+	return LifeSpan(type)
 }
 
 export function GetGraphicDuration(
@@ -124,20 +125,10 @@ export function findGfxTemplate(
 export function GetEnableForGraphic(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
-	cue: CueDefinitionGraphic<GraphicInternalOrPilot>,
-	partDefinition?: PartDefinition,
-	adlib?: boolean
+	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): TSR.TSRTimelineObj['enable'] {
 	if (IsTargetingWall(engine)) {
 		return GetEnableForWall()
-	}
-
-	if (
-		partDefinition &&
-		(endsOnPartEnd(config, cue) || GetPieceLifespanForGraphic(engine, config, cue) === PieceLifespan.OutOnSegmentEnd) &&
-		!adlib
-	) {
-		return { while: `.${PartToParentClass('studio0', partDefinition)} & !.adlib_deparent & !.full` }
 	}
 
 	const timing = CreateTimingEnable(cue, GetDefaultOut(config))
@@ -155,9 +146,4 @@ export function GetEnableForGraphic(
 			start: 0
 		}
 	}
-}
-function endsOnPartEnd(config: TV2BlueprintConfig, cue: CueDefinitionGraphic<GraphicInternalOrPilot>) {
-	return (
-		(cue.end && cue.end.infiniteMode && cue.end.infiniteMode === 'B') || findGfxTemplate(config, cue)?.OutType === 'B'
-	)
 }

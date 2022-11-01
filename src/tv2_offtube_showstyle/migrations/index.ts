@@ -4,6 +4,7 @@ import {
 	changeGfxTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
@@ -265,6 +266,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * - Remove persistent idents
 	 */
 	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
+
+	/**
+	 * 1.7.6
+	 * - Map designs from GFXTemplates to GfxDesignTemplates and delete them from GFXTemplates
+	 */
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'QBOX', 'GFXTemplates', 'GfxDesignTemplates'),
 
 	/**
 	 * 1.7.7

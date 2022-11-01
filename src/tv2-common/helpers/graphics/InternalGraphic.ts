@@ -1,5 +1,4 @@
 import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext, PieceLifespan } from 'blueprints-integration'
-import { Adlib } from 'tv2-common'
 import _ = require('underscore')
 import { AdlibTags, GraphicEngine, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
 import { TV2BlueprintConfig } from '../../blueprintConfig'
@@ -18,7 +17,6 @@ export class InternalGraphic {
 	private readonly context: IShowStyleUserContext
 	private readonly parsedCue: CueDefinitionGraphic<GraphicInternal>
 	private readonly partDefinition?: PartDefinition
-	private readonly adlib?: Adlib
 	private readonly engine: GraphicEngine
 	private readonly name: string
 	private readonly sourceLayerId: SharedSourceLayers
@@ -31,7 +29,6 @@ export class InternalGraphic {
 		config: TV2BlueprintConfig,
 		context: IShowStyleUserContext,
 		parsedCue: CueDefinitionGraphic<GraphicInternal>,
-		adlib?: Adlib,
 		partId?: string,
 		partDefinition?: PartDefinition
 	) {
@@ -43,7 +40,6 @@ export class InternalGraphic {
 		this.context = context
 		this.parsedCue = parsedCue
 		this.partDefinition = partDefinition
-		this.adlib = adlib
 		this.mappedTemplate = mappedTemplate
 		this.engine = parsedCue.target
 		this.name = GraphicDisplayName(config, parsedCue)
@@ -124,22 +120,7 @@ export class InternalGraphic {
 
 	private getInternalGraphicContent(): IBlueprintPiece['content'] {
 		return this.config.studio.GraphicsType === 'HTML'
-			? GetInternalGraphicContentCaspar(
-					this.config,
-					this.engine,
-					this.parsedCue,
-					this.partDefinition,
-					this.mappedTemplate,
-					!!this.adlib
-			  )
-			: GetInternalGraphicContentVIZ(
-					this.config,
-					this.context,
-					this.engine,
-					this.parsedCue,
-					this.partDefinition,
-					this.mappedTemplate,
-					!!this.adlib
-			  )
+			? GetInternalGraphicContentCaspar(this.config, this.engine, this.parsedCue, this.mappedTemplate)
+			: GetInternalGraphicContentVIZ(this.config, this.context, this.engine, this.parsedCue, this.mappedTemplate)
 	}
 }
