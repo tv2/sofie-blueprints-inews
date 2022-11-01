@@ -8,12 +8,7 @@ export function CreatePilotGraphic(
 	pilotGraphicProps: PilotGraphicProps
 ) {
 	const { context, adlib, parsedCue } = pilotGraphicProps
-	if (
-		parsedCue.graphic.vcpid === undefined ||
-		parsedCue.graphic.vcpid === null ||
-		parsedCue.graphic.vcpid.toString() === '' ||
-		parsedCue.graphic.vcpid.toString().length === 0
-	) {
+	if (parsedCue.graphic.vcpid < 0) {
 		context.notifyUserWarning('No valid VCPID provided')
 		return
 	}

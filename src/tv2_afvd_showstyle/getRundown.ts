@@ -112,8 +112,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								input: info.port,
 								transition: TSR.AtemTransitionStyle.CUT
 							}
-						},
-						classes: ['adlib_deparent']
+						}
 					}),
 					...GetSisyfosTimelineObjForReplay(config, info, vo)
 				]
@@ -156,8 +155,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								input: info.port,
 								transition: TSR.AtemTransitionStyle.CUT
 							}
-						},
-						classes: ['adlib_deparent']
+						}
 					}),
 					...eksternSisyfos
 				]

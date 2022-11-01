@@ -10,13 +10,9 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	AddParentClass,
-	createEmptyObject,
 	CueDefinitionEkstern,
-	EksternParentClass,
 	literal,
 	PartDefinition,
-	PartToParentClass,
 	PieceMetaData,
 	TransitionSettings,
 	TV2BlueprintConfigBase,
@@ -126,12 +122,6 @@ export function EvaluateEksternBase<
 				studioLabel: '',
 				switcherInput: atemInput,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					createEmptyObject({
-						// Only want the ident for original versions (or clones)
-						enable: { start: 0 },
-						layer: 'ekstern_enable_ident',
-						classes: [PartToParentClass('studio0', partDefinition) ?? '']
-					}),
 					literal<TSR.TimelineObjAtemME>({
 						id: '',
 						enable: {
@@ -147,10 +137,7 @@ export function EvaluateEksternBase<
 								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 								transitionSettings: TransitionSettings(config, partDefinition)
 							}
-						},
-						...(AddParentClass(config, partDefinition)
-							? { classes: [EksternParentClass('studio0', parsedCue.sourceDefinition.name)] }
-							: {})
+						}
 					}),
 
 					...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)

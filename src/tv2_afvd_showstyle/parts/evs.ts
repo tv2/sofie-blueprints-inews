@@ -13,7 +13,6 @@ import {
 import {
 	AddScript,
 	CreatePartInvalid,
-	EVSParentClass,
 	findSourceInfo,
 	GetSisyfosTimelineObjForReplay,
 	literal,
@@ -128,8 +127,7 @@ function makeContentEVS(
 						transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 						transitionSettings: TransitionSettings(config, partDefinition)
 					}
-				},
-				classes: [EVSParentClass('studio0', partDefinition.sourceDefinition.id)]
+				}
 			}),
 			...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
 		])

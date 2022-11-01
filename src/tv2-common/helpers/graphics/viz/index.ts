@@ -10,7 +10,6 @@ import {
 	IsTargetingOVL,
 	IsTargetingWall,
 	literal,
-	PartDefinition,
 	PilotGraphicProps,
 	TV2BlueprintConfig
 } from 'tv2-common'
@@ -43,16 +42,14 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 					},
 					...(IsTargetingFull(this.engine) ? { classes: ['full'] } : {})
 				}),
-				...(IsTargetingFull(this.engine)
-					? this.settings.viz.createFullPilotTimelineForStudio(this.config, this.context, !!this.adlib)
-					: [])
+				...(IsTargetingFull(this.engine) ? this.settings.viz.createFullPilotTimelineForStudio(this.config) : [])
 			]
 		}
 	}
 
 	private getEnable() {
 		if (IsTargetingOVL(this.engine) || IsTargetingWall(this.engine)) {
-			return GetEnableForGraphic(this.config, this.engine, this.parsedCue, undefined, !!this.adlib)
+			return GetEnableForGraphic(this.config, this.engine, this.parsedCue)
 		}
 		return { start: 0 }
 	}
@@ -86,11 +83,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 }
 
 export interface VizPilotGeneratorSettings {
-	createFullPilotTimelineForStudio(
-		config: TV2BlueprintConfig,
-		context: IShowStyleUserContext,
-		adlib: boolean
-	): TSR.TSRTimelineObj[]
+	createFullPilotTimelineForStudio(config: TV2BlueprintConfig): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentVIZ(
@@ -98,9 +91,7 @@ export function GetInternalGraphicContentVIZ(
 	context: IShowStyleUserContext,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	partDefinition: PartDefinition | undefined,
-	mappedTemplate: string,
-	adlib: boolean
+	mappedTemplate: string
 ): WithTimeline<GraphicsContent> {
 	return {
 		fileName: parsedCue.graphic.template,
@@ -109,7 +100,7 @@ export function GetInternalGraphicContentVIZ(
 		timelineObjects: literal<TSR.TSRTimelineObj[]>([
 			literal<TSR.TimelineObjVIZMSEElementInternal>({
 				id: '',
-				enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
+				enable: GetEnableForGraphic(config, engine, parsedCue),
 				priority: 1,
 				layer: GetTimelineLayerForGraphic(config, GetFullGraphicTemplateNameFromCue(config, parsedCue)),
 				content: {

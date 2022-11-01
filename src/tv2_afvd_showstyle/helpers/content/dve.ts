@@ -33,18 +33,7 @@ export function MakeContentDVE(
 	config: BlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
-	dveConfig: DVEConfigInput | undefined,
-	addClass?: boolean,
-	adlib?: boolean
+	dveConfig: DVEConfigInput | undefined
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
-	return MakeContentDVEBase(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		dveConfig,
-		AFVD_DVE_GENERATOR_OPTIONS,
-		addClass,
-		adlib
-	)
+	return MakeContentDVEBase(context, config, partDefinition, parsedCue, dveConfig, AFVD_DVE_GENERATOR_OPTIONS)
 }

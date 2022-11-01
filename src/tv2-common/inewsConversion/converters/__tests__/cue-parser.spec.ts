@@ -599,6 +599,26 @@ describe('Cue parser', () => {
 		)
 	})
 
+	test('Grafik (kg) - direkte - create adlib when extra lines', () => {
+		const cueGrafik = ['#kg direkte KØBENHAVN', '', ';x.xx']
+		const result = ParseCue(cueGrafik, config)
+		expect(result).toEqual(
+			literal<CueDefinitionGraphic<GraphicInternal>>({
+				type: CueType.Graphic,
+				target: 'OVL',
+
+				graphic: {
+					type: 'internal',
+					template: 'direkte',
+					cue: '#kg',
+					textFields: ['KØBENHAVN']
+				},
+				adlib: true,
+				iNewsCommand: '#kg'
+			})
+		)
+	})
+
 	test('Grafik (kg) - BillederFra_logo', () => {
 		const cueGrafik = ['#kg BillederFra_logo KØBENHAVN', ';0.01']
 		const result = ParseCue(cueGrafik, config)
@@ -899,6 +919,48 @@ describe('Cue parser', () => {
 				start: {
 					seconds: 0
 				},
+				engineNumber: 4,
+				iNewsCommand: 'VCP'
+			})
+		)
+	})
+
+	test('#cg4 pilotdata with non-digit VCPID defaults to -1', () => {
+		const cueMOS = [
+			'#cg4 pilotdata',
+			'TELEFON/KORT//LIVE_KABUL',
+			'VCPID=abc',
+			'ContinueCount=3',
+			'TELEFON/KORT//LIVE_KABUL'
+		]
+		const result = ParseCue(cueMOS, config)
+		expect(result).toEqual(
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
+				name: '',
+				vcpid: -1,
+				continueCount: -1,
+				engineNumber: 4,
+				iNewsCommand: 'VCP'
+			})
+		)
+	})
+
+	test('#cg4 pilotdata with empty VCPID defaults to -1', () => {
+		const cueMOS = [
+			'#cg4 pilotdata',
+			'TELEFON/KORT//LIVE_KABUL',
+			'VCPID=',
+			'ContinueCount=3',
+			'TELEFON/KORT//LIVE_KABUL'
+		]
+		const result = ParseCue(cueMOS, config)
+		expect(result).toEqual(
+			literal<CueDefinitionUnpairedPilot>({
+				type: CueType.UNPAIRED_PILOT,
+				name: '',
+				vcpid: -1,
+				continueCount: -1,
 				engineNumber: 4,
 				iNewsCommand: 'VCP'
 			})

@@ -1,6 +1,6 @@
 export * from './slotMappings'
 
-import { GraphicsContent, IBlueprintPiece, IShowStyleUserContext, TSR, WithTimeline } from 'blueprints-integration'
+import { GraphicsContent, IBlueprintPiece, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GetEnableForGraphic,
@@ -9,7 +9,6 @@ import {
 	joinAssetToFolder,
 	joinAssetToNetworkPath,
 	literal,
-	PartDefinition,
 	PilotGraphicProps,
 	TimelineBlueprintExt,
 	TV2BlueprintConfig
@@ -21,19 +20,17 @@ import { IsTargetingFull } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
 export interface CasparPilotGeneratorSettings {
-	createFullPilotTimelineForStudio(config: TV2BlueprintConfig, context: IShowStyleUserContext): TSR.TSRTimelineObj[]
+	createFullPilotTimelineForStudio(config: TV2BlueprintConfig): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentCaspar(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	partDefinition: PartDefinition | undefined,
-	mappedTemplate: string,
-	adlib: boolean
+	mappedTemplate: string
 ): IBlueprintPiece['content'] {
 	return {
-		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, partDefinition, mappedTemplate, adlib)
+		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, mappedTemplate)
 	}
 }
 
@@ -103,7 +100,7 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 					}
 				}),
 				...(IsTargetingFull(this.engine)
-					? this.settings.caspar.createFullPilotTimelineForStudio(this.config, this.context)
+					? this.settings.caspar.createFullPilotTimelineForStudio(this.config)
 					: EnableDSK(this.config, 'OVL'))
 			]
 		}
@@ -119,14 +116,12 @@ function CasparOverlayTimeline(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	partDefinition: PartDefinition | undefined,
-	mappedTemplate: string,
-	adlib: boolean
+	mappedTemplate: string
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
+			enable: GetEnableForGraphic(config, engine, parsedCue),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })
