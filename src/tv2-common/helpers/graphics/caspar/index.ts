@@ -310,5 +310,5 @@ function getFullPilotBaselineTimelineObject(templateName: string): TSR.TimelineO
 }
 
 export function getHtmlTemplateName(config: TV2BlueprintConfig) {
-	return joinAssetToFolder(config.selectedGraphicsSetup.OvlShowName, 'index')
+	return joinAssetToFolder(config.selectedGraphicsSetup.HtmlPackageFolder, 'index')
 }

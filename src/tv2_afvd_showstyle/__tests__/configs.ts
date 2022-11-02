@@ -48,7 +48,8 @@ export const DEFAULT_GRAPHICS_SETUP: GalleryTableConfigGraphicsSetup = {
 	Name: 'SomeProfile',
 	VcpConcept: 'SomeConcept',
 	OvlShowName: OVL_SHOW_NAME,
-	FullShowName: FULL_SHOW_NAME
+	FullShowName: FULL_SHOW_NAME,
+	HtmlPackageFolder: 'html-package-folder'
 }
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests

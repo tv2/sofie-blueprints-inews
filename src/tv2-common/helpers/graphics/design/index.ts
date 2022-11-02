@@ -100,7 +100,7 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: parsedCue.design,
 						templateData: [],
-						showId: config.selectedGraphicsSetup.OvlShowName
+						showId: config.selectedGraphicsSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
 					}
 				})
 			]
