@@ -450,7 +450,7 @@
     {
       "_id": "PTJBfPjrxPMwY4cqW",
       "label": "Activate",
-      "type": "klar_on_air",
+      "type": "ready_on_air",
       "x": -1,
       "y": 0,
       "width": 14,
