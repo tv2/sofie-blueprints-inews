@@ -140,7 +140,7 @@ describe('telefon', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						literal<TSR.TimelineObjAtemDSK>({
