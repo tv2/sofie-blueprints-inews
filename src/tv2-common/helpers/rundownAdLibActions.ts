@@ -152,7 +152,6 @@ function makeTransitionAction(
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
 			content:
-				isEffekt ||
 				/^MIX ?\d+$/i.test(transitionValues.label) ||
 				/^CUT$/i.test(transitionValues.label) ||
 				/^DIP ?\d+$/i.test(transitionValues.label)
