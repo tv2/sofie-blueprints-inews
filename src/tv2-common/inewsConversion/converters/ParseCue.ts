@@ -1,10 +1,4 @@
-import {
-	literal,
-	TableConfigItemGfxDesignTemplate,
-	TableConfigSchema,
-	TV2BlueprintConfig,
-	UnparsedCue
-} from 'tv2-common'
+import { literal, TableConfigItemGfxDesignTemplate, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
 import { CueType, GraphicEngine, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -260,8 +254,6 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 		return parseMixMinus(cue)
 	} else if (/^DESIGN_LAYOUT=/i.test(cue[0])) {
 		return parseDesignLayout(cue, config)
-	} else if (/^DESIGN_BG=/i.test(cue[0])) {
-		return parseDesignBg(cue, config)
 	} else if (/^ROBOT\s*=/i.test(cue[0])) {
 		return parseRobotCue(cue)
 	}
@@ -930,29 +922,6 @@ function findGraphicDesignConfiguration(
 	return config.showStyle.GfxDesignTemplates.find(
 		template => template.INewsStyleColumn && template.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
 	)
-}
-
-function findSchemaConfiguration(config: TV2BlueprintConfig, designIdentifier: string): TableConfigSchema | undefined {
-	return config.showStyle.SchemaConfig.find(
-		schema => schema.designIdentifier && schema.designIdentifier.toUpperCase() === designIdentifier.toUpperCase()
-	)
-}
-
-function parseDesignBg(cue: string[], config: TV2BlueprintConfig): CueDefinitionBackgroundLoop | undefined {
-	const array = cue[0].split('DESIGN_BG=')
-	const layout = array[1]
-	const tableConfigSchema = findSchemaConfiguration(config, layout)
-	if (!tableConfigSchema) {
-		return undefined
-	}
-
-	return literal<CueDefinitionBackgroundLoop>({
-		type: CueType.BackgroundLoop,
-		target: 'DVE',
-		backgroundLoop: tableConfigSchema.casparCgDveBgScene,
-		iNewsCommand: layout,
-		isFromLayout: true
-	})
 }
 
 function parseRobotCue(cue: string[]): CueDefinitionRobotCamera {

@@ -271,7 +271,7 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	GraphicsSetups: [DEFAULT_GRAPHICS_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	SchemaConfig: [],
+	GfxSchemaTemplates: [],
 	OverlayShowMapping: []
 }
 
