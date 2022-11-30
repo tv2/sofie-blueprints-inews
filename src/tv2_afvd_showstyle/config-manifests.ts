@@ -255,7 +255,7 @@ export const gfxSchemaTemplates: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'VizTemplate',
-				name: 'Viz Template Name',
+				name: 'GFX Template Name',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
