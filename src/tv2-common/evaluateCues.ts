@@ -442,7 +442,7 @@ export async function EvaluateCuesBase(
 									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
 									channel: o.content.channelName,
-									showId: o.content.showId
+									showName: o.content.showName
 								}
 							})
 						}
@@ -465,7 +465,7 @@ export async function EvaluateCuesBase(
 								templateName: 'altud',
 								channel: 'OVL1',
 								templateData: [],
-								showId: o.content.showId
+								showName: o.content.showName
 							}
 						})
 					}

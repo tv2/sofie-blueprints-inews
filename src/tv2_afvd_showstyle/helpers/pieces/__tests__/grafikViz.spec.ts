@@ -165,7 +165,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -238,7 +238,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -278,7 +278,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -353,7 +353,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -393,7 +393,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -470,7 +470,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -649,7 +649,7 @@ describe('grafik piece', () => {
 								templateName: 'direkte',
 								templateData: ['KØBENHAVN'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -726,7 +726,7 @@ describe('grafik piece', () => {
 								templateName: 'arkiv',
 								templateData: ['unnamed org'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -799,7 +799,7 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -838,7 +838,7 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj

@@ -7,8 +7,8 @@ import { SourceLayer } from '../../layers'
 export function CreateShowLifecyclePieces(
 	config: TV2BlueprintConfig,
 	part: BlueprintResultPart,
-	initializeShowIds: string[],
-	cleanupShowIds: string[]
+	initializeShowNames: string[],
+	cleanupShowNames: string[]
 ) {
 	if (config.studio.GraphicsType === 'VIZ') {
 		part.pieces.push({
@@ -29,7 +29,7 @@ export function CreateShowLifecyclePieces(
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.INITIALIZE_SHOWS,
-							showIds: initializeShowIds
+							showNames: initializeShowNames
 						}
 					}),
 					literal<TSR.TimelineObjVIZMSECleanupShows>({
@@ -41,7 +41,7 @@ export function CreateShowLifecyclePieces(
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.CLEANUP_SHOWS,
-							showIds: cleanupShowIds
+							showNames: cleanupShowNames
 						}
 					})
 				]
