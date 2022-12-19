@@ -189,7 +189,7 @@ describe('Sync Ingest Changes To Part Instances', () => {
 				makeSoundBed('someId4', 'SN_Intro', {
 					infinite: { infinitePieceId: 'someInfinite', fromPreviousPart: false, fromHold: true }
 				}),
-				makeSoundBed('someId5', 'SN_Intro', { dynamicallyInserted: 1649158767173 })
+				makeSoundBed('someId5', 'SN_Intro', { dynamicallyInserted: { time: 1649158767173 } })
 			]
 		})
 		const newPart: BlueprintSyncIngestNewData = literal<BlueprintSyncIngestNewData>({
