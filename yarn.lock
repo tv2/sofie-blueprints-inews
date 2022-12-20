@@ -560,20 +560,20 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@46.0.4":
-  version "46.0.4"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.0.4.tgz#70907f5d6be3d6c45eaa2432fffd59103625a2c7"
-  integrity sha512-BTrnMzV5ijCgdHyZl9XpXadz6GN8ts7AeY202oQGGxS4wntV31vX4u0QG0ooZWGm9K44GpTTO2jnmtFznxnOrA==
+"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@46.1.1":
+  version "46.1.1"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.1.1.tgz#21a6eda0a1635f59f680cc868e50195bf700caf1"
+  integrity sha512-xep0lLLblQmCEzUy5S/MQZ1YsRVjwThAu+6HFyi/A++IKkGLTQRX7Pk1lAA3W2TB+vqcBSw+65YSHVSsiYqUNA==
   dependencies:
-    "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.0.0"
+    "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.1.0"
     timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@3.0.3"
     tslib "^2.4.0"
     type-fest "^2.19.0"
 
-"@sofie-automation/shared-lib@npm:@tv2media/shared-lib@46.0.0":
-  version "46.0.0"
-  resolved "https://registry.yarnpkg.com/@tv2media/shared-lib/-/shared-lib-46.0.0.tgz#27ce22985d205b99dd5c06321dd68e0cd80536e4"
-  integrity sha512-TYWB37qMCScqm8a12b2Uq3h4ZewUtLnIMEnThymkXMViMywGgzRTk44j7gAulFr1u8aPuIE6cJchbw9KeRZcYg==
+"@sofie-automation/shared-lib@npm:@tv2media/shared-lib@46.1.0":
+  version "46.1.0"
+  resolved "https://registry.yarnpkg.com/@tv2media/shared-lib/-/shared-lib-46.1.0.tgz#ea13b33b0be2feb5cc3d821a6fe992c865f73c5f"
+  integrity sha512-87h3/w/9vuP6fafH3If8S5j6PlLDSwZGJ1vghpXHHSMtqMV5pm5KZPuT80hGITxXO5GNF1JizaX52Lvb3L6iWw==
   dependencies:
     tslib "^2.4.0"
     type-fest "^2.19.0"
