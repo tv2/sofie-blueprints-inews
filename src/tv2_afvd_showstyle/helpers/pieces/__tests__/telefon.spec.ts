@@ -19,7 +19,7 @@ import {
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import {
-	DEFAULT_GRAPHICS_SETUP,
+	DEFAULT_GFX_SETUP,
 	defaultShowStyleConfig,
 	defaultStudioConfig,
 	OVL_SHOW_NAME
@@ -95,7 +95,7 @@ describe('telefon', () => {
 				},
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
-				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
+				selectedGfxSetup: DEFAULT_GFX_SETUP
 			},
 			mockContext,
 			pieces,

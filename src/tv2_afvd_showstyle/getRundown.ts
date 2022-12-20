@@ -459,7 +459,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: 'BG_LOADER_SC',
 						templateData: [],
-						showName: config.selectedGraphicsSetup.OvlShowName
+						showName: config.selectedGfxSetup.OvlShowName
 					}
 				})
 			)
@@ -1167,7 +1167,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
-					concept: config.selectedGraphicsSetup.VcpConcept
+					concept: config.selectedGfxSetup.VcpConcept
 				}
 			})
 		]

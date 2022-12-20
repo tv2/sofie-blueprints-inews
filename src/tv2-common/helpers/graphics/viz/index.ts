@@ -119,21 +119,21 @@ export function GetInternalGraphicContentVIZ(
 }
 
 function findShowName(config: TV2BlueprintConfig, context: IShowStyleUserContext, engine: GraphicEngine): string {
-	const graphicsSetup = config.selectedGraphicsSetup
+	const gfxSetup = config.selectedGfxSetup
 	switch (engine) {
 		case 'FULL':
 		case 'WALL':
-			if (graphicsSetup.FullShowName === undefined) {
+			if (gfxSetup.FullShowName === undefined) {
 				context.logWarning("You're using Viz graphics with an incompatible ShowStyle")
 				return ''
 			}
-			return graphicsSetup.FullShowName
+			return gfxSetup.FullShowName
 		case 'TLF':
 		case 'OVL':
-			if (graphicsSetup.OvlShowName === undefined) {
+			if (gfxSetup.OvlShowName === undefined) {
 				context.logWarning("You're using Viz graphics with an incompatible ShowStyle")
 				return ''
 			}
-			return graphicsSetup.OvlShowName
+			return gfxSetup.OvlShowName
 	}
 }

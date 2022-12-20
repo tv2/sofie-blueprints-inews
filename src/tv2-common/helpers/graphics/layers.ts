@@ -2,8 +2,8 @@ import { TV2BlueprintConfig } from 'tv2-common'
 import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 
 export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: string) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
+	const conf = config.showStyle.GfxTemplates
+		? config.showStyle.GfxTemplates.find(gfx => gfx.VizTemplate.toString() === name)
 		: undefined
 
 	if (!conf) {
@@ -38,8 +38,8 @@ export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: strin
 }
 
 export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: string) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
+	const conf = config.showStyle.GfxTemplates
+		? config.showStyle.GfxTemplates.find(gfx => gfx.VizTemplate.toString() === name)
 		: undefined
 
 	if (!conf) {

@@ -1,7 +1,7 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
 import {
 	DEFAULT_GRAPHICS,
-	getGraphicsSetupsEntries,
+	getGfxSetupsEntries,
 	GRAPHICS_SETUPS_NAME_COLUMN_ID,
 	GRAPHICS_SETUPS_TABLE_ID
 } from 'tv2-common'
@@ -147,7 +147,7 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
-const graphicsSetups = getGraphicsSetupsEntries([
+const gfxSetups = getGfxSetupsEntries([
 	{
 		id: 'VcpConcept',
 		name: 'VCP Concept',
@@ -266,9 +266,9 @@ export const gfxSchemaTemplates: ConfigManifestEntry[] = [
 	}
 ]
 
-export const overlayShowMapping: ConfigManifestEntry = {
-	id: 'OverlayShowMapping',
-	name: 'Overlay Show mapping',
+export const gfxShowMapping: ConfigManifestEntry = {
+	id: 'GfxShowMapping',
+	name: 'GFX Show mapping',
 	description: 'Maps Overlay Shows to the variety of Skemas and Designs',
 	type: ConfigManifestEntryType.TABLE,
 	required: false,
@@ -287,10 +287,10 @@ export const overlayShowMapping: ConfigManifestEntry = {
 			defaultVal: ''
 		},
 		{
-			id: 'GraphicsSetup',
-			name: 'Graphics Setup',
+			id: 'GfxSetup',
+			name: 'GFX Setup',
 			rank: 1,
-			description: 'Names of the Graphics Setups',
+			description: 'Names of the GFX Setups',
 			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
 			tableId: GRAPHICS_SETUPS_TABLE_ID,
 			columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
@@ -332,19 +332,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	},
 	dveStylesManifest,
 	{
-		/*
-		Graphic template setup								
-		Grafik template (viz)	
-		Source layer
-		Layer mapping
-		inews code	
-		inews name	
-		destination	default out (default, S, B, O)	
-		var 1 name	
-		var 2 name 	
-		note
-		*/
-		id: 'GFXTemplates',
+		id: 'GfxTemplates',
 		name: 'GFX Templates',
 		description:
 			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are also required. GFX Template Name is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNews i.e. "ident_nyhederne"',
@@ -426,9 +414,9 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		]
 	},
 	...gfxDesignTemplates,
-	...graphicsSetups,
+	...gfxSetups,
 	...gfxSchemaTemplates,
-	overlayShowMapping,
+	gfxShowMapping,
 	{
 		/*
 		Wipes Config

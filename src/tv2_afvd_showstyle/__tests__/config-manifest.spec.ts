@@ -5,7 +5,7 @@ import { ShowStyleConfig } from '../helpers/config'
 const blankShowStyleConfig: ShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	DVEStyles: [],
-	GFXTemplates: [],
+	GfxTemplates: [],
 	GfxDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
@@ -14,10 +14,10 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	CasparCGLoadingClip: '',
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	SelectedGraphicsSetupName: '',
-	GraphicsSetups: [],
+	SelectedGfxSetupName: '',
+	GfxSetups: [],
 	GfxSchemaTemplates: [],
-	OverlayShowMapping: []
+	GfxShowMapping: []
 }
 
 describe('Config Manifest', () => {

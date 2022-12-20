@@ -1,6 +1,8 @@
+import { BasicConfigItemValue, IBlueprintShowStyleVariant } from '@sofie-automation/blueprints-integration'
 import { IOutputLayer, ISourceLayer, MigrationContextShowStyle, MigrationStepShowStyle } from 'blueprints-integration'
 import { forceSourceLayerToDefaultsBase, literal } from 'tv2-common'
 import * as _ from 'underscore'
+import { TableConfigItemValue } from '../../types/blueprints-integration'
 import { showStyleConfigManifest } from '../config-manifests'
 import OutputlayerDefaults from './outputlayer-defaults'
 import SourcelayerDefaults from './sourcelayer-defaults'
@@ -104,4 +106,99 @@ export function getOutputLayerDefaultsMigrationSteps(versionStr: string): Migrat
 			})
 		})
 	)
+}
+
+/**
+ * "Renames" the id of a table by copying over all values over into a new table which has the new id - then removes the values from the old table
+ */
+export function renameTableId(version: string, oldTableId: string, newTableId: string): MigrationStepShowStyle {
+	return {
+		id: `${version}.rename.table.id.${oldTableId}.to.${newTableId}`,
+		version,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const oldConfigTable = (context.getBaseConfig(oldTableId) as unknown) as TableConfigItemValue
+			if (!oldConfigTable || oldConfigTable.length === 0) {
+				return false
+			}
+
+			const newConfigTable = (context.getBaseConfig(newTableId) as unknown) as TableConfigItemValue
+			return !newConfigTable
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const oldConfigTable = (context.getBaseConfig(oldTableId) as unknown) as TableConfigItemValue
+			const newConfigTable = ((context.getBaseConfig(newTableId) as unknown) as TableConfigItemValue) ?? []
+			oldConfigTable.map(value => newConfigTable.push(value))
+
+			context.setBaseConfig(newTableId, newConfigTable)
+			context.setBaseConfig(oldTableId, [])
+		}
+	}
+}
+
+/**
+ * "Renames" the id of a column by overriding the value of the old column onto the new column - then removes the value from the old column
+ */
+export function renameColumnId(version: string, oldColumnId: string, newColumnId: string): MigrationStepShowStyle {
+	return {
+		id: `${version}.rename.column.id.${oldColumnId}.to.${newColumnId}`,
+		version,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const oldConfigTable = (context.getBaseConfig(oldColumnId) as unknown) as BasicConfigItemValue
+			if (!oldConfigTable || Object.keys(oldConfigTable).length === 0) {
+				return false
+			}
+
+			const newConfigTable = (context.getBaseConfig(newColumnId) as unknown) as BasicConfigItemValue
+			return !newConfigTable
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const oldConfigColumn = (context.getBaseConfig(oldColumnId) as unknown) as BasicConfigItemValue
+
+			context.setBaseConfig(newColumnId, oldConfigColumn)
+			context.setBaseConfig(oldColumnId, [])
+		}
+	}
+}
+
+/**
+ *  For all variants: "Renames" the id of a column by overriding the value of the old column onto the new column - then removes the value from the old column
+ */
+export function renameColumnIdForAllVariants(
+	version: string,
+	oldColumnId: string,
+	newColumnId: string
+): MigrationStepShowStyle {
+	return {
+		id: `${version}.rename.column.id.${oldColumnId}.to.${newColumnId}.for.all.variants`,
+		version,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const allVariants: IBlueprintShowStyleVariant[] = context.getAllVariants()
+
+			if (allVariants.length === 0) {
+				return false
+			}
+
+			const noVariantsHaveValueInOldColumn: boolean = allVariants.every((variant: IBlueprintShowStyleVariant) => {
+				const oldColumn = context.getVariantConfig(variant._id, oldColumnId)
+				return !oldColumn || Object.keys(oldColumn).length === 0
+			})
+
+			return !noVariantsHaveValueInOldColumn
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const allVariants: IBlueprintShowStyleVariant[] = context.getAllVariants()
+			allVariants.forEach((variant: IBlueprintShowStyleVariant) => {
+				const oldColumn = context.getVariantConfig(variant._id, oldColumnId)
+				if (!oldColumn || Object.keys(oldColumn).length === 0) {
+					return
+				}
+
+				context.setVariantConfig(variant._id, newColumnId, oldColumn)
+				context.setVariantConfig(variant._id, oldColumnId, {})
+			})
+		}
+	}
 }

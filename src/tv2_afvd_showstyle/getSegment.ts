@@ -119,16 +119,16 @@ function insertSpecialPieces(
 		return
 	}
 
-	const graphicsSetupsToInitialize = segmentPayload?.initializeShows
-	if (graphicsSetupsToInitialize) {
+	const gfxSetupsToInitialize = segmentPayload?.initializeShows
+	if (gfxSetupsToInitialize) {
 		const showsToInitialize = new Set<string>()
 		const allShows = new Set<string>()
-		config.showStyle.GraphicsSetups.forEach(graphicsSetup => {
-			allShows.add(graphicsSetup.FullShowName)
-			allShows.add(graphicsSetup.OvlShowName)
-			if (graphicsSetupsToInitialize.includes(graphicsSetup.Name)) {
-				showsToInitialize.add(graphicsSetup.FullShowName)
-				showsToInitialize.add(graphicsSetup.OvlShowName)
+		config.showStyle.GfxSetups.forEach(gfxSetup => {
+			allShows.add(gfxSetup.FullShowName)
+			allShows.add(gfxSetup.OvlShowName)
+			if (gfxSetupsToInitialize.includes(gfxSetup.Name)) {
+				showsToInitialize.add(gfxSetup.FullShowName)
+				showsToInitialize.add(gfxSetup.OvlShowName)
 			}
 		})
 		const showsToCleanup = Array.from(allShows).filter(show => !showsToInitialize.has(show))

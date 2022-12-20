@@ -1,13 +1,13 @@
 import { IBlueprintConfig, ICommonContext, IShowStyleContext, TableConfigItemValue } from 'blueprints-integration'
 import {
-	findGraphicsSetup,
-	TableConfigGraphicsSetup,
-	TableConfigItemOverlayShowMapping,
+	findGfxSetup,
+	TableConfigGfxSetup,
+	TableConfigItemGfxShowMapping,
 	TV2ShowstyleBlueprintConfigBase
 } from 'tv2-common'
 import { BlueprintConfig as BlueprintConfigBase } from '../../tv2_afvd_studio/helpers/config'
 
-export interface GalleryTableConfigGraphicsSetup extends TableConfigGraphicsSetup {
+export interface GalleryTableConfigGfxSetup extends TableConfigGfxSetup {
 	VcpConcept: string
 	FullShowName: string
 	OvlShowName: string
@@ -15,19 +15,19 @@ export interface GalleryTableConfigGraphicsSetup extends TableConfigGraphicsSetu
 
 export interface BlueprintConfig extends BlueprintConfigBase {
 	showStyle: ShowStyleConfig
-	selectedGraphicsSetup: GalleryTableConfigGraphicsSetup
+	selectedGfxSetup: GalleryTableConfigGfxSetup
 }
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	SelectedGraphicsSetupName: string
-	GraphicsSetups: GalleryTableConfigGraphicsSetup[]
-	OverlayShowMapping: TableConfigItemOverlayShowMapping[]
+	SelectedGfxSetupName: string
+	GfxSetups: GalleryTableConfigGfxSetup[]
+	GfxShowMapping: TableConfigItemGfxShowMapping[]
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const showstyleConfig = (rawConfig as unknown) as ShowStyleConfig
-	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig, {
+	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		Name: '',
 		VcpConcept: '',
 		OvlShowName: '',
@@ -36,7 +36,7 @@ export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig
 	})
 	return {
 		showStyle: showstyleConfig,
-		selectedGraphicsSetup
+		selectedGfxSetup
 	}
 }
 

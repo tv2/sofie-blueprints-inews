@@ -33,7 +33,7 @@ export interface TableConfigItemGfxDesignTemplate {
 	VizTemplate: string
 }
 
-export interface TableConfigItemOverlayShowMapping {
+export interface TableConfigItemGfxShowMapping {
 	Design: string
 	GraphicsSetup: string[]
 	Schema: string[]
@@ -49,7 +49,7 @@ export interface TableConfigGfxSchema {
 	VizTemplate: string
 }
 
-export interface TableConfigGraphicsSetup {
+export interface TableConfigGfxSetup {
 	Name: string
 	HtmlPackageFolder: string
 	OvlShowName?: string
@@ -152,21 +152,21 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
-	GFXTemplates: TableConfigItemGfxTemplate[]
+	GfxTemplates: TableConfigItemGfxTemplate[]
 	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
 	GfxSchemaTemplates: TableConfigGfxSchema[]
-	GraphicsSetups: TableConfigGraphicsSetup[]
-	SelectedGraphicsSetupName: string
+	GfxSetups: TableConfigGfxSetup[]
+	SelectedGfxSetupName: string
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
-	selectedGraphicsSetup: TableConfigGraphicsSetup
+	selectedGfxSetup: TableConfigGfxSetup
 }
 
 export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>

@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TableConfigItemValue
 } from 'blueprints-integration'
-import { findGraphicsSetup, TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { findGfxSetup, TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
 
@@ -22,7 +22,7 @@ export interface TableConfigItemGfxTemplates {
 
 export interface OfftubeShowstyleBlueprintConfig extends OfftubeStudioBlueprintConfig {
 	showStyle: OfftubeShowStyleConfig
-	selectedGraphicsSetup: TableConfigGraphicsSetup
+	selectedGfxSetup: TableConfigGfxSetup
 }
 
 export interface DVEConfigInput {
@@ -36,18 +36,18 @@ export interface DVEConfigInput {
 
 export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	GraphicsSetups: TableConfigGraphicsSetup[]
+	GfxSetups: TableConfigGfxSetup[]
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
-	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig, {
+	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		Name: '',
 		HtmlPackageFolder: ''
 	})
 	return {
 		showStyle: showstyleConfig,
-		selectedGraphicsSetup
+		selectedGfxSetup
 	}
 }
 

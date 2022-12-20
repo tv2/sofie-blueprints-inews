@@ -1,6 +1,6 @@
 import { literal, parseMapStr } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { GalleryTableConfigGraphicsSetup, ShowStyleConfig } from '../helpers/config'
+import { GalleryTableConfigGfxSetup, ShowStyleConfig } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -44,7 +44,7 @@ function prepareConfig(
 
 export const OVL_SHOW_NAME = 'ovl-show-id'
 export const FULL_SHOW_NAME = 'full-show-id'
-export const DEFAULT_GRAPHICS_SETUP: GalleryTableConfigGraphicsSetup = {
+export const DEFAULT_GFX_SETUP: GalleryTableConfigGfxSetup = {
 	Name: 'SomeProfile',
 	VcpConcept: 'SomeConcept',
 	OvlShowName: OVL_SHOW_NAME,
@@ -186,9 +186,9 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	WipesConfig: [],
 	BreakerConfig: DefaultBreakerConfig(),
 	MakeAdlibsForFulls: true,
-	GFXTemplates: [
+	GfxTemplates: [
 		...DefaultGrafikConfig(),
-		...literal<ShowStyleConfig['GFXTemplates']>([
+		...literal<ShowStyleConfig['GfxTemplates']>([
 			{
 				INewsCode: 'GRAFIK',
 				INewsName: 'wall',
@@ -267,12 +267,12 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			FadeOut: 0
 		}
 	],
-	SelectedGraphicsSetupName: 'SomeProfile',
-	GraphicsSetups: [DEFAULT_GRAPHICS_SETUP],
+	SelectedGfxSetupName: 'SomeProfile',
+	GfxSetups: [DEFAULT_GFX_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
 	GfxSchemaTemplates: [],
-	OverlayShowMapping: []
+	GfxShowMapping: []
 }
 
 export const EMPTY_SOURCE_CONFIG = {

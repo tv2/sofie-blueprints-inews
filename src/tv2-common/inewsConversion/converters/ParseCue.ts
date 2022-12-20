@@ -351,7 +351,7 @@ function parsekg(
 	}
 
 	const graphicConfig = code
-		? config.showStyle.GFXTemplates.find(
+		? config.showStyle.GfxTemplates.find(
 				template =>
 					template.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
 					template.INewsName.toUpperCase() === graphic.template.toUpperCase()
@@ -734,7 +734,7 @@ function parseTargetEngine(
 		})
 	}
 
-	const graphicConfig = config.showStyle.GFXTemplates.find(
+	const graphicConfig = config.showStyle.GfxTemplates.find(
 		template =>
 			template.INewsCode.toUpperCase() === code?.toUpperCase() &&
 			template.INewsName.toUpperCase() === iNewsName.toUpperCase()
