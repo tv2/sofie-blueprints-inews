@@ -1,9 +1,4 @@
-import {
-	MigrationContextStudio,
-	MigrationStepStudio,
-	TableConfigItemValue,
-	TSR
-} from '@tv2media/blueprints-integration'
+import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue, TSR } from 'blueprints-integration'
 import {
 	AddKeepAudio,
 	MoveClipSourcePath,
@@ -306,7 +301,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	GetMappingDefaultMigrationStepForLayer('1.5.1', SharedGraphicLLayer.GraphicLLayerAdLibs, true),
 	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerWall, true),
 	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerPilot, true),
-	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerPilotOverlay, true),
+	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerOverlayPilot, true),
 	GetMappingDefaultMigrationStepForLayer('1.5.3', SharedGraphicLLayer.GraphicLLayerFullLoop, true),
 	SetConfigTo('1.5.3', 'Offtube', 'AtemSource.GFXFull', 12),
 
@@ -361,6 +356,14 @@ export const studioMigrations: MigrationStepStudio[] = [
 	renameMapping('1.7.3', 'casparcg_player_jingle_looakhead', OfftubeCasparLLayer.CasparPlayerJinglePreload),
 	GetMappingDefaultMigrationStepForLayer('1.7.3', OfftubeCasparLLayer.CasparPlayerJinglePreload, true),
 	GetMappingDefaultMigrationStepForLayer('1.7.3', OfftubeCasparLLayer.CasparPlayerJingle, true),
+
+	/**
+	 * 1.7.8
+	 * - Rename the GraphicLLayerOverlayPilot, because alphabetical order matters for deeply extending the Caspar Objects targeting the same channel:layer
+	 * - Change lookahead properties and channel on GraphicLLayerOverlayPilot
+	 */
+	renameMapping('1.7.8', 'graphic_pilot_overlay', 'graphic_overlay_pilot'),
+	GetMappingDefaultMigrationStepForLayer('1.7.8', 'graphic_overlay_pilot', true),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

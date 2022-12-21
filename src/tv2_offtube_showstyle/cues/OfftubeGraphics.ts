@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	IShowStyleUserContext,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	Adlib,
 	CreateInternalGraphic,
@@ -24,10 +24,10 @@ import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
 
 export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
 	caspar: {
-		createPilotTimelineForStudio: createPilotTimeline
+		createFullPilotTimelineForStudio: createPilotTimeline
 	},
 	viz: {
-		createPilotTimelineForStudio: () => []
+		createFullPilotTimelineForStudio: () => []
 	}
 }
 
@@ -44,7 +44,6 @@ export function OfftubeEvaluateGrafikCaspar(
 ) {
 	if (GraphicIsPilot(parsedCue)) {
 		CreatePilotGraphic(pieces, adlibPieces, actions, {
-			engine: parsedCue.target,
 			config,
 			context,
 			partId,
@@ -58,10 +57,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	}
 }
 
-function createPilotTimeline(
-	config: OfftubeShowstyleBlueprintConfig,
-	_context: IShowStyleUserContext
-): TSR.TSRTimelineObj[] {
+function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({

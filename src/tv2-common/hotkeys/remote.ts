@@ -1,4 +1,4 @@
-import { IBlueprintTriggeredActions } from '@tv2media/blueprints-integration'
+import { IBlueprintTriggeredActions } from 'blueprints-integration'
 import { MakeStudioSourceHotkeys, SourceHotkeyTriggers } from './helpers'
 
 export type RemoteSourceHotkeyAssignments = SourceHotkeyTriggers

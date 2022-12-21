@@ -6,7 +6,7 @@ import {
 	PartEndState,
 	TimelinePersistentState,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	disablePilotWipeAfterJingle,
 	onTimelineGenerate,

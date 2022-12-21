@@ -1,105 +1,114 @@
 export * from './slotMappings'
 
-import {
-	GraphicsContent,
-	IBlueprintPiece,
-	IShowStyleUserContext,
-	TSR,
-	WithTimeline
-} from '@tv2media/blueprints-integration'
+import { GraphicsContent, IBlueprintPiece, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
+	GetEnableForGraphic,
+	GetTimelineLayerForGraphic,
 	GraphicInternal,
-	GraphicPilot,
-	JoinAssetToFolder,
-	JoinAssetToNetworkPath,
+	joinAssetToFolder,
+	joinAssetToNetworkPath,
 	literal,
-	PartDefinition,
+	PilotGraphicProps,
 	TimelineBlueprintExt,
 	TV2BlueprintConfig
 } from 'tv2-common'
 import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
-import { GetEnableForGraphic, GetTimelineLayerForGraphic } from '..'
 import { EnableDSK } from '../../dsk'
-import { IsTargetingFull, IsTargetingWall } from '../target'
+import { PilotGraphicGenerator } from '../pilot'
+import { IsTargetingFull } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
 export interface CasparPilotGeneratorSettings {
-	createPilotTimelineForStudio(config: TV2BlueprintConfig, context: IShowStyleUserContext): TSR.TSRTimelineObj[]
+	createFullPilotTimelineForStudio(config: TV2BlueprintConfig): TSR.TSRTimelineObj[]
 }
 
 export function GetInternalGraphicContentCaspar(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	partDefinition: PartDefinition | undefined,
-	mappedTemplate: string,
-	adlib: boolean
+	mappedTemplate: string
 ): IBlueprintPiece['content'] {
 	return {
-		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, partDefinition, mappedTemplate, adlib)
+		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, mappedTemplate)
 	}
 }
 
-export function GetPilotGraphicContentCaspar(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
-	parsedCue: CueDefinitionGraphic<GraphicPilot>,
-	settings: CasparPilotGeneratorSettings,
-	engine: GraphicEngine
-): WithTimeline<GraphicsContent> {
-	const graphicFolder = config.studio.GraphicFolder ? `${config.studio.GraphicFolder}\\` : ''
-	const fileName = JoinAssetToFolder(config.studio.GraphicFolder, parsedCue.graphic.name)
-	const templateData = {
-		display: 'program',
-		slots: {
-			'250_full': {
-				payload: {
-					type: 'still',
-					url: encodeURI(
-						`${config.studio.HTMLGraphics.GraphicURL}\\${fileName}${config.studio.GraphicFileExtension}`
-							.replace(/\//g, '\\') // Replace forward slash with backward slash
-							.replace(/\\/g, '\\\\') // Replace every \ with \\ and encodURI. Double backslash means the HTML template will be able to parse the string correctly. encodeURI so Caspar doesn't mangle the data.
-					)
+export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
+	private readonly layerMappingName
+
+	constructor(graphicProps: PilotGraphicProps) {
+		super(graphicProps)
+		this.layerMappingName = this.getLayerMappingName()
+	}
+	public getContent(): WithTimeline<GraphicsContent> {
+		const graphicFolder = this.config.studio.GraphicFolder ? `${this.config.studio.GraphicFolder}\\` : ''
+		const sceneName = this.getSceneName()
+		const fileName = joinAssetToFolder(this.config.studio.GraphicFolder, sceneName)
+		const absoluteFilePath = `${this.config.studio.HTMLGraphics.GraphicURL}\\${fileName}${this.config.studio.GraphicFileExtension}`
+		const payloadType = IsTargetingFull(this.engine) ? 'still' : 'overlay'
+		const templateData = {
+			display: 'program',
+			slots: {
+				[layerToHTMLGraphicSlot[this.layerMappingName]]: {
+					payload: {
+						type: payloadType,
+						url: encodeURI(
+							absoluteFilePath
+
+								.replace(/\//g, '\\') // Replace forward slash with backward slash
+								.replace(/\\/g, '\\\\') // Replace every \ with \\ and encodURI. Double backslash means the HTML template will be able to parse the string correctly. encodeURI so Caspar doesn't mangle the data.
+						),
+						noAnimation: false
+					},
+					display: 'program'
 				}
-			}
+			},
+			partialUpdate: !IsTargetingFull(this.engine)
+		}
+		return {
+			fileName,
+			path: joinAssetToNetworkPath(
+				this.config.studio.GraphicNetworkBasePath,
+				graphicFolder,
+				sceneName,
+				this.config.studio.GraphicFileExtension
+			),
+			mediaFlowIds: [this.config.studio.GraphicMediaFlowId],
+			ignoreMediaObjectStatus: this.config.studio.GraphicIgnoreStatus,
+			ignoreBlackFrames: true,
+			ignoreFreezeFrame: true,
+			timelineObjects: [
+				literal<TSR.TimelineObjCCGTemplate & TimelineBlueprintExt>({
+					id: '',
+					enable: {
+						while: '1'
+					},
+					priority: 100,
+					layer: this.layerMappingName,
+					metaData: { templateData, fileName },
+					content: {
+						deviceType: TSR.DeviceType.CASPARCG,
+						type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+						templateType: 'html',
+						name: getHtmlTemplateName(this.config),
+						data: templateData,
+						useStopCommand: false,
+						mixer: {
+							opacity: 100
+						}
+					}
+				}),
+				...(IsTargetingFull(this.engine)
+					? this.settings.caspar.createFullPilotTimelineForStudio(this.config)
+					: EnableDSK(this.config, 'OVL'))
+			]
 		}
 	}
-	return {
-		fileName,
-		path: JoinAssetToNetworkPath(
-			config.studio.GraphicNetworkBasePath,
-			graphicFolder,
-			parsedCue.graphic.name,
-			config.studio.GraphicFileExtension
-		),
-		mediaFlowIds: [config.studio.GraphicMediaFlowId],
-		ignoreMediaObjectStatus: config.studio.GraphicIgnoreStatus,
-		ignoreBlackFrames: true,
-		ignoreFreezeFrame: true,
-		timelineObjects: [
-			literal<TSR.TimelineObjCCGTemplate & TimelineBlueprintExt>({
-				id: '',
-				enable: {
-					while: '1'
-				},
-				priority: 100,
-				layer: IsTargetingWall(engine) ? SharedGraphicLLayer.GraphicLLayerWall : SharedGraphicLLayer.GraphicLLayerPilot,
-				metaData: { templateData, fileName },
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-					templateType: 'html',
-					name: 'sport-overlay/index',
-					data: templateData,
-					useStopCommand: false,
-					mixer: {
-						opacity: 100
-					}
-				}
-			}),
-			...(IsTargetingFull(engine) ? settings.createPilotTimelineForStudio(config, context) : [])
-		]
+
+	private getSceneName() {
+		const nameChunks = this.parsedCue.graphic.name.split('/')
+		return nameChunks[nameChunks.length - 1]
 	}
 }
 
@@ -107,14 +116,12 @@ function CasparOverlayTimeline(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
-	partDefinition: PartDefinition | undefined,
-	mappedTemplate: string,
-	adlib: boolean
+	mappedTemplate: string
 ): TSR.TSRTimelineObj[] {
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
-			enable: GetEnableForGraphic(config, engine, parsedCue, partDefinition, adlib),
+			enable: GetEnableForGraphic(config, engine, parsedCue),
 			priority: 1,
 			layer: GetTimelineLayerForGraphic(config, mappedTemplate),
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })
@@ -133,10 +140,10 @@ export function CreateHTMLRendererContent(
 		deviceType: TSR.DeviceType.CASPARCG,
 		type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
 		templateType: 'html',
-		name: 'sport-overlay/index',
+		name: getHtmlTemplateName(config),
 		data: {
 			display: 'program',
-			slots: HTMLTemplateContent(config, mappedTemplate, data),
+			slots: getHtmlTemplateContent(config, mappedTemplate, data),
 			partialUpdate: true
 		},
 		useStopCommand: false,
@@ -146,7 +153,7 @@ export function CreateHTMLRendererContent(
 	}
 }
 
-function HTMLTemplateContent(config: TV2BlueprintConfig, graphicTemplate: string, data: object): Partial<Slots> {
+function getHtmlTemplateContent(config: TV2BlueprintConfig, graphicTemplate: string, data: object): Partial<Slots> {
 	const layer = GetTimelineLayerForGraphic(config, graphicTemplate)
 
 	const slot = layerToHTMLGraphicSlot[layer]
@@ -164,4 +171,144 @@ function HTMLTemplateContent(config: TV2BlueprintConfig, graphicTemplate: string
 			}
 		}
 	}
+}
+
+export function getHtmlGraphicBaseline(config: TV2BlueprintConfig) {
+	const templateName = getHtmlTemplateName(config)
+	const partiallyUpdatableLayerMappings = [
+		SharedGraphicLLayer.GraphicLLayerOverlayIdent,
+		SharedGraphicLLayer.GraphicLLayerOverlayLower,
+		SharedGraphicLLayer.GraphicLLayerOverlayTema,
+		SharedGraphicLLayer.GraphicLLayerOverlayTopt,
+		SharedGraphicLLayer.GraphicLLayerOverlayPilot,
+		SharedGraphicLLayer.GraphicLLayerLocators
+	]
+	return [
+		...getSlotBaselineTimelineObjects(templateName, partiallyUpdatableLayerMappings),
+		getCompoundSlotBaselineTimelineObject(templateName, partiallyUpdatableLayerMappings),
+		getDesignBaselineTimelineObject(templateName),
+		getFullPilotBaselineTimelineObject(templateName)
+	]
+}
+
+function getSlotBaselineTimelineObjects(
+	templateName: string,
+	layerMappings: SharedGraphicLLayer[]
+): TSR.TSRTimelineObj[] {
+	return layerMappings
+		.filter(layer => layerToHTMLGraphicSlot[layer])
+		.map<TSR.TimelineObjCCGTemplate>(layer => ({
+			id: '',
+			enable: {
+				while: '1'
+			},
+			priority: 0,
+			layer,
+			content: {
+				deviceType: TSR.DeviceType.CASPARCG,
+				type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+				templateType: 'html',
+				name: templateName,
+				data: {
+					display: 'program',
+					slots: {
+						[layerToHTMLGraphicSlot[layer]]: {
+							payload: {},
+							display: 'hidden'
+						}
+					},
+					partialUpdate: true
+				},
+				useStopCommand: false
+			}
+		}))
+}
+
+function getCompoundSlotBaselineTimelineObject(
+	templateName: string,
+	layerMappings: SharedGraphicLLayer[]
+): TSR.TimelineObjCCGTemplate {
+	const slots = layerMappings.reduce((obj: Record<string, any>, layer) => {
+		if (layerToHTMLGraphicSlot[layer]) {
+			obj[layerToHTMLGraphicSlot[layer]] = {
+				payload: {},
+				display: 'hidden'
+			}
+		}
+		return obj
+	}, {})
+	return {
+		id: '',
+		enable: {
+			while: '1'
+		},
+		priority: 0,
+		layer: SharedGraphicLLayer.GraphicLLayerOverlay,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+			templateType: 'html',
+			name: templateName,
+			data: {
+				display: 'program',
+				slots,
+				partialUpdate: true
+			},
+			useStopCommand: false
+		}
+	}
+}
+
+function getDesignBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+	return {
+		id: '',
+		enable: {
+			while: '1'
+		},
+		priority: 0,
+		layer: SharedGraphicLLayer.GraphicLLayerDesign,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+			templateType: 'html',
+			name: templateName,
+			data: {
+				display: 'program',
+				design: '',
+				partialUpdate: true
+			},
+			useStopCommand: false
+		}
+	}
+}
+
+function getFullPilotBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+	return {
+		id: '',
+		enable: {
+			while: '1'
+		},
+		priority: 0,
+		layer: SharedGraphicLLayer.GraphicLLayerPilot,
+		content: {
+			deviceType: TSR.DeviceType.CASPARCG,
+			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
+			templateType: 'html',
+			name: templateName,
+			data: {
+				display: 'program',
+				slots: {
+					[layerToHTMLGraphicSlot[SharedGraphicLLayer.GraphicLLayerPilot]]: {
+						payload: {},
+						display: 'hidden'
+					}
+				}
+			},
+			useStopCommand: false
+		}
+	}
+}
+
+export function getHtmlTemplateName(config: TV2BlueprintConfig) {
+	return joinAssetToFolder(config.selectedGraphicsSetup.HtmlPackageFolder, 'index')
 }

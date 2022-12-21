@@ -1,10 +1,9 @@
-import { BlueprintManifestType, ShowStyleBlueprintManifest } from '@tv2media/blueprints-integration'
-import { getShowStyleVariantId } from '../tv2-common/getShowStyleVariantId'
+import { BlueprintManifestType, ShowStyleBlueprintManifest } from 'blueprints-integration'
 import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'
 
 import { GetShowStyleManifestWithMixins, ShowStyleManifestMixinINews } from 'inews-mixins'
-import { getEndStateForPart } from 'tv2-common'
+import { getEndStateForPart, getShowStyleVariantId } from 'tv2-common'
 import { onTimelineGenerateOfftube } from '../tv2_offtube_showstyle/onTimelineGenerate'
 import { executeActionOfftube } from './actions'
 import { getRundown } from './getRundown'

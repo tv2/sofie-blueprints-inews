@@ -10,11 +10,9 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
-	AddParentClass,
 	AddScript,
-	CameraParentClass,
 	CreatePartInvalid,
 	CreatePartKamBase,
 	FindDSKJingle,
@@ -51,7 +49,7 @@ export async function CreatePartKam(
 
 	const jingleDSK = FindDSKJingle(config)
 
-	if (partDefinition.rawType.match(/kam cs ?3/i)) {
+	if (/\bcs *\d*/i.test(partDefinition.sourceDefinition.id)) {
 		pieces.push({
 			externalId: partDefinition.externalId,
 			name: 'CS 3 (JINGLE)',
@@ -132,10 +130,7 @@ export async function CreatePartKam(
 								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
 								transitionSettings: TransitionSettings(config, partDefinition)
 							}
-						},
-						...(AddParentClass(config, partDefinition)
-							? { classes: [CameraParentClass('studio0', partDefinition.sourceDefinition.id)] }
-							: {})
+						}
 					}),
 					...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 				])

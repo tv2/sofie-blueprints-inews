@@ -32,7 +32,8 @@ export enum CueType {
 	Graphic,
 	Routing,
 	PgmClean,
-	MixMinus
+	MixMinus,
+	RobotCamera
 }
 
 export const enum PartType {
@@ -104,6 +105,7 @@ export enum AdlibTags {
 	ADLIB_RECALL_LAST_DVE = 'recall_last_dve',
 	ADLIB_SELECT_DVE_LAYOUT = 'select_dve_layout',
 	ADLIB_TAKE_WITH_TRANSITION = 'take_with_transition',
+	ADLIB_NEXT_TAKE_WITH_TRANSITION = 'next_take_with_transition',
 	ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
 }
 
@@ -147,7 +149,8 @@ export enum AdlibActionType {
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
 	RECALL_LAST_DVE = 'recall_last_dve',
-	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels'
+	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
+	CALL_ROBOT_PRESET = 'call_robot_preset'
 }
 
 export enum TallyTags {
@@ -178,8 +181,8 @@ export enum SharedGraphicLLayer {
 	GraphicLLayerOverlayLower = 'graphic_overlay_lower', // <= viz_layer_overlay_lower
 	GraphicLLayerOverlayHeadline = 'graphic_overlay_headline', // <= viz_layer_overlay_headline
 	GraphicLLayerOverlayTema = 'graphic_overlay_tema', // <= viz_layer_overlay_tema
+	GraphicLLayerOverlayPilot = 'graphic_overlay_pilot', // <= viz_layer_pilot_overlay
 	GraphicLLayerPilot = 'graphic_pilot', // <= viz_layer_pilot
-	GraphicLLayerPilotOverlay = 'graphic_pilot_overlay', // <= viz_layer_pilot_overlay
 	GraphicLLayerDesign = 'graphic_design', // <= viz_layer_design
 	GraphicLLayerFullLoop = 'graphic_full_loop',
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
@@ -209,6 +212,10 @@ export enum SharedSisyfosLLayer {
 	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
 	SisyfosResync = 'sisyfos_resync',
 	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics'
+}
+
+export enum RobotCameraLayer {
+	TELEMETRICS = 'telemetrics_layer'
 }
 
 export enum SharedOutputLayers {
@@ -263,7 +270,9 @@ export enum SharedSourceLayers {
 	PgmAudioBed = 'studio0_audio_bed',
 
 	// AUX
-	AuxMixMinus = 'studio0_aux_mix_minus'
+	AuxMixMinus = 'studio0_aux_mix_minus',
+
+	RobotCamera = 'studio0_robot_camera'
 }
 
 export enum DSKRoles {

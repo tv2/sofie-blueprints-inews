@@ -1,4 +1,4 @@
-import { ISourceLayer, SourceLayerType } from '@tv2media/blueprints-integration'
+import { ISourceLayer, SourceLayerType } from 'blueprints-integration'
 import { ATEMModel } from '../../types/atem'
 import { GetDSKCount } from '../helpers'
 

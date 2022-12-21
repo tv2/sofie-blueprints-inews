@@ -5,6 +5,7 @@ import { OfftubeShowStyleConfig } from '../helpers/config'
 const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	DVEStyles: [],
 	GFXTemplates: [],
+	GfxDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,
@@ -13,7 +14,9 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
 	MakeAdlibsForFulls: true,
-	SchemaConfig: []
+	GfxSchemaTemplates: [],
+	GraphicsSetups: [],
+	SelectedGraphicsSetupName: ''
 }
 
 describe('Config Manifest', () => {

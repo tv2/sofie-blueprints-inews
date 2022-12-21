@@ -3,9 +3,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	IShowStyleUserContext,
-	IStudioUserContext,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	Adlib,
 	CreatePilotGraphic,
@@ -22,8 +21,8 @@ import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { BlueprintConfig } from '../config'
 
 export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
-	caspar: { createPilotTimelineForStudio: makeStudioTimelineCaspar },
-	viz: { createPilotTimelineForStudio: makeStudioTimelineViz }
+	caspar: { createFullPilotTimelineForStudio: makeStudioTimelineCaspar },
+	viz: { createFullPilotTimelineForStudio: makeStudioTimelineViz }
 }
 
 export function EvaluateCueGraphicPilot(
@@ -40,7 +39,6 @@ export function EvaluateCueGraphicPilot(
 	CreatePilotGraphic(pieces, adlibPieces, actions, {
 		config,
 		context,
-		engine: parsedCue.target,
 		partId,
 		parsedCue,
 		settings: pilotGeneratorSettingsAFVD,
@@ -49,11 +47,7 @@ export function EvaluateCueGraphicPilot(
 	})
 }
 
-function makeStudioTimelineViz(
-	config: BlueprintConfig,
-	_context: IStudioUserContext,
-	adlib: boolean
-): TSR.TSRTimelineObj[] {
+function makeStudioTimelineViz(config: BlueprintConfig): TSR.TSRTimelineObj[] {
 	const fullDSK = FindDSKFullGFX(config)
 
 	return [
@@ -71,8 +65,7 @@ function makeStudioTimelineViz(
 					input: config.studio.VizPilotGraphics.FullGraphicBackground,
 					transition: TSR.AtemTransitionStyle.CUT
 				}
-			},
-			...(adlib ? { classes: ['adlib_deparent'] } : {})
+			}
 		}),
 		literal<TSR.TimelineObjAtemAUX>({
 			id: '',
@@ -96,7 +89,7 @@ function makeStudioTimelineViz(
 	]
 }
 
-function makeStudioTimelineCaspar(config: BlueprintConfig, _context: IStudioUserContext) {
+function makeStudioTimelineCaspar(config: BlueprintConfig) {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
 		literal<TSR.TimelineObjAtemME>({

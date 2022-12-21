@@ -1,4 +1,4 @@
-import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@tv2media/blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from 'blueprints-integration'
 import { literal } from 'tv2-common'
 import { ATEMModel } from '../../types/atem'
 import { GetDSKCount } from '../helpers'

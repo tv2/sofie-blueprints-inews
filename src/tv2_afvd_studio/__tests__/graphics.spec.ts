@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from '@tv2media/blueprints-integration'
+import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from 'blueprints-integration'
 import {
 	CueDefinition,
 	CueDefinitionBackgroundLoop,
@@ -224,7 +224,7 @@ describe('Graphics', () => {
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '!.full' })
-		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilotOverlay)
+		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerOverlayPilot)
 		expect(vizObj.content.channelName).toBe('OVL1') // TODO: OVL1: Enum / Type
 		expect(vizObj.content.templateVcpId).toBe(1234567890)
 		expect(vizObj.content.continueStep).toBe(-1)

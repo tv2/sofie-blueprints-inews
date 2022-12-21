@@ -1,4 +1,4 @@
-import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from '@tv2media/blueprints-integration'
+import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from 'blueprints-integration'
 import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,
@@ -7,7 +7,7 @@ import {
 	literal,
 	SisyfosPlayerClip
 } from 'tv2-common'
-import { AbstractLLayer } from 'tv2-constants'
+import { AbstractLLayer, RobotCameraLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { BlueprintConfig } from '../helpers/config'
 import { AtemLLayer, CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
@@ -515,7 +515,7 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		layerName: 'GFX Pilot (Full)',
 		lookahead: LookaheadMode.NONE
 	}),
-	[GraphicLLayer.GraphicLLayerPilotOverlay]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+	[GraphicLLayer.GraphicLLayerOverlayPilot]: literal<TSR.MappingVizMSE & BlueprintMapping>({
 		device: TSR.DeviceType.VIZMSE,
 		deviceId: 'viz0',
 		layerName: 'GFX Pilot (Overlay)',
@@ -713,12 +713,21 @@ export const MAPPINGS_ATEM: BlueprintMappings = {
 	})
 }
 
+export const MAPPINGS_TELEMETRICS: BlueprintMappings = {
+	[RobotCameraLayer.TELEMETRICS]: literal<TSR.Mapping & BlueprintMapping>({
+		device: TSR.DeviceType.TELEMETRICS,
+		deviceId: 'telemetrics0',
+		lookahead: LookaheadMode.NONE
+	})
+}
+
 export default literal<BlueprintMappings>({
 	...MAPPINGS_ABSTRACT,
 	...MAPPINGS_SISYFOS,
 	...MAPPINGS_CASPAR,
 	...MAPPINGS_GRAPHICS,
-	...MAPPINGS_ATEM
+	...MAPPINGS_ATEM,
+	...MAPPINGS_TELEMETRICS
 })
 
 export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlayers']) {

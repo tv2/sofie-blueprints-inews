@@ -1,4 +1,4 @@
-import { TableConfigItemValue } from '@tv2media/blueprints-integration'
+import { TableConfigItemValue } from 'blueprints-integration'
 import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import { DVEConfigInput } from './helpers'
 import { SourceInfo } from './sources'
@@ -15,7 +15,8 @@ export interface TableConfigItemBreakers {
 	LoadFirstFrame: boolean
 }
 
-export interface TableConfigItemGFXTemplates {
+export interface TableConfigItemGfxTemplate {
+	/** Name of the Viz Template. For HTML graphics it's the Graphic name. */
 	VizTemplate: string
 	SourceLayer: string
 	LayerMapping: string
@@ -23,26 +24,36 @@ export interface TableConfigItemGFXTemplates {
 	INewsName: string
 	VizDestination: string
 	OutType: string
-	IsDesign: boolean
+}
+
+export interface TableConfigItemGfxDesignTemplate {
+	INewsName: string
+	INewsStyleColumn: string
+	/** Name of the Viz template trigering design change. For HTML graphics it coresponds to a CSS class. */
+	VizTemplate: string
+}
+
+export interface TableConfigItemOverlayShowMapping {
+	Design: string
+	GraphicsSetup: string[]
+	Schema: string[]
 }
 
 export interface TableConfigItemAdLibTransitions {
 	Transition: string
 }
 
-export interface TableConfigSchema {
-	schemaName: string
-	designIdentifier: string
-	vizTemplateName: string
-	casparCgDveBgScene: string
+export interface TableConfigGfxSchema {
+	SchemaName: string
+	INewsSkemaColumn: string
+	VizTemplate: string
 }
 
 export interface TableConfigGraphicsSetup {
 	Name: string
-	VcpConcept: string
-	OvlShowId: string
-	FullShowId: string
-	DveLayoutFolder: string
+	HtmlPackageFolder: string
+	OvlShowName?: string
+	FullShowName?: string
 }
 
 export interface TV2StudioConfigBase {
@@ -141,12 +152,15 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
-	GFXTemplates: TableConfigItemGFXTemplates[]
+	GFXTemplates: TableConfigItemGfxTemplate[]
+	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
-	SchemaConfig: TableConfigSchema[]
+	GfxSchemaTemplates: TableConfigGfxSchema[]
+	GraphicsSetups: TableConfigGraphicsSetup[]
+	SelectedGraphicsSetupName: string
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

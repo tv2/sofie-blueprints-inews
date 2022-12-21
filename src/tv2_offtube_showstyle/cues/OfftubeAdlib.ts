@@ -1,12 +1,11 @@
 import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	ISegmentUserContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
@@ -30,10 +29,8 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 export async function OfftubeEvaluateAdLib(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
-	_adLibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
-	_partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
 	rank: number
@@ -103,11 +100,12 @@ export async function OfftubeEvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
+		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
 
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
 			config: cueDVE,
+			name: `DVE: ${cueDVE.template}`,
 			videoId: partDefinition.fields.videoId,
 			segmentExternalId: partDefinition.segmentExternalId
 		}

@@ -3,7 +3,7 @@ import {
 	BlueprintSyncIngestPartInstance,
 	IBlueprintMutatablePart,
 	ISyncIngestUpdateToPartInstanceContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import _ = require('underscore')
 
 type Complete<T> = {

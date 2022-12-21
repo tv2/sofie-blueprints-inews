@@ -5,10 +5,11 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	CueDefinition,
 	EvaluateCueMixMinus,
+	EvaluateCueRobotCamera,
 	EvaluateCuesBase,
 	EvaluateCuesOptions,
 	EvaluateLYD,
@@ -51,7 +52,8 @@ export async function EvaluateCues(
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
 			EvaluateCueRouting,
-			EvaluateCueMixMinus
+			EvaluateCueMixMinus,
+			EvaluateCueRobotCamera
 		},
 		context,
 		config,

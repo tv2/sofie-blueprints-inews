@@ -1,23 +1,18 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	ISegmentUserContext,
-	PieceLifespan
-} from '@tv2media/blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, ISegmentUserContext, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
-	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
+	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
+	t,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
@@ -26,8 +21,7 @@ export function EvaluateDVE(
 	context: ISegmentUserContext,
 	config: BlueprintConfig,
 	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	_actions: IBlueprintActionManifest[],
+	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	adlib?: boolean,
@@ -48,53 +42,41 @@ export function EvaluateDVE(
 		return
 	}
 
-	const content = MakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(config, partDefinition),
-		adlib
-	)
+	const content = MakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
 
 	if (content.valid) {
 		if (adlib) {
-			adlibPieces.push(
-				literal<IBlueprintAdLibPiece<DVEPieceMetaData>>({
-					_rank: rank || 0,
-					externalId: partDefinition.externalId,
-					name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
+			const userData: ActionSelectDVE = {
+				type: AdlibActionType.SELECT_DVE,
+				config: parsedCue,
+				name: `${partDefinition.storyName} DVE: ${parsedCue.template}`,
+				videoId: partDefinition.fields.videoId,
+				segmentExternalId: partDefinition.segmentExternalId
+			}
+			actions.push({
+				externalId: generateExternalId(context, userData),
+				actionId: AdlibActionType.SELECT_DVE,
+				userData,
+				userDataManifest: {},
+				display: {
+					_rank: rank,
 					outputLayerId: SharedOutputLayers.PGM,
 					sourceLayerId: SourceLayer.PgmDVE,
-					uniquenessId: getUniquenessIdDVE(parsedCue),
-					lifespan: PieceLifespan.WithinPart,
-					toBeQueued: true,
+					label: t(`${partDefinition.storyName} DVE: ${parsedCue.template}`),
+					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 					content: content.content,
-					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
-					metaData: {
-						sources: parsedCue.sources,
-						config: rawTemplate,
-						userData: literal<ActionSelectDVE>({
-							type: AdlibActionType.SELECT_DVE,
-							config: parsedCue,
-							videoId: partDefinition.fields.videoId,
-							segmentExternalId: partDefinition.segmentExternalId
-						}),
-						sisyfosPersistMetaData: {
-							sisyfosLayers: []
-						}
-					}
-				})
-			)
+					uniquenessId: getUniquenessIdDVE(parsedCue)
+				}
+			})
 		} else {
 			let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
 			start = start ? start : 0
 			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
+			const pieceName = `DVE: ${parsedCue.template}`
 			pieces.push(
 				literal<IBlueprintPiece<DVEPieceMetaData>>({
 					externalId: partDefinition.externalId,
-					name: `DVE: ${parsedCue.template}`,
+					name: pieceName,
 					enable: {
 						start,
 						...(end ? { duration: end - start } : {})
@@ -112,6 +94,7 @@ export function EvaluateDVE(
 						userData: {
 							type: AdlibActionType.SELECT_DVE,
 							config: parsedCue,
+							name: pieceName,
 							videoId: partDefinition.fields.videoId,
 							segmentExternalId: partDefinition.segmentExternalId
 						},

@@ -5,7 +5,7 @@ import {
 	SplitsContent,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { DVEPieceMetaData, literal, PieceMetaData, RemoteType, SourceDefinitionRemote } from 'tv2-common'
 import { SharedSourceLayers, SourceType } from 'tv2-constants'
 import { getServerPositionForPartInstance } from '../serverResume'
@@ -41,7 +41,7 @@ describe('Server Resume', () => {
 				partInstanceId: 'mock_1',
 				resolvedStart: 1000,
 				resolvedDuration: 10000,
-				dynamicallyInserted: 1,
+				dynamicallyInserted: { time: 1 },
 				piece: {
 					_id: '',
 					enable: { start: 'now' },
@@ -69,7 +69,7 @@ describe('Server Resume', () => {
 					partInstanceId: 'mock_1',
 					startedPlayback: 1000,
 					resolvedStart: 2000,
-					dynamicallyInserted: 1,
+					dynamicallyInserted: { time: 1 },
 					piece: {
 						_id: '',
 						enable: { start: 'now' },
@@ -109,7 +109,7 @@ describe('Server Resume', () => {
 					_id: '',
 					partInstanceId: 'mock_1',
 					resolvedStart: 1000,
-					dynamicallyInserted: 1,
+					dynamicallyInserted: { time: 1 },
 					piece: {
 						_id: '',
 						enable: { start: 'now' },
@@ -155,7 +155,7 @@ describe('Server Resume', () => {
 					_id: '',
 					partInstanceId: 'mock_1',
 					resolvedStart: 1000,
-					dynamicallyInserted: 1,
+					dynamicallyInserted: { time: 1 },
 					piece: {
 						_id: '',
 						enable: { start: 'now' },

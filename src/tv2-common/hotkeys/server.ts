@@ -1,4 +1,4 @@
-import { IBlueprintTriggeredActions } from '@tv2media/blueprints-integration'
+import { IBlueprintTriggeredActions } from 'blueprints-integration'
 import { DVEBoxTriggers, MakeCutToBoxTrigger } from './helpers'
 
 const SERVER_TO_BOX_1_HOTKEYS: string[] = ['Shift+KeyT']

@@ -3,7 +3,7 @@ import {
 	ISourceLayer,
 	MigrationContextShowStyle,
 	MigrationStepShowStyle
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	defaultHotkeys,
 	GlobalHotkeySourceLayers,

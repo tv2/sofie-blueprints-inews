@@ -6,10 +6,11 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,
+	CueTime,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	GraphicPilot,
@@ -21,7 +22,7 @@ import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, 
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_ID } from '../../../__tests__/configs'
+import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
 import { BlueprintConfig, getConfig, parseConfig as parseShowStyleConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
@@ -48,6 +49,26 @@ const dummyPart = literal<PartDefinitionKam>({
 	modified: 0,
 	segmentExternalId: ''
 })
+
+function makeTestBundCue(infiniteMode: CueTime['infiniteMode']): CueDefinitionGraphic<GraphicInternal> {
+	return {
+		type: CueType.Graphic,
+		target: 'OVL',
+		graphic: {
+			type: 'internal',
+			template: 'bund',
+			cue: 'kg',
+			textFields: ['Odense', 'Copenhagen']
+		},
+		start: {
+			seconds: 10
+		},
+		end: {
+			infiniteMode
+		},
+		iNewsCommand: 'kg'
+	}
+}
 
 const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 	id: '',
@@ -121,7 +142,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -143,7 +165,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -216,7 +238,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -256,7 +278,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -331,7 +353,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -371,7 +393,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -425,7 +447,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -447,7 +470,7 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -457,24 +480,8 @@ describe('grafik piece', () => {
 		])
 	})
 
-	test('kg bund infinite', () => {
-		const cue: CueDefinitionGraphic<GraphicInternal> = {
-			type: CueType.Graphic,
-			target: 'OVL',
-			graphic: {
-				type: 'internal',
-				template: 'bund',
-				cue: 'kg',
-				textFields: ['Odense', 'Copenhagen']
-			},
-			start: {
-				seconds: 10
-			},
-			end: {
-				infiniteMode: 'B'
-			},
-			iNewsCommand: 'kg'
-		}
+	test('kg bund infinite (B) has piece and object timing', () => {
+		const cue = makeTestBundCue('B')
 		const pieces: IBlueprintPiece[] = []
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
@@ -491,48 +498,89 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces).toEqual([
-			literal<IBlueprintPiece<GraphicPieceMetaData>>({
-				externalId: partId,
-				name: 'bund - Odense\n - Copenhagen',
-				enable: {
-					start: 10000
-				},
-				lifespan: PieceLifespan.WithinPart,
-				metaData: {
-					sisyfosPersistMetaData: {
-						sisyfosLayers: []
-					},
-					belongsToRemotePart: false
-				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
-				sourceLayerId: SourceLayer.PgmGraphicsLower,
-				content: literal<WithTimeline<GraphicsContent>>({
-					fileName: 'bund',
-					path: 'bund',
-					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
-							id: '',
-							enable: {
-								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
-							},
-							priority: 1,
-							layer: SharedGraphicLLayer.GraphicLLayerOverlayLower,
-							content: {
-								deviceType: TSR.DeviceType.VIZMSE,
-								type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-								templateName: 'bund',
-								templateData: ['Odense', 'Copenhagen'],
-								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
-							}
-						}),
-						dskEnableObj
-					])
-				})
-			})
-		])
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 10000
+			},
+			lifespan: PieceLifespan.WithinPart
+		})
+		expect(
+			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+		).toMatchObject({
+			enable: {
+				while: `!.full`
+			}
+		})
+	})
+
+	test('kg bund infinite (S) has piece and object timing', () => {
+		const cue = makeTestBundCue('S')
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 10000
+			},
+			lifespan: PieceLifespan.OutOnSegmentEnd
+		})
+		expect(
+			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+		).toMatchObject({
+			enable: {
+				while: `!.full`
+			}
+		})
+	})
+
+	test('kg bund infinite (O)', () => {
+		const cue = makeTestBundCue('O')
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 10000
+			},
+			lifespan: PieceLifespan.OutOnShowStyleEnd
+		})
+		expect(
+			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+		).toMatchObject({
+			enable: {
+				while: `!.full`
+			}
+		})
 	})
 
 	test('kg direkte', () => {
@@ -578,7 +626,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
@@ -590,7 +639,7 @@ describe('grafik piece', () => {
 						literal<TSR.TimelineObjVIZMSEElementInternal>({
 							id: '',
 							enable: {
-								while: `.studio0_parent_camera_1 & !.adlib_deparent & !.full`
+								while: `!.full`
 							},
 							priority: 1,
 							layer: SharedGraphicLLayer.GraphicLLayerOverlayIdent,
@@ -600,7 +649,7 @@ describe('grafik piece', () => {
 								templateName: 'direkte',
 								templateData: ['KØBENHAVN'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -654,7 +703,8 @@ describe('grafik piece', () => {
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
 					},
-					belongsToRemotePart: false
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				outputLayerId: SharedOutputLayers.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
@@ -676,7 +726,7 @@ describe('grafik piece', () => {
 								templateName: 'arkiv',
 								templateData: ['unnamed org'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -749,7 +799,7 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -788,7 +838,7 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						dskEnableObj
@@ -796,6 +846,92 @@ describe('grafik piece', () => {
 				})
 			})
 		])
+	})
+
+	test('kg tlftoptlive: timecode has priority over OutType column', () => {
+		const cue = literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'tlftoptlive',
+				cue: 'kg',
+				textFields: ['Line 1', 'Line 2']
+			},
+			start: {
+				seconds: 5
+			},
+			end: {
+				seconds: 10
+			},
+			iNewsCommand: 'kg'
+		})
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+
+		expect(pieces.length).toBe(1)
+		expect(pieces[0]).toMatchObject({
+			enable: {
+				start: 5000,
+				duration: 5000
+			},
+			lifespan: PieceLifespan.WithinPart
+		})
+	})
+
+	test('kg tlftoptlive adilb: timecode has priority over OutType column', () => {
+		const cue = literal<CueDefinitionGraphic<GraphicInternal>>({
+			type: CueType.Graphic,
+			target: 'OVL',
+			graphic: {
+				type: 'internal',
+				template: 'tlftoptlive',
+				cue: 'kg',
+				textFields: ['Line 1', 'Line 2']
+			},
+			end: {
+				seconds: 10
+			},
+			adlib: true,
+			iNewsCommand: 'kg'
+		})
+		const pieces: IBlueprintPiece[] = []
+		const adLibPieces: IBlueprintAdLibPiece[] = []
+		const actions: IBlueprintActionManifest[] = []
+		const partId = '0000000001'
+
+		EvaluateCueGraphic(
+			config,
+			makeMockContext(),
+			pieces,
+			adLibPieces,
+			actions,
+			partId,
+			cue,
+			dummyPart,
+			cue.adlib ? { rank: 0 } : undefined
+		)
+
+		const adlibPiece = adLibPieces.find(piece => piece.tags?.includes('flow_producer'))
+		expect(adlibPiece).toBeDefined()
+		expect(adlibPiece).toMatchObject({
+			expectedDuration: 10000,
+			lifespan: PieceLifespan.WithinPart
+		})
 	})
 
 	it('WALL graphics have enable equal while 1', () => {

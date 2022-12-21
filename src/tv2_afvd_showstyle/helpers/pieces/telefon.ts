@@ -3,7 +3,7 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	ISegmentUserContext
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	Adlib,
 	CueDefinitionTelefon,

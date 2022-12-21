@@ -1,14 +1,12 @@
 import {
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
 	SplitsContent
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionSelectDVE,
-	AddParentClass,
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
@@ -30,7 +28,6 @@ export function OfftubeEvaluateDVE(
 	context: ISegmentUserContext,
 	config: OfftubeShowstyleBlueprintConfig,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
@@ -52,25 +49,9 @@ export function OfftubeEvaluateDVE(
 		return
 	}
 
-	const adlibContent = OfftubeMakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(config, partDefinition),
-		true
-	)
+	const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
 
-	const pieceContent = OfftubeMakeContentDVE(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		rawTemplate,
-		AddParentClass(config, partDefinition),
-		false
-	)
+	const pieceContent = OfftubeMakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
 
 	if (adlibContent.valid && pieceContent.valid) {
 		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
@@ -78,7 +59,7 @@ export function OfftubeEvaluateDVE(
 		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
 		pieces.push({
 			externalId: partDefinition.externalId,
-			name: `${parsedCue.template}`,
+			name: parsedCue.template,
 			enable: {
 				start,
 				...(end ? { duration: end - start } : {})
@@ -99,6 +80,7 @@ export function OfftubeEvaluateDVE(
 				userData: {
 					type: AdlibActionType.SELECT_DVE,
 					config: parsedCue,
+					name: parsedCue.template,
 					videoId: partDefinition.fields.videoId,
 					segmentExternalId: partDefinition.segmentExternalId
 				},
@@ -116,6 +98,7 @@ export function OfftubeEvaluateDVE(
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
 			config: parsedCue,
+			name: `DVE: ${parsedCue.template}`,
 			videoId: partDefinition.fields.videoId,
 			segmentExternalId: partDefinition.segmentExternalId
 		}

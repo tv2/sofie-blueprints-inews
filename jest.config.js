@@ -37,6 +37,7 @@ module.exports = {
 	],
 	moduleDirectories: [
 		"node_modules",
-		"src"
+		"src",
+		"src/types"
 	]
 }

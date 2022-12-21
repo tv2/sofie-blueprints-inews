@@ -1,6 +1,6 @@
-import { IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
+import { IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import { CueType, SourceType } from 'tv2-constants'
-import { CreateTiming } from '../cueTiming'
+import { CreateTimingEnable } from '../cueTiming'
 import { RemoteType, SourceDefinitionRemote } from '../inewsConversion'
 import { CueDefinitionEkstern } from '../inewsConversion/converters/ParseCue'
 import { literal } from '../util'
@@ -23,7 +23,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -44,7 +44,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -66,7 +66,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -87,7 +87,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -108,7 +108,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -130,7 +130,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -151,7 +151,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -171,7 +171,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -191,7 +191,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -214,7 +214,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {
@@ -238,7 +238,7 @@ describe('CreateTiming', () => {
 			iNewsCommand: '',
 			sourceDefinition: EKSTERN_SOURCE
 		}
-		const result = CreateTiming(time, 4000)
+		const result = CreateTimingEnable(time, 4000)
 		expect(result).toEqual(
 			literal<Pick<IBlueprintPiece, 'enable' | 'lifespan'>>({
 				enable: {

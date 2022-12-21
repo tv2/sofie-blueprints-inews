@@ -6,6 +6,7 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	DVEStyles: [],
 	GFXTemplates: [],
+	GfxDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
 	DefaultTemplateDuration: 4,
@@ -15,7 +16,8 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	ShowstyleTransition: 'CUT',
 	SelectedGraphicsSetupName: '',
 	GraphicsSetups: [],
-	SchemaConfig: []
+	GfxSchemaTemplates: [],
+	OverlayShowMapping: []
 }
 
 describe('Config Manifest', () => {

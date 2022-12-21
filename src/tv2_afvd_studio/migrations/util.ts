@@ -6,7 +6,7 @@ import {
 	MigrationStepInputFilteredResult,
 	MigrationStepStudio,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../layers'
 import MappingsDefaults from './mappings-defaults'

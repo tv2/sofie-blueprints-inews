@@ -7,7 +7,7 @@ import {
 	PlayoutActions,
 	SomeAction,
 	TriggerType
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { literal, TRIGGER_HOTKEYS_ON_KEYUP } from 'tv2-common'
 
 export interface RundownViewHotkeyAssignments {

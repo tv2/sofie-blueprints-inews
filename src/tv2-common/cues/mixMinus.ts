@@ -6,7 +6,7 @@ import {
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { CueDefinitionMixMinus, findSourceInfo, literal, PartDefinition } from 'tv2-common'
 import { ControlClasses, SharedATEMLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 import { TV2BlueprintConfig } from '../blueprintConfig'

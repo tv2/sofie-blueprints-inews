@@ -1,4 +1,4 @@
-import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from '@tv2media/blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from 'blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 

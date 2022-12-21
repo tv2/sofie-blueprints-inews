@@ -1,11 +1,5 @@
-import {
-	BlueprintResultSegment,
-	IBlueprintPart,
-	IBlueprintPiece,
-	IngestSegment,
-	TSR
-} from '@tv2media/blueprints-integration'
 import { fail } from 'assert'
+import { BlueprintResultSegment, IBlueprintPart, IBlueprintPiece, IngestSegment, TSR } from 'blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
 import * as _ from 'underscore'
 import { SegmentUserContext } from '../../__mocks__/context'

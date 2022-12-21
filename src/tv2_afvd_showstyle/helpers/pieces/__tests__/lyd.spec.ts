@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
 import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'

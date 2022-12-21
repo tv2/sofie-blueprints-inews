@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	AtemLLayerDSK,
 	CueDefinitionGraphic,
@@ -22,7 +22,7 @@ import {
 	DEFAULT_GRAPHICS_SETUP,
 	defaultShowStyleConfig,
 	defaultStudioConfig,
-	OVL_SHOW_ID
+	OVL_SHOW_NAME
 } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import {
@@ -116,10 +116,11 @@ describe('telefon', () => {
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
-					belongsToRemotePart: false,
 					sisyfosPersistMetaData: {
 						sisyfosLayers: []
-					}
+					},
+					partType: PartType.Kam,
+					pieceExternalId: dummyPart.externalId
 				},
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
@@ -139,7 +140,7 @@ describe('telefon', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_ID
+								showId: OVL_SHOW_NAME
 							}
 						}),
 						literal<TSR.TimelineObjAtemDSK>({

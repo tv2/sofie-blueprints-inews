@@ -4,7 +4,7 @@ import {
 	ConfigManifestEntryType,
 	TableConfigItemValue,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	DSKConfigManifest,
 	literal,
@@ -436,8 +436,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'HTMLGraphics.GraphicURL',
-		name: 'Full Graphic URL (HTML)',
-		description: 'URL to serve full graphics from',
+		name: 'Pilot Graphic URL (HTML)',
+		description: 'URL to serve prerendered full/overlay images from',
 		type: ConfigManifestEntryType.STRING,
 		required: false,
 		defaultVal: 'localhost'

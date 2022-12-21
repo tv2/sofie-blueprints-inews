@@ -5,8 +5,9 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	ISegmentUserContext,
+	IShowStyleUserContext,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinition,
@@ -16,7 +17,10 @@ import {
 	CueDefinitionEkstern,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
+	CueDefinitionRobotCamera,
 	CueDefinitionTelefon,
+	IsTargetingFull,
+	IsTargetingOVL,
 	PartDefinition
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -94,7 +98,6 @@ export interface EvaluateCuesShowstyleOptions {
 		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
 		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionDVE,
@@ -104,10 +107,8 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueAdLib?: (
 		context: ISegmentUserContext,
 		config: TV2BlueprintConfig,
-		adLibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
 		mediaSubscriptions: HackPartMediaObjectSubscription[],
-		partId: string,
 		parsedCue: CueDefinitionAdLib,
 		partDefinition: PartDefinition,
 		rank: number
@@ -173,6 +174,12 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueProfile?: () => void
 	/** TODO: Mic -> For the future */
 	EvaluateCueMic?: () => void
+	EvaluateCueRobotCamera?: (
+		context: IShowStyleUserContext,
+		cueDefinition: CueDefinitionRobotCamera,
+		pieces: IBlueprintPiece[],
+		partId: string
+	) => void
 }
 
 export interface EvaluateCuesOptions {
@@ -205,7 +212,7 @@ export async function EvaluateCuesBase(
 
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
-			const shouldAdlib = /* config.showStyle.IsOfftube || */ options.adlib ? true : cue.adlib ? true : false
+			const shouldAdlib = !!(options.adlib || cue.adlib)
 			const adlib = shouldAdlib ? { rank: adLibRank } : undefined
 
 			switch (cue.type) {
@@ -214,8 +221,8 @@ export async function EvaluateCuesBase(
 						if (
 							config.studio.PreventOverlayWithFull &&
 							GraphicIsPilot(cue) &&
-							cue.target === 'OVL' &&
-							cues.some(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL')
+							IsTargetingOVL(cue.target) &&
+							cues.some(c => c.type === CueType.Graphic && GraphicIsPilot(c) && IsTargetingFull(c.target))
 						) {
 							context.notifyUserWarning(`Cannot create overlay graphic with FULL`)
 							break
@@ -256,7 +263,6 @@ export async function EvaluateCuesBase(
 							context,
 							config,
 							pieces,
-							adLibPieces,
 							actions,
 							partDefinition,
 							cue,
@@ -265,17 +271,7 @@ export async function EvaluateCuesBase(
 						)
 						// Always make an adlib for DVEs
 						if (!shouldAdlib) {
-							showStyleOptions.EvaluateCueDVE(
-								context,
-								config,
-								pieces,
-								adLibPieces,
-								actions,
-								partDefinition,
-								cue,
-								true,
-								adLibRank
-							)
+							showStyleOptions.EvaluateCueDVE(context, config, pieces, actions, partDefinition, cue, true, adLibRank)
 						}
 					}
 					break
@@ -284,10 +280,8 @@ export async function EvaluateCuesBase(
 						await showStyleOptions.EvaluateCueAdLib(
 							context,
 							config,
-							adLibPieces,
 							actions,
 							mediaSubscriptions,
-							partDefinition.externalId,
 							cue,
 							partDefinition,
 							adLibRank
@@ -410,6 +404,11 @@ export async function EvaluateCuesBase(
 				case CueType.UNPAIRED_PILOT:
 					context.notifyUserWarning(`Graphic found without target engine`)
 					break
+				case CueType.RobotCamera:
+					if (showStyleOptions.EvaluateCueRobotCamera) {
+						showStyleOptions.EvaluateCueRobotCamera(context, cue, pieces, partDefinition.externalId)
+					}
+					break
 				default:
 					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
 						// TODO: Profile -> Change the profile as defined in VIZ device settings
@@ -459,13 +458,14 @@ export async function EvaluateCuesBase(
 							})
 						}
 					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS) {
+						const o = obj as TSR.TimelineObjVIZMSEClearAllElements
 						piece.expectedPlayoutItems.push({
 							deviceSubType: TSR.DeviceType.VIZMSE,
 							content: {
 								templateName: 'altud',
 								channel: 'OVL1',
 								templateData: [],
-								showId: config.selectedGraphicsSetup.OvlShowId
+								showId: o.content.showId
 							}
 						})
 					}

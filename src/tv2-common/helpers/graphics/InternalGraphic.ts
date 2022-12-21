@@ -1,7 +1,6 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from '@tv2media/blueprints-integration'
-import { Adlib } from 'tv2-common'
+import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext, PieceLifespan } from 'blueprints-integration'
 import _ = require('underscore')
-import { AdlibTags, GraphicEngine, PartType, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
+import { AdlibTags, GraphicEngine, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
 import { TV2BlueprintConfig } from '../../blueprintConfig'
 import { CueDefinitionGraphic, GraphicInternal, PartDefinition } from '../../inewsConversion'
 import { GraphicPieceMetaData, PieceMetaData } from '../../onTimelineGenerate'
@@ -15,9 +14,9 @@ import { GetInternalGraphicContentVIZ } from './viz'
 export class InternalGraphic {
 	public mappedTemplate: string
 	private readonly config: TV2BlueprintConfig
+	private readonly context: IShowStyleUserContext
 	private readonly parsedCue: CueDefinitionGraphic<GraphicInternal>
 	private readonly partDefinition?: PartDefinition
-	private readonly adlib?: Adlib
 	private readonly engine: GraphicEngine
 	private readonly name: string
 	private readonly sourceLayerId: SharedSourceLayers
@@ -28,8 +27,8 @@ export class InternalGraphic {
 
 	public constructor(
 		config: TV2BlueprintConfig,
+		context: IShowStyleUserContext,
 		parsedCue: CueDefinitionGraphic<GraphicInternal>,
-		adlib?: Adlib,
 		partId?: string,
 		partDefinition?: PartDefinition
 	) {
@@ -38,9 +37,9 @@ export class InternalGraphic {
 		const sourceLayerId = GetSourceLayerForGraphic(config, mappedTemplate)
 
 		this.config = config
+		this.context = context
 		this.parsedCue = parsedCue
 		this.partDefinition = partDefinition
-		this.adlib = adlib
 		this.mappedTemplate = mappedTemplate
 		this.engine = parsedCue.target
 		this.name = GraphicDisplayName(config, parsedCue)
@@ -112,7 +111,8 @@ export class InternalGraphic {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: []
 				},
-				belongsToRemotePart: this.partDefinition?.type === PartType.REMOTE
+				partType: this.partDefinition?.type,
+				pieceExternalId: this.partDefinition?.externalId
 			},
 			content: _.clone(this.content)
 		}
@@ -120,21 +120,7 @@ export class InternalGraphic {
 
 	private getInternalGraphicContent(): IBlueprintPiece['content'] {
 		return this.config.studio.GraphicsType === 'HTML'
-			? GetInternalGraphicContentCaspar(
-					this.config,
-					this.engine,
-					this.parsedCue,
-					this.partDefinition,
-					this.mappedTemplate,
-					!!this.adlib
-			  )
-			: GetInternalGraphicContentVIZ(
-					this.config,
-					this.engine,
-					this.parsedCue,
-					this.partDefinition,
-					this.mappedTemplate,
-					!!this.adlib
-			  )
+			? GetInternalGraphicContentCaspar(this.config, this.engine, this.parsedCue, this.mappedTemplate)
+			: GetInternalGraphicContentVIZ(this.config, this.context, this.engine, this.parsedCue, this.mappedTemplate)
 	}
 }

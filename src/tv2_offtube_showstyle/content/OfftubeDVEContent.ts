@@ -1,4 +1,4 @@
-import { ISegmentUserContext, SplitsContent, WithTimeline } from '@tv2media/blueprints-integration'
+import { ISegmentUserContext, SplitsContent, WithTimeline } from 'blueprints-integration'
 import { CueDefinitionDVE, DVEConfigInput, DVEOptions, MakeContentDVEBase, PartDefinition } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
@@ -40,18 +40,7 @@ export function OfftubeMakeContentDVE(
 	config: OfftubeShowstyleBlueprintConfig,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
-	dveConfig: DVEConfigInput | undefined,
-	addClass?: boolean,
-	adlib?: boolean
+	dveConfig: DVEConfigInput | undefined
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
-	return MakeContentDVEBase(
-		context,
-		config,
-		partDefinition,
-		parsedCue,
-		dveConfig,
-		OFFTUBE_DVE_GENERATOR_OPTIONS,
-		addClass,
-		adlib
-	)
+	return MakeContentDVEBase(context, config, partDefinition, parsedCue, dveConfig, OFFTUBE_DVE_GENERATOR_OPTIONS)
 }

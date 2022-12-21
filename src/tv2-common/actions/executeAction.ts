@@ -16,7 +16,7 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -61,6 +61,7 @@ import {
 import {
 	AdlibActionType,
 	CueType,
+	PartType,
 	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SharedSourceLayers,
@@ -89,6 +90,7 @@ import {
 	GetTagForLive,
 	GetTagForTransition
 } from '../pieces'
+import { createTelemetricsPieceForRobotCamera } from '../pieces/telemetric'
 import { findSourceInfo } from '../sources'
 import { assertUnreachable } from '../util'
 import {
@@ -275,6 +277,15 @@ export async function executeAction<
 			case AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS:
 				await executeActionFadeDownPersistedAudioLevels(context, settings)
 				break
+			case AdlibActionType.CALL_ROBOT_PRESET: {
+				const preset: number = Number(triggerMode)
+				if (Number.isNaN(preset)) {
+					context.notifyUserWarning(`Calling Robot preset ignored. '${triggerMode}' is not a number`)
+					break
+				}
+				await executeActionCallRobotPreset(context, preset)
+				break
+			}
 			default:
 				assertUnreachable(actionId)
 				break
@@ -591,8 +602,6 @@ async function executeActionSelectDVE<
 		graphicsTemplateContent,
 		parsedCue.sources,
 		settings.DVEGeneratorOptions,
-		undefined,
-		false,
 		externalId
 	)
 
@@ -612,7 +621,7 @@ async function executeActionSelectDVE<
 
 	let dvePiece: IBlueprintPiece<DVEPieceMetaData> = {
 		externalId,
-		name: `${parsedCue.template}`,
+		name: userData.name,
 		enable: {
 			start,
 			...(end ? { duration: end - start } : {})
@@ -813,6 +822,7 @@ async function executeActionSelectDVELayout<
 					labels: [],
 					iNewsCommand: `DVE=${userData.config.DVEName}`
 				},
+				name: userData.config.DVEName,
 				videoId: undefined,
 				segmentExternalId: ''
 			}
@@ -1134,8 +1144,7 @@ async function executeActionCutToCamera<
 							input: sourceInfoCam.port,
 							transition: TSR.AtemTransitionStyle.CUT
 						}
-					},
-					classes: ['adlib_deparent']
+					}
 				}),
 				...camSisyfos
 			])
@@ -1277,8 +1286,7 @@ async function executeActionCutToRemote<
 							input: sourceInfo.port,
 							transition: TSR.AtemTransitionStyle.CUT
 						}
-					},
-					classes: ['adlib_deparent']
+					}
 				}),
 				...eksternSisyfos
 			])
@@ -1377,8 +1385,6 @@ async function executeActionCutSourceToBox<
 		graphicsTemplateContent,
 		meta.sources,
 		settings.DVEGeneratorOptions,
-		undefined,
-		undefined,
 		mediaPlayerSession
 	)
 
@@ -1849,7 +1855,8 @@ async function executeActionRecallLastLive<
 		originalOnly: true,
 		excludeCurrentPart: false,
 		pieceMetaDataFilter: {
-			belongsToRemotePart: true
+			partType: PartType.REMOTE,
+			pieceExternalId: lastLive.piece.externalId
 		}
 	})
 
@@ -1903,9 +1910,37 @@ async function executeActionRecallLastDVE<
 
 	if (lastPlayedScheduledDVE && isLastPlayedAScheduledDVE) {
 		await scheduleLastPlayedDVE(context, settings, actionId, lastPlayedScheduledDVE)
-	} else {
-		await scheduleNextScriptedDVE(context, settings, actionId)
+		await addLatestPieceOnLayerForDve(context, settings.SourceLayers.Ident, actionId, lastPlayedScheduledDVE.piece)
 	}
+}
+
+async function addLatestPieceOnLayerForDve(
+	context: ITV2ActionExecutionContext,
+	layer: string,
+	actionId: string,
+	dvePiece: IBlueprintPiece
+): Promise<void> {
+	const lastIdent = await context.findLastPieceOnLayer(layer, {
+		originalOnly: true,
+		excludeCurrentPart: false,
+		pieceMetaDataFilter: {
+			partType: PartType.DVE,
+			pieceExternalId: dvePiece.externalId
+		}
+	})
+
+	if (!lastIdent) {
+		return
+	}
+
+	const externalId = generateExternalId(context, actionId, [dvePiece.name])
+	const newIdentPiece: IBlueprintPiece<PieceMetaData> = {
+		...lastIdent.piece,
+		externalId,
+		lifespan: PieceLifespan.WithinPart
+	}
+
+	await context.insertPiece('next', newIdentPiece)
 }
 
 async function executeActionFadeDownPersistedAudioLevels<
@@ -1927,7 +1962,16 @@ async function executeActionFadeDownPersistedAudioLevels<
 			timelineObjects: []
 		}
 	}
-	context.insertPiece('current', resetSisyfosPersistedLevelsPiece)
+	await context.insertPiece('current', resetSisyfosPersistedLevelsPiece)
+}
+
+async function executeActionCallRobotPreset(context: ITV2ActionExecutionContext, preset: number): Promise<void> {
+	const robotCameraPiece: IBlueprintPiece<PieceMetaData> = createTelemetricsPieceForRobotCamera(
+		`callRobotPreset${preset}`,
+		preset,
+		'now'
+	) as IBlueprintPiece<PieceMetaData>
+	await context.insertPiece('current', robotCameraPiece)
 }
 
 async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionContext) {
@@ -1971,35 +2015,9 @@ async function scheduleLastPlayedDVE<
 	await executeActionSelectDVE(context, settings, actionId, {
 		type: AdlibActionType.SELECT_DVE,
 		config: lastPlayedDVEMeta.userData.config,
+		name: lastPlayedDVE.piece.name,
 		segmentExternalId: externalId,
 		videoId: lastPlayedDVEMeta.userData.videoId
-	})
-}
-
-async function scheduleNextScriptedDVE<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ITV2ActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	actionId: string
-): Promise<void> {
-	const nextScriptedDVE: IBlueprintPiece | undefined = await context.findLastScriptedPieceOnLayer(
-		settings.SourceLayers.DVE
-	)
-
-	if (!nextScriptedDVE) {
-		return
-	}
-
-	const externalId: string = generateExternalId(context, actionId, [nextScriptedDVE.name])
-	const dveMeta: DVEPieceMetaData = nextScriptedDVE.metaData as DVEPieceMetaData
-
-	await executeActionSelectDVE(context, settings, actionId, {
-		type: AdlibActionType.SELECT_DVE,
-		config: dveMeta.userData.config,
-		segmentExternalId: externalId,
-		videoId: dveMeta.userData.videoId
 	})
 }
 
@@ -2049,13 +2067,12 @@ async function executeActionSelectFull<
 		iNewsCommand: ''
 	}
 
-	const generator = new PilotGraphicGenerator({
+	const generator = PilotGraphicGenerator.createPilotGraphicGenerator({
 		config,
 		context,
 		partId: externalId,
 		settings: settings.pilotGraphicSettings,
 		parsedCue: cue,
-		engine: 'FULL',
 		segmentExternalId: userData.segmentExternalId,
 		adlib: { rank: 0 }
 	})
@@ -2129,7 +2146,7 @@ async function executeActionClearGraphics<
 									deviceType: TSR.DeviceType.VIZMSE,
 									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
 									channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined,
-									showId: config.selectedGraphicsSetup.OvlShowId
+									showId: config.selectedGraphicsSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
 								}
 							})
 						]

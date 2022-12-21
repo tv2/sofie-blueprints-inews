@@ -1,5 +1,10 @@
-import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from '@tv2media/blueprints-integration'
-import { DEFAULT_GRAPHICS } from 'tv2-common'
+import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
+import {
+	DEFAULT_GRAPHICS,
+	getGraphicsSetupsEntries,
+	GRAPHICS_SETUPS_NAME_COLUMN_ID,
+	GRAPHICS_SETUPS_TABLE_ID
+} from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -142,125 +147,171 @@ export const dveStylesManifest: ConfigManifestEntry = {
 	]
 }
 
-const graphicsSetups: ConfigManifestEntry[] = [
+const graphicsSetups = getGraphicsSetupsEntries([
 	{
-		id: 'GraphicsSetups',
-		name: 'Graphics Setups',
-		description: 'Possible graphics setups',
+		id: 'VcpConcept',
+		name: 'VCP Concept',
+		rank: 1,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: '',
+		type: ConfigManifestEntryType.STRING
+	},
+	{
+		id: 'OvlShowName',
+		name: 'Overlay Show Name',
+		rank: 2,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: 'Name of the show used for OVL channel',
+		type: ConfigManifestEntryType.STRING
+	},
+	{
+		id: 'FullShowName',
+		name: 'Fullscreen Show Name',
+		rank: 3,
+		required: true,
+		defaultVal: '',
+		hint: '',
+		description: 'Name of the show used for FULL and WALL channels',
+		type: ConfigManifestEntryType.STRING
+	}
+])
+
+const DESIGN_TABLE_ID = 'GfxDesignTemplates'
+const DESIGN_NAME_COLUMN_ID = 'INewsName'
+
+export const gfxDesignTemplates: ConfigManifestEntry[] = [
+	{
+		id: DESIGN_TABLE_ID,
+		name: 'GFX Design Templates',
+		description: '',
 		type: ConfigManifestEntryType.TABLE,
-		required: false,
-		defaultVal: [],
+		required: true,
+		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => template.IsDesign),
 		columns: [
 			{
-				id: 'Name',
-				name: 'Name',
-				description: 'The code as it will appear in iNews',
+				id: DESIGN_NAME_COLUMN_ID,
+				name: 'iNews Name',
+				description: 'The name of the design',
 				type: ConfigManifestEntryType.STRING,
-				required: true,
+				required: false,
 				defaultVal: '',
 				rank: 0
 			},
 			{
-				id: 'VcpConcept',
-				name: 'VCP Concept',
-				rank: 1,
-				required: true,
+				id: 'INewsStyleColumn',
+				name: 'iNews Style Column',
+				description: 'The selected style',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
 				defaultVal: '',
-				hint: '',
-				description: '',
-				type: ConfigManifestEntryType.STRING
+				rank: 1
 			},
 			{
-				id: 'OvlShowId',
-				name: 'Overlay Show-ID',
-				rank: 2,
+				id: 'VizTemplate',
+				name: 'GFX Template Name',
+				description: 'The name of the Viz Template',
+				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
-				hint: '',
-				description: 'UUID of the show used for OVL channel',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'FullShowId',
-				name: 'Fullscreen Show-ID',
-				rank: 3,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'UUID of the show used for FULL and WALL channels',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'DveLayoutFolder',
-				name: 'DVE layout folder',
-				rank: 4,
-				required: true,
-				defaultVal: '',
-				hint: '',
-				description: 'Path to the folder containing the layouts for DVEs',
-				type: ConfigManifestEntryType.STRING
+				rank: 2
 			}
-		],
-		hint: ''
-	},
-	{
-		id: 'SelectedGraphicsSetupName',
-		name: 'Graphic Setup name',
-		description: 'Name of the Graphic Setup that should be used',
-		type: ConfigManifestEntryType.STRING,
-		required: false,
-		defaultVal: ''
+		]
 	}
 ]
 
-export const schemaConfigManifest: ConfigManifestEntry[] = [
+const GFX_SCHEMA_TABLE_ID = 'GfxSchemaTemplates'
+const GFX_SCHEMA_NAME_COLUMN_ID = 'GfxSchemaTemplatesName'
+
+export const gfxSchemaTemplates: ConfigManifestEntry[] = [
 	{
-		id: 'SchemaConfig',
-		name: 'Skema',
+		id: GFX_SCHEMA_TABLE_ID,
+		name: 'GFX Skema Templates',
 		description: 'The values for the Skema and Design combinations',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [],
 		columns: [
 			{
-				id: 'schemaName',
-				name: 'Skema',
-				description: 'The name of the Skema',
-				rank: 0,
-				required: true,
+				id: GFX_SCHEMA_NAME_COLUMN_ID,
+				name: 'iNews Name',
+				description: 'The name of the design',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
 				defaultVal: '',
-				type: ConfigManifestEntryType.STRING
+				rank: 0
 			},
 			{
-				id: 'designIdentifier',
-				name: 'Design',
-				description: 'The identifier of the Design',
-				rank: 1,
-				required: true,
+				id: 'INewsSkemaColumn',
+				name: 'iNews Skema Column',
+				description: 'The selected skema',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
 				defaultVal: '',
-				type: ConfigManifestEntryType.STRING
+				rank: 1
 			},
 			{
-				id: 'vizTemplateName',
-				name: 'Viz Template Name',
-				description: 'The name of the Viz template',
-				rank: 2,
+				id: 'VizTemplate',
+				name: 'GFX Template Name',
+				description: 'The name of the Viz Template',
+				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
-				type: ConfigManifestEntryType.STRING
-			},
-			{
-				id: 'casparCgDveBgScene',
-				name: 'CasparCG DVE Bg Scene',
-				description: 'The dveBgScene',
-				defaultVal: '',
-				rank: 3,
-				required: true,
-				type: ConfigManifestEntryType.STRING
+				rank: 2
 			}
 		]
 	}
 ]
+
+export const overlayShowMapping: ConfigManifestEntry = {
+	id: 'OverlayShowMapping',
+	name: 'Overlay Show mapping',
+	description: 'Maps Overlay Shows to the variety of Skemas and Designs',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: [],
+	columns: [
+		{
+			id: 'Design',
+			name: 'Design',
+			rank: 0,
+			description: 'Name of the Design from the GFX Design table',
+			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+			tableId: DESIGN_TABLE_ID,
+			columnId: DESIGN_NAME_COLUMN_ID,
+			multiple: false,
+			required: false,
+			defaultVal: ''
+		},
+		{
+			id: 'GraphicsSetup',
+			name: 'Graphics Setup',
+			rank: 1,
+			description: 'Names of the Graphics Setups',
+			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+			tableId: GRAPHICS_SETUPS_TABLE_ID,
+			columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
+			multiple: true,
+			required: false,
+			defaultVal: []
+		},
+		{
+			id: 'Schema',
+			name: 'GFX Skema Templates',
+			rank: 2,
+			description: 'Names of the Skemas',
+			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+			tableId: GFX_SCHEMA_TABLE_ID,
+			columnId: GFX_SCHEMA_NAME_COLUMN_ID,
+			multiple: true,
+			required: false,
+			defaultVal: []
+		}
+	]
+}
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
@@ -296,10 +347,10 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		id: 'GFXTemplates',
 		name: 'GFX Templates',
 		description:
-			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are aslo required. VizTemplate is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNes i.e. "ident_nyhederne"',
+			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are also required. GFX Template Name is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNews i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })),
+		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => !template.IsDesign),
 		columns: [
 			{
 				id: 'INewsCode',
@@ -321,7 +372,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			},
 			{
 				id: 'VizTemplate',
-				name: 'Viz Template Name (**)',
+				name: 'GFX Template Name (**)',
 				description: 'The name of the Viz Template',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
@@ -349,15 +400,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 4
 			},
 			{
-				id: 'IsDesign',
-				name: 'Changes Design',
-				description: 'Whether this cue changes the design',
-				type: ConfigManifestEntryType.BOOLEAN,
-				required: false,
-				defaultVal: false,
-				rank: 5
-			},
-			{
 				id: 'SourceLayer',
 				name: 'Source layer (**)',
 				description: 'The ID of the source layer to place the piece on in Sofie UI',
@@ -383,8 +425,10 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
+	...gfxDesignTemplates,
 	...graphicsSetups,
-	...schemaConfigManifest,
+	...gfxSchemaTemplates,
+	overlayShowMapping,
 	{
 		/*
 		Wipes Config

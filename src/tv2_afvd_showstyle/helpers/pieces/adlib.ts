@@ -1,21 +1,18 @@
 import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IShowStyleUserContext,
-	PieceLifespan
-} from '@tv2media/blueprints-integration'
+	IShowStyleUserContext
+} from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
-	DVEPieceMetaData,
+	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
-	literal,
 	PartDefinition,
-	PieceMetaData,
+	t,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType, SharedOutputLayers } from 'tv2-constants'
@@ -27,10 +24,8 @@ import { MakeContentDVE } from '../content/dve'
 export async function EvaluateAdLib(
 	context: IShowStyleUserContext,
 	config: BlueprintConfig,
-	adLibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
-	partId: string,
 	parsedCue: CueDefinitionAdLib,
 	partDefinition: PartDefinition,
 	rank: number
@@ -98,33 +93,28 @@ export async function EvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate, false, true)
+		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
 
-		adLibPieces.push({
-			_rank: rank,
-			externalId: partId,
-			name: `DVE: ${parsedCue.variant}`,
-			sourceLayerId: SourceLayer.PgmDVE,
-			outputLayerId: SharedOutputLayers.PGM,
-			uniquenessId: getUniquenessIdDVE(cueDVE),
-			toBeQueued: true,
-			content: content.content,
-			invalid: !content.valid,
-			lifespan: PieceLifespan.WithinPart,
-			metaData: literal<DVEPieceMetaData>({
-				sources: cueDVE.sources,
-				config: rawTemplate,
-				userData: literal<ActionSelectDVE>({
-					type: AdlibActionType.SELECT_DVE,
-					config: cueDVE,
-					videoId: partDefinition.fields.videoId,
-					segmentExternalId: partDefinition.segmentExternalId
-				}),
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
-			}),
-			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
+		const userData: ActionSelectDVE = {
+			type: AdlibActionType.SELECT_DVE,
+			config: cueDVE,
+			name: `DVE: ${cueDVE.template}`,
+			videoId: partDefinition.fields.videoId,
+			segmentExternalId: partDefinition.segmentExternalId
+		}
+		actions.push({
+			externalId: generateExternalId(context, userData),
+			actionId: AdlibActionType.SELECT_DVE,
+			userData,
+			userDataManifest: {},
+			display: {
+				sourceLayerId: SourceLayer.PgmDVE,
+				outputLayerId: SharedOutputLayers.PGM,
+				uniquenessId: getUniquenessIdDVE(cueDVE),
+				label: t(`${partDefinition.storyName}`),
+				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
+				content: content.content
+			}
 		})
 	}
 }

@@ -4,6 +4,7 @@ import {
 	GraphicsContent,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
+	ICommonContext,
 	IngestRundown,
 	IShowStyleUserContext,
 	IStudioUserContext,
@@ -12,8 +13,9 @@ import {
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
+	ActionCallRobotPreset,
 	ActionClearGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
@@ -110,8 +112,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								input: info.port,
 								transition: TSR.AtemTransitionStyle.CUT
 							}
-						},
-						classes: ['adlib_deparent']
+						}
 					}),
 					...GetSisyfosTimelineObjForReplay(config, info, vo)
 				]
@@ -154,8 +155,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 								input: info.port,
 								transition: TSR.AtemTransitionStyle.CUT
 							}
-						},
-						classes: ['adlib_deparent']
+						}
 					}),
 					...eksternSisyfos
 				]
@@ -459,7 +459,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: 'BG_LOADER_SC',
 						templateData: [],
-						showId: config.selectedGraphicsSetup.OvlShowId
+						showId: config.selectedGraphicsSetup.OvlShowName
 					}
 				})
 			)
@@ -795,7 +795,28 @@ function getGlobalAdlibActionsAFVD(_context: IStudioUserContext, config: Bluepri
 		}
 	})
 
+	blueprintActions.push(createRobotPresetAction(_context))
+
 	return blueprintActions
+}
+
+function createRobotPresetAction(context: ICommonContext): IBlueprintActionManifest {
+	const callRobotPresetAction: ActionCallRobotPreset = {
+		type: AdlibActionType.CALL_ROBOT_PRESET
+	}
+	return {
+		externalId: generateExternalId(context, callRobotPresetAction),
+		actionId: AdlibActionType.CALL_ROBOT_PRESET,
+		userData: callRobotPresetAction,
+		userDataManifest: {},
+		display: {
+			_rank: 400,
+			label: t(`Call Robot preset`),
+			sourceLayerId: SourceLayer.RobotCamera,
+			outputLayerId: SharedOutputLayers.SEC,
+			tags: []
+		}
+	}
 }
 
 function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {

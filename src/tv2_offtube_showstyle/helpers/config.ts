@@ -4,12 +4,12 @@ import {
 	IShowStyleContext,
 	IStudioContext,
 	TableConfigItemValue
-} from '@tv2media/blueprints-integration'
-import { TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+} from 'blueprints-integration'
+import { findGraphicsSetup, TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
 
-export interface TableConfigItemGFXTemplates {
+export interface TableConfigItemGfxTemplates {
 	VizTemplate: string
 	SourceLayer: string
 	LayerMapping: string
@@ -36,25 +36,15 @@ export interface DVEConfigInput {
 
 export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-}
-
-function findGraphicsSetup(
-	_context: ICommonContext,
-	_config: TV2ShowstyleBlueprintConfigBase
-): TableConfigGraphicsSetup {
-	// just for type compatibility, not really supported in offtube
-	return {
-		Name: '',
-		VcpConcept: '',
-		OvlShowId: '',
-		FullShowId: '',
-		DveLayoutFolder: ''
-	}
+	GraphicsSetups: TableConfigGraphicsSetup[]
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
-	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig)
+	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig, {
+		Name: '',
+		HtmlPackageFolder: ''
+	})
 	return {
 		showStyle: showstyleConfig,
 		selectedGraphicsSetup

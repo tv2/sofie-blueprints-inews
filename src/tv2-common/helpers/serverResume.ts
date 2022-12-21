@@ -4,7 +4,7 @@ import {
 	IBlueprintPartInstance,
 	IBlueprintResolvedPieceInstance,
 	VTContent
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { PartEndStateExt, PieceMetaData, t } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import _ = require('underscore')

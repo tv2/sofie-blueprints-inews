@@ -1,9 +1,10 @@
-import { MigrationStepShowStyle, SourceLayerType } from '@tv2media/blueprints-integration'
+import { MigrationStepShowStyle, SourceLayerType } from 'blueprints-integration'
 import {
-	AddGraphicToGFXTable,
-	changeGFXTemplate,
+	AddGraphicToGfxTable,
+	changeGfxTemplate,
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
@@ -54,7 +55,7 @@ export const remapVizLLayer: Map<string, string> = new Map([
 	[VizLLayer.VizLLayerOverlayHeadline, SharedGraphicLLayer.GraphicLLayerOverlayHeadline],
 	[VizLLayer.VizLLayerOverlayTema, SharedGraphicLLayer.GraphicLLayerOverlayTema],
 	[VizLLayer.VizLLayerPilot, SharedGraphicLLayer.GraphicLLayerPilot],
-	[VizLLayer.VizLLayerPilotOverlay, SharedGraphicLLayer.GraphicLLayerPilotOverlay],
+	[VizLLayer.VizLLayerPilotOverlay, SharedGraphicLLayer.GraphicLLayerOverlayPilot],
 	[VizLLayer.VizLLayerDesign, SharedGraphicLLayer.GraphicLLayerDesign],
 	[VizLLayer.VizLLayerAdLibs, SharedGraphicLLayer.GraphicLLayerAdLibs],
 	[VizLLayer.VizLLayerWall, SharedGraphicLLayer.GraphicLLayerWall]
@@ -73,7 +74,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getCreateVariantMigrationSteps(),
-	...remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
+	remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	...getSourceLayerDefaultsMigrationSteps('1.3.0', true),
 
 	/**
@@ -115,7 +116,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	forceSourceLayerToDefaults('1.5.2', OfftubeSourceLayer.PgmJingle),
 
-	AddGraphicToGFXTable('1.5.4', 'Offtube', {
+	AddGraphicToGfxTable('1.5.4', 'Offtube', {
 		VizTemplate: 'locators',
 		SourceLayer: '',
 		LayerMapping: SharedGraphicLLayer.GraphicLLayerLocators,
@@ -223,7 +224,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.7.2
 	 * - Fix bundright configuration
 	 */
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'QBOX',
 		{
@@ -235,7 +236,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ OutType: '' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'QBOX',
 		{
@@ -247,7 +248,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 		},
 		{ SourceLayer: 'studio0_graphicsLower' }
 	),
-	changeGFXTemplate(
+	changeGfxTemplate(
 		'1.7.2',
 		'QBOX',
 		{
@@ -265,6 +266,20 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * - Remove persistent idents
 	 */
 	removeSourceLayer('1.7.5', 'AFVD', 'studio0_graphicsIdent_persistent'),
+
+	/**
+	 * 1.7.6
+	 * - Map designs from GFXTemplates to GfxDesignTemplates and delete them from GFXTemplates
+	 */
+	mapGfxTemplateToDesignTemplateAndDeleteOriginals('1.7.6', 'QBOX', 'GFXTemplates', 'GfxDesignTemplates'),
+
+	/**
+	 * 1.7.7
+	 * - Update SourceLayerType for Continuity
+	 * - Update SourceLayerType for DveBackground
+	 */
+	forceSourceLayerToDefaults('1.7.7', OfftubeSourceLayer.PgmContinuity),
+	forceSourceLayerToDefaults('1.7.7', OfftubeSourceLayer.PgmDVEBackground),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),

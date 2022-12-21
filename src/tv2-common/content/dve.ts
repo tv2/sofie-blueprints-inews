@@ -9,16 +9,15 @@ import {
 	TSR,
 	VTContent,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import {
 	createEmptyObject,
 	CueDefinitionDVE,
 	DVEConfigInput,
-	DVEParentClass,
 	DVESources,
 	FindDSKFullGFX,
 	findSourceInfo,
-	JoinAssetToFolder,
+	joinAssetToFolder,
 	literal,
 	PartDefinition,
 	PieceMetaData,
@@ -134,9 +133,7 @@ export function MakeContentDVEBase<
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
-	dveGeneratorOptions: DVEOptions,
-	addClass?: boolean,
-	adlib?: boolean
+	dveGeneratorOptions: DVEOptions
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	if (!dveConfig) {
 		context.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
@@ -161,8 +158,6 @@ export function MakeContentDVEBase<
 		graphicsTemplateContent,
 		parsedCue.sources,
 		dveGeneratorOptions,
-		addClass ? DVEParentClass('studio0', dveConfig.DVEName) : undefined,
-		adlib,
 		partDefinition.segmentExternalId
 	)
 }
@@ -177,8 +172,6 @@ export function MakeContentDVE2<
 	graphicsTemplateContent: { [key: string]: string },
 	sources: DVESources | undefined,
 	dveGeneratorOptions: DVEOptions,
-	className?: string,
-	adlib?: boolean,
 	mediaPlayerSessionId?: string
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	let template: DVEConfig
@@ -306,11 +299,11 @@ export function MakeContentDVE2<
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
 
 	if (keyFile) {
-		keyFile = JoinAssetToFolder(config.studio.DVEFolder, keyFile)
+		keyFile = joinAssetToFolder(config.studio.DVEFolder, keyFile)
 	}
 
 	if (frameFile) {
-		frameFile = JoinAssetToFolder(config.studio.DVEFolder, frameFile)
+		frameFile = joinAssetToFolder(config.studio.DVEFolder, frameFile)
 	}
 
 	return {
@@ -338,7 +331,7 @@ export function MakeContentDVE2<
 						type: TSR.TimelineContentTypeAtem.SSRC,
 						ssrc: { boxes }
 					},
-					classes: className ? [...classes, className] : classes,
+					classes,
 					metaData: literal<DVEMetaData>({
 						mediaPlayerSession: server ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
 					})
@@ -383,8 +376,7 @@ export function MakeContentDVE2<
 							input: AtemSourceIndex.SSrc,
 							transition: TSR.AtemTransitionStyle.CUT
 						}
-					},
-					...(adlib ? { classes: ['adlib_deparent'] } : {})
+					}
 				}),
 				literal<TSR.TimelineObjCCGTemplate>({
 					id: '',

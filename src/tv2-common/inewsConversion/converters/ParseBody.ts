@@ -1,4 +1,4 @@
-import { TSR } from '@tv2media/blueprints-integration'
+import { TSR } from 'blueprints-integration'
 import {
 	AtemTransitionStyleFromString,
 	CueDefinitionFromLayout,
@@ -177,6 +177,8 @@ const EVS_RED_TEXT = /\bEVS ?(\d+) ?(VOV?)?\b/i
 const ACCEPTED_RED_TEXT = [/\b(SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|VOV?|VOSB)+\b/i, CAMERA_RED_TEXT, EVS_RED_TEXT]
 const REMOTE_CUE = /^(LIVE|FEED) ?([^\s]+)(?: (.+))?$/i
 const ENGINE_CUE = /ENGINE ?([^\s]+)/i
+
+const MAX_ALLOWED_TRANSITION_FRAMES = 250
 
 export function ParseBody(
 	config: TV2BlueprintConfig,
@@ -566,11 +568,16 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 	if (transitionMatch) {
 		definition.transition = {
 			style: AtemTransitionStyleFromString(transitionMatch[1].toUpperCase()),
-			duration: transitionMatch[2] ? Number(transitionMatch[2]) : undefined
+			duration: transitionMatch[2] ? getTimeForTransition(transitionMatch[2]) : undefined
 		}
 	}
 
 	return definition
+}
+
+function getTimeForTransition(timeString: string): number {
+	const time = Number(timeString)
+	return Math.min(time, MAX_ALLOWED_TRANSITION_FRAMES)
 }
 
 function extractTypeProperties(typeStr: string): PartdefinitionTypes {

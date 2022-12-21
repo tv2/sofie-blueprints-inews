@@ -5,7 +5,7 @@ import {
 	OnGenerateTimelineObj,
 	PartEndState,
 	TimelinePersistentState
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { onTimelineGenerate, PieceMetaData } from 'tv2-common'
 import { getConfig } from '../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from './layers'

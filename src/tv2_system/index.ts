@@ -1,4 +1,4 @@
-import { BlueprintManifestType, SystemBlueprintManifest } from '@tv2media/blueprints-integration'
+import { BlueprintManifestType, SystemBlueprintManifest } from 'blueprints-integration'
 import * as _ from 'underscore'
 import { systemMigrations } from './migrations'
 

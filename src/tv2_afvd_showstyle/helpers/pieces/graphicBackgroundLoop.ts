@@ -6,7 +6,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { CalculateTime, CueDefinitionBackgroundLoop, literal, TV2BlueprintConfig } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
@@ -116,6 +116,9 @@ function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
 }
 
 function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
+	if (!config.selectedGraphicsSetup.FullShowName) {
+		return []
+	}
 	return [
 		literal<TSR.TimelineObjVIZMSEElementInternal>({
 			id: '',
@@ -127,7 +130,7 @@ function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBa
 				type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 				templateName: parsedCue.backgroundLoop,
 				templateData: [],
-				showId: config.selectedGraphicsSetup.FullShowId
+				showId: config.selectedGraphicsSetup.FullShowName
 			}
 		})
 	]

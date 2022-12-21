@@ -8,7 +8,7 @@ import {
 	PieceLifespan,
 	TSR,
 	WithTimeline
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { getSegmentBase, INewsPayload, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -124,11 +124,11 @@ function insertSpecialPieces(
 		const showsToInitialize = new Set<string>()
 		const allShows = new Set<string>()
 		config.showStyle.GraphicsSetups.forEach(graphicsSetup => {
-			allShows.add(graphicsSetup.FullShowId)
-			allShows.add(graphicsSetup.OvlShowId)
+			allShows.add(graphicsSetup.FullShowName)
+			allShows.add(graphicsSetup.OvlShowName)
 			if (graphicsSetupsToInitialize.includes(graphicsSetup.Name)) {
-				showsToInitialize.add(graphicsSetup.FullShowId)
-				showsToInitialize.add(graphicsSetup.OvlShowId)
+				showsToInitialize.add(graphicsSetup.FullShowName)
+				showsToInitialize.add(graphicsSetup.OvlShowName)
 			}
 		})
 		const showsToCleanup = Array.from(allShows).filter(show => !showsToInitialize.has(show))

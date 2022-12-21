@@ -1,4 +1,4 @@
-import { ConfigItemValue, TableConfigItemValue } from '@tv2media/blueprints-integration'
+import { ConfigItemValue, TableConfigItemValue } from 'blueprints-integration'
 import { literal, StripFolderFromDVEConfig } from 'tv2-common'
 import { MockShowstyleMigrationContext } from './migrationContext.mock'
 

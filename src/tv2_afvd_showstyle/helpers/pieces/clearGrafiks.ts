@@ -4,7 +4,7 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	TSR
-} from '@tv2media/blueprints-integration'
+} from 'blueprints-integration'
 import { CreateTimingEnable, CueDefinitionClearGrafiks, GetDefaultOut, literal } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
@@ -69,7 +69,7 @@ export function EvaluateClearGrafiks(
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-								showId: config.selectedGraphicsSetup.OvlShowId
+								showId: config.selectedGraphicsSetup.OvlShowName
 							}
 						})
 				  ]
