@@ -1,5 +1,5 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
-import { executeAction } from 'tv2-common'
+import { executeAction, ServerSelectMode } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { getConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
@@ -64,7 +64,10 @@ export async function executeActionAFVD(
 				SELECTED_ADLIB_LAYERS: [SourceLayer.SelectedServer, SourceLayer.SelectedVoiceOver]
 			},
 			createJingleContent: createJingleContentAFVD,
-			pilotGraphicSettings: pilotGeneratorSettingsAFVD
+			pilotGraphicSettings: pilotGeneratorSettingsAFVD,
+			serverActionSettings: {
+				defaultTriggerMode: ServerSelectMode.RESUME
+			}
 		},
 		actionId,
 		userData,
