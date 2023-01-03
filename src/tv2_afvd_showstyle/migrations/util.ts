@@ -131,7 +131,7 @@ export function renameTableId(version: string, oldTableId: string, newTableId: s
 			oldConfigTable.map(value => newConfigTable.push(value))
 
 			context.setBaseConfig(newTableId, newConfigTable)
-			context.setBaseConfig(oldTableId, [])
+			context.removeBaseConfig(oldTableId)
 		}
 	}
 }
