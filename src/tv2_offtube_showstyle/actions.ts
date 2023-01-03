@@ -1,5 +1,5 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
-import { executeAction } from 'tv2-common'
+import { executeAction, ServerSelectMode } from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { pilotGeneratorSettingsOfftube } from './cues/OfftubeGraphics'
@@ -71,7 +71,10 @@ export async function executeActionOfftube(
 				SELECTED_ADLIB_LAYERS
 			},
 			createJingleContent: createJingleContentOfftube,
-			pilotGraphicSettings: pilotGeneratorSettingsOfftube
+			pilotGraphicSettings: pilotGeneratorSettingsOfftube,
+			serverActionSettings: {
+				defaultTriggerMode: ServerSelectMode.RESET
+			}
 		},
 		actionId,
 		userData
