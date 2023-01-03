@@ -137,41 +137,45 @@ export function renameTableId(version: string, oldTableId: string, newTableId: s
 }
 
 /**
- * "Renames" the id of a column by overriding the value of the old column onto the new column - then removes the value from the old column
+ * "Renames" the name of a Blueprint configuration by overriding the value of the old configuration onto the new configuration - then removes the old configuration
  */
-export function renameColumnId(version: string, oldColumnId: string, newColumnId: string): MigrationStepShowStyle {
+export function renameBlueprintConfiguration(
+	version: string,
+	oldConfigurationName: string,
+	newConfigurationName: string
+): MigrationStepShowStyle {
 	return {
-		id: `${version}.rename.column.id.${oldColumnId}.to.${newColumnId}`,
+		id: `${version}.rename.blueprint.configuration.${oldConfigurationName}.to.${newConfigurationName}`,
 		version,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const oldConfigTable = (context.getBaseConfig(oldColumnId) as unknown) as BasicConfigItemValue
-			if (!oldConfigTable || Object.keys(oldConfigTable).length === 0) {
+			const oldConfig = (context.getBaseConfig(oldConfigurationName) as unknown) as BasicConfigItemValue
+			if (!oldConfig || Object.keys(oldConfig).length === 0) {
 				return false
 			}
 
-			const newConfigTable = (context.getBaseConfig(newColumnId) as unknown) as BasicConfigItemValue
-			return !newConfigTable
+			const newConfig = (context.getBaseConfig(newConfigurationName) as unknown) as BasicConfigItemValue
+			return !newConfig
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const oldConfigColumn = (context.getBaseConfig(oldColumnId) as unknown) as BasicConfigItemValue
+			const oldConfig = (context.getBaseConfig(oldConfigurationName) as unknown) as BasicConfigItemValue
 
-			context.setBaseConfig(newColumnId, oldConfigColumn)
-			context.setBaseConfig(oldColumnId, [])
+			context.setBaseConfig(newConfigurationName, oldConfig)
+			context.removeBaseConfig(oldConfigurationName)
 		}
 	}
 }
 
 /**
- *  For all variants: "Renames" the id of a column by overriding the value of the old column onto the new column - then removes the value from the old column
+ *  For all variants: "Renames" the blueprint configuration by overriding the value of the old configuration onto the new configuration - then removes the old configuration
  */
-export function renameColumnIdForAllVariants(
+export function renameBlueprintsConfigurationForAllVariants(
 	version: string,
-	oldColumnId: string,
-	newColumnId: string
+	oldConfigName: string,
+	newConfigName: string
 ): MigrationStepShowStyle {
 	return {
-		id: `${version}.rename.column.id.${oldColumnId}.to.${newColumnId}.for.all.variants`,
+		id: `${version}.rename.blueprint.configuration.${oldConfigName}.to.${newConfigName}.for.all.variants`,
 		version,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
@@ -181,23 +185,23 @@ export function renameColumnIdForAllVariants(
 				return false
 			}
 
-			const noVariantsHaveValueInOldColumn: boolean = allVariants.every((variant: IBlueprintShowStyleVariant) => {
-				const oldColumn = context.getVariantConfig(variant._id, oldColumnId)
-				return !oldColumn || Object.keys(oldColumn).length === 0
+			const noVariantsHaveOldConfig: boolean = allVariants.every((variant: IBlueprintShowStyleVariant) => {
+				const oldConfig = context.getVariantConfig(variant._id, oldConfigName)
+				return !oldConfig || Object.keys(oldConfig).length === 0
 			})
 
-			return !noVariantsHaveValueInOldColumn
+			return !noVariantsHaveOldConfig
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			const allVariants: IBlueprintShowStyleVariant[] = context.getAllVariants()
 			allVariants.forEach((variant: IBlueprintShowStyleVariant) => {
-				const oldColumn = context.getVariantConfig(variant._id, oldColumnId)
-				if (!oldColumn || Object.keys(oldColumn).length === 0) {
+				const oldConfig = context.getVariantConfig(variant._id, oldConfigName)
+				if (!oldConfig || Object.keys(oldConfig).length === 0) {
 					return
 				}
 
-				context.setVariantConfig(variant._id, newColumnId, oldColumn)
-				context.setVariantConfig(variant._id, oldColumnId, {})
+				context.setVariantConfig(variant._id, newConfigName, oldConfig)
+				context.removeVariantConfig(variant._id, oldConfigName)
 			})
 		}
 	}

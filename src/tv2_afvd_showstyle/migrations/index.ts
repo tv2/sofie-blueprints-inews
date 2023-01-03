@@ -26,8 +26,8 @@ import {
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps,
-	renameColumnId,
-	renameColumnIdForAllVariants,
+	renameBlueprintConfiguration,
+	renameBlueprintsConfigurationForAllVariants,
 	renameTableId
 } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
@@ -258,8 +258,8 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	renameTableId('1.7.9', 'GFXTemplates', 'GfxTemplates'),
 	renameTableId('1.7.9', 'GraphicsSetups', 'GfxSetups'),
-	renameColumnId('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
-	renameColumnIdForAllVariants('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+	renameBlueprintConfiguration('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+	renameBlueprintsConfigurationForAllVariants('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
 	renameTableColumn('1.7.9', 'OverlayShowMapping', 'GraphicsSetup', 'GfxSetup'),
 	renameTableId('1.7.9', 'OverlayShowMapping', 'GfxShowMapping'),
 
