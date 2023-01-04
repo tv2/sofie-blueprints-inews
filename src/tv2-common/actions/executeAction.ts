@@ -21,7 +21,6 @@ import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
 	ActionCommentatorSelectFull,
-	ActionCommentatorSelectServer,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
@@ -192,6 +191,11 @@ export interface ActionExecutionSettings<
 		alphaAtEnd: number
 	) => WithTimeline<VTContent>
 	pilotGraphicSettings: PilotGeneratorSettings
+	serverActionSettings: ServerActionSettings
+}
+
+interface ServerActionSettings {
+	defaultTriggerMode: ServerSelectMode
 }
 
 export async function executeAction<
@@ -249,9 +253,7 @@ export async function executeAction<
 			case AdlibActionType.COMMENTATOR_SELECT_SERVER:
 				await executeActionCommentatorSelectServer(
 					context,
-					settings,
-					actionId,
-					userData as ActionCommentatorSelectServer
+					settings
 				)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_FULL:
@@ -451,7 +453,7 @@ async function executeActionSelectServerClip<
 			session: sessionToContinue ?? externalId,
 			adLibPix: userData.adLibPix,
 			lastServerPosition: await getServerPosition(context),
-			actionTriggerMode: triggerMode
+			actionTriggerMode: triggerMode ?? settings.serverActionSettings.defaultTriggerMode
 		},
 		{
 			SourceLayer: {
@@ -1738,9 +1740,7 @@ async function executeActionCommentatorSelectServer<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ITV2ActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	_actionId: string,
-	_userData: ActionCommentatorSelectServer
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>
 ) {
 	const data = await findDataStore<ActionSelectServerClip>(context, [
 		settings.SelectedAdlibs.SourceLayer.Server,
@@ -1766,7 +1766,7 @@ async function executeActionCommentatorSelectServer<
 		settings,
 		AdlibActionType.SELECT_SERVER_CLIP,
 		data,
-		ServerSelectMode.RESET,
+		settings.serverActionSettings.defaultTriggerMode,
 		session
 	)
 }
