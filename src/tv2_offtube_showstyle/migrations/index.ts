@@ -20,7 +20,7 @@ import {
 	renameBlueprintConfiguration,
 	renameBlueprintsConfigurationForAllVariants,
 	renameTableId
-} from '../../tv2_afvd_showstyle/migrations/util'
+} from '../../tv2-common/migrations/renameConfigurationHelper'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 import { GetDefaultStudioSourcesForOfftube } from './hotkeys'

@@ -16,6 +16,11 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
+import {
+	renameBlueprintConfiguration,
+	renameBlueprintsConfigurationForAllVariants,
+	renameTableId
+} from '../../tv2-common/migrations/renameConfigurationHelper'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { ATEMModel } from '../../types/atem'
@@ -25,10 +30,7 @@ import sourcelayerDefaults from './sourcelayer-defaults'
 import {
 	forceSourceLayerToDefaults,
 	getOutputLayerDefaultsMigrationSteps,
-	getSourceLayerDefaultsMigrationSteps,
-	renameBlueprintConfiguration,
-	renameBlueprintsConfigurationForAllVariants,
-	renameTableId
+	getSourceLayerDefaultsMigrationSteps
 } from './util'
 import { getCreateVariantMigrationSteps } from './variants-defaults'
 
