@@ -116,7 +116,7 @@ function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
 }
 
 function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
-	if (!config.selectedGraphicsSetup.FullShowName) {
+	if (!config.selectedGfxSetup.FullShowName) {
 		return []
 	}
 	return [
@@ -130,7 +130,7 @@ function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBa
 				type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 				templateName: parsedCue.backgroundLoop,
 				templateData: [],
-				showName: config.selectedGraphicsSetup.FullShowName
+				showName: config.selectedGfxSetup.FullShowName
 			}
 		})
 	]

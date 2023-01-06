@@ -40,7 +40,7 @@ export function FindInfiniteModeFromConfig(
 ): PieceLifespan {
 	const template = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 	const iNewsName = GraphicIsInternal(parsedCue) ? parsedCue.graphic.template : undefined
-	const conf = config.showStyle.GFXTemplates.find(cnf =>
+	const conf = config.showStyle.GfxTemplates.find(cnf =>
 		cnf.VizTemplate
 			? cnf.VizTemplate.toString().toUpperCase() === template.toUpperCase() &&
 			  (iNewsName ? cnf.INewsName.toUpperCase() === iNewsName.toUpperCase() : true)
@@ -68,7 +68,7 @@ export function GetGraphicDuration(
 	config: TV2BlueprintConfig,
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
 ): number | undefined {
-	if (config.showStyle.GFXTemplates) {
+	if (config.showStyle.GfxTemplates) {
 		const template = findGfxTemplate(config, cue)
 		if (template && template.OutType && !template.OutType.toString().match(/default/i)) {
 			return undefined
@@ -118,7 +118,7 @@ export function findGfxTemplate(
 	if (graphicId === undefined) {
 		return undefined
 	}
-	return config.showStyle.GFXTemplates.find(templ =>
+	return config.showStyle.GfxTemplates.find(templ =>
 		templ.INewsName ? templ.INewsName.toString().toUpperCase() === graphicId?.toUpperCase() : false
 	)
 }

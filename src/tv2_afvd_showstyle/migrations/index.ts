@@ -16,6 +16,11 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
+import {
+	renameBlueprintConfiguration,
+	renameBlueprintsConfigurationForAllVariants,
+	renameTableId
+} from '../../tv2-common/migrations/renameConfigurationHelper'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { ATEMModel } from '../../types/atem'
@@ -249,6 +254,16 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * - Update SourceLayerType for Continuity
 	 */
 	forceSourceLayerToDefaults('1.7.7', SourceLayer.PgmContinuity),
+
+	/**
+	 * 1.7.9 Rename to "Gfx"
+	 */
+	renameTableId('1.7.9', 'GFXTemplates', 'GfxTemplates'),
+	renameTableId('1.7.9', 'GraphicsSetups', 'GfxSetups'),
+	renameBlueprintConfiguration('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+	renameBlueprintsConfigurationForAllVariants('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+	renameTableColumn('1.7.9', 'OverlayShowMapping', 'GraphicsSetup', 'GfxSetup'),
+	renameTableId('1.7.9', 'OverlayShowMapping', 'GfxShowMapping'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

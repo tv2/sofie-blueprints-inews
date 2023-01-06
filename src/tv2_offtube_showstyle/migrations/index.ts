@@ -16,6 +16,11 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
+import {
+	renameBlueprintConfiguration,
+	renameBlueprintsConfigurationForAllVariants,
+	renameTableId
+} from '../../tv2-common/migrations/renameConfigurationHelper'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 import { GetDefaultStudioSourcesForOfftube } from './hotkeys'
@@ -280,6 +285,11 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	forceSourceLayerToDefaults('1.7.7', OfftubeSourceLayer.PgmContinuity),
 	forceSourceLayerToDefaults('1.7.7', OfftubeSourceLayer.PgmDVEBackground),
+
+	renameTableId('1.7.9', 'GFXTemplates', 'GfxTemplates'),
+	renameTableId('1.7.9', 'GraphicsSetups', 'GfxSetups'),
+	renameBlueprintConfiguration('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+	renameBlueprintsConfigurationForAllVariants('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),

@@ -9,7 +9,7 @@ import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } f
 import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers, SourceType } from 'tv2-constants'
 import { SegmentUserContext } from '../../../../__mocks__/context'
 import {
-	DEFAULT_GRAPHICS_SETUP,
+	DEFAULT_GFX_SETUP,
 	defaultShowStyleConfig,
 	defaultStudioConfig,
 	EMPTY_SOURCE_CONFIG
@@ -59,7 +59,7 @@ describe('lyd', () => {
 				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
-				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
+				selectedGfxSetup: DEFAULT_GFX_SETUP
 			},
 			pieces,
 			adlibPieces,
@@ -91,7 +91,7 @@ describe('lyd', () => {
 				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
-				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
+				selectedGfxSetup: DEFAULT_GFX_SETUP
 			},
 			pieces,
 			adlibPieces,
@@ -126,7 +126,7 @@ describe('lyd', () => {
 				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
-				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
+				selectedGfxSetup: DEFAULT_GFX_SETUP
 			},
 			pieces,
 			adlibPieces,
@@ -154,7 +154,7 @@ describe('lyd', () => {
 				sources: EMPTY_SOURCE_CONFIG,
 				mediaPlayers: [],
 				dsk: defaultDSKConfig,
-				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
+				selectedGfxSetup: DEFAULT_GFX_SETUP
 			},
 			pieces,
 			adlibPieces,

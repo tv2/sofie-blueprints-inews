@@ -2146,7 +2146,7 @@ async function executeActionClearGraphics<
 									deviceType: TSR.DeviceType.VIZMSE,
 									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
 									channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined,
-									showName: config.selectedGraphicsSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
+									showName: config.selectedGfxSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
 								}
 							})
 						]
