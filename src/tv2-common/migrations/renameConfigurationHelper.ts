@@ -86,7 +86,7 @@ export function renameBlueprintsConfigurationForAllVariants(
 			const allVariants: IBlueprintShowStyleVariant[] = context.getAllVariants()
 			allVariants.forEach((variant: IBlueprintShowStyleVariant) => {
 				const oldConfig = context.getVariantConfig(variant._id, oldConfigName)
-				if (!oldConfig || Object.keys(oldConfig).length === 0) {
+				if (oldConfig === undefined) {
 					return
 				}
 
