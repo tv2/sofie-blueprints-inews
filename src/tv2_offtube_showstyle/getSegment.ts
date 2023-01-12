@@ -75,8 +75,8 @@ function CreatePartContinuity(
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
 					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
-						literal<TSR.TimelineObjAtemME>({
+					timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TimelineContentAtemAny>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 							id: '',
 							enable: {
 								start: 0

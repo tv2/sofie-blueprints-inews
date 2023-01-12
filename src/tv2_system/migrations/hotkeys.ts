@@ -28,7 +28,7 @@ export function RemoveDefaultCoreShortcuts(versionStr: string): MigrationStepSys
 			for (const trigger of defaultTriggerIds) {
 				const defaultTrigger = context.getTriggeredAction(trigger)
 				if (defaultTrigger) {
-					defaultTrigger.triggers = []
+					defaultTrigger.triggers = {}
 					context.setTriggeredAction(defaultTrigger)
 				}
 			}
@@ -42,8 +42,8 @@ let j = 0
 const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 	{
 		_id: 'toggleShelf',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: ClientActions.shelf,
 				filterChain: [
 					{
@@ -52,21 +52,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 				],
 				state: 'toggle'
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			Tab: {
 				type: TriggerType.hotkey,
 				keys: 'Tab',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Toggle Shelf')
 	},
 	{
 		_id: 'activateRundownPlaylist',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.activateRundownPlaylist,
 				rehearsal: false,
 				filterChain: [
@@ -75,21 +75,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			Backquote: {
 				type: TriggerType.hotkey,
 				keys: 'Backquote',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Activate (On-Air)')
 	},
 	{
 		_id: 'activateRundownPlaylist_rehearsal',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.activateRundownPlaylist,
 				rehearsal: true,
 				filterChain: [
@@ -98,21 +98,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Control+Backquote': {
 				type: TriggerType.hotkey,
 				keys: 'Control+Backquote',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Activate (Rehearsal)')
 	},
 	{
 		_id: 'deactivateRundownPlaylist',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.deactivateRundownPlaylist,
 				filterChain: [
 					{
@@ -120,21 +120,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Control+Shift+Backquote': {
 				type: TriggerType.hotkey,
 				keys: 'Control+Shift+Backquote',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Deactivate')
 	},
 	{
 		_id: 'take',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.take,
 				filterChain: [
 					{
@@ -142,26 +142,26 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			NumpadEnter: {
 				type: TriggerType.hotkey,
 				keys: 'NumpadEnter',
 				up: true
 			},
-			{
+			F12: {
 				type: TriggerType.hotkey,
 				keys: 'F12',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Take')
 	},
 	{
 		_id: 'hold',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.hold,
 				filterChain: [
 					{
@@ -169,21 +169,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			KeyH: {
 				type: TriggerType.hotkey,
 				keys: 'KeyH',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Hold')
 	},
 	{
 		_id: 'hold_undo',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.hold,
 				undo: true,
 				filterChain: [
@@ -192,21 +192,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Shift+KeyH': {
 				type: TriggerType.hotkey,
 				keys: 'Shift+KeyH',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Undo Hold')
 	},
 	{
 		_id: 'reset_rundown_playlist',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.resetRundownPlaylist,
 				filterChain: [
 					{
@@ -214,26 +214,26 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Control+Shift+F12': {
 				type: TriggerType.hotkey,
 				keys: 'Control+Shift+F12',
 				up: true
 			},
-			{
+			'Control+Shift+AnyEnter': {
 				type: TriggerType.hotkey,
 				keys: 'Control+Shift+AnyEnter',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Reset Rundown')
 	},
 	{
 		_id: 'disable_next_piece',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.disableNextPiece,
 				filterChain: [
 					{
@@ -241,21 +241,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			KeyG: {
 				type: TriggerType.hotkey,
 				keys: 'KeyG',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Disable the next element')
 	},
 	{
 		_id: 'disable_next_piece_undo',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.disableNextPiece,
 				filterChain: [
 					{
@@ -264,21 +264,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 				],
 				undo: true
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Shift+KeyG': {
 				type: TriggerType.hotkey,
 				keys: 'Shift+KeyG',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Undo Disable the next element')
 	},
 	{
 		_id: 'create_snapshot_for_debug',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.createSnapshotForDebug,
 				filterChain: [
 					{
@@ -286,21 +286,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			Backspace: {
 				type: TriggerType.hotkey,
 				keys: 'Backspace',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Store Snapshot')
 	},
 	{
 		_id: 'move_next_part',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.moveNext,
 				filterChain: [
 					{
@@ -310,21 +310,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 				parts: 1,
 				segments: 0
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			F9: {
 				type: TriggerType.hotkey,
 				keys: 'F9',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Move Next forwards')
 	},
 	{
 		_id: 'move_next_segment',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.moveNext,
 				filterChain: [
 					{
@@ -334,21 +334,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 				parts: 0,
 				segments: 1
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			F10: {
 				type: TriggerType.hotkey,
 				keys: 'F10',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Move Next to the following segment')
 	},
 	{
 		_id: 'move_previous_part',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.moveNext,
 				filterChain: [
 					{
@@ -358,21 +358,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 				parts: -1,
 				segments: 0
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Shift+F9': {
 				type: TriggerType.hotkey,
 				keys: 'Shift+F9',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Move Next backwards')
 	},
 	{
 		_id: 'move_previous_segment',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: PlayoutActions.moveNext,
 				filterChain: [
 					{
@@ -382,21 +382,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 				parts: 0,
 				segments: -1
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Shift+F10': {
 				type: TriggerType.hotkey,
 				keys: 'Shift+F10',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Move Next to the previous segment')
 	},
 	{
 		_id: 'go_to_onAir_line',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: ClientActions.goToOnAirLine,
 				filterChain: [
 					{
@@ -404,21 +404,21 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Control+Home': {
 				type: TriggerType.hotkey,
 				keys: 'Control+Home',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Go to On Air line')
 	},
 	{
 		_id: 'rewind_segments',
-		actions: [
-			{
+		actions: {
+			'': {
 				action: ClientActions.rewindSegments,
 				filterChain: [
 					{
@@ -426,14 +426,14 @@ const DEFAULT_CORE_TRIGGERS: IBlueprintTriggeredActions[] = [
 					}
 				]
 			}
-		],
-		triggers: [
-			{
+		},
+		triggers: {
+			'Shift+Home': {
 				type: TriggerType.hotkey,
 				keys: 'Shift+Home',
 				up: true
 			}
-		],
+		},
 		_rank: ++j * 1000,
 		name: t('Rewind segments to start')
 	}

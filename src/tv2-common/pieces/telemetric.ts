@@ -25,8 +25,8 @@ export function createTelemetricsPieceForRobotCamera(
 	}
 }
 
-function createTelemetricsTimelineObject(preset: number): TSR.TimelineObjTelemetrics {
-	return literal<TSR.TimelineObjTelemetrics>({
+function createTelemetricsTimelineObject(preset: number): TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics> {
+	return literal<TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics>>({
 		id: `telemetrics_preset_${preset}_${Math.random() * 1000}`,
 		enable: {
 			start: 0

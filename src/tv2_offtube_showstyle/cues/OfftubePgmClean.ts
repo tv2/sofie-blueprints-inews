@@ -44,8 +44,8 @@ export function OfftubeEvaluatePgmClean(
 		sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
 		content: literal<WithTimeline<BaseContent>>({
-			timelineObjects: literal<TimelineObjectCoreExt[]>([
-				literal<TSR.TimelineObjAtemAUX>({
+			timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TimelineContentAtemAUX>>>([
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 					id: '',
 					enable: { while: '1' },
 					priority: 0,

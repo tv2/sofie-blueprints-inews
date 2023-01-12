@@ -187,7 +187,8 @@ describe('lyd', () => {
 		EvaluateLYD(makeMockContext(), CONFIG, pieces, adLibPieces, actions, parsedCue, MOCK_PART)
 
 		expect(pieces).toHaveLength(1)
-		const timelineObject: TSR.TimelineObjCCGMedia = pieces[0].content.timelineObjects[0] as TSR.TimelineObjCCGMedia
+		const timelineObject: TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia> = pieces[0].content
+			.timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>
 		const file = timelineObject.content.file
 		expect(file).toBe('empty')
 	})
@@ -214,7 +215,8 @@ describe('lyd', () => {
 		EvaluateLYD(makeMockContext(), CONFIG, pieces, adLibPieces, actions, parsedCue, MOCK_PART)
 
 		expect(pieces).toHaveLength(1)
-		const timelineObject: TSR.TimelineObjCCGMedia = pieces[0].content.timelineObjects[0] as TSR.TimelineObjCCGMedia
+		const timelineObject: TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia> = pieces[0].content
+			.timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>
 		const file = timelineObject.content.file
 		expect(file).toBe(`${audioBedFolder}/${fileName}`)
 	})

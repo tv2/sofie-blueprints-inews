@@ -32,11 +32,11 @@ export function postProcessPieceTimelineObjects(
 	isAdlib: boolean
 ) {
 	if (piece.content?.timelineObjects) {
-		const extraObjs: TimelineObjectCoreExt[] = []
+		const extraObjs: Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>> = []
 
 		const atemMeObjs = (piece.content.timelineObjects as Array<
-			| (TSR.TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj)
-			| (TSR.TimelineObjAtemDSK & TimelineBlueprintExt & OnGenerateTimelineObj)
+			| (TSR.TimelineContentAtemME & TimelineBlueprintExt & OnGenerateTimelineObj<TSR.TimelineContentAtemME>)
+			| (TSR.TimelineContentAtemDSK & TimelineBlueprintExt & OnGenerateTimelineObj<TSR.TimelineContentAtemDSK>)
 		>).filter(
 			obj =>
 				obj.content &&
@@ -60,7 +60,7 @@ export function postProcessPieceTimelineObjects(
 				) {
 					if (tlObj.classes?.includes(ControlClasses.AbstractLookahead)) {
 						// Create a lookahead-lookahead object for this me-program
-						const lookaheadObj: TSR.TimelineObjAbstractAny & TimelineBlueprintExt = {
+						const lookaheadObj: TimelineObjectCoreExt<TSR.TSRTimelineContentAbstract> & TimelineBlueprintExt = {
 							id: '',
 							enable: { start: 0 },
 							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
@@ -78,7 +78,7 @@ export function postProcessPieceTimelineObjects(
 						extraObjs.push(lookaheadObj)
 					} else {
 						// Create a lookahead-lookahead object for this me-program
-						const lookaheadObj: TSR.TimelineObjAtemME & TimelineBlueprintExt = {
+						const lookaheadObj: TimelineObjectCoreExt<TSR.TimelineContentAtemME> & TimelineBlueprintExt = {
 							id: '',
 							enable: { start: 0 },
 							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
@@ -106,7 +106,7 @@ export function postProcessPieceTimelineObjects(
 
 		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
 		piece.content.timelineObjects = piece.content.timelineObjects.filter(
-			(obj: TSR.TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
+			(obj: TimelineObjectCoreExt<TSR.TSRTimelineContent>) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
 		)
 	}
 }

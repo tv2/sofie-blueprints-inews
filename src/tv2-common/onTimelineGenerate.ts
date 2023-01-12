@@ -40,7 +40,7 @@ export interface TimelinePersistentStateExt {
 	isNewSegment?: boolean
 }
 
-export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
+export interface TimelineBlueprintExt extends TimelineObjectCoreExt<TSR.TSRTimelineContent> {
 	/** Metadata for use by the OnTimelineGenerate or other callbacks */
 	metaData?: {
 		context?: string
@@ -94,7 +94,7 @@ export function onTimelineGenerate<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ITimelineEventContext,
-	timeline: OnGenerateTimelineObj[],
+	timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
@@ -142,10 +142,10 @@ export function onTimelineGenerate<
 
 function processServerLookaheads(
 	context: ITimelineEventContext,
-	timeline: OnGenerateTimelineObj[],
+	timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
-): OnGenerateTimelineObj[] {
+): Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>> {
 	// Includes any non-active servers present in current part
 	const serversInCurrentPart = timeline.filter(obj => {
 		if (_.isArray(obj.enable)) {
@@ -275,10 +275,10 @@ export function getEndStateForPart(
  * Lookahead is replacing this selector rule with a '1' which causes every box to show the same.
  * This simply restores the original enable, which gets put into metaData for this purpose.
  */
-function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
+function dveBoxLookaheadUseOriginalEnable(timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>) {
 	// DVE_box lookahead class
 	for (const obj of timeline) {
-		const obj2 = obj as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
+		const obj2 = obj as TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrc> & TimelineBlueprintExt
 		if (
 			obj2.isLookahead &&
 			obj2.content.deviceType === TSR.DeviceType.ATEM &&
@@ -296,7 +296,7 @@ function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
 export function createSisyfosPersistedLevelsTimelineObject(
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	previousSisyfosLayersThatWantsToBePersisted: SisyfosPersistMetaData['sisyfosLayers']
-): TSR.TimelineObjSisyfosChannels {
+): TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels> {
 	const layersToPersist = findLayersToPersist(resolvedPieces, previousSisyfosLayersThatWantsToBePersisted)
 	return {
 		id: 'sisyfosPersistenceObject',
@@ -368,14 +368,14 @@ function doesMetaDataNotAcceptPersistAudioDeep(metaData: SisyfosPersistMetaData)
 }
 
 export function disablePilotWipeAfterJingle(
-	timeline: OnGenerateTimelineObj[],
+	timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
 	if (previousPartEndState?.isJingle && resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
 		for (const obj of timeline) {
 			if (obj.content.deviceType === TSR.DeviceType.ATEM && !obj.isLookahead) {
-				const obj2 = obj as TSR.TimelineObjAtemAny
+				const obj2 = obj as TSR.TSRTimelineObj<TSR.TimelineContentAtemAny>
 				if (obj2.content.type === TSR.TimelineContentTypeAtem.ME) {
 					obj2.content.me.transition = TSR.AtemTransitionStyle.CUT
 					delete obj2.content.me.transitionSettings

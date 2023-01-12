@@ -20,7 +20,7 @@ import { getConfig } from './helpers/config'
 
 export function onTimelineGenerateOfftube(
 	context: ITimelineEventContext,
-	timeline: OnGenerateTimelineObj[],
+	timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
@@ -53,7 +53,7 @@ export function onTimelineGenerateOfftube(
 
 export function disableFirstPilotGFXAnimation(
 	_context: ITimelineEventContext,
-	timeline: OnGenerateTimelineObj[],
+	timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
@@ -67,7 +67,7 @@ export function disableFirstPilotGFXAnimation(
 				(previousPartEndState?.fullFileName &&
 					previousPartEndState?.fullFileName === (obj as TimelineBlueprintExt).metaData?.fileName))
 		) {
-			const obj2 = obj as TSR.TimelineObjCasparCGAny & TimelineBlueprintExt
+			const obj2 = obj as TSR.TSRTimelineObj<TSR.TimelineContentCasparCGAny> & TimelineBlueprintExt
 			// TODO: this needs types
 			const payload = obj2.metaData?.templateData?.slots && obj2.metaData?.templateData?.slots['250_full']?.payload
 			if (obj2.content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE && payload) {

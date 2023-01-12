@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
 
-import { BlueprintResultSegment, PieceLifespan, TimelineObjectCoreExt } from 'blueprints-integration'
+import { BlueprintResultSegment, PieceLifespan, TimelineObjectCoreExt, TSR } from 'blueprints-integration'
 
 // @ts-ignore
 global.VERSION = 'test'
@@ -35,7 +35,7 @@ describe('regressions-migrations', () => {
 							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -45,7 +45,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'viz_layer_overlay_ident'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -55,7 +55,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'viz_layer_design'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -79,7 +79,7 @@ describe('regressions-migrations', () => {
 							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -89,7 +89,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'viz_layer_overlay_ident'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -99,7 +99,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'viz_layer_overlay_tema'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -140,7 +140,7 @@ describe('regressions-migrations', () => {
 							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -150,7 +150,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'graphic_overlay_ident'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -160,7 +160,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'graphic_design'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -184,7 +184,7 @@ describe('regressions-migrations', () => {
 							lifespan: PieceLifespan.WithinPart,
 							content: {
 								timelineObjects: [
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -194,7 +194,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'graphic_overlay_ident'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -204,7 +204,7 @@ describe('regressions-migrations', () => {
 										},
 										layer: 'graphic_overlay_tema'
 									}),
-									literal<TimelineObjectCoreExt>({
+									literal<TimelineObjectCoreExt<TSR.TSRTimelineContent>>({
 										id: '',
 										enable: {
 											while: '1'
@@ -235,7 +235,9 @@ function migrate(reference: BlueprintResultSegment) {
 	reference.parts = reference.parts.map(part => {
 		part.adLibPieces = part.adLibPieces.map(adlib => {
 			if (adlib.content && adlib.content.timelineObjects) {
-				adlib.content.timelineObjects = (adlib.content.timelineObjects as TimelineObjectCoreExt[]).map(obj => {
+				adlib.content.timelineObjects = (adlib.content.timelineObjects as Array<
+					TimelineObjectCoreExt<TSR.TSRTimelineContent>
+				>).map(obj => {
 					const remappedLayer = remapVizLLayer.get(obj.layer.toString())
 
 					if (remappedLayer) {
@@ -251,7 +253,9 @@ function migrate(reference: BlueprintResultSegment) {
 
 		part.pieces = part.pieces.map(adlib => {
 			if (adlib.content && adlib.content.timelineObjects) {
-				adlib.content.timelineObjects = (adlib.content.timelineObjects as TimelineObjectCoreExt[]).map(obj => {
+				adlib.content.timelineObjects = (adlib.content.timelineObjects as Array<
+					TimelineObjectCoreExt<TSR.TSRTimelineContent>
+				>).map(obj => {
 					const remappedLayer = remapVizLLayer.get(obj.layer.toString())
 
 					if (remappedLayer) {

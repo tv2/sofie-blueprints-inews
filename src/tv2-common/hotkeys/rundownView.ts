@@ -41,14 +41,14 @@ export function MakeRundownViewTriggers(
 			_id: rundownViewActionTriggerId(showStyleId, 'activate_rundown'),
 			_rank: getNextRank(),
 			name: 'Activate Rundown',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.activate
 				})
-			],
-			actions: [
-				literal<IRundownPlaylistActivateAction>({
+			},
+			actions: {
+				'': literal<IRundownPlaylistActivateAction>({
 					action: PlayoutActions.activateRundownPlaylist,
 					rehearsal: false,
 					force: false,
@@ -58,21 +58,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'activate_rundown_rehearsal'),
 			_rank: getNextRank(),
 			name: 'øve rundown',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.activateRehearsal,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<IRundownPlaylistActivateAction>({
+			},
+			actions: {
+				'': literal<IRundownPlaylistActivateAction>({
 					action: PlayoutActions.activateRundownPlaylist,
 					rehearsal: true,
 					force: false,
@@ -82,21 +82,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'deactivate_rundown'),
 			_rank: getNextRank(),
 			name: 'Deactivate rundown',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.deactivate,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.deactivateRundownPlaylist,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
@@ -104,21 +104,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'take'),
 			_rank: getNextRank(),
 			name: 'Take',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.take,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.take,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
@@ -126,21 +126,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'go_to_live'),
 			_rank: getNextRank(),
 			name: 'gå til aktiv linje',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.goToLiveLive,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: ClientActions.goToOnAirLine,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
@@ -148,21 +148,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'rewind_segments'),
 			_rank: getNextRank(),
 			name: 'REW tidslinje',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.rewindSegments,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: ClientActions.rewindSegments,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
@@ -170,21 +170,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'reset_rundown'),
 			_rank: getNextRank(),
 			name: 'Reload rundown',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.resetRundown,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.resetRundownPlaylist,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
@@ -192,21 +192,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'move_next_forward'),
 			_rank: getNextRank(),
 			name: 'hist. højre SKIP',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.moveNextForward,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.moveNext,
 					segments: 0,
 					parts: 1,
@@ -216,21 +216,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'move_next_down'),
 			_rank: getNextRank(),
 			name: 'hist. ned SKIP',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.moveNextDown,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.moveNext,
 					segments: 1,
 					parts: 0,
@@ -240,21 +240,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'move_next_back'),
 			_rank: getNextRank(),
 			name: 'hist. venstre SKIP',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.moveNextBack,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.moveNext,
 					segments: 0,
 					parts: -1,
@@ -264,21 +264,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'move_next_up'),
 			_rank: getNextRank(),
 			name: 'hist. op SKIP',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.moveNextUp,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.moveNext,
 					segments: -1,
 					parts: 0,
@@ -288,21 +288,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'log_error'),
 			_rank: getNextRank(),
 			name: 'Take Snapshot',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.takeSnapshot,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: PlayoutActions.createSnapshotForDebug,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
@@ -310,21 +310,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'queue_next_adlib'),
 			_rank: getNextRank(),
 			name: 'Queue Next AdLib',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.queueNextMiniShelfAdLib,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: ClientActions.miniShelfQueueAdLib,
 					forward: true,
 					filterChain: [
@@ -333,21 +333,21 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		}),
 		literal<IBlueprintTriggeredActions>({
 			_id: rundownViewActionTriggerId(showStyleId, 'queue_previous_adlib'),
 			_rank: getNextRank(),
 			name: 'Queue Previous AdLib',
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				'': literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: assignments.queuePreviousMiniShelfAdLib,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<SomeAction>({
+			},
+			actions: {
+				'': literal<SomeAction>({
 					action: ClientActions.miniShelfQueueAdLib,
 					forward: false,
 					filterChain: [
@@ -356,7 +356,7 @@ export function MakeRundownViewTriggers(
 						})
 					]
 				})
-			]
+			}
 		})
 	]
 }

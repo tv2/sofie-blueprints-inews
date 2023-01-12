@@ -2,7 +2,6 @@ import { MigrationStepShowStyle, SourceLayerType } from 'blueprints-integration'
 import {
 	AddGraphicToGfxTable,
 	changeGfxTemplate,
-	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
@@ -18,7 +17,6 @@ import {
 import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
-import { GetDefaultStudioSourcesForOfftube } from './hotkeys'
 import sourcelayerDefaults from './sourcelayer-defaults'
 import {
 	forceSourceLayerToDefaults,
@@ -205,7 +203,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box3'),
 	removeSourceLayer('1.7.0', 'QBOX', 'studio0_dve_box4'),
 	RemoveOldShortcuts('1.7.0', SHOW_STYLE_ID, sourcelayerDefaults),
-	GetDefaultAdLibTriggers('1.7.0', SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, true),
+	// GetDefaultAdLibTriggers('1.7.0', SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, true), // TODO C
 
 	/**
 	 * 1.7.1
@@ -282,6 +280,6 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	forceSourceLayerToDefaults('1.7.7', OfftubeSourceLayer.PgmDVEBackground),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false)
+	...getOutputLayerDefaultsMigrationSteps(VERSION)
+	// GetDefaultAdLibTriggers(VERSION, SHOW_STYLE_ID, {}, GetDefaultStudioSourcesForOfftube, false) // TODO C
 ]

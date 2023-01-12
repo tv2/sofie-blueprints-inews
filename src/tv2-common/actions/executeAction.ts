@@ -13,6 +13,7 @@ import {
 	IShowStyleUserContext,
 	PieceLifespan,
 	SplitsContent,
+	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
 	WithTimeline
@@ -251,10 +252,7 @@ export async function executeAction<
 				await executeActionCommentatorSelectDVE(context, settings, actionId, userData as ActionCommentatorSelectDVE)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_SERVER:
-				await executeActionCommentatorSelectServer(
-					context,
-					settings
-				)
+				await executeActionCommentatorSelectServer(context, settings)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_FULL:
 				await executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
@@ -706,16 +704,22 @@ async function cutServerToBox<
 		}
 
 		// Find existing CasparCG object
-		const existingCasparObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj => obj.layer === settings.LLayer.Caspar.ClipPending
-		) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
+		const existingCasparObj = (currentServer.piece.content.timelineObjects as Array<
+			TSR.TSRTimelineObj<TSR.TSRTimelineContent>
+		>).find(obj => obj.layer === settings.LLayer.Caspar.ClipPending) as TSR.TSRTimelineObj<
+			TSR.TimelineContentCCGMedia
+		> &
+			TimelineBlueprintExt
 		// Find existing sisyfos object
-		const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
-		) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
+		const existingSisyfosObj = (currentServer.piece.content.timelineObjects as Array<
+			TSR.TSRTimelineObj<TSR.TSRTimelineContent>
+		>).find(obj => obj.layer === settings.LLayer.Sisyfos.ClipPending) as TSR.TSRTimelineObj<
+			TSR.TimelineContentSisyfosChannel
+		> &
+			TimelineBlueprintExt
 		// Find SSRC object in DVE piece
 		const ssrcObjIndex = newDvePiece.content?.timelineObjects
-			? (newDvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+			? (newDvePiece.content?.timelineObjects as Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>).findIndex(
 					obj => obj.layer === settings.LLayer.Atem.SSrcDefault
 			  )
 			: -1
@@ -731,7 +735,8 @@ async function cutServerToBox<
 			return newDvePiece
 		}
 
-		const ssrcObj = newDvePiece.content.timelineObjects[ssrcObjIndex] as TSR.TSRTimelineObj & TimelineBlueprintExt
+		const ssrcObj = newDvePiece.content.timelineObjects[ssrcObjIndex] as TSR.TSRTimelineObj<TSR.TSRTimelineContent> &
+			TimelineBlueprintExt
 
 		ssrcObj.metaData = {
 			...ssrcObj.metaData,
@@ -940,7 +945,8 @@ async function startNewDVELayout<
 							tlObj =>
 								!(
 									tlObj.content.deviceType === TSR.DeviceType.ATEM &&
-									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
+									(tlObj as TSR.TSRTimelineObj<TSR.TimelineContentAtemAny>).content.type ===
+										TSR.TimelineContentTypeAtem.ME
 								) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
 						)
 						.map(obj => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
@@ -1133,8 +1139,8 @@ async function executeActionCutToCamera<
 		},
 		tags: [GetTagForKam(userData.sourceDefinition)],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				literal<TSR.TimelineObjAtemME>({
+			timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
@@ -1216,7 +1222,7 @@ async function stopGraphicPiecesThatShouldEndWithPart(
 function isGraphicThatShouldEndWithPart(pieceInstance: IBlueprintPieceInstance<unknown>): boolean {
 	return (
 		pieceInstance.piece.lifespan === PieceLifespan.WithinPart &&
-		!pieceInstance.stoppedPlayback &&
+		!pieceInstance.reportedStoppedPlayback &&
 		(STOPPABLE_GRAPHICS_LAYERS as string[]).includes(pieceInstance.piece.sourceLayerId)
 	)
 }
@@ -1249,7 +1255,10 @@ async function executeActionCutToRemote<
 		return
 	}
 
-	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = GetSisyfosTimelineObjForRemote(config, sourceInfo)
+	const eksternSisyfos: Array<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosAny>> = GetSisyfosTimelineObjForRemote(
+		config,
+		sourceInfo
+	)
 
 	const sisyfosPersistMetaData: SisyfosPersistMetaData =
 		sourceInfo !== undefined
@@ -1275,8 +1284,8 @@ async function executeActionCutToRemote<
 		},
 		tags: [GetTagForLive(userData.sourceDefinition)],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				literal<TSR.TimelineObjAtemME>({
+			timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
@@ -1340,7 +1349,7 @@ async function executeActionCutSourceToBox<
 	let modifiedPiece: IBlueprintPieceInstance<DVEPieceMetaData> | undefined
 	let modifiedDataStore: IBlueprintPieceInstance | undefined
 
-	if (currentDVE && !currentDVE.stoppedPlayback) {
+	if (currentDVE && !currentDVE.reportedStoppedPlayback) {
 		modify = 'current'
 		modifiedPiece = currentDVE as IBlueprintPieceInstance<DVEPieceMetaData>
 		modifiedDataStore = currentDataStore
@@ -1513,7 +1522,9 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
-	const timelineObjectIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
+	const timelineObjectIndex = (primaryPiece.piece.content.timelineObjects as Array<
+		TSR.TSRTimelineObj<TSR.TSRTimelineContent>
+	>).findIndex(
 		obj =>
 			obj.layer === (settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
@@ -1522,9 +1533,9 @@ async function executeActionTakeWithTransition<
 
 	const timelineObject =
 		timelineObjectIndex > -1
-			? ((primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[
+			? ((primaryPiece.piece.content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>)[
 					timelineObjectIndex
-			  ] as TSR.TimelineObjAtemME)
+			  ] as TSR.TSRTimelineObj<TSR.TimelineContentAtemME>)
 			: undefined
 
 	if (!timelineObject) {
@@ -1654,7 +1665,7 @@ async function executeActionTakeWithTransition<
 
 async function updateTimelineObjectMeTransition(
 	context: ITV2ActionExecutionContext,
-	timelineObject: TSR.TimelineObjAtemME,
+	timelineObject: TSR.TSRTimelineObj<TSR.TimelineContentAtemME>,
 	transitionStyle: TSR.AtemTransitionStyle,
 	transitionSettings: TSR.AtemTransitionSettings,
 	pieceInstance: IBlueprintPieceInstance<PieceMetaData>,
@@ -1738,10 +1749,7 @@ async function findMediaPlayerSessions(
 async function executeActionCommentatorSelectServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ITV2ActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>
-) {
+>(context: ITV2ActionExecutionContext, settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
 	const data = await findDataStore<ActionSelectServerClip>(context, [
 		settings.SelectedAdlibs.SourceLayer.Server,
 		settings.SelectedAdlibs.SourceLayer.VO
@@ -2120,7 +2128,7 @@ async function executeActionClearGraphics<
 			config.studio.GraphicsType === 'HTML'
 				? {
 						timelineObjects: [
-							literal<TSR.TimelineObjAbstractAny>({
+							literal<TSR.TSRTimelineObj<TSR.TimelineContentAbstractAny>>({
 								id: '',
 								enable: {
 									start: 0
@@ -2135,7 +2143,7 @@ async function executeActionClearGraphics<
 				  }
 				: {
 						timelineObjects: [
-							literal<TSR.TimelineObjVIZMSEClearAllElements>({
+							literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEClearAllElements>>({
 								id: '',
 								enable: {
 									start: 0

@@ -43,8 +43,8 @@ export function EvaluateCueMixMinus(
 
 function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
 	return {
-		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjAtemAUX>({
+		timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>>([
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAny>>({
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.AUX,

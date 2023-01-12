@@ -1,3 +1,4 @@
+import { TSR } from '@sofie-automation/blueprints-integration'
 import {
 	BlueprintResultTimeline,
 	IBlueprintResolvedPieceInstance,
@@ -12,7 +13,7 @@ import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from './layers'
 
 export function onTimelineGenerateAFVD(
 	context: ITimelineEventContext,
-	timeline: OnGenerateTimelineObj[],
+	timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>

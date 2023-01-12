@@ -127,7 +127,7 @@ describe('telefon', () => {
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
 					timelineObjects: [
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -143,7 +143,7 @@ describe('telefon', () => {
 								showName: OVL_SHOW_NAME
 							}
 						}),
-						literal<TSR.TimelineObjAtemDSK>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>>({
 							id: '',
 							enable: {
 								start: 0
@@ -169,7 +169,7 @@ describe('telefon', () => {
 								}
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosChannel>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>>({
 							id: '',
 							enable: {
 								start: 0
@@ -182,7 +182,7 @@ describe('telefon', () => {
 								isPgm: 1
 							}
 						}),
-						literal<TSR.TimelineObjSisyfosChannels>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 							id: '',
 							enable: {
 								start: 0

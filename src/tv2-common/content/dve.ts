@@ -200,7 +200,7 @@ export function MakeContentDVE2<
 		...box,
 		source: config.studio.AtemSource.Default
 	}))
-	const dveTimeline: TSR.TSRTimelineObj[] = []
+	const dveTimeline: Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> = []
 	const boxSources: BoxSources = []
 
 	let valid = true
@@ -310,7 +310,7 @@ export function MakeContentDVE2<
 		valid,
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
+			timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
 				// Setup classes for adlibs to be able to override boxes
 				createEmptyObject({
 					enable: getDVEEnable(),
@@ -319,7 +319,7 @@ export function MakeContentDVE2<
 				}),
 
 				// setup ssrc
-				literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrc> & TimelineBlueprintExt>({
 					id: '',
 					enable: {
 						while: '1'
@@ -336,7 +336,7 @@ export function MakeContentDVE2<
 						mediaPlayerSession: server ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
 					})
 				}),
-				literal<TSR.TimelineObjAtemSsrcProps>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrcProps>>({
 					id: '',
 					enable: getDVEEnable(Number(config.studio.CasparPrerollDuration) - 10), // TODO - why 10ms?
 					priority: 1,
@@ -364,7 +364,7 @@ export function MakeContentDVE2<
 						}
 					}
 				}),
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					enable: getDVEEnable(Number(config.studio.CasparPrerollDuration)),
 					priority: 1,
@@ -378,7 +378,7 @@ export function MakeContentDVE2<
 						}
 					}
 				}),
-				literal<TSR.TimelineObjCCGTemplate>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate>>({
 					id: '',
 					enable: getDVEEnable(),
 					priority: 1,
@@ -390,7 +390,7 @@ export function MakeContentDVE2<
 				}),
 				...(keyFile
 					? [
-							literal<TSR.TimelineObjCCGMedia>({
+							literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 								id: '',
 								enable: getDVEEnable(),
 								priority: 1,
@@ -409,7 +409,7 @@ export function MakeContentDVE2<
 					: []),
 				...(frameFile
 					? [
-							literal<TSR.TimelineObjCCGMedia>({
+							literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 								id: '',
 								enable: getDVEEnable(),
 								priority: 1,
@@ -506,7 +506,7 @@ function boxSource(info: {
 	}
 }
 
-function getDVEEnable(offsetFromStart?: number, media?: boolean): TSR.TSRTimelineObj['enable'] {
+function getDVEEnable(offsetFromStart?: number, media?: boolean): TSR.TSRTimelineObj<TSR.TSRTimelineContent>['enable'] {
 	if (offsetFromStart) {
 		return { start: offsetFromStart ?? 0 }
 	}

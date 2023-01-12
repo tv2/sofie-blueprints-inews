@@ -25,15 +25,15 @@ export function MakeClearHotkeys(
 			_id: clearSourceLayerHotKeyId(showStyleId, clearedSourceLayer.sourceLayers),
 			_rank: getNextRank(),
 			name: clearedSourceLayer.name,
-			triggers: [
-				literal<IBlueprintHotkeyTrigger>({
+			triggers: {
+				[clearedSourceLayer.key]: literal<IBlueprintHotkeyTrigger>({
 					type: TriggerType.hotkey,
 					keys: clearedSourceLayer.key,
 					up: TRIGGER_HOTKEYS_ON_KEYUP
 				})
-			],
-			actions: [
-				literal<IAdlibPlayoutAction>({
+			},
+			actions: {
+				adlibPlayoutAction: literal<IAdlibPlayoutAction>({
 					action: PlayoutActions.adlib,
 					filterChain: [
 						literal<IGUIContextFilterLink>({
@@ -51,7 +51,7 @@ export function MakeClearHotkeys(
 						})
 					]
 				})
-			]
+			}
 		})
 	)
 }

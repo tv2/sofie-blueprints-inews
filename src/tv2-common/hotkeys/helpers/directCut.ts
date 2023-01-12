@@ -23,16 +23,16 @@ export function MakeDirectCutTrigger(
 		_rank: getNextRank(),
 		name,
 		triggers: hotkey
-			? [
-					literal<IBlueprintHotkeyTrigger>({
+			? {
+					[hotkey]: literal<IBlueprintHotkeyTrigger>({
 						type: TriggerType.hotkey,
 						keys: hotkey,
 						up: TRIGGER_HOTKEYS_ON_KEYUP
 					})
-			  ]
-			: [], // Not enough known hotkeys -> create a blank trigger as a placeholder to be assigned later
-		actions: [
-			literal<IAdlibPlayoutAction>({
+			  }
+			: {}, // Not enough known hotkeys -> create a blank trigger as a placeholder to be assigned later
+		actions: {
+			adlibPlayoutAction: literal<IAdlibPlayoutAction>({
 				action: PlayoutActions.adlib,
 				filterChain: [
 					literal<IGUIContextFilterLink>({
@@ -60,6 +60,6 @@ export function MakeDirectCutTrigger(
 					})
 				]
 			})
-		]
+		}
 	})
 }

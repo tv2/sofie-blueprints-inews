@@ -58,7 +58,7 @@ export function EvaluateClearGrafiks(
 		content: {
 			timelineObjects: config.studio.HTMLGraphics
 				? [
-						literal<TSR.TimelineObjVIZMSEClearAllElements>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEClearAllElements>>({
 							id: '',
 							enable: {
 								start: 0,

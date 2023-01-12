@@ -25,7 +25,13 @@ const manifest: StudioBlueprintManifest = GetStudioManifestWithMixins(
 		studioMigrations,
 
 		getBaseline,
-		getShowStyleId
+		getShowStyleId,
+		configPresets: {
+			ConfigPreset: {
+				name: '',
+				config: {}
+			}
+		}
 	},
 	[StudioManifestMixinINews.INewsPlaylist]
 )

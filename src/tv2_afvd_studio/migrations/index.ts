@@ -11,14 +11,6 @@ import {
 	SetLayerNamesToDefaults
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
-import {
-	manifestAFVDDownstreamKeyers,
-	manifestAFVDSourcesABMediaPlayers,
-	manifestAFVDSourcesCam,
-	manifestAFVDSourcesReplay,
-	manifestAFVDSourcesRM,
-	manifestAFVDStudioMics
-} from '../config-manifests'
 import { CasparLLayer, SisyfosLLAyer } from '../layers'
 import { deviceMigrations } from './devices'
 import MappingsDefaults from './mappings-defaults'
@@ -43,51 +35,61 @@ export const studioMigrations: MigrationStepStudio[] = [
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesCam',
-		manifestAFVDSourcesCam.defaultVal,
+		'', // TODO C
+		// manifestAFVDSourcesCam.defaultVal, // TODO C
 		'text',
 		'Studio config: Camera mappings',
 		'Enter the camera input mapping',
-		manifestAFVDSourcesCam.defaultVal
+		'' // TODO C
+		// manifestAFVDSourcesCam.defaultVal // TODO C
 	),
 
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesRM',
-		manifestAFVDSourcesRM.defaultVal,
+		'', // TODO C
+		// manifestAFVDSourcesRM.defaultVal,
 		'text',
 		'Studio config: Remote mappings',
 		'Enter the remote input mapping',
-		manifestAFVDSourcesRM.defaultVal
+		'' // TODO C
+		// manifestAFVDSourcesRM.defaultVal // TODO C
 	),
 
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesDelayedPlayback',
-		manifestAFVDSourcesReplay.defaultVal,
+		'', // TODO C
+		// manifestAFVDSourcesReplay.defaultVal, // TODO C
 		'text',
 		'Studio config: Delayed Playback mappings',
 		'Enter the delayed playback input mapping',
-		manifestAFVDSourcesReplay.defaultVal
+		'' // TODO C
+		// manifestAFVDSourcesReplay.defaultVal
 	),
 
 	ensureStudioConfig(
 		'0.1.0',
 		'ABMediaPlayers',
-		manifestAFVDSourcesABMediaPlayers.defaultVal,
+		'', // TODO C
+		// manifestAFVDSourcesABMediaPlayers.defaultVal, // TODO C
 		'text',
 		'Studio config: AB Media Players mappings',
 		'Enter the AB Media Players input mapping',
-		manifestAFVDSourcesABMediaPlayers.defaultVal
+		'' // TODO C
+		// manifestAFVDSourcesABMediaPlayers.defaultVal // TODO C
 	),
 
 	ensureStudioConfig(
 		'0.1.0',
 		'StudioMics',
-		manifestAFVDStudioMics.defaultVal,
+		'', // TODO C
+		// manifestAFVDStudioMics.defaultVal, // TODO C
 		'text',
 		'Studio config: Studio Mics',
 		'Select the Sisyfos layers for Studio Mics',
-		manifestAFVDStudioMics.defaultVal
+		'' // TODO C
+		// manifestAFVDStudioMics.defaultVal
 	),
 
 	...deviceMigrations,
@@ -170,7 +172,13 @@ export const studioMigrations: MigrationStepStudio[] = [
 	 * 1.6.1
 	 * - Add concept of roles to DSK config table (and cleanup configs replaced by table)
 	 */
-	SetConfigTo('1.6.1', 'AFVD', 'AtemSource.DSK', manifestAFVDDownstreamKeyers.defaultVal),
+	SetConfigTo(
+		'1.6.1',
+		'AFVD',
+		'AtemSource.DSK',
+		''
+		// manifestAFVDDownstreamKeyers.defaultVal // TODO C
+	),
 	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.ServerC'),
 	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.JingleFill'),
 	RemoveConfig('1.6.1', 'AFVD', 'AtemSource.JingleKey'),

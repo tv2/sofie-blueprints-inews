@@ -62,8 +62,8 @@ export async function OfftubeCreatePartKam(
 				ignoreMediaObjectStatus: true,
 				fileName: '',
 				path: '',
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
+				timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TimelineContentAtemME>>>([
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 						id: ``,
 						enable: {
 							start: 0
@@ -109,8 +109,8 @@ export async function OfftubeCreatePartKam(
 			content: {
 				studioLabel: '',
 				switcherInput: atemInput,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
+				timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>>([
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 						id: ``,
 						enable: {
 							start: 0

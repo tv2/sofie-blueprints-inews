@@ -57,10 +57,12 @@ export function OfftubeEvaluateGrafikCaspar(
 	}
 }
 
-function createPilotTimeline(config: OfftubeShowstyleBlueprintConfig): TSR.TSRTimelineObj[] {
+function createPilotTimeline(
+	config: OfftubeShowstyleBlueprintConfig
+): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
-		literal<TSR.TimelineObjAtemME>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 			id: '',
 			enable: {
 				start: Number(config.studio.CasparPrerollDuration)

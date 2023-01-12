@@ -106,7 +106,7 @@ function LydContent(
 	if (lydType === 'stop') {
 		return literal<WithTimeline<BaseContent>>({
 			timelineObjects: [
-				literal<TSR.TimelineObjEmpty>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentEmpty>>({
 					id: '',
 					enable: {
 						start: 0
@@ -126,8 +126,8 @@ function LydContent(
 	const filePath = lydType === 'fade' ? file : joinAssetToFolder(config.studio.AudioBedFolder, file)
 
 	return literal<WithTimeline<BaseContent>>({
-		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjCCGMedia>({
+		timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>>([
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: {
 					start: 0
@@ -161,7 +161,7 @@ function LydContent(
 				},
 				classes: [ControlClasses.LYDOnAir]
 			}),
-			literal<TSR.TimelineObjSisyfosChannel>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>>({
 				id: '',
 				enable: {
 					start: 0
@@ -178,9 +178,9 @@ function LydContent(
 	})
 }
 
-export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
+export function CreateLYDBaseline(studio: string): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	return [
-		literal<TSR.TimelineObjAbstractAny>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentAbstractAny>>({
 			id: `${studio}_lyd_baseline`,
 			enable: {
 				while: `!.${ControlClasses.LYDOnAir}`
@@ -192,7 +192,7 @@ export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
 			}
 		}),
 
-		literal<TSR.TimelineObjCCGMedia>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 			id: '',
 			// Q: Why start 10s? A: It needs to be longer than the longest fade out, a 10s fade out is probably more than we will ever use.
 			enable: { start: `#${studio}_lyd_baseline.start + 10000`, end: `.${ControlClasses.LYDOnAir}` },

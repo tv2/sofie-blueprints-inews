@@ -3,7 +3,6 @@ import {
 	ConfigManifestEntryType,
 	IBlueprintAdLibPiece,
 	PieceLifespan,
-	TableConfigItemValue,
 	TSR
 } from 'blueprints-integration'
 import { AtemLLayerDSK, literal, SourceLayerAtemDSK } from 'tv2-common'
@@ -44,13 +43,13 @@ export function GetDSKCount(atemModel: ATEMModel) {
 export function EnableDSK(
 	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
 	dsk: 'FULL' | 'OVL' | 'JINGLE',
-	enable?: TSR.TSRTimelineObj['enable']
-): TSR.TSRTimelineObj[] {
+	enable?: TSR.TSRTimelineObj<TSR.TSRTimelineContent>['enable']
+): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	const dskConf =
 		dsk === 'FULL' ? FindDSKFullGFX(config) : dsk === 'OVL' ? FindDSKOverlayGFX(config) : FindDSKJingle(config)
 
 	return [
-		literal<TSR.TimelineObjAtemDSK>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>>({
 			id: '',
 			enable: enable ?? {
 				start: 0
@@ -98,7 +97,7 @@ export function CreateDSKBaselineAdlibs(
 					invertOnAirState: true,
 					content: {
 						timelineObjects: [
-							literal<TSR.TimelineObjAtemDSK>({
+							literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>>({
 								id: '',
 								enable: { while: '1' },
 								priority: 10,
@@ -125,7 +124,7 @@ export function CreateDSKBaselineAdlibs(
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_ON],
 					content: {
 						timelineObjects: [
-							literal<TSR.TimelineObjAtemDSK>({
+							literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>>({
 								id: '',
 								enable: { while: '1' },
 								priority: 10,
@@ -160,9 +159,11 @@ export function CreateDSKBaselineAdlibs(
 	return adlibItems
 }
 
-export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfigBase>): TSR.TSRTimelineObj[] {
+export function CreateDSKBaseline(
+	config: TV2BlueprintConfigBase<TV2StudioConfigBase>
+): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	return config.dsk.map(dsk => {
-		return literal<TSR.TimelineObjAtemDSK>({
+		return literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>>({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
@@ -191,16 +192,16 @@ export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfig
 	})
 }
 
-export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
+export function DSKConfigManifest(_defaultVal: TableConfigItemDSK[]) {
 	return literal<ConfigManifestEntryTable>({
 		id: 'AtemSource.DSK',
 		name: 'ATEM DSK',
 		description: 'ATEM Downstream Keyers Fill and Key',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
-		defaultVal: literal<Array<TableConfigItemDSK & TableConfigItemValue[0]>>(
-			defaultVal.map(dsk => ({ _id: '', ...dsk, Roles: dsk.Roles ?? [] }))
-		),
+		// defaultVal: literal<Array<TableConfigItemDSK & TableConfigItemValue[0]>>( // TODO C
+		// 	defaultVal.map(dsk => ({ _id: '', ...dsk, Roles: dsk.Roles ?? [] }))
+		// ),
 		columns: [
 			{
 				id: 'Number',

@@ -107,13 +107,13 @@ function getPieceOnLayerFromPart(segment: BlueprintResultSegment, layer: SourceL
 	return piece!
 }
 
-function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
-	const atemMEObj = (piece!.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
+function getATEMMEObj(piece: IBlueprintPiece): TSR.TSRTimelineObj<TSR.TimelineContentAtemME> {
+	const atemMEObj = (piece!.content!.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>).find(
 		obj =>
 			obj.layer === AtemLLayer.AtemMEProgram &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
-	) as TSR.TimelineObjAtemME
+	) as TSR.TSRTimelineObj<TSR.TimelineContentAtemME>
 	expect(atemMEObj).toBeTruthy()
 
 	return atemMEObj

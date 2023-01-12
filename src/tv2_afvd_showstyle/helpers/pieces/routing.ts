@@ -49,8 +49,8 @@ export function EvaluateCueRouting(
 		content: literal<WithTimeline<CameraContent>>({
 			studioLabel: '',
 			switcherInput: sourceInfo.port,
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				literal<TSR.TimelineObjAtemAUX>({
+			timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 100,

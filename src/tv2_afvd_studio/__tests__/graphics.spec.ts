@@ -153,12 +153,12 @@ describe('Graphics', () => {
 		// expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
-		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
+		const timeline = content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>
 		expect(timeline).toHaveLength(5)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
-		)! as TSR.TimelineObjVIZMSEElementPilot
+		)! as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>
 		expect(vizObj.enable).toEqual({ start: 0 })
 		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilot)
 		expect(vizObj.content.channelName).toBe('FULL1') // TODO: FULL1: Enum / Type
@@ -217,12 +217,12 @@ describe('Graphics', () => {
 		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
-		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
+		const timeline = content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>
 		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
-		)! as TSR.TimelineObjVIZMSEElementPilot
+		)! as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>
 		expect(vizObj.enable).toEqual({ while: '!.full' })
 		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerOverlayPilot)
 		expect(vizObj.content.channelName).toBe('OVL1') // TODO: OVL1: Enum / Type
@@ -274,12 +274,12 @@ describe('Graphics', () => {
 		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
-		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
+		const timeline = content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>
 		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
-		)! as TSR.TimelineObjVIZMSEElementPilot
+		)! as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>
 		expect(vizObj.enable).toEqual({ while: '1' })
 		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerWall)
 		expect(vizObj.content.channelName).toBe('WALL1') // TODO: OVL1: Enum / Type
@@ -328,12 +328,12 @@ describe('Graphics', () => {
 		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
-		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
+		const timeline = content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>
 		expect(timeline).toHaveLength(5)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
-		)! as TSR.TimelineObjVIZMSEElementPilot
+		)! as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>
 		expect(vizObj.enable).toEqual({ start: 0 })
 		expect(vizObj.layer).toEqual(SharedGraphicLLayer.GraphicLLayerPilot)
 		expect(vizObj.content.channelName).toBe('FULL1') // TODO: FULL1: Enum / Type
@@ -389,9 +389,9 @@ describe('Graphics', () => {
 		expect(auxPiece.enable).toEqual({ start: 0 })
 		expect(auxPiece.sourceLayerId).toBe(SourceLayer.VizFullIn1)
 		expect(auxPiece.lifespan).toBe(PieceLifespan.WithinPart)
-		const auxObj = (auxPiece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
+		const auxObj = (auxPiece.content?.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>).find(
 			obj => obj.content.deviceType === TSR.DeviceType.ATEM && obj.content.type === TSR.TimelineContentTypeAtem.AUX
-		) as TSR.TimelineObjAtemAUX | undefined
+		) as TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX> | undefined
 		expect(auxObj).toBeTruthy()
 		expect(auxObj?.enable).toEqual({ start: 0 })
 		expect(auxObj?.layer).toBe(AtemLLayer.AtemAuxVizOvlIn1)
@@ -465,10 +465,10 @@ describe('Graphics', () => {
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
-		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
+		const tlObj = (piece.content?.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>).find(
 			obj =>
 				obj.content.deviceType === TSR.DeviceType.CASPARCG && obj.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
-		) as TSR.TimelineObjCCGMedia | undefined
+		) as TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia> | undefined
 		expect(tlObj).toBeTruthy()
 		expect(tlObj?.layer).toBe(CasparLLayer.CasparCGDVELoop)
 		expect(tlObj?.content.file).toBe('dve/DESIGN_SC')
@@ -516,11 +516,11 @@ describe('Graphics', () => {
 		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsLower)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
-		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
+		const tlObj = (piece.content?.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>).find(
 			obj =>
 				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL
-		) as TSR.TimelineObjVIZMSEElementInternal | undefined
+		) as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal> | undefined
 		expect(tlObj).toBeTruthy()
 		expect(tlObj?.layer).toBe(SharedGraphicLLayer.GraphicLLayerOverlayLower)
 		expect(tlObj?.content.templateName).toBe('bund')

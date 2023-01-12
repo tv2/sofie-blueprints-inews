@@ -75,8 +75,8 @@ export function EvaluateEksternBase<
 			content: literal<WithTimeline<RemoteContent>>({
 				studioLabel: '',
 				switcherInput: atemInput,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
+				timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>>([
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 						id: '',
 						enable: {
 							start: 0
@@ -121,8 +121,8 @@ export function EvaluateEksternBase<
 			content: literal<WithTimeline<RemoteContent>>({
 				studioLabel: '',
 				switcherInput: atemInput,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
+				timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>>([
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 						id: '',
 						enable: {
 							start: 0

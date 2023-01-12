@@ -63,14 +63,14 @@ export function CreateJingleContentBase<
 	const jingleDSK = FindDSKJingle(config)
 	return literal<WithTimeline<VTContent>>({
 		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
-		timelineObjects: literal<TimelineObjectCoreExt[]>([
+		timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>>([
 			CreateJingleCasparTimelineObject(fileName, loadFirstFrame, layers),
 
 			...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 
 			...(layers.ATEM.USKJinglePreview
 				? [
-						literal<TSR.TimelineObjAtemME>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 							id: '',
 							enable: {
 								start: 0,
@@ -104,7 +104,7 @@ export function CreateJingleContentBase<
 								} as any
 							}
 						}),
-						literal<TSR.TimelineObjAtemME>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 							id: '',
 							enable: {
 								// Deactive while on air
@@ -123,7 +123,7 @@ export function CreateJingleContentBase<
 
 			...(layers.ATEM.USKCleanEffekt
 				? [
-						literal<TSR.TimelineObjAtemME>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 							id: '',
 							enable: {
 								start: Number(config.studio.CasparPrerollDuration)
@@ -156,7 +156,7 @@ export function CreateJingleContentBase<
 				  ]
 				: []),
 
-			literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel> & TimelineBlueprintExt>({
 				id: '',
 				enable: {
 					start: 0
@@ -177,7 +177,7 @@ function CreateJingleCasparTimelineObject(
 	fileName: string,
 	loadFirstFrame: boolean,
 	layers: JingleLayers
-): TSR.TimelineObjCCGMedia & TimelineBlueprintExt {
+): TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia> & TimelineBlueprintExt {
 	return {
 		id: '',
 		enable: { start: 0 },

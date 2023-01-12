@@ -30,10 +30,10 @@ jobs:
       - name: yarn validate:dependencies
         run: yarn validate:dependencies
 
-      - name: yarn build
-        run: yarn build
+      - name: yarn build-with-test
+        run: yarn build-with-test
 
-      # - name: yarn unit test 
+      # - name: yarn unit test
       #   run: yarn unit
 
       # - name: yarn install production
@@ -85,7 +85,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  
+
   dockerhub-release-custom-tag:
     runs-on: ubuntu-latest
     needs: [run-yarn-build]
@@ -97,7 +97,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       - uses: actions/download-artifact@v2
         with:
           name: dist artifacts

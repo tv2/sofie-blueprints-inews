@@ -38,13 +38,17 @@ function findExistingPieceForRobotCameraLayerAndStartTime(
 
 function containsPresetIdentifier(piece: IBlueprintPiece, presetIdentifier: number): boolean {
 	const existingTimelineObject = piece.content.timelineObjects[0]
-	const timelineObject: TSR.TimelineObjTelemetrics = existingTimelineObject as TSR.TimelineObjTelemetrics
+	const timelineObject: TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics> = existingTimelineObject as TSR.TSRTimelineObj<
+		TSR.TimelineContentTelemetrics
+	>
 	return timelineObject.content.presetShotIdentifiers.includes(presetIdentifier)
 }
 
 function addPresetIdentifierToTimelineObject(piece: IBlueprintPiece, presetIdentifier: number): void {
 	const existingTimelineObject = piece.content.timelineObjects[0]
-	const timelineObject: TSR.TimelineObjTelemetrics = existingTimelineObject as TSR.TimelineObjTelemetrics
+	const timelineObject: TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics> = existingTimelineObject as TSR.TSRTimelineObj<
+		TSR.TimelineContentTelemetrics
+	>
 	timelineObject.content.presetShotIdentifiers.push(presetIdentifier)
 }
 

@@ -100,7 +100,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			content: {
 				ignoreMediaObjectStatus: true,
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemME>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
@@ -143,7 +143,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemME>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
@@ -186,7 +186,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemAUX>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
@@ -238,7 +238,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemAUX>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
@@ -265,7 +265,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 			tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemAUX>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 						id: '',
 						enable: { while: '1' },
 						priority: 1,
@@ -294,8 +294,8 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_LOAD],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				literal<TSR.TimelineObjVIZMSELoadAllElements>({
+			timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSELoadAllElements>>({
 					id: 'loadAllElements',
 					enable: {
 						start: 0,
@@ -323,7 +323,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjVIZMSEElementContinue>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementContinue>>({
 					id: '',
 					enable: {
 						start: 0,
@@ -356,7 +356,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjSisyfosChannels>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 10,
@@ -386,7 +386,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjSisyfosChannels>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 10,
@@ -416,7 +416,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		expectedDuration: 1000,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjSisyfosChannel>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 2,
@@ -433,8 +433,8 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 
 	// viz styles and dve backgrounds
 	function makeDesignAdLib(): IBlueprintAdLibPiece {
-		const timelineObjects: TimelineObjectCoreExt[] = [
-			literal<TSR.TimelineObjCCGMedia>({
+		const timelineObjects: Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>> = [
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: { start: 0 },
 				priority: 110,
@@ -449,7 +449,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		]
 		if (config.studio.GraphicsType === 'VIZ') {
 			timelineObjects.push(
-				literal<TSR.TimelineObjVIZMSEElementInternal>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 110,
@@ -494,7 +494,7 @@ function getGlobalAdLibPiecesAFVD(context: IStudioUserContext, config: Blueprint
 		tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjEmpty>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentEmpty>>({
 					id: '',
 					enable: {
 						start: 0,
@@ -826,7 +826,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 		timelineObjects: [
 			...CreateGraphicBaseline(config),
 			// Default timeline
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -840,7 +840,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -856,7 +856,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 			}),
 
 			// route default outputs
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -869,7 +869,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -882,7 +882,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -895,7 +895,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -908,7 +908,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -923,7 +923,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 			}),
 
 			// render presenter screen
-			literal<TSR.TimelineObjCCGHTMLPage>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGHTMLPage>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -939,7 +939,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 			...CreateDSKBaseline(config),
 
 			// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -967,7 +967,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemSsrcProps>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrcProps>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -983,7 +983,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemSsrc>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrc>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -1024,7 +1024,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -1044,7 +1044,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -1064,7 +1064,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -1081,7 +1081,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGRoute>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGRoute>>({
 				id: '',
 				enable: { while: 1 },
 				priority: 0,
@@ -1095,7 +1095,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 
 			...(config.studio.GraphicsType === 'HTML'
 				? [
-						literal<TSR.TimelineObjCasparCGAny>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentCasparCGAny>>({
 							id: '',
 							enable: { start: 0 },
 							priority: 2, // Take priority over anything trying to set the template on the Viz version of this layer
@@ -1106,7 +1106,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 								mappedLayer: CasparLLayer.CasparCGDVELoop
 							}
 						}),
-						literal<TSR.TimelineObjCCGRoute>({
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGRoute>>({
 							id: '',
 							enable: { while: 1 },
 							priority: 0,
@@ -1120,7 +1120,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				  ]
 				: []),
 
-			literal<TSR.TimelineObjSisyfosChannels>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -1131,7 +1131,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 					channels: Object.keys(sisyfosChannels).map(key => {
 						const llayer = key as SisyfosLLAyer
 						const channel = sisyfosChannels[llayer] as SisyfosChannel
-						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+						return literal<TSR.TimelineContentSisyfosChannels['channels'][0]>({
 							mappedLayer: llayer,
 							isPgm: channel.isPgm,
 							visible: !channel.hideInStudioA
@@ -1145,7 +1145,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 
 			...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 				? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
-						return literal<TSR.TimelineObjCCGMedia>({
+						return literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 							id: '',
 							enable: { while: '1' },
 							priority: 0,
@@ -1160,7 +1160,7 @@ function getBaseline(config: BlueprintConfig): BlueprintResultBaseline {
 				  })
 				: []),
 
-			literal<TSR.TimelineObjVIZMSEConcept>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEConcept>>({
 				id: '',
 				enable: { while: '1' },
 				layer: SharedGraphicLLayer.GraphicLLayerConcept,

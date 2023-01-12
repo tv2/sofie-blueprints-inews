@@ -18,7 +18,7 @@ import OutputlayerDefaults from '../migrations/outputlayer-defaults'
 export function checkAllLayers(
 	context: IShowStyleUserContext,
 	pieces: IBlueprintPieceGeneric[],
-	otherObjs?: TSR.TSRTimelineObjBase[]
+	otherObjs?: Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>
 ) {
 	const missingSourceLayers: string[] = []
 	const missingOutputLayers: string[] = []
@@ -38,7 +38,7 @@ export function checkAllLayers(
 		...getMediaPlayerMappings(config.mediaPlayers)
 	}
 
-	const validateObject = (obj: TimelineObjectCoreExt) => {
+	const validateObject = (obj: TimelineObjectCoreExt<TSR.TSRTimelineContent>) => {
 		const isAbstract = obj.content.deviceType === TSR.DeviceType.ABSTRACT
 		const mapping = allMappings[obj.layer]
 
@@ -65,7 +65,7 @@ export function checkAllLayers(
 		}
 
 		if (sli.content && sli.content.timelineObjects) {
-			for (const obj of sli.content.timelineObjects as TimelineObjectCoreExt[]) {
+			for (const obj of sli.content.timelineObjects as Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>) {
 				validateObject(obj)
 			}
 		}

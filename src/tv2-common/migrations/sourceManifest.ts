@@ -6,7 +6,8 @@ export function MakeConfigForSources(
 	displayName: string,
 	wantsToPersistAudio: boolean,
 	acceptPersistAudio: boolean,
-	defaultVal: ConfigManifestEntryTable['defaultVal']
+	_defaultVal: any // TODO C
+	// defaultVal: ConfigManifestEntryTable['defaultVal'] // TODO C
 ): ConfigManifestEntryTable {
 	return {
 		id: `Sources${name}`,
@@ -14,7 +15,7 @@ export function MakeConfigForSources(
 		description: `${displayName} number to ATEM input and Sisyfos layer`,
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
-		defaultVal,
+		// defaultVal,// TODO C
 		columns: [
 			{
 				id: 'SourceName',

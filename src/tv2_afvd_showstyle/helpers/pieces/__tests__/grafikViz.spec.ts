@@ -70,7 +70,7 @@ function makeTestBundCue(infiniteMode: CueTime['infiniteMode']): CueDefinitionGr
 	}
 }
 
-const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
+const dskEnableObj = literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>>({
 	id: '',
 	enable: {
 		start: 0
@@ -151,8 +151,8 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -224,8 +224,8 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -264,8 +264,8 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -339,8 +339,8 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								start: 0
@@ -379,8 +379,8 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								start: 0
@@ -456,8 +456,8 @@ describe('grafik piece', () => {
 					fileName: 'bund',
 					path: 'bund',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: '!.full'
@@ -635,8 +635,8 @@ describe('grafik piece', () => {
 					fileName: 'direkte',
 					path: 'direkte',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: `!.full`
@@ -712,8 +712,8 @@ describe('grafik piece', () => {
 					fileName: 'arkiv',
 					path: 'arkiv',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: `!.full`
@@ -785,8 +785,8 @@ describe('grafik piece', () => {
 					fileName: 'tlftoptlive',
 					path: 'tlftoptlive',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: `!.full`
@@ -824,8 +824,8 @@ describe('grafik piece', () => {
 					fileName: 'tlftoptlive',
 					path: 'tlftoptlive',
 					ignoreMediaObjectStatus: true,
-					timelineObjects: literal<TSR.TSRTimelineObj[]>([
-						literal<TSR.TimelineObjVIZMSEElementInternal>({
+					timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+						literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 							id: '',
 							enable: {
 								while: `!.full`
@@ -965,11 +965,11 @@ describe('grafik piece', () => {
 		)
 		const piece = pieces[0]
 		expect(piece).toBeTruthy()
-		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
+		const tlObj = (piece.content?.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>).find(
 			obj =>
 				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
-		) as TSR.TimelineObjVIZMSEElementInternal | undefined
+		) as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal> | undefined
 		expect(tlObj).toBeTruthy()
 		expect(tlObj?.enable).toEqual({ while: '1' })
 	})

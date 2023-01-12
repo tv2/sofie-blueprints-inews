@@ -2,7 +2,6 @@ import { MigrationStepShowStyle, SourceLayerType } from 'blueprints-integration'
 import {
 	AddGraphicToGfxTable,
 	changeGfxTemplate,
-	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
 	RemoveOldShortcuts,
@@ -20,7 +19,6 @@ import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrat
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { ATEMModel } from '../../types/atem'
 import { SourceLayer } from '../layers'
-import { GetDefaultStudioSourcesForAFVD } from './hotkeys'
 import sourcelayerDefaults from './sourcelayer-defaults'
 import {
 	forceSourceLayerToDefaults,
@@ -170,13 +168,13 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	removeSourceLayer('1.7.0', 'AFVD', 'studio0_dve_box3'),
 	removeSourceLayer('1.7.0', 'AFVD', 'studio0_dve_box4'),
 	RemoveOldShortcuts('1.7.0', SHOW_STYLE_ID, sourcelayerDefaults),
-	GetDefaultAdLibTriggers(
-		'1.7.0',
-		SHOW_STYLE_ID,
-		{ local: SourceLayer.PgmLocal },
-		GetDefaultStudioSourcesForAFVD,
-		true
-	),
+	// GetDefaultAdLibTriggers( // TODO C
+	// 	'1.7.0',
+	// 	SHOW_STYLE_ID,
+	// 	{ local: SourceLayer.PgmLocal },
+	// 	GetDefaultStudioSourcesForAFVD,
+	// 	true
+	// ),
 
 	/**
 	 * 1.7.1
@@ -253,12 +251,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
-	...getOutputLayerDefaultsMigrationSteps(VERSION),
-	GetDefaultAdLibTriggers(
-		VERSION,
-		SHOW_STYLE_ID,
-		{ local: SourceLayer.PgmLocal },
-		GetDefaultStudioSourcesForAFVD,
-		false
-	)
+	...getOutputLayerDefaultsMigrationSteps(VERSION)
+	// GetDefaultAdLibTriggers( // TODO C
+	// 	VERSION,
+	// 	SHOW_STYLE_ID,
+	// 	{ local: SourceLayer.PgmLocal },
+	// 	GetDefaultStudioSourcesForAFVD,
+	// 	false
+	// )
 ]

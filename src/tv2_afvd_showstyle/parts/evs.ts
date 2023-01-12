@@ -7,7 +7,6 @@ import {
 	IBlueprintPiece,
 	ISegmentUserContext,
 	PieceLifespan,
-	TimelineObjectCoreExt,
 	TSR
 } from 'blueprints-integration'
 import {
@@ -111,8 +110,8 @@ function makeContentEVS(
 		studioLabel: '',
 		switcherInput: atemInput,
 		ignoreMediaObjectStatus: true,
-		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjAtemME>({
+		timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: ``,
 				enable: {
 					start: 0

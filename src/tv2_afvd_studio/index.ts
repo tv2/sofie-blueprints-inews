@@ -1,7 +1,7 @@
 import { BlueprintManifestType, StudioBlueprintManifest } from 'blueprints-integration'
 import { GetStudioManifestWithMixins, StudioManifestMixinINews } from 'inews-mixins'
-import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
+import { galleryDStudioConfigPresets } from './configPreset/configPresets'
 import { getBaseline } from './getBaseline'
 import { getShowStyleId } from './getShowStyleId'
 import { parseConfig } from './helpers/config'
@@ -25,7 +25,8 @@ const manifest: StudioBlueprintManifest = GetStudioManifestWithMixins(
 		studioMigrations,
 
 		getBaseline,
-		getShowStyleId
+		getShowStyleId,
+		configPresets: galleryDStudioConfigPresets
 	},
 	[StudioManifestMixinINews.INewsPlaylist]
 )

@@ -98,9 +98,9 @@ export function EvaluateCueBackgroundLoop(
 	}
 }
 
-function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
+function dveLoopTimeline(path: string): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	return [
-		literal<TSR.TimelineObjCCGMedia>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 			id: '',
 			enable: { start: 0 },
 			priority: 100,
@@ -115,12 +115,15 @@ function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
 	]
 }
 
-function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
+function fullLoopTimeline(
+	config: TV2BlueprintConfig,
+	parsedCue: CueDefinitionBackgroundLoop
+): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	if (!config.selectedGraphicsSetup.FullShowName) {
 		return []
 	}
 	return [
-		literal<TSR.TimelineObjVIZMSEElementInternal>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 			id: '',
 			enable: { start: 0 },
 			priority: 1,

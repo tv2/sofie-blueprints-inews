@@ -99,7 +99,7 @@ export function CreateTimingGraphic(
 	return ret
 }
 
-export function GetEnableForWall(): TSR.TSRTimelineObj['enable'] {
+export function GetEnableForWall(): TSR.TSRTimelineObj<TSR.TSRTimelineContent>['enable'] {
 	return {
 		while: '1'
 	}
@@ -126,7 +126,7 @@ export function GetEnableForGraphic(
 	config: TV2BlueprintConfig,
 	engine: GraphicEngine,
 	cue: CueDefinitionGraphic<GraphicInternalOrPilot>
-): TSR.TSRTimelineObj['enable'] {
+): TSR.TSRTimelineObj<TSR.TSRTimelineContent>['enable'] {
 	if (IsTargetingWall(engine)) {
 		return GetEnableForWall()
 	}

@@ -5,6 +5,7 @@ import {
 	OnGenerateTimelineObj,
 	SourceLayerType,
 	SplitsContent,
+	TimelineKeyframeCoreExt,
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
@@ -37,11 +38,15 @@ export function postProcessPieceTimelineObjects(
 	const jingleDSKLayer = AtemLLayerDSK(jingleDSK.Number)
 
 	if (piece.content?.timelineObjects) {
-		const extraObjs: TimelineObjectCoreExt[] = []
+		const extraObjs: Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>> = []
 
 		const atemMeObjs = (piece.content.timelineObjects as Array<
-			| (TSR.TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj)
-			| (TSR.TimelineObjAtemDSK & TimelineBlueprintExt & OnGenerateTimelineObj)
+			| (TimelineObjectCoreExt<TSR.TimelineContentAtemME> &
+					TimelineBlueprintExt &
+					OnGenerateTimelineObj<TSR.TimelineContentAtemME>)
+			| (TimelineObjectCoreExt<TSR.TimelineContentAtemDSK> &
+					TimelineBlueprintExt &
+					OnGenerateTimelineObj<TSR.TimelineContentAtemDSK>)
 		>).filter(
 			obj =>
 				obj.content &&
@@ -72,7 +77,7 @@ export function postProcessPieceTimelineObjects(
 					(tlObj.content.me.input !== -1 || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					// Create a lookahead-lookahead object for this me-program
-					const lookaheadObj: TSR.TimelineObjAtemAUX & TimelineBlueprintExt = {
+					const lookaheadObj: TimelineObjectCoreExt<TSR.TimelineContentAtemAUX> & TimelineBlueprintExt = {
 						id: '',
 						enable: { start: 0 },
 						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
@@ -100,9 +105,9 @@ export function postProcessPieceTimelineObjects(
 				let mixMinusSource: number | undefined | null // TODO - what about clips?
 				// tslint:disable-next-line:prefer-conditional-expression
 				if (tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
-					mixMinusSource = (tlObj as TSR.TimelineObjAtemDSK).content.dsk.sources?.fillSource
+					mixMinusSource = (tlObj as TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>).content.dsk.sources?.fillSource
 				} else {
-					mixMinusSource = (tlObj as TSR.TimelineObjAtemME).content.me.input
+					mixMinusSource = (tlObj as TSR.TSRTimelineObj<TSR.TimelineContentAtemME>).content.me.input
 				}
 
 				if (piece.sourceLayerId === SourceLayer.PgmLive && !piece.name.match(/EVS ?\d+/i)) {
@@ -120,7 +125,7 @@ export function postProcessPieceTimelineObjects(
 					mixMinusSource = kamSources.length === 1 ? Number(kamSources[0].switcherInput) : null
 				}
 				if (mixMinusSource !== null && mixMinusSource !== -1) {
-					const mixMinusObj: TSR.TimelineObjAtemAUX & TimelineBlueprintExt = {
+					const mixMinusObj: TimelineKeyframeCoreExt<TSR.TimelineContentAtemAUX> & TimelineBlueprintExt = {
 						..._.omit(tlObj, 'content'),
 						id: '',
 						layer: AtemLLayer.AtemAuxVideoMixMinus,
@@ -148,7 +153,7 @@ export function postProcessPieceTimelineObjects(
 			}
 		})
 
-		const atemDskObjs = (piece.content.timelineObjects as TSR.TimelineObjAtemDSK[]).filter(
+		const atemDskObjs = (piece.content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>>).filter(
 			obj =>
 				obj.content &&
 				obj.content.deviceType === TSR.DeviceType.ATEM &&
@@ -161,7 +166,7 @@ export function postProcessPieceTimelineObjects(
 					context.notifyUserWarning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
 				}
 
-				const cleanObj: TSR.TimelineObjAtemME & TimelineBlueprintExt = {
+				const cleanObj: TSR.TSRTimelineObj<TSR.TimelineContentAtemME> & TimelineBlueprintExt = {
 					..._.omit(tlObj, 'content', 'keyframes'),
 					id: '',
 					layer: AtemLLayer.AtemCleanUSKEffect,
@@ -187,7 +192,7 @@ export function postProcessPieceTimelineObjects(
 
 		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
 		piece.content.timelineObjects = piece.content.timelineObjects.filter(
-			(obj: TSR.TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
+			(obj: TSR.TSRTimelineObj<TSR.TSRTimelineContent>) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
 		)
 	}
 }

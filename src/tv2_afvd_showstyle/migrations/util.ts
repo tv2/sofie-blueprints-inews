@@ -63,7 +63,8 @@ export function forceSettingToDefaults(versionStr: string, setting: string): Mig
 				return false
 			}
 
-			return !_.isEqual(existing, defaultVal.defaultVal)
+			return false
+			// return !_.isEqual(existing, defaultVal.defaultVal) // TODO C
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			if (context.getBaseConfig(setting)) {
@@ -77,7 +78,7 @@ export function forceSettingToDefaults(versionStr: string, setting: string): Mig
 			}
 
 			if (!context.getBaseConfig(setting)) {
-				context.setBaseConfig(setting, defaultVal.defaultVal)
+				// context.setBaseConfig(setting, defaultVal.defaultVal) // TODO C
 			}
 		}
 	}

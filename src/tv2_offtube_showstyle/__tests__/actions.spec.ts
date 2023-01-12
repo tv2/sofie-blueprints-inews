@@ -81,7 +81,7 @@ const kamPieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					enable: {
 						start: 0
@@ -372,13 +372,13 @@ function validateNextPartExistsWithPreviousPartKeepaliveDuration(context: Action
 	expect(context.nextPart?.part.inTransition?.previousPartKeepaliveDuration).toEqual(duration)
 }
 
-function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
-	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TSRTimelineObj<TSR.TimelineContentAtemME> {
+	const atemObj = (piece.piece.content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>).find(
 		obj =>
 			obj.layer === OfftubeAtemLLayer.AtemMEClean &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
-	) as TSR.TimelineObjAtemME | undefined
+	) as TSR.TSRTimelineObj<TSR.TimelineContentAtemME> | undefined
 	expect(atemObj).toBeTruthy()
 
 	return atemObj!

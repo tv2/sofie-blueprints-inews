@@ -116,7 +116,8 @@ describe('EvaluateCueRobotCamera', () => {
 
 		EvaluateCueRobotCamera(context, cueDefinition, pieces, '')
 
-		const result: TSR.TimelineObjTelemetrics = pieces[0].content.timelineObjects[0] as TSR.TimelineObjTelemetrics
+		const result: TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics> = pieces[0].content
+			.timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics>
 		expect(result.content.presetShotIdentifiers).toEqual([presetShot])
 	}
 
@@ -190,7 +191,7 @@ describe('EvaluateCueRobotCamera', () => {
 			expect(pieces).toHaveLength(2)
 		})
 
-		function createTelemetricsTimelineObject(presetShot?: number): TSR.TimelineObjTelemetrics {
+		function createTelemetricsTimelineObject(presetShot?: number): TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics> {
 			return {
 				id: '',
 				enable: {
@@ -233,8 +234,8 @@ describe('EvaluateCueRobotCamera', () => {
 
 			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
-			const timelineObject: TSR.TimelineObjTelemetrics = pieces[0].content
-				.timelineObjects[0] as TSR.TimelineObjTelemetrics
+			const timelineObject: TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics> = pieces[0].content
+				.timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics>
 			expect(timelineObject.content.presetShotIdentifiers).toEqual([1, 2])
 		})
 
@@ -248,8 +249,8 @@ describe('EvaluateCueRobotCamera', () => {
 
 			EvaluateCueRobotCamera(context, cueDefinition, pieces, 'randomExternalId')
 
-			const timelineObject: TSR.TimelineObjTelemetrics = pieces[0].content
-				.timelineObjects[0] as TSR.TimelineObjTelemetrics
+			const timelineObject: TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics> = pieces[0].content
+				.timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentTelemetrics>
 			expect(timelineObject.content.presetShotIdentifiers).toEqual([1])
 		})
 

@@ -426,39 +426,41 @@ export async function EvaluateCuesBase(
 
 	;[...pieces, ...adLibPieces].forEach(piece => {
 		if (piece.content && piece.content.timelineObjects) {
-			piece.content.timelineObjects.forEach((obj: TSR.TSRTimelineObj) => {
+			piece.content.timelineObjects.forEach((obj: TSR.TSRTimelineObj<TSR.TSRTimelineContent>) => {
 				if (obj.content.deviceType === TSR.DeviceType.VIZMSE) {
 					if (!piece.expectedPlayoutItems) {
 						piece.expectedPlayoutItems = []
 					}
 
 					if (obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL) {
-						const o = obj as TSR.TimelineObjVIZMSEElementInternal
-						const name = (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName
+						const o = obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>
+						const name = (obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>).content.templateName
 						if (name && name.length) {
 							piece.expectedPlayoutItems.push({
 								deviceSubType: TSR.DeviceType.VIZMSE,
 								content: {
-									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
-									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
+									templateName: (obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>).content
+										.templateName,
+									templateData: (obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>).content
+										.templateData,
 									channel: o.content.channelName,
 									showName: o.content.showName
 								}
 							})
 						}
 					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT) {
-						const name = (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId
+						const name = (obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>).content.templateVcpId
 						if (name !== undefined && name.toString().length) {
 							piece.expectedPlayoutItems.push({
 								deviceSubType: TSR.DeviceType.VIZMSE,
 								content: {
-									vcpid: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
-									channel: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
+									vcpid: (obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>).content.templateVcpId,
+									channel: (obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>).content.channelName
 								}
 							})
 						}
 					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS) {
-						const o = obj as TSR.TimelineObjVIZMSEClearAllElements
+						const o = obj as TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEClearAllElements>
 						piece.expectedPlayoutItems.push({
 							deviceSubType: TSR.DeviceType.VIZMSE,
 							content: {

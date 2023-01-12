@@ -45,7 +45,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 		mappings,
 		(_id, v) => v.device === TSR.DeviceType.SISYFOS && (v as any).mappingType !== TSR.MappingSisyfosType.CHANNELS
 	)
-	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
+	const mappedChannels: TSR.TimelineContentSisyfosChannels['channels'] = []
 	for (const id in sisyfosMappings) {
 		if (sisyfosMappings[id]) {
 			const sisyfosChannel = sisyfosChannels[id as SisyfosLLAyer]
@@ -69,7 +69,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 	return {
 		timelineObjects: [
 			...convertMappings(atemMeMappings, id =>
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					enable: { while: '1' },
 					priority: 0,
@@ -84,7 +84,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					}
 				})
 			),
-			literal<TSR.TimelineObjSisyfosChannels>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 				id: '',
 				enable: {
 					while: '1'
@@ -100,7 +100,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 			}),
 
 			// have ATEM output default still image
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -113,7 +113,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -126,7 +126,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -140,7 +140,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemMediaPlayer>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemMediaPlayer>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -159,7 +159,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjVIZMSEConcept>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEConcept>>({
 				id: '',
 				enable: { while: '1' },
 				layer: SharedGraphicLLayer.GraphicLLayerConcept,

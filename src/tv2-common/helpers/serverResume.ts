@@ -77,8 +77,8 @@ export function getServerPositionForPartInstance(
 	currentPieceEnd?: number
 ): ServerPosition | undefined {
 	currentPieceEnd =
-		currentPieceEnd !== undefined && partInstance.timings?.startedPlayback
-			? currentPieceEnd - partInstance.timings.startedPlayback
+		currentPieceEnd !== undefined && partInstance.timings?.reportedStartedPlayback
+			? currentPieceEnd - partInstance.timings.reportedStartedPlayback
 			: undefined
 
 	const previousPartEndState = partInstance.previousPartEndState as Partial<PartEndStateExt> | undefined
@@ -166,7 +166,8 @@ function getStartTimeForServerInDVE(
 ) {
 	return (
 		timing.start ??
-		(partInstance.timings?.startedPlayback && partInstance.timings?.startedPlayback + pieceInstance.resolvedStart)
+		(partInstance.timings?.reportedStartedPlayback &&
+			partInstance.timings?.reportedStartedPlayback + pieceInstance.resolvedStart)
 	)
 }
 
@@ -178,8 +179,8 @@ function getEndTimeForServerInDVE(
 ) {
 	return (
 		timing.end ??
-		(pieceDuration && partInstance.timings?.startedPlayback
-			? partInstance.timings?.startedPlayback + pieceInstance.resolvedStart + pieceDuration
+		(pieceDuration && partInstance.timings?.reportedStartedPlayback
+			? partInstance.timings?.reportedStartedPlayback + pieceInstance.resolvedStart + pieceDuration
 			: undefined)
 	)
 }

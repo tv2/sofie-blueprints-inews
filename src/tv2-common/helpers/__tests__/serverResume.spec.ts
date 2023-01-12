@@ -62,12 +62,12 @@ describe('Server Resume', () => {
 	})
 	it('Returns server position from server part when setting "now"', () => {
 		const position = getServerPositionForPartInstance(
-			getMockPartInstance({ _id: 'mock_1', timings: { startedPlayback: 1000 } }),
+			getMockPartInstance({ _id: 'mock_1', timings: { reportedStartedPlayback: 1000 } }),
 			[
 				literal<IBlueprintResolvedPieceInstance<PieceMetaData>>({
 					_id: '',
 					partInstanceId: 'mock_1',
-					startedPlayback: 1000,
+					reportedStartedPlayback: 1000,
 					resolvedStart: 2000,
 					dynamicallyInserted: { time: 1 },
 					piece: {
@@ -102,7 +102,7 @@ describe('Server Resume', () => {
 					segmentId: 'segment_0',
 					serverPosition: { fileName: '123456', lastEnd: 10000, endedWithPartInstance: 'mock_0', isPlaying: false }
 				},
-				timings: { startedPlayback: 11000 }
+				timings: { reportedStartedPlayback: 11000 }
 			}),
 			[
 				literal<IBlueprintResolvedPieceInstance<PieceMetaData>>({
@@ -148,7 +148,7 @@ describe('Server Resume', () => {
 					segmentId: 'segment_0',
 					serverPosition: { fileName: '123456', lastEnd: 10000, endedWithPartInstance: 'mock_0', isPlaying: false }
 				},
-				timings: { startedPlayback: 11000 }
+				timings: { reportedStartedPlayback: 11000 }
 			}),
 			[
 				literal<IBlueprintResolvedPieceInstance<PieceMetaData>>({

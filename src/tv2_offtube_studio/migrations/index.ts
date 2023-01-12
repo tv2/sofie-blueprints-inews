@@ -11,12 +11,6 @@ import {
 import { SharedGraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { EnsureSisyfosMappingHasType } from '../../tv2_afvd_studio/migrations/util'
-import {
-	manifestOfftubeDownstreamKeyers,
-	manifestOfftubeSourcesABMediaPlayers,
-	manifestOfftubeSourcesCam,
-	manifestOfftubeStudioMics
-} from '../config-manifests'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../layers'
 import { deviceMigrations } from './devices'
 import MappingsDefaults from './mappings-defaults'
@@ -184,11 +178,13 @@ export const studioMigrations: MigrationStepStudio[] = [
 	ensureStudioConfig(
 		'0.1.0',
 		'SourcesCam',
-		manifestOfftubeSourcesCam.defaultVal,
+		'', // TODO C
+		// manifestOfftubeSourcesCam.defaultVal, // TODO C
 		'text',
 		'Studio config: Camera mappings',
 		'Enter the camera input mapping',
-		manifestOfftubeSourcesCam.defaultVal
+		'' // TODO C
+		// manifestOfftubeSourcesCam.defaultVal // TODO C
 	),
 
 	ensureStudioConfig(
@@ -222,21 +218,25 @@ export const studioMigrations: MigrationStepStudio[] = [
 	ensureStudioConfig(
 		'0.1.0',
 		'ABMediaPlayers',
-		manifestOfftubeSourcesABMediaPlayers.defaultVal,
+		'', // TODO C
+		// manifestOfftubeSourcesABMediaPlayers.defaultVal,
 		'text',
 		'Studio config: AB Media Players mappings',
 		'Enter the AB Media Players input mapping',
-		manifestOfftubeSourcesABMediaPlayers.defaultVal
+		'' // TODO C
+		// manifestOfftubeSourcesABMediaPlayers.defaultVal
 	),
 
 	ensureStudioConfig(
 		'0.1.0',
 		'StudioMics',
-		manifestOfftubeStudioMics.defaultVal,
+		'', // TODO C
+		// manifestOfftubeStudioMics.defaultVal, // TODO C
 		'text',
 		'Studio config: Studio Mics',
 		'Select the Sisyfos layers for Studio Mics',
-		manifestOfftubeStudioMics.defaultVal
+		'' // TODO C
+		// manifestOfftubeStudioMics.defaultVal // TODO C
 	),
 
 	...deviceMigrations,
@@ -326,7 +326,13 @@ export const studioMigrations: MigrationStepStudio[] = [
 			KeepAudioInStudio: true
 		}
 	]),
-	SetConfigTo('1.6.1', 'Offtube', 'AtemSource.DSK', manifestOfftubeDownstreamKeyers.defaultVal),
+	SetConfigTo(
+		'1.6.1',
+		'Offtube',
+		'AtemSource.DSK',
+		''
+		// manifestOfftubeDownstreamKeyers.defaultVal // TODO C
+	),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleFill'),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.JingleKey'),
 	RemoveConfig('1.6.1', 'Offtube', 'AtemSource.CCGClip'),

@@ -91,12 +91,13 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const timelineObjects = pilotContent.timelineObjects.filter(
 				tlObject =>
 					tlObject.content.deviceType === TSR.DeviceType.CASPARCG &&
-					(tlObject as TSR.TimelineObjCCGTemplate).content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE
+					(tlObject as TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate>).content.type ===
+						TSR.TimelineContentTypeCasparCg.TEMPLATE
 			)
 			expect(timelineObjects.length).toBe(1)
 			expect(timelineObjects[0].layer).toBe(SharedGraphicLLayer.GraphicLLayerOverlayPilot)
 			expect(timelineObjects[0].content).toMatchObject(
-				literal<Partial<TSR.TimelineObjCCGTemplate['content']>>({
+				literal<Partial<TSR.TimelineContentCCGTemplate>>({
 					templateType: 'html',
 					name: 'html-package-folder/index',
 					data: {
@@ -125,10 +126,10 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const timelineObjects = pilotContent.timelineObjects.filter(
 				tlObject =>
 					tlObject.content.deviceType === TSR.DeviceType.ATEM &&
-					(tlObject as TSR.TimelineObjAtemDSK).content.type === TSR.TimelineContentTypeAtem.DSK
+					(tlObject as TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>).content.type === TSR.TimelineContentTypeAtem.DSK
 			)
 			expect(timelineObjects.length).toBe(1)
-			expect((timelineObjects[0] as TSR.TimelineObjAtemDSK).content.dsk.onAir).toBe(true)
+			expect((timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentAtemDSK>).content.dsk.onAir).toBe(true)
 		})
 		it('Applies cue timing', () => {
 			const generator = makeGenerator({
@@ -161,12 +162,13 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const timelineObjects = pilotContent.timelineObjects.filter(
 				tlObject =>
 					tlObject.content.deviceType === TSR.DeviceType.CASPARCG &&
-					(tlObject as TSR.TimelineObjCCGTemplate).content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE
+					(tlObject as TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate>).content.type ===
+						TSR.TimelineContentTypeCasparCg.TEMPLATE
 			)
 			expect(timelineObjects.length).toBe(1)
 			expect(timelineObjects[0].layer).toBe(SharedGraphicLLayer.GraphicLLayerPilot)
 			expect(timelineObjects[0].content).toMatchObject(
-				literal<Partial<TSR.TimelineObjCCGTemplate['content']>>({
+				literal<Partial<TSR.TimelineContentCCGTemplate>>({
 					templateType: 'html',
 					name: 'html-package-folder/index',
 					data: {

@@ -1,5 +1,6 @@
 import {
 	BlueprintMappings,
+	DatastorePersistenceMode,
 	IActionExecutionContext,
 	IBlueprintMutatablePart,
 	IBlueprintPart,
@@ -18,6 +19,7 @@ export interface ITV2ActionExecutionContext extends IActionExecutionContext {
 	isTV2Context: true
 
 	getPieceInstances(part: 'current' | 'next'): Promise<Array<IBlueprintPieceInstance<PieceMetaData>>>
+
 	getResolvedPieceInstances(part: 'current' | 'next'): Promise<Array<IBlueprintResolvedPieceInstance<PieceMetaData>>>
 
 	findLastPieceOnLayer(
@@ -28,6 +30,7 @@ export interface ITV2ActionExecutionContext extends IActionExecutionContext {
 			pieceMetaDataFilter?: any
 		}
 	): Promise<IBlueprintPieceInstance<PieceMetaData> | undefined>
+
 	findLastScriptedPieceOnLayer(
 		sourceLayerId: string | string[],
 		options?: {
@@ -35,17 +38,23 @@ export interface ITV2ActionExecutionContext extends IActionExecutionContext {
 			pieceMetaDataFilter?: any
 		}
 	): Promise<IBlueprintPiece<PieceMetaData> | undefined>
+
 	getPartInstanceForPreviousPiece(piece: IBlueprintPieceInstance): Promise<IBlueprintPartInstance>
+
 	getPartForPreviousPiece(piece: IBlueprintPieceDB): Promise<IBlueprintPart | undefined>
+
 	insertPiece(
 		part: 'current' | 'next',
 		piece: IBlueprintPiece<PieceMetaData>
 	): Promise<IBlueprintPieceInstance<PieceMetaData>>
+
 	updatePieceInstance(
 		pieceInstanceId: string,
 		piece: Partial<IBlueprintPiece<PieceMetaData>>
 	): Promise<IBlueprintPieceInstance<PieceMetaData>>
+
 	queuePart(part: IBlueprintPart, pieces: Array<IBlueprintPiece<PieceMetaData>>): Promise<IBlueprintPartInstance>
+
 	updatePartInstance(part: 'current' | 'next', props: Partial<IBlueprintMutatablePart>): Promise<IBlueprintPartInstance>
 }
 
@@ -60,6 +69,14 @@ class TV2ActionExecutionContext implements ITV2ActionExecutionContext {
 	constructor(coreContext: IActionExecutionContext) {
 		this.coreContext = coreContext
 		this.studioId = coreContext.studioId
+	}
+
+	public setTimelineDatastoreValue(key: string, value: any, mode: DatastorePersistenceMode): Promise<void> {
+		return this.coreContext.setTimelineDatastoreValue(key, value, mode)
+	}
+
+	public removeTimelineDatastoreValue(key: string): Promise<void> {
+		return this.coreContext.removeTimelineDatastoreValue(key)
 	}
 
 	public async getPartInstance(part: 'current' | 'next'): Promise<IBlueprintPartInstance<unknown> | undefined> {

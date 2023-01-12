@@ -139,8 +139,8 @@ export function CreateEffektForPartInner<
 			ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 			ignoreBlackFrames: true,
 			ignoreFreezeFrame: true,
-			timelineObjects: literal<TimelineObjectCoreExt[]>([
-				literal<TSR.TimelineObjCCGMedia & TimelineBlueprintExt>({
+			timelineObjects: literal<Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>>>([
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia> & TimelineBlueprintExt>({
 					id: '',
 					enable: {
 						start: 0
@@ -154,7 +154,7 @@ export function CreateEffektForPartInner<
 					}
 				}),
 				...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
-				literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel> & TimelineBlueprintExt>({
 					id: '',
 					enable: {
 						start: 0

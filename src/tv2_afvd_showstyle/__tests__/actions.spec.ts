@@ -137,7 +137,7 @@ const kamPieceInstance_Cut: IBlueprintPieceInstance = {
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					layer: AtemLLayer.AtemMEProgram,
 					enable: {
@@ -173,7 +173,7 @@ const kamPieceInstance_Mix: IBlueprintPieceInstance = {
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					layer: AtemLLayer.AtemMEProgram,
 					enable: {
@@ -214,7 +214,7 @@ const kamPieceInstance_Effekt: IBlueprintPieceInstance = {
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					layer: AtemLLayer.AtemMEProgram,
 					enable: {
@@ -271,7 +271,7 @@ const evsPieceInstance_Cut: IBlueprintPieceInstance = {
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					layer: AtemLLayer.AtemMEProgram,
 					enable: {
@@ -307,7 +307,7 @@ const evsPieceInstance_Mix: IBlueprintPieceInstance = {
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					layer: AtemLLayer.AtemMEProgram,
 					enable: {
@@ -348,7 +348,7 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjAtemME>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 					id: '',
 					layer: AtemLLayer.AtemMEProgram,
 					enable: {
@@ -405,13 +405,13 @@ async function getTransitionPiece(
 	return piece!
 }
 
-function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
-	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
+function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TSRTimelineObj<TSR.TimelineContentAtemME> {
+	const atemObj = (piece.piece.content.timelineObjects as Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>).find(
 		obj =>
 			obj.layer === AtemLLayer.AtemMEProgram &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
-	) as TSR.TimelineObjAtemME | undefined
+	) as TSR.TSRTimelineObj<TSR.TimelineContentAtemME> | undefined
 	expect(atemObj).toBeTruthy()
 
 	return atemObj!

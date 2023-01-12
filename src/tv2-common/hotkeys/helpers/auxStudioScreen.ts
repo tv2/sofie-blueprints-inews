@@ -23,16 +23,16 @@ export function MakeRouteToStudioScreenTrigger(
 		_rank: getNextRank(),
 		name,
 		triggers: hotkey
-			? [
-					literal<IBlueprintHotkeyTrigger>({
+			? {
+					[hotkey]: literal<IBlueprintHotkeyTrigger>({
 						type: TriggerType.hotkey,
 						keys: hotkey,
 						up: TRIGGER_HOTKEYS_ON_KEYUP
 					})
-			  ]
-			: [],
-		actions: [
-			literal<IAdlibPlayoutAction>({
+			  }
+			: {},
+		actions: {
+			adlibPlayoutAction: literal<IAdlibPlayoutAction>({
 				action: PlayoutActions.adlib,
 				filterChain: [
 					literal<IGUIContextFilterLink>({
@@ -60,6 +60,6 @@ export function MakeRouteToStudioScreenTrigger(
 					})
 				]
 			})
-		]
+		}
 	})
 }

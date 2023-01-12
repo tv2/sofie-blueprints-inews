@@ -20,7 +20,7 @@ import { IsTargetingFull } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
 
 export interface CasparPilotGeneratorSettings {
-	createFullPilotTimelineForStudio(config: TV2BlueprintConfig): TSR.TSRTimelineObj[]
+	createFullPilotTimelineForStudio(config: TV2BlueprintConfig): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>
 }
 
 export function GetInternalGraphicContentCaspar(
@@ -79,7 +79,7 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 			ignoreBlackFrames: true,
 			ignoreFreezeFrame: true,
 			timelineObjects: [
-				literal<TSR.TimelineObjCCGTemplate & TimelineBlueprintExt>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate> & TimelineBlueprintExt>({
 					id: '',
 					enable: {
 						while: '1'
@@ -117,9 +117,9 @@ function CasparOverlayTimeline(
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	mappedTemplate: string
-): TSR.TSRTimelineObj[] {
+): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	return [
-		literal<TSR.TimelineObjCCGTemplate>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate>>({
 			id: '',
 			enable: GetEnableForGraphic(config, engine, parsedCue),
 			priority: 1,
@@ -135,7 +135,7 @@ export function CreateHTMLRendererContent(
 	config: TV2BlueprintConfig,
 	mappedTemplate: string,
 	data: object
-): TSR.TimelineObjCCGTemplate['content'] {
+): TSR.TimelineContentCCGTemplate {
 	return {
 		deviceType: TSR.DeviceType.CASPARCG,
 		type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
@@ -194,10 +194,10 @@ export function getHtmlGraphicBaseline(config: TV2BlueprintConfig) {
 function getSlotBaselineTimelineObjects(
 	templateName: string,
 	layerMappings: SharedGraphicLLayer[]
-): TSR.TSRTimelineObj[] {
+): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	return layerMappings
 		.filter(layer => layerToHTMLGraphicSlot[layer])
-		.map<TSR.TimelineObjCCGTemplate>(layer => ({
+		.map<TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate>>(layer => ({
 			id: '',
 			enable: {
 				while: '1'
@@ -227,7 +227,7 @@ function getSlotBaselineTimelineObjects(
 function getCompoundSlotBaselineTimelineObject(
 	templateName: string,
 	layerMappings: SharedGraphicLLayer[]
-): TSR.TimelineObjCCGTemplate {
+): TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate> {
 	const slots = layerMappings.reduce((obj: Record<string, any>, layer) => {
 		if (layerToHTMLGraphicSlot[layer]) {
 			obj[layerToHTMLGraphicSlot[layer]] = {
@@ -259,7 +259,7 @@ function getCompoundSlotBaselineTimelineObject(
 	}
 }
 
-function getDesignBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+function getDesignBaselineTimelineObject(templateName: string): TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate> {
 	return {
 		id: '',
 		enable: {
@@ -282,7 +282,7 @@ function getDesignBaselineTimelineObject(templateName: string): TSR.TimelineObjC
 	}
 }
 
-function getFullPilotBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+function getFullPilotBaselineTimelineObject(templateName: string): TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate> {
 	return {
 		id: '',
 		enable: {

@@ -64,10 +64,10 @@ function GetServerTimeline(
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
-): TimelineObjectCoreExt[] {
+): Array<TimelineObjectCoreExt<TSR.TSRTimelineContent>> {
 	const serverEnableClass = `.${GetEnableClassForServer(contentProps.mediaPlayerSession)}`
 
-	const mediaObj: TSR.TimelineObjCCGMedia & TimelineBlueprintExt = {
+	const mediaObj: TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia> & TimelineBlueprintExt = {
 		id: '',
 		enable: {
 			while: serverEnableClass
@@ -89,7 +89,8 @@ function GetServerTimeline(
 		}
 	}
 
-	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
+	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia> &
+		TimelineBlueprintExt
 	mediaOffObj.enable = { while: `!${serverEnableClass}` }
 	mediaOffObj.content.playing = false
 	mediaOffObj.content.noStarttime = true
@@ -109,7 +110,7 @@ function GetServerTimeline(
 		),
 		...(sourceLayers.ATEM.ServerLookaheadAux
 			? [
-					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX> & TimelineBlueprintExt>({
 						id: '',
 						enable: {
 							start: 0
@@ -141,7 +142,7 @@ export function CutToServer(
 ) {
 	return [
 		EnableServer(mediaPlayerSessionId),
-		literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME> & TimelineBlueprintExt>({
 			id: '',
 			enable: {
 				start: config.studio.CasparPrerollDuration
@@ -166,7 +167,7 @@ export function CutToServer(
 }
 
 export function EnableServer(mediaPlayerSessionId: string) {
-	return literal<TSR.TimelineObjAbstractAny & TimelineBlueprintExt>({
+	return literal<TSR.TSRTimelineObj<TSR.TimelineContentAbstractAny> & TimelineBlueprintExt>({
 		id: '',
 		enable: {
 			start: 0

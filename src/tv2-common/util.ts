@@ -11,8 +11,8 @@ export function assertUnreachable(_never: never): never {
 // tslint:disable-next-line: prettier
 export type WithValuesOfTypes<T, Q> = { [P in keyof T as T[P] extends Q | undefined ? P : never]: T[P] }
 export type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
-export type EmptyBaseObj = OptionalExceptFor<Omit<TSR.TimelineObjEmpty, 'content'>, 'layer' | 'enable' | 'classes'>
-export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
+export type EmptyBaseObj = OptionalExceptFor<Omit<TSR.TSRTimelineObj<TSR.TimelineContentEmpty>, 'content'>, 'layer' | 'enable' | 'classes'>
+export function createEmptyObject(obj: EmptyBaseObj): TSR.TSRTimelineObj<TSR.TimelineContentEmpty> {
 	return {
 		id: '',
 		priority: 0,

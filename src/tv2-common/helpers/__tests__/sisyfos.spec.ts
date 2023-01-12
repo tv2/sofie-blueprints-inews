@@ -23,9 +23,9 @@ describe('Sisyfos', () => {
 		const timelineObjects = GetSisyfosTimelineObjForCamera(config, sourceInfo, false)
 		expect(timelineObjects.length).toBe(2)
 		expect(timelineObjects[0].layer).toBe('some_layer')
-		expect((timelineObjects[0] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(1)
+		expect((timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(1)
 		expect(timelineObjects[1].layer).toBe('some_layer2')
-		expect((timelineObjects[1] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(1)
+		expect((timelineObjects[1] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(1)
 	})
 	it('Enables studio mics for cameras', () => {
 		const sourceInfo = {
@@ -67,9 +67,9 @@ describe('Sisyfos', () => {
 		const timelineObjects = GetSisyfosTimelineObjForRemote(config, sourceInfo)
 		expect(timelineObjects.length).toBe(2)
 		expect(timelineObjects[0].layer).toBe('some_layer')
-		expect((timelineObjects[0] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(1)
+		expect((timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(1)
 		expect(timelineObjects[1].layer).toBe('some_layer2')
-		expect((timelineObjects[1] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(1)
+		expect((timelineObjects[1] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(1)
 	})
 	it('Enables studio mics for remotes', () => {
 		const sourceInfo = {
@@ -97,9 +97,9 @@ describe('Sisyfos', () => {
 		const timelineObjects = GetSisyfosTimelineObjForReplay(config, sourceInfo, false)
 		expect(timelineObjects.length).toBe(2)
 		expect(timelineObjects[0].layer).toBe('some_layer')
-		expect((timelineObjects[0] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(1)
+		expect((timelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(1)
 		expect(timelineObjects[1].layer).toBe('some_layer2')
-		expect((timelineObjects[1] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(1)
+		expect((timelineObjects[1] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(1)
 	})
 	it('Enables audio layers for replay (vo)', () => {
 		const sourceInfo = {
@@ -114,9 +114,9 @@ describe('Sisyfos', () => {
 		const layersTimelineObjects = timelineObjects.filter(t => t.layer !== SharedSisyfosLLayer.SisyfosGroupStudioMics)
 		expect(layersTimelineObjects.length).toBe(2)
 		expect(layersTimelineObjects[0].layer).toBe('some_layer')
-		expect((layersTimelineObjects[0] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(2)
+		expect((layersTimelineObjects[0] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(2)
 		expect(layersTimelineObjects[1].layer).toBe('some_layer2')
-		expect((layersTimelineObjects[1] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(2)
+		expect((layersTimelineObjects[1] as TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>).content.isPgm).toBe(2)
 	})
 	it('Enables studio mics for replay (vo)', () => {
 		const sourceInfo = {

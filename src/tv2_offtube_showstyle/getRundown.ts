@@ -124,7 +124,7 @@ function getGlobalAdLibPiecesOfftube(
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjSisyfosChannels>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 10,
@@ -154,7 +154,7 @@ function getGlobalAdLibPiecesOfftube(
 		expectedDuration: 0,
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjSisyfosChannels>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 10,
@@ -183,8 +183,8 @@ function getGlobalAdLibPiecesOfftube(
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				literal<TSR.TimelineObjSisyfosChannel>({
+			timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosAny>>>([
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannel>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 2,
@@ -210,7 +210,7 @@ function getGlobalAdLibPiecesOfftube(
 		tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
 		content: {
 			timelineObjects: [
-				literal<TSR.TimelineObjEmpty>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentEmpty>>({
 					id: '',
 					enable: {
 						start: 0,
@@ -583,7 +583,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 		timelineObjects: [
 			...CreateGraphicBaseline(config),
 			// Default timeline
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -597,7 +597,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -612,7 +612,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 			}),
 
 			// route default outputs
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -625,7 +625,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -638,7 +638,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGRoute>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGRoute>>({
 				id: '',
 				enable: { while: 1 },
 				priority: 0,
@@ -653,7 +653,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 			// keyers
 			...CreateDSKBaseline(config),
 
-			literal<TSR.TimelineObjAtemSsrcProps>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrcProps>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -669,7 +669,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemSsrc>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrc>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -704,7 +704,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -724,7 +724,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -744,7 +744,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -762,7 +762,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 				}
 			}),
 
-			literal<TSR.TimelineObjCasparCGAny>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentCasparCGAny>>({
 				id: '',
 				enable: { while: 1 },
 				priority: 1,
@@ -775,7 +775,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 			}),
 
 			// create sisyfos channels from the config
-			literal<TSR.TimelineObjSisyfosChannels>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -786,7 +786,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 					channels: Object.keys(sisyfosChannels).map(key => {
 						const llayer = key as OfftubeSisyfosLLayer
 						const channel = sisyfosChannels[llayer] as SisyfosChannel
-						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
+						return literal<TSR.TimelineContentSisyfosChannels['channels'][0]>({
 							mappedLayer: llayer,
 							isPgm: channel.isPgm,
 							visible: true
@@ -797,7 +797,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -815,7 +815,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 
 			...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
 				? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
-						return literal<TSR.TimelineObjCCGMedia>({
+						return literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 							id: '',
 							enable: { while: '1' },
 							priority: 0,

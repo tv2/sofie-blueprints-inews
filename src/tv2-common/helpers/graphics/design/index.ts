@@ -63,11 +63,14 @@ export function EvaluateDesignBase(
 	}
 }
 
-function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {
+function designTimeline(
+	config: TV2BlueprintConfig,
+	parsedCue: CueDefinitionGraphicDesign
+): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	switch (config.studio.GraphicsType) {
 		case 'HTML':
 			return [
-				literal<TSR.TimelineObjCCGTemplate>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGTemplate>>({
 					id: '',
 					enable: {
 						start: 0
@@ -90,7 +93,7 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 			]
 		case 'VIZ':
 			return [
-				literal<TSR.TimelineObjVIZMSEElementInternal>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 					id: '',
 					enable: { start: 0 },
 					priority: 100,

@@ -34,7 +34,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
-	const mappedChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
+	const mappedChannels: TSR.TimelineContentSisyfosChannels['channels'] = []
 	for (const id in sisyfosMappings) {
 		if (sisyfosMappings[id]) {
 			const sisyfosChannel = sisyfosChannels[id as OfftubeSisyfosLLayer]
@@ -57,7 +57,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 
 	return {
 		timelineObjects: [
-			literal<TSR.TimelineObjSisyfosChannels>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentSisyfosChannels>>({
 				id: '',
 				enable: {
 					while: '1'
@@ -73,7 +73,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 			}),
 
 			// have ATEM output default still image
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -89,7 +89,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			literal<TSR.TimelineObjAtemME>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
@@ -102,7 +102,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,

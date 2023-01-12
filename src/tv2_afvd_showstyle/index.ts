@@ -34,7 +34,19 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		syncIngestUpdateToPartInstance,
 
 		showStyleConfigManifest,
-		showStyleMigrations
+		showStyleMigrations,
+		configPresets: {
+			ConfigPreset: {
+				name: '',
+				config: {},
+				variants: {
+					ConfigPresetVariant: {
+						name: '',
+						config: {}
+					}
+				}
+			}
+		}
 	},
 	[
 		ShowStyleManifestMixinINews.INewsPlaylist,

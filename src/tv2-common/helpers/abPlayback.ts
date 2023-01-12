@@ -32,7 +32,7 @@ export interface ABSourceLayers {
 
 function reversePreviousAssignment(
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
-	timeline: OnGenerateTimelineObj[]
+	timeline: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>
 ): SessionToPlayerMap {
 	const previousAssignmentRev: { [sessionId: string]: MediaPlayerClaim | undefined } = {}
 	for (const key of _.keys(previousAssignment)) {
@@ -283,7 +283,7 @@ function updateObjectsToMediaPlayer<
 	context: ITimelineEventContext,
 	config: ShowStyleConfig,
 	playerId: number,
-	objs: OnGenerateTimelineObj[],
+	objs: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	sourceLayers: ABSourceLayers
 ) {
 	for (const obj of objs) {
@@ -307,19 +307,19 @@ function updateObjectsToMediaPlayer<
 				atemInput = { id: playerId.toString(), val: config.studio.AtemSource.Default.toString() }
 			}
 
-			const atemObj = obj as TSR.TimelineObjAtemAny
+			const atemObj = obj as TSR.TSRTimelineObj<TSR.TimelineContentAtemAny>
 			if (atemObj.content.type === TSR.TimelineContentTypeAtem.ME) {
-				const atemObj2 = atemObj as TSR.TimelineObjAtemME
+				const atemObj2 = atemObj as TSR.TSRTimelineObj<TSR.TimelineContentAtemME>
 				if (atemObj2.classes?.includes('ab_on_preview')) {
 					atemObj2.content.me.previewInput = Number(atemInput.val) || 0
 				} else {
 					atemObj2.content.me.input = Number(atemInput.val) || 0
 				}
 			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.AUX) {
-				const atemObj2 = atemObj as TSR.TimelineObjAtemAUX
+				const atemObj2 = atemObj as TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>
 				atemObj2.content.aux.input = Number(atemInput.val) || 0
 			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.SSRC) {
-				const atemObj2 = atemObj as TSR.TimelineObjAtemSsrc
+				const atemObj2 = atemObj as TSR.TSRTimelineObj<TSR.TimelineContentAtemSsrc>
 				// Find box with no source
 				const input = Number(atemInput.val) || 0
 				atemObj2.content.ssrc.boxes.forEach((box, i) => {
@@ -367,7 +367,7 @@ export function assignMediaPlayers<
 >(
 	context: ITimelineEventContext,
 	config: ShowStyleConfig,
-	timelineObjs: OnGenerateTimelineObj[],
+	timelineObjs: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	sourceLayers: ABSourceLayers
@@ -391,7 +391,7 @@ export function applyMediaPlayersAssignments<
 >(
 	context: ITimelineEventContext,
 	config: ShowStyleConfig,
-	timelineObjs: OnGenerateTimelineObj[],
+	timelineObjs: Array<OnGenerateTimelineObj<TSR.TSRTimelineContent>>,
 	previousAssignmentRev: SessionToPlayerMap,
 	activeRequests: ActiveRequest[],
 	sourceLayers: ABSourceLayers,
@@ -408,9 +408,9 @@ export function applyMediaPlayersAssignments<
 	}
 
 	// collect objects by their sessionId
-	const labelledObjs = (timelineObjs as Array<TimelineBlueprintExt & OnGenerateTimelineObj>).filter(
-		o => o.metaData && o.metaData.mediaPlayerSession
-	)
+	const labelledObjs = (timelineObjs as Array<
+		TimelineBlueprintExt & OnGenerateTimelineObj<TSR.TSRTimelineContent>
+	>).filter(o => o.metaData && o.metaData.mediaPlayerSession)
 	const groupedObjs = _.groupBy(labelledObjs, o => {
 		const sessionId = (o.metaData || {}).mediaPlayerSession
 		if (sessionId === undefined || sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
@@ -422,7 +422,10 @@ export function applyMediaPlayersAssignments<
 	})
 
 	// Apply the known assignments
-	const remainingGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []
+	const remainingGroups: Array<{
+		id: string
+		objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj<TSR.TSRTimelineContent>>
+	}> = []
 	for (const groupId of Object.keys(groupedObjs)) {
 		const group = groupedObjs[groupId]
 		const request = _.find(activeRequests, req => req.id === groupId)
@@ -439,8 +442,14 @@ export function applyMediaPlayersAssignments<
 
 	// Find the groups needing more work
 	// Not matching a request means this is either a rogue object in a mislabeled piece, or lookahead for a future part.
-	const unknownGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []
-	const lookaheadGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []
+	const unknownGroups: Array<{
+		id: string
+		objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj<TSR.TSRTimelineContent>>
+	}> = []
+	const lookaheadGroups: Array<{
+		id: string
+		objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj<TSR.TSRTimelineContent>>
+	}> = []
 
 	for (const grp of remainingGroups) {
 		// If this is lookahead for a future part (no end set on the object)

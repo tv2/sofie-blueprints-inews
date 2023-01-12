@@ -10,7 +10,7 @@ export const getGraphicsSetupsEntries = (columns: ConfigManifestEntryTable['colu
 		description: 'Possible graphics setups',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
-		defaultVal: [],
+		// defaultVal: [], // TODO C
 		columns: [
 			{
 				id: 'Name',
@@ -43,7 +43,7 @@ export const getGraphicsSetupsEntries = (columns: ConfigManifestEntryTable['colu
 		tableId: GRAPHICS_SETUPS_TABLE_ID,
 		columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
 		multiple: false,
-		required: false,
-		defaultVal: ''
+		required: false
+		// defaultVal: '' // TODO C
 	}
 ]

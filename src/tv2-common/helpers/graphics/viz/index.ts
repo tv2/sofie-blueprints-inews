@@ -26,7 +26,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 			fileName: 'PILOT_' + this.parsedCue.graphic.vcpid.toString(),
 			path: this.parsedCue.graphic.vcpid.toString(),
 			timelineObjects: [
-				literal<TSR.TimelineObjVIZMSEElementPilot>({
+				literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementPilot>>({
 					id: '',
 					enable: this.getEnable(),
 					priority: 1,
@@ -68,7 +68,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 		}
 	}
 
-	private getOutTransitionProperties(): Partial<TSR.TimelineObjVIZMSEElementPilot['content']> {
+	private getOutTransitionProperties(): Partial<TSR.TimelineContentVIZMSEElementPilot> {
 		if (IsTargetingWall(this.engine) || !this.config.studio.PreventOverlayWithFull) {
 			return {}
 		}
@@ -83,7 +83,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 }
 
 export interface VizPilotGeneratorSettings {
-	createFullPilotTimelineForStudio(config: TV2BlueprintConfig): TSR.TSRTimelineObj[]
+	createFullPilotTimelineForStudio(config: TV2BlueprintConfig): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>
 }
 
 export function GetInternalGraphicContentVIZ(
@@ -97,8 +97,8 @@ export function GetInternalGraphicContentVIZ(
 		fileName: parsedCue.graphic.template,
 		path: parsedCue.graphic.template,
 		ignoreMediaObjectStatus: true,
-		timelineObjects: literal<TSR.TSRTimelineObj[]>([
-			literal<TSR.TimelineObjVIZMSEElementInternal>({
+		timelineObjects: literal<Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>>>([
+			literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEElementInternal>>({
 				id: '',
 				enable: GetEnableForGraphic(config, engine, parsedCue),
 				priority: 1,

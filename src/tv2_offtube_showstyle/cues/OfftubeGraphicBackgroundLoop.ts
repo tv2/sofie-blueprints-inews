@@ -38,8 +38,8 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				fileName,
 				path,
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-					literal<TSR.TimelineObjCCGMedia>({
+				timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>>([
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 						id: '',
 						enable: { start: 0 },
 						priority: 100,
@@ -68,8 +68,8 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				fileName,
 				path,
 				ignoreMediaObjectStatus: true,
-				timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-					literal<TSR.TimelineObjCCGMedia>({
+				timelineObjects: _.compact<Array<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>>([
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentCCGMedia>>({
 						id: '',
 						enable: { start: 0 },
 						priority: 100,

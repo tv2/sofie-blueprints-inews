@@ -47,11 +47,11 @@ export function EvaluateCueGraphicPilot(
 	})
 }
 
-function makeStudioTimelineViz(config: BlueprintConfig): TSR.TSRTimelineObj[] {
+function makeStudioTimelineViz(config: BlueprintConfig): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	const fullDSK = FindDSKFullGFX(config)
 
 	return [
-		literal<TSR.TimelineObjAtemME>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 			id: '',
 			enable: {
 				start: config.studio.VizPilotGraphics.CutToMediaPlayer
@@ -67,7 +67,7 @@ function makeStudioTimelineViz(config: BlueprintConfig): TSR.TSRTimelineObj[] {
 				}
 			}
 		}),
-		literal<TSR.TimelineObjAtemAUX>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemAUX>>({
 			id: '',
 			enable: {
 				start: config.studio.VizPilotGraphics.CutToMediaPlayer
@@ -92,7 +92,7 @@ function makeStudioTimelineViz(config: BlueprintConfig): TSR.TSRTimelineObj[] {
 function makeStudioTimelineCaspar(config: BlueprintConfig) {
 	const fullDSK = FindDSKFullGFX(config)
 	return [
-		literal<TSR.TimelineObjAtemME>({
+		literal<TSR.TSRTimelineObj<TSR.TimelineContentAtemME>>({
 			id: '',
 			enable: {
 				start: Number(config.studio.CasparPrerollDuration)

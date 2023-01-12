@@ -27,7 +27,7 @@ export function ApplyFullGraphicPropertiesToPart(config: TV2BlueprintConfig, par
 	}
 }
 
-export function CreateGraphicBaseline(config: TV2BlueprintConfig): TSR.TSRTimelineObj[] {
+export function CreateGraphicBaseline(config: TV2BlueprintConfig): Array<TSR.TSRTimelineObj<TSR.TSRTimelineContent>> {
 	if (config.studio.GraphicsType === 'VIZ') {
 		return []
 	} else {

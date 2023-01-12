@@ -20,7 +20,7 @@ export function CreateShowLifecyclePieces(
 			lifespan: PieceLifespan.OutOnSegmentChange,
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjVIZMSEInitializeShows>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSEInitializeShows>>({
 						id: '',
 						enable: {
 							while: '1'
@@ -32,7 +32,7 @@ export function CreateShowLifecyclePieces(
 							showNames: initializeShowNames
 						}
 					}),
-					literal<TSR.TimelineObjVIZMSECleanupShows>({
+					literal<TSR.TSRTimelineObj<TSR.TimelineContentVIZMSECleanupShows>>({
 						id: '',
 						enable: {
 							while: '1'

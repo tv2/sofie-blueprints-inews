@@ -623,6 +623,14 @@ export class ActionExecutionContext extends ShowStyleUserContext implements ITV2
 	public notifyUserInfo(_message: string, _params?: { [p: string]: any }): void {
 		// Do nothing
 	}
+
+	public removeTimelineDatastoreValue(_key: string): Promise<void> {
+		return Promise.resolve(undefined)
+	}
+
+	public setTimelineDatastoreValue(_key: string, _value: any, _mode: any): Promise<void> {
+		return Promise.resolve(undefined)
+	}
 }
 
 export interface PartNote {
