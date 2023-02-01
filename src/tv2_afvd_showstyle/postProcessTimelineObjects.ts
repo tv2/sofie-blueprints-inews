@@ -5,7 +5,6 @@ import {
 	SourceLayerType,
 	SplitsContent,
 	TimelineObjectCoreExt,
-	TimelineObjHoldMode,
 	TSR
 } from 'blueprints-integration'
 import { AtemLLayerDSK, ExtendedShowStyleContext, FindDSKJingle, TimelineBlueprintExt } from 'tv2-common'
@@ -72,9 +71,8 @@ export function postProcessPieceTimelineObjects(
 					const lookaheadObj: TSR.TimelineObjAtemAUX & TimelineBlueprintExt = {
 						id: '',
 						enable: { start: 0 },
-						priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
+						priority: 0, // Must be below lookahead, except when forced by hold
 						layer: AtemLLayer.AtemAuxLookahead,
-						holdMode: tlObj.holdMode,
 						content: {
 							deviceType: TSR.DeviceType.ATEM,
 							type: TSR.TimelineContentTypeAtem.AUX,

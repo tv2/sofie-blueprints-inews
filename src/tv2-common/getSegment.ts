@@ -27,7 +27,10 @@ import {
 import { CreatePartInvalid, ServerPartProps } from './parts'
 
 export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyleConfig> {
-	CreatePartContinuity: (config: TV2ShowStyleConfig, ingestSegment: IngestSegment) => BlueprintResultPart
+	CreatePartContinuity: (
+		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		ingestSegment: IngestSegment
+	) => BlueprintResultPart
 	CreatePartUnknown: (
 		context: ExtendedShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinition,
@@ -130,7 +133,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	}, 0)
 
 	if (segment.name && segment.name.trim().match(/^\s*continuity\s*$/i)) {
-		blueprintParts.push(showStyleOptions.CreatePartContinuity(config, ingestSegment))
+		blueprintParts.push(showStyleOptions.CreatePartContinuity(context, ingestSegment))
 		return {
 			segment,
 			parts: blueprintParts

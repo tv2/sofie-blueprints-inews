@@ -8,7 +8,8 @@ import {
 	IsTargetingOVL,
 	IsTargetingWall,
 	literal,
-	PilotGraphicProps
+	PilotGraphicProps,
+	TransitionStyle
 } from 'tv2-common'
 
 import { PilotGraphicGenerator } from '../pilot'
@@ -80,20 +81,15 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 	private getFullPilotTimeline() {
 		const fullDSK = FindDSKFullGFX(this.config)
 		const timelineObjects = [
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			this.context.videoSwitcher.getMixEffectTimelineObject({
 				enable: {
 					start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
 				},
 				priority: 1,
 				layer: this.settings.ProgramLayer,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: this.config.studio.VizPilotGraphics.FullGraphicBackground,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
+					input: this.config.studio.VizPilotGraphics.FullGraphicBackground,
+					transition: TransitionStyle.CUT
 				}
 			}),
 			// Assume DSK is off by default (config table)

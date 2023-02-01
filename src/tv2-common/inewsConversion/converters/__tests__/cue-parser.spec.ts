@@ -1,5 +1,10 @@
-import { TSR } from 'blueprints-integration'
-import { CueDefinitionRobotCamera, RemoteType, SourceDefinitionKam, SourceDefinitionRemote } from 'tv2-common'
+import {
+	CueDefinitionRobotCamera,
+	RemoteType,
+	SourceDefinitionKam,
+	SourceDefinitionRemote,
+	TransitionStyle
+} from 'tv2-common'
 import { CueType, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { literal } from '../../../util'
@@ -1088,7 +1093,7 @@ describe('Cue parser', () => {
 				iNewsCommand: 'EKSTERN',
 				transition: {
 					transition: {
-						style: TSR.AtemTransitionStyle.MIX,
+						style: TransitionStyle.MIX,
 						duration: 10
 					}
 				}

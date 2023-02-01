@@ -27,12 +27,11 @@ import {
 	ActionSelectServerClip,
 	CalculateTime,
 	CreateDipTransitionBlueprintPieceForPart,
-	CreateInTransitionForAtemTransitionStyle,
+	CreateInTransitionForTransitionStyle,
 	CreatePartServerBase,
 	CueDefinition,
 	CueDefinitionDVE,
 	CueDefinitionGraphic,
-	DipTransitionSettings,
 	DVEOptions,
 	DVEPieceMetaData,
 	DVESources,
@@ -48,7 +47,6 @@ import {
 	GraphicPilot,
 	literal,
 	MakeContentDVE2,
-	MixTransitionSettings,
 	PartDefinition,
 	PieceMetaData,
 	PilotGeneratorSettings,
@@ -1091,8 +1089,6 @@ async function executeActionCutToCamera<
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				context.videoSwitcher.getMixEffectTimelineObject({
-					id: '',
-					enable: { while: '1' },
 					priority: 1,
 					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
 					content: {
@@ -1458,21 +1454,11 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
-	const timelineObjectIndex = (primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
-		obj =>
-			obj.layer === (settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram) &&
-			obj.content.deviceType === TSR.DeviceType.ATEM &&
-			obj.content.type === TSR.TimelineContentTypeAtem.ME
+	const mixEffectTimelineObject = context.videoSwitcher.findMixEffectTimelineObject(
+		primaryPiece.piece.content.timelineObjects
 	)
 
-	const timelineObject =
-		timelineObjectIndex > -1
-			? ((primaryPiece.piece.content.timelineObjects as TSR.TSRTimelineObj[])[
-					timelineObjectIndex
-			  ] as TSR.TimelineObjAtemME)
-			: undefined
-
-	if (!timelineObject) {
+	if (!mixEffectTimelineObject) {
 		return
 	}
 
@@ -1487,12 +1473,7 @@ async function executeActionTakeWithTransition<
 	switch (userData.variant.type) {
 		case 'cut':
 			{
-				timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
-
-				primaryPiece.piece.content.timelineObjects[timelineObjectIndex] = timelineObject
-
-				await context.core.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
-
+				await updateTransition(context, mixEffectTimelineObject, primaryPiece, TransitionStyle.CUT)
 				const cutTransitionPiece: IBlueprintPiece<PieceMetaData> = {
 					enable: {
 						start: 0,
@@ -1519,12 +1500,7 @@ async function executeActionTakeWithTransition<
 			}
 			break
 		case 'breaker': {
-			timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
-
-			primaryPiece.piece.content.timelineObjects[timelineObjectIndex] = timelineObject
-
-			await context.core.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
-
+			await updateTransition(context, mixEffectTimelineObject, primaryPiece, TransitionStyle.CUT)
 			const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 			partProps = CreateEffektForPartInner(
 				context,
@@ -1546,13 +1522,12 @@ async function executeActionTakeWithTransition<
 			break
 		}
 		case 'mix': {
-			await updateTimelineObjectMeTransition(
+			await updateTransition(
 				context,
-				timelineObject,
-				TSR.AtemTransitionStyle.MIX,
-				MixTransitionSettings(userData.variant.frames),
+				mixEffectTimelineObject,
 				primaryPiece,
-				timelineObjectIndex
+				TransitionStyle.MIX,
+				userData.variant.frames
 			)
 
 			const blueprintPiece = CreateMixTransitionBlueprintPieceForPart(
@@ -1561,20 +1536,19 @@ async function executeActionTakeWithTransition<
 				settings.SourceLayers.Effekt
 			)
 
-			partProps = CreateInTransitionForAtemTransitionStyle(userData.variant.frames)
+			partProps = CreateInTransitionForTransitionStyle(userData.variant.frames)
 			await context.core.updatePartInstance('next', partProps)
 			await context.core.insertPiece('next', { ...blueprintPiece, tags: [GetTagForTransition(userData.variant)] })
 
 			break
 		}
 		case 'dip': {
-			await updateTimelineObjectMeTransition(
+			await updateTransition(
 				context,
-				timelineObject,
-				TSR.AtemTransitionStyle.DIP,
-				DipTransitionSettings(context.config, userData.variant.frames),
+				mixEffectTimelineObject,
 				primaryPiece,
-				timelineObjectIndex
+				TransitionStyle.DIP,
+				userData.variant.frames
 			)
 			const blueprintPiece = CreateDipTransitionBlueprintPieceForPart(
 				externalId,
@@ -1582,7 +1556,7 @@ async function executeActionTakeWithTransition<
 				settings.SourceLayers.Effekt
 			)
 
-			partProps = CreateInTransitionForAtemTransitionStyle(userData.variant.frames)
+			partProps = CreateInTransitionForTransitionStyle(userData.variant.frames)
 			await context.core.updatePartInstance('next', partProps)
 			await context.core.insertPiece('next', { ...blueprintPiece, tags: [GetTagForTransition(userData.variant)] })
 			break
@@ -1594,18 +1568,15 @@ async function executeActionTakeWithTransition<
 	}
 }
 
-async function updateTimelineObjectMeTransition(
+async function updateTransition(
 	context: ExtendedActionExecutionContext,
-	timelineObject: TSR.TimelineObjAtemME,
-	transitionStyle: TSR.AtemTransitionStyle,
-	transitionSettings: TSR.AtemTransitionSettings,
+	timelineObject: TSR.TSRTimelineObj,
 	pieceInstance: IBlueprintPieceInstance<PieceMetaData>,
-	indexOfTimelineObject: number
+	transitionStyle: TransitionStyle,
+	transitionDuration?: number
 ): Promise<void> {
-	timelineObject.content.me.transition = transitionStyle
-	timelineObject.content.me.transitionSettings = transitionSettings
+	context.videoSwitcher.updateTransition(timelineObject, transitionStyle, transitionDuration)
 
-	pieceInstance.piece.content.timelineObjects[indexOfTimelineObject] = timelineObject
 	await context.core.updatePieceInstance(pieceInstance._id, pieceInstance.piece)
 }
 

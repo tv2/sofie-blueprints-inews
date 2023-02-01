@@ -3,7 +3,6 @@ import {
 	IBlueprintPieceGeneric,
 	OnGenerateTimelineObj,
 	TimelineObjectCoreExt,
-	TimelineObjHoldMode,
 	TSR
 } from 'blueprints-integration'
 import { ExtendedShowStyleContext, TimelineBlueprintExt } from 'tv2-common'
@@ -60,9 +59,8 @@ export function postProcessPieceTimelineObjects(
 						const lookaheadObj: TSR.TimelineObjAbstractAny & TimelineBlueprintExt = {
 							id: '',
 							enable: { start: 0 },
-							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
+							priority: 0,
 							layer: OfftubeAbstractLLayer.OfftubeAbstractLLayerAbstractLookahead,
-							holdMode: tlObj.holdMode,
 							content: {
 								deviceType: TSR.DeviceType.ABSTRACT
 							},
@@ -78,9 +76,8 @@ export function postProcessPieceTimelineObjects(
 						const lookaheadObj: TSR.TimelineObjAtemME & TimelineBlueprintExt = {
 							id: '',
 							enable: { start: 0 },
-							priority: tlObj.holdMode === TimelineObjHoldMode.ONLY ? 5 : 0, // Must be below lookahead, except when forced by hold
+							priority: 0, // Must be below lookahead, except when forced by hold
 							layer: OfftubeAtemLLayer.AtemMENext,
-							holdMode: tlObj.holdMode,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,

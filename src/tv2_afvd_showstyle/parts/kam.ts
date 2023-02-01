@@ -5,8 +5,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
-	TimelineObjectCoreExt,
-	TSR,
 	VTContent,
 	WithTimeline
 } from 'blueprints-integration'
@@ -22,7 +20,7 @@ import {
 	PartDefinitionKam,
 	PieceMetaData,
 	TimeFromINewsField,
-	TransitionSettings
+	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
@@ -65,25 +63,17 @@ export async function CreatePartKam(
 				ignoreMediaObjectStatus: true,
 				fileName: '',
 				path: '',
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
-						id: ``,
-						enable: {
-							start: 0
-						},
+				timelineObjects: [
+					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: jingleDSK.Fill,
-								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(context.config, partDefinition)
-							}
+							input: jingleDSK.Fill,
+							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+							transitionDuration: partDefinition.transition?.duration
 						}
 					})
-				])
+				]
 			})
 		})
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
@@ -113,26 +103,18 @@ export async function CreatePartKam(
 			content: {
 				studioLabel: '',
 				switcherInput: atemInput,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
-						id: ``,
-						enable: {
-							start: 0
-						},
+				timelineObjects: [
+					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: Number(atemInput),
-								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(context.config, partDefinition)
-							}
+							input: Number(atemInput),
+							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+							transitionDuration: partDefinition.transition?.duration
 						}
 					}),
 					...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
-				])
+				]
 			}
 		})
 	}

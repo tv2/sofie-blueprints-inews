@@ -1,5 +1,15 @@
 import { TSR } from 'blueprints-integration'
-import { AuxProps, DskProps, MixEffectProps, SpecialInput, SwitcherType, TransitionStyle } from './types'
+import _ = require('underscore')
+import {
+	AuxProps,
+	DskProps,
+	Keyer,
+	MixEffectProps,
+	SpecialInput,
+	SwitcherType,
+	TIMELINE_OBJECT_DEFAULTS,
+	TransitionStyle
+} from './types'
 import { VideoSwitcherImpl } from './VideoSwitcher'
 
 const SPECIAL_INPUT_MAP = {
@@ -11,33 +21,60 @@ const SPECIAL_INPUT_MAP = {
 const TRANSITION_MAP: Record<TransitionStyle, TSR.TriCasterTransitionEffect> = {
 	[TransitionStyle.CUT]: 'cut',
 	[TransitionStyle.MIX]: 'fade',
-	// making assumptions about the session here
-	[TransitionStyle.DIP]: 1,
-	[TransitionStyle.WIPE]: 2
+	// making assumptions about the session here:
+	[TransitionStyle.DIP]: 2,
+	[TransitionStyle.WIPE]: 3,
+	[TransitionStyle.WIPE_FOR_GFX]: 4,
+	[TransitionStyle.STING]: 5 // not really supported??
 }
 
 export class TriCaster extends VideoSwitcherImpl {
+	public static isMixEffectTimelineObject(
+		timelineObject: TSR.TSRTimelineObj
+	): timelineObject is TSR.TimelineObjTriCasterME {
+		return TSR.isTimelineObjTriCasterME(timelineObject)
+	}
 	public readonly type = SwitcherType.ATEM
 
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjTriCasterME {
 		const { content } = props
 		return {
-			id: props.id,
-			enable: props.enable,
-			layer: props.layer,
-			priority: props.priority,
+			...TIMELINE_OBJECT_DEFAULTS,
+			..._.omit(props, 'content'),
 			content: {
 				deviceType: TSR.DeviceType.TRICASTER,
 				type: TSR.TimelineContentTypeTriCaster.ME,
 				me: {
 					programInput: this.getInputName(content.input),
+					previewInput: this.getInputName(content.previewInput),
 					transition: {
-						effect: TRANSITION_MAP[content.transition],
+						effect: this.getTransition(content.transition),
 						duration: content.transitionDuration ?? 1000 // @todo defaults and ranges
-					}
+					},
+					keyers: content.keyers && this.getKeyers(content.keyers)
 				}
 			}
 		}
+	}
+
+	public findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined {
+		return timelineObjects.find(TriCaster.isMixEffectTimelineObject)
+	}
+
+	public updateTransition(
+		timelineObject: TSR.TSRTimelineObj,
+		transition: TransitionStyle,
+		transitionDuration?: number | undefined
+	): TSR.TSRTimelineObj {
+		if (!TriCaster.isMixEffectTimelineObject(timelineObject)) {
+			// @todo: log error or throw
+			return timelineObject
+		}
+		timelineObject.content.me.transition = {
+			effect: this.getTransition(transition),
+			duration: transitionDuration ?? 1000 // @todo defaults and ranges
+		}
+		return timelineObject
 	}
 
 	public getDskTimelineObjects(_properties: DskProps): TSR.TSRTimelineObj[] {
@@ -47,10 +84,33 @@ export class TriCaster extends VideoSwitcherImpl {
 		throw new Error('Method not implemented.')
 	}
 
-	private getInputName(input: number | SpecialInput) {
+	private getKeyers(keyers: Keyer[]): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> | undefined {
+		if (!keyers?.length) {
+			return
+		}
+		return keyers.reduce<Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer>>((accumulator, keyer) => {
+			accumulator[`dsk${keyer.id + 1}`] = {
+				onAir: keyer.onAir,
+				input: this.getInputName(keyer.config.Fill)
+			}
+			return accumulator
+		}, {})
+	}
+
+	private getInputName(input: number | SpecialInput | undefined) {
+		if (typeof input === 'undefined') {
+			return undefined
+		}
 		if (typeof input === 'number') {
 			return `input${input}`
 		}
 		return SPECIAL_INPUT_MAP[input]
+	}
+
+	private getTransition(transition: TransitionStyle | undefined) {
+		if (transition === undefined) {
+			return 'cut'
+		}
+		return TRANSITION_MAP[transition]
 	}
 }

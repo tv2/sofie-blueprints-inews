@@ -1,10 +1,10 @@
-import { TSR } from 'blueprints-integration'
 import {
 	CueDefinitionBackgroundLoop,
 	CueDefinitionGraphicDesign,
 	getTransitionProperties,
 	PartdefinitionTypes,
 	stripRedundantCuesWhenLayoutCueIsPresent,
+	TransitionStyle,
 	UnparsedCue
 } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
@@ -1286,7 +1286,7 @@ describe('Body parser', () => {
 					type: PartType.Kam,
 					sourceDefinition: SOURCE_DEFINITION_KAM_1,
 					transition: {
-						style: TSR.AtemTransitionStyle.MIX,
+						style: TransitionStyle.MIX,
 						duration: 200
 					},
 					rawType: 'KAM 1',

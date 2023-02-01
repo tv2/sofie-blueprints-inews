@@ -105,14 +105,7 @@ export async function CreatePartServerBase<
 		context.config.studio.CasparPrerollDuration
 	)
 
-	const pgmBlueprintPiece = getPgmBlueprintPiece(
-		partDefinition,
-		partProps,
-		contentProps,
-		layers,
-		context.config,
-		context.config.studio.CasparPrerollDuration
-	)
+	const pgmBlueprintPiece = getPgmBlueprintPiece(context, partDefinition, partProps, contentProps, layers)
 
 	pieces.push(serverSelectionBlueprintPiece)
 	pieces.push(pgmBlueprintPiece)
@@ -270,12 +263,11 @@ function getPgmBlueprintPiece<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
+	context: ExtendedShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
-	layers: ServerPartLayers,
-	config: ShowStyleConfig,
-	prerollDuration: number
+	layers: ServerPartLayers
 ): IBlueprintPiece<PieceMetaData> {
 	return {
 		externalId: partDefinition.externalId,
@@ -288,13 +280,13 @@ function getPgmBlueprintPiece<
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		},
 		content: {
-			...GetVTContentProperties(config, contentProps),
-			timelineObjects: CutToServer(contentProps.mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
+			...GetVTContentProperties(context.config, contentProps),
+			timelineObjects: CutToServer(context, contentProps.mediaPlayerSession, partDefinition, layers.AtemLLayer.MEPgm)
 		},
 		tags: [
 			GetTagForServer(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer),
 			TallyTags.SERVER_IS_LIVE
 		],
-		prerollDuration
+		prerollDuration: context.config.studio.CasparPrerollDuration
 	}
 }

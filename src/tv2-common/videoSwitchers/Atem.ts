@@ -1,11 +1,15 @@
 import { TSR } from 'blueprints-integration'
+import _ = require('underscore')
 import { AtemSourceIndex } from '../../types/atem'
+import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import {
 	AuxProps,
 	DskProps,
+	Keyer,
 	MixEffectProps,
 	SpecialInput,
 	SwitcherType,
+	TIMELINE_OBJECT_DEFAULTS,
 	TransitionStyle,
 	VideoSwitcherImpl
 } from './index'
@@ -20,38 +24,71 @@ const TRANSITION_MAP = {
 	[TransitionStyle.CUT]: TSR.AtemTransitionStyle.CUT,
 	[TransitionStyle.DIP]: TSR.AtemTransitionStyle.DIP,
 	[TransitionStyle.MIX]: TSR.AtemTransitionStyle.MIX,
-	[TransitionStyle.WIPE]: TSR.AtemTransitionStyle.WIPE
+	[TransitionStyle.STING]: TSR.AtemTransitionStyle.STING,
+	[TransitionStyle.WIPE]: TSR.AtemTransitionStyle.WIPE,
+	[TransitionStyle.WIPE_FOR_GFX]: TSR.AtemTransitionStyle.WIPE
 }
 
 export class Atem extends VideoSwitcherImpl {
+	public static isMixEffectTimelineObject(timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemME {
+		return (
+			timelineObject.content.deviceType === TSR.DeviceType.ATEM &&
+			timelineObject.content.type === TSR.TimelineContentTypeAtem.ME
+		)
+	}
 	public readonly type = SwitcherType.ATEM
 
-	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjAtemME {
+	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjAtemME & TimelineBlueprintExt {
 		const { content } = props
+		const me: TSR.TimelineObjAtemME['content']['me'] =
+			content.input && content.transition
+				? {
+						input: this.getInputNumber(content.input),
+						transition: this.getTransition(content.transition),
+						transitionSettings: this.getTransitionSettings(content.transition, content.transitionDuration)
+				  }
+				: {
+						programInput: content.input && this.getInputNumber(content.input),
+						previewInput: content.previewInput && this.getInputNumber(content.previewInput)
+				  }
+		const upstreamKeyers = content.keyers && this.getUpstreamKeyers(content.keyers)
+		if (upstreamKeyers) {
+			me.upstreamKeyers = upstreamKeyers
+		}
 		return {
-			id: props.id,
-			enable: props.enable,
-			layer: props.layer,
-			priority: props.priority,
+			...TIMELINE_OBJECT_DEFAULTS,
+			..._.omit(props, 'content'),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: this.getInputNumber(content.input),
-					transition: this.getTransition(content.transition),
-					transitionSettings: this.getTransitionSettings(content.transition, content.transitionDuration)
-				}
+				me
 			}
 		}
+	}
+
+	public findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined {
+		return timelineObjects.find(Atem.isMixEffectTimelineObject)
+	}
+
+	public updateTransition(
+		timelineObject: TSR.TSRTimelineObj,
+		transition: TransitionStyle,
+		transitionDuration?: number | undefined
+	): TSR.TSRTimelineObj {
+		if (!Atem.isMixEffectTimelineObject(timelineObject)) {
+			// @todo: log error or throw
+			return timelineObject
+		}
+		timelineObject.content.me.transition = this.getTransition(transition)
+		timelineObject.content.me.transitionSettings = this.getTransitionSettings(transition, transitionDuration)
+		return timelineObject
 	}
 
 	public getDskTimelineObjects(props: DskProps) {
 		const { content } = props
 		const timelineObject: TSR.TimelineObjAtemDSK = {
-			id: props.id,
-			enable: props.enable,
-			layer: props.layer,
-			priority: props.priority,
+			...TIMELINE_OBJECT_DEFAULTS,
+			..._.omit(props, 'content'),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.DSK,
@@ -75,10 +112,8 @@ export class Atem extends VideoSwitcherImpl {
 
 	public getAuxTimelineObject(props: AuxProps): TSR.TimelineObjAtemAUX {
 		return {
-			id: props.id,
-			enable: props.enable,
-			layer: props.layer,
-			priority: props.priority,
+			...TIMELINE_OBJECT_DEFAULTS,
+			..._.omit(props, 'content'),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.AUX,
@@ -107,13 +142,42 @@ export class Atem extends VideoSwitcherImpl {
 		}
 		switch (transition) {
 			case TransitionStyle.CUT:
+			case TransitionStyle.STING:
 				return undefined
-			case TransitionStyle.WIPE:
-				return { wipe: { rate: duration } }
-			case TransitionStyle.MIX:
-				return { mix: { rate: duration } }
 			case TransitionStyle.DIP:
 				return { dip: { rate: duration, input: this.config.studio?.AtemSource?.Dip ?? AtemSourceIndex.Col2 } }
+			case TransitionStyle.MIX:
+				return { mix: { rate: duration } }
+			case TransitionStyle.WIPE:
+				return { wipe: { rate: duration } }
+			case TransitionStyle.WIPE_FOR_GFX:
+				return {
+					wipe: {
+						rate: Number(this.config.studio.HTMLGraphics.TransitionSettings.wipeRate),
+						pattern: 1,
+						reverseDirection: true,
+						borderSoftness: this.config.studio.HTMLGraphics.TransitionSettings.borderSoftness
+					}
+				}
 		}
+	}
+	private getUpstreamKeyers(keyers: Keyer[]) {
+		if (!keyers?.length) {
+			return
+		}
+		return keyers.map(keyer => ({
+			upstreamKeyerId: keyer.id,
+			onAir: keyer.onAir,
+			mixEffectKeyType: 0,
+			flyEnabled: false,
+			fillSource: keyer.config.Fill,
+			cutSource: keyer.config.Key,
+			maskEnabled: false,
+			lumaSettings: {
+				preMultiplied: false,
+				clip: Number(keyer.config.Clip) * 10, // input is percents (0-100), atem uses 1-000
+				gain: Number(keyer.config.Gain) * 10 // input is percents (0-100), atem uses 1-000
+			}
+		}))
 	}
 }

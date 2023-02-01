@@ -195,7 +195,6 @@ class GlobalAdLibPiecesGenerator {
 				ignoreMediaObjectStatus: true,
 				timelineObjects: [
 					this.context.videoSwitcher.getMixEffectTimelineObject({
-						id: '',
 						enable: { while: '1' },
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
@@ -288,18 +287,13 @@ class GlobalAdLibPiecesGenerator {
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
+					this.context.videoSwitcher.getMixEffectTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: info.port,
-								transition: TSR.AtemTransitionStyle.CUT
-							}
+							input: info.port,
+							transition: TransitionStyle.CUT
 						}
 					}),
 					...eksternSisyfos
@@ -846,32 +840,20 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 		timelineObjects: [
 			...CreateGraphicBaseline(config),
 			// Default timeline
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.AtemSource.Default,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
+					input: config.studio.AtemSource.Default,
+					transition: TransitionStyle.CUT
 				}
 			}),
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: AtemLLayer.AtemMEClean,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.AtemSource.Default,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
+					input: config.studio.AtemSource.Default,
+					transition: TransitionStyle.CUT
 				}
 			}),
 
@@ -959,32 +941,17 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 			...CreateDSKBaseline(config, videoSwitcher),
 
 			// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: AtemLLayer.AtemCleanUSKEffect,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						upstreamKeyers: [
-							{
-								upstreamKeyerId: 0,
-								onAir: false,
-								mixEffectKeyType: 0,
-								flyEnabled: false,
-								fillSource: jingleDSK.Fill,
-								cutSource: jingleDSK.Key,
-								maskEnabled: false,
-								lumaSettings: {
-									preMultiplied: false,
-									clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
-									gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
-								}
-							}
-						]
-					}
+					keyers: [
+						{
+							id: 0,
+							onAir: false,
+							config: jingleDSK
+						}
+					]
 				}
 			}),
 			literal<TSR.TimelineObjAtemSsrcProps>({

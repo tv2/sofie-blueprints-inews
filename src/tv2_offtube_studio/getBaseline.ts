@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { literal } from 'tv2-common'
+import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
@@ -28,9 +28,9 @@ function filterMappings(
 	return result
 }
 
-export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
-	const mappings = context.getStudioMappings()
-	const config = context.getStudioConfig() as OfftubeStudioBlueprintConfig
+export function getBaseline(coreContext: IStudioContext): BlueprintResultBaseline {
+	const context = new ExtendedStudioContext<OfftubeStudioBlueprintConfig>(coreContext)
+	const mappings = coreContext.getStudioMappings()
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
@@ -41,7 +41,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 			if (sisyfosChannel) {
 				mappedChannels.push({
 					mappedLayer: id,
-					isPgm: config.studio.IdleSisyfosLayers.includes(id) ? 1 : sisyfosChannel.isPgm,
+					isPgm: context.config.studio.IdleSisyfosLayers.includes(id) ? 1 : sisyfosChannel.isPgm,
 					visible: true
 				})
 			} else {
@@ -73,33 +73,21 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 			}),
 
 			// have ATEM output default still image
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: OfftubeAtemLLayer.AtemMEClean,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.IdleSource,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
+					input: context.config.studio.IdleSource,
+					transition: TransitionStyle.CUT
 				}
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: OfftubeAtemLLayer.AtemMEProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						programInput: AtemSourceIndex.Prg2
-					}
+					input: SpecialInput.ME2_PROGRAM
 				}
 			}),
 			literal<TSR.TimelineObjAtemAUX>({

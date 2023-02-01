@@ -6,7 +6,6 @@ import {
 	IRundownContext,
 	OnGenerateTimelineObj,
 	PartEndState,
-	TimelineObjectCoreExt,
 	TimelinePersistentState,
 	TSR
 } from 'blueprints-integration'
@@ -47,15 +46,17 @@ export interface TimelinePersistentStateExt {
 	isNewSegment?: boolean
 }
 
-export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
-	/** Metadata for use by the OnTimelineGenerate or other callbacks */
-	metaData?: {
-		context?: string
-		mediaPlayerSession?: string
-		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
-		templateData?: any
-		fileName?: string
-	}
+/** Metadata for use by the OnTimelineGenerate or other callbacks */
+export interface TimelineObjectMetaData {
+	context?: string
+	mediaPlayerSession?: string
+	dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
+	templateData?: any
+	fileName?: string
+}
+
+export type TimelineBlueprintExt = TSR.TSRTimelineObjBase & {
+	metaData?: TimelineObjectMetaData
 }
 
 export interface PieceMetaData {

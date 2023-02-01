@@ -68,7 +68,8 @@ export function CreateJingleContentBase<
 
 			...EnableDSK(context, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 
-			...(layers.ATEM.USKJinglePreview // @todo: this is a QBOX-only feature, should be refactored at some point
+			// @todo: this is a Qbox-only feature, should be refactored at some point not to use ATEM object directly
+			...(layers.ATEM.USKJinglePreview
 				? [
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
@@ -123,34 +124,20 @@ export function CreateJingleContentBase<
 
 			...(layers.ATEM.USKCleanEffekt
 				? [
-						literal<TSR.TimelineObjAtemME>({
-							id: '',
+						context.videoSwitcher.getMixEffectTimelineObject({
 							enable: {
 								start: Number(config.studio.CasparPrerollDuration)
 							},
 							priority: 1,
 							layer: layers.ATEM.USKCleanEffekt,
 							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									upstreamKeyers: [
-										{
-											upstreamKeyerId: 0,
-											onAir: true,
-											mixEffectKeyType: 0,
-											flyEnabled: false,
-											fillSource: jingleDSK.Fill,
-											cutSource: jingleDSK.Key,
-											maskEnabled: false,
-											lumaSettings: {
-												preMultiplied: false,
-												clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
-												gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
-											}
-										}
-									]
-								}
+								keyers: [
+									{
+										id: 0,
+										onAir: true,
+										config: jingleDSK
+									}
+								]
 							}
 						})
 				  ]

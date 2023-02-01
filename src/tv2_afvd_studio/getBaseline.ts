@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { ExtendedStudioContext, literal } from 'tv2-common'
+import { ExtendedStudioContext, literal, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { SharedGraphicLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
@@ -69,18 +69,12 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 	return {
 		timelineObjects: [
 			...convertMappings(atemMeMappings, id =>
-				literal<TSR.TimelineObjAtemME>({
-					id: '',
-					enable: { while: '1' },
-					priority: 0,
+				context.videoSwitcher.getMixEffectTimelineObject({
 					layer: id,
+					enable: { while: '1' },
 					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.ME,
-						me: {
-							input: AtemSourceIndex.Bars,
-							transition: TSR.AtemTransitionStyle.CUT
-						}
+						input: AtemSourceIndex.Bars,
+						transition: TransitionStyle.CUT
 					}
 				})
 			),
@@ -126,18 +120,12 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 					}
 				}
 			}),
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: AtemSourceIndex.MP1,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
+					input: AtemSourceIndex.MP1,
+					transition: TransitionStyle.CUT
 				}
 			}),
 			literal<TSR.TimelineObjAtemMediaPlayer>({

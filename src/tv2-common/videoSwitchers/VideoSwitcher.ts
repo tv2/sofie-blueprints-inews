@@ -5,6 +5,7 @@ import {
 	DskProps,
 	MixEffectProps,
 	SwitcherType,
+	TransitionStyle,
 	TriCaster,
 	TV2StudioConfig,
 	VideoSwitcher
@@ -27,6 +28,13 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 	}
 
 	public abstract getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
+	public abstract findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined
+	public abstract updateTransition(
+		timelineObjects: TSR.TSRTimelineObj,
+		transition: TransitionStyle,
+		transitionDuration?: number | undefined
+	): TSR.TSRTimelineObj
+
 	public abstract getDskTimelineObjects(properties: DskProps): TSR.TSRTimelineObj[]
 	public abstract getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
 }

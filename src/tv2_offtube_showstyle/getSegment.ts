@@ -8,7 +8,13 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { ExtendedSegmentContextImpl, getSegmentBase, literal } from 'tv2-common'
+import {
+	ExtendedSegmentContextImpl,
+	ExtendedShowStyleContext,
+	getSegmentBase,
+	literal,
+	TransitionStyle
+} from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
@@ -51,7 +57,10 @@ export async function getSegment(
 	}
 }
 
-function CreatePartContinuity(config: OfftubeBlueprintConfig, ingestSegment: IngestSegment): BlueprintResultPart {
+function CreatePartContinuity(
+	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
+	ingestSegment: IngestSegment
+): BlueprintResultPart {
 	return {
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
@@ -70,25 +79,17 @@ function CreatePartContinuity(config: OfftubeBlueprintConfig, ingestSegment: Ing
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
-					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
-						literal<TSR.TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: 0
-							},
+					switcherInput: context.config.studio.AtemSource.Continuity,
+					timelineObjects: [
+						context.videoSwitcher.getMixEffectTimelineObject({
 							priority: 1,
 							layer: OfftubeAtemLLayer.AtemMEClean,
 							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: config.studio.AtemSource.Continuity,
-									transition: TSR.AtemTransitionStyle.CUT
-								}
+								input: context.config.studio.AtemSource.Continuity,
+								transition: TransitionStyle.CUT
 							}
 						})
-					])
+					]
 				})
 			}
 		],

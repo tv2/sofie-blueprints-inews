@@ -40,8 +40,10 @@ import {
 	SourceInfo,
 	SourceInfoToSourceDefinition,
 	SourceInfoType,
+	SpecialInput,
 	t,
 	TimeFromINewsField,
+	TransitionStyle,
 	VideoSwitcher
 } from 'tv2-common'
 import {
@@ -582,31 +584,19 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 		timelineObjects: [
 			...CreateGraphicBaseline(config),
 			// Default timeline
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
+			videoSwitcher.getMixEffectTimelineObject({
 				layer: OfftubeAtemLLayer.AtemMEClean,
+				enable: { while: '1' },
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.AtemSource.Default,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
+					input: config.studio.AtemSource.Default,
+					transition: TransitionStyle.CUT
 				}
 			}),
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: OfftubeAtemLLayer.AtemMENext,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						previewInput: config.studio.AtemSource.Default
-					}
+					previewInput: config.studio.AtemSource.Default
 				}
 			}),
 
@@ -796,17 +786,11 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
 				layer: OfftubeAtemLLayer.AtemMEProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						programInput: AtemSourceIndex.Prg2
-					}
+					input: SpecialInput.ME2_PROGRAM
 				}
 			}),
 

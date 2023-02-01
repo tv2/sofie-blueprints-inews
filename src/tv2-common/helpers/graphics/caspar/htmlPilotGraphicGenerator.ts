@@ -10,7 +10,8 @@ import {
 	layerToHTMLGraphicSlot,
 	literal,
 	PilotGraphicProps,
-	TimelineBlueprintExt
+	TimelineBlueprintExt,
+	TransitionStyle
 } from 'tv2-common'
 
 import { PilotGraphicGenerator } from '../pilot'
@@ -88,28 +89,15 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 	protected getFullPilotTimeline(): TSR.TSRTimelineObj[] {
 		const fullDSK = FindDSKFullGFX(this.config)
 		return [
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			this.context.videoSwitcher.getMixEffectTimelineObject({
 				enable: {
 					start: Number(this.config.studio.CasparPrerollDuration)
 				},
 				priority: 1,
 				layer: this.settings.ProgramLayer,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: fullDSK.Fill,
-						transition: TSR.AtemTransitionStyle.WIPE,
-						transitionSettings: {
-							wipe: {
-								rate: Number(this.config.studio.HTMLGraphics.TransitionSettings.wipeRate),
-								pattern: 1,
-								reverseDirection: true,
-								borderSoftness: this.config.studio.HTMLGraphics.TransitionSettings.borderSoftness
-							}
-						}
-					}
+					input: fullDSK.Fill,
+					transition: TransitionStyle.WIPE_FOR_GFX
 				}
 			}),
 			...GetSisyfosTimelineObjForFull(this.config)

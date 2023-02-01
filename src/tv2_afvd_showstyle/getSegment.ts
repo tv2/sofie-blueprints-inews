@@ -6,10 +6,16 @@ import {
 	IngestSegment,
 	ISegmentUserContext,
 	PieceLifespan,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { ExtendedSegmentContextImpl, getSegmentBase, INewsPayload, literal } from 'tv2-common'
+import {
+	ExtendedSegmentContext,
+	ExtendedSegmentContextImpl,
+	getSegmentBase,
+	INewsPayload,
+	literal,
+	TransitionStyle
+} from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
@@ -62,7 +68,7 @@ export async function getSegment(
 }
 
 export function CreatePartContinuity(
-	config: GalleryBlueprintConfig,
+	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
 	ingestSegment: IngestSegment
 ): BlueprintResultPart {
 	return {
@@ -83,9 +89,9 @@ export function CreatePartContinuity(
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
-					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
-						literal<TSR.TimelineObjAtemME>({
+					switcherInput: context.config.studio.AtemSource.Continuity,
+					timelineObjects: [
+						context.videoSwitcher.getMixEffectTimelineObject({
 							id: '',
 							enable: {
 								start: 0
@@ -93,15 +99,11 @@ export function CreatePartContinuity(
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: config.studio.AtemSource.Continuity,
-									transition: TSR.AtemTransitionStyle.CUT
-								}
+								input: context.config.studio.AtemSource.Continuity,
+								transition: TransitionStyle.CUT
 							}
 						})
-					])
+					]
 				})
 			})
 		],

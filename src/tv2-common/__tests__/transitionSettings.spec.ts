@@ -1,9 +1,9 @@
-import { TSR } from 'blueprints-integration'
+// @todo: rewrite for Atem and TriCaster
+/*import { TSR } from 'blueprints-integration'
 import { PartType } from '../../tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { PartDefinition, PartTransition } from '../inewsConversion'
-import { TransitionSettings } from '../transitionSettings'
 
 const DURATION: number = 50
 
@@ -166,3 +166,4 @@ function createAtemSourceConfig(dip: number) {
 		DSK: []
 	}
 }
+*/

@@ -6,8 +6,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
-	TimelineObjectCoreExt,
-	TSR
+	TimelineObjectCoreExt
 } from 'blueprints-integration'
 import {
 	AddScript,
@@ -21,7 +20,7 @@ import {
 	PartTime,
 	PieceMetaData,
 	SourceInfo,
-	TransitionSettings
+	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
@@ -111,21 +110,13 @@ function makeContentEVS(
 		switcherInput: atemInput,
 		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjAtemME>({
-				id: ``,
-				enable: {
-					start: 0
-				},
+			context.videoSwitcher.getMixEffectTimelineObject({
 				priority: 1,
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: atemInput,
-						transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-						transitionSettings: TransitionSettings(context.config, partDefinition)
-					}
+					input: atemInput,
+					transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+					transitionDuration: partDefinition.transition?.duration
 				}
 			}),
 			...GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, partDefinition.sourceDefinition.vo)

@@ -5,7 +5,6 @@ import {
 	PieceLifespan,
 	RemoteContent,
 	TimelineObjectCoreExt,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
 import {
@@ -14,7 +13,7 @@ import {
 	literal,
 	PartDefinition,
 	PieceMetaData,
-	TransitionSettings,
+	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
@@ -75,21 +74,13 @@ export function EvaluateEksternBase<
 				studioLabel: '',
 				switcherInput: atemInput,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
-						enable: {
-							start: 0
-						},
+					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
 						layer: layersEkstern.ATEM.MEProgram,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: atemInput,
-								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(context.config, partDefinition)
-							}
+							input: atemInput,
+							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+							transitionDuration: partDefinition.transition?.duration
 						},
 						classes: [ControlClasses.LiveSourceOnAir]
 					}),
@@ -121,21 +112,13 @@ export function EvaluateEksternBase<
 				studioLabel: '',
 				switcherInput: atemInput,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
-						id: '',
-						enable: {
-							start: 0
-						},
+					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
 						layer: layersEkstern.ATEM.MEProgram,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: atemInput,
-								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(context.config, partDefinition)
-							}
+							input: atemInput,
+							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+							transitionDuration: partDefinition.transition?.duration
 						}
 					}),
 

@@ -19,6 +19,7 @@ import {
 	PieceMetaData,
 	TimeFromFrames,
 	TimelineBlueprintExt,
+	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
@@ -57,19 +58,19 @@ export function CreateEffektForPartBase(
 		return {}
 	}
 
-	if (transition.style === TSR.AtemTransitionStyle.MIX) {
+	if (transition.style === TransitionStyle.MIX) {
 		const blueprintPiece: IBlueprintPiece =
 			CreateMixTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
 
 		pieces.push(blueprintPiece)
-		return CreateInTransitionForAtemTransitionStyle(transition.duration)
+		return CreateInTransitionForTransitionStyle(transition.duration)
 	}
 
-	if (transition.style === TSR.AtemTransitionStyle.DIP) {
+	if (transition.style === TransitionStyle.DIP) {
 		const blueprintPiece: IBlueprintPiece =
 			CreateDipTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
 		pieces.push(blueprintPiece)
-		return CreateInTransitionForAtemTransitionStyle(transition.duration)
+		return CreateInTransitionForTransitionStyle(transition.duration)
 	}
 
 	return {}
@@ -224,9 +225,7 @@ function createEffectBlueprintPiece(
 	}
 }
 
-export function CreateInTransitionForAtemTransitionStyle(
-	durationInFrames: number
-): Pick<IBlueprintPart, 'inTransition'> {
+export function CreateInTransitionForTransitionStyle(durationInFrames: number): Pick<IBlueprintPart, 'inTransition'> {
 	const transitionDuration = TimeFromFrames(durationInFrames)
 	return {
 		inTransition: {

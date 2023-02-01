@@ -1,5 +1,11 @@
 import { IShowStyleUserContext, TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import { GetSisyfosTimelineObjForServer, literal, PartDefinition, TransitionSettings } from 'tv2-common'
+import {
+	ExtendedShowStyleContext,
+	GetSisyfosTimelineObjForServer,
+	literal,
+	PartDefinition,
+	TransitionStyle
+} from 'tv2-common'
 import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
@@ -133,29 +139,24 @@ function GetServerTimeline(
 }
 
 export function CutToServer(
+	context: ExtendedShowStyleContext,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
-	config: TV2ShowStyleConfig,
 	atemLLayerMEPGM: string,
 	offtubeOptions?: AdlibServerOfftubeOptions
-) {
+): TimelineBlueprintExt[] {
 	return [
 		EnableServer(mediaPlayerSessionId),
-		literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-			id: '',
+		context.videoSwitcher.getMixEffectTimelineObject({
 			enable: {
-				start: config.studio.CasparPrerollDuration
+				start: context.config.studio.CasparPrerollDuration
 			},
 			priority: 1,
 			layer: atemLLayerMEPGM,
 			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: -1,
-					transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-					transitionSettings: TransitionSettings(config, partDefinition)
-				}
+				input: -1,
+				transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+				transitionDuration: partDefinition.transition?.duration
 			},
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId

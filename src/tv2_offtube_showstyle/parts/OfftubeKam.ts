@@ -22,7 +22,7 @@ import {
 	literal,
 	PartDefinitionKam,
 	PieceMetaData,
-	TransitionSettings
+	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
@@ -61,8 +61,8 @@ export async function OfftubeCreatePartKam(
 				ignoreMediaObjectStatus: true,
 				fileName: '',
 				path: '',
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
+				timelineObjects: [
+					context.videoSwitcher.getMixEffectTimelineObject({
 						id: ``,
 						enable: {
 							start: 0
@@ -70,16 +70,12 @@ export async function OfftubeCreatePartKam(
 						priority: 1,
 						layer: OfftubeAtemLLayer.AtemMEClean,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: jingleDSK.Fill,
-								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(context.config, partDefinition)
-							}
+							input: jingleDSK.Fill,
+							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+							transitionDuration: partDefinition.transition?.duration
 						}
 					})
-				])
+				]
 			})
 		})
 	} else {
@@ -108,8 +104,8 @@ export async function OfftubeCreatePartKam(
 			content: {
 				studioLabel: '',
 				switcherInput: atemInput,
-				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					literal<TSR.TimelineObjAtemME>({
+				timelineObjects: [
+					context.videoSwitcher.getMixEffectTimelineObject({
 						id: ``,
 						enable: {
 							start: 0
@@ -117,18 +113,13 @@ export async function OfftubeCreatePartKam(
 						priority: 1,
 						layer: OfftubeAtemLLayer.AtemMEClean,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.ME,
-							me: {
-								input: Number(atemInput),
-								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(context.config, partDefinition)
-							}
+							input: Number(atemInput),
+							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+							transitionDuration: partDefinition.transition?.duration
 						}
 					}),
-
 					...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
-				])
+				]
 			}
 		})
 	}
