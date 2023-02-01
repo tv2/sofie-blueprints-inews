@@ -4,7 +4,6 @@ import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '..
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { pilotGeneratorSettingsOfftube } from './cues/OfftubeGraphics'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
-import { getConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
@@ -25,7 +24,6 @@ export async function executeActionOfftube(
 	await executeAction(
 		context,
 		{
-			getConfig,
 			postProcessPieceTimelineObjects,
 			EvaluateCues: OfftubeEvaluateCues,
 			DVEGeneratorOptions: OFFTUBE_DVE_GENERATOR_OPTIONS,

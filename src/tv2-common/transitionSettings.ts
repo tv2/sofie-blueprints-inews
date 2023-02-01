@@ -1,8 +1,8 @@
 import { TSR } from 'blueprints-integration'
-import { PartDefinition, TV2BlueprintConfig } from 'tv2-common'
+import { PartDefinition, TV2ShowStyleConfig } from 'tv2-common'
 import { AtemSourceIndex } from '../types/atem'
 
-export function TransitionSettings(config: TV2BlueprintConfig, part: PartDefinition): TSR.AtemTransitionSettings {
+export function TransitionSettings(config: TV2ShowStyleConfig, part: PartDefinition): TSR.AtemTransitionSettings {
 	if (!part.transition || !part.transition.duration) {
 		return {}
 	}
@@ -25,7 +25,7 @@ function WipeTransitionSettings(rate: number): TSR.AtemTransitionSettings {
 	}
 }
 
-export function DipTransitionSettings(config: TV2BlueprintConfig, rate: number): TSR.AtemTransitionSettings {
+export function DipTransitionSettings(config: TV2ShowStyleConfig, rate: number): TSR.AtemTransitionSettings {
 	return {
 		dip: {
 			rate,

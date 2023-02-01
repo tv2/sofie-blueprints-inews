@@ -4,20 +4,27 @@ import {
 	IBlueprintPartInstance,
 	IBlueprintResolvedPieceInstance,
 	IRundownContext,
-	IShowStyleContext,
-	ITimelineEventContext,
 	OnGenerateTimelineObj,
 	PartEndState,
 	TimelineObjectCoreExt,
 	TimelinePersistentState,
 	TSR
 } from 'blueprints-integration'
-import { ActionSelectFullGrafik, ActionSelectJingle, ActionSelectServerClip, CasparPlayerClip } from 'tv2-common'
+import {
+	ABSourceLayers,
+	ActionSelectFullGrafik,
+	ActionSelectJingle,
+	ActionSelectServerClip,
+	assignMediaPlayers,
+	CasparPlayerClip,
+	ExtendedTimelineContext,
+	getServerPositionForPartInstance,
+	ServerPosition
+} from 'tv2-common'
 import { AbstractLLayer, PartType, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
-import { ABSourceLayers, assignMediaPlayers, getServerPositionForPartInstance, ServerPosition } from './helpers'
 
 export interface PartEndStateExt {
 	sisyfosPersistMetaData: SisyfosPersistMetaData
@@ -93,25 +100,20 @@ export function onTimelineGenerate<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ITimelineEventContext,
+	context: ExtendedTimelineContext<ShowStyleConfig>,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
-	getConfig: (context: IShowStyleContext) => ShowStyleConfig,
-	sourceLayers: ABSourceLayers,
-	_casparLayerClipPending: string,
-	_atemLayerNext: string
+	sourceLayers: ABSourceLayers
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	const persistentState: TimelinePersistentStateExt = {
 		activeMediaPlayers: {},
-		isNewSegment: context.previousPartInstance?.segmentId !== context.currentPartInstance?.segmentId
+		isNewSegment: context.core.previousPartInstance?.segmentId !== context.core.currentPartInstance?.segmentId
 	}
 
-	const config = getConfig(context)
-
-	if (!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(resolvedPieces, context)) {
+	if (!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(context, resolvedPieces)) {
 		const sisyfosPersistedLevelsTimelineObject = createSisyfosPersistedLevelsTimelineObject(
 			resolvedPieces,
 			previousPartEndState2 ? previousPartEndState2.sisyfosPersistMetaData.sisyfosLayers : []
@@ -125,7 +127,6 @@ export function onTimelineGenerate<
 
 	persistentState.activeMediaPlayers = assignMediaPlayers(
 		context,
-		config,
 		timeline,
 		previousPersistentState2 ? previousPersistentState2.activeMediaPlayers : {},
 		resolvedPieces,
@@ -141,7 +142,7 @@ export function onTimelineGenerate<
 }
 
 function processServerLookaheads(
-	context: ITimelineEventContext,
+	context: ExtendedTimelineContext,
 	timeline: OnGenerateTimelineObj[],
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
@@ -161,7 +162,9 @@ function processServerLookaheads(
 		return (
 			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)].includes(layer) &&
 			!obj.isLookahead &&
-			resolvedPieces.some(p => p._id === obj.pieceInstanceId && p.partInstanceId === context.currentPartInstance?._id)
+			resolvedPieces.some(
+				p => p._id === obj.pieceInstanceId && p.partInstanceId === context.core.currentPartInstance?._id
+			)
 		)
 	})
 
@@ -205,11 +208,11 @@ function processServerLookaheads(
 }
 
 function isAnyPieceInjectedIntoPart(
-	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
-	context: ITimelineEventContext
+	context: ExtendedTimelineContext,
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ) {
 	return resolvedPieces
-		.filter(piece => piece.partInstanceId === context.currentPartInstance?._id)
+		.filter(piece => piece.partInstanceId === context.core.currentPartInstance?._id)
 		.some(piece => {
 			return piece.piece.metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
 		})

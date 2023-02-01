@@ -13,15 +13,15 @@ global.VERSION_INTEGRATION = 'test'
 
 import { INewsStory } from 'tv2-common'
 import { SegmentUserContext } from '../../__mocks__/context'
-import { parseConfig as parseStudioConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { preprocessConfig as parseStudioConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig, preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import Blueprints from '../index'
 
 const onAirRundownRelativePath = '../../../rundowns/on-air.json'
 
 // More ROs can be listed here to make them part of the basic blueprint
-const rundowns: Array<{ ro: string; studioConfig: StudioConfig; showStyleConfig: ShowStyleConfig }> = [
+const rundowns: Array<{ ro: string; studioConfig: StudioConfig; showStyleConfig: GalleryShowStyleConfig }> = [
 	{ ro: onAirRundownRelativePath, studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 ]
 

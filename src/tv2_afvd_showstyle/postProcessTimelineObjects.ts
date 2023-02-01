@@ -1,7 +1,6 @@
 import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
-	IStudioUserContext,
 	OnGenerateTimelineObj,
 	SourceLayerType,
 	SplitsContent,
@@ -9,31 +8,29 @@ import {
 	TimelineObjHoldMode,
 	TSR
 } from 'blueprints-integration'
-import { AtemLLayerDSK, FindDSKJingle, TimelineBlueprintExt } from 'tv2-common'
+import { AtemLLayerDSK, ExtendedShowStyleContext, FindDSKJingle, TimelineBlueprintExt } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
-import { BlueprintConfig } from './helpers/config'
+import { GalleryBlueprintConfig } from './helpers/config'
 import { SourceLayer } from './layers'
 
 export function postProcessPartTimelineObjects(
-	context: IStudioUserContext,
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	parts: BlueprintResultPart[]
 ) {
 	_.each(parts, part => {
-		_.each(part.pieces, p => postProcessPieceTimelineObjects(context, config, p, false))
-		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(context, config, p, true))
+		_.each(part.pieces, p => postProcessPieceTimelineObjects(context, p, false))
+		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(context, p, true))
 	})
 }
 
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
-	context: IStudioUserContext,
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean
 ) {
-	const jingleDSK = FindDSKJingle(config)
+	const jingleDSK = FindDSKJingle(context.config)
 	const jingleDSKLayer = AtemLLayerDSK(jingleDSK.Number)
 
 	if (piece.content?.timelineObjects) {
@@ -51,7 +48,7 @@ export function postProcessPieceTimelineObjects(
 		_.each(atemMeObjs, tlObj => {
 			if (tlObj.layer === AtemLLayer.AtemMEProgram || tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
 				if (!tlObj.id) {
-					tlObj.id = context.getHashId(AtemLLayer.AtemMEProgram, true)
+					tlObj.id = context.core.getHashId(AtemLLayer.AtemMEProgram, true)
 				}
 				if (!tlObj.metaData) {
 					tlObj.metaData = {}
@@ -84,8 +81,8 @@ export function postProcessPieceTimelineObjects(
 							aux: {
 								input:
 									tlObj.content.me.input !== -1
-										? tlObj.content.me.input ?? config.studio.AtemSource.Default
-										: config.studio.AtemSource.Default
+										? tlObj.content.me.input ?? context.config.studio.AtemSource.Default
+										: context.config.studio.AtemSource.Default
 							}
 						},
 						metaData: {
@@ -132,7 +129,7 @@ export function postProcessPieceTimelineObjects(
 								input:
 									mixMinusSource !== undefined && mixMinusSource !== -1
 										? mixMinusSource
-										: config.studio.AtemSource.MixMinusDefault
+										: context.config.studio.AtemSource.MixMinusDefault
 							}
 						},
 						metaData: {
@@ -158,7 +155,7 @@ export function postProcessPieceTimelineObjects(
 			if (tlObj.layer === jingleDSKLayer) {
 				const newProps = _.pick(tlObj.content.dsk, 'onAir')
 				if (_.isEqual(newProps, tlObj.content.dsk)) {
-					context.notifyUserWarning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
+					context.core.notifyUserWarning(`Unhandled Keyer properties for Clean keyer, it may look wrong`)
 				}
 
 				const cleanObj: TSR.TimelineObjAtemME & TimelineBlueprintExt = {

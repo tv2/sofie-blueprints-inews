@@ -1,4 +1,4 @@
-import { IBlueprintConfig, ICommonContext, IStudioContext } from 'blueprints-integration'
+import { IBlueprintConfig, ICommonContext } from 'blueprints-integration'
 import {
 	MediaPlayerConfig,
 	SourceMapping,
@@ -8,13 +8,11 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { DSKRoles } from 'tv2-constants'
-import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { parseMediaPlayers, parseSources } from './sources'
 
-export interface BlueprintConfig {
+export interface GalleryStudioConfig {
 	studio: StudioConfig
 	sources: SourceMapping
-	showStyle: ShowStyleConfig
 	mediaPlayers: MediaPlayerConfig // Atem Input Ids
 	dsk: TableConfigItemDSK[]
 }
@@ -47,21 +45,16 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	}
 }
 
-export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): any {
+export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const studioConfig = (rawConfig as unknown) as StudioConfig
-	const config: BlueprintConfig = {
+	const config: GalleryStudioConfig = {
 		studio: studioConfig,
-		showStyle: {} as any,
 		sources: parseSources(studioConfig),
 		mediaPlayers: parseMediaPlayers(studioConfig),
 		dsk: studioConfig.AtemSource.DSK
 	}
 
 	return config
-}
-
-export function getStudioConfig(context: IStudioContext): BlueprintConfig {
-	return context.getStudioConfig() as BlueprintConfig
 }
 
 export const defaultDSKConfig: TableConfigItemDSK[] = [

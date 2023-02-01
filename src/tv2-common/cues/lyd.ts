@@ -3,7 +3,6 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
@@ -12,6 +11,7 @@ import {
 import {
 	CreateTimingEnable,
 	CueDefinitionLYD,
+	ExtendedShowStyleContext,
 	joinAssetToFolder,
 	literal,
 	PartDefinition,
@@ -26,11 +26,10 @@ import {
 	SharedSisyfosLLayer,
 	SharedSourceLayers
 } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 
 export function EvaluateLYD(
-	context: IShowStyleUserContext,
-	config: TV2BlueprintConfig,
+	context: ExtendedShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -39,14 +38,14 @@ export function EvaluateLYD(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const conf = config.showStyle.LYDConfig.find(lyd =>
+	const conf = context.config.showStyle.LYDConfig.find(lyd =>
 		lyd.INewsName ? lyd.INewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
 	)
 	const stop = !!parsedCue.variant.match(/^[^_]*STOP[^_]*$/i) // TODO: STOP 1 / STOP 2 etc.
 	const fade = parsedCue.variant.match(/FADE ?(\d+)/i)
 
 	if (!conf && !stop && !fade) {
-		context.notifyUserWarning(`LYD ${parsedCue.variant} not configured`)
+		context.core.notifyUserWarning(`LYD ${parsedCue.variant} not configured`)
 		return
 	}
 
@@ -71,7 +70,7 @@ export function EvaluateLYD(
 				: fade
 				? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
 				: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-			content: LydContent(config, file, lydType, fadeIn, fadeOut),
+			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
 			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 		})
 	} else {
@@ -91,13 +90,13 @@ export function EvaluateLYD(
 			outputLayerId: SharedOutputLayers.MUSIK,
 			sourceLayerId: SharedSourceLayers.PgmAudioBed,
 			lifespan,
-			content: LydContent(config, file, lydType, fadeIn, fadeOut)
+			content: LydContent(context.config, file, lydType, fadeIn, fadeOut)
 		})
 	}
 }
 
 function LydContent(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	file: string,
 	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,

@@ -7,13 +7,19 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CalculateTime, CueDefinitionBackgroundLoop, literal, TV2BlueprintConfig } from 'tv2-common'
+import {
+	CalculateTime,
+	CueDefinitionBackgroundLoop,
+	ExtendedShowStyleContext,
+	literal,
+	TV2ShowStyleConfig
+} from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueBackgroundLoop(
-	config: TV2BlueprintConfig,
+	context: ExtendedShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -74,7 +80,7 @@ export function EvaluateCueBackgroundLoop(
 					fileName: parsedCue.backgroundLoop,
 					path: parsedCue.backgroundLoop,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: fullLoopTimeline(config, parsedCue)
+					timelineObjects: fullLoopTimeline(context.config, parsedCue)
 				})
 			})
 		} else {
@@ -91,7 +97,7 @@ export function EvaluateCueBackgroundLoop(
 					fileName: parsedCue.backgroundLoop,
 					path: parsedCue.backgroundLoop,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: fullLoopTimeline(config, parsedCue)
+					timelineObjects: fullLoopTimeline(context.config, parsedCue)
 				})
 			})
 		}
@@ -115,7 +121,7 @@ function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
 	]
 }
 
-function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
+function fullLoopTimeline(config: TV2ShowStyleConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
 	if (!config.selectedGfxSetup.FullShowName) {
 		return []
 	}

@@ -1,7 +1,6 @@
 import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
-	ISegmentUserContext,
 	SplitsContent,
 	TimelineObjectCoreExt,
 	TSR
@@ -11,6 +10,7 @@ import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	ExtendedSegmentContext,
 	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
@@ -23,12 +23,11 @@ import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export async function OfftubeEvaluateAdLib(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	parsedCue: CueDefinitionAdLib,
@@ -46,7 +45,6 @@ export async function OfftubeEvaluateAdLib(
 		actions.push(
 			await CreateAdlibServer(
 				context,
-				config,
 				rank,
 				partDefinition,
 				file,
@@ -81,14 +79,14 @@ export async function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
+		const rawTemplate = GetDVETemplate(context.config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
-			context.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
+			context.core.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
 			return
 		}
 
 		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
+			context.core.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
 
@@ -100,7 +98,7 @@ export async function OfftubeEvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
+		const adlibContent = OfftubeMakeContentDVE(context, partDefinition, cueDVE, rawTemplate)
 
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
@@ -110,7 +108,7 @@ export async function OfftubeEvaluateAdLib(
 			segmentExternalId: partDefinition.segmentExternalId
 		}
 		actions.push({
-			externalId: generateExternalId(context, userData),
+			externalId: generateExternalId(context.core, userData),
 			actionId: AdlibActionType.SELECT_DVE,
 			userData,
 			userDataManifest: {},

@@ -1,33 +1,30 @@
 import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
-	IStudioUserContext,
 	OnGenerateTimelineObj,
 	TimelineObjectCoreExt,
 	TimelineObjHoldMode,
 	TSR
 } from 'blueprints-integration'
-import { TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
+import { ExtendedShowStyleContext, TimelineBlueprintExt } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from './helpers/config'
+import { OfftubeBlueprintConfig } from './helpers/config'
 
 export function postProcessPartTimelineObjects(
-	context: IStudioUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
 	parts: BlueprintResultPart[]
 ) {
 	_.each(parts, part => {
-		_.each(part.pieces, p => postProcessPieceTimelineObjects(context, config, p, false))
-		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(context, config, p, true))
+		_.each(part.pieces, p => postProcessPieceTimelineObjects(context, p, false))
+		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(context, p, true))
 	})
 }
 
 // Do any post-process of timeline objects
 export function postProcessPieceTimelineObjects(
-	context: IStudioUserContext,
-	config: TV2BlueprintConfig,
+	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
 	piece: IBlueprintPieceGeneric,
 	isAdlib: boolean
 ) {
@@ -46,7 +43,7 @@ export function postProcessPieceTimelineObjects(
 		_.each(atemMeObjs, tlObj => {
 			if (tlObj.layer === OfftubeAtemLLayer.AtemMEClean || tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
 				if (!tlObj.id) {
-					tlObj.id = context.getHashId(OfftubeAtemLLayer.AtemMEClean, true)
+					tlObj.id = context.core.getHashId(OfftubeAtemLLayer.AtemMEClean, true)
 				}
 				if (!tlObj.metaData) {
 					tlObj.metaData = {}
@@ -89,7 +86,7 @@ export function postProcessPieceTimelineObjects(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									previewInput:
-										tlObj.content.me.input !== -1 ? tlObj.content.me.input : config.studio.AtemSource.Default
+										tlObj.content.me.input !== -1 ? tlObj.content.me.input : context.config.studio.AtemSource.Default
 								}
 							},
 							metaData: {

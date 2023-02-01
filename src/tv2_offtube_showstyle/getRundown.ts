@@ -28,6 +28,8 @@ import {
 	CreateDSKBaselineAdlibs,
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
+	ExtendedShowStyleContext,
+	ExtendedShowStyleContextImpl,
 	generateExternalId,
 	GetTagForKam,
 	GetTagForLive,
@@ -39,7 +41,8 @@ import {
 	SourceInfoToSourceDefinition,
 	SourceInfoType,
 	t,
-	TimeFromINewsField
+	TimeFromINewsField,
+	VideoSwitcher
 } from 'tv2-common'
 import {
 	AdlibActionType,
@@ -53,10 +56,7 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
-import {
-	getConfig as getShowStyleConfig,
-	OfftubeShowstyleBlueprintConfig
-} from '../tv2_offtube_showstyle/helpers/config'
+import { OfftubeBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { AtemSourceIndex } from '../types/atem'
@@ -64,8 +64,8 @@ import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
-export function getRundown(context: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const config = getShowStyleConfig(context)
+export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
+	const context = new ExtendedShowStyleContextImpl<OfftubeBlueprintConfig>(coreContext)
 
 	let startTime: number = 0
 	let endTime: number = 0
@@ -97,21 +97,20 @@ export function getRundown(context: IShowStyleUserContext, ingestRundown: Ingest
 				expectedEnd: endTime
 			}
 		}),
-		globalAdLibPieces: getGlobalAdLibPiecesOfftube(context, config),
-		globalActions: getGlobalAdlibActionsOfftube(context, config),
-		baseline: getBaseline(config)
+		globalAdLibPieces: getGlobalAdLibPiecesOfftube(context),
+		globalActions: getGlobalAdlibActionsOfftube(context.core, context.config),
+		baseline: getBaseline(context.config, context.videoSwitcher)
 	}
 }
 
 function getGlobalAdLibPiecesOfftube(
-	context: IStudioUserContext,
-	config: OfftubeShowstyleBlueprintConfig
+	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
-	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
+	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, p, true))
 
-	adlibItems.push(...CreateDSKBaselineAdlibs(config, 500))
+	adlibItems.push(...CreateDSKBaselineAdlibs(context.config, 500, context.videoSwitcher))
 
 	adlibItems.push({
 		externalId: 'micUp',
@@ -132,7 +131,7 @@ function getGlobalAdLibPiecesOfftube(
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: config.studio.StudioMics.map(layer => ({
+						channels: context.config.studio.StudioMics.map(layer => ({
 							mappedLayer: layer,
 							isPgm: 1
 						})),
@@ -162,7 +161,7 @@ function getGlobalAdLibPiecesOfftube(
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: config.studio.StudioMics.map(layer => ({
+						channels: context.config.studio.StudioMics.map(layer => ({
 							mappedLayer: layer,
 							isPgm: 0
 						})),
@@ -228,13 +227,13 @@ function getGlobalAdLibPiecesOfftube(
 		}
 	})
 
-	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, config, p, true))
+	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, p, true))
 	return adlibItems
 }
 
 function getGlobalAdlibActionsOfftube(
-	_context: IStudioUserContext,
-	config: OfftubeShowstyleBlueprintConfig
+	context: IStudioUserContext,
+	config: OfftubeBlueprintConfig
 ): IBlueprintActionManifest[] {
 	const blueprintActions: IBlueprintActionManifest[] = []
 
@@ -248,7 +247,7 @@ function getGlobalAdlibActionsOfftube(
 			sourceDefinition
 		}
 		blueprintActions.push({
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.CUT_TO_CAMERA,
 			userData,
 			userDataManifest: {},
@@ -272,7 +271,7 @@ function getGlobalAdlibActionsOfftube(
 			sourceDefinition
 		}
 		blueprintActions.push({
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.CUT_TO_REMOTE,
 			userData,
 			userDataManifest: {},
@@ -304,7 +303,7 @@ function getGlobalAdlibActionsOfftube(
 				sourceDefinition
 			}
 			blueprintActions.push({
-				externalId: generateExternalId(_context, userData),
+				externalId: generateExternalId(context, userData),
 				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 				userData,
 				userDataManifest: {},
@@ -329,7 +328,7 @@ function getGlobalAdlibActionsOfftube(
 				sourceDefinition: { sourceType: SourceType.SERVER }
 			}
 			blueprintActions.push({
-				externalId: generateExternalId(_context, userData),
+				externalId: generateExternalId(context, userData),
 				actionId: AdlibActionType.CUT_SOURCE_TO_BOX,
 				userData,
 				userDataManifest: {},
@@ -350,7 +349,7 @@ function getGlobalAdlibActionsOfftube(
 			type: AdlibActionType.COMMENTATOR_SELECT_SERVER
 		}
 		return {
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_SERVER,
 			userData,
 			userDataManifest: {},
@@ -374,7 +373,7 @@ function getGlobalAdlibActionsOfftube(
 			type: AdlibActionType.COMMENTATOR_SELECT_DVE
 		}
 		return {
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_DVE,
 			userData,
 			userDataManifest: {},
@@ -398,7 +397,7 @@ function getGlobalAdlibActionsOfftube(
 			type: AdlibActionType.COMMENTATOR_SELECT_FULL
 		}
 		return {
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_FULL,
 			userData,
 			userDataManifest: {},
@@ -424,7 +423,7 @@ function getGlobalAdlibActionsOfftube(
 			label: 'GFX Altud'
 		}
 		return {
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.CLEAR_GRAPHICS,
 			userData,
 			userDataManifest: {},
@@ -450,7 +449,7 @@ function getGlobalAdlibActionsOfftube(
 			type: AdlibActionType.RECALL_LAST_DVE
 		}
 		return {
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.RECALL_LAST_DVE,
 			userData,
 			userDataManifest: {},
@@ -472,7 +471,7 @@ function getGlobalAdlibActionsOfftube(
 			config: dveConfig
 		}
 		blueprintActions.push({
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.SELECT_DVE_LAYOUT,
 			userData,
 			userDataManifest: {},
@@ -509,7 +508,7 @@ function getGlobalAdlibActionsOfftube(
 			type: AdlibActionType.RECALL_LAST_LIVE
 		}
 		return {
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.RECALL_LAST_LIVE,
 			userData,
 			userDataManifest: {},
@@ -556,7 +555,7 @@ function getGlobalAdlibActionsOfftube(
 			type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
 		}
 		return {
-			externalId: generateExternalId(_context, userData),
+			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.COMMENTATOR_SELECT_JINGLE,
 			userData,
 			userDataManifest: {},
@@ -578,7 +577,7 @@ function getGlobalAdlibActionsOfftube(
 	return blueprintActions
 }
 
-function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBaseline {
+function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitcher): BlueprintResultBaseline {
 	return {
 		timelineObjects: [
 			...CreateGraphicBaseline(config),
@@ -651,7 +650,7 @@ function getBaseline(config: OfftubeShowstyleBlueprintConfig): BlueprintResultBa
 			}),
 
 			// keyers
-			...CreateDSKBaseline(config),
+			...CreateDSKBaseline(config, videoSwitcher),
 
 			literal<TSR.TimelineObjAtemSsrcProps>({
 				id: '',

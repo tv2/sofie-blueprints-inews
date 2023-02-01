@@ -1,11 +1,11 @@
 import { BlueprintResultPart, PieceLifespan, TSR } from 'blueprints-integration'
-import { literal, TV2BlueprintConfig } from 'tv2-common'
+import { literal, TV2ShowStyleConfig } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { GraphicLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function CreateShowLifecyclePieces(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	part: BlueprintResultPart,
 	initializeShowNames: string[],
 	cleanupShowNames: string[]

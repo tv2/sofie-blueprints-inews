@@ -1,6 +1,6 @@
-import { literal, parseMapStr } from 'tv2-common'
+import { literal, parseMapStr, SwitcherType } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { GalleryTableConfigGfxSetup, ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig, GalleryTableConfigGfxSetup } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -54,6 +54,7 @@ export const DEFAULT_GFX_SETUP: GalleryTableConfigGfxSetup = {
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
 export const defaultStudioConfig: StudioConfig = {
+	SwitcherType: SwitcherType.ATEM,
 	ClipMediaFlowId: '',
 	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',
@@ -147,7 +148,7 @@ export const defaultStudioConfig: StudioConfig = {
 	}
 }
 
-export const defaultShowStyleConfig: ShowStyleConfig = {
+export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	...defaultStudioConfig,
 	DefaultTemplateDuration: 4,
 	CasparCGLoadingClip: 'LoadingLoop',
@@ -188,7 +189,7 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	GfxTemplates: [
 		...DefaultGrafikConfig(),
-		...literal<ShowStyleConfig['GfxTemplates']>([
+		...literal<GalleryShowStyleConfig['GfxTemplates']>([
 			{
 				INewsCode: 'GRAFIK',
 				INewsName: 'wall',

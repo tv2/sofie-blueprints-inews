@@ -1,21 +1,19 @@
 import {
 	BaseContent,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CueDefinitionPgmClean, findSourceInfo, literal, SourceInfo } from 'tv2-common'
+import { CueDefinitionPgmClean, ExtendedSegmentContext, findSourceInfo, literal, SourceInfo } from 'tv2-common'
 import { SharedOutputLayers, SourceType } from 'tv2-constants'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluatePgmClean(
-	context: IShowStyleUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	partId: string,
 	parsedCue: CueDefinitionPgmClean
@@ -25,12 +23,12 @@ export function OfftubeEvaluatePgmClean(
 		return
 	}
 
-	sourceInfo = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+	sourceInfo = findSourceInfo(context.config.sources, parsedCue.sourceDefinition)
 
 	const name = parsedCue.sourceDefinition.name || parsedCue.sourceDefinition.sourceType
 
 	if (!sourceInfo) {
-		context.notifyUserWarning(`Invalid source for clean output: ${name}`)
+		context.core.notifyUserWarning(`Invalid source for clean output: ${name}`)
 		return
 	}
 

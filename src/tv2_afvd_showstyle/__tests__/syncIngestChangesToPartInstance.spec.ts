@@ -11,9 +11,9 @@ import {
 import { literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { SyncIngestUpdateToPartInstanceContext } from '../../__mocks__/context'
-import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { parseConfig as parseShowStyleConfig } from '../helpers/config'
+import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { syncIngestUpdateToPartInstance } from '../syncIngestUpdateToPartInstance'
 

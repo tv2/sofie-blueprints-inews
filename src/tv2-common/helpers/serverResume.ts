@@ -1,11 +1,10 @@
 import {
-	IActionExecutionContext,
 	IBlueprintActionTriggerMode,
 	IBlueprintPartInstance,
 	IBlueprintResolvedPieceInstance,
 	VTContent
 } from 'blueprints-integration'
-import { PartEndStateExt, PieceMetaData, t } from 'tv2-common'
+import { ExtendedActionExecutionContext, PartEndStateExt, PieceMetaData, t, TV2ShowStyleConfig } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { DVEPieceMetaData } from '../content'
@@ -48,22 +47,20 @@ export function getServerSeek(
 }
 
 export async function getServerPosition(
-	context: IActionExecutionContext,
+	context: ExtendedActionExecutionContext<TV2ShowStyleConfig>,
 	replacingCurrentPieceWithOffset?: number
 ): Promise<ServerPosition | undefined> {
-	const partInstance = await context.getPartInstance('current')
+	const partInstance = await context.core.getPartInstance('current')
 	if (!partInstance) {
 		throw new Error('Missing current PartInstance while calculating serverOffsets')
 	}
 
 	const pieceEnd =
 		replacingCurrentPieceWithOffset !== undefined
-			? context.getCurrentTime() + replacingCurrentPieceWithOffset
+			? context.core.getCurrentTime() + replacingCurrentPieceWithOffset
 			: undefined
 
-	const pieceInstances = (await context.getResolvedPieceInstances('current')) as Array<
-		IBlueprintResolvedPieceInstance<PieceMetaData>
-	>
+	const pieceInstances = await context.core.getResolvedPieceInstances('current')
 
 	return getServerPositionForPartInstance(partInstance, pieceInstances, pieceEnd)
 }

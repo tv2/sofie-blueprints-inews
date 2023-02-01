@@ -2,7 +2,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	RemoteContent,
 	TimelineObjectCoreExt,
@@ -11,6 +10,7 @@ import {
 } from 'blueprints-integration'
 import {
 	CueDefinitionEkstern,
+	ExtendedShowStyleContext,
 	literal,
 	PartDefinition,
 	PieceMetaData,
@@ -36,8 +36,7 @@ export function EvaluateEksternBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ExtendedShowStyleContext<ShowStyleConfig>,
 	part: IBlueprintPart,
 	pieces: Array<IBlueprintPiece<PieceMetaData>>,
 	adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
@@ -48,9 +47,9 @@ export function EvaluateEksternBase<
 	adlib?: boolean,
 	rank?: number
 ) {
-	const sourceInfoEkstern = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+	const sourceInfoEkstern = findSourceInfo(context.config.sources, parsedCue.sourceDefinition)
 	if (parsedCue.sourceDefinition.sourceType !== SourceType.REMOTE || sourceInfoEkstern === undefined) {
-		context.notifyUserWarning(`EKSTERN source is not valid: "${parsedCue.sourceDefinition.raw}"`)
+		context.core.notifyUserWarning(`EKSTERN source is not valid: "${parsedCue.sourceDefinition.raw}"`)
 		part.invalid = true
 		return
 	}
@@ -89,13 +88,13 @@ export function EvaluateEksternBase<
 							me: {
 								input: atemInput,
 								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(config, partDefinition)
+								transitionSettings: TransitionSettings(context.config, partDefinition)
 							}
 						},
 						classes: [ControlClasses.LiveSourceOnAir]
 					}),
 
-					...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
+					...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)
 				])
 			})
 		})
@@ -135,12 +134,12 @@ export function EvaluateEksternBase<
 							me: {
 								input: atemInput,
 								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(config, partDefinition)
+								transitionSettings: TransitionSettings(context.config, partDefinition)
 							}
 						}
 					}),
 
-					...GetSisyfosTimelineObjForRemote(config, sourceInfoEkstern)
+					...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)
 				])
 			})
 		})

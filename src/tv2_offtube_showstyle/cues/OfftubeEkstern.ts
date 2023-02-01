@@ -1,18 +1,17 @@
+import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'blueprints-integration'
 import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
-} from 'blueprints-integration'
-import { CueDefinitionEkstern, EvaluateEksternBase, PartDefinition, PieceMetaData } from 'tv2-common'
+	CueDefinitionEkstern,
+	EvaluateEksternBase,
+	ExtendedSegmentContext,
+	PartDefinition,
+	PieceMetaData
+} from 'tv2-common'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateEkstern(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	part: IBlueprintPart,
 	pieces: Array<IBlueprintPiece<PieceMetaData>>,
 	_adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
@@ -25,7 +24,6 @@ export function OfftubeEvaluateEkstern(
 ) {
 	EvaluateEksternBase(
 		context,
-		config,
 		part,
 		pieces,
 		[],

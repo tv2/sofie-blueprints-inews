@@ -1,7 +1,11 @@
 import { TableConfigItemValue } from 'blueprints-integration'
-import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
-import { DVEConfigInput } from './helpers'
-import { SourceInfo } from './sources'
+import {
+	DVEConfigInput,
+	SourceInfo,
+	SwitcherType,
+	TableConfigItemDSK,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
 
@@ -94,6 +98,7 @@ export interface TV2StudioConfigBase {
 	DVEIgnoreStatus: boolean
 
 	ABPlaybackDebugLogging: boolean
+	SwitcherType: SwitcherType
 	AtemSource: {
 		Default: number
 		SplitArtF: number
@@ -169,4 +174,6 @@ export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase
 	selectedGfxSetup: TableConfigGfxSetup
 }
 
-export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>
+export type TV2StudioConfig = TV2StudioBlueprintConfigBase<TV2StudioConfigBase>
+
+export type TV2ShowStyleConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>

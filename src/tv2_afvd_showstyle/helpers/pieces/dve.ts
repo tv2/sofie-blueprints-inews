@@ -1,9 +1,10 @@
-import { IBlueprintActionManifest, IBlueprintPiece, ISegmentUserContext, PieceLifespan } from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
+	ExtendedShowStyleContext,
 	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
@@ -13,13 +14,12 @@ import {
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
+import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateDVE(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
@@ -31,18 +31,18 @@ export function EvaluateDVE(
 		return
 	}
 
-	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
+	const rawTemplate = GetDVETemplate(context.config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.notifyUserWarning(`Could not find template ${parsedCue.template}`)
+		context.core.notifyUserWarning(`Could not find template ${parsedCue.template}`)
 		return
 	}
 
 	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-		context.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
+		context.core.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
 
-	const content = MakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
+	const content = MakeContentDVE(context, partDefinition, parsedCue, rawTemplate)
 
 	if (content.valid) {
 		if (adlib) {
@@ -54,7 +54,7 @@ export function EvaluateDVE(
 				segmentExternalId: partDefinition.segmentExternalId
 			}
 			actions.push({
-				externalId: generateExternalId(context, userData),
+				externalId: generateExternalId(context.core, userData),
 				actionId: AdlibActionType.SELECT_DVE,
 				userData,
 				userDataManifest: {},
@@ -86,7 +86,7 @@ export function EvaluateDVE(
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,
 					content: content.content,
-					prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
+					prerollDuration: Number(context.config.studio.CasparPrerollDuration) || 0,
 					metaData: {
 						mediaPlayerSessions: [partDefinition.segmentExternalId],
 						sources: parsedCue.sources,

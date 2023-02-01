@@ -10,6 +10,7 @@ import {
 	literal,
 	MakeConfigForSources,
 	MakeConfigWithMediaFlow,
+	SwitcherType,
 	TableConfigItemSourceMapping
 } from 'tv2-common'
 import { AtemSourceIndex } from '../types/atem'
@@ -275,6 +276,15 @@ export const manifestAFVDStudioMics: ConfigManifestEntry = {
 export const manifestAFVDDownstreamKeyers: ConfigManifestEntryTable = DSKConfigManifest(defaultDSKConfig)
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
+	{
+		id: 'SwitcherType',
+		name: 'Video Switcher Type',
+		description: 'Type of the video switcher',
+		type: ConfigManifestEntryType.ENUM,
+		options: Object.values(SwitcherType),
+		required: true,
+		defaultVal: SwitcherType.ATEM
+	},
 	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
 	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov', '', true),
 	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png', '', true),

@@ -1,3 +1,4 @@
+import { SwitcherType } from 'tv2-common'
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { defaultDSKConfig, StudioConfig } from '../helpers/config'
@@ -5,6 +6,7 @@ import { defaultDSKConfig, StudioConfig } from '../helpers/config'
 const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
+	SwitcherType: SwitcherType.ATEM,
 	ClipMediaFlowId: '',
 	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',

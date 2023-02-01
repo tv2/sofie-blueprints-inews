@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PlaylistTimingType, TSR } from 'blueprints-integration'
+import { TSR } from 'blueprints-integration'
 import {
 	CueDefinitionBackgroundLoop,
 	CueDefinitionGraphicDesign,
@@ -8,11 +8,7 @@ import {
 	UnparsedCue
 } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../__mocks__/context'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig, parseConfig as parseShowStyleConfig } from '../../../../tv2_afvd_showstyle/helpers/config'
-import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
+import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { literal } from '../../../util'
 import {
 	ParseBody,
@@ -186,32 +182,7 @@ const SOURCE_DEFINITION_KAM_3: SourceDefinitionKam = {
 	name: 'KAM 3'
 }
 
-const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
-
-function makeMockContext() {
-	const rundown = literal<IBlueprintRundownDB>({
-		externalId: RUNDOWN_EXTERNAL_ID,
-		name: RUNDOWN_EXTERNAL_ID,
-		_id: '',
-		showStyleVariantId: '',
-		timing: {
-			type: PlaylistTimingType.None
-		}
-	})
-	const mockContext = new SegmentUserContext(
-		'test',
-		mappingsDefaults,
-		parseStudioConfig,
-		parseShowStyleConfig,
-		rundown._id
-	)
-	mockContext.studioConfig = defaultStudioConfig as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-	return mockContext
-}
-
-const config = getConfig(makeMockContext())
+const config = makeMockGalleryContext().config
 
 describe('Body parser', () => {
 	test('test1', () => {

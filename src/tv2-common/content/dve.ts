@@ -15,6 +15,7 @@ import {
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVESources,
+	ExtendedShowStyleContext,
 	FindDSKFullGFX,
 	findSourceInfo,
 	joinAssetToFolder,
@@ -22,6 +23,7 @@ import {
 	PartDefinition,
 	PieceMetaData,
 	TimelineBlueprintExt,
+	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
@@ -128,15 +130,14 @@ export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ExtendedShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	dveGeneratorOptions: DVEOptions
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
 	if (!dveConfig) {
-		context.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
+		context.core.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
 		return {
 			valid: false,
 			content: {
@@ -153,7 +154,6 @@ export function MakeContentDVEBase<
 
 	return MakeContentDVE2(
 		context,
-		config,
 		dveConfig,
 		graphicsTemplateContent,
 		parsedCue.sources,
@@ -166,8 +166,7 @@ export function MakeContentDVE2<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ExtendedShowStyleContext<ShowStyleConfig>,
 	dveConfig: DVEConfigInput,
 	graphicsTemplateContent: { [key: string]: string },
 	sources: DVESources | undefined,
@@ -178,7 +177,7 @@ export function MakeContentDVE2<
 	try {
 		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
 	} catch (e) {
-		context.notifyUserWarning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
+		context.core.notifyUserWarning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
 		return {
 			valid: false,
 			content: {
@@ -194,11 +193,11 @@ export function MakeContentDVE2<
 
 	const classes: string[] = []
 
-	const boxAssigments = makeBoxAssignments(inputs, context, classes, dveGeneratorOptions, sources)
+	const boxAssigments = makeBoxAssignments(inputs, context.core, classes, dveGeneratorOptions, sources)
 
 	const boxes: BoxConfig[] = Object.entries(template.boxes).map(([_num, box]) => ({
 		...box,
-		source: config.studio.AtemSource.Default
+		source: context.config.studio.AtemSource.Default
 	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: BoxSources = []
@@ -212,7 +211,7 @@ export function MakeContentDVE2<
 			if (sources) {
 				// If it is intentional there are no sources, then ignore
 				// TODO - should this warn?
-				context.notifyUserWarning(`Missing source type for DVE box: ${num + 1}`)
+				context.core.notifyUserWarning(`Missing source type for DVE box: ${num + 1}`)
 				setBoxToBlack(box, boxSources)
 				valid = false
 			}
@@ -224,54 +223,56 @@ export function MakeContentDVE2<
 				case SourceType.DEFAULT:
 					setBoxSource(box, boxSources, {
 						sourceLayerType: SourceLayerType.UNKNOWN,
-						port: config.studio.AtemSource.Default
+						port: context.config.studio.AtemSource.Default
 					})
 					break
 				case SourceType.KAM:
-					const sourceInfoCam = findSourceInfo(config.sources, mappingFrom)
+					const sourceInfoCam = findSourceInfo(context.config.sources, mappingFrom)
 					if (sourceInfoCam === undefined) {
-						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
+						context.core.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
 						setBoxToBlack(box, boxSources)
 						valid = false
 						return
 					}
 
 					setBoxSource(box, boxSources, sourceInfoCam)
-					dveTimeline.push(...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, mappingFrom.minusMic, audioEnable))
+					dveTimeline.push(
+						...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, mappingFrom.minusMic, audioEnable)
+					)
 					break
 				case SourceType.REMOTE:
-					const sourceInfoLive = findSourceInfo(config.sources, mappingFrom)
+					const sourceInfoLive = findSourceInfo(context.config.sources, mappingFrom)
 					if (sourceInfoLive === undefined) {
-						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
+						context.core.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
 						setBoxToBlack(box, boxSources)
 						valid = false
 						return
 					}
 
 					setBoxSource(box, boxSources, sourceInfoLive)
-					dveTimeline.push(...GetSisyfosTimelineObjForRemote(config, sourceInfoLive, audioEnable))
+					dveTimeline.push(...GetSisyfosTimelineObjForRemote(context.config, sourceInfoLive, audioEnable))
 					break
 				case SourceType.REPLAY:
-					const sourceInfoReplay = findSourceInfo(config.sources, mappingFrom)
+					const sourceInfoReplay = findSourceInfo(context.config.sources, mappingFrom)
 					if (sourceInfoReplay === undefined) {
-						context.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
+						context.core.notifyUserWarning(`Invalid source: ${mappingFrom.raw}`)
 						setBoxToBlack(box, boxSources)
 						valid = false
 						return
 					}
 
 					setBoxSource(box, boxSources, sourceInfoReplay)
-					dveTimeline.push(...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, mappingFrom.vo))
+					dveTimeline.push(...GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, mappingFrom.vo))
 					break
 				case SourceType.GRAFIK:
 					if (mappingFrom.name === 'FULL') {
 						setBoxSource(box, boxSources, {
 							sourceLayerType: SourceLayerType.GRAPHICS,
-							port: FindDSKFullGFX(config).Fill
+							port: FindDSKFullGFX(context.config).Fill
 						})
-						dveTimeline.push(...GetSisyfosTimelineObjForFull(config))
+						dveTimeline.push(...GetSisyfosTimelineObjForFull(context.config))
 					} else {
-						context.notifyUserWarning(`Unsupported engine for DVE: ${mappingFrom.name}`)
+						context.core.notifyUserWarning(`Unsupported engine for DVE: ${mappingFrom.name}`)
 						setBoxToBlack(box, boxSources)
 					}
 					break
@@ -292,18 +293,18 @@ export function MakeContentDVE2<
 			graphicsTemplateStyle = JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
 		}
 	} catch {
-		context.notifyUserWarning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
+		context.core.notifyUserWarning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
 	}
 
 	let keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : undefined
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
 
 	if (keyFile) {
-		keyFile = joinAssetToFolder(config.studio.DVEFolder, keyFile)
+		keyFile = joinAssetToFolder(context.config.studio.DVEFolder, keyFile)
 	}
 
 	if (frameFile) {
-		frameFile = joinAssetToFolder(config.studio.DVEFolder, frameFile)
+		frameFile = joinAssetToFolder(context.config.studio.DVEFolder, frameFile)
 	}
 
 	return {
@@ -338,15 +339,15 @@ export function MakeContentDVE2<
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({
 					id: '',
-					enable: getDVEEnable(Number(config.studio.CasparPrerollDuration) - 10), // TODO - why 10ms?
+					enable: getDVEEnable(Number(context.config.studio.CasparPrerollDuration) - 10), // TODO - why 10ms?
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.SSrcArt,
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 						ssrcProps: {
-							artFillSource: config.studio.AtemSource.SplitArtF,
-							artCutSource: config.studio.AtemSource.SplitArtK,
+							artFillSource: context.config.studio.AtemSource.SplitArtF,
+							artCutSource: context.config.studio.AtemSource.SplitArtK,
 							artOption: 1,
 							...(template.properties && template.properties?.artPreMultiplied === false
 								? {
@@ -364,18 +365,14 @@ export function MakeContentDVE2<
 						}
 					}
 				}),
-				literal<TSR.TimelineObjAtemME>({
+				context.videoSwitcher.getMixEffectTimelineObject({
 					id: '',
-					enable: getDVEEnable(Number(config.studio.CasparPrerollDuration)),
+					enable: getDVEEnable(Number(context.config.studio.CasparPrerollDuration)),
 					priority: 1,
 					layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
 					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.ME,
-						me: {
-							input: AtemSourceIndex.SSrc,
-							transition: TSR.AtemTransitionStyle.CUT
-						}
+						input: AtemSourceIndex.SSrc,
+						transition: TransitionStyle.CUT
 					}
 				}),
 				literal<TSR.TimelineObjCCGTemplate>({
@@ -383,7 +380,7 @@ export function MakeContentDVE2<
 					enable: getDVEEnable(),
 					priority: 1,
 					layer: SharedGraphicLLayer.GraphicLLayerLocators,
-					content: CreateHTMLRendererContent(config, 'locators', {
+					content: CreateHTMLRendererContent(context.config, 'locators', {
 						...graphicsTemplateContent,
 						style: graphicsTemplateStyle ?? {}
 					})

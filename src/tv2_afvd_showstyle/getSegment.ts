@@ -9,12 +9,11 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { getSegmentBase, INewsPayload, literal } from 'tv2-common'
+import { ExtendedSegmentContextImpl, getSegmentBase, INewsPayload, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
-import { StudioConfig } from '../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
-import { BlueprintConfig as ShowStyleConfig, getConfig } from './helpers/config'
+import { GalleryBlueprintConfig } from './helpers/config'
 import { CreateShowLifecyclePieces } from './helpers/pieces/showLifecycle'
 import { SourceLayer } from './layers'
 import { CreatePartEVS } from './parts/evs'
@@ -26,15 +25,15 @@ import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
+
 export async function getSegment(
-	context: ISegmentUserContext,
+	coreContext: ISegmentUserContext,
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
-	const config = getConfig(context)
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
+	const context = new ExtendedSegmentContextImpl<GalleryBlueprintConfig>(coreContext)
 
-	const result: BlueprintResultSegment = await getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {
-		getConfig,
+	const result: BlueprintResultSegment = await getSegmentBase<GalleryBlueprintConfig>(context, ingestSegment, {
 		CreatePartContinuity,
 		CreatePartUnknown,
 		CreatePartIntro,
@@ -51,10 +50,10 @@ export async function getSegment(
 	const blueprintParts = result.parts
 
 	if (segmentPayload) {
-		insertSpecialPieces(config, blueprintParts, segmentPayload)
+		insertSpecialPieces(context.config, blueprintParts, segmentPayload)
 	}
 
-	postProcessPartTimelineObjects(context, config, blueprintParts)
+	postProcessPartTimelineObjects(context, blueprintParts)
 
 	return {
 		segment: result.segment,
@@ -62,7 +61,10 @@ export async function getSegment(
 	}
 }
 
-export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: IngestSegment): BlueprintResultPart {
+export function CreatePartContinuity(
+	config: GalleryBlueprintConfig,
+	ingestSegment: IngestSegment
+): BlueprintResultPart {
 	return {
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
@@ -109,7 +111,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 }
 
 function insertSpecialPieces(
-	config: ShowStyleConfig,
+	config: GalleryBlueprintConfig,
 	blueprintParts: BlueprintResultPart[],
 	segmentPayload: INewsPayload
 ) {

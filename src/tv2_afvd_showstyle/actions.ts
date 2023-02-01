@@ -1,7 +1,6 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
 import { executeAction, ServerSelectMode } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
-import { getConfig } from './helpers/config'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
 import { pilotGeneratorSettingsAFVD } from './helpers/pieces/graphicPilot'
@@ -18,7 +17,6 @@ export async function executeActionAFVD(
 	await executeAction(
 		context,
 		{
-			getConfig,
 			postProcessPieceTimelineObjects,
 			EvaluateCues,
 			DVEGeneratorOptions: AFVD_DVE_GENERATOR_OPTIONS,

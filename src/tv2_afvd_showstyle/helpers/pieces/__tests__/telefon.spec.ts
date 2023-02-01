@@ -17,27 +17,13 @@ import {
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../__mocks__/context'
-import {
-	DEFAULT_GFX_SETUP,
-	defaultShowStyleConfig,
-	defaultStudioConfig,
-	OVL_SHOW_NAME
-} from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import { makeMockGalleryContext } from '../../../../__mocks__/context'
+import { OVL_SHOW_NAME } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
-import {
-	defaultDSKConfig,
-	parseConfig as parseStudioConfig,
-	StudioConfig
-} from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../config'
 import { EvaluateTelefon } from '../telefon'
 
-const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
-mockContext.studioConfig = defaultStudioConfig as any
-mockContext.showStyleConfig = defaultShowStyleConfig as any
+const mockContext = makeMockGalleryContext()
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
@@ -83,28 +69,7 @@ describe('telefon', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateTelefon(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: {
-					cameras: [],
-					lives: [],
-					feeds: [],
-					replays: []
-				},
-				mediaPlayers: [],
-				dsk: defaultDSKConfig,
-				selectedGfxSetup: DEFAULT_GFX_SETUP
-			},
-			mockContext,
-			pieces,
-			adLibPieces,
-			actions,
-			partId,
-			dummyPart,
-			cue
-		)
+		EvaluateTelefon(mockContext, pieces, adLibPieces, actions, partId, dummyPart, cue)
 		expect(pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,

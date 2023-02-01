@@ -6,11 +6,10 @@ import {
 	SourceInfoType
 } from 'tv2-common'
 import { SharedSisyfosLLayer } from 'tv2-constants'
-import { makeMockAFVDContext } from '../../../__mocks__/context'
-import { getConfig } from '../../../tv2_afvd_showstyle/helpers/config'
+import { makeMockGalleryContext } from '../../../__mocks__/context'
 
 describe('Sisyfos', () => {
-	const config = getConfig(makeMockAFVDContext())
+	const config = makeMockGalleryContext().config
 	it('Enables audio layers for cameras', () => {
 		const sourceInfo = {
 			type: SourceInfoType.KAM,

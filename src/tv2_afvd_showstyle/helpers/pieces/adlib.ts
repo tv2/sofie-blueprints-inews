@@ -1,13 +1,10 @@
-import {
-	HackPartMediaObjectSubscription,
-	IBlueprintActionManifest,
-	IShowStyleUserContext
-} from 'blueprints-integration'
+import { HackPartMediaObjectSubscription, IBlueprintActionManifest } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
+	ExtendedShowStyleContext,
 	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
@@ -16,14 +13,13 @@ import {
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType, SharedOutputLayers } from 'tv2-constants'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
+import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export async function EvaluateAdLib(
-	context: IShowStyleUserContext,
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	parsedCue: CueDefinitionAdLib,
@@ -41,7 +37,6 @@ export async function EvaluateAdLib(
 		actions.push(
 			await CreateAdlibServer(
 				context,
-				config,
 				rank,
 				partDefinition,
 				file,
@@ -74,14 +69,14 @@ export async function EvaluateAdLib(
 			return
 		}
 
-		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
+		const rawTemplate = GetDVETemplate(context.config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
-			context.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
+			context.core.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
 			return
 		}
 
 		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
+			context.core.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
 
@@ -93,7 +88,7 @@ export async function EvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const content = MakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
+		const content = MakeContentDVE(context, partDefinition, cueDVE, rawTemplate)
 
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
@@ -103,7 +98,7 @@ export async function EvaluateAdLib(
 			segmentExternalId: partDefinition.segmentExternalId
 		}
 		actions.push({
-			externalId: generateExternalId(context, userData),
+			externalId: generateExternalId(context.core, userData),
 			actionId: AdlibActionType.SELECT_DVE,
 			userData,
 			userDataManifest: {},

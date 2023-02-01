@@ -5,7 +5,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	ISegmentUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR
@@ -13,6 +12,8 @@ import {
 import {
 	AddScript,
 	CreatePartInvalid,
+	ExtendedSegmentContext,
+	ExtendedShowStyleContext,
 	findSourceInfo,
 	GetSisyfosTimelineObjForReplay,
 	literal,
@@ -24,18 +25,17 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { BlueprintConfig } from '../helpers/config'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartEVS(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionEVS,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 	const title = partDefinition.sourceDefinition.name
 
 	let part: IBlueprintPart = {
@@ -50,9 +50,9 @@ export async function CreatePartEVS(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
 
-	const sourceInfoReplay = findSourceInfo(config.sources, partDefinition.sourceDefinition)
+	const sourceInfoReplay = findSourceInfo(context.config.sources, partDefinition.sourceDefinition)
 	if (sourceInfoReplay === undefined) {
 		return CreatePartInvalid(partDefinition)
 	}
@@ -70,12 +70,11 @@ export async function CreatePartEVS(
 				sisyfosLayers: []
 			}
 		},
-		content: makeContentEVS(config, atemInput, partDefinition, sourceInfoReplay)
+		content: makeContentEVS(context, atemInput, partDefinition, sourceInfoReplay)
 	})
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,
@@ -102,7 +101,7 @@ export async function CreatePartEVS(
 }
 
 function makeContentEVS(
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	atemInput: number,
 	partDefinition: PartDefinitionEVS,
 	sourceInfoReplay: SourceInfo
@@ -125,11 +124,11 @@ function makeContentEVS(
 					me: {
 						input: atemInput,
 						transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-						transitionSettings: TransitionSettings(config, partDefinition)
+						transitionSettings: TransitionSettings(context.config, partDefinition)
 					}
 				}
 			}),
-			...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
+			...GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
 		])
 	}
 }

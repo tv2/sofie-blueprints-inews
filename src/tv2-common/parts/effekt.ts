@@ -2,7 +2,6 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	IBlueprintPieceType,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
@@ -13,6 +12,7 @@ import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
 	EnableDSK,
+	ExtendedShowStyleContext,
 	GetTagForTransition,
 	literal,
 	PartDefinition,
@@ -23,13 +23,12 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { joinAssetToFolder, joinAssetToNetworkPath } from '../util'
 
 /** Has to be executed before calling EvaluateCues, as some cues may depend on it */
 export function CreateEffektForPartBase(
-	context: IShowStyleUserContext,
-	config: TV2BlueprintConfig,
+	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[],
 	layers: {
@@ -44,7 +43,6 @@ export function CreateEffektForPartBase(
 	if (effekt !== undefined) {
 		const ret = CreateEffektForPartInner(
 			context,
-			config,
 			pieces,
 			effekt.toString(),
 			partDefinition.externalId,
@@ -81,8 +79,7 @@ export function CreateEffektForPartInner<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ExtendedShowStyleContext<ShowStyleConfig>,
 	pieces: IBlueprintPiece[],
 	effekt: string,
 	externalId: string,
@@ -93,30 +90,30 @@ export function CreateEffektForPartInner<
 	},
 	label: string
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
-	if (!config.showStyle.BreakerConfig) {
-		context.notifyUserWarning(`Jingles have not been configured`)
+	if (!context.config.showStyle.BreakerConfig) {
+		context.core.notifyUserWarning(`Jingles have not been configured`)
 		return false
 	}
 
-	const effektConfig = config.showStyle.BreakerConfig.find(
+	const effektConfig = context.config.showStyle.BreakerConfig.find(
 		conf =>
 			conf.BreakerName.toString()
 				.trim()
 				.toUpperCase() === effekt.toUpperCase()
 	)
 	if (!effektConfig) {
-		context.notifyUserWarning(`Could not find effekt ${effekt}`)
+		context.core.notifyUserWarning(`Could not find effekt ${effekt}`)
 		return false
 	}
 
 	const file = effektConfig.ClipName.toString()
 
 	if (!file) {
-		context.notifyUserWarning(`Could not find file for ${effekt}`)
+		context.core.notifyUserWarning(`Could not find file for ${effekt}`)
 		return false
 	}
 
-	const fileName = joinAssetToFolder(config.studio.JingleFolder, file)
+	const fileName = joinAssetToFolder(context.config.studio.JingleFolder, file)
 
 	pieces.push({
 		externalId,
@@ -129,14 +126,14 @@ export function CreateEffektForPartInner<
 		content: literal<WithTimeline<VTContent>>({
 			fileName,
 			path: joinAssetToNetworkPath(
-				config.studio.JingleNetworkBasePath,
-				config.studio.JingleFolder,
+				context.config.studio.JingleNetworkBasePath,
+				context.config.studio.JingleFolder,
 				file,
-				config.studio.JingleFileExtension
+				context.config.studio.JingleFileExtension
 			), // full path on the source network storage
-			mediaFlowIds: [config.studio.JingleMediaFlowId],
+			mediaFlowIds: [context.config.studio.JingleMediaFlowId],
 			previewFrame: Number(effektConfig.StartAlpha),
-			ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
+			ignoreMediaObjectStatus: context.config.studio.JingleIgnoreStatus,
 			ignoreBlackFrames: true,
 			ignoreFreezeFrame: true,
 			timelineObjects: literal<TimelineObjectCoreExt[]>([
@@ -153,7 +150,7 @@ export function CreateEffektForPartInner<
 						file: fileName
 					}
 				}),
-				...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
+				...EnableDSK(context, 'JINGLE', { start: Number(context.config.studio.CasparPrerollDuration) }),
 				literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 					id: '',
 					enable: {
@@ -173,13 +170,13 @@ export function CreateEffektForPartInner<
 
 	return {
 		inTransition: {
-			blockTakeDuration: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
+			blockTakeDuration: TimeFromFrames(Number(effektConfig.Duration)) + context.config.studio.CasparPrerollDuration,
 			previousPartKeepaliveDuration:
-				TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
+				TimeFromFrames(Number(effektConfig.StartAlpha)) + context.config.studio.CasparPrerollDuration,
 			partContentDelayDuration:
 				TimeFromFrames(Number(effektConfig.Duration)) -
 				TimeFromFrames(Number(effektConfig.EndAlpha)) +
-				config.studio.CasparPrerollDuration
+				context.config.studio.CasparPrerollDuration
 		},
 		autoNext: false
 	}

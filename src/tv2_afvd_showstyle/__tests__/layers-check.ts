@@ -9,14 +9,14 @@ import {
 } from 'blueprints-integration'
 
 import { GetDSKSourceLayerNames } from 'tv2-common'
+import { makeMockGalleryContext } from '../../__mocks__/context'
 import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { ATEMModel } from '../../types/atem'
-import { getConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import OutputlayerDefaults from '../migrations/outputlayer-defaults'
 
 export function checkAllLayers(
-	context: IShowStyleUserContext,
+	_context: IShowStyleUserContext,
 	pieces: IBlueprintPieceGeneric[],
 	otherObjs?: TSR.TSRTimelineObjBase[]
 ) {
@@ -25,7 +25,8 @@ export function checkAllLayers(
 	const missingLayers: Array<string | number> = []
 	const wrongDeviceLayers: Array<string | number> = []
 
-	const config = getConfig(context)
+	// @todo: is this right?
+	const config = makeMockGalleryContext().config
 
 	const allSourceLayers: string[] = _.values(SourceLayer)
 		.map(l => l.toString())

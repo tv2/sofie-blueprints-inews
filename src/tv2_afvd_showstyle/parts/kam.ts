@@ -4,7 +4,6 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	ISegmentUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
@@ -15,6 +14,7 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	CreatePartKamBase,
+	ExtendedSegmentContext,
 	FindDSKJingle,
 	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
@@ -26,18 +26,17 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { BlueprintConfig } from '../helpers/config'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartKam(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partKamBase = CreatePartKamBase(context, config, partDefinition, totalWords)
+	const partKamBase = CreatePartKamBase(context, partDefinition, totalWords)
 
 	let part = partKamBase.part.part
 	const partTime = partKamBase.duration
@@ -47,7 +46,7 @@ export async function CreatePartKam(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	const jingleDSK = FindDSKJingle(config)
+	const jingleDSK = FindDSKJingle(context.config)
 
 	if (/\bcs *\d*/i.test(partDefinition.sourceDefinition.id)) {
 		pieces.push({
@@ -80,7 +79,7 @@ export async function CreatePartKam(
 							me: {
 								input: jingleDSK.Fill,
 								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(config, partDefinition)
+								transitionSettings: TransitionSettings(context.config, partDefinition)
 							}
 						}
 					})
@@ -89,14 +88,14 @@ export async function CreatePartKam(
 		})
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
-		const sourceInfoCam = findSourceInfo(config.sources, partDefinition.sourceDefinition)
+		const sourceInfoCam = findSourceInfo(context.config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
-			context.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
+			context.core.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
 		}
 		const atemInput = sourceInfoCam.port
 
-		part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+		part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
 
 		pieces.push({
 			externalId: partDefinition.externalId,
@@ -128,11 +127,11 @@ export async function CreatePartKam(
 							me: {
 								input: Number(atemInput),
 								transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-								transitionSettings: TransitionSettings(config, partDefinition)
+								transitionSettings: TransitionSettings(context.config, partDefinition)
 							}
 						}
 					}),
-					...GetSisyfosTimelineObjForCamera(config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
+					...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 				])
 			}
 		})
@@ -140,7 +139,6 @@ export async function CreatePartKam(
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

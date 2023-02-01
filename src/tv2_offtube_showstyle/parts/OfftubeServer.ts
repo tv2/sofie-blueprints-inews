@@ -1,23 +1,24 @@
+import { BlueprintResultPart, HackPartMediaObjectSubscription, IBlueprintActionManifest } from 'blueprints-integration'
 import {
-	BlueprintResultPart,
-	HackPartMediaObjectSubscription,
-	IBlueprintActionManifest,
-	ISegmentUserContext
-} from 'blueprints-integration'
-import { AddScript, CreateAdlibServer, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
+	AddScript,
+	CreateAdlibServer,
+	CreatePartServerBase,
+	ExtendedSegmentContext,
+	PartDefinition,
+	ServerPartProps
+} from 'tv2-common'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export async function OfftubeCreatePartServer(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
-	const basePartProps = await CreatePartServerBase(context, config, partDefinition, partProps, {
+	const basePartProps = await CreatePartServerBase(context, partDefinition, partProps, {
 		SourceLayer: {
 			PgmServer: partProps.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: partProps.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
@@ -49,12 +50,11 @@ export async function OfftubeCreatePartServer(
 	const file = basePartProps.file
 	const duration = basePartProps.duration
 
-	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
 
 	actions.push(
 		await CreateAdlibServer(
 			context,
-			config,
 			0,
 			partDefinition,
 			file,
@@ -85,7 +85,6 @@ export async function OfftubeCreatePartServer(
 
 	await OfftubeEvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

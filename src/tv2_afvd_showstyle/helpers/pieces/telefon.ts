@@ -1,23 +1,18 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	ISegmentUserContext
-} from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
 import {
 	Adlib,
 	CueDefinitionTelefon,
+	ExtendedShowStyleContext,
 	GetSisyfosTimelineObjForTelefon,
 	GraphicDisplayName,
 	PartDefinition
 } from 'tv2-common'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { BlueprintConfig } from '../config'
+import { GalleryBlueprintConfig } from '../config'
 import { EvaluateCueGraphic } from './graphic'
 
 export function EvaluateTelefon(
-	config: BlueprintConfig,
-	context: ISegmentUserContext,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -27,18 +22,16 @@ export function EvaluateTelefon(
 	adlib?: Adlib
 ) {
 	if (parsedCue.graphic) {
-		EvaluateCueGraphic(config, context, pieces, adlibPieces, actions, partId, parsedCue.graphic, partDefinition, adlib)
+		EvaluateCueGraphic(context, pieces, adlibPieces, actions, partId, parsedCue.graphic, partDefinition, adlib)
 
 		if ((!adlib && pieces.length) || (adlib && adlibPieces.length)) {
 			if (!adlib) {
-				const graphicPieceIndex = pieces.findIndex(p => p.name === GraphicDisplayName(config, parsedCue.graphic!))
-				const graphicPiece = pieces[graphicPieceIndex]
+				const graphicPiece = pieces.find(p => p.name === GraphicDisplayName(context.config, parsedCue.graphic!))
 				if (graphicPiece && graphicPiece.content && graphicPiece.content.timelineObjects) {
 					graphicPiece.content.timelineObjects.push(
-						...GetSisyfosTimelineObjForTelefon(config, SisyfosLLAyer.SisyfosSourceTLF)
+						...GetSisyfosTimelineObjForTelefon(context.config, SisyfosLLAyer.SisyfosSourceTLF)
 					)
 					graphicPiece.name = `${parsedCue.source}`
-					pieces[graphicPieceIndex] = graphicPiece
 				}
 			}
 		}

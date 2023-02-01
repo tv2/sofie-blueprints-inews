@@ -1,7 +1,7 @@
 import { BlueprintResultSegment, IBlueprintActionManifestDisplayContent, IngestSegment } from 'blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
 import { SharedSourceLayers } from 'tv2-constants'
-import { makeMockAFVDContext, SegmentUserContext } from '../../__mocks__/context'
+import { makeMockCoreGalleryContext, SegmentUserContext } from '../../__mocks__/context'
 import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { getSegment } from '../getSegment'
 import { SourceLayer } from '../layers'
@@ -49,7 +49,7 @@ function expectAllPartsToBeValid(result: BlueprintResultSegment) {
 describe('AFVD Blueprint', () => {
 	it('Accepts KAM CS 3', async () => {
 		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS 3</pi>\r\n`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -65,7 +65,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Accepts KAM CS3', async () => {
 		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS3</pi>\r\n`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -92,7 +92,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -112,7 +112,7 @@ describe('AFVD Blueprint', () => {
 			[['GRAFIK=FULL']],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -144,7 +144,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -189,7 +189,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -229,7 +229,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['Cannot create overlay graphic with FULL'])
 		expect(result.segment.isHidden).toBe(false)
@@ -281,7 +281,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext({ PreventOverlayWithFull: false })
+		const context = makeMockCoreGalleryContext({ studioConfig: { PreventOverlayWithFull: false } })
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -327,7 +327,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -373,7 +373,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -409,7 +409,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -444,7 +444,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<pi>Kam 2</pi>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -486,7 +486,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -519,7 +519,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -552,7 +552,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -597,7 +597,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -630,7 +630,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -663,7 +663,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -703,7 +703,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -733,7 +733,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n<p>Some script</p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -754,7 +754,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Creates Live1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -769,7 +769,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Creates Live 1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -784,7 +784,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Creates Feed1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=FEED1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -799,7 +799,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Creates Feed 1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=FEED 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -817,7 +817,7 @@ describe('AFVD Blueprint', () => {
 			[['EKSTERN=LIVE'], ['#kg direkte ODDER', ';0.00']],
 			`\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 
 		expectNotesToBe(context, ['EKSTERN source is not valid: "LIVE"'])
@@ -828,7 +828,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Creates effekt for KAM 1 EFFEKT 1', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 EFFEKT 1</pi></p>\r\n')
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -844,7 +844,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Creates mix for KAM 1 MIX 5', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 MIX 5</pi></p>\r\n')
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -863,7 +863,7 @@ describe('AFVD Blueprint', () => {
 			[['EKSTERN=LIVE 1 EFFEKT 1']],
 			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -885,7 +885,7 @@ describe('AFVD Blueprint', () => {
 			[['EKSTERN=LIVE 1 MIX 10']],
 			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -904,16 +904,18 @@ describe('AFVD Blueprint', () => {
 
 	it('Enables studio mics for LIVE when useStudioMics is enabled', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], '\r\n<p><a idref="0"></a></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesRM: [
-				{
-					SourceName: '1',
-					AtemSource: 10,
-					SisyfosLayers: [],
-					StudioMics: true,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesRM: [
+					{
+						SourceName: '1',
+						AtemSource: 10,
+						SisyfosLayers: [],
+						StudioMics: true,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
@@ -926,16 +928,18 @@ describe('AFVD Blueprint', () => {
 
 	it('Does not enable studio mics for LIVE when useStudioMics is disabled', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], '\r\n<p><a idref="0"></a></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesRM: [
-				{
-					SourceName: '1',
-					AtemSource: 10,
-					SisyfosLayers: [],
-					StudioMics: false,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesRM: [
+					{
+						SourceName: '1',
+						AtemSource: 10,
+						SisyfosLayers: [],
+						StudioMics: false,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
@@ -948,16 +952,18 @@ describe('AFVD Blueprint', () => {
 
 	it('Enables studio mics for KAM when useStudioMics is enabled', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1</pi></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesCam: [
-				{
-					SourceName: '1',
-					AtemSource: 1,
-					SisyfosLayers: [],
-					StudioMics: true,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesCam: [
+					{
+						SourceName: '1',
+						AtemSource: 1,
+						SisyfosLayers: [],
+						StudioMics: true,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
@@ -970,16 +976,18 @@ describe('AFVD Blueprint', () => {
 
 	it('Does not enable studio mics for KAM minus mic when useStudioMics is enabled', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 minus mic</pi></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesCam: [
-				{
-					SourceName: '1',
-					AtemSource: 1,
-					SisyfosLayers: [],
-					StudioMics: true,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesCam: [
+					{
+						SourceName: '1',
+						AtemSource: 1,
+						SisyfosLayers: [],
+						StudioMics: true,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
@@ -992,16 +1000,18 @@ describe('AFVD Blueprint', () => {
 
 	it('Does not enable studio mics for KAM when useStudioMics is disabled', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1</pi></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesCam: [
-				{
-					SourceName: '1',
-					AtemSource: 1,
-					SisyfosLayers: [],
-					StudioMics: false,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesCam: [
+					{
+						SourceName: '1',
+						AtemSource: 1,
+						SisyfosLayers: [],
+						StudioMics: false,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]

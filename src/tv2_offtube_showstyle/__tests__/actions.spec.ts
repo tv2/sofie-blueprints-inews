@@ -24,11 +24,11 @@ import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers, Sourc
 import { ActionExecutionContext } from '../../__mocks__/context'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { OfftubeStudioConfig, parseConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
+import { OfftubeStudioConfig, preprocessConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import mappingsDefaults from '../../tv2_offtube_studio/migrations/mappings-defaults'
 import { executeActionOfftube } from '../actions'
-import { parseConfig as parseShowStyleConfig } from '../helpers/config'
+import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 const RUNDOWN_ID = 'MOCK_ACTION_RUNDOWN'

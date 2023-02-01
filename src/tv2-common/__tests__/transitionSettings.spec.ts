@@ -1,17 +1,17 @@
 import { TSR } from 'blueprints-integration'
 import { PartType } from '../../tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
-import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { PartDefinition, PartTransition } from '../inewsConversion'
 import { TransitionSettings } from '../transitionSettings'
 
 const DURATION: number = 50
 
 describe('transitionsSettingsSuite', () => {
-	let mockConfig: TV2BlueprintConfig
+	let mockConfig: TV2ShowStyleConfig
 
 	beforeEach(() => {
-		mockConfig = ({} as unknown) as TV2BlueprintConfig
+		mockConfig = ({} as unknown) as TV2ShowStyleConfig
 	})
 
 	describe('TransitionSettings', () => {

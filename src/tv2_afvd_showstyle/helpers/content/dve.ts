@@ -1,6 +1,13 @@
-import { IShowStyleUserContext, SplitsContent, WithTimeline } from 'blueprints-integration'
-import { CueDefinitionDVE, DVEConfigInput, DVEOptions, MakeContentDVEBase, PartDefinition } from 'tv2-common'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
+import { SplitsContent, WithTimeline } from 'blueprints-integration'
+import {
+	CueDefinitionDVE,
+	DVEConfigInput,
+	DVEOptions,
+	ExtendedShowStyleContext,
+	MakeContentDVEBase,
+	PartDefinition
+} from 'tv2-common'
+import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 
 export const NUMBER_OF_DVE_BOXES = 4
@@ -29,11 +36,10 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 }
 
 export function MakeContentDVE(
-	context: IShowStyleUserContext,
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
-	return MakeContentDVEBase(context, config, partDefinition, parsedCue, dveConfig, AFVD_DVE_GENERATOR_OPTIONS)
+	return MakeContentDVEBase(context, partDefinition, parsedCue, dveConfig, AFVD_DVE_GENERATOR_OPTIONS)
 }

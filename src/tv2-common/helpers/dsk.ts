@@ -6,25 +6,25 @@ import {
 	TableConfigItemValue,
 	TSR
 } from 'blueprints-integration'
-import { AtemLLayerDSK, literal, SourceLayerAtemDSK } from 'tv2-common'
+import { AtemLLayerDSK, ExtendedShowStyleContext, literal, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
 import { AdlibTags, DSKRoles, SharedOutputLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { TableConfigItemDSK } from '../types'
 
-export function FindDSKFullGFX(config: TV2BlueprintConfigBase<TV2StudioConfigBase>): TableConfigItemDSK {
+export function FindDSKFullGFX(config: TV2ShowStyleConfig): TableConfigItemDSK {
 	return FindDSKWithRoles(config, [DSKRoles.FULLGFX])
 }
 
-export function FindDSKOverlayGFX(config: TV2BlueprintConfigBase<TV2StudioConfigBase>): TableConfigItemDSK {
+export function FindDSKOverlayGFX(config: TV2ShowStyleConfig): TableConfigItemDSK {
 	return FindDSKWithRoles(config, [DSKRoles.OVERLAYGFX])
 }
 
-export function FindDSKJingle(config: TV2BlueprintConfigBase<TV2StudioConfigBase>): TableConfigItemDSK {
+export function FindDSKJingle(config: TV2ShowStyleConfig): TableConfigItemDSK {
 	return FindDSKWithRoles(config, [DSKRoles.JINGLE])
 }
 
-function FindDSKWithRoles(config: TV2BlueprintConfigBase<TV2StudioConfigBase>, roles: DSKRoles[]): TableConfigItemDSK {
+function FindDSKWithRoles(config: TV2ShowStyleConfig, roles: DSKRoles[]): TableConfigItemDSK {
 	return config.dsk.find(dsk => dsk.Roles?.some(role => roles.includes(role))) ?? config.dsk[0]
 }
 
@@ -42,46 +42,42 @@ export function GetDSKCount(atemModel: ATEMModel) {
 }
 
 export function EnableDSK(
-	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
+	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
 	dsk: 'FULL' | 'OVL' | 'JINGLE',
 	enable?: TSR.TSRTimelineObj['enable']
 ): TSR.TSRTimelineObj[] {
 	const dskConf =
-		dsk === 'FULL' ? FindDSKFullGFX(config) : dsk === 'OVL' ? FindDSKOverlayGFX(config) : FindDSKJingle(config)
+		dsk === 'FULL'
+			? FindDSKFullGFX(context.config)
+			: dsk === 'OVL'
+			? FindDSKOverlayGFX(context.config)
+			: FindDSKJingle(context.config)
 
-	return [
-		literal<TSR.TimelineObjAtemDSK>({
-			id: '',
-			enable: enable ?? {
-				start: 0
+	return context.videoSwitcher.getDskTimelineObjects({
+		id: '',
+		enable: enable ?? {
+			start: 0
+		},
+		priority: 1,
+		layer: AtemLLayerDSK(dskConf.Number),
+		content: {
+			onAir: true,
+			sources: {
+				fillSource: dskConf.Fill,
+				cutSource: dskConf.Key
 			},
-			priority: 1,
-			layer: AtemLLayerDSK(dskConf.Number),
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.DSK,
-				dsk: {
-					onAir: true,
-					sources: {
-						fillSource: dskConf.Fill,
-						cutSource: dskConf.Key
-					},
-					properties: {
-						clip: Number(dskConf.Clip) * 10,
-						gain: Number(dskConf.Gain) * 10,
-						mask: {
-							enabled: false
-						}
-					}
-				}
+			properties: {
+				clip: Number(dskConf.Clip) * 10,
+				gain: Number(dskConf.Gain) * 10
 			}
-		})
-	]
+		}
+	})
 }
 
 export function CreateDSKBaselineAdlibs(
 	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
-	baseRank: number
+	baseRank: number,
+	videoSwitcher: VideoSwitcher
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
 	for (const dsk of config.dsk) {
@@ -97,21 +93,15 @@ export function CreateDSKBaselineAdlibs(
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_OFF],
 					invertOnAirState: true,
 					content: {
-						timelineObjects: [
-							literal<TSR.TimelineObjAtemDSK>({
-								id: '',
-								enable: { while: '1' },
-								priority: 10,
-								layer: AtemLLayerDSK(dsk.Number),
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.DSK,
-									dsk: {
-										onAir: false
-									}
-								}
-							})
-						]
+						timelineObjects: videoSwitcher.getDskTimelineObjects({
+							id: '',
+							enable: { while: '1' },
+							priority: 10,
+							layer: AtemLLayerDSK(dsk.Number),
+							content: {
+								onAir: false
+							}
+						})
 					}
 				})
 			} else {
@@ -124,34 +114,25 @@ export function CreateDSKBaselineAdlibs(
 					lifespan: PieceLifespan.OutOnRundownChange,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_ON],
 					content: {
-						timelineObjects: [
-							literal<TSR.TimelineObjAtemDSK>({
-								id: '',
-								enable: { while: '1' },
-								priority: 10,
-								layer: AtemLLayerDSK(dsk.Number),
-								content: {
-									deviceType: TSR.DeviceType.ATEM,
-									type: TSR.TimelineContentTypeAtem.DSK,
-									dsk: {
-										onAir: true,
-										sources: {
-											fillSource: dsk.Fill,
-											cutSource: dsk.Key
-										},
-										properties: {
-											tie: false,
-											preMultiply: false,
-											clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-											gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
-											mask: {
-												enabled: false
-											}
-										}
-									}
+						timelineObjects: videoSwitcher.getDskTimelineObjects({
+							id: '',
+							enable: { while: '1' },
+							priority: 10,
+							layer: AtemLLayerDSK(dsk.Number), // @todo
+							content: {
+								onAir: true,
+								sources: {
+									fillSource: dsk.Fill,
+									cutSource: dsk.Key
+								},
+								properties: {
+									tie: false,
+									preMultiply: false,
+									clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
+									gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
 								}
-							})
-						]
+							}
+						})
 					}
 				})
 			}
@@ -160,17 +141,18 @@ export function CreateDSKBaselineAdlibs(
 	return adlibItems
 }
 
-export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfigBase>): TSR.TSRTimelineObj[] {
-	return config.dsk.map(dsk => {
-		return literal<TSR.TimelineObjAtemDSK>({
-			id: '',
-			enable: { while: '1' },
-			priority: 0,
-			layer: AtemLLayerDSK(dsk.Number),
-			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.DSK,
-				dsk: {
+export function CreateDSKBaseline(
+	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
+	videoSwitcher: VideoSwitcher
+): TSR.TSRTimelineObj[] {
+	return config.dsk
+		.map(dsk => {
+			return videoSwitcher.getDskTimelineObjects({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: AtemLLayerDSK(dsk.Number), // @todo
+				content: {
 					onAir: dsk.DefaultOn,
 					sources: {
 						fillSource: dsk.Fill,
@@ -180,15 +162,12 @@ export function CreateDSKBaseline(config: TV2BlueprintConfigBase<TV2StudioConfig
 						tie: false,
 						preMultiply: false,
 						clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-						gain: Number(dsk.Gain) * 10, // input is percents (0-100), atem uses 1-000,
-						mask: {
-							enabled: false
-						}
+						gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
 					}
 				}
-			}
+			})
 		})
-	})
+		.flat()
 }
 
 export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {

@@ -1,14 +1,9 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	ISegmentUserContext,
-	PieceLifespan
-} from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,
 	CueDefinitionJingle,
+	ExtendedShowStyleContext,
 	generateExternalId,
 	GetTagForJingle,
 	GetTagForJingleNext,
@@ -19,11 +14,10 @@ import {
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
-import { BlueprintConfig } from '../config'
+import { GalleryBlueprintConfig } from '../config'
 
 export function EvaluateJingle(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -33,18 +27,18 @@ export function EvaluateJingle(
 	rank?: number,
 	effekt?: boolean
 ) {
-	if (!config.showStyle.BreakerConfig) {
-		context.notifyUserWarning(`Jingles have not been configured`)
+	if (!context.config.showStyle.BreakerConfig) {
+		context.core.notifyUserWarning(`Jingles have not been configured`)
 		return
 	}
 
 	let file = ''
 
-	const jingle = config.showStyle.BreakerConfig.find(brkr =>
+	const jingle = context.config.showStyle.BreakerConfig.find(brkr =>
 		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === parsedCue.clip.toUpperCase() : false
 	)
 	if (!jingle) {
-		context.notifyUserWarning(`Jingle ${parsedCue.clip} is not configured`)
+		context.core.notifyUserWarning(`Jingle ${parsedCue.clip} is not configured`)
 		return
 	} else {
 		file = jingle.ClipName.toString()
@@ -57,7 +51,7 @@ export function EvaluateJingle(
 			segmentExternalId: part.segmentExternalId
 		}
 		actions.push({
-			externalId: generateExternalId(context, userData),
+			externalId: generateExternalId(context.core, userData),
 			actionId: AdlibActionType.SELECT_JINGLE,
 			userData,
 			userDataManifest: {},
@@ -68,7 +62,7 @@ export function EvaluateJingle(
 				outputLayerId: SharedOutputLayers.JINGLE,
 				content: {
 					...createJingleContentAFVD(
-						config,
+						context,
 						file,
 						jingle.StartAlpha,
 						jingle.LoadFirstFrame,
@@ -91,10 +85,10 @@ export function EvaluateJingle(
 			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: SharedOutputLayers.JINGLE,
 			sourceLayerId: SourceLayer.PgmJingle,
-			prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
+			prerollDuration: context.config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
 			tags: [!effekt ? TallyTags.JINGLE : ''],
 			content: createJingleContentAFVD(
-				config,
+				context,
 				file,
 				jingle.StartAlpha,
 				jingle.LoadFirstFrame,
@@ -106,14 +100,14 @@ export function EvaluateJingle(
 }
 
 export function createJingleContentAFVD(
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	file: string,
 	alphaAtStart: number,
 	loadFirstFrame: boolean,
 	duration: number,
 	alphaAtEnd: number
 ) {
-	return CreateJingleContentBase(config, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
+	return CreateJingleContentBase(context, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
 		Caspar: {
 			PlayerJingle: CasparLLayer.CasparPlayerJingle
 		},

@@ -1,25 +1,20 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	ISegmentUserContext
-} from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
 import {
 	Adlib,
 	CreateInternalGraphic,
 	CueDefinitionGraphic,
+	ExtendedShowStyleContext,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
 	PartDefinition
 } from 'tv2-common'
-import { BlueprintConfig } from '../config'
+import { GalleryBlueprintConfig } from '../config'
 import { EvaluateCueGraphicPilot } from './graphicPilot'
 import { EvaluateCueRouting } from './routing'
 
 export function EvaluateCueGraphic(
-	config: BlueprintConfig,
-	context: ISegmentUserContext,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -29,14 +24,13 @@ export function EvaluateCueGraphic(
 	adlib?: Adlib
 ) {
 	if (parsedCue.routing) {
-		EvaluateCueRouting(config, context, pieces, adlibPieces, actions, partId, parsedCue.routing)
+		EvaluateCueRouting(context, pieces, partId, parsedCue.routing)
 	}
 
 	if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(config, context, pieces, adlibPieces, partId, parsedCue, partDefinition, adlib)
+		CreateInternalGraphic(context, pieces, adlibPieces, partId, parsedCue, partDefinition, adlib)
 	} else if (GraphicIsPilot(parsedCue)) {
 		EvaluateCueGraphicPilot(
-			config,
 			context,
 			pieces,
 			adlibPieces,

@@ -1,23 +1,17 @@
-import {
-	BlueprintResultPart,
-	HackPartMediaObjectSubscription,
-	IBlueprintActionManifest,
-	ISegmentUserContext
-} from 'blueprints-integration'
-import { AddScript, CreatePartServerBase, PartDefinition, ServerPartProps } from 'tv2-common'
+import { BlueprintResultPart, HackPartMediaObjectSubscription, IBlueprintActionManifest } from 'blueprints-integration'
+import { AddScript, CreatePartServerBase, ExtendedSegmentContext, PartDefinition, ServerPartProps } from 'tv2-common'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
-import { BlueprintConfig } from '../helpers/config'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartServer(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
-	const basePartProps = await CreatePartServerBase(context, config, partDefinition, partProps, {
+	const basePartProps = await CreatePartServerBase(context, partDefinition, partProps, {
 		SourceLayer: {
 			PgmServer: partProps.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: partProps.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
@@ -47,13 +41,12 @@ export async function CreatePartServer(
 
 	part = {
 		...part,
-		...CreateEffektForpart(context, config, partDefinition, pieces)
+		...CreateEffektForpart(context, partDefinition, pieces)
 	}
 	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

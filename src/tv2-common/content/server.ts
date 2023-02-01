@@ -1,7 +1,7 @@
 import { IShowStyleUserContext, TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
 import { GetSisyfosTimelineObjForServer, literal, PartDefinition, TransitionSettings } from 'tv2-common'
 import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { ServerContentProps, ServerPartProps } from '../parts'
 import { AdlibServerOfftubeOptions } from '../pieces'
@@ -26,7 +26,7 @@ type VTProps = Pick<
 >
 
 export function GetVTContentProperties(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	contentProps: Omit<ServerContentProps, 'mediaPlayerSession'>
 ): VTProps {
 	return literal<VTProps>({
@@ -47,7 +47,7 @@ export function GetVTContentProperties(
 
 export function MakeContentServer(
 	_context: IShowStyleUserContext,
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
@@ -60,7 +60,7 @@ export function MakeContentServer(
 }
 
 function GetServerTimeline(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
@@ -135,7 +135,7 @@ function GetServerTimeline(
 export function CutToServer(
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	atemLLayerMEPGM: string,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ) {

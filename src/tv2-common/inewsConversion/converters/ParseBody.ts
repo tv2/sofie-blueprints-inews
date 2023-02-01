@@ -3,7 +3,7 @@ import {
 	AtemTransitionStyleFromString,
 	CueDefinitionFromLayout,
 	PostProcessDefinitions,
-	TV2BlueprintConfig,
+	TV2ShowStyleConfig,
 	UnparsedCue
 } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
@@ -181,7 +181,7 @@ const ENGINE_CUE = /ENGINE ?([^\s]+)/i
 const MAX_ALLOWED_TRANSITION_FRAMES = 250
 
 export function ParseBody(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	segmentId: string,
 	segmentName: string,
 	body: string,
@@ -429,7 +429,7 @@ function cueInLine(line: string) {
 }
 
 /** Returns all the cues in a given line as parsed cues. */
-function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2BlueprintConfig): CueDefinition[] {
+function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2ShowStyleConfig): CueDefinition[] {
 	if (!cueInLine(line)) {
 		return []
 	}

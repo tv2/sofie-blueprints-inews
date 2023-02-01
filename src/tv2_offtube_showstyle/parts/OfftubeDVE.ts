@@ -4,21 +4,19 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, PartDefinitionDVE, PartTime } from 'tv2-common'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { AddScript, ExtendedSegmentContext, PartDefinitionDVE, PartTime } from 'tv2-common'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export async function OfftubeCreatePartDVE(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinitionDVE,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 
 	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
@@ -33,7 +31,6 @@ export async function OfftubeCreatePartDVE(
 
 	await OfftubeEvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

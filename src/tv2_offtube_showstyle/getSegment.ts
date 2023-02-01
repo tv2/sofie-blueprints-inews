@@ -8,11 +8,11 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { getSegmentBase, literal } from 'tv2-common'
+import { ExtendedSegmentContextImpl, getSegmentBase, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
-import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
+import { OfftubeBlueprintConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
 import { OfftubeCreatePartGrafik } from './parts/OfftubeGrafik'
@@ -22,13 +22,12 @@ import { CreatePartUnknown } from './parts/OfftubeUnknown'
 import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export async function getSegment(
-	context: ISegmentUserContext,
+	coreContext: ISegmentUserContext,
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
-	const config = getConfig(context)
+	const context = new ExtendedSegmentContextImpl<OfftubeBlueprintConfig>(coreContext)
 
 	const result: BlueprintResultSegment = await getSegmentBase(context, ingestSegment, {
-		getConfig,
 		CreatePartContinuity,
 		CreatePartUnknown,
 		CreatePartKam: OfftubeCreatePartKam,
@@ -44,7 +43,7 @@ export async function getSegment(
 
 	const blueprintParts = result.parts
 
-	postProcessPartTimelineObjects(context, config, blueprintParts)
+	postProcessPartTimelineObjects(context, blueprintParts)
 
 	return {
 		segment: result.segment,
@@ -52,10 +51,7 @@ export async function getSegment(
 	}
 }
 
-function CreatePartContinuity(
-	config: OfftubeShowstyleBlueprintConfig,
-	ingestSegment: IngestSegment
-): BlueprintResultPart {
+function CreatePartContinuity(config: OfftubeBlueprintConfig, ingestSegment: IngestSegment): BlueprintResultPart {
 	return {
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,

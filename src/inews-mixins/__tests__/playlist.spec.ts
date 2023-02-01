@@ -7,8 +7,8 @@ import {
 } from 'blueprints-integration'
 import { getRundownWithBackTime } from 'inews-mixins'
 import { ShowStyleUserContext } from '../../__mocks__/context'
-import { parseConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
-import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { preprocessConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { makeSegmentWithTime } from './rundownDuration.spec'
 

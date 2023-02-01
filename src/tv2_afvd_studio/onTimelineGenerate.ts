@@ -6,35 +6,25 @@ import {
 	PartEndState,
 	TimelinePersistentState
 } from 'blueprints-integration'
-import { onTimelineGenerate, PieceMetaData } from 'tv2-common'
-import { getConfig } from '../tv2_afvd_showstyle/helpers/config'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from './layers'
+import { ExtendedTimelineContext, onTimelineGenerate, PieceMetaData } from 'tv2-common'
+import { CasparLLayer, SisyfosLLAyer } from './layers'
 
 export function onTimelineGenerateAFVD(
-	context: ITimelineEventContext,
+	coreContext: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ): Promise<BlueprintResultTimeline> {
-	return onTimelineGenerate(
-		context,
-		timeline,
-		previousPersistentState,
-		previousPartEndState,
-		resolvedPieces,
-		getConfig,
-		{
-			Caspar: {
-				ClipPending: CasparLLayer.CasparPlayerClipPending
-			},
-			Sisyfos: {
-				ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
-				PlayerA: SisyfosLLAyer.SisyfosSourceServerA,
-				PlayerB: SisyfosLLAyer.SisyfosSourceServerB
-			}
+	const context = new ExtendedTimelineContext(coreContext)
+	return onTimelineGenerate(context, timeline, previousPersistentState, previousPartEndState, resolvedPieces, {
+		Caspar: {
+			ClipPending: CasparLLayer.CasparPlayerClipPending
 		},
-		CasparLLayer.CasparPlayerClipPending,
-		AtemLLayer.AtemMEProgram
-	)
+		Sisyfos: {
+			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
+			PlayerA: SisyfosLLAyer.SisyfosSourceServerA,
+			PlayerB: SisyfosLLAyer.SisyfosSourceServerB
+		}
+	})
 }

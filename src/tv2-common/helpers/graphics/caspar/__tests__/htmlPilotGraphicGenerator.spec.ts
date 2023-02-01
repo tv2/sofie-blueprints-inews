@@ -1,41 +1,17 @@
-import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from 'blueprints-integration'
+import { PieceLifespan, TSR } from 'blueprints-integration'
 import { CueDefinitionGraphic, GraphicPilot, HtmlPilotGraphicGenerator, literal } from 'tv2-common'
 import { CueType, SharedGraphicLLayer } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../../__mocks__/context'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig, parseConfig as parseShowStyleConfig } from '../../../../../tv2_afvd_showstyle/helpers/config'
-import { parseConfig as parseStudioConfig } from '../../../../../tv2_afvd_studio/helpers/config'
-import mappingsDefaults from '../../../../../tv2_afvd_studio/migrations/mappings-defaults'
+import { makeMockGalleryContext } from '../../../../../__mocks__/context'
 import { pilotGeneratorSettingsOfftube } from '../../../../../tv2_offtube_showstyle/cues/OfftubeGraphics'
 
-const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 function makeMockContext() {
-	const rundown = literal<IBlueprintRundownDB>({
-		externalId: RUNDOWN_EXTERNAL_ID,
-		name: RUNDOWN_EXTERNAL_ID,
-		_id: '',
-		showStyleVariantId: '',
-		timing: {
-			type: PlaylistTimingType.None
-		}
-	})
-	const mockContext = new SegmentUserContext(
-		'test',
-		mappingsDefaults,
-		parseStudioConfig,
-		parseShowStyleConfig,
-		rundown._id
-	)
-	mockContext.studioConfig = defaultStudioConfig as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
-	return mockContext
+	// @todo: perhaps make the tests run with two contexts
+	return makeMockGalleryContext()
 }
 
 function makeGenerator(cue: CueDefinitionGraphic<GraphicPilot>) {
 	const context = makeMockContext()
-	const config = getConfig(context)
 	const generator = new HtmlPilotGraphicGenerator({
-		config,
 		context,
 		partId: 'part01',
 		parsedCue: cue,

@@ -4,23 +4,21 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, CueDefinitionEkstern, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, CueDefinitionEkstern, ExtendedSegmentContext, PartDefinition, PartTime } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { BlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { GalleryBlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartLive(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.title || 'Ekstern',
@@ -33,11 +31,10 @@ export async function CreatePartLive(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

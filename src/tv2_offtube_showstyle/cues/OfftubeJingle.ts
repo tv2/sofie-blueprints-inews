@@ -1,14 +1,9 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	ISegmentUserContext,
-	PieceLifespan
-} from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,
 	CueDefinitionJingle,
+	ExtendedSegmentContext,
 	generateExternalId,
 	GetJinglePartProperties,
 	GetTagForJingle,
@@ -20,12 +15,11 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	pieces: Array<IBlueprintPiece<PieceMetaData>>,
 	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -35,27 +29,27 @@ export function OfftubeEvaluateJingle(
 	_rank?: number,
 	effekt?: boolean
 ) {
-	if (!config.showStyle.BreakerConfig) {
-		context.notifyUserWarning(`Jingles have not been configured`)
+	if (!context.config.showStyle.BreakerConfig) {
+		context.core.notifyUserWarning(`Jingles have not been configured`)
 		return
 	}
 
 	let file = ''
 
-	const jingle = config.showStyle.BreakerConfig.find(brkr =>
+	const jingle = context.config.showStyle.BreakerConfig.find(brkr =>
 		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === parsedCue.clip.toUpperCase() : false
 	)
 	if (!jingle) {
-		context.notifyUserWarning(`Jingle ${parsedCue.clip} is not configured`)
+		context.core.notifyUserWarning(`Jingle ${parsedCue.clip} is not configured`)
 		return
 	} else {
 		file = jingle.ClipName.toString()
 	}
 
-	const p = GetJinglePartProperties(context, config, part)
+	const p = GetJinglePartProperties(context, part)
 
 	if (JSON.stringify(p) === JSON.stringify({})) {
-		context.notifyUserWarning(`Could not create adlib for ${parsedCue.clip}`)
+		context.core.notifyUserWarning(`Could not create adlib for ${parsedCue.clip}`)
 		return
 	}
 
@@ -65,7 +59,7 @@ export function OfftubeEvaluateJingle(
 		segmentExternalId: part.segmentExternalId
 	}
 	actions.push({
-		externalId: generateExternalId(context, userData),
+		externalId: generateExternalId(context.core, userData),
 		actionId: AdlibActionType.SELECT_JINGLE,
 		userData,
 		userDataManifest: {},
@@ -75,7 +69,7 @@ export function OfftubeEvaluateJingle(
 			outputLayerId: OfftubeOutputLayers.JINGLE,
 			content: {
 				...createJingleContentOfftube(
-					config,
+					context,
 					file,
 					jingle.StartAlpha,
 					jingle.LoadFirstFrame,
@@ -103,9 +97,9 @@ export function OfftubeEvaluateJingle(
 				sisyfosLayers: []
 			}
 		},
-		prerollDuration: config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
+		prerollDuration: context.config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
 		content: createJingleContentOfftube(
-			config,
+			context,
 			file,
 			jingle.StartAlpha,
 			jingle.LoadFirstFrame,
@@ -122,14 +116,14 @@ export function OfftubeEvaluateJingle(
 }
 
 export function createJingleContentOfftube(
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	file: string,
 	alphaAtStart: number,
 	loadFirstFrame: boolean,
 	duration: number,
 	alphaAtEnd: number
 ) {
-	return CreateJingleContentBase(config, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
+	return CreateJingleContentBase(context, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
 		Caspar: {
 			PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
 			PlayerJinglePreload: OfftubeCasparLLayer.CasparPlayerJinglePreload

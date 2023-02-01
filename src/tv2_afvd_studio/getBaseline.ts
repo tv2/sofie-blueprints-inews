@@ -5,11 +5,11 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { literal } from 'tv2-common'
+import { ExtendedStudioContext, literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { SharedGraphicLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
-import { getStudioConfig } from './helpers/config'
+import { GalleryStudioConfig } from './helpers/config'
 import { AtemLLayer, SisyfosLLAyer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
 
@@ -32,9 +32,9 @@ function convertMappings<T>(input: BlueprintMappings, func: (k: string, v: Bluep
 	return _.map(_.keys(input), k => func(k, input[k]))
 }
 
-export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
-	const config = getStudioConfig(context)
-	const mappings = context.getStudioMappings()
+export function getBaseline(coreContext: IStudioContext): BlueprintResultBaseline {
+	const context = new ExtendedStudioContext<GalleryStudioConfig>(coreContext)
+	const mappings = coreContext.getStudioMappings()
 
 	const atemMeMappings = filterMappings(
 		mappings,
@@ -150,10 +150,10 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					type: TSR.TimelineContentTypeAtem.MEDIAPLAYER,
 					mediaPlayer: {
 						sourceType: TSR.MediaSourceType.Clip,
-						clipIndex: config.studio.AtemSettings.MP1Baseline.Clip - 1, // counting from 1 in the config
+						clipIndex: context.config.studio.AtemSettings.MP1Baseline.Clip - 1, // counting from 1 in the config
 						stillIndex: 0,
-						playing: config.studio.AtemSettings.MP1Baseline.Playing,
-						loop: config.studio.AtemSettings.MP1Baseline.Loop,
+						playing: context.config.studio.AtemSettings.MP1Baseline.Playing,
+						loop: context.config.studio.AtemSettings.MP1Baseline.Loop,
 						atBeginning: false,
 						clipFrame: 0
 					}

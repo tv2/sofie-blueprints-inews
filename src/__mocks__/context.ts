@@ -27,13 +27,27 @@ import {
 	PackageInfo,
 	PieceLifespan,
 	PlaylistTimingType,
-	Time
+	Time,
+	TSR
 } from 'blueprints-integration'
-import { ITV2ActionExecutionContext, PieceMetaData } from 'tv2-common'
+import {
+	AuxProps,
+	DskProps,
+	ExtendedSegmentContext,
+	ITV2ActionExecutionContext,
+	MixEffectProps,
+	PieceMetaData,
+	VideoSwitcher,
+	VideoSwitcherImpl
+} from 'tv2-common'
 import { NoteType } from 'tv2-constants'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../tv2_afvd_showstyle/__tests__/configs'
-import { parseConfig as parseShowStyleConfigAFVD } from '../tv2_afvd_showstyle/helpers/config'
-import { parseConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
+import {
+	GalleryBlueprintConfig,
+	GalleryShowStyleConfig,
+	preprocessConfig as parseShowStyleConfigAFVD
+} from '../tv2_afvd_showstyle/helpers/config'
+import { preprocessConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
 import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
 
 export function getHash(str: string): string {
@@ -44,7 +58,7 @@ export function getHash(str: string): string {
 		.replace(/[\+\/\=]/gi, '_') // remove +/= from strings, because they cause troubles
 }
 
-// tslint:disable-next-line: max-classes-per-file
+// tslint:disable: max-classes-per-file
 export class CommonContext implements ICommonContext {
 	protected savedNotes: PartNote[] = []
 	protected notesRundownId?: string
@@ -104,7 +118,6 @@ export class CommonContext implements ICommonContext {
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class UserNotesContext extends CommonContext implements IUserNotesContext {
 	constructor(contextName: string, rundownId?: string, segmentId?: string, partId?: string) {
 		super(contextName, rundownId, segmentId, partId)
@@ -122,7 +135,6 @@ export class UserNotesContext extends CommonContext implements IUserNotesContext
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class StudioContext extends CommonContext implements IStudioContext {
 	public studioId: string = 'studio0'
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
@@ -155,7 +167,6 @@ export class StudioContext extends CommonContext implements IStudioContext {
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class ShowStyleContext extends StudioContext implements IShowStyleContext, IPackageInfoContext {
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
 	public showStyleConfig: { [key: string]: ConfigItemValue } = {}
@@ -189,7 +200,6 @@ export class ShowStyleContext extends StudioContext implements IShowStyleContext
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class ShowStyleUserContext extends ShowStyleContext implements IUserNotesContext {
 	public notifyUserError(message: string, _params?: { [key: string]: any }): void {
 		this.pushNote(NoteType.NOTIFY_USER_ERROR, message)
@@ -203,7 +213,6 @@ export class ShowStyleUserContext extends ShowStyleContext implements IUserNotes
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class GetRundownContext extends ShowStyleUserContext implements IGetRundownContext {
 	public async getCurrentPlaylist(): Promise<Readonly<IBlueprintRundownPlaylist> | undefined> {
 		return undefined
@@ -218,7 +227,6 @@ export class GetRundownContext extends ShowStyleUserContext implements IGetRundo
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class RundownContext extends ShowStyleContext implements IRundownContext {
 	public readonly rundownId: string = 'rundown0'
 	public readonly rundown: Readonly<IBlueprintRundownDB>
@@ -246,7 +254,6 @@ export class RundownContext extends ShowStyleContext implements IRundownContext 
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class RundownUserContext extends RundownContext implements IRundownUserContext {
 	public notifyUserError(message: string, _params?: { [key: string]: any }): void {
 		this.pushNote(NoteType.NOTIFY_USER_ERROR, message)
@@ -260,7 +267,6 @@ export class RundownUserContext extends RundownContext implements IRundownUserCo
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class SegmentUserContext extends RundownContext implements ISegmentUserContext {
 	constructor(
 		contextName: string,
@@ -300,7 +306,6 @@ export class SegmentUserContext extends RundownContext implements ISegmentUserCo
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 	implements ISyncIngestUpdateToPartInstanceContext {
 	public syncedPieceInstances: string[] = []
@@ -405,7 +410,6 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class ActionExecutionContext extends ShowStyleUserContext implements ITV2ActionExecutionContext {
 	public currentPart: IBlueprintPartInstance
 	public currentPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>
@@ -637,15 +641,38 @@ export interface PartNote {
 	message: string
 }
 
-export function makeMockAFVDContext(studioConfigOverrides?: Partial<StudioConfig>) {
-	const mockContext = new SegmentUserContext(
+// @ts-ignore
+class MockVideoSwitcher implements VideoSwitcher {
+	public getMixEffectTimelineObject = (properties: MixEffectProps) => (properties as any) as TSR.TSRTimelineObj
+	public getDskTimelineObjects = (properties: DskProps) => ([properties] as any) as TSR.TSRTimelineObj[]
+	public getAuxTimelineObject = (properties: AuxProps) => (properties as any) as TSR.TSRTimelineObj
+}
+
+interface ConfigOverrides {
+	studioConfig?: Partial<StudioConfig>
+	showStyleConfig?: Partial<GalleryShowStyleConfig>
+}
+
+export function makeMockCoreGalleryContext(overrides?: ConfigOverrides) {
+	const mockCoreContext = new SegmentUserContext(
 		'test',
 		mappingsDefaultsAFVD,
 		parseStudioConfigAFVD,
 		parseShowStyleConfigAFVD
 	)
-	mockContext.studioConfig = { ...defaultStudioConfig, ...studioConfigOverrides } as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
+	mockCoreContext.studioConfig = { ...defaultStudioConfig, ...overrides?.studioConfig } as any
+	mockCoreContext.showStyleConfig = { ...defaultShowStyleConfig, ...overrides?.showStyleConfig } as any
+	return mockCoreContext
+}
 
+export function makeMockGalleryContext(overrides?: ConfigOverrides) {
+	const mockCoreContext = makeMockCoreGalleryContext(overrides)
+	const config = { ...(mockCoreContext.getStudioConfig() as any), ...(mockCoreContext.getShowStyleConfig() as any) }
+	const mockContext: ExtendedSegmentContext<GalleryBlueprintConfig> = {
+		core: mockCoreContext,
+		// @todo: this is awful, fix it perhaps by replacing defaultShowStyleConfig and defaultStudioConfig with preparsed config?!
+		config,
+		videoSwitcher: VideoSwitcherImpl.getVideoSwitcher(config) // new MockVideoSwitcher()
+	}
 	return mockContext
 }

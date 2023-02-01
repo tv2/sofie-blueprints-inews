@@ -19,23 +19,10 @@ import {
 	PieceMetaData
 } from 'tv2-common'
 import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../__mocks__/context'
-import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_NAME } from '../../../__tests__/configs'
+import { makeMockGalleryContext } from '../../../../__mocks__/context'
+import { OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
-import { BlueprintConfig, getConfig, parseConfig as parseShowStyleConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
-
-function makeMockContext() {
-	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
-	mockContext.studioConfig = defaultStudioConfig as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-	return mockContext
-}
-
-const config = getConfig(makeMockContext())
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
@@ -119,8 +106,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -194,8 +180,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -305,12 +290,9 @@ describe('grafik piece', () => {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		const newConfig = JSON.parse(JSON.stringify(config)) as BlueprintConfig
-		newConfig.studio.PreventOverlayWithFull = false
 
 		EvaluateCueGraphic(
-			newConfig,
-			makeMockContext(),
+			makeMockGalleryContext({ studioConfig: { PreventOverlayWithFull: false } }),
 			pieces,
 			adLibPieces,
 			actions,
@@ -424,8 +406,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -488,8 +469,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -522,8 +502,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -556,8 +535,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -604,8 +582,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -680,8 +657,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -755,8 +731,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -872,8 +847,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -915,8 +889,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,
@@ -953,8 +926,7 @@ describe('grafik piece', () => {
 		const partId = '0000000001'
 
 		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
+			makeMockGalleryContext(),
 			pieces,
 			adLibPieces,
 			actions,

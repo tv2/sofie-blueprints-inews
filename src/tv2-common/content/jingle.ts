@@ -1,7 +1,6 @@
 import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import { TimeFromFrames } from 'tv2-common'
-import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
-import { EnableDSK, FindDSKJingle } from '../helpers'
+import { EnableDSK, ExtendedShowStyleContext, FindDSKJingle, TimeFromFrames } from 'tv2-common'
+import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { joinAssetToFolder, joinAssetToNetworkPath, literal } from '../util'
 
@@ -20,7 +19,7 @@ export interface JingleLayers {
 }
 
 export function CreateJingleExpectedMedia(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	jingle: string,
 	alphaAtStart: number,
 	duration: number,
@@ -51,7 +50,7 @@ export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	config: ShowStyleConfig,
+	context: ExtendedShowStyleContext<ShowStyleConfig>,
 	file: string,
 	alphaAtStart: number,
 	loadFirstFrame: boolean,
@@ -59,6 +58,7 @@ export function CreateJingleContentBase<
 	alphaAtEnd: number,
 	layers: JingleLayers
 ) {
+	const { config } = context
 	const fileName = joinAssetToFolder(config.studio.JingleFolder, file)
 	const jingleDSK = FindDSKJingle(config)
 	return literal<WithTimeline<VTContent>>({
@@ -66,9 +66,9 @@ export function CreateJingleContentBase<
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			CreateJingleCasparTimelineObject(fileName, loadFirstFrame, layers),
 
-			...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
+			...EnableDSK(context, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 
-			...(layers.ATEM.USKJinglePreview
+			...(layers.ATEM.USKJinglePreview // @todo: this is a QBOX-only feature, should be refactored at some point
 				? [
 						literal<TSR.TimelineObjAtemME>({
 							id: '',

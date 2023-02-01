@@ -5,13 +5,19 @@ import {
 	PieceLifespan,
 	TSR
 } from 'blueprints-integration'
-import { CreateTimingEnable, CueDefinitionClearGrafiks, GetDefaultOut, literal } from 'tv2-common'
+import {
+	CreateTimingEnable,
+	CueDefinitionClearGrafiks,
+	ExtendedShowStyleContext,
+	GetDefaultOut,
+	literal
+} from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
+import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 
 export function EvaluateClearGrafiks(
-	config: BlueprintConfig,
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	_adLibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -35,7 +41,7 @@ export function EvaluateClearGrafiks(
 			externalId: partId,
 			name: `CLEAR ${sourceLayerId}`,
 			enable: {
-				start: CreateTimingEnable(parsedCue, GetDefaultOut(config)).enable.start,
+				start: CreateTimingEnable(parsedCue, GetDefaultOut(context.config)).enable.start,
 				duration: 1000
 			},
 			outputLayerId: SharedOutputLayers.SEC,
@@ -51,12 +57,12 @@ export function EvaluateClearGrafiks(
 	pieces.push({
 		externalId: partId,
 		name: 'CLEAR',
-		...CreateTimingEnable(parsedCue, GetDefaultOut(config)),
+		...CreateTimingEnable(parsedCue, GetDefaultOut(context.config)),
 		outputLayerId: SharedOutputLayers.SEC,
 		sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
-			timelineObjects: config.studio.HTMLGraphics
+			timelineObjects: context.config.studio.HTMLGraphics
 				? [
 						literal<TSR.TimelineObjVIZMSEClearAllElements>({
 							id: '',
@@ -69,7 +75,7 @@ export function EvaluateClearGrafiks(
 							content: {
 								deviceType: TSR.DeviceType.VIZMSE,
 								type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-								showName: config.selectedGfxSetup.OvlShowName
+								showName: context.config.selectedGfxSetup.OvlShowName
 							}
 						})
 				  ]

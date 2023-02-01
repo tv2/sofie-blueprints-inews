@@ -1,15 +1,10 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintPiece,
-	ISegmentUserContext,
-	PieceLifespan,
-	SplitsContent
-} from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan, SplitsContent } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CalculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
+	ExtendedSegmentContext,
 	generateExternalId,
 	GetDVETemplate,
 	GetTagForDVE,
@@ -21,12 +16,11 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateDVE(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
@@ -38,20 +32,20 @@ export function OfftubeEvaluateDVE(
 		return
 	}
 
-	const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.template)
+	const rawTemplate = GetDVETemplate(context.config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
-		context.notifyUserWarning(`Could not find template ${parsedCue.template}`)
+		context.core.notifyUserWarning(`Could not find template ${parsedCue.template}`)
 		return
 	}
 
 	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-		context.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
+		context.core.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}
 
-	const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
+	const adlibContent = OfftubeMakeContentDVE(context, partDefinition, parsedCue, rawTemplate)
 
-	const pieceContent = OfftubeMakeContentDVE(context, config, partDefinition, parsedCue, rawTemplate)
+	const pieceContent = OfftubeMakeContentDVE(context, partDefinition, parsedCue, rawTemplate)
 
 	if (adlibContent.valid && pieceContent.valid) {
 		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
@@ -72,7 +66,7 @@ export function OfftubeEvaluateDVE(
 				...pieceContent.content,
 				timelineObjects: [...pieceContent.content.timelineObjects]
 			},
-			prerollDuration: Number(config.studio.CasparPrerollDuration) || 0,
+			prerollDuration: Number(context.config.studio.CasparPrerollDuration) || 0,
 			metaData: literal<DVEPieceMetaData>({
 				mediaPlayerSessions: [partDefinition.segmentExternalId],
 				sources: parsedCue.sources,
@@ -103,7 +97,7 @@ export function OfftubeEvaluateDVE(
 			segmentExternalId: partDefinition.segmentExternalId
 		}
 		actions.push({
-			externalId: generateExternalId(context, userData),
+			externalId: generateExternalId(context.core, userData),
 			actionId: AdlibActionType.SELECT_DVE,
 			userData,
 			userDataManifest: {},

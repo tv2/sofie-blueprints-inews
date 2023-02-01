@@ -1,15 +1,9 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	ISegmentUserContext
-} from 'blueprints-integration'
-import { CueDefinitionGraphicDesign, EvaluateDesignBase } from 'tv2-common'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
+import { CueDefinitionGraphicDesign, EvaluateDesignBase, ExtendedSegmentContext } from 'tv2-common'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 
 export function OfftubeEvaluateGraphicDesign(
-	config: OfftubeShowstyleBlueprintConfig,
-	context: ISegmentUserContext,
+	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -18,5 +12,5 @@ export function OfftubeEvaluateGraphicDesign(
 	adlib?: boolean,
 	rank?: number
 ) {
-	EvaluateDesignBase(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, rank)
+	EvaluateDesignBase(context, pieces, adlibPieces, actions, partId, parsedCue, adlib, rank)
 }

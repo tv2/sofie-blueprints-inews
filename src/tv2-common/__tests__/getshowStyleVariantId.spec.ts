@@ -1,5 +1,5 @@
-import { IBlueprintShowStyleVariant, IngestRundown, IStudioUserContext } from 'blueprints-integration'
-import { makeMockAFVDContext } from '../../__mocks__/context'
+import { IBlueprintShowStyleVariant, IngestRundown } from 'blueprints-integration'
+import { makeMockCoreGalleryContext } from '../../__mocks__/context'
 import { getShowStyleVariantId } from '../getShowStyleVariantId'
 
 describe('getShowStyleVariantId', () => {
@@ -24,8 +24,8 @@ describe('getShowStyleVariantId', () => {
 		}
 	}
 
-	function getMockContext(): IStudioUserContext {
-		return makeMockAFVDContext()
+	function getMockContext() {
+		return makeMockCoreGalleryContext()
 	}
 
 	function getShowStyleVariants(variantNames?: string[]): IBlueprintShowStyleVariant[] {

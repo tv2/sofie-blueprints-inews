@@ -1,8 +1,8 @@
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'
-import { ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig } from '../helpers/config'
 
-const blankShowStyleConfig: ShowStyleConfig = {
+const blankShowStyleConfig: GalleryShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	DVEStyles: [],
 	GfxTemplates: [],

@@ -1,11 +1,10 @@
-import { IBlueprintPiece, IShowStyleUserContext, TSR } from 'blueprints-integration'
+import { IBlueprintPiece, TSR } from 'blueprints-integration'
 import { SharedSourceLayers } from '../../tv2-constants'
 import { CalculateTime } from '../cueTiming'
 import { CueDefinitionRobotCamera } from '../inewsConversion'
 import { createTelemetricsPieceForRobotCamera, ROBOT_CAMERA_NAME_PREFIX } from '../pieces/telemetric'
 
 export function EvaluateCueRobotCamera(
-	_context: IShowStyleUserContext,
 	cueDefinition: CueDefinitionRobotCamera,
 	pieces: IBlueprintPiece[],
 	externalId: string

@@ -9,6 +9,7 @@ import {
 } from 'blueprints-integration'
 import {
 	CutToServer,
+	ExtendedShowStyleContext,
 	GetTagForServer,
 	GetTagForServerNext,
 	MakeContentServer,
@@ -62,21 +63,20 @@ export async function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ExtendedShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps,
 	layers: ServerPartLayers
 ): Promise<{ part: BlueprintResultPart; file: string; duration: number; invalid?: true }> {
 	if (isVideoIdMissing(partDefinition)) {
-		context.notifyUserWarning('Video ID not set!')
+		context.core.notifyUserWarning('Video ID not set!')
 		return { part: CreatePartInvalid(partDefinition), file: '', duration: 0, invalid: true }
 	}
 
 	const file = getVideoId(partDefinition)
-	const mediaObjectDurationSec = await context.hackGetMediaObjectDuration(file)
+	const mediaObjectDurationSec = await context.core.hackGetMediaObjectDuration(file)
 	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
-	const sourceDuration = getSourceDuration(mediaObjectDuration, config.studio.ServerPostrollDuration)
+	const sourceDuration = getSourceDuration(mediaObjectDuration, context.config.studio.ServerPostrollDuration)
 	const duration = getDuration(mediaObjectDuration, sourceDuration, partProps)
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
 	const actualDuration = getActualDuration(duration, sanitisedScript, partProps)
@@ -100,9 +100,9 @@ export async function CreatePartServerBase<
 		partProps,
 		contentProps,
 		layers,
-		context,
-		config,
-		config.studio.CasparPrerollDuration
+		context.core,
+		context.config,
+		context.config.studio.CasparPrerollDuration
 	)
 
 	const pgmBlueprintPiece = getPgmBlueprintPiece(
@@ -110,8 +110,8 @@ export async function CreatePartServerBase<
 		partProps,
 		contentProps,
 		layers,
-		config,
-		config.studio.CasparPrerollDuration
+		context.config,
+		context.config.studio.CasparPrerollDuration
 	)
 
 	pieces.push(serverSelectionBlueprintPiece)

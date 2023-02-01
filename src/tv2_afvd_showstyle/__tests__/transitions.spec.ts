@@ -3,11 +3,11 @@ import { BlueprintResultSegment, IBlueprintPart, IBlueprintPiece, IngestSegment,
 import { TimeFromFrames } from 'tv2-common'
 import * as _ from 'underscore'
 import { SegmentUserContext } from '../../__mocks__/context'
-import { parseConfig } from '../../tv2_afvd_studio/helpers/config'
+import { preprocessConfig } from '../../tv2_afvd_studio/helpers/config'
 import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getSegment } from '../getSegment'
-import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig, preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { MOCK_EFFEKT_1, MOCK_EFFEKT_2 } from './breakerConfigDefault'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
@@ -68,7 +68,7 @@ function makeMockContextWithoutTransitionsConfig(): SegmentUserContext {
 function makeMockContext(): SegmentUserContext {
 	const config = { id: 'default', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 
-	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseConfig, parseShowStyleConfig)
+	const mockContext = new SegmentUserContext('test', mappingsDefaults, preprocessConfig, parseShowStyleConfig)
 	mockContext.studioConfig = config.studioConfig as any
 	mockContext.showStyleConfig = config.showStyleConfig as any
 
@@ -88,7 +88,7 @@ function checkPartExistsWithProperties(segment: BlueprintResultSegment, props: P
 	}
 }
 
-function getTransitionProperties(effekt: ShowStyleConfig['BreakerConfig'][0]): Partial<IBlueprintPart> {
+function getTransitionProperties(effekt: GalleryShowStyleConfig['BreakerConfig'][0]): Partial<IBlueprintPart> {
 	const preroll = defaultStudioConfig.CasparPrerollDuration as number
 	return {
 		inTransition: {

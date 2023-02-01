@@ -48,7 +48,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	IdleSisyfosLayers: string[]
 }
 
-export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
+export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
 	const studioConfig = (rawConfig as unknown) as OfftubeStudioConfig
 	const config: OfftubeStudioBlueprintConfig = {
 		studio: rawConfig as any,

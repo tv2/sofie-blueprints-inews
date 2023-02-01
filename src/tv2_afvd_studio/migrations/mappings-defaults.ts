@@ -9,7 +9,7 @@ import {
 } from 'tv2-common'
 import { AbstractLLayer, RobotCameraLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import { BlueprintConfig } from '../helpers/config'
+import { GalleryStudioConfig } from '../helpers/config'
 import { AtemLLayer, CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
@@ -730,7 +730,7 @@ export default literal<BlueprintMappings>({
 	...MAPPINGS_TELEMETRICS
 })
 
-export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlayers']) {
+export function getMediaPlayerMappings(mediaPlayers: GalleryStudioConfig['mediaPlayers']) {
 	const res: BlueprintMappings = {
 		casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
 			device: TSR.DeviceType.ABSTRACT,
