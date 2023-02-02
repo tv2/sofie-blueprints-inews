@@ -909,7 +909,7 @@ describe('AFVD Blueprint', () => {
 				SourcesRM: [
 					{
 						SourceName: '1',
-						AtemSource: 10,
+						SwitcherSource: 10,
 						SisyfosLayers: [],
 						StudioMics: true,
 						WantsToPersistAudio: false
@@ -933,7 +933,7 @@ describe('AFVD Blueprint', () => {
 				SourcesRM: [
 					{
 						SourceName: '1',
-						AtemSource: 10,
+						SwitcherSource: 10,
 						SisyfosLayers: [],
 						StudioMics: false,
 						WantsToPersistAudio: false
@@ -957,7 +957,7 @@ describe('AFVD Blueprint', () => {
 				SourcesCam: [
 					{
 						SourceName: '1',
-						AtemSource: 1,
+						SwitcherSource: 1,
 						SisyfosLayers: [],
 						StudioMics: true,
 						WantsToPersistAudio: false
@@ -981,7 +981,7 @@ describe('AFVD Blueprint', () => {
 				SourcesCam: [
 					{
 						SourceName: '1',
-						AtemSource: 1,
+						SwitcherSource: 1,
 						SisyfosLayers: [],
 						StudioMics: true,
 						WantsToPersistAudio: false
@@ -1005,7 +1005,7 @@ describe('AFVD Blueprint', () => {
 				SourcesCam: [
 					{
 						SourceName: '1',
-						AtemSource: 1,
+						SwitcherSource: 1,
 						SisyfosLayers: [],
 						StudioMics: false,
 						WantsToPersistAudio: false

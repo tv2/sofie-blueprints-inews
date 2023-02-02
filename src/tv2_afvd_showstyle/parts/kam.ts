@@ -83,7 +83,7 @@ export async function CreatePartKam(
 			context.core.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 			return CreatePartInvalid(partDefinition)
 		}
-		const atemInput = sourceInfoCam.port
+		const switcherInput = sourceInfoCam.port
 
 		part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
 
@@ -102,13 +102,13 @@ export async function CreatePartKam(
 			},
 			content: {
 				studioLabel: '',
-				switcherInput: atemInput,
+				switcherInput,
 				timelineObjects: [
 					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
 						layer: AtemLLayer.AtemMEProgram,
 						content: {
-							input: Number(atemInput),
+							input: Number(switcherInput),
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						}

@@ -89,7 +89,7 @@ export function CreatePartContinuity(
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
-					switcherInput: context.config.studio.AtemSource.Continuity,
+					switcherInput: context.config.studio.SwitcherSource.Continuity,
 					timelineObjects: [
 						context.videoSwitcher.getMixEffectTimelineObject({
 							id: '',
@@ -99,7 +99,7 @@ export function CreatePartContinuity(
 							priority: 1,
 							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								input: context.config.studio.AtemSource.Continuity,
+								input: context.config.studio.SwitcherSource.Continuity,
 								transition: TransitionStyle.CUT
 							}
 						})

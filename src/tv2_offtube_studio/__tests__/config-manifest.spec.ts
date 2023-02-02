@@ -30,7 +30,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,
 
-	AtemSource: {
+	SwitcherSource: {
 		DSK: defaultDSKConfig,
 		SplitArtF: 0,
 		SplitArtK: 0,
@@ -41,6 +41,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 		Dip: 0
 	},
 	AtemSettings: {},
+	TriCasterSettings: {},
 	AudioBedSettings: {
 		fadeIn: 0,
 		fadeOut: 0,

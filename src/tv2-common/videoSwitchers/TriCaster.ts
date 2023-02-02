@@ -29,11 +29,6 @@ const TRANSITION_MAP: Record<TransitionStyle, TSR.TriCasterTransitionEffect> = {
 }
 
 export class TriCaster extends VideoSwitcherImpl {
-	public static isMixEffectTimelineObject(
-		timelineObject: TSR.TSRTimelineObj
-	): timelineObject is TSR.TimelineObjTriCasterME {
-		return TSR.isTimelineObjTriCasterME(timelineObject)
-	}
 	public readonly type = SwitcherType.ATEM
 
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjTriCasterME {
@@ -57,8 +52,14 @@ export class TriCaster extends VideoSwitcherImpl {
 		}
 	}
 
+	public isMixEffect = (
+		timelineObject: TSR.TSRTimelineObj
+	): timelineObject is TSR.TimelineObjTriCasterME => {
+		return TSR.isTimelineObjTriCasterME(timelineObject)
+	}
+
 	public findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined {
-		return timelineObjects.find(TriCaster.isMixEffectTimelineObject)
+		return timelineObjects.find(this.isMixEffect)
 	}
 
 	public updateTransition(
@@ -66,7 +67,7 @@ export class TriCaster extends VideoSwitcherImpl {
 		transition: TransitionStyle,
 		transitionDuration?: number | undefined
 	): TSR.TSRTimelineObj {
-		if (!TriCaster.isMixEffectTimelineObject(timelineObject)) {
+		if (!this.isMixEffect(timelineObject)) {
 			// @todo: log error or throw
 			return timelineObject
 		}

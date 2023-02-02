@@ -1222,18 +1222,14 @@ async function executeActionCutToRemote<
 		tags: [GetTagForLive(userData.sourceDefinition)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				literal<TSR.TimelineObjAtemME>({
+				context.videoSwitcher.getMixEffectTimelineObject({
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
 					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
 					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.ME,
-						me: {
-							input: sourceInfo.port,
-							transition: TSR.AtemTransitionStyle.CUT
-						}
+						input: sourceInfo.port,
+						transition: TransitionStyle.CUT
 					}
 				}),
 				...eksternSisyfos

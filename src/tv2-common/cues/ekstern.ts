@@ -52,7 +52,7 @@ export function EvaluateEksternBase<
 		part.invalid = true
 		return
 	}
-	const atemInput = sourceInfoEkstern.port
+	const switcherInput = sourceInfoEkstern.port
 
 	if (adlib) {
 		adlibPieces.push({
@@ -72,13 +72,13 @@ export function EvaluateEksternBase<
 			},
 			content: literal<WithTimeline<RemoteContent>>({
 				studioLabel: '',
-				switcherInput: atemInput,
+				switcherInput,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
 						layer: layersEkstern.ATEM.MEProgram,
 						content: {
-							input: atemInput,
+							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						},
@@ -110,13 +110,13 @@ export function EvaluateEksternBase<
 			tags: [GetTagForLive(parsedCue.sourceDefinition)],
 			content: literal<WithTimeline<RemoteContent>>({
 				studioLabel: '',
-				switcherInput: atemInput,
+				switcherInput,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
 						layer: layersEkstern.ATEM.MEProgram,
 						content: {
-							input: atemInput,
+							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						}

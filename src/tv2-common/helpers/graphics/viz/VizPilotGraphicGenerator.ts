@@ -11,6 +11,7 @@ import {
 	PilotGraphicProps,
 	TransitionStyle
 } from 'tv2-common'
+import { ControlClasses } from 'tv2-constants'
 
 import { PilotGraphicGenerator } from '../pilot'
 
@@ -112,7 +113,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 							input: fullDSK.Fill
 						}
 					},
-					classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
+					classes: [ControlClasses.MixMinusOverrideDsk, ControlClasses.Placeholder]
 				})
 			)
 		}

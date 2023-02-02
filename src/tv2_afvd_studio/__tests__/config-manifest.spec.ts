@@ -40,7 +40,7 @@ const blankStudioConfig: StudioConfig = {
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,
 
-	AtemSource: {
+	SwitcherSource: {
 		DSK: defaultDSKConfig,
 		SplitArtF: 0,
 		SplitArtK: 0,
@@ -55,6 +55,9 @@ const blankStudioConfig: StudioConfig = {
 			Loop: false,
 			Playing: true
 		}
+	},
+	TriCasterSettings: {
+		DveMixEffect: 1
 	},
 	AudioBedSettings: {
 		fadeIn: 0,

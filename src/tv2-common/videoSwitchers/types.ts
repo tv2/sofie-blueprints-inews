@@ -83,13 +83,39 @@ export interface AuxProps extends TimelineObjectProps {
 }
 
 export interface VideoSwitcher {
+
+	isMixEffect(timelineObject: TimelineObjectCoreExt): boolean
 	getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
 	findMixEffectTimelineObject(timelineObjects: TimelineObjectCoreExt[]): TSR.TSRTimelineObj | undefined
+	isVideoSwitcherTimelineObject(timelineObject: TimelineObjectCoreExt): boolean
 	updateTransition(
-		timelineObjects: TSR.TSRTimelineObj,
+		timelineObject: TimelineObjectCoreExt,
 		transition: TransitionStyle,
 		transitionDuration?: number
 	): TSR.TSRTimelineObj
+	updatePreviewInput(
+		timelineObject: TimelineObjectCoreExt,
+        previewInput: number | SpecialInput
+	): TSR.TSRTimelineObj
+	updateInput(
+		timelineObject: TimelineObjectCoreExt,
+        input: number | SpecialInput
+	): TSR.TSRTimelineObj
+
+	isDsk(timelineObject: TimelineObjectCoreExt): boolean
 	getDskTimelineObjects(properties: DskProps): TSR.TSRTimelineObj[]
+    
+	isAux(timelineObject: TimelineObjectCoreExt): boolean
 	getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
+	updateAuxInput(
+		timelineObject: TimelineObjectCoreExt,
+        input: number | SpecialInput
+	): TSR.TSRTimelineObj
+
+	isDve(timelineObject: TimelineObjectCoreExt): boolean
+	getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
+	updateUnpopulatedDveBoxes(
+		timelineObject: TimelineObjectCoreExt,
+        input: number | SpecialInput
+	): TSR.TSRTimelineObj
 }

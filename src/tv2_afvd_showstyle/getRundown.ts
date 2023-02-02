@@ -844,7 +844,7 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 				enable: { while: '1' },
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
-					input: config.studio.AtemSource.Default,
+					input: config.studio.SwitcherSource.Default,
 					transition: TransitionStyle.CUT
 				}
 			}),
@@ -852,7 +852,7 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 				enable: { while: '1' },
 				layer: AtemLLayer.AtemMEClean,
 				content: {
-					input: config.studio.AtemSource.Default,
+					input: config.studio.SwitcherSource.Default,
 					transition: TransitionStyle.CUT
 				}
 			}),
@@ -893,7 +893,7 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.AUX,
 					aux: {
-						input: config.studio.AtemSource.Default
+						input: config.studio.SwitcherSource.Default
 					}
 				}
 			}),
@@ -919,7 +919,7 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.AUX,
 					aux: {
-						input: config.studio.AtemSource.MixMinusDefault
+						input: config.studio.SwitcherSource.MixMinusDefault
 					}
 				}
 			}),
@@ -963,8 +963,8 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 					ssrcProps: {
-						artFillSource: config.studio.AtemSource.SplitArtF,
-						artCutSource: config.studio.AtemSource.SplitArtK,
+						artFillSource: config.studio.SwitcherSource.SplitArtF,
+						artCutSource: config.studio.SwitcherSource.SplitArtK,
 						artOption: 1,
 						artPreMultiplied: true
 					}

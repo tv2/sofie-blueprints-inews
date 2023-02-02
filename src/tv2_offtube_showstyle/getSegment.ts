@@ -5,7 +5,6 @@ import {
 	IngestSegment,
 	ISegmentUserContext,
 	PieceLifespan,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
 import {
@@ -79,13 +78,13 @@ function CreatePartContinuity(
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
-					switcherInput: context.config.studio.AtemSource.Continuity,
+					switcherInput: context.config.studio.SwitcherSource.Continuity,
 					timelineObjects: [
 						context.videoSwitcher.getMixEffectTimelineObject({
 							priority: 1,
 							layer: OfftubeAtemLLayer.AtemMEClean,
 							content: {
-								input: context.config.studio.AtemSource.Continuity,
+								input: context.config.studio.SwitcherSource.Continuity,
 								transition: TransitionStyle.CUT
 							}
 						})

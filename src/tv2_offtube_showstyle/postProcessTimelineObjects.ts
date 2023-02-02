@@ -40,7 +40,7 @@ export function postProcessPieceTimelineObjects(
 				(obj.content.type === TSR.TimelineContentTypeAtem.ME || obj.content.type === TSR.TimelineContentTypeAtem.DSK)
 		)
 		_.each(atemMeObjs, tlObj => {
-			if (tlObj.layer === OfftubeAtemLLayer.AtemMEClean || tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
+			if (tlObj.layer === OfftubeAtemLLayer.AtemMEClean || tlObj.classes?.includes(ControlClasses.MixMinusOverrideDsk)) {
 				if (!tlObj.id) {
 					tlObj.id = context.core.getHashId(OfftubeAtemLLayer.AtemMEClean, true)
 				}
@@ -51,8 +51,7 @@ export function postProcessPieceTimelineObjects(
 				if (
 					(!isAdlib || piece.toBeQueued) &&
 					'me' in tlObj.content &&
-					(tlObj.content.me.input !== -1 || tlObj.metaData?.mediaPlayerSession !== undefined) &&
-					!tlObj.classes?.includes(ControlClasses.NOLookahead)
+					(tlObj.content.me.input !== -1 || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					if (tlObj.classes?.includes(ControlClasses.AbstractLookahead)) {
 						// Create a lookahead-lookahead object for this me-program
@@ -83,7 +82,9 @@ export function postProcessPieceTimelineObjects(
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {
 									previewInput:
-										tlObj.content.me.input !== -1 ? tlObj.content.me.input : context.config.studio.AtemSource.Default
+										tlObj.content.me.input !== -1
+											? tlObj.content.me.input
+											: context.config.studio.SwitcherSource.Default
 								}
 							},
 							metaData: {
@@ -100,7 +101,7 @@ export function postProcessPieceTimelineObjects(
 
 		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
 		piece.content.timelineObjects = piece.content.timelineObjects.filter(
-			(obj: TSR.TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
+			(obj: TSR.TSRTimelineObjBase) => !obj.classes?.includes(ControlClasses.Placeholder)
 		)
 	}
 }

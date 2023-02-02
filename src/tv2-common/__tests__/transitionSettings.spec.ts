@@ -139,7 +139,7 @@ function assertDipInputValueFromConfig(
 	dipInputSource: number
 ) {
 	mockConfig.studio = ({
-		AtemSource: createAtemSourceConfig(dipInputSource)
+		SwitcherSource: createAtemSourceConfig(dipInputSource)
 	} as any) as TV2StudioConfigBase
 	const transition: PartTransition = {
 		style: TSR.AtemTransitionStyle.DIP,

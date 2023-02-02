@@ -8,6 +8,7 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { AtemLLayerDSK, ExtendedShowStyleContext, FindDSKJingle, TimelineBlueprintExt } from 'tv2-common'
+import { ControlClasses } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from './helpers/config'
@@ -35,17 +36,11 @@ export function postProcessPieceTimelineObjects(
 	if (piece.content?.timelineObjects) {
 		const extraObjs: TimelineObjectCoreExt[] = []
 
-		const atemMeObjs = (piece.content.timelineObjects as Array<
-			| (TSR.TimelineObjAtemME & TimelineBlueprintExt & OnGenerateTimelineObj)
-			| (TSR.TimelineObjAtemDSK & TimelineBlueprintExt & OnGenerateTimelineObj)
-		>).filter(
+		const atemMeObjs = piece.content.timelineObjects.filter(
 			obj =>
-				obj.content &&
-				obj.content.deviceType === TSR.DeviceType.ATEM &&
-				(obj.content.type === TSR.TimelineContentTypeAtem.ME || obj.content.type === TSR.TimelineContentTypeAtem.DSK)
-		)
+				context.videoSwitcher.isMixEffect(obj) || context.videoSwitcher.isDsk(obj))
 		_.each(atemMeObjs, tlObj => {
-			if (tlObj.layer === AtemLLayer.AtemMEProgram || tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
+			if (tlObj.layer === AtemLLayer.AtemMEProgram || tlObj.classes?.includes(ControlClasses.MixMinusOverrideDsk)) {
 				if (!tlObj.id) {
 					tlObj.id = context.core.getHashId(AtemLLayer.AtemMEProgram, true)
 				}
@@ -79,8 +74,8 @@ export function postProcessPieceTimelineObjects(
 							aux: {
 								input:
 									tlObj.content.me.input !== -1
-										? tlObj.content.me.input ?? context.config.studio.AtemSource.Default
-										: context.config.studio.AtemSource.Default
+										? tlObj.content.me.input ?? context.config.studio.SwitcherSource.Default
+										: context.config.studio.SwitcherSource.Default
 							}
 						},
 						metaData: {
@@ -94,7 +89,7 @@ export function postProcessPieceTimelineObjects(
 				// mix minus
 				let mixMinusSource: number | undefined | null // TODO - what about clips?
 				// tslint:disable-next-line:prefer-conditional-expression
-				if (tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK')) {
+				if (tlObj.classes?.includes(ControlClasses.MixMinusOverrideDsk)) {
 					mixMinusSource = (tlObj as TSR.TimelineObjAtemDSK).content.dsk.sources?.fillSource
 				} else {
 					mixMinusSource = (tlObj as TSR.TimelineObjAtemME).content.me.input
@@ -119,7 +114,7 @@ export function postProcessPieceTimelineObjects(
 						..._.omit(tlObj, 'content'),
 						id: '',
 						layer: AtemLLayer.AtemAuxVideoMixMinus,
-						priority: tlObj.classes?.includes('MIX_MINUS_OVERRIDE_DSK') ? 10 : tlObj.priority,
+						priority: tlObj.classes?.includes(ControlClasses.MixMinusOverrideDsk) ? 10 : tlObj.priority,
 						content: {
 							deviceType: TSR.DeviceType.ATEM,
 							type: TSR.TimelineContentTypeAtem.AUX,
@@ -127,7 +122,7 @@ export function postProcessPieceTimelineObjects(
 								input:
 									mixMinusSource !== undefined && mixMinusSource !== -1
 										? mixMinusSource
-										: context.config.studio.AtemSource.MixMinusDefault
+										: context.config.studio.SwitcherSource.MixMinusDefault
 							}
 						},
 						metaData: {
@@ -136,7 +131,7 @@ export function postProcessPieceTimelineObjects(
 						}
 					}
 					mixMinusObj.classes = mixMinusObj.classes?.filter(
-						c => !c.match(`studio0_parent_`) && !c.match('PLACEHOLDER_OBJECT_REMOVEME')
+						c => !c.match(`studio0_parent_`) && !c.match(ControlClasses.Placeholder)
 					)
 					extraObjs.push(mixMinusObj)
 				}
@@ -182,7 +177,7 @@ export function postProcessPieceTimelineObjects(
 
 		piece.content.timelineObjects = piece.content.timelineObjects.concat(extraObjs)
 		piece.content.timelineObjects = piece.content.timelineObjects.filter(
-			(obj: TSR.TSRTimelineObjBase) => !obj.classes?.includes('PLACEHOLDER_OBJECT_REMOVEME')
+			(obj: TSR.TSRTimelineObjBase) => !obj.classes?.includes(ControlClasses.Placeholder)
 		)
 	}
 }

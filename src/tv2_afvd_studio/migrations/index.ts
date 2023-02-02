@@ -187,7 +187,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	RenameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
 	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesReplay', {
 		SourceName: 'EPSIO',
-		AtemSource: 25,
+		SwitcherSource: 25,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
 		StudioMics: true
 	}),

@@ -23,9 +23,9 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
-	AtemSource: {
-		SplitArtF: number // Atem MP1 Fill
-		SplitArtK: number // Atem MP1 Key
+	SwitcherSource: {
+		SplitArtF: number
+		SplitArtK: number
 		SplitBackground: number
 		Loop: number
 		DSK: TableConfigItemDSK[]
@@ -36,6 +36,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	}
 
 	AtemSettings: {}
+	TriCasterSettings: {}
 
 	AudioBedSettings: {
 		fadeIn: number
@@ -55,7 +56,7 @@ export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprint
 		// showStyle: {} as any,
 		sources: parseSources(studioConfig),
 		mediaPlayers: parseMediaPlayers(studioConfig),
-		dsk: studioConfig.AtemSource.DSK
+		dsk: studioConfig.SwitcherSource.DSK
 	}
 	return config
 }

@@ -278,36 +278,26 @@ function updateObjectsToMediaPlayer<
 				context.core.logWarning(`Moving object to mediaPlayer that probably shouldnt be? (from layer: ${obj.layer})`)
 				// context.notifyUserWarning(obj)
 			}
-		} else if (obj.content.deviceType === TSR.DeviceType.ATEM) {
-			let atemInput = _.find(context.config.mediaPlayers, mp => mp.id === playerId.toString())
-			if (!atemInput) {
+		} else if (context.videoSwitcher.isVideoSwitcherTimelineObject(obj)) {
+			let switcherInput = _.find(context.config.mediaPlayers, mp => mp.id === playerId.toString())
+			if (!switcherInput) {
 				context.core.logWarning(`Trying to find atem input for unknown mediaPlayer: #${playerId}`)
-				atemInput = { id: playerId.toString(), val: context.config.studio.AtemSource.Default.toString() }
+				switcherInput = { id: playerId.toString(), val: context.config.studio.SwitcherSource.Default.toString() }
 			}
-
-			const atemObj = obj as TSR.TimelineObjAtemAny
-			if (atemObj.content.type === TSR.TimelineContentTypeAtem.ME) {
-				const atemObj2 = atemObj as TSR.TimelineObjAtemME
-				if (atemObj2.classes?.includes('ab_on_preview')) {
-					atemObj2.content.me.previewInput = Number(atemInput.val) || 0
+			const input = Number(switcherInput.val) || 0
+			if (context.videoSwitcher.isMixEffect(obj)) {
+				if (obj.classes?.includes('ab_on_preview')) {
+					context.videoSwitcher.updatePreviewInput(obj, input)
 				} else {
-					atemObj2.content.me.input = Number(atemInput.val) || 0
+					context.videoSwitcher.updateInput(obj, input)
 				}
-			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.AUX) {
-				const atemObj2 = atemObj as TSR.TimelineObjAtemAUX
-				atemObj2.content.aux.input = Number(atemInput.val) || 0
-			} else if (atemObj.content.type === TSR.TimelineContentTypeAtem.SSRC) {
-				const atemObj2 = atemObj as TSR.TimelineObjAtemSsrc
-				// Find box with no source
-				const input = Number(atemInput.val) || 0
-				atemObj2.content.ssrc.boxes.forEach((box, i) => {
-					if (box.source === -1) {
-						atemObj2.content.ssrc.boxes[i].source = input // Pgm box
-					}
-				})
+			} else if (context.videoSwitcher.isAux(obj)) {
+				context.videoSwitcher.updateAuxInput(obj, input)
+			} else if (context.videoSwitcher.isDve(obj)) {
+				context.videoSwitcher.updateUnpopulatedDveBoxes(obj, input)
 			} else {
 				context.core.logWarning(
-					`Trying to move ATEM object of unknown type (${atemObj.content.type}) for media player assignment`
+					`Trying to move ATEM object of unknown type (${(obj.content as any).type}) for media player assignment`
 				)
 			}
 		} else if (obj.content.deviceType === TSR.DeviceType.SISYFOS) {

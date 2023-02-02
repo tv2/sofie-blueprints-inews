@@ -99,13 +99,14 @@ export interface TV2StudioConfigBase {
 
 	ABPlaybackDebugLogging: boolean
 	SwitcherType: SwitcherType
-	AtemSource: {
+	SwitcherSource: {
 		Default: number
 		SplitArtF: number
 		SplitArtK: number
 		DSK: TableConfigItemDSK[]
 		Dip: number
 	}
+	TriCasterSettings: {}
 	AtemSettings: {}
 	StudioMics: string[]
 	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]

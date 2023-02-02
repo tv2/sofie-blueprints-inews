@@ -123,9 +123,10 @@ export enum ControlClasses {
 	ServerOnAir = 'server_on_air',
 	LYDOnAir = 'lyd_on_air',
 	LiveSourceOnAir = 'live_source_on_air',
-	NOLookahead = 'no_lookahead',
 	CopyMediaPlayerSession = 'copy_media_player_session',
-	AbstractLookahead = 'abstract_lookahead'
+	AbstractLookahead = 'abstract_lookahead',
+	MixMinusOverrideDsk = 'MIX_MINUS_OVERRIDE_DSK',
+	Placeholder = 'PLACEHOLDER_OBJECT_REMOVEME'
 }
 
 export function GetEnableClassForServer(mediaPlayerSessionId: string) {

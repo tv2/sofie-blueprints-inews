@@ -197,7 +197,7 @@ export function MakeContentDVE2<
 
 	const boxes: BoxConfig[] = Object.entries(template.boxes).map(([_num, box]) => ({
 		...box,
-		source: context.config.studio.AtemSource.Default
+		source: context.config.studio.SwitcherSource.Default
 	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: BoxSources = []
@@ -223,7 +223,7 @@ export function MakeContentDVE2<
 				case SourceType.DEFAULT:
 					setBoxSource(box, boxSources, {
 						sourceLayerType: SourceLayerType.UNKNOWN,
-						port: context.config.studio.AtemSource.Default
+						port: context.config.studio.SwitcherSource.Default
 					})
 					break
 				case SourceType.KAM:
@@ -346,8 +346,8 @@ export function MakeContentDVE2<
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 						ssrcProps: {
-							artFillSource: context.config.studio.AtemSource.SplitArtF,
-							artCutSource: context.config.studio.AtemSource.SplitArtK,
+							artFillSource: context.config.studio.SwitcherSource.SplitArtF,
+							artCutSource: context.config.studio.SwitcherSource.SplitArtK,
 							artOption: 1,
 							...(template.properties && template.properties?.artPreMultiplied === false
 								? {

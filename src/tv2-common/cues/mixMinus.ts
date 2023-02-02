@@ -23,7 +23,7 @@ export function EvaluateCueMixMinus(
 		context.core.notifyUserWarning(`${name} does not exist in this studio (MINUSKAM)`)
 		return
 	}
-	const atemInput = sourceInfo.port
+	const switcherInput = sourceInfo.port
 
 	pieces.push({
 		externalId: part.externalId,
@@ -34,11 +34,11 @@ export function EvaluateCueMixMinus(
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
 		sourceLayerId: SharedSourceLayers.AuxMixMinus,
 		outputLayerId: SharedOutputLayers.AUX,
-		content: MixMinusContent(atemInput)
+		content: MixMinusContent(switcherInput)
 	})
 }
 
-function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
+function MixMinusContent(switcherInput: number): WithTimeline<BaseContent> {
 	return {
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			literal<TSR.TimelineObjAtemAUX>({
@@ -46,7 +46,7 @@ function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.AUX,
 					aux: {
-						input: atemInput
+						input: switcherInput
 					}
 				},
 				enable: {

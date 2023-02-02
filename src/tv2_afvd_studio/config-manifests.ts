@@ -32,70 +32,70 @@ export const manifestAFVDSourcesCam = MakeConfigForSources('Cam', 'Camera', fals
 	{
 		_id: '',
 		SourceName: '1',
-		AtemSource: 11,
+		SwitcherSource: 11,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '2',
-		AtemSource: 12,
+		SwitcherSource: 12,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '3',
-		AtemSource: 13,
+		SwitcherSource: 13,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '4',
-		AtemSource: 14,
+		SwitcherSource: 14,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '5',
-		AtemSource: 15,
+		SwitcherSource: 15,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '1S',
-		AtemSource: 16,
+		SwitcherSource: 16,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '2S',
-		AtemSource: 17,
+		SwitcherSource: 17,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '3S',
-		AtemSource: 18,
+		SwitcherSource: 18,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '4S',
-		AtemSource: 19,
+		SwitcherSource: 19,
 		SisyfosLayers: [],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '5S',
-		AtemSource: 20,
+		SwitcherSource: 20,
 		SisyfosLayers: [],
 		StudioMics: true
 	}
@@ -105,7 +105,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '1',
-		AtemSource: 1,
+		SwitcherSource: 1,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_1],
 		StudioMics: true,
 		WantsToPersistAudio: true,
@@ -114,7 +114,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '2',
-		AtemSource: 2,
+		SwitcherSource: 2,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_2],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -123,7 +123,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '3',
-		AtemSource: 3,
+		SwitcherSource: 3,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_3],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -132,7 +132,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '4',
-		AtemSource: 4,
+		SwitcherSource: 4,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_4],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -141,7 +141,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '5',
-		AtemSource: 5,
+		SwitcherSource: 5,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_5],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -150,7 +150,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '6',
-		AtemSource: 6,
+		SwitcherSource: 6,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_6],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -159,7 +159,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '7',
-		AtemSource: 7,
+		SwitcherSource: 7,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_7],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -168,7 +168,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '8',
-		AtemSource: 8,
+		SwitcherSource: 8,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_8],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -177,7 +177,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '9',
-		AtemSource: 9,
+		SwitcherSource: 9,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_9],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -186,7 +186,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 	{
 		_id: '',
 		SourceName: '10',
-		AtemSource: 10,
+		SwitcherSource: 10,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceLive_10],
 		StudioMics: false,
 		WantsToPersistAudio: true,
@@ -200,21 +200,21 @@ export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay'
 	{
 		_id: '',
 		SourceName: '1',
-		AtemSource: 22,
+		SwitcherSource: 22,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_1],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: '2',
-		AtemSource: 23,
+		SwitcherSource: 23,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2],
 		StudioMics: true
 	},
 	{
 		_id: '',
 		SourceName: 'EPSIO',
-		AtemSource: 25,
+		SwitcherSource: 25,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
 		StudioMics: true
 	}
@@ -230,12 +230,12 @@ export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
 		{
 			_id: '',
 			SourceName: '1',
-			AtemSource: 26
+			SwitcherSource: 26
 		},
 		{
 			_id: '',
 			SourceName: '2',
-			AtemSource: 27
+			SwitcherSource: 27
 		}
 	]),
 	columns: [
@@ -249,9 +249,9 @@ export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
 			rank: 0
 		},
 		{
-			id: 'AtemSource',
-			name: 'ATEM input',
-			description: 'ATEM vision mixer input for Media player',
+			id: 'SwicherSource',
+			name: 'Switcher input',
+			description: 'Video Switcher input for Media player',
 			type: ConfigManifestEntryType.INT,
 			required: true,
 			defaultVal: 0,
@@ -306,49 +306,49 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: false
 	},
 	{
-		id: 'AtemSource.SplitArtF',
-		name: 'ATEM Split Screen Art Fill',
-		description: 'ATEM vision mixer input for Split Screen Art Fill',
+		id: 'SwitcherSource.SplitArtF',
+		name: 'Switcher Split Screen Art Fill',
+		description: 'Video Switcher input for Split Screen Art Fill',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 30
 	},
 	{
-		id: 'AtemSource.SplitArtK',
-		name: 'ATEM Split Screen Art Key',
-		description: 'ATEM vision mixer input for Split Screen Art Key',
+		id: 'SwitcherSource.SplitArtK',
+		name: 'Switcher Split Screen Art Key',
+		description: 'Video Switcher input for Split Screen Art Key',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 32
 	},
 	{
-		id: 'AtemSource.Default',
-		name: 'ATEM Default source',
-		description: 'ATEM vision mixer default source',
+		id: 'SwitcherSource.Default',
+		name: 'Switcher Default source',
+		description: 'Video Switcher default source',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
-		id: 'AtemSource.MixMinusDefault',
-		name: 'ATEM Mix-minus default source',
-		description: 'ATEM vision mixer default source for mix-minus',
+		id: 'SwitcherSource.MixMinusDefault',
+		name: 'Switcher Mix-minus default source',
+		description: 'Video Switcher default source for mix-minus',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
-		id: 'AtemSource.Continuity',
-		name: 'ATEM continuity source',
-		description: 'ATEM input for continuity',
+		id: 'SwitcherSource.Continuity',
+		name: 'Switcher continuity source',
+		description: 'Video Switcher input for continuity',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2
 	},
 	{
-		id: 'AtemSource.Dip',
-		name: 'ATEM Dip Source',
-		description: 'ATEM input for the Dip - should match the desired input in the ATEM',
+		id: 'SwitcherSource.Dip',
+		name: 'Switcher Dip Source',
+		description: 'Video Switcher source for the Dip - should match the desired input in the Video Switcher',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2
@@ -373,6 +373,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		id: 'AtemSettings.MP1Baseline.Playing',
 		name: 'ATEM MP1 baseline clip playing',
 		description: 'If the clip on MP1 should play',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: true
+	},
+	{
+		id: 'TriCasterSettings.DveMixEffect',
+		name: 'TriCaster DVE MixEffect',
+		description: 'TriCaster MixEffect used to make DVEs',
 		type: ConfigManifestEntryType.BOOLEAN,
 		required: false,
 		defaultVal: true

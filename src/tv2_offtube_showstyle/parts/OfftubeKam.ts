@@ -5,8 +5,6 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
-	TimelineObjectCoreExt,
-	TSR,
 	VTContent,
 	WithTimeline
 } from 'blueprints-integration'
@@ -83,7 +81,7 @@ export async function OfftubeCreatePartKam(
 		if (sourceInfoCam === undefined) {
 			return CreatePartInvalid(partDefinition)
 		}
-		const atemInput = sourceInfoCam.port
+		const switcherInput = sourceInfoCam.port
 
 		part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
 
@@ -103,7 +101,7 @@ export async function OfftubeCreatePartKam(
 			tags: [GetTagForKam(partDefinition.sourceDefinition)],
 			content: {
 				studioLabel: '',
-				switcherInput: atemInput,
+				switcherInput,
 				timelineObjects: [
 					context.videoSwitcher.getMixEffectTimelineObject({
 						id: ``,
@@ -113,7 +111,7 @@ export async function OfftubeCreatePartKam(
 						priority: 1,
 						layer: OfftubeAtemLLayer.AtemMEClean,
 						content: {
-							input: Number(atemInput),
+							input: Number(switcherInput),
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						}

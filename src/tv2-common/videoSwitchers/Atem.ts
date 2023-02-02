@@ -30,13 +30,12 @@ const TRANSITION_MAP = {
 }
 
 export class Atem extends VideoSwitcherImpl {
-	public static isMixEffectTimelineObject(timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemME {
-		return (
-			timelineObject.content.deviceType === TSR.DeviceType.ATEM &&
-			timelineObject.content.type === TSR.TimelineContentTypeAtem.ME
-		)
-	}
+
 	public readonly type = SwitcherType.ATEM
+	
+	public isVideoSwitcherTimelineObject = (timelineObject: TSR.TSRTimelineObj): boolean => {
+		return timelineObject.content.deviceType === TSR.DeviceType.ATEM
+	}
 
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjAtemME & TimelineBlueprintExt {
 		const { content } = props
@@ -67,7 +66,14 @@ export class Atem extends VideoSwitcherImpl {
 	}
 
 	public findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined {
-		return timelineObjects.find(Atem.isMixEffectTimelineObject)
+		return timelineObjects.find(this.isMixEffect)
+	}
+
+	public isMixEffect = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemME => {
+		return (
+			timelineObject.content.deviceType === TSR.DeviceType.ATEM &&
+			timelineObject.content.type === TSR.TimelineContentTypeAtem.ME
+		)
 	}
 
 	public updateTransition(
@@ -75,12 +81,28 @@ export class Atem extends VideoSwitcherImpl {
 		transition: TransitionStyle,
 		transitionDuration?: number | undefined
 	): TSR.TSRTimelineObj {
-		if (!Atem.isMixEffectTimelineObject(timelineObject)) {
+		if (!this.isMixEffect(timelineObject)) {
 			// @todo: log error or throw
 			return timelineObject
 		}
 		timelineObject.content.me.transition = this.getTransition(transition)
 		timelineObject.content.me.transitionSettings = this.getTransitionSettings(transition, transitionDuration)
+		return timelineObject
+	}
+	public updatePreviewInput(timelineObject: TSR.TSRTimelineObj, previewInput: number | SpecialInput): TSR.TSRTimelineObj {
+		if (!this.isMixEffect(timelineObject)) {
+			// @todo: log error or throw
+			return timelineObject
+		}
+		timelineObject.content.me.previewInput = this.getInputNumber(previewInput)
+		return timelineObject
+	}
+	public updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+		if (!this.isMixEffect(timelineObject)) {
+			// @todo: log error or throw
+			return timelineObject
+		}
+		timelineObject.content.me.input = this.getInputNumber(input)
 		return timelineObject
 	}
 
@@ -145,7 +167,7 @@ export class Atem extends VideoSwitcherImpl {
 			case TransitionStyle.STING:
 				return undefined
 			case TransitionStyle.DIP:
-				return { dip: { rate: duration, input: this.config.studio?.AtemSource?.Dip ?? AtemSourceIndex.Col2 } }
+				return { dip: { rate: duration, input: this.config.studio?.SwitcherSource?.Dip ?? AtemSourceIndex.Col2 } }
 			case TransitionStyle.MIX:
 				return { mix: { rate: duration } }
 			case TransitionStyle.WIPE:

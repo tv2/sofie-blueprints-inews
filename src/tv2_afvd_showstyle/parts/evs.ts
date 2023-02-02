@@ -55,7 +55,7 @@ export async function CreatePartEVS(
 	if (sourceInfoReplay === undefined) {
 		return CreatePartInvalid(partDefinition)
 	}
-	const atemInput = sourceInfoReplay.port
+	const switcherInput = sourceInfoReplay.port
 
 	pieces.push({
 		externalId: partDefinition.externalId,
@@ -69,7 +69,7 @@ export async function CreatePartEVS(
 				sisyfosLayers: []
 			}
 		},
-		content: makeContentEVS(context, atemInput, partDefinition, sourceInfoReplay)
+		content: makeContentEVS(context, switcherInput, partDefinition, sourceInfoReplay)
 	})
 
 	await EvaluateCues(
@@ -101,20 +101,20 @@ export async function CreatePartEVS(
 
 function makeContentEVS(
 	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
-	atemInput: number,
+	switcherInput: number,
 	partDefinition: PartDefinitionEVS,
 	sourceInfoReplay: SourceInfo
 ): IBlueprintPiece['content'] {
 	return {
 		studioLabel: '',
-		switcherInput: atemInput,
+		switcherInput,
 		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			context.videoSwitcher.getMixEffectTimelineObject({
 				priority: 1,
 				layer: AtemLLayer.AtemMEProgram,
 				content: {
-					input: atemInput,
+					input: switcherInput,
 					transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 					transitionDuration: partDefinition.transition?.duration
 				}

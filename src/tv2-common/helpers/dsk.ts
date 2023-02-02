@@ -172,9 +172,9 @@ export function CreateDSKBaseline(
 
 export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 	return literal<ConfigManifestEntryTable>({
-		id: 'AtemSource.DSK',
-		name: 'ATEM DSK',
-		description: 'ATEM Downstream Keyers Fill and Key',
+		id: 'SwitcherSource.DSK',
+		name: 'Switcher DSK',
+		description: 'Video Switcher Downstream Keyers Fill and Key',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: literal<Array<TableConfigItemDSK & TableConfigItemValue[0]>>(

@@ -2,7 +2,7 @@ import { DSKRoles } from 'tv2-constants'
 
 export interface TableConfigItemSourceMapping {
 	SourceName: string
-	AtemSource: number
+	SwitcherSource: number
 }
 
 export type TableConfigItemSourceMappingWithSisyfos = {

@@ -588,7 +588,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 				layer: OfftubeAtemLLayer.AtemMEClean,
 				enable: { while: '1' },
 				content: {
-					input: config.studio.AtemSource.Default,
+					input: config.studio.SwitcherSource.Default,
 					transition: TransitionStyle.CUT
 				}
 			}),
@@ -596,7 +596,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 				enable: { while: '1' },
 				layer: OfftubeAtemLLayer.AtemMENext,
 				content: {
-					previewInput: config.studio.AtemSource.Default
+					previewInput: config.studio.SwitcherSource.Default
 				}
 			}),
 
@@ -623,7 +623,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.AUX,
 					aux: {
-						input: config.studio.AtemSource.Loop
+						input: config.studio.SwitcherSource.Loop
 					}
 				}
 			}),
@@ -651,8 +651,8 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 					ssrcProps: {
-						artFillSource: config.studio.AtemSource.SplitArtF,
-						artCutSource: config.studio.AtemSource.SplitArtK,
+						artFillSource: config.studio.SwitcherSource.SplitArtF,
+						artCutSource: config.studio.SwitcherSource.SplitArtK,
 						artOption: 1, // foreground
 						artPreMultiplied: true
 					}
@@ -671,7 +671,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 							{
 								// left
 								enabled: true,
-								source: config.studio.AtemSource.SplitBackground,
+								source: config.studio.SwitcherSource.SplitBackground,
 								size: 1000,
 								x: 0,
 								y: 0,

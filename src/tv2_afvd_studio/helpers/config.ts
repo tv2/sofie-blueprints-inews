@@ -25,7 +25,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	StudioMics: string[]
-	AtemSource: {
+	SwitcherSource: {
 		SplitArtF: number // Atem MP1 Fill
 		SplitArtK: number // Atem MP1 Key
 		DSK: TableConfigItemDSK[]
@@ -51,7 +51,7 @@ export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprint
 		studio: studioConfig,
 		sources: parseSources(studioConfig),
 		mediaPlayers: parseMediaPlayers(studioConfig),
-		dsk: studioConfig.AtemSource.DSK
+		dsk: studioConfig.SwitcherSource.DSK
 	}
 
 	return config

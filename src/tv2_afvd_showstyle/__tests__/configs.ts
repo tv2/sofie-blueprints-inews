@@ -26,7 +26,7 @@ function prepareConfig(
 	wantsToPersistAudio?: boolean
 ): Array<{
 	SourceName: string
-	AtemSource: number
+	SwitcherSource: number
 	SisyfosLayers: string[]
 	StudioMics: boolean
 	wantsToPersistAudio: boolean
@@ -34,7 +34,7 @@ function prepareConfig(
 	return parseMapStr(undefined, conf, true).map(c => {
 		return {
 			SourceName: c.id,
-			AtemSource: c.val,
+			SwitcherSource: c.val,
 			SisyfosLayers: getSisyfosLayers(configName, c.id),
 			StudioMics: studioMics,
 			wantsToPersistAudio: wantsToPersistAudio ?? false
@@ -101,7 +101,7 @@ export const defaultStudioConfig: StudioConfig = {
 		'sisyfos_source_Guest_3_st_a',
 		'sisyfos_source_Guest_4_st_a'
 	],
-	AtemSource: {
+	SwitcherSource: {
 		MixMinusDefault: 2,
 		DSK: defaultDSKConfig,
 		SplitArtF: 30,
@@ -112,8 +112,8 @@ export const defaultStudioConfig: StudioConfig = {
 	},
 	SofieHostURL: '',
 	ABMediaPlayers: [
-		{ SourceName: '1', AtemSource: 1 },
-		{ SourceName: '2', AtemSource: 2 }
+		{ SourceName: '1', SwitcherSource: 1 },
+		{ SourceName: '2', SwitcherSource: 2 }
 	],
 	ABPlaybackDebugLogging: false,
 	AtemSettings: {
@@ -122,6 +122,9 @@ export const defaultStudioConfig: StudioConfig = {
 			Loop: true,
 			Playing: true
 		}
+	},
+	TriCasterSettings: {
+		DveMixEffect: 1
 	},
 	AudioBedSettings: {
 		fadeIn: 1000,
