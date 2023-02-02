@@ -21,9 +21,6 @@ export interface MakeContentServerSourceLayers {
 	Sisyfos: {
 		ClipPending: string
 	}
-	ATEM: {
-		ServerLookaheadAux?: string
-	}
 }
 
 type VTProps = Pick<
@@ -52,21 +49,20 @@ export function GetVTContentProperties(
 }
 
 export function MakeContentServer(
-	_context: IShowStyleUserContext,
-	config: TV2ShowStyleConfig,
+	context: ExtendedShowStyleContext,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
 ): WithTimeline<VTContent> {
 	return literal<WithTimeline<VTContent>>({
-		...GetVTContentProperties(config, contentProps),
+		...GetVTContentProperties(context.config, contentProps),
 		ignoreMediaObjectStatus: true,
-		timelineObjects: GetServerTimeline(config, sourceLayers, partProps, contentProps)
+		timelineObjects: GetServerTimeline(context, sourceLayers, partProps, contentProps)
 	})
 }
 
 function GetServerTimeline(
-	config: TV2ShowStyleConfig,
+	context: ExtendedShowStyleContext,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
@@ -107,13 +103,13 @@ function GetServerTimeline(
 		mediaObj,
 		mediaOffObj,
 		...GetSisyfosTimelineObjForServer(
-			config,
+			context.config,
 			partProps.voLevels,
 			sourceLayers.Sisyfos.ClipPending,
 			contentProps.mediaPlayerSession,
 			audioEnable
 		),
-		...(sourceLayers.ATEM.ServerLookaheadAux
+		...(context.uniformConfig.SwitcherLLayers.ServerLookaheadAux
 			? [
 					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
 						id: '',
@@ -121,7 +117,7 @@ function GetServerTimeline(
 							start: 0
 						},
 						priority: 0,
-						layer: sourceLayers.ATEM.ServerLookaheadAux,
+						layer: context.uniformConfig.SwitcherLLayers.ServerLookaheadAux,
 						content: {
 							deviceType: TSR.DeviceType.ATEM,
 							type: TSR.TimelineContentTypeAtem.AUX,
@@ -142,7 +138,6 @@ export function CutToServer(
 	context: ExtendedShowStyleContext,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition,
-	atemLLayerMEPGM: string,
 	offtubeOptions?: AdlibServerOfftubeOptions
 ): TimelineBlueprintExt[] {
 	return [
@@ -152,7 +147,7 @@ export function CutToServer(
 				start: context.config.studio.CasparPrerollDuration
 			},
 			priority: 1,
-			layer: atemLLayerMEPGM,
+			layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 			content: {
 				input: -1,
 				transition: partDefinition.transition?.style ?? TransitionStyle.CUT,

@@ -7,6 +7,7 @@ import {
 	TimelinePersistentState,
 	TSR
 } from 'blueprints-integration'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import {
 	disablePilotWipeAfterJingle,
 	ExtendedTimelineContext,
@@ -28,7 +29,7 @@ export function onTimelineGenerateOfftube(
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	disablePilotWipeAfterJingle(timeline, previousPartEndState2, resolvedPieces)
 	disableFirstPilotGFXAnimation(coreContext, timeline, previousPartEndState2, resolvedPieces)
-	const context = new ExtendedTimelineContext(coreContext)
+	const context = new ExtendedTimelineContext(coreContext, QBOX_UNIFORM_CONFIG)
 	return onTimelineGenerate(context, timeline, previousPersistentState, previousPartEndState, resolvedPieces, {
 		Caspar: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending

@@ -1,12 +1,12 @@
 import { IStudioContext } from 'blueprints-integration'
-import { VideoSwitcher, VideoSwitcherImpl } from 'tv2-common'
+import { UniformConfig, VideoSwitcher, VideoSwitcherImpl } from 'tv2-common'
 import { TV2StudioConfig } from '../blueprintConfig'
 
 export class ExtendedStudioContext<BlueprintConfig extends TV2StudioConfig = TV2StudioConfig> {
 	public readonly config: BlueprintConfig
 	public readonly videoSwitcher: VideoSwitcher
 
-	constructor(readonly core: IStudioContext) {
+	constructor(readonly core: IStudioContext, public readonly uniformConfig: UniformConfig) {
 		this.config = this.makeConfig()
 		this.videoSwitcher = VideoSwitcherImpl.getVideoSwitcher(this.config)
 	}

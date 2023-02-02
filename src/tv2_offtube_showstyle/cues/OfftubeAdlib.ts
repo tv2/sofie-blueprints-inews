@@ -61,12 +61,6 @@ export async function OfftubeEvaluateAdLib(
 					Sisyfos: {
 						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 					},
-					AtemLLayer: {
-						MEPgm: OfftubeAtemLLayer.AtemMEClean
-					},
-					ATEM: {
-						ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-					}
 				},
 				true
 			)

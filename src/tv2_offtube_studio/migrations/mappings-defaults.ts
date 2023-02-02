@@ -524,38 +524,6 @@ const MAPPINGS_ATEM: BlueprintMappings = {
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
 	}),
-	[OfftubeAtemLLayer.AtemSSrcBox1]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcBox2]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcBox3]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcBox4]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
 	// TODO: Future: Mix Minus in Offtubes
 	[OfftubeAtemLLayer.AtemAuxVideoMixMinus]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,

@@ -23,19 +23,12 @@ export async function OfftubeCreatePartServer(
 			PgmServer: partProps.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: partProps.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
 		},
-		AtemLLayer: {
-			MEPgm: OfftubeAtemLLayer.AtemMEClean,
-			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-		},
 		Caspar: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		},
 		Sisyfos: {
 			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 		},
-		ATEM: {
-			ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-		}
 	})
 
 	if (basePartProps.invalid) {
@@ -71,13 +64,6 @@ export async function OfftubeCreatePartServer(
 				Sisyfos: {
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
 				},
-				AtemLLayer: {
-					MEPgm: OfftubeAtemLLayer.AtemMEClean,
-					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-				},
-				ATEM: {
-					ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
-				}
 			},
 			false
 		)

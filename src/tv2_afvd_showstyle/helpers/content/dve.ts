@@ -31,7 +31,6 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 			ClipPending: CasparLLayer.CasparPlayerClipPending
 		}
 	},
-	boxMappings: [AtemLLayer.AtemSSrcBox1, AtemLLayer.AtemSSrcBox2, AtemLLayer.AtemSSrcBox3, AtemLLayer.AtemSSrcBox4],
 	AUDIO_LAYERS: Object.keys(SisyfosLLAyer)
 }
 

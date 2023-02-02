@@ -12,13 +12,6 @@ import { OfftubeBlueprintConfig } from '../helpers/config'
 
 export const NUMBER_OF_DVE_BOXES = 4
 
-export const boxMappings: [string, string, string, string] = [
-	OfftubeAtemLLayer.AtemSSrcBox1,
-	OfftubeAtemLLayer.AtemSSrcBox2,
-	OfftubeAtemLLayer.AtemSSrcBox3,
-	OfftubeAtemLLayer.AtemSSrcBox4
-]
-
 export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	dveLayers: {
 		ATEM: {
@@ -38,7 +31,6 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		}
 	},
-	boxMappings,
 	AUDIO_LAYERS: [] // TODO
 }
 

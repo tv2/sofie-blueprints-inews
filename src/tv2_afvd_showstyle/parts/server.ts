@@ -1,6 +1,6 @@
 import { BlueprintResultPart, HackPartMediaObjectSubscription, IBlueprintActionManifest } from 'blueprints-integration'
 import { AddScript, CreatePartServerBase, ExtendedSegmentContext, PartDefinition, ServerPartProps } from 'tv2-common'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
+import { CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -16,16 +16,12 @@ export async function CreatePartServer(
 			PgmServer: partProps.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: partProps.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
 		},
-		AtemLLayer: {
-			MEPgm: AtemLLayer.AtemMEProgram
-		},
 		Caspar: {
 			ClipPending: CasparLLayer.CasparPlayerClipPending
 		},
 		Sisyfos: {
 			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
 		},
-		ATEM: {}
 	})
 
 	if (basePartProps.invalid) {

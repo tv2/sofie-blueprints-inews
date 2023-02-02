@@ -9,10 +9,6 @@ export interface JingleLayers {
 		PlayerJingle: string
 		PlayerJinglePreload?: string
 	}
-	ATEM: {
-		USKCleanEffekt?: string
-		USKJinglePreview?: string
-	}
 	Sisyfos: {
 		PlayerJingle: string
 	}
@@ -69,7 +65,7 @@ export function CreateJingleContentBase<
 			...EnableDSK(context, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
 
 			// @todo: this is a Qbox-only feature, should be refactored at some point not to use ATEM object directly
-			...(layers.ATEM.USKJinglePreview
+			...(context.uniformConfig.SwitcherLLayers.JingleNextMixEffect
 				? [
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
@@ -78,7 +74,7 @@ export function CreateJingleContentBase<
 								duration: 1
 							},
 							priority: 1,
-							layer: layers.ATEM.USKJinglePreview,
+							layer: context.uniformConfig.SwitcherLLayers.JingleNextMixEffect,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
@@ -112,7 +108,7 @@ export function CreateJingleContentBase<
 								start: 1
 							},
 							priority: 1,
-							layer: layers.ATEM.USKJinglePreview,
+							layer: context.uniformConfig.SwitcherLLayers.JingleNextMixEffect,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
@@ -122,14 +118,14 @@ export function CreateJingleContentBase<
 				  ]
 				: []),
 
-			...(layers.ATEM.USKCleanEffekt
+			...(context.uniformConfig.SwitcherLLayers.JingleUskMixEffect
 				? [
 						context.videoSwitcher.getMixEffectTimelineObject({
 							enable: {
 								start: Number(config.studio.CasparPrerollDuration)
 							},
 							priority: 1,
-							layer: layers.ATEM.USKCleanEffekt,
+							layer: context.uniformConfig.SwitcherLLayers.JingleUskMixEffect,
 							content: {
 								keyers: [
 									{

@@ -1,5 +1,6 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
 import { TableConfigItemDSK, TimelineObjectMetaData } from 'tv2-common'
+import { SwitcherMixEffectLLayer } from 'tv2-constants'
 
 export enum SwitcherType {
 	ATEM = 'ATEM',
@@ -23,6 +24,10 @@ export enum TransitionStyle {
 	// ...
 }
 
+export enum SwitcherLLayer {
+
+}
+
 export const TIMELINE_OBJECT_DEFAULTS = {
 	id: '',
 	enable: { start: 0 },
@@ -44,6 +49,7 @@ export interface TimelineObjectProps {
 type TimelineObjectEnable = TSR.TSRTimelineObj['enable']
 
 export interface MixEffectProps extends TimelineObjectProps {
+    layer: SwitcherMixEffectLLayer
 	content: {
 		input?: number | SpecialInput
 		previewInput?: number | SpecialInput

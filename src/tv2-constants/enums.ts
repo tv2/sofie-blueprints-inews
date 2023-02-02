@@ -63,11 +63,6 @@ export const enum SourceType {
 	INVALID = 'INVALID'
 }
 
-export enum Enablers {
-	OFFTUBE_ENABLE_FULL = 'offtube_enable_full',
-	OFFTUBE_ENABLE_SERVER_LOOKAHEAD = 'offtube_enable_server_lookahead'
-}
-
 export enum AdlibTags {
 	OFFTUBE_ADLIB_SERVER = 'offtube_adlib_server',
 	OFFTUBE_100pc_SERVER = 'offtube_adlib_100pc_server',
@@ -118,12 +113,9 @@ export function AdlibTagCutToBox(box: number): AdlibTags {
 }
 
 export enum ControlClasses {
-	/** Indicates that a DVE is currently on air */
-	DVEOnAir = 'dve_on_air',
 	ServerOnAir = 'server_on_air',
 	LYDOnAir = 'lyd_on_air',
 	LiveSourceOnAir = 'live_source_on_air',
-	CopyMediaPlayerSession = 'copy_media_player_session',
 	AbstractLookahead = 'abstract_lookahead',
 	MixMinusOverrideDsk = 'MIX_MINUS_OVERRIDE_DSK',
 	Placeholder = 'PLACEHOLDER_OBJECT_REMOVEME'
@@ -199,8 +191,32 @@ export enum AbstractLLayer {
 	AudioBedBaseline = 'audio_bed_baseline'
 }
 
+export enum SwitcherMixEffectLLayer {
+	Program = 'me_program',
+	Clean = 'me_clean',
+	CleanUSKEffect = 'clean_usk_effect',
+}
+
+export enum SwitcherAuxLLayer {
+	AuxPGM = 'aux_pgm',
+	AuxClean = 'aux_clean',
+	AuxWall = 'aux_wall',
+	AuxAR = 'aux_ar',
+	AuxVizOvlIn1 = 'aux_viz_ovl_in_1',
+	AuxVenue = 'aux_venue',
+	AuxLookahead = 'aux_lookahead',
+	AuxSSrc = 'aux_ssrc',
+	AuxVideoMixMinus = 'aux_video_mix_minus',
+	AuxServerLookahead = 'aux_server_lookahead',
+}
+
+export enum SwitcherDveLLayer {
+	Dve = 'dve',
+	DveBoxes = 'dve_boxes',
+}
+
 export enum SharedATEMLLayer {
-	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus'
+	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus',
 }
 
 export enum SharedCasparLLayer {

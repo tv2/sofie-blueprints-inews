@@ -1,4 +1,4 @@
-import { TSR } from 'blueprints-integration'
+import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
 import {
 	Atem,
 	AuxProps,
@@ -27,7 +27,12 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 	protected constructor(config: TV2StudioConfig) {
 		this.config = config
 	}
-
+	public abstract isDsk(timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean
+	public abstract isAux(timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean
+	public abstract updateAuxInput(timelineObject: TimelineObjectCoreExt<unknown, unknown>, input: number | SpecialInput): TSR.TSRTimelineObj
+	public abstract isDve(timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean
+	public abstract getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
+	public abstract updateUnpopulatedDveBoxes(timelineObject: TimelineObjectCoreExt<unknown, unknown>, input: number | SpecialInput): TSR.TSRTimelineObj
 	public abstract getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
 	public abstract findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined
 	public abstract isVideoSwitcherTimelineObject(timelineObject: TSR.TSRTimelineObj): boolean

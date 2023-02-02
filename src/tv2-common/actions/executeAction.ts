@@ -58,7 +58,8 @@ import {
 	TransitionStyle,
 	TV2AdlibAction,
 	TV2BlueprintConfigBase,
-	TV2StudioConfigBase
+	TV2StudioConfigBase,
+	UniformConfig
 } from 'tv2-common'
 import {
 	AdlibActionType,
@@ -146,14 +147,6 @@ export interface ActionExecutionSettings<
 			Effekt: string
 			StudioMics: string
 		}
-		Atem: {
-			MEProgram: string
-			MEClean: string
-			Next: string
-			ServerLookaheadAUX?: string
-			SSrcDefault: string
-			cutOnclean: boolean
-		}
 	}
 	SelectedAdlibs: {
 		SourceLayer: {
@@ -188,12 +181,13 @@ export async function executeAction<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	coreContext: IActionExecutionContext,
+	uniformConfig: UniformConfig,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	actionIdStr: string,
 	userData: ActionUserData,
 	triggerMode?: string
 ): Promise<void> {
-	await executeWithContext<ShowStyleConfig>(coreContext, async context => {
+	await executeWithContext<ShowStyleConfig>(coreContext, uniformConfig, async context => {
 		const existingTransition = await getExistingTransition(context, settings, 'next')
 
 		const actionId = actionIdStr as AdlibActionType
@@ -439,19 +433,12 @@ async function executeActionSelectServerClip<
 					? settings.SelectedAdlibs.SourceLayer.VO
 					: settings.SelectedAdlibs.SourceLayer.Server
 			},
-			AtemLLayer: {
-				MEPgm: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
-				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
-			},
 			Caspar: {
 				ClipPending: settings.LLayer.Caspar.ClipPending
 			},
 			Sisyfos: {
 				ClipPending: settings.LLayer.Sisyfos.ClipPending
 			},
-			ATEM: {
-				ServerLookaheadAux: settings.LLayer.Atem.ServerLookaheadAUX
-			}
 		}
 	)
 
@@ -677,7 +664,7 @@ async function cutServerToBox<
 		// Find SSRC object in DVE piece
 		const ssrcObjIndex = newDvePiece.content?.timelineObjects
 			? (newDvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
-					obj => obj.layer === settings.LLayer.Atem.SSrcDefault
+					obj => obj.layer === settings.LLayer.VideoSwitcher.Dve
 			  )
 			: -1
 
@@ -1090,7 +1077,7 @@ async function executeActionCutToCamera<
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				context.videoSwitcher.getMixEffectTimelineObject({
 					priority: 1,
-					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
+					layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 					content: {
 						input: sourceInfoCam.port,
 						transition: TransitionStyle.CUT
@@ -1226,7 +1213,7 @@ async function executeActionCutToRemote<
 					id: '',
 					enable: { while: '1' },
 					priority: 1,
-					layer: settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram,
+					layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 					content: {
 						input: sourceInfo.port,
 						transition: TransitionStyle.CUT

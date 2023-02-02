@@ -8,7 +8,7 @@ import {
 	IBlueprintPieceInstance,
 	IBlueprintResolvedPieceInstance
 } from 'blueprints-integration'
-import { ExtendedShowStyleContextImpl, PieceMetaData, TV2ShowStyleConfig } from 'tv2-common'
+import { ExtendedShowStyleContextImpl, PieceMetaData, TV2ShowStyleConfig, UniformConfig } from 'tv2-common'
 import { CoreActionExecutionContext } from './CoreActionExecutionContext'
 
 export interface ITV2ActionExecutionContext extends IActionExecutionContext {
@@ -50,18 +50,19 @@ export interface ITV2ActionExecutionContext extends IActionExecutionContext {
 export class ExtendedActionExecutionContext<
 	BlueprintConfig extends TV2ShowStyleConfig = TV2ShowStyleConfig
 > extends ExtendedShowStyleContextImpl<BlueprintConfig> {
-	constructor(readonly core: CoreActionExecutionContext) {
-		super(core)
+	constructor(readonly core: CoreActionExecutionContext, uniformConfig: UniformConfig) {
+		super(core, uniformConfig)
 		this.core = core
 	}
 }
 
 export async function executeWithContext<BlueprintConfig extends TV2ShowStyleConfig>(
 	coreContext: IActionExecutionContext,
+	uniformConfig: UniformConfig,
 	func: (context: ExtendedActionExecutionContext<BlueprintConfig>) => Promise<void>
 ): Promise<void> {
 	const coreContextWrapped = new CoreActionExecutionContext(coreContext)
-	const context = new ExtendedActionExecutionContext<BlueprintConfig>(coreContextWrapped)
+	const context = new ExtendedActionExecutionContext<BlueprintConfig>(coreContextWrapped, uniformConfig)
 	await func(context)
 	await coreContextWrapped.afterActions()
 }

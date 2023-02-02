@@ -11,6 +11,7 @@ import {
 	PlaylistTimingType,
 	TSR
 } from 'blueprints-integration'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -67,7 +68,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const context = new ExtendedShowStyleContextImpl<OfftubeBlueprintConfig>(coreContext)
+	const context = new ExtendedShowStyleContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
 
 	let startTime: number = 0
 	let endTime: number = 0

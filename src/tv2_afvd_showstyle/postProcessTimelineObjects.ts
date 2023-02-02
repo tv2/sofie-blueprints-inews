@@ -1,7 +1,6 @@
 import {
 	BlueprintResultPart,
 	IBlueprintPieceGeneric,
-	OnGenerateTimelineObj,
 	SourceLayerType,
 	SplitsContent,
 	TimelineObjectCoreExt,
@@ -59,7 +58,6 @@ export function postProcessPieceTimelineObjects(
 
 				if (
 					(!isAdlib || piece.toBeQueued) &&
-					'me' in tlObj.content &&
 					(tlObj.content.me.input !== -1 || tlObj.metaData?.mediaPlayerSession !== undefined)
 				) {
 					// Create a lookahead-lookahead object for this me-program

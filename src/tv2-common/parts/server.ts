@@ -2,7 +2,6 @@ import {
 	BlueprintResultPart,
 	IBlueprintPart,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	VTContent,
 	WithTimeline
@@ -53,10 +52,6 @@ export type ServerPartLayers = {
 		PgmServer: string
 		SelectedServer: string
 	}
-	AtemLLayer: {
-		MEPgm: string
-		ServerLookaheadAux?: string
-	}
 } & MakeContentServerSourceLayers
 
 export async function CreatePartServerBase<
@@ -95,13 +90,12 @@ export async function CreatePartServerBase<
 	const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 
 	const serverSelectionBlueprintPiece = getServerSelectionBlueprintPiece(
+		context,
 		partDefinition,
 		actualDuration,
 		partProps,
 		contentProps,
 		layers,
-		context.core,
-		context.config,
 		context.config.studio.CasparPrerollDuration
 	)
 
@@ -193,19 +187,14 @@ function getUserData(
 	}
 }
 
-function getContentServerElement<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
+function getContentServerElement(
+	context: ExtendedShowStyleContext,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig
 ): WithTimeline<VTContent> {
 	return MakeContentServer(
 		context,
-		config,
 		{
 			Caspar: {
 				ClipPending: layers.Caspar.ClipPending
@@ -213,30 +202,23 @@ function getContentServerElement<
 			Sisyfos: {
 				ClipPending: layers.Sisyfos.ClipPending
 			},
-			ATEM: {
-				ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
-			}
 		},
 		partProps,
 		contentProps
 	)
 }
 
-function getServerSelectionBlueprintPiece<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
+function getServerSelectionBlueprintPiece(
+	context: ExtendedShowStyleContext,
 	partDefinition: PartDefinition,
 	actualDuration: number,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
 	prerollDuration: number
 ): IBlueprintPiece<ServerPieceMetaData> {
 	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, partProps)
-	const contentServerElement = getContentServerElement(partProps, contentProps, layers, context, config)
+	const contentServerElement = getContentServerElement(context, partProps, contentProps, layers)
 
 	return {
 		externalId: partDefinition.externalId,
@@ -281,7 +263,7 @@ function getPgmBlueprintPiece<
 		},
 		content: {
 			...GetVTContentProperties(context.config, contentProps),
-			timelineObjects: CutToServer(context, contentProps.mediaPlayerSession, partDefinition, layers.AtemLLayer.MEPgm)
+			timelineObjects: CutToServer(context, contentProps.mediaPlayerSession, partDefinition)
 		},
 		tags: [
 			GetTagForServer(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer),

@@ -7,6 +7,7 @@ import {
 	PieceLifespan,
 	WithTimeline
 } from 'blueprints-integration'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import {
 	ExtendedSegmentContextImpl,
 	ExtendedShowStyleContext,
@@ -16,7 +17,6 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
-import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
@@ -30,7 +30,7 @@ export async function getSegment(
 	coreContext: ISegmentUserContext,
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
-	const context = new ExtendedSegmentContextImpl<OfftubeBlueprintConfig>(coreContext)
+	const context = new ExtendedSegmentContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
 
 	const result: BlueprintResultSegment = await getSegmentBase(context, ingestSegment, {
 		CreatePartContinuity,
@@ -82,7 +82,7 @@ function CreatePartContinuity(
 					timelineObjects: [
 						context.videoSwitcher.getMixEffectTimelineObject({
 							priority: 1,
-							layer: OfftubeAtemLLayer.AtemMEClean,
+							layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 							content: {
 								input: context.config.studio.SwitcherSource.Continuity,
 								transition: TransitionStyle.CUT

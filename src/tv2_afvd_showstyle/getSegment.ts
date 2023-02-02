@@ -8,6 +8,7 @@ import {
 	PieceLifespan,
 	WithTimeline
 } from 'blueprints-integration'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import {
 	ExtendedSegmentContext,
 	ExtendedSegmentContextImpl,
@@ -37,7 +38,7 @@ export async function getSegment(
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
-	const context = new ExtendedSegmentContextImpl<GalleryBlueprintConfig>(coreContext)
+	const context = new ExtendedSegmentContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 
 	const result: BlueprintResultSegment = await getSegmentBase<GalleryBlueprintConfig>(context, ingestSegment, {
 		CreatePartContinuity,

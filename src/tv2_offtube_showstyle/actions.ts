@@ -1,6 +1,7 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { executeAction, ServerSelectMode } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { pilotGeneratorSettingsOfftube } from './cues/OfftubeGraphics'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
@@ -23,6 +24,7 @@ export async function executeActionOfftube(
 ): Promise<void> {
 	await executeAction(
 		context,
+		QBOX_UNIFORM_CONFIG,
 		{
 			postProcessPieceTimelineObjects,
 			EvaluateCues: OfftubeEvaluateCues,
@@ -49,14 +51,6 @@ export async function executeActionOfftube(
 					Effekt: OfftubeSisyfosLLayer.SisyfosSourceJingle,
 					StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
 				},
-				Atem: {
-					MEProgram: OfftubeAtemLLayer.AtemMEProgram,
-					MEClean: OfftubeAtemLLayer.AtemMEClean,
-					Next: OfftubeAtemLLayer.AtemMENext,
-					ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead,
-					SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
-					cutOnclean: true
-				}
 			},
 			SelectedAdlibs: {
 				SourceLayer: {

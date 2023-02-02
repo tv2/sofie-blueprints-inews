@@ -13,6 +13,7 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import {
 	ActionCallRobotPreset,
 	ActionClearGraphics,
@@ -65,7 +66,7 @@ import { SourceLayer } from './layers'
 import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const context = new ExtendedShowStyleContextImpl<GalleryBlueprintConfig>(coreContext)
+	const context = new ExtendedShowStyleContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 	return {
 		rundown: {
 			externalId: ingestRundown.externalId,

@@ -60,10 +60,6 @@ export enum AtemLLayer {
 	AtemAuxClean = 'atem_aux_clean',
 	AtemAuxScreen = 'atem_aux_screen',
 	AtemAuxServerLookahead = 'atem_aux_server_lookahead',
-	AtemSSrcBox1 = 'atem_supersource_z_box1',
-	AtemSSrcBox2 = 'atem_supersource_z_box2',
-	AtemSSrcBox3 = 'atem_supersource_z_box3',
-	AtemSSrcBox4 = 'atem_supersource_z_box4'
 }
 
 // tslint:disable-next-line: variable-name

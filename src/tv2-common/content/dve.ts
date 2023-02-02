@@ -11,7 +11,6 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	createEmptyObject,
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVESources,
@@ -27,7 +26,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, MEDIA_PLAYER_AUTO, SharedGraphicLLayer, SourceType } from 'tv2-constants'
+import { MEDIA_PLAYER_AUTO, SharedGraphicLLayer, SourceType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
@@ -118,7 +117,6 @@ export interface DVEPieceMetaData extends PieceMetaData {
 
 export interface DVEOptions {
 	dveLayers: DVELayers
-	boxMappings: [string, string, string, string]
 	/** All audio layers */
 	AUDIO_LAYERS: string[]
 }
@@ -191,9 +189,7 @@ export function MakeContentDVE2<
 		? dveConfig.DVEInputs.toString().split(';')
 		: '1:INP1;2:INP2;3:INP3;4:INP4'.split(';')
 
-	const classes: string[] = []
-
-	const boxAssigments = makeBoxAssignments(inputs, context.core, classes, dveGeneratorOptions, sources)
+	const boxAssigments = makeBoxAssignments(inputs, context.core, sources)
 
 	const boxes: BoxConfig[] = Object.entries(template.boxes).map(([_num, box]) => ({
 		...box,
@@ -203,7 +199,7 @@ export function MakeContentDVE2<
 	const boxSources: BoxSources = []
 
 	let valid = true
-	let server = false
+	let hasServer = false
 
 	boxAssigments.forEach((mappingFrom, num) => {
 		const box = boxes[num]
@@ -277,7 +273,7 @@ export function MakeContentDVE2<
 					}
 					break
 				case SourceType.SERVER:
-					server = true
+					hasServer = true
 					setBoxSource(box, boxSources, {
 						sourceLayerType: SourceLayerType.VT,
 						port: -1
@@ -312,13 +308,6 @@ export function MakeContentDVE2<
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				// Setup classes for adlibs to be able to override boxes
-				createEmptyObject({
-					enable: getDVEEnable(),
-					layer: 'dve_lookahead_control',
-					classes: [ControlClasses.DVEOnAir]
-				}),
-
 				// setup ssrc
 				literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
 					id: '',
@@ -332,9 +321,8 @@ export function MakeContentDVE2<
 						type: TSR.TimelineContentTypeAtem.SSRC,
 						ssrc: { boxes }
 					},
-					classes,
 					metaData: literal<DVEMetaData>({
-						mediaPlayerSession: server ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
+						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
 					})
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({
@@ -420,7 +408,7 @@ export function MakeContentDVE2<
 							})
 					  ]
 					: []),
-				...(server && mediaPlayerSessionId ? [EnableServer(mediaPlayerSessionId)] : []),
+				...(hasServer && mediaPlayerSessionId ? [EnableServer(mediaPlayerSessionId)] : []),
 				...dveTimeline
 			])
 		})
@@ -456,8 +444,6 @@ const setBoxToBlack = (boxConfig: BoxConfig, boxSources: BoxSources) => {
 function makeBoxAssignments(
 	inputs: string[],
 	context: IShowStyleUserContext,
-	classes: string[],
-	dveGeneratorOptions: DVEOptions,
 	sources: DVESources | undefined
 ) {
 	const boxAssignments: Array<SourceDefinition | undefined> = []
@@ -469,8 +455,6 @@ function makeBoxAssignments(
 			context.notifyUserWarning(`Invalid DVE mapping: ${sourceProps}`)
 			return
 		}
-
-		classes.push(`${fromCue.replace(/\s/g, '')}_${dveGeneratorOptions.boxMappings[targetBox - 1]}`)
 
 		if (!sources) {
 			// Need something to keep the layout etc

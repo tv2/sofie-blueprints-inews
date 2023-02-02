@@ -1,6 +1,7 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { executeAction, ServerSelectMode } from 'tv2-common'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
 import { pilotGeneratorSettingsAFVD } from './helpers/pieces/graphicPilot'
@@ -16,6 +17,7 @@ export async function executeActionAFVD(
 ): Promise<void> {
 	await executeAction(
 		context,
+		GALLERY_UNIFORM_CONFIG,
 		{
 			postProcessPieceTimelineObjects,
 			EvaluateCues,
@@ -43,13 +45,6 @@ export async function executeActionAFVD(
 					Effekt: SisyfosLLAyer.SisyfosSourceJingle,
 					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
 				},
-				Atem: {
-					MEProgram: AtemLLayer.AtemMEProgram,
-					MEClean: AtemLLayer.AtemMEClean,
-					Next: AtemLLayer.AtemAuxLookahead,
-					SSrcDefault: AtemLLayer.AtemSSrcDefault,
-					cutOnclean: false
-				}
 			},
 			SelectedAdlibs: {
 				SourceLayer: {

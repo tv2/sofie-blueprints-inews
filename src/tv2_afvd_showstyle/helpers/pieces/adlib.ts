@@ -53,10 +53,6 @@ export async function EvaluateAdLib(
 					Sisyfos: {
 						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
 					},
-					AtemLLayer: {
-						MEPgm: AtemLLayer.AtemMEProgram
-					},
-					ATEM: {}
 				},
 				true
 			)

@@ -111,9 +111,6 @@ export function createJingleContentAFVD(
 		Caspar: {
 			PlayerJingle: CasparLLayer.CasparPlayerJingle
 		},
-		ATEM: {
-			USKCleanEffekt: AtemLLayer.AtemCleanUSKEffect
-		},
 		Sisyfos: {
 			PlayerJingle: SisyfosLLAyer.SisyfosSourceJingle
 		}
