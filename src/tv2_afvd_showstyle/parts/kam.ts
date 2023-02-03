@@ -66,7 +66,7 @@ export async function CreatePartKam(
 				timelineObjects: [
 					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
-						layer: AtemLLayer.AtemMEProgram,
+						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: jingleDSK.Fill,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
@@ -106,7 +106,7 @@ export async function CreatePartKam(
 				timelineObjects: [
 					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
-						layer: AtemLLayer.AtemMEProgram,
+						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: Number(switcherInput),
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,

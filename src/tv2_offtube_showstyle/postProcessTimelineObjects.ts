@@ -40,7 +40,10 @@ export function postProcessPieceTimelineObjects(
 				(obj.content.type === TSR.TimelineContentTypeAtem.ME || obj.content.type === TSR.TimelineContentTypeAtem.DSK)
 		)
 		_.each(atemMeObjs, tlObj => {
-			if (tlObj.layer === OfftubeAtemLLayer.AtemMEClean || tlObj.classes?.includes(ControlClasses.MixMinusOverrideDsk)) {
+			if (
+				tlObj.layer === OfftubeAtemLLayer.AtemMEClean ||
+				tlObj.classes?.includes(ControlClasses.MixMinusOverrideDsk)
+			) {
 				if (!tlObj.id) {
 					tlObj.id = context.core.getHashId(OfftubeAtemLLayer.AtemMEClean, true)
 				}

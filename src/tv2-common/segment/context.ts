@@ -1,5 +1,11 @@
 import { ISegmentUserContext } from 'blueprints-integration'
-import { ExtendedShowStyleContext, ExtendedShowStyleContextImpl, TV2ShowStyleConfig, UniformConfig, VideoSwitcher } from 'tv2-common'
+import {
+	ExtendedShowStyleContext,
+	ExtendedShowStyleContextImpl,
+	TV2ShowStyleConfig,
+	UniformConfig,
+	VideoSwitcher
+} from 'tv2-common'
 
 export interface ExtendedSegmentContext<BlueprintConfig extends TV2ShowStyleConfig>
 	extends ExtendedShowStyleContext<BlueprintConfig> {

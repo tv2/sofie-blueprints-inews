@@ -13,7 +13,6 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import {
 	ActionCallRobotPreset,
 	ActionClearGraphics,
@@ -42,6 +41,7 @@ import {
 	SourceInfo,
 	SourceInfoToSourceDefinition,
 	SourceInfoType,
+	SpecialInput,
 	t,
 	TransitionStyle,
 	VideoSwitcher
@@ -54,11 +54,14 @@ import {
 	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SourceType,
+	SwitcherAuxLLayer,
+	SwitcherMixEffectLLayer,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { AtemSourceIndex } from '../types/atem'
 import { GalleryBlueprintConfig } from './helpers/config'
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
@@ -77,7 +80,7 @@ export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: In
 		},
 		globalAdLibPieces: new GlobalAdLibPiecesGenerator(context).generate(),
 		globalActions: getGlobalAdlibActionsAFVD(context.core, context.config), // @todo
-		baseline: getBaseline(context.config, context.videoSwitcher) // @todo
+		baseline: getBaseline(context, context.videoSwitcher) // @todo
 	}
 }
 
@@ -198,7 +201,7 @@ class GlobalAdLibPiecesGenerator {
 					this.context.videoSwitcher.getMixEffectTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
-						layer: AtemLLayer.AtemMEProgram,
+						layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: info.port,
 							transition: TransitionStyle.CUT
@@ -223,10 +226,9 @@ class GlobalAdLibPiecesGenerator {
 			content: {
 				timelineObjects: [
 					this.context.videoSwitcher.getAuxTimelineObject({
-						id: '',
 						enable: { while: '1' },
 						priority: 1,
-						layer: AtemLLayer.AtemAuxAR,
+						layer: SwitcherAuxLLayer.AuxAR,
 						content: {
 							input: info.port
 						}
@@ -248,17 +250,12 @@ class GlobalAdLibPiecesGenerator {
 			tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemAUX>({
-						id: '',
+					this.context.videoSwitcher.getAuxTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
-						layer: AtemLLayer.AtemAuxVizOvlIn1,
+						layer: SwitcherAuxLLayer.AuxVizOvlIn1,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.AUX,
-							aux: {
-								input: info.port
-							}
+							input: info.port
 						}
 					})
 				]
@@ -291,7 +288,7 @@ class GlobalAdLibPiecesGenerator {
 					this.context.videoSwitcher.getMixEffectTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
-						layer: AtemLLayer.AtemMEProgram,
+						layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: info.port,
 							transition: TransitionStyle.CUT
@@ -326,17 +323,12 @@ class GlobalAdLibPiecesGenerator {
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
 			content: {
 				timelineObjects: [
-					literal<TSR.TimelineObjAtemAUX>({
-						id: '',
+					this.context.videoSwitcher.getAuxTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
-						layer: AtemLLayer.AtemAuxAR,
+						layer: SwitcherAuxLLayer.AuxAR,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.AUX,
-							aux: {
-								input: info.port
-							}
+							input: info.port
 						}
 					})
 				]
@@ -834,94 +826,70 @@ function createRobotPresetAction(context: ICommonContext): IBlueprintActionManif
 	}
 }
 
-function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitcher): BlueprintResultBaseline {
-	const jingleDSK = FindDSKJingle(config)
+function getBaseline(
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	videoSwitcher: VideoSwitcher
+): BlueprintResultBaseline {
+	const jingleDSK = FindDSKJingle(context.config)
 
 	return {
 		timelineObjects: [
-			...CreateGraphicBaseline(config),
+			...CreateGraphicBaseline(context.config),
 			// Default timeline
 			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: AtemLLayer.AtemMEProgram,
+				layer: SwitcherMixEffectLLayer.Program,
 				content: {
-					input: config.studio.SwitcherSource.Default,
+					input: context.config.studio.SwitcherSource.Default,
 					transition: TransitionStyle.CUT
 				}
 			}),
 			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: AtemLLayer.AtemMEClean,
+				layer: SwitcherMixEffectLLayer.Clean,
 				content: {
-					input: config.studio.SwitcherSource.Default,
+					input: context.config.studio.SwitcherSource.Default,
 					transition: TransitionStyle.CUT
 				}
 			}),
 
 			// route default outputs
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: AtemLLayer.AtemAuxPGM,
+				layer: SwitcherAuxLLayer.AuxProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.Prg1
-					}
+					input: SpecialInput.ME1_PROGRAM
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			videoSwitcher.getAuxTimelineObject({
 				id: '',
 				enable: { while: '1' },
-				priority: 0,
-				layer: AtemLLayer.AtemAuxClean,
+				layer: SwitcherAuxLLayer.AuxClean,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.Prg4
-					}
+					input: SpecialInput.ME4_PROGRAM // @todo: this is incorrect - how to get the parity
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: AtemLLayer.AtemAuxLookahead,
+				layer: SwitcherAuxLLayer.AuxLookahead,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: config.studio.SwitcherSource.Default
-					}
+					input: context.config.studio.SwitcherSource.Default
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: AtemLLayer.AtemAuxSSrc,
+				layer: SwitcherAuxLLayer.AuxDve,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.SSrc
-					}
+					input: SpecialInput.DVE
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
+			videoSwitcher.getAuxTimelineObject({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
-				layer: AtemLLayer.AtemAuxVideoMixMinus,
+				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: config.studio.SwitcherSource.MixMinusDefault
-					}
+					input: context.config.studio.SwitcherSource.MixMinusDefault
 				}
 			}),
 
@@ -934,17 +902,17 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.HTMLPAGE,
-					url: config.studio.SofieHostURL + '/countdowns/studio0/presenter'
+					url: context.config.studio.SofieHostURL + '/countdowns/studio0/presenter'
 				}
 			}),
 
 			// keyers
-			...CreateDSKBaseline(config, videoSwitcher),
+			...CreateDSKBaseline(context.config, videoSwitcher),
 
 			// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: AtemLLayer.AtemCleanUSKEffect,
+				layer: SwitcherMixEffectLLayer.CleanUSKEffect,
 				content: {
 					keyers: [
 						{
@@ -964,8 +932,8 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 					ssrcProps: {
-						artFillSource: config.studio.SwitcherSource.SplitArtF,
-						artCutSource: config.studio.SwitcherSource.SplitArtK,
+						artFillSource: context.config.studio.SwitcherSource.SplitArtF,
+						artCutSource: context.config.studio.SwitcherSource.SplitArtK,
 						artOption: 1,
 						artPreMultiplied: true
 					}
@@ -1081,7 +1049,7 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 				}
 			}),
 
-			...(config.studio.GraphicsType === 'HTML'
+			...(context.config.studio.GraphicsType === 'HTML'
 				? [
 						literal<TSR.TimelineObjCasparCGAny>({
 							id: '',
@@ -1131,8 +1099,8 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 
 			...CreateLYDBaseline('afvd'),
 
-			...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
-				? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
+			...(context.config.showStyle.CasparCGLoadingClip && context.config.showStyle.CasparCGLoadingClip.length
+				? [...context.config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
 						return literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { while: '1' },
@@ -1141,7 +1109,7 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.MEDIA,
-								file: config.showStyle.CasparCGLoadingClip,
+								file: context.config.showStyle.CasparCGLoadingClip,
 								loop: true
 							}
 						})
@@ -1155,7 +1123,7 @@ function getBaseline(config: GalleryBlueprintConfig, videoSwitcher: VideoSwitche
 				content: {
 					deviceType: TSR.DeviceType.VIZMSE,
 					type: TSR.TimelineContentTypeVizMSE.CONCEPT,
-					concept: config.selectedGfxSetup.VcpConcept
+					concept: context.config.selectedGfxSetup.VcpConcept
 				}
 			})
 		]

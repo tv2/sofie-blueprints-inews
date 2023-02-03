@@ -36,8 +36,8 @@ export function postProcessPieceTimelineObjects(
 		const extraObjs: TimelineObjectCoreExt[] = []
 
 		const atemMeObjs = piece.content.timelineObjects.filter(
-			obj =>
-				context.videoSwitcher.isMixEffect(obj) || context.videoSwitcher.isDsk(obj))
+			obj => context.videoSwitcher.isMixEffect(obj) || context.videoSwitcher.isDsk(obj)
+		)
 		_.each(atemMeObjs, tlObj => {
 			if (tlObj.layer === AtemLLayer.AtemMEProgram || tlObj.classes?.includes(ControlClasses.MixMinusOverrideDsk)) {
 				if (!tlObj.id) {
@@ -48,6 +48,7 @@ export function postProcessPieceTimelineObjects(
 				}
 
 				// Basic clone of every object to AtemMEClean
+				// @todo: this can probably be replaced by some TriCaster feature(?)
 				const cleanObj = _.clone(tlObj) // Note: shallow clone
 				cleanObj.layer = AtemLLayer.AtemMEClean
 				cleanObj.id = '' // Force new id

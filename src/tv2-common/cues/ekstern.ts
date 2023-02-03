@@ -76,7 +76,7 @@ export function EvaluateEksternBase<
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
-						layer: layersEkstern.ATEM.MEProgram,
+						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
@@ -114,7 +114,7 @@ export function EvaluateEksternBase<
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					context.videoSwitcher.getMixEffectTimelineObject({
 						priority: 1,
-						layer: layersEkstern.ATEM.MEProgram,
+						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,

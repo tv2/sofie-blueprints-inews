@@ -11,7 +11,6 @@ import {
 	PlaylistTimingType,
 	TSR
 } from 'blueprints-integration'
-import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import {
 	ActionClearGraphics,
 	ActionCommentatorSelectDVE,
@@ -56,12 +55,15 @@ import {
 	SharedSisyfosLLayer,
 	SharedSourceLayers,
 	SourceType,
+	SwitcherAuxLLayer,
+	SwitcherMixEffectLLayer,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
 import { OfftubeBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { AtemSourceIndex } from '../types/atem'
 import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
@@ -586,7 +588,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 			...CreateGraphicBaseline(config),
 			// Default timeline
 			videoSwitcher.getMixEffectTimelineObject({
-				layer: OfftubeAtemLLayer.AtemMEClean,
+				layer: SwitcherMixEffectLLayer.Clean,
 				enable: { while: '1' },
 				content: {
 					input: config.studio.SwitcherSource.Default,
@@ -595,37 +597,25 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 			}),
 			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: OfftubeAtemLLayer.AtemMENext,
+				layer: SwitcherMixEffectLLayer.Next,
 				content: {
 					previewInput: config.studio.SwitcherSource.Default
 				}
 			}),
 
 			// route default outputs
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemAuxClean,
+				layer: SwitcherAuxLLayer.AuxClean,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.Prg2
-					}
+					input: SpecialInput.ME2_PROGRAM
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemAuxScreen,
+				layer: SwitcherAuxLLayer.AuxScreen,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: config.studio.SwitcherSource.Loop
-					}
+					input: config.studio.SwitcherSource.Loop
 				}
 			}),
 			literal<TSR.TimelineObjCCGRoute>({
@@ -789,7 +779,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 			// Route ME 2 PGM to ME 1 PGM
 			videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: OfftubeAtemLLayer.AtemMEProgram,
+				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					input: SpecialInput.ME2_PROGRAM
 				}

@@ -49,7 +49,6 @@ import {
 	MakeContentDVE2,
 	PartDefinition,
 	PieceMetaData,
-	PilotGeneratorSettings,
 	PilotGraphicGenerator,
 	ServerSelectMode,
 	SisyfosPersistMetaData,
@@ -168,7 +167,6 @@ export interface ActionExecutionSettings<
 		duration: number,
 		alphaAtEnd: number
 	) => WithTimeline<VTContent>
-	pilotGraphicSettings: PilotGeneratorSettings
 	serverActionSettings: ServerActionSettings
 }
 
@@ -438,7 +436,7 @@ async function executeActionSelectServerClip<
 			},
 			Sisyfos: {
 				ClipPending: settings.LLayer.Sisyfos.ClipPending
-			},
+			}
 		}
 	)
 
@@ -1210,7 +1208,6 @@ async function executeActionCutToRemote<
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				context.videoSwitcher.getMixEffectTimelineObject({
-					id: '',
 					enable: { while: '1' },
 					priority: 1,
 					layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
@@ -1937,7 +1934,6 @@ async function executeActionSelectFull<
 	const generator = PilotGraphicGenerator.createPilotGraphicGenerator({
 		context,
 		partId: externalId,
-		settings: settings.pilotGraphicSettings,
 		parsedCue: cue,
 		segmentExternalId: userData.segmentExternalId,
 		adlib: { rank: 0 }

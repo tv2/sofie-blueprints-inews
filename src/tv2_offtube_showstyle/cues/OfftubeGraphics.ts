@@ -8,15 +8,9 @@ import {
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
-	PartDefinition,
-	PilotGeneratorSettings
+	PartDefinition
 } from 'tv2-common'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
-
-export const pilotGeneratorSettingsOfftube: PilotGeneratorSettings = {
-	ProgramLayer: OfftubeAtemLLayer.AtemMEClean
-}
 
 export function OfftubeEvaluateGrafikCaspar(
 	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
@@ -33,7 +27,6 @@ export function OfftubeEvaluateGrafikCaspar(
 			context,
 			partId,
 			parsedCue,
-			settings: pilotGeneratorSettingsOfftube,
 			adlib,
 			segmentExternalId: partDefinition.segmentExternalId
 		})

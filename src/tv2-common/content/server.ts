@@ -111,19 +111,10 @@ function GetServerTimeline(
 		),
 		...(context.uniformConfig.SwitcherLLayers.ServerLookaheadAux
 			? [
-					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 0,
+					context.videoSwitcher.getAuxTimelineObject({
 						layer: context.uniformConfig.SwitcherLLayers.ServerLookaheadAux,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.AUX,
-							aux: {
-								input: -1
-							}
+							input: -1
 						},
 						metaData: {
 							mediaPlayerSession: contentProps.mediaPlayerSession

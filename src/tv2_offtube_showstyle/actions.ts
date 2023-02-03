@@ -1,9 +1,8 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
-import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { executeAction, ServerSelectMode } from 'tv2-common'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
-import { pilotGeneratorSettingsOfftube } from './cues/OfftubeGraphics'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
@@ -50,7 +49,7 @@ export async function executeActionOfftube(
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
 					Effekt: OfftubeSisyfosLLayer.SisyfosSourceJingle,
 					StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
-				},
+				}
 			},
 			SelectedAdlibs: {
 				SourceLayer: {
@@ -63,7 +62,6 @@ export async function executeActionOfftube(
 				SELECTED_ADLIB_LAYERS
 			},
 			createJingleContent: createJingleContentOfftube,
-			pilotGraphicSettings: pilotGeneratorSettingsOfftube,
 			serverActionSettings: {
 				defaultTriggerMode: ServerSelectMode.RESET
 			}

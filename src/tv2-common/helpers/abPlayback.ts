@@ -293,7 +293,7 @@ function updateObjectsToMediaPlayer<
 				}
 			} else if (context.videoSwitcher.isAux(obj)) {
 				context.videoSwitcher.updateAuxInput(obj, input)
-			} else if (context.videoSwitcher.isDve(obj)) {
+			} else if (context.videoSwitcher.isDveBoxes(obj)) {
 				context.videoSwitcher.updateUnpopulatedDveBoxes(obj, input)
 			} else {
 				context.core.logWarning(

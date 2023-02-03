@@ -3,7 +3,7 @@ import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,
 	CasparPlayerClipLoadingLoop,
-	GetDSKMappings,
+	getAtemDskMappings,
 	literal
 } from 'tv2-common'
 import { AbstractLLayer } from 'tv2-constants'
@@ -486,7 +486,7 @@ const MAPPINGS_ATEM: BlueprintMappings = {
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	}),
-	...GetDSKMappings(ATEMModel.PRODUCTION_STUDIO_4K_2ME),
+	...getAtemDskMappings(ATEMModel.PRODUCTION_STUDIO_4K_2ME),
 	[OfftubeAtemLLayer.AtemAuxClean]: literal<TSR.MappingAtem & BlueprintMapping>({
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',

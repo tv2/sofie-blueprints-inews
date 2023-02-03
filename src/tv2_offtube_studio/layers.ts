@@ -59,7 +59,7 @@ export enum AtemLLayer {
 	AtemSSrcDefault = 'atem_supersource_default',
 	AtemAuxClean = 'atem_aux_clean',
 	AtemAuxScreen = 'atem_aux_screen',
-	AtemAuxServerLookahead = 'atem_aux_server_lookahead',
+	AtemAuxServerLookahead = 'atem_aux_server_lookahead'
 }
 
 // tslint:disable-next-line: variable-name

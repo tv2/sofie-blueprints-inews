@@ -1,7 +1,7 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
-import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { executeAction, ServerSelectMode } from 'tv2-common'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
 import { pilotGeneratorSettingsAFVD } from './helpers/pieces/graphicPilot'
@@ -44,7 +44,7 @@ export async function executeActionAFVD(
 					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
 					Effekt: SisyfosLLAyer.SisyfosSourceJingle,
 					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
-				},
+				}
 			},
 			SelectedAdlibs: {
 				SourceLayer: {
@@ -57,7 +57,6 @@ export async function executeActionAFVD(
 				SELECTED_ADLIB_LAYERS: [SourceLayer.SelectedServer, SourceLayer.SelectedVoiceOver]
 			},
 			createJingleContent: createJingleContentAFVD,
-			pilotGraphicSettings: pilotGeneratorSettingsAFVD,
 			serverActionSettings: {
 				defaultTriggerMode: ServerSelectMode.RESUME
 			}

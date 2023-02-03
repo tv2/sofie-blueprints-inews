@@ -1,6 +1,7 @@
-import { TSR } from 'blueprints-integration'
+import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
 import _ = require('underscore')
 import { AtemSourceIndex } from '../../types/atem'
+import { ATEM_LAYER_PREFIX } from '../layers'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import {
 	AuxProps,
@@ -10,15 +11,10 @@ import {
 	SpecialInput,
 	SwitcherType,
 	TIMELINE_OBJECT_DEFAULTS,
+	TimelineObjectProps,
 	TransitionStyle,
 	VideoSwitcherImpl
 } from './index'
-
-const SPECIAL_INPUT_MAP = {
-	[SpecialInput.ME1_PROGRAM]: AtemSourceIndex.Prg1,
-	[SpecialInput.ME2_PROGRAM]: AtemSourceIndex.Prg2,
-	[SpecialInput.SSRC]: AtemSourceIndex.SSrc
-}
 
 const TRANSITION_MAP = {
 	[TransitionStyle.CUT]: TSR.AtemTransitionStyle.CUT,
@@ -30,10 +26,11 @@ const TRANSITION_MAP = {
 }
 
 export class Atem extends VideoSwitcherImpl {
-
 	public readonly type = SwitcherType.ATEM
-	
-	public isVideoSwitcherTimelineObject = (timelineObject: TSR.TSRTimelineObj): boolean => {
+
+	public isVideoSwitcherTimelineObject = (
+		timelineObject: TSR.TSRTimelineObj
+	): timelineObject is TSR.TimelineObjAtemAny => {
 		return timelineObject.content.deviceType === TSR.DeviceType.ATEM
 	}
 
@@ -55,8 +52,7 @@ export class Atem extends VideoSwitcherImpl {
 			me.upstreamKeyers = upstreamKeyers
 		}
 		return {
-			...TIMELINE_OBJECT_DEFAULTS,
-			..._.omit(props, 'content'),
+			...this.getBaseProperties(props),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
@@ -71,7 +67,7 @@ export class Atem extends VideoSwitcherImpl {
 
 	public isMixEffect = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemME => {
 		return (
-			timelineObject.content.deviceType === TSR.DeviceType.ATEM &&
+			this.isVideoSwitcherTimelineObject(timelineObject) &&
 			timelineObject.content.type === TSR.TimelineContentTypeAtem.ME
 		)
 	}
@@ -89,7 +85,10 @@ export class Atem extends VideoSwitcherImpl {
 		timelineObject.content.me.transitionSettings = this.getTransitionSettings(transition, transitionDuration)
 		return timelineObject
 	}
-	public updatePreviewInput(timelineObject: TSR.TSRTimelineObj, previewInput: number | SpecialInput): TSR.TSRTimelineObj {
+	public updatePreviewInput(
+		timelineObject: TSR.TSRTimelineObj,
+		previewInput: number | SpecialInput
+	): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
 			// @todo: log error or throw
 			return timelineObject
@@ -109,8 +108,7 @@ export class Atem extends VideoSwitcherImpl {
 	public getDskTimelineObjects(props: DskProps) {
 		const { content } = props
 		const timelineObject: TSR.TimelineObjAtemDSK = {
-			...TIMELINE_OBJECT_DEFAULTS,
-			..._.omit(props, 'content'),
+			...this.getBaseProperties(props),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.DSK,
@@ -134,8 +132,7 @@ export class Atem extends VideoSwitcherImpl {
 
 	public getAuxTimelineObject(props: AuxProps): TSR.TimelineObjAtemAUX {
 		return {
-			...TIMELINE_OBJECT_DEFAULTS,
-			..._.omit(props, 'content'),
+			...this.getBaseProperties(props),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.AUX,
@@ -146,11 +143,48 @@ export class Atem extends VideoSwitcherImpl {
 		}
 	}
 
-	private getInputNumber(input: number | SpecialInput) {
-		if (typeof input === 'number') {
-			return input
+	public isDsk = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemDSK => {
+		return (
+			this.isVideoSwitcherTimelineObject(timelineObject) &&
+			timelineObject.content.type === TSR.TimelineContentTypeAtem.DSK
+		)
+	}
+	public isAux = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemAUX => {
+		return (
+			this.isVideoSwitcherTimelineObject(timelineObject) &&
+			timelineObject.content.type === TSR.TimelineContentTypeAtem.AUX
+		)
+	}
+	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+		throw new Error('Method not implemented.')
+	}
+	public isDveBoxes = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemSsrc => {
+		return (
+			this.isVideoSwitcherTimelineObject(timelineObject) &&
+			timelineObject.content.type === TSR.TimelineContentTypeAtem.SSRC
+		)
+	}
+	public getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj {
+		throw new Error('Method not implemented.')
+	}
+	public updateUnpopulatedDveBoxes(
+		timelineObject: TimelineObjectCoreExt<unknown, unknown>,
+		input: number | SpecialInput
+	): TSR.TSRTimelineObj {
+		throw new Error('Method not implemented.')
+	}
+
+	private getBaseProperties(props: TimelineObjectProps): Omit<TSR.TimelineObjAtemAny, 'content' | 'keyframes'> {
+		return {
+			...TIMELINE_OBJECT_DEFAULTS,
+			..._.omit(props, 'content'),
+			layer: ATEM_LAYER_PREFIX + props.layer
 		}
-		return SPECIAL_INPUT_MAP[input]
+	}
+
+	private getInputNumber(input: number | SpecialInput) {
+		// this is kind of pointless, but I'm not sure SpecialInput being ATEM values is right
+		return input
 	}
 	private getTransition(transition: TransitionStyle) {
 		return TRANSITION_MAP[transition]

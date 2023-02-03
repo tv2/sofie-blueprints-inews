@@ -22,21 +22,27 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 		return this.videoSwitcherSingleton
 	}
 	public abstract readonly type: SwitcherType
+	public abstract isDsk: (timelineObject: TimelineObjectCoreExt<unknown, unknown>) => boolean
+	public abstract isAux: (timelineObject: TimelineObjectCoreExt<unknown, unknown>) => boolean
+	public abstract isDveBoxes: (timelineObject: TimelineObjectCoreExt<unknown, unknown>) => boolean
+	public abstract isVideoSwitcherTimelineObject: (timelineObject: TimelineObjectCoreExt<unknown, unknown>) => boolean
+	public abstract isMixEffect: (timelineObject: TSR.TSRTimelineObj) => boolean
 	protected readonly config: TV2StudioConfig
 
 	protected constructor(config: TV2StudioConfig) {
 		this.config = config
 	}
-	public abstract isDsk(timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean
-	public abstract isAux(timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean
-	public abstract updateAuxInput(timelineObject: TimelineObjectCoreExt<unknown, unknown>, input: number | SpecialInput): TSR.TSRTimelineObj
-	public abstract isDve(timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean
+	public abstract updateAuxInput(
+		timelineObject: TimelineObjectCoreExt<unknown, unknown>,
+		input: number | SpecialInput
+	): TSR.TSRTimelineObj
 	public abstract getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
-	public abstract updateUnpopulatedDveBoxes(timelineObject: TimelineObjectCoreExt<unknown, unknown>, input: number | SpecialInput): TSR.TSRTimelineObj
+	public abstract updateUnpopulatedDveBoxes(
+		timelineObject: TimelineObjectCoreExt<unknown, unknown>,
+		input: number | SpecialInput
+	): TSR.TSRTimelineObj
 	public abstract getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
 	public abstract findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined
-	public abstract isVideoSwitcherTimelineObject(timelineObject: TSR.TSRTimelineObj): boolean
-	public abstract isMixEffect(timelineObject: TSR.TSRTimelineObj): boolean
 	public abstract updateTransition(
 		timelineObjects: TSR.TSRTimelineObj,
 		transition: TransitionStyle,
@@ -44,12 +50,9 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 	): TSR.TSRTimelineObj
 	public abstract updatePreviewInput(
 		timelineObject: TSR.TSRTimelineObj,
-        previewInput: number | SpecialInput
+		previewInput: number | SpecialInput
 	): TSR.TSRTimelineObj
-	public abstract updateInput(
-		timelineObject: TSR.TSRTimelineObj,
-        input: number | SpecialInput
-	): TSR.TSRTimelineObj
+	public abstract updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj
 
 	public abstract getDskTimelineObjects(properties: DskProps): TSR.TSRTimelineObj[]
 	public abstract getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj

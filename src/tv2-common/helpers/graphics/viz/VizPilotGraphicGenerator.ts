@@ -87,7 +87,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 					start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
 				},
 				priority: 1,
-				layer: this.settings.ProgramLayer,
+				layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 				content: {
 					input: this.config.studio.VizPilotGraphics.FullGraphicBackground,
 					transition: TransitionStyle.CUT
@@ -97,21 +97,16 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 			...EnableDSK(this.context, 'FULL'),
 			...GetSisyfosTimelineObjForFull(this.config)
 		]
-		if (this.settings.AuxProgramLayer) {
+		if (this.context.uniformConfig.SwitcherLLayers.ProgramAux) {
 			timelineObjects.push(
-				literal<TSR.TimelineObjAtemAUX>({
-					id: '',
+				this.context.videoSwitcher.getAuxTimelineObject({
 					enable: {
 						start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
 					},
 					priority: 1,
-					layer: this.settings.AuxProgramLayer,
+					layer: this.context.uniformConfig.SwitcherLLayers.ProgramAux,
 					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.AUX,
-						aux: {
-							input: fullDSK.Fill
-						}
+						input: fullDSK.Fill
 					},
 					classes: [ControlClasses.MixMinusOverrideDsk, ControlClasses.Placeholder]
 				})

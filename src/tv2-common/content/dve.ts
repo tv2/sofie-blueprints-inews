@@ -21,6 +21,7 @@ import {
 	literal,
 	PartDefinition,
 	PieceMetaData,
+	SpecialInput,
 	TimelineBlueprintExt,
 	TransitionStyle,
 	TV2BlueprintConfigBase,
@@ -357,9 +358,9 @@ export function MakeContentDVE2<
 					id: '',
 					enable: getDVEEnable(Number(context.config.studio.CasparPrerollDuration)),
 					priority: 1,
-					layer: dveGeneratorOptions.dveLayers.ATEM.MEProgram,
+					layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 					content: {
-						input: AtemSourceIndex.SSrc,
+						input: SpecialInput.DVE,
 						transition: TransitionStyle.CUT
 					}
 				}),
@@ -441,11 +442,7 @@ const setBoxToBlack = (boxConfig: BoxConfig, boxSources: BoxSources) => {
 	})
 }
 
-function makeBoxAssignments(
-	inputs: string[],
-	context: IShowStyleUserContext,
-	sources: DVESources | undefined
-) {
+function makeBoxAssignments(inputs: string[], context: IShowStyleUserContext, sources: DVESources | undefined) {
 	const boxAssignments: Array<SourceDefinition | undefined> = []
 	inputs.forEach(source => {
 		const sourceProps = source.split(':')

@@ -191,7 +191,7 @@ function getContentServerElement(
 	context: ExtendedShowStyleContext,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
-	layers: ServerPartLayers,
+	layers: ServerPartLayers
 ): WithTimeline<VTContent> {
 	return MakeContentServer(
 		context,
@@ -201,7 +201,7 @@ function getContentServerElement(
 			},
 			Sisyfos: {
 				ClipPending: layers.Sisyfos.ClipPending
-			},
+			}
 		},
 		partProps,
 		contentProps

@@ -7,7 +7,6 @@ import {
 	PieceLifespan,
 	WithTimeline
 } from 'blueprints-integration'
-import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import {
 	ExtendedSegmentContextImpl,
 	ExtendedShowStyleContext,
@@ -17,6 +16,7 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { OfftubeBlueprintConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'

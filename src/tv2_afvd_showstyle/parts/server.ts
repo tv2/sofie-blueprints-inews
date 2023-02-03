@@ -21,7 +21,7 @@ export async function CreatePartServer(
 		},
 		Sisyfos: {
 			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
-		},
+		}
 	})
 
 	if (basePartProps.invalid) {

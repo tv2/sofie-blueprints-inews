@@ -94,7 +94,7 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 					start: Number(this.config.studio.CasparPrerollDuration)
 				},
 				priority: 1,
-				layer: this.settings.ProgramLayer,
+				layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 				content: {
 					input: fullDSK.Fill,
 					transition: TransitionStyle.WIPE_FOR_GFX

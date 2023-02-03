@@ -8,7 +8,6 @@ import {
 	PieceLifespan,
 	WithTimeline
 } from 'blueprints-integration'
-import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import {
 	ExtendedSegmentContext,
 	ExtendedSegmentContextImpl,
@@ -20,6 +19,7 @@ import {
 import { SharedOutputLayers } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemLLayer } from '../tv2_afvd_studio/layers'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { GalleryBlueprintConfig } from './helpers/config'
 import { CreateShowLifecyclePieces } from './helpers/pieces/showLifecycle'
 import { SourceLayer } from './layers'
@@ -93,12 +93,8 @@ export function CreatePartContinuity(
 					switcherInput: context.config.studio.SwitcherSource.Continuity,
 					timelineObjects: [
 						context.videoSwitcher.getMixEffectTimelineObject({
-							id: '',
-							enable: {
-								start: 0
-							},
 							priority: 1,
-							layer: AtemLLayer.AtemMEProgram,
+							layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 							content: {
 								input: context.config.studio.SwitcherSource.Continuity,
 								transition: TransitionStyle.CUT

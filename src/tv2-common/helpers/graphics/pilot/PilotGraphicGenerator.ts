@@ -40,16 +40,10 @@ import {
 } from 'tv2-constants'
 import { Graphic } from '../index'
 
-export interface PilotGeneratorSettings {
-	ProgramLayer: string
-	AuxProgramLayer?: string
-}
-
 export interface PilotGraphicProps {
 	context: ExtendedShowStyleContext
 	partId: string
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
-	settings: PilotGeneratorSettings
 	adlib?: Adlib
 	segmentExternalId: string
 }
@@ -66,7 +60,6 @@ export abstract class PilotGraphicGenerator extends Graphic {
 	protected readonly engine: GraphicEngine
 	protected readonly partId: string
 	protected readonly cue: CueDefinitionGraphic<GraphicPilot>
-	protected readonly settings: PilotGeneratorSettings
 	protected readonly adlib?: Adlib
 	protected readonly segmentExternalId: string
 
@@ -77,7 +70,6 @@ export abstract class PilotGraphicGenerator extends Graphic {
 		this.engine = graphicProps.parsedCue.target
 		this.cue = graphicProps.parsedCue
 		this.partId = graphicProps.partId
-		this.settings = graphicProps.settings
 		this.adlib = graphicProps.adlib
 		this.segmentExternalId = graphicProps.segmentExternalId
 	}

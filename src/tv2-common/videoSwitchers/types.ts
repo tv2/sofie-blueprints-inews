@@ -1,16 +1,22 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
 import { TableConfigItemDSK, TimelineObjectMetaData } from 'tv2-common'
-import { SwitcherMixEffectLLayer } from 'tv2-constants'
+import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
+import { AtemSourceIndex } from '../../types/atem'
 
 export enum SwitcherType {
 	ATEM = 'ATEM',
 	TRICASTER = 'TRICASTER'
 }
 
+/** Using Atem values for compatibility */
 export enum SpecialInput {
-	ME1_PROGRAM = 'me1_program',
-	ME2_PROGRAM = 'me2_program',
-	SSRC = 'ssrc'
+	ME1_PROGRAM = AtemSourceIndex.Prg1,
+	ME2_PROGRAM = AtemSourceIndex.Prg2,
+	ME3_PROGRAM = AtemSourceIndex.Prg3,
+	ME4_PROGRAM = AtemSourceIndex.Prg4,
+	DVE = AtemSourceIndex.SSrc,
+	COLOR_GENERATOR1 = AtemSourceIndex.Col1,
+	COLOR_GENERATOR2 = AtemSourceIndex.Col2
 	// ...
 }
 
@@ -24,9 +30,7 @@ export enum TransitionStyle {
 	// ...
 }
 
-export enum SwitcherLLayer {
-
-}
+export enum SwitcherLLayer {}
 
 export const TIMELINE_OBJECT_DEFAULTS = {
 	id: '',
@@ -49,7 +53,7 @@ export interface TimelineObjectProps {
 type TimelineObjectEnable = TSR.TSRTimelineObj['enable']
 
 export interface MixEffectProps extends TimelineObjectProps {
-    layer: SwitcherMixEffectLLayer
+	layer: SwitcherMixEffectLLayer
 	content: {
 		input?: number | SpecialInput
 		previewInput?: number | SpecialInput
@@ -83,13 +87,13 @@ export interface DskProps extends TimelineObjectProps {
 }
 
 export interface AuxProps extends TimelineObjectProps {
+	layer: SwitcherAuxLLayer
 	content: {
 		input: number | SpecialInput
 	}
 }
 
 export interface VideoSwitcher {
-
 	isMixEffect(timelineObject: TimelineObjectCoreExt): boolean
 	getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
 	findMixEffectTimelineObject(timelineObjects: TimelineObjectCoreExt[]): TSR.TSRTimelineObj | undefined
@@ -99,29 +103,17 @@ export interface VideoSwitcher {
 		transition: TransitionStyle,
 		transitionDuration?: number
 	): TSR.TSRTimelineObj
-	updatePreviewInput(
-		timelineObject: TimelineObjectCoreExt,
-        previewInput: number | SpecialInput
-	): TSR.TSRTimelineObj
-	updateInput(
-		timelineObject: TimelineObjectCoreExt,
-        input: number | SpecialInput
-	): TSR.TSRTimelineObj
+	updatePreviewInput(timelineObject: TimelineObjectCoreExt, previewInput: number | SpecialInput): TSR.TSRTimelineObj
+	updateInput(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
 
 	isDsk(timelineObject: TimelineObjectCoreExt): boolean
 	getDskTimelineObjects(properties: DskProps): TSR.TSRTimelineObj[]
-    
+
 	isAux(timelineObject: TimelineObjectCoreExt): boolean
 	getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
-	updateAuxInput(
-		timelineObject: TimelineObjectCoreExt,
-        input: number | SpecialInput
-	): TSR.TSRTimelineObj
+	updateAuxInput(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
 
-	isDve(timelineObject: TimelineObjectCoreExt): boolean
+	isDveBoxes(timelineObject: TimelineObjectCoreExt): boolean
 	getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
-	updateUnpopulatedDveBoxes(
-		timelineObject: TimelineObjectCoreExt,
-        input: number | SpecialInput
-	): TSR.TSRTimelineObj
+	updateUnpopulatedDveBoxes(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
 }

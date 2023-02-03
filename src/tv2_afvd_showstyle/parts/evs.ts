@@ -112,7 +112,7 @@ function makeContentEVS(
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			context.videoSwitcher.getMixEffectTimelineObject({
 				priority: 1,
-				layer: AtemLLayer.AtemMEProgram,
+				layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 				content: {
 					input: switcherInput,
 					transition: partDefinition.transition?.style ?? TransitionStyle.CUT,

@@ -5,13 +5,14 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { ExtendedStudioContext, literal, TransitionStyle } from 'tv2-common'
+import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
-import { SharedGraphicLLayer } from '../tv2-constants'
+import { SharedGraphicLLayer, SwitcherAuxLLayer, SwitcherMixEffectLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
 import { GalleryStudioConfig } from './helpers/config'
 import { AtemLLayer, SisyfosLLAyer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
+import { GALLERY_UNIFORM_CONFIG } from './uniformConfig'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -28,18 +29,10 @@ function filterMappings(
 
 	return result
 }
-function convertMappings<T>(input: BlueprintMappings, func: (k: string, v: BlueprintMapping) => T): T[] {
-	return _.map(_.keys(input), k => func(k, input[k]))
-}
 
 export function getBaseline(coreContext: IStudioContext): BlueprintResultBaseline {
-	const context = new ExtendedStudioContext<GalleryStudioConfig>(coreContext)
+	const context = new ExtendedStudioContext<GalleryStudioConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 	const mappings = coreContext.getStudioMappings()
-
-	const atemMeMappings = filterMappings(
-		mappings,
-		(_id, v) => v.device === TSR.DeviceType.ATEM && (v as any).mappingType === TSR.MappingAtemType.MixEffect
-	)
 
 	const sisyfosMappings = filterMappings(
 		mappings,
@@ -68,16 +61,6 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 
 	return {
 		timelineObjects: [
-			...convertMappings(atemMeMappings, id =>
-				context.videoSwitcher.getMixEffectTimelineObject({
-					layer: id,
-					enable: { while: '1' },
-					content: {
-						input: AtemSourceIndex.Bars,
-						transition: TransitionStyle.CUT
-					}
-				})
-			),
 			literal<TSR.TimelineObjSisyfosChannels>({
 				id: '',
 				enable: {
@@ -94,35 +77,23 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			}),
 
 			// have ATEM output default still image
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: AtemLLayer.AtemAuxPGM,
+				layer: SwitcherAuxLLayer.AuxProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.Prg1
-					}
+					input: SpecialInput.ME1_PROGRAM
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: AtemLLayer.AtemAuxLookahead,
+				layer: SwitcherAuxLLayer.AuxLookahead,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.Prg1
-					}
+					input: SpecialInput.ME1_PROGRAM
 				}
 			}),
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: AtemLLayer.AtemMEProgram,
+				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					input: AtemSourceIndex.MP1,
 					transition: TransitionStyle.CUT

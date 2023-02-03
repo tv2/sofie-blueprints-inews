@@ -7,7 +7,6 @@ import {
 	TimelinePersistentState,
 	TSR
 } from 'blueprints-integration'
-import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import {
 	disablePilotWipeAfterJingle,
 	ExtendedTimelineContext,
@@ -18,6 +17,7 @@ import {
 } from 'tv2-common'
 import { SharedGraphicLLayer, TallyTags } from 'tv2-constants'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 
 export function onTimelineGenerateOfftube(
 	coreContext: ITimelineEventContext,

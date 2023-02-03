@@ -52,7 +52,7 @@ export async function EvaluateAdLib(
 					},
 					Sisyfos: {
 						ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
-					},
+					}
 				},
 				true
 			)

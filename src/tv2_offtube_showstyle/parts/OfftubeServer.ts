@@ -28,7 +28,7 @@ export async function OfftubeCreatePartServer(
 		},
 		Sisyfos: {
 			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-		},
+		}
 	})
 
 	if (basePartProps.invalid) {
@@ -63,7 +63,7 @@ export async function OfftubeCreatePartServer(
 				},
 				Sisyfos: {
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-				},
+				}
 			},
 			false
 		)

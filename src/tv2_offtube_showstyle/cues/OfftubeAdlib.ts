@@ -60,7 +60,7 @@ export async function OfftubeEvaluateAdLib(
 					},
 					Sisyfos: {
 						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-					},
+					}
 				},
 				true
 			)

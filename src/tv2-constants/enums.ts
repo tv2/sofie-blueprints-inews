@@ -195,28 +195,31 @@ export enum SwitcherMixEffectLLayer {
 	Program = 'me_program',
 	Clean = 'me_clean',
 	CleanUSKEffect = 'clean_usk_effect',
+	Next = 'me_next',
+	NextJingle = 'me_next_jingle'
 }
 
 export enum SwitcherAuxLLayer {
-	AuxPGM = 'aux_pgm',
+	AuxProgram = 'aux_pgm',
 	AuxClean = 'aux_clean',
 	AuxWall = 'aux_wall',
 	AuxAR = 'aux_ar',
 	AuxVizOvlIn1 = 'aux_viz_ovl_in_1',
 	AuxVenue = 'aux_venue',
 	AuxLookahead = 'aux_lookahead',
-	AuxSSrc = 'aux_ssrc',
+	AuxDve = 'aux_dve',
 	AuxVideoMixMinus = 'aux_video_mix_minus',
-	AuxServerLookahead = 'aux_server_lookahead',
+	AuxScreen = 'aux_screen',
+	AuxServerLookahead = 'aux_server_lookahead'
 }
 
 export enum SwitcherDveLLayer {
 	Dve = 'dve',
-	DveBoxes = 'dve_boxes',
+	DveBoxes = 'dve_boxes'
 }
 
 export enum SharedATEMLLayer {
-	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus',
+	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus'
 }
 
 export enum SharedCasparLLayer {

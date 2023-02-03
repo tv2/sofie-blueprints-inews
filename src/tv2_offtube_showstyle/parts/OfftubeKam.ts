@@ -23,7 +23,6 @@ import {
 	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayers, TallyTags } from 'tv2-constants'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -66,7 +65,7 @@ export async function OfftubeCreatePartKam(
 							start: 0
 						},
 						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEClean,
+						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: jingleDSK.Fill,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
@@ -109,7 +108,7 @@ export async function OfftubeCreatePartKam(
 							start: 0
 						},
 						priority: 1,
-						layer: OfftubeAtemLLayer.AtemMEClean,
+						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: Number(switcherInput),
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,

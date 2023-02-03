@@ -3,11 +3,10 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	TimelineObjectCoreExt,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
 import { CueDefinitionMixMinus, ExtendedShowStyleContext, findSourceInfo, literal, PartDefinition } from 'tv2-common'
-import { ControlClasses, SharedATEMLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { ControlClasses, SharedOutputLayers, SharedSourceLayers, SwitcherAuxLLayer } from 'tv2-constants'
 
 export function EvaluateCueMixMinus(
 	context: ExtendedShowStyleContext,
@@ -34,26 +33,21 @@ export function EvaluateCueMixMinus(
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
 		sourceLayerId: SharedSourceLayers.AuxMixMinus,
 		outputLayerId: SharedOutputLayers.AUX,
-		content: MixMinusContent(switcherInput)
+		content: MixMinusContent(context, switcherInput)
 	})
 }
 
-function MixMinusContent(switcherInput: number): WithTimeline<BaseContent> {
+function MixMinusContent(context: ExtendedShowStyleContext, switcherInput: number): WithTimeline<BaseContent> {
 	return {
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjAtemAUX>({
+			context.videoSwitcher.getAuxTimelineObject({
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: switcherInput
-					}
+					input: switcherInput
 				},
 				enable: {
 					while: `.${ControlClasses.LiveSourceOnAir}`
 				},
-				layer: SharedATEMLLayer.AtemAuxVideoMixMinus,
-				id: '',
+				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
 				priority: 1
 			})
 		])

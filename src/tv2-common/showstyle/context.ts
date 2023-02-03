@@ -4,7 +4,7 @@ import { TV2ShowStyleConfig, UniformConfig, VideoSwitcher, VideoSwitcherImpl } f
 export interface ExtendedShowStyleContext<BlueprintConfig extends TV2ShowStyleConfig = TV2ShowStyleConfig> {
 	readonly core: IShowStyleUserContext
 	readonly config: BlueprintConfig
-    readonly uniformConfig: UniformConfig
+	readonly uniformConfig: UniformConfig
 	readonly videoSwitcher: VideoSwitcher
 }
 

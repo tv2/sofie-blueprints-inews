@@ -6,11 +6,13 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
+import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
 import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
+import { QBOX_UNIFORM_CONFIG } from './uniformConfig'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -29,7 +31,7 @@ function filterMappings(
 }
 
 export function getBaseline(coreContext: IStudioContext): BlueprintResultBaseline {
-	const context = new ExtendedStudioContext<OfftubeStudioBlueprintConfig>(coreContext)
+	const context = new ExtendedStudioContext<OfftubeStudioBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
 	const mappings = coreContext.getStudioMappings()
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
@@ -75,7 +77,7 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			// have ATEM output default still image
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: OfftubeAtemLLayer.AtemMEClean,
+				layer: SwitcherMixEffectLLayer.Clean,
 				content: {
 					input: context.config.studio.IdleSource,
 					transition: TransitionStyle.CUT
@@ -85,22 +87,16 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			// Route ME 2 PGM to ME 1 PGM
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: OfftubeAtemLLayer.AtemMEProgram,
+				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					input: SpecialInput.ME2_PROGRAM
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
+			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemAuxClean,
+				layer: SwitcherAuxLLayer.AuxClean,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.Prg2
-					}
+					input: SpecialInput.ME2_PROGRAM
 				}
 			})
 		]
