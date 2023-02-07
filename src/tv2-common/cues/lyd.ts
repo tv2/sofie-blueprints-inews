@@ -158,7 +158,7 @@ function LydContent(
 						}
 					}
 				},
-				classes: [ControlClasses.LYDOnAir]
+				classes: [ControlClasses.LYD_ON_AIR]
 			}),
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
@@ -182,7 +182,7 @@ export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
 		literal<TSR.TimelineObjAbstractAny>({
 			id: `${studio}_lyd_baseline`,
 			enable: {
-				while: `!.${ControlClasses.LYDOnAir}`
+				while: `!.${ControlClasses.LYD_ON_AIR}`
 			},
 			priority: 0,
 			layer: AbstractLLayer.AudioBedBaseline,
@@ -194,7 +194,7 @@ export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
 		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			// Q: Why start 10s? A: It needs to be longer than the longest fade out, a 10s fade out is probably more than we will ever use.
-			enable: { start: `#${studio}_lyd_baseline.start + 10000`, end: `.${ControlClasses.LYDOnAir}` },
+			enable: { start: `#${studio}_lyd_baseline.start + 10000`, end: `.${ControlClasses.LYD_ON_AIR}` },
 			priority: 0,
 			layer: SharedCasparLLayer.CasparCGLYD,
 			content: {

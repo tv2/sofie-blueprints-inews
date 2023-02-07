@@ -13,7 +13,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../config'
 
 export function EvaluateJingle(

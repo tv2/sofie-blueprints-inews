@@ -8,10 +8,10 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	IBlueprintPieceDB,
-	IBlueprintPieceGeneric,
 	IBlueprintPieceInstance,
 	PieceLifespan,
 	SplitsContent,
+	TimelineObjectCoreExt,
 	TSR,
 	VTContent,
 	WithTimeline
@@ -105,11 +105,6 @@ export interface ActionExecutionSettings<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 > {
-	postProcessPieceTimelineObjects: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
-		piece: IBlueprintPieceGeneric,
-		isAdlib: boolean
-	) => void
 	EvaluateCues: (
 		context: ExtendedShowStyleContext<ShowStyleConfig>,
 		part: IBlueprintPart,
@@ -474,10 +469,6 @@ async function executeActionSelectServerClip<
 		return
 	}
 
-	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
-		settings.postProcessPieceTimelineObjects(context, activeServerPiece, false)
-	}
-
 	await context.core.queuePart(part, [
 		activeServerPiece as IBlueprintPiece<PieceMetaData>, // @todo: get rid of these casts
 		serverDataStore as IBlueprintPiece<PieceMetaData>,
@@ -659,17 +650,14 @@ async function cutServerToBox<
 		const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 			obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
 		) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
-		// Find SSRC object in DVE piece
-		const ssrcObjIndex = newDvePiece.content?.timelineObjects
-			? (newDvePiece.content?.timelineObjects as TSR.TSRTimelineObj[]).findIndex(
-					obj => obj.layer === settings.LLayer.VideoSwitcher.Dve
-			  )
-			: -1
-
+		// Find DVE Boxes object in DVE piece
+		const dveBoxesObj = currentServer.piece.content.timelineObjects.find(context.videoSwitcher.isDveBoxes) as
+			| TimelineBlueprintExt
+			| undefined
 		if (
 			!existingCasparObj ||
 			!existingSisyfosObj ||
-			ssrcObjIndex === -1 ||
+			!dveBoxesObj ||
 			!existingCasparObj.metaData ||
 			!existingCasparObj.metaData.mediaPlayerSession
 		) {
@@ -677,14 +665,11 @@ async function cutServerToBox<
 			return newDvePiece
 		}
 
-		const ssrcObj = newDvePiece.content.timelineObjects[ssrcObjIndex] as TSR.TSRTimelineObj & TimelineBlueprintExt
-
-		ssrcObj.metaData = {
-			...ssrcObj.metaData,
+		dveBoxesObj.metaData = {
+			...dveBoxesObj.metaData,
 			mediaPlayerSession: existingCasparObj.metaData.mediaPlayerSession
 		}
 
-		newDvePiece.content.timelineObjects[ssrcObjIndex] = ssrcObj
 		newDvePiece.content.timelineObjects.push(EnableServer(existingCasparObj.metaData.mediaPlayerSession))
 		newDvePiece.metaData.mediaPlayerSessions = [existingCasparObj.metaData.mediaPlayerSession]
 
@@ -861,8 +846,6 @@ async function startNewDVELayout<
 	replacePieceInstancesOrQueue: { activeDVE?: string; dataStore?: string } | 'queue',
 	nextTag: string
 ) {
-	settings.postProcessPieceTimelineObjects(context, dvePiece, false)
-
 	const dveDataStore: IBlueprintPiece<PieceMetaData> | undefined = settings.SelectedAdlibs.SourceLayer.DVE
 		? {
 				externalId,
@@ -998,8 +981,6 @@ async function executeActionSelectJingle<
 		]
 	}
 
-	settings.postProcessPieceTimelineObjects(context, piece, false)
-
 	const part: IBlueprintPart = {
 		externalId,
 		title: `JINGLE ${userData.clip}`,
@@ -1072,21 +1053,18 @@ async function executeActionCutToCamera<
 		},
 		tags: [GetTagForKam(userData.sourceDefinition)],
 		content: {
-			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				context.videoSwitcher.getMixEffectTimelineObject({
+			timelineObjects: [
+				...context.videoSwitcher.getOnAirTimelineObjects({
 					priority: 1,
-					layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 					content: {
 						input: sourceInfoCam.port,
 						transition: TransitionStyle.CUT
 					}
 				}),
 				...camSisyfos
-			])
+			]
 		}
 	}
-
-	settings.postProcessPieceTimelineObjects(context, kamPiece, false)
 
 	if (userData.queue || serverInCurrentPart) {
 		await context.core.queuePart(part, [
@@ -1207,21 +1185,19 @@ async function executeActionCutToRemote<
 		tags: [GetTagForLive(userData.sourceDefinition)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				context.videoSwitcher.getMixEffectTimelineObject({
+				...context.videoSwitcher.getOnAirTimelineObjects({
 					enable: { while: '1' },
 					priority: 1,
-					layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 					content: {
 						input: sourceInfo.port,
 						transition: TransitionStyle.CUT
-					}
+					},
+					mixMinusInput: null
 				}),
 				...eksternSisyfos
 			])
 		}
 	}
-
-	settings.postProcessPieceTimelineObjects(context, remotePiece, false)
 
 	await context.core.queuePart(part, [
 		remotePiece,
@@ -1434,9 +1410,7 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
-	const mixEffectTimelineObject = context.videoSwitcher.findMixEffectTimelineObject(
-		primaryPiece.piece.content.timelineObjects
-	)
+	const mixEffectTimelineObject = primaryPiece.piece.content.timelineObjects.find(context.videoSwitcher.isMixEffect)
 
 	if (!mixEffectTimelineObject) {
 		return
@@ -1550,7 +1524,7 @@ async function executeActionTakeWithTransition<
 
 async function updateTransition(
 	context: ExtendedActionExecutionContext,
-	timelineObject: TSR.TSRTimelineObj,
+	timelineObject: TimelineObjectCoreExt,
 	pieceInstance: IBlueprintPieceInstance<PieceMetaData>,
 	transitionStyle: TransitionStyle,
 	transitionDuration?: number
@@ -1940,8 +1914,6 @@ async function executeActionSelectFull<
 	})
 
 	const fullPiece = generator.createPiece()
-
-	settings.postProcessPieceTimelineObjects(context, fullPiece, false)
 
 	const fullDataStore = generator.createFullDataStore()
 

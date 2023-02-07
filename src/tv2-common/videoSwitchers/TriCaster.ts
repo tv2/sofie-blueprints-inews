@@ -63,10 +63,6 @@ export class TriCaster extends VideoSwitcherImpl {
 		}
 	}
 
-	public findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined {
-		return timelineObjects.find(this.isMixEffect)
-	}
-
 	public updateTransition(
 		timelineObject: TSR.TSRTimelineObj,
 		transition: TransitionStyle,
@@ -131,12 +127,12 @@ export class TriCaster extends VideoSwitcherImpl {
 			!!(timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode).layers
 		)
 	}
-	public getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj {
+	public getDveTimelineObject(_properties: AuxProps): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
 	}
 	public updateUnpopulatedDveBoxes(
-		timelineObject: TSR.TSRTimelineObj,
-		input: number | SpecialInput
+		_timelineObject: TSR.TSRTimelineObj,
+		_input: number | SpecialInput
 	): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
 	}

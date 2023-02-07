@@ -3,12 +3,10 @@ import {
 	IBlueprintPiece,
 	PieceLifespan,
 	TimelineObjectCoreExt,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
 import { CueDefinitionPgmClean, ExtendedSegmentContext, findSourceInfo, literal, SourceInfo } from 'tv2-common'
 import { SharedOutputLayers, SourceType, SwitcherAuxLLayer } from 'tv2-constants'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 

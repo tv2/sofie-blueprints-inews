@@ -11,8 +11,8 @@ import {
 import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
-	EnableDSK,
 	ExtendedShowStyleContext,
+	getDskOnAirTimelineObjects,
 	GetTagForTransition,
 	literal,
 	PartDefinition,
@@ -23,7 +23,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { DSKRoles, SharedOutputLayers } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { joinAssetToFolder, joinAssetToNetworkPath } from '../util'
 
@@ -151,7 +151,9 @@ export function CreateEffektForPartInner<
 						file: fileName
 					}
 				}),
-				...EnableDSK(context, 'JINGLE', { start: Number(context.config.studio.CasparPrerollDuration) }),
+				...getDskOnAirTimelineObjects(context, DSKRoles.JINGLE, {
+					start: Number(context.config.studio.CasparPrerollDuration)
+				}),
 				literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 					id: '',
 					enable: {

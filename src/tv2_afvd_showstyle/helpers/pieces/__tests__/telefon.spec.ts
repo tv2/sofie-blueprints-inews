@@ -8,12 +8,12 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	AtemLLayerDSK,
 	CueDefinitionGraphic,
 	CueDefinitionTelefon,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	literal,
+	LLayerDSK,
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
@@ -114,7 +114,7 @@ describe('telefon', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: AtemLLayerDSK(0),
+							layer: prefixLayer(LLayerDSK(0)),
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.DSK,
@@ -192,3 +192,6 @@ describe('telefon', () => {
 		])
 	})
 })
+function prefixLayer(name: string): string | number {
+	return 'atem_' + name
+}

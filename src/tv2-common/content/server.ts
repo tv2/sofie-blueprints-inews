@@ -1,4 +1,4 @@
-import { IShowStyleUserContext, TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
+import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
 import {
 	ExtendedShowStyleContext,
 	GetSisyfosTimelineObjForServer,
@@ -6,11 +6,10 @@ import {
 	PartDefinition,
 	TransitionStyle
 } from 'tv2-common'
-import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
+import { AbstractLLayer, GetEnableClassForServer } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { ServerContentProps, ServerPartProps } from '../parts'
-import { AdlibServerOfftubeOptions } from '../pieces'
 import { joinAssetToNetworkPath } from '../util'
 
 // TODO: These are TSR layers, not sourcelayers
@@ -109,10 +108,10 @@ function GetServerTimeline(
 			contentProps.mediaPlayerSession,
 			audioEnable
 		),
-		...(context.uniformConfig.SwitcherLLayers.ServerLookaheadAux
+		...(context.uniformConfig.SwitcherLLayers.NextServerAux
 			? [
 					context.videoSwitcher.getAuxTimelineObject({
-						layer: context.uniformConfig.SwitcherLLayers.ServerLookaheadAux,
+						layer: context.uniformConfig.SwitcherLLayers.NextServerAux,
 						content: {
 							input: -1
 						},
@@ -128,17 +127,15 @@ function GetServerTimeline(
 export function CutToServer(
 	context: ExtendedShowStyleContext,
 	mediaPlayerSessionId: string,
-	partDefinition: PartDefinition,
-	offtubeOptions?: AdlibServerOfftubeOptions
+	partDefinition: PartDefinition
 ): TimelineBlueprintExt[] {
 	return [
 		EnableServer(mediaPlayerSessionId),
-		context.videoSwitcher.getMixEffectTimelineObject({
+		...context.videoSwitcher.getOnAirTimelineObjects({
 			enable: {
 				start: context.config.studio.CasparPrerollDuration
 			},
 			priority: 1,
-			layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 			content: {
 				input: -1,
 				transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
@@ -146,8 +143,7 @@ export function CutToServer(
 			},
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
-			},
-			classes: [...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])]
+			}
 		})
 	]
 }

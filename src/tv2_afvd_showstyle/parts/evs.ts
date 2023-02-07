@@ -23,7 +23,6 @@ import {
 	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -110,9 +109,8 @@ function makeContentEVS(
 		switcherInput,
 		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			context.videoSwitcher.getMixEffectTimelineObject({
+			...context.videoSwitcher.getOnAirTimelineObjects({
 				priority: 1,
-				layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 				content: {
 					input: switcherInput,
 					transition: partDefinition.transition?.style ?? TransitionStyle.CUT,

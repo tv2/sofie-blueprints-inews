@@ -6,7 +6,7 @@ import {
 	TableConfigItemValue,
 	TSR
 } from 'blueprints-integration'
-import { AtemLLayerDSK, ExtendedShowStyleContext, literal, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
+import { ExtendedShowStyleContext, literal, LLayerDSK, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
 import { AdlibTags, DSKRoles, SharedOutputLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
@@ -41,37 +41,53 @@ export function GetDSKCount(atemModel: ATEMModel) {
 	}
 }
 
-export function EnableDSK(
+export function getDskOnAirTimelineObjects(
 	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
-	dsk: 'FULL' | 'OVL' | 'JINGLE',
+	dskRole: DSKRoles,
 	enable?: TSR.TSRTimelineObj['enable']
 ): TSR.TSRTimelineObj[] {
-	const dskConf =
-		dsk === 'FULL'
-			? FindDSKFullGFX(context.config)
-			: dsk === 'OVL'
-			? FindDSKOverlayGFX(context.config)
-			: FindDSKJingle(context.config)
-
-	return context.videoSwitcher.getDskTimelineObjects({
-		id: '',
-		enable: enable ?? {
-			start: 0
-		},
-		priority: 1,
-		layer: AtemLLayerDSK(dskConf.Number),
-		content: {
-			onAir: true,
-			sources: {
-				fillSource: dskConf.Fill,
-				cutSource: dskConf.Key
+	const dskConf = FindDSKWithRoles(context.config, [dskRole])
+	return [
+		...context.videoSwitcher.getDskTimelineObjects({
+			id: '',
+			enable: enable ?? {
+				start: 0
 			},
-			properties: {
-				clip: Number(dskConf.Clip) * 10,
-				gain: Number(dskConf.Gain) * 10
+			priority: 1,
+			layer: LLayerDSK(dskConf.Number),
+			content: {
+				onAir: true,
+				sources: {
+					fillSource: dskConf.Fill,
+					cutSource: dskConf.Key
+				},
+				properties: {
+					clip: Number(dskConf.Clip) * 10,
+					gain: Number(dskConf.Gain) * 10
+				}
 			}
-		}
-	})
+		}),
+		...(dskRole === DSKRoles.JINGLE && context.uniformConfig.SwitcherLLayers.JingleUskMixEffect
+			? [
+					context.videoSwitcher.getMixEffectTimelineObject({
+						enable: enable ?? {
+							start: 0
+						},
+						priority: 1,
+						layer: context.uniformConfig.SwitcherLLayers.JingleUskMixEffect,
+						content: {
+							keyers: [
+								{
+									id: 0,
+									onAir: true,
+									config: dskConf
+								}
+							]
+						}
+					})
+			  ]
+			: [])
+	]
 }
 
 export function CreateDSKBaselineAdlibs(
@@ -97,7 +113,7 @@ export function CreateDSKBaselineAdlibs(
 							id: '',
 							enable: { while: '1' },
 							priority: 10,
-							layer: AtemLLayerDSK(dsk.Number),
+							layer: LLayerDSK(dsk.Number),
 							content: {
 								onAir: false
 							}
@@ -118,7 +134,7 @@ export function CreateDSKBaselineAdlibs(
 							id: '',
 							enable: { while: '1' },
 							priority: 10,
-							layer: AtemLLayerDSK(dsk.Number), // @todo
+							layer: LLayerDSK(dsk.Number), // @todo
 							content: {
 								onAir: true,
 								sources: {
@@ -151,7 +167,7 @@ export function CreateDSKBaseline(
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
-				layer: AtemLLayerDSK(dsk.Number), // @todo
+				layer: LLayerDSK(dsk.Number), // @todo
 				content: {
 					onAir: dsk.DefaultOn,
 					sources: {

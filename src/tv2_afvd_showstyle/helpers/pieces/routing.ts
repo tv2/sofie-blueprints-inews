@@ -2,7 +2,6 @@ import { CameraContent, IBlueprintPiece, PieceLifespan, TSR, WithTimeline } from
 import { CalculateTime, CueDefinitionRouting, ExtendedShowStyleContext, findSourceInfo, literal } from 'tv2-common'
 import { SharedOutputLayers, SwitcherAuxLLayer } from 'tv2-constants'
 import _ = require('underscore')
-import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueRouting(
@@ -42,11 +41,7 @@ export function EvaluateCueRouting(
 					priority: 100,
 					layer: SwitcherAuxLLayer.AuxVizOvlIn1,
 					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.AUX,
-						aux: {
-							input: sourceInfo.port
-						}
+						input: sourceInfo.port
 					}
 				})
 			])

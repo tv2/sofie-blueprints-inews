@@ -14,7 +14,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType, SharedOutputLayers } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
+import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 

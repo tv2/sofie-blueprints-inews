@@ -1,8 +1,8 @@
 import { GraphicsContent, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	assertUnreachable,
-	EnableDSK,
 	FindDSKFullGFX,
+	getDskOnAirTimelineObjects,
 	GetSisyfosTimelineObjForFull,
 	IsTargetingFull,
 	IsTargetingOVL,
@@ -11,7 +11,7 @@ import {
 	PilotGraphicProps,
 	TransitionStyle
 } from 'tv2-common'
-import { ControlClasses } from 'tv2-constants'
+import { DSKRoles } from 'tv2-constants'
 
 import { PilotGraphicGenerator } from '../pilot'
 
@@ -82,19 +82,18 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 	private getFullPilotTimeline() {
 		const fullDSK = FindDSKFullGFX(this.config)
 		const timelineObjects = [
-			this.context.videoSwitcher.getMixEffectTimelineObject({
+			...this.context.videoSwitcher.getOnAirTimelineObjects({
 				enable: {
 					start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
 				},
 				priority: 1,
-				layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 				content: {
 					input: this.config.studio.VizPilotGraphics.FullGraphicBackground,
 					transition: TransitionStyle.CUT
 				}
 			}),
 			// Assume DSK is off by default (config table)
-			...EnableDSK(this.context, 'FULL'),
+			...getDskOnAirTimelineObjects(this.context, DSKRoles.FULLGFX),
 			...GetSisyfosTimelineObjForFull(this.config)
 		]
 		if (this.context.uniformConfig.SwitcherLLayers.ProgramAux) {
@@ -107,8 +106,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 					layer: this.context.uniformConfig.SwitcherLLayers.ProgramAux,
 					content: {
 						input: fullDSK.Fill
-					},
-					classes: [ControlClasses.MixMinusOverrideDsk, ControlClasses.Placeholder]
+					}
 				})
 			)
 		}

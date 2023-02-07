@@ -10,9 +10,7 @@ import * as _ from 'underscore'
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
 export function RealLLayers(): string[] {
 	return (
-		_.values(OfftubeAbstractLLayer)
-			// @ts-ignore
-			.concat(_.values(OfftubeSisyfosLLayer))
+		_.values(OfftubeSisyfosLLayer)
 			// @ts-ignore
 			.concat(_.values(OfftubeAtemLLayer))
 			// @ts-ignore
@@ -22,11 +20,6 @@ export function RealLLayers(): string[] {
 			// @ts-ignore
 			.concat(_.values(SharedGraphicLLayer))
 	)
-}
-
-export enum OfftubeAbstractLLayer {
-	/** Contains the classes to enable infinites */
-	OfftubeAbstractLLayerAbstractLookahead = 'offtube_abstract_layer_abstract_lookahead'
 }
 
 enum SisyfosLLayer {

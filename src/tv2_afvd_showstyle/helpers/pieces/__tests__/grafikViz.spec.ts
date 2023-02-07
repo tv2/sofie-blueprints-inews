@@ -8,13 +8,13 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	AtemLLayerDSK,
 	CueDefinitionGraphic,
 	CueTime,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	GraphicPilot,
 	literal,
+	LLayerDSK,
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
@@ -63,7 +63,7 @@ const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 		start: 0
 	},
 	priority: 1,
-	layer: AtemLLayerDSK(0),
+	layer: prefixLayer(LLayerDSK(0)),
 	content: {
 		deviceType: TSR.DeviceType.ATEM,
 		type: TSR.TimelineContentTypeAtem.DSK,
@@ -946,3 +946,7 @@ describe('grafik piece', () => {
 		expect(tlObj?.enable).toEqual({ while: '1' })
 	})
 })
+
+function prefixLayer(layerName: string) {
+	return 'atem_' + layerName
+}

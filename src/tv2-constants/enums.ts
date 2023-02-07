@@ -113,16 +113,15 @@ export function AdlibTagCutToBox(box: number): AdlibTags {
 }
 
 export enum ControlClasses {
-	ServerOnAir = 'server_on_air',
-	LYDOnAir = 'lyd_on_air',
-	LiveSourceOnAir = 'live_source_on_air',
-	AbstractLookahead = 'abstract_lookahead',
-	MixMinusOverrideDsk = 'MIX_MINUS_OVERRIDE_DSK',
-	Placeholder = 'PLACEHOLDER_OBJECT_REMOVEME'
+	SERVER_ON_AIR = 'server_on_air',
+	LYD_ON_AIR = 'lyd_on_air',
+	LIVE_SOURCE_ON_AIR = 'live_source_on_air',
+	ABSTRACT_LOOKAHEAD = 'abstract_lookahead',
+	PLACEHOLDER = 'placeholder'
 }
 
 export function GetEnableClassForServer(mediaPlayerSessionId: string) {
-	return `${ControlClasses.ServerOnAir}_${mediaPlayerSessionId}`
+	return `${ControlClasses.SERVER_ON_AIR}_${mediaPlayerSessionId}`
 }
 
 export enum AdlibActionType {

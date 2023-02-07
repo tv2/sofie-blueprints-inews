@@ -24,7 +24,6 @@ import { OfftubeCreatePartGrafik } from './parts/OfftubeGrafik'
 import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
-import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export async function getSegment(
 	coreContext: ISegmentUserContext,
@@ -47,8 +46,6 @@ export async function getSegment(
 	})
 
 	const blueprintParts = result.parts
-
-	postProcessPartTimelineObjects(context, blueprintParts)
 
 	return {
 		segment: result.segment,
@@ -80,9 +77,8 @@ function CreatePartContinuity(
 					studioLabel: '',
 					switcherInput: context.config.studio.SwitcherSource.Continuity,
 					timelineObjects: [
-						context.videoSwitcher.getMixEffectTimelineObject({
+						...context.videoSwitcher.getOnAirTimelineObjects({
 							priority: 1,
-							layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 							content: {
 								input: context.config.studio.SwitcherSource.Continuity,
 								transition: TransitionStyle.CUT

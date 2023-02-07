@@ -64,10 +64,8 @@ import { OfftubeBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
-import { AtemSourceIndex } from '../types/atem'
 import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
-import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const context = new ExtendedShowStyleContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
@@ -112,8 +110,6 @@ function getGlobalAdLibPiecesOfftube(
 	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>
 ): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
-
-	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, p, true))
 
 	adlibItems.push(...CreateDSKBaselineAdlibs(context.config, 500, context.videoSwitcher))
 
@@ -232,7 +228,6 @@ function getGlobalAdLibPiecesOfftube(
 		}
 	})
 
-	adlibItems.forEach(p => postProcessPieceTimelineObjects(context, p, true))
 	return adlibItems
 }
 

@@ -17,7 +17,7 @@ export class ExtendedShowStyleContextImpl<
 
 	constructor(readonly core: CoreContext, public readonly uniformConfig: UniformConfig) {
 		this.config = this.makeConfig()
-		this.videoSwitcher = VideoSwitcherImpl.getVideoSwitcher(this.config)
+		this.videoSwitcher = VideoSwitcherImpl.getVideoSwitcher(core, this.config, uniformConfig)
 	}
 
 	private makeConfig(): BlueprintConfig {

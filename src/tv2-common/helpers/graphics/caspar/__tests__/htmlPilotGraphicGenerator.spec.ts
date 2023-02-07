@@ -2,7 +2,6 @@ import { PieceLifespan, TSR } from 'blueprints-integration'
 import { CueDefinitionGraphic, GraphicPilot, HtmlPilotGraphicGenerator, literal } from 'tv2-common'
 import { CueType, SharedGraphicLLayer } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../../__mocks__/context'
-import { pilotGeneratorSettingsOfftube } from '../../../../../tv2_offtube_showstyle/cues/OfftubeGraphics'
 
 function makeMockContext() {
 	// @todo: perhaps make the tests run with two contexts
@@ -15,8 +14,7 @@ function makeGenerator(cue: CueDefinitionGraphic<GraphicPilot>) {
 		context,
 		partId: 'part01',
 		parsedCue: cue,
-		segmentExternalId: '',
-		settings: pilotGeneratorSettingsOfftube
+		segmentExternalId: ''
 	})
 	return generator
 }

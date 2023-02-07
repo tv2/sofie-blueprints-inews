@@ -16,8 +16,7 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	dveLayers: {
 		ATEM: {
 			SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
-			SSrcArt: OfftubeAtemLLayer.AtemSSrcArt,
-			MEProgram: OfftubeAtemLLayer.AtemMEClean
+			SSrcArt: OfftubeAtemLLayer.AtemSSrcArt
 		},
 		CASPAR: {
 			CGDVEKey: OfftubeCasparLLayer.CasparCGDVEKey,

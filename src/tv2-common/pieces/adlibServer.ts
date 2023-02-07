@@ -15,11 +15,6 @@ import {
 import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
 import { getServerAdLibTriggerModes, t } from '../helpers'
 
-export interface AdlibServerOfftubeOptions {
-	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
-	isOfftube: boolean
-}
-
 export async function CreateAdlibServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>

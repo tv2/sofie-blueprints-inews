@@ -89,7 +89,6 @@ export interface DVELayers {
 	ATEM: {
 		SSrcDefault: string
 		SSrcArt: string
-		MEProgram: string
 	}
 	CASPAR: {
 		CGDVEKey: string
@@ -102,10 +101,6 @@ export interface DVELayers {
 	CasparLLayer: {
 		ClipPending: string
 	}
-}
-
-export interface DVEMetaData {
-	mediaPlayerSession?: string
 }
 
 export interface DVEPieceMetaData extends PieceMetaData {
@@ -322,9 +317,9 @@ export function MakeContentDVE2<
 						type: TSR.TimelineContentTypeAtem.SSRC,
 						ssrc: { boxes }
 					},
-					metaData: literal<DVEMetaData>({
+					metaData: {
 						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
-					})
+					}
 				}),
 				literal<TSR.TimelineObjAtemSsrcProps>({
 					id: '',
@@ -354,11 +349,10 @@ export function MakeContentDVE2<
 						}
 					}
 				}),
-				context.videoSwitcher.getMixEffectTimelineObject({
+				...context.videoSwitcher.getOnAirTimelineObjects({
 					id: '',
 					enable: getDVEEnable(Number(context.config.studio.CasparPrerollDuration)),
 					priority: 1,
-					layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 					content: {
 						input: SpecialInput.DVE,
 						transition: TransitionStyle.CUT

@@ -1,7 +1,7 @@
 import { GraphicsContent, TSR, WithTimeline } from 'blueprints-integration'
 import {
-	EnableDSK,
 	FindDSKFullGFX,
+	getDskOnAirTimelineObjects,
 	getHtmlTemplateName,
 	GetSisyfosTimelineObjForFull,
 	IsTargetingFull,
@@ -13,6 +13,7 @@ import {
 	TimelineBlueprintExt,
 	TransitionStyle
 } from 'tv2-common'
+import { DSKRoles } from 'tv2-constants'
 
 import { PilotGraphicGenerator } from '../pilot'
 
@@ -81,7 +82,9 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 						}
 					}
 				}),
-				...(IsTargetingFull(this.engine) ? this.getFullPilotTimeline() : EnableDSK(this.context, 'OVL'))
+				...(IsTargetingFull(this.engine)
+					? this.getFullPilotTimeline()
+					: getDskOnAirTimelineObjects(this.context, DSKRoles.OVERLAYGFX))
 			]
 		}
 	}
@@ -89,12 +92,11 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 	protected getFullPilotTimeline(): TSR.TSRTimelineObj[] {
 		const fullDSK = FindDSKFullGFX(this.config)
 		return [
-			this.context.videoSwitcher.getMixEffectTimelineObject({
+			...this.context.videoSwitcher.getOnAirTimelineObjects({
 				enable: {
 					start: Number(this.config.studio.CasparPrerollDuration)
 				},
 				priority: 1,
-				layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 				content: {
 					input: fullDSK.Fill,
 					transition: TransitionStyle.WIPE_FOR_GFX

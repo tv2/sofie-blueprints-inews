@@ -4,10 +4,8 @@ import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
-import { pilotGeneratorSettingsAFVD } from './helpers/pieces/graphicPilot'
 import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
-import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export async function executeActionAFVD(
 	context: IActionExecutionContext,
@@ -19,7 +17,6 @@ export async function executeActionAFVD(
 		context,
 		GALLERY_UNIFORM_CONFIG,
 		{
-			postProcessPieceTimelineObjects,
 			EvaluateCues,
 			DVEGeneratorOptions: AFVD_DVE_GENERATOR_OPTIONS,
 			SourceLayers: {

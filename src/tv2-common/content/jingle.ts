@@ -1,5 +1,6 @@
 import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import { EnableDSK, ExtendedShowStyleContext, FindDSKJingle, TimeFromFrames } from 'tv2-common'
+import { ExtendedShowStyleContext, FindDSKJingle, getDskOnAirTimelineObjects, TimeFromFrames } from 'tv2-common'
+import { DSKRoles } from 'tv2-constants'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { joinAssetToFolder, joinAssetToNetworkPath, literal } from '../util'
@@ -62,7 +63,7 @@ export function CreateJingleContentBase<
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			CreateJingleCasparTimelineObject(fileName, loadFirstFrame, layers),
 
-			...EnableDSK(context, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
+			...getDskOnAirTimelineObjects(context, DSKRoles.JINGLE, { start: Number(config.studio.CasparPrerollDuration) }),
 
 			// @todo: this is a Qbox-only feature, should be refactored at some point not to use ATEM object directly
 			...(context.uniformConfig.SwitcherLLayers.JingleNextMixEffect
@@ -113,27 +114,6 @@ export function CreateJingleContentBase<
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {}
-							}
-						})
-				  ]
-				: []),
-
-			...(context.uniformConfig.SwitcherLLayers.JingleUskMixEffect
-				? [
-						context.videoSwitcher.getMixEffectTimelineObject({
-							enable: {
-								start: Number(config.studio.CasparPrerollDuration)
-							},
-							priority: 1,
-							layer: context.uniformConfig.SwitcherLLayers.JingleUskMixEffect,
-							content: {
-								keyers: [
-									{
-										id: 0,
-										onAir: true,
-										config: jingleDSK
-									}
-								]
 							}
 						})
 				  ]

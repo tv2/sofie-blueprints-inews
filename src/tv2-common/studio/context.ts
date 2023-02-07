@@ -8,7 +8,7 @@ export class ExtendedStudioContext<BlueprintConfig extends TV2StudioConfig = TV2
 
 	constructor(readonly core: IStudioContext, public readonly uniformConfig: UniformConfig) {
 		this.config = this.makeConfig()
-		this.videoSwitcher = VideoSwitcherImpl.getVideoSwitcher(this.config)
+		this.videoSwitcher = VideoSwitcherImpl.getVideoSwitcher(core, this.config, uniformConfig)
 	}
 
 	private makeConfig(): BlueprintConfig {

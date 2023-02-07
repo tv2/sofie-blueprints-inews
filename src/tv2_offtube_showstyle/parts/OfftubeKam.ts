@@ -58,21 +58,14 @@ export async function OfftubeCreatePartKam(
 				ignoreMediaObjectStatus: true,
 				fileName: '',
 				path: '',
-				timelineObjects: [
-					context.videoSwitcher.getMixEffectTimelineObject({
-						id: ``,
-						enable: {
-							start: 0
-						},
-						priority: 1,
-						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
-						content: {
-							input: jingleDSK.Fill,
-							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-							transitionDuration: partDefinition.transition?.duration
-						}
-					})
-				]
+				timelineObjects: context.videoSwitcher.getOnAirTimelineObjects({
+					priority: 1,
+					content: {
+						input: jingleDSK.Fill,
+						transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+						transitionDuration: partDefinition.transition?.duration
+					}
+				})
 			})
 		})
 	} else {
@@ -102,15 +95,10 @@ export async function OfftubeCreatePartKam(
 				studioLabel: '',
 				switcherInput,
 				timelineObjects: [
-					context.videoSwitcher.getMixEffectTimelineObject({
-						id: ``,
-						enable: {
-							start: 0
-						},
+					...context.videoSwitcher.getOnAirTimelineObjects({
 						priority: 1,
-						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
-							input: Number(switcherInput),
+							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						}

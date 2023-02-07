@@ -61,10 +61,6 @@ export class Atem extends VideoSwitcherImpl {
 		}
 	}
 
-	public findMixEffectTimelineObject(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj | undefined {
-		return timelineObjects.find(this.isMixEffect)
-	}
-
 	public isMixEffect = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemME => {
 		return (
 			this.isVideoSwitcherTimelineObject(timelineObject) &&
@@ -155,7 +151,7 @@ export class Atem extends VideoSwitcherImpl {
 			timelineObject.content.type === TSR.TimelineContentTypeAtem.AUX
 		)
 	}
-	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+	public updateAuxInput(_timelineObject: TSR.TSRTimelineObj, _input: number | SpecialInput): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
 	}
 	public isDveBoxes = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemSsrc => {
@@ -164,12 +160,12 @@ export class Atem extends VideoSwitcherImpl {
 			timelineObject.content.type === TSR.TimelineContentTypeAtem.SSRC
 		)
 	}
-	public getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj {
+	public getDveTimelineObject(_properties: AuxProps): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
 	}
 	public updateUnpopulatedDveBoxes(
-		timelineObject: TimelineObjectCoreExt<unknown, unknown>,
-		input: number | SpecialInput
+		_timelineObject: TimelineObjectCoreExt<unknown, unknown>,
+		_input: number | SpecialInput
 	): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
 	}

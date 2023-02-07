@@ -63,6 +63,10 @@ export interface MixEffectProps extends TimelineObjectProps {
 	}
 }
 
+export interface OnAirMixEffectProps extends Omit<MixEffectProps, 'layer'> {
+	mixMinusInput?: number | SpecialInput | null
+}
+
 export interface Keyer {
 	// id starting from 0
 	id: number
@@ -96,7 +100,7 @@ export interface AuxProps extends TimelineObjectProps {
 export interface VideoSwitcher {
 	isMixEffect(timelineObject: TimelineObjectCoreExt): boolean
 	getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
-	findMixEffectTimelineObject(timelineObjects: TimelineObjectCoreExt[]): TSR.TSRTimelineObj | undefined
+	getOnAirTimelineObjects(properties: OnAirMixEffectProps): TSR.TSRTimelineObj[]
 	isVideoSwitcherTimelineObject(timelineObject: TimelineObjectCoreExt): boolean
 	updateTransition(
 		timelineObject: TimelineObjectCoreExt,

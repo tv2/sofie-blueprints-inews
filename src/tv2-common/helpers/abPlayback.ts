@@ -47,7 +47,6 @@ export interface ActiveRequest {
 	end: number | undefined
 	type: MediaPlayerClaimType
 	player?: string
-	optional?: boolean
 }
 
 function maxUndefined(a: number | undefined, b: number | undefined): number | undefined {
@@ -63,7 +62,6 @@ function maxUndefined(a: number | undefined, b: number | undefined): number | un
 interface SessionTime {
 	start: number
 	end: number | undefined
-	optional: boolean
 	duration: number | undefined
 }
 function calculateSessionTimeRanges(resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>) {
@@ -96,14 +94,12 @@ function calculateSessionTimeRanges(resolvedPieces: Array<IBlueprintResolvedPiec
 				sessionRequests[sessionId] = {
 					start: Math.min(val.start, start),
 					end: maxUndefined(val.end, end),
-					optional: val.optional && (metadata.mediaPlayerOptional || false),
 					duration: p.resolvedDuration
 				}
 			} else {
 				sessionRequests[sessionId] = {
 					start,
 					end,
-					optional: metadata.mediaPlayerOptional || false,
 					duration: p.resolvedDuration
 				}
 			}
@@ -153,13 +149,7 @@ function findNextAvailablePlayer<
 	}
 
 	// Try with all players in use
-	let res = tryForInUse(inUse)
-	if (res !== undefined) {
-		return res
-	}
-
-	// Try again with optional ones ignored
-	res = tryForInUse(_.filter(inUse, r => !r.optional))
+	const res = tryForInUse(inUse)
 	if (res !== undefined) {
 		return res
 	}
@@ -213,8 +203,7 @@ export function resolveMediaPlayerAssignments<
 				start: r.start,
 				end: r.end,
 				player: prev ? prev.playerId.toString() : undefined, // Persist previous assignments
-				type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active,
-				optional: r.optional
+				type: prev && prev.lookahead ? MediaPlayerClaimType.Preloaded : MediaPlayerClaimType.Active
 			})
 		}
 	}
@@ -286,7 +275,7 @@ function updateObjectsToMediaPlayer<
 			}
 			const input = Number(switcherInput.val) || 0
 			if (context.videoSwitcher.isMixEffect(obj)) {
-				if (obj.classes?.includes('ab_on_preview')) {
+				if (context.uniformConfig.SwitcherLLayers.NextPreviewMixEffect) {
 					context.videoSwitcher.updatePreviewInput(obj, input)
 				} else {
 					context.videoSwitcher.updateInput(obj, input)

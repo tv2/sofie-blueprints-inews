@@ -29,7 +29,7 @@ export function SisyfosPlayerClip(i: number | string) {
  * Created layer mapping name for a DSK
  * @param i DSK number starting from 0
  */
-export function AtemLLayerDSK(i: number) {
+export function LLayerDSK(i: number) {
 	return `dsk_${i + 1}`
 }
 
@@ -37,7 +37,7 @@ export function GetDSKMappingNames(atemModel: ATEMModel): string[] {
 	const names: string[] = []
 
 	for (let i = 0; i < GetDSKCount(atemModel); i++) {
-		names.push(AtemLLayerDSK(i))
+		names.push(LLayerDSK(i))
 	}
 
 	return names

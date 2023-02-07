@@ -6,7 +6,6 @@ import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
-import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 const SELECTED_ADLIB_LAYERS = [
 	OfftubeSourceLayer.SelectedAdLibDVE,
@@ -25,7 +24,6 @@ export async function executeActionOfftube(
 		context,
 		QBOX_UNIFORM_CONFIG,
 		{
-			postProcessPieceTimelineObjects,
 			EvaluateCues: OfftubeEvaluateCues,
 			DVEGeneratorOptions: OFFTUBE_DVE_GENERATOR_OPTIONS,
 			SourceLayers: {

@@ -1,18 +1,5 @@
 import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
-import {
-	Adlib,
-	CreatePilotGraphic,
-	CueDefinitionGraphic,
-	ExtendedShowStyleContext,
-	GraphicPilot,
-	PilotGeneratorSettings
-} from 'tv2-common'
-import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
-
-export const pilotGeneratorSettingsAFVD: PilotGeneratorSettings = {
-	ProgramLayer: AtemLLayer.AtemMEProgram,
-	AuxProgramLayer: AtemLLayer.AtemAuxPGM
-}
+import { Adlib, CreatePilotGraphic, CueDefinitionGraphic, ExtendedShowStyleContext, GraphicPilot } from 'tv2-common'
 
 export function EvaluateCueGraphicPilot(
 	context: ExtendedShowStyleContext,
@@ -28,7 +15,6 @@ export function EvaluateCueGraphicPilot(
 		context,
 		partId,
 		parsedCue,
-		settings: pilotGeneratorSettingsAFVD,
 		adlib,
 		segmentExternalId
 	})

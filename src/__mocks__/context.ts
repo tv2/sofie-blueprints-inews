@@ -49,6 +49,7 @@ import {
 } from '../tv2_afvd_showstyle/helpers/config'
 import { preprocessConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
 import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 
 export function getHash(str: string): string {
 	const hash = crypto.createHash('sha1')
@@ -672,7 +673,8 @@ export function makeMockGalleryContext(overrides?: ConfigOverrides) {
 		core: mockCoreContext,
 		// @todo: this is awful, fix it perhaps by replacing defaultShowStyleConfig and defaultStudioConfig with preparsed config?!
 		config,
-		videoSwitcher: VideoSwitcherImpl.getVideoSwitcher(config) // new MockVideoSwitcher()
+		uniformConfig: GALLERY_UNIFORM_CONFIG,
+		videoSwitcher: VideoSwitcherImpl.getVideoSwitcher(mockCoreContext, config, GALLERY_UNIFORM_CONFIG) // new MockVideoSwitcher()
 	}
 	return mockContext
 }

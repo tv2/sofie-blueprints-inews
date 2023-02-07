@@ -8,13 +8,7 @@ import {
 } from 'tv2-common'
 import { AbstractLLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeGraphicLLayer,
-	OfftubeSisyfosLLayer
-} from '../layers'
+import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeGraphicLLayer, OfftubeSisyfosLLayer } from '../layers'
 
 const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -36,11 +30,6 @@ const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
-	}),
-	[OfftubeAbstractLLayer.OfftubeAbstractLLayerAbstractLookahead]: literal<TSR.MappingAbstract & BlueprintMapping>({
-		device: TSR.DeviceType.ABSTRACT,
-		deviceId: 'abstract0',
-		lookahead: LookaheadMode.WHEN_CLEAR
 	}),
 	[AbstractLLayer.IdentMarker]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,

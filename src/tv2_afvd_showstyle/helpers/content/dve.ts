@@ -16,8 +16,7 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	dveLayers: {
 		ATEM: {
 			SSrcDefault: AtemLLayer.AtemSSrcDefault,
-			SSrcArt: AtemLLayer.AtemSSrcArt,
-			MEProgram: AtemLLayer.AtemMEProgram
+			SSrcArt: AtemLLayer.AtemSSrcArt
 		},
 		CASPAR: {
 			CGDVEKey: CasparLLayer.CasparCGDVEKey,

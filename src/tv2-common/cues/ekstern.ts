@@ -74,15 +74,15 @@ export function EvaluateEksternBase<
 				studioLabel: '',
 				switcherInput,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					context.videoSwitcher.getMixEffectTimelineObject({
+					...context.videoSwitcher.getOnAirTimelineObjects({
 						priority: 1,
-						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						},
-						classes: [ControlClasses.LiveSourceOnAir]
+						classes: [ControlClasses.LIVE_SOURCE_ON_AIR], // @todo: this should not be here probably
+						mixMinusInput: null
 					}),
 
 					...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)
@@ -112,14 +112,14 @@ export function EvaluateEksternBase<
 				studioLabel: '',
 				switcherInput,
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
-					context.videoSwitcher.getMixEffectTimelineObject({
+					...context.videoSwitcher.getOnAirTimelineObjects({
 						priority: 1,
-						layer: context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
-						}
+						},
+						mixMinusInput: null // @todo: should it be here?
 					}),
 
 					...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)

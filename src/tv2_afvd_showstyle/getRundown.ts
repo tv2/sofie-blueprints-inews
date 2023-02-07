@@ -66,7 +66,6 @@ import { AtemSourceIndex } from '../types/atem'
 import { GalleryBlueprintConfig } from './helpers/config'
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
 import { SourceLayer } from './layers'
-import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const context = new ExtendedShowStyleContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
@@ -122,7 +121,6 @@ class GlobalAdLibPiecesGenerator {
 		adLibPieces.push(...this.makeSisyfosAdLibs())
 		adLibPieces.push(this.makeAudioBedAdLib())
 
-		adLibPieces.forEach(p => postProcessPieceTimelineObjects(this.context, p, true))
 		return adLibPieces
 	}
 
@@ -198,10 +196,9 @@ class GlobalAdLibPiecesGenerator {
 			content: {
 				ignoreMediaObjectStatus: true,
 				timelineObjects: [
-					this.context.videoSwitcher.getMixEffectTimelineObject({
+					...this.context.videoSwitcher.getOnAirTimelineObjects({
 						enable: { while: '1' },
 						priority: 1,
-						layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: info.port,
 							transition: TransitionStyle.CUT
@@ -285,14 +282,14 @@ class GlobalAdLibPiecesGenerator {
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: [
-					this.context.videoSwitcher.getMixEffectTimelineObject({
+					...this.context.videoSwitcher.getOnAirTimelineObjects({
 						enable: { while: '1' },
 						priority: 1,
-						layer: this.context.uniformConfig.SwitcherLLayers.PrimaryMixEffect,
 						content: {
 							input: info.port,
 							transition: TransitionStyle.CUT
-						}
+						},
+						mixMinusInput: null // @should it be here?
 					}),
 					...eksternSisyfos
 				]

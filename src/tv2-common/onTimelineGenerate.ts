@@ -50,7 +50,6 @@ export interface TimelinePersistentStateExt {
 export interface TimelineObjectMetaData {
 	context?: string
 	mediaPlayerSession?: string
-	dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
 	templateData?: any
 	fileName?: string
 }
@@ -62,7 +61,6 @@ export type TimelineBlueprintExt = TSR.TSRTimelineObjBase & {
 export interface PieceMetaData {
 	sisyfosPersistMetaData?: SisyfosPersistMetaData
 	mediaPlayerSessions?: string[]
-	mediaPlayerOptional?: boolean
 	modifiedByAction?: boolean
 }
 
@@ -133,8 +131,6 @@ export function onTimelineGenerate<
 		resolvedPieces,
 		sourceLayers
 	)
-
-	dveBoxLookaheadUseOriginalEnable(timeline)
 
 	return Promise.resolve({
 		timeline,
@@ -272,29 +268,6 @@ export function getEndStateForPart(
 	endState.serverPosition = getServerPositionForPartInstance(partInstance, resolvedPieces, time)
 
 	return endState
-}
-
-/**
- * DVE box lookahead uses classes to select the correct object.
- * Lookahead is replacing this selector rule with a '1' which causes every box to show the same.
- * This simply restores the original enable, which gets put into metaData for this purpose.
- */
-function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
-	// DVE_box lookahead class
-	for (const obj of timeline) {
-		const obj2 = obj as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
-		if (
-			obj2.isLookahead &&
-			obj2.content.deviceType === TSR.DeviceType.ATEM &&
-			obj2.content.type === TSR.TimelineContentTypeAtem.SSRC
-		) {
-			const origClass = obj2.metaData ? obj2.metaData.dveAdlibEnabler : undefined
-			if (origClass) {
-				// Restore the original enable rule
-				obj2.enable = { while: origClass }
-			}
-		}
-	}
 }
 
 export function createSisyfosPersistedLevelsTimelineObject(

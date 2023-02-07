@@ -45,7 +45,7 @@ function MixMinusContent(context: ExtendedShowStyleContext, switcherInput: numbe
 					input: switcherInput
 				},
 				enable: {
-					while: `.${ControlClasses.LiveSourceOnAir}`
+					while: `.${ControlClasses.LIVE_SOURCE_ON_AIR}`
 				},
 				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
 				priority: 1
