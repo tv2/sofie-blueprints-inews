@@ -26,9 +26,6 @@ interface EksternLayers {
 	SourceLayer: {
 		PgmLive: string
 	}
-	ATEM: {
-		MEProgram: string
-	}
 }
 
 export function EvaluateEksternBase<

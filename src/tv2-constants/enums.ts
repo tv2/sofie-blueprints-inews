@@ -217,8 +217,8 @@ export enum SwitcherDveLLayer {
 	DveBoxes = 'dve_boxes'
 }
 
-export enum SharedATEMLLayer {
-	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus'
+export enum SwitcherMediaPlayerLLayer {
+	Mp1 = 'mp1'
 }
 
 export enum SharedCasparLLayer {

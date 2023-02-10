@@ -1,4 +1,6 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
+import { literal } from 'tv2-common'
+import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemSourceIndex } from '../../types/atem'
 import { ATEM_LAYER_PREFIX } from '../layers'
@@ -6,6 +8,7 @@ import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import {
 	AuxProps,
 	DskProps,
+	DveProps,
 	Keyer,
 	MixEffectProps,
 	SpecialInput,
@@ -52,7 +55,7 @@ export class Atem extends VideoSwitcherImpl {
 			me.upstreamKeyers = upstreamKeyers
 		}
 		return {
-			...this.getBaseProperties(props),
+			...this.getBaseProperties(props, props.layer),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.ME,
@@ -101,10 +104,10 @@ export class Atem extends VideoSwitcherImpl {
 		return timelineObject
 	}
 
-	public getDskTimelineObjects(props: DskProps) {
+	public getDskTimelineObject(props: DskProps) {
 		const { content } = props
 		const timelineObject: TSR.TimelineObjAtemDSK = {
-			...this.getBaseProperties(props),
+			...this.getBaseProperties(props, props.layer),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.DSK,
@@ -123,12 +126,12 @@ export class Atem extends VideoSwitcherImpl {
 				}
 			}
 		}
-		return [timelineObject]
+		return timelineObject
 	}
 
 	public getAuxTimelineObject(props: AuxProps): TSR.TimelineObjAtemAUX {
 		return {
-			...this.getBaseProperties(props),
+			...this.getBaseProperties(props, props.layer),
 			content: {
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.AUX,
@@ -151,6 +154,43 @@ export class Atem extends VideoSwitcherImpl {
 			timelineObject.content.type === TSR.TimelineContentTypeAtem.AUX
 		)
 	}
+	public getDveTimelineObjects(props: DveProps): TSR.TSRTimelineObj[] {
+		return [
+			literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
+				...this.getBaseProperties(props, SwitcherDveLLayer.DveBoxes),
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRC,
+					ssrc: { boxes: props.content.boxes }
+				}
+			}),
+			literal<TSR.TimelineObjAtemSsrcProps>({
+				...this.getBaseProperties(props, SwitcherDveLLayer.Dve),
+				content: {
+					deviceType: TSR.DeviceType.ATEM,
+					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
+					ssrcProps: {
+						artFillSource: props.content.artFillSource,
+						artCutSource: props.content.artCutSource,
+						artOption: 1,
+						...(props.content.template.properties && props.content.template.properties?.artPreMultiplied === false
+							? {
+									artPreMultiplied: false,
+									artInvertKey: props.content.template.properties.artInvertKey,
+									artClip: props.content.template.properties.artClip * 10,
+									artGain: props.content.template.properties.artGain * 10
+							  }
+							: { artPreMultiplied: true }),
+						...(props.content.template.border?.borderEnabled
+							? {
+									...props.content.template.border
+							  }
+							: { borderEnabled: false })
+					}
+				}
+			})
+		]
+	}
 	public updateAuxInput(_timelineObject: TSR.TSRTimelineObj, _input: number | SpecialInput): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
 	}
@@ -160,9 +200,6 @@ export class Atem extends VideoSwitcherImpl {
 			timelineObject.content.type === TSR.TimelineContentTypeAtem.SSRC
 		)
 	}
-	public getDveTimelineObject(_properties: AuxProps): TSR.TSRTimelineObj {
-		throw new Error('Method not implemented.')
-	}
 	public updateUnpopulatedDveBoxes(
 		_timelineObject: TimelineObjectCoreExt<unknown, unknown>,
 		_input: number | SpecialInput
@@ -170,11 +207,14 @@ export class Atem extends VideoSwitcherImpl {
 		throw new Error('Method not implemented.')
 	}
 
-	private getBaseProperties(props: TimelineObjectProps): Omit<TSR.TimelineObjAtemAny, 'content' | 'keyframes'> {
+	private getBaseProperties(
+		props: TimelineObjectProps,
+		layer: string
+	): Omit<TSR.TimelineObjAtemAny, 'content' | 'keyframes'> {
 		return {
 			...TIMELINE_OBJECT_DEFAULTS,
 			..._.omit(props, 'content'),
-			layer: ATEM_LAYER_PREFIX + props.layer
+			layer: ATEM_LAYER_PREFIX + layer
 		}
 	}
 
@@ -205,7 +245,7 @@ export class Atem extends VideoSwitcherImpl {
 			case TransitionStyle.WIPE_FOR_GFX:
 				return {
 					wipe: {
-						rate: Number(this.config.studio.HTMLGraphics.TransitionSettings.wipeRate),
+						rate: this.config.studio.HTMLGraphics.TransitionSettings.wipeRate,
 						pattern: 1,
 						reverseDirection: true,
 						borderSoftness: this.config.studio.HTMLGraphics.TransitionSettings.borderSoftness

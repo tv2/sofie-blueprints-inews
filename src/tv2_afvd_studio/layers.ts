@@ -1,21 +1,16 @@
 import {
 	AbstractLLayer,
 	RobotCameraLayer,
-	SharedATEMLLayer,
 	SharedCasparLLayer,
 	SharedGraphicLLayer,
 	SharedSisyfosLLayer
 } from 'tv2-constants'
 import * as _ from 'underscore'
 
-export type LLayer = VirtualAbstractLLayer | AtemLLayer | CasparLLayer | SisyfosLLAyer
-
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
 export function RealLLayers(): string[] {
 	return (
-		_.values(AtemLLayer)
-			// @ts-ignore
-			.concat(_.values(CasparLLayer))
+		_.values(CasparLLayer)
 			// @ts-ignore
 			.concat(_.values(SisyfosLLAyer))
 			// @ts-ignore
@@ -30,31 +25,6 @@ export function RealLLayers(): string[] {
 }
 
 export enum VirtualAbstractLLayer {}
-
-export enum AFVDAtemLLayer {
-	AtemMEProgram = 'atem_me_program',
-	AtemMEClean = 'atem_me_clean',
-	AtemCleanUSKEffect = 'atem_clean_usk_effect',
-	AtemSSrcArt = 'atem_supersource_art',
-	AtemSSrcDefault = 'atem_supersource_default',
-	AtemMP1 = 'atem_mp_1',
-
-	AtemAuxPGM = 'atem_aux_pgm',
-	AtemAuxClean = 'atem_aux_clean',
-	AtemAuxAR = 'atem_aux_ar',
-	AtemAuxVizOvlIn1 = 'atem_aux_viz_ovl_in_1',
-	// AtemAuxVizFullIn1 = 'atem_aux_viz_full_in_1',
-	AtemAuxLookahead = 'atem_aux_lookahead',
-	AtemAuxSSrc = 'atem_aux_ssrc'
-}
-
-// tslint:disable-next-line: variable-name
-export const AtemLLayer = {
-	...AFVDAtemLLayer,
-	...SharedATEMLLayer
-}
-
-export type AtemLLayer = AFVDAtemLLayer | SharedATEMLLayer
 
 enum AFVDCasparLLayer {
 	CasparCGDVELoop = 'casparcg_dve_loop',

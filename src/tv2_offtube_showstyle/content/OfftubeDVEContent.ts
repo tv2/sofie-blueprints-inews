@@ -7,17 +7,13 @@ import {
 	MakeContentDVEBase,
 	PartDefinition
 } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 
 export const NUMBER_OF_DVE_BOXES = 4
 
 export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	dveLayers: {
-		ATEM: {
-			SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
-			SSrcArt: OfftubeAtemLLayer.AtemSSrcArt
-		},
 		CASPAR: {
 			CGDVEKey: OfftubeCasparLLayer.CasparCGDVEKey,
 			CGDVEFrame: OfftubeCasparLLayer.CasparCGDVEFrame
@@ -29,8 +25,7 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		CasparLLayer: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		}
-	},
-	AUDIO_LAYERS: [] // TODO
+	}
 }
 
 export function OfftubeMakeContentDVE(

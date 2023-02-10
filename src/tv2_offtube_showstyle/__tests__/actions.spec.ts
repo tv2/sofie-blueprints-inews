@@ -20,12 +20,19 @@ import {
 	SourceDefinitionKam,
 	SourceDefinitionRemote
 } from 'tv2-common'
-import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers, SourceType } from 'tv2-constants'
+import {
+	AdlibActionType,
+	CueType,
+	NoteType,
+	PartType,
+	SharedSourceLayers,
+	SourceType,
+	SwitcherMixEffectLLayer
+} from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { OfftubeStudioConfig, preprocessConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import mappingsDefaults from '../../tv2_offtube_studio/migrations/mappings-defaults'
 import { executeActionOfftube } from '../actions'
 import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
@@ -86,7 +93,7 @@ const kamPieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 					enable: {
 						start: 0
 					},
-					layer: AtemLLayer.AtemMEClean,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Clean),
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
@@ -375,7 +382,7 @@ function validateNextPartExistsWithPreviousPartKeepaliveDuration(context: Action
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 		obj =>
-			obj.layer === OfftubeAtemLLayer.AtemMEClean &&
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Clean) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME | undefined

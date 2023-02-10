@@ -55,11 +55,12 @@ import {
 	SharedOutputLayers,
 	SourceType,
 	SwitcherAuxLLayer,
+	SwitcherDveLLayer,
 	SwitcherMixEffectLLayer,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { AtemSourceIndex } from '../types/atem'
@@ -924,7 +925,7 @@ function getBaseline(
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
-				layer: AtemLLayer.AtemSSrcArt,
+				layer: SwitcherDveLLayer.Dve,
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
@@ -940,7 +941,7 @@ function getBaseline(
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
-				layer: AtemLLayer.AtemSSrcDefault,
+				layer: SwitcherDveLLayer.DveBoxes,
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRC,

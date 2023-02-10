@@ -7,7 +7,6 @@ import {
 	PieceMetaData,
 	TV2ShowStyleConfig
 } from 'tv2-common'
-import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
@@ -33,9 +32,6 @@ export function EvaluateEkstern(
 		{
 			SourceLayer: {
 				PgmLive: SourceLayer.PgmLive
-			},
-			ATEM: {
-				MEProgram: AtemLLayer.AtemMEProgram
 			}
 		},
 		adlib,

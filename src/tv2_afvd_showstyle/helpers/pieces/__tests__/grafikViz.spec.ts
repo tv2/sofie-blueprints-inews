@@ -20,6 +20,7 @@ import {
 } from 'tv2-common'
 import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
+import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
 import { OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
 import { EvaluateCueGraphic } from '../graphic'
@@ -946,7 +947,3 @@ describe('grafik piece', () => {
 		expect(tlObj?.enable).toEqual({ while: '1' })
 	})
 })
-
-function prefixLayer(layerName: string) {
-	return 'atem_' + layerName
-}

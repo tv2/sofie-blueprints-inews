@@ -56,12 +56,13 @@ import {
 	SharedSourceLayers,
 	SourceType,
 	SwitcherAuxLLayer,
+	SwitcherDveLLayer,
 	SwitcherMixEffectLLayer,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
 import { OfftubeBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
@@ -632,7 +633,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
-				layer: OfftubeAtemLLayer.AtemSSrcArt,
+				layer: SwitcherDveLLayer.Dve,
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
@@ -648,7 +649,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
-				layer: OfftubeAtemLLayer.AtemSSrcDefault,
+				layer: SwitcherDveLLayer.DveBoxes,
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRC,

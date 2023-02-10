@@ -8,9 +8,8 @@ import {
 import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
 import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-import { AtemSourceIndex } from '../types/atem'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from './layers'
+import { OfftubeSisyfosLLayer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
 import { QBOX_UNIFORM_CONFIG } from './uniformConfig'
 

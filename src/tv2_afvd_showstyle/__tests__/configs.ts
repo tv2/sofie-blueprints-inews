@@ -278,10 +278,3 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	GfxSchemaTemplates: [],
 	GfxShowMapping: []
 }
-
-export const EMPTY_SOURCE_CONFIG = {
-	cameras: [],
-	lives: [],
-	feeds: [],
-	replays: []
-}

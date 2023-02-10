@@ -22,7 +22,6 @@ import {
 	PartDefinition,
 	PieceMetaData,
 	SpecialInput,
-	TimelineBlueprintExt,
 	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -86,10 +85,6 @@ export interface DVEConfig {
 }
 
 export interface DVELayers {
-	ATEM: {
-		SSrcDefault: string
-		SSrcArt: string
-	}
 	CASPAR: {
 		CGDVEKey: string
 		CGDVEFrame: string
@@ -113,8 +108,6 @@ export interface DVEPieceMetaData extends PieceMetaData {
 
 export interface DVEOptions {
 	dveLayers: DVELayers
-	/** All audio layers */
-	AUDIO_LAYERS: string[]
 }
 
 type BoxConfig = DVEConfigBox & { source: number }
@@ -305,53 +298,20 @@ export function MakeContentDVE2<
 			boxSourceConfiguration: boxSources,
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				// setup ssrc
-				literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
-					id: '',
-					enable: {
-						while: '1'
-					},
+				...context.videoSwitcher.getDveTimelineObjects({
 					priority: 1,
-					layer: dveGeneratorOptions.dveLayers.ATEM.SSrcDefault,
 					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.SSRC,
-						ssrc: { boxes }
+						boxes,
+						template,
+						artFillSource: context.config.studio.SwitcherSource.SplitArtF,
+						artCutSource: context.config.studio.SwitcherSource.SplitArtK
 					},
 					metaData: {
 						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
 					}
 				}),
-				literal<TSR.TimelineObjAtemSsrcProps>({
-					id: '',
-					enable: getDVEEnable(Number(context.config.studio.CasparPrerollDuration) - 10), // TODO - why 10ms?
-					priority: 1,
-					layer: dveGeneratorOptions.dveLayers.ATEM.SSrcArt,
-					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.SSRCPROPS,
-						ssrcProps: {
-							artFillSource: context.config.studio.SwitcherSource.SplitArtF,
-							artCutSource: context.config.studio.SwitcherSource.SplitArtK,
-							artOption: 1,
-							...(template.properties && template.properties?.artPreMultiplied === false
-								? {
-										artPreMultiplied: false,
-										artInvertKey: template.properties.artInvertKey,
-										artClip: template.properties.artClip * 10,
-										artGain: template.properties.artGain * 10
-								  }
-								: { artPreMultiplied: true }),
-							...(template.border?.borderEnabled
-								? {
-										...template.border
-								  }
-								: { borderEnabled: false })
-						}
-					}
-				}),
 				...context.videoSwitcher.getOnAirTimelineObjects({
-					id: '',
-					enable: getDVEEnable(Number(context.config.studio.CasparPrerollDuration)),
+					enable: { start: context.config.studio.CasparPrerollDuration },
 					priority: 1,
 					content: {
 						input: SpecialInput.DVE,
@@ -360,7 +320,7 @@ export function MakeContentDVE2<
 				}),
 				literal<TSR.TimelineObjCCGTemplate>({
 					id: '',
-					enable: getDVEEnable(),
+					enable: { start: 0 },
 					priority: 1,
 					layer: SharedGraphicLLayer.GraphicLLayerLocators,
 					content: CreateHTMLRendererContent(context.config, 'locators', {
@@ -372,7 +332,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
-								enable: getDVEEnable(),
+								enable: { start: 0 },
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEKey,
 								content: {
@@ -391,7 +351,7 @@ export function MakeContentDVE2<
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
 								id: '',
-								enable: getDVEEnable(),
+								enable: { start: 0 },
 								priority: 1,
 								layer: dveGeneratorOptions.dveLayers.CASPAR.CGDVEFrame,
 								content: {
@@ -476,13 +436,6 @@ function boxSource(info: {
 		switcherInput: info.port,
 		type: info.sourceLayerType
 	}
-}
-
-function getDVEEnable(offsetFromStart?: number, media?: boolean): TSR.TSRTimelineObj['enable'] {
-	if (offsetFromStart) {
-		return { start: offsetFromStart ?? 0 }
-	}
-	return media ? { while: '1' } : { start: offsetFromStart ?? 0 }
 }
 
 export function getUniquenessIdDVE(parsedCue: CueDefinitionDVE) {

@@ -1,4 +1,4 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, ICommonContext, TSR } from 'blueprints-integration'
+import { ICommonContext, TSR } from 'blueprints-integration'
 import { ActionBase } from './actions'
 
 export function literal<T>(o: T) {
@@ -22,14 +22,6 @@ export function createEmptyObject(obj: EmptyBaseObj): TSR.TimelineObjEmpty {
 			type: 'empty'
 		}
 	}
-}
-
-/**
- * Returs true if the piece is interface IBlueprintAdLibPiece
- * @param {IBlueprintPiece | IBlueprintAdLibPiece} piece Piece to check
- */
-export function isAdLibPiece(piece: IBlueprintPiece | IBlueprintAdLibPiece) {
-	return '_rank' in piece
 }
 
 export function SanitizeString(str: string) {

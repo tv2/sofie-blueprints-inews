@@ -37,6 +37,7 @@ import {
 	ITV2ActionExecutionContext,
 	MixEffectProps,
 	PieceMetaData,
+	TV2StudioConfigBase,
 	VideoSwitcher,
 	VideoSwitcherImpl
 } from 'tv2-common'
@@ -47,7 +48,7 @@ import {
 	GalleryShowStyleConfig,
 	preprocessConfig as parseShowStyleConfigAFVD
 } from '../tv2_afvd_showstyle/helpers/config'
-import { preprocessConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
+import { preprocessConfig as parseStudioConfigAFVD } from '../tv2_afvd_studio/helpers/config'
 import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 
@@ -650,7 +651,7 @@ class MockVideoSwitcher implements VideoSwitcher {
 }
 
 interface ConfigOverrides {
-	studioConfig?: Partial<StudioConfig>
+	studioConfig?: Partial<TV2StudioConfigBase>
 	showStyleConfig?: Partial<GalleryShowStyleConfig>
 }
 

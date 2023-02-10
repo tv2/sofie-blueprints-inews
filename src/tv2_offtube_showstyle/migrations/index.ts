@@ -31,7 +31,6 @@ import {
 	getSourceLayerDefaultsMigrationSteps,
 	remapTableColumnValues
 } from './util'
-import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
 
@@ -78,7 +77,6 @@ const SHOW_STYLE_ID = 'tv2_offtube_showstyle'
 export const showStyleMigrations: MigrationStepShowStyle[] = [
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
-	...getCreateVariantMigrationSteps(),
 	remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	...getSourceLayerDefaultsMigrationSteps('1.3.0', true),
 

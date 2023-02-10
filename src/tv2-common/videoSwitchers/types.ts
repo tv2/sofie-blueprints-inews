@@ -1,5 +1,5 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { TableConfigItemDSK, TimelineObjectMetaData } from 'tv2-common'
+import { TimelineObjectMetaData, SwitcherDskProps } from 'tv2-common'
 import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
 
@@ -45,7 +45,6 @@ export interface TimelineObjectProps {
 	enable?: TimelineObjectEnable
 	// Default: 0
 	priority?: number
-	layer: string
 	metaData?: TimelineObjectMetaData
 	classes?: string[]
 }
@@ -71,10 +70,11 @@ export interface Keyer {
 	// id starting from 0
 	id: number
 	onAir: boolean
-	config: TableConfigItemDSK
+	config: SwitcherDskProps
 }
 
 export interface DskProps extends TimelineObjectProps {
+	layer: string // @todo: better type
 	content: {
 		onAir: boolean
 		sources?: {
@@ -97,6 +97,15 @@ export interface AuxProps extends TimelineObjectProps {
 	}
 }
 
+export interface DveProps extends TimelineObjectProps {
+	content: {
+		boxes: any // @todo
+		template: any // @todo
+		artFillSource: number | SpecialInput
+		artCutSource: number | SpecialInput
+	}
+}
+
 export interface VideoSwitcher {
 	isMixEffect(timelineObject: TimelineObjectCoreExt): boolean
 	getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
@@ -111,13 +120,13 @@ export interface VideoSwitcher {
 	updateInput(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
 
 	isDsk(timelineObject: TimelineObjectCoreExt): boolean
-	getDskTimelineObjects(properties: DskProps): TSR.TSRTimelineObj[]
+	getDskTimelineObject(properties: DskProps): TSR.TSRTimelineObj
 
 	isAux(timelineObject: TimelineObjectCoreExt): boolean
 	getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
 	updateAuxInput(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
 
 	isDveBoxes(timelineObject: TimelineObjectCoreExt): boolean
-	getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
+	getDveTimelineObjects(properties: DveProps): TSR.TSRTimelineObj[]
 	updateUnpopulatedDveBoxes(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
 }

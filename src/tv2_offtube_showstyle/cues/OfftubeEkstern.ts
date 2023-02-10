@@ -6,7 +6,6 @@ import {
 	PartDefinition,
 	PieceMetaData
 } from 'tv2-common'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -33,9 +32,6 @@ export function OfftubeEvaluateEkstern(
 		{
 			SourceLayer: {
 				PgmLive: OfftubeSourceLayer.PgmLive
-			},
-			ATEM: {
-				MEProgram: OfftubeAtemLLayer.AtemMEClean
 			}
 		},
 		adlib,

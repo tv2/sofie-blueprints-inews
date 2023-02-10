@@ -8,10 +8,10 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { ActionCutToCamera, ActionTakeWithTransition, literal, SourceDefinitionKam } from 'tv2-common'
-import { AdlibActionType, NoteType, SharedOutputLayers, SourceType } from 'tv2-constants'
+import { AdlibActionType, NoteType, SharedOutputLayers, SourceType, SwitcherMixEffectLLayer } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { executeActionAFVD } from '../actions'
 import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
@@ -139,7 +139,7 @@ const kamPieceInstance_Cut: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -175,7 +175,7 @@ const kamPieceInstance_Mix: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -216,7 +216,7 @@ const kamPieceInstance_Effekt: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -273,7 +273,7 @@ const evsPieceInstance_Cut: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -309,7 +309,7 @@ const evsPieceInstance_Mix: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -350,7 +350,7 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -408,7 +408,7 @@ async function getTransitionPiece(
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 		obj =>
-			obj.layer === AtemLLayer.AtemMEProgram &&
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Program) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME | undefined

@@ -3,6 +3,7 @@ import {
 	Atem,
 	AuxProps,
 	DskProps,
+	DveProps,
 	MixEffectProps,
 	OnAirMixEffectProps,
 	SpecialInput,
@@ -16,19 +17,14 @@ import {
 import _ = require('underscore')
 
 export abstract class VideoSwitcherImpl implements VideoSwitcher {
-	public static videoSwitcherSingleton: VideoSwitcherImpl | undefined = undefined
 	public static getVideoSwitcher(
 		core: IStudioContext,
 		config: TV2StudioConfig,
 		uniformConfig: UniformConfig
 	): VideoSwitcherImpl {
-		if (!this.videoSwitcherSingleton || this.videoSwitcherSingleton.type !== config.studio.SwitcherType) {
-			this.videoSwitcherSingleton =
-				config.studio.SwitcherType === SwitcherType.ATEM
-					? new Atem(core, config, uniformConfig)
-					: new TriCaster(core, config, uniformConfig)
-		}
-		return this.videoSwitcherSingleton
+		return config.studio.SwitcherType === SwitcherType.ATEM
+			? new Atem(core, config, uniformConfig)
+			: new TriCaster(core, config, uniformConfig)
 	}
 	public abstract readonly type: SwitcherType
 	public abstract isDsk: (timelineObject: TimelineObjectCoreExt) => boolean
@@ -103,7 +99,7 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 		timelineObject: TimelineObjectCoreExt<unknown, unknown>,
 		input: number | SpecialInput
 	): TSR.TSRTimelineObj
-	public abstract getDveTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
+	public abstract getDveTimelineObjects(properties: DveProps): TSR.TSRTimelineObj[]
 	public abstract updateUnpopulatedDveBoxes(
 		timelineObject: TimelineObjectCoreExt<unknown, unknown>,
 		input: number | SpecialInput
@@ -120,6 +116,6 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 	): TSR.TSRTimelineObj
 	public abstract updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj
 
-	public abstract getDskTimelineObjects(properties: DskProps): TSR.TSRTimelineObj[]
+	public abstract getDskTimelineObject(properties: DskProps): TSR.TSRTimelineObj
 	public abstract getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
 }

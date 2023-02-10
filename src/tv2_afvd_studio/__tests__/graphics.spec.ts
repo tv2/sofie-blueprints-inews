@@ -12,12 +12,20 @@ import {
 	PartDefinition,
 	RemoteType
 } from 'tv2-common'
-import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
+import {
+	CueType,
+	PartType,
+	SharedGraphicLLayer,
+	SharedOutputLayers,
+	SourceType,
+	SwitcherAuxLLayer
+} from 'tv2-constants'
 import { makeMockGalleryContext, SegmentUserContext } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { SourceLayer } from '../../tv2_afvd_showstyle/layers'
 import { CreatePartGrafik } from '../../tv2_afvd_showstyle/parts/grafik'
 import { CreatePartUnknown } from '../../tv2_afvd_showstyle/parts/unknown'
-import { AtemLLayer, CasparLLayer } from '../layers'
+import { CasparLLayer } from '../layers'
 
 const SEGMENT_EXTERNAL_ID = '00000000'
 
@@ -382,7 +390,7 @@ describe('Graphics', () => {
 		) as TSR.TimelineObjAtemAUX | undefined
 		expect(auxObj).toBeTruthy()
 		expect(auxObj?.enable).toEqual({ start: 0 })
-		expect(auxObj?.layer).toBe(AtemLLayer.AtemAuxVizOvlIn1)
+		expect(auxObj?.layer).toBe(prefixLayer(SwitcherAuxLLayer.AuxVizOvlIn1))
 		expect(auxObj?.content.aux.input).toBe(1)
 	})
 

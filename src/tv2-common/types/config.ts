@@ -12,14 +12,17 @@ export type TableConfigItemSourceMappingWithSisyfos = {
 	AcceptPersistAudio?: boolean
 } & TableConfigItemSourceMapping
 
-export interface TableConfigItemDSK {
-	/** 0-based */
-	Number: number
+export interface SwitcherDskProps {
 	Fill: number
 	Key: number
+	Clip: string
+	Gain: string
+}
+
+export interface TableConfigItemDSK extends SwitcherDskProps {
+	/** 0-based */
+	Number: number
 	Toggle: boolean
 	DefaultOn: boolean
 	Roles?: DSKRoles[]
-	Clip: string
-	Gain: string
 }

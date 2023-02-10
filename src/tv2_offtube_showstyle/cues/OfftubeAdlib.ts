@@ -1,10 +1,4 @@
-import {
-	HackPartMediaObjectSubscription,
-	IBlueprintActionManifest,
-	SplitsContent,
-	TimelineObjectCoreExt,
-	TSR
-} from 'blueprints-integration'
+import { HackPartMediaObjectSubscription, IBlueprintActionManifest, SplitsContent } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
@@ -20,8 +14,7 @@ import {
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
-import _ = require('underscore')
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -118,34 +111,4 @@ export async function OfftubeEvaluateAdLib(
 			}
 		})
 	}
-}
-
-export function makeofftubeDVEIDsUniqueForFlow(timeline: TimelineObjectCoreExt[]): TimelineObjectCoreExt[] {
-	const startIdObj = timeline.find(tlObj => tlObj.layer === OfftubeAtemLLayer.AtemSSrcDefault)
-
-	if (!startIdObj) {
-		return timeline
-	}
-
-	const startId = startIdObj.id
-
-	if (!startId.length) {
-		return timeline
-	}
-
-	const newId = `${startId}_flow`
-
-	return timeline.map(tlObj => {
-		const enable = _.clone(tlObj.enable) as TSR.Timeline.TimelineEnable
-
-		if (enable.start && typeof enable.start === 'string') {
-			enable.start = enable.start.replace(startId, newId)
-		}
-
-		return {
-			...tlObj,
-			id: tlObj.id.replace(startId, newId),
-			enable
-		}
-	})
 }

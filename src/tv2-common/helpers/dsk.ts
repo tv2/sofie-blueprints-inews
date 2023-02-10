@@ -48,7 +48,7 @@ export function getDskOnAirTimelineObjects(
 ): TSR.TSRTimelineObj[] {
 	const dskConf = FindDSKWithRoles(context.config, [dskRole])
 	return [
-		...context.videoSwitcher.getDskTimelineObjects({
+		context.videoSwitcher.getDskTimelineObject({
 			id: '',
 			enable: enable ?? {
 				start: 0
@@ -109,15 +109,17 @@ export function CreateDSKBaselineAdlibs(
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_OFF],
 					invertOnAirState: true,
 					content: {
-						timelineObjects: videoSwitcher.getDskTimelineObjects({
-							id: '',
-							enable: { while: '1' },
-							priority: 10,
-							layer: LLayerDSK(dsk.Number),
-							content: {
-								onAir: false
-							}
-						})
+						timelineObjects: [
+							videoSwitcher.getDskTimelineObject({
+								id: '',
+								enable: { while: '1' },
+								priority: 10,
+								layer: LLayerDSK(dsk.Number),
+								content: {
+									onAir: false
+								}
+							})
+						]
 					}
 				})
 			} else {
@@ -130,25 +132,27 @@ export function CreateDSKBaselineAdlibs(
 					lifespan: PieceLifespan.OutOnRundownChange,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_ON],
 					content: {
-						timelineObjects: videoSwitcher.getDskTimelineObjects({
-							id: '',
-							enable: { while: '1' },
-							priority: 10,
-							layer: LLayerDSK(dsk.Number), // @todo
-							content: {
-								onAir: true,
-								sources: {
-									fillSource: dsk.Fill,
-									cutSource: dsk.Key
-								},
-								properties: {
-									tie: false,
-									preMultiply: false,
-									clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-									gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
+						timelineObjects: [
+							videoSwitcher.getDskTimelineObject({
+								id: '',
+								enable: { while: '1' },
+								priority: 10,
+								layer: LLayerDSK(dsk.Number), // @todo
+								content: {
+									onAir: true,
+									sources: {
+										fillSource: dsk.Fill,
+										cutSource: dsk.Key
+									},
+									properties: {
+										tie: false,
+										preMultiply: false,
+										clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
+										gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
+									}
 								}
-							}
-						})
+							})
+						]
 					}
 				})
 			}
@@ -161,29 +165,27 @@ export function CreateDSKBaseline(
 	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
 	videoSwitcher: VideoSwitcher
 ): TSR.TSRTimelineObj[] {
-	return config.dsk
-		.map(dsk => {
-			return videoSwitcher.getDskTimelineObjects({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: LLayerDSK(dsk.Number), // @todo
-				content: {
-					onAir: dsk.DefaultOn,
-					sources: {
-						fillSource: dsk.Fill,
-						cutSource: dsk.Key
-					},
-					properties: {
-						tie: false,
-						preMultiply: false,
-						clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-						gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
-					}
+	return config.dsk.map(dsk => {
+		return videoSwitcher.getDskTimelineObject({
+			id: '',
+			enable: { while: '1' },
+			priority: 0,
+			layer: LLayerDSK(dsk.Number), // @todo
+			content: {
+				onAir: dsk.DefaultOn,
+				sources: {
+					fillSource: dsk.Fill,
+					cutSource: dsk.Key
+				},
+				properties: {
+					tie: false,
+					preMultiply: false,
+					clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
+					gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
 				}
-			})
+			}
 		})
-		.flat()
+	})
 }
 
 export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {

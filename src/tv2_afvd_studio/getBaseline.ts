@@ -7,10 +7,15 @@ import {
 } from 'blueprints-integration'
 import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
-import { SharedGraphicLLayer, SwitcherAuxLLayer, SwitcherMixEffectLLayer } from '../tv2-constants'
+import {
+	SharedGraphicLLayer,
+	SwitcherAuxLLayer,
+	SwitcherMediaPlayerLLayer,
+	SwitcherMixEffectLLayer
+} from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
 import { GalleryStudioConfig } from './helpers/config'
-import { AtemLLayer, SisyfosLLAyer } from './layers'
+import { SisyfosLLAyer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
 import { GALLERY_UNIFORM_CONFIG } from './uniformConfig'
 
@@ -103,7 +108,7 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 				id: '',
 				enable: { while: '1' },
 				priority: 0,
-				layer: AtemLLayer.AtemMP1,
+				layer: SwitcherMediaPlayerLLayer.Mp1,
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.MEDIAPLAYER,

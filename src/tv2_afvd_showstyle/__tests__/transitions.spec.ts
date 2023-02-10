@@ -1,10 +1,11 @@
 import { fail } from 'assert'
 import { BlueprintResultSegment, IBlueprintPart, IBlueprintPiece, IngestSegment, TSR } from 'blueprints-integration'
 import { TimeFromFrames } from 'tv2-common'
+import { SwitcherMixEffectLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SegmentUserContext } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { preprocessConfig } from '../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getSegment } from '../getSegment'
 import { GalleryShowStyleConfig, preprocessConfig as parseShowStyleConfig } from '../helpers/config'
@@ -110,7 +111,7 @@ function getPieceOnLayerFromPart(segment: BlueprintResultSegment, layer: SourceL
 function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	const atemMEObj = (piece!.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
 		obj =>
-			obj.layer === AtemLLayer.AtemMEProgram &&
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Program) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME

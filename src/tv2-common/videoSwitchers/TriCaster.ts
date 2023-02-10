@@ -4,6 +4,7 @@ import { TRICASTER_CLEAN_ME, TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '..
 import {
 	AuxProps,
 	DskProps,
+	DveProps,
 	Keyer,
 	MixEffectProps,
 	SpecialInput,
@@ -46,7 +47,7 @@ export class TriCaster extends VideoSwitcherImpl {
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjTriCasterME {
 		const { content } = props
 		return {
-			...this.getBaseProperties(props),
+			...this.getBaseProperties(props, props.layer),
 			content: {
 				deviceType: TSR.DeviceType.TRICASTER,
 				type: TSR.TimelineContentTypeTriCaster.ME,
@@ -98,12 +99,12 @@ export class TriCaster extends VideoSwitcherImpl {
 		return timelineObject
 	}
 
-	public getDskTimelineObjects(_properties: DskProps): TSR.TSRTimelineObj[] {
+	public getDskTimelineObject(_properties: DskProps): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
 	}
 	public getAuxTimelineObject(props: AuxProps): TSR.TimelineObjTriCasterMixOutput {
 		return {
-			...this.getBaseProperties(props),
+			...this.getBaseProperties(props, props.layer),
 			content: {
 				deviceType: TSR.DeviceType.TRICASTER,
 				type: TSR.TimelineContentTypeTriCaster.MIX_OUTPUT,
@@ -127,7 +128,7 @@ export class TriCaster extends VideoSwitcherImpl {
 			!!(timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode).layers
 		)
 	}
-	public getDveTimelineObject(_properties: AuxProps): TSR.TSRTimelineObj {
+	public getDveTimelineObjects(_properties: DveProps): TSR.TSRTimelineObj[] {
 		throw new Error('Method not implemented.')
 	}
 	public updateUnpopulatedDveBoxes(
@@ -137,11 +138,14 @@ export class TriCaster extends VideoSwitcherImpl {
 		throw new Error('Method not implemented.')
 	}
 
-	private getBaseProperties(props: TimelineObjectProps): Omit<TSR.TimelineObjTriCasterAny, 'content' | 'keyframes'> {
+	private getBaseProperties(
+		props: TimelineObjectProps,
+		layer: string
+	): Omit<TSR.TimelineObjTriCasterAny, 'content' | 'keyframes'> {
 		return {
 			...TIMELINE_OBJECT_DEFAULTS,
 			..._.omit(props, 'content'),
-			layer: TRICASTER_LAYER_PREFIX + props.layer
+			layer: TRICASTER_LAYER_PREFIX + layer
 		}
 	}
 

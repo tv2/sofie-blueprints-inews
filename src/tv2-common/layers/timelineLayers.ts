@@ -6,6 +6,7 @@ export const TRICASTER_DEVICE_ID = 'tricaster0'
 export const TRICASTER_CLEAN_ME = 'v1'
 export const TRICASTER_DVE_ME = 'v2'
 
+export const ATEM_DEVICE_ID = 'atem0'
 export const ATEM_LAYER_PREFIX = 'atem_'
 export const TRICASTER_LAYER_PREFIX = 'tricaster_'
 
