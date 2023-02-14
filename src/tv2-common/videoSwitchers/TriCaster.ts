@@ -1,6 +1,7 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
+import { TimeFromFrames } from 'tv2-common'
 import _ = require('underscore')
-import { TRICASTER_CLEAN_ME, TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'
+import { TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'
 import {
 	AuxProps,
 	DskProps,
@@ -16,10 +17,10 @@ import {
 import { VideoSwitcherImpl } from './VideoSwitcher'
 
 const SPECIAL_INPUT_MAP: Record<SpecialInput, TSR.TriCasterSourceName | TSR.TriCasterMixEffectName> = {
-	[SpecialInput.ME1_PROGRAM]: 'main',
-	[SpecialInput.ME2_PROGRAM]: 'v1',
-	[SpecialInput.ME3_PROGRAM]: 'v2',
-	[SpecialInput.ME4_PROGRAM]: TRICASTER_CLEAN_ME, // @todo: fixme, I'm a hack because with TriCaster we're using a different M/E for Clean
+	[SpecialInput.ME1_PROGRAM]: 'v1',
+	[SpecialInput.ME2_PROGRAM]: 'v2',
+	[SpecialInput.ME3_PROGRAM]: 'v3',
+	[SpecialInput.ME4_PROGRAM]: 'v4',
 	[SpecialInput.DVE]: TRICASTER_DVE_ME,
 	[SpecialInput.COLOR_GENERATOR1]: 'bfr1',
 	[SpecialInput.COLOR_GENERATOR2]: 'bfr2'
@@ -56,7 +57,7 @@ export class TriCaster extends VideoSwitcherImpl {
 					previewInput: this.getInputName(content.previewInput),
 					transition: {
 						effect: this.getTransition(content.transition),
-						duration: content.transitionDuration ?? 1000 // @todo defaults and ranges
+						duration: this.getTransitionDuration(content.transition, content.transitionDuration)
 					},
 					keyers: content.keyers && this.getKeyers(content.keyers)
 				}
@@ -75,7 +76,7 @@ export class TriCaster extends VideoSwitcherImpl {
 		}
 		timelineObject.content.me.transition = {
 			effect: this.getTransition(transition),
-			duration: transitionDuration ?? 1000 // @todo defaults and ranges
+			duration: this.getTransitionDuration(transition, transitionDuration)
 		}
 		return timelineObject
 	}
@@ -99,8 +100,23 @@ export class TriCaster extends VideoSwitcherImpl {
 		return timelineObject
 	}
 
-	public getDskTimelineObject(_properties: DskProps): TSR.TSRTimelineObj {
-		throw new Error('Method not implemented.')
+	public getDskTimelineObject(props: DskProps): TSR.TimelineObjTriCasterME {
+		// we chose to use an ME (not the main switcher) as the PGM ME, hence this returns just an ME object
+		return {
+			...this.getBaseProperties(props, props.layer),
+			content: {
+				deviceType: TSR.DeviceType.TRICASTER,
+				type: TSR.TimelineContentTypeTriCaster.ME,
+				me: {
+					keyers: {
+						[`dsk${props.content.config.Number + 1}`]: {
+							onAir: props.content.onAir,
+							input: this.getInputName(props.content.config.Fill)
+						}
+					}
+				}
+			}
+		}
 	}
 	public getAuxTimelineObject(props: AuxProps): TSR.TimelineObjTriCasterMixOutput {
 		return {
@@ -138,6 +154,13 @@ export class TriCaster extends VideoSwitcherImpl {
 		throw new Error('Method not implemented.')
 	}
 
+	private getTransitionDuration(transition?: TransitionStyle, durationInFrames?: number): number {
+		if (transition === TransitionStyle.WIPE_FOR_GFX) {
+			durationInFrames = this.config.studio.HTMLGraphics.TransitionSettings.wipeRate
+		}
+		return TimeFromFrames(durationInFrames ?? 25) / 1000
+	}
+
 	private getBaseProperties(
 		props: TimelineObjectProps,
 		layer: string
@@ -154,7 +177,7 @@ export class TriCaster extends VideoSwitcherImpl {
 			return
 		}
 		return keyers.reduce<Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer>>((accumulator, keyer) => {
-			accumulator[`dsk${keyer.id + 1}`] = {
+			accumulator[`dsk${keyer.config.Number + 1}`] = {
 				onAir: keyer.onAir,
 				input: this.getInputName(keyer.config.Fill)
 			}

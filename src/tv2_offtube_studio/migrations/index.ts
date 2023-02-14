@@ -275,7 +275,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
 	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
 
-	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
+//	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
 
 	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
 	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
@@ -362,7 +362,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	 * - Rename the GraphicLLayerOverlayPilot, because alphabetical order matters for deeply extending the Caspar Objects targeting the same channel:layer
 	 * - Change lookahead properties and channel on GraphicLLayerOverlayPilot
 	 */
-	renameMapping('1.7.8', 'graphic_pilot_overlay', 'graphic_overlay_pilot'),
+	removeMapping('1.7.8', 'graphic_pilot_overlay'),
 	GetMappingDefaultMigrationStepForLayer('1.7.8', 'graphic_overlay_pilot', true),
 
 	// Fill in any mappings that did not exist before

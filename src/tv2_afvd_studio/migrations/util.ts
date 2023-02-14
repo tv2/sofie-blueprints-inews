@@ -1,6 +1,5 @@
 import {
 	BlueprintMapping,
-	ConfigItemValue,
 	MigrationContextStudio,
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,

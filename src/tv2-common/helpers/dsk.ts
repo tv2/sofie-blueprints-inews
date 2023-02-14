@@ -57,14 +57,7 @@ export function getDskOnAirTimelineObjects(
 			layer: LLayerDSK(dskConf.Number),
 			content: {
 				onAir: true,
-				sources: {
-					fillSource: dskConf.Fill,
-					cutSource: dskConf.Key
-				},
-				properties: {
-					clip: Number(dskConf.Clip) * 10,
-					gain: Number(dskConf.Gain) * 10
-				}
+				config: dskConf
 			}
 		}),
 		...(dskRole === DSKRoles.JINGLE && context.uniformConfig.SwitcherLLayers.JingleUskMixEffect
@@ -78,7 +71,6 @@ export function getDskOnAirTimelineObjects(
 						content: {
 							keyers: [
 								{
-									id: 0,
 									onAir: true,
 									config: dskConf
 								}
@@ -116,7 +108,8 @@ export function CreateDSKBaselineAdlibs(
 								priority: 10,
 								layer: LLayerDSK(dsk.Number),
 								content: {
-									onAir: false
+									onAir: false,
+									config: dsk
 								}
 							})
 						]
@@ -140,16 +133,7 @@ export function CreateDSKBaselineAdlibs(
 								layer: LLayerDSK(dsk.Number), // @todo
 								content: {
 									onAir: true,
-									sources: {
-										fillSource: dsk.Fill,
-										cutSource: dsk.Key
-									},
-									properties: {
-										tie: false,
-										preMultiply: false,
-										clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-										gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
-									}
+									config: dsk
 								}
 							})
 						]
@@ -173,16 +157,7 @@ export function CreateDSKBaseline(
 			layer: LLayerDSK(dsk.Number), // @todo
 			content: {
 				onAir: dsk.DefaultOn,
-				sources: {
-					fillSource: dsk.Fill,
-					cutSource: dsk.Key
-				},
-				properties: {
-					tie: false,
-					preMultiply: false,
-					clip: Number(dsk.Clip) * 10, // input is percents (0-100), atem uses 1-000,
-					gain: Number(dsk.Gain) * 10 // input is percents (0-100), atem uses 1-000,
-				}
+				config: dsk
 			}
 		})
 	})
@@ -260,18 +235,18 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				id: 'Clip',
 				name: 'ATEM Clip',
 				description: 'DSK Clip (0-100)',
-				type: ConfigManifestEntryType.STRING,
+				type: ConfigManifestEntryType.FLOAT, // @todo: this needs a migration
 				required: true,
-				defaultVal: '50',
+				defaultVal: 50,
 				rank: 6
 			},
 			{
 				id: 'Gain',
 				name: 'ATEM Gain',
 				description: 'DSK Gain (0-100)',
-				type: ConfigManifestEntryType.STRING,
+				type: ConfigManifestEntryType.FLOAT, // @todo: this needs a migration
 				required: true,
-				defaultVal: '12.5',
+				defaultVal: 12.5,
 				rank: 7
 			}
 		]

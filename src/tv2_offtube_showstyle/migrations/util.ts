@@ -7,7 +7,6 @@ import {
 } from 'blueprints-integration'
 import { forceSourceLayerToDefaultsBase } from 'tv2-common'
 import * as _ from 'underscore'
-import { showStyleConfigManifest } from '../config-manifests'
 import OutputlayerDefaults from './outputlayer-defaults'
 import SourcelayerDefaults from './sourcelayer-defaults'
 

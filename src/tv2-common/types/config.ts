@@ -13,15 +13,15 @@ export type TableConfigItemSourceMappingWithSisyfos = {
 } & TableConfigItemSourceMapping
 
 export interface SwitcherDskProps {
+	/** 0-based */
+	Number: number
 	Fill: number
 	Key: number
-	Clip: string
-	Gain: string
+	Clip: number
+	Gain: number
 }
 
 export interface TableConfigItemDSK extends SwitcherDskProps {
-	/** 0-based */
-	Number: number
 	Toggle: boolean
 	DefaultOn: boolean
 	Roles?: DSKRoles[]

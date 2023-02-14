@@ -99,7 +99,8 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 				priority: 1,
 				content: {
 					input: fullDSK.Fill,
-					transition: TransitionStyle.WIPE_FOR_GFX
+					transition: TransitionStyle.WIPE_FOR_GFX,
+					transitionDuration: 20
 				}
 			}),
 			...GetSisyfosTimelineObjForFull(this.config)

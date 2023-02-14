@@ -1,5 +1,5 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { TimelineObjectMetaData, SwitcherDskProps } from 'tv2-common'
+import { SwitcherDskProps, TimelineObjectMetaData } from 'tv2-common'
 import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
 
@@ -57,6 +57,7 @@ export interface MixEffectProps extends TimelineObjectProps {
 		input?: number | SpecialInput
 		previewInput?: number | SpecialInput
 		transition?: TransitionStyle
+		/** Transition duration (frames) */
 		transitionDuration?: number
 		keyers?: Keyer[]
 	}
@@ -67,8 +68,6 @@ export interface OnAirMixEffectProps extends Omit<MixEffectProps, 'layer'> {
 }
 
 export interface Keyer {
-	// id starting from 0
-	id: number
 	onAir: boolean
 	config: SwitcherDskProps
 }
@@ -77,16 +76,7 @@ export interface DskProps extends TimelineObjectProps {
 	layer: string // @todo: better type
 	content: {
 		onAir: boolean
-		sources?: {
-			fillSource: number | SpecialInput
-			cutSource: number | SpecialInput
-		}
-		properties?: {
-			tie?: boolean
-			preMultiply?: boolean
-			clip?: number // percents (0-100), atem uses 1-000,
-			gain?: number // percents (0-100), atem uses 1-000,
-		}
+		config: SwitcherDskProps
 	}
 }
 

@@ -864,7 +864,7 @@ function getBaseline(
 				enable: { while: '1' },
 				layer: SwitcherAuxLLayer.AuxClean,
 				content: {
-					input: SpecialInput.ME4_PROGRAM // @todo: this is incorrect - how to get the parity
+					input: SpecialInput.ME4_PROGRAM
 				}
 			}),
 			videoSwitcher.getAuxTimelineObject({
@@ -914,7 +914,6 @@ function getBaseline(
 				content: {
 					keyers: [
 						{
-							id: 0,
 							onAir: false,
 							config: jingleDSK
 						}

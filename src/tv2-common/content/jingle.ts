@@ -93,7 +93,6 @@ export function CreateJingleContentBase<
 											cutSource: jingleDSK.Clip,
 											maskEnabled: false,
 											lumaSettings: {
-												preMultiplied: false,
 												clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
 												gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
 											}

@@ -7,6 +7,7 @@ import {
 	PrefixEvsWithEvs,
 	RemoveConfig,
 	RenameStudioConfig,
+	renameStudioTableColumn,
 	SetConfigTo,
 	SetLayerNamesToDefaults
 } from 'tv2-common'
@@ -181,7 +182,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
 	removeMapping('1.6.1', 'atem_dsk_efect'),
 
-	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'), // @todo: check what this does because it does not seem right
 	RemoveConfig('1.6.2', 'AFVD', 'SourcesSkype'),
 
 	RenameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
@@ -200,6 +201,12 @@ export const studioMigrations: MigrationStepStudio[] = [
 	 * - Rename the GraphicLLayerPilotOverlay, because alphabetical order matters for deeply extending the Caspar Objects targeting the same channel:layer
 	 */
 	renameMapping('1.7.8', 'graphic_pilot_overlay', 'graphic_overlay_pilot'),
+
+	/**
+	 * 1.8.0 (@todo version)
+	 */
+	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map((tableName) => renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')),
+	RenameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

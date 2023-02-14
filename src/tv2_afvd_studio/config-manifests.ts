@@ -249,7 +249,7 @@ export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
 			rank: 0
 		},
 		{
-			id: 'SwicherSource',
+			id: 'SwitcherSource',
 			name: 'Switcher input',
 			description: 'Video Switcher input for Media player',
 			type: ConfigManifestEntryType.INT,

@@ -4,7 +4,7 @@ import { makeMockGalleryContext } from '../../../__mocks__/context'
 import { prefixLayer } from '../../../tv2-common/__tests__/testUtil'
 import { TV2StudioConfigBase } from '../../../tv2-common/blueprintConfig'
 import { AtemSourceIndex } from '../../../types/atem'
-import { SwitcherType, TransitionStyle } from '../types'
+import { AuxProps, DskProps, MixEffectProps, SwitcherType, TransitionStyle } from '../types'
 import { VideoSwitcherImpl } from '../VideoSwitcher'
 
 const DURATION: number = 50
@@ -19,14 +19,15 @@ function setupAtem(studioConfigOverrides?: Partial<TV2StudioConfigBase>) {
 
 describe('ATEM', () => {
 	describe('Mix Effect', () => {
+		const DEFAULT_ME: MixEffectProps = {
+			layer: SwitcherMixEffectLLayer.Program,
+			content: {
+				input: 5
+			}
+		}
 		test('sets timeline object defaults', () => {
 			const atem = setupAtem()
-			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
-				content: {
-					input: 5
-				}
-			})
+			const timelineObject = atem.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
 				id: '',
 				enable: { start: 0 },
@@ -41,10 +42,7 @@ describe('ATEM', () => {
 		test('sets classes', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
-				content: {
-					input: 5
-				},
+				...DEFAULT_ME,
 				classes: ['classA', 'classB']
 			})
 			expect(timelineObject).toMatchObject({
@@ -55,10 +53,7 @@ describe('ATEM', () => {
 		test('sets metaData', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
-				content: {
-					input: 5
-				},
+				...DEFAULT_ME,
 				metaData: { context: 'Some Context', mediaPlayerSession: 'mySession' }
 			})
 			expect(timelineObject).toMatchObject({
@@ -68,12 +63,7 @@ describe('ATEM', () => {
 
 		test('sets layer prefix', () => {
 			const atem = setupAtem()
-			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
-				content: {
-					input: 5
-				}
-			})
+			const timelineObject = atem.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
 				layer: prefixLayer(SwitcherMixEffectLLayer.Program)
 			})
@@ -81,12 +71,7 @@ describe('ATEM', () => {
 
 		test('sets programInput when no transition provided', () => {
 			const atem = setupAtem()
-			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
-				content: {
-					input: 5
-				}
-			})
+			const timelineObject = atem.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
 				content: {
 					me: {
@@ -183,7 +168,14 @@ describe('ATEM', () => {
 		})
 
 		test('supports WIPE for GFX', () => {
-			const atem = setupAtem()
+			const wipeRate = 22
+			const atem = setupAtem({
+				HTMLGraphics: {
+					GraphicURL: 'donotcare',
+					TransitionSettings: { wipeRate, borderSoftness: 7500, loopOutTransitionDuration: 15 },
+					KeepAliveDuration: 120
+				}
+			})
 			const timelineObject = atem.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
@@ -198,7 +190,7 @@ describe('ATEM', () => {
 						transition: TSR.AtemTransitionStyle.WIPE,
 						transitionSettings: {
 							wipe: {
-								rate: 20,
+								rate: wipeRate,
 								pattern: 1,
 								reverseDirection: true,
 								borderSoftness: 7500
@@ -277,48 +269,59 @@ describe('ATEM', () => {
 			})
 		}
 
-        test('supports keyers', () => {
-            const atem = setupAtem()
+		test('supports keyers', () => {
+			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
-                    keyers: [
-                        {
-                            id: 2,
-                            onAir: true,
-                            config: {
-                                
-                            }
-                        }
-                    ]
+					keyers: [
+						{
+							onAir: true,
+							config: {
+								Number: 0,
+								Fill: 5,
+								Key: 6,
+								Clip: 125,
+								Gain: 1
+							}
+						}
+					]
 				}
 			})
 			expect(timelineObject).toMatchObject({
 				content: {
 					me: {
-						transitionSettings: {
-							wipe: {
-								rate: 20,
-								pattern: 1,
-								reverseDirection: true,
-								borderSoftness: 7500
+						upstreamKeyers: [
+							{
+								upstreamKeyerId: 0,
+								onAir: true,
+								mixEffectKeyType: 0,
+								flyEnabled: false,
+								fillSource: 5,
+								cutSource: 6,
+								maskEnabled: false,
+								lumaSettings: {
+									clip: 1250,
+									gain: 10
+								}
 							}
-						}
+						]
 					}
 				}
 			})
-        })
+		})
 	})
 
 	describe('Aux', () => {
+		const DEFAULT_AUX: AuxProps = {
+			layer: SwitcherAuxLLayer.AuxClean,
+			content: {
+				input: 5
+			}
+		}
 		test('sets timeline object defaults', () => {
 			const atem = setupAtem()
-			const timelineObject = atem.getAuxTimelineObject({
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: 5
-				}
-			})
+			const timelineObject = atem.getAuxTimelineObject(DEFAULT_AUX)
 			expect(timelineObject).toMatchObject({
 				id: '',
 				enable: { start: 0 },
@@ -333,10 +336,7 @@ describe('ATEM', () => {
 		test('sets classes', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getAuxTimelineObject({
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: 5
-				},
+				...DEFAULT_AUX,
 				classes: ['classA', 'classB']
 			})
 			expect(timelineObject).toMatchObject({
@@ -347,10 +347,7 @@ describe('ATEM', () => {
 		test('sets metaData', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getAuxTimelineObject({
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: 5
-				},
+				...DEFAULT_AUX,
 				metaData: { context: 'Some Context', mediaPlayerSession: 'mySession' }
 			})
 			expect(timelineObject).toMatchObject({
@@ -360,12 +357,7 @@ describe('ATEM', () => {
 
 		test('sets layer prefix', () => {
 			const atem = setupAtem()
-			const timelineObject = atem.getAuxTimelineObject({
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: 5
-				}
-			})
+			const timelineObject = atem.getAuxTimelineObject(DEFAULT_AUX)
 			expect(timelineObject).toMatchObject({
 				layer: prefixLayer(SwitcherAuxLLayer.AuxClean)
 			})
@@ -374,12 +366,7 @@ describe('ATEM', () => {
 		test('sets aux', () => {
 			const atem = setupAtem()
 
-			const timelineObject = atem.getAuxTimelineObject({
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: 5
-				}
-			})
+			const timelineObject = atem.getAuxTimelineObject(DEFAULT_AUX)
 
 			expect(timelineObject).toMatchObject({
 				content: {
@@ -394,14 +381,22 @@ describe('ATEM', () => {
 	})
 
 	describe('DSK', () => {
+		const DEFAULT_DSK: DskProps = {
+			layer: 'dsk_1',
+			content: {
+				onAir: true,
+				config: {
+					Number: 0,
+					Fill: 5,
+					Key: 6,
+					Clip: 125,
+					Gain: 1
+				}
+			}
+		}
 		test('sets timeline object defaults', () => {
 			const atem = setupAtem()
-			const timelineObject = atem.getDskTimelineObject({
-				layer: 'dsk_1',
-				content: {
-					onAir: true
-				}
-			})
+			const timelineObject = atem.getDskTimelineObject(DEFAULT_DSK)
 			expect(timelineObject).toMatchObject({
 				id: '',
 				enable: { start: 0 },
@@ -416,10 +411,7 @@ describe('ATEM', () => {
 		test('sets classes', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getDskTimelineObject({
-				layer: 'dsk_1',
-				content: {
-					onAir: true
-				},
+				...DEFAULT_DSK,
 				classes: ['classA', 'classB']
 			})
 			expect(timelineObject).toMatchObject({
@@ -430,10 +422,7 @@ describe('ATEM', () => {
 		test('sets metaData', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getDskTimelineObject({
-				layer: 'dsk_1',
-				content: {
-					onAir: true
-				},
+				...DEFAULT_DSK,
 				metaData: { context: 'Some Context', mediaPlayerSession: 'mySession' }
 			})
 			expect(timelineObject).toMatchObject({
@@ -443,12 +432,7 @@ describe('ATEM', () => {
 
 		test('sets layer prefix', () => {
 			const atem = setupAtem()
-			const timelineObject = atem.getDskTimelineObject({
-				layer: 'dsk_1',
-				content: {
-					onAir: true
-				}
-			})
+			const timelineObject = atem.getDskTimelineObject(DEFAULT_DSK)
 			expect(timelineObject).toMatchObject({
 				layer: prefixLayer('dsk_1')
 			})
@@ -457,12 +441,7 @@ describe('ATEM', () => {
 		test('enables DSK', () => {
 			const atem = setupAtem()
 
-			const timelineObject = atem.getDskTimelineObject({
-				layer: 'dsk_1',
-				content: {
-					onAir: true
-				}
-			})
+			const timelineObject = atem.getDskTimelineObject(DEFAULT_DSK)
 
 			expect(timelineObject).toMatchObject({
 				content: {

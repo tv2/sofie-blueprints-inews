@@ -113,12 +113,13 @@ export class Atem extends VideoSwitcherImpl {
 				type: TSR.TimelineContentTypeAtem.DSK,
 				dsk: {
 					onAir: content.onAir,
-					sources: content.sources && {
-						fillSource: this.getInputNumber(content.sources.fillSource),
-						cutSource: this.getInputNumber(content.sources.cutSource)
+					sources: {
+						fillSource: this.getInputNumber(content.config.Fill),
+						cutSource: this.getInputNumber(content.config.Key)
 					},
-					properties: content.properties && {
-						...content.properties,
+					properties: {
+						clip: content.config.Clip * 10, // input is percents (0-100), atem uses 1-000,
+						gain: content.config.Gain * 10, // input is percents (0-100), atem uses 1-000,
 						mask: {
 							enabled: false
 						}
@@ -258,7 +259,7 @@ export class Atem extends VideoSwitcherImpl {
 			return
 		}
 		return keyers.map(keyer => ({
-			upstreamKeyerId: keyer.id,
+			upstreamKeyerId: keyer.config.Number,
 			onAir: keyer.onAir,
 			mixEffectKeyType: 0,
 			flyEnabled: false,
@@ -266,9 +267,8 @@ export class Atem extends VideoSwitcherImpl {
 			cutSource: keyer.config.Key,
 			maskEnabled: false,
 			lumaSettings: {
-				preMultiplied: false,
-				clip: Number(keyer.config.Clip) * 10, // input is percents (0-100), atem uses 1-000
-				gain: Number(keyer.config.Gain) * 10 // input is percents (0-100), atem uses 1-000
+				clip: keyer.config.Clip * 10, // input is percents (0-100), atem uses 1-000
+				gain: keyer.config.Gain * 10 // input is percents (0-100), atem uses 1-000
 			}
 		}))
 	}
