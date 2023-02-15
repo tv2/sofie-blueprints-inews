@@ -74,6 +74,7 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 			result.push(
 				this.getAuxTimelineObject({
 					..._.omit(properties, 'content'),
+					priority: 0, // lower than lookahead-lookahead
 					content: { input: properties.content.input },
 					layer: this.uniformConfig.SwitcherLLayers.NextAux,
 					metaData: { ...properties.metaData, context: `Aux Lookahead for ${primaryId}` }

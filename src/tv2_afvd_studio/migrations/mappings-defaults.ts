@@ -13,7 +13,8 @@ import {
 	TRICASTER_CLEAN_ME,
 	TRICASTER_DEVICE_ID,
 	TRICASTER_DVE_ME,
-	TRICASTER_LAYER_PREFIX
+	TRICASTER_LAYER_PREFIX,
+	TRICASTER_PROGRAM_ME
 } from 'tv2-common'
 import {
 	AbstractLLayer,
@@ -683,7 +684,7 @@ export const MAPPINGS_TRICASTER: Record<string, TSR.MappingTriCaster & Blueprint
 			deviceId: TRICASTER_DEVICE_ID,
 			lookahead: LookaheadMode.NONE,
 			mappingType: TSR.MappingTriCasterType.ME,
-			name: 'main'
+			name: TRICASTER_PROGRAM_ME
 		},
 		[SwitcherMixEffectLLayer.Clean]: {
 			device: TSR.DeviceType.TRICASTER,
