@@ -205,7 +205,9 @@ export const studioMigrations: MigrationStepStudio[] = [
 	/**
 	 * 1.8.0 (@todo version)
 	 */
-	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map((tableName) => renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')),
+	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map(tableName =>
+		renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')
+	),
 	RenameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),
 
 	// Fill in any mappings that did not exist before

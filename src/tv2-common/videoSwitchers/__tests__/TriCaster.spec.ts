@@ -114,10 +114,8 @@ describe('TriCaster', () => {
 					type: TSR.TimelineContentTypeTriCaster.ME,
 					me: {
 						programInput: 'input5',
-						transition: {
-							effect: 'fade',
-							duration: DURATION_SECONDS
-						}
+						transitionEffect: 'fade',
+						transitionDuration: DURATION_SECONDS
 					}
 				})
 			})
@@ -139,10 +137,8 @@ describe('TriCaster', () => {
 					type: TSR.TimelineContentTypeTriCaster.ME,
 					me: {
 						programInput: 'input3',
-						transition: {
-							effect: 3,
-							duration: DURATION_SECONDS
-						}
+						transitionEffect: 3,
+						transitionDuration: DURATION_SECONDS
 					}
 				})
 			})
@@ -170,10 +166,8 @@ describe('TriCaster', () => {
 					type: TSR.TimelineContentTypeTriCaster.ME,
 					me: {
 						programInput: 'input5',
-						transition: {
-							effect: 4,
-							duration: wipeRate / 25
-						}
+						transitionEffect: 4,
+						transitionDuration: wipeRate / 25
 					}
 				})
 			})
@@ -195,10 +189,8 @@ describe('TriCaster', () => {
 					type: TSR.TimelineContentTypeTriCaster.ME,
 					me: {
 						programInput: 'input5',
-						transition: {
-							effect: 2,
-							duration: DURATION_SECONDS
-						}
+						transitionEffect: 2,
+						transitionDuration: DURATION_SECONDS
 					}
 				})
 			})

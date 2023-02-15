@@ -47,22 +47,24 @@ export class TriCaster extends VideoSwitcherImpl {
 
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjTriCasterME {
 		const { content } = props
-		return {
+		const transition = this.getTransition(content.transition)
+		const result: TSR.TimelineObjTriCasterME = {
 			...this.getBaseProperties(props, props.layer),
 			content: {
 				deviceType: TSR.DeviceType.TRICASTER,
 				type: TSR.TimelineContentTypeTriCaster.ME,
 				me: {
 					programInput: this.getInputName(content.input),
-					previewInput: this.getInputName(content.previewInput),
-					transition: {
-						effect: this.getTransition(content.transition),
-						duration: this.getTransitionDuration(content.transition, content.transitionDuration)
-					},
+					...(content.previewInput !== undefined && transition === 'cut'
+						? { previewInput: this.getInputName(content.previewInput) }
+						: {}),
+					transitionEffect: transition,
+					transitionDuration: this.getTransitionDuration(content.transition, content.transitionDuration),
 					keyers: content.keyers && this.getKeyers(content.keyers)
 				}
 			}
 		}
+		return result
 	}
 
 	public updateTransition(
@@ -74,12 +76,14 @@ export class TriCaster extends VideoSwitcherImpl {
 			// @todo: log error or throw
 			return timelineObject
 		}
-		timelineObject.content.me.transition = {
-			effect: this.getTransition(transition),
-			duration: this.getTransitionDuration(transition, transitionDuration)
-		}
+		timelineObject.content.me.transitionEffect = this.getTransition(transition)
+		;(timelineObject.content.me as TSR.TriCasterMixEffectInMixMode).transitionDuration = this.getTransitionDuration(
+			transition,
+			transitionDuration
+		)
 		return timelineObject
 	}
+
 	public updatePreviewInput(
 		timelineObject: TSR.TSRTimelineObj,
 		previewInput: number | SpecialInput
@@ -91,6 +95,7 @@ export class TriCaster extends VideoSwitcherImpl {
 		;(timelineObject.content.me as TSR.TriCasterMixEffectWithPreview).previewInput = this.getInputName(previewInput)
 		return timelineObject
 	}
+
 	public updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
 			// @todo: log error or throw
@@ -118,6 +123,7 @@ export class TriCaster extends VideoSwitcherImpl {
 			}
 		}
 	}
+
 	public getAuxTimelineObject(props: AuxProps): TSR.TimelineObjTriCasterMixOutput {
 		return {
 			...this.getBaseProperties(props, props.layer),
@@ -137,6 +143,7 @@ export class TriCaster extends VideoSwitcherImpl {
 		timelineObject.content.source = this.getInputName(input)
 		return timelineObject
 	}
+
 	public isDveBoxes = (timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean => {
 		// @todo: this is ugly
 		return (
@@ -144,9 +151,11 @@ export class TriCaster extends VideoSwitcherImpl {
 			!!(timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode).layers
 		)
 	}
+
 	public getDveTimelineObjects(_properties: DveProps): TSR.TSRTimelineObj[] {
 		throw new Error('Method not implemented.')
 	}
+
 	public updateUnpopulatedDveBoxes(
 		_timelineObject: TSR.TSRTimelineObj,
 		_input: number | SpecialInput

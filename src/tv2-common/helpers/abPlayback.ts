@@ -275,7 +275,11 @@ function updateObjectsToMediaPlayer<
 			}
 			const input = Number(switcherInput.val) || 0
 			if (context.videoSwitcher.isMixEffect(obj)) {
-				if (context.uniformConfig.SwitcherLLayers.NextPreviewMixEffect) {
+				// the `endsWith` below is a nasty hack, but this will be gone after AB refactor
+				if (
+					context.uniformConfig.SwitcherLLayers.NextPreviewMixEffect &&
+					obj.layer.toString().endsWith(context.uniformConfig.SwitcherLLayers.NextPreviewMixEffect)
+				) {
 					context.videoSwitcher.updatePreviewInput(obj, input)
 				} else {
 					context.videoSwitcher.updateInput(obj, input)
