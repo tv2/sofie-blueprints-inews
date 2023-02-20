@@ -145,7 +145,7 @@ export function CreateDSKBaselineAdlibs(
 	return adlibItems
 }
 
-export function CreateDSKBaseline(
+export function createDskBaseline(
 	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
 	videoSwitcher: VideoSwitcher
 ): TSR.TSRTimelineObj[] {

@@ -23,7 +23,7 @@ import {
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
 	CasparPlayerClipLoadingLoop,
-	CreateDSKBaseline,
+	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
@@ -834,39 +834,8 @@ function getBaseline(
 		timelineObjects: [
 			...CreateGraphicBaseline(context.config),
 			// Default timeline
-			videoSwitcher.getMixEffectTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherMixEffectLLayer.Program,
-				content: {
-					input: context.config.studio.SwitcherSource.Default,
-					transition: TransitionStyle.CUT
-				}
-			}),
-			videoSwitcher.getMixEffectTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherMixEffectLLayer.Clean,
-				content: {
-					input: context.config.studio.SwitcherSource.Default,
-					transition: TransitionStyle.CUT
-				}
-			}),
+			...getMixEffectBaseline(context, videoSwitcher),
 
-			// route default outputs
-			videoSwitcher.getAuxTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxProgram,
-				content: {
-					input: SpecialInput.ME1_PROGRAM
-				}
-			}),
-			videoSwitcher.getAuxTimelineObject({
-				id: '',
-				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: SpecialInput.ME4_PROGRAM
-				}
-			}),
 			videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
 				layer: SwitcherAuxLLayer.AuxLookahead,
@@ -905,7 +874,7 @@ function getBaseline(
 			}),
 
 			// keyers
-			...CreateDSKBaseline(context.config, videoSwitcher),
+			...createDskBaseline(context.config, videoSwitcher),
 
 			// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 			videoSwitcher.getMixEffectTimelineObject({
@@ -1125,4 +1094,31 @@ function getBaseline(
 			})
 		]
 	}
+}
+
+function getMixEffectBaseline(
+	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	videoSwitcher: VideoSwitcher
+): TSR.TSRTimelineObj[] {
+	return Object.values(context.uniformConfig.MixEffects).flatMap(mixEffect =>
+		_.compact([
+			videoSwitcher.getMixEffectTimelineObject({
+				enable: { while: '1' },
+				layer: SwitcherMixEffectLLayer.Program,
+				content: {
+					input: context.config.studio.SwitcherSource.Default,
+					transition: TransitionStyle.CUT
+				}
+			}),
+			mixEffect.auxLayer
+				? videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: mixEffect.auxLayer,
+						content: {
+							input: mixEffect.input
+						}
+				  })
+				: undefined
+		])
+	)
 }

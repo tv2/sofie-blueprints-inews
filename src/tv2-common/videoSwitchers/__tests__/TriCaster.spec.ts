@@ -1,18 +1,18 @@
-import { TSR } from 'blueprints-integration'
-import { literal } from 'tv2-common'
+import { BlueprintMapping, LookaheadMode, TSR } from 'blueprints-integration'
+import { literal, TRICASTER_DEVICE_ID } from 'tv2-common'
 import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
-import { makeMockGalleryContext } from '../../../__mocks__/context'
-import { TV2StudioConfigBase } from '../../../tv2-common/blueprintConfig'
-import { AuxProps, DskProps, MixEffectProps, SwitcherType, TransitionStyle } from '../types'
+import { makeMockGalleryContext, MockConfigOverrides } from '../../../__mocks__/context'
+import { AuxProps, DskProps, MixEffectProps, SpecialInput, SwitcherType, TransitionStyle } from '../types'
 import { VideoSwitcherImpl } from '../VideoSwitcher'
 
 const DURATION_FRAMES: number = 50
 const DURATION_SECONDS: number = DURATION_FRAMES / 25
 
-function setupTriCaster(studioConfigOverrides?: Partial<TV2StudioConfigBase>) {
+function setupTriCaster(mockConfigOverrides?: MockConfigOverrides) {
 	// @todo: is this the correct way?
 	const context = makeMockGalleryContext({
-		studioConfig: { SwitcherType: SwitcherType.TRICASTER, ...studioConfigOverrides }
+		...mockConfigOverrides,
+		studioConfig: { SwitcherType: SwitcherType.TRICASTER, ...mockConfigOverrides?.studioConfig }
 	})
 	return VideoSwitcherImpl.getVideoSwitcher(context.core, context.config, context.uniformConfig)
 }
@@ -147,10 +147,12 @@ describe('TriCaster', () => {
 		test('supports WIPE for GFX', () => {
 			const wipeRate = 22
 			const triCaster = setupTriCaster({
-				HTMLGraphics: {
-					GraphicURL: 'donotcare',
-					TransitionSettings: { wipeRate, borderSoftness: 20, loopOutTransitionDuration: 15 },
-					KeepAliveDuration: 120
+				studioConfig: {
+					HTMLGraphics: {
+						GraphicURL: 'donotcare',
+						TransitionSettings: { wipeRate, borderSoftness: 20, loopOutTransitionDuration: 15 },
+						KeepAliveDuration: 120
+					}
 				}
 			})
 			const timelineObject = triCaster.getMixEffectTimelineObject({
@@ -283,8 +285,18 @@ describe('TriCaster', () => {
 			})
 		})
 
-		test('sets aux source', () => {
-			const triCaster = setupTriCaster()
+		test('sets Mix Output when layer mapping is MIX_OUTPUT', () => {
+			const triCaster = setupTriCaster({
+				mappingDefaults: {
+					[prefixLayer(DEFAULT_AUX.layer)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+						device: TSR.DeviceType.TRICASTER,
+						deviceId: TRICASTER_DEVICE_ID,
+						lookahead: LookaheadMode.WHEN_CLEAR,
+						mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+						name: 'mix2'
+					})
+				}
+			})
 
 			const timelineObject = triCaster.getAuxTimelineObject(DEFAULT_AUX)
 
@@ -293,6 +305,72 @@ describe('TriCaster', () => {
 					deviceType: TSR.DeviceType.TRICASTER,
 					type: TSR.TimelineContentTypeTriCaster.MIX_OUTPUT,
 					source: 'input5'
+				}
+			})
+		})
+
+		test('sets Matrix Output when layer mapping is MATRIX_OUTPUT', () => {
+			const triCaster = setupTriCaster({
+				mappingDefaults: {
+					[prefixLayer(DEFAULT_AUX.layer)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+						device: TSR.DeviceType.TRICASTER,
+						deviceId: TRICASTER_DEVICE_ID,
+						lookahead: LookaheadMode.WHEN_CLEAR,
+						mappingType: TSR.MappingTriCasterType.MATRIX_OUTPUT,
+						name: 'out2'
+					})
+				}
+			})
+
+			const timelineObject = triCaster.getAuxTimelineObject(DEFAULT_AUX)
+
+			expect(timelineObject).toMatchObject({
+				content: {
+					deviceType: TSR.DeviceType.TRICASTER,
+					type: TSR.TimelineContentTypeTriCaster.MATRIX_OUTPUT,
+					source: 'input5'
+				}
+			})
+		})
+
+		test('resolves Special Input for Matrix Output', () => {
+			const triCaster = setupTriCaster({
+				mappingDefaults: {
+					[prefixLayer(SwitcherAuxLLayer.AuxClean)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+						device: TSR.DeviceType.TRICASTER,
+						deviceId: TRICASTER_DEVICE_ID,
+						lookahead: LookaheadMode.WHEN_CLEAR,
+						mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+						name: 'mix5'
+					}),
+					[prefixLayer(SwitcherAuxLLayer.AuxVideoMixMinus)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+						device: TSR.DeviceType.TRICASTER,
+						deviceId: TRICASTER_DEVICE_ID,
+						lookahead: LookaheadMode.WHEN_CLEAR,
+						mappingType: TSR.MappingTriCasterType.MATRIX_OUTPUT,
+						name: 'out2'
+					})
+				},
+				uniformConfig: {
+					SpecialInputAuxLLayers: {
+						[SpecialInput.ME1_PROGRAM]: SwitcherAuxLLayer.AuxProgram,
+						[SpecialInput.ME3_PROGRAM]: SwitcherAuxLLayer.AuxClean
+					}
+				}
+			})
+
+			const timelineObject = triCaster.getAuxTimelineObject({
+				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
+				content: {
+					input: SpecialInput.ME3_PROGRAM
+				}
+			})
+
+			expect(timelineObject).toMatchObject({
+				content: {
+					deviceType: TSR.DeviceType.TRICASTER,
+					type: TSR.TimelineContentTypeTriCaster.MATRIX_OUTPUT,
+					source: 'mix5'
 				}
 			})
 		})

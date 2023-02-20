@@ -96,14 +96,14 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 			...getDskOnAirTimelineObjects(this.context, DSKRoles.FULLGFX),
 			...GetSisyfosTimelineObjForFull(this.config)
 		]
-		if (this.context.uniformConfig.SwitcherLLayers.ProgramAux) {
+		if (this.context.uniformConfig.MixEffects.Program.auxLayer) {
 			timelineObjects.push(
 				this.context.videoSwitcher.getAuxTimelineObject({
 					enable: {
 						start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
 					},
 					priority: 1,
-					layer: this.context.uniformConfig.SwitcherLLayers.ProgramAux,
+					layer: this.context.uniformConfig.MixEffects.Program.auxLayer,
 					content: {
 						input: fullDSK.Fill
 					}

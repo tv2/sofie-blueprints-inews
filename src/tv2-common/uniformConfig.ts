@@ -1,4 +1,5 @@
 import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
+import { SpecialInput } from './videoSwitchers'
 
 /** This config contains hardcoded values that differ between Gallery and Qbox Blueprints */
 export interface UniformConfig {
@@ -17,14 +18,26 @@ export interface UniformConfig {
 		JingleNextMixEffect?: SwitcherMixEffectLLayer
 		/** Optional layer to preview servers on Aux */
 		NextServerAux?: SwitcherAuxLLayer
-		/** Optional layer to output Program on */
-		ProgramAux?: SwitcherAuxLLayer
 		/** Optional mix-minus layer */
 		MixMinusAux?: SwitcherAuxLLayer
 	}
-	// @todo: implement this
-	// SwitcherMixEffects: {
-	// 	TriCasterClean: SpecialInput
-	// 	AtemClean: SpecialInput
-	// }
+	/**
+	 * MixEffects grouped by their roles (note Program !== Primary)
+	 * Relevant mostly for baseline
+	 */
+	MixEffects: {
+		Program: MixEffect
+		Clean: MixEffect
+	}
+	/**
+	 * Auxes on which certain inputs appear
+	 * It allows associating TriCaster's MEs to mix outputs in order to route MEs to matrix outs
+	 */
+	SpecialInputAuxLLayers: Partial<Record<SpecialInput, SwitcherAuxLLayer>>
+}
+
+export interface MixEffect {
+	input: SpecialInput
+	mixEffectLayer: SwitcherMixEffectLLayer
+	auxLayer?: SwitcherAuxLLayer
 }

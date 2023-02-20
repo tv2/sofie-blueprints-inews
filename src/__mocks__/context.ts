@@ -38,6 +38,7 @@ import {
 	MixEffectProps,
 	PieceMetaData,
 	TV2StudioConfigBase,
+	UniformConfig,
 	VideoSwitcher,
 	VideoSwitcherImpl
 } from 'tv2-common'
@@ -650,15 +651,17 @@ class MockVideoSwitcher implements VideoSwitcher {
 	public getAuxTimelineObject = (properties: AuxProps) => (properties as any) as TSR.TSRTimelineObj
 }
 
-interface ConfigOverrides {
+export interface MockConfigOverrides {
 	studioConfig?: Partial<TV2StudioConfigBase>
 	showStyleConfig?: Partial<GalleryShowStyleConfig>
+	mappingDefaults?: BlueprintMappings
+	uniformConfig?: Partial<UniformConfig>
 }
 
-export function makeMockCoreGalleryContext(overrides?: ConfigOverrides) {
+export function makeMockCoreGalleryContext(overrides?: MockConfigOverrides) {
 	const mockCoreContext = new SegmentUserContext(
 		'test',
-		mappingsDefaultsAFVD,
+		{ ...mappingsDefaultsAFVD, ...overrides?.mappingDefaults },
 		parseStudioConfigAFVD,
 		parseShowStyleConfigAFVD
 	)
@@ -667,14 +670,14 @@ export function makeMockCoreGalleryContext(overrides?: ConfigOverrides) {
 	return mockCoreContext
 }
 
-export function makeMockGalleryContext(overrides?: ConfigOverrides) {
+export function makeMockGalleryContext(overrides?: MockConfigOverrides) {
 	const mockCoreContext = makeMockCoreGalleryContext(overrides)
 	const config = { ...(mockCoreContext.getStudioConfig() as any), ...(mockCoreContext.getShowStyleConfig() as any) }
 	const mockContext: ExtendedSegmentContext<GalleryBlueprintConfig> = {
 		core: mockCoreContext,
 		// @todo: this is awful, fix it perhaps by replacing defaultShowStyleConfig and defaultStudioConfig with preparsed config?!
 		config,
-		uniformConfig: GALLERY_UNIFORM_CONFIG,
+		uniformConfig: { ...GALLERY_UNIFORM_CONFIG, ...overrides?.uniformConfig },
 		videoSwitcher: VideoSwitcherImpl.getVideoSwitcher(mockCoreContext, config, GALLERY_UNIFORM_CONFIG) // new MockVideoSwitcher()
 	}
 	return mockContext

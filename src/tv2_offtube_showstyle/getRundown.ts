@@ -24,7 +24,7 @@ import {
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
 	CasparPlayerClipLoadingLoop,
-	CreateDSKBaseline,
+	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateGraphicBaseline,
 	CreateLYDBaseline,
@@ -627,7 +627,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 			}),
 
 			// keyers
-			...CreateDSKBaseline(config, videoSwitcher),
+			...createDskBaseline(config, videoSwitcher),
 
 			literal<TSR.TimelineObjAtemSsrcProps>({
 				id: '',
