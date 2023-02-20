@@ -1,10 +1,10 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'blueprints-integration'
+import { IBlueprintPart } from 'blueprints-integration'
 import {
 	CueDefinitionEkstern,
+	EvaluateCueResult,
 	EvaluateEksternBase,
 	ExtendedShowStyleContext,
 	PartDefinition,
-	PieceMetaData,
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { SourceLayer } from '../../layers'
@@ -12,20 +12,15 @@ import { SourceLayer } from '../../layers'
 export function EvaluateEkstern(
 	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
 	part: IBlueprintPart,
-	pieces: Array<IBlueprintPiece<PieceMetaData>>,
-	adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
-	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
 	adlib?: boolean,
 	rank?: number
-) {
-	EvaluateEksternBase(
+): EvaluateCueResult {
+	return EvaluateEksternBase(
 		context,
 		part,
-		pieces,
-		adlibPieces,
 		partId,
 		parsedCue,
 		partDefinition,

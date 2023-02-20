@@ -1,28 +1,30 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
-import { IsTargetingFull, IsTargetingOVL, PilotGraphicGenerator, PilotGraphicProps } from 'tv2-common'
+import {
+	EvaluateCueResult,
+	IsTargetingFull,
+	IsTargetingOVL,
+	PilotGraphicGenerator,
+	PilotGraphicProps
+} from 'tv2-common'
 
-export function CreatePilotGraphic(
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	actions: IBlueprintActionManifest[],
-	pilotGraphicProps: PilotGraphicProps
-) {
+export function CreatePilotGraphic(pilotGraphicProps: PilotGraphicProps): EvaluateCueResult {
+	const result = new EvaluateCueResult()
 	const { context, adlib, parsedCue } = pilotGraphicProps
 	if (parsedCue.graphic.vcpid < 0) {
 		context.core.notifyUserWarning('No valid VCPID provided')
-		return
+		return result
 	}
 
 	const generator = PilotGraphicGenerator.createPilotGraphicGenerator(pilotGraphicProps)
 
 	if (IsTargetingOVL(parsedCue.target) && adlib) {
-		adlibPieces.push(generator.createAdlibPiece())
+		result.adlibPieces.push(generator.createAdlibPiece())
 	} else {
-		pieces.push(generator.createPiece())
+		result.pieces.push(generator.createPiece())
 	}
 
 	if (IsTargetingFull(parsedCue.target)) {
-		actions.push(generator.createFullPilotAdLibAction())
-		pieces.push(generator.createFullDataStore())
+		result.actions.push(generator.createFullPilotAdLibAction())
+		result.pieces.push(generator.createFullDataStore())
 	}
+	return result
 }

@@ -1,10 +1,10 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPart, IBlueprintPiece } from 'blueprints-integration'
+import { IBlueprintPart } from 'blueprints-integration'
 import {
 	CueDefinitionEkstern,
+	EvaluateCueResult,
 	EvaluateEksternBase,
 	ExtendedSegmentContext,
-	PartDefinition,
-	PieceMetaData
+	PartDefinition
 } from 'tv2-common'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
@@ -12,20 +12,15 @@ import { OfftubeSourceLayer } from '../layers'
 export function OfftubeEvaluateEkstern(
 	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
 	part: IBlueprintPart,
-	pieces: Array<IBlueprintPiece<PieceMetaData>>,
-	_adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
-	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
 	adlib?: boolean,
 	rank?: number
-) {
-	EvaluateEksternBase(
+): EvaluateCueResult {
+	return EvaluateEksternBase(
 		context,
 		part,
-		pieces,
-		[],
 		partId,
 		parsedCue,
 		partDefinition,

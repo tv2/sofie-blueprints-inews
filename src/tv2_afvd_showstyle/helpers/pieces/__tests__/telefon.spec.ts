@@ -1,12 +1,4 @@
-import {
-	GraphicsContent,
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PieceLifespan,
-	TSR,
-	WithTimeline
-} from 'blueprints-integration'
+import { GraphicsContent, IBlueprintPiece, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	CueDefinitionTelefon,
@@ -66,12 +58,9 @@ describe('telefon', () => {
 			},
 			iNewsCommand: 'TELEFON'
 		}
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateTelefon(mockContext, pieces, adLibPieces, actions, partId, dummyPart, cue)
-		expect(pieces).toEqual([
+		const result = EvaluateTelefon(mockContext, partId, dummyPart, cue)
+		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'TLF 1',

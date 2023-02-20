@@ -38,17 +38,27 @@ import {
 export interface Adlib {
 	rank: number
 }
+
+export class EvaluateCueResult {
+	public readonly pieces: IBlueprintPiece[] = []
+	public readonly adlibPieces: IBlueprintAdLibPiece[] = []
+	public readonly actions: IBlueprintActionManifest[] = []
+
+	public push(source: EvaluateCueResult): EvaluateCueResult {
+		this.pieces.push(...source.pieces)
+		this.adlibPieces.push(...source.adlibPieces)
+		this.actions.push(...source.actions)
+		return this
+	}
+}
 export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueGraphic?: (
 		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 		partDefinition: PartDefinition,
 		adlib?: Adlib
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueBackgroundLoop?: (
 		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
@@ -71,22 +81,18 @@ export interface EvaluateCuesShowstyleOptions {
 	) => void
 	EvaluateCueRouting?: (
 		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
 		partId: string,
 		parsedCue: CueDefinitionRouting
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueEkstern?: (
 		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
 		part: IBlueprintPart,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionEkstern,
 		partDefinition: PartDefinition,
 		adlib?: boolean,
 		rank?: number
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueDVE?: (
 		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
@@ -106,14 +112,11 @@ export interface EvaluateCuesShowstyleOptions {
 	) => Promise<void>
 	EvaluateCueTelefon?: (
 		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTelefon,
 		adlib?: Adlib
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueJingle?: (
 		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
@@ -189,6 +192,7 @@ export async function EvaluateCuesBase(
 	options: EvaluateCuesOptions
 ) {
 	let adLibRank = 0
+	const result = new EvaluateCueResult()
 
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
@@ -207,31 +211,23 @@ export async function EvaluateCuesBase(
 							context.core.notifyUserWarning(`Cannot create overlay graphic with FULL`)
 							break
 						}
-						showStyleOptions.EvaluateCueGraphic(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							cue,
-							partDefinition,
-							adlib
+						result.push(
+							showStyleOptions.EvaluateCueGraphic(context, partDefinition.externalId, cue, partDefinition, adlib)
 						)
 					}
 					break
 				case CueType.Ekstern:
 					if (showStyleOptions.EvaluateCueEkstern) {
-						showStyleOptions.EvaluateCueEkstern(
-							context,
-							part,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							cue,
-							partDefinition,
-							shouldAdlib,
-							adLibRank
+						result.push(
+							showStyleOptions.EvaluateCueEkstern(
+								context,
+								part,
+								partDefinition.externalId,
+								cue,
+								partDefinition,
+								shouldAdlib,
+								adLibRank
+							)
 						)
 					}
 					break
@@ -258,15 +254,8 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.Telefon:
 					if (showStyleOptions.EvaluateCueTelefon) {
-						showStyleOptions.EvaluateCueTelefon(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							partDefinition,
-							cue,
-							adlib
+						result.push(
+							showStyleOptions.EvaluateCueTelefon(context, partDefinition.externalId, partDefinition, cue, adlib)
 						)
 					}
 					break
@@ -341,7 +330,7 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.Routing:
 					if (showStyleOptions.EvaluateCueRouting) {
-						showStyleOptions.EvaluateCueRouting(context, pieces, partDefinition.externalId, cue)
+						result.push(showStyleOptions.EvaluateCueRouting(context, partDefinition.externalId, cue))
 					}
 					break
 				case CueType.PgmClean:
@@ -380,6 +369,9 @@ export async function EvaluateCuesBase(
 		}
 	}
 
+	pieces.push(...result.pieces)
+	adLibPieces.push(...result.adlibPieces)
+	actions.push(...result.actions)
 	;[...pieces, ...adLibPieces].forEach(piece => {
 		if (piece.content && piece.content.timelineObjects) {
 			piece.content.timelineObjects.forEach((obj: TSR.TSRTimelineObj) => {

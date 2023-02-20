@@ -1,9 +1,9 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
 import {
 	Adlib,
 	CreateInternalGraphic,
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
+	EvaluateCueResult,
 	ExtendedShowStyleContext,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
@@ -14,16 +14,13 @@ import { OfftubeBlueprintConfig } from '../helpers/config'
 
 export function OfftubeEvaluateGrafikCaspar(
 	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,
 	adlib?: Adlib
-) {
+): EvaluateCueResult {
 	if (GraphicIsPilot(parsedCue)) {
-		CreatePilotGraphic(pieces, adlibPieces, actions, {
+		return CreatePilotGraphic({
 			context,
 			partId,
 			parsedCue,
@@ -31,6 +28,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			segmentExternalId: partDefinition.segmentExternalId
 		})
 	} else if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(context, pieces, adlibPieces, partId, parsedCue, partDefinition, adlib)
+		return CreateInternalGraphic(context, partId, parsedCue, partDefinition, adlib)
 	}
+	return new EvaluateCueResult()
 }
