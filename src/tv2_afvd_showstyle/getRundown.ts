@@ -851,6 +851,13 @@ function getBaseline(
 				}
 			}),
 			videoSwitcher.getAuxTimelineObject({
+				enable: { while: '1' },
+				layer: SwitcherAuxLLayer.AuxMixEffect3,
+				content: {
+					input: SpecialInput.ME3_PROGRAM
+				}
+			}),
+			videoSwitcher.getAuxTimelineObject({
 				id: '',
 				enable: { while: '1' },
 				priority: 0,

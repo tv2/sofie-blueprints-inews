@@ -740,26 +740,19 @@ export const MAPPINGS_TRICASTER = prefixLayers<TSR.MappingTriCaster & BlueprintM
 		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
 		name: 'mix6'
 	},
-	[SwitcherAuxLLayer.AuxDve]: {
+	[SwitcherAuxLLayer.AuxMixEffect3]: {
 		device: TSR.DeviceType.TRICASTER,
 		deviceId: TRICASTER_DEVICE_ID,
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
 		name: 'mix7'
 	},
-	// [SwitcherAuxLLayer.AuxMixEffect3]: {
-	// 	device: TSR.DeviceType.TRICASTER,
-	// 	deviceId: TRICASTER_DEVICE_ID,
-	// 	lookahead: LookaheadMode.WHEN_CLEAR,
-	// 	mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-	// 	name: 'mix8'
-	// },
 	[SwitcherAuxLLayer.AuxVideoMixMinus]: {
 		device: TSR.DeviceType.TRICASTER,
 		deviceId: TRICASTER_DEVICE_ID,
 		lookahead: LookaheadMode.WHEN_CLEAR,
-		mappingType: TSR.MappingTriCasterType.MATRIX_OUTPUT,
-		name: 'out1'
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix8'
 	},
 	[SwitcherDveLLayer.Dve]: {
 		device: TSR.DeviceType.TRICASTER,
