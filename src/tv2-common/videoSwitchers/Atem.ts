@@ -192,8 +192,13 @@ export class Atem extends VideoSwitcherImpl {
 			})
 		]
 	}
-	public updateAuxInput(_timelineObject: TSR.TSRTimelineObj, _input: number | SpecialInput): TSR.TSRTimelineObj {
-		throw new Error('Method not implemented.')
+	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+		if (!this.isAux(timelineObject)) {
+			// @todo: log error or throw
+			return timelineObject
+		}
+		timelineObject.content.aux.input = this.getInputNumber(input)
+		return timelineObject
 	}
 	public isDveBoxes = (timelineObject: TSR.TSRTimelineObj): timelineObject is TSR.TimelineObjAtemSsrc => {
 		return (
