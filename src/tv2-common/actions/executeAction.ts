@@ -62,6 +62,7 @@ import {
 } from 'tv2-common'
 import {
 	AdlibActionType,
+	ControlClasses,
 	CueType,
 	PartType,
 	SharedGraphicLLayer,
@@ -865,7 +866,7 @@ async function startNewDVELayout<
 						.filter(
 							tlObj =>
 								!(
-									tlObj.content.deviceType === TSR.DeviceType.ATEM &&
+									tlObj.content.deviceType === TSR.DeviceType.ATEM && // @todo: tricaster
 									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
 								) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
 						)
@@ -1192,7 +1193,7 @@ async function executeActionCutToRemote<
 						input: sourceInfo.port,
 						transition: TransitionStyle.CUT
 					},
-					mixMinusInput: null
+					classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
 				}),
 				...eksternSisyfos
 			])
@@ -1410,9 +1411,9 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
-	const mixEffectTimelineObject = primaryPiece.piece.content.timelineObjects.find(context.videoSwitcher.isMixEffect)
+	const mixEffectTimelineObjects = primaryPiece.piece.content.timelineObjects.filter(context.videoSwitcher.isMixEffect)
 
-	if (!mixEffectTimelineObject) {
+	if (!mixEffectTimelineObjects.length) {
 		return
 	}
 
@@ -1427,7 +1428,7 @@ async function executeActionTakeWithTransition<
 	switch (userData.variant.type) {
 		case 'cut':
 			{
-				await updateTransition(context, mixEffectTimelineObject, primaryPiece, TransitionStyle.CUT)
+				await updateTransition(context, mixEffectTimelineObjects, primaryPiece, TransitionStyle.CUT)
 				const cutTransitionPiece: IBlueprintPiece<PieceMetaData> = {
 					enable: {
 						start: 0,
@@ -1454,7 +1455,7 @@ async function executeActionTakeWithTransition<
 			}
 			break
 		case 'breaker': {
-			await updateTransition(context, mixEffectTimelineObject, primaryPiece, TransitionStyle.CUT)
+			await updateTransition(context, mixEffectTimelineObjects, primaryPiece, TransitionStyle.CUT)
 			const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 			partProps = CreateEffektForPartInner(
 				context,
@@ -1478,7 +1479,7 @@ async function executeActionTakeWithTransition<
 		case 'mix': {
 			await updateTransition(
 				context,
-				mixEffectTimelineObject,
+				mixEffectTimelineObjects,
 				primaryPiece,
 				TransitionStyle.MIX,
 				userData.variant.frames
@@ -1499,7 +1500,7 @@ async function executeActionTakeWithTransition<
 		case 'dip': {
 			await updateTransition(
 				context,
-				mixEffectTimelineObject,
+				mixEffectTimelineObjects,
 				primaryPiece,
 				TransitionStyle.DIP,
 				userData.variant.frames
@@ -1524,13 +1525,14 @@ async function executeActionTakeWithTransition<
 
 async function updateTransition(
 	context: ExtendedActionExecutionContext,
-	timelineObject: TimelineObjectCoreExt,
+	timelineObjects: TimelineObjectCoreExt[],
 	pieceInstance: IBlueprintPieceInstance<PieceMetaData>,
 	transitionStyle: TransitionStyle,
 	transitionDuration?: number
 ): Promise<void> {
-	context.videoSwitcher.updateTransition(timelineObject, transitionStyle, transitionDuration)
-
+	for (const timelineObject of timelineObjects) {
+		context.videoSwitcher.updateTransition(timelineObject, transitionStyle, transitionDuration)
+	}
 	await context.core.updatePieceInstance(pieceInstance._id, pieceInstance.piece)
 }
 

@@ -31,10 +31,12 @@ import {
 	ExtendedShowStyleContextImpl,
 	FindDSKJingle,
 	generateExternalId,
+	getMixMinusTimelineObject,
 	GetSisyfosTimelineObjForRemote,
 	GetSisyfosTimelineObjForReplay,
 	GetTransitionAdLibActions,
 	literal,
+	MixMinusPriority,
 	PieceMetaData,
 	replaySourceName,
 	SourceDefinitionKam,
@@ -51,6 +53,7 @@ import {
 	AdlibTagCutToBox,
 	AdlibTags,
 	CONSTANTS,
+	ControlClasses,
 	SharedGraphicLLayer,
 	SharedOutputLayers,
 	SourceType,
@@ -290,7 +293,7 @@ class GlobalAdLibPiecesGenerator {
 							input: info.port,
 							transition: TransitionStyle.CUT
 						},
-						mixMinusInput: null // @should it be here?
+						classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
 					}),
 					...eksternSisyfos
 				]
@@ -858,14 +861,17 @@ function getBaseline(
 				}
 			}),
 			videoSwitcher.getAuxTimelineObject({
-				id: '',
 				enable: { while: '1' },
-				priority: 0,
 				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
 				content: {
-					input: context.config.studio.SwitcherSource.MixMinusDefault
+					input: context.uniformConfig.MixEffects.Program.input
 				}
 			}),
+			getMixMinusTimelineObject(
+				context,
+				context.config.studio.SwitcherSource.MixMinusDefault,
+				MixMinusPriority.STUDIO_CONFIG
+			),
 
 			// render presenter screen
 			literal<TSR.TimelineObjCCGHTMLPage>({

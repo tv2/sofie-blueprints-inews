@@ -115,7 +115,7 @@ export function AdlibTagCutToBox(box: number): AdlibTags {
 export enum ControlClasses {
 	SERVER_ON_AIR = 'server_on_air',
 	LYD_ON_AIR = 'lyd_on_air',
-	LIVE_SOURCE_ON_AIR = 'live_source_on_air',
+	OVERRIDEN_ON_MIX_MINUS = 'overriden_on_mix_minus',
 	ABSTRACT_LOOKAHEAD = 'abstract_lookahead',
 	PLACEHOLDER = 'placeholder'
 }

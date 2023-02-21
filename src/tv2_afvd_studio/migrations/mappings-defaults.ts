@@ -634,7 +634,7 @@ export const MAPPINGS_ATEM = prefixLayers<TSR.MappingAtem & BlueprintMapping>(AT
 	[SwitcherAuxLLayer.AuxVideoMixMinus]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: ATEM_DEVICE_ID,
-		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 6 // 6 = out 7
 	},
@@ -750,7 +750,7 @@ export const MAPPINGS_TRICASTER = prefixLayers<TSR.MappingTriCaster & BlueprintM
 	[SwitcherAuxLLayer.AuxVideoMixMinus]: {
 		device: TSR.DeviceType.TRICASTER,
 		deviceId: TRICASTER_DEVICE_ID,
-		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
 		name: 'mix8'
 	},

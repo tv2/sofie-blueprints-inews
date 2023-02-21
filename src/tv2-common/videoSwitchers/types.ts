@@ -64,7 +64,6 @@ export interface MixEffectProps extends TimelineObjectProps {
 }
 
 export interface OnAirMixEffectProps extends Omit<MixEffectProps, 'layer'> {
-	mixMinusInput?: number | SpecialInput | null
 }
 
 export interface Keyer {

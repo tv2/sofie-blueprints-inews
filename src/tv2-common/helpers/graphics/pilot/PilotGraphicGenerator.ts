@@ -150,6 +150,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 		content.timelineObjects = content.timelineObjects.filter(
 			o =>
 				o.content.deviceType !== TSR.DeviceType.ATEM &&
+				o.content.deviceType !== TSR.DeviceType.TRICASTER &&
 				o.content.deviceType !== TSR.DeviceType.SISYFOS &&
 				o.content.deviceType !== TSR.DeviceType.VIZMSE &&
 				o.content.deviceType !== TSR.DeviceType.CASPARCG

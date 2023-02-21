@@ -54,7 +54,7 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 		if (this.uniformConfig.SwitcherLLayers.PrimaryMixEffectClone) {
 			result.push(
 				this.getMixEffectTimelineObject({
-					...properties,
+					..._.omit(properties, 'classes'),
 					layer: this.uniformConfig.SwitcherLLayers.PrimaryMixEffectClone,
 					metaData: { ...properties.metaData, context: `Clone of Primary MixEffect timeline object ${primaryId}` }
 				})
@@ -63,7 +63,7 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 		if (this.uniformConfig.SwitcherLLayers.NextPreviewMixEffect && properties.content.input) {
 			result.push(
 				this.getMixEffectTimelineObject({
-					..._.omit(properties, 'content'),
+					..._.omit(properties, 'content', 'classes'),
 					content: { previewInput: properties.content.input },
 					layer: this.uniformConfig.SwitcherLLayers.NextPreviewMixEffect,
 					metaData: { ...properties.metaData, context: `Preview Lookahead for ${primaryId}` }
@@ -73,26 +73,13 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 		if (this.uniformConfig.SwitcherLLayers.NextAux && properties.content.input) {
 			result.push(
 				this.getAuxTimelineObject({
-					..._.omit(properties, 'content'),
+					..._.omit(properties, 'content', 'classes'),
 					priority: 0, // lower than lookahead-lookahead
 					content: { input: properties.content.input },
 					layer: this.uniformConfig.SwitcherLLayers.NextAux,
 					metaData: { ...properties.metaData, context: `Aux Lookahead for ${primaryId}` }
 				})
 			)
-		}
-		if (this.uniformConfig.SwitcherLLayers.MixMinusAux) {
-			const input = properties.mixMinusInput || properties.content.input
-			if (input) {
-				result.push(
-					this.getAuxTimelineObject({
-						..._.omit(properties, 'content'),
-						content: { input },
-						layer: this.uniformConfig.SwitcherLLayers.MixMinusAux,
-						metaData: { ...properties.metaData, context: `Mix-minus for ${primaryId}` }
-					})
-				)
-			}
 		}
 		return result
 	}

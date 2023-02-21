@@ -75,8 +75,7 @@ export function EvaluateEksternBase<
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						},
-						classes: [ControlClasses.LIVE_SOURCE_ON_AIR], // @todo: this should not be here probably
-						mixMinusInput: null
+						classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
 					}),
 
 					...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)
@@ -114,7 +113,7 @@ export function EvaluateEksternBase<
 						transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 						transitionDuration: partDefinition.transition?.duration
 					},
-					mixMinusInput: null // @todo: should it be here?
+					classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
 				}),
 
 				...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)

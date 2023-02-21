@@ -105,7 +105,7 @@ export async function CreatePartKam(
 					...context.videoSwitcher.getOnAirTimelineObjects({
 						priority: 1,
 						content: {
-							input: Number(switcherInput),
+							input: switcherInput,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						}

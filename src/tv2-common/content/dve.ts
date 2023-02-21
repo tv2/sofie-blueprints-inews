@@ -17,8 +17,10 @@ import {
 	ExtendedShowStyleContext,
 	FindDSKFullGFX,
 	findSourceInfo,
+	getMixMinusTimelineObject,
 	joinAssetToFolder,
 	literal,
+	MixMinusPriority,
 	PartDefinition,
 	PieceMetaData,
 	SpecialInput,
@@ -26,7 +28,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { MEDIA_PLAYER_AUTO, SharedGraphicLLayer, SourceType } from 'tv2-constants'
+import { ControlClasses, MEDIA_PLAYER_AUTO, SharedGraphicLLayer, SourceType } from 'tv2-constants'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
@@ -186,6 +188,7 @@ export function MakeContentDVE2<
 	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: BoxSources = []
+	const cameraSources: number[] = []
 
 	let valid = true
 	let hasServer = false
@@ -221,6 +224,7 @@ export function MakeContentDVE2<
 					}
 
 					setBoxSource(box, boxSources, sourceInfoCam)
+					cameraSources.push(box.source)
 					dveTimeline.push(
 						...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, mappingFrom.minusMic, audioEnable)
 					)
@@ -292,6 +296,10 @@ export function MakeContentDVE2<
 		frameFile = joinAssetToFolder(context.config.studio.DVEFolder, frameFile)
 	}
 
+	if (cameraSources.length === 1) {
+		dveTimeline.push(getMixMinusTimelineObject(context, cameraSources[0], MixMinusPriority.CUSTOM_INPUT))
+	}
+
 	return {
 		valid,
 		content: literal<WithTimeline<SplitsContent>>({
@@ -308,7 +316,7 @@ export function MakeContentDVE2<
 					},
 					metaData: {
 						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
-					}
+					},
 				}),
 				...context.videoSwitcher.getOnAirTimelineObjects({
 					enable: { start: context.config.studio.CasparPrerollDuration },
@@ -316,7 +324,8 @@ export function MakeContentDVE2<
 					content: {
 						input: SpecialInput.DVE,
 						transition: TransitionStyle.CUT
-					}
+					},
+					classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
 				}),
 				literal<TSR.TimelineObjCCGTemplate>({
 					id: '',
@@ -379,7 +388,6 @@ const setBoxSource = (
 		boxConfig.source = sourceInfo.port
 
 		boxSources.push({
-			// TODO - draw box geometry
 			...boxSource(sourceInfo),
 			...literal<CameraContent | RemoteContent>({
 				studioLabel: '',

@@ -1,11 +1,5 @@
-import {
-	BaseContent,
-	IBlueprintPiece,
-	PieceLifespan,
-	TimelineObjectCoreExt,
-	WithTimeline
-} from 'blueprints-integration'
-import { CueDefinitionMixMinus, ExtendedShowStyleContext, findSourceInfo, literal, PartDefinition } from 'tv2-common'
+import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
+import { CueDefinitionMixMinus, ExtendedShowStyleContext, findSourceInfo, PartDefinition } from 'tv2-common'
 import { ControlClasses, SharedOutputLayers, SharedSourceLayers, SwitcherAuxLLayer } from 'tv2-constants'
 
 export function EvaluateCueMixMinus(
@@ -14,6 +8,10 @@ export function EvaluateCueMixMinus(
 	part: PartDefinition,
 	parsedCue: CueDefinitionMixMinus
 ) {
+	if (!context.uniformConfig.SwitcherLLayers.MixMinusAux) {
+		context.core.notifyUserWarning(`Mix-Minus out not available in this studio (MINUSKAM)`)
+		return
+	}
 	const sourceInfo = findSourceInfo(context.config.sources, parsedCue.sourceDefinition)
 
 	const name = parsedCue.sourceDefinition.name || parsedCue.sourceDefinition.sourceType
@@ -33,23 +31,31 @@ export function EvaluateCueMixMinus(
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
 		sourceLayerId: SharedSourceLayers.AuxMixMinus,
 		outputLayerId: SharedOutputLayers.AUX,
-		content: MixMinusContent(context, switcherInput)
+		content: {
+			timelineObjects: [getMixMinusTimelineObject(context, switcherInput, MixMinusPriority.MINUSKAM_CUE)]
+		}
 	})
 }
 
-function MixMinusContent(context: ExtendedShowStyleContext, switcherInput: number): WithTimeline<BaseContent> {
-	return {
-		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			context.videoSwitcher.getAuxTimelineObject({
-				content: {
-					input: switcherInput
-				},
-				enable: {
-					while: `.${ControlClasses.LIVE_SOURCE_ON_AIR}`
-				},
-				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
-				priority: 1
-			})
-		])
-	}
+export enum MixMinusPriority {
+	STUDIO_CONFIG = 1,
+	MINUSKAM_CUE = 2,
+	CUSTOM_INPUT = 3
+}
+
+export function getMixMinusTimelineObject(
+	context: ExtendedShowStyleContext,
+	switcherInput: number,
+	priority: MixMinusPriority
+): TSR.TSRTimelineObj {
+	return context.videoSwitcher.getAuxTimelineObject({
+		content: {
+			input: switcherInput
+		},
+		enable: {
+			while: `.${ControlClasses.OVERRIDEN_ON_MIX_MINUS}`
+		},
+		layer: SwitcherAuxLLayer.AuxVideoMixMinus,
+		priority
+	})
 }
