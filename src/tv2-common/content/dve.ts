@@ -303,8 +303,8 @@ export function MakeContentDVE2<
 					content: {
 						boxes,
 						template,
-						artFillSource: context.config.studio.SwitcherSource.SplitArtF,
-						artCutSource: context.config.studio.SwitcherSource.SplitArtK
+						artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
+						artCutSource: context.config.studio.SwitcherSource.SplitArtKey
 					},
 					metaData: {
 						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined

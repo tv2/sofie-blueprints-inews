@@ -24,8 +24,8 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	SwitcherSource: {
-		SplitArtF: number
-		SplitArtK: number
+		SplitArtFill: number
+		SplitArtKey: number
 		SplitBackground: number
 		Loop: number
 		DSK: TableConfigItemDSK[]

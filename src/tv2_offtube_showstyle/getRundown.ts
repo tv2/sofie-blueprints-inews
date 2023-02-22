@@ -638,8 +638,8 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 					ssrcProps: {
-						artFillSource: config.studio.SwitcherSource.SplitArtF,
-						artCutSource: config.studio.SwitcherSource.SplitArtK,
+						artFillSource: config.studio.SwitcherSource.SplitArtFill,
+						artCutSource: config.studio.SwitcherSource.SplitArtKey,
 						artOption: 1, // foreground
 						artPreMultiplied: true
 					}

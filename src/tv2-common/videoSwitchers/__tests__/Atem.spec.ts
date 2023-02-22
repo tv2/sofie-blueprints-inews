@@ -240,8 +240,8 @@ describe('ATEM', () => {
 				SwitcherSource: {
 					Dip: dipInputSource,
 					Default: 1,
-					SplitArtF: 1,
-					SplitArtK: 1,
+					SplitArtFill: 1,
+					SplitArtKey: 1,
 					DSK: []
 				}
 			})

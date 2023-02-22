@@ -1,5 +1,6 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { TimeFromFrames } from 'tv2-common'
+import { literal, TimeFromFrames } from 'tv2-common'
+import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'
 import {
@@ -35,6 +36,8 @@ const TRANSITION_MAP: Record<TransitionStyle, TSR.TriCasterTransitionEffect> = {
 	[TransitionStyle.WIPE_FOR_GFX]: 4,
 	[TransitionStyle.STING]: 5 // not really supported??
 }
+
+const SOURCE_INPUT_PREFIX: string = 'input'
 
 export class TriCaster extends VideoSwitcherImpl {
 	public readonly type = SwitcherType.ATEM
@@ -151,9 +154,30 @@ export class TriCaster extends VideoSwitcherImpl {
 			!!(timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode).layers
 		)
 	}
-
-	public getDveTimelineObjects(_properties: DveProps): TSR.TSRTimelineObj[] {
-		throw new Error('Method not implemented.')
+	public getDveTimelineObjects(dveProps: DveProps): TSR.TSRTimelineObj[] {
+		return [
+			literal<TSR.TimelineObjTriCasterME>({
+				id: '',
+				enable: dveProps.enable ?? { start: 0 },
+				layer: TRICASTER_LAYER_PREFIX + SwitcherDveLLayer.DveBoxes,
+				priority: 1,
+				content: {
+					deviceType: TSR.DeviceType.TRICASTER,
+					type: TSR.TimelineContentTypeTriCaster.ME,
+					me: literal<TSR.TriCasterMixEffectInEffectMode>({
+						transitionEffect: 8,
+						layers: this.generateDveBoxLayers(dveProps.content.boxes),
+						keyers: {
+							dsk1: {
+								input: `${SOURCE_INPUT_PREFIX}${5}`,
+								onAir: true,
+								transitionEffect: 'cut'
+							}
+						}
+					})
+				}
+			})
+		]
 	}
 
 	public updateUnpopulatedDveBoxes(
@@ -161,6 +185,108 @@ export class TriCaster extends VideoSwitcherImpl {
 		_input: number | SpecialInput
 	): TSR.TSRTimelineObj {
 		throw new Error('Method not implemented.')
+	}
+
+	private generateDveBoxLayers(boxes: any[]): Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> {
+		return {
+			a: boxes[0].enabled ? this.generateDveBoxLayout(boxes[0]) : this.generateInvisibleBoxLayer(),
+			b: boxes[1].enabled ? this.generateDveBoxLayout(boxes[1]) : this.generateInvisibleBoxLayer(),
+			c: boxes[2].enabled ? this.generateDveBoxLayout(boxes[2]) : this.generateInvisibleBoxLayer(),
+			d: boxes[3].enabled ? this.generateDveBoxLayout(boxes[3]) : this.generateInvisibleBoxLayer()
+		}
+	}
+
+	private generateDveBoxLayout(box: any): TSR.TriCasterLayer {
+		return {
+			input: `${SOURCE_INPUT_PREFIX}${box.source}`,
+			positioningAndCropEnabled: true,
+			position: this.convertPosition(box),
+			scale: this.convertScale(box),
+			crop: this.convertCrop(box)
+		}
+	}
+
+	private convertPosition(box: any): TSR.TriCasterLayer['position'] {
+		return {
+			x: this.convertPositionX(box),
+			y: this.convertPositionY(box)
+		}
+	}
+
+	/**
+	 * The x-position needs an offset added depending on the scale.
+	 * It seems to be a linear progression that for every 48 'size', that we are from 100% scale, an offset of 0.009 needs to be added.
+	 * If the x is negative we need to subtract the offset instead of adding it.
+	 * The division by a 1000 is to convert from the value we receive to the value TriCaster accepts
+	 */
+	private convertPositionX(box: { x: number; size: number }): number {
+		// 1000 comes ATEM scale upper bound. 48 comes from ATEM x position upper bound divided by 100
+		const offset = ((1000 - box.size) / 48) * 0.009
+		return box.x / 1000 + (box.x < 0 ? offset * -1 : offset)
+	}
+
+	/**
+	 * The y-position needs an offset that depend on the percentage y is compared to the height of the screen
+	 * If y is negative we need to subtract the offset instead of adding it.
+	 * The division by a 1000 is to convert from the value we receive to the value TriCaster accepts
+	 */
+	private convertPositionY(box: { y: number }): number {
+		const positiveValue = box.y < 0 ? box.y * -1 : box.y
+		const percentageToBeAdded = (positiveValue / 2700) * 100
+		const offset = (percentageToBeAdded * positiveValue) / 100
+		const position = box.y < 0 ? box.y - offset : box.y + offset
+		return (position / 1000) * -1
+	}
+
+	private convertScale(box: any): TSR.TriCasterLayer['scale'] {
+		return {
+			x: box.size / 1000,
+			y: box.size / 1000
+		}
+	}
+
+	private convertCrop(box: any): TSR.TriCasterLayer['crop'] {
+		if (!box.cropped || this.isAllCropZero(box)) {
+			return {
+				down: 0,
+				up: 0,
+				left: 0,
+				right: 0
+			}
+		}
+		const atemCropTopBottomMaxValue = 18000
+		const atemCropLeftRightMaxValue = 32000
+		return {
+			down: this.getPercentage(box.cropBottom, atemCropTopBottomMaxValue),
+			up: this.getPercentage(box.cropTop, atemCropTopBottomMaxValue),
+			left: this.getPercentage(box.cropLeft, atemCropLeftRightMaxValue),
+			right: this.getPercentage(box.cropRight, atemCropLeftRightMaxValue)
+		}
+	}
+
+	private isAllCropZero(box: any): boolean {
+		return box.cropTop === 0 && box.cropBottom === 0 && box.cropLeft === 0 && box.cropRight === 0
+	}
+
+	private getPercentage(part: number, whole: number): number {
+		return (part / whole) * 100
+	}
+
+	private generateInvisibleBoxLayer(): TSR.TriCasterLayer {
+		return {
+			input: 'Black',
+			positioningAndCropEnabled: true,
+			position: {
+				x: -3.555,
+				y: -2
+			},
+			crop: {
+				down: 0,
+				up: 0,
+				left: 0,
+				right: 0
+			}
+		}
 	}
 
 	private getTransitionDuration(transition?: TransitionStyle, durationInFrames?: number): number {

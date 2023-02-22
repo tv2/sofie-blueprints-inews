@@ -929,8 +929,8 @@ function getBaseline(
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 					ssrcProps: {
-						artFillSource: context.config.studio.SwitcherSource.SplitArtF,
-						artCutSource: context.config.studio.SwitcherSource.SplitArtK,
+						artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
+						artCutSource: context.config.studio.SwitcherSource.SplitArtKey,
 						artOption: 1,
 						artPreMultiplied: true
 					}
