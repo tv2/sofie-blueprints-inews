@@ -50,12 +50,12 @@ describe('Generate rundowns without error', () => {
 				expect(res.segment.name).toEqual(segment.name)
 
 				const allPieces: IBlueprintPieceGeneric[] = []
-				_.each(res.parts, part => {
+				_.each(res.parts, (part) => {
 					allPieces.push(...part.pieces)
 					allPieces.push(...part.adLibPieces)
 				})
 
-				checkAllLayers(mockContext, allPieces)
+				checkAllLayers(allPieces)
 
 				// ensure there were no warnings
 				// TODO: Re-enable when the time is right

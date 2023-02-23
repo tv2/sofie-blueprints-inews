@@ -1,6 +1,6 @@
 import { CameraContent, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
 import {
-	CalculateTime,
+	calculateTime,
 	CueDefinitionRouting,
 	EvaluateCueResult,
 	ExtendedShowStyleContext,
@@ -17,7 +17,7 @@ export function EvaluateCueRouting(
 	parsedCue: CueDefinitionRouting
 ): EvaluateCueResult {
 	const result = new EvaluateCueResult()
-	const time = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+	const time = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 	const sourceDefinition = parsedCue.INP1 ?? parsedCue.INP
 	if (!sourceDefinition) {
 		context.core.notifyUserWarning(`No input provided for viz engine aux`)

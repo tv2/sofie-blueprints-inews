@@ -117,7 +117,7 @@ export abstract class InternalGraphic extends Graphic {
 
 	public getTemplateName(): string {
 		const iNewsTemplateName = this.cue.graphic.template
-		const template = this.config.showStyle.GfxTemplates.find(templ =>
+		const template = this.config.showStyle.GfxTemplates.find((templ) =>
 			templ.INewsName ? templ.INewsName.toString().toUpperCase() === iNewsTemplateName.toUpperCase() : false
 		)
 		if (template && template.VizTemplate.toString().length) {
@@ -128,10 +128,14 @@ export abstract class InternalGraphic extends Graphic {
 		return iNewsTemplateName
 	}
 
+	public getTemplateId(): string {
+		return this.cue.graphic.template
+	}
+
 	public getDisplayName(): string {
 		return `${this.cue.graphic.template ? `${this.templateName}` : ''}${
 			this.cue.graphic.textFields.length ? ' - ' : ''
-		}${this.cue.graphic.textFields.filter(txt => !txt.match(/^;.\.../i)).join('\n - ')}`
+		}${this.cue.graphic.textFields.filter((txt) => !txt.match(/^;.\.../i)).join('\n - ')}`
 	}
 
 	protected abstract getContent(): IBlueprintPiece['content']

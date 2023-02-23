@@ -9,11 +9,11 @@ import {
 import {
 	CueDefinitionGraphic,
 	CueTime,
+	getDskLLayerName,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	GraphicPilot,
 	literal,
-	LLayerDSK,
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
@@ -63,7 +63,7 @@ const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 		start: 0
 	},
 	priority: 1,
-	layer: prefixLayer(LLayerDSK(0)),
+	layer: prefixLayer(getDskLLayerName(0)),
 	content: {
 		deviceType: TSR.DeviceType.ATEM,
 		type: TSR.TimelineContentTypeAtem.DSK,
@@ -456,7 +456,7 @@ describe('grafik piece', () => {
 			lifespan: PieceLifespan.WithinPart
 		})
 		expect(
-			result.pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+			result.pieces[0].content.timelineObjects.find((tlObject) => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
 		).toMatchObject({
 			enable: {
 				while: `!.full`
@@ -483,7 +483,7 @@ describe('grafik piece', () => {
 			lifespan: PieceLifespan.OutOnSegmentEnd
 		})
 		expect(
-			result.pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+			result.pieces[0].content.timelineObjects.find((tlObject) => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
 		).toMatchObject({
 			enable: {
 				while: `!.full`
@@ -511,7 +511,7 @@ describe('grafik piece', () => {
 			lifespan: PieceLifespan.OutOnShowStyleEnd
 		})
 		expect(
-			result.pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+			result.pieces[0].content.timelineObjects.find((tlObject) => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
 		).toMatchObject({
 			enable: {
 				while: `!.full`
@@ -827,7 +827,7 @@ describe('grafik piece', () => {
 			cue.adlib ? { rank: 0 } : undefined
 		)
 
-		const adlibPiece = result.adlibPieces.find(piece => piece.tags?.includes('flow_producer'))
+		const adlibPiece = result.adlibPieces.find((piece) => piece.tags?.includes('flow_producer'))
 		expect(adlibPiece).toBeDefined()
 		expect(adlibPiece).toMatchObject({
 			expectedDuration: 10000,
@@ -860,7 +860,7 @@ describe('grafik piece', () => {
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
+			(obj) =>
 				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined

@@ -108,10 +108,10 @@ function GetServerTimeline(
 			contentProps.mediaPlayerSession,
 			audioEnable
 		),
-		...(context.uniformConfig.SwitcherLLayers.NextServerAux
+		...(context.uniformConfig.switcherLLayers.nextServerAux
 			? [
 					context.videoSwitcher.getAuxTimelineObject({
-						layer: context.uniformConfig.SwitcherLLayers.NextServerAux,
+						layer: context.uniformConfig.switcherLLayers.nextServerAux,
 						content: {
 							input: -1
 						},

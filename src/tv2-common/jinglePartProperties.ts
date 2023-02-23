@@ -10,13 +10,11 @@ export function GetJinglePartProperties(
 	part: PartDefinition
 ): Pick<IBlueprintPart, 'autoNext' | 'expectedDuration' | 'autoNextOverlap' | 'disableNextInTransition'> | {} {
 	if (part.cues) {
-		const cue = part.cues.find(c => c.type === CueType.Jingle) as CueDefinitionJingle
+		const cue = part.cues.find((c) => c.type === CueType.Jingle) as CueDefinitionJingle
 		if (cue) {
-			const realBreaker = context.config.showStyle.BreakerConfig.find(conf => {
+			const realBreaker = context.config.showStyle.BreakerConfig.find((conf) => {
 				return conf.BreakerName && typeof conf.BreakerName === 'string'
-					? conf.BreakerName.toString()
-							.trim()
-							.toUpperCase() === cue.clip.toUpperCase()
+					? conf.BreakerName.toString().trim().toUpperCase() === cue.clip.toUpperCase()
 					: false
 			})
 

@@ -74,7 +74,7 @@ function remapTableColumnValuesInner(
 ): { changed: number; table: TableConfigItemValue } {
 	let changed = 0
 
-	table.forEach(row => {
+	table.forEach((row) => {
 		const val = row[columnId]
 
 		if (val) {

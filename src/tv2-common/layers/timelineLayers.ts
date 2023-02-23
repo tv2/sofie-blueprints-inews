@@ -1,4 +1,5 @@
 import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from 'blueprints-integration'
+import { SwitcherDskLLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { GetDSKCount } from '../helpers'
 
@@ -23,23 +24,19 @@ export function CasparPlayerClipLoadingLoop(i: number | string) {
 	return `casparcg_player_clip_${i}_loading_loop`
 }
 
-export function SisyfosPlayerClip(i: number | string) {
-	return `sisyfos_player_clip_${i}`
-}
-
 /**
  * Created layer mapping name for a DSK
  * @param i DSK number starting from 0
  */
-export function LLayerDSK(i: number) {
+export function getDskLLayerName(i: number): SwitcherDskLLayer {
 	return `dsk_${i + 1}`
 }
 
-export function GetDSKMappingNames(atemModel: ATEMModel): string[] {
+export function getDskMappingNames(atemModel: ATEMModel): string[] {
 	const names: string[] = []
 
 	for (let i = 0; i < GetDSKCount(atemModel); i++) {
-		names.push(LLayerDSK(i))
+		names.push(getDskLLayerName(i))
 	}
 
 	return names
@@ -47,7 +44,7 @@ export function GetDSKMappingNames(atemModel: ATEMModel): string[] {
 
 export function getAtemDskMappings(atemModel: ATEMModel): BlueprintMappings {
 	const base: Record<string, TSR.MappingAtem & BlueprintMapping> = {}
-	return GetDSKMappingNames(atemModel).reduce((prev, name, index) => {
+	return getDskMappingNames(atemModel).reduce((prev, name, index) => {
 		prev[name] = {
 			device: TSR.DeviceType.ATEM,
 			deviceId: 'atem0',

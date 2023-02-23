@@ -6,7 +6,7 @@ export function PostProcessDefinitions(partDefinitions: PartDefinition[], segmen
 
 	partDefinitions.forEach((part, i) => {
 		setPartTitle(part)
-		part.cues = part.cues.map(c => {
+		part.cues = part.cues.map((c) => {
 			if (c.type === CueType.Ekstern) {
 				c.transition = undefined
 			}
@@ -56,7 +56,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			break
 		case PartType.INTRO:
 			// Intro must have a jingle cue, if it doesn't then padId will handle
-			const jingle = partDefinition.cues.find(cue => cue.type === CueType.Jingle) as CueDefinitionJingle
+			const jingle = partDefinition.cues.find((cue) => cue.type === CueType.Jingle) as CueDefinitionJingle
 			if (jingle) {
 				id += `-${jingle.clip}`
 			}

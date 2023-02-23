@@ -33,7 +33,7 @@ function reversePreviousAssignment(
 	const previousAssignmentRev: { [sessionId: string]: MediaPlayerClaim | undefined } = {}
 	for (const key of _.keys(previousAssignment)) {
 		for (const v2 of previousAssignment[key] || []) {
-			if (timeline.some(obj => obj.metaData && (obj.metaData as any).mediaPlayerSession === v2.sessionId)) {
+			if (timeline.some((obj) => obj.metaData && (obj.metaData as any).mediaPlayerSession === v2.sessionId)) {
 				previousAssignmentRev[v2.sessionId] = v2
 			}
 		}
@@ -65,7 +65,7 @@ interface SessionTime {
 	duration: number | undefined
 }
 function calculateSessionTimeRanges(resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>) {
-	const piecesWantingMediaPlayers = _.filter(resolvedPieces, p => {
+	const piecesWantingMediaPlayers = _.filter(resolvedPieces, (p) => {
 		if (!p.piece.metaData) {
 			return false
 		}
@@ -73,14 +73,14 @@ function calculateSessionTimeRanges(resolvedPieces: Array<IBlueprintResolvedPiec
 	})
 
 	const sessionRequests: { [sessionId: string]: SessionTime | undefined } = {}
-	_.each(piecesWantingMediaPlayers, p => {
+	_.each(piecesWantingMediaPlayers, (p) => {
 		const metadata = p.piece.metaData!
 		const start = p.resolvedStart
 		const duration = p.resolvedDuration
 		const end = duration !== undefined ? start + duration : undefined
 
 		// Track the range of each session
-		_.each(metadata.mediaPlayerSessions || [], sessionId => {
+		_.each(metadata.mediaPlayerSessions || [], (sessionId) => {
 			// TODO - will fixed ids ever be wanted? Is it reasonable to want to have the same session across multiple pieces?
 			// Infinites are the exception here, but anything else?
 			// Perhaps the id given should be prefixed with the piece(instance) id? And sharing sessions can be figured out when it becomes needed
@@ -112,7 +112,7 @@ function findNextAvailablePlayer<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(config: ShowStyleConfig, inUse: ActiveRequest[], req: ActiveRequest) {
 	const pickFirstNotInUse = (inUseRequests: ActiveRequest[]) => {
-		const inUseIds = _.compact(_.map(inUseRequests, r => r.player))
+		const inUseIds = _.compact(_.map(inUseRequests, (r) => r.player))
 		for (const mp of config.mediaPlayers) {
 			if (inUseIds.indexOf(mp.id) === -1) {
 				return mp.id
@@ -130,14 +130,14 @@ function findNextAvailablePlayer<
 		}
 
 		// Try reclaiming any lookahead
-		const allActiveUses = _.filter(filteredInUse, r => r.type !== MediaPlayerClaimType.Preloaded)
+		const allActiveUses = _.filter(filteredInUse, (r) => r.type !== MediaPlayerClaimType.Preloaded)
 		mpId = pickFirstNotInUse(allActiveUses)
 		if (mpId !== undefined) {
 			return mpId
 		}
 
 		// Is there something ending at the same time this starts?
-		const activeUsesNotEndingNow = _.filter(filteredInUse, r => r.end === undefined || r.end > req.start)
+		const activeUsesNotEndingNow = _.filter(filteredInUse, (r) => r.end === undefined || r.end > req.start)
 		mpId = pickFirstNotInUse(activeUsesNotEndingNow)
 		if (mpId !== undefined) {
 			return mpId
@@ -207,7 +207,7 @@ export function resolveMediaPlayerAssignments<
 			})
 		}
 	}
-	_.sortBy(activeRequests, r => r.start)
+	_.sortBy(activeRequests, (r) => r.start)
 
 	// Go through and assign players
 	context.core.logDebug('all reqs' + JSON.stringify(activeRequests, undefined, 4))
@@ -219,7 +219,7 @@ export function resolveMediaPlayerAssignments<
 			continue
 		}
 
-		const otherActive = _.filter(activeRequests, r => doesRequestOverlap(req, r))
+		const otherActive = _.filter(activeRequests, (r) => doesRequestOverlap(req, r))
 
 		context.core.logDebug(`for ${JSON.stringify(req)} there is: ${JSON.stringify(otherActive, undefined, 4)}`)
 
@@ -268,7 +268,7 @@ function updateObjectsToMediaPlayer<
 				// context.notifyUserWarning(obj)
 			}
 		} else if (context.videoSwitcher.isVideoSwitcherTimelineObject(obj)) {
-			let switcherInput = _.find(context.config.mediaPlayers, mp => mp.id === playerId.toString())
+			let switcherInput = _.find(context.config.mediaPlayers, (mp) => mp.id === playerId.toString())
 			if (!switcherInput) {
 				context.core.logWarning(`Trying to find atem input for unknown mediaPlayer: #${playerId}`)
 				switcherInput = { id: playerId.toString(), val: context.config.studio.SwitcherSource.Default.toString() }
@@ -277,8 +277,8 @@ function updateObjectsToMediaPlayer<
 			if (context.videoSwitcher.isMixEffect(obj)) {
 				// the `endsWith` below is a nasty hack, but this will be gone after AB refactor
 				if (
-					context.uniformConfig.SwitcherLLayers.NextPreviewMixEffect &&
-					obj.layer.toString().endsWith(context.uniformConfig.SwitcherLLayers.NextPreviewMixEffect)
+					context.uniformConfig.switcherLLayers.nextPreviewMixEffect &&
+					obj.layer.toString().endsWith(context.uniformConfig.switcherLLayers.nextPreviewMixEffect)
 				) {
 					context.videoSwitcher.updatePreviewInput(obj, input)
 				} else {
@@ -366,12 +366,12 @@ export function applyMediaPlayersAssignments<
 
 	// collect objects by their sessionId
 	const labelledObjs = (timelineObjs as Array<TimelineBlueprintExt & OnGenerateTimelineObj>).filter(
-		o => o.metaData && o.metaData.mediaPlayerSession
+		(o) => o.metaData && o.metaData.mediaPlayerSession
 	)
-	const groupedObjs = _.groupBy(labelledObjs, o => {
+	const groupedObjs = _.groupBy(labelledObjs, (o) => {
 		const sessionId = (o.metaData || {}).mediaPlayerSession
 		if (sessionId === undefined || sessionId === '' || sessionId === MEDIA_PLAYER_AUTO) {
-			const piece = resolvedPieces.find(p => p._id === o.pieceInstanceId)
+			const piece = resolvedPieces.find((p) => p._id === o.pieceInstanceId)
 			return piece?.infinite?.infinitePieceId || o.pieceInstanceId || MEDIA_PLAYER_AUTO
 		} else {
 			return sessionId
@@ -382,7 +382,7 @@ export function applyMediaPlayersAssignments<
 	const remainingGroups: Array<{ id: string; objs: Array<TimelineBlueprintExt & OnGenerateTimelineObj> }> = []
 	for (const groupId of Object.keys(groupedObjs)) {
 		const group = groupedObjs[groupId]
-		const request = _.find(activeRequests, req => req.id === groupId)
+		const request = _.find(activeRequests, (req) => req.id === groupId)
 		if (request) {
 			if (request.player) {
 				// TODO - what if player is undefined?
@@ -403,7 +403,7 @@ export function applyMediaPlayersAssignments<
 		// If this is lookahead for a future part (no end set on the object)
 		const isFuturePartLookahead = _.some(
 			grp.objs,
-			o =>
+			(o) =>
 				!!o.isLookahead /*|| (o as any).wasLookahead*/ &&
 				(o.enable as TSR.Timeline.TimelineEnable).duration === undefined &&
 				(o.enable as TSR.Timeline.TimelineEnable).end === undefined
@@ -417,7 +417,7 @@ export function applyMediaPlayersAssignments<
 
 	// These are the groups that shouldn't exist, so are likely a bug. There isnt a lot we can do beyond warn about the potential bug
 	for (const grp of unknownGroups) {
-		const objIds = _.map(grp.objs, o => o.id)
+		const objIds = _.map(grp.objs, (o) => o.id)
 		const prev = previousAssignmentRev[grp.id]
 		if (prev) {
 			updateObjectsToMediaPlayer(context, prev.playerId, grp.objs, sourceLayers)
@@ -441,10 +441,10 @@ export function applyMediaPlayersAssignments<
 	for (const mp of context.config.mediaPlayers) {
 		// Block players with an 'infinite' clip from being used for lookahead
 		const endTimes = _.map(
-			_.filter(activeRequests, s => s.player === mp.id),
-			s => s.end
+			_.filter(activeRequests, (s) => s.player === mp.id),
+			(s) => s.end
 		)
-		const realEndTimes = _.filter(endTimes, e => e !== undefined) as number[]
+		const realEndTimes = _.filter(endTimes, (e) => e !== undefined) as number[]
 		if (endTimes.length === realEndTimes.length) {
 			// No infinite(undefined) ones, so find the highest end
 			mediaPlayerUsageEnd.push({
@@ -454,7 +454,7 @@ export function applyMediaPlayersAssignments<
 		}
 	}
 	// Sort by the end time
-	mediaPlayerUsageEnd = _.sortBy(mediaPlayerUsageEnd, u => u.end).reverse()
+	mediaPlayerUsageEnd = _.sortBy(mediaPlayerUsageEnd, (u) => u.end).reverse()
 
 	// Finish up with allocating lookahead based on what is left. If there is no space left that is not a problem until playback is closer
 	for (const grp of lookaheadGroups) {
@@ -464,7 +464,7 @@ export function applyMediaPlayersAssignments<
 
 		context.core.logDebug('Players are available at:' + JSON.stringify(mediaPlayerUsageEnd))
 
-		const prevAssignment = prev ? _.find(mediaPlayerUsageEnd, mp => mp.playerId === prev.playerId) : undefined
+		const prevAssignment = prev ? _.find(mediaPlayerUsageEnd, (mp) => mp.playerId === prev.playerId) : undefined
 		if (prevAssignment && (prevAssignment.end === 0 || false)) {
 			// TODO - decide if the previous assignment is still suitable
 			context.core.logDebug('lookahead can retain existing player')

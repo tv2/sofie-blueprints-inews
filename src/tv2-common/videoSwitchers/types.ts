@@ -1,6 +1,6 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
 import { SwitcherDskProps, TimelineObjectMetaData } from 'tv2-common'
-import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
+import { SwitcherAuxLLayer, SwitcherDskLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
 
 export enum SwitcherType {
@@ -63,8 +63,7 @@ export interface MixEffectProps extends TimelineObjectProps {
 	}
 }
 
-export interface OnAirMixEffectProps extends Omit<MixEffectProps, 'layer'> {
-}
+export interface OnAirMixEffectProps extends Omit<MixEffectProps, 'layer'> {}
 
 export interface Keyer {
 	onAir: boolean
@@ -72,7 +71,7 @@ export interface Keyer {
 }
 
 export interface DskProps extends TimelineObjectProps {
-	layer: string // @todo: better type
+	layer: SwitcherDskLLayer
 	content: {
 		onAir: boolean
 		config: SwitcherDskProps

@@ -9,9 +9,9 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	CreateTimingEnable,
 	CueDefinitionLYD,
 	ExtendedShowStyleContext,
+	getTimingEnable,
 	joinAssetToFolder,
 	literal,
 	PartDefinition,
@@ -38,7 +38,7 @@ export function EvaluateLYD(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const conf = context.config.showStyle.LYDConfig.find(lyd =>
+	const conf = context.config.showStyle.LYDConfig.find((lyd) =>
 		lyd.INewsName ? lyd.INewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
 	)
 	const stop = !!parsedCue.variant.match(/^[^_]*STOP[^_]*$/i) // TODO: STOP 1 / STOP 2 etc.
@@ -69,7 +69,7 @@ export function EvaluateLYD(
 				? 2000
 				: fade
 				? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
-				: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
+				: getTimingEnable(parsedCue).enable.duration ?? undefined,
 			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
 			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 		})
@@ -78,15 +78,15 @@ export function EvaluateLYD(
 			externalId: part.externalId,
 			name: parsedCue.variant,
 			...(stop
-				? { enable: { start: CreateTimingEnable(parsedCue).enable.start, duration: 2000 } }
+				? { enable: { start: getTimingEnable(parsedCue).enable.start, duration: 2000 } }
 				: fade
 				? {
 						enable: {
-							start: CreateTimingEnable(parsedCue).enable.start,
+							start: getTimingEnable(parsedCue).enable.start,
 							duration: Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
 						}
 				  }
-				: CreateTimingEnable(parsedCue)),
+				: getTimingEnable(parsedCue)),
 			outputLayerId: SharedOutputLayers.MUSIK,
 			sourceLayerId: SharedSourceLayers.PgmAudioBed,
 			lifespan,

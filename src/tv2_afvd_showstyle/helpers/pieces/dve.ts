@@ -1,7 +1,7 @@
 import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
-	CalculateTime,
+	calculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
 	ExtendedShowStyleContext,
@@ -69,9 +69,9 @@ export function EvaluateDVE(
 				}
 			})
 		} else {
-			let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
+			let start = parsedCue.start ? calculateTime(parsedCue.start) : 0
 			start = start ? start : 0
-			const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
+			const end = parsedCue.end ? calculateTime(parsedCue.end) : undefined
 			const pieceName = `DVE: ${parsedCue.template}`
 			pieces.push(
 				literal<IBlueprintPiece<DVEPieceMetaData>>({

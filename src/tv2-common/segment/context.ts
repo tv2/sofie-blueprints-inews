@@ -16,7 +16,8 @@ export interface ExtendedSegmentContext<BlueprintConfig extends TV2ShowStyleConf
 
 export class ExtendedSegmentContextImpl<BlueprintConfig extends TV2ShowStyleConfig>
 	extends ExtendedShowStyleContextImpl<BlueprintConfig>
-	implements ExtendedSegmentContext<BlueprintConfig> {
+	implements ExtendedSegmentContext<BlueprintConfig>
+{
 	constructor(readonly core: ISegmentUserContext, readonly uniformConfig: UniformConfig) {
 		super(core, uniformConfig)
 	}

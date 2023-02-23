@@ -31,7 +31,7 @@ function prepareConfig(
 	StudioMics: boolean
 	wantsToPersistAudio: boolean
 }> {
-	return parseMapStr(undefined, conf, true).map(c => {
+	return parseMapStr(undefined, conf, true).map((c) => {
 		return {
 			SourceName: c.id,
 			SwitcherSource: c.val,
@@ -122,9 +122,6 @@ export const defaultStudioConfig: StudioConfig = {
 			Loop: true,
 			Playing: true
 		}
-	},
-	TriCasterSettings: {
-		DveMixEffect: 1
 	},
 	AudioBedSettings: {
 		fadeIn: 1000,

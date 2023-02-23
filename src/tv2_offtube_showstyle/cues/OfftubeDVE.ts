@@ -1,7 +1,7 @@
 import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan, SplitsContent } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
-	CalculateTime,
+	calculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
 	ExtendedSegmentContext,
@@ -48,9 +48,9 @@ export function OfftubeEvaluateDVE(
 	const pieceContent = OfftubeMakeContentDVE(context, partDefinition, parsedCue, rawTemplate)
 
 	if (adlibContent.valid && pieceContent.valid) {
-		let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
+		let start = parsedCue.start ? calculateTime(parsedCue.start) : 0
 		start = start ? start : 0
-		const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
+		const end = parsedCue.end ? calculateTime(parsedCue.end) : undefined
 		pieces.push({
 			externalId: partDefinition.externalId,
 			name: parsedCue.template,

@@ -41,7 +41,7 @@ export function GetTransitionAdLibActions<
 
 	if (config.showStyle.Transitions) {
 		const transitionActions: IBlueprintActionManifest[] = config.showStyle.Transitions.filter(
-			transition => transition.Transition && transition.Transition.length
+			(transition) => transition.Transition && transition.Transition.length
 		).flatMap((transition, i) => createActionsForTransition(config, transition.Transition, startingRank + 0.01 * i))
 		blueprintActionManifests.push(...transitionActions)
 	}
@@ -54,7 +54,7 @@ function createActionsForTransition(
 	transition: string,
 	rank: number
 ): IBlueprintActionManifest[] {
-	const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition)
+	const jingleConfig = config.showStyle.BreakerConfig.find((j) => j.BreakerName === transition)
 	const transitionValues: TransitionValues = {
 		rank,
 		label: transition,

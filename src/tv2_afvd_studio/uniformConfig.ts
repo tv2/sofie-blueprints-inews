@@ -1,13 +1,13 @@
-import { SpecialInput, UniformConfig } from 'tv2-common'
+import { getSpecialLayers, SpecialInput, UniformConfig } from 'tv2-common'
 import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 
-const MIX_EFFECTS: UniformConfig['MixEffects'] = {
-	Program: {
+const MIX_EFFECTS: UniformConfig['mixEffects'] = {
+	program: {
 		input: SpecialInput.ME1_PROGRAM,
 		mixEffectLayer: SwitcherMixEffectLLayer.Program,
 		auxLayer: SwitcherAuxLLayer.AuxProgram
 	},
-	Clean: {
+	clean: {
 		input: SpecialInput.ME4_PROGRAM,
 		mixEffectLayer: SwitcherMixEffectLLayer.Clean,
 		auxLayer: SwitcherAuxLLayer.AuxClean
@@ -15,20 +15,15 @@ const MIX_EFFECTS: UniformConfig['MixEffects'] = {
 }
 
 export const GALLERY_UNIFORM_CONFIG: UniformConfig = {
-	SwitcherLLayers: {
-		PrimaryMixEffect: SwitcherMixEffectLLayer.Program,
-		PrimaryMixEffectClone: SwitcherMixEffectLLayer.Clean,
-		JingleUskMixEffect: SwitcherMixEffectLLayer.CleanUSKEffect,
-		NextAux: SwitcherAuxLLayer.AuxLookahead,
-		MixMinusAux: SwitcherAuxLLayer.AuxVideoMixMinus
+	switcherLLayers: {
+		primaryMixEffect: SwitcherMixEffectLLayer.Program,
+		primaryMixEffectClone: SwitcherMixEffectLLayer.Clean,
+		jingleUskMixEffect: SwitcherMixEffectLLayer.CleanUSKEffect,
+		nextAux: SwitcherAuxLLayer.AuxLookahead,
+		mixMinusAux: SwitcherAuxLLayer.AuxVideoMixMinus
 	},
-	MixEffects: MIX_EFFECTS,
-	SpecialInputAuxLLayers: {
-		...Object.fromEntries(
-			Object.values(MIX_EFFECTS)
-				.filter(mixEffect => mixEffect.auxLayer)
-				.map(mixEffect => [mixEffect.input, mixEffect.auxLayer])
-		),
-		[SpecialInput.DVE]: SwitcherAuxLLayer.AuxDve
+	mixEffects: MIX_EFFECTS,
+	specialInputAuxLLayers: {
+		...getSpecialLayers(MIX_EFFECTS)
 	}
 }

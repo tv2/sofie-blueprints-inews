@@ -20,7 +20,7 @@ export function MakeClearHotkeys(
 	assignments: ClearLayerHotkeyAssignments,
 	getNextRank: () => number
 ) {
-	return assignments.map(clearedSourceLayer =>
+	return assignments.map((clearedSourceLayer) =>
 		literal<IBlueprintTriggeredActions>({
 			_id: clearSourceLayerHotKeyId(showStyleId, clearedSourceLayer.sourceLayers),
 			_rank: getNextRank(),

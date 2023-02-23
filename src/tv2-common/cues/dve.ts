@@ -71,5 +71,5 @@ export function TemplateIsValid(templateRaw: string): boolean {
 }
 
 export function GetDVETemplate(config: DVEConfigInput[], templateName: string): DVEConfigInput | undefined {
-	return config ? config.find(c => c.DVEName.toString().toUpperCase() === templateName.toUpperCase()) : undefined
+	return config ? config.find((c) => c.DVEName.toString().toUpperCase() === templateName.toUpperCase()) : undefined
 }

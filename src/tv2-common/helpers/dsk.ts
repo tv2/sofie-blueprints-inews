@@ -6,7 +6,7 @@ import {
 	TableConfigItemValue,
 	TSR
 } from 'blueprints-integration'
-import { ExtendedShowStyleContext, literal, LLayerDSK, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
+import { ExtendedShowStyleContext, getDskLLayerName, literal, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
 import { AdlibTags, DSKRoles, SharedOutputLayers } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
@@ -25,7 +25,7 @@ export function FindDSKJingle(config: TV2ShowStyleConfig): TableConfigItemDSK {
 }
 
 function FindDSKWithRoles(config: TV2ShowStyleConfig, roles: DSKRoles[]): TableConfigItemDSK {
-	return config.dsk.find(dsk => dsk.Roles?.some(role => roles.includes(role))) ?? config.dsk[0]
+	return config.dsk.find((dsk) => dsk.Roles?.some((role) => roles.includes(role))) ?? config.dsk[0]
 }
 
 export function GetDSKCount(atemModel: ATEMModel) {
@@ -49,25 +49,24 @@ export function getDskOnAirTimelineObjects(
 	const dskConf = FindDSKWithRoles(context.config, [dskRole])
 	return [
 		context.videoSwitcher.getDskTimelineObject({
-			id: '',
 			enable: enable ?? {
 				start: 0
 			},
 			priority: 1,
-			layer: LLayerDSK(dskConf.Number),
+			layer: getDskLLayerName(dskConf.Number),
 			content: {
 				onAir: true,
 				config: dskConf
 			}
 		}),
-		...(dskRole === DSKRoles.JINGLE && context.uniformConfig.SwitcherLLayers.JingleUskMixEffect
+		...(dskRole === DSKRoles.JINGLE && context.uniformConfig.switcherLLayers.jingleUskMixEffect
 			? [
 					context.videoSwitcher.getMixEffectTimelineObject({
 						enable: enable ?? {
 							start: 0
 						},
 						priority: 1,
-						layer: context.uniformConfig.SwitcherLLayers.JingleUskMixEffect,
+						layer: context.uniformConfig.switcherLLayers.jingleUskMixEffect,
 						content: {
 							keyers: [
 								{
@@ -103,10 +102,9 @@ export function CreateDSKBaselineAdlibs(
 					content: {
 						timelineObjects: [
 							videoSwitcher.getDskTimelineObject({
-								id: '',
 								enable: { while: '1' },
 								priority: 10,
-								layer: LLayerDSK(dsk.Number),
+								layer: getDskLLayerName(dsk.Number),
 								content: {
 									onAir: false,
 									config: dsk
@@ -130,7 +128,7 @@ export function CreateDSKBaselineAdlibs(
 								id: '',
 								enable: { while: '1' },
 								priority: 10,
-								layer: LLayerDSK(dsk.Number), // @todo
+								layer: getDskLLayerName(dsk.Number),
 								content: {
 									onAir: true,
 									config: dsk
@@ -149,12 +147,12 @@ export function createDskBaseline(
 	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
 	videoSwitcher: VideoSwitcher
 ): TSR.TSRTimelineObj[] {
-	return config.dsk.map(dsk => {
+	return config.dsk.map((dsk) => {
 		return videoSwitcher.getDskTimelineObject({
 			id: '',
 			enable: { while: '1' },
 			priority: 0,
-			layer: LLayerDSK(dsk.Number), // @todo
+			layer: getDskLLayerName(dsk.Number),
 			content: {
 				onAir: dsk.DefaultOn,
 				config: dsk
@@ -171,7 +169,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: literal<Array<TableConfigItemDSK & TableConfigItemValue[0]>>(
-			defaultVal.map(dsk => ({ _id: '', ...dsk, Roles: dsk.Roles ?? [] }))
+			defaultVal.map((dsk) => ({ _id: '', ...dsk, Roles: dsk.Roles ?? [] }))
 		),
 		columns: [
 			{
@@ -186,8 +184,8 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			},
 			{
 				id: 'Fill',
-				name: 'ATEM Fill',
-				description: 'ATEM vision mixer input for DSK Fill',
+				name: 'Switcher Fill',
+				description: 'Video Switcher input for DSK Fill',
 				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 21,
@@ -195,8 +193,8 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			},
 			{
 				id: 'Key',
-				name: 'ATEM Key',
-				description: 'ATEM vision mixer input for DSK Key',
+				name: 'Switcher Key',
+				description: 'Video Switcher input for DSK Key',
 				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 34,
@@ -234,8 +232,8 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			{
 				id: 'Clip',
 				name: 'ATEM Clip',
-				description: 'DSK Clip (0-100)',
-				type: ConfigManifestEntryType.FLOAT, // @todo: this needs a migration
+				description: 'DSK Clip (0-100), only used in the ATEM',
+				type: ConfigManifestEntryType.FLOAT,
 				required: true,
 				defaultVal: 50,
 				rank: 6
@@ -243,8 +241,8 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			{
 				id: 'Gain',
 				name: 'ATEM Gain',
-				description: 'DSK Gain (0-100)',
-				type: ConfigManifestEntryType.FLOAT, // @todo: this needs a migration
+				description: 'DSK Gain (0-100), only used in the ATEM',
+				type: ConfigManifestEntryType.FLOAT,
 				required: true,
 				defaultVal: 12.5,
 				rank: 7

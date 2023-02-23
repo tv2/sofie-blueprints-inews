@@ -26,11 +26,11 @@ import {
 	CasparPlayerClipLoadingLoop,
 	createDskBaseline,
 	CreateDSKBaselineAdlibs,
-	CreateGraphicBaseline,
 	CreateLYDBaseline,
 	ExtendedShowStyleContext,
 	ExtendedShowStyleContextImpl,
 	generateExternalId,
+	getGraphicBaseline,
 	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
@@ -40,11 +40,9 @@ import {
 	SourceInfo,
 	SourceInfoToSourceDefinition,
 	SourceInfoType,
-	SpecialInput,
 	t,
 	TimeFromINewsField,
-	TransitionStyle,
-	VideoSwitcher
+	TransitionStyle
 } from 'tv2-common'
 import {
 	AdlibActionType,
@@ -57,7 +55,6 @@ import {
 	SourceType,
 	SwitcherAuxLLayer,
 	SwitcherDveLLayer,
-	SwitcherMixEffectLLayer,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -103,7 +100,7 @@ export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: In
 		}),
 		globalAdLibPieces: getGlobalAdLibPiecesOfftube(context),
 		globalActions: getGlobalAdlibActionsOfftube(context.core, context.config),
-		baseline: getBaseline(context.config, context.videoSwitcher)
+		baseline: getBaseline(context)
 	}
 }
 
@@ -133,7 +130,7 @@ function getGlobalAdLibPiecesOfftube(
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: context.config.studio.StudioMics.map(layer => ({
+						channels: context.config.studio.StudioMics.map((layer) => ({
 							mappedLayer: layer,
 							isPgm: 1
 						})),
@@ -163,7 +160,7 @@ function getGlobalAdLibPiecesOfftube(
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: context.config.studio.StudioMics.map(layer => ({
+						channels: context.config.studio.StudioMics.map((layer) => ({
 							mappedLayer: layer,
 							isPgm: 0
 						})),
@@ -488,19 +485,19 @@ function getGlobalAdlibActionsOfftube(
 
 	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeCutCameraActions(o, false, globalRank++)
 		})
 
 	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeCutCameraActions(o, true, globalRank++)
 		})
 
 	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeAdlibBoxesActions(o, SourceInfoType.KAM, globalRank++)
 		})
 
@@ -527,25 +524,25 @@ function getGlobalAdlibActionsOfftube(
 
 	config.sources.feeds
 		.slice(0, 10) // the first x sources to create feed-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeRemoteAction(o, globalRank++)
 		})
 
 	config.sources.lives
 		.slice(0, 10) // the first x sources to create live-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeRemoteAction(o, globalRank++)
 		})
 
 	config.sources.feeds
 		.slice(0, 10) // the first x remote to create INP1/2/3 feed-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeAdlibBoxesActions(o, SourceInfoType.FEED, globalRank++)
 		})
 
 	config.sources.lives
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeAdlibBoxesActions(o, SourceInfoType.LIVE, globalRank++)
 		})
 
@@ -578,40 +575,44 @@ function getGlobalAdlibActionsOfftube(
 	return blueprintActions
 }
 
-function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitcher): BlueprintResultBaseline {
+function getBaseline(context: ExtendedShowStyleContext<OfftubeBlueprintConfig>): BlueprintResultBaseline {
 	return {
-		timelineObjects: [
-			...CreateGraphicBaseline(config),
+		timelineObjects: _.compact([
+			...getGraphicBaseline(context.config),
 			// Default timeline
-			videoSwitcher.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Clean,
+			context.videoSwitcher.getMixEffectTimelineObject({
+				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
 				enable: { while: '1' },
 				content: {
-					input: config.studio.SwitcherSource.Default,
+					input: context.config.studio.SwitcherSource.Default,
 					transition: TransitionStyle.CUT
 				}
 			}),
-			videoSwitcher.getMixEffectTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherMixEffectLLayer.Next,
-				content: {
-					previewInput: config.studio.SwitcherSource.Default
-				}
-			}),
+			context.uniformConfig.switcherLLayers.nextPreviewMixEffect
+				? context.videoSwitcher.getMixEffectTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.switcherLLayers.nextPreviewMixEffect,
+						content: {
+							previewInput: context.config.studio.SwitcherSource.Default
+						}
+				  })
+				: undefined,
 
 			// route default outputs
-			videoSwitcher.getAuxTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: SpecialInput.ME2_PROGRAM
-				}
-			}),
-			videoSwitcher.getAuxTimelineObject({
+			context.uniformConfig.mixEffects.clean.auxLayer
+				? context.videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.mixEffects.clean.auxLayer,
+						content: {
+							input: context.uniformConfig.mixEffects.clean.input
+						}
+				  })
+				: undefined,
+			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
 				layer: SwitcherAuxLLayer.AuxScreen,
 				content: {
-					input: config.studio.SwitcherSource.Loop
+					input: context.config.studio.SwitcherSource.Loop
 				}
 			}),
 			literal<TSR.TimelineObjCCGRoute>({
@@ -627,7 +628,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 			}),
 
 			// keyers
-			...createDskBaseline(config, videoSwitcher),
+			...createDskBaseline(context.config, context.videoSwitcher),
 
 			literal<TSR.TimelineObjAtemSsrcProps>({
 				id: '',
@@ -638,8 +639,8 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 					ssrcProps: {
-						artFillSource: config.studio.SwitcherSource.SplitArtF,
-						artCutSource: config.studio.SwitcherSource.SplitArtK,
+						artFillSource: context.config.studio.SwitcherSource.SplitArtF,
+						artCutSource: context.config.studio.SwitcherSource.SplitArtK,
 						artOption: 1, // foreground
 						artPreMultiplied: true
 					}
@@ -658,7 +659,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 							{
 								// left
 								enabled: true,
-								source: config.studio.SwitcherSource.SplitBackground,
+								source: context.config.studio.SwitcherSource.SplitBackground,
 								size: 1000,
 								x: 0,
 								y: 0,
@@ -759,7 +760,7 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-					channels: Object.keys(sisyfosChannels).map(key => {
+					channels: Object.keys(sisyfosChannels).map((key) => {
 						const llayer = key as OfftubeSisyfosLLayer
 						const channel = sisyfosChannels[llayer] as SisyfosChannel
 						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
@@ -773,18 +774,18 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			videoSwitcher.getMixEffectTimelineObject({
+			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
 				content: {
-					input: SpecialInput.ME2_PROGRAM
+					input: context.uniformConfig.mixEffects.clean.input
 				}
 			}),
 
 			...CreateLYDBaseline('offtube'),
 
-			...(config.showStyle.CasparCGLoadingClip && config.showStyle.CasparCGLoadingClip.length
-				? [...config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
+			...(context.config.showStyle.CasparCGLoadingClip && context.config.showStyle.CasparCGLoadingClip.length
+				? [...context.config.mediaPlayers.map((mp) => CasparPlayerClipLoadingLoop(mp.id))].map((layer) => {
 						return literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { while: '1' },
@@ -793,12 +794,12 @@ function getBaseline(config: OfftubeBlueprintConfig, videoSwitcher: VideoSwitche
 							content: {
 								deviceType: TSR.DeviceType.CASPARCG,
 								type: TSR.TimelineContentTypeCasparCg.MEDIA,
-								file: config.showStyle.CasparCGLoadingClip,
+								file: context.config.showStyle.CasparCGLoadingClip,
 								loop: true
 							}
 						})
 				  })
 				: [])
-		]
+		])
 	}
 }

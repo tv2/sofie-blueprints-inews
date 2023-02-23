@@ -26,7 +26,7 @@ export interface GalleryShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 }
 
 export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
-	const showstyleConfig = (rawConfig as unknown) as GalleryShowStyleConfig
+	const showstyleConfig = rawConfig as unknown as GalleryShowStyleConfig
 	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		Name: '',
 		VcpConcept: '',

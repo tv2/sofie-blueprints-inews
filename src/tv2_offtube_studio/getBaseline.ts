@@ -5,8 +5,7 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
-import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
+import { ExtendedStudioContext, literal, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
 import { OfftubeSisyfosLLayer } from './layers'
@@ -19,7 +18,7 @@ function filterMappings(
 ): BlueprintMappings {
 	const result: BlueprintMappings = {}
 
-	_.each(_.keys(input), k => {
+	_.each(_.keys(input), (k) => {
 		const v = input[k]
 		if (filter(k, v)) {
 			result[k] = v
@@ -57,7 +56,7 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 	}
 
 	return {
-		timelineObjects: [
+		timelineObjects: _.compact([
 			literal<TSR.TimelineObjSisyfosChannels>({
 				id: '',
 				enable: {
@@ -76,7 +75,7 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			// have ATEM output default still image
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: SwitcherMixEffectLLayer.Clean,
+				layer: context.uniformConfig.mixEffects.clean.mixEffectLayer,
 				content: {
 					input: context.config.studio.IdleSource,
 					transition: TransitionStyle.CUT
@@ -86,18 +85,20 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			// Route ME 2 PGM to ME 1 PGM
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
 				content: {
-					input: SpecialInput.ME2_PROGRAM
+					input: context.uniformConfig.mixEffects.clean.input
 				}
 			}),
-			context.videoSwitcher.getAuxTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxClean,
-				content: {
-					input: SpecialInput.ME2_PROGRAM
-				}
-			})
-		]
+			context.uniformConfig.mixEffects.clean.auxLayer
+				? context.videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.mixEffects.clean.auxLayer,
+						content: {
+							input: context.uniformConfig.mixEffects.clean.input
+						}
+				  })
+				: undefined
+		])
 	}
 }

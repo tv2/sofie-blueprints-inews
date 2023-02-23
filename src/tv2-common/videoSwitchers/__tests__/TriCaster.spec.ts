@@ -9,7 +9,6 @@ const DURATION_FRAMES: number = 50
 const DURATION_SECONDS: number = DURATION_FRAMES / 25
 
 function setupTriCaster(mockConfigOverrides?: MockConfigOverrides) {
-	// @todo: is this the correct way?
 	const context = makeMockGalleryContext({
 		...mockConfigOverrides,
 		studioConfig: { SwitcherType: SwitcherType.TRICASTER, ...mockConfigOverrides?.studioConfig }
@@ -352,7 +351,7 @@ describe('TriCaster', () => {
 					})
 				},
 				uniformConfig: {
-					SpecialInputAuxLLayers: {
+					specialInputAuxLLayers: {
 						[SpecialInput.ME1_PROGRAM]: SwitcherAuxLLayer.AuxProgram,
 						[SpecialInput.ME3_PROGRAM]: SwitcherAuxLLayer.AuxClean
 					}

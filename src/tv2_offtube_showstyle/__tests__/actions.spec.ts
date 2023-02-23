@@ -270,10 +270,10 @@ async function getActiveServerPieces(
 	return {
 		activePiece: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer)),
+			.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.PgmServer)),
 		dataStore: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedServer))
+			.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedServer))
 	}
 }
 
@@ -281,10 +281,12 @@ async function getVOPieces(context: ActionExecutionContext, part: 'current' | 'n
 	return {
 		activePiece: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver)),
+			.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.PgmVoiceOver)),
 		dataStore: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedVoiceOver))
+			.then((pieceInstances) =>
+				pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedVoiceOver)
+			)
 	}
 }
 
@@ -292,10 +294,12 @@ async function getDVEPieces(context: ActionExecutionContext, part: 'current' | '
 	return {
 		activePiece: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE)),
+			.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.PgmDVE)),
 		dataStore: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE))
+			.then((pieceInstances) =>
+				pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.SelectedAdLibDVE)
+			)
 	}
 }
 
@@ -306,11 +310,11 @@ async function getFullGrafikPieces(
 	return {
 		activePiece: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayers.PgmPilot)),
+			.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === SharedSourceLayers.PgmPilot)),
 		dataStore: await context
 			.getPieceInstances(part)
-			.then(pieceInstances =>
-				pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayers.SelectedAdlibGraphicsFull)
+			.then((pieceInstances) =>
+				pieceInstances.find((p) => p.piece.sourceLayerId === SharedSourceLayers.SelectedAdlibGraphicsFull)
 			)
 	}
 }
@@ -321,7 +325,7 @@ async function getCameraPiece(
 ): Promise<IBlueprintPieceInstance | undefined> {
 	return context
 		.getPieceInstances(part)
-		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmCam))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.PgmCam))
 }
 
 async function getRemotePiece(
@@ -330,7 +334,7 @@ async function getRemotePiece(
 ): Promise<IBlueprintPieceInstance | undefined> {
 	return context
 		.getPieceInstances(part)
-		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmLive))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === OfftubeSourceLayer.PgmLive))
 }
 
 function validateSourcePiecesExist(pieces: ActivePiecesForSource) {
@@ -364,9 +368,11 @@ function validateRemotePiece(piece: IBlueprintPieceInstance | undefined) {
 
 function validateNoWarningsOrErrors(context: ActionExecutionContext) {
 	expect(
-		context.getNotes().filter(n => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
+		context.getNotes().filter((n) => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
 	).toEqual([])
-	expect(context.getNotes().filter(n => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual([])
+	expect(context.getNotes().filter((n) => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual(
+		[]
+	)
 }
 
 function validateNextPartExistsWithDuration(context: ActionExecutionContext, duration: number) {
@@ -381,7 +387,7 @@ function validateNextPartExistsWithPreviousPartKeepaliveDuration(context: Action
 
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-		obj =>
+		(obj) =>
 			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Clean) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
@@ -419,7 +425,7 @@ describe('Select Server Action', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -446,7 +452,7 @@ describe('Select Server Action', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -478,7 +484,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -511,7 +517,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -545,7 +551,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -579,7 +585,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -612,7 +618,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
 
@@ -645,7 +651,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -677,7 +683,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -710,7 +716,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -742,7 +748,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -774,7 +780,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.SELECT_DVE, selectDVEActionMorbarn)
 
@@ -806,7 +812,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		// SERVER (A)
 		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
@@ -930,7 +936,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -973,7 +979,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -1016,7 +1022,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 
@@ -1059,7 +1065,7 @@ describe('Combination Actions', () => {
 		)
 		context.studioConfig = defaultStudioConfig as any
 		context.showStyleConfig = defaultShowStyleConfig as any
-		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+		;(context.studioConfig as unknown as OfftubeStudioConfig).GraphicsType = 'HTML'
 
 		await executeActionOfftube(context, AdlibActionType.CUT_TO_CAMERA, selectCameraAction)
 

@@ -43,40 +43,40 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 	}
 	public getOnAirTimelineObjects(properties: OnAirMixEffectProps): TSR.TSRTimelineObj[] {
 		const result: TSR.TSRTimelineObj[] = []
-		const primaryId = properties.id ?? this.core.getHashId(this.uniformConfig.SwitcherLLayers.PrimaryMixEffect, true)
+		const primaryId = properties.id ?? this.core.getHashId(this.uniformConfig.switcherLLayers.primaryMixEffect, true)
 		result.push(
 			this.getMixEffectTimelineObject({
 				...properties,
 				id: primaryId,
-				layer: this.uniformConfig.SwitcherLLayers.PrimaryMixEffect
+				layer: this.uniformConfig.switcherLLayers.primaryMixEffect
 			})
 		)
-		if (this.uniformConfig.SwitcherLLayers.PrimaryMixEffectClone) {
+		if (this.uniformConfig.switcherLLayers.primaryMixEffectClone) {
 			result.push(
 				this.getMixEffectTimelineObject({
 					..._.omit(properties, 'classes'),
-					layer: this.uniformConfig.SwitcherLLayers.PrimaryMixEffectClone,
+					layer: this.uniformConfig.switcherLLayers.primaryMixEffectClone,
 					metaData: { ...properties.metaData, context: `Clone of Primary MixEffect timeline object ${primaryId}` }
 				})
 			)
 		}
-		if (this.uniformConfig.SwitcherLLayers.NextPreviewMixEffect && properties.content.input) {
+		if (this.uniformConfig.switcherLLayers.nextPreviewMixEffect && properties.content.input) {
 			result.push(
 				this.getMixEffectTimelineObject({
 					..._.omit(properties, 'content', 'classes'),
 					content: { previewInput: properties.content.input },
-					layer: this.uniformConfig.SwitcherLLayers.NextPreviewMixEffect,
+					layer: this.uniformConfig.switcherLLayers.nextPreviewMixEffect,
 					metaData: { ...properties.metaData, context: `Preview Lookahead for ${primaryId}` }
 				})
 			)
 		}
-		if (this.uniformConfig.SwitcherLLayers.NextAux && properties.content.input) {
+		if (this.uniformConfig.switcherLLayers.nextAux && properties.content.input) {
 			result.push(
 				this.getAuxTimelineObject({
 					..._.omit(properties, 'content', 'classes'),
 					priority: 0, // lower than lookahead-lookahead
 					content: { input: properties.content.input },
-					layer: this.uniformConfig.SwitcherLLayers.NextAux,
+					layer: this.uniformConfig.switcherLLayers.nextAux,
 					metaData: { ...properties.metaData, context: `Aux Lookahead for ${primaryId}` }
 				})
 			)
@@ -106,4 +106,12 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 
 	public abstract getDskTimelineObject(properties: DskProps): TSR.TSRTimelineObj
 	public abstract getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
+
+	protected logWrongTimelineObjectType(timelineObject: TSR.TSRTimelineObj, functionName: string) {
+		this.core.logWarning(
+			`Modifying an incompatible timeline object (${JSON.stringify(
+				_.pick(timelineObject.content, 'deviceType', 'type')
+			)}) in ${functionName}`
+		)
+	}
 }

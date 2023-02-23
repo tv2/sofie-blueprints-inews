@@ -4,7 +4,6 @@ import { CueType, SharedGraphicLLayer } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../../__mocks__/context'
 
 function makeMockContext() {
-	// @todo: perhaps make the tests run with two contexts
 	return makeMockGalleryContext()
 }
 
@@ -63,7 +62,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const generator = makeGeneratorForOvl()
 			const pilotContent = generator.getContent()
 			const timelineObjects = pilotContent.timelineObjects.filter(
-				tlObject =>
+				(tlObject) =>
 					tlObject.content.deviceType === TSR.DeviceType.CASPARCG &&
 					(tlObject as TSR.TimelineObjCCGTemplate).content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE
 			)
@@ -97,7 +96,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const generator = makeGeneratorForOvl()
 			const pilotContent = generator.getContent()
 			const timelineObjects = pilotContent.timelineObjects.filter(
-				tlObject =>
+				(tlObject) =>
 					tlObject.content.deviceType === TSR.DeviceType.ATEM &&
 					(tlObject as TSR.TimelineObjAtemDSK).content.type === TSR.TimelineContentTypeAtem.DSK
 			)
@@ -133,7 +132,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const generator = makeGeneratorForFull()
 			const pilotContent = generator.getContent()
 			const timelineObjects = pilotContent.timelineObjects.filter(
-				tlObject =>
+				(tlObject) =>
 					tlObject.content.deviceType === TSR.DeviceType.CASPARCG &&
 					(tlObject as TSR.TimelineObjCCGTemplate).content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE
 			)

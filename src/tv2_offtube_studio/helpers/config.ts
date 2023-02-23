@@ -36,7 +36,6 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	}
 
 	AtemSettings: {}
-	TriCasterSettings: {}
 
 	AudioBedSettings: {
 		fadeIn: number
@@ -50,7 +49,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 }
 
 export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
-	const studioConfig = (rawConfig as unknown) as OfftubeStudioConfig
+	const studioConfig = rawConfig as unknown as OfftubeStudioConfig
 	const config: OfftubeStudioBlueprintConfig = {
 		studio: rawConfig as any,
 		// showStyle: {} as any,

@@ -316,7 +316,7 @@ export function MakeContentDVE2<
 					},
 					metaData: {
 						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
-					},
+					}
 				}),
 				...context.videoSwitcher.getOnAirTimelineObjects({
 					enable: { start: context.config.studio.CasparPrerollDuration },
@@ -406,7 +406,7 @@ const setBoxToBlack = (boxConfig: BoxConfig, boxSources: BoxSources) => {
 
 function makeBoxAssignments(inputs: string[], context: IShowStyleUserContext, sources: DVESources | undefined) {
 	const boxAssignments: Array<SourceDefinition | undefined> = []
-	inputs.forEach(source => {
+	inputs.forEach((source) => {
 		const sourceProps = source.split(':')
 		const fromCue = sourceProps[1]
 		const targetBox = Number(sourceProps[0])
@@ -433,10 +433,7 @@ function makeBoxAssignments(inputs: string[], context: IShowStyleUserContext, so
 	return boxAssignments
 }
 
-function boxSource(info: {
-	port: number
-	sourceLayerType: SourceLayerType
-}): {
+function boxSource(info: { port: number; sourceLayerType: SourceLayerType }): {
 	switcherInput: number
 	type: SourceLayerType
 } {

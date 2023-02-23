@@ -10,7 +10,6 @@ import { VideoSwitcherImpl } from '../VideoSwitcher'
 const DURATION: number = 50
 
 function setupAtem(studioConfigOverrides?: Partial<TV2StudioConfigBase>) {
-	// @todo: is this the correct way?
 	const context = makeMockGalleryContext({
 		studioConfig: { SwitcherType: SwitcherType.ATEM, ...studioConfigOverrides }
 	})

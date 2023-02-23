@@ -8,7 +8,7 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	CalculateTime,
+	calculateTime,
 	CueDefinitionGraphicDesign,
 	ExtendedShowStyleContext,
 	getHtmlTemplateName,
@@ -27,7 +27,7 @@ export function EvaluateDesignBase(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 	if (!parsedCue.design || !parsedCue.design.length) {
 		context.core.notifyUserWarning(`No valid design found for ${parsedCue.design}`)
 		return

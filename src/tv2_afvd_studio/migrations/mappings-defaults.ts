@@ -9,7 +9,6 @@ import {
 	getTriCasterDskMappings,
 	literal,
 	prefixLayers,
-	SisyfosPlayerClip,
 	TRICASTER_CLEAN_ME,
 	TRICASTER_DEVICE_ID,
 	TRICASTER_DVE_ME,
@@ -25,7 +24,6 @@ import {
 	SwitcherMixEffectLLayer
 } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import { GalleryStudioConfig } from '../helpers/config'
 import { CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
@@ -769,14 +767,6 @@ export const MAPPINGS_TRICASTER = prefixLayers<TSR.MappingTriCaster & BlueprintM
 		name: TRICASTER_DVE_ME
 	},
 	...getTriCasterDskMappings()
-	// @todo: are we using media players in the TriCaster?
-	// [SwitcherMediaPlayerLLayer.Mp1]: {
-	// 	device: TSR.DeviceType.TRICASTER,
-	// 	deviceId: TRICASTER_DEVICE_ID,
-	// 	lookahead: LookaheadMode.NONE,
-	// 	mappingType: TSR.MappingAtemType.MediaPlayer,
-	// 	index: 0
-	// }
 })
 
 export const MAPPINGS_TELEMETRICS: BlueprintMappings = {
@@ -796,40 +786,3 @@ export default literal<BlueprintMappings>({
 	...MAPPINGS_TRICASTER,
 	...MAPPINGS_TELEMETRICS
 })
-
-export function getMediaPlayerMappings(mediaPlayers: GalleryStudioConfig['mediaPlayers']) {
-	const res: BlueprintMappings = {
-		casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
-			device: TSR.DeviceType.ABSTRACT,
-			deviceId: 'abstract0',
-			lookahead: LookaheadMode.PRELOAD,
-			lookaheadDepth: mediaPlayers.length // Number of players
-		}),
-		sisyfos_source_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
-			device: TSR.DeviceType.ABSTRACT,
-			deviceId: 'abstract0',
-			lookahead: LookaheadMode.NONE
-		})
-	}
-
-	for (const mp of mediaPlayers) {
-		res[CasparPlayerClip(mp.id)] = literal<TSR.MappingCasparCG & BlueprintMapping>({
-			device: TSR.DeviceType.CASPARCG,
-			deviceId: 'caspar01',
-			lookahead: LookaheadMode.NONE,
-			channel: 0, // TODO?
-			layer: 110
-		})
-		res[SisyfosPlayerClip(mp.id)] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-			device: TSR.DeviceType.SISYFOS,
-			deviceId: 'sisyfos0',
-			lookahead: LookaheadMode.NONE,
-			channel: Number(mp.id) || 0,
-			mappingType: TSR.MappingSisyfosType.CHANNEL,
-			layerName: `Server ${mp.id === '1' ? 'A' : 'B'}`,
-			setLabelToLayerName: true
-		})
-	}
-
-	return res
-}

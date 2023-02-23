@@ -1,18 +1,5 @@
-import { AbstractLLayer, SharedCasparLLayer, SharedGraphicLLayer, SharedSisyfosLLayer } from 'tv2-constants'
+import { SharedCasparLLayer, SharedGraphicLLayer, SharedSisyfosLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-
-/** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
-export function RealLLayers(): string[] {
-	return (
-		_.values(OfftubeSisyfosLLayer)
-			// @ts-ignore
-			.concat(_.values(OfftubeCasparLLayer))
-			// @ts-ignore
-			.concat(_.values(AbstractLLayer))
-			// @ts-ignore
-			.concat(_.values(SharedGraphicLLayer))
-	)
-}
 
 enum SisyfosLLayer {
 	SisyfosConfig = 'sisyfos_config',

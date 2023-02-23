@@ -2,10 +2,10 @@ import { GraphicsContent, IBlueprintPiece, PieceLifespan, TSR, WithTimeline } fr
 import {
 	CueDefinitionGraphic,
 	CueDefinitionTelefon,
+	getDskLLayerName,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	literal,
-	LLayerDSK,
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
@@ -104,7 +104,7 @@ describe('telefon', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: prefixLayer(LLayerDSK(0)),
+							layer: prefixLayer(getDskLLayerName(0)),
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.DSK,

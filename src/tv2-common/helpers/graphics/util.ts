@@ -17,7 +17,7 @@ export function ApplyFullGraphicPropertiesToPart(config: TV2ShowStyleConfig, par
 	}
 }
 
-export function CreateGraphicBaseline(config: TV2ShowStyleConfig): TSR.TSRTimelineObj[] {
+export function getGraphicBaseline(config: TV2ShowStyleConfig): TSR.TSRTimelineObj[] {
 	if (config.studio.GraphicsType === 'VIZ') {
 		return []
 	} else {

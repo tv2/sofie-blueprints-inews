@@ -29,25 +29,6 @@ import { CasparLLayer } from '../layers'
 
 const SEGMENT_EXTERNAL_ID = '00000000'
 
-// function makeMockGalleryContext(): ExtendedSegmentContext<GalleryBlueprintConfig> {
-// 	const mockCoreContext = new SegmentUserContext(
-// 		'mock_context',
-// 		mappingsDefaults,
-// 		parseStudioConfig,
-// 		parseShowStyleConfig,
-// 		rundown._id
-// 	)
-// 	mockCoreContext.studioConfig = defaultStudioConfig as any
-// 	mockCoreContext.showStyleConfig = defaultShowStyleConfig as any
-// 	const mockContext: ExtendedSegmentContext<GalleryBlueprintConfig> = {
-// 		core: mockCoreContext,
-// 		 // @todo: this is awful, fix it perhaps by replacing defaultShowStyleConfig and defaultStudioConfig with preparsed config?!
-// 		config: { ...(mockCoreContext.getStudioConfig() as any), ...(mockCoreContext.getShowStyleConfig() as any) },
-// 		videoSwitcher: new MockSwitcher()
-// 	}
-// 	return mockContext
-// }
-
 describe('Graphics', () => {
 	it('Throws warning for unpaired target and creates invalid part', async () => {
 		const context = makeMockGalleryContext()
@@ -74,7 +55,7 @@ describe('Graphics', () => {
 
 		const result = await CreatePartGrafik(context, partDefintion, 0)
 
-		expect((context.core as SegmentUserContext).getNotes().map(msg => msg.message)).toEqual([
+		expect((context.core as SegmentUserContext).getNotes().map((msg) => msg.message)).toEqual([
 			`No graphic found after GRAFIK cue`
 		])
 		expect(result.pieces).toHaveLength(0)
@@ -110,7 +91,7 @@ describe('Graphics', () => {
 
 		CreatePartGrafik(context, partDefinition, 0)
 
-		expect((context.core as SegmentUserContext).getNotes().map(msg => msg.message)).toEqual([
+		expect((context.core as SegmentUserContext).getNotes().map((msg) => msg.message)).toEqual([
 			`Graphic found without target engine`
 		])
 	})
@@ -156,7 +137,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(7) // @todo: this depends on unrelated configuration
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
@@ -219,7 +200,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '!.full' })
@@ -275,7 +256,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '1' })
@@ -328,7 +309,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(7)
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
@@ -381,12 +362,12 @@ describe('Graphics', () => {
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(3)
-		const auxPiece = result.pieces.find(p => p.outputLayerId === SharedOutputLayers.AUX)!
+		const auxPiece = result.pieces.find((p) => p.outputLayerId === SharedOutputLayers.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
 		expect(auxPiece.sourceLayerId).toBe(SourceLayer.VizFullIn1)
 		expect(auxPiece.lifespan).toBe(PieceLifespan.WithinPart)
 		const auxObj = (auxPiece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj => obj.content.deviceType === TSR.DeviceType.ATEM && obj.content.type === TSR.TimelineContentTypeAtem.AUX
+			(obj) => obj.content.deviceType === TSR.DeviceType.ATEM && obj.content.type === TSR.TimelineContentTypeAtem.AUX
 		) as TSR.TimelineObjAtemAUX | undefined
 		expect(auxObj).toBeTruthy()
 		expect(auxObj?.enable).toEqual({ start: 0 })
@@ -460,7 +441,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
+			(obj) =>
 				obj.content.deviceType === TSR.DeviceType.CASPARCG && obj.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
 		) as TSR.TimelineObjCCGMedia | undefined
 		expect(tlObj).toBeTruthy()
@@ -510,7 +491,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsLower)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
+			(obj) =>
 				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined

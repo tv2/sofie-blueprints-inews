@@ -2,11 +2,12 @@ import { MigrationStepStudio, TSR } from 'blueprints-integration'
 import {
 	AddKeepAudio,
 	addSourceToSourcesConfig,
+	convertStudioTableColumnToFloat,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
 	PrefixEvsWithEvs,
 	RemoveConfig,
-	RenameStudioConfig,
+	renameStudioConfig,
 	renameStudioTableColumn,
 	SetConfigTo,
 	SetLayerNamesToDefaults
@@ -108,7 +109,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 		'viz_layer_pilot',
 		'viz_layer_pilot_overlay',
 		'viz_layer_wall'
-	].map(layer => renameMapping('0.2.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
+	].map((layer) => renameMapping('0.2.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
 	AddKeepAudio('0.2.0', 'SourcesRM'),
 	MoveClipSourcePath('0.2.0', 'AFVD'),
 	...[
@@ -142,24 +143,24 @@ export const studioMigrations: MigrationStepStudio[] = [
 		'sisyfos_source_evs_1',
 		'sisyfos_source_evs_2',
 		'sisyfos_resync'
-	].map(layer => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
+	].map((layer) => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', SisyfosLLAyer.SisyfosGroupStudioMics),
 	GetMappingDefaultMigrationStepForLayer('1.3.2', CasparLLayer.CasparCGLYD, true),
 	GetMappingDefaultMigrationStepForLayer('1.4.0', CasparLLayer.CasparPlayerClipPending, true),
 	GetMappingDefaultMigrationStepForLayer('1.4.5', CasparLLayer.CasparPlayerClipPending, true),
 
-	RenameStudioConfig('1.4.6', 'AFVD', 'MediaFlowId', 'ClipMediaFlowId'),
-	RenameStudioConfig('1.4.6', 'AFVD', 'NetworkBasePath', 'NetworkBasePathClip'),
-	RenameStudioConfig('1.4.6', 'AFVD', 'JingleBasePath', 'NetworkBasePathJingle'),
+	renameStudioConfig('1.4.6', 'AFVD', 'MediaFlowId', 'ClipMediaFlowId'),
+	renameStudioConfig('1.4.6', 'AFVD', 'NetworkBasePath', 'NetworkBasePathClip'),
+	renameStudioConfig('1.4.6', 'AFVD', 'JingleBasePath', 'NetworkBasePathJingle'),
 
-	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotCutToMediaPlayer', 'VizPilotGraphics.CutToMediaPlayer'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotKeepaliveDuration', 'VizPilotGraphics.KeepAliveDuration'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotOutTransitionDuration', 'VizPilotGraphics.OutTransitionDuration'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotPrerollDuration', 'VizPilotGraphics.PrerollDuration'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'FullFrameGrafikBackground', 'VizPilotGraphics.FullGraphicBackground'),
+	renameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotCutToMediaPlayer', 'VizPilotGraphics.CutToMediaPlayer'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotKeepaliveDuration', 'VizPilotGraphics.KeepAliveDuration'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotOutTransitionDuration', 'VizPilotGraphics.OutTransitionDuration'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotPrerollDuration', 'VizPilotGraphics.PrerollDuration'),
+	renameStudioConfig('1.5.0', 'AFVD', 'FullFrameGrafikBackground', 'VizPilotGraphics.FullGraphicBackground'),
 
 	renameMapping('1.5.1', 'studio0_adlib_viz_cmd', 'studio0_adlib_graphic_cmd'),
 
@@ -182,10 +183,10 @@ export const studioMigrations: MigrationStepStudio[] = [
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
 	removeMapping('1.6.1', 'atem_dsk_efect'),
 
-	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'), // @todo: check what this does because it does not seem right
+	renameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'), // @todo: check what this does because it does not seem right
 	RemoveConfig('1.6.2', 'AFVD', 'SourcesSkype'),
 
-	RenameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
+	renameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
 	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesReplay', {
 		SourceName: 'EPSIO',
 		SwitcherSource: 25,
@@ -203,12 +204,14 @@ export const studioMigrations: MigrationStepStudio[] = [
 	renameMapping('1.7.8', 'graphic_pilot_overlay', 'graphic_overlay_pilot'),
 
 	/**
-	 * 1.8.0 (@todo version)
+	 * 1.8.0
 	 */
-	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map(tableName =>
+	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map((tableName) =>
 		renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')
 	),
-	RenameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),
+	renameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),
+	convertStudioTableColumnToFloat('1.8.0', 'SwitcherSource.DSK', 'Clip'),
+	convertStudioTableColumnToFloat('1.8.0', 'SwitcherSource.DSK', 'Gain'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

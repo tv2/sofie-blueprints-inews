@@ -147,7 +147,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.6.3
 	 * - Hide DSK toggle layers
 	 */
-	...GetDSKSourceLayerNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME).map(layerName =>
+	...GetDSKSourceLayerNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME).map((layerName) =>
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 

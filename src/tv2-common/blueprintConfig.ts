@@ -106,7 +106,6 @@ export interface TV2StudioConfigBase {
 		DSK: TableConfigItemDSK[]
 		Dip: number
 	}
-	TriCasterSettings: {}
 	AtemSettings: {}
 	StudioMics: string[]
 	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]

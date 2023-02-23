@@ -77,7 +77,7 @@ export class Atem extends VideoSwitcherImpl {
 		transitionDuration?: number | undefined
 	): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updateTransition.name)
 			return timelineObject
 		}
 		timelineObject.content.me.transition = this.getTransition(transition)
@@ -89,7 +89,7 @@ export class Atem extends VideoSwitcherImpl {
 		previewInput: number | SpecialInput
 	): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updatePreviewInput.name)
 			return timelineObject
 		}
 		timelineObject.content.me.previewInput = this.getInputNumber(previewInput)
@@ -97,7 +97,7 @@ export class Atem extends VideoSwitcherImpl {
 	}
 	public updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updateInput.name)
 			return timelineObject
 		}
 		timelineObject.content.me.input = this.getInputNumber(input)
@@ -194,7 +194,7 @@ export class Atem extends VideoSwitcherImpl {
 	}
 	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
 		if (!this.isAux(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updateAuxInput.name)
 			return timelineObject
 		}
 		timelineObject.content.aux.input = this.getInputNumber(input)
@@ -263,7 +263,7 @@ export class Atem extends VideoSwitcherImpl {
 		if (!keyers?.length) {
 			return
 		}
-		return keyers.map(keyer => ({
+		return keyers.map((keyer) => ({
 			upstreamKeyerId: keyer.config.Number,
 			onAir: keyer.onAir,
 			mixEffectKeyType: 0,

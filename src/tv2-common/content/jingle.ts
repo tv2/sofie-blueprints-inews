@@ -66,7 +66,7 @@ export function CreateJingleContentBase<
 			...getDskOnAirTimelineObjects(context, DSKRoles.JINGLE, { start: Number(config.studio.CasparPrerollDuration) }),
 
 			// @todo: this is a Qbox-only feature, should be refactored at some point not to use ATEM object directly
-			...(context.uniformConfig.SwitcherLLayers.JingleNextMixEffect
+			...(context.uniformConfig.switcherLLayers.jingleNextMixEffect
 				? [
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
@@ -75,7 +75,7 @@ export function CreateJingleContentBase<
 								duration: 1
 							},
 							priority: 1,
-							layer: context.uniformConfig.SwitcherLLayers.JingleNextMixEffect,
+							layer: context.uniformConfig.switcherLLayers.jingleNextMixEffect,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
@@ -108,7 +108,7 @@ export function CreateJingleContentBase<
 								start: 1
 							},
 							priority: 1,
-							layer: context.uniformConfig.SwitcherLLayers.JingleNextMixEffect,
+							layer: context.uniformConfig.switcherLLayers.jingleNextMixEffect,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,

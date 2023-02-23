@@ -8,7 +8,7 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	CalculateTime,
+	calculateTime,
 	CueDefinitionBackgroundLoop,
 	ExtendedShowStyleContext,
 	literal,
@@ -28,7 +28,7 @@ export function EvaluateCueBackgroundLoop(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 
 	if (parsedCue.target === 'DVE') {
 		const fileName = parsedCue.backgroundLoop

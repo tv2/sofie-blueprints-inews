@@ -8,7 +8,7 @@ export function EvaluateCueMixMinus(
 	part: PartDefinition,
 	parsedCue: CueDefinitionMixMinus
 ) {
-	if (!context.uniformConfig.SwitcherLLayers.MixMinusAux) {
+	if (!context.uniformConfig.switcherLLayers.mixMinusAux) {
 		context.core.notifyUserWarning(`Mix-Minus out not available in this studio (MINUSKAM)`)
 		return
 	}

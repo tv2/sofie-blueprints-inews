@@ -218,6 +218,8 @@ export enum SwitcherDveLLayer {
 	DveBoxes = 'dve_boxes'
 }
 
+export type SwitcherDskLLayer = `dsk_${number}`
+
 export enum SwitcherMediaPlayerLLayer {
 	Mp1 = 'mp1'
 }

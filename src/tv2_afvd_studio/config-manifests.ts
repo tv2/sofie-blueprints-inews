@@ -378,14 +378,6 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: true
 	},
 	{
-		id: 'TriCasterSettings.DveMixEffect',
-		name: 'TriCaster DVE MixEffect',
-		description: 'TriCaster MixEffect used to make DVEs',
-		type: ConfigManifestEntryType.BOOLEAN,
-		required: false,
-		defaultVal: true
-	},
-	{
 		id: 'AudioBedSettings.fadeIn',
 		name: 'Bed Fade In',
 		description: 'Default fade in duration for audio beds',

@@ -53,12 +53,7 @@ export function joinAssetToNetworkPath(
 	// Replace every `\\` with `\`, then replace every `\` with `/`
 	const folderWithForwardSlashes = folder?.replace(/\\\\/g, '/').replace(/\\/g, '/')
 	const assetWithForwardSlashes = assetFile.replace(/\\\\/g, '/').replace(/\\/g, '/')
-	const networkPathWithForwardSlashes =
-		networkPath[0] +
-		networkPath
-			.slice(1)
-			.replace(/\\\\/g, '/')
-			.replace(/\\/g, '/')
+	const networkPathWithForwardSlashes = networkPath[0] + networkPath.slice(1).replace(/\\\\/g, '/').replace(/\\/g, '/')
 
 	// Remove trailing/leading slash from folder and leading slash from asset
 	const folderWithoutLeadingTrailingSlashes = folderWithForwardSlashes?.replace(/\/+$/, '').replace(/^\/+/, '')
