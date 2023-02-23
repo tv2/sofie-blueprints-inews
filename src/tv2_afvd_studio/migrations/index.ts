@@ -209,6 +209,8 @@ export const studioMigrations: MigrationStepStudio[] = [
 		renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')
 	),
 	RenameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),
+	RenameStudioConfig('1.8.0', 'AFVD', 'SwitcherSource.SplitArtF', 'SwitcherSource.SplitArtFill'),
+	RenameStudioConfig('1.8.0', 'AFVD', 'SwitcherSource.SplitArtK', 'SwitcherSource.SplitArtKey'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

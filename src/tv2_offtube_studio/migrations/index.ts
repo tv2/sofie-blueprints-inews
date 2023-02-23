@@ -5,6 +5,7 @@ import {
 	MoveSourcesToTable,
 	RemoveConfig,
 	RenameStudioConfig,
+	renameStudioTableColumn,
 	SetConfigTo,
 	SetLayerNamesToDefaults
 } from 'tv2-common'
@@ -364,6 +365,16 @@ export const studioMigrations: MigrationStepStudio[] = [
 	 */
 	removeMapping('1.7.8', 'graphic_pilot_overlay'),
 	GetMappingDefaultMigrationStepForLayer('1.7.8', 'graphic_overlay_pilot', true),
+
+	/**
+	 * 1.8.0
+	 */
+	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map(tableName =>
+		renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')
+	),
+	RenameStudioConfig('1.8.0', 'Offtube', 'AtemSource', 'SwitcherSource'),
+	RenameStudioConfig('1.8.0', 'Offtube', 'SwitcherSource.SplitArtF', 'SwitcherSource.SplitArtFill'),
+	RenameStudioConfig('1.8.0', 'Offtube', 'SwitcherSource.SplitArtK', 'SwitcherSource.SplitArtKey'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
