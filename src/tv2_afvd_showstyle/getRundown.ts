@@ -55,7 +55,6 @@ import {
 	SharedOutputLayers,
 	SourceType,
 	SwitcherAuxLLayer,
-	SwitcherDveLLayer,
 	SwitcherMixEffectLLayer,
 	TallyTags
 } from 'tv2-constants'
@@ -920,61 +919,45 @@ function getBaseline(
 					]
 				}
 			}),
-			literal<TSR.TimelineObjAtemSsrcProps>({
-				id: '',
+			...videoSwitcher.getDveTimelineObjects({
 				enable: { while: '1' },
-				priority: 0,
-				layer: SwitcherDveLLayer.Dve,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
-					ssrcProps: {
-						artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
-						artCutSource: context.config.studio.SwitcherSource.SplitArtKey,
-						artOption: 1,
-						artPreMultiplied: true
-					}
-				}
-			}),
-			literal<TSR.TimelineObjAtemSsrc>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: SwitcherDveLLayer.DveBoxes,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.SSRC,
-					ssrc: {
-						boxes: [
-							{
-								// left
-								enabled: true,
-								source: AtemSourceIndex.Bars,
-								size: 580,
-								x: -800,
-								y: 50,
-								cropped: true,
-								cropRight: 2000
-							},
-							{
-								// right
-								enabled: true,
-								source: AtemSourceIndex.Bars,
-								size: 580,
-								x: 800,
-								y: 50
-								// note: this sits behind box1, so don't crop it to ensure there is no gap between
-							},
-							{
-								// box 3
-								enabled: false
-							},
-							{
-								// box 4
-								enabled: false
-							}
-						]
-					}
+					boxes: [
+						{
+							// left
+							enabled: true,
+							source: AtemSourceIndex.Bars,
+							size: 580,
+							x: -800,
+							y: 50,
+							cropped: true,
+							cropRight: 2000
+						},
+						{
+							// right
+							enabled: true,
+							source: AtemSourceIndex.Bars,
+							size: 580,
+							x: 800,
+							y: 50
+							// note: this sits behind box1, so don't crop it to ensure there is no gap between
+						},
+						{
+							// box 3
+							enabled: false
+						},
+						{
+							// box 4
+							enabled: false
+						}
+					],
+					template: {
+						properties: {
+							artPreMultiplied: true
+						}
+					},
+					artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
+					artCutSource: context.config.studio.SwitcherSource.SplitArtKey
 				}
 			}),
 			literal<TSR.TimelineObjCCGMedia>({
