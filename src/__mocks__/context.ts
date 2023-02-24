@@ -646,13 +646,6 @@ export interface PartNote {
 	message: string
 }
 
-// @ts-ignore
-class MockVideoSwitcher implements VideoSwitcher {
-	public getMixEffectTimelineObject = (properties: MixEffectProps) => properties as any as TSR.TSRTimelineObj
-	public getDskTimelineObjects = (properties: DskProps) => [properties] as any as TSR.TSRTimelineObj[]
-	public getAuxTimelineObject = (properties: AuxProps) => properties as any as TSR.TSRTimelineObj
-}
-
 export interface MockConfigOverrides {
 	studioConfig?: Partial<TV2StudioConfigBase>
 	showStyleConfig?: Partial<GalleryShowStyleConfig>

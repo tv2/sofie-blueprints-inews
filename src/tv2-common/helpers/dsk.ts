@@ -47,11 +47,10 @@ export function getDskOnAirTimelineObjects(
 	enable?: TSR.TSRTimelineObj['enable']
 ): TSR.TSRTimelineObj[] {
 	const dskConf = FindDSKWithRoles(context.config, [dskRole])
+	enable = enable ?? { start: 0 }
 	return [
 		context.videoSwitcher.getDskTimelineObject({
-			enable: enable ?? {
-				start: 0
-			},
+			enable,
 			priority: 1,
 			layer: getDskLLayerName(dskConf.Number),
 			content: {
@@ -62,9 +61,7 @@ export function getDskOnAirTimelineObjects(
 		...(dskRole === DSKRoles.JINGLE && context.uniformConfig.switcherLLayers.jingleUskMixEffect
 			? [
 					context.videoSwitcher.getMixEffectTimelineObject({
-						enable: enable ?? {
-							start: 0
-						},
+						enable,
 						priority: 1,
 						layer: context.uniformConfig.switcherLLayers.jingleUskMixEffect,
 						content: {
