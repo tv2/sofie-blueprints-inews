@@ -1,4 +1,4 @@
-import { TSR } from '../../../../tv-automation-server-core/packages/blueprints-integration'
+import { TSR } from 'blueprints-integration'
 
 export interface TriCasterDveConverter {
 	convertPosition(x: number, y: number): TSR.TriCasterLayer['position']
