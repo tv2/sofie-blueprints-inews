@@ -15,6 +15,7 @@ import {
 	VideoSwitcher
 } from 'tv2-common'
 import _ = require('underscore')
+import { AtemToTricasterDveConverter } from './atemToTricasterDveConverter'
 
 export abstract class VideoSwitcherImpl implements VideoSwitcher {
 	public static getVideoSwitcher(
@@ -24,7 +25,7 @@ export abstract class VideoSwitcherImpl implements VideoSwitcher {
 	): VideoSwitcherImpl {
 		return config.studio.SwitcherType === SwitcherType.ATEM
 			? new Atem(core, config, uniformConfig)
-			: new TriCaster(core, config, uniformConfig)
+			: new TriCaster(core, config, uniformConfig, new AtemToTricasterDveConverter())
 	}
 	public abstract readonly type: SwitcherType
 	public abstract isDsk: (timelineObject: TimelineObjectCoreExt) => boolean

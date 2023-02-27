@@ -1,9 +1,8 @@
-import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { literal, TimeFromFrames } from 'tv2-common'
+import { IStudioContext, TimelineObjectCoreExt, TSR } from 'blueprints-integration'
+import { literal, TimeFromFrames, TV2StudioConfig, UniformConfig } from 'tv2-common'
 import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'
-import { AtemToTricasterDveConverter } from './atemToTricasterDveConverter'
 import { TriCasterDveConverter } from './TriCasterDveConverter'
 import {
 	AuxProps,
@@ -50,7 +49,17 @@ export class TriCaster extends VideoSwitcherImpl {
 	public isAux = TSR.isTimelineObjTriCasterMixOutput
 	public isVideoSwitcherTimelineObject = TSR.isTimelineObjTriCaster
 
-	private dveConverter: TriCasterDveConverter = new AtemToTricasterDveConverter()
+	private dveConverter: TriCasterDveConverter
+
+	constructor(
+		core: IStudioContext,
+		config: TV2StudioConfig,
+		uniformConfig: UniformConfig,
+		dveConverter: TriCasterDveConverter
+	) {
+		super(core, config, uniformConfig)
+		this.dveConverter = dveConverter
+	}
 
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjTriCasterME {
 		const { content } = props

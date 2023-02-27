@@ -1,20 +1,20 @@
-import { TSR } from 'blueprints-integration'
-import { literal } from 'tv2-common'
-import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
-import { makeMockGalleryContext } from '../../../__mocks__/context'
-import { TV2StudioConfigBase } from '../../../tv2-common/blueprintConfig'
-import { AuxProps, DskProps, MixEffectProps, SwitcherType, TransitionStyle } from '../types'
-import { VideoSwitcherImpl } from '../VideoSwitcher'
+import { IStudioContext, TSR } from 'blueprints-integration'
+import { instance, mock, when } from 'ts-mockito'
+import { literal, TriCaster, TV2StudioConfig, TV2StudioConfigBase, UniformConfig } from 'tv2-common'
+import { SwitcherAuxLLayer, SwitcherDveLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
+import { TriCasterDveConverter } from '../TriCasterDveConverter'
+import { AuxProps, DskProps, MixEffectProps, TransitionStyle } from '../types'
 
 const DURATION_FRAMES: number = 50
 const DURATION_SECONDS: number = DURATION_FRAMES / 25
 
-function setupTriCaster(studioConfigOverrides?: Partial<TV2StudioConfigBase>) {
-	// @todo: is this the correct way?
-	const context = makeMockGalleryContext({
-		studioConfig: { SwitcherType: SwitcherType.TRICASTER, ...studioConfigOverrides }
-	})
-	return VideoSwitcherImpl.getVideoSwitcher(context.core, context.config, context.uniformConfig)
+function createTestee(studioMock?: TV2StudioConfig): TriCaster {
+	const context = mock<IStudioContext>()
+	const config = studioMock ?? mock<TV2StudioConfig>()
+	const uniformConfig = mock<UniformConfig>()
+	const dveConverter = mock<TriCasterDveConverter>()
+
+	return new TriCaster(context, config, uniformConfig, dveConverter)
 }
 
 describe('TriCaster', () => {
@@ -26,8 +26,8 @@ describe('TriCaster', () => {
 			}
 		}
 		test('sets timeline object defaults', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject(DEFAULT_ME)
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
 				id: '',
 				enable: { start: 0 },
@@ -40,8 +40,8 @@ describe('TriCaster', () => {
 		})
 
 		test('sets classes', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject({
 				...DEFAULT_ME,
 				classes: ['classA', 'classB']
 			})
@@ -51,8 +51,8 @@ describe('TriCaster', () => {
 		})
 
 		test('sets metaData', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject({
 				...DEFAULT_ME,
 				metaData: { context: 'Some Context', mediaPlayerSession: 'mySession' }
 			})
@@ -62,16 +62,16 @@ describe('TriCaster', () => {
 		})
 
 		test('sets layer prefix', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject(DEFAULT_ME)
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
 				layer: prefixLayer(SwitcherMixEffectLLayer.Program)
 			})
 		})
 
 		test('sets programInput', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject(DEFAULT_ME)
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
 				content: {
 					me: {
@@ -82,8 +82,8 @@ describe('TriCaster', () => {
 		})
 
 		test('sets previewInput', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					previewInput: 5
@@ -99,8 +99,8 @@ describe('TriCaster', () => {
 		})
 
 		test('supports MIX', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					input: 5,
@@ -122,8 +122,8 @@ describe('TriCaster', () => {
 		})
 
 		test('supports WIPE', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					input: 3,
@@ -146,14 +146,16 @@ describe('TriCaster', () => {
 
 		test('supports WIPE for GFX', () => {
 			const wipeRate = 22
-			const triCaster = setupTriCaster({
+			const config = mock<TV2StudioConfig>()
+			when(config.studio).thenReturn(({
 				HTMLGraphics: {
 					GraphicURL: 'donotcare',
 					TransitionSettings: { wipeRate, borderSoftness: 20, loopOutTransitionDuration: 15 },
 					KeepAliveDuration: 120
 				}
-			})
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			} as any) as TV2StudioConfigBase)
+			const testee: TriCaster = createTestee(instance(config))
+			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					input: 5,
@@ -174,8 +176,8 @@ describe('TriCaster', () => {
 		})
 
 		test('supports DIP', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					input: 5,
@@ -197,8 +199,8 @@ describe('TriCaster', () => {
 		})
 
 		test('supports keyers', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getMixEffectTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
 					keyers: [
@@ -240,8 +242,8 @@ describe('TriCaster', () => {
 			}
 		}
 		test('sets timeline object defaults', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getAuxTimelineObject(DEFAULT_AUX)
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getAuxTimelineObject(DEFAULT_AUX)
 			expect(timelineObject).toMatchObject({
 				id: '',
 				enable: { start: 0 },
@@ -254,8 +256,8 @@ describe('TriCaster', () => {
 		})
 
 		test('sets classes', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getAuxTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getAuxTimelineObject({
 				...DEFAULT_AUX,
 				classes: ['classA', 'classB']
 			})
@@ -265,8 +267,8 @@ describe('TriCaster', () => {
 		})
 
 		test('sets metaData', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getAuxTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getAuxTimelineObject({
 				...DEFAULT_AUX,
 				metaData: { context: 'Some Context', mediaPlayerSession: 'mySession' }
 			})
@@ -276,17 +278,17 @@ describe('TriCaster', () => {
 		})
 
 		test('sets layer prefix', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getAuxTimelineObject(DEFAULT_AUX)
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getAuxTimelineObject(DEFAULT_AUX)
 			expect(timelineObject).toMatchObject({
 				layer: prefixLayer(SwitcherAuxLLayer.AuxClean)
 			})
 		})
 
 		test('sets aux source', () => {
-			const triCaster = setupTriCaster()
+			const testee: TriCaster = createTestee()
 
-			const timelineObject = triCaster.getAuxTimelineObject(DEFAULT_AUX)
+			const timelineObject = testee.getAuxTimelineObject(DEFAULT_AUX)
 
 			expect(timelineObject).toMatchObject({
 				content: {
@@ -313,8 +315,8 @@ describe('TriCaster', () => {
 			}
 		}
 		test('sets timeline object defaults', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getDskTimelineObject(DEFAULT_DSK)
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getDskTimelineObject(DEFAULT_DSK)
 			expect(timelineObject).toMatchObject({
 				id: '',
 				enable: { start: 0 },
@@ -327,8 +329,8 @@ describe('TriCaster', () => {
 		})
 
 		test('sets classes', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getDskTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getDskTimelineObject({
 				...DEFAULT_DSK,
 				classes: ['classA', 'classB']
 			})
@@ -338,8 +340,8 @@ describe('TriCaster', () => {
 		})
 
 		test('sets metaData', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getDskTimelineObject({
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getDskTimelineObject({
 				...DEFAULT_DSK,
 				metaData: { context: 'Some Context', mediaPlayerSession: 'mySession' }
 			})
@@ -349,17 +351,17 @@ describe('TriCaster', () => {
 		})
 
 		test('sets layer prefix', () => {
-			const triCaster = setupTriCaster()
-			const timelineObject = triCaster.getDskTimelineObject(DEFAULT_DSK)
+			const testee: TriCaster = createTestee()
+			const timelineObject = testee.getDskTimelineObject(DEFAULT_DSK)
 			expect(timelineObject).toMatchObject({
 				layer: prefixLayer('dsk_1')
 			})
 		})
 
 		test('enables DSK', () => {
-			const triCaster = setupTriCaster()
+			const testee: TriCaster = createTestee()
 
-			const timelineObject = triCaster.getDskTimelineObject(DEFAULT_DSK)
+			const timelineObject = testee.getDskTimelineObject(DEFAULT_DSK)
 
 			expect(timelineObject).toMatchObject({
 				content: literal<TSR.TimelineObjTriCasterME['content']>({
@@ -376,8 +378,129 @@ describe('TriCaster', () => {
 			})
 		})
 	})
+
+	describe('getDveTimelineObjects', () => {
+		it('creates one TriCaster DVE timelineObject', () => {
+			const testee: TriCaster = createTestee()
+			const result: TSR.TSRTimelineObj[] = testee.getDveTimelineObjects(getBasicDveProps())
+
+			expect(result).toHaveLength(1)
+			expect(result[0].layer).toBe(prefixLayer(SwitcherDveLLayer.DveBoxes))
+		})
+
+		// TODO: Replace with interface
+		function getBasicDveProps(boxes?: any[]) {
+			return {
+				content: {
+					boxes: boxes ?? [{ enabled: false }, { enabled: false }, { enabled: false }, { enabled: false }],
+					template: {},
+					artFillSource: 0,
+					artCutSource: 0
+				}
+			}
+		}
+
+		it('creates timelineObject content for TriCaster MixEffect', () => {
+			const testee: TriCaster = createTestee()
+			const result: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(getBasicDveProps())[0]
+				.content as TSR.TimelineObjTriCasterME['content']
+
+			expect(result.deviceType).toBe(TSR.DeviceType.TRICASTER)
+			expect(result.type).toBe(TSR.TimelineContentTypeTriCaster.ME)
+			expect(result.me).toBeTruthy()
+		})
+
+		it('generate overlay keyer', () => {
+			const testee: TriCaster = createTestee()
+			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(getBasicDveProps())[0]
+				.content as TSR.TimelineObjTriCasterME['content']
+			const result: Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> = content.me.keyers!
+
+			expect(result).toBeTruthy()
+			expect(result.dsk1).toBeTruthy()
+			// TODO: Find value from config
+			expect(result.dsk1.input).toBe('input5')
+			expect(result.dsk1.onAir).toBeTruthy()
+			expect(result.dsk1.transitionEffect).toBe('cut')
+		})
+
+		it("has no enabled boxes, all layers are 'invisible'", () => {
+			const testee: TriCaster = createTestee()
+			const emptyBoxes = [{ enabled: false }, { enabled: false }, { enabled: false }, { enabled: false }]
+			const content = testee.getDveTimelineObjects(getBasicDveProps(emptyBoxes))[0]
+				.content as TSR.TimelineObjTriCasterME['content']
+			const result: Partial<Record<
+				TSR.TriCasterLayerName,
+				TSR.TriCasterLayer
+			>> = (content.me as TSR.TriCasterMixEffectInEffectMode).layers!
+
+			expect(result.a).toMatchObject(invisibleBox())
+			expect(result.b).toMatchObject(invisibleBox())
+			expect(result.c).toMatchObject(invisibleBox())
+			expect(result.d).toMatchObject(invisibleBox())
+		})
+
+		function invisibleBox(): TSR.TriCasterLayer {
+			return {
+				input: 'Black',
+				positioningAndCropEnabled: true,
+				position: {
+					x: -3.555,
+					y: -2
+				},
+				crop: {
+					down: 0,
+					up: 0,
+					left: 0,
+					right: 0
+				}
+			}
+		}
+
+		it('has enabled layer A, create box for A', () => {
+			const boxes = [{ enabled: true, source: 1 }, { enabled: false }, { enabled: false }, { enabled: false }]
+			const layers = getLayers(boxes)
+			assertLayer(layers.a!)
+		})
+
+		function getLayers(
+			boxes: Array<{ enabled: boolean; source?: number }>
+		): Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> {
+			const testee: TriCaster = createTestee()
+			const content = testee.getDveTimelineObjects(getBasicDveProps(boxes))[0]
+				.content as TSR.TimelineObjTriCasterME['content']
+			return (content.me as TSR.TriCasterMixEffectInEffectMode).layers!
+		}
+
+		function assertLayer(box: TSR.TriCasterLayer): void {
+			expect(box).toBeTruthy()
+			expect(box.input).toBeTruthy()
+			expect(box.positioningAndCropEnabled).toBeTruthy()
+			expect(box.position).toBeTruthy()
+			expect(box.scale).toBeTruthy()
+			expect(box.crop).toBeTruthy()
+		}
+
+		it('has enabled layer B, create box for B', () => {
+			const boxes = [{ enabled: false }, { enabled: true, source: 1 }, { enabled: false }, { enabled: false }]
+			const layers = getLayers(boxes)
+			assertLayer(layers.b!)
+		})
+
+		it('has enabled layer C, create box for C', () => {
+			const boxes = [{ enabled: false }, { enabled: false }, { enabled: true, source: 1 }, { enabled: false }]
+			const layers = getLayers(boxes)
+			assertLayer(layers.c!)
+		})
+
+		it('has enabled layer D, create box for D', () => {
+			const boxes = [{ enabled: false }, { enabled: false }, { enabled: false }, { enabled: true, source: 1 }]
+			const layers = getLayers(boxes)
+			assertLayer(layers.d!)
+		})
+	})
 })
 
-export function prefixLayer(layerName: string) {
+function prefixLayer(layerName: string) {
 	return 'tricaster_' + layerName
 }
