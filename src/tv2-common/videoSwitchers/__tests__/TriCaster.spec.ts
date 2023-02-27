@@ -411,15 +411,21 @@ describe('TriCaster', () => {
 		})
 
 		it('generate overlay keyer', () => {
-			const testee: TriCaster = createTestee()
+			const config = mock<TV2StudioConfig>()
+			const artFillSource = 10
+			when(config.studio).thenReturn(({
+				SwitcherSource: {
+					SplitArtFill: artFillSource
+				}
+			} as any) as TV2StudioConfigBase)
+			const testee: TriCaster = createTestee(instance(config))
 			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(getBasicDveProps())[0]
 				.content as TSR.TimelineObjTriCasterME['content']
 			const result: Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> = content.me.keyers!
 
 			expect(result).toBeTruthy()
 			expect(result.dsk1).toBeTruthy()
-			// TODO: Find value from config
-			expect(result.dsk1.input).toBe('input5')
+			expect(result.dsk1.input).toBe(`input${artFillSource}`)
 			expect(result.dsk1.onAir).toBeTruthy()
 			expect(result.dsk1.transitionEffect).toBe('cut')
 		})

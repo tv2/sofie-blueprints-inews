@@ -234,7 +234,7 @@ export class TriCaster extends VideoSwitcherImpl {
 	private generateOverlayKeyer(): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> {
 		return {
 			dsk1: {
-				input: this.getInputName(DVE_OVERLAY_INPUT_NUMBER),
+				input: this.getInputName(this.config.studio.SwitcherSource?.SplitArtFill ?? DVE_OVERLAY_INPUT_NUMBER),
 				onAir: true,
 				transitionEffect: 'cut'
 			}
